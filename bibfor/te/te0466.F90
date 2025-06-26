@@ -49,17 +49,17 @@ subroutine te0466(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_axi, l_vf
-    integer :: jv_poids, jv_func, jv_dfunc, jv_gano, jv_poids2, jv_dfunc2, jv_func2
-    integer :: idfdy, igeom, i, j, l, ifluxf
-    integer :: ndim, nno, ipg, npi, ires, iflux, itemps, ipres, ipresf
-    integer :: idec, jdec, kdec, ldec, ldec2, ino, jno
-    integer :: iopt, iret, iforc
-    integer :: nnos, nnom, nflux
+    integer(kind=8) :: jv_poids, jv_func, jv_dfunc, jv_gano, jv_poids2, jv_dfunc2, jv_func2
+    integer(kind=8) :: idfdy, igeom, i, j, l, ifluxf
+    integer(kind=8) :: ndim, nno, ipg, npi, ires, iflux, itemps, ipres, ipresf
+    integer(kind=8) :: idec, jdec, kdec, ldec, ldec2, ino, jno
+    integer(kind=8) :: iopt, iret, iforc
+    integer(kind=8) :: nnos, nnom, nflux
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, valpar(4)
     real(kind=8) :: deltat, flu1, flu2, fluth, x, y, z, fx, fy, fz
-    integer :: napre1, napre2, natemp
+    integer(kind=8) :: napre1, napre2, natemp
     character(len=8) :: nompar(4), elrefe, elref2
-    integer :: ndlno, ndlnm, ndim2
+    integer(kind=8) :: ndlno, ndlnm, ndim2
     real(kind=8) :: pres, presf
     type(THM_DS) :: ds_thm
 !

@@ -18,7 +18,7 @@
 
 subroutine indent(i, ddls, ddlm, nnos, idec)
     implicit none
-    integer :: i, ddls, ddlm, nnos, idec
+    integer(kind=8) :: i, ddls, ddlm, nnos, idec
 !
 !.......................................................................
 !

@@ -28,16 +28,16 @@ subroutine gauss3d(n, a, x, b, ngf, &
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
-    integer :: ngf, n, err1
+    integer(kind=8) :: ngf, n, err1
     real(kind=8) :: a(ngf, ngf+1), b(ngf), x(ngf)
-    integer :: ipzero(ngf)
+    integer(kind=8) :: ipzero(ngf)
 !
-    integer :: i, j, k, ipmax
+    integer(kind=8) :: i, j, k, ipmax
     real(kind=8) :: aux, s
     real(kind=8) :: pmax
     real(kind=8) :: epsilon1
     real(kind=8), dimension(1) :: valr
-    integer, dimension(2) :: vali
+    integer(kind=8), dimension(2) :: vali
     real(kind=8) :: aa(22, 22), bb(22)
 !
     pmax = 0.d0

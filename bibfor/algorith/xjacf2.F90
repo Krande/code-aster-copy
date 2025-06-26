@@ -33,7 +33,7 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg, &
 #include "asterfort/normev.h"
 #include "asterfort/reeref.h"
 #include "blas/ddot.h"
-    integer :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, nptf, ndim, nnops
+    integer(kind=8) :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, nptf, ndim, nnops
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(27, 3)
     real(kind=8) :: nd(3), tau1(3), xg(3)
     character(len=8) :: elrefp, fpg, elc, elrefc
@@ -67,11 +67,11 @@ subroutine xjacf2(elrefp, elrefc, elc, ndim, fpg, &
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: grlt(3), grln(3), norme, norm2, ps
-    integer :: ndimf, nnoc, nn
-    integer :: i, j, k, nno, ipoidf, ivff, idfdef
+    integer(kind=8) :: ndimf, nnoc, nn
+    integer(kind=8) :: i, j, k, nno, ipoidf, ivff, idfdef
     aster_logical :: axi
     real(kind=8) :: xe(3)
-    integer :: ibid, nptfmx
+    integer(kind=8) :: ibid, nptfmx
     real(kind=8) :: dfdx(3), rbid2, cosa, sina
     character(len=8) :: k8bid
 !

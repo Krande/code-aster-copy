@@ -36,11 +36,11 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
 #include "asterfort/mm_cycl_erase.h"
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: i_cont_poin
+    integer(kind=8), intent(in) :: i_cont_poin
     real(kind=8), intent(in) :: coef_cont
     real(kind=8), intent(in) :: pres_cont_prev
     real(kind=8), intent(in) :: dist_cont_prev
-    integer, intent(in) :: indi_cont_eval, indi_cont_prev
+    integer(kind=8), intent(in) :: indi_cont_eval, indi_cont_prev
     real(kind=8), intent(in) :: dist_cont
     real(kind=8), intent(in) :: pres_cont
     real(kind=8), intent(out) :: alpha_cont_matr, alpha_cont_vect
@@ -64,19 +64,19 @@ subroutine mm_cycl_d1(ds_contact, i_cont_poin, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: cycl_type = 1
+    integer(kind=8), parameter :: cycl_type = 1
     character(len=24) :: sdcont_cyclis
-    integer, pointer :: p_sdcont_cyclis(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cyclis(:) => null()
     character(len=24) :: sdcont_cycnbr
-    integer, pointer :: p_sdcont_cycnbr(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cycnbr(:) => null()
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: cycl_long_acti
-    integer :: cycl_ecod, cycl_long, cycl_sub_type, cycl_stat
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8) :: cycl_long_acti
+    integer(kind=8) :: cycl_ecod, cycl_long, cycl_sub_type, cycl_stat
     aster_logical :: detect
     real(kind=8) :: laug_cont_prev, laug_cont_curr
     real(kind=8) :: pres_near_zero
-    integer :: zone_cont_prev, zone_cont_curr
+    integer(kind=8) :: zone_cont_prev, zone_cont_curr
     logical :: indi_cont_prev_modified, endCycl
 !
 ! --------------------------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ interface
         real(kind=8) :: omx
         real(kind=8) :: ya
         real(kind=8) :: sya
-        integer :: ipenteflex
+        integer(kind=8) :: ipenteflex
         real(kind=8) :: kappa_flex
         real(kind=8) :: myf
         real(kind=8) :: pendf

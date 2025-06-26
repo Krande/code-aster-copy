@@ -36,7 +36,7 @@ subroutine cfinal(ds_contact, nbliac)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer :: nbliac
+    integer(kind=8) :: nbliac
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,17 +52,17 @@ subroutine cfinal(ds_contact, nbliac)
 !
     aster_logical :: liaact, liaexi
     real(kind=8) :: jeuini, jeumin
-    integer :: posit, ajliai, spliai, indic, nbliac_init
-    integer :: nbliai
-    integer :: iliai, iliac
+    integer(kind=8) :: posit, ajliai, spliai, indic, nbliac_init
+    integer(kind=8) :: nbliai
+    integer(kind=8) :: iliai, iliac
     aster_logical :: lgcp, lgliss
     character(len=1) :: typeaj
     character(len=19) :: liac
-    integer :: jliac
+    integer(kind=8) :: jliac
     character(len=24) :: jeuite, jeux
-    integer :: jjeuit, jjeux
+    integer(kind=8) :: jjeuit, jjeux
     character(len=24) :: numlia
-    integer :: jnumli
+    integer(kind=8) :: jnumli
 !
 ! ----------------------------------------------------------------------
 !

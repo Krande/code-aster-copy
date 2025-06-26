@@ -74,10 +74,10 @@ subroutine callis(nomres)
     character(len=8) :: sst1, sst2, intf1, intf2, mod1, mod2, lint1, lint2
     character(len=8) :: k8bid, ma1, ma2, matprj
     character(len=16) :: motcle(2)
-    integer :: nblis, ldpmli, nbbloc, lllia, iad, nblig, i, iret, ibid, nbno1
-    integer :: nbno2, llint1, llint2, iinc, irep11, irep12, irep21, irep22
-    integer :: iopt, nbeq1, nbeq2, ddla1, ddla2, imast, nbcol
-    integer :: taille(2), icar(4)
+    integer(kind=8) :: nblis, ldpmli, nbbloc, lllia, iad, nblig, i, iret, ibid, nbno1
+    integer(kind=8) :: nbno2, llint1, llint2, iinc, irep11, irep12, irep21, irep22
+    integer(kind=8) :: iopt, nbeq1, nbeq2, ddla1, ddla2, imast, nbcol
+    integer(kind=8) :: taille(2), icar(4)
     real(kind=8) :: un, moins1
 !
 !

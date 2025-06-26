@@ -51,13 +51,13 @@ subroutine dbrReadPod(operation, paraPod)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nocc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nocc
     real(kind=8) :: toleSVD, toleIncr
     character(len=16) :: fieldName
     character(len=8)  :: lineicAxis, lineicSect, baseType
     character(len=8)  :: resultDomName
-    integer :: nbModeMaxi, nbCmpToFilter, nbVariToFilter
+    integer(kind=8) :: nbModeMaxi, nbCmpToFilter, nbVariToFilter
     type(ROM_DS_Result) :: resultDom
 !
 ! --------------------------------------------------------------------------------------------------

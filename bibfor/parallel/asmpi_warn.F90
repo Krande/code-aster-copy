@@ -32,7 +32,7 @@ subroutine asmpi_warn(iexc)
 #include "asterfort/gtstat.h"
 #include "asterfort/ststat.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: iexc
+    integer(kind=8), intent(in) :: iexc
 !-----------------------------------------------------------------------
 !   Function : MPI COMM WARN
 !       A processor raised an error, it emits the message
@@ -51,7 +51,7 @@ subroutine asmpi_warn(iexc)
 #include "mpif.h"
 !
     mpi_int :: iermpi, rank, nbpro4, mpicou, mpicow
-    integer :: iret, ibid
+    integer(kind=8) :: iret, ibid
 !
 ! --- COMMUNICATEUR MPI COM_WORLD (MPICOW) ET COM COURANT (MPICOU)
 ! --- SI ILS SONT DIFFERENTS, ON NETTOIE ET ON MET LE COM WORLD POUR
@@ -97,7 +97,7 @@ subroutine asmpi_warn(iexc)
 999 continue
 # endif
 #else
-    integer :: idummy
+    integer(kind=8) :: idummy
     idummy = iexc
 #endif
 end subroutine

@@ -45,7 +45,7 @@ subroutine xthpos(resuin, resuou)
 ! IN  MODELE  : NOM DU MODELE
 !
 ! ----------------------------------------------------------------------
-    integer :: jord, nbordr, ior, iord, iret
+    integer(kind=8) :: jord, nbordr, ior, iord, iret
     character(len=19) :: ligrmo, chtn, chtpg, celtmp
     character(len=24) :: ordr, modele
 ! ----------------------------------------------------------------------

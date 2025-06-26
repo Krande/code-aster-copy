@@ -69,7 +69,7 @@ subroutine charth(load, valeType)
     character(len=4), parameter :: phenomS = 'THER'
     character(len=16), parameter :: command = 'AFFE_CHAR_THER'
     character(len=16), parameter :: keywFactEnforceDOF = 'TEMP_IMPO'
-    integer :: geomDime, iret
+    integer(kind=8) :: geomDime, iret
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase
     character(len=19) :: loadLigrel

@@ -20,8 +20,8 @@
 !
 interface
     subroutine utcmp3(nbcmp, nomcmp, numcmp)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=*) :: nomcmp(*)
-        integer :: numcmp(*)
+        integer(kind=8) :: numcmp(*)
     end subroutine utcmp3
 end interface

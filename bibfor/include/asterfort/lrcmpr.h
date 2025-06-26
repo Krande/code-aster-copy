@@ -23,7 +23,7 @@ interface
         med_idt :: idfimd
         character(len=*) :: nomprf
         character(len=*) :: ntproa
-        integer :: lgproa
-        integer :: codret
+        integer(kind=8) :: lgproa
+        integer(kind=8) :: codret
     end subroutine lrcmpr
 end interface

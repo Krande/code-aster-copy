@@ -54,8 +54,8 @@ subroutine pechli(resu, modele, mateco)
 ! ----------------------------------------------------------------------
 !
     aster_logical :: chrcst
-    integer :: i, iret, jinst, jpilo
-    integer :: nbord, jord, numord
+    integer(kind=8) :: i, iret, jinst, jpilo
+    integer(kind=8) :: nbord, jord, numord
     real(kind=8) :: chlim(3), chmax(3), inst, eta, prec, valer(4), f0u, m
     complex(kind=8) :: c16b
 !

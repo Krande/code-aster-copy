@@ -30,7 +30,7 @@ function cos3t(s, pref, epssig)
 ! --- : EPSSIG : EPSILON DE TOLERANCE ----------------------------------
 ! OUT : COS3T  = RAC(54)*DET(S)/(SII)**3 -------------------------------
 ! ======================================================================
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: sii, siirel, dets, un, mun
     blas_int :: b_incx, b_incy, b_n
 ! ======================================================================

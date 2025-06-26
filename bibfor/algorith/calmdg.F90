@@ -72,9 +72,9 @@ subroutine calmdg(model, modgen, nugene, num, nu, &
 !           LE RANG DES DDLS GENERALISES HORS LAGRANGES
 !
 !---------------------------------------------------------------------
-    integer :: ibid, nbid, isst, iadrp
-    integer :: i, j, itxsto, itysto, iprsto
-    integer :: icor(2), ndble, tmod(1)
+    integer(kind=8) :: ibid, nbid, isst, iadrp
+    integer(kind=8) :: i, j, itxsto, itysto, iprsto
+    integer(kind=8) :: icor(2), ndble, tmod(1)
     real(kind=8) :: tgeom(6)
     real(kind=8) :: norm1, norm2, reste(3), deuxpi
     character(len=2) :: model
@@ -89,16 +89,16 @@ subroutine calmdg(model, modgen, nugene, num, nu, &
 !---------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iadirg, iadrz, iadx, iady, iadz
-    integer ::  icompt, igeo, ilires, ilmax
-    integer :: imacl, imodg, ind, ior, iprs, irang, iret
-    integer :: irot, itzsto, k, nbmo, nbmod, nbmodg
-    integer :: nbsst, nn
+    integer(kind=8) :: iadirg, iadrz, iadx, iady, iadz
+    integer(kind=8) ::  icompt, igeo, ilires, ilmax
+    integer(kind=8) :: imacl, imodg, ind, ior, iprs, irang, iret
+    integer(kind=8) :: irot, itzsto, k, nbmo, nbmod, nbmodg
+    integer(kind=8) :: nbsst, nn
     real(kind=8) :: bid, ebid
-    integer, pointer :: tabl_adrx(:) => null()
-    integer, pointer :: tabl_adry(:) => null()
-    integer, pointer :: tabl_mode(:) => null()
-    integer, pointer :: indic(:) => null()
+    integer(kind=8), pointer :: tabl_adrx(:) => null()
+    integer(kind=8), pointer :: tabl_adry(:) => null()
+    integer(kind=8), pointer :: tabl_mode(:) => null()
+    integer(kind=8), pointer :: indic(:) => null()
     character(len=24), pointer :: mael_refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

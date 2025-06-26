@@ -59,23 +59,23 @@ subroutine te0500(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: nbre1, nbrr1
+    integer(kind=8) :: nbre1, nbrr1
     parameter(nbre1=1, nbrr1=2)
 !
-    integer :: nbre2
+    integer(kind=8) :: nbre2
     parameter(nbre2=2)
 !
-    integer :: nbre3, nbrr3
+    integer(kind=8) :: nbre3, nbrr3
     parameter(nbre3=1, nbrr3=2)
 !
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
 !
-    integer :: ipi, kpi, iaux, npg, igeom, jv_gano, imate, ierre, igrdca, iret, isigap, isigam
-    integer :: itab(7), nbcmp
-    integer :: dimdep, dimdef, dimcon
-    integer :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2
-    integer :: nddl_meca, npi, nddl_p1, nddl_p2, nddl_2nd, nnos, nddls, nddlm
-    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5), dimuel
+    integer(kind=8) :: ipi, kpi, iaux, npg, igeom, jv_gano, imate, ierre, igrdca, iret, isigap, isigam
+    integer(kind=8) :: itab(7), nbcmp
+    integer(kind=8) :: dimdep, dimdef, dimcon
+    integer(kind=8) :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2
+    integer(kind=8) :: nddl_meca, npi, nddl_p1, nddl_p2, nddl_2nd, nnos, nddls, nddlm
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), second(5), dimuel
 !
     real(kind=8) :: poids2
     real(kind=8) :: ovfl
@@ -88,8 +88,8 @@ subroutine te0500(option, nomte)
 !
     aster_logical :: l_axi
 !
-    integer :: codme1(nbre1), codmr1(nbrr1), codme2(nbre2), codmr2(nbrr1), codme3(nbre3), kpg, spt
-    integer :: codmr3(nbrr3), codmr4(nbrr3)
+    integer(kind=8) :: codme1(nbre1), codmr1(nbrr1), codme2(nbre2), codmr2(nbrr1), codme3(nbre3), kpg, spt
+    integer(kind=8) :: codmr3(nbrr3), codmr4(nbrr3)
     character(len=3) :: inte_type
     character(len=4) :: nompar(1)
     character(len=8) :: type_elem(2), valk

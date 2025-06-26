@@ -23,10 +23,10 @@ interface
                       nbmac, macofo)
         character(len=8) :: noma
         character(len=19) :: cnxinv
-        integer :: ndim
-        integer :: na
-        integer :: nb
-        integer :: nbmac
+        integer(kind=8) :: ndim
+        integer(kind=8) :: na
+        integer(kind=8) :: nb
+        integer(kind=8) :: nbmac
         character(len=19) :: macofo
     end subroutine fonno1
 end interface

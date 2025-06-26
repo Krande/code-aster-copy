@@ -20,10 +20,10 @@
 !
 interface
     subroutine prvite(vec1, long, ip1, ip2, itp)
-        integer :: long
+        integer(kind=8) :: long
         real(kind=8) :: vec1(long)
-        integer :: ip1
-        integer :: ip2
-        integer :: itp
+        integer(kind=8) :: ip1
+        integer(kind=8) :: ip2
+        integer(kind=8) :: itp
     end subroutine prvite
 end interface

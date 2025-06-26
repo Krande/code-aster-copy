@@ -37,7 +37,7 @@ subroutine apcinv(mesh, sdappa, i_zone)
 
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: sdappa
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,18 +55,18 @@ subroutine apcinv(mesh, sdappa, i_zone)
 !
     character(len=8) :: knuzo
     character(len=24) :: cnives
-    integer :: nb_elem_mast, nb_elem_slav, nb_node_mast
+    integer(kind=8) :: nb_elem_mast, nb_elem_slav, nb_node_mast
     character(len=24) :: sdappa_mast, sdappa_slav
     character(len=24) :: sdappa_slne, sdappa_mane, sdappa_civm, sdappa_lnma
-    integer :: mast_indx_maxi, slav_indx_maxi, mast_indx_mini, slav_indx_mini
-    integer, pointer :: v_sdappa_mast(:) => null()
-    integer, pointer :: v_sdappa_slav(:) => null()
+    integer(kind=8) :: mast_indx_maxi, slav_indx_maxi, mast_indx_mini, slav_indx_mini
+    integer(kind=8), pointer :: v_sdappa_mast(:) => null()
+    integer(kind=8), pointer :: v_sdappa_slav(:) => null()
     mpi_int :: i_proc, nb_proc, mpicou
-    integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
-    integer, pointer :: v_appa_slav_mpi(:) => null()
-    integer ::nb_el_slav_mpi
-    integer, pointer :: list_node_mast(:) => null()
-    integer, pointer :: v_lnma(:) => null()
+    integer(kind=8) :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
+    integer(kind=8), pointer :: v_appa_slav_mpi(:) => null()
+    integer(kind=8) ::nb_el_slav_mpi
+    integer(kind=8), pointer :: list_node_mast(:) => null()
+    integer(kind=8), pointer :: v_lnma(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

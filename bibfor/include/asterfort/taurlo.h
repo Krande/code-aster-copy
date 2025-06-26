@@ -22,18 +22,18 @@ interface
     subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr,&
                       kwork, sompgw, jrwork, tspaq, ipg, dectau, &
                       jvecpg, jnorma)
-        integer :: nbvec
-        integer :: jvectn
-        integer :: jvectu
-        integer :: jvectv
-        integer :: nbordr
-        integer :: kwork
-        integer :: sompgw
-        integer :: jrwork
-        integer :: tspaq
-        integer :: ipg
-        integer ::dectau
-        integer :: jvecpg
-        integer :: jnorma
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jvectn
+        integer(kind=8) :: jvectu
+        integer(kind=8) :: jvectv
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sompgw
+        integer(kind=8) :: jrwork
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: ipg
+        integer(kind=8) ::dectau
+        integer(kind=8) :: jvecpg
+        integer(kind=8) :: jnorma
     end subroutine taurlo
 end interface

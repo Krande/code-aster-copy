@@ -25,7 +25,7 @@ subroutine cmlqlq(main, maout, nbma, lima)
 #include "asterfort/jedema.h"
 #include "jeveux.h"
 !
-    integer :: nbma, lima(nbma)
+    integer(kind=8) :: nbma, lima(nbma)
     character(len=8) :: main, maout
 ! ----------------------------------------------------------------------
 !         TRANSFORMATION DES MAILLES LINEAIRES -> QUADRATIQUES

@@ -21,10 +21,10 @@
 interface
     subroutine pacou6(r, qt, n, i, a,&
                       b)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: r(n, *)
         real(kind=8) :: qt(n, *)
-        integer :: i
+        integer(kind=8) :: i
         real(kind=8) :: a
         real(kind=8) :: b
     end subroutine pacou6

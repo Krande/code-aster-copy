@@ -20,8 +20,8 @@
 !
 interface
     subroutine arlt1d(mlv,ndim,ndml2,mcpln2)
-        integer :: ndim
-        integer :: ndml2
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ndml2
         real(kind=8) :: mcpln2(2*ndim*ndml2,2*ndim*ndml2)
         real(kind=8) :: mlv(78)
     end subroutine arlt1d

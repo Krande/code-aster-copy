@@ -21,10 +21,10 @@
 interface
     subroutine btdbmc(b, d, jacob, ndim, nno,&
                       nbsig, elas_type, btdb)
-        integer, intent(in) :: nbsig
-        integer, intent(in) :: ndim
-        integer, intent(in) :: nno
-        integer, intent(in) :: elas_type
+        integer(kind=8), intent(in) :: nbsig
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: nno
+        integer(kind=8), intent(in) :: elas_type
         real(kind=8), intent(in) :: b(nbsig, *)
         real(kind=8), intent(in) :: d(nbsig, *)
         real(kind=8), intent(in) :: jacob

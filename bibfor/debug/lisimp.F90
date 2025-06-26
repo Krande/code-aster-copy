@@ -37,7 +37,7 @@ subroutine lisimp(lischa, ifm)
 #include "asterfort/lisltf.h"
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
-    integer :: ifm
+    integer(kind=8) :: ifm
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,15 +53,15 @@ subroutine lisimp(lischa, ifm)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ichar, nbchar, ibid
+    integer(kind=8) :: ichar, nbchar, ibid
     character(len=8) :: charge, typech, nomfct, k8bid
     character(len=16) :: typapp, typfct
-    integer :: genrec(1), tabcod(30)
+    integer(kind=8) :: genrec(1), tabcod(30)
     character(len=24) :: lisgen, nomlis, gencha
-    integer :: jlisg, nbgenr(2), igenr, iposit(2)
+    integer(kind=8) :: jlisg, nbgenr(2), igenr, iposit(2)
     character(len=13) :: prefob
     real(kind=8) :: phase
-    integer :: npuis
+    integer(kind=8) :: npuis
 !
 ! ----------------------------------------------------------------------
 !

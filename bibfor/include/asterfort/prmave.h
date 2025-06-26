@@ -21,15 +21,15 @@
 interface
     subroutine prmave(ipr, amat, na, na1, na2,&
                       bvec, nb1, cvec, nc1, ier)
-        integer :: na
-        integer :: ipr
+        integer(kind=8) :: na
+        integer(kind=8) :: ipr
         real(kind=8) :: amat(na, *)
-        integer :: na1
-        integer :: na2
+        integer(kind=8) :: na1
+        integer(kind=8) :: na2
         real(kind=8) :: bvec(*)
-        integer :: nb1
+        integer(kind=8) :: nb1
         real(kind=8) :: cvec(*)
-        integer :: nc1
-        integer :: ier
+        integer(kind=8) :: nc1
+        integer(kind=8) :: ier
     end subroutine prmave
 end interface

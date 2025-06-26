@@ -63,7 +63,7 @@ contains
         real(kind=8), intent(in)            :: disp(SSH_NBDOF_HEXA)
         type(SSH_EPSG_HEXA), intent(inout)  :: epsg
 ! - Local
-        integer :: EH, AD, JM
+        integer(kind=8) :: EH, AD, JM
         real(kind=8) :: J10(3), J1ETA(3), J1ZETA(3), J1ETAZETA(3)
         real(kind=8) :: J20(3), J2XI(3), J2ZETA(3), J2XIZETA(3)
         real(kind=8) :: J30(3), J3ETA(3), J3XI(3), J3XIETA(3)
@@ -193,8 +193,8 @@ contains
         type(SSH_GEOM_HEXA), intent(in) :: geomHexa
         type(SSH_KINE_HEXA), intent(inout) :: kineHexa
 ! - Local
-        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-        integer :: iNodeGeom, EH, AD, JM, C1, C2
+        integer(kind=8), parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer(kind=8) :: iNodeGeom, EH, AD, JM, C1, C2
         real(kind=8) :: aux13(3), aux23(3), aux12(3), aux11(3), aux22(3), aux33(3)
         real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA)
         real(kind=8) :: dN_dZeta(SSH_NBNODEG_HEXA)
@@ -572,12 +572,12 @@ contains
     subroutine compGCovaMatrHexa(iNodeGeom, jNodeGeom, GCova0, GCovaZETA, GCovaZETAZETA_)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in)       :: iNodeGeom, jNodeGeom
+        integer(kind=8), intent(in)       :: iNodeGeom, jNodeGeom
         real(kind=8), intent(out) :: GCova0(SSH_SIZE_TENS)
         real(kind=8), intent(out) :: GCovaZETA(SSH_SIZE_TENS)
         real(kind=8), optional, intent(out) :: GCovaZETAZETA_(SSH_SIZE_TENS)
 ! - Local
-        integer :: AD, EH, JM
+        integer(kind=8) :: AD, EH, JM
         real(kind=8) :: aux13, aux23, aux33, auxz12, auxz13, auxz23
         real(kind=8) :: XI(3)
         real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA)
@@ -684,13 +684,13 @@ contains
                                   GCovaETAZETA, GCovaXIZETA)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in)       :: iNodeGeom, jNodeGeom
+        integer(kind=8), intent(in)       :: iNodeGeom, jNodeGeom
         real(kind=8), intent(out) :: GCovaXI(SSH_SIZE_TENS)
         real(kind=8), intent(out) :: GCovaETA(SSH_SIZE_TENS)
         real(kind=8), intent(out) :: GCovaETAZETA(SSH_SIZE_TENS)
         real(kind=8), intent(out) :: GCovaXIZETA(SSH_SIZE_TENS)
 ! - Local
-        integer :: AD, EH, JM
+        integer(kind=8) :: AD, EH, JM
         real(kind=8) :: aux13, aux23, aux33, aux11, aux12, aux22
         real(kind=8) :: XI(3)
         real(kind=8) :: dN_dXsi(SSH_NBNODEG_HEXA), dN_dEta(SSH_NBNODEG_HEXA)
@@ -817,11 +817,11 @@ contains
 ! - Parameters
         type(SSH_EPSG_HEXA), intent(in)  :: epsg
         type(SSH_EPSL_HEXA), intent(out) :: epsl
-        integer, intent(out)             :: iretLog
+        integer(kind=8), intent(out)             :: iretLog
 ! - Local
-        integer, parameter :: nbvec = 3
+        integer(kind=8), parameter :: nbvec = 3
         real(kind=8) :: epsc(6), epsl33(3, 3)
-        integer :: i, j, k
+        integer(kind=8) :: i, j, k
 !   ------------------------------------------------------------------------------------------------
 !
         iretLog = 0

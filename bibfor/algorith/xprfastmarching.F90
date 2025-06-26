@@ -104,12 +104,12 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom, &
     character(len=2)  :: levset
 
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
-    integer      :: nbno, nbnoma, jcnsls, jgrls
-    integer      :: node, ndim
-    integer      :: jbl, jbeta, jlistp, jvp, jltno
-    integer      :: ifm, niv, jnodto, ibid
-    integer      :: inar, jconx1, jconx2
-    integer      :: jzero, jcopiels, jvtemp, jcalculs
+    integer(kind=8)      :: nbno, nbnoma, jcnsls, jgrls
+    integer(kind=8)      :: node, ndim
+    integer(kind=8)      :: jbl, jbeta, jlistp, jvp, jltno
+    integer(kind=8)      :: ifm, niv, jnodto, ibid
+    integer(kind=8)      :: inar, jconx1, jconx2
+    integer(kind=8)      :: jzero, jcopiels, jvtemp, jcalculs
 
 !     EVALUATION OF THE GRADIENT OF THE LEVEL SET
     character(len=8)  :: lpain(4), lpaout(2)

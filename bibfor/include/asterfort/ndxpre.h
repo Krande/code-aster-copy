@@ -27,8 +27,8 @@ interface
                       lerrit)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer :: list_func_acti(*)
-        integer :: nume_inst
+        integer(kind=8) :: list_func_acti(*)
+        integer(kind=8) :: nume_inst
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: matass, maprec
         character(len=19), intent(in) :: sdnume, sddisc

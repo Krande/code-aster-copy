@@ -24,10 +24,10 @@ interface
                       q2, q2m, vect, ncompn, jheavn, ifiss,&
                       nfiss, nfh, ifa, jheafa, ncomph)
                            
-        integer :: ndim
-        integer :: ddls
-        integer :: ddlm
-        integer :: nnops
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nnops
         real(kind=8) :: ffp2(27)
         real(kind=8) :: q1
         real(kind=8) :: q1m
@@ -38,13 +38,13 @@ interface
         real(kind=8) :: jac
         real(kind=8) :: ta1
         real(kind=8) :: vect(560)
-        integer :: ncompn
-        integer :: jheavn
-        integer :: ifiss
-        integer :: nfiss
-        integer :: nfh
-        integer :: ifa
-        integer :: jheafa
-        integer :: ncomph
+        integer(kind=8) :: ncompn
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ifa
+        integer(kind=8) :: jheafa
+        integer(kind=8) :: ncomph
     end subroutine xvechb
 end interface

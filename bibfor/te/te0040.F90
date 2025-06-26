@@ -37,17 +37,17 @@ subroutine te0040(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: icompo, iinpg
-    integer :: ioutno, iret
-    integer :: jcara, jgeom
-    integer :: lzi, lzr, nbcou, nso
+    integer(kind=8) :: icompo, iinpg
+    integer(kind=8) :: ioutno, iret
+    integer(kind=8) :: jcara, jgeom
+    integer(kind=8) :: lzi, lzr, nbcou, nso
 !
 !
 !-----------------------------------------------------------------------
 !
 !
-    integer :: jmat, jnbspi
-    integer :: nb1, nb2, npgsr, npgsn
+    integer(kind=8) :: jmat, jnbspi
+    integer(kind=8) :: nb1, nb2, npgsr, npgsn
 !
 !
 !

@@ -21,9 +21,9 @@ interface
                       nbMatrElem, listMatrElem, coefMatrElem,&
                       numeDofZ, motcle, matrScalType)
         character(len=1), intent(in) :: jvBase
-        integer, intent(in) :: nbMatrElem
+        integer(kind=8), intent(in) :: nbMatrElem
         character(len=*), intent(in) :: matrAsseZ, listMatrElem(nbMatrElem), numeDofZ
-        integer, intent(in) :: matrScalType
+        integer(kind=8), intent(in) :: matrScalType
         real(kind=8), intent(in) :: coefMatrElem(*)
         character(len=4), intent(in) :: motcle
     end subroutine assmam

@@ -20,7 +20,7 @@ subroutine zengen(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     implicit none
 #include "asterf_types.h"
     real(kind=8)     :: ppr(*)
-    integer          :: ppi(*)
+    integer(kind=8)          :: ppi(*)
     character(len=*) :: ppc(*)
     real(kind=8)     :: yy0(*)
     real(kind=8)     :: dy0(*)
@@ -51,10 +51,10 @@ subroutine zengen(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     parameter(seuil=1.0e+10)
 !
 !   système d'équations : contrainte, epsivisq, epsi , dissipation
-    integer :: isig, iepvis, iepsi, idissi
+    integer(kind=8) :: isig, iepvis, iepsi, idissi
     parameter(isig=1, iepvis=2, iepsi=3, idissi=4)
 !   paramètres du modèle : s1, e2, s3, nu3, alpha3
-    integer :: is1, ie2, is3, inu3, ialp3
+    integer(kind=8) :: is1, ie2, is3, inu3, ialp3
     parameter(is1=1, ie2=2, is3=3, inu3=4, ialp3=5)
 !
     dyy(iepsi) = dy0(iepsi)

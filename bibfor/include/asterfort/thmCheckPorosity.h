@@ -19,7 +19,7 @@
 interface 
     subroutine thmCheckPorosity(j_mater, meca, ds_thm)
         use THM_type
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=16), intent(in) :: meca
         type(THM_DS), intent(in) :: ds_thm
     end subroutine thmCheckPorosity

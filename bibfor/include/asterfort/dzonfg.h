@@ -21,14 +21,14 @@
 interface
     subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno,&
                       tbelzo, nbelzo, tbnozo, nbnozo)
-        integer :: nelcom
-        integer :: nsommx
-        integer :: icnc(nsommx+2, *)
-        integer :: numeli(nelcom+2, *)
-        integer :: inno
-        integer :: tbelzo(1000)
-        integer :: nbelzo(3)
-        integer :: tbnozo(1000)
-        integer :: nbnozo(3)
+        integer(kind=8) :: nelcom
+        integer(kind=8) :: nsommx
+        integer(kind=8) :: icnc(nsommx+2, *)
+        integer(kind=8) :: numeli(nelcom+2, *)
+        integer(kind=8) :: inno
+        integer(kind=8) :: tbelzo(1000)
+        integer(kind=8) :: nbelzo(3)
+        integer(kind=8) :: tbnozo(1000)
+        integer(kind=8) :: nbnozo(3)
     end subroutine dzonfg
 end interface

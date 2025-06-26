@@ -19,16 +19,16 @@
 function nddl(ili, nunoel, nec, idprn1, idprn2)
 ! aslint: disable=
     implicit none
-    integer :: nddl
+    integer(kind=8) :: nddl
 #include "jeveux.h"
-    integer :: ili, nunoel
+    integer(kind=8) :: ili, nunoel
 ! IN  ILI    I : NUMERO DU GROUPE DANS LE LIGREL
 ! IN  NUNOEL I : NUMERO DU NOEUD
 ! OUT NDDL   I : NOMBRE DE DDLS DE CE NOEUD
 !----------------------------------------------------------------------
 !     FONCTION D ACCES A PRNO
 !----------------------------------------------------------------------
-    integer :: idprn1, idprn2, iec, j, k, nec, lshift
+    integer(kind=8) :: idprn1, idprn2, iec, j, k, nec, lshift
 !
 !-----------------------------------------------------------------------
 #define zzprno(ili,nunoel,l) zi( idprn1-1+zi(idprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)

@@ -47,8 +47,8 @@ subroutine mmtppe(ndim, nne, nnm, nnl, nbdm, &
 #include "asterfort/mmcalg.h"
 #include "Contact_type.h"
 !
-    integer, intent(in) :: ndim, nne, nnm, nnl, nbdm
-    integer, intent(in) :: i_reso_geom
+    integer(kind=8), intent(in) :: ndim, nne, nnm, nnl, nbdm
+    integer(kind=8), intent(in) :: i_reso_geom
     aster_logical, intent(in) :: l_large_slip
     real(kind=8), intent(in) :: jeusup
     real(kind=8), intent(in) :: tau1(3), tau2(3)
@@ -122,7 +122,7 @@ subroutine mmtppe(ndim, nne, nnm, nnl, nbdm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_disp_incr, jv_disp
+    integer(kind=8) :: jv_disp_incr, jv_disp
     real(kind=8) :: ppe
     real(kind=8) :: ddepmam(9, 3)
     real(kind=8) :: geomm(3), geome(3)
@@ -135,7 +135,7 @@ subroutine mmtppe(ndim, nne, nnm, nnl, nbdm, &
     real(kind=8) :: elem_slav_coor(9, 3), elem_mast_coor(9, 3)
     real(kind=8) :: elem_slav_temp(nne, ndim), elem_mast_temp(nnm, ndim)
     real(kind=8) :: elem_slav_tem2(nne, ndim), elem_mast_tem2(nnm, ndim)
-    integer :: i_dime, i_nne, i_nnm
+    integer(kind=8) :: i_dime, i_nne, i_nnm
 !
 ! --------------------------------------------------------------------------------------------------
 !

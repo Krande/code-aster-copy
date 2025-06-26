@@ -41,20 +41,20 @@ subroutine cestas(cesz)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::  jcesd, jcesv, jcesl, nbma
-    integer :: jce2d, jce2v, jce2l
-    integer ::    icmp
-    integer :: ima, ipt, isp, nbpt, nbsp, iad, iad2
-    integer :: ncmp, nbcmp, nbpt2, nbsp2, nbcmp2
+    integer(kind=8) ::  jcesd, jcesv, jcesl, nbma
+    integer(kind=8) :: jce2d, jce2v, jce2l
+    integer(kind=8) ::    icmp
+    integer(kind=8) :: ima, ipt, isp, nbpt, nbsp, iad, iad2
+    integer(kind=8) :: ncmp, nbcmp, nbpt2, nbsp2, nbcmp2
     character(len=1) :: base
     character(len=8) :: ma, nomgd, typces
     character(len=3) :: tsca
     character(len=19) :: ces, ces2
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: cesk(:) => null()
-    integer, pointer :: vnbcmp(:) => null()
-    integer, pointer :: vnbpt(:) => null()
-    integer, pointer :: vnbsp(:) => null()
+    integer(kind=8), pointer :: vnbcmp(:) => null()
+    integer(kind=8), pointer :: vnbpt(:) => null()
+    integer(kind=8), pointer :: vnbsp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

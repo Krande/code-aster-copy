@@ -21,7 +21,7 @@ interface
     subroutine thmGetParaInit(j_mater, ds_thm, l_check_)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         aster_logical, optional, intent(in) :: l_check_
     end subroutine thmGetParaInit
 end interface 

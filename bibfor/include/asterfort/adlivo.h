@@ -21,12 +21,12 @@
 interface
     subroutine adlivo(mv, is, nvtot, nvoima, nscoma,&
                       touvoi, nomail)
-        integer :: nscoma
-        integer :: nvoima
-        integer :: mv
-        integer :: is
-        integer :: nvtot
-        integer :: touvoi(1:nvoima, 1:nscoma+2)
+        integer(kind=8) :: nscoma
+        integer(kind=8) :: nvoima
+        integer(kind=8) :: mv
+        integer(kind=8) :: is
+        integer(kind=8) :: nvtot
+        integer(kind=8) :: touvoi(1:nvoima, 1:nscoma+2)
         character(len=8) :: nomail
     end subroutine adlivo
 end interface

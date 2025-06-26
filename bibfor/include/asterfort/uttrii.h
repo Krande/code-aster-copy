@@ -20,7 +20,7 @@
 !
 interface
     subroutine uttrii(ivale, nbvale)
-        integer :: ivale(*)
-        integer :: nbvale
+        integer(kind=8) :: ivale(*)
+        integer(kind=8) :: nbvale
     end subroutine uttrii
 end interface

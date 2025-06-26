@@ -82,8 +82,8 @@ contains
         character(len=24), parameter :: jvListDamp = "&&NMMOAM.AMORTISSEMENT"
         character(len=16) :: answer
         character(len=8) :: listDamp
-        integer :: iret, iMode
-        integer :: nbMode, nbModeDS, nbModeMax, nbDampVale
+        integer(kind=8) :: iret, iMode
+        integer(kind=8) :: nbMode, nbModeDS, nbModeMax, nbDampVale
         aster_logical :: lReacVite
         character(len=8) :: dampMode
         aster_logical :: lReducedDampPy, lReducedDampList
@@ -183,9 +183,9 @@ contains
         character(len=19) :: numeEquaRef, tmpcha, tmpchaRef
         character(len=8) :: dampMode
         character(len=4) :: indik4
-        integer :: nbMode, nbEqua, nbEquaRef
-        integer :: i, ier, iv, iret, lmat, jvDeeq, iMode
-        integer :: jvPara, jvDataDampBase
+        integer(kind=8) :: nbMode, nbEqua, nbEquaRef
+        integer(kind=8) :: i, ier, iv, iret, lmat, jvDeeq, iMode
+        integer(kind=8) :: jvPara, jvDataDampBase
         real(kind=8), pointer :: dampVale(:) => null()
         real(kind=8), pointer :: modeVale(:) => null()
         real(kind=8), pointer :: modeValeRef(:) => null()

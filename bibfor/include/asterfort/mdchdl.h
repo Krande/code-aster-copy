@@ -23,8 +23,8 @@
 interface
     subroutine mdchdl(lnoue2, iliai, ddlcho, ier)
         aster_logical :: lnoue2
-        integer :: iliai
-        integer :: ddlcho(*)
-        integer :: ier
+        integer(kind=8) :: iliai
+        integer(kind=8) :: ddlcho(*)
+        integer(kind=8) :: ier
     end subroutine mdchdl
 end interface

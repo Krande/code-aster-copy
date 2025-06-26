@@ -21,9 +21,9 @@ interface
     subroutine mxwell_mt(ndim, typmod, imate , instam, instap, nl,&
                          deps, sigm  , vim   , option,&
                          sigp, vip   , dsidep, iret)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: instam, instap
         real(kind=8) :: nl
         real(kind=8) :: deps(6)
@@ -32,6 +32,6 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*), vim(*)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret     
+        integer(kind=8) :: iret     
     end subroutine mxwell_mt
 end interface

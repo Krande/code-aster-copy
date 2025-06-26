@@ -31,7 +31,7 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
@@ -49,7 +49,7 @@ subroutine dismtm(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: itm, ianbno
+    integer(kind=8) :: itm, ianbno
 !
 !
 !

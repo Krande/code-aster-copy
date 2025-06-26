@@ -24,9 +24,9 @@ interface
     subroutine cgajpa(para, notype, nbpara, linopa, litypa, nxpara)
         character(len=*) :: para
         character(len=*) :: notype       
-        integer :: nbpara
+        integer(kind=8) :: nbpara
         character(len=*) :: linopa(nxpara)
         character(len=*) :: litypa(nxpara)
-        integer :: nxpara
+        integer(kind=8) :: nxpara
     end subroutine cgajpa
 end interface

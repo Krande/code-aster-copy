@@ -23,13 +23,13 @@ interface
                       shift, yh, yb, vr, nlivr,&
                       vpr, vpi, vecp, mxresf, resufi,&
                       resufr, lagr, omecor)
-        integer :: mxresf
-        integer :: nlivr
-        integer :: neq
+        integer(kind=8) :: mxresf
+        integer(kind=8) :: nlivr
+        integer(kind=8) :: neq
         character(len=1) :: appr
         character(len=*) :: opt
-        integer :: nbfreq
-        integer :: nbvect
+        integer(kind=8) :: nbfreq
+        integer(kind=8) :: nbvect
         complex(kind=8) :: shift
         real(kind=8) :: yh(neq, *)
         real(kind=8) :: yb(neq, *)
@@ -37,9 +37,9 @@ interface
         real(kind=8) :: vpr(*)
         real(kind=8) :: vpi(*)
         complex(kind=8) :: vecp(neq, *)
-        integer :: resufi(mxresf, *)
+        integer(kind=8) :: resufi(mxresf, *)
         real(kind=8) :: resufr(mxresf, *)
-        integer :: lagr(*)
+        integer(kind=8) :: lagr(*)
         real(kind=8) :: omecor
     end subroutine wp2vec
 end interface

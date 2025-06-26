@@ -32,7 +32,7 @@ subroutine comp_nbvari_kit(kit_comp, &
 !
     character(len=16), intent(in) :: kit_comp(4)
     aster_logical, intent(in) :: l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg
-    integer, intent(out) :: nbVariFromKit, numeLawKit(4), nbVariKit(4)
+    integer(kind=8), intent(out) :: nbVariFromKit, numeLawKit(4), nbVariKit(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,14 +55,14 @@ subroutine comp_nbvari_kit(kit_comp, &
 !
     character(len=16) :: rela_thmc, rela_ther, rela_hydr, rela_meca
     character(len=16) :: metaRela, metaPhas, metaGlob
-    integer :: nbVariMetaRela, nbMetaPhas, nbVariMetaGlob
-    integer :: nb_vari_thmc, nb_vari_ther, nb_vari_hydr, nb_vari_meca
+    integer(kind=8) :: nbVariMetaRela, nbMetaPhas, nbVariMetaGlob
+    integer(kind=8) :: nb_vari_thmc, nb_vari_ther, nb_vari_hydr, nb_vari_meca
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
-    integer :: nb_vari_flua, nb_vari_plas, nb_vari_cpla, nb_vari_coup
+    integer(kind=8) :: nb_vari_flua, nb_vari_plas, nb_vari_cpla, nb_vari_coup
     character(len=16) :: rela_comp_cg(2)
-    integer :: nb_vari_cg(2), numeCompCG(2)
-    integer :: nume_comp_plas, nume_comp_flua
-    integer :: nume_comp_thmc, nume_comp_hydr, nume_comp_meca, nume_comp_ther
+    integer(kind=8) :: nb_vari_cg(2), numeCompCG(2)
+    integer(kind=8) :: nume_comp_plas, nume_comp_flua
+    integer(kind=8) :: nume_comp_thmc, nume_comp_hydr, nume_comp_meca, nume_comp_ther
 !
 ! --------------------------------------------------------------------------------------------------
 !

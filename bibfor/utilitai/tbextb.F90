@@ -36,7 +36,7 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr, &
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 !
-    integer :: npacri, vi(*), iret
+    integer(kind=8) :: npacri, vi(*), iret
     real(kind=8) :: vr(*), lprec(*)
     complex(kind=8) :: vc(*)
     character(len=*) :: tabin, basout, tabout, lipacr(*), lcrpa(*), vk(*)
@@ -60,10 +60,10 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr, &
 !                = 20 , PAS DE LIGNES POUR LE PARAMETRE DONNE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: irt, nbpara, nblign, nbpu
-    integer :: i, j, k, n, jvale, itrouv, itrou2
-    integer :: ki, kr, kc, kk, jvall, nbp
-    integer :: imax, imin
+    integer(kind=8) :: irt, nbpara, nblign, nbpu
+    integer(kind=8) :: i, j, k, n, jvale, itrouv, itrou2
+    integer(kind=8) :: ki, kr, kc, kk, jvall, nbp
+    integer(kind=8) :: imax, imin
     real(kind=8) :: prec, refr, rmax, rmin
     complex(kind=8) :: cmin, cmax
     character(len=1) :: base
@@ -72,14 +72,14 @@ subroutine tbextb(tabin, basout, tabout, npacri, lipacr, &
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     aster_logical :: lok
-    integer, pointer :: numero(:) => null()
+    integer(kind=8), pointer :: numero(:) => null()
     character(len=24), pointer :: para_r(:) => null()
     character(len=8), pointer :: type_r(:) => null()
     complex(kind=8), pointer :: vale_c(:) => null()
-    integer, pointer :: vale_i(:) => null()
+    integer(kind=8), pointer :: vale_i(:) => null()
     character(len=80), pointer :: vale_k(:) => null()
     real(kind=8), pointer :: vale_r(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 ! ----------------------------------------------------------------------
 !

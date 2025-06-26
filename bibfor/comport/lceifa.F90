@@ -26,7 +26,7 @@ subroutine lceifa(fami, kpg, ksp, mat, option, &
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
     character(len=16) :: option
-    integer :: mat, kpg, ksp
+    integer(kind=8) :: mat, kpg, ksp
     real(kind=8) :: mu(3), su(3), deltap(6), ddedt(6, 6), vim(*), vip(*), r
     character(len=*) :: fami
 !
@@ -46,10 +46,10 @@ subroutine lceifa(fami, kpg, ksp, mat, option, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: resi, rigi, elas
-    integer :: regime
+    integer(kind=8) :: regime
     real(kind=8) :: sc, gc, dc, dc0, c, h, ka, sk, rk, val(4), kap, gap, incr
     real(kind=8) :: dn, tn, t(3), ddndtn, deltam
-    integer :: cod(4)
+    integer(kind=8) :: cod(4)
     character(len=16) :: nom(4)
     character(len=1) :: poum
 !

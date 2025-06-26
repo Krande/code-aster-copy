@@ -21,9 +21,9 @@
 interface
     subroutine dil2gr(imate, ndim, dimdef,&
                       defgep, sigp, dsde2g)
-        integer :: dimdef
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         real(kind=8) :: defgep(dimdef)
         real(kind=8) :: sigp(ndim)
         real(kind=8) :: dsde2g(ndim, ndim)

@@ -28,7 +28,7 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ntel(*)
+    integer(kind=8) :: ntel(*)
     character(len=19) :: napcis, foncis
     character(len=24) :: tmp, nom
 !       AFFECTATION DES CARACTÉRISTIQUES GÉNÉRALES CALCULÉES
@@ -46,8 +46,8 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
     real(kind=8) :: valpay(2), valpaz(2), valpaf
     character(len=24) :: nompa(2), nompaf
 !-----------------------------------------------------------------------
-    integer :: i, ier, igen, igen2, igeoc, igeor, isec
-    integer :: jdge, nel
+    integer(kind=8) :: i, ier, igen, igen2, igeoc, igeor, isec
+    integer(kind=8) :: jdge, nel
     real(kind=8) :: aireint, ay, az
 !-----------------------------------------------------------------------
     data eps/1.d-3/

@@ -48,19 +48,19 @@ subroutine te0110(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbres, nbpar, ndimax
+    integer(kind=8) :: nbres, nbpar, ndimax
 !-----------------------------------------------------------------------
-    integer :: icoehf, icoehr, ier, iret, ivf1, ivf2, kq
-    integer :: l, mzr, nbddl, nbnoso, nbv, nbvar
+    integer(kind=8) :: icoehf, icoehr, ier, iret, ivf1, ivf2, kq
+    integer(kind=8) :: l, mzr, nbddl, nbnoso, nbv, nbvar
     real(kind=8) :: deltat, pk, pm, poi1, poi2, theta, un
     real(kind=8) :: xgau, ygau, zero, zgau
 !-----------------------------------------------------------------------
     parameter(nbres=30)
     parameter(nbpar=4)
     parameter(ndimax=27)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=2) :: num
-    integer :: codmat
+    integer(kind=8) :: codmat
     character(len=8) :: hfmoin, hfplus, hfbord, alias8, fami, poum, nompar(nbpar)
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
@@ -72,9 +72,9 @@ subroutine te0110(option, nomte)
     real(kind=8) :: matref(3), matele(3)
     real(kind=8) :: rigith(ndimax, ndimax), masse(ndimax, ndimax)
     real(kind=8) :: long, hmoin, hplus, hbord
-    integer :: i, j, nno, kp, npg1, npg2, gi, pi, ivectt, itemp, icacoq
-    integer :: ipoids, ivf, idfde, igeom, imate, nnos, jgano
-    integer :: itemps, k, pj, gj, ndim, ibid, kpg, spt
+    integer(kind=8) :: i, j, nno, kp, npg1, npg2, gi, pi, ivectt, itemp, icacoq
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate, nnos, jgano
+    integer(kind=8) :: itemps, k, pj, gj, ndim, ibid, kpg, spt
 !
 !
 ! --- DETERMINATION DU SECOND MEMBRE CHAR_THER_EVOL :

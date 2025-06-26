@@ -30,7 +30,7 @@ interface
         character(len=*) :: suropt
         character(len=*) :: lpain(*)
         character(len=*) :: lchin(*)
-        integer :: nbopt
+        integer(kind=8) :: nbopt
         character(len=*) :: typcoe
         real(kind=8) :: alpha
         complex(kind=8) :: calpha

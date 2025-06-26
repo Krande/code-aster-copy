@@ -21,7 +21,7 @@
 interface
     subroutine inmain(nommat, neq, nozero)
         character(len=19) :: nommat
-        integer :: neq
-        integer :: nozero
+        integer(kind=8) :: neq
+        integer(kind=8) :: nozero
     end subroutine inmain
 end interface

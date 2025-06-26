@@ -66,8 +66,8 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=24), parameter :: cellAffe = '&&COMPMECASAVE.LIST'
     aster_logical :: lAllCellAffe
-    integer :: nbCellAffe
-    integer :: iFactorKeyword, nbFactorKeyword, exteDefo, lctestIret
+    integer(kind=8) :: nbCellAffe
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword, exteDefo, lctestIret
     character(len=16) :: defoComp, relaComp, typeCpla, typeComp, reguVisc, postIncr
     character(len=16) :: relaCompPY, defoCompPY
     character(len=19) :: partit, answer

@@ -28,10 +28,10 @@ subroutine resuSelectNode(meshName, meshNodeNb, &
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: meshName
-    integer, intent(in) :: nodeUserNb, meshNodeNb, nodeUserNume(*)
+    integer(kind=8), intent(in) :: nodeUserNb, meshNodeNb, nodeUserNume(*)
     character(len=8), pointer :: nodeName(:)
-    integer, pointer :: nodeNume(:)
-    integer, intent(out) :: nodeNb
+    integer(kind=8), pointer :: nodeNume(:)
+    integer(kind=8), intent(out) :: nodeNb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ subroutine resuSelectNode(meshName, meshNodeNb, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iNode
+    integer(kind=8) :: iNode
 !
 ! --------------------------------------------------------------------------------------------------
 !

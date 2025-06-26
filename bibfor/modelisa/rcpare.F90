@@ -23,7 +23,7 @@ subroutine rcpare(nommat, pheno, para, icodre)
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
     character(len=*) :: nommat, pheno, para
-    integer :: icodre
+    integer(kind=8) :: icodre
 ! ----------------------------------------------------------------------
 !     VERIFICATION DE LA PRESENCE D'UNE CARACTERISTIQUE DANS UN
 !     COMPORTEMENT DONNE
@@ -43,10 +43,10 @@ subroutine rcpare(nommat, pheno, para, icodre)
     character(len=8) ::  nomma2
     character(len=32) :: pheno2
     character(len=32) :: ncomr, ncomc, ncomk, ncomp
-    integer :: nbpar, nbr, nbc, nbk, nbcomp, icomp
+    integer(kind=8) :: nbpar, nbr, nbc, nbk, nbcomp, icomp
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, ipar
+    integer(kind=8) :: i, j, ipar
 !-----------------------------------------------------------------------
     icodre = 1
     pheno2 = pheno

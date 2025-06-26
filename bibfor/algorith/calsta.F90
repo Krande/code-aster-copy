@@ -26,7 +26,7 @@ subroutine calsta(proj, gamma, dh, def, nno, &
 !
     implicit none
 !
-    integer :: kpg, kk, kkd, n, i, m, j, kl, nno, j1, ifiltr, proj
+    integer(kind=8) :: kpg, kk, kkd, n, i, m, j, kl, nno, j1, ifiltr, proj
     real(kind=8) :: dsidep(6, 6), f(3, 3)
     real(kind=8) :: tmp, sig(6)
     real(kind=8) :: gamma(4), dh(8)

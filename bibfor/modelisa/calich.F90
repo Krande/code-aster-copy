@@ -73,18 +73,18 @@ subroutine calich(chargz, phenom)
     complex(kind=8) :: betac
 !
 !-----------------------------------------------------------------------
-    integer :: i
-    integer ::    iequa, ino, inocmp
-    integer :: iocc, iret, k, nb, nbcmp, nbec, nbnoeu
-    integer :: nbterm, nequa, nliai, nucmp
+    integer(kind=8) :: i
+    integer(kind=8) ::    iequa, ino, inocmp
+    integer(kind=8) :: iocc, iret, k, nb, nbcmp, nbec, nbnoeu
+    integer(kind=8) :: nbterm, nequa, nliai, nucmp
     real(kind=8) :: beta, vale, zero
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

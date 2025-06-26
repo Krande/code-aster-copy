@@ -53,12 +53,12 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, &
 !
 !-----------------------------------------------------------------------
 ! DECLARATION PARAMETRES D'APPELS
-    integer :: nbeq, nfreq, nconv, lmatb, ddlexc(nbeq), typeps
+    integer(kind=8) :: nbeq, nfreq, nconv, lmatb, ddlexc(nbeq), typeps
     real(kind=8) :: vect(nbeq, nconv), alpha, vaux(nbeq), delta(nconv), dsor(nfreq+1, 2), omecor
 !
 !-----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
-    integer :: ireor1, ireor2, i, j, k, compt1, compt2, compt3, iauxi, iauxj, nconvl, ifm, niv
+  integer(kind=8) :: ireor1, ireor2, i, j, k, compt1, compt2, compt3, iauxi, iauxj, nconvl, ifm, niv
     real(kind=8) :: seuilr, seuilp, auxri, auxri1
     aster_logical :: ltest, lcheck
 !

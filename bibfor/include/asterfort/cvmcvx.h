@@ -20,7 +20,7 @@
 !
 interface
     subroutine cvmcvx(nmat, mater, sig, vin, seuil)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(*)

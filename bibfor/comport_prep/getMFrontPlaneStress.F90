@@ -29,7 +29,7 @@ subroutine getMFrontPlaneStress(keywf, i_comp, rela_comp, l_mfront_cp)
 #include "asterfort/getvtx.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: i_comp
+    integer(kind=8), intent(in) :: i_comp
     character(len=16), intent(in) :: rela_comp
     aster_logical, intent(out) :: l_mfront_cp
 !
@@ -48,7 +48,7 @@ subroutine getMFrontPlaneStress(keywf, i_comp, rela_comp, l_mfront_cp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=16) :: rela_comp_py, answer
 !
 ! --------------------------------------------------------------------------------------------------

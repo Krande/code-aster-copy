@@ -23,10 +23,10 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2, ideb)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer, intent(in)           :: iddl, neq
-    integer, intent(out)          :: lagr1, lagr2
+    integer(kind=8), intent(in)           :: iddl, neq
+    integer(kind=8), intent(out)          :: lagr1, lagr2
     character(len=*), intent(in)  :: nume
-    integer, intent(in), optional :: ideb
+    integer(kind=8), intent(in), optional :: ideb
 
 !
 !     RECHERCHE LES DEUX LAGRANGES ASSOCIES AU DDL IDDL.
@@ -47,8 +47,8 @@ subroutine ddllag(nume, iddl, neq, lagr1, lagr2, ideb)
     character(len=24) :: nomnu
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, icas, icmp, inoe, nc, nn, idebu
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8) :: i, icas, icmp, inoe, nc, nn, idebu
+    integer(kind=8), pointer :: deeq(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()

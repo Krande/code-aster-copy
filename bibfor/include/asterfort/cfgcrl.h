@@ -22,8 +22,8 @@ interface
     subroutine cfgcrl(resoco, neq, nbliai, matass, solveu,&
                       alpha)
         character(len=24) :: resoco
-        integer :: neq
-        integer :: nbliai
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
         character(len=19) :: matass
         character(len=19) :: solveu
         real(kind=8) :: alpha

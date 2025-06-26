@@ -20,6 +20,6 @@ interface
     subroutine dismrs(questionZ, objNameZ, repi, repkz, ierd)
         character(len=*), intent(in) :: questionZ, objNameZ
         character(len=*), intent(out)  :: repkz
-        integer, intent(out) :: repi, ierd
+        integer(kind=8), intent(out) :: repi, ierd
     end subroutine dismrs
 end interface

@@ -53,7 +53,7 @@ subroutine carayo(load, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'RAYONNEMENT'
-    integer :: nrayo, jvalv, ncmp, n, iocc, nbtou, nbma, jma
+    integer(kind=8) :: nrayo, jvalv, ncmp, n, iocc, nbtou, nbma, jma
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=19) :: carte

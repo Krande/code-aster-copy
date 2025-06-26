@@ -48,7 +48,7 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     !!! Variable globale
     !!!
 
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: invar, vintr, s(6), mater(nbmat, 2), ucriv, seuil, tmp
 
     !!!
@@ -59,7 +59,7 @@ subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
     real(kind=8) :: r0c, rtheta
     real(kind=8) :: rcos3t
     real(kind=8) :: paravi(3), varvi(4)
-    integer :: ndi, ndt
+    integer(kind=8) :: ndi, ndt
     common/tdim/ndt, ndi
 
     !!!

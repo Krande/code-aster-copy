@@ -35,7 +35,7 @@ subroutine teattr(kstop, noattr, vattr, iret_, typel)
     character(len=1), intent(in) :: kstop
     character(len=*), intent(in) :: noattr
     character(len=*), intent(out) :: vattr
-    integer, optional, intent(out) :: iret_
+    integer(kind=8), optional, intent(out) :: iret_
     character(len=*), intent(in), optional :: typel
 
 !---------------------------------------------------------------------
@@ -59,7 +59,7 @@ subroutine teattr(kstop, noattr, vattr, iret_, typel)
 !-----------------------------------------------------------------------
     character(len=16) :: nomt2, noatt2, vattr2
     character(len=24) :: valk(2)
-    integer :: jcte, n1, nbattr, k, ite, iret
+    integer(kind=8) :: jcte, n1, nbattr, k, ite, iret
     aster_logical :: apelje
 !----------------------------------------------------------------------
     if (present(typel)) then

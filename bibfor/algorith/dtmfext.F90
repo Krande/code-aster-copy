@@ -33,17 +33,17 @@ subroutine dtmfext(sd_dtm_, time, fext, buffdtm)
     character(len=*), intent(in)  :: sd_dtm_
     real(kind=8), intent(out) :: time
     real(kind=8), pointer :: fext(:)
-    integer, pointer  :: buffdtm(:)
+    integer(kind=8), pointer  :: buffdtm(:)
 
 !
 !   -0.2- Local variables
-    integer          :: nbmode, ntotex
+    integer(kind=8)          :: nbmode, ntotex
     real(kind=8)     :: r8b
     character(len=8) :: sd_dtm
 !
-    integer, pointer :: idescf(:) => null()
-    integer, pointer :: liad(:) => null()
-    integer, pointer :: inumor(:) => null()
+    integer(kind=8), pointer :: idescf(:) => null()
+    integer(kind=8), pointer :: liad(:) => null()
+    integer(kind=8), pointer :: inumor(:) => null()
     real(kind=8), pointer :: coefm(:) => null()
     character(len=8), pointer :: nomfon(:) => null()
 !

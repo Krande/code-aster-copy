@@ -20,7 +20,7 @@
 !
 interface
     subroutine exchml(imodat, iparg)
-        integer :: imodat
-        integer :: iparg
+        integer(kind=8) :: imodat
+        integer(kind=8) :: iparg
     end subroutine exchml
 end interface

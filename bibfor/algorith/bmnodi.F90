@@ -64,19 +64,19 @@ subroutine bmnodi(basmdz, intfz, nmintz, numint, nbdef, &
 !
 !
     character(len=*), intent(in) :: basmdz, nmintz, intfz
-    integer, intent(in) :: nbdef
-    integer, intent(inout) :: numint
-    integer, intent(out) :: ivcord(nbdef)
-    integer, intent(inout) :: nbdif
+    integer(kind=8), intent(in) :: nbdef
+    integer(kind=8), intent(inout) :: numint
+    integer(kind=8), intent(out) :: ivcord(nbdef)
+    integer(kind=8), intent(inout) :: nbdif
 !
     character(len=8) :: basmod, nomint, intf, blanc, intfb
     character(len=24) :: noeint, idesc
     character(len=24) :: valk(3)
-    integer :: vali
-    integer :: idec(300)
+    integer(kind=8) :: vali
+    integer(kind=8) :: idec(300)
     character(len=10) :: typbas(3)
-    integer :: i, inoe, iordef, j, lldes, llnoe
-    integer :: nbnot, nbcmp, nbec, nbmod, nbnoe
+    integer(kind=8) :: i, inoe, iordef, j, lldes, llnoe
+    integer(kind=8) :: nbnot, nbcmp, nbec, nbmod, nbnoe
 !-----------------------------------------------------------------------
     data typbas/'CLASSIQUE', 'CYCLIQUE', 'RITZ'/
 !-----------------------------------------------------------------------

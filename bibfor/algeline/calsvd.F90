@@ -74,14 +74,14 @@ subroutine calsvd(nm, m, n, a, w, &
 #include "asterfort/as_deallocate.h"
 #include "blas/dgesdd.h"
 #include "blas/dgesvd.h"
-    integer :: nm, m, n, ierr
+    integer(kind=8) :: nm, m, n, ierr
     real(kind=8) :: a(nm, n), w(n), u(nm, m), v(nm, n)
     aster_logical :: matu, matv
 !
 ! VARIABLES LOCALES
 ! -----------------
     integer(kind=4) :: ierr1
-    integer :: nm1, nm2, ldvt, i, j, lwork
+    integer(kind=8) :: nm1, nm2, ldvt, i, j, lwork
     character(len=1) :: code
     parameter(nm1=20)
     real(kind=8) :: vt(nm1*nm1)

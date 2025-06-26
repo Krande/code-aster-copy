@@ -20,7 +20,7 @@
 interface
     subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx,&
                       cour, jacp, cosa, sina)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: poids
         real(kind=8) :: dfrdk(1)
         real(kind=8) :: coor(*)

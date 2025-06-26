@@ -28,7 +28,7 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
 !
 !
     character(len=*), intent(in) :: name
-    integer, intent(in) :: nrows, ncols
+    integer(kind=8), intent(in) :: nrows, ncols
     aster_logical, intent(in) :: l_sym
     real(kind=8), dimension(:, :), intent(in) :: mat
 !
@@ -47,7 +47,7 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_matr_out, j, ij, i
+    integer(kind=8) :: jv_matr_out, j, ij, i
     blas_int :: b_1, b_j
 !
 ! --------------------------------------------------------------------------------------------------

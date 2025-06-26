@@ -23,11 +23,11 @@
 interface
     subroutine mgausw(a, b, dim, nordre, nb,&
                       det, iret)
-        integer :: nb
-        integer :: dim
+        integer(kind=8) :: nb
+        integer(kind=8) :: dim
         real(kind=8) :: a(dim, dim)
         real(kind=8) :: b(dim, nb)
-        integer :: nordre
+        integer(kind=8) :: nordre
         real(kind=8) :: det
         aster_logical :: iret
     end subroutine mgausw

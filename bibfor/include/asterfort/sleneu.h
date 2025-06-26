@@ -22,17 +22,17 @@ interface
     subroutine sleneu(iunv, nbnode, ama, bma, cma,&
                       ami, bmi, cmi, mix, man,&
                       ites, datset)
-        integer :: iunv
-        integer :: nbnode
+        integer(kind=8) :: iunv
+        integer(kind=8) :: nbnode
         real(kind=8) :: ama
         real(kind=8) :: bma
         real(kind=8) :: cma
         real(kind=8) :: ami
         real(kind=8) :: bmi
         real(kind=8) :: cmi
-        integer :: mix
-        integer :: man
-        integer :: ites
-        integer :: datset
+        integer(kind=8) :: mix
+        integer(kind=8) :: man
+        integer(kind=8) :: ites
+        integer(kind=8) :: datset
     end subroutine sleneu
 end interface

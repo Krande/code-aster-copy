@@ -30,7 +30,7 @@ subroutine zlscal(n, za, zx, incx)
     implicit none
 !
     complex(kind=8) :: za, zx(*)
-    integer :: i, incx, ix, n
+    integer(kind=8) :: i, incx, ix, n
 !
     if (n .le. 0 .or. incx .le. 0) goto 999
     if (incx .eq. 1) goto 20

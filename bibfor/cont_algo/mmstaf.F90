@@ -35,13 +35,13 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     character(len=19), intent(in) :: chdepd
     real(kind=8), intent(in) :: coef_frot
-    integer, intent(in) :: nummae
+    integer(kind=8), intent(in) :: nummae
     character(len=8), intent(in) :: aliase
-    integer, intent(in) :: nne
-    integer, intent(in) :: nummam
+    integer(kind=8), intent(in) :: nne
+    integer(kind=8), intent(in) :: nummam
     real(kind=8), intent(in) :: ksipc1
     real(kind=8), intent(in) :: ksipc2
     real(kind=8), intent(in) :: ksipr1
@@ -53,7 +53,7 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, &
     real(kind=8), intent(in) :: norm(3)
     real(kind=8), intent(out) :: pres_frot(3)
     real(kind=8), intent(out) :: dist_frot(3)
-    integer, intent(out) :: indi_frot_eval
+    integer(kind=8), intent(out) :: indi_frot_eval
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,7 +87,7 @@ subroutine mmstaf(mesh, ndim, chdepd, coef_frot, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::  idim1, idim2
+    integer(kind=8) ::  idim1, idim2
     real(kind=8) :: laug_frot_norm
     real(kind=8) :: dlagrf(2), dist_total(3)
     real(kind=8) :: ddeple(3), ddeplm(3)

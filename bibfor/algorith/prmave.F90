@@ -21,8 +21,8 @@ subroutine prmave(ipr, amat, na, na1, na2, &
 !
 !
     implicit none
-    integer :: na
-    integer :: na1, na2, nb1, nc1, ipr, ier
+    integer(kind=8) :: na
+    integer(kind=8) :: na1, na2, nb1, nc1, ipr, ier
     real(kind=8) :: amat(na, *), bvec(*), cvec(*)
 !
 ! ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine prmave(ipr, amat, na, na1, na2, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 ! ----------------------------------------------------------------------
 !

@@ -58,14 +58,14 @@ subroutine ntcrob(meshz, modelz, result, sddisc, ds_inout, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_obsv, nb_keyw_fact, numeReuseCalc
+    integer(kind=8) :: nb_obsv, nb_keyw_fact, numeReuseCalc
     character(len=19) :: sdarch
     character(len=14) :: sdextr_obsv
     character(len=16) :: keyw_fact
     character(len=24) :: sdarchAinfJv
-    integer, pointer :: sdarchAinf(:) => null()
+    integer(kind=8), pointer :: sdarchAinf(:) => null()
     character(len=24) :: extr_info
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

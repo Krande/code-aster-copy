@@ -40,7 +40,7 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax, &
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: ioc, ispmax, ispmin, isamax, isamin
+    integer(kind=8) :: ioc, ispmax, ispmin, isamax, isamin
     real(kind=8) :: valmin, valmax, vaamin, vaamax
     character(len=8) :: mamax, nomax, cmpmax, mamin, nomin, cmpmin
     character(len=8) :: maamax, noamax, cmamax, maamin, noamin, cmamin
@@ -51,11 +51,11 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcesd, jcesl, nbma, ncmp, nbm
-    integer :: ibid, nbmail, idmail, nbc, nbcmp
-    integer :: i100, i110, icp, imai, nbpt, nbsp, ipt, isp, iad
-    integer :: imamax, iptmax, imamin, iptmin, jcone
-    integer :: imaaax, ipamax, imaain, ipamin, ier1, ier2
+    integer(kind=8) :: jcesd, jcesl, nbma, ncmp, nbm
+    integer(kind=8) :: ibid, nbmail, idmail, nbc, nbcmp
+    integer(kind=8) :: i100, i110, icp, imai, nbpt, nbsp, ipt, isp, iad
+    integer(kind=8) :: imamax, iptmax, imamin, iptmin, jcone
+    integer(kind=8) :: imaaax, ipamax, imaain, ipamin, ier1, ier2
     real(kind=8) :: x
     character(len=8) :: nocmp, ma
     character(len=16) :: motcle(2), typmcl(2)

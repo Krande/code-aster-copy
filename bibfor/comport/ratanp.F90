@@ -49,7 +49,7 @@ subroutine ratanp(dpstrs, rprops, ii, jj, mm, edge, apex)
 #include "asterf_types.h"
 !
 ! Declaration of integer type variables
-    integer :: ii, jj, mm
+    integer(kind=8) :: ii, jj, mm
 !
 !     aster_logical :: epflag, epflag0
 ! Real arrays and variables

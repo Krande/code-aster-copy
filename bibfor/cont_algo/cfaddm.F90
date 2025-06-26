@@ -35,9 +35,9 @@ subroutine cfaddm(ds_contact, l_frot, node_slav_indx, i_cont_link, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer :: node_slav_indx, i_cont_link
-    integer :: nb_node_mast, model_ndim
-    integer :: nods_mast_indx(*)
+    integer(kind=8) :: node_slav_indx, i_cont_link
+    integer(kind=8) :: nb_node_mast, model_ndim
+    integer(kind=8) :: nods_mast_indx(*)
     real(kind=8) :: coef_node(*)
     real(kind=8) :: jeu, coornp(3)
     real(kind=8) :: norm(3), tau1(3), tau2(3)
@@ -75,8 +75,8 @@ subroutine cfaddm(ds_contact, l_frot, node_slav_indx, i_cont_link, &
     character(len=24) :: sdcont_jeuite
     real(kind=8), pointer :: v_sdcont_jeuite(:) => null()
     real(kind=8) :: coef_cont(30), coef_fric_x(30), coef_fric_y(30)
-    integer :: nb_dof_tot
-    integer :: dof_indx(30)
+    integer(kind=8) :: nb_dof_tot
+    integer(kind=8) :: dof_indx(30)
 !
 ! --------------------------------------------------------------------------------------------------
 !

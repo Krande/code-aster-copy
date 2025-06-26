@@ -82,23 +82,23 @@ subroutine retrgl(nomres, resgen, mailsk, profno)
     character(len=19) :: numddl, nume_equa_gene, knume, kinst, trange, profno
     character(len=24) :: crefe(2), chamba, indirf, chamno, seliai, sizlia, sst
     character(len=24) :: valk, nomsst
-    integer :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
+    integer(kind=8) :: elim, neqet, neqred, lmapro, lsilia, lsst, lmoet
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad, iar, iarchi, ibid, ich
-    integer :: idep, idvecg, ieq, ier, ire1, i_ligr_ss
-    integer :: ire2, ire3, iret, iretou, j, jinst, jnume
-    integer :: k, k1, l, ldnew, linst, llchab, llind
-    integer :: llinsk, llors, llprs
-    integer :: llrot, ltrotx, ltroty, ltrotz, ltvec, n1
-    integer :: nbbas, nbcham, nbcmp, nbcou, nbinsg, nbinst, nbnot
-    integer :: nbsst, neq, neqgen, neqs, numsst, nutars
+    integer(kind=8) :: i, i1, iad, iar, iarchi, ibid, ich
+    integer(kind=8) :: idep, idvecg, ieq, ier, ire1, i_ligr_ss
+    integer(kind=8) :: ire2, ire3, iret, iretou, j, jinst, jnume
+    integer(kind=8) :: k, k1, l, ldnew, linst, llchab, llind
+    integer(kind=8) :: llinsk, llors, llprs
+    integer(kind=8) :: llrot, ltrotx, ltroty, ltrotz, ltvec, n1
+    integer(kind=8) :: nbbas, nbcham, nbcmp, nbcou, nbinsg, nbinst, nbnot
+    integer(kind=8) :: nbsst, neq, neqgen, neqs, numsst, nutars
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: resu(:) => null()
-    integer :: i_chmp(3), shift, i_bloc
+    integer(kind=8) :: i_chmp(3), shift, i_bloc
     type(DynaGene) :: dyna_gene
 !-----------------------------------------------------------------------
     data pgc/'RETRGL'/

@@ -64,11 +64,11 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, icomp, iddn, idds, iec, ieq, i_ligr_mesh, ibid, i_ligr_link
-    integer :: ipoint, j, k, lddeeq, ldinse, ldnueq
-    integer :: ldprno, linueq, llprno, lttds, nbcmp
-    integer :: nbcou, nbcpmx, nbddl, nbec, nbnot, nbsst, nddlt
-    integer :: ntail, numno, nusst, jrefn
+    integer(kind=8) :: i, icomp, iddn, idds, iec, ieq, i_ligr_mesh, ibid, i_ligr_link
+    integer(kind=8) :: ipoint, j, k, lddeeq, ldinse, ldnueq
+    integer(kind=8) :: ldprno, linueq, llprno, lttds, nbcmp
+    integer(kind=8) :: nbcou, nbcpmx, nbddl, nbec, nbnot, nbsst, nddlt
+    integer(kind=8) :: ntail, numno, nusst, jrefn
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     character(len=6) :: pgc
@@ -76,9 +76,9 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
     character(len=8) :: k8bid
     character(len=19) :: numddl, nume_equa
     character(len=24) :: indirf, lili, prno, deeq, nueq
-    integer :: idec(nbcpmx)
-    integer, pointer :: vnueq(:) => null()
-    integer, pointer :: skeleton(:) => null()
+    integer(kind=8) :: idec(nbcpmx)
+    integer(kind=8), pointer :: vnueq(:) => null()
+    integer(kind=8), pointer :: skeleton(:) => null()
 !
 !-----------------------------------------------------------------------
     data pgc/'GENUGL'/

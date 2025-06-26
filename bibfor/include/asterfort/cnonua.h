@@ -20,7 +20,7 @@
 !
 interface
     subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
-        integer, intent(in) :: nb_dim
+        integer(kind=8), intent(in) :: nb_dim
         character(len=*), intent(in) :: chnoz
         character(len=*), intent(in) :: list_nodez
         character(len=*), intent(in) :: nuagez

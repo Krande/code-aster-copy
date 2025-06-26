@@ -22,7 +22,7 @@ interface
     subroutine dstapv(nbpt, d, t, dmin, dmax,&
                       dmoy, detyp, drms, sd, sde,&
                       sd2)
-        integer :: nbpt
+        integer(kind=8) :: nbpt
         real(kind=8) :: d(*)
         real(kind=8) :: t(*)
         real(kind=8) :: dmin

@@ -29,21 +29,21 @@ interface
                             list_ptitma_zone,li_ptgausma_zone,nb_pair_zone, i_proc)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
         real(kind=8), intent(in) :: patch_weight_t(*)
-        integer, intent(inout) :: nb_pair_zone
-        integer, pointer :: list_pair_zone(:)
-        integer, pointer :: list_nbptit_zone(:)
+        integer(kind=8), intent(inout) :: nb_pair_zone
+        integer(kind=8), pointer :: list_pair_zone(:)
+        integer(kind=8), pointer :: list_nbptit_zone(:)
         real(kind=8), pointer :: list_ptitsl_zone(:)
         real(kind=8), pointer :: list_ptitma_zone(:)
         real(kind=8), pointer :: li_ptgausma_zone(:)
-        integer, pointer :: nb_pair_zmpi(:)
-        integer, pointer :: list_pair_zmpi(:)
-        integer, pointer :: list_nbptit_zmpi(:)
+        integer(kind=8), pointer :: nb_pair_zmpi(:)
+        integer(kind=8), pointer :: list_pair_zmpi(:)
+        integer(kind=8), pointer :: list_nbptit_zmpi(:)
         real(kind=8), pointer :: list_ptitsl_zmpi(:)
         real(kind=8), pointer :: list_ptitma_zmpi(:)
         real(kind=8), pointer :: li_ptgausma_zmpi(:)
-        integer, intent(in) :: nb_proc
-        integer, intent(in) :: i_proc
+        integer(kind=8), intent(in) :: nb_proc
+        integer(kind=8), intent(in) :: i_proc
     end subroutine apsave_patch
 end interface

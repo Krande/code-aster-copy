@@ -20,7 +20,7 @@
 !
 interface
     subroutine parti0(nbmat, tlimat, partit)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         character(len=*) :: tlimat(*)
         character(len=*) :: partit
     end subroutine parti0

@@ -39,22 +39,22 @@ subroutine apsave_patch(mesh, sdappa, i_zone, &
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: sdappa
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
     real(kind=8), intent(in) :: patch_weight_t(*)
-    integer, intent(inout) :: nb_pair_zone
-    integer, pointer :: list_pair_zone(:)
-    integer, pointer :: list_nbptit_zone(:)
+    integer(kind=8), intent(inout) :: nb_pair_zone
+    integer(kind=8), pointer :: list_pair_zone(:)
+    integer(kind=8), pointer :: list_nbptit_zone(:)
     real(kind=8), pointer :: list_ptitsl_zone(:)
     real(kind=8), pointer :: list_ptitma_zone(:)
     real(kind=8), pointer :: li_ptgausma_zone(:)
-    integer, pointer :: nb_pair_zmpi(:)
-    integer, pointer :: list_pair_zmpi(:)
-    integer, pointer :: list_nbptit_zmpi(:)
+    integer(kind=8), pointer :: nb_pair_zmpi(:)
+    integer(kind=8), pointer :: list_pair_zmpi(:)
+    integer(kind=8), pointer :: list_nbptit_zmpi(:)
     real(kind=8), pointer :: list_ptitsl_zmpi(:)
     real(kind=8), pointer :: list_ptitma_zmpi(:)
     real(kind=8), pointer :: li_ptgausma_zmpi(:)
-    integer, intent(in) :: nb_proc
-    integer, intent(in) :: i_proc
+    integer(kind=8), intent(in) :: nb_proc
+    integer(kind=8), intent(in) :: i_proc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,19 +71,19 @@ subroutine apsave_patch(mesh, sdappa, i_zone, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_patch, patch_indx, patch_jdec, nb_patch, deca, idx_start, idx_end
-    integer :: i_proc2, nb_pair_init
-    integer, pointer :: v_mesh_lpatch(:) => null()
+    integer(kind=8) :: i_patch, patch_indx, patch_jdec, nb_patch, deca, idx_start, idx_end
+    integer(kind=8) :: i_proc2, nb_pair_init
+    integer(kind=8), pointer :: v_mesh_lpatch(:) => null()
     character(len=24) :: sdappa_wpat, njv_aux, njv_aux2, njv_aux3, njv_aux4, njv_aux5
     real(kind=8), pointer :: v_sdappa_wpat(:) => null()
-    integer, pointer :: v_sdappa_dcl(:) => null()
-    integer, pointer :: list_tmp(:) => null()
-    integer, pointer :: list_tmp2(:) => null()
+    integer(kind=8), pointer :: v_sdappa_dcl(:) => null()
+    integer(kind=8), pointer :: list_tmp(:) => null()
+    integer(kind=8), pointer :: list_tmp2(:) => null()
     real(kind=8), pointer :: list_tmp3(:) => null()
     real(kind=8), pointer :: list_tmp4(:) => null()
     real(kind=8), pointer :: list_tmp5(:) => null()
-    integer, pointer :: list_aux(:) => null()
-    integer, pointer :: list_aux2(:) => null()
+    integer(kind=8), pointer :: list_aux(:) => null()
+    integer(kind=8), pointer :: list_aux2(:) => null()
     real(kind=8), pointer :: list_aux3(:) => null()
     real(kind=8), pointer :: list_aux4(:) => null()
     real(kind=8), pointer :: list_aux5(:) => null()

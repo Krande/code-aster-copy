@@ -18,11 +18,11 @@
 
 subroutine btsig(lonlig, loncol, jacgau, bmat, sigma, bsigma)
     implicit none
-    integer, intent(in) :: loncol, lonlig
+    integer(kind=8), intent(in) :: loncol, lonlig
     real(kind=8), intent(in) :: jacgau, bmat(loncol, 81), sigma(1)
     real(kind=8), intent(out) :: bsigma(1)
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: valbsi
 !-----------------------------------------------------------------------
 ! --- CALCUL DU PRODUIT (BT)*(SIGMA) ,

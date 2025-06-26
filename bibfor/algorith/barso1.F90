@@ -18,7 +18,7 @@
 
 subroutine barso1(n1, n2, n3, coor, poin)
     implicit none
-    integer :: n1, n2, n3, poin(*)
+    integer(kind=8) :: n1, n2, n3, poin(*)
     real(kind=8) :: coor(*)
 !     BARSOUM :
 !-----------------------------------------------------------------------

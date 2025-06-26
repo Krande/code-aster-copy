@@ -24,7 +24,7 @@ interface
     subroutine lkfsxi(nmat, materf, i1, devsig, dshds,&
                       plas, xi, para, vara, dfdsdx,&
                       dpardx)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: i1
         real(kind=8) :: devsig(6)

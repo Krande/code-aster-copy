@@ -20,6 +20,6 @@
 !
 interface
     function llbloc()
-        integer :: llbloc
+        integer(kind=8) :: llbloc
     end function llbloc
 end interface

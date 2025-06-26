@@ -27,7 +27,7 @@ subroutine lisnol(lischa, genchz, nomlis, nbch)
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
     character(len=24) :: nomlis
-    integer :: nbch, nbtmp(2)
+    integer(kind=8) :: nbch, nbtmp(2)
     character(len=*) :: genchz
 !
 ! ----------------------------------------------------------------------
@@ -46,8 +46,8 @@ subroutine lisnol(lischa, genchz, nomlis, nbch)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbchar
-    integer :: ibid, iposit(2)
+    integer(kind=8) :: nbchar
+    integer(kind=8) :: ibid, iposit(2)
     character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------

@@ -71,20 +71,20 @@ subroutine recbec(nomres, typesd, basmod, modcyc, numsec)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, icomp, iddi, idi, idia
-    integer :: idiam, idicou, ier, ii, inum, iorc, iormo
-    integer :: j, jj, ldfre, ldkge, ldmge, ldom2, ldomo
-    integer :: ldotm, ldtyd, llcham, llmoc
-    integer :: lmass, ltetgd, ltora, ltord
-    integer :: ltorf, ltorg, ltorto, ltveco, ltvere, ltvezt, mdiapa
-    integer :: nbdax, nbddg, nbddr, nbdia, nbmoc, nbmod, nbmor
-    integer :: nborc, nbsec, nbtmp, neq, numa, numd, numg
-    integer :: numsec
+    integer(kind=8) :: i, iad, ibid, icomp, iddi, idi, idia
+    integer(kind=8) :: idiam, idicou, ier, ii, inum, iorc, iormo
+    integer(kind=8) :: j, jj, ldfre, ldkge, ldmge, ldom2, ldomo
+    integer(kind=8) :: ldotm, ldtyd, llcham, llmoc
+    integer(kind=8) :: lmass, ltetgd, ltora, ltord
+    integer(kind=8) :: ltorf, ltorg, ltorto, ltveco, ltvere, ltvezt, mdiapa
+    integer(kind=8) :: nbdax, nbddg, nbddr, nbdia, nbmoc, nbmod, nbmor
+    integer(kind=8) :: nborc, nbsec, nbtmp, neq, numa, numd, numg
+    integer(kind=8) :: numsec
     real(kind=8) :: aaa, bbb, betsec
-    integer, pointer :: cycl_diam(:) => null()
-    integer, pointer :: cycl_nuin(:) => null()
-    integer, pointer :: cycl_desc(:) => null()
-    integer, pointer :: cycl_nbsc(:) => null()
+    integer(kind=8), pointer :: cycl_diam(:) => null()
+    integer(kind=8), pointer :: cycl_nuin(:) => null()
+    integer(kind=8), pointer :: cycl_desc(:) => null()
+    integer(kind=8), pointer :: cycl_nbsc(:) => null()
     real(kind=8), pointer :: cycl_freq(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

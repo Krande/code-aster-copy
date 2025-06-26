@@ -22,10 +22,10 @@ interface
     subroutine mdnoch(nochmd, lnochm, lresu, noresu, nomsym,&
                       codret)
         character(len=64) :: nochmd
-        integer :: lnochm
-        integer :: lresu
+        integer(kind=8) :: lnochm
+        integer(kind=8) :: lresu
         character(len=8) :: noresu
         character(len=16) :: nomsym
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine mdnoch
 end interface

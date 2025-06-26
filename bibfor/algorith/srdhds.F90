@@ -46,14 +46,14 @@ subroutine srdhds(nbmat, mater, s, dhds, retcom)
     !!! Variables globales
     !!!
 
-    integer :: nbmat, retcom
+    integer(kind=8) :: nbmat, retcom
     real(kind=8) :: mater(nbmat, 2), s(6), dhds(6)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: gamma, beta, pref, t(6), sii, rcos3t, dets, ptit
     real(kind=8) :: fact1(6), fact2(6), r54, pi, drdcos, dcosds(6)
     common/tdim/ndt, ndi

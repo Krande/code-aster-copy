@@ -72,7 +72,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
 !
-    integer :: imat(2), ninc, nd, nchoc, h, hf, itemax, info
+    integer(kind=8) :: imat(2), ninc, nd, nchoc, h, hf, itemax, info
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect
     character(len=19) :: matdrv, solveu
     real(kind=8) :: epscor
@@ -81,7 +81,7 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     character(len=14) :: xru, xtang, xtemp
-    integer :: iru, itang, ivect, cptr, iret, itemp, inddl, ifres
+    integer(kind=8) :: iru, itang, ivect, cptr, iret, itemp, inddl, ifres
     real(kind=8) :: eps, normr, normc
     complex(kind=8) :: cbid
     blas_int :: b_incx, b_incy, b_n

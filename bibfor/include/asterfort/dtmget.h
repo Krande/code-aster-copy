@@ -26,25 +26,25 @@ interface
                       vc, vk8, vk16, vk24, address,&
                       buffer)
         character(len=*)          , intent(in) :: sd_dtm_
-        integer                   , intent(in) :: ip
-        integer,          optional, intent(in) :: iocc
+        integer(kind=8)                   , intent(in) :: ip
+        integer(kind=8),          optional, intent(in) :: iocc
         character(len=24),optional, intent(out):: savejv
-        integer,          optional, intent(out):: lonvec
-        integer,          optional, intent(out):: iscal
+        integer(kind=8),          optional, intent(out):: lonvec
+        integer(kind=8),          optional, intent(out):: iscal
         real(kind=8),     optional, intent(out):: rscal
         complex(kind=8),  optional, intent(out):: cscal   
         character(len=*), optional, intent(out):: kscal
-        integer,          optional, intent(out):: ivect(*)
+        integer(kind=8),          optional, intent(out):: ivect(*)
         real(kind=8),     optional, intent(out):: rvect(*)
         complex(kind=8),  optional, intent(out):: cvect(*)
         character(len=*), optional, intent(out):: kvect(*)
-        integer          , pointer, optional :: vi(:)
+        integer(kind=8)          , pointer, optional :: vi(:)
         real(kind=8)     , pointer, optional :: vr(:)
         complex(kind=8)  , pointer, optional :: vc(:)
         character(len=8) , pointer, optional :: vk8(:)
         character(len=16), pointer, optional :: vk16(:)
         character(len=24), pointer, optional :: vk24(:)
-        integer                   , optional, intent(out) :: address
-        integer          , pointer, optional  :: buffer(:)
+        integer(kind=8)                   , optional, intent(out) :: address
+        integer(kind=8)          , pointer, optional  :: buffer(:)
     end subroutine dtmget
 end interface

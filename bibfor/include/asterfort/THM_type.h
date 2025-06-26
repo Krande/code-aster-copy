@@ -44,4 +44,3 @@
 #define LIQU_GAZ_ATM     6
 #define LIQU_AD_GAZ_VAPE 9
 #define LIQU_AD_GAZ      10
-

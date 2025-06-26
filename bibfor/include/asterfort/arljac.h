@@ -20,8 +20,8 @@
 !
 interface
     subroutine arljac(nno,ndim,dff,coor,invjac)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: dff(3,nno)
         real(kind=8) :: coor(ndim*nno)
         real(kind=8) :: invjac(3,3)

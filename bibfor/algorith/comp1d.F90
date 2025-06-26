@@ -33,7 +33,7 @@ subroutine comp1d(BEHinteg, &
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*) :: fami
     character(len=16) :: option
-    integer :: codret, kpg, ksp
+    integer(kind=8) :: codret, kpg, ksp
     real(kind=8) :: angmas(3)
     real(kind=8) :: vim(*), vip(*), sigx, sigxp, epsx, depx, etan
 !
@@ -74,9 +74,9 @@ subroutine comp1d(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imate, iinstm
-    integer :: iinstp, icarcr
-    integer, parameter :: ndimLdc = 2
+    integer(kind=8) :: imate, iinstm
+    integer(kind=8) :: iinstp, icarcr
+    integer(kind=8), parameter :: ndimLdc = 2
     real(kind=8) :: dsidep(6, 6)
     real(kind=8) :: sigm(6), sigp(6), eps(6), deps(6)
     character(len=8) :: typmod(2)

@@ -43,10 +43,10 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat, &
 #include "asterfort/Behaviour_type.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imat
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imat
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
@@ -59,7 +59,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat, &
     real(kind=8), intent(out) :: sigp(*)
     real(kind=8), intent(out) :: vip(5)
     real(kind=8), intent(out) :: dsidep(6, 6)
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -93,8 +93,8 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: maxval, nb_phase, meta_type
-    integer :: ndimsi, i, j, k, mode, iret2
+    integer(kind=8) :: maxval, nb_phase, meta_type
+    integer(kind=8) :: ndimsi, i, j, k, mode, iret2
     real(kind=8) :: phase(5), phasm(5), zalpha, deltaz(5)
     real(kind=8) :: temp, dt, coef_hard
     real(kind=8) :: epsth, e, deuxmu, deumum, troisk
@@ -109,7 +109,7 @@ subroutine nzedga(fami, kpg, ksp, ndim, imat, &
     real(kind=8) :: plasti, dp, seuil
     real(kind=8) :: coef1, coef2, coef3, dv, n0(3), b
     character(len=1) :: poum
-    integer :: test
+    integer(kind=8) :: test
     aster_logical :: resi, rigi, l_temp
     aster_logical :: l_visc, l_plas, l_anneal, l_plas_tran, l_hard_isotline, l_hard_isotnlin
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)

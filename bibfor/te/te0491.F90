@@ -144,12 +144,12 @@ subroutine te0491(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/diago3.h"
 !-----------------------------------------------------------------------
-    integer :: idconm, idene1, idene2, idepl, ideplm, idepmm
-    integer :: idfde, idsig, idsigm, idvari, igau, igeom, imate, icodre(5)
-    integer :: ipoids, ivf, jgano, jprol, jvale, mxcmel, nbsgm, itemps
-    integer :: nbsig, nbsig2, nbval, nbvari, ndim, nno, nnos, npg1
-    integer :: iret, iret1
-    integer :: i, jtab(7)
+    integer(kind=8) :: idconm, idene1, idene2, idepl, ideplm, idepmm
+    integer(kind=8) :: idfde, idsig, idsigm, idvari, igau, igeom, imate, icodre(5)
+    integer(kind=8) :: ipoids, ivf, jgano, jprol, jvale, mxcmel, nbsgm, itemps
+    integer(kind=8) :: nbsig, nbsig2, nbval, nbvari, ndim, nno, nnos, npg1
+    integer(kind=8) :: iret, iret1
+    integer(kind=8) :: i, jtab(7)
     parameter(mxcmel=162)
     parameter(nbsgm=6)
     real(kind=8) :: airep, c1, c2, deux, deuxmu, dsde, e

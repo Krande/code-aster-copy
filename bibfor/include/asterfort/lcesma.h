@@ -24,13 +24,13 @@ interface
     
         interface
         subroutine lccrma(mat, fami, kpg, ksp, poum)
-            integer,intent(in) :: mat, kpg, ksp
+            integer(kind=8),intent(in) :: mat, kpg, ksp
             character(len=1),intent(in):: poum
             character(len=*),intent(in) :: fami
         end subroutine lccrma
         end interface
 
-        integer :: mat, kpg, ksp
+        integer(kind=8) :: mat, kpg, ksp
         character(len=1) :: poum
         character(len=*) :: fami
     end subroutine lcesma

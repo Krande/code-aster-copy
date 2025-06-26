@@ -28,7 +28,7 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rc36zz.h"
-    integer :: nbma, listma(*)
+    integer(kind=8) :: nbma, listma(*)
     character(len=8) :: carael, noma
     character(len=24) :: chcara
 !
@@ -46,9 +46,9 @@ subroutine rc36ca(carael, noma, nbma, listma, chcara)
 ! OUT : CHCARA : CHAM_ELEM DE TYPE ELNO DE CARACTERISTIQUES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: nbcmp, iret, im, ima, nbpt, decal, ipt, icmp, iad, iadc, ncmp
-    integer :: jcesd, jcesl, jcesdc, jcesvc, jceslc
-    integer :: jcesd1, jcesv1, jcesl1, jcesd2, jcesv2, jcesl2
+    integer(kind=8) :: nbcmp, iret, im, ima, nbpt, decal, ipt, icmp, iad, iadc, ncmp
+    integer(kind=8) :: jcesd, jcesl, jcesdc, jcesvc, jceslc
+    integer(kind=8) :: jcesd1, jcesv1, jcesl1, jcesd2, jcesv2, jcesl2
     real(kind=8) :: vc
     character(len=8) :: nomgd
     character(len=16) :: nocmp(4)

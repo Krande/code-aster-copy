@@ -46,7 +46,7 @@ subroutine cgComputeMatrix(cgField, cgTheta, cgStat)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer          ::  i, j
+    integer(kind=8)          ::  i, j
     character(len=24) :: chabsfon
     real(kind=8) :: start, finish
     real(kind=8), pointer :: matr(:) => null()

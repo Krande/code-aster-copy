@@ -54,7 +54,7 @@ subroutine gdstag(stoudy, kp, nno, ajacob, en, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ic, kp, ne, nno
+    integer(kind=8) :: ic, kp, ne, nno
     real(kind=8) :: ajacob, demi, stoudy, un, unsurj, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

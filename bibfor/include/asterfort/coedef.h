@@ -23,20 +23,20 @@ interface
                       rho, icoq, nbno, numno, nunoe0,&
                       nbnoto, coordo, iaxe, kec, geom,&
                       defm, drmax, torco, tcoef)
-        integer :: nbnoto
-        integer :: nbno
-        integer :: nbm
-        integer :: imod
+        integer(kind=8) :: nbnoto
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbm
+        integer(kind=8) :: imod
         real(kind=8) :: fremod
         real(kind=8) :: young
         real(kind=8) :: poiss
         real(kind=8) :: rho
-        integer :: icoq
-        integer :: numno(nbno)
-        integer :: nunoe0
+        integer(kind=8) :: icoq
+        integer(kind=8) :: numno(nbno)
+        integer(kind=8) :: nunoe0
         real(kind=8) :: coordo(3, nbnoto)
-        integer :: iaxe
-        integer :: kec
+        integer(kind=8) :: iaxe
+        integer(kind=8) :: kec
         real(kind=8) :: geom(9)
         real(kind=8) :: defm(2, nbnoto, nbm)
         real(kind=8) :: drmax

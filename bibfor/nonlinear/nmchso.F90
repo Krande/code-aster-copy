@@ -51,7 +51,7 @@ subroutine nmchso(chapin, tychaz, typsoz, nomvaz, chapou)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: index, i, nmax
+    integer(kind=8) :: index, i, nmax
     character(len=19) :: chtemp, nomvar
     character(len=6) :: tychap, typsol
 !

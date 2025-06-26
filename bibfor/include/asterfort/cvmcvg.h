@@ -24,14 +24,14 @@ interface
                       irteti)
         real(kind=8) :: dy(*)
         real(kind=8) :: ddy(*)
-        integer :: nr
-        integer :: itmax
+        integer(kind=8) :: nr
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iter
-        integer :: intg
-        integer :: typess
+        integer(kind=8) :: iter
+        integer(kind=8) :: intg
+        integer(kind=8) :: typess
         real(kind=8) :: essai
-        integer :: icomp
-        integer :: irteti
+        integer(kind=8) :: icomp
+        integer(kind=8) :: irteti
     end subroutine cvmcvg
 end interface

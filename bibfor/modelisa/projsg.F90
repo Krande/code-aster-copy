@@ -71,7 +71,7 @@ subroutine projsg(x3dca, x3d1, x3d2, normal, x3dp, &
 #include "blas/dscal.h"
     real(kind=8) :: x3dca(*), x3d1(*), x3d2(*), normal(*), x3dp(*), xbar(*)
     real(kind=8) :: excent
-    integer :: iproj
+    integer(kind=8) :: iproj
 !
 ! VARIABLES LOCALES
 ! -----------------

@@ -22,12 +22,12 @@ interface
     subroutine lcmmjc(coeft, ifa, nmat, nbcomm, ir,&
                       is, necrci, dgamms, alphmr, dalpha,&
                       sgnr, daldgr)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: coeft(nmat)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
-        integer :: ir
-        integer :: is
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
+        integer(kind=8) :: ir
+        integer(kind=8) :: is
         character(len=16) :: necrci
         real(kind=8) :: dgamms
         real(kind=8) :: alphmr

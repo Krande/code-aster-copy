@@ -32,7 +32,7 @@ subroutine op0047()
 #include "asterfort/gmsast.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/stbast.h"
-    integer :: nfie, nfis, n
+    integer(kind=8) :: nfie, nfis, n
     aster_logical :: lgrcou
     character(len=8) :: k8b
     character(len=16) :: k16b, cmd

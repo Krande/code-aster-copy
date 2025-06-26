@@ -85,14 +85,14 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla, &
 #include "asterfort/int_to_char8.h"
     character(len=8) :: mailla, caelem
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
-    integer :: nbnobe, icabl, nbmabe, nbnoca(*)
+    integer(kind=8) :: nbnobe, icabl, nbmabe, nbnoca(*)
     character(len=24) :: nmabet
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ideca, inobe, inoca, ipara, iproj, itria, jcoor, jnoca
-    integer :: jnunob, jxca, jyca, jzca, nbcnx, nblign
-    integer :: nbno, nbpara, nnomax, noe, noebe, numail
+    integer(kind=8) :: ideca, inobe, inoca, ipara, iproj, itria, jcoor, jnoca
+    integer(kind=8) :: jnunob, jxca, jyca, jzca, nbcnx, nblign
+    integer(kind=8) :: nbno, nbpara, nnomax, noe, noebe, numail
     real(kind=8) :: d2, d2min, dx, dy, dz, excent, normal(3), x3dca(3), xbar(3)
     real(kind=8) :: dmax_cable
     complex(kind=8) :: cbid
@@ -101,10 +101,10 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla, &
     aster_logical :: encore
 !
     character(len=24) :: param(4), parcr
-    integer, pointer :: cnx_maille(:) => null()
+    integer(kind=8), pointer :: cnx_maille(:) => null()
     real(kind=8), pointer :: xyz_noemai(:) => null()
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     data param/'MAILLE_BETON_VOISINE    ',&
      &                     'NOEUD_BETON_VOISIN      ',&
      &                     'INDICE_PROJECTION       ',&

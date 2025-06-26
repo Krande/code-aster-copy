@@ -25,10 +25,10 @@ interface
                       nomcmp, lsup, linf, lmax, lmin,&
                       borinf, borsup)
         character(len=*) :: cesz
-        integer :: unite
-        integer :: nbmat
-        integer :: nummai(*)
-        integer :: nbcmp
+        integer(kind=8) :: unite
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nummai(*)
+        integer(kind=8) :: nbcmp
         character(len=*) :: nomcmp(*)
         aster_logical :: lsup
         aster_logical :: linf

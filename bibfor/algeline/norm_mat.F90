@@ -20,7 +20,7 @@ function norm_mat(ndim, m)
 !
     implicit none
 !
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: m(ndim, ndim)
     real(kind=8) :: norm_mat
 !
@@ -30,7 +30,7 @@ function norm_mat(ndim, m)
 ! IN  NDIM : DIMENSION DE LA MATRICE
 ! IN  M    : MATRICE NDIM*NDIM
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     norm_mat = 0.d0
     do i = 1, ndim

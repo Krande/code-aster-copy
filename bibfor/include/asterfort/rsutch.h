@@ -24,7 +24,7 @@ interface
     subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
         character(len=*) :: nomsd
         character(len=*) :: nomsy
-        integer :: iordr
+        integer(kind=8) :: iordr
         character(len=*) :: nomcha
         aster_logical :: lverif
     end subroutine rsutch

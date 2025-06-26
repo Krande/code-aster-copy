@@ -37,7 +37,7 @@ subroutine selectListRead(keywfactz, iocc, selectList)
 #include "asterfort/nmcrpm.h"
 !
     character(len=*), intent(in) :: keywfactz
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     type(NL_DS_SelectList), intent(out) :: selectList
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,8 +57,8 @@ subroutine selectListRead(keywfactz, iocc, selectList)
     character(len=16) :: keywfact
     character(len=8) :: criterion
     real(kind=8) :: precision, prec_default, incr_mini
-    integer :: n1, n2, n3, iret
-    integer :: nb_value, freq_step
+    integer(kind=8) :: n1, n2, n3, iret
+    integer(kind=8) :: nb_value, freq_step
     aster_logical :: l_abso
     character(len=19) :: list
     real(kind=8), pointer :: v_vale(:) => null()

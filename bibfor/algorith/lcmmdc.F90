@@ -19,7 +19,7 @@
 subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap, &
                   is, ceff, dcdals)
     implicit none
-    integer :: ifa, nmat, nbcomm(nmat, 3), is
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), is
     real(kind=8) :: coeft(*), alphap(12), ceff, dcdals
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
@@ -33,7 +33,7 @@ subroutine lcmmdc(coeft, ifa, nmat, nbcomm, alphap, &
 !           CEFF    :  Coefficeint pour passer de A_ij a Aeff_ij
 !     ----------------------------------------------------------------
     real(kind=8) :: alpha, beta, rhoref, omegat
-    integer :: iei, i
+    integer(kind=8) :: iei, i
 !     ----------------------------------------------------------------
 !
     iei = nbcomm(ifa, 3)

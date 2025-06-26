@@ -25,10 +25,10 @@ interface
                       nbch, acceno)
         character(len=*) :: resu
         character(len=*) :: motfac
-        integer :: iocc
-        integer :: dimlis
+        integer(kind=8) :: iocc
+        integer(kind=8) :: dimlis
         character(len=*) :: lisch(*)
-        integer :: nbch
+        integer(kind=8) :: nbch
         aster_logical :: acceno
     end subroutine rsutc4
 end interface

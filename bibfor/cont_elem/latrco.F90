@@ -23,8 +23,8 @@ subroutine latrco(iTria, nbPoinInte, poinInte, triaCoorPara)
 #include "asterfort/assert.h"
 #include "asterfort/mesh_pairing_type.h"
 !
-    integer, intent(in) :: iTria
-    integer, intent(in) :: nbPoinInte
+    integer(kind=8), intent(in) :: iTria
+    integer(kind=8), intent(in) :: nbPoinInte
     real(kind=8), intent(in) :: poinInte(2, MAX_NB_INTE)
     real(kind=8), intent(out) :: triaCoorPara(2, 3)
 !
@@ -43,7 +43,7 @@ subroutine latrco(iTria, nbPoinInte, poinInte, triaCoorPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iPoinInte, iPoinInte1, iPoinInte2
+    integer(kind=8) :: iPoinInte, iPoinInte1, iPoinInte2
     real(kind=8) ::  barycenter(2)
 !
 ! --------------------------------------------------------------------------------------------------

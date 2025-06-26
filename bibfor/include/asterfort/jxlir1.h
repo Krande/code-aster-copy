@@ -20,7 +20,7 @@
 !
 interface
     subroutine jxlir1(ic, caralu)
-        integer :: ic
-        integer :: caralu(*)
+        integer(kind=8) :: ic
+        integer(kind=8) :: caralu(*)
     end subroutine jxlir1
 end interface

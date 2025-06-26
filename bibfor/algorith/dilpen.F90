@@ -19,13 +19,13 @@
 subroutine dilpen(imate, rpena)
     implicit none
 #include "asterfort/rcvalb.h"
-    integer :: imate
+    integer(kind=8) :: imate
     real(kind=8) :: rpena
 ! ======================================================================
 ! --- BUT : RECUPERATION DU COEFFICIENT DE PENALISATION ----------------
 ! ======================================================================
     real(kind=8) :: val(1)
-    integer :: icodre(1), kpg, spt
+    integer(kind=8) :: icodre(1), kpg, spt
     character(len=16) :: ncra
     character(len=8) :: fami, poum
 ! ======================================================================

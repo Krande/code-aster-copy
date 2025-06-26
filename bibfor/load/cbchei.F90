@@ -54,7 +54,7 @@ subroutine cbchei(load, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'PRE_EPSI'
-    integer :: nbfac, iepsi, ncmp, cret, jcesd, jcesc, nbcmpch, i, j
+    integer(kind=8) :: nbfac, iepsi, ncmp, cret, jcesd, jcesc, nbcmpch, i, j
     character(len=4) :: typch
     character(len=5) :: para
     character(len=19) :: carte, chames
@@ -62,7 +62,7 @@ subroutine cbchei(load, mesh, model, valeType)
     aster_logical :: compok
     character(len=8), pointer :: valv(:) => null()
     character(len=8), pointer :: vncmp(:) => null()
-    integer, parameter :: nbcmpdisp = 17
+    integer(kind=8), parameter :: nbcmpdisp = 17
     character(len=8), parameter :: nomcmpdisp(nbcmpdisp) = (/ &
                                    'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ', &
                            'EPX ', 'KY  ', 'KZ  ', 'EXX ', 'EYY ', 'EXY ', 'KXX ', 'KYY ', 'KXY ', &

@@ -21,11 +21,11 @@
 interface
     subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr,&
                       nbptex)
-        integer :: jinfo
-        integer :: nfon
-        integer :: nmafon
+        integer(kind=8) :: jinfo
+        integer(kind=8) :: nfon
+        integer(kind=8) :: nmafon
         character(len=19) :: listpt
         character(len=19) :: ptextr
-        integer :: nbptex
+        integer(kind=8) :: nbptex
     end subroutine xffext
 end interface

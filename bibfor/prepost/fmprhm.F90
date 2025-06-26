@@ -20,7 +20,7 @@ subroutine fmprhm(nbfonc, nbptot, sigm, rphmax)
     implicit none
 !
 #include "jeveux.h"
-    integer :: nbfonc, nbptot
+    integer(kind=8) :: nbfonc, nbptot
     real(kind=8) :: sigm(nbfonc*nbptot)
     real(kind=8) :: rphmax
 !     NBFONC  : IN  : NOMBRE DE FONCTIONS (6 EN 3D 4 EN 2D)
@@ -33,7 +33,7 @@ subroutine fmprhm(nbfonc, nbptot, sigm, rphmax)
 ! ------- CALCUL DE LA PRESSION HYDROSTATIQUE MAXIMALE---
 !
 !-----------------------------------------------------------------------
-    integer :: i, ide
+    integer(kind=8) :: i, ide
 !-----------------------------------------------------------------------
     rphmax = (sigm(1)+sigm(2)+sigm(3))/3.d0
     do i = 2, nbptot

@@ -25,7 +25,7 @@ interface
         character(len=16), intent(in) :: type_comp
         character(len=16), intent(in) :: crit
         character(len=16), intent(in) :: norm
-        integer, intent(in) :: nb_form
-        integer, intent(out) :: repi
+        integer(kind=8), intent(in) :: nb_form
+        integer(kind=8), intent(out) :: repi
     end subroutine ccchci
 end interface

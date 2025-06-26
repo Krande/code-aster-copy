@@ -37,7 +37,7 @@ subroutine rc32ma()
 !     ------------------------------------------------------------------
 !
     character(len=8) :: mater, nocmp(7), nopa
-    integer :: n1, icodre(7), jvala, nbpa, i
+    integer(kind=8) :: n1, icodre(7), jvala, nbpa, i
     real(kind=8) :: tempa, para(7)
 !
 ! DEB ------------------------------------------------------------------

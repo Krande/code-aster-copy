@@ -22,7 +22,7 @@ subroutine posthm(option, modint, jgano, ncmp, nvim, &
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/ppgan2.h"
-    integer :: jgano, ncmp, nvim
+    integer(kind=8) :: jgano, ncmp, nvim
     real(kind=8) :: vno(*), vpg(*)
     character(len=3) :: modint
     character(len=16) :: option
@@ -50,9 +50,9 @@ subroutine posthm(option, modint, jgano, ncmp, nvim, &
 ! =====================================================================
 ! --- * SIEFPG ET SIEFSO DE DIMENSION NNOMAX*DIMMAX -------------------
 ! =====================================================================
-    integer :: i, j, jganpg, jganso
-    integer :: ndim, nno, nnos, npg, ndim2, nno2, nnos2, npg2
-    integer :: nvmax, npgmax, nnosma, dimmax, nnomax
+    integer(kind=8) :: i, j, jganpg, jganso
+    integer(kind=8) :: ndim, nno, nnos, npg, ndim2, nno2, nnos2, npg2
+    integer(kind=8) :: nvmax, npgmax, nnosma, dimmax, nnomax
     parameter(nvmax=60)
     parameter(npgmax=8)
     parameter(nnosma=8)

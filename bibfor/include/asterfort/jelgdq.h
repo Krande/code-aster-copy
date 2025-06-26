@@ -22,6 +22,6 @@ interface
     subroutine jelgdq(nomlu, rlong, nbsv)
         character(len=*) :: nomlu
         real(kind=8) :: rlong
-        integer :: nbsv
+        integer(kind=8) :: nbsv
     end subroutine jelgdq
 end interface

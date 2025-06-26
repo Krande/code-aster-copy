@@ -23,7 +23,7 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(in) :: ds_multipara
         type(ROM_DS_Empi), intent(inout)   :: base
-        integer, intent(in)                :: iMode
+        integer(kind=8), intent(in)                :: iMode
         character(len=19), intent(in)      :: mode
     end subroutine romGreedyModeSave
 end interface

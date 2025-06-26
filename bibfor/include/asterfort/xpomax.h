@@ -29,8 +29,8 @@ interface
         character(len=8) :: mo
         character(len=8) :: malini
         character(len=24) :: mailx
-        integer :: nbnoc
-        integer :: nbmac
+        integer(kind=8) :: nbnoc
+        integer(kind=8) :: nbmac
         character(len=2) :: prefno(4)
         character(len=24) :: nogrfi
         character(len=8) :: maxfem
@@ -44,8 +44,8 @@ interface
         character(len=24) :: dirgrm
         character(len=24) :: nivgrm
         character(len=8) :: resuco
-        integer :: ngfon
-        integer :: iord
+        integer(kind=8) :: ngfon
+        integer(kind=8) :: iord
         character(len=19) :: comps1
         character(len=19) :: comps2
         aster_logical :: pre1

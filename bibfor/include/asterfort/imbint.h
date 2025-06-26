@@ -21,6 +21,6 @@
 interface
     subroutine imbint(nomres, ifm)
         character(len=8) :: nomres
-        integer :: ifm
+        integer(kind=8) :: ifm
     end subroutine imbint
 end interface

@@ -34,9 +34,9 @@ subroutine cfaca2(nbliac, spliai, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: nbliac
-    integer :: spliai, indfac
-    integer :: lmat
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: spliai, indfac
+    integer(kind=8) :: lmat
     real(kind=8) :: xjvmax
     character(len=24) :: sdcont_solv
 !
@@ -58,21 +58,21 @@ subroutine cfaca2(nbliac, spliai, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdecal
-    integer :: nbddl, jva, jvale, neq
-    integer :: iliac, jj, lliac, lljac, ii, dercol, bloc
-    integer :: nbbloc
+    integer(kind=8) :: jdecal
+    integer(kind=8) :: nbddl, jva, jvale, neq
+    integer(kind=8) :: iliac, jj, lliac, lljac, ii, dercol, bloc
+    integer(kind=8) :: nbbloc
     real(kind=8) :: val
     character(len=19) :: liac, cm1a
-    integer :: jliac, jcm1a
+    integer(kind=8) :: jliac, jcm1a
     character(len=19) :: stoc
     character(len=19) :: ouvert, macont
-    integer :: jouv
+    integer(kind=8) :: jouv
     character(len=24) :: appoin, apddl, apcoef
-    integer :: japptr, japddl, japcoe
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scde(:) => null()
-    integer, pointer :: scib(:) => null()
+    integer(kind=8) :: japptr, japddl, japcoe
+    integer(kind=8), pointer :: scbl(:) => null()
+    integer(kind=8), pointer :: scde(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

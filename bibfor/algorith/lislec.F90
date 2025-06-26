@@ -52,14 +52,14 @@ subroutine lislec(motfac, phenoz, base, lischa)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iexci, nbexci, ibid, ibid2(2)
+    integer(kind=8) :: iexci, nbexci, ibid, ibid2(2)
     character(len=8) :: charge, k8bid
     character(len=16) :: typapp, typfct
-    integer :: genrec(2), motclc(2)
+    integer(kind=8) :: genrec(2), motclc(2)
     character(len=8) :: typech, nomfct
     character(len=13) :: prefob
     real(kind=8) :: phase
-    integer :: npuis
+    integer(kind=8) :: npuis
 !
 ! ----------------------------------------------------------------------
 !

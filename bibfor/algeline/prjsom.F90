@@ -24,7 +24,7 @@ function prjsom(nbmat, mater, invare, invars, b, &
 #include "asterfort/assert.h"
 #include "asterfort/cosphi.h"
     aster_logical :: prjsom
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: invare, invars, mater(nbmat, 2), b, siie
     character(len=9) :: type
 ! --- BUT : TESTER S'IL DOIT Y AVOIR PROJECTION ------------------------

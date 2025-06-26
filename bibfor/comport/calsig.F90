@@ -48,7 +48,7 @@ subroutine calsig(fami, kpg, ksp, ein, mod, &
     character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: rela_comp
-    integer :: kpg, ksp, icp, nmat, iret, iret1, iret2, iret3
+    integer(kind=8) :: kpg, ksp, icp, nmat, iret, iret1, iret2, iret3
     real(kind=8) :: nu, coel(nmat), hook(6, 6), alphal, alphat, alphan, ethl
     real(kind=8) :: etht
     real(kind=8) :: ein(6), xsdt, x, dtime, eth, alpha, tperd, dtper, tperef

@@ -21,7 +21,7 @@
 interface
     subroutine crcoch_getloads(list_load, nb_load, nb_ondp, v_ondp)
         character(len=19), intent(in) :: list_load
-        integer, intent(out) :: nb_ondp, nb_load
+        integer(kind=8), intent(out) :: nb_ondp, nb_load
         character(len=8), pointer :: v_ondp(:)
     end subroutine crcoch_getloads
 end interface

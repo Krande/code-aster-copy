@@ -22,10 +22,10 @@ interface
     subroutine cbvalc(rouc, neq, smhc, smdi, idlexc,&
                       coefr, coefc, valmi, valmr, valmc)
         character(len=2) :: rouc
-        integer :: neq
+        integer(kind=8) :: neq
         integer(kind=4) :: smhc(*)
-        integer :: smdi(*)
-        integer :: idlexc(*)
+        integer(kind=8) :: smdi(*)
+        integer(kind=8) :: idlexc(*)
         real(kind=8) :: coefr
         complex(kind=8) :: coefc
         complex(kind=8) :: valmi(*)

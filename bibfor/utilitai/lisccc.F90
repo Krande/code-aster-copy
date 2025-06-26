@@ -29,8 +29,8 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 #include "asterfort/jemarq.h"
 #include "asterfort/lisdef.h"
     character(len=16) :: nomcmd
-    integer :: motclc(2)
-    integer :: nbnaut, nbauth, mclaut(2)
+    integer(kind=8) :: motclc(2)
+    integer(kind=8) :: nbnaut, nbauth, mclaut(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,13 +50,13 @@ subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: zbgdlh, zbgccg
+    integer(kind=8) :: zbgdlh, zbgccg
     parameter(zbgdlh=17, zbgccg=9)
     character(len=16) :: autdlh(zbgdlh), autccg(zbgccg)
 !
-    integer :: tabcox(60), tabaut(60)
-    integer :: nbtota, nbgcmd
-    integer :: ipose, iposit(2), iauth, ibid
+    integer(kind=8) :: tabcox(60), tabaut(60)
+    integer(kind=8) :: nbtota, nbgcmd
+    integer(kind=8) :: ipose, iposit(2), iauth, ibid
     character(len=8) :: k8bid
     character(len=16) :: motclf
     aster_logical :: lfind

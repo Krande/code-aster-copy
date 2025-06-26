@@ -30,12 +30,12 @@ subroutine nmextr_read_1(ds_inout, keyw_fact, nb_keyw_fact, list_field, rela_fie
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
-    integer, intent(in) :: nb_keyw_fact
+    integer(kind=8), intent(in) :: nb_keyw_fact
     character(len=16), intent(in) :: keyw_fact
     character(len=24), pointer :: list_field(:)
-    integer, pointer :: rela_field_keyw(:)
-    integer, intent(out) :: nb_field
-    integer, intent(out) :: nb_field_comp
+    integer(kind=8), pointer :: rela_field_keyw(:)
+    integer(kind=8), intent(out) :: nb_field
+    integer(kind=8), intent(out) :: nb_field_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ subroutine nmextr_read_1(ds_inout, keyw_fact, nb_keyw_fact, list_field, rela_fie
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_keyw_fact, i_field, i_list_field
+    integer(kind=8) :: i_keyw_fact, i_field, i_list_field
     character(len=24) :: field_type, field_old
     aster_logical :: l_extr, l_find
 !

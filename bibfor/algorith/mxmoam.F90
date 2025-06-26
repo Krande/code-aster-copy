@@ -42,7 +42,7 @@ subroutine mxmoam(sddyna, nbmodp)
 #include "blas/dcopy.h"
 !
     character(len=19) :: sddyna
-    integer :: nbmodp
+    integer(kind=8) :: nbmodp
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,27 +59,27 @@ subroutine mxmoam(sddyna, nbmodp)
 !
 !
 !
-    integer :: nbmd, nbmg, neq, nbmax, nbrg, nbag
-    integer :: nbgene
-    integer :: iddeeq, jval
-    integer :: ldblo, ldblo1, ldblo2
-    integer :: imode, ifonc, imode2
-    integer :: iret, ibid, nf, lpar, vali(3)
+    integer(kind=8) :: nbmd, nbmg, neq, nbmax, nbrg, nbag
+    integer(kind=8) :: nbgene
+    integer(kind=8) :: iddeeq, jval
+    integer(kind=8) :: ldblo, ldblo1, ldblo2
+    integer(kind=8) :: imode, ifonc, imode2
+    integer(kind=8) :: iret, ibid, nf, lpar, vali(3)
     character(len=8) :: k8bid
     character(len=8) :: modmec, magene, amgene, rigene
     character(len=14) :: numddl
     character(len=19) :: fmodal, valfon
-    integer :: jfmoda, jvalfo
+    integer(kind=8) :: jfmoda, jvalfo
     character(len=19) :: depgem, vitgem, accgem
-    integer :: jdepgm, jvitgm, jaccgm
+    integer(kind=8) :: jdepgm, jvitgm, jaccgm
     character(len=19) :: depgep, vitgep, accgep
-    integer :: jdepgp, jvitgp, jaccgp
+    integer(kind=8) :: jdepgp, jvitgp, jaccgp
     character(len=19) :: basmod
-    integer :: jbasmo
+    integer(kind=8) :: jbasmo
     character(len=19) :: riggen, masgen, amogen, fongen, forgen
-    integer :: jrigge, jmasge, jamoge, jfonge, jforge
+    integer(kind=8) :: jrigge, jmasge, jamoge, jfonge, jforge
     character(len=19) :: accgcn
-    integer :: jacccn
+    integer(kind=8) :: jacccn
     character(len=24) :: deeq
     character(len=24) :: nomcha
     character(len=24), pointer :: lifoge(:) => null()

@@ -51,7 +51,7 @@ subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
 !
     character(len=8) :: model, mesh, typmo, mesh0, nomgd
     aster_logical :: lmodemeca, ldynatrans
-    integer :: nexci, nbel, i
+    integer(kind=8) :: nexci, nbel, i
     real(kind=8) :: start, finish, dirz, absccur, long
     real(kind=8), pointer :: jvale(:) => null()
 !

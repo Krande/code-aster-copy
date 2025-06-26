@@ -22,7 +22,7 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd, &
     implicit none
 #include "asterc/indik8.h"
 #include "asterfort/utmess.h"
-    integer :: ino, nbcmp, ncmpmx, nec, desc(*), ioc
+    integer(kind=8) :: ino, nbcmp, ncmpmx, nec, desc(*), ioc
     real(kind=8) :: valglo(*), val(*)
     character(len=*) :: type
     character(len=8) :: nocmp(*), kvalgl(*), ncmpgd(*), kval(*)
@@ -47,8 +47,8 @@ subroutine affeno(ioc, ino, nocmp, nbcmp, ncmpgd, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nocoaf, icmp, j, iec, jj, ind, ior
-    integer :: vali(3)
+    integer(kind=8) :: nocoaf, icmp, j, iec, jj, ind, ior
+    integer(kind=8) :: vali(3)
 !
     nocoaf = 0
     do icmp = 1, nbcmp

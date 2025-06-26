@@ -21,7 +21,7 @@ subroutine dstlxy(codi, hlt2, an, depf, lambda)
     real(kind=8) :: hlt2(4, 6), an(3, 9), depf(9), codi(*), lambda(4)
 !     'LAMBDA' DE L'ELEMENT DE PLAQUE DST
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: c(3), s(3)
     real(kind=8) :: ta(6, 3), bla(4, 3), bln(4, 9)
 !     ------------------------------------------------------------------

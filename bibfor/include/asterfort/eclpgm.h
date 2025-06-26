@@ -21,7 +21,7 @@
 interface
     subroutine eclpgm(ma2, mo, cham1, ligrel, shrink,&
                       lonmin, nch, lisch)
-        integer :: nch
+        integer(kind=8) :: nch
         character(len=8) :: ma2
         character(len=8) :: mo
         character(len=19) :: cham1

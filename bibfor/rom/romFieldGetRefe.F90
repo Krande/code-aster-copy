@@ -31,9 +31,9 @@ subroutine romFieldGetRefe(resultNameZ, modelZ, &
 #include "asterfort/romFieldGetInfo.h"
 !
     character(len=*), intent(in) :: resultNameZ, modelZ
-    integer, intent(in)  :: nbFieldResult
+    integer(kind=8), intent(in)  :: nbFieldResult
     character(len=16), pointer :: resultField(:)
-    integer, pointer :: resultFieldNume(:)
+    integer(kind=8), pointer :: resultFieldNume(:)
     character(len=24), intent(in)  :: fieldName
     type(ROM_DS_Field), intent(inout) :: field
 !
@@ -55,7 +55,7 @@ subroutine romFieldGetRefe(resultNameZ, modelZ, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iFieldResult, numeStore, iret
+    integer(kind=8) :: iFieldResult, numeStore, iret
     character(len=24) :: fieldRefe
     character(len=8) :: model
 !

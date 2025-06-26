@@ -29,6 +29,6 @@ interface
         real(kind=8) :: c23
         real(kind=8) :: k
         real(kind=8) :: cvol(6, 6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine hyp3dv
 end interface

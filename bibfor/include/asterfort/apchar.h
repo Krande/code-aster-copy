@@ -26,17 +26,17 @@ interface
                       lc, impr, ifapm, ind)
         character(len=8) :: typcha
         character(len=24) :: k24rc
-        integer :: nk
+        integer(kind=8) :: nk
         complex(kind=8) :: lambda
         real(kind=8) :: theta
-        integer :: lraide
-        integer :: lmasse
-        integer :: ldynam
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: ldynam
         character(len=19) :: solveu
-        integer :: lamor
+        integer(kind=8) :: lamor
         aster_logical :: lc
         character(len=3) :: impr
-        integer :: ifapm
-        integer :: ind
+        integer(kind=8) :: ifapm
+        integer(kind=8) :: ind
     end subroutine apchar
 end interface

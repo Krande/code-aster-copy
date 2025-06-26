@@ -44,8 +44,8 @@ function cfdisl(sdcont_defi_, question_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_defi, question
-    integer :: cont_form
-    integer :: algo_cont, algo_frot
+    integer(kind=8) :: cont_form
+    integer(kind=8) :: algo_cont, algo_frot
 !
 ! --------------------------------------------------------------------------------------------------
 !

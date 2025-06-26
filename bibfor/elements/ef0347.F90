@@ -46,17 +46,17 @@ subroutine ef0347(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nc, ii, npg, ipoids, imate, k, kk
-    integer :: icgp, icontn, kp
+    integer(kind=8) :: nc, ii, npg, ipoids, imate, k, kk
+    integer(kind=8) :: icgp, icontn, kp
 !
     real(kind=8) :: d1b(7, 14), co(3), fs(14), xl
     real(kind=8) :: aa, alfay, alfaz, young, nu, gcis, ey, ez, xiy, xiz, temp, phiy, phiz
 !
-    integer             :: iret(2)
+    integer(kind=8)             :: iret(2)
     character(len=2)    :: nomres(2)
     real(kind=8)        :: valres(2)
 !
-    integer, parameter  :: nb_cara = 7
+    integer(kind=8), parameter  :: nb_cara = 7
     real(kind=8)        :: vale_cara(nb_cara)
     character(len=8)    :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1'/

@@ -45,14 +45,14 @@ subroutine vdrep2(alpha, beta, zilzi, zrlzr, matevn, &
     real(kind=8) :: matevn(2, 2, 1), matevg(2, 2, 1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: pgl(3, 3), zrlzr(*)
-    integer :: zilzi(*)
+    integer(kind=8) :: zilzi(*)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- NOMBRE DE NOEUDS DE L'ELEMENT  :
 !     -----------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idec, igau, ino, j, k, nb2
-    integer :: npgsr
+    integer(kind=8) :: i, idec, igau, ino, j, k, nb2
+    integer(kind=8) :: npgsr
     real(kind=8) :: alpha, beta, c
     real(kind=8) :: s
     real(kind=8) :: r8bid4(4)

@@ -31,11 +31,11 @@ subroutine ut2alg(nn, nc, p, sl, sg)
 !OUT  R   SG   NN*NC COMPOSANTES DE LA TRIANGULAIRE SG DANS GLOBAL
 !     ------------------------------------------------------------------
     real(kind=8) :: r(4)
-    integer :: in(2)
+    integer(kind=8) :: in(2)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k, l, m, n, nb
-    integer :: nc, nn
+    integer(kind=8) :: i, j, k, l, m, n, nb
+    integer(kind=8) :: nc, nn
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

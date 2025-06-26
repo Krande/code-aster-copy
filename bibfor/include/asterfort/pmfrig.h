@@ -21,7 +21,7 @@
 interface
     subroutine pmfrig(nomte, icdmat, klv)
         character(len=*) :: nomte
-        integer :: icdmat
+        integer(kind=8) :: icdmat
         real(kind=8) :: klv(*)
     end subroutine pmfrig
 end interface

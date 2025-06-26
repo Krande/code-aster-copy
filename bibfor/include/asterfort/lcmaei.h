@@ -23,23 +23,23 @@ interface
                       imat, necris, necoul, nbval, valres,&
                       nmat, itbint, nfs, nsg, hsri,&
                       ifa, nomfam, nbsys)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=*) :: poum
         character(len=16) :: nmater
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=16) :: necris
         character(len=16) :: necoul
-        integer :: nbval
+        integer(kind=8) :: nbval
         real(kind=8) :: valres(nmat)
-        integer :: itbint
-        integer :: nfs
+        integer(kind=8) :: itbint
+        integer(kind=8) :: nfs
         real(kind=8) :: hsri(nsg, nsg)
-        integer :: ifa
+        integer(kind=8) :: ifa
         character(len=16) :: nomfam
-        integer :: nbsys
+        integer(kind=8) :: nbsys
     end subroutine lcmaei
 end interface

@@ -24,10 +24,10 @@ interface
     subroutine mrmult(cumul, lmat, vect, xsol, nbvect,&
                       prepos, lrom)
         character(len=*) :: cumul
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: vect(*)
         real(kind=8) :: xsol(*)
-        integer :: nbvect
+        integer(kind=8) :: nbvect
         aster_logical :: prepos
         aster_logical, optional :: lrom
     end subroutine mrmult

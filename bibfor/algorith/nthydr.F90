@@ -22,7 +22,7 @@ subroutine nthydr(hydrat)
 #include "asterc/getfac.h"
 #include "asterfort/getvtx.h"
     aster_logical :: hydrat
-    integer :: nbocc, n1, i
+    integer(kind=8) :: nbocc, n1, i
     character(len=16) :: comp
 !     ------------------------------------------------------------------
 !

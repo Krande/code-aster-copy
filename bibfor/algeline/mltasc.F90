@@ -38,11 +38,11 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: nbloc, lgbloc(*), lonmat, adinit(lonmat), typsym
+    integer(kind=8) :: nbloc, lgbloc(*), lonmat, adinit(lonmat), typsym
     character(len=24) :: factol, factou, valm
     character(len=*) :: nommat
-    integer :: fin, deb, mati, mats, adprov
-    integer :: ip, irefac, lgblib
+    integer(kind=8) :: fin, deb, mati, mats, adprov
+    integer(kind=8) :: ip, irefac, lgblib
 !===============================================================
 !     ASSEMBLAGE DE LA MATRICE INITIALE DANS LA MATRICE FACTOR
 !     VERSION ASTER
@@ -52,7 +52,7 @@ subroutine mltasc(nbloc, lgbloc, adinit, nommat, lonmat, &
 !     VERSION NON SYMETRIQUE
 !=============================================================
     character(len=8) :: base
-    integer :: i, i1, ib, ifacl, ifacu, code
+    integer(kind=8) :: i, i1, ib, ifacl, ifacu, code
     data valm/'                   .VALM'/
     valm(1:19) = nommat
     call jemarq()

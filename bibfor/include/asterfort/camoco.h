@@ -26,6 +26,6 @@ interface
         character(len=8) :: intf
         character(len=19) :: raid
         character(len=19) :: raildl
-        integer :: inord
+        integer(kind=8) :: inord
     end subroutine camoco
 end interface

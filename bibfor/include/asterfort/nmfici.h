@@ -21,8 +21,8 @@
 interface
     subroutine nmfici(nno, nddl, wref, vff, dfde,&
                       geom, poids, b)
-        integer :: nddl
-        integer :: nno
+        integer(kind=8) :: nddl
+        integer(kind=8) :: nno
         real(kind=8) :: wref
         real(kind=8) :: vff(nno)
         real(kind=8) :: dfde(2, nno)

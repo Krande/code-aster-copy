@@ -25,7 +25,7 @@ interface
                           istop, iret)
     character(len=19), intent(in) :: matas1
     character(len=*), intent(in) :: matpre
-    integer, intent(in) :: nsecm
+    integer(kind=8), intent(in) :: nsecm
     character(len=*), intent(in) :: chsecm
     character(len=*), intent(in) :: chsolu
     character(len=*), intent(in) :: base
@@ -33,7 +33,7 @@ interface
     complex(kind=8), intent(inout) :: csolu(*)
     character(len=*), intent(in) :: criter
     aster_logical, intent(in) :: prepos
-    integer, intent(in) :: istop
-    integer, intent(out) :: iret
+    integer(kind=8), intent(in) :: istop
+    integer(kind=8), intent(out) :: iret
     end subroutine elg_resoud
 end interface

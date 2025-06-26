@@ -43,7 +43,7 @@ subroutine op0127()
     character(len=16) :: nomcon, nomope
     character(len=14) :: nugene
     character(len=24) :: typrof
-    integer :: ibid1, ibid2, iopt
+    integer(kind=8) :: ibid1, ibid2, iopt
 !
 !
 !-----------------------------------------------------------------------

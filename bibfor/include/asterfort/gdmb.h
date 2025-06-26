@@ -21,8 +21,8 @@
 interface
     subroutine gdmb(ne, kp, ajacob, en, enprim,&
                     x0pg, b)
-        integer :: ne
-        integer :: kp
+        integer(kind=8) :: ne
+        integer(kind=8) :: kp
         real(kind=8) :: ajacob
         real(kind=8) :: en(3, 2)
         real(kind=8) :: enprim(3, 2)

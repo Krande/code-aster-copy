@@ -31,7 +31,7 @@ subroutine pha300(ifoi, ptf, phase)
 !
 #include "jeveux.h"
 #include "asterc/r8pi.h"
-    integer :: ifoi
+    integer(kind=8) :: ifoi
     real(kind=8) :: ptf, phase
 !
 !-----------------------------------------------------------------------

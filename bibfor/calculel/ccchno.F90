@@ -40,14 +40,14 @@ subroutine ccchno(option, numord, resuin, resuou, lichou, &
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
-    integer :: numord, codret
+    integer(kind=8) :: numord, codret
     character(len=1) :: basopt
     character(len=8) :: resuin, resuou, nomail, modele, carael
     character(len=16) :: option
     character(len=24) :: lichou(2), mesmai, ligrel
     aster_logical :: ligmod
     character(len=19), optional :: nochou
-    integer, optional :: ideb, ifin
+    integer(kind=8), optional :: ideb, ifin
     character(len=24), optional :: vcham
 !  CALC_CHAMP - CALCUL D'UN CHAMP AUX NOEUDS
 !  -    -                   --        --
@@ -75,9 +75,9 @@ subroutine ccchno(option, numord, resuin, resuou, lichou, &
 !   LICHOU  K8*  LISTE DES CHAMPS OUT
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: ier, nbma, jmai, ngr, igr, nmaxob, iret
+    integer(kind=8) :: ier, nbma, jmai, ngr, igr, nmaxob, iret
     parameter(nmaxob=30)
-    integer :: adobj(nmaxob), nbobj, nbsp, nb
+    integer(kind=8) :: adobj(nmaxob), nbobj, nbsp, nb
     aster_logical :: ldist
 !
     character(len=8) :: k8b, erdm

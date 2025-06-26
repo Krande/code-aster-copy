@@ -56,12 +56,12 @@ subroutine te0486(option, nomte)
 ! ----------------------------------------------------------------------
     character(len=24) :: valk
 ! ----------------------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: igeom, ium, iup, ipres, jpres
-    integer :: ino, lzi, lzr, iadzi, iazk24, iret
-    integer :: i, j, in, kn, ii, komptn, nb1, nb2
-    integer :: ivectu, imatun, intsn, npgsn
-    integer :: irco3d, ifco3d, itemps, ierz, mxnoeu
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: igeom, ium, iup, ipres, jpres
+    integer(kind=8) :: ino, lzi, lzr, iadzi, iazk24, iret
+    integer(kind=8) :: i, j, in, kn, ii, komptn, nb1, nb2
+    integer(kind=8) :: ivectu, imatun, intsn, npgsn
+    integer(kind=8) :: irco3d, ifco3d, itemps, ierz, mxnoeu
     parameter(mxnoeu=9)
     real(kind=8) :: pres, presno(9), madn(3, 51), nks1(3, 51), nks2(3, 51)
     real(kind=8) :: a1(3), a2(3), anta1(3, 3), anta2(3, 3), surf(3)

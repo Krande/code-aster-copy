@@ -23,7 +23,7 @@ subroutine dinon4(neq, ul, dul, utl, nno, &
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
-    integer :: neq, nbcomp, nno, nbpar
+    integer(kind=8) :: neq, nbcomp, nno, nbpar
     real(kind=8) :: ul(neq), dul(neq), utl(neq)
     real(kind=8) :: varimo(nbcomp*1), varipl(nbcomp*1)
     real(kind=8) :: raide(nbcomp), param(6, nbpar)
@@ -63,10 +63,10 @@ subroutine dinon4(neq, ul, dul, utl, nno, &
 !
 !***************** DECLARATION DES VARIABLES LOCALES *******************
 !
-    integer :: ii
+    integer(kind=8) :: ii
     real(kind=8) :: ulel, dulel, utlel, r8min
 !
-    integer :: ivari
+    integer(kind=8) :: ivari
     real(kind=8) :: kdeb, kfin, fpre, useuil, fplus, fmoins, depl
 !
     real(kind=8) :: zero

@@ -36,10 +36,10 @@ subroutine vlaxpy(alpha, chamna, chamnb)
 !     IN  CHAMNA    :  K*  : CHAM_NO MAITRE 1
 !     IN/OUT CHAMNB :  K*  : CHAM_NO MAITRE 2
 !----------------------------------------------------------------------
-    integer :: neq, i
+    integer(kind=8) :: neq, i
     character(len=19) :: nume_equa
     character(len=24) :: chamn1, chamn2
-    integer, pointer :: delg(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
     real(kind=8), pointer :: val1(:) => null()
     real(kind=8), pointer :: val2(:) => null()
 !----------------------------------------------------------------------

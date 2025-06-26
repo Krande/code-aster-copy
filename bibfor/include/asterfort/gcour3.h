@@ -28,7 +28,7 @@ interface
         character(len=8) :: resu
         character(len=8) :: noma
         character(len=24) :: coorn
-        integer :: lnoff
+        integer(kind=8) :: lnoff
         character(len=24) :: trav1
         character(len=24) :: trav2
         character(len=24) :: trav3
@@ -37,9 +37,9 @@ interface
         character(len=19) :: grlt
         character(len=24) :: liss
         character(len=24) :: basfon
-        integer :: nbre
+        integer(kind=8) :: nbre
         aster_logical :: milieu
-        integer :: ndimte
+        integer(kind=8) :: ndimte
         character(len=16) :: typdis
         character(len=8) :: nomfis
     end subroutine gcour3

@@ -75,7 +75,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater, &
     !!! Variables globales
     !!!
 
-    integer :: val, dum, nbmat, retcom, nvi
+    integer(kind=8) :: val, dum, nbmat, retcom, nvi
     real(kind=8) :: dt, invar, s(6), sel(6), mater(nbmat, 2), vinm(nvi)
     real(kind=8) :: dside(6, 6), de(6, 6)
     real(kind=8) :: ucrpm, ucrvm, ucriv, seuilv
@@ -84,7 +84,7 @@ subroutine sroptg(val, dum, dt, nbmat, mater, &
     !!! Variables locales
     !!!
 
-    integer :: ndi, ndt, i, k
+    integer(kind=8) :: ndi, ndt, i, k
     real(kind=8) :: paraep(3), varpl(4), derpar(3)
     real(kind=8) :: paravi(3), varvi(4)
     real(kind=8) :: dhds(6), ds2hds(6), dfdsp(6)

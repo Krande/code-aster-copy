@@ -20,7 +20,7 @@ subroutine gcax(m, in, ip, ac, x, &
                 y)
     implicit none
     integer(kind=4) :: ip(*)
-    integer :: m, in(m)
+    integer(kind=8) :: m, in(m)
     real(kind=8) :: ac(*), x(m), y(m)
     real(kind=8) :: dtemp
 !     ------------------------------------------------------------------
@@ -35,7 +35,7 @@ subroutine gcax(m, in, ip, ac, x, &
 ! OUT. Y(I=1,M)     <--    VECTEUR DE SORTIE
 !     _____________ ____ ______________________________________________
 !-----------------------------------------------------------------------
-    integer :: i, j, kdeb, kfin, ki, klong
+    integer(kind=8) :: i, j, kdeb, kfin, ki, klong
 !-----------------------------------------------------------------------
     y(1) = ac(1)*x(1)
     do i = 2, m

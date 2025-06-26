@@ -57,8 +57,8 @@ subroutine te0305(option, nomte)
 !
     character(len=8) :: nompar(4)
     aster_logical :: l_func, l_suiv
-    integer :: jv_time, jv_forc, ideplm, ideplp
-    integer :: kp, nbpar
+    integer(kind=8) :: jv_time, jv_forc, ideplm, ideplp
+    integer(kind=8) :: kp, nbpar
     real(kind=8) :: rhs(MAX_BV), disp_curr(MAX_BV)
     real(kind=8) :: forc_pg(3, MAX_QP), valpar(4)
     blas_int :: b_incx, b_incy, b_n

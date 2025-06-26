@@ -20,7 +20,7 @@
 !
 interface
     subroutine rcrot(nbabsc, phi, vale, sigm)
-    integer :: nbabsc
+    integer(kind=8) :: nbabsc
     real(kind=8) :: phi, vale(4,nbabsc), sigm(4,nbabsc)
     end subroutine rcrot
 end interface

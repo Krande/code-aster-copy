@@ -22,7 +22,7 @@ subroutine jjallt(lonoi, ic, gi, typei, ltypi, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/jjalls.h"
-    integer :: lonoi, ic, ltypi, jctab
+    integer(kind=8) :: lonoi, ic, ltypi, jctab
     character(len=*) :: gi, typei, ci
 !-----------------------------------------------------------------------
 ! CHAPEAU A LA ROUTINE JJALLS POUR PLACER CORRECTEMENT LE SEGMENT DE
@@ -39,8 +39,8 @@ subroutine jjallt(lonoi, ic, gi, typei, ltypi, &
 ! OUT  JCDYN  : ADRESSE PAR RAPPORT AU COMMUN DE REFERENCE EN
 !               ALLOCATION DYNAMIQUE
 !
-    integer :: izr(1), izc(1), izl(1), izk8(1), izk16(1), izk24(1)
-    integer :: izk32(1), izk80(1), jbid, izi4(1), jcdyn
+    integer(kind=8) :: izr(1), izc(1), izl(1), izk8(1), izk16(1), izk24(1)
+    integer(kind=8) :: izk32(1), izk80(1), jbid, izi4(1), jcdyn
     equivalence(izr, zr), (izc, zc), (izl, zl), (izk8, zk8), (izk16, zk16),&
      &               (izk24, zk24), (izk32, zk32), (izk80, zk80), (izi4, zi4)
 ! DEB ------------------------------------------------------------------

@@ -20,9 +20,9 @@
 !
 interface
     subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
-        integer :: npic
+        integer(kind=8) :: npic
         real(kind=8) :: pic(*)
-        integer :: ncyc
+        integer(kind=8) :: ncyc
         real(kind=8) :: sigmin(*)
         real(kind=8) :: sigmax(*)
     end subroutine fgcota

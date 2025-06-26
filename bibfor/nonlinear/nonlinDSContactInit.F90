@@ -54,19 +54,19 @@ subroutine nonlinDSContactInit(mesh, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: cont_form
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: cont_form
     character(len=8) :: sdcont
     character(len=24) :: iden_rela
     aster_logical :: l_cont, l_unil
     aster_logical :: l_form_disc, l_form_cont, l_form_lac
     aster_logical :: l_all_verif, l_iden_rela
     aster_logical :: l_unil_pena, l_inte_node
-    integer :: nt_patch
-    integer :: i_exist
+    integer(kind=8) :: nt_patch
+    integer(kind=8) :: i_exist
     character(len=8), pointer :: v_load_type(:) => null()
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
     character(len=3) :: matd
 !
 ! --------------------------------------------------------------------------------------------------

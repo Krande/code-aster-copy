@@ -25,7 +25,7 @@ interface
 
         aster_logical, intent(in) :: resi
         character(len=*),intent(in) :: fami
-        integer,intent(in) :: imate, kpg, ksp
+        integer(kind=8),intent(in) :: imate, kpg, ksp
         type(dp_material) :: mat 
     end function
 end interface

@@ -35,15 +35,15 @@ subroutine te0105(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=4)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: pc(3), valpar(nbres), zero, un
     real(kind=8) :: coor2d(18), x, y, z, theta, fplnp1, fpln, fmonp1, fmon
     real(kind=8) :: dfdx(9), dfdy(9), poids, flux, cour, cosa, sina
     real(kind=8) :: matnp(9), fluxp1, coef, long, rp1, rp2, rp3, poid
-    integer :: nno, kp, npg1, gi, pi, ivectt, iflux, itemps, nnos
-    integer :: ipoids, ivf, idfde, igeom, ndim, jgano, i, k, ier
+    integer(kind=8) :: nno, kp, npg1, gi, pi, ivectt, iflux, itemps, nnos
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, ndim, jgano, i, k, ier
 !
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &

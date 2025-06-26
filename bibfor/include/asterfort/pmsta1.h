@@ -30,19 +30,19 @@ interface
         real(kind=8) :: deps(9)
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
-        integer :: nbvari
-        integer :: nbvita
-        integer :: iforta
-        integer :: nbpar
+        integer(kind=8) :: nbvari
+        integer(kind=8) :: nbvita
+        integer(kind=8) :: iforta
+        integer(kind=8) :: nbpar
         character(len=16) :: nompar(*)
         real(kind=8) :: vr(*)
-        integer :: igrad
+        integer(kind=8) :: igrad
         character(len=8) :: typpar(*)
         character(len=8) :: nomvi(*)
         character(len=19) :: sddisc
-        integer :: liccvg(5)
+        integer(kind=8) :: liccvg(5)
         aster_logical :: itemax
         aster_logical :: conver
-        integer :: actite
+        integer(kind=8) :: actite
     end subroutine pmsta1
 end interface

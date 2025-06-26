@@ -20,7 +20,7 @@
 !
 interface
     subroutine numeddl_get_component_name(nume19, cmpid, cmpname)
-        integer :: cmpid
+        integer(kind=8) :: cmpid
         character(len=*) :: nume19
         character(len=8) :: cmpname
     end subroutine numeddl_get_component_name

@@ -34,10 +34,10 @@ subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
 #include "asterfort/ulisog.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: paraListNb
+    integer(kind=8), intent(in) :: paraListNb
     character(len=16), pointer :: paraListName(:)
     character(len=*) :: nomcon
-    integer :: ifichi, numdt, numit
+    integer(kind=8) :: ifichi, numdt, numit
     real(kind=8) :: dt
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,8 +58,8 @@ subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
 ! --------------------------------------------------------------------------------------------------
 !
     med_idt :: idfimd
-    integer :: edleaj, codret, hdfok, medok
-    integer :: iPara, iaux
+    integer(kind=8) :: edleaj, codret, hdfok, medok
+    integer(kind=8) :: iPara, iaux
     character(len=1) :: saux01
     character(len=8) :: saux08
     character(len=16) :: paraName

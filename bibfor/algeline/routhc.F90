@@ -21,7 +21,7 @@ subroutine routhc(hr, hi, pr, a0, dr, &
     implicit none
 !
 #include "jeveux.h"
-    integer :: ior
+    integer(kind=8) :: ior
     real(kind=8) :: hr, hi, a0(*), dr(*)
     complex(kind=8) :: pr
 !
@@ -29,7 +29,7 @@ subroutine routhc(hr, hi, pr, a0, dr, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     h = dcmplx(1.0d0, 0.0d0)
     do i = 1, ior

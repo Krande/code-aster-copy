@@ -50,7 +50,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 !
-    integer :: ndt, nvi, nmat, ndi, ns, i, nbcomm(nmat, 3), nr
+    integer(kind=8) :: ndt, nvi, nmat, ndi, ns, i, nbcomm(nmat, 3), nr
     real(kind=8) :: yd(*), materd(nmat, 2), materf(nmat, 2), vind(*)
     real(kind=8) :: id(3, 3), hookf(6, 6), dkooh(6, 6), epsegl(6), fe(3, 3)
     real(kind=8) :: dtot, sigd(6)
@@ -59,7 +59,7 @@ subroutine lcafyd(compor, materd, materf, nbcomm, cpmono, &
     character(len=24) :: cpmono(5*nmat+1), necoul
     character(len=8) :: mod
     common/tdim/ndt, ndi
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/

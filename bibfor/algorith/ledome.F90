@@ -46,7 +46,7 @@ subroutine ledome(option, nomo, materi, mate, carele)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: n
+    integer(kind=8) :: n
     character(len=8) :: repons
 !
 ! ----------------------------------------------------------------------

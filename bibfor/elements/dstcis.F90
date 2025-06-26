@@ -23,7 +23,7 @@ subroutine dstcis(dci, carat3, hft2, bca, an)
 !     MATRICES BCA(2,3) ET AN(3,9) DU CISAILLEMENT POUR LE DST
 !     --------------------------------------------------------
 !
-    integer :: i, j, k, iret
+    integer(kind=8) :: i, j, k, iret
     real(kind=8) :: l(3), c(3), s(3), x(3), y(3), det
     real(kind=8) :: ta(6, 3), db(2, 3), aa(3, 3), aai(3, 3), aw(3, 9)
 !     ------------------------------------------------------------------

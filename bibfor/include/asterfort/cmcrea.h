@@ -18,7 +18,7 @@
 !
 interface
     subroutine cmcrea(main, maout, nbocc)
-        integer :: nbocc
+        integer(kind=8) :: nbocc
         character(len=8) :: main
         character(len=8) :: maout
     end subroutine cmcrea

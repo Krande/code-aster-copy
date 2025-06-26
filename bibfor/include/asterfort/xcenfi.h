@@ -23,18 +23,18 @@ interface
                       pinref, pmiref, cenref, cenfi,&
                       nn, exit, jonc, num)
         character(len=8) :: elrefp
-        integer :: ndim
-        integer :: ndime
-        integer :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ndime
+        integer(kind=8) :: nno
         real(kind=8) :: geom(*)
         real(kind=8) :: lsn(*)
         real(kind=8) :: pinref(*)
         real(kind=8) :: pmiref(*)
         real(kind=8) :: cenref(ndime)
         real(kind=8) :: cenfi(ndim)
-        integer :: nn(4)
-        integer :: exit(2)
+        integer(kind=8) :: nn(4)
+        integer(kind=8) :: exit(2)
         aster_logical :: jonc
-        integer, intent(in), optional :: num(8)
+        integer(kind=8), intent(in), optional :: num(8)
     end subroutine xcenfi
 end interface 

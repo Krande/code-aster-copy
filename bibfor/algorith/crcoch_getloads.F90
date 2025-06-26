@@ -33,7 +33,7 @@ subroutine crcoch_getloads(listLoad, nbLoad, nb_ondp, v_ondp)
 #include "LoadTypes_type.h"
 !
     character(len=19), intent(in) :: listLoad
-    integer, intent(out) :: nb_ondp, nbLoad
+    integer(kind=8), intent(out) :: nb_ondp, nbLoad
     character(len=8), pointer :: v_ondp(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine crcoch_getloads(listLoad, nbLoad, nb_ondp, v_ondp)
     character(len=4), parameter :: phenom = "MECA"
     character(len=1), parameter :: jvBase = "V"
     character(len=16), parameter :: loadKeyword = 'CONV_CHAR'
-    integer :: iocc, nocc
+    integer(kind=8) :: iocc, nocc
     character(len=8), pointer :: loadFromUser(:) => null()
     type(ListLoad_Prep) :: listLoadPrep
     aster_logical, parameter :: kineExcl = ASTER_TRUE, diriExcl = ASTER_TRUE

@@ -24,7 +24,7 @@ interface
         character(len=*), intent(in) :: compor_curr
         character(len=*), intent(in) :: sigm
         character(len=*), intent(in) :: ligrel_currz
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
         character(len=1), optional, intent(in) :: type_stop
     end subroutine sgcomp
 end interface

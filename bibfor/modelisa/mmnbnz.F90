@@ -31,8 +31,8 @@ subroutine mmnbnz(mesh, sdcont_defi, i_zone, nb_cont_poin)
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: i_zone
-    integer, intent(out) :: nb_cont_poin
+    integer(kind=8), intent(in) :: i_zone
+    integer(kind=8), intent(out) :: nb_cont_poin
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,8 +49,8 @@ subroutine mmnbnz(mesh, sdcont_defi, i_zone, nb_cont_poin)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form, elem_slav_indx, elem_slav_nume, type_inte, nb_poin_elem
-    integer :: i_elem_slav, nb_elem_slav, jdecme
+    integer(kind=8) :: cont_form, elem_slav_indx, elem_slav_nume, type_inte, nb_poin_elem
+    integer(kind=8) :: i_elem_slav, nb_elem_slav, jdecme
 !
 ! --------------------------------------------------------------------------------------------------
 !

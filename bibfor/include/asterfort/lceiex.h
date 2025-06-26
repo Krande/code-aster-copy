@@ -23,9 +23,9 @@ interface
                       mu, su, de, ddedt, vim,&
                       vip, r, carcri, codret)
         character(len=*) :: fami
-        integer :: kpg,codret
-        integer :: ksp
-        integer :: mat
+        integer(kind=8) :: kpg,codret
+        integer(kind=8) :: ksp
+        integer(kind=8) :: mat
         character(len=16) :: option
         real(kind=8) :: mu(3)
         real(kind=8) :: su(3)

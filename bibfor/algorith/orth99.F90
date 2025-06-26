@@ -51,7 +51,7 @@ subroutine orth99(nomres, ritz)
 #include "asterfort/detrsd.h"
 !
     character(len=8) :: nomres
-    integer :: ritz
+    integer(kind=8) :: ritz
 !
 !         DEFI_BASE_MODALE : ORTHO_BASE
 !
@@ -60,9 +60,9 @@ subroutine orth99(nomres, ritz)
 !----------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, n1, ier, ibid, imatra, nbmode, jordm, iddeeq
-    integer ::  neq, idmode, iorol, iorne, iad
-    integer :: jiad, ieq, i, nindep, ir, tmod(1)
+    integer(kind=8) :: ifm, niv, n1, ier, ibid, imatra, nbmode, jordm, iddeeq
+    integer(kind=8) ::  neq, idmode, iorol, iorne, iad
+    integer(kind=8) :: jiad, ieq, i, nindep, ir, tmod(1)
     real(kind=8) :: alpha, rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, matras, base, ortho, intf
@@ -72,8 +72,8 @@ subroutine orth99(nomres, ritz)
     character(len=24) :: typeco
     real(kind=8), pointer :: trav1(:) => null()
     real(kind=8), pointer :: trav3(:) => null()
-    integer, pointer :: trav4(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: trav4(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     logical :: rewrite
 !----------------------------------------------------------------------

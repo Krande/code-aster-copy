@@ -33,9 +33,9 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    integer :: ndim, nno1, nno2, npg, iw, idff1
-    integer :: mate
-    integer :: vu(3, 27), vp(27)
+    integer(kind=8) :: ndim, nno1, nno2, npg, iw, idff1
+    integer(kind=8) :: mate
+    integer(kind=8) :: vu(3, 27), vp(27)
     real(kind=8) :: geomi(ndim, nno1)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     real(kind=8) :: sig(2*ndim+1, npg), ddl(*), vect(*)
@@ -67,9 +67,9 @@ subroutine nufnlg(ndim, nno1, nno2, npg, iw, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: axi, grand
-    integer :: vij(3, 3), lij(3, 3)
-    integer :: nddl, ndu, g
-    integer :: kl, sa, na, ia, ja, kk
+    integer(kind=8) :: vij(3, 3), lij(3, 3)
+    integer(kind=8) :: nddl, ndu, g
+    integer(kind=8) :: kl, sa, na, ia, ja, kk
     real(kind=8) :: geomm(3*27), jm, wm, epsm(6)
     real(kind=8) :: deplm(3*27), presm(27), pm, r
     real(kind=8) :: dff1(nno1, 4)

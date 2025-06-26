@@ -23,7 +23,7 @@ interface
                       t, nomaz, liso1z, liso2z)
         character(len=*) :: lisi1z
         character(len=*) :: lisi2z
-        integer :: lonlis
+        integer(kind=8) :: lonlis
         real(kind=8) :: centre(3)
         real(kind=8) :: theta(3)
         real(kind=8) :: t(3)

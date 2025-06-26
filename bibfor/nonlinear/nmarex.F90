@@ -42,7 +42,7 @@ subroutine nmarex(keywfact, sdarch, lDyna_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbFieldExcl, iFieldExcl
+    integer(kind=8) :: nbFieldExcl, iFieldExcl
     aster_logical :: lDyna, lAcce, lSigm
     character(len=16), pointer :: fieldExcl(:) => null()
 !

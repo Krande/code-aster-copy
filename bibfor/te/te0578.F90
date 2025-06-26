@@ -40,9 +40,9 @@ subroutine te0578(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim, nfh, nfe, itempn, igeom, nnop, itempg, jpintt
-    integer :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
-    integer :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
+    integer(kind=8) :: ndim, nfh, nfe, itempn, igeom, nnop, itempg, jpintt
+    integer(kind=8) :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst
+    integer(kind=8) :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
     character(len=8) :: elrefp
 !
 ! ----------------------------------------------------------------------

@@ -26,7 +26,7 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: resoco
-    integer :: neq, nbliai
+    integer(kind=8) :: neq, nbliai
     real(kind=8) :: tole
     real(kind=8) :: ninf
 !
@@ -48,16 +48,16 @@ subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
 !
 !
 !
-    integer :: iliai, nbddl, jdecal
+    integer(kind=8) :: iliai, nbddl, jdecal
     real(kind=8) :: jeuinc, jeuold, jeunew, ssgrad
     character(len=19) :: mu
-    integer :: jmu
+    integer(kind=8) :: jmu
     character(len=19) :: sgradp
-    integer :: jsgrap
+    integer(kind=8) :: jsgrap
     character(len=24) :: apcoef, apddl, appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=24) :: jeuite
-    integer :: jjeuit
+    integer(kind=8) :: jjeuit
     character(len=19) :: ddeplc
     real(kind=8), pointer :: vale(:) => null()
 !

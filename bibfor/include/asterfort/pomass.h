@@ -25,7 +25,7 @@ interface
         real(kind=8) :: e
         real(kind=8) :: xnu
         real(kind=8) :: rho
-        integer :: kanl
+        integer(kind=8) :: kanl
         real(kind=8) :: mlv(*)
     end subroutine pomass
 end interface

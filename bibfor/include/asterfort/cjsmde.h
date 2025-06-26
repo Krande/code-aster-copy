@@ -28,7 +28,7 @@ interface
         character(len=8) :: mod
         real(kind=8) :: crit(*)
         real(kind=8) :: mater(14, 2)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: epsd(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
@@ -38,7 +38,7 @@ interface
         aster_logical :: noconv
         aster_logical :: aredec
         aster_logical :: stopnc
-        integer :: niter
+        integer(kind=8) :: niter
         real(kind=8) :: epscon
         aster_logical :: trac
     end subroutine cjsmde

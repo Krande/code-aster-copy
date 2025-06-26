@@ -49,12 +49,12 @@ subroutine cfverl(ds_contact)
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: nomnoe
-    integer :: nnoeu, ier
-    integer :: ino, nbno
+    integer(kind=8) :: nnoeu, ier
+    integer(kind=8) :: ino, nbno
     real(kind=8) :: angle
     character(len=19) :: sdappa
     character(len=24) :: apverk, apvera
-    integer :: jlistn, jlista
+    integer(kind=8) :: jlistn, jlista
     aster_logical :: lliss
 !
 ! ----------------------------------------------------------------------

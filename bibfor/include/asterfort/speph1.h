@@ -24,8 +24,8 @@ interface
     subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                       specmi, nnoe, nomcmp, nbmode, nbn,&
                       nbpf)
-        integer :: nbpf
-        integer :: nbn
+        integer(kind=8) :: nbpf
+        integer(kind=8) :: nbn
         aster_logical :: intphy
         aster_logical :: intmod
         character(len=8) :: nomu
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: specmi(nbpf, *)
         character(len=8) :: nnoe(*)
         character(len=8) :: nomcmp(*)
-        integer :: nbmode
+        integer(kind=8) :: nbmode
     end subroutine speph1
 end interface

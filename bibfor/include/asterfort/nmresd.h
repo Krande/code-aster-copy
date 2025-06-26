@@ -24,7 +24,7 @@ interface
                       ds_algorom_)
         use NonLin_Datastructure_type
         use ROM_Datastructure_type        
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: sddyna
         type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
         type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -37,6 +37,6 @@ interface
         character(len=19) :: cnpilo
         character(len=19) :: cncine
         character(len=19) :: solalg(*)
-        integer :: rescvg
+        integer(kind=8) :: rescvg
     end subroutine nmresd
 end interface

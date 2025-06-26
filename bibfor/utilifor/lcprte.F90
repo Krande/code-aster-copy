@@ -23,7 +23,7 @@ subroutine lcprte(x, y, m)
 !       IN  Y      :  VECTEUR
 !       OUT M      :  MATRICE RESULTAT
 !       ----------------------------------------------------------------
-    integer :: n, nd, i, j
+    integer(kind=8) :: n, nd, i, j
     real(kind=8) :: x(6), y(6), m(6, 6)
     common/tdim/n, nd
     do i = 1, n

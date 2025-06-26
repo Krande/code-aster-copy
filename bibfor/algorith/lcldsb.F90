@@ -30,7 +30,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim, imate, &
 #include "blas/ddot.h"
     character(len=16) :: option
     character(len=*) :: fami
-    integer :: ndim, imate, ksp, kpg
+    integer(kind=8) :: ndim, imate, ksp, kpg
     real(kind=8) :: epsm(6), deps(6), vim(*)
     real(kind=8) :: sig(6), vip(*), dsidep(6, 12)
 ! ----------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine lcldsb(fami, kpg, ksp, ndim, imate, &
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
     aster_logical :: rigi, resi, elas, coup
-    integer :: ndimsi, k, l, i, j, m, n, t(3, 3), iret
+    integer(kind=8) :: ndimsi, k, l, i, j, m, n, t(3, 3), iret
     real(kind=8) :: eps(6), treps, sigel(6), kron(6)
     real(kind=8) :: rac2, coef
     real(kind=8) :: rigmin, fd, d, ener

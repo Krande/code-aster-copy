@@ -27,7 +27,7 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-    integer :: nbma, nbtrou, tatrou(nbma)
+    integer(kind=8) :: nbma, nbtrou, tatrou(nbma)
     character(len=8) :: modele
 !
 ! person_in_charge: josselin.delmas at edf.fr
@@ -53,9 +53,9 @@ subroutine utmam2(modele, nbma, nbtrou, tatrou)
 !
 !.......................................................................
 !
-    integer :: nbmail, ima, itrou
-    integer, pointer :: liste_m_temp(:) => null()
-    integer, pointer :: maille(:) => null()
+    integer(kind=8) :: nbmail, ima, itrou
+    integer(kind=8), pointer :: liste_m_temp(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
 !
 !
 ! ----------------------------------------------------------------------

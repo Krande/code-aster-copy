@@ -25,7 +25,7 @@ subroutine affono(valr, valk, desc, prnm, nbcomp, &
 #include "asterf_types.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/utmess.h"
-    integer :: prnm(1), nbcomp, desc, ino, nsurch, forimp(nbcomp)
+    integer(kind=8) :: prnm(1), nbcomp, desc, ino, nsurch, forimp(nbcomp)
     real(kind=8) :: valr(1), valfor(nbcomp)
     aster_logical :: verif
     character(len=4) :: fonree
@@ -65,7 +65,7 @@ subroutine affono(valr, valk, desc, prnm, nbcomp, &
 !
 !****************************************************************
 !-----------------------------------------------------------------------
-    integer :: iec, indigd, j, nbec, nsurc0
+    integer(kind=8) :: iec, indigd, j, nbec, nsurc0
 !-----------------------------------------------------------------------
     indigd = 0
     do iec = 1, nbec

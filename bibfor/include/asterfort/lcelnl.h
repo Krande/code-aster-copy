@@ -28,7 +28,7 @@ interface
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
-    integer :: kpg, ksp, ndim, imate, codret
+    integer(kind=8) :: kpg, ksp, ndim, imate, codret
     real(kind=8) :: crit(*)
     real(kind=8) :: eps(:), sig(:), vi(1), dsidep(:,:)
 

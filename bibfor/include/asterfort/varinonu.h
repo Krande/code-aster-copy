@@ -21,8 +21,8 @@ interface
                         nbCell, listCell    ,&
                         nbVari, listVariName, listVariNume)
         character(len=*), intent(in) :: modelZ, comporZ
-        integer, intent(in) :: nbCell, listCell(nbCell)
-        integer, intent(in) :: nbVari
+        integer(kind=8), intent(in) :: nbCell, listCell(nbCell)
+        integer(kind=8), intent(in) :: nbVari
         character(len=16), intent(in) :: listVariName(nbVari)
         character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
     end subroutine varinonu

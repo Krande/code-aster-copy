@@ -20,7 +20,7 @@
 !
 interface
     subroutine hfmss(ind, vectt, hsfm, hss)
-        integer :: ind
+        integer(kind=8) :: ind
         real(kind=8) :: vectt(3, 3)
         real(kind=8) :: hsfm(3, 9)
         real(kind=8) :: hss(2, 9)

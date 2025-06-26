@@ -23,7 +23,7 @@ subroutine dsqci2(qsi, eta, caraq4, hft2, hmft2, &
     real(kind=8) :: bcb(2, 12), bcm(2, 8), bca(2, 4)
 !     MATRICES BCB(2,12), BCA(2,4), BCM(2,8) AU POINT QSI, ETA POUR DSQ
 !     -----------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: peta, meta, pqsi, mqsi, c(4), s(4)
     real(kind=8) :: tb(6, 12), ta(6, 4), tc(6, 8)
 !     ------------------------------------------------------------------

@@ -35,7 +35,7 @@ subroutine mefgmn(noma, nbgma, ligrma)
 !
     character(len=8) :: noma
     character(len=24) :: ligrma(*)
-    integer :: nbgma
+    integer(kind=8) :: nbgma
 !     CREATION DE GROUPES DE NOEUDS A PARTIR DES GROUPES DE MAILLES
 !     POUR CHAQUE TUBES DU FAISCEAU. LES GROUPES DE NOEUDS CREES ONT
 !     LE MEME NOM QUE LES GROUPES DE MAILLES.
@@ -50,8 +50,8 @@ subroutine mefgmn(noma, nbgma, ligrma)
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialima, ialino, ianbno, igrno, iret
-    integer :: j, n1, nbma, nbnoto
+    integer(kind=8) :: i, ialima, ialino, ianbno, igrno, iret
+    integer(kind=8) :: j, n1, nbma, nbnoto
 !-----------------------------------------------------------------------
     call jemarq()
     grpma = noma//'.GROUPEMA       '

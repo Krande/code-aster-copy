@@ -27,11 +27,11 @@ subroutine ccvrch(resuin, numor0, lforc_noda)
 #include "asterfort/utmess.h"
 !
     character(len=8) :: resuin
-    integer :: numor0
+    integer(kind=8) :: numor0
     aster_logical :: lforc_noda
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: nchalu, jpara
+    integer(kind=8) :: nchalu, jpara
 !
     character(len=8) :: k8b
     character(len=24) :: excisd, modele

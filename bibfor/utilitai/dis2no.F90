@@ -20,7 +20,7 @@ function dis2no(geom, ino1, ino2)
     implicit none
     real(kind=8) :: dis2no
 #include "asterfort/padist.h"
-    integer :: ino1, ino2
+    integer(kind=8) :: ino1, ino2
     real(kind=8) :: geom(*)
 !
 !
@@ -35,7 +35,7 @@ function dis2no(geom, ino1, ino2)
 !---------------------------------------------------------------------
 !
     real(kind=8) :: a(3), b(3)
-    integer :: i
+    integer(kind=8) :: i
 !
 !---------------------------------------------------------------------
 !

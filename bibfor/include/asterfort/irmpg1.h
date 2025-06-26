@@ -25,11 +25,11 @@ interface
                       lfichUniq, codret)
         character(len=*) :: nofimd
         character(len=16) :: nomfpg
-        integer :: nbnoto
-        integer :: nbrepg
-        integer :: nbsp
-        integer :: ndim
-        integer :: typgeo
+        integer(kind=8) :: nbnoto
+        integer(kind=8) :: nbrepg
+        integer(kind=8) :: nbsp
+        integer(kind=8) :: ndim
+        integer(kind=8) :: typgeo
         real(kind=8) :: refcoo(*)
         real(kind=8) :: gscoo(*)
         real(kind=8) :: wg(*)
@@ -39,6 +39,6 @@ interface
         character(len=*) :: nolopg
         character(len=*) :: nomasu
         aster_logical :: lfichUniq
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine irmpg1
 end interface

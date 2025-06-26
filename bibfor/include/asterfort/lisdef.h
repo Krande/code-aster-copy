@@ -22,8 +22,8 @@ interface
     subroutine lisdef(oper, optkz, opti, valkz, vali)
         character(len=4) :: oper
         character(len=*) :: optkz
-        integer :: opti
+        integer(kind=8) :: opti
         character(len=*) :: valkz
-        integer :: vali(2)
+        integer(kind=8) :: vali(2)
     end subroutine lisdef
 end interface

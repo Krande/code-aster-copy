@@ -24,12 +24,12 @@ interface
         character(len=24) :: mate, mateco
         character(len=8) :: cara
         character(len=19) :: kcha
-        integer :: ncha
+        integer(kind=8) :: ncha
         character(len=8) :: result
-        integer :: nuord
-        integer :: nbordr
+        integer(kind=8) :: nuord
+        integer(kind=8) :: nbordr
         character(len=1) :: base
-        integer :: npass
+        integer(kind=8) :: npass
         character(len=24) :: ligrel
     end subroutine medom2
 end interface

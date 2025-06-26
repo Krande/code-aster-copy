@@ -23,8 +23,8 @@
 interface
     subroutine nmepsb(ndim, nno, axi, vff, dfdi,&
                       deplg, epsb, geps)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         aster_logical :: axi
         real(kind=8) :: vff(nno)
         real(kind=8) :: dfdi(nno, ndim)

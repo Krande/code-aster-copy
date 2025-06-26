@@ -28,7 +28,7 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp, l_etat_init_)
 #include "asterfort/thm_kit_read.h"
 !
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(out) :: kit_comp(4)
     aster_logical, optional, intent(in) :: l_etat_init_
@@ -49,7 +49,7 @@ subroutine comp_meca_rkit(keywordfact, iocc, rela_comp, kit_comp, l_etat_init_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc
+    integer(kind=8) :: nocc
     character(len=16) :: rela_thmc, rela_hydr, rela_meca, rela_ther
     character(len=16) :: rela_flua, rela_plas, rela_cpla, rela_coup
     character(len=16) :: rela_cg(2)

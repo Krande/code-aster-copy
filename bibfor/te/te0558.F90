@@ -51,25 +51,25 @@ subroutine te0558(option, nomte)
 !
 !......................................................................
 !
-    integer :: nbspg, incoca, jmate, nfh, ddld, ddlm, ddlp, ddlc, i
-    integer :: contac, ndim, nnop, nnops, ibid, nddls, nddlm, nnopm
-    integer :: dimuel, iadzi, iazk24, lact(16), igeom, idepd, idepm
-    integer :: jlsn, jlst, jptint, jaint, jcface, jheafa, ncomph, pos(16)
-    integer :: jlonch, jbasec, jout1, ninter, jheavn, ncompp, ncompc
-    integer :: nface, nptf, nnof, npgf, ipoidf, ivff, idfdef, jdonco, jfisco
-    integer :: cface(30, 6), j, jcohes, jcoheo, iret, jtab(7), ncompv
-    integer :: vstnc(32), nnol, pla(27), nlact(2), algocr, ifiss, nfiss
-    integer :: nint, ninteg, ncompn, jfisno, jheano, ncompd, ncompa, ncompb
-    integer :: jfiss, nfisc2, kfiss, ifisc, nfisc, jstano
+    integer(kind=8) :: nbspg, incoca, jmate, nfh, ddld, ddlm, ddlp, ddlc, i
+    integer(kind=8) :: contac, ndim, nnop, nnops, ibid, nddls, nddlm, nnopm
+    integer(kind=8) :: dimuel, iadzi, iazk24, lact(16), igeom, idepd, idepm
+    integer(kind=8) :: jlsn, jlst, jptint, jaint, jcface, jheafa, ncomph, pos(16)
+    integer(kind=8) :: jlonch, jbasec, jout1, ninter, jheavn, ncompp, ncompc
+    integer(kind=8) :: nface, nptf, nnof, npgf, ipoidf, ivff, idfdef, jdonco, jfisco
+    integer(kind=8) :: cface(30, 6), j, jcohes, jcoheo, iret, jtab(7), ncompv
+    integer(kind=8) :: vstnc(32), nnol, pla(27), nlact(2), algocr, ifiss, nfiss
+    integer(kind=8) :: nint, ninteg, ncompn, jfisno, jheano, ncompd, ncompa, ncompb
+    integer(kind=8) :: jfiss, nfisc2, kfiss, ifisc, nfisc, jstano
     aster_logical :: lbid
     real(kind=8) :: rela
     character(len=8) :: typma, elrefp, elrefc, elc, fpg
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: enr
 !
-    integer :: nfimax
+    integer(kind=8) :: nfimax
     parameter(nfimax=10)
-    integer :: fisc(2*nfimax), fisco(2*nfimax)
+    integer(kind=8) :: fisc(2*nfimax), fisco(2*nfimax)
     type(THM_DS) :: ds_thm
 !
 !......................................................................

@@ -20,7 +20,7 @@ interface
     subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
         character(len=8), intent(in) :: load
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=8), intent(in) :: model
         character(len=4), intent(in) :: valeType
     end subroutine char_crea_neum

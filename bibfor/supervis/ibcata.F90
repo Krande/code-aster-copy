@@ -30,7 +30,7 @@ subroutine ibcata(ier)
 #include "asterfort/utremt.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"
-    integer :: ier
+    integer(kind=8) :: ier
 !     ALLOCATION ET LECTURE DES DIFFERENTS CATALOGUES
 !     ------------------------------------------------------------------
 !     ROUTINE(S) UTILISEE(S) :
@@ -45,16 +45,16 @@ subroutine ibcata(ier)
 !     --- 3  = CATAELEM
 !     --- 4  = BASELEM
 !-----------------------------------------------------------------------
-    integer :: icata, ieltdf, ier1, iocc, iplace, iun, mxcata
-    integer :: mxdfca, nbcata, nbnom, nbocc, nbunit
+    integer(kind=8) :: icata, ieltdf, ier1, iocc, iplace, iun, mxcata
+    integer(kind=8) :: mxdfca, nbcata, nbnom, nbocc, nbunit
 !-----------------------------------------------------------------------
     parameter(ieltdf=4)
 !     ------------------------------------------------------------------
     parameter(mxdfca=4, mxcata=10)
     character(len=32) :: dfnom(mxdfca), nom(mxcata)
     character(len=24) :: valk
-    integer :: dfunit(mxdfca), unite(mxcata)
-    integer :: i, irestart
+    integer(kind=8) :: dfunit(mxdfca), unite(mxcata)
+    integer(kind=8) :: i, irestart
 !     ------------------------------------------------------------------
 !     OPTIONS PAR DEFAUT :
 !

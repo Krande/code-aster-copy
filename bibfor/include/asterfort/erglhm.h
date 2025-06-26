@@ -24,12 +24,12 @@ interface
     subroutine erglhm(perman, jceld, iavale, iord, ligrel,&
                       longt, nbgr, resuc1)
         aster_logical :: perman
-        integer :: jceld
-        integer :: iavale
-        integer :: iord
+        integer(kind=8) :: jceld
+        integer(kind=8) :: iavale
+        integer(kind=8) :: iord
         character(len=19) :: ligrel
-        integer :: longt
-        integer :: nbgr
+        integer(kind=8) :: longt
+        integer(kind=8) :: nbgr
         character(len=19) :: resuc1
     end subroutine erglhm
 end interface

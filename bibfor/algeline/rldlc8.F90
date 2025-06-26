@@ -31,8 +31,8 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq, &
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: nommat
-    integer :: neq
-    integer :: hcol(*), adia(*), ablo(*)
+    integer(kind=8) :: neq
+    integer(kind=8) :: hcol(*), adia(*), ablo(*)
     complex(kind=8) :: xsol(neq, *)
 ! COMPIL PARAL
 !     ------------------------------------------------------------------
@@ -104,8 +104,8 @@ subroutine rldlc8(nommat, hcol, adia, ablo, neq, &
     character(len=24) :: nomdia, ualf
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadia, ibloc, ide, iderbl, iequa, ilong
-    integer :: isol, ixx, ldiag, lmat, nbbloc, nbsol
+    integer(kind=8) :: i, iadia, ibloc, ide, iderbl, iequa, ilong
+    integer(kind=8) :: isol, ixx, ldiag, lmat, nbbloc, nbsol
 !
 !-----------------------------------------------------------------------
     data ualf/'                   .UALF'/

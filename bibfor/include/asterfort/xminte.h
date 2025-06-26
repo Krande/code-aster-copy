@@ -20,8 +20,8 @@
 !
 interface
     subroutine xminte(ndim, integ, fpg)
-        integer :: ndim
-        integer :: integ
+        integer(kind=8) :: ndim
+        integer(kind=8) :: integ
         character(len=8) :: fpg
     end subroutine xminte
 end interface

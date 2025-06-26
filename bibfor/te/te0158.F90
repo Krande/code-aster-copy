@@ -53,13 +53,13 @@ subroutine te0158(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jeffg, lmater, iret, lorien, jdepl, i, j, kp, nc
-    integer :: itemp, jtab(7), istrxr
+    integer(kind=8) :: jeffg, lmater, iret, lorien, jdepl, i, j, kp, nc
+    integer(kind=8) :: itemp, jtab(7), istrxr
 !
     character(len=4) :: fami
     character(len=16) :: ch16
-    integer :: ipos, in
-    integer :: npg, nno, ivf, ipoids
+    integer(kind=8) :: ipos, in
+    integer(kind=8) :: npg, nno, ivf, ipoids
     real(kind=8) :: b(4), gg, xi, wi
     real(kind=8) :: ul(14), pgl(3, 3), d1b(6, 12), dege(3, 7), d1btg(7, 14)
     real(kind=8) :: degem(6), alpha
@@ -69,7 +69,7 @@ subroutine te0158(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 9
+    integer(kind=8), parameter :: nb_cara = 9
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara), nomat
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1', 'EY2', 'EZ2'/

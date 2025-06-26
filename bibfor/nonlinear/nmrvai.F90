@@ -31,8 +31,8 @@ subroutine nmrvai(ds_measure, device_type_, phasis, input_count, output_count)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=*), intent(in) :: device_type_
     character(len=1), optional, intent(in) :: phasis
-    integer, optional, intent(in) :: input_count
-    integer, optional, intent(out) :: output_count
+    integer(kind=8), optional, intent(in) :: input_count
+    integer(kind=8), optional, intent(out) :: output_count
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ subroutine nmrvai(ds_measure, device_type_, phasis, input_count, output_count)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: operation
-    integer :: device_indx
+    integer(kind=8) :: device_indx
     type(NL_DS_Device) :: device
     aster_logical :: l_count_add
 !

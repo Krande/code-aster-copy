@@ -24,7 +24,7 @@ interface
                       fplas   , fp   , fd    ,&
                       fprim   , fdevi)
         real(kind=8), intent(in) :: deuxmu, trans, rprim, seuil
-        integer, intent(in) :: nb_phase
+        integer(kind=8), intent(in) :: nb_phase
         real(kind=8), intent(in) :: phase(nb_phase), zalpha
         real(kind=8), intent(in) :: fmel, eta(nb_phase), unsurn(nb_phase), dt, dp
         real(kind=8), intent(out) :: fplas, fp(nb_phase), fd(nb_phase), fprim, fdevi

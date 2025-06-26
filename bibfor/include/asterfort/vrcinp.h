@@ -20,7 +20,7 @@
 !
 interface
     subroutine vrcinp(ind, instam, instap)
-        integer, intent(in) :: ind
+        integer(kind=8), intent(in) :: ind
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
     end subroutine vrcinp

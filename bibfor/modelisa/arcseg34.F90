@@ -27,7 +27,7 @@ subroutine arcseg34(nbno, coor, abscur)
 #include "asterfort/utmess.h"
 #include "asterfort/provec.h"
 !
-    integer, intent(in) :: nbno
+    integer(kind=8), intent(in) :: nbno
     real(kind=8), intent(in) :: coor(3, nbno)
     real(kind=8), intent(out) :: abscur(nbno)
 ! ......................................................................
@@ -50,7 +50,7 @@ subroutine arcseg34(nbno, coor, abscur)
     real(kind=8) :: a(3), b(3), c(3), ab(3), bc(3), ce(3), mab(3), mbc(3)
     real(kind=8) :: n(3), mat(3, 3), r, r2, ra(3), rk(3), x(3), det
     real(kind=8) :: sintheta, costheta, theta, valr(6)
-    integer :: k, iret
+    integer(kind=8) :: k, iret
     blas_int :: b_incx, b_incy, b_n
 !   ----------------------------------------------------------------------------
     ASSERT(nbno .ge. 1 .and. nbno .le. 4)

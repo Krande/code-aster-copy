@@ -21,7 +21,7 @@
 interface
     subroutine cfreso(sdcont_solv, ldscon, nbliac)
         character(len=24) :: sdcont_solv
-        integer :: ldscon
-        integer :: nbliac
+        integer(kind=8) :: ldscon
+        integer(kind=8) :: nbliac
     end subroutine cfreso
 end interface

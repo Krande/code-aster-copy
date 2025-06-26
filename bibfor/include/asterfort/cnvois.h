@@ -23,10 +23,10 @@ interface
                     elem_indx_maxi, elem_neigh)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: conx_inve
-        integer, intent(in) :: nb_elem
-        integer, intent(in) :: list_elem(nb_elem)
-        integer, intent(in) :: elem_indx_mini
-        integer, intent(in) :: elem_indx_maxi
+        integer(kind=8), intent(in) :: nb_elem
+        integer(kind=8), intent(in) :: list_elem(nb_elem)
+        integer(kind=8), intent(in) :: elem_indx_mini
+        integer(kind=8), intent(in) :: elem_indx_maxi
         character(len=24), intent(in) :: elem_neigh
     end subroutine cnvois
 end interface

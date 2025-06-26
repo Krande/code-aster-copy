@@ -49,12 +49,12 @@ subroutine modelCheckFluidFormulation(model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, iret
+    integer(kind=8) :: ifm, niv, iret
     character(len=8) :: mesh
-    integer :: nbCellFluid
-    integer, pointer :: cellFluid(:) => null()
-    integer, pointer :: modelCells(:) => null()
-    integer :: iCellFluid, cellTypeNume
+    integer(kind=8) :: nbCellFluid
+    integer(kind=8), pointer :: cellFluid(:) => null()
+    integer(kind=8), pointer :: modelCells(:) => null()
+    integer(kind=8) :: iCellFluid, cellTypeNume
     character(len=16) :: cellTypeName, FEForm, FEForm2
 !
 ! --------------------------------------------------------------------------------------------------

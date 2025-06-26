@@ -23,8 +23,8 @@
 interface
     subroutine i2fccl(tplace, n, existe, adrdbt)
         aster_logical :: tplace(*)
-        integer :: n
+        integer(kind=8) :: n
         aster_logical :: existe
-        integer :: adrdbt
+        integer(kind=8) :: adrdbt
     end subroutine i2fccl
 end interface

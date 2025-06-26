@@ -21,8 +21,8 @@
 interface
     subroutine cfzone(defico, izone, typsur, isurf)
         character(len=24) :: defico
-        integer :: izone
+        integer(kind=8) :: izone
         character(len=4) :: typsur
-        integer :: isurf
+        integer(kind=8) :: isurf
     end subroutine cfzone
 end interface

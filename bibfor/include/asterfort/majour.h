@@ -23,7 +23,7 @@
 interface
     subroutine majour(neq, lgrot, lendo, sdnume, chaini,&
                       chadel, coef, chamaj, ordre)
-        integer :: neq
+        integer(kind=8) :: neq
         aster_logical :: lgrot
         aster_logical :: lendo
         character(len=19) :: sdnume
@@ -31,6 +31,6 @@ interface
         real(kind=8) :: chadel(*)
         real(kind=8) :: coef
         real(kind=8) :: chamaj(*)
-        integer :: ordre
+        integer(kind=8) :: ordre
     end subroutine majour
 end interface

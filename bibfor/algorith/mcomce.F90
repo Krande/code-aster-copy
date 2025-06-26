@@ -31,10 +31,10 @@ subroutine mcomce(noma, newgeo, nummai, coor, alias, &
 #include "asterfort/mmelty.h"
     character(len=8) :: noma
     character(len=19) :: newgeo
-    integer :: nummai
+    integer(kind=8) :: nummai
     real(kind=8) :: coor(27)
     character(len=8) :: alias
-    integer :: nno
+    integer(kind=8) :: nno
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,8 +55,8 @@ subroutine mcomce(noma, newgeo, nummai, coor, alias, &
 !
 !
 !
-    integer ::  jdes
-    integer :: ino, no(9)
+    integer(kind=8) ::  jdes
+    integer(kind=8) :: ino, no(9)
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------

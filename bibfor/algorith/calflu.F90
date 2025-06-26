@@ -23,7 +23,7 @@ subroutine calflu(chamno, modele, mate, mateco, nu, vectas, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/vectfl.h"
-    integer :: nr, nv
+    integer(kind=8) :: nr, nv
     character(len=*) :: chamno, modele, mate, mateco, nu, vectas, opt
 !
 !------- CALCUL DES VECTEURS ASSEMBLES DE FLUX FLUIDES

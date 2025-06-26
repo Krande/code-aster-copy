@@ -22,7 +22,7 @@ interface
     subroutine utremt(mot, liste, nbval, place)
         character(len=*) :: mot
         character(len=*) :: liste(*)
-        integer :: nbval
-        integer :: place
+        integer(kind=8) :: nbval
+        integer(kind=8) :: place
     end subroutine utremt
 end interface

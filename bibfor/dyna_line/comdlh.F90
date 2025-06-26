@@ -87,24 +87,24 @@ subroutine comdlh()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, nbold, isto1
+    integer(kind=8) :: ibid, nbold, isto1
     real(kind=8) :: r8bid
     complex(kind=8) :: c16bid
     character(len=8) :: k8bid
     character(len=8) :: resuco, result, resu1
     character(len=19) :: cn2mbr, vediri, veneum, vevoch, vassec
     character(len=19) :: listLoad
-    integer :: nbsym, i, n1
-    integer :: lfreq, nbfreq
-    integer :: nb_equa, nb_matr, ifm, niv
-    integer :: ifreq, ieq, inom, ier, ierc, ierc2
-    integer :: lsecmb, nbmodi, nbmody, nbbas, j
-    integer :: icoef, icode, nbmode, jrefe
-    integer :: linst, iret, ladpa, dec
-    integer :: ldgec, lvgec, lagec, jordr, jfreq
-    integer :: jdepl, jvite, jacce
-    integer :: nbord, sstruct, nbsst
-    integer :: freqpr, last_prperc, perc, nbpheq, nbEqua
+    integer(kind=8) :: nbsym, i, n1
+    integer(kind=8) :: lfreq, nbfreq
+    integer(kind=8) :: nb_equa, nb_matr, ifm, niv
+    integer(kind=8) :: ifreq, ieq, inom, ier, ierc, ierc2
+    integer(kind=8) :: lsecmb, nbmodi, nbmody, nbbas, j
+    integer(kind=8) :: icoef, icode, nbmode, jrefe
+    integer(kind=8) :: linst, iret, ladpa, dec
+    integer(kind=8) :: ldgec, lvgec, lagec, jordr, jfreq
+    integer(kind=8) :: jdepl, jvite, jacce
+    integer(kind=8) :: nbord, sstruct, nbsst
+    integer(kind=8) :: freqpr, last_prperc, perc, nbpheq, nbEqua
     aster_logical :: newcal, calgen
     aster_logical :: l_damp, l_damp_modal, l_impe
     real(kind=8) :: depi, freq, omega, omeg2, fmin, fmax, last_freq
@@ -123,14 +123,14 @@ subroutine comdlh()
     character(len=24) :: matr_list(4), basemo, nume24, typco
     character(len=24) :: exreco, exresu, kineLoadReal, kineLoad
     character(len=24) :: charge, multFunc, infoch
-    integer :: nbexre, tmod(1)
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8) :: nbexre, tmod(1)
+    integer(kind=8), pointer :: ordr(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: nlmasse(:) => null()
     complex(kind=8), pointer :: secmb(:) => null()
     complex(kind=8), pointer :: solut(:) => null()
     complex(kind=8), pointer :: nlvale(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
     real(kind=8), pointer :: mass_dia(:) => null()
     real(kind=8), pointer :: rigi_dia(:) => null()
     real(kind=8), pointer :: puls(:) => null()

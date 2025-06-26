@@ -62,7 +62,7 @@ subroutine srdgde(val, vintr, dt, seuive, ucrim, &
     !!! Variables globales
     !!!
 
-    integer :: nbmat, retcom, val, nvi
+    integer(kind=8) :: nbmat, retcom, val, nvi
     real(kind=8) :: seuive, ucrim, im, sm(6), vintr
     real(kind=8) :: mater(nbmat, 2), vinm(nvi), depsv(6), dgamv, dt, tmp
 
@@ -70,7 +70,7 @@ subroutine srdgde(val, vintr, dt, seuive, ucrim, &
     !!! Variable locales
     !!!
 
-    integer :: i, ndi, ndt
+    integer(kind=8) :: i, ndi, ndt
     real(kind=8) :: a, n, pa, bidon, paravi(3), varvi(4)
     real(kind=8) :: dhds(6), ds2hds(6), dfdsv(6), bprime, vecnv(6), gv(6), ddepsv(6)
     real(kind=8) :: tpp, trr, av0, r, z

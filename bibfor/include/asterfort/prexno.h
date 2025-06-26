@@ -23,7 +23,7 @@ interface
                       nomin, cmpmin, valmin, noamax, cmamax,&
                       vaamax, noamin, cmamin, vaamin)
         character(len=*) :: champ
-        integer :: ioc
+        integer(kind=8) :: ioc
         character(len=8) :: nomax
         character(len=8) :: cmpmax
         real(kind=8) :: valmax

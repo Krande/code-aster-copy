@@ -20,10 +20,10 @@
 !
 interface
     function knindi(long, kn, lkn, nbkn)
-        integer :: long
+        integer(kind=8) :: long
         character(len=*) :: kn
         character(len=*) :: lkn(*)
-        integer :: nbkn
-        integer :: knindi
+        integer(kind=8) :: nbkn
+        integer(kind=8) :: knindi
     end function knindi
 end interface

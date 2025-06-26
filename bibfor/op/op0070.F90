@@ -65,25 +65,25 @@ subroutine op0070()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: fonact(100)
-    integer, parameter :: zmeelm = 8
-    integer, parameter :: zmeass = 4
-    integer, parameter :: zveelm = 12
-    integer, parameter :: zveass = 19
-    integer, parameter :: zsolal = 17
-    integer, parameter :: zvalin = 28
+    integer(kind=8) :: fonact(100)
+    integer(kind=8), parameter :: zmeelm = 8
+    integer(kind=8), parameter :: zmeass = 4
+    integer(kind=8), parameter :: zveelm = 12
+    integer(kind=8), parameter :: zveass = 19
+    integer(kind=8), parameter :: zsolal = 17
+    integer(kind=8), parameter :: zvalin = 28
 !
 ! --- GESTION BOUCLES
 !
-    integer :: numins, nbiter
+    integer(kind=8) :: numins, nbiter
     character(len=4) :: etfixe, etinst, etcalc
 !
 ! --- GESTION ERREUR
 !
-    integer :: lenout
+    integer(kind=8) :: lenout
     character(len=16) :: compex
 !
-    integer :: ibid
+    integer(kind=8) :: ibid
 !
     real(kind=8) :: eta
 !

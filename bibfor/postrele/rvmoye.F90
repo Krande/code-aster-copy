@@ -42,16 +42,16 @@ subroutine rvmoye(nomres, iocc)
 #include "asterfort/tbexip.h"
 #include "asterfort/utmess.h"
 !
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=*) :: nomres
 !
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     character(len=16) :: nopara(200)
 !
-    integer :: ibid, n1, np, nc, iret, icmp, nbcmp
-    integer :: jordr, i100, nbordr, iord, vali(20), nbc
-    integer :: ii, ik, ir, jaces, nbacc
-    integer :: iadr, iac
+    integer(kind=8) :: ibid, n1, np, nc, iret, icmp, nbcmp
+    integer(kind=8) :: jordr, i100, nbordr, iord, vali(20), nbc
+    integer(kind=8) :: ii, ik, ir, jaces, nbacc
+    integer(kind=8) :: iadr, iac
     real(kind=8) :: prec, som(64), valr(200)
     complex(kind=8) :: c16b
     character(len=3) :: typpar

@@ -38,18 +38,18 @@ subroutine te0225(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: i, ip, k, kp, igeom, icaco, ivectt, imate
-    integer :: ivf, idfdk, nno, npg, jcoopg, j, nbres, jdfd2
+    integer(kind=8) :: i, ip, k, kp, igeom, icaco, ivectt, imate
+    integer(kind=8) :: ivf, idfdk, nno, npg, jcoopg, j, nbres, jdfd2
 !-----------------------------------------------------------------------
-    integer :: ipoids, iret1, iret2, iret3, iret4, jgano, ndim
-    integer :: nnos
+    integer(kind=8) :: ipoids, iret1, iret2, iret3, iret4, jgano, ndim
+    integer(kind=8) :: nnos
     real(kind=8) :: tref
 !-----------------------------------------------------------------------
     parameter(nbres=3)
     character(len=32) :: phenom
     character(len=16) :: nomres(nbres)
     character(len=4) :: fami
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     real(kind=8) :: valres(nbres), dfdx(3), r, cour, jac, cosa, sina
     real(kind=8) :: tpg1, tpg2, tpg3, tpg, zero, un, deux, x3
     real(kind=8) :: h, epsthe, nu, coef, axis

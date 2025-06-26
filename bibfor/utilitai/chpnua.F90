@@ -21,7 +21,7 @@ subroutine chpnua(nx, chpt, lno, nuage)
 #include "asterfort/cnonua.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
-    integer :: nx
+    integer(kind=8) :: nx
     character(len=*) :: chpt, lno, nuage
 !     PASSAGE D'UNE SD CHAM_GD A UNE SD NUAGE
 !

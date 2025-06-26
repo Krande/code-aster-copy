@@ -22,7 +22,7 @@ subroutine renuu1(coin, longi, ordo, longo, nbco, &
 !
 !     ARGUMENTS:
 !     ----------
-    integer :: longi, longo, coin(*), ordo(*), nbco(*), newn(*)
+    integer(kind=8) :: longi, longo, coin(*), ordo(*), nbco(*), newn(*)
 ! ----------------------------------------------------------------------
 !     BUT:     ORDONNER LA LISTE DE NOEUDS COIN(*) DE LONGUEUR LONGI
 !           DANS LA LISTE ORDO(*) :
@@ -46,7 +46,7 @@ subroutine renuu1(coin, longi, ordo, longo, nbco, &
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     longo = 0
     do i = 1, longi

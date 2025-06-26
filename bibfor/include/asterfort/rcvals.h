@@ -20,9 +20,9 @@
 !
 interface
     subroutine rcvals(iarret, icodre, nbres, nomres)
-        integer, intent(in) :: nbres
-        integer, intent(in) :: iarret
-        integer, intent(in) :: icodre(nbres)
+        integer(kind=8), intent(in) :: nbres
+        integer(kind=8), intent(in) :: iarret
+        integer(kind=8), intent(in) :: icodre(nbres)
         character(len=*), intent(in) :: nomres(nbres)
     end subroutine rcvals
 end interface

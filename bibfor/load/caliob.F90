@@ -61,19 +61,19 @@ subroutine caliob(load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: n_max_keyword = 300
-    integer :: ddlimp(n_max_keyword)
+    integer(kind=8), parameter :: n_max_keyword = 300
+    integer(kind=8) :: ddlimp(n_max_keyword)
     real(kind=8) :: valimr(n_max_keyword)
     complex(kind=8) :: valimc(n_max_keyword)
     character(len=8) :: valimf(n_max_keyword)
     character(len=16) :: keywordlist(n_max_keyword)
 !
     character(len=24) :: list_node
-    integer :: jlino, nb_node
-    integer :: ino
-    integer :: geomDime, nbec
-    integer :: nliai, nume_node
-    integer :: i_angle, i_keyword, iocc, i_direct
+    integer(kind=8) :: jlino, nb_node
+    integer(kind=8) :: ino
+    integer(kind=8) :: geomDime, nbec
+    integer(kind=8) :: nliai, nume_node
+    integer(kind=8) :: i_angle, i_keyword, iocc, i_direct
     real(kind=8) :: coefr, val_r, direct(3)
     character(len=8) :: ddl, coeff, val_f
     complex(kind=8) :: coefc, val_c
@@ -81,14 +81,14 @@ subroutine caliob(load, mesh, model, valeType)
     character(len=8) :: nomg
     character(len=8) :: name_node
     character(len=16) :: keywordfact, keyword
-    integer :: n_keyword
+    integer(kind=8) :: n_keyword
     character(len=19) :: lisrel
     real(kind=8) :: matr_rota(3, 3), rdgd
     real(kind=8) :: zero
     real(kind=8) :: angl_naut(3)
-    integer :: n_angle
+    integer(kind=8) :: n_angle
     character(len=24) :: keywordexcl
-    integer :: n_keyexcl
+    integer(kind=8) :: n_keyexcl
 !
 ! --------------------------------------------------------------------------------------------------
 !

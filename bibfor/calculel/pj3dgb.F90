@@ -23,8 +23,8 @@ subroutine pj3dgb(ino2, geom2, geom1, tetr4, ndec, &
     implicit none
 #include "asterfort/assert.h"
     real(kind=8) :: geom1(*), geom2(*), btvr(*)
-    integer :: ino2, p1, q1, r1, p2, q2, r2, ndec
-    integer :: btdi(*), btnb(*), btlc(*), btco(*), tetr4(*)
+    integer(kind=8) :: ino2, p1, q1, r1, p2, q2, r2, ndec
+    integer(kind=8) :: btdi(*), btnb(*), btlc(*), btco(*), tetr4(*)
 !     BUT :
 !       TROUVER LA "GROSSE BOITE" (P1,Q1,R1,P2,Q2,R2) DANS LA QUELLE
 !       ON EST SUR DE TROUVER LE TETR4/TRIA3/SEG2 LE PLUS PROCHE DE INO2
@@ -49,7 +49,7 @@ subroutine pj3dgb(ino2, geom2, geom1, tetr4, ndec, &
 !  OUT  R2         I  : COTE     DU COIN HAUT/DROIT DE LA GROSSE BOITE
 ! ----------------------------------------------------------------------
     real(kind=8) :: d, x1, y1, z1, x2, y2, z2, xmin, ymin, zmin, dx, dy, dz
-    integer :: p0, q0, r0, nx, ny, nz, k, p, q, r, itr, ntrbt, iposi, ino1
+    integer(kind=8) :: p0, q0, r0, nx, ny, nz, k, p, q, r, itr, ntrbt, iposi, ino1
 !
 ! DEB ------------------------------------------------------------------
 !

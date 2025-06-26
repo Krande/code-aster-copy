@@ -57,12 +57,12 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 #include "asterfort/uttcpu.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmato, nbpart, renum, nbmasd, nomsdm, masd, idmasd, numsdm
+    integer(kind=8) :: nbmato, nbpart, renum, nbmasd, nomsdm, masd, idmasd, numsdm
     character(len=8) :: ma
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: id1, isd, nbma, ima, nbre, idma, ifm, niv
-    integer :: nbgrsd
+    integer(kind=8) :: id1, isd, nbma, ima, nbre, idma, ifm, niv
+    integer(kind=8) :: nbgrsd
     real(kind=8) :: tmps(7)
     character(len=8) :: ktmp
     character(len=24) :: grpema

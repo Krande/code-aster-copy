@@ -26,9 +26,9 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde, &
 #include "asterfort/iniqs4.h"
 #include "asterfort/nmgeom.h"
 #include "asterfort/r8inir.h"
-    integer :: nno, npg
+    integer(kind=8) :: nno, npg
     character(len=8) :: typmod(*)
-    integer :: ipoids, ivf, idfde
+    integer(kind=8) :: ipoids, ivf, idfde
     real(kind=8) :: geom(2, nno)
     real(kind=8) :: dfdi(nno, 2)
     real(kind=8) :: sigm(10, npg)
@@ -54,7 +54,7 @@ subroutine nmasf2(nno, npg, ipoids, ivf, idfde, &
 !
 !
     aster_logical :: grand, axi
-    integer :: kpg, n, i, j, kl, kpgs, proj, npgs
+    integer(kind=8) :: kpg, n, i, j, kl, kpgs, proj, npgs
     real(kind=8) :: f(3, 3), eps(6), r
     real(kind=8) :: poids
     real(kind=8) :: rac2

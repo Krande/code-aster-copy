@@ -30,7 +30,7 @@ subroutine dxeffi(option, nomte, pgl, cont, ind, &
     real(kind=8) :: pgl(3, 3), cont(*), effint(*)
     character(len=16) :: nomte
     character(len=*) :: option
-    integer :: ind
+    integer(kind=8) :: ind
 !     IN  NOMTE  : NOM DE L'ELEMENT TRAITE
 !     IN  XYZL   : COORDONNEES DES NOEUDS
 !     IN  UL     : DEPLACEMENT A L'INSTANT T
@@ -39,12 +39,12 @@ subroutine dxeffi(option, nomte, pgl, cont, ind, &
 !     OUT EFFINT : EFFORTS INTERNES
 !     ------------------------------------------------------------------
 !
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: nbcon, nbcou, npgh, k, ipg, icou, igauh, icpg, icacoq, jnbspi
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: nbcon, nbcou, npgh, k, ipg, icou, igauh, icpg, icacoq, jnbspi
     real(kind=8) :: hic, h, zic, zmin, coef, zero, deux, distn, coehsd
     real(kind=8) :: n(3), m(3), t(2)
 !
-    integer :: multic, iniv
+    integer(kind=8) :: multic, iniv
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: t2iu(2, 2), t2ui(2, 2), t1ve(3, 3)

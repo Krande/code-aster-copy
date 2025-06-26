@@ -19,8 +19,8 @@
 interface
     subroutine porea4(nno, nc, geom, gamma, pgl,&
                       xl, dispParaNameZ_)
-        integer :: nno
-        integer :: nc
+        integer(kind=8) :: nno
+        integer(kind=8) :: nc
         real(kind=8) :: geom(3, nno)
         real(kind=8) :: gamma
         real(kind=8) :: pgl(3, 3)

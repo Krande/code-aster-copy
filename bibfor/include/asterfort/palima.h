@@ -25,7 +25,7 @@ interface
         character(len=*) :: mcfact
         character(len=*) :: mcgrma
         character(len=*) :: mcma
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: noml
     end subroutine palima
 end interface

@@ -52,10 +52,10 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve, &
     character(len=*) :: ntncmp, ntucmp
 !
     med_idt :: idfimd
-    integer :: existc
-    integer :: ncmpve
+    integer(kind=8) :: existc
+    integer(kind=8) :: ncmpve
 !
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
@@ -63,12 +63,12 @@ subroutine ircmcc(idfimd, nomamd, nochmd, existc, ncmpve, &
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: edfl64
+    integer(kind=8) :: edfl64
     parameter(edfl64=6)
 !
-    integer :: adncmp, aducmp
-    integer :: ifm, nivinf
-    integer :: iaux
+    integer(kind=8) :: adncmp, aducmp
+    integer(kind=8) :: ifm, nivinf
+    integer(kind=8) :: iaux
     real(kind=8) :: start, end
 !
     character(len=8) :: saux08

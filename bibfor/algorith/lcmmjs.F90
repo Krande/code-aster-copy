@@ -22,7 +22,7 @@ subroutine lcmmjs(nomfam, nbsys, tbsys)
 !      ----------------------------------------------------------------
 !     MONOCRISTAL : RECUPERATION DES SYSTEMES DE GLISSEMENT UTILISATEUR
 !       ----------------------------------------------------------------
-    integer :: i, j, nbsys, numfam, decal
+    integer(kind=8) :: i, j, nbsys, numfam, decal
     character(len=16) :: nomfam
     real(kind=8) :: tbsys(30, 6), tbsysg
     common/tbsysg/tbsysg(900)

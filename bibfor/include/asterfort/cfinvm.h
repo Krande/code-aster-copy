@@ -21,8 +21,8 @@
 interface
     subroutine cfinvm(defico, jdeciv, ima, posma)
         character(len=24) :: defico
-        integer :: jdeciv
-        integer :: ima
-        integer :: posma
+        integer(kind=8) :: jdeciv
+        integer(kind=8) :: ima
+        integer(kind=8) :: posma
     end subroutine cfinvm
 end interface

@@ -39,7 +39,7 @@ subroutine tbcrsd(nomta, baseta)
 ! IN  : NOMTA  : NOM DE LA STRUCTURE "TABLE" A CREER.
 ! IN  : BASETA : BASE SUR LAQUELLE ON CREE LA "TABLE".
 !     ------------------------------------------------------------------
-    integer :: jtbba, jtbnp
+    integer(kind=8) :: jtbba, jtbnp
     character(len=1) :: base
     character(len=19) :: nomtab
 ! DEB------------------------------------------------------------------

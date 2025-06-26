@@ -26,8 +26,8 @@ interface
         character(len=*) :: mateco, mate
         character(len=*) :: nu
         character(len=*) :: vectas
-        integer :: nr
-        integer :: nv
+        integer(kind=8) :: nr
+        integer(kind=8) :: nv
         character(len=*) :: opt
     end subroutine calflu
 end interface

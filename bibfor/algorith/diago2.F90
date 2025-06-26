@@ -30,7 +30,7 @@ subroutine diago2(tens, vecp, valp)
 !                     (XX YY XY)
 ! ----------------------------------------------------------------------
 !
-    integer :: i, nrac, ind
+    integer(kind=8) :: i, nrac, ind
 !
     real(kind=8) :: trace, y(2), det(2)
     real(kind=8) :: a, dev(3)

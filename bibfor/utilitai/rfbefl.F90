@@ -42,7 +42,7 @@ subroutine rfbefl(base)
 !
 !     OPERATEUR "RECU_FONCTION"  MOT CLE "BASE_ELAS_FLUI"
 !     ------------------------------------------------------------------
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=4) :: interp(2)
     character(len=8) :: k8b, basefl, ttordr, typflu
     character(len=16) :: nomcmd, typcon, parax, paray
@@ -51,11 +51,11 @@ subroutine rfbefl(base)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, id, imod, ind, ind1, ind2
-    integer :: inumeo, j, lfon, lfreq, lnumo, lpro, lvar
-    integer :: lvite, min, n1, n2, n3, n4, n5
-    integer :: nbm, nbno, nbv, npv, nummod, iven
-    integer :: ifsvr, ifsvi, lremf, nbzex, ivcn, nbconn, dec
+    integer(kind=8) :: i, id, imod, ind, ind1, ind2
+    integer(kind=8) :: inumeo, j, lfon, lfreq, lnumo, lpro, lvar
+    integer(kind=8) :: lvite, min, n1, n2, n3, n4, n5
+    integer(kind=8) :: nbm, nbno, nbv, npv, nummod, iven
+    integer(kind=8) :: ifsvr, ifsvi, lremf, nbzex, ivcn, nbconn, dec
     real(kind=8) :: pas, epsi
 !-----------------------------------------------------------------------
     call jemarq()

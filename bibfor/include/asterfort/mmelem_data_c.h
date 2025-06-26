@@ -29,14 +29,14 @@ interface
                              typf_frot_nume_, &
                              get_elem_indx_)
         aster_logical, intent(in), optional :: l_axi_
-        integer, intent(in), optional :: model_ndim_
+        integer(kind=8), intent(in), optional :: model_ndim_
         character(len=8), intent(in), optional :: typg_slav_name_
         character(len=8), intent(in), optional :: typg_mast_name_
-        integer, intent(out), optional :: nb_cont_type_
-        integer, intent(out), optional :: nb_node_elem_
-        integer, intent(out), optional :: typg_cont_nume_
-        integer, intent(out), optional :: typf_cont_nume_
-        integer, intent(out), optional :: typf_frot_nume_
-        integer, intent(out), optional :: get_elem_indx_
+        integer(kind=8), intent(out), optional :: nb_cont_type_
+        integer(kind=8), intent(out), optional :: nb_node_elem_
+        integer(kind=8), intent(out), optional :: typg_cont_nume_
+        integer(kind=8), intent(out), optional :: typf_cont_nume_
+        integer(kind=8), intent(out), optional :: typf_frot_nume_
+        integer(kind=8), intent(out), optional :: get_elem_indx_
     end subroutine mmelem_data_c
 end interface

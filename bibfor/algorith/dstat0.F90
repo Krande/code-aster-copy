@@ -50,7 +50,7 @@ subroutine dstat0(nbpt, d, dmoy, detyp, drms, &
 !       SDD SOMME DES CARRES DES DIFFERENCES A LA MOYENNE
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbpt
+    integer(kind=8) :: i, nbpt
 !-----------------------------------------------------------------------
     sd = 0.d0
     sd2 = 0.d0

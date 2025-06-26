@@ -27,7 +27,7 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum, &
 #include "blas/dcopy.h"
     character(len=8) :: typmod(2)
     character(len=16) :: option
-    integer :: ndim, imate, iret
+    integer(kind=8) :: ndim, imate, iret
     real(kind=8) :: sum(2), dsu(2), vim(6)
     real(kind=8) :: sig(6), vip(6), dsidep(6, 6), crit(3)
 ! ----------------------------------------------------------------------
@@ -79,9 +79,9 @@ subroutine lcjoba(ndim, typmod, imate, crit, sum, &
 !   BDN    = CONSTANTE B D'ENDOMMAGEMENT NORMALE
 ! ----------------------------------------------------------------------
     aster_logical :: rigi, resi, conv, trac, adher
-    integer :: icodre(14)
+    integer(kind=8) :: icodre(14)
     character(len=16) :: nomres(14)
-    integer :: k, itemax
+    integer(kind=8) :: k, itemax
     real(kind=8) :: su(2), eps(2), e, gtt, hpen
     real(kind=8) :: bdn, adn, epstr0
     real(kind=8) :: bd1, ad1, gamd0, bd2, ad2, gamd2

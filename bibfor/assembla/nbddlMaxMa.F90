@@ -41,9 +41,9 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
 #include "jeveux.h"
 !
     character(len=*), intent(in) :: nume_ddlz, matr_assez
-    integer, intent(in)  :: nbmat
+    integer(kind=8), intent(in)  :: nbmat
     character(len=*), intent(in) :: v_name_mat(nbmat)
-    integer              :: maxDDLMa
+    integer(kind=8)              :: maxDDLMa
 !     ------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !     RETOURNE LE NOMBRE DE DDL MAXIMUM POUR UN ELEMENT
@@ -56,21 +56,21 @@ function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
     character(len=8)  :: mesh, model, model_elem, nogdco, nogdsi
     character(len=14) :: nume_ddl
     character(len=19) :: nomligrel, matr_elem, resu_elem, matr_asse, partition
-    integer :: iconx1, iconx2, iel, iret, nnoe
-    integer :: igrel, numa, ino, n1, n12, nddl1, rang, jrefa, jdesc
-    integer :: nddlt, nel, nec, mode, nugd, imat, nbssa, iamail
-    integer :: nb_resu_elem, iresu, ilima, ilinu, nbproc, ilinu_ref
+    integer(kind=8) :: iconx1, iconx2, iel, iret, nnoe
+    integer(kind=8) :: igrel, numa, ino, n1, n12, nddl1, rang, jrefa, jdesc
+    integer(kind=8) :: nddlt, nel, nec, mode, nugd, imat, nbssa, iamail
+    integer(kind=8) :: nb_resu_elem, iresu, ilima, ilinu, nbproc, ilinu_ref
     aster_logical :: l_dgrel, l_distme, l_matd, lligrel_cp
     mpi_int :: mrank, msize
 !
-    integer, pointer :: v_adne(:) => null()
-    integer, pointer :: v_adli(:) => null()
-    integer, pointer :: v_numsd(:) => null()
-    integer, pointer :: v_prn1(:) => null()
-    integer, pointer :: v_prn2(:) => null()
-    integer, pointer :: sssa(:) => null()
-    integer, pointer :: v_refp(:) => null()
-    integer, pointer :: v_crco(:) => null()
+    integer(kind=8), pointer :: v_adne(:) => null()
+    integer(kind=8), pointer :: v_adli(:) => null()
+    integer(kind=8), pointer :: v_numsd(:) => null()
+    integer(kind=8), pointer :: v_prn1(:) => null()
+    integer(kind=8), pointer :: v_prn2(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: v_refp(:) => null()
+    integer(kind=8), pointer :: v_crco(:) => null()
     character(len=24), pointer :: v_relr(:) => null()
     character(len=24), pointer :: v_nomlig(:) => null()
     character(len=24), pointer :: v_prtk(:) => null()

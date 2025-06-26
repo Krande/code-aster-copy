@@ -46,12 +46,12 @@ subroutine fieldNodeHasConstantProfile(fieldz, lConst)
     character(len=8) :: mesh
     character(len=16) :: fieldSupp
     character(len=19) :: field
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: nodeNbCmp(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: nodeNbCmp(:) => null()
     character(len=19) :: numeequa
-    integer :: iNode, iEqua
-    integer :: numeNode, numeCmp
-    integer :: nbNodeMesh, nbEqua, nbCmpNode, nbCmp
+    integer(kind=8) :: iNode, iEqua
+    integer(kind=8) :: numeNode, numeCmp
+    integer(kind=8) :: nbNodeMesh, nbEqua, nbCmpNode, nbCmp
 !
 ! --------------------------------------------------------------------------------------------------
 !

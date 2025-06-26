@@ -26,7 +26,7 @@ subroutine motubn(tabpus, dinst, nbsect)
 #include "asterfort/tbliva.h"
 #include "asterfort/tbnuli.h"
 #include "asterfort/utmess.h"
-    integer :: nbsect
+    integer(kind=8) :: nbsect
     real(kind=8) :: dinst
     character(len=*) :: tabpus
 !
@@ -36,8 +36,8 @@ subroutine motubn(tabpus, dinst, nbsect)
 ! ----------------------------------------------------------------------
     character(len=24) :: valk
 !
-    integer :: ibid, i, iret, numeli
-    integer :: vali
+    integer(kind=8) :: ibid, i, iret, numeli
+    integer(kind=8) :: vali
     real(kind=8) :: zero, lprec(2), acces(2)
     real(kind=8) :: valr
     complex(kind=8) :: c16b

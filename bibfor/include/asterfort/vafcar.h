@@ -21,14 +21,14 @@
 interface
     subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar, ivr, kioc, ier)
         character(len=*) :: tpgz
-        integer :: imclf
+        integer(kind=8) :: imclf
         character(len=*) :: nmobjz
-        integer :: nutyel
-        integer :: ntyele(*)
+        integer(kind=8) :: nutyel
+        integer(kind=8) :: ntyele(*)
         character(len=*) :: car(*)
-        integer :: ncar
-        integer :: ivr(*)
+        integer(kind=8) :: ncar
+        integer(kind=8) :: ivr(*)
         character(len=6) :: kioc
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine vafcar
 end interface

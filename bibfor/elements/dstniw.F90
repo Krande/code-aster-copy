@@ -69,7 +69,7 @@ subroutine dstniw(qsi, eta, carat3, dci, bca, &
 !    WMEST(6)       OUT   R       FONCTIONS DE FORME TELLES QUE
 !                                 W = WMEST*UM (+ WST*UN)
 !     ------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: db(2, 3), dba(2, 9), dbam(2, 6), n(9)
     real(kind=8) :: lbd, zero, x4, x6, y4, y6
 !     ------------------------------------------------------------------

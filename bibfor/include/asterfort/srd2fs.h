@@ -21,7 +21,7 @@
 interface
     subroutine srd2fs(nmat, materf, para, vara, varh,&
                       i1, devsig, ds2hds, d2shds, d2fds2)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: para(3)
         real(kind=8) :: vara(4)

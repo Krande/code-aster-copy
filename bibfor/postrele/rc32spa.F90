@@ -36,7 +36,7 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns, &
 #include "asterfort/utmess.h"
 !
     character(len=4) :: lieu
-    integer :: iocc1, iocc2, ns
+    integer(kind=8) :: iocc1, iocc2, ns
     real(kind=8) :: sp(2), instsp(4), spmeca(2)
     aster_logical :: ze200
 !
@@ -53,9 +53,9 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns, &
 ! OUT : SPMECA
 ! OUT : INSTSP : 4 INSTANTS (SP1 et SP2)
 !
-    integer :: jinfoi, nmecap, npresp, ntherp, jinfor, numcha, iret
-    integer :: jchara, jcharb, k, j, jtranp, jsigu, i0, i1, e0(2)
-    integer :: jtemp, nmecaq, npresq, ntherq, jtranq, n1, jspseis
+    integer(kind=8) :: jinfoi, nmecap, npresp, ntherp, jinfor, numcha, iret
+    integer(kind=8) :: jchara, jcharb, k, j, jtranp, jsigu, i0, i1, e0(2)
+    integer(kind=8) :: jtemp, nmecaq, npresq, ntherq, jtranq, n1, jspseis
     real(kind=8) :: presap, presbp, map(12), mbp(12), s2pp, sb(6)
     real(kind=8) :: instpmin, instpmax, maq(12), mbq(12), presaq
     real(kind=8) :: tresca, sa(6), st(6), sc(6), presbq, sa1(6), sa2(6)

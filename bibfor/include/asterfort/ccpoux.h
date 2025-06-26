@@ -24,15 +24,15 @@ interface
                       suropt, iret)
         character(len=8) :: resuin
         character(len=16) :: typesd
-        integer :: nordre
-        integer :: nbchre
-        integer :: ioccur
+        integer(kind=8) :: nordre
+        integer(kind=8) :: nbchre
+        integer(kind=8) :: ioccur
         character(len=19) :: kcharg
         character(len=8) :: modele
-        integer :: nbpain
+        integer(kind=8) :: nbpain
         character(len=8) :: lipain(*)
         character(len=24) :: lichin(*)
         character(len=24) :: suropt
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine ccpoux
 end interface

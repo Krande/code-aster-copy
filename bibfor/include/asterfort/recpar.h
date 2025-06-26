@@ -21,7 +21,7 @@
 interface
     subroutine recpar(neq, dti, dtmax, vmin, vvar,&
                       cmp, cdp, dtmin, nper, nrmax)
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: dti
         real(kind=8) :: dtmax
         real(kind=8) :: vmin(*)
@@ -29,7 +29,7 @@ interface
         real(kind=8) :: cmp
         real(kind=8) :: cdp
         real(kind=8) :: dtmin
-        integer :: nper
-        integer :: nrmax
+        integer(kind=8) :: nper
+        integer(kind=8) :: nrmax
     end subroutine recpar
 end interface

@@ -21,6 +21,6 @@
 interface
     subroutine comp_comp_read(v_info_valk, v_info_vali)
         character(len=16), intent(out) :: v_info_valk(:)
-        integer          , intent(out) :: v_info_vali(:)
+        integer(kind=8)          , intent(out) :: v_info_vali(:)
     end subroutine comp_comp_read
 end interface

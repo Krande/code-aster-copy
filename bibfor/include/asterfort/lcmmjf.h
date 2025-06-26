@@ -25,21 +25,21 @@ interface
                       hsr, rp, alphap, dalpha, gammap,&
                       dgamma, sgns, dgdtau, dgdal, dfdr,&
                       petith, iret)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         real(kind=8) :: taus
         real(kind=8) :: coeft(nmat)
         real(kind=8) :: materf(nmat)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
         real(kind=8) :: dt
         character(len=16) :: necoul
-        integer :: is
-        integer :: ir
-        integer :: nbsys
+        integer(kind=8) :: is
+        integer(kind=8) :: ir
+        integer(kind=8) :: nbsys
         real(kind=8) :: vind(*)
         real(kind=8) :: dy(*)
-        integer :: nfs
+        integer(kind=8) :: nfs
         real(kind=8) :: hsr(nsg, nsg)
         real(kind=8) :: rp
         real(kind=8) :: alphap
@@ -51,6 +51,6 @@ interface
         real(kind=8) :: dgdal
         real(kind=8) :: dfdr
         real(kind=8) :: petith
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmjf
 end interface

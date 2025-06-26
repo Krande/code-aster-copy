@@ -52,7 +52,7 @@ function srbpri(val, vin, nvi, nbmat, mater, para, invar, s, tmp)
     !!! Variables globales
     !!!
 
-    integer :: val, nbmat, nvi
+    integer(kind=8) :: val, nbmat, nvi
     real(kind=8) :: vin(nvi), mater(nbmat, 2), para(3), invar, s(6), srbpri, tmp
 
     !!!
@@ -65,7 +65,7 @@ function srbpri(val, vin, nvi, nbmat, mater, para, invar, s, tmp)
     real(kind=8) :: c, phi, alres, sigtil, sigmin, sigmax, sigcar, alpha
     real(kind=8) :: sinpsi, m1, s1, spre, spos, xi20, rm, rq, rs, xi1, fact1
     real(kind=8) :: m10, qi0, rx2, trr, qi, dtmp, tiers, fact3, fact4, xi10, rx1
-    integer ndt, ndi
+    integer(kind=8) ndt, ndi
     common/tdim/ndt, ndi
 
     !!!

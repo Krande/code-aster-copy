@@ -23,7 +23,7 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp, &
 !
 #include "asterfort/mefac1.h"
 #include "asterfort/mefac2.h"
-    integer :: ndim(14), nbcyl, nbgrp, nbtron, numgrp(*), idir, igrp
+    integer(kind=8) :: ndim(14), nbcyl, nbgrp, nbtron, numgrp(*), idir, igrp
     real(kind=8) :: dcent(nbcyl), ficent(nbcyl), rint(*), som(9)
     real(kind=8) :: d(nbcyl, nbcyl), fi(nbcyl, nbcyl)
     real(kind=8) :: a(2*nbtron*(nbcyl+1), *), b(*)
@@ -53,7 +53,7 @@ subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp, &
 ! IN  : A      : TABLEAU DE TRAVAIL: SOUS MATRICE DU SYSTEME A.X = B
 ! IN  : B      : TABLEAU DE TRAVAIL: SECOND MEMBRE DU SYSTEME A.X = B
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, l, ni, nj, nk, nl
+    integer(kind=8) :: i, j, k, l, ni, nj, nk, nl
     real(kind=8) :: coef
 ! ----------------------------------------------------------------------
 !

@@ -48,7 +48,7 @@ subroutine nmcvgf(sddisc, sderro, valinc, ds_contact)
 ! IN  VALINC : VARIABLE CHAPEAU INCREMENTS DES VARIABLES
 ! In  ds_contact       : datastructure for contact management
 !
-    integer :: ievdac, nume_inst
+    integer(kind=8) :: ievdac, nume_inst
     character(len=4) :: etnewt, etfixe
 !
 ! ----------------------------------------------------------------------

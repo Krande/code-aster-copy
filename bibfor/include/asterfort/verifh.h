@@ -22,12 +22,12 @@ interface
     subroutine verifh(fami    , kpg    , ksp    , poum    , j_mater   ,&
                       epshy   , materi_, ihydr_ )
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(out) :: epshy
         character(len=8), optional, intent(in) :: materi_
-        integer, optional, intent(out) :: ihydr_
+        integer(kind=8), optional, intent(out) :: ihydr_
     end subroutine verifh
 end interface

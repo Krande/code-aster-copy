@@ -41,7 +41,7 @@ subroutine conlag(matasz, cond)
 !
 !
 !
-    integer ::  neq, iret, jcol
+    integer(kind=8) ::  neq, iret, jcol
     character(len=19) :: matass
     real(kind=8), pointer :: conl(:) => null()
 !

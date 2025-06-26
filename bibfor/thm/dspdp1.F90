@@ -49,7 +49,7 @@ subroutine dspdp1(ds_thm, signe, tbiot, satur, dsdp1, phi0, ep, surf, sbjh, wbjh
 ! In  wbjh             : unsaturatred pores surface fraction from BJH - At end of current step
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
 !
 ! --------------------------------------------------------------------------------------------------
 !

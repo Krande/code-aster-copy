@@ -23,8 +23,8 @@ interface
                       foncis)
         character(len=24) :: tmp
         character(len=24) :: nom
-        integer :: nel
-        integer :: ntel(*)
+        integer(kind=8) :: nel
+        integer(kind=8) :: ntel(*)
         character(len=19) :: napcis
         character(len=19) :: foncis
     end subroutine affgen

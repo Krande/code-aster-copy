@@ -21,12 +21,12 @@
 interface
     subroutine srilnf(nvi, vind, nmat, materf, dt,&
                       nr, yf, deps,vinf)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(nvi)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: dt
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: yf(nr)
         real(kind=8) :: deps(6)
         real(kind=8) :: vinf(nvi)

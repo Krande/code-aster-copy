@@ -22,6 +22,6 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(in) :: ds_multipara
         type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
-        integer, intent(out) :: i_coef_maxi
+        integer(kind=8), intent(out) :: i_coef_maxi
     end subroutine romGreedyResiMaxi
 end interface

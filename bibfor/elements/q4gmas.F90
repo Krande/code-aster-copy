@@ -44,9 +44,9 @@ subroutine q4gmas(xyzl, option, pgl, mas, ener)
 !     OUT MAS    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_CIN (ECIN_ELEM)
 !     ------------------------------------------------------------------
-    integer :: i, j, k, int, jcoqu, jdepg, ii(8), jj(8), ll(16)
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: jvitg, iret
+    integer(kind=8) :: i, j, k, int, jcoqu, jdepg, ii(8), jj(8), ll(16)
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: jvitg, iret
     real(kind=8) :: flex(12, 12), bc(2, 12)
     real(kind=8) :: memb(8, 8), amemb(64), mefl(8, 12)
     real(kind=8) :: wq4(12), depl(24), masloc(300), masglo(300), vite(24)

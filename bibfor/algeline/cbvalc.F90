@@ -29,8 +29,8 @@ subroutine cbvalc(rouc, neq, smhc, smdi, idlexc, &
 #include "asterfort/assert.h"
     character(len=2) :: rouc
     integer(kind=4) :: smhc(*)
-    integer :: neq, smdi(*), idlexc(*)
-    integer :: kin, idebli, ilig, ifinli, ind, jcol
+    integer(kind=8) :: neq, smdi(*), idlexc(*)
+    integer(kind=8) :: kin, idebli, ilig, ifinli, ind, jcol
     real(kind=8) :: coefr, valmr(*)
     complex(kind=8) :: coefc, valmc(*), valmi(*)
 !     ------------------------------------------------------------------

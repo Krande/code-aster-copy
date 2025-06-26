@@ -48,7 +48,7 @@ subroutine te0185(option, nomte)
 !     CETTE ROUTINE NE SERT QUE D'INDIRECTION VERS LE BON TE00IJ
 !     EN FONCTION DE LA MODELISATION ET DE LA NATURE DU CALCUL :
 !     LINEAIRE OU NON-LINEAIRE
-    integer :: j1, inlin, ibid
+    integer(kind=8) :: j1, inlin, ibid
     aster_logical :: line
     character(len=3) :: cmod
     character(len=8) :: alias8

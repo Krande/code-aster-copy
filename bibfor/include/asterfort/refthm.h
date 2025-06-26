@@ -29,20 +29,20 @@ interface
                       b        , r        , vectu )
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer, intent(in) :: jv_mater
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: jv_mater
+        integer(kind=8), intent(in) :: ndim
         aster_logical, intent(in) :: l_axi
         aster_logical, intent(in) :: fnoevo
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-        integer, intent(in) :: nno, nnos
-        integer, intent(in) :: npi, npg
+        integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+        integer(kind=8), intent(in) :: nno, nnos
+        integer(kind=8), intent(in) :: npi, npg
         real(kind=8) :: elem_coor(ndim, nno)
         real(kind=8), intent(in) :: dt
-        integer, intent(in) :: dimuel, dimdef, dimcon
-        integer, intent(in) :: jv_poids, jv_poids2
-        integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
-        integer, intent(in) :: nddls, nddlm
-        integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+        integer(kind=8), intent(in) :: dimuel, dimdef, dimcon
+        integer(kind=8), intent(in) :: jv_poids, jv_poids2
+        integer(kind=8), intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
+        integer(kind=8), intent(in) :: nddls, nddlm
+        integer(kind=8), intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
         real(kind=8), intent(out) :: b(dimdef, dimuel)
         real(kind=8), intent(out) :: r(1:dimdef+1)
         real(kind=8), intent(out) :: vectu(dimuel)

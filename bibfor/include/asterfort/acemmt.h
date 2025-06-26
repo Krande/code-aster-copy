@@ -21,6 +21,6 @@
 interface
     subroutine acemmt(noma, nmmt)
         character(len=8) :: noma
-        integer :: nmmt(*)
+        integer(kind=8) :: nmmt(*)
     end subroutine acemmt
 end interface

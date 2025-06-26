@@ -23,6 +23,6 @@ interface
         character(len=*)      , intent(in)  :: sd_dtm_
         real(kind=8)          , intent(out) :: time
         real(kind=8), pointer :: fext(:)
-        integer     , pointer  :: buffdtm(:)
+        integer(kind=8)     , pointer  :: buffdtm(:)
     end subroutine dtmfext
 end interface

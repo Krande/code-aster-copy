@@ -22,14 +22,14 @@ interface
     subroutine xhlag4(ffc, idepl, idepm, lact, ndim,&
                       nnops, pla, lamb, nvec, champ)
         real(kind=8) :: ffc(16)
-        integer :: idepl
-        integer :: idepm
-        integer :: lact(16)
-        integer :: ndim
-        integer :: nnops
-        integer :: pla(27)
+        integer(kind=8) :: idepl
+        integer(kind=8) :: idepm
+        integer(kind=8) :: lact(16)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnops
+        integer(kind=8) :: pla(27)
         real(kind=8) :: lamb(3)
-        integer :: nvec
+        integer(kind=8) :: nvec
         character(len=8) :: champ
     end subroutine xhlag4
 end interface

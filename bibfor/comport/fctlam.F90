@@ -40,7 +40,7 @@ subroutine fctlam(x, finalW)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: lastW, currentW, expW, eps
-    integer :: n, nmax
+    integer(kind=8) :: n, nmax
 !
     eps = 1.d-9
     currentW = 0.d0

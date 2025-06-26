@@ -52,7 +52,7 @@ subroutine xelgano(modele, sigelga, sigseno)
 !
     character(len=16) :: option
 
-    integer :: nchin, nchout
+    integer(kind=8) :: nchin, nchout
     parameter(nchin=2)
     parameter(nchout=1)
     character(len=8)  :: lpain(nchin), lpaout(nchout)

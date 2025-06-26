@@ -21,15 +21,15 @@
 interface
     subroutine vppgen(lmasse, lamor, lraide, masseg, amorg,&
                       raideg, vect, neq, nbvect, iddl)
-        integer :: neq
-        integer :: lmasse
-        integer :: lamor
-        integer :: lraide
+        integer(kind=8) :: neq
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
+        integer(kind=8) :: lraide
         real(kind=8) :: masseg(*)
         real(kind=8) :: amorg(*)
         real(kind=8) :: raideg(*)
         real(kind=8) :: vect(neq, *)
-        integer :: nbvect
-        integer :: iddl(*)
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: iddl(*)
     end subroutine vppgen
 end interface

@@ -22,7 +22,7 @@ interface
     subroutine cvmres(mod, nmat, materd, materf, timed,&
                       timef, yd, yf, epsd, deps,&
                       dy, res)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)

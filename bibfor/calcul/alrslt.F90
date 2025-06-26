@@ -38,7 +38,7 @@ subroutine alrslt(nout, lchout, lpaout, base)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 
-    integer :: nout
+    integer(kind=8) :: nout
     character(len=*) :: base, lchout(*)
     character(len=8) :: lpaout(*)
 ! ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine alrslt(nout, lchout, lpaout, base)
 !     sorties:
 !       creation des champs globaux resultats
 ! ----------------------------------------------------------------------
-    integer :: gd, descgd, code, i, iret1, iret2, iret
+    integer(kind=8) :: gd, descgd, code, i, iret1, iret2, iret
     character(len=19) :: nochou, dcel
     character(len=8) :: nompar
     character(len=8) :: nomgd, tsca, tych

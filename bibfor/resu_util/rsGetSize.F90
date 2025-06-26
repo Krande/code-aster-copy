@@ -24,7 +24,7 @@ subroutine rsGetSize(resultName, resultSize)
 #include "asterfort/rsorac.h"
 !
     character(len=8), intent(in) :: resultName
-    integer, intent(out) :: resultSize
+    integer(kind=8), intent(out) :: resultSize
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,7 +41,7 @@ subroutine rsGetSize(resultName, resultSize)
 !
     character(len=8) :: k8bid
     complex(kind=8) :: c16bid
-    integer :: list(1), iret
+    integer(kind=8) :: list(1), iret
     real(kind=8) :: r8bid
 !
 ! --------------------------------------------------------------------------------------------------

@@ -26,23 +26,23 @@ interface
                       jbas, jtail, fiss, goinop, listpt,&
                       orient, typdis, nbmai, operation_opt)
         character(len=8) :: noma
-        integer :: ndim
-        integer :: nmafon
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nmafon
         character(len=19) :: cnslt
         character(len=19) :: cnsln
         character(len=19) :: cnxinv
-        integer :: jmafon
-        integer :: nxptff
-        integer :: jfon
-        integer :: nfon
-        integer :: jbas
-        integer :: jtail
+        integer(kind=8) :: jmafon
+        integer(kind=8) :: nxptff
+        integer(kind=8) :: jfon
+        integer(kind=8) :: nfon
+        integer(kind=8) :: jbas
+        integer(kind=8) :: jtail
         character(len=8) :: fiss
         aster_logical :: goinop
         character(len=19) :: listpt
         aster_logical :: orient
         character(len=16) :: typdis
-        integer :: nbmai
+        integer(kind=8) :: nbmai
         character(len=16), intent(in), optional :: operation_opt
     end subroutine xptfon
 end interface

@@ -23,21 +23,21 @@ interface
                       igeom, xn, yn, zn, jac,&
                       idfdx, idfdy, hf, poids3, npgf,&
                       noe)
-        integer :: ifm
-        integer :: niv
-        integer :: nsomm
-        integer :: ifa
-        integer :: tymvol
-        integer :: igeom
+        integer(kind=8) :: ifm
+        integer(kind=8) :: niv
+        integer(kind=8) :: nsomm
+        integer(kind=8) :: ifa
+        integer(kind=8) :: tymvol
+        integer(kind=8) :: igeom
         real(kind=8) :: xn(9)
         real(kind=8) :: yn(9)
         real(kind=8) :: zn(9)
         real(kind=8) :: jac(9)
-        integer :: idfdx
-        integer :: idfdy
+        integer(kind=8) :: idfdx
+        integer(kind=8) :: idfdy
         real(kind=8) :: hf
         real(kind=8) :: poids3(9)
-        integer :: npgf
-        integer :: noe(9, 6, 4)
+        integer(kind=8) :: npgf
+        integer(kind=8) :: noe(9, 6, 4)
     end subroutine utno3d
 end interface

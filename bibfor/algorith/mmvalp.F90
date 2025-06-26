@@ -26,10 +26,10 @@ subroutine mmvalp(nb_dim, elem_type, elem_nbno, nb_cmp, ksi1, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nb_dim
+    integer(kind=8), intent(in) :: nb_dim
     character(len=8), intent(in) :: elem_type
-    integer, intent(in) :: elem_nbno
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: elem_nbno
+    integer(kind=8), intent(in) :: nb_cmp
     real(kind=8), intent(in) :: ksi1
     real(kind=8), intent(in) :: ksi2
     real(kind=8), intent(in) :: vale_node(*)
@@ -55,7 +55,7 @@ subroutine mmvalp(nb_dim, elem_type, elem_nbno, nb_cmp, ksi1, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: shape_func(9)
-    integer :: i_node, i_cmp
+    integer(kind=8) :: i_node, i_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !

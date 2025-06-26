@@ -30,10 +30,10 @@ subroutine cpmcpt15_1(conloc, jmacsu, indno, indma, conneo)
 #include "asterfort/assert.h"
 
 !
-    integer, intent(in) :: indma
-    integer, intent(in) :: indno
-    integer, intent(in) :: jmacsu
-    integer, intent(in) :: conneo(*)
+    integer(kind=8), intent(in) :: indma
+    integer(kind=8), intent(in) :: indno
+    integer(kind=8), intent(in) :: jmacsu
+    integer(kind=8), intent(in) :: conneo(*)
     character(len=24), intent(in) :: conloc
 !
 ! -------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine cpmcpt15_1(conloc, jmacsu, indno, indma, conneo)
 ! IN        INDNO   INDICE DU PREMIER NOEUD AJOUTE
 ! IN        INDMA   INDICE DE LA PREMIERE MAILLE AJOUTEE
 ! -------------------------------------------------------------------------------------------------
-    integer :: lino(15), jconloc
+    integer(kind=8) :: lino(15), jconloc
 
 ! -------------------------------------------------------------------------------------------------
     call jemarq()

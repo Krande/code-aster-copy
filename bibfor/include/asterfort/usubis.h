@@ -28,6 +28,6 @@ interface
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: x
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine usubis
 end interface

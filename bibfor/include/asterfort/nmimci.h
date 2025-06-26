@@ -25,7 +25,7 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=*), intent(in) :: col_name_
-        integer, intent(in) :: vali
+        integer(kind=8), intent(in) :: vali
         aster_logical, intent(in) :: l_affe
     end subroutine nmimci
 end interface

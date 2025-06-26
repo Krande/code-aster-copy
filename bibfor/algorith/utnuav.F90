@@ -22,7 +22,7 @@ subroutine utnuav(noma, k, iocc, lno)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/reliem.h"
-    integer :: k, iocc
+    integer(kind=8) :: k, iocc
     character(len=*) :: noma, lno
 !
 !     COMMANDE:  PROJ_CHAMP / NUAG_DEG_XX
@@ -33,7 +33,7 @@ subroutine utnuav(noma, k, iocc, lno)
 !
     character(len=16) :: limocl(5), tymocl(5)
     character(len=8) :: ma8
-    integer :: n1
+    integer(kind=8) :: n1
 !
     call jemarq()
     ma8 = noma

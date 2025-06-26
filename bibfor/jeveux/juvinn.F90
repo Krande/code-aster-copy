@@ -35,7 +35,7 @@ subroutine juvinn(ojb)
 !
 !
     character(len=8) :: type
-    integer :: n1, k, jojb
+    integer(kind=8) :: n1, k, jojb
     real(kind=8) :: rvid, rnan
 !     ------------------------------------------------------------------
 !

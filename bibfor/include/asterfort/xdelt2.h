@@ -22,16 +22,16 @@ interface
     subroutine xdelt2(elp, n, ndime, ksi,&
                       ptint, ndim, tabco, tabls, ipp, ip,&
                       delta)
-        integer :: ndime
-        integer :: ndim
+        integer(kind=8) :: ndime
+        integer(kind=8) :: ndim
         character(len=8) :: elp
-        integer :: n(3)
+        integer(kind=8) :: n(3)
         real(kind=8) :: ksi(ndim)
         real(kind=8) :: ptint(*)
         real(kind=8) :: tabco(*)
         real(kind=8) :: tabls(*)
-        integer :: ipp
-        integer :: ip
+        integer(kind=8) :: ipp
+        integer(kind=8) :: ip
         real(kind=8) :: delta(ndime)
     end subroutine xdelt2
 end interface 

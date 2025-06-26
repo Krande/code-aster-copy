@@ -24,7 +24,7 @@ subroutine dfllin(keywf, i_fail, coef_maxi)
 !
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: i_fail
+    integer(kind=8), intent(in) :: i_fail
     real(kind=8), intent(out) :: coef_maxi
 !
 ! --------------------------------------------------------------------------------------------------

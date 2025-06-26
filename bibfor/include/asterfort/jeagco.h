@@ -22,8 +22,8 @@
             subroutine jeagco(schin,schout,nbocnw,lontnw,claout)
               character(len=*), intent(in) :: schin
               character(len=*), intent(in) :: schout
-              integer, intent(in) :: nbocnw
-              integer, intent(in) :: lontnw
+              integer(kind=8), intent(in) :: nbocnw
+              integer(kind=8), intent(in) :: lontnw
               character(len=*), intent(in) :: claout
             end subroutine jeagco
           end interface 

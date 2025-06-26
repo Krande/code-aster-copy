@@ -22,12 +22,12 @@ interface
     subroutine getcon(nomres, iob, ishf, ilng, ctype,&
                       lcon, iadvar, nomob)
         character(len=*) :: nomres
-        integer :: iob
-        integer :: ishf
-        integer :: ilng
-        integer :: ctype
-        integer :: lcon
-        integer :: iadvar
+        integer(kind=8) :: iob
+        integer(kind=8) :: ishf
+        integer(kind=8) :: ilng
+        integer(kind=8) :: ctype
+        integer(kind=8) :: lcon
+        integer(kind=8) :: iadvar
         character(len=24) :: nomob
     end subroutine getcon
 end interface

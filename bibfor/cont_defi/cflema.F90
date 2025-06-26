@@ -30,11 +30,11 @@ subroutine cflema(sdcont_defi, nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(in) :: nb_cont_elem0
-    integer, intent(inout) :: nb_cont_elem
-    integer, pointer :: v_poin_elem(:)
-    integer, pointer :: v_list_elem(:)
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(in) :: nb_cont_elem0
+    integer(kind=8), intent(inout) :: nb_cont_elem
+    integer(kind=8), pointer :: v_poin_elem(:)
+    integer(kind=8), pointer :: v_list_elem(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,12 +53,12 @@ subroutine cflema(sdcont_defi, nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdecma
-    integer :: i_surf, i_elem, ii, elem_nume_1, elem_nume_2, k
-    integer :: nb_elem_elim, nb_elem
-    integer, pointer :: v_elem_indx(:) => null()
+    integer(kind=8) :: jdecma
+    integer(kind=8) :: i_surf, i_elem, ii, elem_nume_1, elem_nume_2, k
+    integer(kind=8) :: nb_elem_elim, nb_elem
+    integer(kind=8), pointer :: v_elem_indx(:) => null()
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

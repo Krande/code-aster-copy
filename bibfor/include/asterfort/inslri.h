@@ -21,11 +21,11 @@
 interface
     subroutine inslri(nbx, nbn, lister, listei, valr,&
                       vali)
-        integer :: nbx
-        integer :: nbn
+        integer(kind=8) :: nbx
+        integer(kind=8) :: nbn
         real(kind=8) :: lister(nbx)
-        integer :: listei(nbx)
+        integer(kind=8) :: listei(nbx)
         real(kind=8) :: valr
-        integer :: vali
+        integer(kind=8) :: vali
     end subroutine inslri
 end interface

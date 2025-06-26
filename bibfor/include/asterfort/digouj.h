@@ -21,13 +21,13 @@ interface
                       nc, icodma, dul, sim, varim,&
                       pgl, klv, klc, varip, fono,&
                       sip, nomte)
-        integer :: neq
-        integer :: nbt
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbt
         character(len=16) :: option
         character(len=16) :: rela_comp
-        integer :: nno
-        integer :: nc
-        integer :: icodma
+        integer(kind=8) :: nno
+        integer(kind=8) :: nc
+        integer(kind=8) :: icodma
         real(kind=8) :: dul(neq)
         real(kind=8) :: sim(neq)
         real(kind=8) :: varim(*)

@@ -29,7 +29,7 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: nunoa, nunob, nunoc
+    integer(kind=8) :: nunoa, nunob, nunoc
     character(len=8) :: noma
     character(len=19) :: cnxinv
     aster_logical :: fabord
@@ -53,12 +53,12 @@ subroutine xfabor(noma, cnxinv, nunoa, nunob, nunoc, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jma, nmanoa, nmanob, nmanoc, jmanoa, jmanob, jmanoc
-    integer :: imaa, imab, imac, itypma, numaa, numab, numac, nbmaco
-    integer :: ndime
+    integer(kind=8) :: jma, nmanoa, nmanob, nmanoc, jmanoa, jmanob, jmanoc
+    integer(kind=8) :: imaa, imab, imac, itypma, numaa, numab, numac, nbmaco
+    integer(kind=8) :: ndime
     character(len=19) :: mai
     character(len=8) :: typma
-    integer, pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

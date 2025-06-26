@@ -22,12 +22,12 @@ interface
     subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
                       ispt, icmp, iad)
         character(len=1) :: stop
-        integer :: jcesd
-        integer :: jcesl
-        integer :: ima
-        integer :: ipt
-        integer :: ispt
-        integer :: icmp
-        integer :: iad
+        integer(kind=8) :: jcesd
+        integer(kind=8) :: jcesl
+        integer(kind=8) :: ima
+        integer(kind=8) :: ipt
+        integer(kind=8) :: ispt
+        integer(kind=8) :: icmp
+        integer(kind=8) :: iad
     end subroutine cesexi
 end interface

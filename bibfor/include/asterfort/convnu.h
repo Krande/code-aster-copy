@@ -24,6 +24,6 @@ interface
         character(len=19) :: numout
         character(len=24) :: nomvec
         character(len=1) :: base
-        integer :: neqout
+        integer(kind=8) :: neqout
     end subroutine convnu
 end interface

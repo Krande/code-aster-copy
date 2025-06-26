@@ -25,12 +25,12 @@ interface
         character(len=24) :: mafour
         character(len=8) :: nomail
         character(len=*) :: motfac
-        integer :: iocc
-        integer :: nbmc
+        integer(kind=8) :: iocc
+        integer(kind=8) :: nbmc
         character(len=16) :: motcle(*)
         character(len=16) :: typmcl(*)
         character(len=*) :: typlig
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=8) :: ndorig
         character(len=8) :: ndextr
         character(len=8) :: typm

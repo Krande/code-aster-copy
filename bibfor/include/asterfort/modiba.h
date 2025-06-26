@@ -27,13 +27,13 @@ interface
         character(len=8) :: nomres
         character(len=8) :: basemo
         character(len=19) :: basefl
-        integer :: numvit
+        integer(kind=8) :: numvit
         aster_logical :: newres
-        integer :: itypfl
-        integer :: imasse
-        integer :: nuor(*)
-        integer :: nbnuor
-        integer :: numo(*)
-        integer :: nbmfl
+        integer(kind=8) :: itypfl
+        integer(kind=8) :: imasse
+        integer(kind=8) :: nuor(*)
+        integer(kind=8) :: nbnuor
+        integer(kind=8) :: numo(*)
+        integer(kind=8) :: nbmfl
     end subroutine modiba
 end interface

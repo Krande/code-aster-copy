@@ -45,8 +45,8 @@ subroutine dtmprep_arch(sd_dtm_)
 !
 !   -0.2- Local variables
     aster_logical     :: checktfin
-    integer           :: iret1, iret2, iparch, nbarch, nbsaves
-    integer           :: nbinst, nbocc, i, j, sizearch
+    integer(kind=8)           :: iret1, iret2, iparch, nbarch, nbsaves
+    integer(kind=8)           :: nbinst, nbocc, i, j, sizearch
     real(kind=8)      :: tinit, tfin, epsi, dt, residue, perarch
     character(len=8)  :: sd_dtm
     character(len=19) :: numarc

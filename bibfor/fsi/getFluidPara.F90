@@ -43,10 +43,10 @@ subroutine getFluidPara(j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_, alpha_, cele_i_, r_
-    integer, parameter :: nb_resu = 6
-    integer :: icodre(nb_resu)
+    integer(kind=8), parameter :: nb_resu = 6
+    integer(kind=8) :: icodre(nb_resu)
     character(len=16), parameter :: resu_name(nb_resu) = &
                                     (/'RHO      ', 'COEF_AMOR', 'CELE_I   ', 'LONG_CARA', &
                                       'CELE_R   ', 'PESA_Z   '/)
@@ -54,7 +54,7 @@ subroutine getFluidPara(j_mater, &
     real(kind=8) :: rho, cele_r, pesa, alpha, cele_i, r_impe
     character(len=8) :: fami
     character(len=1) :: poum
-    integer :: ipg, ispg
+    integer(kind=8) :: ipg, ispg
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -27,6 +27,6 @@ interface
         character(len=*), intent(in) :: chcara(*), chtime, chharm
         character(len=*), intent(in) :: chvarc, chvref, chstrx
         character(len=*), intent(in) :: chelemz, basez
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine compStress
 end interface

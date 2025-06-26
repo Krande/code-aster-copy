@@ -21,7 +21,7 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv, &
 !
     implicit none
 #include "asterfort/r8inir.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), de(6, 6)
     real(kind=8) :: dphi(6), dfdsv(6), seuilv
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -41,7 +41,7 @@ subroutine lkdphi(nbmat, mater, de, seuilv, dfdsv, &
 !       DPHI   = A*n/PA*(fv(SIG,XIV)/PA)**(n-1).dfv/dsig*De
 ! =================================================================
     common/tdim/ndt, ndi
-    integer :: i, ndi, ndt
+    integer(kind=8) :: i, ndi, ndt
     real(kind=8) :: un, zero
     real(kind=8) :: pa, a, n, aa(6)
     parameter(un=1.0d0)

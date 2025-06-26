@@ -21,11 +21,11 @@
 interface
     subroutine foec2c(iuni, v, nbcoup, n1, n2,&
                       nompar, nomres)
-        integer :: nbcoup
-        integer :: iuni
+        integer(kind=8) :: nbcoup
+        integer(kind=8) :: iuni
         real(kind=8) :: v(3*nbcoup)
-        integer :: n1
-        integer :: n2
+        integer(kind=8) :: n1
+        integer(kind=8) :: n2
         character(len=*) :: nompar
         character(len=*) :: nomres
     end subroutine foec2c

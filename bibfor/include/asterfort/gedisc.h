@@ -21,9 +21,9 @@
 interface
     subroutine gedisc(ndim, nno, npg, vff, geom,&
                       pg)
-        integer :: npg
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: vff(nno, npg)
         real(kind=8) :: geom(ndim, nno)
         real(kind=8) :: pg(ndim+1, npg)

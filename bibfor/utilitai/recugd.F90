@@ -30,7 +30,7 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
-    integer :: nbgd, iassef, iassmx
+    integer(kind=8) :: nbgd, iassef, iassmx
     real(kind=8) :: valres(nbgd*iassef)
     character(len=8) :: nomcmp(nbgd)
     character(len=19) :: caelem
@@ -48,8 +48,8 @@ subroutine recugd(caelem, nomcmp, valres, nbgd, iassef, &
 !-----------------------------------------------------------------------
 !
 !
-    integer :: icard, icarv, icmp, icode, nbec
-    integer :: ii, irang, iranv, jj, ll, nbcmp
+    integer(kind=8) :: icard, icarv, icmp, icode, nbec
+    integer(kind=8) :: ii, irang, iranv, jj, ll, nbcmp
 !
 !
     character(len=24) :: carav, carad

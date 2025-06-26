@@ -46,16 +46,16 @@ module FE_Basis_module
 !
     type FE_Basis
 !
-        integer :: typeEF = EF_LAGRANGE
-        integer :: size
+        integer(kind=8) :: typeEF = EF_LAGRANGE
+        integer(kind=8) :: size
 ! ----- Dimension topologique
-        integer :: ndim = 0
+        integer(kind=8) :: ndim = 0
         aster_logical :: l_skin = ASTER_FALSE
         aster_logical :: l_axis = ASTER_FALSE
 ! ----- Type maille
         character(len=8) :: typema = ''
 ! ----- Nombre de noeuds
-        integer :: nbnodes = 0
+        integer(kind=8) :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
         real(kind=8), dimension(3, 27) :: coorno = 0.d0
 !
@@ -159,7 +159,7 @@ contains
 !   Initialization
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, iadzi, iazk24
+        integer(kind=8) :: i, iadzi, iazk24
         real(kind=8) :: jaco(3, 3), cojac(3, 3), jacob
         real(kind=8), dimension(3, MAX_BS) :: BSGrad, BSGrad2
 !

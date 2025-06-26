@@ -20,7 +20,7 @@
 !
 interface
     subroutine lkvarv(vintr, nbmat, mater, paravi)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: vintr
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: paravi(3)

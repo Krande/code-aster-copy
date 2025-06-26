@@ -76,16 +76,16 @@ subroutine xcpmo1(modmes, modthx, modmex)
     character(len=16) :: ktyelt, ktyelm
     character(len=8) :: noma, valk8(3), nommax
     character(len=1) :: k1bid
-    integer :: igr, jeltp, imx
-    integer :: ima, iexi
-    integer :: nmamex
-    integer :: nfiss, nbmx, nutyelt, nutyelm
-    integer :: nbelmx, nbel2, cpt
+    integer(kind=8) :: igr, jeltp, imx
+    integer(kind=8) :: ima, iexi
+    integer(kind=8) :: nmamex
+    integer(kind=8) :: nfiss, nbmx, nutyelt, nutyelm
+    integer(kind=8) :: nbelmx, nbel2, cpt
 !
-    integer, pointer :: tabmx(:) => null()
+    integer(kind=8), pointer :: tabmx(:) => null()
     character(len=8), pointer :: fiss(:) => null()
 !
-    integer :: nma3d, nma2d, nma1d, nenrch
+    integer(kind=8) :: nma3d, nma2d, nma1d, nenrch
     parameter(nma3d=4)
     parameter(nma2d=2)
     parameter(nma1d=1)
@@ -101,7 +101,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 ! ---------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-    integer :: nel3dthx, nelplthx, nelaxthx
+    integer(kind=8) :: nel3dthx, nelplthx, nelaxthx
     parameter(nel3dthx=(nma3d+nma2d)*nenrch)
     parameter(nelplthx=(nma2d+nma1d)*nenrch)
     parameter(nelaxthx=(nma2d+nma1d)*nenrch)
@@ -145,7 +145,7 @@ subroutine xcpmo1(modmes, modthx, modmex)
 ! ---------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-    integer :: nel3dmex, nelplmex, nelaxmex
+    integer(kind=8) :: nel3dmex, nelplmex, nelaxmex
     parameter(nel3dmex=(nma3d+nma2d)*nenrch)
     parameter(nelplmex=(2*nma2d+nma1d)*nenrch)
     parameter(nelaxmex=(nma2d+nma1d)*nenrch)
@@ -191,16 +191,16 @@ subroutine xcpmo1(modmes, modthx, modmex)
 ! ---------------------------------------------------------------------
 ! ---------------------------------------------------------------------
 !
-    integer :: nel3dmec, nelplmec, nelaxmec
+    integer(kind=8) :: nel3dmec, nelplmec, nelaxmec
     parameter(nel3dmec=nma3d+nma2d)
     parameter(nelplmec=2*nma2d+nma1d)
     parameter(nelaxmec=nma2d+nma1d)
     character(len=16) :: ele3dmec(nel3dmec)
     character(len=16) :: eleplmec(nelplmec)
     character(len=16) :: eleaxmec(nelaxmec)
-    integer, pointer :: mmes(:) => null()
-    integer, pointer :: mmex(:) => null()
-    integer, pointer :: mthx(:) => null()
+    integer(kind=8), pointer :: mmes(:) => null()
+    integer(kind=8), pointer :: mmex(:) => null()
+    integer(kind=8), pointer :: mthx(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
 !
 !   elements 3D lineaires mecaniques classiques

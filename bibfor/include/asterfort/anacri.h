@@ -27,7 +27,7 @@ interface
         character(len=16) :: nomfor
         character(len=16) :: typcha
         character(len=3) :: impgrd
-        integer :: paract(35)
+        integer(kind=8) :: paract(35)
         aster_logical :: fordef
         aster_logical :: crsigm
         aster_logical :: crepst

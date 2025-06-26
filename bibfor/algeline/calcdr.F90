@@ -29,7 +29,7 @@ subroutine calcdr(nbmat, mater, parame, derive, g, &
 #include "asterfort/hlode.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), derive(4), g, i
     real(kind=8) :: q(6), devg(6), devgii, traceg, dfdl
 ! --- BUT : CALCUL DE DF/DLAMBDA POUR LES ITERATIONS DE NEWTON ---------

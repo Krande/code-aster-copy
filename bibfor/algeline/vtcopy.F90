@@ -23,7 +23,7 @@ subroutine vtcopy(fieldInZ, fieldOutZ, codret)
 #include "asterfort/vtcop1.h"
 !
     character(len=*), intent(in) :: fieldInZ, fieldOutZ
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !

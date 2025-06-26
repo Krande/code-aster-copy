@@ -29,10 +29,10 @@ subroutine dgmode(mode, imodel, ilong, nec, dg)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nbec.h"
-    integer :: dg(*), nec, mode, ilong, imodel
+    integer(kind=8) :: dg(*), nec, mode, ilong, imodel
 !
 !-----------------------------------------------------------------------
-    integer :: i, jmod, nbpt
+    integer(kind=8) :: i, jmod, nbpt
 !-----------------------------------------------------------------------
     call jemarq()
     nec = 0

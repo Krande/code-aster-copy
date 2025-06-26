@@ -21,15 +21,15 @@ interface
     subroutine ermev2(nno, igeom, ff, sig, nbcmp,&
                       dfdx, dfdy, poids, poiaxi, dsx,&
                       dsy, norme)
-        integer :: nno
-        integer :: igeom
+        integer(kind=8) :: nno
+        integer(kind=8) :: igeom
         real(kind=8) :: ff(nno)
         real(kind=8) :: sig(*)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         real(kind=8) :: dfdx(nno)
         real(kind=8) :: dfdy(nno)
         real(kind=8) :: poids
-        integer :: poiaxi
+        integer(kind=8) :: poiaxi
         real(kind=8) :: dsx
         real(kind=8) :: dsy
         real(kind=8) :: norme

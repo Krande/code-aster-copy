@@ -30,7 +30,7 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verigd.h"
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     character(len=*) :: chs1, nomgd2, base, chs2
     character(len=8) :: lcmp1(ncmp), lcmp2(ncmp)
 ! ---------------------------------------------------------------------
@@ -52,8 +52,8 @@ subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2, &
     character(len=24) :: valk(3)
 !     ------------------------------------------------------------------
     character(len=19) :: chsa, chsb, chsp
-    integer :: i1, i2, jcs1k, jcs1d, jcs1c, jcs2k, jcs2c, k, kk
-    integer :: iret, ncmpch
+    integer(kind=8) :: i1, i2, jcs1k, jcs1d, jcs1c, jcs2k, jcs2c, k, kk
+    integer(kind=8) :: iret, ncmpch
 !
     character(len=8) :: nocmp, nomgd1, tsca1, tsca2
 !

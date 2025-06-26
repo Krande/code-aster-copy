@@ -37,9 +37,9 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 #include "asterfort/Behaviour_type.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer :: ndim, imate, retcom
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8) :: ndim, imate, retcom
     character(len=8) :: typmod(*)
     character(len=16) :: option
     real(kind=8) :: carcri(3)
@@ -73,7 +73,7 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
 !
 !
     aster_logical :: cplan, lVari
-    integer :: iadzi, iazk24, iret
+    integer(kind=8) :: iadzi, iazk24, iret
     real(kind=8), parameter :: epxmax = 5.d0
     character(len=8) :: nomail
     real(kind=8) :: valres(10), valpam(3)
@@ -98,9 +98,9 @@ subroutine nmccam(fami, kpg, ksp, ndim, &
     real(kind=8) :: diff2
     real(kind=8) :: zero, un, deux, trois, six, unsde, tol, ptit
     real(kind=8) :: valm, valp, tm, tp, tref, pcrpLoc(7)
-    integer :: ndimsi, signf, signfi
-    integer :: i, k, l, iter, matr
-    integer :: icodre(9)
+    integer(kind=8) :: ndimsi, signf, signfi
+    integer(kind=8) :: i, k, l, iter, matr
+    integer(kind=8) :: icodre(9)
     character(len=18) :: nomres(10)
     character(len=8) :: nompar(10)
     parameter(zero=0.d0)

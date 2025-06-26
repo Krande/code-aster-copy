@@ -21,9 +21,9 @@ subroutine caladu(neq, nbddl, coef, ddl, depl, &
 !
     implicit none
 !
-    integer :: neq
-    integer :: nbddl
-    integer :: ddl(nbddl)
+    integer(kind=8) :: neq
+    integer(kind=8) :: nbddl
+    integer(kind=8) :: ddl(nbddl)
     real(kind=8) :: coef(nbddl)
     real(kind=8) :: depl(neq)
     real(kind=8) :: val
@@ -45,7 +45,7 @@ subroutine caladu(neq, nbddl, coef, ddl, depl, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: j
+    integer(kind=8) :: j
 !
 ! ----------------------------------------------------------------------
 !

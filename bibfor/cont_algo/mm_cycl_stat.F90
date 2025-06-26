@@ -48,10 +48,10 @@ subroutine mm_cycl_stat(ds_measure, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: cycl_index, cycl_stat
-    integer :: i_cont_poin, nt_cont_poin
-    integer :: cycl_nb(4)
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8) :: cycl_index, cycl_stat
+    integer(kind=8) :: i_cont_poin, nt_cont_poin
+    integer(kind=8) :: cycl_nb(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !

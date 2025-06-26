@@ -25,11 +25,11 @@ subroutine utppgl(nn, nc, p, sg, sl)
 #include "asterfort/utpagl.h"
 #include "asterfort/utpsgl.h"
 #include "asterfort/vecmap.h"
-    integer, intent(in) :: nn, nc
+    integer(kind=8), intent(in) :: nn, nc
     real(kind=8), intent(in) :: p(3, 3), sg(*)
     real(kind=8), intent(out) :: sl(*)
 !
-    integer :: n, n1, nddl
+    integer(kind=8) :: n, n1, nddl
     real(kind=8), dimension(nn*nc, nn*nc) :: matsy1, matsy2, matas2
     real(kind=8), dimension(nn*nc, nn*nc) :: matsym, matasy
     real(kind=8), dimension(nn*nc, nn*nc) :: parsmg, parayg, matril, matrig

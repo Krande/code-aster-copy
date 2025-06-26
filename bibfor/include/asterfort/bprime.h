@@ -21,7 +21,7 @@
 interface
     function bprime(nbmat, mater, parame, invar1, s,&
                     epssig)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: parame(5)
         real(kind=8) :: invar1

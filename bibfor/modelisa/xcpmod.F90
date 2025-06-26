@@ -58,7 +58,7 @@ subroutine xcpmod(modmes, modthx, modmex)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, iret1, iret2, iret3, iret4, iret5
+    integer(kind=8) :: iret, iret1, iret2, iret3, iret4, iret5
     character(len=8) :: noma1, noma2, valk(4), k8cont
     character(len=19) :: ligr1, ligr2
     character(len=24) :: pheno

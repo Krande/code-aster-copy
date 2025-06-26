@@ -21,15 +21,15 @@
 interface
     subroutine dgffibres(nboccfib, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgrp, &
                          ulnbnoeuds, ulnbmailles, nbfibres1, maxfibre1, ncarfi1)
-        integer :: nboccfib
-        integer :: iinbgf
-        integer :: maxmailgrp
-        integer :: ulnbnoeuds
-        integer :: ulnbmailles
-        integer :: nbfibres1
-        integer :: tousgroupesnbf(*)
-        integer :: maxfibre1
-        integer :: ncarfi1
+        integer(kind=8) :: nboccfib
+        integer(kind=8) :: iinbgf
+        integer(kind=8) :: maxmailgrp
+        integer(kind=8) :: ulnbnoeuds
+        integer(kind=8) :: ulnbmailles
+        integer(kind=8) :: nbfibres1
+        integer(kind=8) :: tousgroupesnbf(*)
+        integer(kind=8) :: maxfibre1
+        integer(kind=8) :: ncarfi1
         character(len=24) :: tousgroupesnom(*)
     end subroutine dgffibres
 end interface

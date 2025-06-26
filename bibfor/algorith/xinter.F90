@@ -29,7 +29,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib, &
 #include "asterfort/xveri0.h"
 #include "asterfort/xnewto.h"
     character(len=8) :: elrefp
-    integer :: ndim, ndime, ia, ib, im
+    integer(kind=8) :: ndim, ndime, ia, ib, im
     real(kind=8) :: lsn(*), geom(*), inter(3), inref(3), pintt(*), pmitt(*)
     real(kind=8) :: lsna, lsnb, lsnm
 !
@@ -46,7 +46,7 @@ subroutine xinter(ndim, ndime, elrefp, geom, lsn, ia, ib, &
     real(kind=8) :: ksi(ndime), ptxx(3*ndime), x(81), ff(27)
     real(kind=8) :: epsmax, a, b, c, pta(ndim), ptb(ndim), newpt(ndim)
     real(kind=8) :: ptm(ndim), dekker(4*ndime)
-    integer :: itemax, ibid, n(3), j, nno, iret, exit(2)
+    integer(kind=8) :: itemax, ibid, n(3), j, nno, iret, exit(2)
 !
 !---------------------------------------------------------------------
 !     DEBUT

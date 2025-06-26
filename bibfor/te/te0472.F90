@@ -53,10 +53,10 @@ subroutine te0472(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_axi, l_vf
-    integer :: nno, nnos, kp, npg, ndim, nnom, napre1, napre2, ndim2
-    integer :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
-    integer :: ipres, k, kk, i, l, ires, iflux, itemps, iopt, ipresf, ndlnm
-    integer :: ifluxf, iret, ndlno, igeom, natemp
+    integer(kind=8) :: nno, nnos, kp, npg, ndim, nnom, napre1, napre2, ndim2
+    integer(kind=8) :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
+    integer(kind=8) :: ipres, k, kk, i, l, ires, iflux, itemps, iopt, ipresf, ndlnm
+    integer(kind=8) :: ifluxf, iret, ndlno, igeom, natemp
     real(kind=8) :: poids, r, z, tx, ty, nx, ny, valpar(3), deltat, tplus
     real(kind=8) :: pres, presf, poids2, nx2, ny2, flu1, flu2, fluth
     character(len=8) :: nompar(3), elrefe, elref2

@@ -43,7 +43,7 @@ subroutine pbflu0(rhof, hmoy, rmoy, long, icoq, &
 !-----------------------------------------------------------------------
 !
     real(kind=8) :: rhof, hmoy, rmoy, long
-    integer :: icoq, imod, nbm
+    integer(kind=8) :: icoq, imod, nbm
     real(kind=8) :: rkip, tcoef(10, nbm), d(6)
 !
     real(kind=8) :: ln
@@ -51,7 +51,7 @@ subroutine pbflu0(rhof, hmoy, rmoy, long, icoq, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: itab
+    integer(kind=8) :: itab
     real(kind=8) :: a1, a2, a3, a4, b1, b2, b3
     real(kind=8) :: b4, c1, c2, c3, c4, poids, tole
     real(kind=8) :: u, v, vi1, vi2, x, y, z

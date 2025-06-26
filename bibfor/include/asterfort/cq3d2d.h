@@ -20,7 +20,7 @@
 !
 interface
     subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: coor3d(*)
         real(kind=8) :: coteta
         real(kind=8) :: siteta

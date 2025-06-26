@@ -34,7 +34,7 @@ function spect4(xx, y, xlc, vitn, rhoe, &
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-    integer :: i, im, jm, nbp
+    integer(kind=8) :: i, im, jm, nbp
     real(kind=8) :: defm(nbp, *), vitn(nbp, *), rhoe(nbp, *), xlc, xx, y
 !
 !-----------------------------------------------------------------------

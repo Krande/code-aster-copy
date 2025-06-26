@@ -57,8 +57,8 @@ subroutine eps2mc(nno, ndim, nbsig, npg, ipoids, &
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, idecno, idfde, igau, ipoids, ivf, k
-    integer :: nbsig, ndim, nno, npg
+    integer(kind=8) :: i, idecno, idfde, igau, ipoids, ivf, k
+    integer(kind=8) :: nbsig, ndim, nno, npg
     real(kind=8) :: dudx, dudy, dudz, dvdx, dvdy, dvdz, dwdx
     real(kind=8) :: dwdy, dwdz, dx, rayon, undemi, zero
 !-----------------------------------------------------------------------

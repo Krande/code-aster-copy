@@ -53,11 +53,11 @@ subroutine te0299(option, nomte)
 #include "asterfort/coor_cyl.h"
 #include "asterfort/provec.h"
 !
-    integer :: icodre(3), matcod, ncmp, i1, ij
-    integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos, jgano
-    integer :: igeom, ithet, irota, ipesa, ificg, idepl, iret, ipuls, isigi
-    integer :: imate, iforc, iforf, ifond, itemps, k, i, j, kk, l, ndim, jtab(7)
-    integer :: ino
+    integer(kind=8) :: icodre(3), matcod, ncmp, i1, ij
+    integer(kind=8) :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos, jgano
+    integer(kind=8) :: igeom, ithet, irota, ipesa, ificg, idepl, iret, ipuls, isigi
+    integer(kind=8) :: imate, iforc, iforf, ifond, itemps, k, i, j, kk, l, ndim, jtab(7)
+    integer(kind=8) :: ino
 !
     real(kind=8) :: dfdi(18), f(3, 3), eps(6), fno(18), sigin(6), dsigin(6, 3)
     real(kind=8) :: dudm(3, 4), dfdm(3, 4), dtdm(3, 4), der(4)

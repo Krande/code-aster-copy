@@ -51,13 +51,13 @@ subroutine nm1das(fami, kpg, ksp, e, syc, &
     real(kind=8) :: e, epsthe, syc, syt, etc, ett, cr, tmoins, tplus
     real(kind=8) :: sigm, deps, pmt, pmc, xmt, xmc, xpt, xpc, vim(4), vip(4)
     real(kind=8) :: sig, ppt, ppc, dsdem, dsdep
-    integer :: kpg, ksp
+    integer(kind=8) :: kpg, ksp
     character(len=*) :: fami
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES
 !     ------------------------------------------------------------------
     real(kind=8) :: rmc, rmt, sige, ht, hc, depmec, dpt, rpt, dpc, rpc, sigd
-    integer :: icodma
+    integer(kind=8) :: icodma
 !
 !     ------------------------------------------------------------------
 !     VARIABLES INTERMEDIAIRES

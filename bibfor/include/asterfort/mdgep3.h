@@ -21,16 +21,16 @@
 interface
     subroutine mdgep3(neq, nbexci, psidel, temps, nomfon,&
                       tab, kacce, kprof, inst, indice, taille)
-        integer, intent(in) :: nbexci
-        integer, intent(in) :: neq
+        integer(kind=8), intent(in) :: nbexci
+        integer(kind=8), intent(in) :: neq
         real(kind=8), intent(in) :: psidel(neq, nbexci)
         real(kind=8), intent(in) :: temps
         character(len=8), intent(in) :: nomfon(2*nbexci)
         real(kind=8), intent(out) :: tab(neq)
         character(len=4), intent(in), optional :: kacce
         character(len=4), intent(in), optional :: kprof
-        integer, intent(in), optional :: inst
-        integer, intent(inout), optional :: indice
-        integer, intent(inout), optional :: taille
+        integer(kind=8), intent(in), optional :: inst
+        integer(kind=8), intent(inout), optional :: indice
+        integer(kind=8), intent(inout), optional :: taille
     end subroutine mdgep3
 end interface

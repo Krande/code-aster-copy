@@ -54,17 +54,17 @@ subroutine cesgno(ces1, celfpg, ces2)
 !         REMARQUE : LE CHAM_ELEM_S EST DEJA ALLOUE.
 !-----------------------------------------------------------------------
 !
-    integer, parameter :: nbpgmx = 27
+    integer(kind=8), parameter :: nbpgmx = 27
     character(len=8) :: elrf, fapg1, fapg(MT_NBFAMX)
-    integer :: nbfpg, nbpg(MT_NBFAMX), ndiml, nnol, nnosl
+    integer(kind=8) :: nbfpg, nbpg(MT_NBFAMX), ndiml, nnol, nnosl
 !
-    integer :: ima, ncmp, icmp, ino, isp, nno
-    integer :: nbma, iret
-    integer :: npg, ipg, nujni, nbobj
-    integer :: jces1d, jces1l, jces1v, jces1c, iad1, nbpt1, nbsp1
-    integer :: jces2d, jces2l, jces2v, iad2, nbpt2, nbsp2
-    integer :: jmat, jganol, ivfl, jdfd2l, jcoopl, ipoidl, npgl, lonfam
-    integer :: ifam, decal, jvr, idfdel, nufpg, avance, jnofpg
+    integer(kind=8) :: ima, ncmp, icmp, ino, isp, nno
+    integer(kind=8) :: nbma, iret
+    integer(kind=8) :: npg, ipg, nujni, nbobj
+    integer(kind=8) :: jces1d, jces1l, jces1v, jces1c, iad1, nbpt1, nbsp1
+    integer(kind=8) :: jces2d, jces2l, jces2v, iad2, nbpt2, nbsp2
+    integer(kind=8) :: jmat, jganol, ivfl, jdfd2l, jcoopl, ipoidl, npgl, lonfam
+    integer(kind=8) :: ifam, decal, jvr, idfdel, nufpg, avance, jnofpg
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=16) :: schema
@@ -72,8 +72,8 @@ subroutine cesgno(ces1, celfpg, ces2)
     real(kind=8) :: vrpg(nbpgmx), vrno(MT_NNOMAX), sr
     complex(kind=8) :: vcpg(nbpgmx), vcno(MT_NNOMAX), sc
     character(len=8), pointer :: cesk(:) => null()
-    integer :: ndim
-    integer :: nnos, ipoids, jcoopg, ivf, idfde, jdfd2, jgano
+    integer(kind=8) :: ndim
+    integer(kind=8) :: nnos, ipoids, jcoopg, ivf, idfde, jdfd2, jgano
 !
 !
 !     ------------------------------------------------------------------

@@ -23,6 +23,6 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Measure), intent(in) :: ds_measure
         character(len=*), intent(in) :: timer_type_
-        integer, intent(out) :: vali
+        integer(kind=8), intent(out) :: vali
     end subroutine nmtima
 end interface

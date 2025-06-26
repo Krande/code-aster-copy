@@ -22,7 +22,7 @@ interface
         real(kind=8) :: l3(3)
         real(kind=8) :: vss33(3, 3)
         real(kind=8) :: dim3
-        integer :: ndim
-        integer :: ifour
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ifour
     end subroutine tail_reel
 end interface

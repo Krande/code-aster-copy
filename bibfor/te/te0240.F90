@@ -49,9 +49,9 @@ subroutine te0240(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imate, itype, lmat, lorien, lsect, lsect2
-    integer :: kpg, spt
-    integer :: nbpar, nc, nno
+    integer(kind=8) :: imate, itype, lmat, lorien, lsect, lsect2
+    integer(kind=8) :: kpg, spt
+    integer(kind=8) :: nbpar, nc, nno
 !
     real(kind=8) :: rho, valpar
     real(kind=8) :: pgl(3, 3), mat(136)
@@ -64,9 +64,9 @@ subroutine te0240(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=2)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) ::  nomres(nbres)
 !

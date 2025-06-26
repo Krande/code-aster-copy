@@ -21,10 +21,10 @@
 interface
     subroutine vpordc(type, iordre, nbpro, valpro, vecpro,&
                       neq)
-        integer :: neq
-        integer :: nbpro
-        integer :: type
-        integer :: iordre
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbpro
+        integer(kind=8) :: type
+        integer(kind=8) :: iordre
         complex(kind=8) :: valpro(*)
         complex(kind=8) :: vecpro(neq, nbpro)
     end subroutine vpordc

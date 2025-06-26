@@ -26,11 +26,11 @@ interface
         aster_logical, intent(in) :: l_vf
         character(len=8), intent(in) :: elrefe
         character(len=8), intent(in) :: elref2
-        integer, intent(out) :: nno, nnos, nnom
-        integer, intent(out) :: jv_gano
-        integer, intent(out) :: jv_poids, jv_poids2
-        integer, intent(out) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
+        integer(kind=8), intent(out) :: nno, nnos, nnom
+        integer(kind=8), intent(out) :: jv_gano
+        integer(kind=8), intent(out) :: jv_poids, jv_poids2
+        integer(kind=8), intent(out) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
         character(len=3), optional, intent(in) :: inte_type_
-        integer, optional, intent(out):: npi_, npi2_, npg_
+        integer(kind=8), optional, intent(out):: npi_, npi2_, npg_
     end subroutine thmGetElemInfo
 end interface

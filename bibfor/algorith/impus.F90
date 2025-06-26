@@ -21,12 +21,12 @@ subroutine impus(isor, ibl, pusee)
 !     IMPRESSION PUISSANCE D USURE
 !
 !
-    integer :: isor
+    integer(kind=8) :: isor
     real(kind=8) :: pusee
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibl
+    integer(kind=8) :: ibl
 !-----------------------------------------------------------------------
     if (ibl .eq. 1) then
         write (isor, *) ' '

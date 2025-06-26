@@ -26,7 +26,7 @@ subroutine crsvmf(motfac, solveu, istop, nprec, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-    integer :: istop, nprec
+    integer(kind=8) :: istop, nprec
     real(kind=8) :: epsmat
     character(len=3) :: mixpre, kellag
     character(len=8) :: kxfem
@@ -47,9 +47,9 @@ subroutine crsvmf(motfac, solveu, istop, nprec, &
 !
 !
 !
-    integer ::    ibid
+    integer(kind=8) ::    ibid
     character(len=8) :: renum
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !

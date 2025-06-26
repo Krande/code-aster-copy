@@ -27,7 +27,7 @@ interface
         character(len=*) :: nu
         character(len=*) :: vecpro
         character(len=4) :: motcle
-        integer :: type
+        integer(kind=8) :: type
         character(len=24) :: fomult
         real(kind=8) :: instap
     end subroutine assvss

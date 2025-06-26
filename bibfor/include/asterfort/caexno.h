@@ -26,6 +26,6 @@ interface
         character(len=*) :: motfac
         character(len=*) :: mcgrno
         character(len=*) :: mcno
-        integer :: iocc
+        integer(kind=8) :: iocc
     end subroutine caexno
 end interface

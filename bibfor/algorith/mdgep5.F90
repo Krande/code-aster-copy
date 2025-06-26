@@ -19,7 +19,7 @@
 subroutine mdgep5(neq, nbmode, bmodal, xgene, iddl, &
                   u)
     implicit none
-    integer :: neq, nbmode, iddl, j
+    integer(kind=8) :: neq, nbmode, iddl, j
     real(kind=8) :: bmodal(neq, *)
     complex(kind=8) :: xgene(*), u
     u = dcmplx(0.d0, 0.d0)

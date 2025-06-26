@@ -19,7 +19,7 @@
 subroutine btsir(lonlig, loncol, jacgau, bmat, sigma, &
                  bsigma)
     implicit none
-    integer :: i, j, loncol, lonlig
+    integer(kind=8) :: i, j, loncol, lonlig
     real(kind=8) :: jacgau, bmat(loncol, 1), sigma(1), bsigma(1)
     real(kind=8) :: valbsi
 !-----------------------------------------------------------------------

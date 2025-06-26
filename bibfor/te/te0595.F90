@@ -60,15 +60,15 @@ subroutine te0595(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: mini, matsym
-    integer :: ndim, nnod, nnop, npg, ntrou
-    integer :: icoret, codret, iret
-    integer :: iw, ivfd, ivfp, idfd
-    integer :: jtab(7), lgpg
-    integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, imate, icontm, ivarim
-    integer :: iinstm, iinstp, iddlm, iddld, icarcr
-    integer :: ivectu, icontp, ivarip, imatuu
-    integer :: nddl, ibid
+    integer(kind=8) :: ndim, nnod, nnop, npg, ntrou
+    integer(kind=8) :: icoret, codret, iret
+    integer(kind=8) :: iw, ivfd, ivfp, idfd
+    integer(kind=8) :: jtab(7), lgpg
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
+    integer(kind=8) :: igeom, imate, icontm, ivarim
+    integer(kind=8) :: iinstm, iinstp, iddlm, iddld, icarcr
+    integer(kind=8) :: ivectu, icontp, ivarip, imatuu
+    integer(kind=8) :: nddl, ibid
     real(kind=8) :: angmas(3)
     character(len=8) :: lielrf(10), typmod(2), alias8
     character(len=16) :: defo_comp

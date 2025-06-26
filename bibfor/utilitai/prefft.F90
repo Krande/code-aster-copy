@@ -43,7 +43,7 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
-    integer :: npara, nsens, npuis
+    integer(kind=8) :: npara, nsens, npuis
     character(len=4) :: grand
     character(len=16) :: symetr, method, kmpi
     character(len=19) :: resin, vectot
@@ -67,11 +67,11 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
 !
 !
 !     ------------------------------------------------------------------
-    integer :: nbva, n, nbpts, nbpts1, nbpts2
-    integer :: nbordr, jordr, ibid, i, ii
-    integer :: iordr, lacce, lfon, iddl, neq
-    integer :: lvar, ier, lordr, lval, iret, tord(1)
-    integer :: lvale, nout, nbvout, lfon2, j, ltra
+    integer(kind=8) :: nbva, n, nbpts, nbpts1, nbpts2
+    integer(kind=8) :: nbordr, jordr, ibid, i, ii
+    integer(kind=8) :: iordr, lacce, lfon, iddl, neq
+    integer(kind=8) :: lvar, ier, lordr, lval, iret, tord(1)
+    integer(kind=8) :: lvale, nout, nbvout, lfon2, j, ltra
     real(kind=8) :: r8b, dimag, rzero
     complex(kind=8) :: c16b, czero
     character(len=3) :: k3
@@ -82,8 +82,8 @@ subroutine prefft(resin, method, symetr, nsens, grand, &
     character(len=24) :: chdep2, typres, kdist
     aster_logical :: ldist, dbg_ob, lmkl
     mpi_int :: mpicou, mpicow, mrang, mnbproc
-    integer :: rang, nbproc, nbloc, impi, iaux, jkdist, ndist
-    integer :: ifm, niv, nbout, minj, maxj, ndist1, lcham
+    integer(kind=8) :: rang, nbproc, nbloc, impi, iaux, jkdist, ndist
+    integer(kind=8) :: ifm, niv, nbout, minj, maxj, ndist1, lcham
     blas_int :: b_incx, b_incy, b_n
 !
 !

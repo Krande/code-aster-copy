@@ -21,13 +21,13 @@
 interface
     subroutine rotchm(profno, vale, tetss, nbss, invsk,&
                       nbnot, nbcmp, iax)
-        integer :: nbnot
-        integer :: nbss
+        integer(kind=8) :: nbnot
+        integer(kind=8) :: nbss
         character(len=19) :: profno
         real(kind=8) :: vale(*)
         real(kind=8) :: tetss(nbss)
-        integer :: invsk(nbnot, 2)
-        integer :: nbcmp
-        integer :: iax
+        integer(kind=8) :: invsk(nbnot, 2)
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: iax
     end subroutine rotchm
 end interface

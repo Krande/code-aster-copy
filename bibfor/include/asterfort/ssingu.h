@@ -21,9 +21,9 @@
 interface
     subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha,&
                       re, he, chelem)
-        integer :: nelem
+        integer(kind=8) :: nelem
         character(len=8) :: nomail
-        integer :: nbr(nelem)
+        integer(kind=8) :: nbr(nelem)
         character(len=24) :: ligrmo
         real(kind=8) :: alpha(nelem)
         real(kind=8) :: re(nelem)

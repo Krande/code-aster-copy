@@ -24,7 +24,7 @@ interface
                              nu12i   , &
                              hr, hi)
 !
-        integer, intent(in) :: elas_id
+        integer(kind=8), intent(in) :: elas_id
         real(kind=8), intent(in) :: nu, g, e1, e2
         real(kind=8), intent(in) :: nu12
         real(kind=8), intent(in) :: nui, gi, e1i, e2i

@@ -22,12 +22,12 @@ interface
                       xcrit, ceigen, cmod, ndimax, cmat1,&
                       cmat2, cvect, cvect1, alpha, beta,&
                       lambd1, lambd2, interv)
-        integer :: ndimax
-        integer :: nbmod
-        integer :: ndim
+        integer(kind=8) :: ndimax
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: ndim
         complex(kind=8) :: ck(*)
         complex(kind=8) :: cm(*)
-        integer :: niter
+        integer(kind=8) :: niter
         real(kind=8) :: xcrit
         complex(kind=8) :: ceigen(nbmod)
         complex(kind=8) :: cmod(ndimax, nbmod)

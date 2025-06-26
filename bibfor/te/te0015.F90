@@ -39,13 +39,13 @@ subroutine te0015(option, nomte)
 !.......................................................................
 !
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: rho(1), coef
     real(kind=8) :: poids
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: jgano, imate, ipesa, ivectu, nnos
-    integer :: ndim, nno, npg, ndl, kp, l, i, ii, j
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: jgano, imate, ipesa, ivectu, nnos
+    integer(kind=8) :: ndim, nno, npg, ndl, kp, l, i, ii, j
 !
 !
 !

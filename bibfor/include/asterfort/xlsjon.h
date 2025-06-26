@@ -20,10 +20,10 @@
 !
 interface
     subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
-        integer :: ino
-        integer :: jlsn
-        integer :: nfiss
-        integer :: jfisco
+        integer(kind=8) :: ino
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: jfisco
         real(kind=8) :: jonc_no(nfiss)
     end subroutine xlsjon
 end interface

@@ -20,12 +20,12 @@
 interface
     subroutine greihm(ndim, mecani, press1,&
                       press2, tempe, dimdef, dimcon)
-        integer :: ndim
-        integer :: mecani(8)
-        integer :: press1(9)
-        integer :: press2(9)
-        integer :: tempe(5)
-        integer :: dimdef
-        integer :: dimcon
+        integer(kind=8) :: ndim
+        integer(kind=8) :: mecani(8)
+        integer(kind=8) :: press1(9)
+        integer(kind=8) :: press2(9)
+        integer(kind=8) :: tempe(5)
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimcon
     end subroutine greihm
 end interface

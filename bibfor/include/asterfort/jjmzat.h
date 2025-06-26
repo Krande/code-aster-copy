@@ -20,7 +20,7 @@
 !
 interface
     subroutine jjmzat(iclas, idat)
-        integer :: iclas
-        integer :: idat
+        integer(kind=8) :: iclas
+        integer(kind=8) :: idat
     end subroutine jjmzat
 end interface

@@ -21,7 +21,7 @@ interface
                       vectce, vectcm, vectfe, vectfm,&
                       vectcc, vectff,&
                       vcont , vfric)
-        integer, intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
+        integer(kind=8), intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
         real(kind=8), intent(in) :: vectce(27), vectcm(27)
         real(kind=8), intent(in) :: vectfe(27), vectfm(27)
         real(kind=8), intent(in) :: vectcc(9), vectff(18)

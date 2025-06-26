@@ -19,7 +19,7 @@
 subroutine hbmajs(dg, nbmat, materf, se, i1e, &
                   sigeqe, etap, sigp)
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: dg, materf(nbmat, 2), se(6), i1e, sigp(6), sigeqe, etap
 ! ======================================================================
 ! --- LOI DE HOEK BROWN : MISE A JOUR DES CONTRAINTES A T+ -------------
@@ -31,7 +31,7 @@ subroutine hbmajs(dg, nbmat, materf, se, i1e, &
 ! IN   ETAP    VALEUR DE ETA A GAMMA_PLUS ------------------------------
 ! OUT  SIGP    CONTRAINTES A T+ ----------------------------------------
 ! ======================================================================
-    integer :: ii, ndi, ndt
+    integer(kind=8) :: ii, ndi, ndt
     real(kind=8) :: k, mu, i1, dev(6), un, neuf, trois
 ! =================================================================
     parameter(un=1.0d0)

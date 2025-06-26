@@ -49,18 +49,18 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol, &
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    integer :: jprol, jvale, nbvale, jmat
+    integer(kind=8) :: jprol, jvale, nbvale, jmat
     real(kind=8) :: temp, e
-    integer :: ktrac
+    integer(kind=8) :: ktrac
     character(len=*) :: nomcl
     character(len=*), optional, intent(in) :: materi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imate, nbmat
-    integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, ipifc, jpro, kmat
-    integer :: jvalf1, nbvf1, kk, k1, k2, nar, inom
-    integer :: jvaln, nbvn, ii, jj, jvalf2, nbvf2
+    integer(kind=8) :: imate, nbmat
+    integer(kind=8) :: icomp, ipi, idf, nbf, ivalk, ik, ipif, ipifc, jpro, kmat
+    integer(kind=8) :: jvalf1, nbvf1, kk, k1, k2, nar, inom
+    integer(kind=8) :: jvaln, nbvn, ii, jj, jvalf2, nbvf2
     real(kind=8) :: coef, tole, t1, t2, e1, e2, z1, z2, zp1, zp2
     real(kind=8) :: rprim1, rp1, rprim2, rp2
     aster_logical :: procon, ltrac
@@ -70,7 +70,7 @@ subroutine rctrac(jmat, ktrac, nomcl, temp, jprol, &
 !
 ! --------------------------------------------------------------------------------------------------
 !   PARAMETER ASSOCIE AU MATERIAU CODE
-    integer :: lmat, lfct, lsup
+    integer(kind=8) :: lmat, lfct, lsup
     parameter(lmat=9, lfct=10, lsup=2)
 !
 ! --------------------------------------------------------------------------------------------------

@@ -19,6 +19,6 @@
 interface
     subroutine contSetInit(sdcont, mesh, nbContZone)
         character(len=8), intent(in) :: sdcont, mesh
-        integer, intent(in) :: nbContZone
+        integer(kind=8), intent(in) :: nbContZone
     end subroutine contSetInit
 end interface

@@ -24,10 +24,10 @@ subroutine mltafp(n, ncol, adper, matper, matfi, &
 ! POUR UNE MEILLEURE UTILISATION DES REGISTRES SUR CRAY
     implicit none
     integer(kind=4) :: local(*)
-    integer :: n, ncol, adper(*)
+    integer(kind=8) :: n, ncol, adper(*)
     real(kind=8) :: matper(*), matfi(*)
 !     VARIABLES LOCALES
-    integer :: decp1, decf1, j, i, ni
+    integer(kind=8) :: decp1, decf1, j, i, ni
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     decf1 = 1

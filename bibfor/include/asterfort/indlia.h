@@ -23,8 +23,8 @@ interface
                       sizlia)
         character(len=8) :: modgen
         character(len=24) :: seliai
-        integer :: nindep
-        integer :: nbddl
+        integer(kind=8) :: nindep
+        integer(kind=8) :: nbddl
         character(len=24) :: sst
         character(len=24) :: sizlia
     end subroutine indlia

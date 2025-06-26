@@ -60,7 +60,7 @@ subroutine angcou(coor, zk1, izk, icoude, zk2, &
 !                      ZK2        -->  VECTEUR ZK AU NOEUD MILIEU
 ! ......................................................................
 !
-    integer :: icoude, i, izk
+    integer(kind=8) :: icoude, i, izk
     real(kind=8) :: test
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

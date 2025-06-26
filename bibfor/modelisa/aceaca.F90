@@ -29,7 +29,7 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/wkvect.h"
-    integer :: lmax, nbocc
+    integer(kind=8) :: lmax, nbocc
     character(len=8) :: nomu, noma
 !     AFFE_CARA_ELEM
 !     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT CABLE
@@ -47,8 +47,8 @@ subroutine aceaca(nomu, noma, lmax, nbocc)
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
-    integer :: i, ioc, jdcc, jdccf, jdls, jdvc, jdvcf
-    integer :: nfcx, ng, nt, nv
+    integer(kind=8) :: i, ioc, jdcc, jdccf, jdls, jdvc, jdvcf
+    integer(kind=8) :: nfcx, ng, nt, nv
 !-----------------------------------------------------------------------
     call jemarq()
     cartca = nomu//'.CARCABLE'

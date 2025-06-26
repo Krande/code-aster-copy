@@ -22,7 +22,7 @@ subroutine teneps(jrwork, adr, sig, eps, epse, &
     implicit none
 #include "jeveux.h"
 !
-    integer, intent(in) :: jrwork, adr
+    integer(kind=8), intent(in) :: jrwork, adr
     real(kind=8), intent(out) :: sig(6), eps(6), epse(6), epsp(6)
 !
 !
@@ -38,7 +38,7 @@ subroutine teneps(jrwork, adr, sig, eps, epse, &
 !    EPSE   : OUT : DEFORMATION ELASTIQUE (6 COMPOSANTES)
 !    SIG    : OUT : DEFORMATION PLASTIQUE (6 COMPOSANTES)
 !-----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
 !
     do k = 1, 6
         sig(k) = 0.0d0

@@ -59,14 +59,14 @@ subroutine arlmaf(mail, mailar, dime, ngrma, ima, &
 !     ARGUMENTS:
 !     ----------
     character(len=8) :: mail, mailar
-    integer :: dime
-    integer :: connex(*), loncum(*)
+    integer(kind=8) :: dime
+    integer(kind=8) :: connex(*), loncum(*)
     character(len=19) :: ngrma
-    integer :: imail
-    integer :: ima, nummai, cxcumu
-    integer :: itypma, iret
-    integer :: cxno(27), nbno, ino, cxmax
-    integer :: jgcnx, jtypm
+    integer(kind=8) :: imail
+    integer(kind=8) :: ima, nummai, cxcumu
+    integer(kind=8) :: itypma, iret
+    integer(kind=8) :: cxno(27), nbno, ino, cxmax
+    integer(kind=8) :: jgcnx, jtypm
     character(len=8) :: nomel, nommai, k8bid
     character(len=24) :: mconn, mtypm
 !

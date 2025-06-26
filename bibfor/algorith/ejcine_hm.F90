@@ -30,7 +30,7 @@ subroutine ejcine_hm(ndim, axi, nno1, nno2, vff1, &
 #include "asterfort/sumetr.h"
 #include "blas/ddot.h"
     aster_logical :: axi
-    integer :: ndim, nno1, nno2
+    integer(kind=8) :: ndim, nno1, nno2
     real(kind=8) :: wref, vff1(nno1), vff2(nno2), geom(ndim, nno2), ang(*)
     real(kind=8) :: dffr2(ndim-1, nno2), wg, b(3, 3, 2*nno1)
 !-----------------------------------------------------------------------
@@ -49,7 +49,7 @@ subroutine ejcine_hm(ndim, axi, nno1, nno2, vff1, &
 ! OUT WG     POIDS REEL DU POINT DE GAUSS (AVEC DISTORSION)
 ! OUT B      MATRICE DE PASSAGE UNODAL -> SAUT DE U LOCAL
 !-----------------------------------------------------------------------
-    integer :: n, i, j, nang
+    integer(kind=8) :: n, i, j, nang
     real(kind=8) :: cova(3, 3), metr(2, 2), dfdx(9), cour, jac, cosa, sina
     real(kind=8) :: angloc(3), rot(3, 3), r, rmax
     blas_int :: b_incx, b_incy, b_n

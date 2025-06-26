@@ -24,7 +24,7 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse, &
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/ermev2.h"
-    integer :: cpt, npg, ndim, igeom, jsigse
+    integer(kind=8) :: cpt, npg, ndim, igeom, jsigse
     real(kind=8) :: tvolse, coorse(*)
 !  XFEM - ERREUR EN MECANIQUE - TERME VOLUMIQUE - DIMENSION 2
 !  *       *        **                *                     *
@@ -59,13 +59,13 @@ subroutine xrmev2(cpt, npg, ndim, igeom, jsigse, &
 !
 !
 !
-    integer :: nbcmp
+    integer(kind=8) :: nbcmp
     parameter(nbcmp=4)
 !
     real(kind=8) :: dfdx(3), dfdy(3), poijac, dsx, dsy, norme, signse(nbcmp*27)
-    integer :: ndimb, nno, nnos, npgbis, ipoids, jcoopg, ivf, idfde, jdfd2
-    integer :: jgano
-    integer :: kpg, n, ibid, icmp, iadpg
+    integer(kind=8) :: ndimb, nno, nnos, npgbis, ipoids, jcoopg, ivf, idfde, jdfd2
+    integer(kind=8) :: jgano
+    integer(kind=8) :: kpg, n, ibid, icmp, iadpg
 !
 ! ----------------------------------------------------------------------
 !

@@ -22,7 +22,7 @@ subroutine impcom(inoda, nomddl, chaine)
 !
     implicit none
     character(len=8) :: nomddl
-    integer :: inoda
+    integer(kind=8) :: inoda
     character(len=16) :: chaine
 !
 ! ----------------------------------------------------------------------
@@ -44,8 +44,8 @@ subroutine impcom(inoda, nomddl, chaine)
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: chnod
-    integer :: i, k
-    integer :: nchain
+    integer(kind=8) :: i, k
+    integer(kind=8) :: nchain
     parameter(nchain=7)
 !
 ! ----------------------------------------------------------------------

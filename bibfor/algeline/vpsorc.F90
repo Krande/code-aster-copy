@@ -110,8 +110,8 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq, &
 #include "asterfort/znaupd.h"
 #include "asterfort/zneupd.h"
 !
-    integer :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq), neqact
-    integer :: maxitr, ifm, niv, priram(8), nconv
+   integer(kind=8) :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq), neqact
+    integer(kind=8) :: maxitr, ifm, niv, priram(8), nconv
     real(kind=8) :: tolsor, alpha, rwork(*)
     complex(kind=8) :: vect(nbeq, *), resid(*), workd(*), workl(*), dsor(*), vaux(*), workv(*)
     complex(kind=8) :: sigma
@@ -122,17 +122,17 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq, &
 ! DECLARATION VARIABLES LOCALES
 !
 ! POUR LE FONCTIONNEMENT GLOBAL
-    integer :: i, j
-    integer :: iret
+    integer(kind=8) :: i, j
+    integer(kind=8) :: iret
 !
 ! POUR ARPACK
-    integer :: ido, info, ishfts, mode, iparam(11), ipntr(14), vali(6)
+    integer(kind=8) :: ido, info, ishfts, mode, iparam(11), ipntr(14), vali(6)
     aster_logical :: rvec
     character(len=1) :: bmat, kbid
     character(len=2) :: which
     character(len=19) :: k19bid, matass, chcine, criter
 !
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+   integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd

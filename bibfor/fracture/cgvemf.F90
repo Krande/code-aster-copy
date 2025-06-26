@@ -42,7 +42,7 @@ subroutine cgvemf(modele, typfis, nomfis, typdis)
 !             'FISSURE' OU 'COHESIF'
 ! ======================================================================
 !
-    integer :: ixfem
+    integer(kind=8) :: ixfem
     aster_logical :: fiinmo
     character(len=8) :: valk(2)
 !

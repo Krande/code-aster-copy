@@ -36,7 +36,7 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp, &
 #include "asterfort/as_allocate.h"
 !
     character(len=*) :: cns1z, cns2z, base
-    integer :: nbno, nbcmp, lino(nbno)
+    integer(kind=8) :: nbno, nbcmp, lino(nbno)
     character(len=*) :: licmp(nbcmp)
 ! ---------------------------------------------------------------------
 ! BUT: REDUIRE UN CHAM_NO_S SUR UN ENSEMBLE DE NOEUDS ET DE COMPOSANTES
@@ -69,17 +69,17 @@ subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp, &
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcn1v, jcn1l, nbnom, ncmp2, kno
-    integer :: icmp2
-    integer :: jcn2d, jcn2v, jcn2l
-    integer :: ncmpmx, ncmp1, icmp1
-    integer :: ino
+    integer(kind=8) :: jcn1v, jcn1l, nbnom, ncmp2, kno
+    integer(kind=8) :: icmp2
+    integer(kind=8) :: jcn2d, jcn2v, jcn2l
+    integer(kind=8) :: ncmpmx, ncmp1, icmp1
+    integer(kind=8) :: ino
     character(len=8) :: ma, nomgd, nocmp
     character(len=3) :: tsca
     character(len=19) :: cns1, cns2
     character(len=8), pointer :: cn1c(:) => null()
     character(len=8), pointer :: cn2c(:) => null()
-    integer, pointer :: cn1d(:) => null()
+    integer(kind=8), pointer :: cn1d(:) => null()
     aster_logical, pointer :: exino(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()

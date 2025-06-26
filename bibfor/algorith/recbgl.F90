@@ -82,23 +82,23 @@ subroutine recbgl(nomres, typsd, modcyc, profno, indirf, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, icomp, iddi, idi, idiam
-    integer :: idicou, ieqf, ieqi, ier, ii, inum, iorc
-    integer :: iormo, j, jj, k, ldfreq, ldkge, ldmge
-    integer :: ldom2, ldomo, ldotm, ldtyd, llcham
-    integer ::   llmoc, lmass
-    integer :: ltetgd, ltinds, ltora, ltord, ltorf, ltorg, ltorto
-    integer ::  ltveco, ltvere, ltvezt, mdiapa, nbcmp, nbdax
-    integer :: nbddg, nbddr, nbdia, nbmoc, nbmod, nbnot, nborc
-    integer :: nbsec, nddcou, neq, neqsec, numa, numd, numg
+    integer(kind=8) :: i, iad, ibid, icomp, iddi, idi, idiam
+    integer(kind=8) :: idicou, ieqf, ieqi, ier, ii, inum, iorc
+    integer(kind=8) :: iormo, j, jj, k, ldfreq, ldkge, ldmge
+    integer(kind=8) :: ldom2, ldomo, ldotm, ldtyd, llcham
+    integer(kind=8) ::   llmoc, lmass
+    integer(kind=8) :: ltetgd, ltinds, ltora, ltord, ltorf, ltorg, ltorto
+    integer(kind=8) ::  ltveco, ltvere, ltvezt, mdiapa, nbcmp, nbdax
+    integer(kind=8) :: nbddg, nbddr, nbdia, nbmoc, nbmod, nbnot, nborc
+    integer(kind=8) :: nbsec, nddcou, neq, neqsec, numa, numd, numg
     real(kind=8), pointer :: teta_secteur(:) => null()
-    integer, pointer :: cycl_nbsc(:) => null()
+    integer(kind=8), pointer :: cycl_nbsc(:) => null()
     real(kind=8), pointer :: cycl_freq(:) => null()
-    integer, pointer :: skeleton(:) => null()
-    integer, pointer :: cycl_desc(:) => null()
-    integer, pointer :: cycl_diam(:) => null()
+    integer(kind=8), pointer :: skeleton(:) => null()
+    integer(kind=8), pointer :: cycl_desc(:) => null()
+    integer(kind=8), pointer :: cycl_diam(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
-    integer, pointer :: cycl_nuin(:) => null()
+    integer(kind=8), pointer :: cycl_nuin(:) => null()
 !
 !-----------------------------------------------------------------------
     data depl/'DEPL            '/

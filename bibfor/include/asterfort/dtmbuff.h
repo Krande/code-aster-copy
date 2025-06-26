@@ -21,7 +21,7 @@
 interface
     subroutine dtmbuff(sd_dtm, addrs, level)
         character(len=*) , intent(in)  :: sd_dtm
-        integer, pointer :: addrs(:)
-        integer, optional, intent(in)  :: level
+        integer(kind=8), pointer :: addrs(:)
+        integer(kind=8), optional, intent(in)  :: level
     end subroutine dtmbuff
 end interface

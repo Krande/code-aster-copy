@@ -50,10 +50,10 @@ subroutine diagav(noma19, neq, ilfin, typvar, eps)
     character(len=1) :: base
     character(len=4) :: kmpic
     real(kind=8) :: eps, diamax, diamin, vabs
-    integer :: neq, ilfin, typvar, ifm, niv, iret, iadigs
-    integer :: jsxdi, nbbloc, ibloc, iavale, idern, iprem, i
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scib(:) => null()
+    integer(kind=8) :: neq, ilfin, typvar, ifm, niv, iret, iadigs
+    integer(kind=8) :: jsxdi, nbbloc, ibloc, iavale, idern, iprem, i
+    integer(kind=8), pointer :: scbl(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
 !

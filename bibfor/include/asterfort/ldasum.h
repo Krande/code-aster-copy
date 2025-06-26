@@ -20,9 +20,9 @@
 !
 interface
     function ldasum(n, dx, incx)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: dx(1)
-        integer :: incx
+        integer(kind=8) :: incx
         real(kind=8) :: ldasum
     end function ldasum
 end interface

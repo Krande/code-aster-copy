@@ -39,7 +39,7 @@ subroutine cjstde(mod, mater, nvi, eps, sig, &
 #include "asterfort/lcdevi.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, i, j, codret
+    integer(kind=8) :: ndt, ndi, nvi, i, j, codret
     real(kind=8) :: mater(14, 2), vin(*), sig(6), dsde(6, 6)
     real(kind=8) :: hook(6, 6), i1, eps(6), epsv, e, nu, al, la, mu
     real(kind=8) :: r, gr, x(6), gx(6), xii, dfdds(6), gd(6), kron(6)

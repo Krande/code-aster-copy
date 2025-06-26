@@ -88,12 +88,12 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     real(kind=8) :: scmaxi
     real(kind=8) :: scmaxs
     real(kind=8) :: ssmax
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     logical :: condns
     real(kind=8) :: astend
     real(kind=8) :: ascomp
@@ -102,9 +102,9 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     real(kind=8) :: sctend
     real(kind=8) :: sccomp
     real(kind=8) :: alpha
-    integer :: pivot
-    integer :: etat
-    integer :: ierr
+    integer(kind=8) :: pivot
+    integer(kind=8) :: etat
+    integer(kind=8) :: ierr
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -117,39 +117,39 @@ subroutine cafelsiter(cequi, effm, effn, ht, bw, &
     logical :: COND_AJOUT_RESIDU, COND_AJOUT_AsCOMP, COND_AJOUT_AsTEND, COND_COUNT
     logical :: COND_COUNT_SYME, COND_COUNT_NOCOMP, COND_AJOUT_Proceed
     logical :: COND_COUNT_SYMENOCOMP
-    integer :: COUNT_CARA, verif, indx_ch
-    integer :: COUNT_CARA_SYME, COUNT_CARA_NOCOMP, COUNT_CARA_SYMENOCOMP
+    integer(kind=8) :: COUNT_CARA, verif, indx_ch
+    integer(kind=8) :: COUNT_CARA_SYME, COUNT_CARA_NOCOMP, COUNT_CARA_SYMENOCOMP
     logical :: COND_F
-    integer :: COUNT_F
-    integer :: N_ET, N_PC, N_PCAC, N_EC, N_TOT
+    integer(kind=8) :: COUNT_F
+    integer(kind=8) :: N_ET, N_PC, N_PCAC, N_EC, N_TOT
 
     real(kind=8), pointer :: SsTEND_ET(:) => null(), SsCOMP_ET(:) => null()
     real(kind=8), pointer :: ScTEND_ET(:) => null(), ScCOMP_ET(:) => null()
     real(kind=8), pointer :: AsTEND_ET(:) => null(), AsCOMP_ET(:) => null()
     real(kind=8), pointer :: alpha_ET(:) => null(), RESIDU_ET(:) => null()
-    integer, pointer :: PIVOT_ET(:) => null(), ETAT_ET(:) => null()
+    integer(kind=8), pointer :: PIVOT_ET(:) => null(), ETAT_ET(:) => null()
 
     real(kind=8), pointer :: SsTEND_PCAC(:) => null(), SsCOMP_PCAC(:) => null()
     real(kind=8), pointer :: ScTEND_PCAC(:) => null(), ScCOMP_PCAC(:) => null()
     real(kind=8), pointer :: AsTEND_PCAC(:) => null(), AsCOMP_PCAC(:) => null()
     real(kind=8), pointer :: alpha_PCAC(:) => null(), RESIDU_PCAC(:) => null()
-    integer, pointer :: PIVOT_PCAC(:) => null(), ETAT_PCAC(:) => null()
+    integer(kind=8), pointer :: PIVOT_PCAC(:) => null(), ETAT_PCAC(:) => null()
 
     real(kind=8), pointer :: SsTEND_EC(:) => null(), SsCOMP_EC(:) => null()
     real(kind=8), pointer :: ScTEND_EC(:) => null(), ScCOMP_EC(:) => null()
     real(kind=8), pointer :: AsTEND_EC(:) => null(), AsCOMP_EC(:) => null()
     real(kind=8), pointer :: alpha_EC(:) => null(), RESIDU_EC(:) => null()
-    integer, pointer :: PIVOT_EC(:) => null(), ETAT_EC(:) => null()
+    integer(kind=8), pointer :: PIVOT_EC(:) => null(), ETAT_EC(:) => null()
 
     real(kind=8), pointer :: SsTEND_TOT(:) => null(), SsCOMP_TOT(:) => null()
     real(kind=8), pointer :: ScTEND_TOT(:) => null(), ScCOMP_TOT(:) => null()
     real(kind=8), pointer :: AsTEND_TOT(:) => null(), AsCOMP_TOT(:) => null()
     real(kind=8), pointer :: alpha_TOT(:) => null(), RESIDU_TOT(:) => null()
-    integer, pointer :: PIVOT_TOT(:) => null(), ETAT_TOT(:) => null()
+    integer(kind=8), pointer :: PIVOT_TOT(:) => null(), ETAT_TOT(:) => null()
 
     real(kind=8), dimension(2, 2) :: Dsys
     real(kind=8), dimension(2) :: SOL
-    integer :: i, j, s, INDICE_F
+    integer(kind=8) :: i, j, s, INDICE_F
 
     character(20) :: p(40)
 

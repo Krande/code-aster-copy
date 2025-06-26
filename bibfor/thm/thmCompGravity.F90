@@ -54,21 +54,21 @@ subroutine thmCompGravity(ds_thm)
 !
     character(len=16) :: phenom
     real(kind=8) :: rho(1), coef, poids, rx
-    integer :: icodre(1)
-    integer :: jv_geom, jv_mater, jv_pesa, jv_vect
+    integer(kind=8) :: icodre(1)
+    integer(kind=8) :: jv_geom, jv_mater, jv_pesa, jv_vect
     character(len=8) :: elrefe, elref2
-    integer :: nno, nnos, nnom
-    integer :: npi, npi2, npg
-    integer :: dimdep, dimdef, dimcon, dimuel
-    integer :: nddls, nddlm
-    integer :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-    integer :: jv_poids, jv_poids2
-    integer :: jv_func, jv_func2, jv_dfunc, jv_dfunc2, jv_gano
-    integer :: kpg, l, i, j, k, ii
+    integer(kind=8) :: nno, nnos, nnom
+    integer(kind=8) :: npi, npi2, npg
+    integer(kind=8) :: dimdep, dimdef, dimcon, dimuel
+    integer(kind=8) :: nddls, nddlm
+    integer(kind=8) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+    integer(kind=8) :: jv_poids, jv_poids2
+    integer(kind=8) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2, jv_gano
+    integer(kind=8) :: kpg, l, i, j, k, ii
     aster_logical :: l_vf, l_axi
     character(len=3) :: inte_type
-    integer :: ndim
-    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8) :: ndim
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !

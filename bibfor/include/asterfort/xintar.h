@@ -21,7 +21,7 @@
 interface
     subroutine xintar(lsna, lsnb, lsnm, a, b,&
                       m, ndim, intar)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: lsna
         real(kind=8) :: lsnb
         real(kind=8) :: lsnm

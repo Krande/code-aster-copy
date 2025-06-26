@@ -42,7 +42,7 @@ subroutine srsige(nmat, materd, deps, sigd, sigf)
     !!! Variables globales
     !!!
 
-    integer :: nmat, ndt, ndi
+    integer(kind=8) :: nmat, ndt, ndi
     real(kind=8) :: materd(nmat, 2)
     real(kind=8) :: sigd(6), sigf(6)
     real(kind=8) :: deps(6)
@@ -51,7 +51,7 @@ subroutine srsige(nmat, materd, deps, sigd, sigf)
     !!! Variables locales
     !!!
 
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: dsde(6, 6), kk, mu, depsv, kron(6)
     real(kind=8) :: i1ml, iel, devsig(6), depsd(6)
     real(kind=8) :: sigdt(6), sigft(6), depst(6)

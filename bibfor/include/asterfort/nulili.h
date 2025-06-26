@@ -19,15 +19,15 @@
 interface
     subroutine nulili(nbLigr, listLigr, lili, base, gran_name, &
                       igds, mesh, nec, nlili, modeLocZ_)
-        integer, intent(in) :: nbLigr
+        integer(kind=8), intent(in) :: nbLigr
         character(len=24), pointer :: listLigr(:)
         character(len=24), intent(in):: lili
         character(len=1), intent(in):: base
         character(len=8), intent(out) :: gran_name
-        integer, intent(out) :: igds
+        integer(kind=8), intent(out) :: igds
         character(len=8), intent(out) :: mesh
-        integer, intent(out) :: nec
-        integer, intent(out) :: nlili
+        integer(kind=8), intent(out) :: nec
+        integer(kind=8), intent(out) :: nlili
         character(len=*), optional, intent(in) :: modeLocZ_
     end subroutine nulili
 end interface

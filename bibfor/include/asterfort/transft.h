@@ -22,8 +22,8 @@ interface
     subroutine transft(modein, kvec, neq, nbpt, nomres)
         character(len=8) :: modein
         character(len=19) :: kvec
-        integer :: neq
-        integer :: nbpt
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbpt
         character(len=8) :: nomres
     end subroutine transft
 end interface 

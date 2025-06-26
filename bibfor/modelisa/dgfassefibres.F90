@@ -32,9 +32,9 @@ subroutine dgfassefibres(nboccasf, iinbgf, tousgroupesnom, tousgroupesnbf, maxma
 !
     implicit none
 !
-    integer :: nboccasf, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres2, maxfibre2, ncarfi2
-    integer :: nbocctype1
-    integer           :: tousgroupesnbf(*)
+    integer(kind=8) :: nboccasf, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres2, maxfibre2, ncarfi2
+    integer(kind=8) :: nbocctype1
+    integer(kind=8)           :: tousgroupesnbf(*)
     character(len=24) :: tousgroupesnom(*)
 !
 #include "jeveux.h"
@@ -47,9 +47,9 @@ subroutine dgfassefibres(nboccasf, iinbgf, tousgroupesnom, tousgroupesnbf, maxma
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer           :: ioc, nbfibreass, ibid, ii, jj, nbvfibre
+    integer(kind=8)           :: ioc, nbfibreass, ibid, ii, jj, nbvfibre
 !
-    integer           :: vali(3)
+    integer(kind=8)           :: vali(3)
     character(len=24) :: valk(3)
 !
     character(len=24), pointer ::    nomgrfibreass(:) => null()

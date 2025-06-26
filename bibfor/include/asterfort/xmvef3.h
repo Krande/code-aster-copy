@@ -22,9 +22,9 @@ interface
     subroutine xmvef3(ndim, nnol, pla, ffc, reac12,&
                       pb, jac, seuil, tau1, tau2,&
                       lact, cstafr, mu, vtmp)
-        integer :: ndim
-        integer :: nnol
-        integer :: pla(27)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnol
+        integer(kind=8) :: pla(27)
         real(kind=8) :: ffc(8)
         real(kind=8) :: reac12(3)
         real(kind=8) :: pb(3)
@@ -32,7 +32,7 @@ interface
         real(kind=8) :: seuil
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        integer :: lact(8)
+        integer(kind=8) :: lact(8)
         real(kind=8) :: cstafr
         real(kind=8) :: mu
         real(kind=8) :: vtmp(400)

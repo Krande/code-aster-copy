@@ -19,7 +19,7 @@
 subroutine acevgb(nbocc, nlm, nlg)
     implicit none
 #include "asterfort/getvtx.h"
-    integer :: nbocc, nlm, nlg
+    integer(kind=8) :: nbocc, nlm, nlg
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR L'ELEMENT "GRILLE"
 ! ----------------------------------------------------------------------
@@ -27,7 +27,7 @@ subroutine acevgb(nbocc, nlm, nlg)
 ! OUT : NLM    : NOMBRE TOTAL DE MAILLE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
-    integer :: ioc, ng, nm, nsom
+    integer(kind=8) :: ioc, ng, nm, nsom
 !     ------------------------------------------------------------------
 !
     nlm = 0

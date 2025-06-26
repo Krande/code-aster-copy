@@ -35,10 +35,10 @@ subroutine te0408(option, nomte)
 !
 ! ------------------------------------------------------------------------------
 !
-    integer :: itabp(8), itempp, ino, nbcou, npgh, itemps
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, isp
-    integer :: ier, igauh, icou, jnbspi, iret, itempf, jresu, jgeom
-    integer :: pta, ptb, ptc, ptd
+    integer(kind=8) :: itabp(8), itempp, ino, nbcou, npgh, itemps
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, isp
+    integer(kind=8) :: ier, igauh, icou, jnbspi, iret, itempf, jresu, jgeom
+    integer(kind=8) :: pta, ptb, ptc, ptd
 !
     real(kind=8) :: tpinf, tpmoy, tpsup, cp1, cp2, cp3, tpc, zic, zmin
     real(kind=8) :: hic, epais, excent, norm2
@@ -47,15 +47,15 @@ subroutine te0408(option, nomte)
 !
     aster_logical :: tempno, elem_dkt, CasIsOk
 !
-    integer, parameter :: MaxPara = 4
-    integer :: jprof, nbpara, casfct
+    integer(kind=8), parameter :: MaxPara = 4
+    integer(kind=8) :: jprof, nbpara, casfct
     real(kind=8) :: valpu(MaxPara), xyz(3), cdg(3), vect(3), vectab(3), vectcd(3)
     character(len=8) :: nompu(MaxPara)
     character(len=16) :: nompara(MaxPara)
     character(len=19) :: nomfon
     character(len=24) :: chprol
 !
-    integer :: retpara(2)
+    integer(kind=8) :: retpara(2)
     real(kind=8) :: valr(2)
     character(len=8) :: valp(2), k8bid
     blas_int :: b_incx, b_incy, b_n

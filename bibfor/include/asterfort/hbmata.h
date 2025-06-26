@@ -22,7 +22,7 @@ interface
     subroutine hbmata(se, dg, etap, i1e, sigeqe,&
                       vp, vecp, parame, derive, sig3,&
                       detadg, dgdl, nbmat, materf, dsidep)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: se(6)
         real(kind=8) :: dg
         real(kind=8) :: etap

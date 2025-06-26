@@ -38,24 +38,24 @@ interface
         character(len=19) :: lischa
         character(len=8)  :: symech
         character(len=24) :: chfond
-        integer           :: nnoff
+        integer(kind=8)           :: nnoff
         character(len=24) :: basloc
         character(len=24) :: courb
-        integer           :: iord
-        integer           :: ndeg
+        integer(kind=8)           :: iord
+        integer(kind=8)           :: ndeg
         character(len=24) :: liss
-        integer           :: ndimte
+        integer(kind=8)           :: ndimte
         aster_logical     :: extim
         real(kind=8)      :: time
-        integer           :: nbprup
+        integer(kind=8)           :: nbprup
         character(len=16) :: noprup(*)
         character(len=8)  :: fiss
         aster_logical     :: lmoda
         real(kind=8)      :: puls
         aster_logical     :: milieu
         aster_logical     :: connex
-        integer :: coor
-        integer :: iadnoe
+        integer(kind=8) :: coor
+        integer(kind=8) :: iadnoe
         character(len=16), intent(in), optional :: typdis
     end subroutine cakg3d
 end interface

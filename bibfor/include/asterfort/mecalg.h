@@ -36,13 +36,13 @@ interface
         character(len=24) :: compor
         aster_logical :: incr
         real(kind=8) :: time
-        integer :: iord
-        integer :: nbprup
+        integer(kind=8) :: iord
+        integer(kind=8) :: nbprup
         character(len=16) :: noprup(*)
         character(len=24) :: chvite
         character(len=24) :: chacce
         character(len=8) :: kcalc
-        integer :: coor
-        integer :: iadnoe
+        integer(kind=8) :: coor
+        integer(kind=8) :: iadnoe
     end subroutine mecalg
 end interface

@@ -30,8 +30,8 @@ subroutine nmcrls(sddisc, listInstJv, numeInit, numeEnd, &
 #include "asterfort/wkvect.h"
 !
     character(len=19), intent(in) :: sddisc, listInstJv
-    integer, intent(in) :: numeInit, numeEnd
-    integer, intent(out) :: nbInstNew
+    integer(kind=8), intent(in) :: numeInit, numeEnd
+    integer(kind=8), intent(out) :: nbInstNew
     real(kind=8), intent(out) :: dtmin
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ subroutine nmcrls(sddisc, listInstJv, numeInit, numeEnd, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: pos, iInst, nbInst
+    integer(kind=8) :: pos, iInst, nbInst
     real(kind=8) :: deltat
     real(kind=8), pointer :: listInst(:) => null()
     character(len=24) :: sddiscDITRJv

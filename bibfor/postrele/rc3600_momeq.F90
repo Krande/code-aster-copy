@@ -55,16 +55,16 @@ subroutine rc3600_momeq()
 #include "asterfort/imprsd.h"
     character(len=8) :: resu, champ
 
-    integer :: ifm, niv
-    integer :: n0, n1, iret
-    integer :: nbordr, i, iadin, iadou, j, jordr, nuordr
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: n0, n1, iret
+    integer(kind=8) :: nbordr, i, iadin, iadou, j, jordr, nuordr
 
     real(kind=8) :: prec
     character(len=3) :: type
     character(len=16) :: crit, typesd, nomsym
     character(len=19) ::resuTmp19
 
-    integer ::ibid, nbac, nbpa, nbpara, jnompa
+    integer(kind=8) ::ibid, nbac, nbpa, nbpara, jnompa
     character(len=8) :: modele, resuTmp, nomtab, conceptin
     character(len=8) :: modeav, lpain(1), lpaout(1), typmax, typresu
     character(len=4) :: tsca
@@ -72,7 +72,7 @@ subroutine rc3600_momeq()
     character(len=16) :: nomcmd, concep, nopara, nomopt
     character(len=19) :: chin, chextr, ligrel, resu19, lchin(1), lchout(1)
     character(len=19) :: noch19, tychlu, mcf
-    integer :: iexi
+    integer(kind=8) :: iexi
     aster_logical :: lnoeu, ldetli, lvide
 
 !     ------------------------------------------------------------------

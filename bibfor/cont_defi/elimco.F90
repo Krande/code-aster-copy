@@ -36,11 +36,11 @@ subroutine elimco(sdcont, mesh, model, nb_cont_surf, &
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(inout) :: nb_cont_elem
-    integer, intent(inout) :: nb_cont_node
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(inout) :: nb_cont_elem
+    integer(kind=8), intent(inout) :: nb_cont_node
     aster_logical, intent(in) :: l_elim_coq3d
-    integer, optional, intent(out) :: nb_node_coq3d_
+    integer(kind=8), optional, intent(out) :: nb_node_coq3d_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,12 +61,12 @@ subroutine elimco(sdcont, mesh, model, nb_cont_surf, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_node0, nb_cont_elem0, nb_node_coq3d
+    integer(kind=8) :: nb_cont_node0, nb_cont_elem0, nb_node_coq3d
     character(len=24) :: sdcont_defi
-    integer, pointer :: v_poin_elem(:) => null()
-    integer, pointer :: v_list_elem(:) => null()
-    integer, pointer :: v_poin_node(:) => null()
-    integer, pointer :: v_list_node(:) => null()
+    integer(kind=8), pointer :: v_poin_elem(:) => null()
+    integer(kind=8), pointer :: v_list_elem(:) => null()
+    integer(kind=8), pointer :: v_poin_node(:) => null()
+    integer(kind=8), pointer :: v_list_node(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

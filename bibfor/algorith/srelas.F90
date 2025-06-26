@@ -45,14 +45,14 @@ subroutine srelas(ndi, ndt, nmat, mater, sigd, de, k, mu)
    !!! Varibles globales
    !!!
 
-    integer :: ndi, ndt, nmat
+    integer(kind=8) :: ndi, ndt, nmat
     real(kind=8) :: mater(nmat, 2), sigd(6), de(6, 6), mu, k
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: mue, ke, pa, nelas, invar1
 
     !!!

@@ -43,7 +43,7 @@ subroutine te0314(option, nomte)
 ! ======================================================================
 ! ======================================================================
     aster_logical :: axi
-    integer :: ires, iflux, itemps, igeom
+    integer(kind=8) :: ires, iflux, itemps, igeom
     real(kind=8) :: flu1, deltat, r
 !
     axi = .false.

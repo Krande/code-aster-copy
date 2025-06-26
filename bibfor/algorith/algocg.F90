@@ -51,7 +51,7 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass, &
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24) :: defico, resoco
     character(len=19) :: matass, solveu
-    integer :: ctccvg
+    integer(kind=8) :: ctccvg
 !
 ! ----------------------------------------------------------------------
 !
@@ -97,16 +97,16 @@ subroutine algocg(ds_measure, defico, resoco, solveu, matass, &
 !
 !
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: conjug
-    integer :: iliai, iter, premax
-    integer :: neq, nbliac, nbliai
-    integer :: gcpmax
+    integer(kind=8) :: iliai, iter, premax
+    integer(kind=8) :: neq, nbliac, nbliai
+    integer(kind=8) :: gcpmax
     character(len=16) :: precon, search, pceffe
     character(len=19) :: sgradm, sgradp, sgrprm, sgrprp, mum
-    integer :: jsgram, jsgrap, jsgprm, jsgprp, jmum
+    integer(kind=8) :: jsgram, jsgrap, jsgprm, jsgprp, jmum
     character(len=19) :: mu
-    integer :: jmu
+    integer(kind=8) :: jmu
     character(len=19) :: ddeplc, ddelt
     real(kind=8) :: tole, coefrs
     real(kind=8) :: ninf, ninfpc, alpha, epsi

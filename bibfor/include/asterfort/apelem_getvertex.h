@@ -22,10 +22,10 @@ interface
     subroutine apelem_getvertex(elem_dime, elem_code,&
                                 para_coor, nb_vertex, para_code,&
                                 elem_coor, proj_tole)
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(out) :: para_coor(elem_dime-1,4)
-        integer, intent(out) :: nb_vertex
+        integer(kind=8), intent(out) :: nb_vertex
         character(len=8), intent(out) :: para_code
         real(kind=8), intent(in) :: elem_coor(3,9)
         real(kind=8), intent(in) :: proj_tole

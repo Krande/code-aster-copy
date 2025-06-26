@@ -23,10 +23,10 @@ interface
                       isval, nbval)
         character(len=*) :: motfac
         character(len=*) :: motcle
-        integer :: iocc
-        integer :: iarg
-        integer :: mxval
-        integer :: isval(mxval)
-        integer :: nbval
+        integer(kind=8) :: iocc
+        integer(kind=8) :: iarg
+        integer(kind=8) :: mxval
+        integer(kind=8) :: isval(mxval)
+        integer(kind=8) :: nbval
     end subroutine getltx
 end interface

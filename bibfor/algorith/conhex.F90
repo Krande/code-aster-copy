@@ -48,15 +48,15 @@ subroutine conhex(macor, nbcor, macoc, nbcoc, lface, &
 #include "asterfort/conors.h"
 #include "asterfort/conper.h"
 #include "asterfort/utmess.h"
-    integer :: nbnoco
-    integer :: nblir, nbcor
-    integer :: nblic, nbcoc, nococ(8)
-    integer :: vali
+    integer(kind=8) :: nbnoco
+    integer(kind=8) :: nblir, nbcor
+    integer(kind=8) :: nblic, nbcoc, nococ(8)
+    integer(kind=8) :: vali
 !
     character(len=8) :: macor(nbcor+2), macoc(nbcoc+2), ma
 !
     aster_logical :: lomodi, locorr, lface, quadra, loreor
-    integer :: i1, i2, i3
+    integer(kind=8) :: i1, i2, i3
 #define face(i1,i2,i3,i4) nococ(1).eq.i1.and.nococ(2).eq.i2.and. \
     nococ(3) .eq. i3 .and. nococ(4) .eq. i4
 !

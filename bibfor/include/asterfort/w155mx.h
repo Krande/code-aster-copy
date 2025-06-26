@@ -19,6 +19,6 @@
 interface
     subroutine w155mx(resultOut, resultIn, nbStore, listStore)
         character(len=8), intent(in) :: resultOut, resultIn
-        integer, intent(in) :: nbStore, listStore(nbStore)
+        integer(kind=8), intent(in) :: nbStore, listStore(nbStore)
     end subroutine w155mx
 end interface

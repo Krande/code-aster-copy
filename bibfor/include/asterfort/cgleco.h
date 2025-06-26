@@ -22,7 +22,7 @@
 !
 interface
     subroutine cgleco(resu, modele, mate, iord0, compor,incr)
-        integer, intent(in) :: iord0
+        integer(kind=8), intent(in) :: iord0
         character(len=8), intent(in) :: resu
         character(len=8), intent(in) :: modele
         character(len=8), intent(in) :: mate

@@ -22,10 +22,10 @@ interface
                      vim, option, sig, vip, dsidep,&
                      codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: epsm(6)
@@ -35,6 +35,6 @@ interface
         real(kind=8) :: sig(6)
         real(kind=8) :: vip(2)
         real(kind=8) :: dsidep(6, 6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine eibex
 end interface

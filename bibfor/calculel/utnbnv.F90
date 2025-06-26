@@ -38,7 +38,7 @@ subroutine utnbnv(typmav, nbsv, nbnv)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterfort/assert.h"
-    integer :: nbnv, nbsv
+    integer(kind=8) :: nbnv, nbsv
     character(len=8) :: typmav
 !
 ! DECLARATION VARIABLES LOCALES

@@ -22,7 +22,7 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari, nom_vari)
 #include "asterfort/getvtx.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/utmess.h"
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=8) :: nomgd, nomcmp
     character(len=*) :: mcfac
     character(len=16) :: nom_vari
@@ -43,7 +43,7 @@ subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari, nom_vari)
 !                  -1 si nomgd='VARI_R' + motcle NOM_VARI.
 !
 ! ----------------------------------------------------------------------
-    integer :: ibid, n2, iret, ivari
+    integer(kind=8) :: ibid, n2, iret, ivari
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
 !

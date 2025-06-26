@@ -24,16 +24,16 @@ interface
     subroutine possvd(nm, m, n, w, matu,&
                       u, matv, v, eps, rg,&
                       rv1)
-        integer :: n
-        integer :: nm
-        integer :: m
+        integer(kind=8) :: n
+        integer(kind=8) :: nm
+        integer(kind=8) :: m
         real(kind=8) :: w(n)
         aster_logical :: matu
         real(kind=8) :: u(nm, n)
         aster_logical :: matv
         real(kind=8) :: v(nm, n)
         real(kind=8) :: eps
-        integer :: rg
+        integer(kind=8) :: rg
         real(kind=8) :: rv1(n)
     end subroutine possvd
 end interface

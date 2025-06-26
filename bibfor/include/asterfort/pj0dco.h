@@ -25,7 +25,7 @@ interface
                       dmax0d)
         character(len=*), intent(in) :: typeSelect
         character(len=8), intent(in) :: entity1, entity2
-        integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+        integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
         character(len=*), intent(in) :: geom1, geom2
         character(len=16), intent(in)  :: corrMesh
         real(kind=8), intent(in) :: dmax0d

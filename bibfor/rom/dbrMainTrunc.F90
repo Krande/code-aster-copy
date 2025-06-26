@@ -50,13 +50,13 @@ subroutine dbrMainTrunc(paraTrunc, baseOut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbMode, nbEquaDom, nbEquaRom
-    integer :: iMode, iEqua, iret, numeEquaRom, numeMode
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbMode, nbEquaDom, nbEquaRom
+    integer(kind=8) :: iMode, iEqua, iret, numeEquaRom, numeMode
     character(len=24) :: modeDom, modeRom, modeSymbName, numeequa
     character(len=8) :: modelRom, resultNameIn, mesh, resultNameOut
     real(kind=8) :: modeSing
-    integer :: nbSnap, numeSlice, physNume
+    integer(kind=8) :: nbSnap, numeSlice, physNume
     real(kind=8), pointer :: valeDom(:) => null(), valeRom(:) => null()
     type(ROM_DS_Empi) :: baseIn
 !

@@ -65,7 +65,7 @@ contains
 ! ---------------------------------------------------------------------------------
 !
         type(HHO_quadrature) :: hhoQuad
-        integer :: ipg, idim
+        integer(kind=8) :: ipg, idim
         real(kind=8) :: coor(3), evalues(3), work(50)
         blas_int :: b_lda, b_lwork, b_n
         blas_int :: b_incx, info
@@ -120,7 +120,7 @@ contains
 ! ---------------------------------------------------------------------------------
 !
         type(HHO_quadrature) :: hhoQuad
-        integer :: ipg, idim
+        integer(kind=8) :: ipg, idim
         real(kind=8) :: coor(3), evalues(3), work(50), axes_3d(3, 3)
         blas_int :: b_lda, b_lwork, b_n
         blas_int :: b_incx, info

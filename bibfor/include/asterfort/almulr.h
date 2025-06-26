@@ -20,10 +20,10 @@
 !
 interface
     subroutine almulr(czero, table, nbval, mantis, expo)
-        integer :: nbval
+        integer(kind=8) :: nbval
         character(len=*) :: czero
         real(kind=8) :: table(nbval)
         real(kind=8) :: mantis
-        integer :: expo
+        integer(kind=8) :: expo
     end subroutine almulr
 end interface

@@ -27,7 +27,7 @@ interface
         real(kind=8) :: dm(3, 3)
         real(kind=8) :: dmf(3, 3)
         real(kind=8) :: pgl(3, 3)
-        integer :: indith
-        integer :: npg
+        integer(kind=8) :: indith
+        integer(kind=8) :: npg
     end subroutine dxmat1
 end interface

@@ -38,7 +38,7 @@ subroutine lcelas(loi, mod, &
 #include "asterfort/lksige.h"
 #include "asterfort/srsige.h"
 #include "asterfort/rsllin.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: theta

@@ -27,7 +27,7 @@ subroutine palima(nomaz, mcfact, mcgrma, mcma, iocc, &
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nomaz, mcfact, mcgrma, mcma, noml
-    integer :: iocc
+    integer(kind=8) :: iocc
 !
 ! BUT : LECTURE DE LA LISTE DES MAILLES DESCRITES PAR LA SEQUENCE :
 !       MCFAC : ( MCGRMA : LISTE DE GROUP_MA ,
@@ -48,8 +48,8 @@ subroutine palima(nomaz, mcfact, mcgrma, mcma, iocc, &
     character(len=8) :: noma
     character(len=16) :: mcf, tymocl(2), limocl(2)
     character(len=24) :: liste1
-    integer :: k, n1, j1, j2, ima
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8) :: k, n1, j1, j2, ima
+    integer(kind=8), pointer :: typmail(:) => null()
 !
     call jemarq()
     noma = nomaz

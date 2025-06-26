@@ -23,6 +23,6 @@ interface
                                nbVari, numeLaw)
         character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla
         character(len=16), intent(in) :: kit_comp(4), post_iter, regu_visc, post_incr
-        integer, intent(out) :: nbVari, numeLaw
+        integer(kind=8), intent(out) :: nbVari, numeLaw
     end subroutine comp_nbvari_std
 end interface

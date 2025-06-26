@@ -21,10 +21,10 @@
 interface
     subroutine utdtab(raz, na, nb, mb, md,&
                       a, b, d, xab, dtab)
-        integer :: md
-        integer :: mb
-        integer :: nb
-        integer :: na
+        integer(kind=8) :: md
+        integer(kind=8) :: mb
+        integer(kind=8) :: nb
+        integer(kind=8) :: na
         character(len=*) :: raz
         real(kind=8) :: a(na, nb)
         real(kind=8) :: b(nb, mb)

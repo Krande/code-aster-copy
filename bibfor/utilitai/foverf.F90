@@ -22,7 +22,7 @@ subroutine foverf(v, nc, ier)
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: nc, ier, i, isens, ilarge, niv, ifm
+    integer(kind=8) :: nc, ier, i, isens, ilarge, niv, ifm
     real(kind=8) :: v(nc)
     character(len=16) :: nomcmd, typfon
     character(len=19) :: nomfon

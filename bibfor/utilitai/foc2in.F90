@@ -20,7 +20,7 @@ subroutine foc2in(method, nbpts, var, fon, cste, &
                   res)
     implicit none
     character(len=*) :: method
-    integer :: nbpts
+    integer(kind=8) :: nbpts
     real(kind=8) :: var(*), fon(*), cste, res(*)
 !     INTEGRATION D'UNE FONCTION PAR LA METHODE DE SIMPSON.
 !     ------------------------------------------------------------------
@@ -41,9 +41,9 @@ subroutine foc2in(method, nbpts, var, fon, cste, &
 !
 !     COEF(1) POUR LES IMPAIRS, COEF(2) POUR LES PAIRS
     real(kind=8) :: coef(2)
-    integer :: ip(2)
+    integer(kind=8) :: ip(2)
 !-----------------------------------------------------------------------
-    integer :: i, iperm
+    integer(kind=8) :: i, iperm
 !-----------------------------------------------------------------------
     data ip/2, 1/
 !     ------------------------------------------------------------------

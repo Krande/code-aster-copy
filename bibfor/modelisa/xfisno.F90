@@ -49,19 +49,19 @@ subroutine xfisno(noma, modelx)
 !
 !
 !
-    integer :: jlcnx, jcesfd, jcesfl, jcesd, jcesl
-    integer :: jcesd2, jcesl2
-    integer :: nbma, ima, nbno, ino, nheav, iheav, nfiss, ifiss
-    integer :: ibid, iad, nncp
-    integer, pointer :: p_mail_affe(:) => null()
+    integer(kind=8) :: jlcnx, jcesfd, jcesfl, jcesd, jcesl
+    integer(kind=8) :: jcesd2, jcesl2
+    integer(kind=8) :: nbma, ima, nbno, ino, nheav, iheav, nfiss, ifiss
+    integer(kind=8) :: ibid, iad, nncp
+    integer(kind=8), pointer :: p_mail_affe(:) => null()
     character(len=19) :: fissno, ces, cesf, ligrel, ces2, heavno
     aster_logical :: lcont
-    integer, pointer :: xfem_cont(:) => null()
-    integer, pointer :: cesfv(:) => null()
-    integer, pointer :: cesv2(:) => null()
-    integer, pointer :: cesv(:) => null()
-    integer, pointer :: nbsp2(:) => null()
-    integer, pointer :: nbsp(:) => null()
+    integer(kind=8), pointer :: xfem_cont(:) => null()
+    integer(kind=8), pointer :: cesfv(:) => null()
+    integer(kind=8), pointer :: cesv2(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: nbsp2(:) => null()
+    integer(kind=8), pointer :: nbsp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

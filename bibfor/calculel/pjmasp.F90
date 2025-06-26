@@ -53,20 +53,20 @@ subroutine pjmasp(moa2, masp, corres, noca)
     character(len=16) :: corres
     character(len=8) :: masp, moa2, noca
 ! ----------------------------------------------------------------------
-    integer :: ntgeo, ipo, ipg, nuno2
-    integer ::  nbnosp, nno2, ino2p
-    integer :: k, j1, ipoi1
-    integer :: nbma, nbpt, nbsp, nbcmp
-    integer :: ima, ipt, isp, icmp, iad, iadime
-    integer :: jtypma, jpo2
-    integer :: jcesd, jcesl, iatypm
-    integer :: nchi, nbpgmx, nbspmx
+    integer(kind=8) :: ntgeo, ipo, ipg, nuno2
+    integer(kind=8) ::  nbnosp, nno2, ino2p
+    integer(kind=8) :: k, j1, ipoi1
+    integer(kind=8) :: nbma, nbpt, nbsp, nbcmp
+    integer(kind=8) :: ima, ipt, isp, icmp, iad, iadime
+    integer(kind=8) :: jtypma, jpo2
+    integer(kind=8) :: jcesd, jcesl, iatypm
+    integer(kind=8) :: nchi, nbpgmx, nbspmx
     character(len=8) :: nom, mail2, lpain(6)
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc
     character(len=24) :: lchin(6)
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
 !

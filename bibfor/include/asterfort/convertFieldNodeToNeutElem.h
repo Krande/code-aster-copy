@@ -22,7 +22,7 @@ interface
                                           nbCmpField, cmpNameNode, cmpNameNeut)
         character(len=8), intent(in) :: model
         character(len=*), intent(in) :: ligrel, fieldNode, fieldElemNeut
-        integer, intent(out) :: nbCmpField
+        integer(kind=8), intent(out) :: nbCmpField
         character(len=8), pointer :: cmpNameNode(:), cmpNameNeut(:)
     end subroutine convertFieldNodeToNeutElem
 end interface

@@ -21,12 +21,12 @@ function nbsigm()
 #include "asterfort/assert.h"
 #include "asterfort/teattr.h"
 #include "asterfort/utmess.h"
-    integer :: nbsigm
+    integer(kind=8) :: nbsigm
 !     BUT : NOMBRE DE CONTRAINTES ASSOCIE AU TYPE_ELEM COURANT
 !-----------------------------------------------------------------------
 !
     character(len=8) :: nbsig
-    integer :: iret
+    integer(kind=8) :: iret
 !
     call teattr('C', 'NBSIGM', nbsig, iret)
     if (iret .ne. 0) then

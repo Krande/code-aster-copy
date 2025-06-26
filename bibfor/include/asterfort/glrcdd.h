@@ -23,7 +23,7 @@ interface
                       surfgp, q, epst, deps, dsig,&
                       ecr, delas, dsidep, normm, normn,&
                       crit, codret)
-        integer :: zimat
+        integer(kind=8) :: zimat
         real(kind=8) :: maxmp(*)
         real(kind=8) :: minmp(*)
         real(kind=8) :: matr(*)
@@ -39,6 +39,6 @@ interface
         real(kind=8) :: normm
         real(kind=8) :: normn
         real(kind=8) :: crit(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine glrcdd
 end interface

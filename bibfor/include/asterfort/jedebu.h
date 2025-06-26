@@ -20,8 +20,8 @@
 !
 interface
     subroutine jedebu(nbfi, mxzon, idb)
-        integer :: nbfi
-        integer :: mxzon
-        integer :: idb
+        integer(kind=8) :: nbfi
+        integer(kind=8) :: mxzon
+        integer(kind=8) :: idb
     end subroutine jedebu
 end interface

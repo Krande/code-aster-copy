@@ -26,7 +26,7 @@ subroutine metaZircGetParameters(jv_mater, temp, metaZircPara)
 #include "asterc/r8prem.h"
 #include "asterfort/rcvalb.h"
 !
-    integer, intent(in) :: jv_mater
+    integer(kind=8), intent(in) :: jv_mater
     real(kind=8), intent(in) :: temp
     type(META_ZircParameters), intent(out) :: metaZircPara
 !
@@ -43,11 +43,11 @@ subroutine metaZircGetParameters(jv_mater, temp, metaZircPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kpg, spt
+    integer(kind=8) :: kpg, spt
     character(len=8) :: fami, poum
-    integer, parameter :: nb_para_zirc = 12
+    integer(kind=8), parameter :: nb_para_zirc = 12
     real(kind=8) :: para_zirc_vale(nb_para_zirc)
-    integer :: icodre_zirc(nb_para_zirc)
+    integer(kind=8) :: icodre_zirc(nb_para_zirc)
     character(len=16), parameter :: para_zirc_name(nb_para_zirc) = (/'TDEQ ', &
                                                                      'K    ', &
                                                                      'N    ', &

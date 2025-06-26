@@ -39,16 +39,16 @@ subroutine pairWrap(method, &
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: method
+    integer(kind=8), intent(in) :: method
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: newgeo, mastConxInvName
     character(len=24), intent(in) :: mastNeighName, slavNeighName
     real(kind=8), intent(in) :: pairTole, distRatio
-    integer, intent(in) :: verbosity
-    integer, intent(in) :: nbCellMast, listCellMast(nbCellMast)
-    integer, intent(in) :: nbCellSlav, listCellSlav(nbCellSlav)
-    integer, intent(in) :: nbNodeMast, listNodeMast(nbNodeMast)
-    integer, intent(out) :: nbPairZone
+    integer(kind=8), intent(in) :: verbosity
+    integer(kind=8), intent(in) :: nbCellMast, listCellMast(nbCellMast)
+    integer(kind=8), intent(in) :: nbCellSlav, listCellSlav(nbCellSlav)
+    integer(kind=8), intent(in) :: nbNodeMast, listNodeMast(nbNodeMast)
+    integer(kind=8), intent(out) :: nbPairZone
     character(len=8), intent(in) :: baseName
 !
 ! --------------------------------------------------------------------------------------------------
@@ -82,7 +82,7 @@ subroutine pairWrap(method, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: pairDime, jvData, spaceDime
+    integer(kind=8) :: pairDime, jvData, spaceDime
     type(MESH_PAIRING) :: meshPairing
     character(len=24) :: zonePair, zoneNbPoinInte, zonePoinInte
 !

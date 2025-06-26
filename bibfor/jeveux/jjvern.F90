@@ -24,17 +24,17 @@ subroutine jjvern(noml32, icre, iret)
 #include "asterfort/jjcren.h"
 #include "asterfort/utmess.h"
     character(len=32) :: noml32
-    integer :: icre, iret
+    integer(kind=8) :: icre, iret
 !     ------------------------------------------------------------------
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
-    integer :: illici, jclass(0:255)
+    integer(kind=8) :: illici, jclass(0:255)
     common/jchaje/illici, jclass
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !-----------------------------------------------------------------------
-    integer :: jdocu, jgenr, jorig, jrnom, jtype, k, n
+    integer(kind=8) :: jdocu, jgenr, jorig, jrnom, jtype, k, n
 !
 !-----------------------------------------------------------------------
     parameter(n=5)

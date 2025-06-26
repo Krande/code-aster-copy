@@ -22,13 +22,13 @@ subroutine lcesma(mat, fami, kpg, ksp, poum, lccrma)
 #include "asterfort/rcvarc.h"
     interface
         subroutine lccrma(mat, fami, kpg, ksp, poum)
-            integer, intent(in) :: mat, kpg, ksp
+            integer(kind=8), intent(in) :: mat, kpg, ksp
             character(len=1), intent(in):: poum
             character(len=*), intent(in) :: fami
         end subroutine lccrma
     end interface
 
-    integer :: mat, kpg, ksp
+    integer(kind=8) :: mat, kpg, ksp
     character(len=1) :: poum
     character(len=*) :: fami
 ! ----------------------------------------------------------------------
@@ -42,9 +42,9 @@ subroutine lcesma(mat, fami, kpg, ksp, poum, lccrma)
 ! IN  POUM   LECTURE DES PARAMETRES EN DEBUT '-' OU FIN '+' DU PAS
 ! IN  LCCRMA ROUTINE POUR LECTURE DES PARAMETRES DU CRITERE
 ! ----------------------------------------------------------------------
-    integer :: nbel, nbnl
+    integer(kind=8) :: nbel, nbnl
     parameter(nbel=2, nbnl=2)
-    integer :: iok(nbel+nbnl), idum
+    integer(kind=8) :: iok(nbel+nbnl), idum
     real(kind=8) :: valel(nbel), valnl(nbnl), alpha, temp, tref, rdum(1)
     real(kind=8) :: e, nu
  character(len=16), parameter, dimension(nbel) :: nomel = (/'E               ', 'NU              '/)

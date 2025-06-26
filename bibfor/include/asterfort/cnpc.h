@@ -20,8 +20,8 @@
 !
 interface
     subroutine cnpc(main, macou, macsu, conneo)
-        integer :: macsu
-        integer :: macou 
+        integer(kind=8) :: macsu
+        integer(kind=8) :: macou 
         character(len=8) :: main
         character(len=24) :: conneo
     end subroutine cnpc

@@ -22,7 +22,7 @@ subroutine liscrs(lischa, nbchar, base)
     implicit none
 #include "asterfort/wkvect.h"
     character(len=19) :: lischa
-    integer :: nbchar
+    integer(kind=8) :: nbchar
     character(len=1) :: base
 !
 ! ----------------------------------------------------------------------
@@ -41,9 +41,9 @@ subroutine liscrs(lischa, nbchar, base)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: nomcha, genrch, typcha, typeap, precha, mocfch
-    integer :: jncha, jgenc, jtypc, jtypa, jprec, jmcfc
+    integer(kind=8) :: jncha, jgenc, jtypc, jtypa, jprec, jmcfc
     character(len=24) :: nomfon, typfon, valfon
-    integer :: jnfon, jtfon, jvfon
+    integer(kind=8) :: jnfon, jtfon, jvfon
 !
 ! ----------------------------------------------------------------------
 !

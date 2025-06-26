@@ -21,13 +21,13 @@
 interface
     subroutine rkdhay(mod, nvi, vini, coeft, nmat,&
                       sigi, dvin, iret)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         character(len=8) :: mod
         real(kind=8) :: vini(nvi)
         real(kind=8) :: coeft(nmat)
         real(kind=8) :: sigi(*)
         real(kind=8) :: dvin(nvi)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rkdhay
 end interface

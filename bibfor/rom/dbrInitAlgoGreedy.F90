@@ -47,8 +47,8 @@ subroutine dbrInitAlgoGreedy(paraGreedy)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbVariCoef, nbModeMaxi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbVariCoef, nbModeMaxi
     character(len=1) :: systMatrType, syst2mbrType, systType
     aster_logical :: lStabFSI
     character(len=19) :: vectRefe

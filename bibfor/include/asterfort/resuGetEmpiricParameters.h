@@ -20,9 +20,9 @@ interface
     subroutine resuGetEmpiricParameters(resultType  , fieldNb   , fieldList    ,&
                                         empiNumePlan, empiSnapNb, empiFieldType)
         character(len=16), intent(in) :: resultType
-        integer, intent(in) :: fieldNb
+        integer(kind=8), intent(in) :: fieldNb
         character(len=16), intent(in) :: fieldList(100)
-        integer, intent(out) :: empiNumePlan, empiSnapNb
+        integer(kind=8), intent(out) :: empiNumePlan, empiSnapNb
         character(len=24), intent(out) :: empiFieldType
     end subroutine resuGetEmpiricParameters
 end interface

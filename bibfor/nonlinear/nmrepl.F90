@@ -46,8 +46,8 @@ subroutine nmrepl(modele, numedd, ds_material, carele, ds_system, &
 #include "asterfort/nmrelp.h"
 #include "asterfort/nmrep2.h"
 !
-    integer :: fonact(*)
-    integer :: iterat
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: iterat
     real(kind=8) :: deltat, eta, etan, offset
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
@@ -60,7 +60,7 @@ subroutine nmrepl(modele, numedd, ds_material, carele, ds_system, &
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Conv), intent(inout) :: ds_conv
-    integer :: pilcvg, ldccvg
+    integer(kind=8) :: pilcvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,16 +109,16 @@ subroutine nmrepl(modele, numedd, ds_material, carele, ds_system, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: zsolal = 17, zvalin = 28
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: zsolal = 17, zvalin = 28
     character(len=19) :: solalt(zsolal), valint(zvalin, 2)
-    integer, parameter :: zveass = 19
+    integer(kind=8), parameter :: zveass = 19
     character(len=19) :: veasst(zveass)
     aster_logical :: exopt, mieux, irecli
-    integer :: itrlmx, iterho, act, opt
-    integer :: pilopt
-    integer :: nbeffe
-    integer :: nr, pos, nbsto, n, nbatte, nmax
+    integer(kind=8) :: itrlmx, iterho, act, opt
+    integer(kind=8) :: pilopt
+    integer(kind=8) :: nbeffe
+    integer(kind=8) :: nr, pos, nbsto, n, nbatte, nmax
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp
     real(kind=8) :: f0, fopt, fcvg
     real(kind=8) :: rho, rhoopt, proeta(2)

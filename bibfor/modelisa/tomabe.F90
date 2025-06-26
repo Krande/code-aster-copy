@@ -83,7 +83,7 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma, &
 ! ARGUMENTS
 ! ---------
     character(len=8) :: chmat, mailla
-    integer :: nbnoma, nbnobe, nbmabe
+    integer(kind=8) :: nbnoma, nbnobe, nbmabe
     aster_logical :: mail2d
     character(len=19) :: nunobe
     real(kind=8) :: xflu, xret
@@ -91,12 +91,12 @@ subroutine tomabe(chmat, nmabet, nbmabe, mailla, nbnoma, &
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ias, icste, idecal, imail, ino, iret, jconx, jncoch, jnumab
-    integer :: jnunob, jptma, jtyma, jvalk, jvalr, nbconx, nbcste, ntyma, numail
-    integer :: numnoe, jcesd, jcesl, iad, icodn, iretbb, ireteb
+    integer(kind=8) :: ias, icste, idecal, imail, ino, iret, jconx, jncoch, jnumab
+    integer(kind=8) :: jnunob, jptma, jtyma, jvalk, jvalr, nbconx, nbcste, ntyma, numail
+    integer(kind=8) :: numnoe, jcesd, jcesl, iad, icodn, iretbb, ireteb
 !
-    integer :: ntri3, ntri6, nqua4, nqua8, nqua9, ntet4, ntet10, npyr5, npyr13
-    integer :: npen6, npen15, nhex8, nhex20, nhex27
+    integer(kind=8) :: ntri3, ntri6, nqua4, nqua8, nqua9, ntet4, ntet10, npyr5, npyr13
+    integer(kind=8) :: npen6, npen15, nhex8, nhex20, nhex27
 !
     aster_logical :: mail3d, trouv1, trouv2
     character(len=3) :: k3mai

@@ -35,7 +35,7 @@ subroutine nmvcpr_elem(modelz, matez, matecoz, cara_elemz, &
 #include "asterfort/varcDetect.h"
 !
     character(len=*), intent(in) :: modelz, cara_elemz, matez, matecoz
-    integer, intent(in) :: nume_harm
+    integer(kind=8), intent(in) :: nume_harm
     character(len=1), intent(in) :: time_comp
     character(len=*), intent(in) :: varc_refez, comporz
     character(len=19), intent(in) :: hval_incr(*)
@@ -64,13 +64,13 @@ subroutine nmvcpr_elem(modelz, matez, matecoz, cara_elemz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxchin = 34, mxchout = 2
+    integer(kind=8), parameter :: mxchin = 34, mxchout = 2
     character(len=8) :: lpain(mxchin), lpaout(mxchout)
     character(len=19) :: lchin(mxchin), lchout(mxchout)
     aster_logical :: l_temp, l_hydr, l_ptot
     aster_logical :: l_sech, l_epsa, l_meta
     character(len=19) :: sigm_prev, vari_prev, varc_prev, varc_curr
-    integer :: nbin, nbout
+    integer(kind=8) :: nbin, nbout
     character(len=24) :: mult_comp, chsith
 !
 ! --------------------------------------------------------------------------------------------------

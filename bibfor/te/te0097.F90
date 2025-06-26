@@ -46,16 +46,16 @@ subroutine te0097(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: npgMax = 27, nbNodeMax = 27
-    integer :: ndim, npg, jvWeightDisp, jvShapeDisp, jvDShapeDisp, jvShapePres
-    integer :: idim
-    integer :: jvSigm, jvDisp, jvGeom, jvMate, nbsig
-    integer :: kpg, isig, iNodeDisp, iNodePres, iOSGS
-    integer :: nbNodeDisp, nbNodePres, nbNodeGonf
+    integer(kind=8), parameter :: npgMax = 27, nbNodeMax = 27
+    integer(kind=8) :: ndim, npg, jvWeightDisp, jvShapeDisp, jvDShapeDisp, jvShapePres
+    integer(kind=8) :: idim
+    integer(kind=8) :: jvSigm, jvDisp, jvGeom, jvMate, nbsig
+    integer(kind=8) :: kpg, isig, iNodeDisp, iNodePres, iOSGS
+    integer(kind=8) :: nbNodeDisp, nbNodePres, nbNodeGonf
     real(kind=8) :: sigmDisp(npgMax*6), angl_naut(3), instan, nharm, sigmTrac(npgMax)
     real(kind=8) :: presGaus(npgMax), dispU(3*nbNodeMax), dispP(nbNodeMax)
-    integer :: vu(3, nbNodeMax), vg(nbNodeMax), vp(nbNodeMax), vpi(3, nbNodeMax)
-    integer :: nbElrefe, iRefePres, iRefeGonf
+    integer(kind=8) :: vu(3, nbNodeMax), vg(nbNodeMax), vp(nbNodeMax), vpi(3, nbNodeMax)
+    integer(kind=8) :: nbElrefe, iRefePres, iRefeGonf
     character(len=8) :: listElrefe(10), typmod(2)
     aster_logical :: lGonf
 !

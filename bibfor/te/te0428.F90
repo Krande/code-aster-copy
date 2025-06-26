@@ -36,8 +36,8 @@ subroutine te0428(option, nomte)
 !    calcul de la matrice de rigidite geometrique des elements de plaque
 !       => option rigi_meca_geom
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: jgeom, jmatr
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: jgeom, jmatr
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
 !
 !     ---> pour dkt/dktg  matelem = 3 * 6 ddl = 171 termes stockage syme

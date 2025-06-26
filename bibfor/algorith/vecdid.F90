@@ -58,13 +58,13 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: iret
-    integer :: nchar, nbres, icha
+    integer(kind=8) :: iret
+    integer(kind=8) :: nchar, nbres, icha
     real(kind=8) :: alpha
     character(len=8) :: nomcha
     character(len=19) :: vect_elem
@@ -72,7 +72,7 @@ subroutine vecdid(model, list_load, disp_didi, vect_elem_)
     character(len=1) :: base
     character(len=24) :: masque
     character(len=24) :: ligrch, chalph
-    integer, pointer :: infc(:) => null()
+    integer(kind=8), pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

@@ -41,8 +41,8 @@ subroutine trnuli(itab, nblig, nbcol, icol, nures)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, nbcol, nblig, nures
-    integer :: itab(nblig, nbcol), icol(nbcol)
+    integer(kind=8) :: i, j, nbcol, nblig, nures
+    integer(kind=8) :: itab(nblig, nbcol), icol(nbcol)
     aster_logical :: ok
 !-----------------------------------------------------------------------
     i = 0

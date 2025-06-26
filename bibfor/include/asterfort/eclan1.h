@@ -22,17 +22,17 @@ interface
     subroutine eclan1(ipoini, mxnbpi, nsomm1, nterm1, i1,&
                       i2, i3, i4, i5, i6,&
                       i7, i8)
-        integer :: mxnbpi
-        integer :: ipoini
-        integer :: nsomm1(mxnbpi, *)
-        integer :: nterm1(mxnbpi)
-        integer :: i1
-        integer :: i2
-        integer :: i3
-        integer :: i4
-        integer :: i5
-        integer :: i6
-        integer :: i7
-        integer :: i8
+        integer(kind=8) :: mxnbpi
+        integer(kind=8) :: ipoini
+        integer(kind=8) :: nsomm1(mxnbpi, *)
+        integer(kind=8) :: nterm1(mxnbpi)
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
+        integer(kind=8) :: i3
+        integer(kind=8) :: i4
+        integer(kind=8) :: i5
+        integer(kind=8) :: i6
+        integer(kind=8) :: i7
+        integer(kind=8) :: i8
     end subroutine eclan1
 end interface

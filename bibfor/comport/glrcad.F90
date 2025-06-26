@@ -68,8 +68,8 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara, &
 #include "blas/dcopy.h"
     aster_logical :: bbok
 !
-    integer :: ncrit, ncrit2, ier, zimat
-    integer :: i, j, kk, kkk, ipara(4), codret, kmax
+    integer(kind=8) :: ncrit, ncrit2, ier, zimat
+    integer(kind=8) :: i, j, kk, kkk, ipara(4), codret, kmax
 !
     real(kind=8) :: delas(6, 6), alpha, beta, gamma, k1, k2, dmax1
     real(kind=8) :: dmax2, curvcu(3), c1(6, 6), c2(6, 6), deps(6), mp1(*)
@@ -95,9 +95,9 @@ subroutine glrcad(zimat, mp1, mp2, delas, rpara, &
 !         ZERO ADIMENSIONNEL POUR LE CRITERE F
     real(kind=8) :: nmzeg, newzeg, newzfg(2)
 !         ZERO ADIMENSIONNEL POUR LE CRITERE G
-    integer :: nmief, newief
+    integer(kind=8) :: nmief, newief
 !         NMIEF > 0 : NBN HORS DE LA ZONE DE DEFINITION DE MP
-    integer :: nmprox(2), newpro(2)
+    integer(kind=8) :: nmprox(2), newpro(2)
     blas_int :: b_incx, b_incy, b_n
 !         NMPROX > 0 : NBN DANS ZONE DE CRITIQUE
 !---------------------------------------------

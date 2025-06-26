@@ -20,7 +20,7 @@
 !
 interface
     subroutine montee(nout, lchout, lpaout, fin)
-        integer :: nout
+        integer(kind=8) :: nout
         character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
         character(len=*) :: fin

@@ -20,9 +20,9 @@
 !
 interface
     subroutine vpshif(lmatk, valshi, lmatm, lmatsh)
-        integer :: lmatk
+        integer(kind=8) :: lmatk
         real(kind=8) :: valshi
-        integer :: lmatm
-        integer :: lmatsh
+        integer(kind=8) :: lmatm
+        integer(kind=8) :: lmatsh
     end subroutine vpshif
 end interface

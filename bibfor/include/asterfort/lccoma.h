@@ -22,12 +22,12 @@ interface
                       indi_lagc    , poidpg      , shape_mast_func,&
                       jaco_upda    , dist_vect   ,&
                       mmat     )
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: nb_node_mast
-        integer, intent(in) :: nb_node_slav
-        integer, intent(in) :: nb_lagr
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: nb_node_mast
+        integer(kind=8), intent(in) :: nb_node_slav
+        integer(kind=8), intent(in) :: nb_lagr
         aster_logical, intent(in) :: l_norm_smooth
-        integer, intent(in) :: indi_lagc(10)
+        integer(kind=8), intent(in) :: indi_lagc(10)
         real(kind=8), intent(in) :: poidpg
         real(kind=8), intent(in) :: shape_mast_func(9)
         real(kind=8), intent(in) :: jaco_upda, dist_vect(3)

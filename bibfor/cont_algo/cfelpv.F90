@@ -25,8 +25,8 @@ subroutine cfelpv(numlia, sdcont_solv, nbliai, lelpiv)
 !
 !
     aster_logical :: lelpiv
-    integer :: numlia
-    integer :: nbliai
+    integer(kind=8) :: numlia
+    integer(kind=8) :: nbliai
     character(len=24) :: sdcont_solv
 
 !  SAVOIR SI LA LIAISON EST A PIVOT NUL
@@ -41,9 +41,9 @@ subroutine cfelpv(numlia, sdcont_solv, nbliai, lelpiv)
 !
 !
 !
-    integer :: iote
+    integer(kind=8) :: iote
     character(len=19) :: sdcont_liot
-    integer, pointer :: v_sdcont_liot(:) => null()
+    integer(kind=8), pointer :: v_sdcont_liot(:) => null()
 ! ======================================================================
 
     sdcont_liot = sdcont_solv(1:14)//'.LIOT'

@@ -39,8 +39,8 @@ subroutine pmconv(r, rini, r1, inst, sigp, &
     real(kind=8) :: inst
     real(kind=8) :: sigp(6)
     real(kind=8) :: coef
-    integer :: iter
-    integer :: indimp(6)
+    integer(kind=8) :: iter
+    integer(kind=8) :: indimp(6)
     type(NL_DS_Conv), intent(in) :: ds_conv
     aster_logical :: conver
     aster_logical :: itemax
@@ -61,7 +61,7 @@ subroutine pmconv(r, rini, r1, inst, sigp, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ind, i, itmax, irela
+    integer(kind=8) :: ind, i, itmax, irela
     real(kind=8) :: resi_glob_rela, resi_glob_maxi
     real(kind=8) :: r8b(12)
     real(kind=8) :: ee, e1, e2, toler, e1ini, e2ini, er1, eini

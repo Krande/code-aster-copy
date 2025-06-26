@@ -52,12 +52,12 @@ subroutine massdir(massmat, dir, dmass)
     real(kind=8), intent(out) :: dmass
 !
 !   -0.2- Local variables
-    integer :: lmatm, neq, ieq, ic, dec, iret
+    integer(kind=8) :: lmatm, neq, ieq, ic, dec, iret
     real(kind=8) :: magn, normdir(3)
     character(len=8) :: nomcmp(3)
     character(len=14) :: nume
     character(len=19) :: masse
-    integer, pointer :: posdof(:) => null()
+    integer(kind=8), pointer :: posdof(:) => null()
     real(kind=8), pointer :: unitv(:) => null()
     real(kind=8), pointer :: mass_utv(:) => null()
     blas_int :: b_incx, b_incy, b_n

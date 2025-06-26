@@ -22,9 +22,9 @@ interface
     subroutine dneigh(rnorm, n, h, ldh, ritzr,&
                       ritzi, bounds, q, ldq, workl,&
                       ierr)
-        integer :: ldq
-        integer :: ldh
-        integer :: n
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldh
+        integer(kind=8) :: n
         real(kind=8) :: rnorm
         real(kind=8) :: h(ldh, n)
         real(kind=8) :: ritzr(n)
@@ -32,6 +32,6 @@ interface
         real(kind=8) :: bounds(n)
         real(kind=8) :: q(ldq, n)
         real(kind=8) :: workl(n*(n+3))
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine dneigh
 end interface

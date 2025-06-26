@@ -28,10 +28,10 @@ interface
         use NonLin_Datastructure_type
         character(len=8) :: noma
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: ndimg
-        integer :: posnoe
+        integer(kind=8) :: ndimg
+        integer(kind=8) :: posnoe
         character(len=4) :: typenm
-        integer :: numenm
+        integer(kind=8) :: numenm
         aster_logical :: lmait
         aster_logical :: lescl
         aster_logical :: lmfixe

@@ -38,7 +38,7 @@ subroutine te0119(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: j1, ibid, iadzi, iazk24
+    integer(kind=8) :: j1, ibid, iadzi, iazk24
     real(kind=8)        :: excent
     character(len=3)    :: cmod
     character(len=8)    :: alias8

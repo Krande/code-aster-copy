@@ -43,10 +43,10 @@ subroutine nonlinDSMeasureRead(ds_measure)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=16) :: keywfact, answer
     aster_logical :: l_csv, l_table
-    integer :: unit_csv, noc
+    integer(kind=8) :: unit_csv, noc
 !
 ! --------------------------------------------------------------------------------------------------
 !

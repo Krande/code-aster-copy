@@ -21,11 +21,11 @@
 interface
     subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab,&
                       nval)
-        integer :: nmax
+        integer(kind=8) :: nmax
         character(len=*) :: ligrel
-        integer :: igrel
-        integer :: adtabl(nmax)
+        integer(kind=8) :: igrel
+        integer(kind=8) :: adtabl(nmax)
         character(len=24) :: k24tab(nmax)
-        integer :: nval
+        integer(kind=8) :: nval
     end subroutine inigrl
 end interface

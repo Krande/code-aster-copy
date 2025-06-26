@@ -20,10 +20,10 @@
 !
 interface
     subroutine tesmcl(icl, iv, cv, mtcl, irteti)
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         character(len=*) :: cv
         character(len=8) :: mtcl
-        integer :: irteti
+        integer(kind=8) :: irteti
     end subroutine tesmcl
 end interface

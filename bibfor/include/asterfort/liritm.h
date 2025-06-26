@@ -21,13 +21,13 @@
 interface
     subroutine liritm(ifl, icl, iv, rv, cv,&
                       cnl, deblig, ilec)
-        integer :: ifl
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: ifl
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         real(kind=8) :: rv
         character(len=*) :: cv
         character(len=14) :: cnl
-        integer :: deblig
-        integer :: ilec
+        integer(kind=8) :: deblig
+        integer(kind=8) :: ilec
     end subroutine liritm
 end interface

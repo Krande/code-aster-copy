@@ -43,7 +43,7 @@ subroutine romFieldDSCopy(fieldIn, fieldOut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iCmpName, nbCmpName, iEqua, nbEqua
+    integer(kind=8) :: iCmpName, nbCmpName, iEqua, nbEqua
 !
 ! --------------------------------------------------------------------------------------------------
 !

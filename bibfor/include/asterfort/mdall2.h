@@ -23,7 +23,7 @@ interface
         character(len=8) :: nomres
         character(len=8) :: basemo
         character(len=8) :: res
-        integer :: nbo
-        integer :: nbmode
+        integer(kind=8) :: nbo
+        integer(kind=8) :: nbmode
     end subroutine mdall2
 end interface

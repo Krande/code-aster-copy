@@ -64,12 +64,12 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord, &
     character(len=*) :: nochmd
     character(len=*) :: nomcmc, nmcmfi
 !
-    integer :: numpt, numord, nbcmpc, nbprof
+    integer(kind=8) :: numpt, numord, nbcmpc, nbprof
     med_idt :: idfimd
-    integer :: nbvato, typent, typgeo
-    integer :: existc, nbcmfi, nbval
+    integer(kind=8) :: nbvato, typent, typgeo
+    integer(kind=8) :: existc, nbcmfi, nbval
 !
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
@@ -77,7 +77,7 @@ subroutine mdexch(nofimd, idfimd, nochmd, numpt, numord, &
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: iaux
+    integer(kind=8) :: iaux
 !
 !====
 ! 1. LE CHAMP A-T-IL ETE CREE ?

@@ -35,7 +35,7 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "blas/dcopy.h"
-    integer :: nbobst, nbpt, nbloc, iadh(*), iwk4(*)
+    integer(kind=8) :: nbobst, nbpt, nbloc, iadh(*), iwk4(*)
     real(kind=8) :: temps(*), dloc(*), fcho(*), vgli(*), trepos, wk1(*), wk2(*)
     real(kind=8) :: wk3(*), offset
     character(len=*) :: nomres
@@ -53,11 +53,11 @@ subroutine statch(nbobst, nbpt, temps, dloc, fcho, &
 !     IADH         : VECTEUR INDICATEUR D ADHERENCE
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, valei(3), nbpara, ndepl, nusur, nforn, nstch
+    integer(kind=8) :: ibid, valei(3), nbpara, ndepl, nusur, nforn, nstch
 !-----------------------------------------------------------------------
-    integer :: i, ibl, idebut, idec, ifin, ifires, impr
-    integer :: in, indic, j, nbchoc, nbchot, nbmafn, nbmifn
-    integer :: nbpas, nbrebo, nbrebt, nbval, nrepc
+    integer(kind=8) :: i, ibl, idebut, idec, ifin, ifires, impr
+    integer(kind=8) :: in, indic, j, nbchoc, nbchot, nbmafn, nbmifn
+    integer(kind=8) :: nbpas, nbrebo, nbrebt, nbval, nrepc
     real(kind=8) :: dt, dxetyp, dxetyt, dxmax, dxmaxt, dxmin, dxmint
     real(kind=8) :: dxmoy, dxmoyt, dxrms, dxrmst, fnmax, fnmaxm, fnmin
     real(kind=8) :: fnminm, fnmoyc, fnmoyt, fnrmsc, fnrmst, ftetyp, ftmax

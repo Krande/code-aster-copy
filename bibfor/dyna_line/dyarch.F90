@@ -35,7 +35,7 @@ subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbpas, nbarch, ich, nbexcl
+    integer(kind=8) :: nbpas, nbarch, ich, nbexcl
     character(len=*) :: lisins, lisarc, type(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jarch, nbocc, n1, jnum, lnum, k, ipach, jinsc
+    integer(kind=8) :: jarch, nbocc, n1, jnum, lnum, k, ipach, jinsc
     real(kind=8) :: epsi
     character(len=8) ::  rela
     character(len=19) :: numarc

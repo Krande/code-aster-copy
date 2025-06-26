@@ -22,7 +22,7 @@ interface
     subroutine dbgobj(ojbz, perm, iunit, mess)
         character(len=*) :: ojbz
         character(len=*) :: perm
-        integer :: iunit
+        integer(kind=8) :: iunit
         character(len=*) :: mess
     end subroutine dbgobj
 end interface

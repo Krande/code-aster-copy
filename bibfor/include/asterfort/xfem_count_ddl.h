@@ -23,14 +23,14 @@ interface
     subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, &
                               nbnoxfem, ieq_loc, neq_mloc, maxi_ddl)
         character(len=8) :: k8cmp(*)
-        integer :: deeq(*)
-        integer :: neq
-        integer :: ino_xfem(nbnomax)
+        integer(kind=8) :: deeq(*)
+        integer(kind=8) :: neq
+        integer(kind=8) :: ino_xfem(nbnomax)
         aster_logical :: is_xfem(nbnomax)
-        integer :: nbnomax
-        integer :: nbnoxfem
-        integer :: ieq_loc(neq)
-        integer :: neq_mloc(nbnoxfem)
-        integer :: maxi_ddl
+        integer(kind=8) :: nbnomax
+        integer(kind=8) :: nbnoxfem
+        integer(kind=8) :: ieq_loc(neq)
+        integer(kind=8) :: neq_mloc(nbnoxfem)
+        integer(kind=8) :: maxi_ddl
     end subroutine xfem_count_ddl
 end interface

@@ -45,17 +45,17 @@ subroutine leccoo(ifl, icl, iv, rv, cv, &
 #include "asterfort/verdbl.h"
 #include "asterfort/vermot.h"
 #include "asterfort/vernmb.h"
-    integer :: nbm
+    integer(kind=8) :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
-    integer :: dim(nbm), nbt(nbm), deblig
+    integer(kind=8) :: dim(nbm), nbt(nbm), deblig
     character(len=14) :: cnl
     character(len=*) :: cv
     character(len=24) :: valk(3), nom
 !-----------------------------------------------------------------------
-    integer :: i, icl, ier, ifl, ifm, ilec, inom
-    integer :: irtet, irteti, iv, j, nbg
-    integer :: numtcl
+    integer(kind=8) :: i, icl, ier, ifl, ifm, ilec, inom
+    integer(kind=8) :: irtet, irteti, iv, j, nbg
+    integer(kind=8) :: numtcl
 !-----------------------------------------------------------------------
     irteti = 0
 !

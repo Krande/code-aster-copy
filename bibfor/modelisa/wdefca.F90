@@ -51,12 +51,12 @@ function wdefca(ino, s, alpha, f0, frco, &
 !
 ! ARGUMENTS
 ! ---------
-    integer :: ino
+    integer(kind=8) :: ino
     real(kind=8) :: s(*), alpha(*), f0, frco, frli
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: xi, xip1, xref
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

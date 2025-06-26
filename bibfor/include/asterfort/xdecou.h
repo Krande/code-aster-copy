@@ -23,22 +23,22 @@ interface
                       pintt, cnset, lsn, fisco, igeom,&
                       nfiss, ifiss, pinter, ninter, npts,&
                       ainter, lonref, nfisc)
-        integer :: nfisc
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfisc
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elp
-        integer :: nnose
-        integer :: it
+        integer(kind=8) :: nnose
+        integer(kind=8) :: it
         real(kind=8) :: pintt(*)
-        integer :: cnset(*)
+        integer(kind=8) :: cnset(*)
         real(kind=8) :: lsn(*)
-        integer :: fisco(*)
-        integer :: igeom
-        integer :: nfiss
-        integer :: ifiss
+        integer(kind=8) :: fisco(*)
+        integer(kind=8) :: igeom
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ifiss
         real(kind=8) :: pinter(*)
-        integer :: ninter
-        integer :: npts
+        integer(kind=8) :: ninter
+        integer(kind=8) :: npts
         real(kind=8) :: ainter(*)
         real(kind=8) :: lonref
     end subroutine xdecou

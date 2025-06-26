@@ -20,7 +20,7 @@
 !
 interface
     subroutine codlet_wrap(entier, cadre, chaine, kstop)
-        integer, intent(in) :: entier
+        integer(kind=8), intent(in) :: entier
         character(len=*), intent(in) :: cadre
         character(len=*), intent(out) :: chaine
         character(len=*), intent(in) :: kstop

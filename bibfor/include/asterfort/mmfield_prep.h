@@ -28,7 +28,7 @@ interface
         character(len=*), intent(in) :: field_out
         aster_logical, optional, intent(in) :: l_update_
         aster_logical, optional, intent(in) :: l_sort_
-        integer, optional, intent(in) :: nb_cmp_
+        integer(kind=8), optional, intent(in) :: nb_cmp_
         character(len=8), optional, intent(in):: list_cmp_(*)
         character(len=*), optional, intent(in) :: field_update_
         real(kind=8), optional, intent(in) :: alpha_

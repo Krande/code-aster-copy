@@ -21,8 +21,8 @@
 interface
     subroutine numel2(cham, ima, igrel, iel)
         character(len=*) :: cham
-        integer :: ima
-        integer :: igrel
-        integer :: iel
+        integer(kind=8) :: ima
+        integer(kind=8) :: igrel
+        integer(kind=8) :: iel
     end subroutine numel2
 end interface

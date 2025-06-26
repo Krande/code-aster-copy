@@ -45,7 +45,7 @@ subroutine rotama(geomi, pt, d, angl, bidim)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "blas/dnrm2.h"
-    integer :: n1, i, iadcoo
+    integer(kind=8) :: n1, i, iadcoo
     aster_logical :: bidim
     character(len=19) :: geomi
     character(len=24) :: coorjv

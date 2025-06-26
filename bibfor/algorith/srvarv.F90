@@ -38,7 +38,7 @@ subroutine srvarv(vintr, nbmat, mater, tmp, paravi)
     !!! Variables globales
     !!!
 
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: vintr, mater(nbmat, 2), paravi(3), tmp
 
     !!!

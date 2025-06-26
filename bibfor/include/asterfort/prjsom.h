@@ -23,7 +23,7 @@
 interface
     function prjsom(nbmat, mater, invare, invars, b,&
                     siie, type)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: invare
         real(kind=8) :: invars

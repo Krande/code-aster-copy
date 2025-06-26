@@ -45,8 +45,8 @@ subroutine te0045(option, nomte)
     character(len=8) :: k8bid
     character(len=16) :: ch16
     real(kind=8) :: mat1(78), mat2(144), zero, deux, trois, pgl(3, 3), r8bid
-    integer :: infodi, irepm, nbterm, nno, nc, ndim, itype, i, i1, i2, i3
-    integer :: lmass, lcoor, lorien, lcastr, ibid
+    integer(kind=8) :: infodi, irepm, nbterm, nno, nc, ndim, itype, i, i1, i2, i3
+    integer(kind=8) :: lmass, lcoor, lorien, lcastr, ibid
     parameter(zero=0.d0, deux=2.d0, trois=3.d0)
 !     ------------------------------------------------------------------
 !

@@ -57,7 +57,7 @@ subroutine pbflso(umoy, rmoy, long, icoq, imod, &
 !
 #include "asterfort/pbflkz.h"
     real(kind=8) :: umoy, rmoy, long
-    integer :: icoq, imod, nbm
+    integer(kind=8) :: icoq, imod, nbm
     real(kind=8) :: rkip, tcoef(10, nbm), harm(6)
     complex(kind=8) :: lambda(3), kcalcu(3, 4), passag(3, 3)
     real(kind=8) :: condit(3)
@@ -71,7 +71,7 @@ subroutine pbflso(umoy, rmoy, long, icoq, imod, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: itab, k, m1, m2
+    integer(kind=8) :: itab, k, m1, m2
     real(kind=8) :: dz, u, v, z
 !-----------------------------------------------------------------------
     itab = 0

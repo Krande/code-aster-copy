@@ -21,9 +21,9 @@
 interface
     subroutine rvinfa(ifm, mcf, iocc, qnt, opt,&
                       opr, rep)
-        integer :: ifm
+        integer(kind=8) :: ifm
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: qnt
         character(len=*) :: opt
         character(len=*) :: opr

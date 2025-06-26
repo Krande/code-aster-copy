@@ -23,14 +23,14 @@
 interface
     subroutine exchnn(descn, numn, tcmp, nbc, tvale,&
                       tnueq, b, valcmp, taber)
-        integer :: descn(*)
-        integer :: numn
-        integer :: tcmp(*)
-        integer :: nbc
+        integer(kind=8) :: descn(*)
+        integer(kind=8) :: numn
+        integer(kind=8) :: tcmp(*)
+        integer(kind=8) :: nbc
         real(kind=8) :: tvale(*)
-        integer :: tnueq(*)
+        integer(kind=8) :: tnueq(*)
         aster_logical :: b
         real(kind=8) :: valcmp(*)
-        integer :: taber(*)
+        integer(kind=8) :: taber(*)
     end subroutine exchnn
 end interface

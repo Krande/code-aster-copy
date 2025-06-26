@@ -42,7 +42,7 @@ subroutine srvacp(nbmat, mater, paraep, varpl)
     !!! Variables globales
     !!!
 
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: paraep(3), mater(nbmat, 2), varpl(4)
 
     !!!

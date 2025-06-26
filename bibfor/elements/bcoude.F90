@@ -22,7 +22,7 @@ subroutine bcoude(igau, icou, isect, l, h, &
     implicit none
 #include "asterc/r8pi.h"
     real(kind=8) :: l, h, a, b(4, *), ff(*), df1(*), df2(*)
-    integer :: nno, ncou, nsect, m, igau, icou, isect, mmt
+    integer(kind=8) :: nno, ncou, nsect, m, igau, icou, isect, mmt
 !
 ! ......................................................................
 !
@@ -48,7 +48,7 @@ subroutine bcoude(igau, icou, isect, l, h, &
 !
     real(kind=8) :: pi, deuxpi, cosfi, sinfi, cosmfi, sinmfi
     real(kind=8) :: zeta, r, hk, dhk, d2hk, fi
-    integer :: k, icolon, n, ibloc
+    integer(kind=8) :: k, icolon, n, ibloc
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

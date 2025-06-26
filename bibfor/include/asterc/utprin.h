@@ -22,13 +22,13 @@ interface
     subroutine utprin(ch1, num, idmess, nk, valk,&
                       ni, vali, nr, valr, fname)
         character(len=*) :: ch1
-        integer :: num
+        integer(kind=8) :: num
         character(len=*) :: idmess
-        integer :: nk
+        integer(kind=8) :: nk
         character(len=*) :: valk(*)
-        integer :: ni
-        integer :: vali(*)
-        integer :: nr
+        integer(kind=8) :: ni
+        integer(kind=8) :: vali(*)
+        integer(kind=8) :: nr
         real(kind=8) :: valr(*)
         character(len=*) :: fname
     end subroutine utprin

@@ -23,7 +23,7 @@
 interface
     subroutine subac1(laxi, nno, vff, dff, geom,&
                       cova)
-        integer :: nno
+        integer(kind=8) :: nno
         aster_logical :: laxi
         real(kind=8) :: vff(nno)
         real(kind=8) :: dff(nno)

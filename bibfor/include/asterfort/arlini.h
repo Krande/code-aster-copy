@@ -20,10 +20,10 @@
 !
 interface
     subroutine arlini(mail,base,dime,nbno,nbma,nbnoma)
-        integer :: dime
-        integer :: nbma
-        integer :: nbno
-        integer :: nbnoma
+        integer(kind=8) :: dime
+        integer(kind=8) :: nbma
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbnoma
         character(len=1) :: base
         character(len=8) :: mail
     end subroutine arlini

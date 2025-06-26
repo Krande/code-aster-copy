@@ -21,11 +21,11 @@
 interface
     subroutine vpzhes(mat, k, l, neq, mxeq,&
                       d)
-        integer :: mxeq
-        integer :: neq
+        integer(kind=8) :: mxeq
+        integer(kind=8) :: neq
         real(kind=8) :: mat(mxeq, neq)
-        integer :: k
-        integer :: l
+        integer(kind=8) :: k
+        integer(kind=8) :: l
         real(kind=8) :: d(neq)
     end subroutine vpzhes
 end interface

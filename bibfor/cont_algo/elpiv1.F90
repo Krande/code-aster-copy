@@ -40,10 +40,10 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai, &
     character(len=8) :: noma
     character(len=24) :: sdcont_solv, sdcont_defi
     real(kind=8) :: xjvmax
-    integer :: nbliac
-    integer :: indic
-    integer :: ajliai, spliai
-    integer :: spavan
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: indic
+    integer(kind=8) :: ajliai, spliai
+    integer(kind=8) :: spavan
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,18 +76,18 @@ subroutine elpiv1(xjvmax, indic, nbliac, ajliai, spliai, &
 !
     character(len=1) :: typesp
     character(len=19) :: liac, liot, macont, stoc, ouvert
-    integer :: jliac, jliot, jvale, jva, jouv
-    integer :: nbbloc, nbliai
+    integer(kind=8) :: jliac, jliot, jvale, jva, jouv
+    integer(kind=8) :: nbbloc, nbliai
     real(kind=8) :: copmax
-    integer :: kk1, kk2, kk1f, kk2f
-    integer :: nbote, lliac
-    integer :: iblc
-    integer :: niv, ifm
-    integer :: bloc, dercol
+    integer(kind=8) :: kk1, kk2, kk1f, kk2f
+    integer(kind=8) :: nbote, lliac
+    integer(kind=8) :: iblc
+    integer(kind=8) :: niv, ifm
+    integer(kind=8) :: bloc, dercol
     aster_logical :: pivnul
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scde(:) => null()
-    integer, pointer :: scib(:) => null()
+    integer(kind=8), pointer :: scbl(:) => null()
+    integer(kind=8), pointer :: scde(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

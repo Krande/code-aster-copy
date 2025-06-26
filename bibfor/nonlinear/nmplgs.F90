@@ -88,25 +88,25 @@ subroutine nmplgs(ndim, nno1, vff1, idfde1, nno2, &
 ! --------------------------------------------------------------------------------------------------
 !
     common/trucit/iteamm
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     character(len=8) :: typmod(2), fami, poum
     character(len=16) :: option, compor(COMPOR_SIZE)
-    integer :: nbvois, nvoima, numav, iret, nscoma, iteamm
+    integer(kind=8) :: nbvois, nvoima, numav, iret, nscoma, iteamm
     integer(kind=4) :: reuss
     parameter(nvoima=12, nscoma=4)
-    integer :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mate, lgpg, codret
-    integer :: livois(1:nvoima), numa
-    integer :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
+    integer(kind=8) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mate, lgpg, codret
+    integer(kind=8) :: livois(1:nvoima), numa
+    integer(kind=8) :: nbsoco(1:nvoima), lisoco(1:nvoima, 1:nscoma, 1:2)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno1)
     real(kind=8) :: carcri(CARCRI_SIZE), instam, instap
     real(kind=8) :: ddlm(*), ddld(*), sigm(2*ndim, npg), sigp(2*ndim, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg), matr(*), vect(*)
     real(kind=8) :: dfdi2(nno2, ndim), angmas(3), compar
-    integer :: k2(1), kpg, spt
+    integer(kind=8) :: k2(1), kpg, spt
     aster_logical :: grand, axi
-    integer :: ndimsi, nddl, g, gg, cod(npg), n, i, m, j, kl, pq, os, kk, vivois
-    integer :: iu(3, 27), ie(6, 8), kvois, ll
-    integer :: nfin, vrarr(nno2), nn, nnn, vivonu, kvoinu, nini, nunu
+    integer(kind=8) :: ndimsi, nddl, g, gg, cod(npg), n, i, m, j, kl, pq, os, kk, vivois
+    integer(kind=8) :: iu(3, 27), ie(6, 8), kvois, ll
+    integer(kind=8) :: nfin, vrarr(nno2), nn, nnn, vivonu, kvoinu, nini, nunu
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: lc(1), c, deplm(3*27), depld(3*27), dfdi1(27, 3), nono
     real(kind=8) :: r, wg, epsgm(6, 2), epsgd(6, 2), gepsm(6, 3), geps(6, 3)

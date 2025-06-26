@@ -35,9 +35,9 @@ module cara_elem_carte_type
     implicit none
 !
     type cara_elem_carte
-        integer             :: adr_cmp
-        integer             :: adr_val
-        integer             :: nbr_cmp
+        integer(kind=8)             :: adr_cmp
+        integer(kind=8)             :: adr_val
+        integer(kind=8)             :: nbr_cmp
         character(len=19)   :: nom_carte
     end type cara_elem_carte
 !

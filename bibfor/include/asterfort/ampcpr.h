@@ -22,16 +22,16 @@ interface
     subroutine ampcpr(cmat, nb1, nb2, bmat, n1,&
                       n2, i, j, fac, npar,&
                       nsym)
-        integer :: n2
-        integer :: n1
+        integer(kind=8) :: n2
+        integer(kind=8) :: n1
         complex(kind=8) :: cmat(*)
-        integer :: nb1
-        integer :: nb2
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nb2
         real(kind=8) :: bmat(n1, n2)
-        integer :: i
-        integer :: j
+        integer(kind=8) :: i
+        integer(kind=8) :: j
         real(kind=8) :: fac
-        integer :: npar
-        integer :: nsym
+        integer(kind=8) :: npar
+        integer(kind=8) :: nsym
     end subroutine ampcpr
 end interface

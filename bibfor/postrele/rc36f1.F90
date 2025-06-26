@@ -25,8 +25,8 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl, &
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: nbsigr, nocc(*), isk, isl, nk, nl, n0, nsitup, nbp12, nbp23
-    integer :: nbp13, sigr(*)
+    integer(kind=8) :: nbsigr, nocc(*), isk, isl, nk, nl, n0, nsitup, nbp12, nbp23
+    integer(kind=8) :: nbp13, sigr(*)
     real(kind=8) :: saltij(*)
     aster_logical :: yapass
     character(len=3) :: typass
@@ -43,11 +43,11 @@ subroutine rc36f1(nbsigr, nocc, saltij, isk, isl, &
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: ig1, ig2, nbsips, jnpass, i, k, i1, nsitu, numg1, numg2
-    integer :: sipass, npass, ioc1, ioc2
+    integer(kind=8) :: ig1, ig2, nbsips, jnpass, i, k, i1, nsitu, numg1, numg2
+    integer(kind=8) :: sipass, npass, ioc1, ioc2
     real(kind=8) :: salmia, salmib, salt1, salt2, salt3, salt4, saltam, saltbm
     aster_logical :: chemin
-    integer, pointer :: situ_group(:) => null()
+    integer(kind=8), pointer :: situ_group(:) => null()
 !     ------------------------------------------------------------------
 !
     call jeveuo('&&RC32SI.SITU_GROUP', 'L', vi=situ_group)

@@ -20,8 +20,8 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
                   mclf, nbepo, ntyele, ivr, zjdlm)
     implicit none
 !
-    integer :: lmax, npoutr, nbocc, nbepo, zjdlm(*)
-    integer :: ntyele(*), ivr(*)
+    integer(kind=8) :: lmax, npoutr, nbocc, nbepo, zjdlm(*)
+    integer(kind=8) :: ntyele(*), ivr(*)
     character(len=8) :: noma, nomo
     character(len=*) :: mclf
 !
@@ -96,19 +96,19 @@ subroutine aceapo(noma, nomo, lmax, npoutr, nbocc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, idw, ier, iisec, iivar, ioc, isec, ifm, jj, kk
-    integer :: itabl, ivar, ivect, ixma, j
-    integer :: jdcge, jdcpo, jdcpof, jdge, jdgef
-    integer :: jdgm, jdme, jdvge, jdvpo, jdvpof
-    integer :: nbcar, nbcolo, nblign, nbmagr, nbmail, nbo, nbval
-    integer :: ncar, ncarac, ndim, nfcx, ng, nm, nnosec
-    integer :: npoaff, nsec, nsecpo, ntab, ntypse, nummai, nutyel
-    integer :: nval, nvsec, nutyptu(3)
+    integer(kind=8) :: ii, idw, ier, iisec, iivar, ioc, isec, ifm, jj, kk
+    integer(kind=8) :: itabl, ivar, ivect, ixma, j
+    integer(kind=8) :: jdcge, jdcpo, jdcpof, jdge, jdgef
+    integer(kind=8) :: jdgm, jdme, jdvge, jdvpo, jdvpof
+    integer(kind=8) :: nbcar, nbcolo, nblign, nbmagr, nbmail, nbo, nbval
+    integer(kind=8) :: ncar, ncarac, ndim, nfcx, ng, nm, nnosec
+    integer(kind=8) :: npoaff, nsec, nsecpo, ntab, ntypse, nummai, nutyel
+    integer(kind=8) :: nval, nvsec, nutyptu(3)
     real(kind=8) :: epy1, hy1
 !
-    integer, pointer :: ncp(:) => null()
-    integer, pointer :: tab_para(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: ncp(:) => null()
+    integer(kind=8), pointer :: tab_para(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 !
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: valem(:) => null()

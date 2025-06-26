@@ -24,6 +24,6 @@ interface
         type(NL_DS_Measure), intent(in) :: ds_measure
         character(len=*), intent(in) :: device_type_
         type(NL_DS_Device), intent(out) :: device
-        integer, optional, intent(out) :: device_indx_
+        integer(kind=8), optional, intent(out) :: device_indx_
     end subroutine GetDevice
 end interface

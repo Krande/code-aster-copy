@@ -50,8 +50,8 @@ subroutine trchel(ific, nocc)
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
-    integer, intent(in) :: ific
-    integer, intent(in) :: nocc
+    integer(kind=8), intent(in) :: ific
+    integer(kind=8), intent(in) :: nocc
 !     COMMANDE:  TEST_RESU
 !                MOT CLE FACTEUR "CHAM_ELEM"
 ! ----------------------------------------------------------------------
@@ -59,9 +59,9 @@ subroutine trchel(ific, nocc)
     character(len=6) :: nompro
     parameter(nompro='TRCHEL')
 !
-    integer :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp, ng
-    integer :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22, n1r, n2r, n3r
-    integer :: irefrr, irefir, irefcr, n1a, n1b, imigma, nbmag
+    integer(kind=8) :: iocc, iret, nbcmp, jcmp, n1, n2, n3, n4, ivari, nupo, nusp, ng
+    integer(kind=8) :: irefr, irefi, irefc, nref, nl1, nl2, nl11, nl22, n1r, n2r, n3r
+    integer(kind=8) :: irefrr, irefir, irefcr, n1a, n1b, imigma, nbmag
     real(kind=8) :: epsi, epsir
     character(len=1) :: typres
     character(len=3) :: ssigne

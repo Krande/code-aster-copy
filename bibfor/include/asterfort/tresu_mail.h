@@ -23,8 +23,8 @@
      &ssigne)
               character(len=8), intent(in) :: nommai
               character(len=16), intent(in) :: tbtxt(2)
-              integer, intent(in) :: refi
-              integer, intent(in) :: iocc
+              integer(kind=8), intent(in) :: refi
+              integer(kind=8), intent(in) :: iocc
               real(kind=8), intent(in) :: epsi
               character(len=*), intent(in) :: crit
               aster_logical, intent(in) :: llab

@@ -42,7 +42,7 @@ subroutine cbgrai(load, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'PRE_GRAD_TEMP'
-    integer :: nbfac
+    integer(kind=8) :: nbfac
 !
 ! --------------------------------------------------------------------------------------------------
 !

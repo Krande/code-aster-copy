@@ -100,10 +100,10 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 !
     complex(kind=8) :: cbid
     character(len=24) :: k24bid
-    integer :: ndim, n1, nbvari, nbpar, i, j, k, imate, kpg, ksp, nbocc, n2
-    integer :: iepsi, icont, igrad, irota, defimp, indimp(9), ncmp
-    integer :: pred, matrel, ic1c2, iforta, imptgt, nbvita, imes(2)
-    integer :: iligne, icolon, nbcol, numins, ier
+    integer(kind=8) :: ndim, n1, nbvari, nbpar, i, j, k, imate, kpg, ksp, nbocc, n2
+    integer(kind=8) :: iepsi, icont, igrad, irota, defimp, indimp(9), ncmp
+    integer(kind=8) :: pred, matrel, ic1c2, iforta, imptgt, nbvita, imes(2)
+    integer(kind=8) :: iligne, icolon, nbcol, numins, ier
     character(len=4), parameter :: nomeps(6) = (/'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ'/)
     character(len=4), parameter :: nomsig(6) = (/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/)
     character(len=4), parameter :: nomgrd(9) = (/'F11', 'F12', 'F13', &

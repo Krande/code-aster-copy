@@ -21,9 +21,9 @@
 
 interface 
     subroutine lcmfra(vp, itemax, precvg, chi, iret)
-        integer,intent(in)      :: itemax
+        integer(kind=8),intent(in)      :: itemax
         real(kind=8),intent(in) :: vp(3), precvg
-        integer,intent(out)     :: iret
+        integer(kind=8),intent(out)     :: iret
         real(kind=8),intent(out):: chi
     end subroutine lcmfra
 end interface 

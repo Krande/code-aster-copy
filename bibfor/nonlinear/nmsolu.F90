@@ -58,7 +58,7 @@ subroutine nmsolu(sddyna, solalg)
     character(len=19) :: vitpr1, vitpr2
     character(len=19) :: accpr1, accpr2
     character(len=19) :: depso1, depso2
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !

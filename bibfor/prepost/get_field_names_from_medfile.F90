@@ -47,10 +47,10 @@ subroutine get_field_names_from_medfile(idfimd, field_name_vector)
     med_idt idfimd
     character(len=*) :: field_name_vector
 !
-    integer :: nbcham, nbcmp, jcmp
-    integer :: tycha, junit
-    integer :: nseqca
-    integer :: iret, i
+    integer(kind=8) :: nbcham, nbcmp, jcmp
+    integer(kind=8) :: tycha, junit
+    integer(kind=8) :: nseqca
+    integer(kind=8) :: iret, i
     character(len=80), pointer :: v_names(:) => null()
 !
     character(len=64) :: nomcha

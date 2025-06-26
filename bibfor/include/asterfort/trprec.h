@@ -22,7 +22,7 @@ interface
     subroutine trprec(mcf, iocc, epsi, crit, prec,&
                       crit2)
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         real(kind=8) :: epsi
         character(len=8) :: crit
         real(kind=8) :: prec

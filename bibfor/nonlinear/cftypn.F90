@@ -28,7 +28,7 @@ subroutine cftypn(defico, posno, typno)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
-    integer :: posno
+    integer(kind=8) :: posno
     character(len=4) :: typno
 !
 ! ----------------------------------------------------------------------
@@ -48,8 +48,8 @@ subroutine cftypn(defico, posno, typno)
 !
 !
     character(len=24) :: typeno
-    integer :: jtypno
-    integer :: ztypn
+    integer(kind=8) :: jtypno
+    integer(kind=8) :: ztypn
 !
 ! ----------------------------------------------------------------------
 !

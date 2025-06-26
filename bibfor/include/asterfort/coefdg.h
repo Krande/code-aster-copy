@@ -21,7 +21,7 @@
 interface
     subroutine coefdg(compor, mat, dpida2)
         character(len=16) :: compor
-        integer :: mat
+        integer(kind=8) :: mat
         real(kind=8) :: dpida2
     end subroutine coefdg
 end interface

@@ -44,7 +44,7 @@ subroutine masyns(matas)
     character(len=*) :: matas
     character(len=1) :: base, ktyp
     character(len=19) :: mat19
-    integer :: i, nbloc, lgbloc, jvalmi, jvalms, jvalma
+    integer(kind=8) :: i, nbloc, lgbloc, jvalmi, jvalms, jvalma
     character(len=24), pointer :: refa(:) => null()
 !
 !---------------------------------------------------------------------

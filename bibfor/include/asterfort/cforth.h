@@ -20,9 +20,9 @@
 !
 interface
     subroutine cforth(ndimg, tau1, tau2, iret)
-        integer :: ndimg
+        integer(kind=8) :: ndimg
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine cforth
 end interface

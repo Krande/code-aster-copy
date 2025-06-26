@@ -23,7 +23,7 @@ interface
         character(len=8)  :: resu
         character(len=8)  :: noma
         character(len=6)  :: nomobj
-        integer           :: nbnoff
+        integer(kind=8)           :: nbnoff
         character(len=8)  :: typmp
     end subroutine fonnoe2
 end interface

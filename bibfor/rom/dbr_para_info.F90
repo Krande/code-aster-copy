@@ -46,7 +46,7 @@ subroutine dbr_para_info(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=16) :: operation
     aster_logical :: lReuse
 !

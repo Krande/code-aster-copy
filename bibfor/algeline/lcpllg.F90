@@ -37,7 +37,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    integer :: itmax, nbmat, nr, nvi, icomp, irtet
+    integer(kind=8) :: itmax, nbmat, nr, nvi, icomp, irtet
     real(kind=8) :: toler, mater(nbmat, 2), deps(6), sigd(6)
     real(kind=8) :: vind(*), sigf(6), vinf(*), seuil, devg(6), devgii
     character(len=8) :: mod
@@ -64,7 +64,7 @@ subroutine lcpllg(toler, itmax, mod, nbmat, mater, &
 ! --- : DEVGII : NORME DU DEVIATEUR DE G -------------------------------
 ! --- : IRTET  : CONTROLE DU REDECOUPAGE DU PAS DE TEMPS ---------------
 ! ======================================================================
-    integer :: ii, ndt, ndi, iter, irteti, codret
+    integer(kind=8) :: ii, ndt, ndi, iter, irteti, codret
     real(kind=8) :: sige(6), lgleps, gamp, se(6), siie, invare, yd(10)
     real(kind=8) :: gamps, invars, b, s(6), delta, dy(10), yf(10)
     real(kind=8) :: fiter, dkooh(6, 6), epsf(6), i1, traceg, trois

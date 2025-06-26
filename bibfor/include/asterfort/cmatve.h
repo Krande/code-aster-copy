@@ -20,7 +20,7 @@
 !
 interface
     subroutine cmatve(mat, vectin, vectou, ndim)
-        integer :: ndim
+        integer(kind=8) :: ndim
         complex(kind=8) :: mat(ndim, ndim)
         complex(kind=8) :: vectin(ndim)
         complex(kind=8) :: vectou(ndim)

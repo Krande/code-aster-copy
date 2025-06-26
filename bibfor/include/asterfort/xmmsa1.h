@@ -27,25 +27,25 @@ interface
                       fk, lact, ddls, ddlm, coeffr,&
                       coeffp, p, adher, knp, ptknp,&
                       ik)
-        integer :: algofr
-        integer :: ndim
-        integer :: nno
-        integer :: nnos
-        integer :: nnol
-        integer :: pla(27)
+        integer(kind=8) :: algofr
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnos
+        integer(kind=8) :: nnol
+        integer(kind=8) :: pla(27)
         real(kind=8) :: ffc(8)
         real(kind=8) :: ffp(27)
-        integer :: idepd
-        integer :: idepm
-        integer :: nfh
+        integer(kind=8) :: idepd
+        integer(kind=8) :: idepm
+        integer(kind=8) :: nfh
         real(kind=8) :: nd(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        integer :: singu
+        integer(kind=8) :: singu
         real(kind=8) :: rr
-        integer :: lact(8)
-        integer :: ddls
-        integer :: ddlm
+        integer(kind=8) :: lact(8)
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlm
         real(kind=8) :: coeffr
         real(kind=8) :: coeffp
         real(kind=8) :: p(3, 3)

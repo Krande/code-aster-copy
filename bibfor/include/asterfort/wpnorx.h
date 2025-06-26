@@ -20,9 +20,9 @@
 !
 interface
     subroutine wpnorx(nbmode, neq, exclus, vecp, resufk)
-        integer :: neq
-        integer :: nbmode
-        integer :: exclus(*)
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: exclus(*)
         complex(kind=8) :: vecp(neq, nbmode)
         character(len=*) :: resufk(*)
     end subroutine wpnorx

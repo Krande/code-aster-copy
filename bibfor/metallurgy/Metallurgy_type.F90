@@ -38,11 +38,11 @@ module Metallurgy_type
         character(len=8) :: resultName = " "
 ! ----- For storing indexes
         character(len=19) :: listStoreJv = '&&OP0194.LISTSTORE'
-        integer :: nbStore = 0
-        integer, pointer :: listStore(:) => null()
+        integer(kind=8) :: nbStore = 0
+        integer(kind=8), pointer :: listStore(:) => null()
 ! ----- List of options to compute
         character(len=19) :: listOptionsJv = '&&OP0194.LES_OPTION'
-        integer :: nbOption = 0
+        integer(kind=8) :: nbOption = 0
         character(len=16), pointer :: listOption(:) => null()
 ! ----- Main parameters
         character(len=24) :: metaLigrel = "&&OP0194.METALIGREL"
@@ -65,11 +65,11 @@ module Metallurgy_type
 ! ----- Keyword LOI_META
         character(len=16) :: metaLaw = ' '
 ! ----- Total number of internal state variables
-        integer :: nbVari = 0
+        integer(kind=8) :: nbVari = 0
 ! ----- Number of phases
-        integer :: nbPhase = 0
+        integer(kind=8) :: nbPhase = 0
 ! ----- Index of behaviour
-        integer :: numeComp = 0
+        integer(kind=8) :: numeComp = 0
     end type META_ParaBehaviour
 
 ! - Metallurgy - Preparation - Map for parameters of behaviours (COMPOR_META)
@@ -77,7 +77,7 @@ module Metallurgy_type
 ! ----- Factor keyword to read
         character(len=16) :: factorKeyword = " "
 ! ----- Number of factor keywords
-        integer :: nbFactorKeyword = 0
+        integer(kind=8) :: nbFactorKeyword = 0
 ! ----- List of parameters
         type(META_ParaBehaviour), pointer :: paraBehaviour(:) => null()
 ! ----- Flag for tempering
@@ -115,9 +115,9 @@ module Metallurgy_type
 
 ! - Metallurgy - Parameters for TRC curves
     type META_TRCParameters
-        integer :: jv_ftrc = 0, jv_trc = 0
-        integer :: iadexp = 0, iadtrc = 0
-        integer :: nbHist = 0
+        integer(kind=8) :: jv_ftrc = 0, jv_trc = 0
+        integer(kind=8) :: iadexp = 0, iadtrc = 0
+        integer(kind=8) :: nbHist = 0
         type(META_TRCMartensiteLaw) :: martensiteLaw
         type(META_TRCAusteniteGrain) :: austeniteGrain
     end type META_TRCParameters

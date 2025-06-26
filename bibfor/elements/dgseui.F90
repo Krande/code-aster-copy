@@ -24,7 +24,7 @@ subroutine dgseui(em, num, ef, nuf, eb, &
     implicit none
 !
 ! PARAMETRES ENTRANTS
-    integer :: icisai
+    integer(kind=8) :: icisai
     real(kind=8) :: em, num, ef, nuf, h
     real(kind=8) :: eb, nub, ftj
 !

@@ -40,9 +40,9 @@ subroutine op0105()
     character(len=8) :: mag, dm(2)
     character(len=16) :: kbi1, kbi2
     character(len=8) :: oper
-    integer :: n1, ibid
-    integer, pointer :: dim1(:) => null()
-    integer, pointer :: dim2(:) => null()
+    integer(kind=8) :: n1, ibid
+    integer(kind=8), pointer :: dim1(:) => null()
+    integer(kind=8), pointer :: dim2(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -38,7 +38,7 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha, &
 #include "asterfort/utch19.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer, intent(in) :: nbordr, lordr(*), npoint, nusp, ivari
+    integer(kind=8), intent(in) :: nbordr, lordr(*), npoint, nusp, ivari
     character(len=1), intent(in) :: base
     character(len=8), intent(in) :: interp, maille, noeud, cmp
     character(len=16), intent(in) :: nomcha
@@ -67,10 +67,10 @@ subroutine focrr0(nomfon, interp, base, resu, nomcha, &
     character(len=16) :: nomcmd, typcon, nomacc, typcha, typres
     character(len=19) :: profch, profc2, cham19
     complex(kind=8) :: valc
-    integer :: npoinz, nuspz
-    integer :: ibid, iddl, ie, ii, inoeud, iordr
-    integer :: iret, lacce, lfon, lg1, lg2, lpro
-    integer :: lvale, lvar, nbacc, vali
+    integer(kind=8) :: npoinz, nuspz
+    integer(kind=8) :: ibid, iddl, ie, ii, inoeud, iordr
+    integer(kind=8) :: iret, lacce, lfon, lg1, lg2, lpro
+    integer(kind=8) :: lvale, lvar, nbacc, vali
     real(kind=8) :: valr
     character(len=16), pointer :: acces(:) => null()
 !-----------------------------------------------------------------------

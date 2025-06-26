@@ -21,8 +21,8 @@
 interface
     subroutine zzpoly(nno, ino, xino, yino, sig,&
                       b)
-        integer :: nno
-        integer :: ino
+        integer(kind=8) :: nno
+        integer(kind=8) :: ino
         real(kind=8) :: xino
         real(kind=8) :: yino
         real(kind=8) :: sig(1)

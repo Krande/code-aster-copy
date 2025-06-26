@@ -23,12 +23,12 @@ interface
                                  lAllCellAffe, cellAffe      , nbCellAffe   ,&
                                  relaComp, relaCompPY  , chmate, typeComp,&
                                  lElasByDefault, lNeedDeborst , lIncoUpo)
-        integer, intent(in) :: iComp
+        integer(kind=8), intent(in) :: iComp
         character(len=8), intent(in) :: model
         character(len=19), intent(in) :: fullElemField
         aster_logical, intent(in) :: lAllCellAffe
         character(len=24), intent(in) :: cellAffe
-        integer, intent(in) :: nbCellAffe
+        integer(kind=8), intent(in) :: nbCellAffe
         character(len=16), intent(in) :: relaComp
         character(len=16), intent(in) :: relaCompPY
         character(len=16), intent(in) :: typeComp

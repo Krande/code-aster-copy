@@ -20,8 +20,8 @@
 !
 interface
     subroutine xellin(elref1, nno1, elref2, nno2)
-        integer :: nno1
-        integer :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: nno2
         character(len=8) :: elref1
         character(len=8) :: elref2
     end subroutine xellin

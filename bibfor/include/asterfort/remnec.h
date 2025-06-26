@@ -24,6 +24,6 @@ interface
         character(len=16) :: typesd
         character(len=8) :: basmod
         character(len=8) :: modcyc
-        integer :: numsec
+        integer(kind=8) :: numsec
     end subroutine remnec
 end interface

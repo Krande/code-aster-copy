@@ -24,7 +24,7 @@ subroutine sigela(typmod, ndim, e, nu, epse, &
 #include "asterfort/jacobi.h"
 #include "asterfort/r8inir.h"
     character(len=8) :: typmod(1)
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: epse(6), e, nu
     real(kind=8) :: sigel(6)
 ! ----------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine sigela(typmod, ndim, e, nu, epse, &
 ! OUT SIGEL   : CONTRAINTES ELASTIQUES
 ! ----------------------------------------------------------------------
 !
-    integer :: ndimsi, nperm, nitjac, trij, ordrej, k
+    integer(kind=8) :: ndimsi, nperm, nitjac, trij, ordrej, k
     real(kind=8) :: epsep(3), vecpe(3, 3), sigelp(3)
     real(kind=8) :: tol, toldyn, tr(6), tu(6), jacaux(3)
     real(kind=8) :: rac2, coplan, lambda, deuxmu

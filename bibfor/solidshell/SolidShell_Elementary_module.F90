@@ -75,8 +75,8 @@ contains
         character(len=4), intent(in)     :: inteFami
         type(SSH_ELEM_PROP), intent(out) :: elemProp
 ! - Local
-        integer :: npg, nno
-        integer :: jvWeight, jvCoor, jvShape, jvDShape
+        integer(kind=8) :: npg, nno
+        integer(kind=8) :: jvWeight, jvCoor, jvShape, jvDShape
 !   ------------------------------------------------------------------------------------------------
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('> initElemProp')
@@ -125,7 +125,7 @@ contains
         type(SSH_ELEM_PROP), intent(in)  :: elemProp
         type(SSH_CELL_GEOM), intent(out) :: cellGeom
 ! - Local
-        integer      :: iDofGeom, iNodeGeom
+        integer(kind=8)      :: iDofGeom, iNodeGeom
         real(kind=8) :: detJac0
         real(kind=8) :: area0
 !   ------------------------------------------------------------------------------------------------
@@ -186,7 +186,7 @@ contains
         real(kind=8), intent(in)         :: timeCurr
         type(SSH_MATE_PARA), intent(out) :: matePara
 ! - Local
-        integer :: jvMate
+        integer(kind=8) :: jvMate
 !   ------------------------------------------------------------------------------------------------
 !
         if (SSH_DBG_ELEM) SSH_DBG_STRG('> initMatePara')
@@ -227,9 +227,9 @@ contains
         type(SSH_MATE_PARA), intent(in) :: matePara
         type(SSH_BEHA_PARA), intent(out) :: behaPara
 ! ----- Local
-        integer :: nno, npg
-        integer :: jvWeight, jvShape, jvDShape
-        integer :: jvTimeM, jvTimeP
+        integer(kind=8) :: nno, npg
+        integer(kind=8) :: jvWeight, jvShape, jvDShape
+        integer(kind=8) :: jvTimeM, jvTimeP
         aster_logical :: lMatrSyme
 !   ------------------------------------------------------------------------------------------------
 !
@@ -310,7 +310,7 @@ contains
         type(SSH_CELL_GEOM), intent(in)    :: cellGeom
         type(SSH_MATE_PARA), intent(inout) :: matePara
 ! - Local
-        integer :: nno, jvGeom
+        integer(kind=8) :: nno, jvGeom
 !   ------------------------------------------------------------------------------------------------
 !
         nno = elemProp%nbNodeGeom
@@ -360,7 +360,7 @@ contains
         type(SSH_ELEM_PROP) :: elemProp
         type(SSH_MATE_PARA) :: matePara
         real(kind=8) :: matrRigi(SSH_NBDOF_MAX, SSH_NBDOF_MAX), timeCurr
-        integer :: jvMatr, i, j, k
+        integer(kind=8) :: jvMatr, i, j, k
 !   ------------------------------------------------------------------------------------------------
 !
         matrRigi = 0.d0
@@ -414,7 +414,7 @@ contains
         type(SSH_ELEM_PROP) :: elemProp
         type(SSH_MATE_PARA) :: matePara
         real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX), timeCurr
-        integer :: jvSigm, jvDisp, i
+        integer(kind=8) :: jvSigm, jvDisp, i
 !   ------------------------------------------------------------------------------------------------
 !
         siefElga = 0.d0
@@ -467,7 +467,7 @@ contains
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
         real(kind=8) :: forcNoda(SSH_NBDOF_MAX)
-        integer :: jvSigm, jvVect, i
+        integer(kind=8) :: jvSigm, jvVect, i
 !   ------------------------------------------------------------------------------------------------
 !
         forcNoda = 0.d0
@@ -564,7 +564,7 @@ contains
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
         real(kind=8) :: epsiElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
-        integer :: jvEpsi, jvDisp, i
+        integer(kind=8) :: jvEpsi, jvDisp, i
 !   ------------------------------------------------------------------------------------------------
 !
         epsiElga = 0.d0
@@ -609,7 +609,7 @@ contains
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
         real(kind=8) :: epslElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
-        integer :: jvEpsi, jvDisp, i
+        integer(kind=8) :: jvEpsi, jvDisp, i
 !   ------------------------------------------------------------------------------------------------
 !
         epslElga = 0.d0
@@ -659,7 +659,7 @@ contains
         type(SSH_ELEM_PROP) :: elemProp
         type(SSH_MATE_PARA) :: matePara
         real(kind=8) :: loadNoda(SSH_NBDOF_MAX), timeCurr
-        integer :: jvVect, i
+        integer(kind=8) :: jvVect, i
 !   ------------------------------------------------------------------------------------------------
 !
         loadNoda = 0.d0
@@ -711,7 +711,7 @@ contains
         type(SSH_ELEM_PROP) :: elemProp
         type(SSH_MATE_PARA) :: matePara
         real(kind=8) :: matrMass(SSH_NBDOF_MAX, SSH_NBDOF_MAX), timeCurr
-        integer :: jvMatr, i, j, k
+        integer(kind=8) :: jvMatr, i, j, k
 !   ------------------------------------------------------------------------------------------------
 !
         matrMass = 0.d0
@@ -764,8 +764,8 @@ contains
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
         real(kind=8) :: matrRigiGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
-        integer :: nbIntePoint
-        integer :: jvMatr, jvSigm, i, j, k
+        integer(kind=8) :: nbIntePoint
+        integer(kind=8) :: jvMatr, jvSigm, i, j, k
 !   ------------------------------------------------------------------------------------------------
 !
         matrRigiGeom = 0.d0
@@ -815,7 +815,7 @@ contains
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
         real(kind=8) :: refeForcNoda(SSH_NBDOF_MAX), sigmRefe
-        integer :: jvVect, iDof
+        integer(kind=8) :: jvVect, iDof
 !   ------------------------------------------------------------------------------------------------
 !
         refeForcNoda = 0.d0
@@ -865,7 +865,7 @@ contains
         type(SSH_ELEM_PROP) :: elemProp
         type(SSH_MATE_PARA) :: matePara
         real(kind=8) :: loadNoda(SSH_NBDOF_MAX), timeCurr
-        integer :: jvVect, jvTime, i, iret
+        integer(kind=8) :: jvVect, jvTime, i, iret
 !   ------------------------------------------------------------------------------------------------
 !
         loadNoda = 0.d0
@@ -917,14 +917,14 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Local
         character(len=4), parameter :: inteFami = 'RIGI'
-        integer, parameter :: nbCmp = 6
+        integer(kind=8), parameter :: nbCmp = 6
         character(len=16) :: option
         type(SSH_CELL_GEOM) :: cellGeom
         type(SSH_ELEM_PROP) :: elemProp
         type(SSH_MATE_PARA) :: matePara
         real(kind=8) :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS), timeCurr
         real(kind=8) :: epvcElgaAllCmp(SSH_NBPG_MAX, nbCmp)
-        integer :: jvEpsi, iIntePoint, iCmp
+        integer(kind=8) :: jvEpsi, iIntePoint, iCmp
 !   ------------------------------------------------------------------------------------------------
 !
         epvcElga = 0.d0

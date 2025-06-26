@@ -19,6 +19,6 @@
 interface
     subroutine mgis_get_number_of_esvs(extern_addr, nbvar)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(out) :: nbvar
+        integer(kind=8), intent(out) :: nbvar
     end subroutine mgis_get_number_of_esvs
 end interface

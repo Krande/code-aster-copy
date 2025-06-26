@@ -37,15 +37,15 @@ subroutine lcmafl(fami, kpg, ksp, poum, nmater, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-    integer :: kpg, ksp, nmat, imat, nbval, nbcoef, itbint, nfs, nsg
-    integer :: iret2, nbsys
+    integer(kind=8) :: kpg, ksp, nmat, imat, nbval, nbcoef, itbint, nfs, nsg
+    integer(kind=8) :: iret2, nbsys
     real(kind=8) :: valres(nmat), hsri(nsg, nsg), h, e, nu, mu
     real(kind=8) :: tempf, valh(6), vallue(nmat), val(1)
     character(len=16) :: nomres(nmat)
-    integer :: icodre(nmat)
+    integer(kind=8) :: icodre(nmat)
     character(len=*) :: fami, poum
     character(len=16) :: nmater, necoul, necris, phenom
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------

@@ -42,7 +42,7 @@ subroutine proqua(quat1, quat2, quat3)
 ! ------------------------------------------------------------------
 !
     real(kind=8) :: prosca
-    integer :: i
+    integer(kind=8) :: i
     blas_int :: b_incx, b_incy, b_n
 !
 ! ------------------------------------------------------------------

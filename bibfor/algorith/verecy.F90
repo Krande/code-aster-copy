@@ -52,7 +52,7 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
 !
 !
 !
@@ -64,10 +64,10 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, j, jnode, llintg
-    integer :: llista, llistb, ltnd, ltng, nbd, nbg, nbpbax
-    integer :: nbpbr, nbpbse, nbpbto, nbpbvt, nbsec, numd, numg
-    integer :: nunod, nunog
+    integer(kind=8) :: i, ibid, j, jnode, llintg
+    integer(kind=8) :: llista, llistb, ltnd, ltng, nbd, nbg, nbpbax
+    integer(kind=8) :: nbpbr, nbpbse, nbpbto, nbpbvt, nbsec, numd, numg
+    integer(kind=8) :: nunod, nunog
     real(kind=8) :: crit, difr, difz, dist, distj, distr, distrf
     real(kind=8) :: distrj, distz, distzj, pi, prec, pvdif, rd
     real(kind=8) :: rg, teta, xd, xg, yd, yg, zd

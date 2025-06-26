@@ -23,10 +23,10 @@ interface
                               dgfa_ds, dpfa_ds, dpfa_dpg, dpg_depspg6,&
                               raideur66p, dpfa_dr, dra_dl, dpg_depsa6)
         real(kind=8), intent(inout) :: a(ngf,ngf+1)
-        integer, intent(in) :: ngf
-        integer, intent(in) :: na
-        integer, intent(in) :: nc
-        integer, intent(in) :: ig(nc)
+        integer(kind=8), intent(in) :: ngf
+        integer(kind=8), intent(in) :: na
+        integer(kind=8), intent(in) :: nc
+        integer(kind=8), intent(in) :: ig(nc)
         real(kind=8), intent(in) :: dgfa_ds(nc, 6)
         real(kind=8), intent(in) :: dpfa_ds(nc, 6)
         real(kind=8), intent(in) :: dpfa_dpg(nc)

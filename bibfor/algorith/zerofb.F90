@@ -27,7 +27,7 @@ subroutine zerofb(func, x1, x2, tol, itmax, &
             real(kind=8) :: func, x
         end function func
     end interface
-    integer :: itmax, iter, iret
+    integer(kind=8) :: itmax, iter, iret
     real(kind=8) :: zbrent, tol, x1, x2, eps
     real(kind=8) :: a, b, c, d, e, fa, fb, fc, p, q, r, s, tol1, xm
 ! ----------------------------------------------------------------------

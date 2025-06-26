@@ -33,7 +33,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
     real(kind=8) :: ddy(*)
 !
 !     VARIABLES EN ARGUMENT DE LCRESI
-    integer :: imat, nmat, nr, nvi, kpg, ksp, itmax, nfs, nsg
+    integer(kind=8) :: imat, nmat, nr, nvi, kpg, ksp, itmax, nfs, nsg
     real(kind=8) :: deps(6), epsd(6), vind(*), toler, vinf(*)
     real(kind=8) :: r(*), yd(*), yf(*), dy(*)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
@@ -43,7 +43,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg), crit(*)
     character(len=*) :: fami
 !
-    integer :: nbcomm(nmat, 3)
+    integer(kind=8) :: nbcomm(nmat, 3)
     real(kind=8) :: pgl(3, 3)
     character(len=24) :: cpmono(5*nmat+1)
 !
@@ -72,7 +72,7 @@ subroutine lcreli(fami, kpg, ksp, rela_comp, mod, &
 !     IN /OUT IRET : CODE RETOUR D'ERREUR (DIFFERENT DE 0 SI PB)
 !
 !     ----------------------------------------------------------------
-    integer :: i, iret, itrho, imxrho
+    integer(kind=8) :: i, iret, itrho, imxrho
     real(kind=8) :: f, df, w, rhomin, rhomax
     real(kind=8) :: rhoddy(nr), dyp(nr), rp(nr), yfp(nr)
     real(kind=8) :: rho0, fp0, rho1, fp1, fp2, rho2, rho05, fsup

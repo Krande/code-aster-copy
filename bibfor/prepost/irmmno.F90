@@ -52,7 +52,7 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     med_idt :: idfimd
-    integer :: ndim, nbnoeu
+    integer(kind=8) :: ndim, nbnoeu
 !
     real(kind=8) :: coordo(*)
 !
@@ -68,14 +68,14 @@ subroutine irmmno(idfimd, nomamd, ndim, nbnoeu, coordo, &
     character(len=6) :: nompro
     parameter(nompro='IRMMNO')
 !
-    integer :: edfuin
+    integer(kind=8) :: edfuin
     parameter(edfuin=0)
 !
-    integer :: codret
-    integer :: iaux
-    integer :: jcoord
-    integer :: ifm, nivinf, rang, nbproc, start, filter(1), jaux
-    integer :: jnbno, nbnot, jno, nbnol, cmpt
+    integer(kind=8) :: codret
+    integer(kind=8) :: iaux
+    integer(kind=8) :: jcoord
+    integer(kind=8) :: ifm, nivinf, rang, nbproc, start, filter(1), jaux
+    integer(kind=8) :: jnbno, nbnot, jno, nbnol, cmpt
     mpi_int :: mrank, msize
     aster_logical :: lfu
     real(kind=8) :: start1, end1

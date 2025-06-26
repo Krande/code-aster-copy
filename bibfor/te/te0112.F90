@@ -44,10 +44,10 @@ subroutine te0112(option, nomte)
 !
     real(kind=8) :: a(3, 3, 9, 9)
     real(kind=8) :: dfdr(9), dfdz(9), dfdt(9), poids, r, xh
-    integer :: nno, kp, npg, imatuu, icontr, iharmo
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: i, ic, ijkl, ik, j, k, l
-    integer :: nh
+    integer(kind=8) :: nno, kp, npg, imatuu, icontr, iharmo
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: i, ic, ijkl, ik, j, k, l
+    integer(kind=8) :: nh
 !
 ! --------------------------------------------------------------------------------------------------
 !

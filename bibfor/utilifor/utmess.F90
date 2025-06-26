@@ -43,27 +43,27 @@ subroutine utmess(typ, idmess, nk, valk, sk, &
 !
     character(len=*), intent(in) :: typ
     character(len=*), intent(in) :: idmess
-    integer, intent(in), optional :: nk
+    integer(kind=8), intent(in), optional :: nk
     character(len=*), intent(in), optional, target :: valk(*)
     character(len=*), intent(in), optional :: sk
-    integer, intent(in), optional :: ni
-    integer, intent(in), optional, target :: vali(*)
-    integer, intent(in), optional :: si
-    integer, intent(in), optional :: nr
+    integer(kind=8), intent(in), optional :: ni
+    integer(kind=8), intent(in), optional, target :: vali(*)
+    integer(kind=8), intent(in), optional :: si
+    integer(kind=8), intent(in), optional :: nr
     real(kind=8), intent(in), optional, target :: valr(*)
     real(kind=8), intent(in), optional :: sr
-    integer, intent(in), optional :: num_except
+    integer(kind=8), intent(in), optional :: num_except
     character(len=*), optional :: fname
 !
 !   working variables
-    integer :: unk, uni, unr, nexcep
+    integer(kind=8) :: unk, uni, unr, nexcep
     character(len=256), target :: uvk(1)
 !   because it is not supported by older versions of gfortran, we use two different
 !   calls to utmess_core
 !    character(len=:), pointer :: ptrk(:)
     aster_logical :: use_valk, under_te0000
-    integer, target :: uvi(1)
-    integer, pointer :: ptri(:) => null()
+    integer(kind=8), target :: uvi(1)
+    integer(kind=8), pointer :: ptri(:) => null()
     real(kind=8), target :: uvr(1)
     real(kind=8), pointer :: ptrr(:) => null()
     character(len=2) :: typ2

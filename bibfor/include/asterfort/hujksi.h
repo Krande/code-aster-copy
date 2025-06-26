@@ -24,6 +24,6 @@ interface
         real(kind=8) :: mater(22, 2)
         real(kind=8) :: r
         real(kind=8) :: ksi
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine hujksi
 end interface

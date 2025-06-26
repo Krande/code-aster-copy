@@ -35,17 +35,17 @@ subroutine xls2d(callst, grille, jltsv, jltsl, jlnsv, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: nbno, jcoor, jcoorg, nbmaf, nbsef, jdlima, jdlise
-    integer :: jlnsv, jlnsl, jltsv, jltsl, jconx1, jconx2
+    integer(kind=8) :: nbno, jcoor, jcoorg, nbmaf, nbsef, jdlima, jdlise
+    integer(kind=8) :: jlnsv, jlnsl, jltsv, jltsl, jconx1, jconx2
     aster_logical :: callst, grille
 !
 ! person_in_charge: samuel.geniaut at edf.fr
-    integer :: ino, imafis, nmaabs, inoma, nuno(2), jcrd
+    integer(kind=8) :: ino, imafis, nmaabs, inoma, nuno(2), jcrd
     real(kind=8) :: p(2), dmin, a(2), b(2), m(2), ap(2), ab(2), norcab, ps, eps
     real(kind=8) :: d, oriabp, xln, ps1, xlt, tole
-    integer :: isefis, nseabs, inose, nunose, n1, nbnoma, num, nunoc, i
+    integer(kind=8) :: isefis, nseabs, inose, nunose, n1, nbnoma, num, nunoc, i
     aster_logical :: ma2ff
-    integer :: ir, ir2, ir3, jmafit, jmafif, jmaori, nuno1, nuno2, nunoi, ori
+    integer(kind=8) :: ir, ir2, ir3, jmafit, jmafif, jmaori, nuno1, nuno2, nunoi, ori
     aster_logical :: finfis
     aster_logical, pointer :: is_pt_fond(:) => null()
     blas_int :: b_incx, b_incy, b_n

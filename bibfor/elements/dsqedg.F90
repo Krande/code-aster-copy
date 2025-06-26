@@ -43,8 +43,8 @@ subroutine dsqedg(xyzl, option, pgl, depl, edgl)
 !     IN  DEPL   : DEPLACEMENTS
 !     OUT EDGL   : EFFORTS OU DEFORMATIONS GENERALISES AUX NOEUDS DANS
 !                  LE REPERE INTRINSEQUE A L'ELEMENT
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: multic, ne, k, j, i, ie, jcara
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: multic, ne, k, j, i, ie, jcara
     real(kind=8) :: depf(12), depm(8)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2)

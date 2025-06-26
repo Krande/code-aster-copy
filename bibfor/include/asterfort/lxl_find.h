@@ -18,7 +18,7 @@
 !
 interface
     function lxl_find(chaine, char1)
-        integer :: lxl_find
+        integer(kind=8) :: lxl_find
         character(len=*), intent(in) :: chaine
         character(len=1), intent(in) :: char1
     end function lxl_find

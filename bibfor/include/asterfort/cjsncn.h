@@ -22,11 +22,11 @@ interface
     subroutine cjsncn(roucjs, essmax, ndt, nvi, umess,&
                       relax, rotagd, epsd, deps, sigd,&
                       vind)
-        integer :: nvi
-        integer :: ndt
-        integer :: essmax
+        integer(kind=8) :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: essmax
         character(len=*) :: roucjs
-        integer :: umess
+        integer(kind=8) :: umess
         real(kind=8) :: relax(essmax)
         real(kind=8) :: rotagd(essmax)
         real(kind=8) :: epsd(ndt)

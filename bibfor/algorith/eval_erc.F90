@@ -65,7 +65,7 @@ subroutine eval_erc(baseno, dynam1, vecterc, nommes, matobs, &
 !
     character(len=8), intent(in) :: baseno, nommes
     character(len=19), intent(in) :: dynam1
-    integer, intent(in) :: ifreq, obsdim(3)
+    integer(kind=8), intent(in) :: ifreq, obsdim(3)
     real(kind=8), intent(in) :: vecterc(*), omega, alpha
     real(kind=8), intent(out) :: cout_fon, terme_uv
     character(len=24), intent(in) :: matobs(3)
@@ -73,8 +73,8 @@ subroutine eval_erc(baseno, dynam1, vecterc, nommes, matobs, &
     character(len=8) :: mnorme
     character(len=11) :: bl11
     character(len=19) :: nom_objev_mes
-    integer :: occ, i_tach, i_mes, iaux1, iaux2, iaux3, iaux4, iobsfil, iobscol
-    integer :: iobsval, ii, n_fil, n_col, idesc, nvect_mes, nvale_norme, ivale_norm, lmat
+    integer(kind=8) :: occ, i_tach, i_mes, iaux1, iaux2, iaux3, iaux4, iobsfil, iobscol
+    integer(kind=8) :: iobsval, ii, n_fil, n_col, idesc, nvect_mes, nvale_norme, ivale_norm, lmat
     real(kind=8) :: coef_mes, coef_alpha, terme_obs
     aster_logical :: isdiag
     blas_int :: b_incx, b_incy, b_n

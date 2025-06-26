@@ -24,7 +24,7 @@ interface
                       xiy1, xiy2, xiz1, xiz2, xjx1,&
                       xjx2, g, alfay1, alfay2, alfaz1,&
                       alfaz2, ey, ez)
-        integer :: itype
+        integer(kind=8) :: itype
         real(kind=8) :: sk(*)
         real(kind=8) :: e
         real(kind=8) :: rof

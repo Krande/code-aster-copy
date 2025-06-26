@@ -20,8 +20,8 @@
 !
 interface
     function dinins(sddisc, nume_inst)
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=19), intent(in) :: sddisc
-        integer :: dinins
+        integer(kind=8) :: dinins
     end function dinins
 end interface

@@ -23,9 +23,9 @@ interface
                       matelz, numecz, matriz)
         character(len=24) :: deficu
         character(len=24) :: resocu
-        integer :: neq
-        integer :: nbliai
-        integer :: nmult
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
+        integer(kind=8) :: nmult
         character(len=*) :: numedz
         character(len=*) :: matelz
         character(len=*) :: numecz

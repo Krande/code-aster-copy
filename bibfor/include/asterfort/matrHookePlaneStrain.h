@@ -21,7 +21,7 @@ interface
     subroutine matrHookePlaneStrain(elas_type, angl_naut,&
                                     h, g, g1,&
                                     matr_elas)
-        integer, intent(in) :: elas_type
+        integer(kind=8), intent(in) :: elas_type
         real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), intent(in) :: h(6), g
         real(kind=8), intent(in) :: g1

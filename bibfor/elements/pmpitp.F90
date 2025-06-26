@@ -31,7 +31,7 @@ subroutine pmpitp(typfib, flp, nbpout, yj, zj, fl)
 !       fl(12)    : forces elementaires
 ! -----------------------------------------------------------
 #include "asterfort/r8inir.h"
-    integer :: i, nbpout, typfib
+    integer(kind=8) :: i, nbpout, typfib
     real(kind=8) :: fl(*), flp(12, *), yj(*), zj(*)
 !
     if (typfib .eq. 2) then

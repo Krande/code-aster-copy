@@ -59,17 +59,17 @@ subroutine te0082(option, nomte)
 !
     character(len=16) :: phenom
     character(len=3) :: stopz
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     real(kind=8) :: valres(1), poids, r, vfi, vfj
     real(kind=8) :: matp(18, 18), matv(171), masvit(18), masdep(18)
     real(kind=8) :: vect1(18), vect2(18)
-    integer :: nno, kp, nnos, npg2, ii, jj, i, j, k, imatuu
-    integer :: l, n1, n2, i2, j2
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: kd1, kd2, ij1, ij2, nddl, nvec, iacce, ivect
-    integer :: idepl, ivite, ifreq, iecin
-    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-    integer :: idec, iret
+    integer(kind=8) :: nno, kp, nnos, npg2, ii, jj, i, j, k, imatuu
+    integer(kind=8) :: l, n1, n2, i2, j2
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: kd1, kd2, ij1, ij2, nddl, nvec, iacce, ivect
+    integer(kind=8) :: idepl, ivite, ifreq, iecin
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8) :: idec, iret
     aster_logical :: l_axi
     aster_logical, parameter :: l_vf = ASTER_FALSE
     type(THM_DS) :: ds_thm

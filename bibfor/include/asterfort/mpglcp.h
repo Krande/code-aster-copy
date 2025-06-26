@@ -20,7 +20,7 @@ interface
     subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta, &
                       gamma, pgl)
         character(len=1) :: typecp
-        integer :: nbnolo
+        integer(kind=8) :: nbnolo
         real(kind=8) :: coordo(*)
         real(kind=8) :: alpha
         real(kind=8) :: beta

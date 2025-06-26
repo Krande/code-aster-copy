@@ -24,7 +24,7 @@ interface
                                  x_      , y_     ,&
                                  z_      , nz_)
         character(len=16), intent(in) :: FEForm
-        integer, intent(in) :: cellDime, jvLoad
+        integer(kind=8), intent(in) :: cellDime, jvLoad
         real(kind=8), intent(out) :: speedDire
         real(kind=8), intent(in) :: nx, ny
         aster_logical, optional, intent(in) :: lFunc_, lReal_, lCplx_, lTime_

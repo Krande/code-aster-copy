@@ -20,8 +20,8 @@
 interface
     subroutine porea3(nno, nc, deplm, deplp, geom,&
                       gamma,  pgl, xl1, angp)
-        integer :: nc
-        integer :: nno
+        integer(kind=8) :: nc
+        integer(kind=8) :: nno
         real(kind=8) :: deplm(nno*nc), deplp(nno*nc)
         real(kind=8) :: geom(3, nno)
         real(kind=8) :: gamma

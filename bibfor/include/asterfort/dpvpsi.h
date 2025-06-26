@@ -21,7 +21,7 @@
 interface
     subroutine dpvpsi(nbmat, mater, se, seqe, i1e,&
                       fonecr, dp, sig)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: se(6)
         real(kind=8) :: seqe

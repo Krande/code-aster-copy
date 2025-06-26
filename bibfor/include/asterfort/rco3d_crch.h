@@ -26,8 +26,7 @@ interface
         character(len=19) :: chmlrac
         character(len=24) :: lismaco
         real(kind=8)      :: crig
-        integer           :: nbmaco
+        integer(kind=8)           :: nbmaco
         real(kind=8), pointer ::  v_epai(:)
     end subroutine rco3d_crch
 end interface
-

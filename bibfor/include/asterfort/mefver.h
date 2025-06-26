@@ -20,7 +20,7 @@
 !
 interface
     subroutine mefver(ndim, som, xint, yint, rint)
-        integer :: ndim(14)
+        integer(kind=8) :: ndim(14)
         real(kind=8) :: som(9)
         real(kind=8) :: xint(*)
         real(kind=8) :: yint(*)

@@ -32,9 +32,9 @@ subroutine rcevo1(nommat, fatizh, sm, para, symax)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     real(kind=8) :: valres(3), erefe(1), e(1), rbid, tsm(1)
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=8) :: nompar, nomval(3)
 ! DEB ------------------------------------------------------------------
 !

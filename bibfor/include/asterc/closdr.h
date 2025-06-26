@@ -21,6 +21,6 @@
 interface
     subroutine closdr(dfname, ierr)
         character(len=128) :: dfname
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine closdr
 end interface

@@ -26,7 +26,7 @@ subroutine writeVector(name, nb_value, vect)
 !
 !
     character(len=*), intent(in) :: name
-    integer, intent(in) :: nb_value
+    integer(kind=8), intent(in) :: nb_value
     real(kind=8), intent(in) :: vect(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ subroutine writeVector(name, nb_value, vect)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_vect_out
+    integer(kind=8) :: jv_vect_out
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

@@ -23,7 +23,7 @@ function nltype(inttyp)
 #include "nldef.h"
 #include "asterfort/assert.h"
 !
-    integer :: inttyp
+    integer(kind=8) :: inttyp
     character(len=16) :: nltype
     character(len=16) :: nltypes(_NL_NB_TYPES)
 

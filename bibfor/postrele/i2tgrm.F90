@@ -33,11 +33,11 @@ subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm, &
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: nbm, voisn1(*), voisn2(*)
-    integer :: nbchm, stchm(*), ptchm(*)
+    integer(kind=8) :: nbm, voisn1(*), voisn2(*)
+    integer(kind=8) :: nbchm, stchm(*), ptchm(*)
 !
     aster_logical :: simple, cycle
-    integer :: i, apt, ast, mdpt, aplace
+    integer(kind=8) :: i, apt, ast, mdpt, aplace
 !-----------------------------------------------------------------------
     call jemarq()
     apt = 1

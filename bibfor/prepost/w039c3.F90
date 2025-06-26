@@ -34,7 +34,7 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
 #include "asterfort/utmess.h"
 #include "asterfort/lxlgut.h"
 !
-    integer :: ifi
+    integer(kind=8) :: ifi
     character(len=8) :: carele, modele
     character(len=80) :: titre
     character(len=*) :: form
@@ -48,7 +48,7 @@ subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !
-    integer :: iret, jaux, nbCmpDyna
+    integer(kind=8) :: iret, jaux, nbCmpDyna
     character(len=1), parameter :: nomcmp(3) = ['X', 'Y', 'Z']
     character(len=8) :: typech, sdcarm, carele8
     character(len=19) :: chrel1, chrel2, chrel3, chrelno1, chrelno2, chrelno3, modelLigrel, celmod

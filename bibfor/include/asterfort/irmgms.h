@@ -23,13 +23,13 @@
 interface
     subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
                       nonoe, lgmsh, versio)
-        integer :: ifc
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ifc
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         character(len=8) :: noma
-        integer :: nbgrm
+        integer(kind=8) :: nbgrm
         character(len=8) :: nonoe(*)
         aster_logical :: lgmsh
-        integer :: versio
+        integer(kind=8) :: versio
     end subroutine irmgms
 end interface

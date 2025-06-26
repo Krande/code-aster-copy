@@ -19,7 +19,7 @@
 subroutine wprest(a, x, n, m, y)
     implicit none
 !
-    integer :: n, m
+    integer(kind=8) :: n, m
     complex(kind=8) :: y(*)
     real(kind=8) :: a(n, *), x(*)
 !
@@ -33,11 +33,11 @@ subroutine wprest(a, x, n, m, y)
 ! IN  Y : C : MATRICE DES VECTEUR PROPRES DU PB QUADRATIQUE
 !     --------------------------------------------------------------
     complex(kind=8) :: cval, czero
-    integer :: i, j
+    integer(kind=8) :: i, j
 !     --------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
 !-----------------------------------------------------------------------
     czero = dcmplx(0.0d0, 0.0d0)
     do i = 1, n, 1

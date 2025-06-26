@@ -45,8 +45,8 @@ subroutine romFieldChck(field, fieldName_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: fieldName
-    integer :: nbCmpChck, nbCmpName
-    integer :: iCmpName, iCmpChck, cmpIndx
+    integer(kind=8) :: nbCmpChck, nbCmpName
+    integer(kind=8) :: iCmpName, iCmpChck, cmpIndx
     character(len=8) :: chckCmpName(6), cmpName
 !
 ! --------------------------------------------------------------------------------------------------

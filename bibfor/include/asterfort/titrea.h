@@ -28,12 +28,12 @@ interface
         character(len=*) :: nomobj
         character(len=1) :: st
         character(len=*) :: motfac
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=1) :: base
         character(len=*) :: formr
         character(len=*), optional, intent(in) :: nomsym
-        integer, optional, intent(in) :: iordr
+        integer(kind=8), optional, intent(in) :: iordr
         character(len=80), optional, intent(in) :: defTitle
-        integer, optional, intent(in) :: lDefTitle
+        integer(kind=8), optional, intent(in) :: lDefTitle
     end subroutine titrea
 end interface

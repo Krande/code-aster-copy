@@ -65,9 +65,9 @@ subroutine te0151(option, nomte)
 !
     character(len=*) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
-    integer :: i, idis, iret, istruc, itype, jdepl, jende
-    integer :: jfreq, jmasd, jvite, kanl, lmater, lorien
-    integer :: nbpar, nbres, nc, nno, npg
+    integer(kind=8) :: i, idis, iret, istruc, itype, jdepl, jende
+    integer(kind=8) :: jfreq, jmasd, jvite, kanl, lmater, lorien
+    integer(kind=8) :: nbpar, nbres, nc, nno, npg
     real(kind=8) :: tvar, e, enerth, g, rho, valpar, xl, xnu
 ! --------------------------------------------------------------------------------------------------
     character(len=3) :: stopz
@@ -76,10 +76,10 @@ subroutine te0151(option, nomte)
     character(len=16) :: ch16
     real(kind=8) :: ul(14), ug(14), pgl(3, 3), klc(14, 14), klv(105)
     real(kind=8) :: epsthe
-    integer :: kpg, spt, nklv
+    integer(kind=8) :: kpg, spt, nklv
 ! --------------------------------------------------------------------------------------------------
     parameter(nbres=3)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
     data nomres/'E', 'NU', 'RHO'/

@@ -25,7 +25,7 @@ subroutine dismph(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/assert.h"
 #include "asterfort/dismgd.h"
 #include "asterfort/utmess.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
     character(len=16) :: nomob

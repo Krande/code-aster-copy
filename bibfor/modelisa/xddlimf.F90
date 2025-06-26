@@ -51,7 +51,7 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
 #include "asterfort/jedetr.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: ino, jnoxfv, ndim
+    integer(kind=8) :: ino, jnoxfv, ndim
     real(kind=8) :: lsn(4), lst(4), valimr, direct(3)
     complex(kind=8) :: valimc
     character(len=4) :: fonree
@@ -74,11 +74,11 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
 !
 ! OUT CLASS  : ON AFFECTE AUSSI LA RELATION CINEMATIQUE "TOTALE"
 !
-    integer :: nbxcmp, nbnomax
+    integer(kind=8) :: nbxcmp, nbnomax
     parameter(nbxcmp=60, nbnomax=20)
-    integer :: ier, nbno, jconx2, nbmano, jma, adrma, numa, voisin(3), dimens(nbxcmp)
-    integer :: itypma, ibid, nbnoma, nno, i, jlsnd, jlsnl, hea_pt, heavm(135), jheavnl
-    integer :: iad, ima, j, nuno, nuno2, iadrco, icode, numac, nbnomac, nterm, ncompn, jheavnd
+    integer(kind=8) :: ier, nbno, jconx2, nbmano, jma, adrma, numa, voisin(3), dimens(nbxcmp)
+    integer(kind=8) :: itypma, ibid, nbnoma, nno, i, jlsnd, jlsnl, hea_pt, heavm(135), jheavnl
+  integer(kind=8) :: iad, ima, j, nuno, nuno2, iadrco, icode, numac, nbnomac, nterm, ncompn, jheavnd
     real(kind=8) :: lsno(3), lsn2, coor(4*ndim), param(1), alpha(1), geom(nbnomax*ndim)
     real(kind=8) :: ff(nbnomax), eps, ptm(ndim), ptp(ndim), xe(3)
     real(kind=8) :: valpar(ndim), deplm, deplp, deplun, deplde, depltr, coef(nbxcmp)
@@ -90,10 +90,10 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
     character(len=24) :: coorn, noojb
     character(len=16) :: typres, nomcmd
     parameter(eps=2.d-6)
-    integer, pointer :: nunotmp(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: nunotmp(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: ihea_no(:) => null()
+    integer(kind=8), pointer :: ihea_no(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
     complex(kind=8) :: cbid
     aster_logical :: milieu, passe, coupee

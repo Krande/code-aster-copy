@@ -22,7 +22,7 @@ interface
                              varmo, force, varpl)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
-        integer         :: icodma
+        integer(kind=8)         :: icodma
         real(kind=8)    :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*)
     end subroutine dis_choc_frot_nosyme
 end interface

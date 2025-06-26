@@ -35,7 +35,7 @@ subroutine mateMFrontGetProperties(nomrc_mfront, l_mfront_func, l_mfront_anis, &
 !
     character(len=32), intent(inout) :: nomrc_mfront
     aster_logical, intent(out) :: l_mfront_func, l_mfront_anis
-    integer, intent(out) :: mfront_nbvale
+    integer(kind=8), intent(out) :: mfront_nbvale
     character(len=16), intent(out) :: mfront_prop(16)
     real(kind=8), intent(out) :: mfront_valr(16)
     character(len=16), intent(out) :: mfront_valk(16)
@@ -59,7 +59,7 @@ subroutine mateMFrontGetProperties(nomrc_mfront, l_mfront_func, l_mfront_anis, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: k16dummy, typeco
-    integer :: i_prop, prop_nb, ind, n, idummy, indexE
+    integer(kind=8) :: i_prop, prop_nb, ind, n, idummy, indexE
     character(len=16) :: prop_valk
     real(kind=8) :: prop_valr
     character(len=8), pointer :: prop_type(:) => null()

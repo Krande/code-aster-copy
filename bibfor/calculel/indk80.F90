@@ -18,12 +18,12 @@
 !
 function indk80(lk80, k80z, rang, nbk80)
     implicit none
-    integer :: indk80
+    integer(kind=8) :: indk80
 !
 ! INSPI INDIK24
 !     ARGUMENTS:
 !     ----------
-    integer :: nbk80, rang
+    integer(kind=8) :: nbk80, rang
     character(len=*) :: k80z, lk80(*)
     character(len=80) :: k80, lk80z
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ function indk80(lk80, k80z, rang, nbk80)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 ! DEB-------------------------------------------------------------------
 !
     k80 = k80z

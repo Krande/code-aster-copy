@@ -21,8 +21,8 @@
 interface
     subroutine mmelin(noma, numa, typint, nnint)
         character(len=8) :: noma
-        integer :: numa
-        integer :: typint
-        integer :: nnint
+        integer(kind=8) :: numa
+        integer(kind=8) :: typint
+        integer(kind=8) :: nnint
     end subroutine mmelin
 end interface

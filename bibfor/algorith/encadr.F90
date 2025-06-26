@@ -27,7 +27,7 @@ subroutine encadr(func, x1, x2, f1, f2, &
         end function
     end interface
     real(kind=8) :: x1, x2, f1, f2, xmult
-    integer :: niter, iret
+    integer(kind=8) :: niter, iret
 !
 !
 !     DETERMINATION D'UN ENCADREMENT DU ZERO D'UNE FONCTION.
@@ -45,7 +45,7 @@ subroutine encadr(func, x1, x2, f1, f2, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     iret = 1
 !

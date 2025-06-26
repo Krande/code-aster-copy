@@ -61,26 +61,26 @@ subroutine dizeng(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, ivarim, jdc, irep, jtp, jtm, ifono, icontp, ivarip, iadzi, iazk24
-    integer :: icarcr
-    integer :: icontm, ii, neq
+    integer(kind=8) :: imat, ivarim, jdc, irep, jtp, jtm, ifono, icontp, ivarip, iadzi, iazk24
+    integer(kind=8) :: icarcr
+    integer(kind=8) :: icontm, ii, neq
     real(kind=8) :: r8bid, raide(6), fl(12), klv(78), klc(144), raideurDeno
     character(len=8) :: k8bid
     character(len=24) :: messak(5)
 !   pour la loi de comportement
-    integer :: nbpara
+    integer(kind=8) :: nbpara
 !   SOUPL_1  RAIDE_2  SOUPL_3  RAID_VISQ   PUIS_VISQ
     parameter(nbpara=5)
     real(kind=8) :: ldcpar(nbpara)
-    integer :: ldcpai(1)
+    integer(kind=8) :: ldcpai(1)
     character(len=8) :: ldcpac(1)
     real(kind=8) :: temps0, temps1, dtemps
 !   équations du système : sigma, epsivis, epsi, puiss
-    integer :: nbequa, nbdecp
+    integer(kind=8) :: nbequa, nbdecp
     parameter(nbequa=4)
     real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2)
     real(kind=8) :: errmax
@@ -89,11 +89,11 @@ subroutine dizeng(for_discret, iret)
     parameter(precis=1.0e-08)
 !
 !   paramètres issus de DEFI_MATERIAU
-    integer, parameter :: nbcar = 8, ie1 = 1, ie2 = 2, ie3 = 3, in3 = 4
-    integer, parameter :: ia3 = 5, is1 = 6, is2 = 7, is3 = 8
+    integer(kind=8), parameter :: nbcar = 8, ie1 = 1, ie2 = 2, ie3 = 3, in3 = 4
+    integer(kind=8), parameter :: ia3 = 5, is1 = 6, is2 = 7, is3 = 8
     character(len=16) :: nomcar(nbcar)
     real(kind=8) :: valcar(nbcar)
-    integer :: codcar(nbcar)
+    integer(kind=8) :: codcar(nbcar)
     blas_int :: b_incx, b_incy, b_n
     data nomcar/'K1', 'K2', 'K3', 'C', 'PUIS_ALPHA', 'UNSUR_K1', 'UNSUR_K2', 'UNSUR_K3'/
 ! --------------------------------------------------------------------------------------------------

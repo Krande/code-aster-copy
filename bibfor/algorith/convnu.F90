@@ -60,15 +60,15 @@ subroutine convnu(numin, numout, nomvec, base, neqout)
     character(len=24) :: valk(4)
     aster_logical :: erreur
 !
-    integer :: ibid
-    integer :: vali(2)
+    integer(kind=8) :: ibid
+    integer(kind=8) :: vali(2)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iran(1), ityp, ldcvn
-    integer :: neqin, neqout, nuno
-    integer, pointer :: nlldein(:) => null()
-    integer, pointer :: nlldeou(:) => null()
+    integer(kind=8) :: i, iran(1), ityp, ldcvn
+    integer(kind=8) :: neqin, neqout, nuno
+    integer(kind=8), pointer :: nlldein(:) => null()
+    integer(kind=8), pointer :: nlldeou(:) => null()
 !-----------------------------------------------------------------------
     data ibid/0/
 !-----------------------------------------------------------------------

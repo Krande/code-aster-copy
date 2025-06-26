@@ -20,10 +20,10 @@
 !
           interface 
             subroutine coqgth(imate,compor,fami,ipg,ep,epsm,deps)
-              integer, intent(in) :: imate
+              integer(kind=8), intent(in) :: imate
               character(len=16), intent(in) :: compor
               character(len=*), intent(in) :: fami
-              integer, intent(in) :: ipg
+              integer(kind=8), intent(in) :: ipg
               real(kind=8), intent(in) :: ep
               real(kind=8), intent(inout) :: epsm(6)
               real(kind=8), intent(inout) :: deps(6)

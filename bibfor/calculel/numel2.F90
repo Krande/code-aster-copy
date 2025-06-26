@@ -38,8 +38,8 @@ subroutine numel2(cham, ima, igrel, iel)
     character(len=19) :: cham19, noligr
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacelk, ialiel, iel, igr, igrel, ima
-    integer :: nbgrel, nel
+    integer(kind=8) :: i, iacelk, ialiel, iel, igr, igrel, ima
+    integer(kind=8) :: nbgrel, nel
 !-----------------------------------------------------------------------
     call jemarq()
     igrel = 0

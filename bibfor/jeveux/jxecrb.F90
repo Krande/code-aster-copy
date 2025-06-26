@@ -27,7 +27,7 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco, &
 #include "asterc/writdr.h"
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
-    integer :: ic, iaddi, iadmo, lso, idco, idos
+    integer(kind=8) :: ic, iaddi, iadmo, lso, idco, idos
 ! ----------------------------------------------------------------------
 ! ECRITURE DISQUE D'UN OU PLUSIEURS ENREGISTREMENTS SUR LE FICHIER
 ! D'ACCES DIRECT ASSOCIE A UNE BASE
@@ -41,19 +41,19 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco, &
 !                                              >0 GROS OBJET
 !                                              =0 PETITS OBJETS
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: i, iadloc, ib, ierr, jiacce
-    integer :: jiecr, jusadi, n, nbacce, nblent, numext
+    integer(kind=8) :: i, iadloc, ib, ierr, jiacce
+    integer(kind=8) :: jiecr, jusadi, n, nbacce, nblent, numext
 !-----------------------------------------------------------------------
     parameter(n=5)
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -67,16 +67,16 @@ subroutine jxecrb(ic, iaddi, iadmo, lso, idco, &
     common/kbasje/nombas(n)
     character(len=128) :: repglo, repvol
     common/banvje/repglo, repvol
-    integer :: lrepgl, lrepvo
+    integer(kind=8) :: lrepgl, lrepvo
     common/balvje/lrepgl, lrepvo
-    integer :: idn, iext, nbenrg
+    integer(kind=8) :: idn, iext, nbenrg
     common/iextje/idn(n), iext(n), nbenrg(n)
     common/jiacce/jiacce(n), nbacce(2*n)
     common/jusadi/jusadi(n)
 !     ------------------------------------------------------------------
     character(len=512) :: nom512
     aster_logical :: lrab
-    integer :: lgbl, vali(3)
+    integer(kind=8) :: lgbl, vali(3)
 ! DEB ------------------------------------------------------------------
     ib = 0
     ierr = 0

@@ -30,7 +30,7 @@ interface
         real(kind=8) :: mater(14, 2)
         real(kind=8) :: seuili
         real(kind=8) :: seuild
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: epsd(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
@@ -39,10 +39,10 @@ interface
         real(kind=8) :: vinf(*)
         character(len=6) :: mecani
         character(len=4) :: nivcjs
-        integer :: niter
-        integer :: ndec
+        integer(kind=8) :: niter
+        integer(kind=8) :: ndec
         real(kind=8) :: epscon
-        integer :: iret
+        integer(kind=8) :: iret
         aster_logical :: trac
     end subroutine cjspla
 end interface

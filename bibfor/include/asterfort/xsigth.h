@@ -20,10 +20,10 @@
 !
 interface
     subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
-        integer :: ndim
-        integer :: lonch(10)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: lonch(10)
         real(kind=8) :: inst
-        integer :: nbsig
+        integer(kind=8) :: nbsig
         real(kind=8) :: sigth(*)
     end subroutine xsigth
 end interface

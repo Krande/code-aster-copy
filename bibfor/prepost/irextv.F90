@@ -30,7 +30,7 @@ subroutine irextv(fileFormat, &
 #include "asterfort/getvtx.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: keywfIocc
+    integer(kind=8), intent(in) :: keywfIocc
     aster_logical, intent(in) :: lField, lResu
     character(len=8), intent(in) :: fileFormat
     aster_logical, intent(out) :: lsup, linf, lmax, lmin
@@ -59,7 +59,7 @@ subroutine irextv(fileFormat, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: answer
-    integer :: nbOcc
+    integer(kind=8) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !

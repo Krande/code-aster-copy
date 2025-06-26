@@ -21,7 +21,7 @@
 interface
     subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf,&
                       idfde, nno, nharm, jacob, b)
-       integer, intent(in) :: nbsig, igau, ipoids, ivf, idfde, nno
+       integer(kind=8), intent(in) :: nbsig, igau, ipoids, ivf, idfde, nno
        real(kind=8), intent(in) :: nharm, xyz(1)
        real(kind=8), intent(out) :: jacob, b(nbsig, 81)
     end subroutine bmatmc

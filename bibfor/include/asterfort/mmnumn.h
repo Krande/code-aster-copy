@@ -22,10 +22,10 @@ interface
     subroutine mmnumn(noma, typint, nummae, nnomae, iptm,&
                       numnoe)
         character(len=8) :: noma
-        integer :: typint
-        integer :: nummae
-        integer :: nnomae
-        integer :: iptm
-        integer :: numnoe
+        integer(kind=8) :: typint
+        integer(kind=8) :: nummae
+        integer(kind=8) :: nnomae
+        integer(kind=8) :: iptm
+        integer(kind=8) :: numnoe
     end subroutine mmnumn
 end interface

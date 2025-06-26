@@ -49,10 +49,10 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls, &
 ! ----------------------------------------------------------------------
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer, intent(in) :: jmate, dimuel, nfiss, jheavn, ncompn
-    integer, intent(in) :: nvec, nnop, nnops, nddls, nddlm, ndim
-    integer, intent(in) :: pla(27), ncomph
-    integer, intent(in) :: contac
+    integer(kind=8), intent(in) :: jmate, dimuel, nfiss, jheavn, ncompn
+    integer(kind=8), intent(in) :: nvec, nnop, nnops, nddls, nddlm, ndim
+    integer(kind=8), intent(in) :: pla(27), ncomph
+    integer(kind=8), intent(in) :: contac
     real(kind=8), intent(in) :: deplp(dimuel), deplm(dimuel)
     real(kind=8), intent(in) :: ffp(27), ffc(16)
     real(kind=8), intent(in) :: dffc(16, 3), ffp2(27)
@@ -62,9 +62,9 @@ subroutine xfract(ds_thm, nvec, nnop, nnops, nddls, &
     real(kind=8), intent(out) :: q1, q2, dpf, pf, t, pinf, psup
     real(kind=8), optional, intent(in) :: depl0(dimuel), depl1(dimuel)
     real(kind=8), optional, intent(out) :: lambm(3), pfm
-    integer :: i, j, in, pli, hea_fa(2), ifiss, nfh, ifa, jheafa
+    integer(kind=8) :: i, j, in, pli, hea_fa(2), ifiss, nfh, ifa, jheafa
     real(kind=8) :: ffi, dffi(3)
-    integer :: heavn(nnop, 5), ifh, dec
+    integer(kind=8) :: heavn(nnop, 5), ifh, dec
     real(kind=8) :: coefi
     aster_logical :: lmultc
 !

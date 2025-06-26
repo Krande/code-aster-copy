@@ -68,20 +68,20 @@ subroutine cla110(nomres, modgen)
 !   PARAMETER : REPRESENTE LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 !   SOUS-JACENTE TRAITEE
 !
-    integer :: nbcmpm, ibid
+    integer(kind=8) :: nbcmpm, ibid
 !-----------------------------------------------------------------------
-    integer :: i, iad, iatyma, icomp, igd, igr, igrma
-    integer :: ilstgr, ioc, iret, is, itcon, j, k
-    integer :: l, ldcone, ldcoo, lddes, lddime, ldgrma
-    integer :: ldskin, ldtitr, llcona, llma, llrot
-    integer :: lltra, lltyp, lstac, ltdesc, ltfac, ltino, ltinv
-    integer :: ltlima, ltlino, ltmail, ltnbgr, ltnbma, ltnbno, ltnogr
-    integer :: ltnoma, ltrot, lttra, lutgma, lutnom, lutsst, maxgr
-    integer :: maxma, nbcon, nbgr, nbgrut, nbincr, nbma, nbmat
-    integer :: nbno, nbnot, nbskma, nbsst, nbstac, nbtemp, nbtgrm
-    integer :: nbtmma, nbtmno, nbtmp, nbtout, nbuf, nbvgr, nbvma
-    integer :: nctail, ngrma, ngrmat, ntail, nuact, numma, numno
-    integer :: nusst
+    integer(kind=8) :: i, iad, iatyma, icomp, igd, igr, igrma
+    integer(kind=8) :: ilstgr, ioc, iret, is, itcon, j, k
+    integer(kind=8) :: l, ldcone, ldcoo, lddes, lddime, ldgrma
+    integer(kind=8) :: ldskin, ldtitr, llcona, llma, llrot
+    integer(kind=8) :: lltra, lltyp, lstac, ltdesc, ltfac, ltino, ltinv
+    integer(kind=8) :: ltlima, ltlino, ltmail, ltnbgr, ltnbma, ltnbno, ltnogr
+    integer(kind=8) :: ltnoma, ltrot, lttra, lutgma, lutnom, lutsst, maxgr
+    integer(kind=8) :: maxma, nbcon, nbgr, nbgrut, nbincr, nbma, nbmat
+    integer(kind=8) :: nbno, nbnot, nbskma, nbsst, nbstac, nbtemp, nbtgrm
+    integer(kind=8) :: nbtmma, nbtmno, nbtmp, nbtout, nbuf, nbvgr, nbvma
+    integer(kind=8) :: nctail, ngrma, ngrmat, ntail, nuact, numma, numno
+    integer(kind=8) :: nusst
     real(kind=8) :: xnew
 !-----------------------------------------------------------------------
     parameter(nbcmpm=10)
@@ -93,7 +93,7 @@ subroutine cla110(nomres, modgen)
     real(kind=8) :: matrot(nbcmpm, nbcmpm)
     real(kind=8) :: matbuf(nbcmpm, nbcmpm), mattmp(nbcmpm, nbcmpm)
     character(len=8) :: k8bid, exclu
-    integer, pointer :: nldtyp(:) => null()
+    integer(kind=8), pointer :: nldtyp(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------

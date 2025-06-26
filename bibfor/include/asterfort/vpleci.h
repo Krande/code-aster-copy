@@ -22,10 +22,10 @@ interface
     subroutine vpleci(eigsol, ktype, indice, valk, valr, vali)
         character(len=19) , intent(in)  :: eigsol
         character(len=1)  , intent(in)  :: ktype
-        integer           , intent(in)  :: indice
+        integer(kind=8)           , intent(in)  :: indice
 !!
         character(len=24) , intent(out) :: valk
         real(kind=8)      , intent(out) :: valr
-        integer           , intent(out) :: vali
+        integer(kind=8)           , intent(out) :: vali
     end subroutine vpleci
 end interface

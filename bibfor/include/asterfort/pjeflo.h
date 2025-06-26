@@ -20,9 +20,9 @@
 !
 interface
     subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=*) :: elrefa
-        integer :: ipb
+        integer(kind=8) :: ipb
         real(kind=8) :: xr2(ndim)
         real(kind=8) :: disprj
     end subroutine pjeflo

@@ -54,8 +54,8 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte, &
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 
-    integer :: neq, nbordr, iarchi, ir
-    integer :: nume, nbtyar
+    integer(kind=8) :: neq, nbordr, iarchi, ir
+    integer(kind=8) :: nume, nbtyar
 !
     real(kind=8) :: dep0(neq), vit0(neq), acc0(neq), t0
     real(kind=8) :: fexte(2*neq), famor(2*neq), fliai(2*neq)
@@ -71,7 +71,7 @@ subroutine dltcrr(result, neq, nbordr, iarchi, texte, &
 !
 !
 !
-    integer :: istoc
+    integer(kind=8) :: istoc
 !
 !
 !

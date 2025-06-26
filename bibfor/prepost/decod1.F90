@@ -22,7 +22,7 @@ subroutine decod1(rec, irec, ifield, valatt, trouve)
 #include "asterfort/lxliis.h"
 #include "asterfort/trfmot.h"
     character(len=*) :: rec(20)
-    integer :: irec, ifield, valatt
+    integer(kind=8) :: irec, ifield, valatt
     aster_logical :: trouve
 !
 !    VERIFICATION : L'ENTETE DU DATASET LU EST-IL CELUI RECHERCHE ?
@@ -38,7 +38,7 @@ subroutine decod1(rec, irec, ifield, valatt, trouve)
 !
 !----------------------------------------------------------------------
 !
-    integer :: ilu, ier
+    integer(kind=8) :: ilu, ier
     character(len=80) :: field
 !
 !- RECHERCHE DU CHAMP A TRAITER

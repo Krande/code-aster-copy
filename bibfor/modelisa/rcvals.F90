@@ -21,13 +21,13 @@ subroutine rcvals(iarret, icodre, nbres, nomres)
 #include "jeveux.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: iarret, nbres
-    integer, intent(in) :: icodre(nbres)
+    integer(kind=8), intent(in) :: iarret, nbres
+    integer(kind=8), intent(in) :: icodre(nbres)
     character(len=*), intent(in) :: nomres(nbres)
 !
     character(len=24) :: valk
     character(len=16) :: nomail, para
-    integer :: ier, iadzi, iazk24, ires
+    integer(kind=8) :: ier, iadzi, iazk24, ires
 ! ----------------------------------------------------------------------
 !
 !

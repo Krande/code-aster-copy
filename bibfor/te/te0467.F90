@@ -37,8 +37,8 @@ subroutine te0467(option, nomte)
 !
 !
 !
-    integer :: ndim, nno, nnos, npg, jgano, kp, icopg, ino
-    integer :: idfde, ipoids, ivf, igeom
+    integer(kind=8) :: ndim, nno, nnos, npg, jgano, kp, icopg, ino
+    integer(kind=8) :: idfde, ipoids, ivf, igeom
     real(kind=8) :: xx, yy, poids, jacp, rbid, rbid2(2)
     aster_logical :: laxi
 !

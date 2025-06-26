@@ -30,7 +30,7 @@ subroutine dfllli(listr8_sdaster, dtmin, nb_inst)
 !
     character(len=19), intent(in) :: listr8_sdaster
     real(kind=8), intent(out) :: dtmin
-    integer, intent(out) :: nb_inst
+    integer(kind=8), intent(out) :: nb_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine dfllli(listr8_sdaster, dtmin, nb_inst)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_inst
+    integer(kind=8) :: i_inst
     real(kind=8) :: deltat
     real(kind=8), pointer :: v_vale(:) => null()
 !

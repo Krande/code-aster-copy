@@ -24,13 +24,13 @@ interface
                       ksipr2, tau1m, tau2m, tau1, tau2)
         use NonLin_Datastructure_type
         character(len=8) :: noma
-        integer :: ndimg
+        integer(kind=8) :: ndimg
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: izone
-        integer :: posnoe
+        integer(kind=8) :: izone
+        integer(kind=8) :: posnoe
         character(len=4) :: typenm
-        integer :: posenm
-        integer :: numenm
+        integer(kind=8) :: posenm
+        integer(kind=8) :: numenm
         real(kind=8) :: ksipr1
         real(kind=8) :: ksipr2
         real(kind=8) :: tau1m(3)

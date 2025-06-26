@@ -33,7 +33,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt, &
 #include "asterfort/juveca.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
-    integer :: nbordr, nbropt
+    integer(kind=8) :: nbordr, nbropt
     character(len=8) :: resuin, resuou
     character(len=19) :: lisord, lisopt
 ! person_in_charge: nicolas.sellenet at edf.fr
@@ -68,11 +68,11 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt, &
 ! OUT :
 !   NBOPT  I    NOMBRE D'OPTIONS
 ! ----------------------------------------------------------------------
-    integer :: ntymax
+    integer(kind=8) :: ntymax
     parameter(ntymax=11)
 !
-    integer :: i, ityp, n1, jopt, postmp, nbopfa, ioc, ibid
-    integer :: nuti, nsup, jord, iordr, iret
+    integer(kind=8) :: i, ityp, n1, jopt, postmp, nbopfa, ioc, ibid
+    integer(kind=8) :: nuti, nsup, jord, iordr, iret
 !
     character(len=9) :: mcfact
     character(len=12) :: typopt, tygrop(ntymax)
@@ -81,7 +81,7 @@ subroutine cclopu(resuin, resuou, lisord, nbordr, lisopt, &
     parameter(mcfact='CHAM_UTIL')
 !
     aster_logical :: newcal, vu
-    integer, pointer :: nb_op_ty(:) => null()
+    integer(kind=8), pointer :: nb_op_ty(:) => null()
     character(len=16), pointer :: oputil(:) => null()
 !
     data tygrop/'CONTRAINTE  ', 'DEFORMATION ', 'ENERGIE     ', &

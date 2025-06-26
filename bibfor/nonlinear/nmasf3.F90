@@ -34,9 +34,9 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde, &
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: nno, nbpg1, imate
-    integer :: ipoids, ivf, idfde
-    integer :: ipoid2, ivf2, idfde2
+    integer(kind=8) :: nno, nbpg1, imate
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: ipoid2, ivf2, idfde2
     character(len=16) :: compor(*)
     real(kind=8) :: geom(3, nno)
     real(kind=8) :: deplm(3, nno), dfdi(nno, 3)
@@ -63,11 +63,11 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde, &
 !
 !
     aster_logical :: grand, calbn, axi
-    integer :: codre(1)
+    integer(kind=8) :: codre(1)
     character(len=16) :: nomres(2)
     character(len=32) :: phenom
-    integer :: kpg, i, ii, ino, ia, j, k, kl, proj, nbpg2
-    integer :: ndim, nnos, jgano, kp, iaa
+    integer(kind=8) :: kpg, i, ii, ino, ia, j, k, kl, proj, nbpg2
+    integer(kind=8) :: ndim, nnos, jgano, kp, iaa
     real(kind=8) :: d(6, 6), f(3, 3), eps(6), r, s
     real(kind=8) :: poids, poipg2(8)
     real(kind=8) :: jac, sigas(6, 8), invja(3, 3), bi(3, 8), hx(3, 4)

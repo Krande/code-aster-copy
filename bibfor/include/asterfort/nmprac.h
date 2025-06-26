@@ -24,7 +24,7 @@ interface
                       faccvg)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         character(len=19), intent(in) :: listLoad
         character(len=24), intent(in) :: numeDof
         character(len=19), intent(in) :: sddyna
@@ -35,6 +35,6 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: maprec
         character(len=19), intent(inout) :: matrAsse
-        integer, intent(out) :: faccvg
+        integer(kind=8), intent(out) :: faccvg
     end subroutine nmprac
 end interface

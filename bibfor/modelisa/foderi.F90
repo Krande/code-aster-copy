@@ -40,8 +40,8 @@ subroutine foderi(nomfon, temp, f, df)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: mxsave, isvnxt, nextsv
-    integer :: iaprol, iavale, luvale
+    integer(kind=8) :: mxsave, isvnxt, nextsv
+    integer(kind=8) :: iaprol, iavale, luvale
     character(len=2) :: svprgd
     character(len=8) :: svnomf
     common/ifdsav/mxsave, isvnxt, nextsv(5)
@@ -49,7 +49,7 @@ subroutine foderi(nomfon, temp, f, df)
     common/kfdsav/svnomf(5), svprgd(5)
 !     ------------------------------------------------------------------
     aster_logical :: tesinf, tessup
-    integer :: isave, kk, jpro, jvalf, jv, jp, nbvf
+    integer(kind=8) :: isave, kk, jpro, jvalf, jv, jp, nbvf
     character(len=19) :: ch19
     character(len=24) :: chpro, chval
 !     ------------------------------------------------------------------

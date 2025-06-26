@@ -46,7 +46,7 @@ interface
         real(kind=8) :: epsic
         real(kind=8) :: epsiels
         real(kind=8) :: epsilim
-        integer :: codret
+        integer(kind=8) :: codret
         real(kind=8) :: ep
         aster_logical :: is_param_opt(*)
         real(kind=8) :: val_param_opt(*)

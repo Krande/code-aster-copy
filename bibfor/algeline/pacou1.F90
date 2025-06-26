@@ -25,8 +25,8 @@ subroutine pacou1(x, fvec, df, work, eps, &
 ! ---------
 #include "jeveux.h"
 #include "asterfort/pacouf.h"
-    integer :: i, indic, j, n, nbm, nmode
-    integer :: veci1(*)
+    integer(kind=8) :: i, indic, j, n, nbm, nmode
+    integer(kind=8) :: veci1(*)
     real(kind=8) :: x(*), fvec(*), df(n, *), work(*), eps
     real(kind=8) :: amor(*), vg, masg(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)

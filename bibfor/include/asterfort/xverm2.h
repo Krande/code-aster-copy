@@ -20,7 +20,7 @@
 !
 interface
     subroutine xverm2(nfiss, fiss, mod)
-        integer :: nfiss
+        integer(kind=8) :: nfiss
         character(len=8) :: fiss(nfiss)
         character(len=8) :: mod
     end subroutine xverm2

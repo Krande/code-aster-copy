@@ -32,8 +32,8 @@ subroutine dgfsections(nboccsec, iinbgf, tousgroupesnom, tousgroupesnbf, maxmail
 !
     implicit none
 !
-    integer :: nboccsec, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres1
-    integer           :: tousgroupesnbf(*)
+    integer(kind=8) :: nboccsec, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres1
+    integer(kind=8)           :: tousgroupesnbf(*)
     character(len=24) :: tousgroupesnom(*)
 !
 #include "jeveux.h"
@@ -51,8 +51,8 @@ subroutine dgfsections(nboccsec, iinbgf, tousgroupesnom, tousgroupesnbf, maxmail
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer           :: ioc, nbv, jdtm, jmaill, nbmagr, jdo, nbmaills, nbnoeuds, nummai, nutyma
-    integer           :: nttri3, ntqua4, ntseg2, ntpoi1
+integer(kind=8)           :: ioc, nbv, jdtm, jmaill, nbmagr, jdo, nbmaills, nbnoeuds, nummai, nutyma
+    integer(kind=8)           :: nttri3, ntqua4, ntseg2, ntpoi1
     character(len=7)  :: k7bid
     character(len=8)  :: nomas, ktyma
     character(len=24) :: mlgtms

@@ -21,7 +21,7 @@ subroutine runge6(ipif, deltat, tpgp, tpgm, hpgm, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/fointa.h"
-    integer :: ipif
+    integer(kind=8) :: ipif
     real(kind=8) :: deltat, tpgp, tpgm, hpgm, hpgp, err
 !     CALCUL DE h+ PAR RUNGE-KUTTA6
 !     RESOLUTION DE DH/DT = f(HYDR,TEMP)

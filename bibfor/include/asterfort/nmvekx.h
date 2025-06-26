@@ -20,7 +20,7 @@
 !
 interface
     subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: tp
         real(kind=8) :: xhi
         real(kind=8) :: kxhi

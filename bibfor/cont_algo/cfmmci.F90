@@ -45,7 +45,7 @@ subroutine cfmmci(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_zone, i_zone
+    integer(kind=8) :: nb_cont_zone, i_zone
     aster_logical :: l_cont_disc
     real(kind=8) :: coef_pena_cont, coef_pena_fric
 !

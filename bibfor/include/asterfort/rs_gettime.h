@@ -21,7 +21,7 @@
 interface
     subroutine rs_gettime(result_, nume, inst)
         character(len=*), intent(in) :: result_
-        integer, intent(in) :: nume
+        integer(kind=8), intent(in) :: nume
         real(kind=8), intent(out) :: inst
     end subroutine rs_gettime
 end interface

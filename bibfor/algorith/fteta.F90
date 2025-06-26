@@ -41,7 +41,7 @@ subroutine fteta(theta, neq, f0, f1)
 !
     real(kind=8) :: coef
 !-----------------------------------------------------------------------
-    integer :: neq
+    integer(kind=8) :: neq
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     coef = 1.0d0-theta

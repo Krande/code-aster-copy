@@ -33,10 +33,10 @@ subroutine lc1015(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/Behaviour_type.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
@@ -50,10 +50,10 @@ subroutine lc1015(fami, kpg, ksp, ndim, imate, &
     real(kind=8), intent(out) :: sigp(*)
     real(kind=8), intent(out) :: vip(*)
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: icomp
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: icomp
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(out) :: dsidep(*)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -49,12 +49,12 @@ subroutine veri_noe(mailla, dmax_cable, lnuma, liproj, nbmaok, &
 ! ---------
     character(len=8) :: mailla
     real(kind=8) :: x3dca(3), dmax_cable
-    integer :: iproj, lnuma(*), liproj(*), nbmaok, noe, numail
+    integer(kind=8) :: iproj, lnuma(*), liproj(*), nbmaok, noe, numail
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: imail, j, jconx1, jcoor, jconx2, nbcnx, inoma
-    integer :: jtyma, ntyma, itria, inoeu, icote, iproj2, i, cxma(9), jnoeu, knoeu
+    integer(kind=8) :: imail, j, jconx1, jcoor, jconx2, nbcnx, inoma
+    integer(kind=8) :: jtyma, ntyma, itria, inoeu, icote, iproj2, i, cxma(9), jnoeu, knoeu
     real(kind=8) :: d1, d2
     character(len=24) :: conxma, coorno, tymama
     real(kind=8) :: xyzma(3, 9), normal(3), excent, xbar(3), x3dp(3), prec, quart

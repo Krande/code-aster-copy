@@ -39,7 +39,7 @@ subroutine nummod(nugene, modmec)
 ! MODMEC /I/ : NOM K8 DU MODE_MECA OU DU MODE_GENE
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbvect, nbmode, tmod(1), n2
+    integer(kind=8) :: ibid, n1, nbvect, nbmode, tmod(1), n2
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=8) :: k8b, typrof

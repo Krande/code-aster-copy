@@ -56,11 +56,11 @@ subroutine excygl(nmresz, typsdz, mdcycz, maillz, profno)
     character(len=16) :: typsd
     character(len=19) :: profno
     character(len=24) :: indirf
-    integer :: numdia, nbsec
+    integer(kind=8) :: numdia, nbsec
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, iret, nbmcal
+    integer(kind=8) :: ibid, iret, nbmcal
 !-----------------------------------------------------------------------
     data pgc/'EXCYGL'/
 !-----------------------------------------------------------------------

@@ -20,7 +20,7 @@
 interface 
     subroutine xfem_pc_sol(matas1, nsolu, solu)
         character(len=19) :: matas1
-        integer :: nsolu
+        integer(kind=8) :: nsolu
         real(kind=8) :: solu(*)
     end subroutine xfem_pc_sol
 end interface 

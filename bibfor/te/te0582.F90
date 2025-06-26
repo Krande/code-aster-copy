@@ -39,12 +39,12 @@ subroutine te0582(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbrddm
+    integer(kind=8) :: nbrddm
     parameter(nbrddm=156)
-    integer :: npg, ipoids, ivf
-    integer :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
+    integer(kind=8) :: npg, ipoids, ivf
+    integer(kind=8) :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
     real(kind=8) :: mass(nbrddm*nbrddm), k(nbrddm*nbrddm)
-    integer :: m, nbrddl, nc, iacce, ivect, imass
+    integer(kind=8) :: m, nbrddl, nc, iacce, ivect, imass
 !
 !
 !

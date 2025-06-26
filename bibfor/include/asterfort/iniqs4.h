@@ -20,7 +20,7 @@
 !
 interface
     subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: sdfde(4, 4)
         real(kind=8) :: sdfdk(4, 4)
         real(kind=8) :: poipg(4)

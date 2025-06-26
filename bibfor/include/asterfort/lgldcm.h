@@ -20,7 +20,7 @@
 !
 interface
     subroutine lgldcm(nbmat, mater, sig, vin)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(*)

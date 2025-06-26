@@ -42,8 +42,8 @@ subroutine nonlinDSContactRead(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nocc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nocc
     character(len=8) :: sdcont
     character(len=16), parameter :: factorKeyword = 'CONTACT'
 !

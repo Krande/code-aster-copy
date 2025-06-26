@@ -34,11 +34,11 @@ subroutine te0162(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: elrefe
-    integer :: nno, kp, npg, i, ivectu
+    integer(kind=8) :: nno, kp, npg, i, ivectu
 !
 !
 !-----------------------------------------------------------------------
-    integer :: idfdk, ipoids, ivf, jgano, ndim, nnos
+    integer(kind=8) :: idfdk, ipoids, ivf, jgano, ndim, nnos
 !-----------------------------------------------------------------------
     call elref1(elrefe)
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &

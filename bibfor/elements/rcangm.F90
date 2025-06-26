@@ -26,7 +26,7 @@ subroutine rcangm(ndim, coor, angl_naut)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utrcyl.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: angl_naut(3), coor(3)
 ! ......................................................................
 !    - ORIENTATION DU MASSIF
@@ -36,7 +36,7 @@ subroutine rcangm(ndim, coor, angl_naut)
 !                            (CAS CYLINDRIQUE)
 !   OUT     ANGL_NAUT R    : ANGLE NAUTIQUE
 ! ......................................................................
-    integer :: icamas, iret, i
+    integer(kind=8) :: icamas, iret, i
     real(kind=8) :: p(3, 3), xg(3), yg(3), orig(3), dire(3)
     real(kind=8) :: alpha, beta, xu, yu, xnorm
 !     ------------------------------------------------------------------

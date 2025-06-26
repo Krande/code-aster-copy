@@ -45,9 +45,9 @@ subroutine hujres(fami, kpg, ksp, mod, crit, &
 #include "asterfort/hujprj.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, ndec, iret, kpg, ksp
-    integer :: i, k, ifm, niv, nsubd, maj, niter
-    integer :: nvimax, idec, imat, indi(7)
+    integer(kind=8) :: ndt, ndi, nvi, ndec, iret, kpg, ksp
+    integer(kind=8) :: i, k, ifm, niv, nsubd, maj, niter
+    integer(kind=8) :: nvimax, idec, imat, indi(7)
     parameter(nvimax=50)
     real(kind=8) :: deps(6), vins(nvimax)
     real(kind=8) :: sigd(6), sigf(6), predic(6), ptrac

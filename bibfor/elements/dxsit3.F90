@@ -26,7 +26,7 @@ subroutine dxsit3(nomte, mater, pgl, sigma)
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    integer :: mater
+    integer(kind=8) :: mater
     real(kind=8) :: pgl(3, *), sigma(*)
     character(len=16) :: nomte
 !
@@ -36,10 +36,10 @@ subroutine dxsit3(nomte, mater, pgl, sigma)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ndim, nnoel, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: i, j, icou, icpg, igauh, ipg, ipgh, nbcmp, nbcou
-    integer :: npgh
-    integer :: jnbspi, multic, jcaco
+    integer(kind=8) :: ndim, nnoel, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: i, j, icou, icpg, igauh, ipg, ipgh, nbcmp, nbcou
+    integer(kind=8) :: npgh
+    integer(kind=8) :: jnbspi, multic, jcaco
 !
     real(kind=8) :: zero, epsth(2)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)

@@ -26,12 +26,12 @@ subroutine fmater(nbfmax, nftab, tab)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 
-    integer :: nbfmax, nftab
+    integer(kind=8) :: nbfmax, nftab
     character(len=8) :: tab(*)
 !-----------------------------------------------------------------------
 ! but : recuperer les familles de points de gauss de la liste MATER
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
 
     ASSERT(nbfmax .ge. ca_nfpg_)

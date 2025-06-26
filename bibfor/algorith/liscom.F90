@@ -50,9 +50,9 @@ subroutine liscom(nomo, codarr, lischa, l_need_modelz)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ichar, nbchar
+    integer(kind=8) :: ichar, nbchar
     character(len=8) :: charge, modch1
-    integer :: genrec
+    integer(kind=8) :: genrec
     aster_logical :: lveag, lveas, l_need_model
 !
 ! ----------------------------------------------------------------------

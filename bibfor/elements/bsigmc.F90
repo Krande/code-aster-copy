@@ -46,12 +46,12 @@ subroutine bsigmc(nno, ndim, nbsig, npg, ipoids, &
 ! -----  ARGUMENTS
 #include "asterfort/bmatmc.h"
 #include "asterfort/btsig.h"
-    integer, intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
+    integer(kind=8), intent(in) :: nno, ndim, nbsig, npg, ipoids, ivf, idfde
     real(kind=8), intent(in) :: xyz(1), nharm, sigma(1)
     real(kind=8), intent(out) :: bsigma(1)
 !
 ! -----  VARIABLES LOCALES
-    integer :: i, igau, nbinco
+    integer(kind=8) :: i, igau, nbinco
     real(kind=8) :: b(nbsig, 81), jacgau
 
 !.========================= DEBUT DU CODE EXECUTABLE ==================

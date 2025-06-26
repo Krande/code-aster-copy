@@ -70,17 +70,17 @@ subroutine sschge(macrElemZ)
     character(len=19) :: vectAsse, vectElem
     character(len=24), parameter :: listLoad = "&&SSCHGE_LISTLOAD"
     character(len=16), parameter :: factKeyword = 'CAS_CHARGE'
-    integer :: jvLica
-    integer :: n1, n2
-    integer :: nbDofExte, nbDofInte, nbDof
-    integer :: nbLoad, nbLoadMax
-    integer :: nbCase, caseNume, iCase
+    integer(kind=8) :: jvLica
+    integer(kind=8) :: n1, n2
+    integer(kind=8) :: nbDofExte, nbDofInte, nbDof
+    integer(kind=8) :: nbLoad, nbLoadMax
+    integer(kind=8) :: nbCase, caseNume, iCase
     real(kind=8) :: time
-    integer, parameter :: numeHarm = 0
+    integer(kind=8), parameter :: numeHarm = 0
     character(len=8), pointer :: refm(:) => null(), macrElemLich(:) => null()
     character(len=8), pointer :: loadName(:) => null()
     real(kind=8), pointer :: macrElemLica(:) => null()
-    integer, pointer :: desm(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     type(ListLoad_Prep) :: listLoadPrep
     aster_logical, parameter :: kineExcl = ASTER_FALSE, diriExcl = ASTER_FALSE

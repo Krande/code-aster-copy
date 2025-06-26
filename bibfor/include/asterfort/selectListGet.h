@@ -20,7 +20,7 @@ interface
     subroutine selectListGet(selectList, nume_inst, inst, l_select)
         use NonLin_Datastructure_type
         type(NL_DS_SelectList), intent(in) :: selectList
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         real(kind=8), intent(in) :: inst
         aster_logical, intent(out) :: l_select
     end subroutine selectListGet

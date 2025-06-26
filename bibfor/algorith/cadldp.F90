@@ -20,7 +20,7 @@ subroutine cadldp(vp, sigeqe, nbmat, materf, parame, &
                   derive, sig3, eta, dg, detadg, &
                   dgdl, ddldsp)
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: ddldsp, materf(nbmat, 2), parame(4), derive(5)
     real(kind=8) :: vp(3), sigeqe, eta, dg, detadg, sig3, dgdl
 ! ======================================================================
@@ -39,7 +39,7 @@ subroutine cadldp(vp, sigeqe, nbmat, materf, parame, &
 ! ======================================================================
     real(kind=8) :: un, deux, trois, k, dl, mu
     real(kind=8) :: a2, a3, a4, c5, a6, aux1, aux2, aux3, denom
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
 ! ======================================================================
     parameter(un=1.0d0)
     parameter(deux=2.0d0)

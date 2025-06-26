@@ -25,7 +25,7 @@ interface
                                 newBehaviourOnCell, inconsistentBehaviour,&
                                 l_modif_vari)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nbCell
+        integer(kind=8), intent(in) :: nbCell
         character(len=19), intent(in) :: comporCurr, comporPrev
         character(len=19), intent(in) :: ligrelCurr, ligrelPrev
         character(len=48), intent(in) :: comp_comb_1, comp_comb_2

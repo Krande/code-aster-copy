@@ -22,7 +22,7 @@ interface
     subroutine nupodd(nu, base, rang, nbproc)
         character(len=14) :: nu
         character(len=2) :: base
-        integer :: rang
-        integer :: nbproc
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbproc
     end subroutine nupodd
 end interface

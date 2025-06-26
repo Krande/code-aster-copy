@@ -21,20 +21,20 @@ interface
     subroutine xfocoh(jbas, jconx1, jconx2, jcoor, jfon,&
                       cnsln, chgrn, chgrt, noma, listpt, ndim,&
                       nfon, nxptff, orient, nbmai)
-        integer :: jbas
-        integer :: jconx1
-        integer :: jconx2
-        integer :: jcoor
-        integer :: jfon
+        integer(kind=8) :: jbas
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: jcoor
+        integer(kind=8) :: jfon
         character(len=19) :: cnsln
         character(len=19) :: chgrn
         character(len=19) :: chgrt
         character(len=8) :: noma
         character(len=19) :: listpt
-        integer :: ndim
-        integer :: nfon
-        integer :: nxptff
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfon
+        integer(kind=8) :: nxptff
         aster_logical :: orient
-        integer :: nbmai
+        integer(kind=8) :: nbmai
     end subroutine xfocoh
 end interface 

@@ -87,7 +87,7 @@ subroutine dnconv(n, ritzr, ritzi, bounds, tol, &
 #include "asterc/matfpe.h"
 #include "asterc/r8prem.h"
 #include "blas/dlapy2.h"
-    integer :: n, nconv
+    integer(kind=8) :: n, nconv
     real(kind=8) :: tol
 !
 !     %-----------------%
@@ -100,7 +100,7 @@ subroutine dnconv(n, ritzr, ritzi, bounds, tol, &
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: temp, eps23
 !
 !     %-----------%

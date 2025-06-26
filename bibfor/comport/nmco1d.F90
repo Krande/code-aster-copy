@@ -39,7 +39,7 @@ subroutine nmco1d(BEHInteg, &
 #include "asterfort/vmci1d.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: imate, codret, kpg, ksp
+    integer(kind=8) :: imate, codret, kpg, ksp
     character(len=16) :: option, rela_comp, rela_cpla
     character(len=*) :: fami
     real(kind=8) :: epsm, deps, sigm, vim(*)
@@ -68,10 +68,10 @@ subroutine nmco1d(BEHInteg, &
 !
     aster_logical :: cine, isot, pinto, com1d, elas, cinegc
     real(kind=8) :: e, et, sigy
-    integer, parameter :: nvarpi = 8, ncstpm = 13
+    integer(kind=8), parameter :: nvarpi = 8, ncstpm = 13
     real(kind=8) :: cstpm(ncstpm)
     real(kind=8) :: em, ep, depsth, depsm, val(1)
-    integer :: codres(1)
+    integer(kind=8) :: codres(1)
 ! --------------------------------------------------------------------------------------------------
 !
     elas = .false.

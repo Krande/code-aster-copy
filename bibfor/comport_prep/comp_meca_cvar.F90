@@ -41,12 +41,12 @@ subroutine comp_meca_cvar(prepMapCompor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iFactorKeyword, nbFactorKeyword
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: post_iter, extern_addr
     character(len=16) :: rela_comp, defo_comp, mult_comp, kit_comp(4), type_cpla
     character(len=16) :: regu_visc, post_incr
-    integer :: numeLawKit(4), nbVari, nbVariKit(4), numeLaw, nbVariUMAT
-    integer :: extern_type
+    integer(kind=8) :: numeLawKit(4), nbVari, nbVariKit(4), numeLaw, nbVariUMAT
+    integer(kind=8) :: extern_type
 !
 ! --------------------------------------------------------------------------------------------------
 !

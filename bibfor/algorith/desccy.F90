@@ -43,7 +43,7 @@ subroutine desccy(nomres)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
 !
 !
 !
@@ -52,11 +52,11 @@ subroutine desccy(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid(1), ldnoea, ldnoed, ldnoeg, ldnumg
-    integer :: lldesc, nba, nbd, nbda, nbdd, nbdg
-    integer :: nbg, nbmcal, nbmod, nbmod1, nbmod2, nbnot, nboc
-    integer :: nbtemp, numa, numd, numg, n1
-    integer, pointer :: cycl_nuin(:) => null()
+    integer(kind=8) :: ibid(1), ldnoea, ldnoed, ldnoeg, ldnumg
+    integer(kind=8) :: lldesc, nba, nbd, nbda, nbdd, nbdg
+    integer(kind=8) :: nbg, nbmcal, nbmod, nbmod1, nbmod2, nbnot, nboc
+    integer(kind=8) :: nbtemp, numa, numd, numg, n1
+    integer(kind=8), pointer :: cycl_nuin(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

@@ -32,10 +32,10 @@ interface
         real(kind=8) :: masg(*)
         real(kind=8) :: vecr4(*)
         real(kind=8) :: vecr5(*)
-        integer :: veci1(*)
+        integer(kind=8) :: veci1(*)
         real(kind=8) :: vgap
-        integer :: indic
-        integer :: nbm
-        integer :: nmode
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbm
+        integer(kind=8) :: nmode
     end subroutine pacouf
 end interface

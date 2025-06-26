@@ -25,9 +25,9 @@ subroutine lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte, poin_inte2)
 
 ! aslint: disable=W1306
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     real(kind=8), intent(in) :: pair_tole
-    integer, intent(inout) :: nb_poin_inte
+    integer(kind=8), intent(inout) :: nb_poin_inte
     real(kind=8), intent(inout) :: poin_inte(elem_dime-1, nb_poin_inte)
     real(kind=8), optional, intent(inout) :: poin_inte2(elem_dime-1, nb_poin_inte)
 !
@@ -50,7 +50,7 @@ subroutine lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte, poin_inte2)
     real(kind=8) :: poin_inte_sort2(elem_dime-1, 16)
     real(kind=8) :: angle(nb_poin_inte), bary(2)
     real(kind=8) :: v(2), norm
-    integer :: i_poin_inte, angle_sorted(nb_poin_inte), list_poin_next(nb_poin_inte), nb_inte_new
+    integer(kind=8) :: i_poin_inte, angle_sorted(nb_poin_inte), list_poin_next(nb_poin_inte), nb_inte_new
 !
 ! --------------------------------------------------------------------------------------------------
 !

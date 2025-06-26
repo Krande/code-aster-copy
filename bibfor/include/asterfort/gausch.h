@@ -20,7 +20,7 @@
 !
 interface
     subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
-        integer :: npgxyz(3)
+        integer(kind=8) :: npgxyz(3)
         real(kind=8) :: xpg(1)
         real(kind=8) :: ypg(1)
         real(kind=8) :: zpg(1)

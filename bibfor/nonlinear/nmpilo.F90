@@ -39,8 +39,8 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
 #include "asterfort/nmpila.h"
 #include "asterfort/nmpipe.h"
 !
-    integer :: nbatte, nbeffe
-    integer :: pilcvg
+    integer(kind=8) :: nbatte, nbeffe
+    integer(kind=8) :: pilcvg
     real(kind=8) :: deltat, rho, eta(nbatte)
     character(len=19) :: sdpilo
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -84,8 +84,8 @@ subroutine nmpilo(sdpilo, deltat, rho, solalg, veasse, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: neq, i
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: neq, i
     real(kind=8) :: dtau, etrmin, etrmax, coef
     character(len=19) :: ddepl0, ddepl1
     character(len=24) :: typpil

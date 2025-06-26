@@ -29,7 +29,7 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ipif, nbpu
+    integer(kind=8) :: ipif, nbpu
     real(kind=8) :: valpu(*), resu
     character(len=*) :: nompu(*)
 !     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
@@ -43,14 +43,14 @@ subroutine fointa(ipif, nbpu, nompu, valpu, resu)
 !
 !
 !
-    integer :: npar(2), indfct, jpro, jpar, lpara, nbvn, nbpara, i
-    integer :: nupar, nbpt, jval, inume, ier, iret
+    integer(kind=8) :: npar(2), indfct, jpro, jpar, lpara, nbvn, nbpara, i
+    integer(kind=8) :: nupar, nbpt, jval, inume, ier, iret
     real(kind=8) :: tab(4), rpar, rvar, epsi, tresu(1)
     character(len=1) :: coli
     character(len=19) :: nomf
     character(len=24) :: nompf(2)
 !     ------------------------------------------------------------------
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     character(len=24) :: valk(3)
 ! ----------------------------------------------------------------------
 ! PARAMETER ASSOCIE AU MATERIAU CODE

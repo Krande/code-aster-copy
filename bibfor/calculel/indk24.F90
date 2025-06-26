@@ -18,12 +18,12 @@
 !
 function indk24(lk24, k24z, rang, nbk24)
     implicit none
-    integer :: indk24
+    integer(kind=8) :: indk24
 !
 ! INSPI INDIK8
 !     ARGUMENTS:
 !     ----------
-    integer :: nbk24, rang
+    integer(kind=8) :: nbk24, rang
     character(len=*) :: k24z, lk24(*)
     character(len=24) :: k24, lk24z
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ function indk24(lk24, k24z, rang, nbk24)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 ! DEB-------------------------------------------------------------------
 !
     k24 = k24z

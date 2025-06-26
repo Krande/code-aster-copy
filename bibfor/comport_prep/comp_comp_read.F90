@@ -35,7 +35,7 @@ subroutine comp_comp_read(v_info_valk, v_info_vali)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(out) :: v_info_valk(:)
-    integer, intent(out) :: v_info_vali(:)
+    integer(kind=8), intent(out) :: v_info_vali(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,13 +51,13 @@ subroutine comp_comp_read(v_info_valk, v_info_vali)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywordfact
-    integer :: iocc, nocc, nbgmax, i, jdecal, idummy, idummy2
+    integer(kind=8) :: iocc, nocc, nbgmax, i, jdecal, idummy, idummy2
     character(len=8) :: sdcomp, k8dummy
     character(len=16) :: comp_code
     character(len=16) :: rela_comp, defo_comp, type_comp, type_cpla, mult_comp
-    integer :: nb_vari, nume_comp, nb_vari_exte, unit_comp
+    integer(kind=8) :: nb_vari, nume_comp, nb_vari_exte, unit_comp
     character(len=24), pointer :: v_sdcomp_cprk(:) => null()
-    integer, pointer :: v_sdcomp_cpri(:) => null()
+    integer(kind=8), pointer :: v_sdcomp_cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

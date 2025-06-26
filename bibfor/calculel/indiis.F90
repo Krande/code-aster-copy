@@ -18,12 +18,12 @@
 !
 function indiis(lis, is, rang, nbis)
     implicit none
-    integer :: indiis
+    integer(kind=8) :: indiis
 !
 !     ARGUMENTS:
 !     ----------
-    integer :: nbis, rang
-    integer :: is, lis(*)
+    integer(kind=8) :: nbis, rang
+    integer(kind=8) :: is, lis(*)
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !     LIS : LISTE DE IS OU ON DOIT CHERCHER L'ENTIER IS
@@ -39,7 +39,7 @@ function indiis(lis, is, rang, nbis)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------

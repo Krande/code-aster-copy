@@ -21,12 +21,12 @@
 interface
     subroutine nmdocv(keywordfact, iocc, algo_inte, keyword, l_mfront_proto, l_kit_thm, vali, valr)
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=16), intent(in) :: algo_inte
         character(len=14), intent(in) :: keyword
         aster_logical, intent(in) :: l_mfront_proto
         aster_logical, intent(in) :: l_kit_thm
-        integer, pointer, optional :: vali
+        integer(kind=8), pointer, optional :: vali
         real(kind=8), pointer, optional :: valr
     end subroutine nmdocv
 end interface

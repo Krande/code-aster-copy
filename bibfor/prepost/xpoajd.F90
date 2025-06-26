@@ -47,12 +47,12 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 #include "asterfort/xmofhm.h"
 #include "asterfort/xpoffo.h"
 !
-    integer :: ino, nnop, igeom, ndim, ndime, ddlc, jdirno
-    integer :: nbcmp, cmp(*), nfe, ima, jconx1, jconx2, jcnsv1, heavno(20, 3)
-    integer :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac, ncompa
-    integer :: nfiss, he(nfiss), nfh, inn, nnn, ninter(4), jheavn, ncompn
-    integer :: nlachm(2), lacthm(16)
-    integer :: jbaslo, jlsn, jlst, jstno
+    integer(kind=8) :: ino, nnop, igeom, ndim, ndime, ddlc, jdirno
+    integer(kind=8) :: nbcmp, cmp(*), nfe, ima, jconx1, jconx2, jcnsv1, heavno(20, 3)
+    integer(kind=8) :: jcnsv2, jcnsl2, nbnoc, inntot, iainc, contac, ncompa
+    integer(kind=8) :: nfiss, he(nfiss), nfh, inn, nnn, ninter(4), jheavn, ncompn
+    integer(kind=8) :: nlachm(2), lacthm(16)
+    integer(kind=8) :: jbaslo, jlsn, jlst, jstno
     aster_logical :: lmeca
     character(len=8) :: elrefp, typma
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss), ka, mu
@@ -106,14 +106,14 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 !
 !
     character(len=8) :: elrefc, elref2
-    integer :: nnops, iaindec, nptint
+    integer(kind=8) :: nnops, iaindec, nptint
     real(kind=8) :: ff(nnop), ffc(16), fe(4), crilsn, minlsn
     real(kind=8) :: r, theta, chpri(3), lagrs(9), laghm(3), lagrc(3*ndim)
     real(kind=8) :: ff2(8), press
     real(kind=8) :: fk(27, 3, 3)
-    integer :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
-    integer :: nnol, ngl(8), ibid, ifiss, fiss, npr(8), nlag
-    integer :: lact(8), nlact, hea_se, alp
+    integer(kind=8) :: i, j, iad, ipos, ig, ino2, ndimc, idecv2, idecl2
+    integer(kind=8) :: nnol, ngl(8), ibid, ifiss, fiss, npr(8), nlag
+    integer(kind=8) :: lact(8), nlact, hea_se, alp
     aster_logical :: lpint, lcont, pre1
     parameter(crilsn=1.d-6)
 !

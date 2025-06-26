@@ -24,6 +24,6 @@ interface
         character(len=8) :: noma
         character(len=24) :: sdcont_defi
         character(len=24) :: sdcont_solv
-        integer :: ifm
+        integer(kind=8) :: ifm
     end subroutine cfimp1
 end interface

@@ -19,8 +19,8 @@
 !
 interface
     function xextr_uplet(n,id)
-       integer :: n
-       integer :: xextr_uplet(n)
-       integer :: id
+       integer(kind=8) :: n
+       integer(kind=8) :: xextr_uplet(n)
+       integer(kind=8) :: id
     end function xextr_uplet
 end interface

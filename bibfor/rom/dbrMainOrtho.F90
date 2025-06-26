@@ -50,16 +50,16 @@ subroutine dbrMainOrtho(paraOrtho, baseOut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: lmatb, nbMode, nbEqua, nbSnap
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: lmatb, nbMode, nbEqua, nbSnap
     real(kind=8) :: alpha
     real(kind=8), pointer :: trav1(:) => null()
     real(kind=8), pointer :: trav3(:) => null()
-    integer, pointer :: ddlexc(:) => null()
+    integer(kind=8), pointer :: ddlexc(:) => null()
     real(kind=8), pointer :: matrPhi(:) => null()
     real(kind=8), pointer :: v(:) => null()
     real(kind=8), pointer :: s(:) => null()
-    integer :: nbSing
+    integer(kind=8) :: nbSing
 !
 ! --------------------------------------------------------------------------------------------------
 !

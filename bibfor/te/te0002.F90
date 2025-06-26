@@ -36,8 +36,8 @@ subroutine te0002(option, nomte)
 #include "asterfort/jevech.h"
 !
     real(kind=8) :: k(10, 10), valpar(4), result
-    integer :: i, ier, j, ndl, ip, jalpha, jmat, jdimp, jdmul, jgeom, jlagr
-    integer :: jvec, jtime, nbpar
+    integer(kind=8) :: i, ier, j, ndl, ip, jalpha, jmat, jdimp, jdmul, jgeom, jlagr
+    integer(kind=8) :: jvec, jtime, nbpar
     complex(kind=8) :: kc(10, 10)
 !
     character(len=8) :: nompar(4)

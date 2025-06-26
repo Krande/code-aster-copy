@@ -23,8 +23,8 @@ subroutine xvaleurmin(jcalculs, jvtemp, jnodto, nbno, minlo)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 
-    integer :: jcalculs, jnodto, jvtemp
-    integer :: nbno, minlo
+    integer(kind=8) :: jcalculs, jnodto, jvtemp
+    integer(kind=8) :: nbno, minlo
 
 ! person_in_charge: patrick.massin at edf.fr
 
@@ -41,8 +41,8 @@ subroutine xvaleurmin(jcalculs, jvtemp, jnodto, nbno, minlo)
 !      MINLO   = INDICE DU NOEUD OU LE MINIMUM EST LOCALISE
 !------------------------------------------------------------------------
 
-    integer :: inod, node
-    integer :: ideb, nodeb
+    integer(kind=8) :: inod, node
+    integer(kind=8) :: ideb, nodeb
     real(kind=8) :: minimum
 
     !   tolerances --- absolue et relative --- pour determiner si deux valeurs sont egales

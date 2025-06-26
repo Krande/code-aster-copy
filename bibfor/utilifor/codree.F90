@@ -42,12 +42,12 @@ subroutine codree(reel, mode, chaine)
 !     ------------------------------------------------------------------
     character(len=2) :: p
     character(len=10) :: format
-    integer :: long, nbchif
+    integer(kind=8) :: long, nbchif
     real(kind=8) :: valeur
     aster_logical :: marktr
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ient, ii, il, im, ndec
+    integer(kind=8) :: ient, ii, il, im, ndec
 !-----------------------------------------------------------------------
     long = len(chaine)
     if (long .lt. 2) goto 900

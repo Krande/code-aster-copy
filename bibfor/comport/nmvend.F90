@@ -32,7 +32,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf, &
 #include "asterfort/utlcal.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zerofr.h"
-    integer :: kpg, ksp, nmat, np, nb, ier, ndim
+    integer(kind=8) :: kpg, ksp, nmat, np, nb, ier, ndim
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: p(np), beta(nb), vim(*), dt1, crit(*)
     real(kind=8) :: deps(6), sigm(6)
@@ -69,7 +69,7 @@ subroutine nmvend(fami, kpg, ksp, materd, materf, &
 !
 ! INFO P(1)=RPOINT,  P(2)=DFOINT
 !-----------------------------------------------------------------------
-    integer :: i, ndt, ndi, niter, iret, iret1, iret2, iret3, it2, iter
+    integer(kind=8) :: i, ndt, ndi, niter, iret, iret1, iret2, iret3, it2, iter
     real(kind=8) :: dammax, prec, precr, val0, devse(6)
 !
     real(kind=8) :: e, nu, alphap, alpham, dd, dr

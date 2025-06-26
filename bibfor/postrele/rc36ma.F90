@@ -71,13 +71,13 @@ subroutine rc36ma(nommat, noma)
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
-    integer :: nbcmp
+    integer(kind=8) :: nbcmp
     parameter(nbcmp=9)
-    integer :: nbpa, nbpb, nbpt, ipt, nbseis, ndim, jcesdm, jceslm, isp
-    integer :: icmp, iad, im, nbmail, jcesla, jcesva, jcesda, jceslb
-    integer :: jcesvb, jcesdb, ier, iocc, nbsitu, jchmat, na, nb, jmater
+    integer(kind=8) :: nbpa, nbpb, nbpt, ipt, nbseis, ndim, jcesdm, jceslm, isp
+    integer(kind=8) :: icmp, iad, im, nbmail, jcesla, jcesva, jcesda, jceslb
+    integer(kind=8) :: jcesvb, jcesdb, ier, iocc, nbsitu, jchmat, na, nb, jmater
     real(kind=8) :: para(nbcmp), tempa, tempra, tempb, temprb, tke
-    integer :: icodre(nbcmp)
+    integer(kind=8) :: icodre(nbcmp)
     character(len=8) :: k8b, nomgd, mater, nopa, nopb, typeke
     character(len=16) :: nocmp(nbcmp)
     character(len=8) :: licmp(4)

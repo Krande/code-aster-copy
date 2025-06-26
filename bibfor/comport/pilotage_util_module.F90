@@ -35,7 +35,7 @@ contains
         implicit none
         real(kind=8), intent(in)  :: a, b, l0, etam, etap
         aster_logical, intent(out) :: vide
-        integer, intent(out)      :: nsol, sgn
+        integer(kind=8), intent(out)      :: nsol, sgn
         real(kind=8), intent(out) :: sol
 ! ---------------------------------------------------------------------
 !  a,b    composantes du terme quadratique

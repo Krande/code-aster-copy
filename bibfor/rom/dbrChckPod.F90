@@ -50,13 +50,13 @@ subroutine dbrChckPod(operation, paraPod, lReuse, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nbPara = 4
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: nbPara = 4
     character(len=16), parameter :: paraName(nbPara) = (/ &
                                     'MODELE  ', 'CHAMPMAT', &
                                     'CARAELEM', 'EXCIT   '/)
     aster_logical :: lTablFromResu, lTablRequired
-    integer :: nbMode, nbSnap
+    integer(kind=8) :: nbMode, nbSnap
 !
 ! --------------------------------------------------------------------------------------------------
 !

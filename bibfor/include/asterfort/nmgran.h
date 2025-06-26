@@ -24,10 +24,10 @@ interface
                       depst,  sigm,   vim,    option, sigp, &
                       vip,    dsidep, materi)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: typmod(*), materi
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: instam
         real(kind=8) :: instap

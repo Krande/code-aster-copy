@@ -20,7 +20,7 @@
 !
           interface 
             subroutine rvchve(iocc,xpi,ypi,zpi)
-              integer, intent(in) :: iocc
+              integer(kind=8), intent(in) :: iocc
               real(kind=8), intent(inout) :: xpi
               real(kind=8), intent(inout) :: ypi
               real(kind=8), intent(inout) :: zpi

@@ -20,7 +20,7 @@ interface
     subroutine smcomo(coef, fmod, temp_curr, nb_hist,&
                       ftrc, trc)
         real(kind=8), intent(in) :: coef(*), fmod(*), temp_curr
-        integer, intent(in) :: nb_hist
+        integer(kind=8), intent(in) :: nb_hist
         real(kind=8), intent(out) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
     end subroutine smcomo
 end interface

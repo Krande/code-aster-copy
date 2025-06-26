@@ -35,7 +35,7 @@ subroutine hydramat3d(hyd0, hydr, hyds, young00, young, &
 #include "asterfort/hydrxmat.h"
 #include "asterfort/utmess.h"
 
-    integer i, j
+    integer(kind=8) i, j
 
 !   declaration variables externes
     real(kind=8), intent(in) :: young00, nu00, rt00, ref00, rc00
@@ -51,7 +51,7 @@ subroutine hydramat3d(hyd0, hydr, hyds, young00, young, &
     real(kind=8) :: lambda, mu
     real(kind=8) :: rt33(3, 3), rtg33(3, 3), ref33(3, 3)
     real(kind=8) :: raideur66(6, 6), souplesse66(6, 6)
-    integer :: err1
+    integer(kind=8) :: err1
     real(kind=8) :: rteff, deuxtiers
     parameter(deuxtiers=2.d0/3.d0)
 

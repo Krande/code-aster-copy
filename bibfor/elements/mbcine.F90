@@ -47,7 +47,7 @@ subroutine mbcine(nno, geom, dff, alpha, beta, &
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 #include "asterfort/utmess.h"
-    integer :: nno, i, n, gamma
+    integer(kind=8) :: nno, i, n, gamma
     real(kind=8) :: geom(3, nno), dff(2, nno), vdirec(3), vortho(3)
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2), a(2, 2)
     real(kind=8) :: alpha, beta, projn, b(3, 3, nno), denomi

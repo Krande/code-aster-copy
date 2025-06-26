@@ -61,29 +61,29 @@ subroutine apstos(mesh, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: newgeo, sdappa
     character(len=8) :: knuzo
-    integer :: nb_elem_mast, nb_elem_slav
+    integer(kind=8) :: nb_elem_mast, nb_elem_slav
     character(len=24) :: sdappa_mast, sdappa_slav
-    integer :: i_zone, nb_pair_zone, nb_cont_zone, nt_patch, zmeth
+    integer(kind=8) :: i_zone, nb_pair_zone, nb_cont_zone, nt_patch, zmeth
     aster_logical :: l_smooth
     real(kind=8) :: pair_tole
     character(len=24) :: pair_method
-    integer, pointer :: list_pair_zone(:) => null()
-    integer, pointer :: list_nbptit_zone(:) => null()
+    integer(kind=8), pointer :: list_pair_zone(:) => null()
+    integer(kind=8), pointer :: list_nbptit_zone(:) => null()
     real(kind=8), pointer :: list_ptitsl_zone(:) => null()
     real(kind=8), pointer :: list_ptitma_zone(:) => null()
     real(kind=8), pointer :: list_ptgama_zone(:) => null()
     character(len=24) :: sdappa_gapi
-    integer, pointer :: v_sdappa_mast(:) => null()
-    integer, pointer :: v_sdappa_slav(:) => null()
-    integer, pointer :: v_sdcont_methco(:) => null()
+    integer(kind=8), pointer :: v_sdappa_mast(:) => null()
+    integer(kind=8), pointer :: v_sdappa_slav(:) => null()
+    integer(kind=8), pointer :: v_sdcont_methco(:) => null()
     character(len=24) :: sdcont_methco
     mpi_int :: i_proc, nb_proc, mpicou
-    integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
-    integer, pointer :: v_appa_slav_mpi(:) => null()
-    integer ::nb_el_slav_mpi, err_appa
+    integer(kind=8) :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
+    integer(kind=8), pointer :: v_appa_slav_mpi(:) => null()
+    integer(kind=8) ::nb_el_slav_mpi, err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !

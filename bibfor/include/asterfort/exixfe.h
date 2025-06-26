@@ -21,6 +21,6 @@
 interface
     subroutine exixfe(modele, iret)
         character(len=*) :: modele
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine exixfe
 end interface

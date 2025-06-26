@@ -20,11 +20,11 @@
 !
 interface 
     subroutine hmdeca(i, ddls, ddlm, nnos, idec, dec)
-        integer :: i
-        integer :: ddls
-        integer :: ddlm
-        integer :: nnos
-        integer :: idec
-        integer :: dec
+        integer(kind=8) :: i
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nnos
+        integer(kind=8) :: idec
+        integer(kind=8) :: dec
     end subroutine hmdeca
 end interface 

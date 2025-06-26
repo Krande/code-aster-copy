@@ -22,9 +22,9 @@ interface
     subroutine padtma(coor1, coor2, nbnott, icoupl, dmin, no_err)
         real(kind=8) :: coor1(*)
         real(kind=8) :: coor2(*)
-        integer :: nbnott(3)
-        integer :: icoupl(*)
+        integer(kind=8) :: nbnott(3)
+        integer(kind=8) :: icoupl(*)
         real(kind=8) :: dmin
-        integer ,optional, intent(out) :: no_err
+        integer(kind=8) ,optional, intent(out) :: no_err
     end subroutine padtma
 end interface

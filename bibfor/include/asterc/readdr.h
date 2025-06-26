@@ -21,9 +21,9 @@
 interface
     subroutine readdr(dfname, buff, nbytes, irec, ierr)
         character(len=*) :: dfname
-        integer :: buff(*)
-        integer :: nbytes
-        integer :: irec
-        integer :: ierr
+        integer(kind=8) :: buff(*)
+        integer(kind=8) :: nbytes
+        integer(kind=8) :: irec
+        integer(kind=8) :: ierr
     end subroutine readdr
 end interface

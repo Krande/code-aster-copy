@@ -22,9 +22,9 @@ interface
     subroutine fext(t, neq, nvect, liad, lifo,&
                     f)
         real(kind=8) :: t
-        integer :: neq
-        integer :: nvect
-        integer :: liad(*)
+        integer(kind=8) :: neq
+        integer(kind=8) :: nvect
+        integer(kind=8) :: liad(*)
         character(len=24) :: lifo(*)
         real(kind=8) :: f(*)
     end subroutine fext

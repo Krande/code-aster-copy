@@ -24,12 +24,12 @@ interface
     function meiden(scal, ncmp, i1, i3, nec,&
                     i2, i4)
         character(len=4) :: scal
-        integer :: ncmp
-        integer :: i1
-        integer :: i3
-        integer :: nec
-        integer :: i2
-        integer :: i4
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: i1
+        integer(kind=8) :: i3
+        integer(kind=8) :: nec
+        integer(kind=8) :: i2
+        integer(kind=8) :: i4
         aster_logical :: meiden
     end function meiden
 end interface

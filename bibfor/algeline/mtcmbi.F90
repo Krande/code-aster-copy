@@ -34,7 +34,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: lmat, lres
+    integer(kind=8) :: lmat, lres
     character(len=*) :: typmat
     complex(kind=8) :: ccoef
 !     DUPLIQUE LA MATRICE EN METTANT TOUTES LES TERMES A ZERO SAUF
@@ -47,7 +47,7 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
 !     NBBLIC = NOMBRE DE BLOCS POUR .VALI DE LA MATRICE
 !     LGBLOC = LONGUEUR DES BLOCS
 !     -----------------------------------------------------------------
-    integer :: lgbloc
+    integer(kind=8) :: lgbloc
     real(kind=8) :: const(2)
     character(len=1) :: ch1, typcst
     character(len=8) :: nomddl
@@ -58,9 +58,9 @@ subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
     aster_logical :: matsym
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iatmai, iatmat, iatrei, iatres, ibid, icoef
-    integer :: idebli, iequa, ifinli, ilig, ind, ival
-    integer :: jsmdi, jsmhc, kin, lddl, neq
+    integer(kind=8) :: i, iatmai, iatmat, iatrei, iatres, ibid, icoef
+    integer(kind=8) :: idebli, iequa, ifinli, ilig, ind, ival
+    integer(kind=8) :: jsmdi, jsmhc, kin, lddl, neq
 !
     real(kind=8) :: coef, zero
     character(len=24), pointer :: refa(:) => null()

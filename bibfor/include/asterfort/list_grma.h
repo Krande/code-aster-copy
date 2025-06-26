@@ -20,10 +20,10 @@
 !
           interface 
             subroutine list_grma(mailla,ima,n1,lgrma,nbgrma)
-              integer, intent(in) :: n1
+              integer(kind=8), intent(in) :: n1
               character(len=8), intent(in) :: mailla
-              integer, intent(in) :: ima
+              integer(kind=8), intent(in) :: ima
               character(len=*), intent(out) :: lgrma(n1)
-              integer, intent(out) :: nbgrma
+              integer(kind=8), intent(out) :: nbgrma
             end subroutine list_grma
           end interface 

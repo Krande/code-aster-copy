@@ -60,7 +60,7 @@ subroutine fstat0(nbpt, fn, offset, fnmoyt, fnmoyc, &
 !       SMINR   SOMME DES MINIMAS RELATIFS
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbmaxr, nbminr, nbpt, ncount
+    integer(kind=8) :: i, nbmaxr, nbminr, nbpt, ncount
 !-----------------------------------------------------------------------
     sfn = 0.d0
     sfn2 = 0.d0

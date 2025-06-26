@@ -26,7 +26,7 @@ subroutine hujpxs(mater, sig, vin, prox)
 !
 !   OUT PROX   = .TRUE. POUR PASSAGE CYCLIQUE - MONOTONE
 !   ------------------------------------------------------------------
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: mater(22, 2), r4, i1, sig(6), vin(*)
     real(kind=8) :: d, pco, beta, pc, epsvpm, dist
     real(kind=8) :: d13, zero, aexp, exptol, rh

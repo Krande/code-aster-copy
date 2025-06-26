@@ -19,10 +19,10 @@
 !
 interface
     subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
-        integer, intent(in) :: paraListNb
+        integer(kind=8), intent(in) :: paraListNb
         character(len=16), pointer :: paraListName(:)
         character(len=*) :: nomcon
-        integer :: ifichi, numdt, numit
+        integer(kind=8) :: ifichi, numdt, numit
         real(kind=8) :: dt
     end subroutine irmpav
 end interface

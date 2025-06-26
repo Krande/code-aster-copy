@@ -82,8 +82,8 @@ subroutine xprgeo(noma, cnsln, cnslt, grln, grlt, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifm, niv, nbno, ndim, j, jnodto, node, ier
-    integer :: ibid, jbeta, jlistp, pos, pos1, jvp
+    integer(kind=8) :: i, ifm, niv, nbno, ndim, j, jnodto, node, ier
+    integer(kind=8) :: ibid, jbeta, jlistp, pos, pos1, jvp
     character(len=8) :: lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)

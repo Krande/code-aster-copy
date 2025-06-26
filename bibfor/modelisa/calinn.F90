@@ -42,7 +42,7 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z, &
 #include "asterfort/char8_to_int.h"
 !
     character(len=*) :: motfaz, prefiz, nomaz, lisi1z, lisi2z, modz
-    integer :: iocc
+    integer(kind=8) :: iocc
 ! ---------------------------------------------------------------------
 !
 !     BUT : CREER LA STRUCTURE INTERMEDIAIRE PRFEIXEE PAR PREFIX
@@ -83,9 +83,9 @@ subroutine calinn(prefiz, nomaz, motfaz, iocc, lisi1z, &
 !
 !
 !
-    integer :: i, idconi, idlou1, idlou2, ino1, ino2, lonli1, lonli2
-    integer :: lonlis, nbma1, nbno1, n1, ndim, ng1, ngm1, nlino, no, nr, nt
-    integer :: n2, n3, n4, n5, n6, n7, n8, vali(2)
+    integer(kind=8) :: i, idconi, idlou1, idlou2, ino1, ino2, lonli1, lonli2
+    integer(kind=8) :: lonlis, nbma1, nbno1, n1, ndim, ng1, ngm1, nlino, no, nr, nt
+    integer(kind=8) :: n2, n3, n4, n5, n6, n7, n8, vali(2)
     real(kind=8) :: centre(3), theta(3), t(3)
     aster_logical :: dnor
     character(len=8) :: k8bid, ddl1, ddl2, noma, mod

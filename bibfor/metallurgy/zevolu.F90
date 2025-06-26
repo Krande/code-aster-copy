@@ -30,7 +30,7 @@ subroutine zevolu(kine_type, &
 #include "asterfort/tempeq.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: kine_type
+    integer(kind=8), intent(in) :: kine_type
     real(kind=8), intent(in) :: zbeta, zbetam
     real(kind=8), intent(in) :: tdeq, tfeq
     real(kind=8), intent(in) :: k, n

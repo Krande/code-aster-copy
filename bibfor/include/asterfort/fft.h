@@ -20,8 +20,8 @@
 !
 interface
     subroutine fft(s, n, ifft)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: s(n)
-        integer :: ifft
+        integer(kind=8) :: ifft
     end subroutine fft
 end interface

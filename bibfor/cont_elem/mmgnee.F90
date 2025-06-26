@@ -27,7 +27,7 @@ subroutine mmgnee(ndim, nne, wpg, ffe, &
 !
 #include "asterf_types.h"
 !
-    integer, intent(in) :: ndim, nne
+    integer(kind=8), intent(in) :: ndim, nne
     real(kind=8), intent(in) :: ffe(9)
     real(kind=8), intent(in) :: wpg, jacobi, coefac, jeu, dlagrc
     real(kind=8), intent(in) :: kappa(2, 2), vech1(3), vech2(3), h(2, 2), hah(2, 2)
@@ -69,10 +69,10 @@ subroutine mmgnee(ndim, nne, wpg, ffe, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, ii, jj
+    integer(kind=8) :: i, j, ii, jj
     real(kind=8) :: g(3, 3), e(3, 3), d(3, 3), f(3, 3)
     real(kind=8) :: supkap, supmat, alpha
-    integer :: inoe1, inoe2, idim1, idim2
+    integer(kind=8) :: inoe1, inoe2, idim1, idim2
 !
 ! --------------------------------------------------------------------------------------------------
 !

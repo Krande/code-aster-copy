@@ -22,9 +22,9 @@
 !
 interface
     function in_liste_entier(val,liste,indx)
-        integer :: val,liste(:)
+        integer(kind=8) :: val,liste(:)
         logical :: in_liste_entier
 !
-        integer,intent(out),optional :: indx
+        integer(kind=8),intent(out),optional :: indx
     end function in_liste_entier
 end interface

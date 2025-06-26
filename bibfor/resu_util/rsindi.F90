@@ -26,7 +26,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 !
-    integer :: nbordr, nbtrou, nutrou(*), ndim, ival, paobj
+    integer(kind=8) :: nbordr, nbtrou, nutrou(*), ndim, ival, paobj
     real(kind=8) :: rval, epsi
     character(len=4) :: tysca
     character(len=*) :: kval, crit
@@ -62,7 +62,7 @@ subroutine rsindi(tysca, iaobj, paobj, jordr, ival, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iaobj, jordr
+    integer(kind=8) :: i, iaobj, jordr
 !-----------------------------------------------------------------------
     crit2 = crit
     nbtrou = 0

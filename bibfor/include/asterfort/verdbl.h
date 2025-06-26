@@ -20,9 +20,9 @@
 !
 interface
     subroutine verdbl(deblig, cnl, ier, irteti)
-        integer :: deblig
+        integer(kind=8) :: deblig
         character(len=14) :: cnl
-        integer :: ier
-        integer :: irteti
+        integer(kind=8) :: ier
+        integer(kind=8) :: irteti
     end subroutine verdbl
 end interface

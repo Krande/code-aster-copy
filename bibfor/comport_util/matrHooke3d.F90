@@ -27,7 +27,7 @@ subroutine matrHooke3d(elas_type, angl, &
 #include "asterfort/utbtab.h"
 !
 !
-    integer, intent(in) :: elas_type
+    integer(kind=8), intent(in) :: elas_type
     real(kind=8), intent(in) :: angl(3)
     real(kind=8), intent(in) :: g, h(6)
     real(kind=8), intent(in) :: g1, g2, g3
@@ -59,7 +59,7 @@ subroutine matrHooke3d(elas_type, angl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: irep, i, j
+    integer(kind=8) :: irep, i, j
     real(kind=8) :: matr_tran(6, 6), dorth(6, 6), work(6, 6)
 !
 ! --------------------------------------------------------------------------------------------------

@@ -24,9 +24,9 @@ interface
                       gauss_coor, shape_func, &
                       jacobian  , norm_g)
         character(len=*), intent(in) :: side
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         aster_logical, intent(in) :: l_axis, l_upda_jaco
-        integer, intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_node
         real(kind=8), intent(in) :: elem_init(nb_node, elem_dime)
         real(kind=8), intent(in) :: elem_coor(nb_node, elem_dime)
         character(len=8), intent(in) :: elem_code

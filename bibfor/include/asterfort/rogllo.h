@@ -21,8 +21,8 @@
 interface
     subroutine rogllo(nb1, nb2, vrg, blam, ctor,&
                       knn)
-        integer :: nb1
-        integer :: nb2
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nb2
         real(kind=8) :: vrg(2601)
         real(kind=8) :: blam(9, 3, 3)
         real(kind=8) :: ctor

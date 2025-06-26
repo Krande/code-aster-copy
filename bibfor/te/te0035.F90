@@ -39,8 +39,8 @@ subroutine te0035(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: i, jgeom, jcaco, jvecg, idefi, ncomp, ig
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: i, jgeom, jcaco, jvecg, idefi, ncomp, ig
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: epsini(32)
     real(kind=8) :: bsigma(24), sigt(32)

@@ -60,13 +60,13 @@ subroutine xprdis(fisref, fisdis, dist, tol, lcmin)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, nbptfr, numfon, nbptfd, i, j, fon
+    integer(kind=8) :: ifm, niv, nbptfr, numfon, nbptfd, i, j, fon
     real(kind=8) :: eps, xm, ym, zm, xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij
     real(kind=8) :: xim, yim, zim, s, norm2, xn, yn, zn, d, dmin
     real(kind=8) :: dismin, dismax, difmin, difmax
     real(kind=8), pointer :: fond(:) => null()
     real(kind=8), pointer :: fonr(:) => null()
-    integer, pointer :: fondmult(:) => null()
+    integer(kind=8), pointer :: fondmult(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT

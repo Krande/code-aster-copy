@@ -54,7 +54,7 @@ subroutine vpvers(eigsol, modes, checksd)
 !
 ! --- VARIABLES LOCALES
 !
-    integer           :: ibid, iret
+    integer(kind=8)           :: ibid, iret
     real(kind=8)      :: alpha, eps, freq1, rbid
     character(len=1)  :: appr
     character(len=8)  :: method

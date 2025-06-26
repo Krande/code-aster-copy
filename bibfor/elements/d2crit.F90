@@ -50,7 +50,7 @@ subroutine d2crit(zimat, nmnbn, nmplas, nmdpla, nmprox, &
 #include "asterfort/fplass.h"
 #include "asterfort/nmnet2.h"
 #include "asterfort/r8inir.h"
-    integer :: j, zimat, nmprox(2), cief, cier
+    integer(kind=8) :: j, zimat, nmprox(2), cief, cier
 !
     real(kind=8) :: nmnbn(6), nmplas(2, 3), nmdpla(2, 2)
     real(kind=8) :: cnbn(6), cplas(2, 3), czef, czeg, cdeps(6)

@@ -29,7 +29,7 @@ subroutine jevete(nomobj, code, iad)
     character(len=*) :: nomobj
     character(len=1) :: code
     character(len=24) :: nomob2
-    integer ::  ii, iad
+    integer(kind=8) ::  ii, iad
 !-------------------------------------------------------------------
 !  entrees:
 !     nomobj  : nombre de l'objet '&INEL.XXXX' dont on veut l'adresse

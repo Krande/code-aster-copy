@@ -49,14 +49,14 @@ subroutine surfun(char, noma)
 !
 !
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: cmpgcu, coegcu, coedcu, poincu, noeucu
-    integer :: jcmpg, jcoefg, jcoefd, jpoin, jnoeu
-    integer :: nnocu, ncmpg
-    integer :: numno, nbcmp, jdecal
+    integer(kind=8) :: jcmpg, jcoefg, jcoefd, jpoin, jnoeu
+    integer(kind=8) :: nnocu, ncmpg
+    integer(kind=8) :: numno, nbcmp, jdecal
     character(len=24) :: deficu
-    integer :: ino, icmp
-    integer :: lgbloc
+    integer(kind=8) :: ino, icmp
+    integer(kind=8) :: lgbloc
     character(len=8) :: nomno
 !
 ! ----------------------------------------------------------------------

@@ -22,14 +22,14 @@ interface
     subroutine hujmat(fami, kpg, ksp, mod, imat,&
                       tempf, materf, ndt, ndi, nvi)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: tempf
         real(kind=8) :: materf(22, 2)
-        integer :: ndt
-        integer :: ndi
-        integer :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nvi
     end subroutine hujmat
 end interface

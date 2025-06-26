@@ -32,7 +32,7 @@ subroutine ascima(infcha, nu, matass, cumul)
 !
     character(len=19) :: infcha
     character(len=*) :: nu, matass
-    integer :: nchci
+    integer(kind=8) :: nchci
 ! ----------------------------------------------------------------------
 !  BUT : ON NOTE LES DDLS ELIMINES PAR LES CHARGES CINEMATIQUES
 !
@@ -53,8 +53,8 @@ subroutine ascima(infcha, nu, matass, cumul)
 !----------------------------------------------------------------------
     character(len=4) :: cumul
     character(len=19) :: infch2
-    integer :: iret, iret1, iret2, iret3, ich, ncharg, jlchci
-    integer, pointer :: infc(:) => null()
+    integer(kind=8) :: iret, iret1, iret2, iret3, ich, ncharg, jlchci
+    integer(kind=8), pointer :: infc(:) => null()
     character(len=24), pointer :: lcha(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

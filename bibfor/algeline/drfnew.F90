@@ -38,7 +38,7 @@ subroutine drfnew(devg, devgii, traceg, dfds, dfdg, &
 ! OUT : DFDL   : DF/DLAMBDA = - DF/DSIG.(2*MU*DEV(G) + K*TRACE(G)*I)
 ! ------------ :                + DF/DGAMP*RAC(2/3)*GII
 ! ======================================================================
-    integer :: ii, ndt, ndi
+    integer(kind=8) :: ii, ndt, ndi
     real(kind=8) :: vect1(6), scal1, mun, deux, trois
     blas_int :: b_incx, b_incy, b_n
 ! ======================================================================

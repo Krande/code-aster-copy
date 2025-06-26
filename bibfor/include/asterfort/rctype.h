@@ -21,8 +21,8 @@
 interface
     subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_vale,&
                       para_type, keyw_factz  , keywz, materi)
-        integer, intent(in) :: jmat
-        integer, intent(in) :: nb_para_list
+        integer(kind=8), intent(in) :: jmat
+        integer(kind=8), intent(in) :: nb_para_list
         character(len=*), intent(in) :: para_list_name(*)
         real(kind=8), intent(in) :: para_list_vale(*)
         real(kind=8), intent(out) :: para_vale

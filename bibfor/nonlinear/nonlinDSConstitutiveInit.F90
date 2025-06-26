@@ -52,11 +52,11 @@ subroutine nonlinDSConstitutiveInit(modelZ, caraElemZ, ds_constitutive, verbose_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: lLinear, lDisCtc, verbose
-    integer :: nb_affe, i_affe
+    integer(kind=8) :: nb_affe, i_affe
     character(len=16), pointer :: v_compor_vale(:) => null()
-    integer, pointer :: v_compor_desc(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

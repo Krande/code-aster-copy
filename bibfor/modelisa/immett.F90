@@ -58,12 +58,12 @@ subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar, &
 #include "asterfort/cotfac.h"
 #include "asterfort/tstbar.h"
 #include "asterfort/utmess.h"
-    integer :: nbcnx, itetra, immer
+    integer(kind=8) :: nbcnx, itetra, immer
     real(kind=8) :: xyzma(3, *), x3dca(*), xbar(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: id(4), ii, j, ktest
+    integer(kind=8) :: id(4), ii, j, ktest
     real(kind=8) :: d, dx, dy, dz
 !
 !

@@ -26,6 +26,6 @@ interface
         real(kind=8) :: baslog(9)
         real(kind=8) :: fe(4)
         real(kind=8) :: dgdgl(4, 3)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine xcalfe
 end interface

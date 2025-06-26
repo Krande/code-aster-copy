@@ -35,8 +35,8 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo, &
 #include "asterfort/wkvect.h"
 #include "asterfort/xffcr.h"
 #include "asterfort/xffext.h"
-    integer :: nfon, jfono, jbaso, jtailo, nmafon, jfon, jbas, jtail
-    integer :: jnofaf, nbfond
+    integer(kind=8) :: nfon, jfono, jbaso, jtailo, nmafon, jfon, jbas, jtail
+    integer(kind=8) :: jnofaf, nbfond
     character(len=19) :: info, listpt
     character(len=24) :: fonmul
     aster_logical :: goinop
@@ -67,8 +67,8 @@ subroutine xoriff(info, nfon, jfono, jbaso, jtailo, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: indice, indicm, indipt, ima, ipt, iptext
-    integer :: jfonmu, jinfo, jlistp, jptext, jtabpt, k, nbptex
+    integer(kind=8) :: indice, indicm, indipt, ima, ipt, iptext
+    integer(kind=8) :: jfonmu, jinfo, jlistp, jptext, jtabpt, k, nbptex
     real(kind=8) :: absc, m(3), p(3)
     character(len=19) :: ptextr, tabpt, typfon
 !

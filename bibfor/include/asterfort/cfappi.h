@@ -23,7 +23,7 @@ interface
         character(len=8) :: noma
         character(len=24) :: defico
         character(len=8) :: nomnoe
-        integer :: typapp
-        integer :: posapp
+        integer(kind=8) :: typapp
+        integer(kind=8) :: posapp
     end subroutine cfappi
 end interface

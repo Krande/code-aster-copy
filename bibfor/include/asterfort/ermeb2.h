@@ -23,14 +23,14 @@ interface
                       isig, typema, nbcmp, inst, nx,&
                       ny, tx, ty, sig11, sig22,&
                       sig12, chx, chy)
-        integer :: ino
-        integer :: iref1
-        integer :: iref2
-        integer :: ivois
-        integer :: igeom
-        integer :: isig
+        integer(kind=8) :: ino
+        integer(kind=8) :: iref1
+        integer(kind=8) :: iref2
+        integer(kind=8) :: ivois
+        integer(kind=8) :: igeom
+        integer(kind=8) :: isig
         character(len=8) :: typema
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         real(kind=8) :: inst
         real(kind=8) :: nx(3)
         real(kind=8) :: ny(3)

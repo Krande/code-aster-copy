@@ -21,9 +21,9 @@
 interface
     subroutine xdivte(elp, cnset, nse, nnose, exit)
         character(len=8) :: elp
-        integer :: cnset(*)
-        integer :: nse
-        integer :: nnose
-        integer :: exit(2)
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: nse
+        integer(kind=8) :: nnose
+        integer(kind=8) :: exit(2)
     end subroutine xdivte
 end interface

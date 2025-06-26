@@ -22,16 +22,16 @@ interface
     subroutine matnor(fami, kpg, ksp, imat, nmat,&
                       poum, coefel, coefpl, ndt, nvi,&
                       nr)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imat
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imat
         character(len=*) :: poum
         real(kind=8) :: coefel(nmat)
         real(kind=8) :: coefpl(nmat)
-        integer :: ndt
-        integer :: nvi
-        integer :: nr
+        integer(kind=8) :: ndt
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
     end subroutine matnor
 end interface

@@ -48,7 +48,7 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac, &
     character(len=3) :: nicou
     character(len=16) :: motfac
     character(len=19) :: chin, chextr, ligrel
-    integer :: nucou, nangl, nufib
+    integer(kind=8) :: nucou, nangl, nufib
 !
 ! ----------------------------------------------------------------------
 ! BUT : EXTRACTION DU CHAM_ELEM CORRESPONDANT A UN SOUS-POINT
@@ -69,23 +69,23 @@ subroutine w155ch(chin, carele, ligrel, chextr, motfac, &
     character(len=16) :: option
     character(len=8) :: licmp(4), ma, nomgd, tsca
     character(len=8) :: nompar
-    integer :: iret, nbellg, nbma, numa, jcesd, jcesl
-    integer :: nbpt, ksp1, ksp2, kcmp, iad
-    integer :: jlima, ncmp, ncdyn1, ncdyn2, ncdyn, ncmp1
-    integer :: jce2l, jce2d, jce2v, jce5l, jce5d, jce5v, nbspmx
-    integer :: jcelv1, jcelv2, igr1, igr2, nbgr, nbgr1, nbgr2, debugr1, debugr2
-    integer :: lgcata, jmolo, iel1, iel2, nbsp1, nbsp2, adiel1, adiel2, ipt
-    integer :: ieq2, ieq11, ieq12, nbel1, nbel2, imolo
+    integer(kind=8) :: iret, nbellg, nbma, numa, jcesd, jcesl
+    integer(kind=8) :: nbpt, ksp1, ksp2, kcmp, iad
+    integer(kind=8) :: jlima, ncmp, ncdyn1, ncdyn2, ncdyn, ncmp1
+    integer(kind=8) :: jce2l, jce2d, jce2v, jce5l, jce5d, jce5v, nbspmx
+    integer(kind=8) :: jcelv1, jcelv2, igr1, igr2, nbgr, nbgr1, nbgr2, debugr1, debugr2
+    integer(kind=8) :: lgcata, jmolo, iel1, iel2, nbsp1, nbsp2, adiel1, adiel2, ipt
+    integer(kind=8) :: ieq2, ieq11, ieq12, nbel1, nbel2, imolo
     real(kind=8) :: c1, c2
-    integer, pointer :: celd1(:) => null()
-    integer, pointer :: celd2(:) => null()
-    integer, pointer :: liel1(:) => null()
-    integer, pointer :: liel2(:) => null()
-    integer, pointer :: lliel1(:) => null()
-    integer, pointer :: lliel2(:) => null()
-    integer, pointer :: igriel1(:) => null()
+    integer(kind=8), pointer :: celd1(:) => null()
+    integer(kind=8), pointer :: celd2(:) => null()
+    integer(kind=8), pointer :: liel1(:) => null()
+    integer(kind=8), pointer :: liel2(:) => null()
+    integer(kind=8), pointer :: lliel1(:) => null()
+    integer(kind=8), pointer :: lliel2(:) => null()
+    integer(kind=8), pointer :: igriel1(:) => null()
     aster_logical :: same_ligrel
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
 !
 #define numail2(igr,iel) liel2(lliel2(igr)+iel-1)
 #define numail1(igr,iel) liel1(lliel1(igr)+iel-1)

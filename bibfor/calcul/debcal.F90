@@ -48,7 +48,7 @@ subroutine debcal(nin, lchin, lpain, nout, lchout)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 
-    integer :: nin, nout
+    integer(kind=8) :: nin, nout
     character(len=19) :: lchin(nin), lchout(nout)
     character(len=8) :: lpain(nin)
 !----------------------------------------------------------------------
@@ -69,19 +69,19 @@ subroutine debcal(nin, lchin, lpain, nout, lchout)
 !    allocation d'objets de travail
 !
 !----------------------------------------------------------------------
-    integer :: desc
-    integer :: i
-    integer :: ibid, nbpara, iret, j, igd2
-    integer :: jpar, igd, nec, ncmpmx, iii
-    integer :: jproli, ianueq, iret1, inomcp
-    integer :: iret2, iret3
+    integer(kind=8) :: desc
+    integer(kind=8) :: i
+    integer(kind=8) :: ibid, nbpara, iret, j, igd2
+    integer(kind=8) :: jpar, igd, nec, ncmpmx, iii
+    integer(kind=8) :: jproli, ianueq, iret1, inomcp
+    integer(kind=8) :: iret2, iret3
     character(len=8) :: k8bi, typsca
     character(len=4) :: knum, tych
     character(len=8) :: nompar, ma, ma2, k8bi1, k8bi2
     character(len=19) :: chin, chou, ligre2
     character(len=24) :: noprno, objdes, valk(5)
     character(len=24), pointer :: refe(:) => null()
-    integer, pointer :: nbno(:) => null()
+    integer(kind=8), pointer :: nbno(:) => null()
 !-----------------------------------------------------------------------
 
 !   -- Remarque : cette routine ne fait pas appel a jemarq / jedema

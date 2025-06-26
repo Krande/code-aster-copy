@@ -21,7 +21,7 @@ subroutine invjac(nno, ipg, ipoids, idfde, coor, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/matinv.h"
-    integer :: ipg, ipoids, idfde, nno
+    integer(kind=8) :: ipg, ipoids, idfde, nno
     real(kind=8) :: coor(1), jac
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DE L'INVERSE DE LA MATRICE JACOBIENNE
@@ -37,7 +37,7 @@ subroutine invjac(nno, ipg, ipoids, idfde, coor, &
 !                   JAC           <--  JACOBIEN
 ! ......................................................................
 !
-    integer :: i, j, ii, k
+    integer(kind=8) :: i, j, ii, k
     real(kind=8) :: poids, g(3, 3)
     real(kind=8) :: de, dn, dk, invja(3, 3)
 !

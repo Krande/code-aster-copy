@@ -26,23 +26,23 @@ function jexatr(nomc, noma)
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomc, noma
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
-    integer :: numatr
+    integer(kind=8) :: numatr
     common/idatje/numatr
 !     ------------------------------------------------------------------
-    integer :: idiadd, idlong, idlono, idluti
+    integer(kind=8) :: idiadd, idlong, idlono, idluti
 !-----------------------------------------------------------------------
-    integer :: ibacol, ixiadd, ixlong, ixlono, ixluti
+    integer(kind=8) :: ibacol, ixiadd, ixlong, ixlono, ixluti
 !-----------------------------------------------------------------------
     parameter(idiadd=2,&
      &                             idlong=7,&
      &               idlono=8, idluti=9)
 !     ------------------------------------------------------------------
-    integer :: icre, iret
+    integer(kind=8) :: icre, iret
     character(len=24) :: nom24
     character(len=6) :: nomalu
     character(len=8) :: ch8

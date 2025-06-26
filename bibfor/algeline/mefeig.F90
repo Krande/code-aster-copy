@@ -26,7 +26,7 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata, &
 #include "asterfort/mtcrog.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vphqrp.h"
-    integer :: nbmod, ndim(14), ind(2*nbmod)
+    integer(kind=8) :: nbmod, ndim(14), ind(2*nbmod)
     real(kind=8) :: matm(nbmod, nbmod), matr(nbmod, nbmod)
     real(kind=8) :: mat1(2*nbmod, 2*nbmod), mavi(2*nbmod, 2*nbmod)
     real(kind=8) :: mata(nbmod, nbmod), fre(nbmod), ksi(nbmod)
@@ -70,7 +70,7 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata, &
 !                RETENUES, CORRESPONDANT A UNE FREQUENCE POSITIVE, ET
 !                ORDONNEES DE FACON CROISSANTE
 ! ----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     character(len=3) :: note
     real(kind=8) :: norema, noremi, noimma, noimmi, normr, normi, norm
     real(kind=8) :: temp
@@ -78,8 +78,8 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata, &
 !
 ! --- LECTURE DES DIMENSIONS
 !-----------------------------------------------------------------------
-    integer :: icode, ier, ifm, ihh, jhh, n
-    integer :: nitqr
+    integer(kind=8) :: icode, ier, ifm, ihh, jhh, n
+    integer(kind=8) :: nitqr
     real(kind=8) :: a, adiv, alpha, alphai, alphar, b, bdiv
     real(kind=8) :: beta, betai, betar, c, det, pi
     real(kind=8) :: snor, u, v, vnorma, vnormb
@@ -369,17 +369,17 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata, &
 ! --- FORMATS
 !
 6000 format(1x, '***************************************************',&
-    &       '*****************')
+   &       '*****************')
 6001 format(1x, '*              *                         *          ',&
-    &       '               *')
+   &       '               *')
 6002 format(1x, '*    NUMERO    *   NORME RELATIVE DE LA  *   NORME '&
-    &       , 'RELATIVE DE LA  *')
+   &       , 'RELATIVE DE LA  *')
 6003 format(1x, '*  DE VECTEUR  *     PARTIE REELLE       *    PARTIE'&
-    &       , ' IMAGINAIRE    *')
+   &       , ' IMAGINAIRE    *')
 6005 format(1p, 1x, '*   MAX :    ', '  * ', 5x, d13.6, 4x, '  *  '&
-    &       , 4x, d13.6, 5x, ' *')
+   &       , 4x, d13.6, 5x, ' *')
 6006 format(1p, 1x, '*   MIN :    ', '  * ', 5x, d13.6, 4x, '  *  '&
-    &       , 4x, d13.6, 5x, ' *')
+   &       , 4x, d13.6, 5x, ' *')
 !
 !
 !

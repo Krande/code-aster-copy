@@ -20,9 +20,9 @@
 !
 interface
     subroutine hujcrd(k, mater, sig, vin, seuild, iret)
-        integer, intent(in) :: k
+        integer(kind=8), intent(in) :: k
         real(kind=8), intent(in) :: mater(22, 2), sig(6), vin(*)
         real(kind=8), intent(out) :: seuild
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine hujcrd
 end interface

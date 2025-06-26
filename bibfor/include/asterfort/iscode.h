@@ -19,8 +19,8 @@
 !
 interface
     subroutine iscode(idec, icod, ndim)
-        integer :: ndim
-        integer :: idec(ndim)
-        integer :: icod(*)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: idec(ndim)
+        integer(kind=8) :: icod(*)
     end subroutine iscode
 end interface

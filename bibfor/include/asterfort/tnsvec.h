@@ -20,8 +20,8 @@
 !
 interface
     subroutine tnsvec(choix, ndim, mat, vec, r)
-        integer :: ndim
-        integer :: choix
+        integer(kind=8) :: ndim
+        integer(kind=8) :: choix
         real(kind=8) :: mat(3, 3)
         real(kind=8) :: vec(2*ndim)
         real(kind=8) :: r

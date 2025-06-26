@@ -73,13 +73,13 @@ subroutine nmextr_comp(field, field_disc, field_type, meshz, modelz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=15)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=24) :: chgeom, chcara(18), chharm, chtime
-    integer :: n_harm
+    integer(kind=8) :: n_harm
     character(len=19) :: ligrel
     character(len=16) :: option
 !

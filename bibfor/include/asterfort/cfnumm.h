@@ -21,7 +21,7 @@
           interface 
             subroutine cfnumm(defico,posnma,numnma)
               character(len=24), intent(in) :: defico
-              integer, intent(in) :: posnma
-              integer, intent(out) :: numnma
+              integer(kind=8), intent(in) :: posnma
+              integer(kind=8), intent(out) :: numnma
             end subroutine cfnumm
           end interface 

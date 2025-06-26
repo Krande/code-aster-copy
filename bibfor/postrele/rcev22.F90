@@ -44,7 +44,7 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbinti
+    integer(kind=8) :: nbinti
     aster_logical :: lfatig, flexio, lrocht, lsymm
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, ccont, cnoc, cresu, cpres
@@ -53,10 +53,10 @@ subroutine rcev22(nbinti, kinti, iocc, csigm, cinst, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, l1, l2, l3, ndim
-    integer :: nbabsc, jabsc, nbxcoo, jxcoo, nbycoo, jycoo
-    integer :: jsigm, jinst, ncmp, iret, jsioe, iocc, nbins0
-    integer :: jnocc, jresu, nbcycl, jresp
+    integer(kind=8) :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, l1, l2, l3, ndim
+    integer(kind=8) :: nbabsc, jabsc, nbxcoo, jxcoo, nbycoo, jycoo
+    integer(kind=8) :: jsigm, jinst, ncmp, iret, jsioe, iocc, nbins0
+    integer(kind=8) :: jnocc, jresu, nbcycl, jresp
     parameter(ncmp=6)
     real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
     real(kind=8) :: momen0_axis(4), momen1_axis(4), momen2_axis(4), rho

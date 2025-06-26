@@ -30,50 +30,50 @@ interface
                       nnn, contac, lmeca, pre1, heavno,&
                       nlachm, lacthm, jbaslo, &
                       jlsn, jlst, jstno, ka, mu)
-        integer :: nbcmp
-        integer :: nfiss
-        integer :: nnop
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nnop
         character(len=8) :: elrefp
-        integer :: ino
+        integer(kind=8) :: ino
         real(kind=8) :: lsn(nfiss)
         real(kind=8) :: lst(nfiss)
-        integer :: ninter(4)
-        integer :: iainc
+        integer(kind=8) :: ninter(4)
+        integer(kind=8) :: iainc
         character(len=8) :: typma
         real(kind=8) :: co(3)
-        integer :: igeom
-        integer :: jdirno
-        integer :: jfisno
-        integer :: jheavn
-        integer :: ncompn
-        integer :: he(nfiss)
-        integer :: ndime
-        integer :: ndim
-        integer :: cmp(*)
-        integer :: nfh
-        integer :: nfe
-        integer :: ddlc
-        integer :: ima
-        integer :: jconx1
-        integer :: jconx2
-        integer :: jcnsv1
-        integer :: jcnsv2
-        integer :: jcnsl2
-        integer :: nbnoc
-        integer :: inntot
-        integer :: inn
-        integer :: nnn
-        integer :: contac
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jdirno
+        integer(kind=8) :: jfisno
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: ncompn
+        integer(kind=8) :: he(nfiss)
+        integer(kind=8) :: ndime
+        integer(kind=8) :: ndim
+        integer(kind=8) :: cmp(*)
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nfe
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ima
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: jcnsv1
+        integer(kind=8) :: jcnsv2
+        integer(kind=8) :: jcnsl2
+        integer(kind=8) :: nbnoc
+        integer(kind=8) :: inntot
+        integer(kind=8) :: inn
+        integer(kind=8) :: nnn
+        integer(kind=8) :: contac
         aster_logical :: lmeca
         aster_logical :: pre1
-        integer :: ncompa
-        integer :: heavno(20, 3)
-        integer :: nlachm(2)
-        integer :: lacthm(16)
-        integer :: jbaslo
-        integer :: jlsn
-        integer :: jlst
-        integer :: jstno
+        integer(kind=8) :: ncompa
+        integer(kind=8) :: heavno(20, 3)
+        integer(kind=8) :: nlachm(2)
+        integer(kind=8) :: lacthm(16)
+        integer(kind=8) :: jbaslo
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jlst
+        integer(kind=8) :: jstno
         real(kind=8) :: ka
         real(kind=8) :: mu
     end subroutine xpoajd

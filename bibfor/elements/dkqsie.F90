@@ -36,7 +36,7 @@ subroutine dkqsie(option, fami, xyzl, pgl, depl, &
     character(len=4) :: fami
     character(len=16) :: option
     real(kind=8) :: xyzl(3, *), pgl(3, *), depl(*), cdl(*)
-    integer :: nbcou
+    integer(kind=8) :: nbcou
 !     RELATION ELAS_COQUE
 !     CONTRAINTES DE L'ELEMENT DE PLAQUE DKQ (SIEF_ELGA)
 !     ------------------------------------------------------------------
@@ -47,15 +47,15 @@ subroutine dkqsie(option, fami, xyzl, pgl, depl, &
 !                  LE CALCUL EST FAIT SUR UNE SEULE COUCHE (ELAS_COQUE)
 !                  SUR 3 NIVEAUX : 3 PTS D INTEGRATION DANS L EPAISSEUR
 !                  CORRESPONDANT AUX NIVEAUX INF, MOY, SUP
-    integer :: nnomai
+    integer(kind=8) :: nnomai
     parameter(nnomai=4)
-    integer :: nddlme
+    integer(kind=8) :: nddlme
     parameter(nddlme=2)
-    integer :: nddlfl
+    integer(kind=8) :: nddlfl
     parameter(nddlfl=3)
 !
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: jcaco, i, j, ie, icpg, ig, icou, iniv, multic
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: jcaco, i, j, ie, icpg, ig, icou, iniv, multic
     real(kind=8) :: zic, epais, excen
     real(kind=8) :: depf(nddlfl*nnomai), depm(nddlme*nnomai)
     real(kind=8) :: vt(2), lambda(4)

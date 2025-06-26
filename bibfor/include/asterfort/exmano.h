@@ -21,8 +21,8 @@
 interface
     subroutine exmano(noma, numnoe, numano, nbmano)
         character(len=8) :: noma
-        integer :: numnoe
-        integer :: numano(*)
-        integer :: nbmano
+        integer(kind=8) :: numnoe
+        integer(kind=8) :: numano(*)
+        integer(kind=8) :: nbmano
     end subroutine exmano
 end interface

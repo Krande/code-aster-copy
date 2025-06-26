@@ -22,6 +22,6 @@ interface
         implicit none
         character(len=*), intent(in) :: cara(*)
         real(kind=8), intent(in) :: vale(*)
-        integer, intent(in) :: nval
+        integer(kind=8), intent(in) :: nval
     end subroutine
 end interface

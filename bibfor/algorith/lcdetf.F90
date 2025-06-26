@@ -25,7 +25,7 @@ subroutine lcdetf(ndim, fr, det)
 !
     implicit none
 #include "asterfort/assert.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: fr(3, 3), det
 !
     if (ndim .eq. 3) then

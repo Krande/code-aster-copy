@@ -37,7 +37,7 @@ subroutine cargri(lexc, densit, distn, dir11)
 !
 !     ------------------------------------------------------------------
     real(kind=8) :: alpha, beta
-    integer :: icacoq
+    integer(kind=8) :: icacoq
 !
     call jevech('PCACOQU', 'L', icacoq)
 !

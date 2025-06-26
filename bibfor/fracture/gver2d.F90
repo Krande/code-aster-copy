@@ -65,9 +65,9 @@ subroutine gver2d(nocc, noeud, rinf, rsup)
     character(len=8) :: config, noeud, fond, kfon
     character(len=24) :: chfond, taillr
 !
-    integer :: iocc, nocc, n1
-    integer :: nbm, n2, lnoff, numfon, ibid
-    integer :: iatmno
+    integer(kind=8) :: iocc, nocc, n1
+    integer(kind=8) :: nbm, n2, lnoff, numfon, ibid
+    integer(kind=8) :: iatmno
 !
     real(kind=8) :: rbid, rinf, rsup, valr(2)
 !

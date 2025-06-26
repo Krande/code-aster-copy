@@ -51,7 +51,7 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd, &
     character(len=16) :: option
     character(len=8) :: repere
     character(len=4) :: typegd
-    integer :: iocc, iret, nbcpc, gd, codir
+    integer(kind=8) :: iocc, iret, nbcpc, gd, codir
     real(kind=8) :: dir(*)
 !
 !     SAISIE DES CMP NECESSAIRES AU POST-TRAITEMENT
@@ -75,9 +75,9 @@ subroutine rvcpnc(mcf, iocc, nch19, gd, typegd, &
     character(len=24) :: valk(23)
     character(len=8) :: nomgd, k8b, mailla
     character(len=4) :: docu
-    integer :: acpgd, ntc, nin, ntn1, ntn2, nep, nnc, avk8, i, nbcpgd, nso
-    integer :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc
-    integer :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, iexi, nn
+    integer(kind=8) :: acpgd, ntc, nin, ntn1, ntn2, nep, nnc, avk8, i, nbcpgd, nso
+    integer(kind=8) :: alsi, n1, n2, n3, ntd1, pt, avicp, avinew, alscpc, ptnc
+    integer(kind=8) :: ancpu, nbc, iadt1, iadt2, ibid, ntd2, iexi, nn
     aster_logical :: dirx, diry, dirz
     character(len=8), pointer :: tmp(:) => null()
 !

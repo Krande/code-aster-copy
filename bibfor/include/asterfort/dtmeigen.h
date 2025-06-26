@@ -22,8 +22,8 @@ interface
     subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
         character(len=*), intent(in)  :: sd_dtm_
         character(len=*), intent(in)  :: sd_int_
-        integer          , intent(in) :: oldcase
-        integer, pointer              :: buffdtm(:)
-        integer, pointer              :: buffint(:)
+        integer(kind=8)          , intent(in) :: oldcase
+        integer(kind=8), pointer              :: buffdtm(:)
+        integer(kind=8), pointer              :: buffint(:)
     end subroutine dtmeigen
 end interface

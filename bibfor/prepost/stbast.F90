@@ -24,7 +24,7 @@ subroutine stbast(nfie, nfis, lgrcou)
 #include "asterfort/uldefi.h"
 #include "asterfort/ulisop.h"
 #include "asterfort/ulopen.h"
-    integer :: nfie, nfis
+    integer(kind=8) :: nfie, nfis
     aster_logical :: lgrcou
 !
 !      FONCTION : LANCEMENT DE L'INTERFACE IDEAS (SUPERTAB)

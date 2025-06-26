@@ -41,9 +41,9 @@ subroutine checkSuperElement(optionZ, modelZ)
 !
     character(len=16) :: option
     character(len=8) :: model, mesh, superElementName
-    integer :: iCell, iexi
-    integer :: nbSuperElement, nbSuperCell
-    integer, pointer :: sssa(:) => null()
+    integer(kind=8) :: iCell, iexi
+    integer(kind=8) :: nbSuperElement, nbSuperCell
+    integer(kind=8), pointer :: sssa(:) => null()
     character(len=8), pointer :: nomacr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

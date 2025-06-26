@@ -73,7 +73,7 @@ subroutine ptmtuf(m, rho, e, rof, ce, &
 ! LOC R*8 ! ASZ    !   -     ! AIRE REDUITE CISAILLEE SUIVANT Z
 ! LOC I   ! IP     !   16    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 !     ------------------------------------------------------------------
-    integer :: ip(16), i
+    integer(kind=8) :: ip(16), i
     real(kind=8) :: asy, asz
     real(kind=8) :: xl2, phiy, phiz, zial, yial, cy, cz
     real(kind=8) :: zero, phiy2, phiz2

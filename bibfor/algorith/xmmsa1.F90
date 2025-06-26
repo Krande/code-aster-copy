@@ -32,9 +32,9 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol, &
 #include "asterfort/xadher.h"
 #include "asterfort/xcalc_saut.h"
 #include "asterfort/xmafr1.h"
-    integer :: algofr, ndim, nno, nnos, nnol
-    integer :: nfh, ddls, ddlm
-    integer :: singu, pla(27), lact(8), idepd, idepm
+    integer(kind=8) :: algofr, ndim, nno, nnos, nnol
+    integer(kind=8) :: nfh, ddls, ddlm
+    integer(kind=8) :: singu, pla(27), lact(8), idepd, idepm
     real(kind=8) :: coeffr, coeffp, p(3, 3), ik(3, 3)
     real(kind=8) :: ffc(8), ffp(27), tau1(3), tau2(3), ptknp(3, 3)
     real(kind=8) :: knp(3, 3), nd(3)
@@ -85,8 +85,8 @@ subroutine xmmsa1(algofr, ndim, nno, nnos, nnol, &
 !
 !
 !
-    integer :: i, j, nli, ino, in, pli, ig
-    integer :: alpi
+    integer(kind=8) :: i, j, nli, ino, in, pli, ig
+    integer(kind=8) :: alpi
     real(kind=8) :: ffi, lamb1(3), r3(3), vitang(3), kn(3, 3), saut(3), coefj
 !
 ! ----------------------------------------------------------------------

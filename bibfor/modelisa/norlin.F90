@@ -25,7 +25,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc, &
     character(len=3) :: typma
     character(len=8) :: knumai
     real(kind=8) :: coor(3, *), dfonc(*), a, b, c, prec
-    integer :: in, l
+    integer(kind=8) :: in, l
 !
 !     OBJECTIF : CALCULER LA NORMALE OU LA TANGENTE A UNE MAILLE
 !                QUADRATIQUE EN LINEAIRE ( SEULS LES NOEUDS SOMMETS
@@ -45,7 +45,7 @@ subroutine norlin(typma, l, knumai, coor, dfonc, &
 !     B      : VALEUR SELON Y DU VECTEUR NORMAL
 !     C      : VALEUR SELON Z DU VECTEUR NORMAL
 !
-    integer :: ifonc, nn
+    integer(kind=8) :: ifonc, nn
     real(kind=8) :: eks1x, eks1y, eks1z, eet1x, eet1y, eet1z, norme
     real(kind=8) :: eks2x, eks2y, eks2z, eet2x, eet2y, eet2z
 !

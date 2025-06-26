@@ -20,7 +20,7 @@
 !
 interface
     subroutine lccree(nbkit, lkit, compor)
-        integer :: nbkit
+        integer(kind=8) :: nbkit
         character(len=*) :: lkit(*)
         character(len=*) :: compor
     end subroutine lccree

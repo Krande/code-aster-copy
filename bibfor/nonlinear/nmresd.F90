@@ -43,7 +43,7 @@ subroutine nmresd(fonact, sddyna, ds_measure, solveu, &
 #include "asterfort/romAlgoNLCorrEFMatrixModify.h"
 #include "asterfort/romAlgoNLCorrEFResiduModify.h"
 !
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=19) :: solalg(*)
     character(len=19) :: maprec, matass
     type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
@@ -52,7 +52,7 @@ subroutine nmresd(fonact, sddyna, ds_measure, solveu, &
     character(len=19) :: cncine, cndonn, cnpilo
     character(len=24) :: numedd
     real(kind=8) :: instan
-    integer :: rescvg
+    integer(kind=8) :: rescvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,7 +87,7 @@ subroutine nmresd(fonact, sddyna, ds_measure, solveu, &
     aster_logical :: lprmo, l_rom
     character(len=19) :: depso1, depso2
     character(len=24) :: mata24, vect24, cncine24
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

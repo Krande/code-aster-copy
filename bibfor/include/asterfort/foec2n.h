@@ -21,11 +21,11 @@
 interface
     subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc,&
                       impr)
-        integer :: nbfonc
-        integer :: iuni
+        integer(kind=8) :: nbfonc
+        integer(kind=8) :: iuni
         character(len=*) :: vecpro(*)
         real(kind=8) :: valpar(nbfonc)
         character(len=*) :: chval
-        integer :: impr
+        integer(kind=8) :: impr
     end subroutine foec2n
 end interface

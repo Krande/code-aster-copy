@@ -32,7 +32,7 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: compor
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=19), intent(in) :: list_vale
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,17 +50,17 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iocc
-    integer :: nb_elem_affe, nocc
+    integer(kind=8) :: iocc
+    integer(kind=8) :: nb_elem_affe, nocc
     character(len=24) :: list_elem_affe
     character(len=16) :: rela_comp
-    integer :: nb_vari
+    integer(kind=8) :: nb_vari
     character(len=16) :: keywordfact
     aster_logical :: l_affe_all
-    integer, pointer :: vali(:) => null()
+    integer(kind=8), pointer :: vali(:) => null()
     character(len=16), pointer :: valv(:) => null()
     character(len=24), pointer :: valk(:) => null()
-    integer, pointer :: v_elem_affe(:) => null()
+    integer(kind=8), pointer :: v_elem_affe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

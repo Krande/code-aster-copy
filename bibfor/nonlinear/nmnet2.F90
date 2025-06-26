@@ -42,7 +42,7 @@ subroutine nmnet2(zimat, nmnbn, cnbn, cplas, czef, &
 !
 #include "asterfort/gplass.h"
 #include "asterfort/mppffn.h"
-    integer :: j, cief, cier, zimat
+    integer(kind=8) :: j, cief, cier, zimat
 !
     real(kind=8) :: nmnbn(6), cnbn(6), cplas(2, 3), czef, czeg
     real(kind=8) :: cdeps(6), cdtg(6, 6), dc1(6, 6), dc2(6, 6), normm

@@ -32,7 +32,7 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr, &
 #include "asterfort/tbadap.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbpar, vi(*), nume
+    integer(kind=8) :: nbpar, vi(*), nume
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
     character(len=*) :: nomta, nompar(*), vk(*)
@@ -50,13 +50,13 @@ subroutine tbajli(nomta, nbpar, nompar, vi, vr, &
 !                > 0 : ON SURCHARGE UNE LIGNE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, nbpm, nbpu
-    integer :: ndim, i, j, jvale, jlogq, ki, kr, kc, kk
+    integer(kind=8) :: iret, nbpara, nblign, nbpm, nbpu
+    integer(kind=8) :: ndim, i, j, jvale, jlogq, ki, kr, kc, kk
     character(len=3) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

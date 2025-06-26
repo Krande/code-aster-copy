@@ -20,6 +20,6 @@ interface
     subroutine romLineicPrepNume(base, nbNodeWithDof)
         use Rom_Datastructure_type
             type(ROM_DS_Empi), intent(inout) :: base
-            integer, intent(in) ::  nbNodeWithDof
+            integer(kind=8), intent(in) ::  nbNodeWithDof
     end subroutine romLineicPrepNume
 end interface

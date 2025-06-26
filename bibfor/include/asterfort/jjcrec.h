@@ -21,11 +21,11 @@
 interface
     subroutine jjcrec(icl, ida, genri, typei, nb,&
                       iadmi)
-        integer :: icl
-        integer :: ida
+        integer(kind=8) :: icl
+        integer(kind=8) :: ida
         character(len=*) :: genri
         character(len=*) :: typei
-        integer :: nb
-        integer :: iadmi
+        integer(kind=8) :: nb
+        integer(kind=8) :: iadmi
     end subroutine jjcrec
 end interface

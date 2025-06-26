@@ -21,7 +21,7 @@
 interface
     subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
                             dt, invm_c, op_h1, op_h2, invm_k)
-        integer     , intent(in)  :: nbequ
+        integer(kind=8)     , intent(in)  :: nbequ
         real(kind=8), intent(in)  :: par(:)
         real(kind=8), pointer  :: mgen(:)
         real(kind=8), pointer  :: kgen(:)

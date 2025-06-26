@@ -46,15 +46,15 @@ subroutine te0230(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbres, nbpar
+    integer(kind=8) :: nbres, nbpar
     parameter(nbres=2)
     parameter(nbpar=3)
 !
-    integer :: i, igau, imate, imatuu, j, iret, idrigi(2), rigi
-    integer :: k, nbinco, nbsig, ndim, nno
-    integer :: nnos, npg1
-    integer :: icodre(nbres), elas_id
-    integer :: igeom, ipoids, ivf, idfde, idim
+    integer(kind=8) :: i, igau, imate, imatuu, j, iret, idrigi(2), rigi
+    integer(kind=8) :: k, nbinco, nbsig, ndim, nno
+    integer(kind=8) :: nnos, npg1
+    integer(kind=8) :: icodre(nbres), elas_id
+    integer(kind=8) :: igeom, ipoids, ivf, idfde, idim
 !
     real(kind=8) :: b(486), jacgau
     real(kind=8) :: btdbi(81, 81), di(36), eta

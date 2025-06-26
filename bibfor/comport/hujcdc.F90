@@ -30,9 +30,9 @@ subroutine hujcdc(k, mater, sig, vin, seuil)
 !   ------------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterfort/infniv.h"
-    integer :: k, ndt, ndi
-    integer :: ifm, niv
-    integer :: i, j
+    integer(kind=8) :: k, ndt, ndi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i, j
     real(kind=8) :: mater(22, 2), sig(6), vin(*), seuil
     real(kind=8) :: un, r, epsvp, pcr, pa, tole
     real(kind=8) :: degr, beta, b, m, phi, pcref, ptrac

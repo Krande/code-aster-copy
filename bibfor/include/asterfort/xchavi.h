@@ -21,14 +21,14 @@
 interface
     subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
                       jbeta, ndim, nfonn, sifval)
-        integer :: actpoi
-        integer :: jbasc
-        integer :: jffis
-        integer :: jfon
-        integer :: jvit
-        integer :: jbeta
-        integer :: ndim
-        integer :: nfonn
-        integer :: sifval
+        integer(kind=8) :: actpoi
+        integer(kind=8) :: jbasc
+        integer(kind=8) :: jffis
+        integer(kind=8) :: jfon
+        integer(kind=8) :: jvit
+        integer(kind=8) :: jbeta
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfonn
+        integer(kind=8) :: sifval
     end subroutine xchavi
 end interface

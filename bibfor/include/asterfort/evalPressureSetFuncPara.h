@@ -24,10 +24,10 @@ interface
                                        geomCurr_)
         aster_logical, intent(in) :: lTime
         real(kind=8), intent(in) :: time
-        integer, intent(in) :: nbNode, cellDime, ipg
-        integer, intent(in) :: jvShapFunc, jvGeom
-        integer, intent(in) :: paraNbMax
-        integer, intent(out) :: paraNb
+        integer(kind=8), intent(in) :: nbNode, cellDime, ipg
+        integer(kind=8), intent(in) :: jvShapFunc, jvGeom
+        integer(kind=8), intent(in) :: paraNbMax
+        integer(kind=8), intent(out) :: paraNb
         character(len=8) :: paraName(paraNbMax)
         real(kind=8) :: paraVale(paraNbMax)
         real(kind=8), optional, intent(in) :: geomCurr_(*)

@@ -25,7 +25,7 @@ subroutine cbflnl(load, mesh, model)
 !
     character(len=8), intent(in) :: load, mesh, model
 !
-    integer :: nbfac
+    integer(kind=8) :: nbfac
     character(len=16) :: motfac
 !     ------------------------------------------------------------------
 !

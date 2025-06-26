@@ -29,7 +29,7 @@ interface
         real(kind=8) :: lamb1(3)
         real(kind=8) :: cstafr
         real(kind=8) :: cpenfr
-        integer :: algofr
+        integer(kind=8) :: algofr
         real(kind=8) :: vitang(3)
         real(kind=8) :: pboul(3)
         real(kind=8) :: kn(3, 3)

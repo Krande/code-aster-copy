@@ -20,6 +20,6 @@ interface
     subroutine peaire(resu, mesh, nbocc)
         character(len=*) :: resu
         character(len=8), intent(in) :: mesh
-        integer :: nbocc
+        integer(kind=8) :: nbocc
     end subroutine peaire
 end interface

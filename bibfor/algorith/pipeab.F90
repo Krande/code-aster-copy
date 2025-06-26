@@ -25,9 +25,9 @@ subroutine pipeab(mat, dtau, vim, sup, sud, mup, mud, nsol, sol, sgn)
 #include "asterfort/rcvalb.h"
 #include "asterfort/zerop2.h"
 
-    integer                  :: mat
+    integer(kind=8)                  :: mat
     real(kind=8), intent(in) :: dtau, vim(:), sup(:), sud(:), mup(:), mud(:)
-    integer, intent(out)     :: nsol, sgn(2)
+    integer(kind=8), intent(out)     :: nsol, sgn(2)
     real(kind=8), intent(out):: sol(2)
 
 !
@@ -43,12 +43,12 @@ subroutine pipeab(mat, dtau, vim, sup, sud, mup, mud, nsol, sol, sgn)
 ! out sol    : solutions de l'equation de pilotage
 ! out sgn    : signe de la pente de la fonction de pilotage en chaque solution
 ! ----------------------------------------------------------------------
-    integer :: cod(6), cine, nrac
+    integer(kind=8) :: cod(6), cine, nrac
     character(len=16) :: nom(6)
     real(kind=8) :: sc, dc, alpha, beta, s0, d0, r, ka, sr, val(6)
     real(kind=8) :: rac(2), p0, p1, p2
     real(kind=8), dimension(size(sup)) :: sig_f, sig_p, s_f, s_p
-    integer, parameter:: unilater = 0, glis_1d = 1, glis_2d = 2
+    integer(kind=8), parameter:: unilater = 0, glis_1d = 1, glis_2d = 2
 ! --------------------------------------------------------------------------------------------------
     data nom/'SIGM_C', 'GLIS_C', 'ALPHA', 'BETA', 'PENA_LAGR', 'CINEMATIQUE'/
 ! --------------------------------------------------------------------------------------------------

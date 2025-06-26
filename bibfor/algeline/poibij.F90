@@ -60,11 +60,11 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    integer :: npv
+    integer(kind=8) :: npv
     real(kind=8) :: vabs(npv), geom(9), fsvr(7)
-    integer :: nbm, vicoq(nbm)
+    integer(kind=8) :: nbm, vicoq(nbm)
     real(kind=8) :: torco(4, nbm), tcoef(10, nbm), freq(2*nbm*npv)
-    integer :: imasse
+    integer(kind=8) :: imasse
     real(kind=8) :: maj(nbm), vecpr(*)
 !
     real(kind=8) :: mcf0, ksi
@@ -73,8 +73,8 @@ subroutine poibij(npv, vabs, geom, fsvr, nbm, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifm, imat2, imatb, imod, iv
-    integer :: j, k
+    integer(kind=8) :: i, ifm, imat2, imatb, imod, iv
+    integer(kind=8) :: j, k
     real(kind=8) :: cf0, crit, fi, hmoy, omegai, pi, rug
     real(kind=8) :: s1, s2, umoy, visc
 !-----------------------------------------------------------------------

@@ -20,9 +20,9 @@
 interface
     subroutine rldlg3(metres, lmat, xsol, cxsol, nbsol)
         character(len=*) :: metres
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: xsol(*)
         complex(kind=8) :: cxsol(*)
-        integer :: nbsol
+        integer(kind=8) :: nbsol
     end subroutine rldlg3
 end interface

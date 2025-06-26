@@ -68,11 +68,11 @@ subroutine rotlis(nomres, fmli, icar, fplin, fplio, &
 !   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 !   SOUS-JACENTE TRAITEE
 !
-    integer :: nbcmpm, ordo, nbec, ibid, llrot, ntail, iadn, iado, i, j, k
-    integer :: l, nbligo, icompo, ldmat, ii, llplin, nbnoe, llplio, ldlid
-    integer :: nblign, nbcoln, llmat, nbcolo, icompn, iblo
+    integer(kind=8) :: nbcmpm, ordo, nbec, ibid, llrot, ntail, iadn, iado, i, j, k
+    integer(kind=8) :: l, nbligo, icompo, ldmat, ii, llplin, nbnoe, llplio, ldlid
+    integer(kind=8) :: nblign, nbcoln, llmat, nbcolo, icompn, iblo
     parameter(nbcmpm=10)
-    integer :: ideco(nbcmpm), idecn(nbcmpm), icar(3)
+    integer(kind=8) :: ideco(nbcmpm), idecn(nbcmpm), icar(3)
     character(len=8) :: nomres, sst, intf, nommcl, basmod, nomg
     character(len=24) :: fmli, fplin, fplio, nomatn, famli
     real(kind=8) :: rot(3), matrot(nbcmpm, nbcmpm), fact, matbuf(nbcmpm, nbcmpm)

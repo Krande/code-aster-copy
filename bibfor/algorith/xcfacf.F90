@@ -30,7 +30,7 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn, &
 #include "asterfort/intfac.h"
 #include "asterfort/padist.h"
 #include "asterfort/xajpin.h"
-    integer :: ptmax, ipt, igeom, nno, ndim, nmaabs
+    integer(kind=8) :: ptmax, ipt, igeom, nno, ndim, nmaabs
     real(kind=8) :: lsn(nno), lst(nno), ptint(*), ainter(*)
     character(len=8) :: typma, noma
 !
@@ -64,8 +64,8 @@ subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn, &
     real(kind=8) :: a(3), b(3), c(3)
     real(kind=8) :: loncar, dst
     real(kind=8) :: m(3)
-    integer :: i, nbf, ibid, ifq, j, codret
-    integer :: fa(6, 8), ibid3(12, 3), indptf(3)
+    integer(kind=8) :: i, nbf, ibid, ifq, j, codret
+    integer(kind=8) :: fa(6, 8), ibid3(12, 3), indptf(3)
     aster_logical :: ajout
 ! ----------------------------------------------------------------------
 !

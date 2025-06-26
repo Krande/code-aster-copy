@@ -26,12 +26,12 @@ interface
                              iapsdl, ianueq, jvale, jresl)
         character(len=8), intent(in) :: model, mesh
         character(len=19), intent(in) :: vectElem
-        integer, intent(in) :: vectScalType
+        integer(kind=8), intent(in) :: vectScalType
         real(kind=8), intent(in) :: vectElemCoef
         character(len=8), pointer :: nomacr(:)
-        integer, intent(in) :: meshNbNode, nbCmp, nec, nbecmx
-        integer, intent(in) :: iapsdl, ianueq, jvale, jresl
-        integer, intent(in) :: idprn1, idprn2
-        integer, intent(inout) :: icodla(nbecmx), icodge(nbecmx)
+        integer(kind=8), intent(in) :: meshNbNode, nbCmp, nec, nbecmx
+        integer(kind=8), intent(in) :: iapsdl, ianueq, jvale, jresl
+        integer(kind=8), intent(in) :: idprn1, idprn2
+        integer(kind=8), intent(inout) :: icodla(nbecmx), icodge(nbecmx)
     end subroutine asseVectSuper
 end interface

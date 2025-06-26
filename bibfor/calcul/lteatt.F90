@@ -48,7 +48,7 @@ function lteatt(noattr, vattr, typel)
 !  Sinon, typel est inutile.
 !-----------------------------------------------------------------------
     character(len=16) :: vattr2
-    integer :: iret
+    integer(kind=8) :: iret
 !----------------------------------------------------------------------
     if (present(typel)) then
         call teattr('C', noattr, vattr2, iret, typel=typel)

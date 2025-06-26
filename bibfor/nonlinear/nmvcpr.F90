@@ -54,8 +54,8 @@ subroutine nmvcpr(modelz, cara_elemz, hval_incr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nume_harm
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nume_harm
     character(len=8) :: vevcprCurr, vevcprPrev
     character(len=19) :: varc_refe, compor
     character(len=24) :: mate, mateco

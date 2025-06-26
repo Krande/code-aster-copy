@@ -22,8 +22,8 @@ interface
     subroutine paligi(modelisa, ligrch, idx_grel, idx_nema, list_elem)
         character(len=24), intent(in) :: modelisa
         character(len=*), intent(in) :: ligrch
-        integer, intent(in) :: idx_grel
-        integer, intent(inout) :: idx_nema
-        integer, intent(in) :: list_elem(*)
+        integer(kind=8), intent(in) :: idx_grel
+        integer(kind=8), intent(inout) :: idx_nema
+        integer(kind=8), intent(in) :: list_elem(*)
     end subroutine paligi
 end interface

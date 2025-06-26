@@ -21,10 +21,10 @@
 interface
      subroutine difoncalc(tirela,raidTang,vloc,vpara,&
                           nbVloc,nbPara,iret,nbdecp,errmax)
-        integer :: nbVloc
-        integer :: nbPara
-        integer :: iret
-        integer :: nbdecp
+        integer(kind=8) :: nbVloc
+        integer(kind=8) :: nbPara
+        integer(kind=8) :: iret
+        integer(kind=8) :: nbdecp
         real(kind=8) :: tirela(6)
         real(kind=8) :: raidTang(6)
         real(kind=8) :: vloc(nbVloc)

@@ -22,11 +22,11 @@ interface
     subroutine verifg(fami , kpg  , nspg, poum, j_mater,&
                       epsth, iret_)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: nspg
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: nspg
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(out) :: epsth
-        integer, optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: iret_
     end subroutine verifg
 end interface

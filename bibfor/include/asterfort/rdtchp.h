@@ -29,6 +29,6 @@ interface
         character(len=8) :: noma
         character(len=8) :: nomare
         character(len=19) :: ligrel
-        integer :: cret
+        integer(kind=8) :: cret
     end subroutine rdtchp
 end interface

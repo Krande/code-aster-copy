@@ -23,16 +23,16 @@ interface
                       cf0, icoq, jcoq, jmod, nbm,&
                       rki, thetai, thetaj, tcoef, ysol,&
                       bij)
-        integer :: nbm
+        integer(kind=8) :: nbm
         real(kind=8) :: umoy
         real(kind=8) :: rhof
         real(kind=8) :: r1
         real(kind=8) :: r2
         real(kind=8) :: long
         real(kind=8) :: cf0
-        integer :: icoq
-        integer :: jcoq
-        integer :: jmod
+        integer(kind=8) :: icoq
+        integer(kind=8) :: jcoq
+        integer(kind=8) :: jmod
         real(kind=8) :: rki
         real(kind=8) :: thetai
         real(kind=8) :: thetaj

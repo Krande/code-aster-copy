@@ -54,7 +54,7 @@ subroutine nmevdt(ds_measure, sderro, timer)
 !
     aster_logical :: mtcpup, mtcpui, stopus
     character(len=4) :: etnewt
-    integer :: itcpup, itcpui, isusr1
+    integer(kind=8) :: itcpup, itcpui, isusr1
 !
 ! ----------------------------------------------------------------------
 !

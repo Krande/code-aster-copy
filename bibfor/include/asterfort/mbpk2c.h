@@ -20,7 +20,7 @@
 !
 interface
     subroutine mbpk2c(sens,alpha, beta, h,covaini,jacini,jacdef,sigin,sigout)
-    integer :: sens
+    integer(kind=8) :: sens
     real(kind=8) :: covaini(3, 3), jacini, jacdef
     real(kind=8) :: alpha, beta, h
     real(kind=8) :: sigin(3), sigout(3)

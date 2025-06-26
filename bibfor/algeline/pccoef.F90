@@ -34,19 +34,19 @@ subroutine pccoef(n, in, ip, ac, icpl, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
     real(kind=8) :: ac(*)
-    integer :: n
-    integer :: in(n)
+    integer(kind=8) :: n
+    integer(kind=8) :: in(n)
     integer(kind=4) :: ip(*), icpc(*)
     real(kind=8) :: acpc(*), cx(n)
-    integer :: icpl(0:n)
+    integer(kind=8) :: icpl(0:n)
 !----------------------------------------------------------------------
 !
 ! AC ---> ACPC
 ! ==========================
 !-----------------------------------------------------------------------
-    integer :: i, j, k, k1, k2
-    integer :: kk, kk1, kk2
-    integer, pointer :: ind(:) => null()
+    integer(kind=8) :: i, j, k, k1, k2
+    integer(kind=8) :: kk, kk1, kk2
+    integer(kind=8), pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
     kk2 = icpl(n-1)
     do kk = 1, kk2

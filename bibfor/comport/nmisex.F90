@@ -33,7 +33,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/verift.h"
 #include "asterfort/zerofr.h"
 !
-    integer :: imate, ndim, kpg, ksp, iret
+    integer(kind=8) :: imate, ndim, kpg, ksp, iret
     real(kind=8) :: crit(*), instam, instap
     real(kind=8) :: deps(6), sigm(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)
@@ -76,9 +76,9 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate, &
 !
 !
     aster_logical :: cplan, plasti, inco
-    integer :: ndimsi, jprol2, jvale2, nbval2
-    integer :: imate2, k, l, niter, ibid
-    integer :: iret5
+    integer(kind=8) :: ndimsi, jprol2, jvale2, nbval2
+    integer(kind=8) :: imate2, k, l, niter, ibid
+    integer(kind=8) :: iret5
     real(kind=8) :: depsth(6), valres(3), epsthe, pm, co, dt, deuxmu
     real(kind=8) :: depsmo, sigmmo, e, nu, troisk, rprim, rp, p, dx
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy
@@ -88,7 +88,7 @@ subroutine nmisex(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: precr, dp0, xap
     real(kind=8) :: valrm(2)
     real(kind=8) :: rac2
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=6) :: epsa(6)
     character(len=16) :: nomres(3)
 !

@@ -21,9 +21,9 @@
 interface
     subroutine pidefo(ndim, npg, kpg, compor, fm,&
                       epsm, epsp, epsd, copilo)
-        integer :: npg
-        integer :: ndim
-        integer :: kpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: ndim
+        integer(kind=8) :: kpg
         character(len=16) :: compor(*)
         real(kind=8) :: fm(3, 3)
         real(kind=8) :: epsm(6)

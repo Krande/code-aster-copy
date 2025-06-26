@@ -28,15 +28,15 @@ subroutine lcmmfe(taus, coeft, materf, ifa, nmat, &
 #include "asterfort/lcmmdd.h"
 #include "asterfort/lcmmkr.h"
 #include "asterfort/utmess.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), iret
-    integer :: ifl, is, nbsys, nuecou, nfs, nsg
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), iret
+    integer(kind=8) :: ifl, is, nbsys, nuecou, nfs, nsg
     real(kind=8) :: taus, coeft(nmat), alphap, dgamma, dp, dt
     real(kind=8) :: rp, sgns, hsr(nsg, nsg), dy(*), vind(*), materf(nmat)
     real(kind=8) :: dalpha
     real(kind=8) :: c, k, n, ftau, crit, a, d
     real(kind=8) :: gammap, ptit, cisa2
     character(len=16) :: necoul
-    integer :: irr, decirr, nums, decal, gdef
+    integer(kind=8) :: irr, decirr, nums, decal, gdef
     common/polycr/irr, decirr, nums, decal, gdef
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================

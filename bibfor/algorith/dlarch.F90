@@ -54,8 +54,8 @@ subroutine dlarch(result, neq, istoc, iarchi, texte, &
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vtcrem.h"
-    integer :: neq, istoc, iarchi, alarm
-    integer :: nbtyar
+    integer(kind=8) :: neq, istoc, iarchi, alarm
+    integer(kind=8) :: nbtyar
 !
     real(kind=8) :: depl(neq), vite(neq), acce(neq)
     real(kind=8) :: fexte(neq), famor(neq), fliai(neq)
@@ -68,8 +68,8 @@ subroutine dlarch(result, neq, istoc, iarchi, texte, &
 !
 !
 !
-    integer :: iaux, jaux, itype
-    integer :: lgcomm
+    integer(kind=8) :: iaux, jaux, itype
+    integer(kind=8) :: lgcomm
     character(len=8) :: k8b
 !
     character(len=24) :: chamno

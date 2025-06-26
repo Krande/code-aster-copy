@@ -62,9 +62,9 @@ subroutine mtdsc3(nommat)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ier, k, lmat
-    integer :: lnom
-    integer, pointer :: scde(:) => null()
+    integer(kind=8) :: ier, k, lmat
+    integer(kind=8) :: lnom
+    integer(kind=8), pointer :: scde(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

@@ -46,11 +46,11 @@ subroutine imbint(nomres, ifm)
 #include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid(1), idau, idcb, idda, idha, idmn
-    integer :: ifau, ifcb, ifha, ifmn, ino, ipoin
-    integer :: ityp, j, k, llact, lldes, llncmp
-    integer :: llnoe, lltyp, nbcmp, nbcpmx, nbdef, nbec, nbint
-    integer :: nbno, nbnot, ncomp, numgd
+    integer(kind=8) :: i, ibid(1), idau, idcb, idda, idha, idmn
+    integer(kind=8) :: ifau, ifcb, ifha, ifmn, ino, ipoin
+    integer(kind=8) :: ityp, j, k, llact, lldes, llncmp
+    integer(kind=8) :: llnoe, lltyp, nbcmp, nbcpmx, nbdef, nbec, nbint
+    integer(kind=8) :: nbno, nbnot, ncomp, numgd
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     character(len=8) :: nomcou, typcou, nomnoe, typ, typbas(3), nomtyp
@@ -59,10 +59,10 @@ subroutine imbint(nomres, ifm)
     character(len=11) :: dactif
     character(len=24) :: nomint, typint, noeint, desdef, ddact
     character(len=80) :: chaine
-    integer :: idec(nbcpmx), ifm, i1
+    integer(kind=8) :: idec(nbcpmx), ifm, i1
 !
-    integer :: ibid1
-    integer, pointer :: idc_desc(:) => null()
+    integer(kind=8) :: ibid1
+    integer(kind=8), pointer :: idc_desc(:) => null()
     data ibid1/0/
 !
 !-----------------------------------------------------------------------

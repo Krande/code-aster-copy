@@ -19,9 +19,9 @@
 !
 interface
     subroutine xbasgl(ndim, basloc, ipt, p, invp)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: basloc(*)
-        integer :: ipt
+        integer(kind=8) :: ipt
         real(kind=8) :: p(3,3)
         real(kind=8) :: invp(3,3)
     end subroutine xbasgl

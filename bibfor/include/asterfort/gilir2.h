@@ -20,9 +20,9 @@
 !
 interface
     subroutine gilir2(nfic, niv, ndim, nbobo)
-        integer :: nfic
-        integer :: niv
-        integer :: ndim
-        integer :: nbobo
+        integer(kind=8) :: nfic
+        integer(kind=8) :: niv
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbobo
     end subroutine gilir2
 end interface

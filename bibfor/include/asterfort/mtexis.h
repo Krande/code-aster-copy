@@ -21,6 +21,6 @@
 interface
     subroutine mtexis(mat, ier)
         character(len=*) :: mat
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine mtexis
 end interface

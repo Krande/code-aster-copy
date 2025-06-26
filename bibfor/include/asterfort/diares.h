@@ -21,10 +21,10 @@
 interface
     subroutine diares(n, nevec, a, lda, tau,&
                       evec, ldevec, work)
-        integer :: ldevec
-        integer :: lda
-        integer :: n
-        integer :: nevec
+        integer(kind=8) :: ldevec
+        integer(kind=8) :: lda
+        integer(kind=8) :: n
+        integer(kind=8) :: nevec
         complex(kind=8) :: a(lda, *)
         complex(kind=8) :: tau(*)
         complex(kind=8) :: evec(ldevec, *)

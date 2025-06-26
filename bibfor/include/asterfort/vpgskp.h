@@ -21,14 +21,14 @@
 interface
     subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb,&
                       typeps, vaux, ddlexc, delta)
-        integer :: nconv
-        integer :: nbeq
+        integer(kind=8) :: nconv
+        integer(kind=8) :: nbeq
         real(kind=8) :: vect(nbeq, nconv)
         real(kind=8) :: alpha
-        integer :: lmatb
-        integer :: typeps
+        integer(kind=8) :: lmatb
+        integer(kind=8) :: typeps
         real(kind=8) :: vaux(nbeq)
-        integer :: ddlexc(nbeq)
+        integer(kind=8) :: ddlexc(nbeq)
         real(kind=8) :: delta(nconv)
     end subroutine vpgskp
 end interface

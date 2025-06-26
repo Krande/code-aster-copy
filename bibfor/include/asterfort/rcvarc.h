@@ -24,9 +24,9 @@ interface
         character(len=*), intent(in) :: varc_name_
         character(len=*), intent(in) :: poum
         character(len=*), intent(in) :: famiZ
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         real(kind=8), intent(out) :: varc_vale
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine rcvarc
 end interface

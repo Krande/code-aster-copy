@@ -50,8 +50,8 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
 #include "blas/dcopy.h"
 #include "blas/zcopy.h"
 !
-    integer :: ineg, nbmode, neq, mxresf, nbpari, nbparr, nbpark
-    integer :: iprec, resufi(mxresf, *)
+    integer(kind=8) :: ineg, nbmode, neq, mxresf, nbpari, nbparr, nbpark
+    integer(kind=8) :: iprec, resufi(mxresf, *)
     character(len=4) :: mod45
     character(len=*) :: typ, modes, resufk(mxresf, *), nopara(*)
     real(kind=8) :: vecpr8(neq, *), resufr(mxresf, *)
@@ -65,11 +65,11 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
 !                     ENSUITE LES NOMS DE PARAMETRES DE TYP REEL
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: imode, jmode, ier, nmin, imin, nmax, imax
-    integer :: vali(3), jpara
-    integer :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
-    integer :: nbpast, irang, iret, jmodg, jmacr, jbasm
-    integer :: jmod2, igd, jrefe
+    integer(kind=8) :: imode, jmode, ier, nmin, imin, nmax, imax
+    integer(kind=8) :: vali(3), jpara
+    integer(kind=8) :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
+    integer(kind=8) :: nbpast, irang, iret, jmodg, jmacr, jbasm
+    integer(kind=8) :: jmod2, igd, jrefe
     parameter(nbpast=19)
     character(len=8) :: res, k8b, modele, chmat, carael, basemo, mesh, nomgd
     character(len=16) :: typcon, nomcmd, nosy, typmod
@@ -78,7 +78,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     character(len=24) :: valk, typeba, raide, raide2, k24b
     aster_logical :: lrefd, lbasm, lstock
     character(len=24), pointer :: rerr(:) => null()
-    integer, pointer :: p_desc(:) => null()
+    integer(kind=8), pointer :: p_desc(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 ! --- PARAMETRES STOCKES DANS LA SD RESULTAT DYNAMIQUE

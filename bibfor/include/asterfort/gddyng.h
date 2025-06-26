@@ -23,8 +23,8 @@ interface
                       rmk, omkm1, ompkm1, omk, ompk,&
                       x0sec, rgmkm, rgmk, omgkm, ompgkm,&
                       omgk, ompgk)
-        integer :: kp
-        integer :: nno
+        integer(kind=8) :: kp
+        integer(kind=8) :: nno
         real(kind=8) :: en(3, 2)
         real(kind=8) :: x0sk(3, 3)
         real(kind=8) :: rmkm1(3, 3)

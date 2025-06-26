@@ -42,18 +42,18 @@ subroutine epslmc(nno, ndim, nbsig, &
 #include "asterfort/lteatt.h"
 #include "asterfort/deflog.h"
 !
-    integer, intent(in)    :: nno
-    integer, intent(in)    :: ndim
-    integer, intent(in)    :: nbsig
-    integer, intent(in)    :: npg
-    integer, intent(in)    :: ipoids
-    integer, intent(in)    :: ivf
-    integer, intent(in)    :: idfde
+    integer(kind=8), intent(in)    :: nno
+    integer(kind=8), intent(in)    :: ndim
+    integer(kind=8), intent(in)    :: nbsig
+    integer(kind=8), intent(in)    :: npg
+    integer(kind=8), intent(in)    :: ipoids
+    integer(kind=8), intent(in)    :: ivf
+    integer(kind=8), intent(in)    :: idfde
     real(kind=8), intent(in)    :: xyz(1)
     real(kind=8), intent(in)    :: depl(1)
     real(kind=8), intent(inout) :: epsi(1)
 !
-    integer :: igau, k, iret
+    integer(kind=8) :: igau, k, iret
     real(kind=8) :: r, w
     real(kind=8), dimension(nno, ndim) :: dfdi
     real(kind=8), dimension(3, 3)      :: f, gn

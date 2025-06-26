@@ -23,7 +23,7 @@ interface
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: mesh
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: nb_cont_zone
-        integer, intent(out) :: nb_cont_surf
+        integer(kind=8), intent(in) :: nb_cont_zone
+        integer(kind=8), intent(out) :: nb_cont_surf
     end subroutine poinco
 end interface

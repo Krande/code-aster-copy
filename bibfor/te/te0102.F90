@@ -40,14 +40,14 @@ subroutine te0102(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: i, icacoq, ind, j, jgano, nbddl, nbres
-    integer :: nbv, nbvar, ndimax
+    integer(kind=8) :: i, icacoq, ind, j, jgano, nbddl, nbres
+    integer(kind=8) :: nbv, nbvar, ndimax
     real(kind=8) :: rocp, un, undemi
 !-----------------------------------------------------------------------
     parameter(ndimax=27)
     parameter(nbres=6)
     parameter(nbvar=2)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=2) :: num
     character(len=8) :: nompar(nbvar), fami, poum
     character(len=16) :: nomres(nbres)
@@ -60,9 +60,9 @@ subroutine te0102(option, nomte)
     real(kind=8) :: quinze, seize, cour, cosa, sina, r
     real(kind=8) :: valpar(nbvar), tempe, instan
     real(kind=8) :: masse(ndimax, ndimax)
-    integer :: nno, kp, npg2, gi, pi, gj, pj, k, imattt
-    integer :: ipoids, ivf, idfde, igeom, kpg, spt
-    integer :: imate, itemps, nnos, ndim
+    integer(kind=8) :: nno, kp, npg2, gi, pi, gj, pj, k, imattt
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, kpg, spt
+    integer(kind=8) :: imate, itemps, nnos, ndim
 !
 !
     if (nomte .ne. 'THCPSE3 ' .and. nomte .ne. 'THCASE3 ') then

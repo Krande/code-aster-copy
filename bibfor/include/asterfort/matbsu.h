@@ -22,10 +22,10 @@ interface
     subroutine matbsu(nb1, xr, npgsr, intsn, b1mnc,&
                       b2mnc, b1mni, b2mni, b1mri, b2mri,&
                       b1src, b2src, b1su, b2su)
-        integer :: nb1
+        integer(kind=8) :: nb1
         real(kind=8) :: xr(*)
-        integer :: npgsr
-        integer :: intsn
+        integer(kind=8) :: npgsr
+        integer(kind=8) :: intsn
         real(kind=8) :: b1mnc(3, 51)
         real(kind=8) :: b2mnc(3, 51)
         real(kind=8) :: b1mni(3, 51)

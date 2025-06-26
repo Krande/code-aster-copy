@@ -24,8 +24,8 @@ interface
                            geom  , pres, cisa ,&
                            vect)
         aster_logical, intent(in) :: l_axis
-        integer, intent(in) :: nno, npg, ndof
-        integer, intent(in) :: ipoids, ivf, idfde
+        integer(kind=8), intent(in) :: nno, npg, ndof
+        integer(kind=8), intent(in) :: ipoids, ivf, idfde
         real(kind=8), intent(in) :: geom(2, nno)
         real(kind=8), intent(in) :: pres(npg), cisa(npg)
         real(kind=8), intent(out) :: vect(ndof, nno)

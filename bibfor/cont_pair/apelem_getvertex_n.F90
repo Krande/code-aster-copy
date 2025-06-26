@@ -25,10 +25,10 @@ subroutine apelem_getvertex_n(elem_dime, elem_code, &
 #include "asterfort/assert.h"
 #include "asterfort/mmnewt.h"
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
     real(kind=8), intent(out) :: para_coor(elem_dime-1, 4)
-    integer, intent(out) :: nb_vertex
+    integer(kind=8), intent(out) :: nb_vertex
     character(len=8), intent(out) :: para_code
 !
 ! --------------------------------------------------------------------------------------------------

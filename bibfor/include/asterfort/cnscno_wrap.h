@@ -27,6 +27,6 @@ interface
         character(len=*) :: basez
         character(len=*) :: cnoz
         character(len=1) :: kstop
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine cnscno_wrap
 end interface

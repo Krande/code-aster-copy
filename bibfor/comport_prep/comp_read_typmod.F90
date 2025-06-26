@@ -37,13 +37,13 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, pointer :: v_model_elem(:)
-    integer, intent(in) :: elem_type
+    integer(kind=8), pointer :: v_model_elem(:)
+    integer(kind=8), intent(in) :: elem_type
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: i_comp
+    integer(kind=8), intent(in) :: i_comp
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(in) :: type_cpla_in
-    integer, intent(out) :: model_mfront
+    integer(kind=8), intent(out) :: model_mfront
     character(len=16), intent(out) :: type_cpla_out
 !
 ! --------------------------------------------------------------------------------------------------
@@ -67,12 +67,12 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem_affe, nb_elem, i_elem, elem_nume, model_save
-    integer :: elem_type_nume, codret
+    integer(kind=8) :: nb_elem_affe, nb_elem, i_elem, elem_nume, model_save
+    integer(kind=8) :: elem_type_nume, codret
     aster_logical :: l_affe_all, l_mfront_cp
     character(len=24) :: list_elem_affe
     character(len=16) :: elem_type_name
-    integer, pointer :: v_elem_affe(:) => null()
+    integer(kind=8), pointer :: v_elem_affe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

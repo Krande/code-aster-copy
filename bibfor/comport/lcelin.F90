@@ -30,13 +30,13 @@ subroutine lcelin(mod, nmat, materd, materf, deps, &
 ! ----------------------------------------------------------------
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: sigd(6), sigf(6)
     real(kind=8) :: dkooh(6, 6), hookf(6, 6)
     real(kind=8) :: epsed(6), epsef(6), deps(6)
     character(len=8) :: mod
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 ! ----------------------------------------------------------------
     if (int(materf(nmat, 1)) .eq. 0) then

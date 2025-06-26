@@ -31,7 +31,7 @@ subroutine mai2a3(mailla)
     character(len=*) :: mailla
 ! IN  : MAILLA  : NOM DE LA SD MAILLAGE
     character(len=16) :: repk
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
 
     call jemarq()
 

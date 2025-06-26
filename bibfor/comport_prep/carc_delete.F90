@@ -40,7 +40,7 @@ subroutine carc_delete(prepMapCarcri)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbFactorKeyword, nbInfo, iInfo
+    integer(kind=8) :: nbFactorKeyword, nbInfo, iInfo
 !
 ! --------------------------------------------------------------------------------------------------
 !

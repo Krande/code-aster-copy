@@ -21,10 +21,10 @@
 interface
     subroutine arlcp3(nbma1 ,nbma2 ,numno1,numno2,m3dea , &
                   m1dea ,numn1t,numn2t,len1  ,len2  , lisrel, charge)
-       integer :: nbnomx
+       integer(kind=8) :: nbnomx
        parameter    (nbnomx=27)
-       integer          :: nbma1,nbma2
-       integer          :: len1,len2
+       integer(kind=8)          :: nbma1,nbma2
+       integer(kind=8)          :: len1,len2
        real(kind=8)     :: m3dea(12,3*nbnomx,nbma1),m1dea(12,12,nbma2)
        character(len=5), dimension(nbnomx+2,nbma1) :: numno1
        character(len=5), dimension(2,nbma2)  :: numno2

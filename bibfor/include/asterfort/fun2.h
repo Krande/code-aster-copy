@@ -18,7 +18,7 @@
 !
 interface
     subroutine fun2(xi1, xi2, pp, xkk, qq, vt, n)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: xi1, xi2, pp, xkk, qq, vt
     end subroutine fun2
 end interface

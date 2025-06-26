@@ -62,10 +62,10 @@ subroutine chpass(tychr, ma, celmod, nomgd, prol0, &
 !     -----------------------------------------------------------------
 !
 !
-    integer :: n1, ib, nbocc, iocc, nbtrou, jnutro, nbmocl, lnom, ibid
+    integer(kind=8) :: n1, ib, nbocc, iocc, nbtrou, jnutro, nbmocl, lnom, ibid
     aster_logical :: chgcmp, cumul, lcumul(2), compOK, messConseil
-    integer :: ncmp, jlicmp, gd, jcmpgd, iret, nncp, nchg
-    integer :: jcesd, jcesc, i, ncmpdisp, j
+    integer(kind=8) :: ncmp, jlicmp, gd, jcmpgd, iret, nncp, nchg
+    integer(kind=8) :: jcesd, jcesc, i, ncmpdisp, j
     real(kind=8) :: coefr, lcoefr(2)
     complex(kind=8) :: coefc, lcoefc(2)
     character(len=8) :: kbid, modele, nomcmp

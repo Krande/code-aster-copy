@@ -93,11 +93,11 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa, &
 #include "asterfort/utmess.h"
     character(len=2) :: chdim
 !
-    integer :: iare, nnos, nnoa
+    integer(kind=8) :: iare, nnos, nnoa
     real(kind=8) :: orien, geom(*)
 !
-    integer :: nno, npg, noe(9, 6, 4)
-    integer :: ifa, tymvol, idfde
+    integer(kind=8) :: nno, npg, noe(9, 6, 4)
+    integer(kind=8) :: ifa, tymvol, idfde
 !
     real(kind=8) :: jac(9), nx(9), ny(9), nz(9)
     real(kind=8) :: tx(3), ty(3), hf
@@ -107,8 +107,8 @@ subroutine calnor(chdim, geom, iare, nnos, nnoa, &
 ! DECLARATION VARIABLES LOCALES
 !
 !
-    integer :: i, j, ino, jno, mno, ipg, idec, jdec, kdec
-    integer :: lenoeu, numno, nnos2
+    integer(kind=8) :: i, j, ino, jno, mno, ipg, idec, jdec, kdec
+    integer(kind=8) :: lenoeu, numno, nnos2
 !
     real(kind=8) :: x1, y1, x2, y2, x3, y3, norme
     real(kind=8) :: x(9), y(9), z(9), sx(9, 9), sy(9, 9), sz(9, 9)

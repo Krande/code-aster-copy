@@ -41,12 +41,12 @@ subroutine lcpitg(compor, df, line, dp, dvbe, &
 ! ----------------------------------------------------------------------
 #include "blas/ddot.h"
     character(len=16) :: compor
-    integer :: line
+    integer(kind=8) :: line
     real(kind=8) :: df(3, 3), dp, dvbe(6), dtaudf(6, 3, 3)
 !
 ! COMMON GRANDES DEFORMATIONS SIMO - MIEHE
 !
-    integer :: ind(3, 3), ind1(6), ind2(6)
+    integer(kind=8) :: ind(3, 3), ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6), id(6, 6)
     real(kind=8) :: bem(6), betr(6), dvbetr(6), eqbetr, trbetr
     real(kind=8) :: jp, dj, jm, dfb(3, 3)
@@ -60,7 +60,7 @@ subroutine lcpitg(compor, df, line, dp, dvbe, &
 ! ----------------------------------------------------------------------
 !  COMMON MATERIAU POUR VON MISES
 !
-    integer :: jprol, jvale, nbval
+    integer(kind=8) :: jprol, jvale, nbval
     real(kind=8) :: pm, young, nu, mu, unk, troisk, cother
     real(kind=8) :: sigm0, epsi0, dt, coefm, rpm, pente, apui, npui, sigy
 !
@@ -70,7 +70,7 @@ subroutine lcpitg(compor, df, line, dp, dvbe, &
      &          apui, npui, sigy, jprol, jvale, nbval
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ij, kl, k, l
+    integer(kind=8) :: ij, kl, k, l
     real(kind=8) :: a2, a3, a4, rb, arg, eqbe
     real(kind=8) :: dtaudj, dtaudb
     real(kind=8) :: dvbbtr(6, 6), dvbedf(6, 3, 3)

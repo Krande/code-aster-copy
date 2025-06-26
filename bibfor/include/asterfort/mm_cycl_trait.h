@@ -28,17 +28,17 @@ interface
                              indi_frot_curr, coef_frot_curr)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_cont_poin
+        integer(kind=8), intent(in) :: i_cont_poin
         real(kind=8), intent(in) :: coef_cont_prev
         real(kind=8), intent(in) :: coef_frot_prev
         real(kind=8), intent(in) :: pres_frot_prev(3)
         real(kind=8), intent(in) :: dist_frot_prev(3)
         real(kind=8), intent(in) :: pres_frot_curr(3)
         real(kind=8), intent(in) :: dist_frot_curr(3)
-        integer, intent(in) :: indi_cont_eval
-        integer, intent(in) :: indi_frot_eval
-        integer, intent(out) :: indi_cont_curr
-        integer, intent(out) :: indi_frot_curr
+        integer(kind=8), intent(in) :: indi_cont_eval
+        integer(kind=8), intent(in) :: indi_frot_eval
+        integer(kind=8), intent(out) :: indi_cont_curr
+        integer(kind=8), intent(out) :: indi_frot_curr
         real(kind=8), intent(out) :: coef_cont_curr
         real(kind=8), intent(out) :: coef_frot_curr
     end subroutine mm_cycl_trait

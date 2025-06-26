@@ -30,7 +30,7 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim, &
 #include "asterfort/lkds2h.h"
 #include "asterfort/lkvacv.h"
 #include "asterfort/lkvarv.h"
-    integer :: nbmat, retcom, val
+    integer(kind=8) :: nbmat, retcom, val
     real(kind=8) :: seuive, ucrim, im, sm(6), vintr
     real(kind=8) :: mater(nbmat, 2), vinm(7), depsv(6), dgamv
     real(kind=8) :: dt
@@ -56,7 +56,7 @@ subroutine lkdgde(val, vintr, dt, seuive, ucrim, &
 ! --- : RETCOM: CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS-------
 ! =================================================================
     common/tdim/ndt, ndi
-    integer :: i, ndi, ndt
+    integer(kind=8) :: i, ndi, ndt
     real(kind=8) :: a, n, pa
     real(kind=8) :: bidon, deux, trois, zero
     real(kind=8) :: paravi(3), varvi(4)

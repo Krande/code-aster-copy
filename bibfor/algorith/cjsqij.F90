@@ -26,7 +26,7 @@ subroutine cjsqij(s, i1, x, q)
 !       OUT Q      :  TENSEUR RESULTAT
 !       ----------------------------------------------------------------
 !
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: s(6), i1, x(6), q(6)
 !
     common/tdim/ndt, ndi

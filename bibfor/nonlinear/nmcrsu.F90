@@ -72,11 +72,11 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: metlis
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8) :: pas_mini_elas, valr
-    integer :: nb_adap, i_adap
-    integer :: iter_glob_maxi, iter_glob_elas
-    integer :: ifm, niv, itmx, vali
+    integer(kind=8) :: nb_adap, i_adap
+    integer(kind=8) :: iter_glob_maxi, iter_glob_elas
+    integer(kind=8) :: ifm, niv, itmx, vali
     aster_logical :: ldeco
     real(kind=8) :: resi_glob_maxi, resi_glob_rela, inikry
     character(len=16) :: typeco, nopara, decoup
@@ -85,7 +85,7 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
     character(len=24) :: tpsevr, tpsevk, tpseloca, tpsesu
     character(len=24) :: tpsavr, tpsaloca, tpstpr, tpstpk
     character(len=24) :: tpsext
-    integer :: jtpsex, eventType, action_type
+    integer(kind=8) :: jtpsex, eventType, action_type
     character(len=8), pointer:: v_modele_dli(:) => null()
     character(len=8):: modele_dli, modele_snl
 

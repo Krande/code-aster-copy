@@ -61,13 +61,13 @@ subroutine dis_contact_frot(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, igeom, ivarip
-    integer :: iretlc, ifono, imatsym, icarcr, iiter, iterat
-    integer :: icontm, icontp
+    integer(kind=8) :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, igeom, ivarip
+    integer(kind=8) :: iretlc, ifono, imatsym, icarcr, iiter, iterat
+    integer(kind=8) :: icontm, icontp
 !
     real(kind=8) :: klc(for_discret%neq*for_discret%neq), klv(for_discret%nbt)
     real(kind=8) :: dvl(for_discret%neq), dpe(for_discret%neq), dve(for_discret%neq)
@@ -77,14 +77,14 @@ subroutine dis_contact_frot(for_discret, iret)
     character(len=8) :: k8bid
     aster_logical :: Prediction, Dynamique
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nbre1 = 9
+    integer(kind=8), parameter :: nbre1 = 9
     real(kind=8) :: valre1(nbre1)
-    integer :: codre1(nbre1)
+    integer(kind=8) :: codre1(nbre1)
     character(len=8) :: nomre1(nbre1)
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     real(kind=8) :: valpar
     character(len=8) :: nompar
-    integer :: jadre1, jcodre1
+    integer(kind=8) :: jadre1, jcodre1
 !
     data nomre1/'RIGI_NOR', 'RIGI_TAN', 'AMOR_NOR', 'AMOR_TAN', 'COULOMB', &
         'DIST_1', 'DIST_2', 'JEU', 'CONTACT'/
@@ -92,23 +92,23 @@ subroutine dis_contact_frot(for_discret, iret)
 !   Pour l'intégration de la loi de comportement
     real(kind=8) :: temps0, temps1, dtemps
 !   Paramètres de la loi :     Kn       Kt       mu       cn       ct       jeu,      ky,    kz
-    integer, parameter :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, iky = 7, ikz = 8
-    integer, parameter :: nbpara = 8
+    integer(kind=8), parameter :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, iky = 7, ikz = 8
+    integer(kind=8), parameter :: nbpara = 8
     real(kind=8) :: ldcpar(nbpara)
-    integer :: ldcpai(2)
+    integer(kind=8) :: ldcpai(2)
     character(len=8) :: ldcpac(1)
 !   Équations du système
-    integer, parameter :: nbequa = 14
+    integer(kind=8), parameter :: nbequa = 14
     real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax
-    integer :: nbdecp
+    integer(kind=8) :: nbdecp
 !   Variables internes
-    integer, parameter :: nbvari = 9, nbcorr = 8, idebut = 9
-    integer :: Correspond(nbcorr)
+    integer(kind=8), parameter :: nbvari = 9, nbcorr = 8, idebut = 9
+    integer(kind=8) :: Correspond(nbcorr)
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
     character(len=32) :: messak(3)
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbout
+    integer(kind=8) :: nbout
     real(kind=8) :: xl(6), xd(3), rignor, rigtan, coulom, deplac, evoljeu0, evoljeu1, xjeu
     real(kind=8) :: LgDiscret, Dist12, inst0, inst1
     blas_int :: b_incx, b_incy, b_n

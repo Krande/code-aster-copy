@@ -36,7 +36,7 @@ subroutine romGreedyModeSave(ds_multipara, base, &
 !
     type(ROM_DS_MultiPara), intent(in) :: ds_multipara
     type(ROM_DS_Empi), intent(inout)   :: base
-    integer, intent(in)                :: iMode
+    integer(kind=8), intent(in)                :: iMode
     character(len=19), intent(in)      :: mode
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine romGreedyModeSave(ds_multipara, base, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=1) :: syst_type
     complex(kind=8), pointer :: vc_mode(:) => null()
     real(kind=8), pointer :: vr_mode(:) => null()

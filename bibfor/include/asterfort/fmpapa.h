@@ -21,8 +21,8 @@
 interface
     subroutine fmpapa(nbfonc, nbptot, sigm, rd0, rtau0,&
                       rcrit, rphmax, rayon)
-        integer :: nbptot
-        integer :: nbfonc
+        integer(kind=8) :: nbptot
+        integer(kind=8) :: nbfonc
         real(kind=8) :: sigm(nbfonc*nbptot)
         real(kind=8) :: rd0
         real(kind=8) :: rtau0

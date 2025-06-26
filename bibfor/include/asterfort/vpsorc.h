@@ -27,32 +27,32 @@ interface
                       workv, rwork, ddlexc, ddllag, neqact,&
                       maxitr, ifm, niv, priram, alpha,&
                       nconv, flage, solveu)
-        integer :: nbvect
-        integer :: nbeq
-        integer :: lmasse
-        integer :: ldynfa
-        integer :: nfreq
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: nbeq
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: ldynfa
+        integer(kind=8) :: nfreq
         real(kind=8) :: tolsor
         complex(kind=8) :: vect(nbeq, *)
         complex(kind=8) :: resid(*)
         complex(kind=8) :: workd(*)
         complex(kind=8) :: workl(*)
-        integer :: lonwl
+        integer(kind=8) :: lonwl
         aster_logical :: selec(nbvect)
         complex(kind=8) :: dsor(*)
         complex(kind=8) :: sigma
         complex(kind=8) :: vaux(*)
         complex(kind=8) :: workv(*)
         real(kind=8) :: rwork(*)
-        integer :: ddlexc(nbeq)
-        integer :: ddllag(nbeq)
-        integer :: neqact
-        integer :: maxitr
-        integer :: ifm
-        integer :: niv
-        integer :: priram(8)
+        integer(kind=8) :: ddlexc(nbeq)
+        integer(kind=8) :: ddllag(nbeq)
+        integer(kind=8) :: neqact
+        integer(kind=8) :: maxitr
+        integer(kind=8) :: ifm
+        integer(kind=8) :: niv
+        integer(kind=8) :: priram(8)
         real(kind=8) :: alpha
-        integer :: nconv
+        integer(kind=8) :: nconv
         aster_logical :: flage
         character(len=19) :: solveu
     end subroutine vpsorc

@@ -49,9 +49,9 @@ subroutine te0138(option, nomte)
     character(len=8) :: coef, alias8
     real(kind=8) :: poids, r, nx, ny, alpha, rbid, tpg, coorse(18)
     real(kind=8) :: vectt(9)
-    integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom, i, j
-    integer :: l, li, iflux, iveres, nse, c(6, 9), ise, nnop2, itempi
-    integer :: ibid
+    integer(kind=8) :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom, i, j
+    integer(kind=8) :: l, li, iflux, iveres, nse, c(6, 9), ise, nnop2, itempi
+    integer(kind=8) :: ibid
     aster_logical :: laxi
     character(len=8) :: elrefe
 !

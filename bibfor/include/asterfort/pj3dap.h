@@ -21,18 +21,18 @@
           interface 
             subroutine pj3dap(ino2,geom2,geom1,tetr4,cobary,itr3,nbtrou,&
      &btdi,btvr,btnb,btlc,btco,l_dmax,dmax,dala,loin,dmin)
-              integer :: ino2
+              integer(kind=8) :: ino2
               real(kind=8) :: geom2(*)
               real(kind=8) :: geom1(*)
-              integer :: tetr4(*)
+              integer(kind=8) :: tetr4(*)
               real(kind=8) :: cobary(4)
-              integer :: itr3
-              integer :: nbtrou
-              integer :: btdi(*)
+              integer(kind=8) :: itr3
+              integer(kind=8) :: nbtrou
+              integer(kind=8) :: btdi(*)
               real(kind=8) :: btvr(*)
-              integer :: btnb(*)
-              integer :: btlc(*)
-              integer :: btco(*)
+              integer(kind=8) :: btnb(*)
+              integer(kind=8) :: btlc(*)
+              integer(kind=8) :: btco(*)
               aster_logical :: l_dmax
               real(kind=8) :: dmax
               real(kind=8) :: dala

@@ -22,7 +22,7 @@ interface
     subroutine hbcalc(fmoins, gamma, dg, nbmat, materf,&
                       i1e, sigeqe, vp, etap, vh,&
                       vg, parame, derive, incrg)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: fmoins
         real(kind=8) :: gamma
         real(kind=8) :: dg

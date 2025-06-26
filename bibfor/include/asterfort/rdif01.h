@@ -26,20 +26,20 @@ interface
                       nbphas, coel, x, dtime, neps,&
                       epsd, detot, dvin, nhsr, numhsr,&
                       hsr, itmax, toler, iret)
-        integer :: nhsr
-        integer :: nmat
-        integer :: nvi
-        integer :: nsg
+        integer(kind=8) :: nhsr
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nsg
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: rela_comp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=3) :: matcst
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
-        integer :: nfs
+        integer(kind=8) :: nfs
         real(kind=8) :: toutms(*)
         real(kind=8) :: vini(nvi)
         real(kind=8) :: cothe(nmat)
@@ -47,18 +47,18 @@ interface
         real(kind=8) :: dcothe(nmat)
         real(kind=8) :: dcoeff(nmat)
         real(kind=8) :: pgl(3, 3)
-        integer :: nbphas
+        integer(kind=8) :: nbphas
         real(kind=8) :: coel(nmat)
         real(kind=8) :: x
         real(kind=8) :: dtime
-        integer :: neps
+        integer(kind=8) :: neps
         real(kind=8) :: epsd(6)
         real(kind=8) :: detot(6)
         real(kind=8) :: dvin(nvi)
-        integer :: numhsr(*)
+        integer(kind=8) :: numhsr(*)
         real(kind=8) :: hsr(nsg, nsg, nhsr)
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rdif01
 end interface

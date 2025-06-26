@@ -66,14 +66,14 @@ subroutine vtgpld(cumul, alpha, geomiz, deplaz, base, &
 !
     character(len=24) :: lili, prno, nueq
     character(len=24) :: lili_name
-    integer :: i_ligr_mesh
-    integer, pointer :: v_prno(:) => null()
-    integer, pointer :: v_nueq(:) => null()
-    integer :: desc_gran(10)
-    integer :: idx_gd, ldim
-    integer :: nb_cmp_gd, nb_node_mesh, nb_cmp_node, nb_ec
-    integer :: length_prno
-    integer :: i_cmp_glob, i_ec, i_equ, i_node, i_dof
+    integer(kind=8) :: i_ligr_mesh
+    integer(kind=8), pointer :: v_prno(:) => null()
+    integer(kind=8), pointer :: v_nueq(:) => null()
+    integer(kind=8) :: desc_gran(10)
+    integer(kind=8) :: idx_gd, ldim
+    integer(kind=8) :: nb_cmp_gd, nb_node_mesh, nb_cmp_node, nb_ec
+    integer(kind=8) :: length_prno
+    integer(kind=8) :: i_cmp_glob, i_ec, i_equ, i_node, i_dof
     real(kind=8) :: rdepla
     character(len=8) :: nomgd, ktype
     character(len=19) :: geomi, depla, geomf, nume_equa

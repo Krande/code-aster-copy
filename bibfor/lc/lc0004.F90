@@ -25,7 +25,7 @@ subroutine lc0004(fami, kpg, ksp, ndim, imate, &
 
     implicit none
 #include "asterfort/nmchab.h"
-    integer :: kpg, ksp, ndim, imate, codret, nvi
+    integer(kind=8) :: kpg, ksp, ndim, imate, codret, nvi
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option

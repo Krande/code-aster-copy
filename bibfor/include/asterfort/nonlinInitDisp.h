@@ -20,7 +20,7 @@ interface
     subroutine nonlinInitDisp(list_func_acti, sdnume   , nume_dof,&
                               hval_algo     , hval_incr)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: sdnume
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: hval_algo(*), hval_incr(*)

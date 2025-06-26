@@ -21,9 +21,9 @@
 interface
     subroutine mtcrou(a, b, nmax, n, nbscmb,&
                       l, d)
-        integer :: nbscmb
-        integer :: n
-        integer :: nmax
+        integer(kind=8) :: nbscmb
+        integer(kind=8) :: n
+        integer(kind=8) :: nmax
         real(kind=8) :: a(nmax, nmax)
         real(kind=8) :: b(nmax, nbscmb)
         real(kind=8) :: l(n, n)

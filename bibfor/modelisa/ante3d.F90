@@ -54,12 +54,12 @@ subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2, &
 !
 ! ARGUMENTS
 ! ---------
-    integer :: nbsom, itetra
+    integer(kind=8) :: nbsom, itetra
     real(kind=8) :: xbar(*), ksi1, ksi2, ksi3
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i, isom(4), j
+    integer(kind=8) :: i, isom(4), j
 !
     real(kind=8) :: xtet(4), ytet(4), ztet(4), xpyr(5), ypyr(5), zpyr(5)
     real(kind=8) :: xpen(6), ypen(6), zpen(6), xhex(8), yhex(8), zhex(8)

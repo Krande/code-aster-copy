@@ -45,12 +45,12 @@ subroutine dbrParaInfoPod(operation, paraPod)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: cmpFilterName
     character(len=16) :: variFilterName
     character(len=24) :: fieldName
     real(kind=8) :: toleSVD, toleIncr
-    integer :: nbModeMaxi, nbCmpToFilter, iCmpToFilter, nbVariToFilter
+    integer(kind=8) :: nbModeMaxi, nbCmpToFilter, iCmpToFilter, nbVariToFilter
     type(ROM_DS_Field) :: field
 !
 ! --------------------------------------------------------------------------------------------------

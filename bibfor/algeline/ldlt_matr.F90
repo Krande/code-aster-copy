@@ -49,18 +49,18 @@ subroutine ldlt_matr(matas1, matas2, kperm, basp)
     character(len=24), intent(in) :: kperm
     character(len=1), intent(in) :: basp
 !-----------------------------------------------------------------------
-    integer :: nvalm, neq, nnz, kterm1, kterm2, jcol1, jcol2, ilig1, ilig2
-    integer :: k2, k2_1, k2_2, k, iexi
+    integer(kind=8) :: nvalm, neq, nnz, kterm1, kterm2, jcol1, jcol2, ilig1, ilig2
+    integer(kind=8) :: k2, k2_1, k2_2, k, iexi
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa2(:) => null()
     character(len=1) :: typ1
-    integer, pointer :: smde1(:) => null()
-    integer, pointer :: smde2(:) => null()
-    integer, pointer :: perm(:) => null()
-    integer, pointer :: smdi1(:) => null()
-    integer, pointer :: smdi2(:) => null()
-    integer, pointer :: ccid(:) => null()
-    integer, pointer :: cci2(:) => null()
+    integer(kind=8), pointer :: smde1(:) => null()
+    integer(kind=8), pointer :: smde2(:) => null()
+    integer(kind=8), pointer :: perm(:) => null()
+    integer(kind=8), pointer :: smdi1(:) => null()
+    integer(kind=8), pointer :: smdi2(:) => null()
+    integer(kind=8), pointer :: ccid(:) => null()
+    integer(kind=8), pointer :: cci2(:) => null()
     real(kind=8), pointer :: conl(:) => null()
     real(kind=8), pointer :: con2(:) => null()
     integer(kind=4), pointer :: smhc1(:) => null()

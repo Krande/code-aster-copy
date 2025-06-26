@@ -26,7 +26,7 @@ subroutine tbacce(nomta, numeli, para, mode, vi, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-    integer :: numeli, vi
+    integer(kind=8) :: numeli, vi
     real(kind=8) :: vr
     complex(kind=8) :: vc
     character(len=*) :: nomta, para, mode, vk
@@ -46,14 +46,14 @@ subroutine tbacce(nomta, numeli, para, mode, vi, &
 ! IN/OUT : VK     : VALEUR POUR LE PARAMETRE "K"
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, j, jvale, jvall
+    integer(kind=8) :: iret, nbpara, nblign, j, jvale, jvall
     character(len=1) :: modacc
     character(len=4) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar
     character(len=24) :: valk
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

@@ -33,8 +33,8 @@ function iden_nume(pchn1, pchn2)
 !
     character(len=24) :: lili1, lili2, ligr_name1, ligr_name2
     character(len=24) :: prno1
-    integer :: nb_lili1, nb_lili2, prno_length
-    integer :: i_lili1, i_lili2
+    integer(kind=8) :: nb_lili1, nb_lili2, prno_length
+    integer(kind=8) :: i_lili1, i_lili2
     aster_logical :: l_same_ligr
 !
 ! --------------------------------------------------------------------------------------------------

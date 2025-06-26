@@ -25,7 +25,7 @@ subroutine matrix_factor(solveu, base, iret, matpre, matass, &
 #include "asterfort/prere2.h"
 #include "asterfort/xfem_ksolv.h"
 !-----------------------------------------------------------------------
-    integer :: npvneg, istop, iret
+    integer(kind=8) :: npvneg, istop, iret
     character(len=1) :: base
     character(len=*) :: matass, matpre, solveu
 !-----------------------------------------------------------------------

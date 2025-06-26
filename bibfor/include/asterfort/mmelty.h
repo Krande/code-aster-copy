@@ -21,9 +21,9 @@
 interface
     subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: elem_nume
+        integer(kind=8), intent(in) :: elem_nume
         character(len=8), optional, intent(out) :: elem_type_
-        integer, optional, intent(out)  :: nb_node_
-        integer, optional, intent(out)  :: nb_dim_
+        integer(kind=8), optional, intent(out)  :: nb_node_
+        integer(kind=8), optional, intent(out)  :: nb_dim_
     end subroutine mmelty
 end interface

@@ -28,7 +28,7 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm, &
 #include "asterfort/lcmmdh.h"
 #include "asterfort/lcmmfe.h"
 #include "asterfort/lcmmfi.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), nfs, nsg
     real(kind=8) :: taur, materf(nmat*2), rr, dt, vind(36), dy(12)
     real(kind=8) :: dpdtau, dprdas, hsr(nsg, nsg), hr
 ! person_in_charge: jean-michel.proix at edf.fr
@@ -53,9 +53,9 @@ subroutine lcmmjd(taur, materf, ifa, nmat, nbcomm, &
     real(kind=8) :: ceff, dcdals, soms3, soms2, soms1
     real(kind=8) :: dhrdas, tauf, y, beta, mu, somaal, ars, sgnr, t3
     real(kind=8) :: alphap(12)
-    integer :: ifl, is, nbsys, ir, iret, nuecou, iei, iu, i, is3, ir3
+    integer(kind=8) :: ifl, is, nbsys, ir, iret, nuecou, iei, iu, i, is3, ir3
     character(len=16) :: k16b
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
 !

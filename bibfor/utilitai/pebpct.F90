@@ -37,7 +37,7 @@ subroutine pebpct(ligrel, nbma, lma, cham, nomcmp, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: dim, nbma, bfix
+    integer(kind=8) :: dim, nbma, bfix
     real(kind=8) :: borpct(dim), borne(2), seuil, voltot
     character(len=*) :: ligrel
     character(len=8) :: nomcmp, norme, carele
@@ -80,12 +80,12 @@ subroutine pebpct(ligrel, nbma, lma, cham, nomcmp, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbmat, i, nbintv
-    integer :: jcesl, jcesd, jcesk, jpoil, jpoid, jval
-    integer :: jvol, ispt, nbpspt
-    integer :: ima, nbsp, nbpt, iad, ipt, j, jnuma, nbptmx, k
+    integer(kind=8) :: nbmat, i, nbintv
+    integer(kind=8) :: jcesl, jcesd, jcesk, jpoil, jpoid, jval
+    integer(kind=8) :: jvol, ispt, nbpspt
+    integer(kind=8) :: ima, nbsp, nbpt, iad, ipt, j, jnuma, nbptmx, k
     real(kind=8) :: volpt, pas, p0, valmin, valmax, pdiv
-    integer :: ncmpm, nucmp, nbval
+    integer(kind=8) :: ncmpm, nucmp, nbval
     character(len=4) :: tych, non
     character(len=8) :: noma
     character(len=19) ::  cesout, chams
@@ -95,7 +95,7 @@ subroutine pebpct(ligrel, nbma, lma, cham, nomcmp, &
     real(kind=8), pointer :: pdsm(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: poiv(:) => null()
-    integer, pointer :: repe(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

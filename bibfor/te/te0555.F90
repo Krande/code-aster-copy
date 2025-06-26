@@ -49,12 +49,12 @@ subroutine te0555(option, nomte)
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: celer, jac
     real(kind=8) :: a(18, 18), vites(18)
-    integer :: ipoids, ivf, idfdx, idfdy
-    integer :: jv_geom, jv_mate, jv_vitplu, jv_vitent, jv_vect
-    integer :: ndim, nno, ndi, ipg, npg
-    integer :: idec, jdec, kdec, ldec
-    integer :: i, ii, j, jj, ino, jno
-    integer :: j_mater, iret
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy
+    integer(kind=8) :: jv_geom, jv_mate, jv_vitplu, jv_vitent, jv_vect
+    integer(kind=8) :: ndim, nno, ndi, ipg, npg
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: i, ii, j, jj, ino, jno
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------

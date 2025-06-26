@@ -20,6 +20,6 @@ interface
     subroutine romMultiParaProdModeInit(ds_multipara, nb_mode_maxi)
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-        integer, intent(in) :: nb_mode_maxi
+        integer(kind=8), intent(in) :: nb_mode_maxi
     end subroutine romMultiParaProdModeInit
 end interface

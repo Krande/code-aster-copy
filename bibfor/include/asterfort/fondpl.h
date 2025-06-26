@@ -22,8 +22,8 @@ interface
     subroutine fondpl(modele, mate, mateco, numedd, neq, chondp,&
                       nchond, vecond, veonde, vaonde, temps,&
                       foonde)
-        integer :: nchond
-        integer :: neq
+        integer(kind=8) :: nchond
+        integer(kind=8) :: neq
         character(len=24) :: modele
         character(len=8) :: mate
         character(len=24) :: mateco

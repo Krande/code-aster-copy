@@ -20,10 +20,10 @@
 !
 interface
     subroutine wprest(a, x, n, m, y)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: a(n, *)
         real(kind=8) :: x(*)
-        integer :: m
+        integer(kind=8) :: m
         complex(kind=8) :: y(*)
     end subroutine wprest
 end interface

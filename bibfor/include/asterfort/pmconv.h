@@ -31,8 +31,8 @@ interface
         real(kind=8) :: inst
         real(kind=8) :: sigp(6)
         real(kind=8) :: coef
-        integer :: iter
-        integer :: indimp(6)
+        integer(kind=8) :: iter
+        integer(kind=8) :: indimp(6)
         type(NL_DS_Conv), intent(in) :: ds_conv
         aster_logical :: conver
         aster_logical :: itemax

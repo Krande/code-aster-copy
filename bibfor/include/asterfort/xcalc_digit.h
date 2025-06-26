@@ -19,7 +19,7 @@
 !
 interface
     function xcalc_digit(id)
-       integer :: xcalc_digit
-       integer :: id
+       integer(kind=8) :: xcalc_digit
+       integer(kind=8) :: id
     end function xcalc_digit
 end interface

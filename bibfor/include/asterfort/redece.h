@@ -30,10 +30,10 @@ interface
         use Behaviour_type
     type(Behaviour_Integ) :: BEHinteg
     character(len=*) :: fami
-    integer :: imate, ndim, kpg, ksp, numlc
-    integer :: neps, nsig, ndsde
+    integer(kind=8) :: imate, ndim, kpg, ksp, numlc
+    integer(kind=8) :: neps, nsig, ndsde
     aster_logical, intent(in) :: l_epsi_varc
-    integer, intent(in):: nvi
+    integer(kind=8), intent(in):: nvi
     real(kind=8) :: carcri(*), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(neps), deps(neps)
@@ -45,6 +45,6 @@ interface
     character(len=16) :: compor(*), option
     character(len=8), intent(in) :: materi
     character(len=16), intent(in) :: mult_comp
-    integer,intent(out):: codret
+    integer(kind=8),intent(out):: codret
     end subroutine redece
 end interface

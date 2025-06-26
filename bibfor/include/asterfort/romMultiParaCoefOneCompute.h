@@ -23,6 +23,6 @@ interface
         type(ROM_DS_Empi), intent(in) :: ds_empi
         type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
         type(ROM_DS_Solve), intent(in) :: ds_solveROM
-        integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
+        integer(kind=8), intent(in) :: i_mode_until, i_mode_coef, i_coef
     end subroutine romMultiParaCoefOneCompute
 end interface

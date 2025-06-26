@@ -22,6 +22,6 @@ interface
     subroutine nmresx(sddisc, sderro, iter_newt)
         character(len=19), intent(in) :: sddisc
         character(len=24), intent(in) :: sderro
-        integer, intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: iter_newt
     end subroutine nmresx
 end interface

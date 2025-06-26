@@ -21,9 +21,9 @@
 interface
     subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
         character(len=*) :: nomsd
-        integer :: icode
+        integer(kind=8) :: icode
         character(len=*) :: nomjv
-        integer :: nbacc
-        integer :: nbpara
+        integer(kind=8) :: nbacc
+        integer(kind=8) :: nbpara
     end subroutine rsnopa
 end interface

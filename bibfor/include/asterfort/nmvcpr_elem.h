@@ -22,7 +22,7 @@ interface
                            varc_refez, comporz   ,&
                            base      , vect_elemz)
         character(len=*), intent(in) :: modelz, cara_elemz, matez, matecoz
-        integer, intent(in) :: nume_harm
+        integer(kind=8), intent(in) :: nume_harm
         character(len=1), intent(in) :: time_comp
         character(len=19), intent(in) :: hval_incr(*)
         character(len=*), intent(in) :: varc_refez, comporz

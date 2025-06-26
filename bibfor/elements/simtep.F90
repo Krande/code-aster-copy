@@ -59,12 +59,12 @@ subroutine simtep(fami, nno, ndim, nbsig, npg, &
 #include "jeveux.h"
 #include "asterfort/sigmmc.h"
 #include "asterfort/sigtmc.h"
-    integer :: ipoids, ivf, idfde
+    integer(kind=8) :: ipoids, ivf, idfde
     character(len=*) :: fami
     real(kind=8) :: xyz(1), depl(1), angl_naut(3), sigma(1)
     real(kind=8) :: instan, nharm
 ! -----  VARIABLES LOCALES
-    integer :: i, mater, nbsig, ndim, nno, npg
+    integer(kind=8) :: i, mater, nbsig, ndim, nno, npg
     character(len=16) :: k16bid
     real(kind=8) :: sigth(162), zero
 !.========================= DEBUT DU CODE EXECUTABLE ==================

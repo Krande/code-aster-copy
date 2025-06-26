@@ -21,8 +21,8 @@
 interface
     subroutine rsutrg(nomsd, iordr, irang, nbordr)
         character(len=*) :: nomsd
-        integer :: iordr
-        integer :: irang
-        integer :: nbordr
+        integer(kind=8) :: iordr
+        integer(kind=8) :: irang
+        integer(kind=8) :: nbordr
     end subroutine rsutrg
 end interface

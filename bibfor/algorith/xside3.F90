@@ -42,8 +42,8 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
 #include "asterfort/iselli.h"
 #include "asterfort/xkamat.h"
 #include "asterfort/xnbddl.h"
-    integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, ddls, nfe
-    integer :: nfiss, idepl, idecpg, heavn(nnop, 5), jstno
+    integer(kind=8) :: ndim, igeom, imate, nnop, npg, nfh, ddlc, ddls, nfe
+    integer(kind=8) :: nfiss, idepl, idecpg, heavn(nnop, 5), jstno
     character(len=8) :: elrefp, elrese
     real(kind=8) :: basloc(9*nnop), he(nfiss)
     real(kind=8) :: lsn(nnop), lst(nnop)
@@ -80,11 +80,11 @@ subroutine xside3(elrefp, ndim, coorse, elrese, igeom, &
 !
     character(len=2) :: k2bid
     character(len=16) :: phenom
-    integer :: kpg, n, i, j, iret, ipg
-    integer :: nno, npgbis, ddlm, ddld, ndimb
-    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
-    integer :: nbsig, nnops, hea_se
-    integer :: singu
+    integer(kind=8) :: kpg, n, i, j, iret, ipg
+    integer(kind=8) :: nno, npgbis, ddlm, ddld, ndimb
+    integer(kind=8) :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids
+    integer(kind=8) :: nbsig, nnops, hea_se
+    integer(kind=8) :: singu
     real(kind=8) :: f(3, 3), eps(6)
     real(kind=8) :: instan, rac2
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop)

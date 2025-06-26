@@ -52,19 +52,19 @@ subroutine thmCompRefeForcNoda(ds_thm)
     character(len=8) :: elrefe, elref2
     aster_logical :: fnoevo
     real(kind=8) :: dt
-    integer :: jv_mater, jv_geom, jv_vectu
+    integer(kind=8) :: jv_mater, jv_geom, jv_vectu
     real(kind=8) :: b(21, 120), r(22)
-    integer :: nno, nnos, nnom
-    integer :: npi, npi2, npg
-    integer :: jv_poids, jv_poids2
-    integer :: jv_func, jv_func2, jv_dfunc, jv_dfunc2, jv_gano
-    integer :: nddls, nddlm
-    integer :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-    integer :: dimdep, dimdef, dimcon, dimuel
+    integer(kind=8) :: nno, nnos, nnom
+    integer(kind=8) :: npi, npi2, npg
+    integer(kind=8) :: jv_poids, jv_poids2
+    integer(kind=8) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2, jv_gano
+    integer(kind=8) :: nddls, nddlm
+    integer(kind=8) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+    integer(kind=8) :: dimdep, dimdef, dimcon, dimuel
     aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
-    integer :: ndim
-    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8) :: ndim
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !

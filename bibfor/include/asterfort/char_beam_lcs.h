@@ -26,14 +26,14 @@ interface
         character(len=8), intent(in) :: model
         character(len=19), intent(in) :: connex_inv
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
-        integer, intent(in) :: node_nume
-        integer, intent(in) :: n_keyword
+        integer(kind=8), intent(in) :: iocc
+        integer(kind=8), intent(in) :: node_nume
+        integer(kind=8), intent(in) :: n_keyword
         character(len=8), intent(in) :: node_name
         character(len=16), intent(in) :: cmp_name_loc(6)
         real(kind=8), intent(in) :: cmp_valr_loc(6)
         character(len=16), intent(out) :: cmp_name_glo(6)
-        integer, intent(out) :: cmp_acti_glo(6)
+        integer(kind=8), intent(out) :: cmp_acti_glo(6)
         real(kind=8), intent(out) :: cmp_valr_glo(6)
     end subroutine char_beam_lcs
 end interface

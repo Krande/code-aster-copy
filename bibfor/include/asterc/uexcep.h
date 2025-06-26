@@ -21,13 +21,13 @@
 interface
     subroutine uexcep(nexc, idmess, nk, valk, ni,&
                       vali, nr, valr)
-        integer :: nexc
+        integer(kind=8) :: nexc
         character(len=*) :: idmess
-        integer :: nk
+        integer(kind=8) :: nk
         character(len=*) :: valk(*)
-        integer :: ni
-        integer :: vali(*)
-        integer :: nr
+        integer(kind=8) :: ni
+        integer(kind=8) :: vali(*)
+        integer(kind=8) :: nr
         real(kind=8) :: valr(*)
     end subroutine uexcep
 end interface

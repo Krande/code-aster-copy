@@ -22,8 +22,8 @@ subroutine nm1dpm(fami, kpg, ksp, imate, option, &
 !
     implicit none
     character(len=*) :: fami, option
-    integer :: kpg, ksp, nvar
-    integer :: ncstpm, imate
+    integer(kind=8) :: kpg, ksp, nvar
+    integer(kind=8) :: ncstpm, imate
     real(kind=8) :: cstpm(ncstpm)
     real(kind=8) :: sigm, vim(nvar)
     real(kind=8) :: deps

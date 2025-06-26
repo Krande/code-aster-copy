@@ -28,7 +28,7 @@ subroutine ddi_kit_read(keywordfact, iocc, l_etat_init, &
 #include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     aster_logical, intent(in) :: l_etat_init
     character(len=16), intent(out) :: rela_flua
     character(len=16), intent(out) :: rela_plas
@@ -53,10 +53,10 @@ subroutine ddi_kit_read(keywordfact, iocc, l_etat_init, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: dmflua, dmplas
+    integer(kind=8) :: dmflua, dmplas
     parameter(dmflua=5, dmplas=9)
     character(len=16) :: poflua(dmflua), poplas(dmplas)
-    integer :: ikit, ii, nocc
+    integer(kind=8) :: ikit, ii, nocc
     character(len=16) :: rela_kit(2)
 !
 ! --------------------------------------------------------------------------------------------------

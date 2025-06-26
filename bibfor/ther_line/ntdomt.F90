@@ -40,7 +40,7 @@ subroutine ntdomt(theta)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
 
     call getvr8(' ', 'PARM_THETA', scal=theta, nbret=iret)
     if (iret == 0) theta = 1.0

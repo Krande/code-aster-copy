@@ -22,8 +22,8 @@ interface
     function utmotp(fonree, motfac, iocc, motcle)
         character(len=4) :: fonree
         character(len=*) :: motfac
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: motcle
-        integer :: utmotp
+        integer(kind=8) :: utmotp
     end function utmotp
 end interface

@@ -20,7 +20,7 @@
 !
 interface
     function jvinfo(info)
-        integer :: info
-        integer :: jvinfo
+        integer(kind=8) :: info
+        integer(kind=8) :: jvinfo
     end function jvinfo
 end interface

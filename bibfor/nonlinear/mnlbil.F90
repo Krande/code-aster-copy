@@ -29,15 +29,15 @@ subroutine mnlbil(x, omega, alpha, eta, h, &
 #include "asterfort/jemarq.h"
 #include "asterfort/mnlfft.h"
 #include "asterfort/wkvect.h"
-    integer :: h, hf, nt
+    integer(kind=8) :: h, hf, nt
     real(kind=8) :: x(2*h+1), omega, alpha, eta, sort(2*hf+1)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: it, ixt, iif
+    integer(kind=8) :: it, ixt, iif
     real(kind=8) :: depi, a1, b1, c1, d1, h1, p, q, discr1, sd
     complex(kind=8) :: u3, v3, u, v, f1, a2, b2, c2, discr2, fk
-    integer :: k, j
+    integer(kind=8) :: k, j
 !
     call jemarq()
 !

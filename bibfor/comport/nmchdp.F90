@@ -77,8 +77,8 @@ subroutine nmchdp(crit, seuil, dp, iret, iter)
 #include "asterfort/utlcal.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zerofr.h"
-    integer :: ndimsi, nbvar, visc, memo, niter, i, iter, ifm, niv, nbp, iret
-    integer :: idelta
+    integer(kind=8) :: ndimsi, nbvar, visc, memo, niter, i, iter, ifm, niv, nbp, iret
+    integer(kind=8) :: idelta
     real(kind=8) :: mat(18), pm, sigedv(6), alfam(6), deuxmu, dp, dt, qp
     real(kind=8) :: ksip(6)
     real(kind=8) :: crit(*), seuil, alfa2m(6), z, zz, ksim(6), qm, dpe, n1, n2

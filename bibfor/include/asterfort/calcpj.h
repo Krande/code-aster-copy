@@ -22,7 +22,7 @@ interface
     subroutine calcpj(nbmat, mater, gamp, evp, sigd,&
                       sige, epssig, invare, gamps, evps,&
                       invars, b)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: gamp
         real(kind=8) :: evp

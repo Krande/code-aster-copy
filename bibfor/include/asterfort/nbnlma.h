@@ -20,11 +20,11 @@ interface
     subroutine nbnlma(noma, nbm    , limanu    , nbtyp, lityp,&
                       nbn , l_error, elem_error)
         character(len=8), intent(in) :: noma
-        integer, intent(in) :: nbm
-        integer, intent(in) :: limanu(*)
-        integer, intent(in) :: nbtyp
+        integer(kind=8), intent(in) :: nbm
+        integer(kind=8), intent(in) :: limanu(*)
+        integer(kind=8), intent(in) :: nbtyp
         character(len=8), intent(in) :: lityp(*)
-        integer, intent(out) :: nbn
+        integer(kind=8), intent(out) :: nbn
         aster_logical, intent(out) :: l_error
         character(len=8), intent(out) :: elem_error
     end subroutine nbnlma

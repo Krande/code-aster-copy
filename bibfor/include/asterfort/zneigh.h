@@ -22,9 +22,9 @@ interface
     subroutine zneigh(rnorm, n, h, ldh, ritz,&
                       bounds, q, ldq, workl, rwork,&
                       ierr)
-        integer :: ldq
-        integer :: ldh
-        integer :: n
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldh
+        integer(kind=8) :: n
         real(kind=8) :: rnorm
         complex(kind=8) :: h(ldh, n)
         complex(kind=8) :: ritz(n)
@@ -32,6 +32,6 @@ interface
         complex(kind=8) :: q(ldq, n)
         complex(kind=8) :: workl(n*(n+3))
         real(kind=8) :: rwork(n)
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine zneigh
 end interface

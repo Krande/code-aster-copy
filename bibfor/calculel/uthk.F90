@@ -76,30 +76,30 @@ subroutine uthk(nomte, geom, hk, ndim, niv, &
 #include "asterfort/utmess.h"
 #include "asterfort/uttgel.h"
 !
-    integer, parameter :: l1 = 9, l2 = 6, l3 = 4
+    integer(kind=8), parameter :: l1 = 9, l2 = 6, l3 = 4
     character(len=16), intent(in) :: nomte
     real(kind=8), intent(in) :: geom(*)
     real(kind=8), intent(out) :: hk
-    integer, intent(in) :: ndim
-    integer, intent(in) :: niv
-    integer, intent(in), optional :: noe(l1*l2*l3)
-    integer, intent(in), optional :: nsomm
-    integer, intent(in), optional :: tymvol
-    integer, intent(in), optional :: ifa
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: niv
+    integer(kind=8), intent(in), optional :: noe(l1*l2*l3)
+    integer(kind=8), intent(in), optional :: nsomm
+    integer(kind=8), intent(in), optional :: tymvol
+    integer(kind=8), intent(in), optional :: ifa
 !
 ! DECLARATION VARIABLES LOCALES
 !
     character(len=6) :: nompro
     parameter(nompro='UTHK  ')
 !
-    integer :: dimtab
+    integer(kind=8) :: dimtab
     parameter(dimtab=28)
     real(kind=8) :: tabaux(dimtab)
 !
     real(kind=8) :: x1, y1, z1, x2, y2, z2, x3, y3, z3, x4, y4, z4, x5, y5, z5
     real(kind=8) :: x6, y6, z6
     real(kind=8) :: x7, y7, z7, x8, y8, z8
-    integer :: in, i, iino
+    integer(kind=8) :: in, i, iino
     character(len=2) :: typgeo
     character(len=6) :: valk(2)
 !

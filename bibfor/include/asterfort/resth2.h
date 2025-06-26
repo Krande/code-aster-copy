@@ -26,7 +26,7 @@ interface
         character(len=8) :: modele
         character(len=24) :: ligrel
         character(len=8) :: lchar(1)
-        integer :: nchar
+        integer(kind=8) :: nchar
         character(len=8) :: ma
         character(len=19) :: cartef
         character(len=19) :: nomgdf

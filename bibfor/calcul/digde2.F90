@@ -23,8 +23,8 @@ function digde2(modelo)
 ! person_in_charge: jacques.pellet at edf.fr
 
 #include "jeveux.h"
-    integer :: modelo
-    integer :: digde2
+    integer(kind=8) :: modelo
+    integer(kind=8) :: digde2
 !-----------------------------------------------------------------------
 ! routine identique a digdel mais qui utilise des variables de calcul_module
 ! pour etre plus rapide.
@@ -37,7 +37,7 @@ function digde2(modelo)
 !                 mode_local
 !
 !-----------------------------------------------------------------------
-    integer :: modloc
+    integer(kind=8) :: modloc
 !-----------------------------------------------------------------------
     modloc = ca_iamloc_-1+zi(ca_ilmloc_-1+modelo)
     digde2 = zi(modloc-1+3)

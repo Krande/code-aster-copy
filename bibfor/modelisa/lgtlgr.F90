@@ -62,19 +62,19 @@ subroutine lgtlgr(basez, ligrey, ligrez)
 ! ====================== DEBUT DU CODE EXECUTABLE ======================
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, idligi
-    integer ::   idnema, idphen
-    integer :: ij, imodl, iret, j, jdnbno, jdpm, k
-    integer :: k1, lonlie, nbapma, nbapno, nbmato, nbmaty, nbno
-    integer :: nbno2, nbnoto, ntypoi, nutyp1, nutype
-    integer, pointer :: pono(:) => null()
-    integer, pointer :: lity(:) => null()
-    integer, pointer :: poma(:) => null()
-    integer, pointer :: lima(:) => null()
-    integer, pointer :: apno(:) => null()
+    integer(kind=8) :: i, ibid, idligi
+    integer(kind=8) ::   idnema, idphen
+    integer(kind=8) :: ij, imodl, iret, j, jdnbno, jdpm, k
+    integer(kind=8) :: k1, lonlie, nbapma, nbapno, nbmato, nbmaty, nbno
+    integer(kind=8) :: nbno2, nbnoto, ntypoi, nutyp1, nutype
+    integer(kind=8), pointer :: pono(:) => null()
+    integer(kind=8), pointer :: lity(:) => null()
+    integer(kind=8), pointer :: poma(:) => null()
+    integer(kind=8), pointer :: lima(:) => null()
+    integer(kind=8), pointer :: apno(:) => null()
     character(len=16), pointer :: mode(:) => null()
-    integer, pointer :: lino(:) => null()
-    integer, pointer :: apma(:) => null()
+    integer(kind=8), pointer :: lino(:) => null()
+    integer(kind=8), pointer :: apma(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

@@ -30,28 +30,28 @@ interface
 !
         type(Behaviour_Integ) :: BEHinteg
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: neps
+        integer(kind=8) :: neps
         real(kind=8) :: epsm_inp(neps)
         real(kind=8) :: deps_inp(neps)
-        integer :: nsig
+        integer(kind=8) :: nsig
         real(kind=8) :: sigm(nsig)
         real(kind=8) :: vim(*)
         character(len=16) :: option
         real(kind=8) :: angmas(*)
         real(kind=8) :: sigp(nsig)
         real(kind=8) :: vip(*)
-        integer :: ndsde
+        integer(kind=8) :: ndsde
         real(kind=8) :: dsidep(merge(nsig,6,nsig*neps.eq.ndsde),merge(neps,6,nsig*neps.eq.ndsde))
-        integer :: codret
+        integer(kind=8) :: codret
         character(len=16), optional, intent(in) :: mult_comp_
         aster_logical, optional, intent(in)     :: l_epsi_varc_
         character(len=8), optional, intent(in)  :: materi_

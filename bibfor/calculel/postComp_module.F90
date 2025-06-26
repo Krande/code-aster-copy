@@ -109,7 +109,7 @@ contains
 ! ----- Local
         character(len=8) :: answer, modelRefe, caraElemRefe
         character(len=16) :: option
-        integer :: codret, numeStore0
+        integer(kind=8) :: codret, numeStore0
         aster_logical :: lRDM
 !   ------------------------------------------------------------------------------------------------
 !
@@ -185,7 +185,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: optionZ, modelRefeZ
-        integer, intent(in) :: numeStore0
+        integer(kind=8), intent(in) :: numeStore0
         type(POST_COMP), intent(inout) :: postComp
 ! ----- Local
         character(len=8) :: modelRefe
@@ -261,12 +261,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: resultInZ, resultOutZ, resultTypeZ
-        integer, intent(in) :: nbStore
-        integer, pointer :: listStore(:)
+        integer(kind=8), intent(in) :: nbStore
+        integer(kind=8), pointer :: listStore(:)
         character(len=*), intent(in) :: listStoreJvZ
         type(POST_COMP_RESU), intent(inout) :: postCompResu
 ! ----- Locals
-        integer :: jvPara
+        integer(kind=8) :: jvPara
 !   ------------------------------------------------------------------------------------------------
 !
         postCompResu%resultIn = resultInZ
@@ -315,11 +315,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(POST_COMP_RESU), intent(in) :: postCompResu
-        integer, intent(in) :: numeStore0
+        integer(kind=8), intent(in) :: numeStore0
         character(len=1), intent(out) :: scalType
 ! ----- Locals
         character(len=24) :: disp
-        integer :: iret
+        integer(kind=8) :: iret
 !   ------------------------------------------------------------------------------------------------
 !
         scalType = "R"
@@ -378,10 +378,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: optionZ
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         type(POST_COMP), intent(inout) :: postComp
 ! ----- Locals
-        integer :: iret, nbEqua
+        integer(kind=8) :: iret, nbEqua
         character(len=2) :: codret
         character(len=16) :: option
 !   ------------------------------------------------------------------------------------------------
@@ -473,7 +473,7 @@ contains
         type(POST_COMP_RESU), intent(in) :: postCompResu
         character(len=*), intent(in) :: optionZ, optionOrigZ
 ! ----- Locals
-        integer :: cret
+        integer(kind=8) :: cret
         character(len=16) :: option
 !   ------------------------------------------------------------------------------------------------
 !
@@ -503,11 +503,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: optionZ
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         type(POST_COMP), intent(inout) :: postComp
 ! ----- Local
         character(len=16) :: option
-        integer :: codret, jvPara
+        integer(kind=8) :: codret, jvPara
 !   ------------------------------------------------------------------------------------------------
 !
         option = optionZ
@@ -607,9 +607,9 @@ contains
 ! ----- Parameters
         type(POST_COMP_RESU), intent(in) :: postCompResu
         character(len=24), intent(out) :: numeDof
-        integer, intent(out) :: jvMassMatr
+        integer(kind=8), intent(out) :: jvMassMatr
 ! ----- Local
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=16) :: typeSD
         character(len=19) :: massGene
         character(len=24) :: modalBase, massMatrix
@@ -721,7 +721,7 @@ contains
         character(len=*), intent(in) :: fieldOutZ
 ! ----- Local
         character(len=16), parameter :: option = "FORC_NODA"
-        integer :: iEqua, jfi, jfr, jfo
+        integer(kind=8) :: iEqua, jfi, jfr, jfo
         character(len=24) :: fieldOut
         character(len=24) :: veFnod(2)
         character(len=24) :: vaFnodCR, vaFnodCI, vaFnodR
@@ -841,7 +841,7 @@ contains
         real(kind=8), pointer :: cnchmpRVale(:) => null()
         real(kind=8), pointer :: cncgmpVale(:) => null()
         real(kind=8), pointer :: cnfpipVale(:) => null()
-        integer :: nbEqua
+        integer(kind=8) :: nbEqua
         character(len=1) :: stopCalc
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1012,14 +1012,14 @@ contains
 ! ----- Parameters
         type(POST_COMP), intent(in) :: postComp
         character(len=*), intent(in) :: optionUserZ
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         character(len=14), intent(in) :: numeDof
         character(len=*), intent(in) :: fieldOutZ
 ! ----- Locals
         character(len=16) :: optionUser
         character(len=24) :: fieldOut
         character(len=16) :: modeType, resultType
-        integer :: nbEqua, jvPara, jref, iComp, iEqua, numeSeleEqua
+        integer(kind=8) :: nbEqua, jvPara, jref, iComp, iEqua, numeSeleEqua
         real(kind=8), pointer :: dispVale(:) => null(), vectWorkR(:) => null()
         real(kind=8), pointer :: acceValeR(:) => null()
         complex(kind=8), pointer :: acceValeC(:) => null(), vectWorkC(:) => null()
@@ -1029,9 +1029,9 @@ contains
         real(kind=8) :: coefMGamR
         complex(kind=8) :: coefMGamC
         blas_int :: b_incx, b_incy, b_n
-        integer, pointer :: seleDof(:) => null()
+        integer(kind=8), pointer :: seleDof(:) => null()
         real(kind=8), pointer :: valeDof(:) => null()
-        integer, parameter :: nbComp = 3
+        integer(kind=8), parameter :: nbComp = 3
         character(len=8), parameter :: compName(nbComp) = (/'DX', 'DY', 'DZ'/)
         real(kind=8) :: coefVale(nbComp)
         character(len=24) :: vemgam, vamgam
@@ -1197,12 +1197,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(POST_COMP), intent(inout) :: postComp
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
 ! ----- Local
         character(len=24) :: listLoadResu
         aster_logical :: hasPiloLoads, lPilo1, lPilo2
         aster_logical :: lLoadsFromResu, lLoadsAreDefined
-        integer :: jvPara
+        integer(kind=8) :: jvPara
 !   ------------------------------------------------------------------------------------------------
 !
         if (.not. postComp%postCompPara%lLoadsFromUser) then
@@ -1259,7 +1259,7 @@ contains
         character(len=16), parameter :: loadKeyword = 'EXCIT'
         character(len=1), parameter :: jvBase = "V"
         character(len=8) :: model
-        integer :: nbLoadUser
+        integer(kind=8) :: nbLoadUser
         type(ListLoad_Prep) :: listLoadPrep
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1306,12 +1306,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(POST_COMP_RESU), intent(in) :: postCompResu
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         aster_logical, intent(out) :: lLoadsFromResu
         character(len=24), intent(out) :: listLoadResu
 ! ----- Local
-        integer :: nbLoadResu
-        integer :: jvPara
+        integer(kind=8) :: nbLoadResu
+        integer(kind=8) :: jvPara
 !   ------------------------------------------------------------------------------------------------
 !
         listLoadResu = "&&CCFNRN.LOADRESU"

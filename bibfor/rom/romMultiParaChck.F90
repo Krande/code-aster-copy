@@ -46,8 +46,8 @@ subroutine romMultiParaChck(ds_multipara, l_stab_fsi)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: syme
-    integer :: nb_matr, nb_vect, nb_vari_para, nb_vale_para, ndim
-    integer :: i_matr, i_vect, i_vari_para
+    integer(kind=8) :: nb_matr, nb_vect, nb_vari_para, nb_vale_para, ndim
+    integer(kind=8) :: i_matr, i_vect, i_vari_para
     character(len=24) :: nume_dof_ref, nume_dof
     character(len=24) :: numeq_ref, numeq
 !

@@ -29,7 +29,7 @@ subroutine dismpm(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=24) :: repk
     character(len=32) :: nomob
@@ -47,7 +47,7 @@ subroutine dismpm(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: nbtm, jphen, imode
+    integer(kind=8) :: nbtm, jphen, imode
     character(len=16) :: phen, mode
 ! DEB-------------------------------------------------------------------
     repk = ' '

@@ -25,11 +25,11 @@ subroutine rccoma(jmat, mater_typez, iarret, mater_keyword, icodre)
 #include "asterfort/utmess.h"
 !
 !
-    integer, intent(in) :: jmat
+    integer(kind=8), intent(in) :: jmat
     character(len=*), intent(in) :: mater_typez
-    integer, intent(in) :: iarret
+    integer(kind=8), intent(in) :: iarret
     character(len=*), intent(out) :: mater_keyword
-    integer, optional, intent(out) :: icodre
+    integer(kind=8), optional, intent(out) :: icodre
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,7 +58,7 @@ subroutine rccoma(jmat, mater_typez, iarret, mater_keyword, icodre)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbmat, im, imat, icomp, ind, icodre_in
+    integer(kind=8) :: nbmat, im, imat, icomp, ind, icodre_in
     character(len=16) :: mater_type
 !
 ! --------------------------------------------------------------------------------------------------

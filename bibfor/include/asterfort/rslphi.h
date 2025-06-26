@@ -28,10 +28,10 @@ interface
                       mexpo, dt, phi, phip, rigeq,&
                       rigm, p, overfl)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: loi
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: troisk
         real(kind=8) :: troimu
         real(kind=8) :: depsmo

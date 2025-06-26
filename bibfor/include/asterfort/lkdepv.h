@@ -21,7 +21,7 @@
 interface
     subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv,&
                       ddgamv)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: depsv(6)
         real(kind=8) :: ddepsv(6)

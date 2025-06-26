@@ -59,16 +59,16 @@ subroutine xoripe(modele)
 !
     real(kind=8) :: gbo(3), gpr(3), next(3), norme, lsn
     real(kind=8) :: co(3, 3), ab(3), ac(3), n2d(3), a(3), b(3), c(3)
-    integer :: ima, nbma, j, kk, i, ifis, nfis, iad2
-    integer :: nbmail, iret, jm3d, ibid, jvecno
-    integer :: numapr, numab, nbnopr, nbnobo, nbnose, nbnott(3)
-    integer :: nbnos, id4, id6
-    integer :: jconx2, ino, nuno
-    integer :: ich, jcesd(5), jcesv(5), jcesl(5), iad, nse, ise, in
-    integer :: ndime, icmp, ndim, id(3), intemp, nseori, ifm, niv, nncp
-    integer :: s1, s2, jgrp, nmaenr, jlsnd, jlsnl
-    integer :: nsignp, nsignm, nsignz, ihe, he, itypma
-    integer :: ifiss, nfiss, mailvo(1)
+    integer(kind=8) :: ima, nbma, j, kk, i, ifis, nfis, iad2
+    integer(kind=8) :: nbmail, iret, jm3d, ibid, jvecno
+    integer(kind=8) :: numapr, numab, nbnopr, nbnobo, nbnose, nbnott(3)
+    integer(kind=8) :: nbnos, id4, id6
+    integer(kind=8) :: jconx2, ino, nuno
+    integer(kind=8) :: ich, jcesd(5), jcesv(5), jcesl(5), iad, nse, ise, in
+    integer(kind=8) :: ndime, icmp, ndim, id(3), intemp, nseori, ifm, niv, nncp
+    integer(kind=8) :: s1, s2, jgrp, nmaenr, jlsnd, jlsnl
+    integer(kind=8) :: nsignp, nsignm, nsignz, ihe, he, itypma
+    integer(kind=8) :: ifiss, nfiss, mailvo(1)
     character(len=8) :: noma, typbo, fiss
     character(len=6) :: nompro
     parameter(nompro='XORIPE')
@@ -78,15 +78,15 @@ subroutine xoripe(modele)
     character(len=24) :: elfis_heav, elfis_ctip, elfis_hect
     character(len=19) :: pintto, cnseto, loncha, heav
     aster_logical :: quadratique
-    integer :: itypbo
-    integer, pointer :: vnfis(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: tmdim(:) => null()
+    integer(kind=8) :: itypbo
+    integer(kind=8), pointer :: vnfis(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=8), pointer :: vfiss(:) => null()
-    integer, pointer :: listCellNume(:) => null()
+    integer(kind=8), pointer :: listCellNume(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

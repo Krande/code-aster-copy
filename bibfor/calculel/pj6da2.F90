@@ -22,7 +22,7 @@ subroutine pj6da2(ino2, geom2, i, geom1, seg2, &
 #include "asterc/r8maem.h"
 #include "asterfort/pj3da4.h"
     real(kind=8) :: cobary(2), geom1(*), geom2(*), d2, long
-    integer :: ino2, i, seg2(*)
+    integer(kind=8) :: ino2, i, seg2(*)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !  but :
@@ -40,7 +40,7 @@ subroutine pj6da2(ino2, geom2, i, geom1, seg2, &
 !  out  long       r  : longueur du seg2 i
 
 ! ----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
     real(kind=8) :: dp, l1, l2, la, lb
     real(kind=8) :: a(3), b(3), m(3), ab(3)
 ! DEB ------------------------------------------------------------------

@@ -22,8 +22,8 @@ interface
                                em_ , deuxmum_, mum_, troiskm_)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: kpg, ksp
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), optional, intent(out) :: e_, deuxmu_, mu_, troisk_
         real(kind=8), optional, intent(out) :: em_, deuxmum_, mum_, troiskm_
     end subroutine metaGetParaElas

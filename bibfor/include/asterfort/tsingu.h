@@ -20,8 +20,8 @@
 !
 interface
     subroutine tsingu(nelem, nbr, re, taille, he)
-        integer :: nelem
-        integer :: nbr(nelem)
+        integer(kind=8) :: nelem
+        integer(kind=8) :: nbr(nelem)
         real(kind=8) :: re(nelem)
         real(kind=8) :: taille(nelem)
         real(kind=8) :: he(nelem)

@@ -20,10 +20,10 @@
 !
 interface
     subroutine irmiim(ifmis, ifreq, nfreq, nbno, tabrig)
-        integer :: ifmis
-        integer :: ifreq
-        integer :: nfreq
-        integer :: nbno
+        integer(kind=8) :: ifmis
+        integer(kind=8) :: ifreq
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: nbno
         character(len=24) :: tabrig
     end subroutine irmiim
 end interface

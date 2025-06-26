@@ -32,10 +32,10 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl, &
 #include "asterfort/rcvale.h"
 #include "asterfort/renrfa.h"
 #include "asterfort/utmess.h"
-    integer :: nbvec, nbordr, ncycl(nbvec)
+    integer(kind=8) :: nbvec, nbordr, ncycl(nbvec)
 !    real(kind=8) :: gdeq(nbvec*nbordr)
 !    real(kind=8) :: nrupt(nbvec*nbordr), domel(nbvec*nbordr)
-    integer :: jgdeq, jnrupt, jdomel
+    integer(kind=8) :: jgdeq, jnrupt, jdomel
     aster_logical :: post
     character(len=8) :: nommat
     character(len=16) :: nomcri, forvie, grdvie
@@ -62,8 +62,8 @@ subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl, &
 !                     DE CHAQUE VECTEUR NORMAL.
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: ivect, icycl, adrs, i
-    integer :: icodre(1)
+    integer(kind=8) :: ivect, icycl, adrs, i
+    integer(kind=8) :: icodre(1)
     character(len=16) :: kbid
     character(len=8) :: nomgrd
     aster_logical :: limit

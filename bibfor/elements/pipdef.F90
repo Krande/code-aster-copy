@@ -29,8 +29,8 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
 #include "asterfort/assert.h"
 #include "asterfort/nmgeom.h"
 #include "blas/daxpy.h"
-    integer :: ndim, nno, kpg
-    integer :: ipoids, ivf, idfde
+    integer(kind=8) :: ndim, nno, kpg
+    integer(kind=8) :: ipoids, ivf, idfde
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*)
     real(kind=8) :: geom(ndim, *), deplm(*)
@@ -70,7 +70,7 @@ subroutine pipdef(ndim, nno, kpg, ipoids, ivf, &
 !
 !
     aster_logical :: axi, grand
-    integer :: ndimsi
+    integer(kind=8) :: ndimsi
     real(kind=8) :: r, deps(6)
     real(kind=8) :: t9bid(3, 3)
     real(kind=8) :: poids

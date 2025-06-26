@@ -51,8 +51,8 @@ subroutine asmari(ds_system, hval_meelem, list_load, matr_rigi)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_matr_elem, iexi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_matr_elem, iexi
     character(len=19) :: mediri, meeltc
     character(len=19) :: list_matr_elem(8)
 !

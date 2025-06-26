@@ -21,6 +21,6 @@
 interface
     function grdeur(nompar)
         character(len=8) :: nompar
-        integer :: grdeur
+        integer(kind=8) :: grdeur
     end function grdeur
 end interface

@@ -56,13 +56,13 @@ subroutine te0407(option, nomte)
     character(len=16) :: mult_comp, defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=4), parameter :: fami = 'RIGI'
-    integer :: nno, npg, i, imatuu, lgpg, ndim
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: icontm, ivarim, jv_mult_comp
-    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
-    integer :: ivectu, icontp, ivarip
-    integer :: ivarix, iret
-    integer :: jtab(7), jcret, codret
+    integer(kind=8) :: nno, npg, i, imatuu, lgpg, ndim
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: icontm, ivarim, jv_mult_comp
+    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icarcr
+    integer(kind=8) :: ivectu, icontp, ivarip
+    integer(kind=8) :: ivarix, iret
+    integer(kind=8) :: jtab(7), jcret, codret
     real(kind=8) :: def(6, 3, 8), dfdi(8, 3)
     real(kind=8) :: angl_naut(3)
     character(len=8), parameter :: typmod(2) = (/'3D', '  '/)

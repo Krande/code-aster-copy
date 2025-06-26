@@ -53,8 +53,8 @@ contains
 ! ----- Locals
         character(len=24) :: comporMap
         character(len=16), pointer :: comporVale(:) => null()
-        integer, pointer :: comporDesc(:) => null()
-        integer :: comporValeSize, mapNbZone, iMapZone, mapNbCmpMax
+        integer(kind=8), pointer :: comporDesc(:) => null()
+        integer(kind=8) :: comporValeSize, mapNbZone, iMapZone, mapNbCmpMax
         character(len=16) :: compor(COMPOR_SIZE), extern_addr
 !   ------------------------------------------------------------------------------------------------
 !

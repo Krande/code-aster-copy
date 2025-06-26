@@ -21,13 +21,13 @@
 interface
     subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma,&
                       nuconn, versio, nbgrou)
-        integer :: nbtyma
-        integer :: igmsh
-        integer :: maxnod
-        integer :: nbmail
-        integer :: nbnoma(nbtyma)
-        integer :: nuconn(19, 32)
-        integer :: versio
-        integer, intent(in) :: nbgrou
+        integer(kind=8) :: nbtyma
+        integer(kind=8) :: igmsh
+        integer(kind=8) :: maxnod
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: nbnoma(nbtyma)
+        integer(kind=8) :: nuconn(19, 32)
+        integer(kind=8) :: versio
+        integer(kind=8), intent(in) :: nbgrou
     end subroutine gmlelt
 end interface

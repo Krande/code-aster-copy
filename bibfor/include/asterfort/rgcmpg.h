@@ -20,8 +20,8 @@
 !
 interface
     function rgcmpg(icode, irgcmp)
-        integer :: icode
-        integer :: irgcmp
-        integer :: rgcmpg
+        integer(kind=8) :: icode
+        integer(kind=8) :: irgcmp
+        integer(kind=8) :: rgcmpg
     end function rgcmpg
 end interface

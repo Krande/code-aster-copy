@@ -21,11 +21,11 @@
 interface
     subroutine dtmforc_ants(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl,&
                             time  , depl   , vite  , fext)
-        integer               , intent(in)  :: nl_ind
+        integer(kind=8)               , intent(in)  :: nl_ind
         character(len=*)      , intent(in)  :: sd_dtm_
         character(len=*)      , intent(in)  :: sd_nl_
-        integer     , pointer  :: buffdtm  (:)
-        integer     , pointer  :: buffnl   (:)
+        integer(kind=8)     , pointer  :: buffdtm  (:)
+        integer(kind=8)     , pointer  :: buffnl   (:)
         real(kind=8)          , intent(in)  :: time
         real(kind=8), pointer  :: depl     (:)
         real(kind=8), pointer  :: vite     (:)

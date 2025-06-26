@@ -22,9 +22,9 @@ interface
     subroutine mlfc16(nommat, npivot, neq, typsym, eps,&
                       renumz)
         character(len=*) :: nommat
-        integer :: npivot
-        integer :: neq
-        integer :: typsym
+        integer(kind=8) :: npivot
+        integer(kind=8) :: neq
+        integer(kind=8) :: typsym
         real(kind=8) :: eps
         character(len=*) :: renumz
     end subroutine mlfc16

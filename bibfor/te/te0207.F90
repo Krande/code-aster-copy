@@ -35,9 +35,9 @@ subroutine te0207(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: ndim, nno, nnos, npg, nddl
-    integer :: ipoids, ivf, idfde, jgano
-    integer :: jvGeom, jvSief, jvVect
+    integer(kind=8) :: ndim, nno, nnos, npg, nddl
+    integer(kind=8) :: ipoids, ivf, idfde, jgano
+    integer(kind=8) :: jvGeom, jvSief, jvVect
 ! ----------------------------------------------------------------------
 !
 !

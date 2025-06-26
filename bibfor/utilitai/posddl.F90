@@ -35,8 +35,8 @@ subroutine posddl(typesd, resu, node_name, cmp_name, node_nume, &
     character(len=*), intent(in) :: resu
     character(len=*), intent(in) :: node_name
     character(len=*), intent(in) :: cmp_name
-    integer, intent(out) :: node_nume
-    integer, intent(out) :: dof_nume
+    integer(kind=8), intent(out) :: node_nume
+    integer(kind=8), intent(out) :: dof_nume
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,10 +55,10 @@ subroutine posddl(typesd, resu, node_name, cmp_name, node_nume, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbCmp, nbNode
+    integer(kind=8) :: nbCmp, nbNode
     character(len=8) :: mesh
-    integer, pointer :: tablCmp(:) => null()
-    integer, pointer :: list_node(:) => null()
+    integer(kind=8), pointer :: tablCmp(:) => null()
+    integer(kind=8), pointer :: list_node(:) => null()
     character(len=8), pointer :: list_cmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

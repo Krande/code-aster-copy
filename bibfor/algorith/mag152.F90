@@ -34,18 +34,18 @@ subroutine mag152(n9, n10, nomres, nugene, modmec, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: indice
-    integer :: jrefa, i, iaconl, iadesc, iblo
-    integer :: somme
-    integer :: jsmde, n1bloc, n2bloc
-    integer :: nbid, nbloc, ntbloc, nueq, nhmax
-    integer :: n9, n10, hc
+    integer(kind=8) :: indice
+    integer(kind=8) :: jrefa, i, iaconl, iadesc, iblo
+    integer(kind=8) :: somme
+    integer(kind=8) :: jsmde, n1bloc, n2bloc
+    integer(kind=8) :: nbid, nbloc, ntbloc, nueq, nhmax
+    integer(kind=8) :: n9, n10, hc
     character(len=8) :: nomres, modmec, nummod
     character(len=8) :: modgen
     character(len=14) :: num14, nugene
     character(len=19) :: nomsto
     integer(kind=4), pointer :: smhc(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     character(len=24), pointer :: refn(:) => null()
 ! -----------------------------------------------------------------
 !

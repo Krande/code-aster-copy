@@ -62,7 +62,7 @@ subroutine ndfdyn(sddyna, nlDynaDamping, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19), parameter :: cniner = '&&CNPART.CHP1', cnhyst = '&&CNPART.CHP2'
     real(kind=8) :: coefIner, coefDamp
     aster_logical :: lDampMatrix, l_impl

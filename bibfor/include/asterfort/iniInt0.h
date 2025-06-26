@@ -23,25 +23,25 @@ interface
     subroutine iniInt0(x1, x2, x3, x4, x5,&
                         x6, x7, x8, x9, x10, x11, x12, x13, x14,&
                         x15, x16, x17, x18, x19, x20)
-        integer, intent(out) :: x1
-        integer, optional, intent(out) :: x2
-        integer, optional, intent(out) :: x3
-        integer, optional, intent(out) :: x4
-        integer, optional, intent(out) :: x5
-        integer, optional, intent(out) :: x6
-        integer, optional, intent(out) :: x7
-        integer, optional, intent(out) :: x8
-        integer, optional, intent(out) :: x9
-        integer, optional, intent(out) :: x10
-        integer, optional, intent(out) :: x11
-        integer, optional, intent(out) :: x12
-        integer, optional, intent(out) :: x13
-        integer, optional, intent(out) :: x14
-        integer, optional, intent(out) :: x15
-        integer, optional, intent(out) :: x16
-        integer, optional, intent(out) :: x17
-        integer, optional, intent(out) :: x18
-        integer, optional, intent(out) :: x19
-        integer, optional, intent(out) :: x20
+        integer(kind=8), intent(out) :: x1
+        integer(kind=8), optional, intent(out) :: x2
+        integer(kind=8), optional, intent(out) :: x3
+        integer(kind=8), optional, intent(out) :: x4
+        integer(kind=8), optional, intent(out) :: x5
+        integer(kind=8), optional, intent(out) :: x6
+        integer(kind=8), optional, intent(out) :: x7
+        integer(kind=8), optional, intent(out) :: x8
+        integer(kind=8), optional, intent(out) :: x9
+        integer(kind=8), optional, intent(out) :: x10
+        integer(kind=8), optional, intent(out) :: x11
+        integer(kind=8), optional, intent(out) :: x12
+        integer(kind=8), optional, intent(out) :: x13
+        integer(kind=8), optional, intent(out) :: x14
+        integer(kind=8), optional, intent(out) :: x15
+        integer(kind=8), optional, intent(out) :: x16
+        integer(kind=8), optional, intent(out) :: x17
+        integer(kind=8), optional, intent(out) :: x18
+        integer(kind=8), optional, intent(out) :: x19
+        integer(kind=8), optional, intent(out) :: x20
     end subroutine iniInt0
 end interface

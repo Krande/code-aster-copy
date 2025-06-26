@@ -71,11 +71,11 @@ subroutine op0100()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xcourb.h"
-    integer :: nbord, iord, i, ivec, iret, nbpara
-    integer :: lnoff, jinst, ndeg, nbropt, iadrco, ipuls, iord0, icham
-    integer :: iadfis, iadnoe
-    integer :: ndimte, ndim, jopt, nb_objet, nb_cham_theta
-    integer, parameter :: nxpara = 15
+    integer(kind=8) :: nbord, iord, i, ivec, iret, nbpara
+    integer(kind=8) :: lnoff, jinst, ndeg, nbropt, iadrco, ipuls, iord0, icham
+    integer(kind=8) :: iadfis, iadnoe
+    integer(kind=8) :: ndimte, ndim, jopt, nb_objet, nb_cham_theta
+    integer(kind=8), parameter :: nxpara = 15
 !
     real(kind=8) :: time, rinf, rsup, puls
     character(len=6) :: nompro
@@ -101,7 +101,7 @@ subroutine op0100()
 !
     aster_logical :: exitim, connex, milieu
     aster_logical :: incr, lmoda
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !
 !     ==============
 !     1. PREALABLES

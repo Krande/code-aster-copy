@@ -47,7 +47,7 @@ subroutine matr_asse_syme(matas)
     character(len=19) :: matas1
     character(len=1) :: bas1
     character(len=3) :: tysca
-    integer :: n1, n2, k1, k2, jvalm1, jvalm2
+    integer(kind=8) :: n1, n2, k1, k2, jvalm1, jvalm2
     character(len=24), pointer :: refa(:) => null()
 !-------------------------------------------------------------------
     call jemarq()

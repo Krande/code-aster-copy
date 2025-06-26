@@ -74,21 +74,21 @@ subroutine te0390(option, nomte)
     real(kind=8) :: rgmk(3), omgkm(3), ompgkm(3), omgk(3), ompgk(3)
     character(len=16) :: rela_comp, defo_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
-    integer, parameter :: nbres = 3
-    integer :: icodre(nbres)
+    integer(kind=8), parameter :: nbres = 3
+    integer(kind=8) :: icodre(nbres)
     character(len=16), parameter :: nomres(nbres) = (/'E  ', 'NU ', 'RHO'/)
-    integer :: i, iacckm, iaccp, ico, iddepl, idepde
-    integer :: idepkm, idepm, idfdk, ifint, igeom, imat, imate
-    integer :: imatuu, instmr, instpr, ipoids, iret, iromk, iromkm
-    integer :: istady, ivarim, ivarip, ivf, ivitkm, ivitp, j
-    integer :: jcret, jefint, k0, k1, k2, k3
-    integer :: k4, k5, k6, k7, kc, kp, ks
-    integer :: iorien, lsig, lsigma, ne, nno
-    integer :: nord, npg, codret
+    integer(kind=8) :: i, iacckm, iaccp, ico, iddepl, idepde
+    integer(kind=8) :: idepkm, idepm, idfdk, ifint, igeom, imat, imate
+    integer(kind=8) :: imatuu, instmr, instpr, ipoids, iret, iromk, iromkm
+    integer(kind=8) :: istady, ivarim, ivarip, ivf, ivitkm, ivitp, j
+    integer(kind=8) :: jcret, jefint, k0, k1, k2, k3
+    integer(kind=8) :: k4, k5, k6, k7, kc, kp, ks
+    integer(kind=8) :: iorien, lsig, lsigma, ne, nno
+    integer(kind=8) :: nord, npg, codret
     real(kind=8) :: a, ajacob, alfnmk, ay, az, delnmk, demi
     real(kind=8) :: deux, e, g, pas, pjacob, r8bid, rho
     real(kind=8) :: stoudy, un, xiy, xiz, xjx
-    integer, parameter :: nb_cara = 6
+    integer(kind=8), parameter :: nb_cara = 6
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'A1   ', 'IY1  ', 'IZ1  ', &
                                                           'AY1  ', 'AZ1  ', 'JX1  '/)

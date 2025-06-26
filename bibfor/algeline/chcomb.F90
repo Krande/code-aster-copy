@@ -60,7 +60,7 @@ subroutine chcomb(tablez, nomaou)
 !                                 DE CISAILLEMENT-TORSION EN SORTIE.
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: ibid, iret, idcode, dimcoo, nbno, jcoor, idcoor, ino
+    integer(kind=8) :: ibid, iret, idcode, dimcoo, nbno, jcoor, idcoor, ino
     real(kind=8) :: r8b, xt, yt
     complex(kind=8) :: c16b
     character(len=8) :: k8b, noma, typobj

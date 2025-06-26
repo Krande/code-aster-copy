@@ -54,7 +54,7 @@ subroutine lcumfd(vari, nvari, nstrs, cmat, nmat, &
 !
 !      IMPLICIT REAL*8(A-H,O-Z)
     implicit none
-    integer :: i, iflu, ifpo, nstrs, nvari, nmat
+    integer(kind=8) :: i, iflu, ifpo, nstrs, nvari, nmat
     real(kind=8) :: vari(nvari), cmat(nmat)
     real(kind=8) :: afpd(6)
     real(kind=8) :: epsdvr(6), epsdvi(6)

@@ -34,14 +34,14 @@ subroutine gmlneu(igmsh, nbnode)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    integer :: igmsh, nbnode
+    integer(kind=8) :: igmsh, nbnode
 ! -----  VARIABLES LOCALES
 !
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !-----------------------------------------------------------------------
-    integer :: imes, inode, jcoor, jdetr, jinfo, ndmax
-    integer :: node
+    integer(kind=8) :: imes, inode, jcoor, jdetr, jinfo, ndmax
+    integer(kind=8) :: node
     real(kind=8) :: x, y, z
 !-----------------------------------------------------------------------
     call jemarq()

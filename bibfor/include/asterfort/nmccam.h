@@ -21,11 +21,11 @@ interface
                       deps, sigm, pcrm, option, sigp,&
                       pcrp, dsidep, retcom)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer :: ndim
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: carcri(3)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: pcrp(7)
         real(kind=8) :: dsidep(6, 6)
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine nmccam
 end interface

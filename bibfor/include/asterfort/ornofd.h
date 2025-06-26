@@ -23,7 +23,7 @@ interface
                       ndextr, base, vecori)
         character(len=24) :: mafour
         character(len=8) :: nomail
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=24) :: noeord
         character(len=8) :: ndorig
         character(len=8) :: ndextr

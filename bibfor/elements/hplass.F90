@@ -33,7 +33,7 @@ subroutine hplass(nmnbn, nmplas, nmdpla, nmddpl, bend, &
 ! OUT HPLAS : MATRICE HESSIENNE DU CRITERE DE PLASTICITE
 !
 #include "asterfort/r8inir.h"
-    integer :: bend
+    integer(kind=8) :: bend
 !
     real(kind=8) :: hplas(6, *), nmnbn(6), nmplas(2, 3)
     real(kind=8) :: nmdpla(2, 2), nmddpl(2, 2)

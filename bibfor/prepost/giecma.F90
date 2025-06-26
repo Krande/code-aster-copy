@@ -36,7 +36,7 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nfic, nbele, nbno, icoma, ibid
+    integer(kind=8) :: nfic, nbele, nbno, icoma, ibid
     character(len=8) :: tymail, nomobj
     aster_logical :: trouve, ecrma(*)
 ! ----------------------------------------------------------------------
@@ -59,9 +59,9 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail, &
 !
 !     VARIABLES LOCALES:
 !-----------------------------------------------------------------------
-    integer :: i, iacorr, ibvec, icoj
-    integer :: icok, ii, itymai, ivect, j, k, l
-    integer :: maili, maille, nbelem, nbfois, nbrest, nmtot, numno
+    integer(kind=8) :: i, iacorr, ibvec, icoj
+    integer(kind=8) :: icok, ii, itymai, ivect, j, k, l
+    integer(kind=8) :: maili, maille, nbelem, nbfois, nbrest, nmtot, numno
 !
 !-----------------------------------------------------------------------
     parameter(nbelem=18)
@@ -71,10 +71,10 @@ subroutine giecma(nfic, trouve, nbele, nomobj, tymail, &
 !
 !     COGIAS EST UN TAMPON POUR ECRIRE LA CONNECTIVITE DES MAILLES
 !        DANS L'ORDRE ASTER . (27 EST LE MAX DE NOEUDS POSSIBLE).
-    integer :: cogias(27)
-    integer, pointer :: indirect(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: numanew(:) => null()
+    integer(kind=8) :: cogias(27)
+    integer(kind=8), pointer :: indirect(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: numanew(:) => null()
     data tymaas/'POI1    ', 'SEG2    ', 'SEG3    ', 'TRIA3   ',&
      &     'TRIA6   ', 'QUAD4   ', 'QUAD8   ', 'QUAD9   ', 'TETRA4  ',&
      &     'TETRA10 ', 'PENTA6  ', 'PENTA15 ', 'HEXA8   ', 'HEXA20  ',&

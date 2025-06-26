@@ -23,7 +23,7 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/verift.h"
 !
-    integer :: kpg, ksp, icdmat
+    integer(kind=8) :: kpg, ksp, icdmat
     character(len=1) :: poum
     character(len=4) :: fami
     character(len=8) :: materi
@@ -35,7 +35,7 @@ subroutine paeldt(kpg, ksp, fami, poum, icdmat, &
 !        DEFORMATION THERMIQUE POUR UN SOUS-POINT DONNE
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     real(kind=8) :: valres(2), tpl, tms, tref
     character(len=16) :: nomres(2)
 !

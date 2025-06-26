@@ -21,7 +21,7 @@
 interface
     subroutine rc36si(noma, nbma, listma)
         character(len=8) :: noma
-        integer :: nbma
-        integer :: listma(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: listma(*)
     end subroutine rc36si
 end interface

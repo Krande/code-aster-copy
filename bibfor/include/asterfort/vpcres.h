@@ -38,16 +38,16 @@ interface
         character(len=16) , intent(in) :: typcal
         character(len=1)  , intent(in) :: appr
         character(len=16) , intent(in) :: typeqz
-        integer           , intent(in) :: nfreq
-        integer           , intent(in) :: nbvect
-        integer           , intent(in) :: nbvec2
-        integer           , intent(in) :: nbrss
-        integer           , intent(in) :: nbborn
-        integer           , intent(in) :: nborto
-        integer           , intent(in) :: nitv
-        integer           , intent(in) :: itemax
-        integer           , intent(in) :: nperm
-        integer           , intent(in) :: maxitr
+        integer(kind=8)           , intent(in) :: nfreq
+        integer(kind=8)           , intent(in) :: nbvect
+        integer(kind=8)           , intent(in) :: nbvec2
+        integer(kind=8)           , intent(in) :: nbrss
+        integer(kind=8)           , intent(in) :: nbborn
+        integer(kind=8)           , intent(in) :: nborto
+        integer(kind=8)           , intent(in) :: nitv
+        integer(kind=8)           , intent(in) :: itemax
+        integer(kind=8)           , intent(in) :: nperm
+        integer(kind=8)           , intent(in) :: maxitr
         real(kind=8)      , intent(in) :: vectf(2)
         real(kind=8)      , intent(in) :: precsh
         real(kind=8)      , intent(in) :: omecor

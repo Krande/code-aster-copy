@@ -102,7 +102,7 @@ subroutine ar_dgeqr2(m, n, a, lda, tau, &
 #include "asterfort/ar_dlarfg.h"
 #include "asterfort/xerbla.h"
 #include "blas/dlarf.h"
-    integer :: info, lda, m, n
+    integer(kind=8) :: info, lda, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     real(kind=8) :: a(lda, *), tau(*), work(*)
@@ -112,7 +112,7 @@ subroutine ar_dgeqr2(m, n, a, lda, tau, &
     parameter(one=1.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
-    integer :: i, k
+    integer(kind=8) :: i, k
     real(kind=8) :: aii
     blas_int :: b_incv, b_ldc, b_m, b_n
 !     ..

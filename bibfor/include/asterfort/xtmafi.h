@@ -21,12 +21,12 @@
 interface
     subroutine xtmafi(ndim, fiss, nfiss, lismai,&
                       mesmai, nbma, mesh, model, typ_enr)
-        integer :: nfiss
-        integer :: ndim
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ndim
         character(len=8) :: fiss(nfiss)
         character(len=24) :: lismai
         character(len=24) :: mesmai
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=8), optional, intent(in) :: mesh
         character(len=8), optional, intent(in) :: model
         character(len=*), optional, intent(in) :: typ_enr

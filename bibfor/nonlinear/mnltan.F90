@@ -66,13 +66,13 @@ subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl, &
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
     aster_logical :: lcal
-    integer :: imat(2), ninc, nd, nchoc, h, hf
+    integer(kind=8) :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect, xtang
     character(len=19) :: matdrv, solveu
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: i, itang, iret, ib, ivplu
+    integer(kind=8) :: i, itang, iret, ib, ivplu
     real(kind=8) :: norme
     complex(kind=8) :: cbid
     blas_int :: b_incx, b_incy, b_n

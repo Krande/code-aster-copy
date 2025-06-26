@@ -36,7 +36,7 @@ interface
         real(kind=8) :: tpsthe(6)
         character(len=24), intent(in) :: timeMap
         character(len=19), intent(in) :: varc_curr, sddisc
-        integer, intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: iter_newt
         character(len=24) :: matass
         character(len=19) :: maprec
         character(len=24) :: cnchci
@@ -53,7 +53,7 @@ interface
         character(len=24) :: comporTher
         character(len=24) :: cnvabt
         character(len=24) :: cnresi
-        integer :: ther_crit_i(*)
+        integer(kind=8) :: ther_crit_i(*)
         real(kind=8) :: ther_crit_r(*)
         aster_logical :: reasma
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom

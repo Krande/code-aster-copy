@@ -23,12 +23,12 @@ subroutine mltclj(nb, n, ll, m, it, &
     implicit none
 ! aslint: disable=C1513
 #include "blas/zgemm.h"
-    integer :: n, p, adper(*)
+    integer(kind=8) :: n, p, adper(*)
     complex(kind=8) :: front(*), frn(*)
-    integer :: nb, decal, add, ind, nmb, i, j, kb, ia, ib, nlb, ll
+    integer(kind=8) :: nb, decal, add, ind, nmb, i, j, kb, ia, ib, nlb, ll
     character(len=1) :: tra, trb
-    integer :: m, k, i1, it, j1, restm, restl, nbl
-    integer :: nproc, numpro
+    integer(kind=8) :: m, k, i1, it, j1, restm, restl, nbl
+    integer(kind=8) :: nproc, numpro
     complex(kind=8) :: s, trav(p, nb, *)
     complex(kind=8) :: c(nb, nb, *), alpha, beta
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n

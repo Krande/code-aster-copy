@@ -47,10 +47,10 @@ subroutine reajre(matr_vect_elemz, resu_elemz, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     parameter(ndim=10)
 !
-    integer :: iret, nlmax, nluti, iret1, iret2
+    integer(kind=8) :: iret, nlmax, nluti, iret1, iret2
     character(len=19) :: matr_vect_elem, resu_elem
     character(len=24), pointer :: p_relr(:) => null()
 !

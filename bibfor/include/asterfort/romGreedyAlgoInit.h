@@ -20,8 +20,8 @@
 interface
     subroutine romGreedyAlgoInit(nb_mode, nb_vari_coef, vect_refe, ds_algoGreedy)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_mode
-        integer, intent(in) :: nb_vari_coef
+        integer(kind=8), intent(in) :: nb_mode
+        integer(kind=8), intent(in) :: nb_vari_coef
         character(len=19), intent(in) :: vect_refe
         type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
     end subroutine romGreedyAlgoInit

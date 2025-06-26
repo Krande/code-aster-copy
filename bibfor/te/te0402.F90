@@ -65,12 +65,12 @@ subroutine te0402(option, nomte)
 !
 !---- DECLARATIONS LOCALES
 !
-    integer :: i, j
-    integer :: in
-    integer :: ii, jj
-    integer :: irig
-    integer :: kompt
-    integer :: kpgs
+    integer(kind=8) :: i, j
+    integer(kind=8) :: in
+    integer(kind=8) :: ii, jj
+    integer(kind=8) :: irig
+    integer(kind=8) :: kompt
+    integer(kind=8) :: kpgs
 !
 !
     real(kind=8) :: sigmtd(5)
@@ -93,22 +93,22 @@ subroutine te0402(option, nomte)
 !
 !---- DECLARATIONS STANDARDS
 !
-    integer :: igeom, icontr, imatuu
+    integer(kind=8) :: igeom, icontr, imatuu
 !
-    integer :: lzi, lzr, jcara
+    integer(kind=8) :: lzi, lzr, jcara
 !
-    integer :: nb1, nb2
+    integer(kind=8) :: nb1, nb2
 !
 !
 !
 !
 !---- DECLARATIONS PROPRES COQUE_3D
 !
-    integer :: inte, intsn
+    integer(kind=8) :: inte, intsn
 !
     real(kind=8) :: epais
 !
-    integer :: npge, npgsn, k1
+    integer(kind=8) :: npge, npgsn, k1
 !
     real(kind=8) :: vecta(9, 2, 3)
     real(kind=8) :: vectn(9, 3), vectpt(9, 2, 3)

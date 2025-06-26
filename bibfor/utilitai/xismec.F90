@@ -35,7 +35,7 @@ function xismec()
 #include "asterfort/jeveuo.h"
     character(len=16) :: k16tmp
     character(len=24) :: licham
-    integer :: jlicha
+    integer(kind=8) :: jlicha
     aster_logical :: lmeca
 !-----------------------------------------------------------------------
 !

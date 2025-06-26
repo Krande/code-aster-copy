@@ -23,7 +23,7 @@ interface
                       vin, dsde)
         character(len=8) :: mod
         real(kind=8) :: mater(14, 2)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: eps(6)
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(*)

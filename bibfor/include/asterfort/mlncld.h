@@ -21,14 +21,14 @@
 interface
     subroutine mlncld(n, frontl, frontu, adper, t1,&
                       t2, ad, eps, ier)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: frontl(*)
         complex(kind=8) :: frontu(*)
-        integer :: adper(*)
+        integer(kind=8) :: adper(*)
         complex(kind=8) :: t1(*)
         complex(kind=8) :: t2(*)
-        integer :: ad(*)
+        integer(kind=8) :: ad(*)
         real(kind=8) :: eps
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine mlncld
 end interface

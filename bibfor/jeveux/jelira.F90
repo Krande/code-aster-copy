@@ -30,21 +30,21 @@ subroutine jelira(nomlu, catr, ival, cval)
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomlu, catr
     character(len=*), intent(out), optional :: cval
-    integer, intent(out), optional :: ival
+    integer(kind=8), intent(out), optional :: ival
 !     ------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: isstat
+    integer(kind=8) :: isstat
     common/iconje/isstat
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadmi, ib, ibacol, ibnum, ic, id, ipgcex
-    integer :: is, iss, iu, iuu, iva, ixdeso, ixiadd
-    integer :: ixiadm, ixlong, ixlono, ixluti, ixnom, ixnum, jcara
-    integer :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jlong
-    integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
-    integer :: ltypi, n
+    integer(kind=8) :: iadmi, ib, ibacol, ibnum, ic, id, ipgcex
+    integer(kind=8) :: is, iss, iu, iuu, iva, ixdeso, ixiadd
+    integer(kind=8) :: ixiadm, ixlong, ixlono, ixluti, ixnom, ixnum, jcara
+    integer(kind=8) :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jlong
+    integer(kind=8) :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
+    integer(kind=8) :: ltypi, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -60,19 +60,19 @@ subroutine jelira(nomlu, catr, ival, cval)
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 !
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idnom, idlong, idlono, idluti
-    integer :: idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idnom, idlong, idlono, idluti
+    integer(kind=8) :: idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
      &                          idnom=5, idlong=7,&
      &             idlono=8, idluti=9, idnum=10)
@@ -81,7 +81,7 @@ subroutine jelira(nomlu, catr, ival, cval)
     character(len=33) :: cva
     character(len=1) :: genri
     character(len=8) :: catrlu
-    integer :: lcv, icre, iret
+    integer(kind=8) :: lcv, icre, iret
     aster_logical :: lconst, lconti, llong, lluti, lcol
 ! DEB ------------------------------------------------------------------
 !

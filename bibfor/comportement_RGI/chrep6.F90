@@ -33,7 +33,7 @@ subroutine chrep6(x6, vp33, controle, xp6)
     aster_logical :: controle
 
 !   variables locales
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: x33(3, 3), xp33(3, 3)
 
 !   chargement et passage des deformations

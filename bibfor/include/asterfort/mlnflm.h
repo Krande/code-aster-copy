@@ -22,17 +22,17 @@ interface
     subroutine mlnflm(nb, n, p, frontl, frontu,&
                       adper, tu, tl, ad, eps,&
                       ier, cl, cu)
-        integer :: nb
-        integer :: n
-        integer :: p
+        integer(kind=8) :: nb
+        integer(kind=8) :: n
+        integer(kind=8) :: p
         real(kind=8) :: frontl(*)
         real(kind=8) :: frontu(*)
-        integer :: adper(*)
+        integer(kind=8) :: adper(*)
         real(kind=8) :: tu(*)
         real(kind=8) :: tl(*)
-        integer :: ad(*)
+        integer(kind=8) :: ad(*)
         real(kind=8) :: eps
-        integer :: ier
+        integer(kind=8) :: ier
         real(kind=8) :: cl(nb, nb, *)
         real(kind=8) :: cu(nb, nb, *)
     end subroutine mlnflm

@@ -24,7 +24,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 #include "asterfort/rcvalb.h"
 #include "asterfort/rftDiffusion.h"
 #include "asterfort/utmess.h"
-    integer :: imate
+    integer(kind=8) :: imate
     real(kind=8) :: temp, c, diff
     character(len=16) :: comp
 ! ----------------------------------------------------------------------
@@ -40,13 +40,13 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: nbres
+    integer(kind=8) :: nbres
     real(kind=8) :: rap
 !-----------------------------------------------------------------------
     parameter(nbres=10)
-    integer :: nbpar, kpg, spt
+    integer(kind=8) :: nbpar, kpg, spt
     real(kind=8) :: valres(nbres), valpar(2), tz0
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=8) :: nompar(2), fami, poum
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom

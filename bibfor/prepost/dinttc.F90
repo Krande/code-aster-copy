@@ -42,12 +42,12 @@ subroutine dinttc(coord1, coord2, xo1o2, yo1o2, zo1o2, &
 #include "asterfort/assert.h"
     real(kind=8) :: coord1(3), coord2(3), xo1o2, yo1o2, zo1o2, do1o2
     real(kind=8) :: r, coord(3, 12)
-    integer :: norm(2, 4), nint, nhop, npir
-    integer :: nbi
+    integer(kind=8) :: norm(2, 4), nint, nhop, npir
+    integer(kind=8) :: nbi
 !
 ! - DECLARATION LOCALE
 !
-    integer :: i, j, k, l, ia, ib
+    integer(kind=8) :: i, j, k, l, ia, ib
     real(kind=8) :: xo1a, yo1a, zo1a, xo2a, yo2a, zo2a, xab, yab, zab
     real(kind=8) :: xxo1, yxo1, zxo1, xxo2, yxo2, zxo2
     real(kind=8) :: a, b, c, delta, lamda1, lamda2, lambda

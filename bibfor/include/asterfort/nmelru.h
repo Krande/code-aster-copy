@@ -25,9 +25,9 @@ interface
                       epseq, p_arg, divu, gonf, inco, nonlin, ener)
     
     character(len=*),intent(in)  :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    integer, intent(in)          :: imate
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: imate
     character(len=16),intent(in) :: compor(*)
     real(kind=8), intent(in)     :: epseq
     real(kind=8), intent(in)     :: p_arg

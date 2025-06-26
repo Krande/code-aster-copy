@@ -22,7 +22,7 @@ interface
                              noLoads)
         character(len=4), intent(in) :: phenom
         character(len=*), intent(in) :: resultZ
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         character(len=*), intent(in) :: listLoadZ
         character(len=24), intent(out) :: mateco
         character(len=8), intent(out) :: model, materField, caraElem

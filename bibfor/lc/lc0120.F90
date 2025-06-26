@@ -31,7 +31,7 @@ subroutine lc0120(BEHinteg, &
 #include "asterfort/plasbe.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
+    integer(kind=8) :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(6), deps(6)

@@ -24,10 +24,10 @@ interface
         real(kind=8) :: x0
         real(kind=8) :: xap
         real(kind=8) :: epsi
-        integer :: nitmax
+        integer(kind=8) :: nitmax
         real(kind=8) :: solu
-        integer :: iret
-        integer :: n
+        integer(kind=8) :: iret
+        integer(kind=8) :: n
         interface
             function func(x)
                 real(kind=8) :: x

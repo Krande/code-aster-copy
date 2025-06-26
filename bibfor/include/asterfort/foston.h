@@ -20,7 +20,7 @@
 !
 interface
     subroutine foston(chval, vecnom, nbfonc)
-        integer :: nbfonc
+        integer(kind=8) :: nbfonc
         character(len=*) :: chval
         character(len=*) :: vecnom(nbfonc)
     end subroutine foston

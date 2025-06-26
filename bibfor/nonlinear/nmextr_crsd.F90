@@ -25,9 +25,9 @@ subroutine nmextr_crsd(sdextrz, nb_keyw_fact, nb_field, nb_field_comp)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: sdextrz
-    integer, intent(in) :: nb_keyw_fact
-    integer, intent(in) :: nb_field
-    integer, intent(in) :: nb_field_comp
+    integer(kind=8), intent(in) :: nb_keyw_fact
+    integer(kind=8), intent(in) :: nb_field
+    integer(kind=8), intent(in) :: nb_field_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine nmextr_crsd(sdextrz, nb_keyw_fact, nb_field, nb_field_comp)
 !
     character(len=14) :: sdextr
     character(len=24) :: extr_info, extr_type, extr_flag, extr_field, extr_comp
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
     character(len=8), pointer :: v_extr_type(:) => null()
     aster_logical, pointer :: v_extr_flag(:) => null()
     character(len=24), pointer :: v_extr_field(:) => null()

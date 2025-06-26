@@ -23,6 +23,6 @@ interface
         character(len=*) :: nomfic
         character(len=*) :: kacc
         character(len=*) :: typef
-        integer :: ulnomf
+        integer(kind=8) :: ulnomf
     end function ulnomf
 end interface

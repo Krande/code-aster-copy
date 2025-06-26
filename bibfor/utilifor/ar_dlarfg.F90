@@ -99,7 +99,7 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
 #include "blas/dlapy2.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
-    integer :: incx, n
+    integer(kind=8) :: incx, n
     real(kind=8) :: alpha, tau
 !     ..
 !     .. ARRAY ARGUMENTS ..
@@ -110,7 +110,7 @@ subroutine ar_dlarfg(n, alpha, x, incx, tau)
     parameter(one=1.0d+0, zero=0.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
-    integer :: j, knt
+    integer(kind=8) :: j, knt
     real(kind=8) :: beta, rsafmn, safmin, xnorm
     blas_int :: b_incx, b_n
 !     ..

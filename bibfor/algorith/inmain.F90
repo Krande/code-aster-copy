@@ -42,11 +42,11 @@ subroutine inmain(nommat, neq, nozero)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: neq, nozero
+    integer(kind=8) :: neq, nozero
     character(len=19) :: nommat
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: jrefa, i1, j1, iret
+    integer(kind=8) :: jrefa, i1, j1, iret
 !
 !-----------C
 !--       --C

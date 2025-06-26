@@ -27,7 +27,7 @@ subroutine cfinvm(defico, jdeciv, ima, posma)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
-    integer :: jdeciv, ima, posma
+    integer(kind=8) :: jdeciv, ima, posma
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine cfinvm(defico, jdeciv, ima, posma)
 !
 !
     character(len=24) :: manoco
-    integer :: jmano
+    integer(kind=8) :: jmano
 !
 ! ----------------------------------------------------------------------
 !

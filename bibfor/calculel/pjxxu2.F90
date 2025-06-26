@@ -35,7 +35,7 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
     character(len=2) :: dim
     character(len=8) :: moa
     character(len=16) :: klino
-    integer :: nbma, lima(*), nbnoOut
+    integer(kind=8) :: nbma, lima(*), nbnoOut
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 ! BUT :
@@ -69,13 +69,13 @@ subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
     character(len=8) :: ma
     character(len=8) :: notm(10)
 !
-    integer :: nno, nutm(10), nbtm, i, k, j
-    integer :: ima, nbno, ino, nuno, kk
-    integer :: iad, ialin1, ilcnx1
-    integer :: iexi
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: lima_check(:) => null()
-    integer, pointer :: linoma(:) => null()
+    integer(kind=8) :: nno, nutm(10), nbtm, i, k, j
+    integer(kind=8) :: ima, nbno, ino, nuno, kk
+    integer(kind=8) :: iad, ialin1, ilcnx1
+    integer(kind=8) :: iexi
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: lima_check(:) => null()
+    integer(kind=8), pointer :: linoma(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()

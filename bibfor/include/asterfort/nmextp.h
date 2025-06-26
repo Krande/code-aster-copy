@@ -23,7 +23,7 @@ interface
                   field_s  , list_poin  , list_spoi , nb_poin   , nb_spoi,&
                   type_extr_elem)
         character(len=16), intent(in) :: keyw_fact
-        integer, intent(in) :: i_keyw_fact
+        integer(kind=8), intent(in) :: i_keyw_fact
         character(len=19), intent(in) :: field
         character(len=24), intent(in) :: field_type
         character(len=4) , intent(in) :: field_disc
@@ -31,7 +31,7 @@ interface
         character(len=8), intent(out) :: type_extr_elem
         character(len=24), intent(in) :: list_poin
         character(len=24), intent(in) :: list_spoi
-        integer, intent(out) :: nb_poin
-        integer, intent(out) :: nb_spoi
+        integer(kind=8), intent(out) :: nb_poin
+        integer(kind=8), intent(out) :: nb_spoi
     end subroutine nmextp
 end interface

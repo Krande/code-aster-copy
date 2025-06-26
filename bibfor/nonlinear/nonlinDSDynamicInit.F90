@@ -60,10 +60,10 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, nlDynaDamping, ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbMode, nbEqua
-    integer :: iExci, nbExci
-    integer :: jvMultSuppProj, jvNumeDofDEEQ
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbMode, nbEqua
+    integer(kind=8) :: iExci, nbExci
+    integer(kind=8) :: jvMultSuppProj, jvNumeDofDEEQ
     aster_logical :: lDampModal, lMultiSupport
     character(len=19) :: pfcn1, pfcn2, dispPrev, multSuppProj
     character(len=8) :: mesh

@@ -22,11 +22,11 @@ interface
     subroutine norlin(typma, l, knumai, coor, dfonc,&
                       in, prec, a, b, c)
         character(len=3) :: typma
-        integer :: l
+        integer(kind=8) :: l
         character(len=8) :: knumai
         real(kind=8) :: coor(3, *)
         real(kind=8) :: dfonc(*)
-        integer :: in
+        integer(kind=8) :: in
         real(kind=8) :: prec
         real(kind=8) :: a
         real(kind=8) :: b

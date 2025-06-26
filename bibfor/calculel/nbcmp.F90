@@ -18,7 +18,7 @@
 
 function nbcmp(gd)
     implicit none
-    integer :: nbcmp
+    integer(kind=8) :: nbcmp
 !
 !
 !     RETOURNE LE NOMBRE D ENTIERS CODES POUR UN GRANDEUR DU TYPE :
@@ -34,7 +34,7 @@ function nbcmp(gd)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: gd, code
+    integer(kind=8) :: gd, code
     character(len=8) :: nomgd, nomgd1, nomgd2
 !     INCLUDE($FUNJEV)
 !
@@ -42,14 +42,14 @@ function nbcmp(gd)
 !
 !
 !
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
     character(len=32) :: valk(3)
 !
 !     EXCLUDE($FUNJEV)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iddgd, igd1, igd2
+    integer(kind=8) :: iddgd, igd1, igd2
 !-----------------------------------------------------------------------
     call jemarq()
     nbcmp = 0

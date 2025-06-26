@@ -22,8 +22,8 @@ interface
     subroutine forcen(rnormc, intsn, nb1, xi, xr,&
                       rho, epais, vomega, vecl1, xa)
         real(kind=8) :: rnormc
-        integer :: intsn
-        integer :: nb1
+        integer(kind=8) :: intsn
+        integer(kind=8) :: nb1
         real(kind=8) :: xi(3, *)
         real(kind=8) :: xr(*)
         real(kind=8) :: rho

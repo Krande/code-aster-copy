@@ -26,7 +26,7 @@ subroutine dclsma(n, tab, iran)
 !
 ! OUT IRAN : RANG DE LA RACINE
 !
-    integer :: i, ii, j, jj, n, iswap, iran(*)
+    integer(kind=8) :: i, ii, j, jj, n, iswap, iran(*)
     real(kind=8) :: tab(*)
 !
     do i = 1, n

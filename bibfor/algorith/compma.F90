@@ -45,12 +45,12 @@ subroutine compma(mailla, nbgr, nomgr, nbto)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbgr
+    integer(kind=8) :: nbgr
     character(len=8) :: mailla
     character(len=24) :: valk(2), nomcou, nomgr(nbgr)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ier, nb, nbto, num
+    integer(kind=8) :: i, ier, nb, nbto, num
 !-----------------------------------------------------------------------
     if (nbgr .eq. 0) then
         nbto = 0

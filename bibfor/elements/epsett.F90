@@ -20,7 +20,7 @@ subroutine epsett(applic, nbrddl, depl, btild, sgmtd, &
                   epsi, wgt, effint)
     implicit none
 !
-    integer :: nbrddl, i, k
+    integer(kind=8) :: nbrddl, i, k
     character(len=6) :: applic
     real(kind=8) :: btild(4, *), depl(*), epsi(*), sgmtd(*), effinb
     real(kind=8) :: wgt, effint(*)

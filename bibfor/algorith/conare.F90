@@ -19,7 +19,7 @@
 subroutine conare(typma, ar, nbar)
     implicit none
 #include "asterfort/utmess.h"
-    integer :: ar(12, 3), nbar
+    integer(kind=8) :: ar(12, 3), nbar
     character(len=8) :: typma
 !                       RENVOIE LA MATRICE DE CONNECTIVITÉ DES
 !                       ARETES D'UNE MAILLE DE TYPE TYPMA
@@ -32,7 +32,7 @@ subroutine conare(typma, ar, nbar)
 !              NBAR : NOMBRE D'ARETES
 !......................................................................
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
 !......................................................................
 !
     do i = 1, 12

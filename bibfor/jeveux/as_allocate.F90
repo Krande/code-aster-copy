@@ -30,9 +30,9 @@ subroutine as_allocate(size, vl, vi, vi4, vr, &
 #include "asterfort/jjldyn.h"
 #include "asterfort/utmess.h"
 !
-    integer :: size
+    integer(kind=8) :: size
     aster_logical, pointer, optional :: vl(:)
-    integer, pointer, optional :: vi(:)
+    integer(kind=8), pointer, optional :: vi(:)
     integer(kind=4), pointer, optional :: vi4(:)
     real(kind=8), pointer, optional :: vr(:)
     complex(kind=8), pointer, optional :: vc(:)
@@ -57,8 +57,8 @@ subroutine as_allocate(size, vl, vi, vi4, vr, &
 ! INOUT vk16    : vecteur de k16
 ! ...
 ! ----------------------------------------------------------------------
-    integer, save :: iprem = 0
-    integer :: lonty, lsic, unmega, ltot, ival(4)
+    integer(kind=8), save :: iprem = 0
+    integer(kind=8) :: lonty, lsic, unmega, ltot, ival(4)
     character(len=3) :: tsca
     aster_logical :: alloc
 !

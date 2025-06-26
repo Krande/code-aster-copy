@@ -23,11 +23,11 @@
 interface
     subroutine nmmalu(nno, axi, r, vff, dfdi,&
                       lij)
-        integer :: nno
+        integer(kind=8) :: nno
         aster_logical :: axi
         real(kind=8) :: r
         real(kind=8) :: vff(nno)
         real(kind=8) :: dfdi(nno, 4)
-        integer :: lij(3, 3)
+        integer(kind=8) :: lij(3, 3)
     end subroutine nmmalu
 end interface

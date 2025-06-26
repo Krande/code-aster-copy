@@ -27,7 +27,7 @@ subroutine matinv(stop, ndim, mat, inv, det)
 ! aslint: disable=W1306
 !
     character(len=1), intent(in) :: stop
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: mat(ndim, ndim)
     real(kind=8), intent(out) :: inv(ndim, ndim)
     real(kind=8), intent(out) :: det
@@ -49,7 +49,7 @@ subroutine matinv(stop, ndim, mat, inv, det)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: idim, jdim
+    integer(kind=8) :: idim, jdim
     real(kind=8) :: m(ndim, ndim), unsdet
 !
     if (ndim .eq. 1) then

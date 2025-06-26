@@ -39,7 +39,7 @@ subroutine exchgo(imodat, iparg)
 #include "asterfort/jexnum.h"
 #include "asterfort/jenuno.h"
 !
-    integer :: imodat, iparg
+    integer(kind=8) :: imodat, iparg
 !----------------------------------------------------------------------
 !     entrees:
 !        imodat  : indice dans la collection modeloc
@@ -48,10 +48,10 @@ subroutine exchgo(imodat, iparg)
 !        ecriture dans le champ local
 !----------------------------------------------------------------------
 !
-    integer :: ima, ino, nno, long, nugl, num
-    integer :: desc, modloc, ityplo, gd
-    integer :: deb1, deb2, idg2, nbpt, nbpt2, lgcata, ncmp
-    integer :: iaux1, k, iec, debugr
+    integer(kind=8) :: ima, ino, nno, long, nugl, num
+    integer(kind=8) :: desc, modloc, ityplo, gd
+    integer(kind=8) :: deb1, deb2, idg2, nbpt, nbpt2, lgcata, ncmp
+    integer(kind=8) :: iaux1, k, iec, debugr
     aster_logical :: diff, moyenn
 !
 ! --------------------------------------------------------------------------------------------------

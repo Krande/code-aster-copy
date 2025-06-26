@@ -28,7 +28,7 @@ subroutine tefrep(option, fieldTypeName, jvForc)
 !
     character(len=16), intent(in) :: option
     character(len=*), intent(in) :: fieldTypeName
-    integer, intent(out) :: jvForc
+    integer(kind=8), intent(out) :: jvForc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,8 +44,8 @@ subroutine tefrep(option, fieldTypeName, jvForc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: itab(8), iCmp, iret, iNode, ico
-    integer :: iadzi, iazk24, nbValue, jad, nbNode, nbCmp
+    integer(kind=8) :: itab(8), iCmp, iret, iNode, ico
+    integer(kind=8) :: iadzi, iazk24, nbValue, jad, nbNode, nbCmp
     character(len=24) :: valk(2)
     character(len=8) :: cellName
 !

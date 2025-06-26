@@ -22,17 +22,17 @@ interface
     subroutine lecdbg(ifl, icl, iv, rv, cv,&
                       cnl, mcl, nbm, nbg, dim,&
                       nob, irteti)
-        integer :: nbm
-        integer :: ifl
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: nbm
+        integer(kind=8) :: ifl
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         real(kind=8) :: rv
         character(len=*) :: cv
         character(len=14) :: cnl
         character(len=8) :: mcl(nbm)
-        integer :: nbg
-        integer :: dim(nbm)
+        integer(kind=8) :: nbg
+        integer(kind=8) :: dim(nbm)
         character(len=24) :: nob(50, nbm)
-        integer :: irteti
+        integer(kind=8) :: irteti
     end subroutine lecdbg
 end interface

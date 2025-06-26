@@ -21,9 +21,9 @@
 interface
     subroutine matvec(nordre, amat, nombv, v1, v2,&
                       vecres)
-        integer :: nordre
+        integer(kind=8) :: nordre
         real(kind=8) :: amat(*)
-        integer :: nombv
+        integer(kind=8) :: nombv
         real(kind=8) :: v1(*)
         real(kind=8) :: v2(*)
         real(kind=8) :: vecres(*)

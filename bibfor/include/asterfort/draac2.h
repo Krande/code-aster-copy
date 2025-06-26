@@ -26,6 +26,6 @@ interface
         real(kind=8) :: c
         real(kind=8) :: x1
         real(kind=8) :: x2
-        integer :: kode
+        integer(kind=8) :: kode
     end subroutine draac2
 end interface

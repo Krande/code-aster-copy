@@ -40,7 +40,7 @@ function asmpi_all(ibool, test) result(obool)
 !     obool   : gloab output boolean
 !
 !---------------------------------------------------------------------------------------------------
-    integer :: iint
+    integer(kind=8) :: iint
 !-----------------------------------------------------------------------
 !
     if (ibool .eqv. test) then

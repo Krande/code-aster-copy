@@ -21,11 +21,11 @@
 interface
     subroutine btdfn(ind, nb1, nb2, ksi3s2, intsn,&
                      xr, epais, vectpt, hsj1fx, btdf)
-        integer :: ind
-        integer :: nb1
-        integer :: nb2
+        integer(kind=8) :: ind
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nb2
         real(kind=8) :: ksi3s2
-        integer :: intsn
+        integer(kind=8) :: intsn
         real(kind=8) :: xr(*)
         real(kind=8) :: epais
         real(kind=8) :: vectpt(9, 2, 3)

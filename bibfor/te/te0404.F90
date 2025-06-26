@@ -47,20 +47,20 @@ subroutine te0404(option, nomte)
     character(len=16) :: option, nomte
 !
     character(len=4) :: fami
-    integer :: icodre(1)
-    integer :: codres(2)
+    integer(kind=8) :: icodre(1)
+    integer(kind=8) :: codres(2)
     character(len=16) :: nomres(2)
     character(len=8) :: cnd
-    integer :: icour, imate, igeom, nd, ndim, nno, nnos, npg
-    integer :: i, j, ipoids, ivf, idfde, jgano, ier
-    integer :: jcoqu, multic, idfd2, icoopg
+    integer(kind=8) :: icour, imate, igeom, nd, ndim, nno, nnos, npg
+    integer(kind=8) :: i, j, ipoids, ivf, idfde, jgano, ier
+    integer(kind=8) :: jcoqu, multic, idfd2, icoopg
     real(kind=8) :: dmin, distij, xi, yi, zii, xj, yj, zj
     real(kind=8) :: e, nu, rho(1), vitmat, epais
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4), t1ve(9), valres(2)
     aster_logical :: coupmf
-    integer :: elas_id
+    integer(kind=8) :: elas_id
     character(len=16) :: elas_keyword
 ! DEB ------------------------------------------------------------------
 !

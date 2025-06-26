@@ -64,7 +64,7 @@ subroutine mecagl(option, result, modele, depla, thetai, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: iord, nbprup, ndimte, coor
+    integer(kind=8) :: iord, nbprup, ndimte, coor
 !
     real(kind=8) :: time
 !
@@ -107,12 +107,12 @@ subroutine mecagl(option, result, modele, depla, thetai, &
 !                   DU FOND DE FISSURE (IADFIS DANS OP0100)
 ! ......................................................................
 !
-    integer, parameter :: nbmxpa = 20
+    integer(kind=8), parameter :: nbmxpa = 20
 !
-    integer :: i, ibid, iadrg, iret, jresu, nchin
-    integer :: nnoff, num, incr, nres, nsig, ino1, ino2, inga, pbtype
-    integer :: ndeg, livi(nbmxpa), numfon
-    integer :: iadrno, iadgi, iadabs, ifm, niv, ifon
+    integer(kind=8) :: i, ibid, iadrg, iret, jresu, nchin
+    integer(kind=8) :: nnoff, num, incr, nres, nsig, ino1, ino2, inga, pbtype
+    integer(kind=8) :: ndeg, livi(nbmxpa), numfon
+    integer(kind=8) :: iadrno, iadgi, iadabs, ifm, niv, ifon
     real(kind=8) :: gthi(1), livr(nbmxpa), xl
     complex(kind=8) :: livc(nbmxpa)
     aster_logical :: fonc, lxfem

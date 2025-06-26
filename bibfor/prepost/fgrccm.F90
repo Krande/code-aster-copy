@@ -22,7 +22,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
 #include "jeveux.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: ext(*), sigmin(*), sigmax(*)
-    integer :: nbextr, ncyc
+    integer(kind=8) :: nbextr, ncyc
 !     DETERMINATION DES CYCLES PAR LA METHODE DE COMPTAGE RCCM
 !     ------------------------------------------------------------------
 ! IN  NBEXTR : I   : NOMBRE D'EXTREMA
@@ -41,7 +41,7 @@ subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
 ! --- CALCUL DE LA VALEUR MOYENNE DES CONTRAINTES ---
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     moyext = 0.d0
 !

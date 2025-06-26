@@ -22,11 +22,11 @@ interface
     subroutine dpmate(mod, imat, materf, ndt, ndi,&
                       nvi, typedp)
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materf(5, 2)
-        integer :: ndt
-        integer :: ndi
-        integer :: nvi
-        integer :: typedp
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nvi
+        integer(kind=8) :: typedp
     end subroutine dpmate
 end interface

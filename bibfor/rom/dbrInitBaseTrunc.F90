@@ -51,7 +51,7 @@ subroutine dbrInitBaseTrunc(resultName, paraTrunc, lReuse, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: resultNameIn
 !
 ! --------------------------------------------------------------------------------------------------

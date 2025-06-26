@@ -22,11 +22,11 @@ interface
     subroutine char_pair_node(mesh, nb_node, &
                               list_node_i1, list_node_i2, list_node_o1, list_node_o2, i_error)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_node
         character(len=24), intent(in) :: list_node_i1
         character(len=24), intent(in) :: list_node_i2
         character(len=24), intent(in) :: list_node_o1
         character(len=24), intent(in) :: list_node_o2
-        integer, intent(out) :: i_error
+        integer(kind=8), intent(out) :: i_error
     end subroutine char_pair_node
 end interface

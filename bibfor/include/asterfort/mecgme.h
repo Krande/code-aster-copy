@@ -33,7 +33,7 @@ interface
         character(len=*), intent(in) :: dispPrevZ, dispCumuInstZ
         character(len=*), intent(in) :: matrElemZ
         character(len=*), optional, intent(in) :: varcCurrZ_
-        integer, optional, intent(in) :: nharm_
+        integer(kind=8), optional, intent(in) :: nharm_
         character(len=*), optional, intent(in) :: ligrelCalcZ_
         character(len=1), optional, intent(in) :: jvBase_
     end subroutine mecgme

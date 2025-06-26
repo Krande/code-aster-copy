@@ -45,7 +45,7 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbinti
+    integer(kind=8) :: nbinti
     aster_logical :: lfatig, flexio, lrocht, kemixt, lsymm
     character(len=16) :: kinti
     character(len=24) :: csigm, cinst, csiex, cnoc, cresu, cpres, cstex, csmex
@@ -54,11 +54,11 @@ subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, l1, l2, l3, ndim
-    integer :: nbabsc, jabsc, nbxcoo, jxcoo, nbycoo, jycoo, jsigm, jinst
-    integer :: ncmp, iret, nbtran, jsioe, iocc
-    integer :: nbins0, jnocc, ii, jresu, nbcycl, jresp, jstoe, lo, le
-    integer :: jsmoe
+    integer(kind=8) :: ibid, n1, nbinst, kinst, ncmpr, i, j, k, l, l1, l2, l3, ndim
+    integer(kind=8) :: nbabsc, jabsc, nbxcoo, jxcoo, nbycoo, jycoo, jsigm, jinst
+    integer(kind=8) :: ncmp, iret, nbtran, jsioe, iocc
+    integer(kind=8) :: nbins0, jnocc, ii, jresu, nbcycl, jresp, jstoe, lo, le
+    integer(kind=8) :: jsmoe
     parameter(ncmp=6)
     real(kind=8) :: r8b, prec(2), momen0, momen1, vale(2)
     real(kind=8) :: momen0_axis(4), momen1_axis(4), momen2_axis(4), rho

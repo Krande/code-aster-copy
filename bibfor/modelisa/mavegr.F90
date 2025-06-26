@@ -40,7 +40,7 @@ subroutine mavegr(nomu)
 !     SUPPRESSION DES GROUPES DE NOEUDS OU MAILLES DE NOM '      '
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, i, j, nbgrma, nbgrmt, nbgrno, nbgrnt, nbma, nbno, jvg, jgg
+    integer(kind=8) :: iret, i, j, nbgrma, nbgrmt, nbgrno, nbgrnt, nbma, nbno, jvg, jgg
     character(len=24) :: grpnoe, grpnov, grpmai, grpmav, gpptnn, gpptnm
     character(len=24) :: nomg, blanc
 ! ----------------------------------------------------------------------

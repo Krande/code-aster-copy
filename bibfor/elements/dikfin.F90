@@ -22,7 +22,7 @@ subroutine dikfin(nbt, dnsdu, dnsdt, dmsdt, dnsdu2, &
 ! ----------------------------------------------------------------------
     implicit none
 #include "asterfort/r8inir.h"
-    integer :: nbt
+    integer(kind=8) :: nbt
     real(kind=8) :: dnsdu, dnsdt, dmsdt, dnsdu2, dnsdt2, dmsdt2, ky, kz, krx
     real(kind=8) :: krz
     real(kind=8) :: klv(nbt), klv2(nbt)

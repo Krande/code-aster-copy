@@ -32,9 +32,9 @@ subroutine infmaj_ext(info)
 !
 #include "asterfort/iunifi.h"
 !
-    integer, intent(in) :: info
+    integer(kind=8), intent(in) :: info
 !
-    integer :: nivuti, nivpgm, unite
+    integer(kind=8) :: nivuti, nivpgm, unite
     common/inf001/nivuti, nivpgm, unite
 !-----FIN DE INF001-----------------------------------------------------
 !

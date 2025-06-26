@@ -44,13 +44,13 @@ subroutine te0568(nomopt, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
-    integer :: nb_node_slav, nb_node_mast, nb_lagr, nb_dof
-    integer :: indi_lagc(10)
-    integer :: elem_dime
-    integer :: jvect
+    integer(kind=8) :: i
+    integer(kind=8) :: nb_node_slav, nb_node_mast, nb_lagr, nb_dof
+    integer(kind=8) :: indi_lagc(10)
+    integer(kind=8) :: elem_dime
+    integer(kind=8) :: jvect
     real(kind=8) :: lagrc_curr, gap_curr, gapi
-    integer :: indi_cont, nmcp, i_reso_geom
+    integer(kind=8) :: indi_cont, nmcp, i_reso_geom
     aster_logical :: l_norm_smooth
     aster_logical :: l_axis, debug, l_upda_jaco
     character(len=8) :: elem_slav_code, elem_mast_code
@@ -59,7 +59,7 @@ subroutine te0568(nomopt, nomte)
     real(kind=8) :: elem_mast_coop(27), elem_slav_coop(27)
     real(kind=8) :: poin_inte_sl(16)
     real(kind=8) :: poin_inte_ma(16)
-    integer :: nb_poin_inte
+    integer(kind=8) :: nb_poin_inte
     character(len=8) :: elga_fami_slav, elga_fami_mast
     real(kind=8) :: vcont(55)
 !

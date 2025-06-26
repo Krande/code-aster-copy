@@ -30,15 +30,15 @@ subroutine metaGetParaHardTrac(j_mater, meta_type, nb_phasis, &
 #include "asterfort/utmess.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: j_mater
-    integer, intent(in) :: meta_type
-    integer, intent(in) :: nb_phasis
+    integer(kind=8), intent(in) :: j_mater
+    integer(kind=8), intent(in) :: meta_type
+    integer(kind=8), intent(in) :: nb_phasis
     aster_logical, intent(in) :: l_temp
     real(kind=8), intent(in) :: temp
     real(kind=8), intent(in) :: epsp(*)
     real(kind=8), intent(out) :: h0(*)
     real(kind=8), optional, intent(out) :: rp_(*)
-    integer, optional, intent(out) :: maxval_
+    integer(kind=8), optional, intent(out) :: maxval_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,11 +60,11 @@ subroutine metaGetParaHardTrac(j_mater, meta_type, nb_phasis, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_phasis
+    integer(kind=8) :: i_phasis
     character(len=8) :: keyw_trac(5)
     character(len=16) :: keyw_fact
-    integer :: j_prol, j_vale
-    integer :: nb_vale, maxval
+    integer(kind=8) :: j_prol, j_vale
+    integer(kind=8) :: nb_vale, maxval
     character(len=8) :: para_type
     real(kind=8) :: para_vale, r8dummy
 !

@@ -20,10 +20,10 @@ interface
     subroutine smcaba(x , nb_hist, trc, ftrc, ind,&
                       dz)
         real(kind=8), intent(in) :: x(5)
-        integer, intent(in) :: nb_hist
+        integer(kind=8), intent(in) :: nb_hist
         real(kind=8), intent(in) :: trc((3*nb_hist), 5)
         real(kind=8), intent(in) :: ftrc((3*nb_hist), 3)
-        integer, intent(in) :: ind(6)
+        integer(kind=8), intent(in) :: ind(6)
         real(kind=8), intent(inout) :: dz(4)
     end subroutine smcaba
 end interface

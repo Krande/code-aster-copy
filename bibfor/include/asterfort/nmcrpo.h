@@ -23,7 +23,7 @@
 interface
     subroutine nmcrpo(nomsd, nume, inst, lselec)
         character(len=19) :: nomsd
-        integer :: nume
+        integer(kind=8) :: nume
         real(kind=8) :: inst
         aster_logical :: lselec
     end subroutine nmcrpo

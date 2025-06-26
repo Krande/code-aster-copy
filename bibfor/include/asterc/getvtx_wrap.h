@@ -22,9 +22,9 @@ interface
     subroutine getvtx_wrap(motfac, motcle, iocc, mxval, txval, nbval)
         character(len=*) :: motfac
         character(len=*) :: motcle
-        integer :: iocc
-        integer :: mxval
+        integer(kind=8) :: iocc
+        integer(kind=8) :: mxval
         character(len=*) :: txval(*)
-        integer :: nbval
+        integer(kind=8) :: nbval
     end subroutine getvtx_wrap
 end interface

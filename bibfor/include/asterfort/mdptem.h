@@ -22,8 +22,8 @@ interface
     subroutine mdptem(nbmode, masgen, pulsat, nbchoc, dt,&
                       dtmax, dtmin, tinit, tfin, nbpas,&
                       ier, lisins)
-        integer :: nbchoc
-        integer :: nbmode
+        integer(kind=8) :: nbchoc
+        integer(kind=8) :: nbmode
         real(kind=8) :: masgen(*)
         real(kind=8) :: pulsat(*)
         real(kind=8) :: dt
@@ -31,8 +31,8 @@ interface
         real(kind=8) :: dtmin
         real(kind=8) :: tinit
         real(kind=8) :: tfin
-        integer :: nbpas
-        integer :: ier
+        integer(kind=8) :: nbpas
+        integer(kind=8) :: ier
         character(len=24) :: lisins
     end subroutine mdptem
 end interface

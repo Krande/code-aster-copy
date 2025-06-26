@@ -22,10 +22,10 @@ interface
     subroutine mmpnoe(defico, posmae, alias, typint, iptm,&
                       posnoe)
         character(len=24) :: defico
-        integer :: posmae
+        integer(kind=8) :: posmae
         character(len=8) :: alias
-        integer :: typint
-        integer :: iptm
-        integer :: posnoe
+        integer(kind=8) :: typint
+        integer(kind=8) :: iptm
+        integer(kind=8) :: posnoe
     end subroutine mmpnoe
 end interface

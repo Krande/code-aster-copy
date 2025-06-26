@@ -44,7 +44,7 @@ subroutine cgvefo(option, typfis, nomfis, typdis)
 !             'FISSURE' OU 'COHESIF'
 ! ======================================================================
 !
-    integer :: ier
+    integer(kind=8) :: ier
     character(len=8) :: conf
 !
     call jemarq()

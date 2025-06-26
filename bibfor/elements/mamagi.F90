@@ -26,9 +26,9 @@ subroutine mamagi(nomte, xr, yr)
     real(kind=8) :: coefa(4), coefb(4), coefc(4), coefd(4)
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, ifon, ig, intef, integ
-    integer :: intsn, iret, j, jf, k, kp, l
-    integer :: npge, npgsn, nso
+    integer(kind=8) :: i, i1, i2, ifon, ig, intef, integ
+    integer(kind=8) :: intsn, iret, j, jf, k, kp, l
+    integer(kind=8) :: npge, npgsn, nso
     real(kind=8) :: bij, xi1, xi2, xi3
 !-----------------------------------------------------------------------
     npge = 3

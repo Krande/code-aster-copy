@@ -41,9 +41,9 @@ subroutine mlfc16(nommat, npivot, neq, typsym, eps, &
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: nommat, renumz
-    integer :: npivot, neq
+    integer(kind=8) :: npivot, neq
     real(kind=8) :: eps
-    integer :: typsym
+    integer(kind=8) :: typsym
 !
 !     FACTORISATION DE GAUSS PAR LA MULTIFRONTALE
 !     D'UNE MATRICE SYMETRIQUE A COEFFICIENTS REELS
@@ -70,7 +70,7 @@ subroutine mlfc16(nommat, npivot, neq, typsym, eps, &
 !     :SI RENUMZ=' ' : CELLE DU SOLVEUR PAR DEFAUT DE LA MATRICE
 !
 !     ------------------------------------------------------------------
-    integer :: k, nc, ierr
+    integer(kind=8) :: k, nc, ierr
     character(len=14) :: nu
     character(len=19) :: noma19
     character(len=24) :: nmprvr, nmprvi, nmprv2, nmpri2, nmprcl, nmprcu, nmprt1
@@ -79,24 +79,24 @@ subroutine mlfc16(nommat, npivot, neq, typsym, eps, &
     character(len=24) :: nomp01, nomp02, nomp03, nomp04, nomp05, nomp06, nomp07
     character(len=24) :: nomp08, nomp09, nomp10, nomp11, nomp12, nomp13, nomp14
     character(len=24) :: nomp15, nomp16, nomp17, nomp18, nomp19, nomp20
-    integer :: ldiag, long, ifac, sni, isnd, adfac0, adfac
+    integer(kind=8) :: ldiag, long, ifac, sni, isnd, adfac0, adfac
 !     -------------------------------------------------- POINTEURS
-    integer :: tempi
-    integer :: supnd
-    integer :: seq, fils, frere, adress, lfront, nblign, lgsn
-    integer :: nbass, decal, local
-    integer :: adpile, lgbloc, pile
-    integer :: ncbloc, adinit, adjnit
+    integer(kind=8) :: tempi
+    integer(kind=8) :: supnd
+    integer(kind=8) :: seq, fils, frere, adress, lfront, nblign, lgsn
+    integer(kind=8) :: nbass, decal, local
+    integer(kind=8) :: adpile, lgbloc, pile
+    integer(kind=8) :: ncbloc, adinit, adjnit
 !     -------------------------------------------------- VARIABLES
-    integer :: anc, tabi2, tabr2, i, j, trav1, trav2
-    integer :: lonmat, nbsn
-    integer :: lgpile, nbloc, mxmate, ln, adbl1
-    integer :: ib, desc, it(5), mxbloc, ltempr, nb
+    integer(kind=8) :: anc, tabi2, tabr2, i, j, trav1, trav2
+    integer(kind=8) :: lonmat, nbsn
+    integer(kind=8) :: lgpile, nbloc, mxmate, ln, adbl1
+    integer(kind=8) :: ib, desc, it(5), mxbloc, ltempr, nb
     real(kind=8) :: temps(7)
-    integer :: nproc, ifm, niv, lpmax
+    integer(kind=8) :: nproc, ifm, niv, lpmax
 !     NB : ORDRE DES MATRICES CL ET CU (LES PRODUITS MATRICE*MATRICE)
 !     96 EST OPTIMUM POUR EV68, 32 EST OPTIMUM POUR PENTIUM 4
-    integer :: cl, cu
+    integer(kind=8) :: cl, cu
     complex(kind=8), pointer :: digs(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------

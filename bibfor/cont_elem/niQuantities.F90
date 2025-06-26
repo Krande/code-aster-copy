@@ -41,9 +41,9 @@ subroutine niQuantities(geom, param)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_fric
-    integer :: i_node_volu, i_node_mast, i_dime, elem_dime, nb_node_volu
-    integer :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c, index, j_time
-    integer :: jv_cont, jv_frot, jcont, i_node_slav, map, iret, itab(8)
+    integer(kind=8) :: i_node_volu, i_node_mast, i_dime, elem_dime, nb_node_volu
+    integer(kind=8) :: jv_geom, jv_disp_incr, jv_disp, jv_geom_c, index, j_time
+    integer(kind=8) :: jv_cont, jv_frot, jcont, i_node_slav, map, iret, itab(8)
     real(kind=8) :: depl_mast_incr(3, 9), depl_volu_incr(3, 27)
     real(kind=8) :: depl_mast_prev(3, 9), depl_volu_prev(3, 27)
 !

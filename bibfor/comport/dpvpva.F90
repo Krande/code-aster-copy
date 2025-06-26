@@ -19,7 +19,7 @@
 subroutine dpvpva(vin, nbmat, mater, fonecr)
 !
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: vin(4), fonecr(3), mater(nbmat, 2)
 ! --- MODELE VISC_DRUC_PRAG : DRUCKER PRAGER VISCOPLASTIQUE-------
 ! ================================================================

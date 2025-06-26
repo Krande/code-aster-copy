@@ -45,10 +45,10 @@ subroutine te0593(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    integer :: ndim, nno1, nno2, nno3, nnos, npg, jgn, ntrou
-    integer :: iw, ivf1, ivf2, ivf3, idf1, idf2, idf3
-    integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, ivectu
+    integer(kind=8) :: ndim, nno1, nno2, nno3, nnos, npg, jgn, ntrou
+    integer(kind=8) :: iw, ivf1, ivf2, ivf3, idf1, idf2, idf3
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
+    integer(kind=8) :: igeom, ivectu
     real(kind=8) :: sigref, epsref
     character(len=8) :: lielrf(10), typmod(2)
     character(len=16), pointer :: compor(:) => null()

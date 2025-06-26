@@ -18,7 +18,7 @@
 !
 interface
     subroutine peeint(tableOut, model, nbocc)
-        integer :: nbocc
+        integer(kind=8) :: nbocc
         character(len=8) :: model
         character(len=19) :: tableOut
     end subroutine peeint

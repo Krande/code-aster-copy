@@ -20,7 +20,7 @@
 interface
     subroutine nmfinp(sddisc, numeInst, lastTimeStep)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: numeInst
+        integer(kind=8), intent(in) :: numeInst
         aster_logical, intent(out) :: lastTimeStep
     end subroutine nmfinp
 end interface

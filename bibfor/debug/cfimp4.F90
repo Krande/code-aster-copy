@@ -47,7 +47,7 @@ subroutine cfimp4(ds_contact, mesh, ifm)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: ifm
+    integer(kind=8), intent(in) :: ifm
     character(len=8), intent(in) :: mesh
 !
 ! ----------------------------------------------------------------------
@@ -62,27 +62,27 @@ subroutine cfimp4(ds_contact, mesh, ifm)
 ! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
 !
-    integer :: ztacf
+    integer(kind=8) :: ztacf
     character(len=24) :: tacfin
-    integer :: jtacf
+    integer(kind=8) :: jtacf
     character(len=24) :: apcoef, tangco
-    integer :: japcoe, jtango
+    integer(kind=8) :: japcoe, jtango
     character(len=24) :: apcofr
-    integer :: japcof
+    integer(kind=8) :: japcof
     character(len=24) :: jeusup, jeuite
-    integer :: jjeusu, jjeuit
+    integer(kind=8) :: jjeusu, jjeuit
     character(len=24) :: appoin, numlia
-    integer :: japptr, jnumli
+    integer(kind=8) :: japptr, jnumli
     character(len=24) :: nbddl, apddl
-    integer :: jnbddl, japddl
-    integer :: typapp, entapp
-    integer :: nzoco, ntnoe, nbliai, nnoco, ndimg
-    integer :: k, izone, ino, iliai, iddle, inom, iddlm, ip
-    integer :: posno, posnoe, posmam
+    integer(kind=8) :: jnbddl, japddl
+    integer(kind=8) :: typapp, entapp
+    integer(kind=8) :: nzoco, ntnoe, nbliai, nnoco, ndimg
+    integer(kind=8) :: k, izone, ino, iliai, iddle, inom, iddlm, ip
+    integer(kind=8) :: posno, posnoe, posmam
     character(len=8) :: nomno, nomnoe, nommam, nomnom, nomno2, nomapp
-    integer :: posno2
-    integer :: jdece, jdecm, jdecno
-    integer :: nbddlt, nbddle, nbddlm, nbnom
+    integer(kind=8) :: posno2
+    integer(kind=8) :: jdece, jdecm, jdecno
+    integer(kind=8) :: nbddlt, nbddle, nbddlm, nbnom
     character(len=4) :: typno, type2
     character(len=19) :: sdappa
     character(len=16) :: nompt

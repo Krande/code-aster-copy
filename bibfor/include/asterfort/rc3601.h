@@ -25,14 +25,14 @@ interface
                       ipt, nbm, adrm, c, k,&
                       cara, nommat, snmax, samax, utot,&
                       sm, factus)
-        integer :: ig
-        integer :: iocs
+        integer(kind=8) :: ig
+        integer(kind=8) :: iocs
         aster_logical :: seisme
-        integer :: npass
-        integer :: ima
-        integer :: ipt
-        integer :: nbm
-        integer :: adrm(*)
+        integer(kind=8) :: npass
+        integer(kind=8) :: ima
+        integer(kind=8) :: ipt
+        integer(kind=8) :: nbm
+        integer(kind=8) :: adrm(*)
         real(kind=8) :: c(*)
         real(kind=8) :: k(*)
         real(kind=8) :: cara(*)

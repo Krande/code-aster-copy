@@ -85,7 +85,7 @@ subroutine glrc_sig_mat(lambda, deuxmu, lamf, deumuf, alf, &
 !          DSIDEP(6,6) : MATRICE TANGENTE
 !----------------------------------------------------------------------
 !
-    integer :: k, l, i
+    integer(kind=8) :: k, l, i
 !
     real(kind=8) :: lambdd, lamfd, dlmd1, dlmd2, dlmfd1, dlmfd2
     real(kind=8) :: treps2, gf1, gf2, mu, fd1, fd2

@@ -22,6 +22,6 @@ interface
         character(len=*), intent(in) :: matrRigiz, matrMassz, matrDampz, listLoadz
         aster_logical, intent(in) :: lDamp
         character(len=24), intent(out) :: kineLoad
-        integer, optional, intent(in) :: integScheme_
+        integer(kind=8), optional, intent(in) :: integScheme_
     end subroutine dyGetKineLoad
 end interface

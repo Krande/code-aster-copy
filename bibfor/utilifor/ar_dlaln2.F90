@@ -172,7 +172,7 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca, &
 #include "asterc/r8miem.h"
 #include "blas/dladiv.h"
     aster_logical :: ltrans
-    integer :: info, lda, ldb, ldx, na, nw
+    integer(kind=8) :: info, lda, ldb, ldx, na, nw
     real(kind=8) :: ca, d1, d2, scale, smin, wi, wr, xnorm
 !     ..
 !     .. ARRAY ARGUMENTS ..
@@ -185,7 +185,7 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca, &
     parameter(two=2.0d0)
 !     ..
 !     .. LOCAL SCALARS ..
-    integer :: icmax, j
+    integer(kind=8) :: icmax, j
     real(kind=8) :: bbnd, bi1, bi2, bignum, bnorm, br1, br2, ci21, ci22, cmax
     real(kind=8) :: cnorm, cr21, cr22, csi, csr, li21, lr21, smini, smlnum, temp
     real(kind=8) :: u22abs, ui11, ui11r, ui12, ui12s, ui22, ur11, ur11r, ur12
@@ -193,7 +193,7 @@ subroutine ar_dlaln2(ltrans, na, nw, smin, ca, &
 !     ..
 !     .. LOCAL ARRAYS ..
     aster_logical :: rswap(4), zswap(4)
-    integer :: ipivot(4, 4)
+    integer(kind=8) :: ipivot(4, 4)
     real(kind=8) :: ci(2, 2), civ(4), cr(2, 2), crv(4)
 !     ..
 !     .. EXTERNAL FUNCTIONS ..

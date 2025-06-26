@@ -23,7 +23,7 @@ interface
         character(len=16), intent(in) :: keywf
         character(len=19), intent(in) :: list_inst
         real(kind=8), intent(in) :: tole
-        integer, intent(in) :: nb_inst
-        integer, intent(out) :: nume_end
+        integer(kind=8), intent(in) :: nb_inst
+        integer(kind=8), intent(out) :: nume_end
     end subroutine nmdifi
 end interface

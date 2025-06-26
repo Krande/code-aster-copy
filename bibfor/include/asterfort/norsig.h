@@ -20,7 +20,7 @@
 !
 interface
     function norsig(sigma, nbsig)
-        integer :: nbsig
+        integer(kind=8) :: nbsig
         real(kind=8) :: sigma(nbsig)
         real(kind=8) :: norsig
     end function norsig

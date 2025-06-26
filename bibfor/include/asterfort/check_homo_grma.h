@@ -21,6 +21,6 @@ interface
     subroutine check_homo_grma(cara, nval)
         implicit none
         character(len=*), intent(in) :: cara(*)
-        integer, intent(in) :: nval
+        integer(kind=8), intent(in) :: nval
     end subroutine
 end interface

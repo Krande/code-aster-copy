@@ -22,11 +22,11 @@ interface
     subroutine irrini(fami, kpg, ksp, typess, essai,&
                       mod, nmat, materf, yd, deps,&
                       dy)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: typess
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: typess
         real(kind=8) :: essai
         character(len=8) :: mod
         real(kind=8) :: materf(nmat, 2)

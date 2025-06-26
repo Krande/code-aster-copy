@@ -18,7 +18,7 @@
 !
 interface
     subroutine char_eval_fonc(load, mesh, geomDime, param)
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=5), intent(in)  :: param
         character(len=8), intent(in)  :: load, mesh
     end subroutine char_eval_fonc

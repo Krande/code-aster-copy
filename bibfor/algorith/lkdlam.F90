@@ -25,7 +25,7 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv, &
 #include "asterfort/lkdepp.h"
 #include "asterfort/lkdfdx.h"
 #include "asterfort/r8inir.h"
-    integer :: varv, nbmat
+    integer(kind=8) :: varv, nbmat
     real(kind=8) :: sm(6), im, deps(6), depsv(6), mater(nbmat, 2)
     real(kind=8) :: dgamv, gp(6), devgii, paraep(3), varpl(4), dfdsp(6)
     real(kind=8) :: vinm(7), dlam, de(6, 6)
@@ -51,7 +51,7 @@ subroutine lkdlam(varv, nbmat, mater, deps, depsv, &
 ! OUT : DLAM  :  VALEUR DE DELTA LAMBDA  ELASTOPLASTIQUE ----------
 ! =================================================================
     common/tdim/ndt, ndi
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
     real(kind=8) :: zero, deux, trois
     real(kind=8) :: degp(6), dfdegp, derpar(3), dfdxip, dfdsig
     real(kind=8) :: sigint(6), sigv(6), sigt(6)

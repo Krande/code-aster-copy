@@ -35,9 +35,9 @@ subroutine te0395(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
     real(kind=8) :: bsigm(3, 8), geo(24), sigtmp(6), ftemp(24), sigref
-    integer :: jgano, nno, k, npg1, i, j, ivectu, ndim, nnos
-    integer :: ipoids, ivf, idfde, igeom, jvSief, imate, jvDisp
-    integer :: icomp, ii, iretc, iretd
+    integer(kind=8) :: jgano, nno, k, npg1, i, j, ivectu, ndim, nnos
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, jvSief, imate, jvDisp
+    integer(kind=8) :: icomp, ii, iretc, iretd
     blas_int :: b_incx, b_incy, b_n
 ! DEB ------------------------------------------------------------------
 !

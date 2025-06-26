@@ -29,11 +29,11 @@
               character(len=8), intent(in) :: maille
               character(len=8), intent(in) :: noeud
               character(len=8), intent(in) :: cmp
-              integer, intent(in) :: npoint
-              integer, intent(in) :: nusp
-              integer, intent(in) :: ivari
+              integer(kind=8), intent(in) :: npoint
+              integer(kind=8), intent(in) :: nusp
+              integer(kind=8), intent(in) :: ivari
               character(len=16), intent(in) :: nomvari
-              integer, intent(in) :: nbordr
-              integer, intent(in) :: lordr(*)
+              integer(kind=8), intent(in) :: nbordr
+              integer(kind=8), intent(in) :: lordr(*)
             end subroutine focrr0
           end interface 

@@ -31,7 +31,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode, &
 #include "asterfort/utmess.h"
 !
     character(len=*) :: norm, para
-    integer :: nbmode, neq, lmatr, ddlexc(*)
+    integer(kind=8) :: nbmode, neq, lmatr, ddlexc(*)
     real(kind=8) :: vecpro(neq, *), resufr(nbmode, *), xmastr(3), coef(*)
 !     NORMALISATION DE VECTEURS ET DE GRANDEURS MODALES
 !     ------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine vpnorm(norm, para, lmatr, neq, nbmode, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ie, im, indg, isign, numddl
+    integer(kind=8) :: ie, im, indg, isign, numddl
     real(kind=8), pointer :: poi1(:) => null()
     real(kind=8), pointer :: poi2(:) => null()
 !

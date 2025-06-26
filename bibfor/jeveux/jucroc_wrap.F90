@@ -27,7 +27,7 @@ subroutine jucroc_wrap(nomc, nooc, nuoc, dim, pc)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
     character(len=*) :: nomc, nooc
-    integer :: nuoc, dim
+    integer(kind=8) :: nuoc, dim
     type(c_ptr) :: pc
 !     CREATION D'UN OBJET DE COLLECTION
 !     ------------------------------------------------------------------

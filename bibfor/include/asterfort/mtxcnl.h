@@ -25,9 +25,9 @@ interface
         character(len=*) :: typcst
         real(kind=8) :: const(2)
         character(len=1) :: typmat
-        integer :: lmat
+        integer(kind=8) :: lmat
         character(len=1) :: typres
-        integer :: lres
-        integer :: neq
+        integer(kind=8) :: lres
+        integer(kind=8) :: neq
     end subroutine mtxcnl
 end interface

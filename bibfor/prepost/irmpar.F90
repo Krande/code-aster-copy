@@ -34,8 +34,8 @@ subroutine irmpar(nomcon, ifichi, paraListNb, paraListName)
 #include "asterfort/utmess.h"
 !
     character(len=*) :: nomcon
-    integer :: ifichi
-    integer, intent(in) :: paraListNb
+    integer(kind=8) :: ifichi
+    integer(kind=8), intent(in) :: paraListNb
     character(len=16), pointer :: paraListName(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,10 +51,10 @@ subroutine irmpar(nomcon, ifichi, paraListNb, paraListName)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: edleaj, codret, hdfok, medok
+    integer(kind=8) :: edleaj, codret, hdfok, medok
     med_idt :: idfimd
-    integer :: iPara
-    integer :: typflo
+    integer(kind=8) :: iPara
+    integer(kind=8) :: typflo
     parameter(typflo=6)
     character(len=1) :: saux01
     character(len=8) :: saux08

@@ -22,10 +22,10 @@ interface
     subroutine moytpg(fami, kpg, nspg, poum, temp,&
                       iret)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: nspg
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: nspg
         character(len=*), intent(in) :: poum
         real(kind=8), intent(out) :: temp
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine moytpg
 end interface

@@ -22,7 +22,7 @@ interface
     subroutine get_jvbasename(bas_, numext, path)
         implicit none
         character(len=*), intent(in) :: bas_
-        integer, intent(in) :: numext
+        integer(kind=8), intent(in) :: numext
         character(len=*), intent(out) :: path
     end subroutine get_jvbasename
 end interface

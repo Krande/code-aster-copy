@@ -31,7 +31,7 @@ interface
                       mprt1n   , mprt2n      , mprnt1, mprnt2,&
                       taujeu1  , taujeu2     ,&
                       dnepmait1, dnepmait2)
-        integer, intent(in) :: ndim, nnm
+        integer(kind=8), intent(in) :: ndim, nnm
         aster_logical, intent(in) :: l_large_slip
         real(kind=8), intent(in) :: dffm(2, 9), ddffm(3,9)
         real(kind=8), intent(in) :: elem_mast_coor(9, 3), ddepmam(9, 3)

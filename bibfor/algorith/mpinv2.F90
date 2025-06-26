@@ -53,8 +53,8 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu, &
 #include "asterfort/rslsvd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbmesu, nbmode, nbabs
-    integer :: vali
+    integer(kind=8) :: nbmesu, nbmode, nbabs
+    integer(kind=8) :: vali
     real(kind=8) :: phi(nbmesu, nbmode)
     real(kind=8) :: valr
     real(kind=8) :: rmesu(nbmesu, nbabs), reta(nbmode, nbabs)
@@ -63,8 +63,8 @@ subroutine mpinv2(nbmesu, nbmode, nbabs, phi, rmesu, &
     real(kind=8) :: coef(*)
     aster_logical :: lfonct
 ! ----------------------------------------------------------------------
-    integer :: imod, jmod, imes, iabs, ierr, ibid, jmes
-    integer :: lscdmb, lwks, lphiph, lphitp, lmatsy, lwork, leta, lvals, lu, lv
+    integer(kind=8) :: imod, jmod, imes, iabs, ierr, ibid, jmes
+    integer(kind=8) :: lscdmb, lwks, lphiph, lphitp, lmatsy, lwork, leta, lvals, lu, lv
     real(kind=8) :: alpha, eps
     aster_logical :: nul
     character(len=3) :: method

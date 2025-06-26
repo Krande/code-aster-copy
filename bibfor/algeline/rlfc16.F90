@@ -27,7 +27,7 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
 #include "asterfort/mlnmin.h"
 #include "asterfort/mltdca.h"
 #include "asterfort/wkvect.h"
-    integer :: neq, nbsol, typsym
+    integer(kind=8) :: neq, nbsol, typsym
     character(len=*) :: nommat
     complex(kind=8) :: cxsol(neq, *)
 !     ------------------------------------------------------------------
@@ -56,13 +56,13 @@ subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
     character(len=24) :: nomp08, nomp09, nomp10, nomp11, nomp12, nomp13, nomp14
     character(len=24) :: nomp15, nomp16, nomp17, nomp18, nomp19, nomp20
 !     -------------------------------------------------- POINTEURS
-    integer :: pointr, desc
-    integer :: nouv, anc, supnd
-    integer :: seq, adress, lgsn
-    integer :: decal, global
-    integer :: ncbloc, lgbloc, nbloc, nbsn, ad, trav
-    integer :: lgblma, points
-    integer :: i
+    integer(kind=8) :: pointr, desc
+    integer(kind=8) :: nouv, anc, supnd
+    integer(kind=8) :: seq, adress, lgsn
+    integer(kind=8) :: decal, global
+    integer(kind=8) :: ncbloc, lgbloc, nbloc, nbsn, ad, trav
+    integer(kind=8) :: lgblma, points
+    integer(kind=8) :: i
     character(len=14) :: nu
 !
 !     ------------------------------------------------------------------

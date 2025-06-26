@@ -48,11 +48,11 @@ subroutine mnlaft(x, y, h, nt, pq)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    integer :: h, nt
+    integer(kind=8) :: h, nt
     real(kind=8) :: x(2*h+1), y(2*h+1), pq(2*h+1)
 !
-    integer :: ixf, iyf, ixyf
-    integer :: k
+    integer(kind=8) :: ixf, iyf, ixyf
+    integer(kind=8) :: k
 !
     call jemarq()
 !

@@ -27,11 +27,11 @@ subroutine select_dof_gene(nume_equa_genez, nb_cmp, cata_cmp, list_cmp, list_equ
 !
 !
     character(len=*), intent(in) :: nume_equa_genez
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=8), pointer, optional :: cata_cmp(:)
     character(len=8), pointer, optional :: list_cmp(:)
-    integer, pointer, optional :: list_equa(:)
-    integer, pointer, optional :: tabl_equa(:, :)
+    integer(kind=8), pointer, optional :: list_equa(:)
+    integer(kind=8), pointer, optional :: tabl_equa(:, :)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,12 +59,12 @@ subroutine select_dof_gene(nume_equa_genez, nb_cmp, cata_cmp, list_cmp, list_equ
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_equa, i_cmp, nb_equa
-    integer :: node_nume
+    integer(kind=8) :: i_equa, i_cmp, nb_equa
+    integer(kind=8) :: node_nume
     character(len=8) :: name_cmp
     character(len=19) :: nume_equa_gene
-    integer, pointer :: v_desc(:) => null()
-    integer, pointer :: v_deeq(:) => null()
+    integer(kind=8), pointer :: v_desc(:) => null()
+    integer(kind=8), pointer :: v_deeq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

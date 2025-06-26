@@ -24,11 +24,11 @@ interface
                           teta1, teta2, dt, ppas, theta, fl3d,&
                           end3d, wpl3, vwpl33, vwpl33t, dt3, dr3, ipzero,&
                           ngf, rc00, var0, varf, sigf6d, matdechac, rhov, ierr1)
-        integer, intent(in) :: ngf
+        integer(kind=8), intent(in) :: ngf
         real(kind=8), intent(in) :: dt3(3)
         real(kind=8), intent(in) :: dr3(3)
-        integer, intent(in) :: iadrmat
-        integer, intent(in) :: ipzero(ngf)
+        integer(kind=8), intent(in) :: iadrmat
+        integer(kind=8), intent(in) :: ipzero(ngf)
         real(kind=8), intent(in) :: xmat(*)
         real(kind=8), intent(in) :: sigmf6(6)
         real(kind=8), intent(in) :: epstf6(6)
@@ -49,6 +49,6 @@ interface
         real(kind=8), intent(out) :: sigf6d(6)
         real(kind=8), intent(out) :: matdechac(6,6)
         real(kind=8), intent(out) :: rhov
-        integer, intent(out) :: ierr1
+        integer(kind=8), intent(out) :: ierr1
     end subroutine rgiRenfoStress
 end interface

@@ -39,7 +39,7 @@ subroutine endo3d(wpl3, vwpl33, vwpl33t, wplx3, vwplx33, vwplx33t, &
 #include "asterfort/indice1.h"
 #include "asterfort/indice0.h"
 
-    integer i, j, k, l
+    integer(kind=8) i, j, k, l
 
     real(kind=8) :: sigf6(6), sigf6d(6), rt33(3, 3), ref33(3, 3)
     real(kind=8) :: gft, long3(3)
@@ -50,7 +50,7 @@ subroutine endo3d(wpl3, vwpl33, vwpl33t, wplx3, vwplx33, vwplx33t, &
     real(kind=8) :: ekdc, dc, dt3(3), dt1
     real(kind=8) :: xmt, sigefft
     aster_logical ::  iso, dtiso, faux
-    integer ndim, ifour
+    integer(kind=8) ndim, ifour
     real(kind=8) :: eprg00, dtr, dim3, epeqpc
 
     real(kind=8) :: dr3(3), wl3(3)
@@ -76,12 +76,12 @@ subroutine endo3d(wpl3, vwpl33, vwpl33t, wplx3, vwplx33, vwplx33t, &
 
 !     matrice des en do de traction
     real(kind=8) :: umdt66(6, 6), umdr66(6, 6)
-    integer errg
+    integer(kind=8) errg
 
 !     matrice pour methode e Gauss
-    integer ngf
+    integer(kind=8) ngf
     real(kind=8) :: x(ngf), b(ngf), a(ngf, (ngf+1))
-    integer ipzero(ngf)
+    integer(kind=8) ipzero(ngf)
 
 !     deformation equivalente pour endo grand lors de la reouverture
 !     de fissure (lorsque la fissure se reouvre on a 2*epsmt6

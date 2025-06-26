@@ -44,21 +44,21 @@ subroutine mnlldr(ind, imat, neq, ninc, nd, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: ind, imat(2), neq, ninc, nd, nchoc, h, hf
+    integer(kind=8) :: ind, imat(2), neq, ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, xcdl, adime, xtemp
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: jeu, eta, alpha
-    integer :: il, itemp1, itemp2
-    integer :: deb, ddl, j, i, nddl
-    integer :: icdl, iadim, itemp, k
-    integer :: ncmp, hind, hfind, nddlx, nddly
+    integer(kind=8) :: il, itemp1, itemp2
+    integer(kind=8) :: deb, ddl, j, i, nddl
+    integer(kind=8) :: icdl, iadim, itemp, k
+    integer(kind=8) :: ncmp, hind, hfind, nddlx, nddly
     aster_logical :: stp
-    integer, pointer :: vnddl(:) => null()
-    integer, pointer :: neqs(:) => null()
+    integer(kind=8), pointer :: vnddl(:) => null()
+    integer(kind=8), pointer :: neqs(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
-    integer, pointer :: vncmp(:) => null()
+    integer(kind=8), pointer :: vncmp(:) => null()
     real(kind=8), pointer :: raid(:) => null()
     real(kind=8), pointer :: reg(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()

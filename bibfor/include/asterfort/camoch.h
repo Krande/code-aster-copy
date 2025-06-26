@@ -27,6 +27,6 @@ interface
         character(len=19) :: raid
         character(len=19) :: mass
         character(len=19) :: raildl
-        integer :: inord
+        integer(kind=8) :: inord
     end subroutine camoch
 end interface

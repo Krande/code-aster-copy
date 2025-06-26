@@ -22,10 +22,10 @@ interface
     subroutine sele_node_elem(modelz       , nb_elem_type, list_elem_type, list_node,nb_node_found,&
                               pre_select_elem)
         character(len=*), intent(in) :: modelz
-        integer, intent(in) :: nb_elem_type
+        integer(kind=8), intent(in) :: nb_elem_type
         character(len=16), pointer :: list_elem_type(:)
-        integer, pointer :: list_node(:)
-        integer, intent(out) :: nb_node_found
-        integer, pointer, optional :: pre_select_elem(:)
+        integer(kind=8), pointer :: list_node(:)
+        integer(kind=8), intent(out) :: nb_node_found
+        integer(kind=8), pointer, optional :: pre_select_elem(:)
     end subroutine sele_node_elem
 end interface

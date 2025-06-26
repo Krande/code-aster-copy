@@ -20,7 +20,7 @@
 !
 interface
     subroutine dcalph(x, y, nbpts, pe)
-        integer :: nbpts
+        integer(kind=8) :: nbpts
         real(kind=8) :: x(nbpts)
         real(kind=8) :: y(nbpts)
         real(kind=8) :: pe

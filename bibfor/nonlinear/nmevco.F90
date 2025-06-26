@@ -36,10 +36,10 @@ subroutine nmevco(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
 #include "asterfort/utdidt.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: i_echec
-    integer, intent(out) :: i_echec_acti
+    integer(kind=8), intent(in) :: i_echec
+    integer(kind=8), intent(out) :: i_echec_acti
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,16 +58,16 @@ subroutine nmevco(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbliai, ip
-    integer :: iliai
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbliai, ip
+    integer(kind=8) :: iliai
     character(len=24) :: numlia, ctevco
-    integer :: jnumli, jctevc
+    integer(kind=8) :: jnumli, jctevc
     real(kind=8) :: etacin, etacfi, etacol
     real(kind=8) :: fincol, subdur
     real(kind=8) :: instam, instap
     aster_logical :: levent
-    integer :: zeven
+    integer(kind=8) :: zeven
 !
 ! --------------------------------------------------------------------------------------------------
 !

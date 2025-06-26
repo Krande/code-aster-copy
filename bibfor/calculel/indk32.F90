@@ -18,12 +18,12 @@
 !
 function indk32(lk32, k32z, rang, nbk32)
     implicit none
-    integer :: indk32
+    integer(kind=8) :: indk32
 !
 ! INSPI INDIK24
 !     ARGUMENTS:
 !     ----------
-    integer :: nbk32, rang
+    integer(kind=8) :: nbk32, rang
     character(len=*) :: k32z, lk32(*)
     character(len=32) :: k32, lk32z
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ function indk32(lk32, k32z, rang, nbk32)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 ! DEB-------------------------------------------------------------------
 !
     k32 = k32z

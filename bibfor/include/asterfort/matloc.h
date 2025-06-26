@@ -24,11 +24,11 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: connex_inv
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=8), intent(in) :: node_name
-        integer, intent(in) :: node_nume
-        integer, intent(in) :: nb_repe_elem
-        integer, intent(in) :: list_repe_elem(*)
+        integer(kind=8), intent(in) :: node_nume
+        integer(kind=8), intent(in) :: nb_repe_elem
+        integer(kind=8), intent(in) :: list_repe_elem(*)
         real(kind=8), intent(out) :: matr_glob_loca(3, 3)
     end subroutine matloc
 end interface

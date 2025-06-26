@@ -24,6 +24,6 @@ interface
         character(len=24) :: mail2d
         character(len=24) :: mail3d
         character(len=24) :: mailto
-        integer :: nbma2d
+        integer(kind=8) :: nbma2d
     end subroutine srlima
 end interface

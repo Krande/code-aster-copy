@@ -60,14 +60,14 @@ subroutine axacti(basmod, numa, nbdiam, lisnu, nblis, &
 #include "asterfort/utmess.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, icomp, inu, j, lldesc, llnoa
-    integer :: nbacti, nbcmp, nbcpmx, nbdiam, nbec, nblis
-    integer :: nbnoa, nbnot, numa
+    integer(kind=8) :: i, icomp, inu, j, lldesc, llnoa
+    integer(kind=8) :: nbacti, nbcmp, nbcpmx, nbdiam, nbec, nblis
+    integer(kind=8) :: nbnoa, nbnot, numa
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     character(len=8) :: basmod, intf
     aster_logical :: okass
-    integer :: idec(nbcpmx), lisnu(nblis)
+    integer(kind=8) :: idec(nbcpmx), lisnu(nblis)
 !
 !-----------------------------------------------------------------------
 !

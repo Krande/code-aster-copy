@@ -49,7 +49,7 @@ subroutine gdfine(kp, nno, pjacob, en, grani, &
     real(kind=8) :: v3(3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k, kp, ne, nno
+    integer(kind=8) :: i, j, k, kp, ne, nno
     real(kind=8) :: coef, pjacob, un
 !-----------------------------------------------------------------------
     un = 1.d0

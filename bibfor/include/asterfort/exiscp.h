@@ -24,10 +24,10 @@ interface
         character(len=8) :: nomcmp
         character(len=8) :: char
         character(len=8) :: modele
-        integer :: nbnd
+        integer(kind=8) :: nbnd
         character(len=3) :: typend
         character(len=8) :: nomnd(*)
-        integer :: numnd(*)
-        integer :: resu(*)
+        integer(kind=8) :: numnd(*)
+        integer(kind=8) :: resu(*)
     end subroutine exiscp
 end interface

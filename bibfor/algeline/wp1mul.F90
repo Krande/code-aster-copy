@@ -32,8 +32,8 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf, &
 #include "asterfort/preres.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/wp1dft.h"
-    integer :: mxresf, nprec
-    integer :: lmasse, lamor, lraide, nitf, nbfreq, resufi(mxresf, *)
+    integer(kind=8) :: mxresf, nprec
+    integer(kind=8) :: lmasse, lamor, lraide, nitf, nbfreq, resufi(mxresf, *)
     complex(kind=8) :: ptorig(3, *)
     real(kind=8) :: tolf, resufr(mxresf, *)
     character(len=19) :: solveu
@@ -63,10 +63,10 @@ subroutine wp1mul(lmasse, lamor, lraide, ptorig, tolf, &
     character(len=24) :: nmat(3), ndynam
     complex(kind=8) :: res0, res1, res2, h0, h1, lambda, delta, zz, g0, gg, gg1
     complex(kind=8) :: gg2, z0, z1, z2
-    integer :: idet0, idet1, idet2, ibid
+    integer(kind=8) :: idet0, idet1, idet2, ibid
     real(kind=8) :: det0, det1, det2, rn1, rn2, err, errz, const(6)
 !-----------------------------------------------------------------------
-    integer :: i, icomb, imode, istu, iter, ldynam, lzero
+    integer(kind=8) :: i, icomb, imode, istu, iter, ldynam, lzero
 !-----------------------------------------------------------------------
     data nomddl/'        '/
 !     ------------------------------------------------------------------

@@ -72,17 +72,17 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, intent(in) :: icomp
+    integer(kind=8), intent(in) :: icomp
 !
 !   -0.2- Local variables
     aster_logical     :: lnoeu2, friction
-    integer           :: i, n1, ibid, ind, nbbuck
-    integer           :: jcoor, iret, nbmcl, nbma, im
-    integer           :: jmama, nbnma, ier, nbno1, nbno2
-    integer           :: ino1, ino2, ind1, ind2, irett
-    integer           :: namtan, nbmode, ind_mmax, info, vali(10)
-    integer           :: j, neq, start, finish, mxlevel, nbchoc
-    integer           :: nl_type, nexcit, unidir
+    integer(kind=8)           :: i, n1, ibid, ind, nbbuck
+    integer(kind=8)           :: jcoor, iret, nbmcl, nbma, im
+    integer(kind=8)           :: jmama, nbnma, ier, nbno1, nbno2
+    integer(kind=8)           :: ino1, ino2, ind1, ind2, irett
+    integer(kind=8)           :: namtan, nbmode, ind_mmax, info, vali(10)
+    integer(kind=8)           :: j, neq, start, finish, mxlevel, nbchoc
+    integer(kind=8)           :: nl_type, nexcit, unidir
 !
     real(kind=8)      :: ctang, ktang, fric_static, fric_dynamic, r8bid
     real(kind=8)      :: gap, xjeu, k, amor, mmax, tdepl2, gdepl(3), ldepl(3)
@@ -106,8 +106,8 @@ subroutine dtmprep_noli_choc(sd_dtm_, sd_nl_, icomp)
 !
     complex(kind=8)   :: cbid
 
-    integer, pointer       :: ddlcho(:) => null()
-    integer, pointer       :: elems(:) => null()
+    integer(kind=8), pointer       :: ddlcho(:) => null()
+    integer(kind=8), pointer       :: elems(:) => null()
     real(kind=8), pointer       :: coor_no1(:) => null()
     real(kind=8), pointer       :: coor_no2(:) => null()
     real(kind=8), pointer       :: bc_norm(:) => null()

@@ -68,24 +68,24 @@ subroutine te0377(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: ifm, niv
-    integer :: iadzi, iazk24
-    integer :: ibid, iaux, iret, itab(7), noe(9, 6, 4)
-    integer :: igeom, jtime
-    integer :: ierr, ivois
-    integer :: imate
-    integer :: iad
-    integer :: ifovr, ifovf
-    integer :: ipes, irot
-    integer :: iref1, iref2, ivf2
-    integer :: ndim
-    integer :: nno, nnos, npg, ipoids, ivf, idfde, jgano
-    integer :: nnof, npgf
-    integer :: nbcmp, nbpar
-    integer :: ipg
-    integer :: ipgf
-    integer :: nbf
-    integer :: tymvol, ndegre, ifa, tyv
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iadzi, iazk24
+    integer(kind=8) :: ibid, iaux, iret, itab(7), noe(9, 6, 4)
+    integer(kind=8) :: igeom, jtime
+    integer(kind=8) :: ierr, ivois
+    integer(kind=8) :: imate
+    integer(kind=8) :: iad
+    integer(kind=8) :: ifovr, ifovf
+    integer(kind=8) :: ipes, irot
+    integer(kind=8) :: iref1, iref2, ivf2
+    integer(kind=8) :: ndim
+    integer(kind=8) :: nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: nnof, npgf
+    integer(kind=8) :: nbcmp, nbpar
+    integer(kind=8) :: ipg
+    integer(kind=8) :: ipgf
+    integer(kind=8) :: nbf
+    integer(kind=8) :: tymvol, ndegre, ifa, tyv
 !
     real(kind=8) :: r8bid3(3)
     real(kind=8) :: dfdx(9), dfdy(9), hk, poids
@@ -101,11 +101,11 @@ subroutine te0377(option, nomte)
     real(kind=8) :: tx(3), ty(3)
     real(kind=8) :: sig11(3), sig22(3), sig12(3)
     real(kind=8) :: e, nu, rho, valres(3)
-    integer, parameter :: nb_para = 3
+    integer(kind=8), parameter :: nb_para = 3
     real(kind=8) :: para_vale(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'X', 'Y', 'Z'/)
 !
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=3) :: typnor
     character(len=8) :: typmav, elrefe
     character(len=8) :: elreff, elrefb

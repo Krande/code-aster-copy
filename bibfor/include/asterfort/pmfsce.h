@@ -20,7 +20,7 @@
 !
 interface
     subroutine pmfsce(nno, x, y, surf, centre)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: x(4)
         real(kind=8) :: y(4)
         real(kind=8) :: surf

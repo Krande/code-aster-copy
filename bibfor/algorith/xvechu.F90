@@ -41,9 +41,9 @@ subroutine xvechu(ndim, nnop, nnops, ddls, ddlm, pla, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, ndim, ier, nnop, ddls, ddlm, nnops, in, pla(27)
-    integer :: pli, ncompn, jheavn, nfiss, hea_fa(2)
-    integer :: ifiss, nfh, jheafa, ifa, ncomph, ifh, dec
+    integer(kind=8) :: i, j, k, ndim, ier, nnop, ddls, ddlm, nnops, in, pla(27)
+    integer(kind=8) :: pli, ncompn, jheavn, nfiss, hea_fa(2)
+    integer(kind=8) :: ifiss, nfh, jheafa, ifa, ncomph, ifh, dec
     real(kind=8) :: h(3), hfix(3), ptr(3, 3), lamb(3), am(3), delta(6)
     real(kind=8) :: r, p(3, 3), ffp(27), jac, ffc(16), ffi
     real(kind=8) :: vect(560), coefi

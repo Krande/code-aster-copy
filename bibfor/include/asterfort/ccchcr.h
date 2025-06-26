@@ -23,11 +23,11 @@ interface
                       nb_cmp_out, val_out, ichk)
         character(len=16), intent(in) :: crit
         character(len=8), intent(in) :: name_gd
-        integer, intent(in) :: nb_val_in
+        integer(kind=8), intent(in) :: nb_val_in
         real(kind=8), intent(in) :: val_in(nb_val_in)
         character(len=8), intent(in) :: cmp_in(nb_val_in)
-        integer, intent(in) :: nb_cmp_out
+        integer(kind=8), intent(in) :: nb_cmp_out
         real(kind=8), intent(out) :: val_out(nb_cmp_out)
-        integer, intent(out) :: ichk
+        integer(kind=8), intent(out) :: ichk
     end subroutine ccchcr
 end interface

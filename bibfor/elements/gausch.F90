@@ -34,10 +34,10 @@ subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
 !......................................................................C
 !
     implicit none
-    integer :: npgxyz(3)
+    integer(kind=8) :: npgxyz(3)
     real(kind=8) :: xpg(1), ypg(1), zpg(1), hpg(1)
 !----------------------------------------------------------------------
-    integer :: npari, i, j, k, npi
+    integer(kind=8) :: npari, i, j, k, npi
     real(kind=8) :: a(4), h(4), coord(3, 4), hpgxyz(3, 4)
 !----------------------------------------------------------------------
 !

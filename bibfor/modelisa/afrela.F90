@@ -37,12 +37,12 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
 !
 !  Person in charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nbterm
+    integer(kind=8), intent(in) :: nbterm
     real(kind=8), intent(in) :: coef_real(nbterm)
     complex(kind=8), intent(in) :: coef_cplx(nbterm)
     character(len=8), intent(in) :: dof_name(nbterm)
     character(len=8), intent(in) :: node_name(nbterm)
-    integer, intent(in) :: repe_type(nbterm)
+    integer(kind=8), intent(in) :: repe_type(nbterm)
     real(kind=8), intent(in) :: repe_defi(3, nbterm)
     real(kind=8), intent(in) :: vale_real
     complex(kind=8), intent(in) :: vale_cplx
@@ -91,16 +91,16 @@ subroutine afrela(coef_real, coef_cplx, dof_name, node_name, repe_type, &
 !
     real(kind=8) :: vale_real_norm
     complex(kind=8) :: vale_cplx_norm
-    integer :: imult
+    integer(kind=8) :: imult
     character(len=8) :: dof_name_tran(3), dof_name_rota(3)
     character(len=19) :: lisrel
-    integer :: idbeta, idcoef, idim, idnbre
-    integer :: idpoin, idsurc, ifm, ipoint, iret
-    integer :: iterm, idirect, lonuti, lveclr, mdim, nbrel0
-    integer :: nbrela, nbrmax, nbterr, niv, k
+    integer(kind=8) :: idbeta, idcoef, idim, idnbre
+    integer(kind=8) :: idpoin, idsurc, ifm, ipoint, iret
+    integer(kind=8) :: iterm, idirect, lonuti, lveclr, mdim, nbrel0
+    integer(kind=8) :: nbrela, nbrmax, nbterr, niv, k
     real(kind=8) :: norm_coef
     aster_logical :: l_rota
-    integer, pointer :: rlnt(:) => null()
+    integer(kind=8), pointer :: rlnt(:) => null()
     character(len=8), pointer :: rlno(:) => null()
     character(len=8), pointer :: rldd(:) => null()
 !

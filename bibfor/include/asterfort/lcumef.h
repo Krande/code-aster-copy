@@ -34,7 +34,7 @@ interface
         real(kind=8) :: depsi(6)
         real(kind=8) :: epsfm(6)
         real(kind=8) :: sigi(6)
-        integer :: nstrs
+        integer(kind=8) :: nstrs
         real(kind=8) :: sigt(6)
     end subroutine lcumef
 end interface

@@ -23,11 +23,11 @@ interface
                       resure, resuim, ier)
         character(len=*) :: codmes
         character(len=*) :: nomf
-        integer :: nbpu
+        integer(kind=8) :: nbpu
         character(len=*) :: nompu(*)
         real(kind=8) :: valpu(*)
         real(kind=8) :: resure
         real(kind=8) :: resuim
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine fointc
 end interface

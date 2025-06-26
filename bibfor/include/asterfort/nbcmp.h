@@ -20,7 +20,7 @@
 !
 interface
     function nbcmp(gd)
-        integer :: gd
-        integer :: nbcmp
+        integer(kind=8) :: gd
+        integer(kind=8) :: nbcmp
     end function nbcmp
 end interface

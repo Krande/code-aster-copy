@@ -45,7 +45,7 @@ subroutine srdepp(vin, nvi, nbmat, mater, paraep, derpar)
     !!! Variable globales
     !!!
 
-    integer :: nbmat, nvi
+    integer(kind=8) :: nbmat, nvi
     real(kind=8) :: vin(nvi), paraep(3), mater(nbmat, 2), derpar(3)
 
     !!!

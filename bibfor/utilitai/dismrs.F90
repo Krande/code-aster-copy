@@ -39,7 +39,7 @@ subroutine dismrs(questionZ, objNameZ, repi, repkz, ierd)
 !
     character(len=*), intent(in) :: questionZ, objNameZ
     character(len=*), intent(out)  :: repkz
-    integer, intent(out) :: repi, ierd
+    integer(kind=8), intent(out) :: repi, ierd
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,14 +58,14 @@ subroutine dismrs(questionZ, objNameZ, repi, repkz, ierd)
     character(len=24) :: valk(2)
     character(len=8) :: answer
     character(len=19) :: fieldResult
-    integer :: ibid
+    integer(kind=8) :: ibid
     character(len=24), pointer :: tach(:) => null()
     character(len=32) :: repk
     character(len=19) :: result
-    integer :: iStore, iField, iFieldName
-    integer :: iret
-    integer :: jvPara, jvStore
-    integer :: nbField, nbFound, nbFieldName, nbModeDyna, nbModeStat, nbStore
+    integer(kind=8) :: iStore, iField, iFieldName
+    integer(kind=8) :: iret
+    integer(kind=8) :: jvPara, jvStore
+    integer(kind=8) :: nbField, nbFound, nbFieldName, nbModeDyna, nbModeStat, nbStore
 !
 ! --------------------------------------------------------------------------------------------------
 !

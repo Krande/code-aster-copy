@@ -32,20 +32,20 @@ subroutine noligr(ligrz, igrel, numel, nunoeu, &
 #include "asterfort/assert.h"
 !
     character(len=*), intent(in) :: ligrz
-    integer, intent(in) :: igrel
-    integer, intent(in) :: numel
-    integer, intent(in) :: nunoeu
-    integer, intent(in) :: code
-    integer, intent(inout) :: inema
-    integer, intent(inout) :: nbno
-    integer, intent(in) :: jlgns
+    integer(kind=8), intent(in) :: igrel
+    integer(kind=8), intent(in) :: numel
+    integer(kind=8), intent(in) :: nunoeu
+    integer(kind=8), intent(in) :: code
+    integer(kind=8), intent(inout) :: inema
+    integer(kind=8), intent(inout) :: nbno
+    integer(kind=8), intent(in) :: jlgns
 
 !   -- arguments optionnels pour gagner du temps CPU :
     character(len=3), intent(in), optional ::  rapide
-    integer, intent(in), optional ::  jliel0
-    integer, intent(in), optional ::  jlielc
-    integer, intent(in), optional ::  jnema0
-    integer, intent(in), optional ::  jnemac
+    integer(kind=8), intent(in), optional ::  jliel0
+    integer(kind=8), intent(in), optional ::  jlielc
+    integer(kind=8), intent(in), optional ::  jnema0
+    integer(kind=8), intent(in), optional ::  jnemac
     aster_logical, intent(in), optional :: l_lag1
 
 !
@@ -88,11 +88,11 @@ subroutine noligr(ligrz, igrel, numel, nunoeu, &
 !------------------------------------------------------------------------
     character(len=19) :: ligr
     character(len=24) :: liel, nema
-    integer :: jnema, jnema02, jnemac2
-    integer :: jliel, jliel02, jlielc2
-    integer :: kligr, lonigr, lgnema
+    integer(kind=8) :: jnema, jnema02, jnemac2
+    integer(kind=8) :: jliel, jliel02, jlielc2
+    integer(kind=8) :: kligr, lonigr, lgnema
     aster_logical :: lrapid, l_lag1c
-    integer, save :: iprem = 0, numpoi, numse3
+    integer(kind=8), save :: iprem = 0, numpoi, numse3
 !-----------------------------------------------------------------------
     if (present(l_lag1)) then
         l_lag1c = l_lag1

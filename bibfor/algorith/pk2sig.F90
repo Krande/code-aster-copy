@@ -31,7 +31,7 @@ subroutine pk2sig(ndim, f, jac, pk2, sig, &
 !     LES CONTRAINTES DE CAUCHY SIG EN ENTREE N'ONT PAS DE RAC2
 !     LES CONTRAINTES PK2 EN SORTIE N'ONT PAS DE RAC2
 ! ----------------------------------------------------------------------
-    integer, intent(in) :: ndim, ind
+    integer(kind=8), intent(in) :: ndim, ind
     real(kind=8), intent(in) :: f(3, 3), jac
     real(kind=8), intent(inout) :: pk2(2*ndim), sig(2*ndim)
 !
@@ -42,10 +42,10 @@ subroutine pk2sig(ndim, f, jac, pk2, sig, &
 ! IN/OUT  SIG : CONTRAINTES DE CAUCHY
 ! IN  IND     : CHOIX
 !
-    integer :: pq, kl
+    integer(kind=8) :: pq, kl
     real(kind=8) :: ftf, fmm(3, 3), r8bid
-    integer, parameter ::  indi(6) = (/1, 2, 3, 1, 1, 2/)
-    integer, parameter ::  indj(6) = (/1, 2, 3, 2, 3, 3/)
+    integer(kind=8), parameter ::  indi(6) = (/1, 2, 3, 1, 1, 2/)
+    integer(kind=8), parameter ::  indj(6) = (/1, 2, 3, 2, 3, 3/)
     real(kind=8), parameter :: rind(6) = (/0.5d0, 0.5d0, 0.5d0, 0.70710678118655d0,&
                             &               0.70710678118655d0, 0.70710678118655d0/)
     real(kind=8), parameter :: rind1(6) = (/0.5d0, 0.5d0, 0.5d0, 1.d0, 1.d0, 1.d0/)

@@ -23,7 +23,7 @@ subroutine getRgiPara(nomres, nmatbe2)
     implicit none
 
     character(len=12), intent(out) :: nomres(*)
-    integer, intent(in) :: nmatbe2
+    integer(kind=8), intent(in) :: nmatbe2
 !
     nomres(1) = 'HYDR'
     nomres(2) = 'HYDS'

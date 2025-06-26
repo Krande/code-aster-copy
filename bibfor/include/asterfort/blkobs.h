@@ -20,7 +20,7 @@
 !
 interface 
     subroutine blkobs(matobs, obsdim,alpha,matprod)
-        integer,intent(in) :: obsdim(3)
+        integer(kind=8),intent(in) :: obsdim(3)
         character(len=24),intent(in) :: matobs(3)
         real(kind=8),intent(in) :: alpha
         character(len=24),intent(out) :: matprod(4)

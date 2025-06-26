@@ -22,9 +22,9 @@ interface
        subroutine couplagfp3d(a, ngf, na, nc,&
                               dpfa_ds, dpfa_dpg, dpg_depsa6, raideur66p)
         real(kind=8), intent(inout) :: a(ngf,ngf+1)
-        integer, intent(in) :: ngf
-        integer, intent(in) :: na
-        integer, intent(in) :: nc
+        integer(kind=8), intent(in) :: ngf
+        integer(kind=8), intent(in) :: na
+        integer(kind=8), intent(in) :: nc
         real(kind=8), intent(in) :: dpfa_ds(nc, 6)
         real(kind=8), intent(in) :: dpfa_dpg(nc)
         real(kind=8), intent(in) :: dpg_depsa6(6)

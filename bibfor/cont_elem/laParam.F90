@@ -38,7 +38,7 @@ subroutine laParam(parameters)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcont
+    integer(kind=8) :: jcont
 !
     call jevech('PCONFR', 'L', jcont)
 !

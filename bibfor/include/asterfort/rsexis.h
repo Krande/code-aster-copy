@@ -21,6 +21,6 @@
 interface
     subroutine rsexis(nomsd, ier)
         character(len=*) :: nomsd
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine rsexis
 end interface

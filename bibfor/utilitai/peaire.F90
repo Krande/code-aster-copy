@@ -35,15 +35,15 @@ subroutine peaire(resu, mesh, nbocc)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbocc
+    integer(kind=8) :: nbocc
     character(len=*) :: resu
     character(len=8), intent(in) :: mesh
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "AIRE_INTERNE"
 !     ------------------------------------------------------------------
 !
-    integer :: nbparr, ibid, iret, iocc, ng, ngb, jgb, igb, nbb
-    integer :: ifm, niv, iadgma
+    integer(kind=8) :: nbparr, ibid, iret, iocc, ng, ngb, jgb, igb, nbb
+    integer(kind=8) :: ifm, niv, iadgma
     parameter(nbparr=3)
     real(kind=8) :: valpar(nbparr), aire, long
     character(len=3) :: typarr(nbparr)

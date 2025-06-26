@@ -23,7 +23,7 @@ subroutine lkdfds(nbmat, mater, s, para, var, &
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
 #include "asterfort/r8inir.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2)
     real(kind=8) :: s(6), para(3), var(4), ucri
     real(kind=8) :: ds2hds(6), dfdsig(6)
@@ -43,7 +43,7 @@ subroutine lkdfds(nbmat, mater, s, para, var, &
 !     : UCRI  : LE TERME SOUS LA PUISSANCE DANS LE CRITERE --------
 ! OUT : DFDSIG : dF/dsig ------------------------------------------
 ! =================================================================
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
     real(kind=8) :: pref, sigc, rcos3t, h0c, h0e, htheta
     real(kind=8) :: zero, un, lgleps
     real(kind=8) :: a(6), kron(6)

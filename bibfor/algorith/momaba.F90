@@ -44,16 +44,16 @@ subroutine momaba(mailla)
 !
     character(len=8) :: mailla
 !
-    integer :: jtyma, nbmc, nbma, jnuma, i, ityp, n1, n2, i1, nbno
-    integer :: nbmat, jpoin, ifm, niv, jcon, ndim, nn, jnbma, nbnmf
-    integer :: ilcnx2, nbm1, kk, numa, i1sauv, i2sauv, nbnsf
+    integer(kind=8) :: jtyma, nbmc, nbma, jnuma, i, ityp, n1, n2, i1, nbno
+    integer(kind=8) :: nbmat, jpoin, ifm, niv, jcon, ndim, nn, jnbma, nbnmf
+    integer(kind=8) :: ilcnx2, nbm1, kk, numa, i1sauv, i2sauv, nbnsf
     aster_logical :: lnmf, lmodi, lconx
     parameter(nbmc=2)
     character(len=8) :: k8b, type
     character(len=16) :: tymocl(nbmc), motcle(nbmc)
     character(len=24) :: connex, nomjv
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: coninv(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: coninv(:) => null()
     real(kind=8), pointer :: conm(:) => null()
     real(kind=8), pointer :: coor(:) => null()
 !     ------------------------------------------------------------------

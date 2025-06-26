@@ -23,11 +23,11 @@ interface
                       ksp      , angl_naut, j_mater, option,&
                       epsi_varc)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: angl_naut(3)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: instan

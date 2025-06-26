@@ -22,8 +22,8 @@ interface
     subroutine cfmmex(defico, typexc, izone, numnoe, suppok)
         character(len=24) :: defico
         character(len=4) :: typexc
-        integer :: izone
-        integer :: numnoe
-        integer :: suppok
+        integer(kind=8) :: izone
+        integer(kind=8) :: numnoe
+        integer(kind=8) :: suppok
     end subroutine cfmmex
 end interface

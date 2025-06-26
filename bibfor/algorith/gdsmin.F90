@@ -28,7 +28,7 @@ subroutine gdsmin()
 ! COMMON GRANDES DEFORMATIONS SIMO - MIEHE
 !
 #include "asterfort/r8inir.h"
-    integer :: ind(3, 3), ind1(6), ind2(6)
+    integer(kind=8) :: ind(3, 3), ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6), id(6, 6)
     real(kind=8) :: bem(6), betr(6), dvbetr(6), eqbetr, trbetr
     real(kind=8) :: jp, dj, jm, dfb(3, 3)

@@ -43,7 +43,7 @@ subroutine detlsp(matasz, solvez)
 !
     character(len=19) :: solveu, matass
     character(len=24) :: metres, precon, solvbd, usersmbd, renumbd
-    integer ::  iret, pcpivbd, ibid
+    integer(kind=8) ::  iret, pcpivbd, ibid
     real(kind=8) :: r8bid, blrepsbd
     complex(kind=8) :: c16bid
     character(len=24), pointer :: slvk(:) => null()

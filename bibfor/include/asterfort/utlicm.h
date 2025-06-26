@@ -23,11 +23,11 @@ interface
                       cmpValidNb  , numcmp     ,&
                       ntncmp      , ntucmp)
         character(len=8), intent(in):: quantityName
-        integer, intent(in) :: cmpUserNb
+        integer(kind=8), intent(in) :: cmpUserNb
         character(len=8), pointer :: cmpUserName(:)
-        integer, intent(in) :: cmpCataNb
+        integer(kind=8), intent(in) :: cmpCataNb
         character(len=8), pointer :: cmpCataName(:)
-        integer, intent(out) :: cmpValidNb
+        integer(kind=8), intent(out) :: cmpValidNb
         character(len=*), intent(in) :: numcmp, ntncmp, ntucmp
     end subroutine utlicm
 end interface

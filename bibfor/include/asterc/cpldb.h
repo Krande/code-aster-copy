@@ -21,7 +21,7 @@
 interface
     subroutine cpldb(icompo, cpiter, ti, tf, numpas,&
                      nomvar, idim, taille, paramr, info)
-        integer :: icompo
+        integer(kind=8) :: icompo
         integer(kind=4) :: cpiter
         real(kind=8) :: ti
         real(kind=8) :: tf

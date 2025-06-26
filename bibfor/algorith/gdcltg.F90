@@ -33,7 +33,7 @@ subroutine gdcltg(df, e)
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
 !
-    integer :: ind1(6), ind2(6)
+    integer(kind=8) :: ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6)
     real(kind=8) :: lambda, mu, deuxmu, unk, troisk, cother
     real(kind=8) :: jm, dj, jp, djdf(3, 3)
@@ -49,7 +49,7 @@ subroutine gdcltg(df, e)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-    integer :: ij, kl, i, j, l, il, jl, ind12(3, 3)
+    integer(kind=8) :: ij, kl, i, j, l, il, jl, ind12(3, 3)
     real(kind=8) :: tre, coef, betr(6)
     blas_int :: b_incx, b_n
     data ind12/1, 4, 5, 4, 2, 6, 5, 6, 3/

@@ -28,7 +28,7 @@ function didern(sddisc, numins)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
     aster_logical :: didern
-    integer :: numins
+    integer(kind=8) :: numins
     character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ function didern(sddisc, numins)
 !
 !
 !
-    integer :: nbtemp, iret
+    integer(kind=8) :: nbtemp, iret
     character(len=24) :: tpsdit
 !
 ! ----------------------------------------------------------------------

@@ -19,7 +19,7 @@
 interface
     subroutine rsGetOneBehaviourFromResult(resultZ, nbStore, listStore, compor)
         character(len=*), intent(in) :: resultZ
-        integer, intent(in) :: nbStore, listStore(nbStore)
+        integer(kind=8), intent(in) :: nbStore, listStore(nbStore)
         character(len=*), intent(out) :: compor
     end subroutine rsGetOneBehaviourFromResult
 end interface

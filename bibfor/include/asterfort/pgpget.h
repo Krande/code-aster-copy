@@ -24,15 +24,15 @@ interface
                       ivect, rvect, cvect)
         character(len=*)          , intent(in) :: sd_pgp
         character(len=*)          , intent(in) :: param
-        integer,          optional, intent(in) :: iobs
+        integer(kind=8),          optional, intent(in) :: iobs
         character(len=24),optional, intent(out):: savejv
-        integer,          optional, intent(out):: lonvec
+        integer(kind=8),          optional, intent(out):: lonvec
         character(len=*), optional, intent(out):: kscal
-        integer,          optional, intent(out):: iscal
+        integer(kind=8),          optional, intent(out):: iscal
         real(kind=8),     optional, intent(out):: rscal
         complex(kind=8),  optional, intent(out):: cscal   
         character(len=*), optional, intent(out):: kvect(*)
-        integer,          optional, intent(out):: ivect(*)
+        integer(kind=8),          optional, intent(out):: ivect(*)
         real(kind=8),     optional, intent(out):: rvect(*)
         complex(kind=8),  optional, intent(out):: cvect(*)
     end subroutine pgpget

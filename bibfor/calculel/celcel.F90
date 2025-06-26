@@ -58,22 +58,22 @@ subroutine celcel(transf, cel1, base, cel2)
 ! ----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ima, ipt, ispt, icmp, nbma, ibid
-    integer :: jcesd1, jcesl1, jcesc1
-    integer :: jcesd2, jcesl2, nbgrel, igrel, debugr, nbel
-    integer :: nbpt, nbspt, ncmp2, iad1, iad2, imolo, nbspmx, iel, nbsp
-    integer :: ncmpg, nbvamx, nncp, ico
+    integer(kind=8) :: ima, ipt, ispt, icmp, nbma, ibid
+    integer(kind=8) :: jcesd1, jcesl1, jcesc1
+    integer(kind=8) :: jcesd2, jcesl2, nbgrel, igrel, debugr, nbel
+    integer(kind=8) :: nbpt, nbspt, ncmp2, iad1, iad2, imolo, nbspmx, iel, nbsp
+    integer(kind=8) :: ncmpg, nbvamx, nncp, ico
     character(len=19) :: ces1, ces2, ligrel, cel11, cel22
     character(len=16) :: optini, nompar
     character(len=8) :: ma, nomgd, typces, kbid
     character(len=24) :: valk(3)
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv1(:) => null()
     real(kind=8), pointer :: cesv2(:) => null()
-    integer, pointer :: vnbpt(:) => null()
-    integer, pointer :: vnbspt(:) => null()
+    integer(kind=8), pointer :: vnbpt(:) => null()
+    integer(kind=8), pointer :: vnbspt(:) => null()
 ! -DEB------------------------------------------------------------------
     call jemarq()
 !

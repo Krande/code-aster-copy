@@ -20,9 +20,9 @@
 !
 interface
     subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
-        integer, intent(in) :: domdist(*), nbdom
+        integer(kind=8), intent(in) :: domdist(*), nbdom
         integer(kind=4), intent(in) :: pgid(*)
         mpi_int :: mpicou
-        integer, intent(out) :: comm(*), tag(*)
+        integer(kind=8), intent(out) :: comm(*), tag(*)
     end subroutine build_tree_comm
 end interface

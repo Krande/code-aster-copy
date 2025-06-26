@@ -44,10 +44,10 @@ subroutine op0161()
     character(len=24) :: nomch
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ian, ibid, ich, ior, iordr, iret, jangl
-    integer :: jcara, jcham, jcoe, jjan, jmat, jmod, jnch
-    integer :: jnha, jnmo, jordr, jpara, jtch, jtmo, k, tord(1)
-    integer :: n1, n2, n3, nbangl, nbcham, nbordr, nbtrou
+    integer(kind=8) :: ian, ibid, ich, ior, iordr, iret, jangl
+    integer(kind=8) :: jcara, jcham, jcoe, jjan, jmat, jmod, jnch
+    integer(kind=8) :: jnha, jnmo, jordr, jpara, jtch, jtmo, k, tord(1)
+    integer(kind=8) :: n1, n2, n3, nbangl, nbcham, nbordr, nbtrou
 !
     real(kind=8) :: angle, rbid
 !-----------------------------------------------------------------------

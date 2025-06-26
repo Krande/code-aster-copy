@@ -42,13 +42,13 @@ subroutine lirtet(ifl, ilec, inom, cnl, nom, &
     character(len=8) :: cvz
     character(len=24) :: nom
     character(len=*) :: cv
-    integer :: deblig
+    integer(kind=8) :: deblig
     real(kind=8) :: rv
     aster_logical :: lnom, lent
 !
 !-----------------------------------------------------------------------
-    integer :: i, icl, ifl, ilec, inom, iv
-    integer :: lcv, nbigno
+    integer(kind=8) :: i, icl, ifl, ilec, inom, iv
+    integer(kind=8) :: lcv, nbigno
 !-----------------------------------------------------------------------
     lnom = .false.
     lent = .false.

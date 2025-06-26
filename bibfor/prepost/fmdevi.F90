@@ -20,7 +20,7 @@ subroutine fmdevi(nbfonc, nbptot, sigm, dev)
     implicit none
 !
 #include "jeveux.h"
-    integer :: nbfonc, nbptot
+    integer(kind=8) :: nbfonc, nbptot
     real(kind=8) :: sigm(nbfonc*nbptot)
     real(kind=8) :: dev(nbfonc*nbptot)
 !     NBFONC  : IN  : NOMBRE DE FONCTIONS (6 EN 3D 4 EN 2D)
@@ -30,7 +30,7 @@ subroutine fmdevi(nbfonc, nbptot, sigm, dev)
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
     real(kind=8) :: ph
-    integer :: i, idec, j
+    integer(kind=8) :: i, idec, j
 !-----------------------------------------------------------------------
 !
 !------- CALCUL DU DEVIATEUR -------

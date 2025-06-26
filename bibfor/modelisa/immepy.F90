@@ -62,13 +62,13 @@ subroutine immepy(nbcnx, xyzma, x3dca, itetra, xbar, &
 #include "asterfort/cotfac.h"
 #include "asterfort/tstbar.h"
 #include "asterfort/utmess.h"
-    integer :: nbcnx, itetra, immer
+    integer(kind=8) :: nbcnx, itetra, immer
     real(kind=8) :: xyzma(3, *), x3dca(*), xbar(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
     real(kind=8) :: d, dx, dy, dz
-    integer :: ktest, f1(4), idc, id(6), ii, j
+    integer(kind=8) :: ktest, f1(4), idc, id(6), ii, j
     aster_logical :: facnp1
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

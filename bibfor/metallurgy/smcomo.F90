@@ -26,7 +26,7 @@ subroutine smcomo(coef, fmod, temp_curr, nb_hist, &
 #include "asterfort/metaSteelTRCPolynom.h"
 !
     real(kind=8), intent(in) :: coef(*), fmod(*), temp_curr
-    integer, intent(in) :: nb_hist
+    integer(kind=8), intent(in) :: nb_hist
     real(kind=8), intent(out) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ subroutine smcomo(coef, fmod, temp_curr, nb_hist, &
 !
     real(kind=8), parameter :: t_5 = 5.d0
     real(kind=8), parameter :: zero = 0.d0
-    integer :: i_hist, i_exp, k, lg, nb_exp
+    integer(kind=8) :: i_hist, i_exp, k, lg, nb_exp
     real(kind=8) :: coeffz
     real(kind=8) :: temp_exp_prev, temp_exp_curr, tempe, dtemp_trc
 !

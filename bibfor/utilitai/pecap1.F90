@@ -95,7 +95,7 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 #include "asterfort/int_to_char8.h"
 !
 ! -----  ARGUMENTS
-    integer :: ngi
+    integer(kind=8) :: ngi
     character(len=*) :: chgeoz, tempez, lisgma(ngi)
 ! -----  VARIABLES LOCALES
     character(len=8) :: lpain(2), lpaout(1)
@@ -113,16 +113,16 @@ subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid
-    integer :: igr, iret, iret1, iret2
-    integer :: jdes, jgro, m, nbmail, nbno, nbordr
-    integer :: numail, dof_nume, nunoeu
+    integer(kind=8) :: i, ibid
+    integer(kind=8) :: igr, iret, iret1, iret2
+    integer(kind=8) :: jdes, jgro, m, nbmail, nbno, nbordr
+    integer(kind=8) :: numail, dof_nume, nunoeu
     real(kind=8) :: ct, deux, prec, r8b, strap, temp, undemi
     real(kind=8) :: x1, x2, xmin, y1, y2, ymin, zero
     real(kind=8), pointer :: coor(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
     r8b = 0.d0

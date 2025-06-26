@@ -21,7 +21,7 @@
 interface
     subroutine tbajvr(table, nbpara, nompar, vr, livr)
         character(len=*) :: table
-        integer :: nbpara
+        integer(kind=8) :: nbpara
         character(len=*) :: nompar
         real(kind=8) :: vr
         real(kind=8) :: livr(*)

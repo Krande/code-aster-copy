@@ -34,7 +34,7 @@ subroutine irrlnf(nmat, materf, yf, eloupl, vinf)
 !  OUT
 !     VINF   : VARIABLES INTERNES INTEGREES
 ! --- -------------------------------------------------------------
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: yf(*), vinf(*), materf(nmat, 2), eloupl
 !
 !     DEFORMATION PLASTIQUE CUMULEE

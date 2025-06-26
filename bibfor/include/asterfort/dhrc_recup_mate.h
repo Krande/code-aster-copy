@@ -22,7 +22,7 @@ interface
     subroutine dhrc_recup_mate(imate, compor, a0, c0,&
                      aa_t, ga_t, ab, gb, ac,&
                      gc, aa_c, ga_c, cstseu)
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor
         real(kind=8), intent(out) :: a0(6, 6)
         real(kind=8), intent(out) :: c0(2, 2, 2)

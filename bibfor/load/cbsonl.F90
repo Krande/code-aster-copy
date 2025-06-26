@@ -24,7 +24,7 @@ subroutine cbsonl(load, mesh, model, geomDime)
 #include "asterfort/casonl.h"
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,7 +42,7 @@ subroutine cbsonl(load, mesh, model, geomDime)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'SOUR_NL'
-    integer :: nbfac
+    integer(kind=8) :: nbfac
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -28,7 +28,7 @@ subroutine comp_read_mfront(keywf, i_comp, extern_addr)
 #include "asterfort/jeveuo.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: i_comp
+    integer(kind=8), intent(in) :: i_comp
     character(len=16), intent(out) :: extern_addr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine comp_read_mfront(keywf, i_comp, extern_addr)
 ! --------------------------------------------------------------------------------------------------
     character(len=8) :: mgb
     character(len=16), pointer :: addr(:) => null()
-    integer :: nbret
+    integer(kind=8) :: nbret
 !
 ! - Get parameters
 !

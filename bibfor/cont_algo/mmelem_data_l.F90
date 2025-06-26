@@ -39,12 +39,12 @@ subroutine mmelem_data_l(l_axi_, &
     character(len=8), intent(in), optional :: typg_slav_name_
     character(len=8), intent(in), optional :: typg_mast_name_
     character(len=16), intent(in), optional :: typf_slav_name_
-    integer, intent(out), optional :: nb_cont_type_
-    integer, intent(out), optional :: nb_node_elem_
-    integer, intent(out), optional :: typg_cont_nume_
-    integer, intent(out), optional :: typf_cont_nume_
-    integer, intent(in), optional :: set_elem_indx_
-    integer, intent(out), optional :: get_elem_indx_
+    integer(kind=8), intent(out), optional :: nb_cont_type_
+    integer(kind=8), intent(out), optional :: nb_node_elem_
+    integer(kind=8), intent(out), optional :: typg_cont_nume_
+    integer(kind=8), intent(out), optional :: typf_cont_nume_
+    integer(kind=8), intent(in), optional :: set_elem_indx_
+    integer(kind=8), intent(out), optional :: get_elem_indx_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,8 +68,8 @@ subroutine mmelem_data_l(l_axi_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cont_geom = 40
-    integer, parameter :: nb_cont_solv = 43
+    integer(kind=8), parameter :: nb_cont_geom = 40
+    integer(kind=8), parameter :: nb_cont_solv = 43
 !
 ! - Name of geometry type for slave element
 !
@@ -109,7 +109,7 @@ subroutine mmelem_data_l(l_axi_, &
 !
 ! - Number of nodes for contact/friction element
 !
-    integer, parameter, dimension(nb_cont_solv) :: nb_node = (/ &
+    integer(kind=8), parameter, dimension(nb_cont_solv) :: nb_node = (/ &
                                                    6, 12, 8, 8, 16, &
                                                    16, 9, 9, 12, 12, &
                                                    12, 12, 7, 7, 7, &
@@ -161,7 +161,7 @@ subroutine mmelem_data_l(l_axi_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_cont_geom, geom_indx, elem_indx, typg_cont_nume, i_cont
+    integer(kind=8) :: i_cont_geom, geom_indx, elem_indx, typg_cont_nume, i_cont
     character(len=16) :: typf_cont_name, typg_cont_name, valk(2)
 !
 ! --------------------------------------------------------------------------------------------------

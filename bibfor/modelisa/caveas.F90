@@ -52,7 +52,7 @@ subroutine caveas(chargz)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: idveas, ier, nvecas
+    integer(kind=8) :: idveas, ier, nvecas
 !-----------------------------------------------------------------------
     call jemarq()
 !

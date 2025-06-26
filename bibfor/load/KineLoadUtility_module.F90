@@ -99,17 +99,17 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
-        integer, intent(in) :: iOcc, meshNbNode, geomDime
+        integer(kind=8), intent(in) :: iOcc, meshNbNode, geomDime
         character(len=24), intent(out) :: nodeSlavJv
-        integer, intent(out) :: nbNodeSlav, nbCellSlav
-        integer, pointer :: nodeSlav(:), cellSlav(:)
-        integer, pointer :: nodeSkinToBody(:)
+        integer(kind=8), intent(out) :: nbNodeSlav, nbCellSlav
+        integer(kind=8), pointer :: nodeSlav(:), cellSlav(:)
+        integer(kind=8), pointer :: nodeSkinToBody(:)
 ! - Local
         character(len=24) :: cellSlavJv
         aster_logical :: lError
         character(len=8) :: cellNameError, mesh, model
-        integer :: iNodeSlav
-        integer, parameter :: nbCellSkin2D = 3, nbCellSkin3D = 8
+        integer(kind=8) :: iNodeSlav
+        integer(kind=8), parameter :: nbCellSkin2D = 3, nbCellSkin3D = 8
         character(len=8), parameter :: cellSkin2D(nbCellSkin2D) = (/'SEG2', 'SEG3', 'SEG4'/)
         character(len=8), parameter :: cellSkin3D(nbCellSkin3D) = (/'TRIA3', 'TRIA6', &
                                                                     'QUAD4', 'QUAD8', &
@@ -178,11 +178,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(in) :: geomDime
-        integer, intent(in) :: nbCellSkin
-        integer, pointer :: cellSkin(:)
-        integer, intent(in) :: nbNode
-        integer, pointer :: node(:)
+        integer(kind=8), intent(in) :: geomDime
+        integer(kind=8), intent(in) :: nbCellSkin
+        integer(kind=8), pointer :: cellSkin(:)
+        integer(kind=8), intent(in) :: nbNode
+        integer(kind=8), pointer :: node(:)
         real(kind=8), pointer :: norm(:)
 ! - Local
         character(len=24), parameter :: normJv = '&&CANORT.NORMALE'
@@ -218,10 +218,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ, factorKeywordZ
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         character(len=24), intent(out) :: nodeSlavJv
-        integer, intent(out) :: nbNodeSlav
-        integer, pointer :: nodeSlav(:)
+        integer(kind=8), intent(out) :: nbNodeSlav
+        integer(kind=8), pointer :: nodeSlav(:)
         character(len=*), optional, intent(in) :: keywordSuffixZ_
 ! - Local
         character(len=8) :: mesh, keywordSuffix
@@ -263,10 +263,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         character(len=24), intent(out) :: cellMastJv
-        integer, intent(out) :: nbCellMast
-        integer, pointer :: cellMast(:)
+        integer(kind=8), intent(out) :: nbCellMast
+        integer(kind=8), pointer :: cellMast(:)
         character(len=*), optional, intent(in) :: keywordSuffixZ_
 ! - Local
         character(len=8) :: mesh, model, keywordSuffix
@@ -309,10 +309,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: modelZ, meshZ, factorKeywordZ
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         character(len=24), intent(out) :: cellSlavJv
-        integer, intent(out) :: nbCellSlav
-        integer, pointer :: cellSlav(:)
+        integer(kind=8), intent(out) :: nbCellSlav
+        integer(kind=8), pointer :: cellSlav(:)
         character(len=*), optional, intent(in) :: keywordSuffixZ_
 ! - Local
         character(len=8) :: mesh, model, keywordSuffix
@@ -356,10 +356,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ, factorKeywordZ
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         character(len=24), intent(out) :: nodeMastJv
-        integer, intent(out) :: nbNodeMast
-        integer, pointer :: nodeMast(:)
+        integer(kind=8), intent(out) :: nbNodeMast
+        integer(kind=8), pointer :: nodeMast(:)
         character(len=*), optional, intent(in) :: keywordSuffixZ_
 ! - Local
         character(len=8) :: mesh, keywordSuffix
@@ -394,13 +394,13 @@ contains
     subroutine kineLoadElimMult(iOcc, nodeJv, nbNode, node, nodeElim)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         character(len=24), intent(in) :: nodeJv
-        integer, intent(inout) :: nbNode
-        integer, pointer :: node(:), nodeElim(:)
+        integer(kind=8), intent(inout) :: nbNode
+        integer(kind=8), pointer :: node(:), nodeElim(:)
 ! - Local
-        integer :: iNode, elimNodeIndx, nodeNume
-        integer, pointer :: nodeCopy(:) => null()
+        integer(kind=8) :: iNode, elimNodeIndx, nodeNume
+        integer(kind=8), pointer :: nodeCopy(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         elimNodeIndx = 0
@@ -455,7 +455,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ, factorKeywordZ
-        integer, intent(in) :: iOcc, geomDime, nbNode
+        integer(kind=8), intent(in) :: iOcc, geomDime, nbNode
         character(len=24), intent(in) :: nodeJv
         character(len=24), intent(out) :: geomJv
         aster_logical, optional, intent(out) :: lApplyRota_
@@ -524,26 +524,26 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: outputFileZ, meshZ
-        integer, intent(in) :: meshNbNode
+        integer(kind=8), intent(in) :: meshNbNode
         character(len=*), intent(in) :: factorKeywordZ
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         aster_logical, intent(in) :: lMastTransf, lSlavTransf
         character(len=8), intent(in) :: mastTransf(3), slavTransf(3)
         character(len=24), intent(out) :: geomMastJv
-        integer, intent(in) :: nbNodeSlav
-        integer, pointer :: nodeSlav(:)
+        integer(kind=8), intent(in) :: nbNodeSlav
+        integer(kind=8), pointer :: nodeSlav(:)
         character(len=24), intent(in) :: geomSlavJv
         aster_logical, intent(in) :: lVerbose
         character(len=8), intent(in) :: meshDebugJv
 ! - Local
-        integer :: iNode, iFunc
-        integer :: ier, jvGeomInit, nodeNume
+        integer(kind=8) :: iNode, iFunc
+        integer(kind=8) :: ier, jvGeomInit, nodeNume
         character(len=24) :: nodeMastJv
         character(len=8) :: mesh, outputFile
         character(len=8), parameter :: funcParaName(3) = (/'X', 'Y', 'Z'/)
         real(kind=8) :: funcEval(3)
-        integer :: nbNodeMast
-        integer, pointer :: nodeMast(:) => null()
+        integer(kind=8) :: nbNodeMast
+        integer(kind=8), pointer :: nodeMast(:) => null()
         real(kind=8), pointer :: geomMast(:) => null(), geomSlav(:) => null()
         real(kind=8), pointer :: geomVerbose(:) => null()
 !   ------------------------------------------------------------------------------------------------
@@ -635,15 +635,15 @@ contains
                               kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: geomDime, nbNodeMast
-        integer, intent(in) :: iLink
+        integer(kind=8), intent(in) :: geomDime, nbNodeMast
+        integer(kind=8), intent(in) :: iLink
         real(kind=8), pointer :: normSlav(:)
-        integer, pointer :: nodeSkinToBody(:)
+        integer(kind=8), pointer :: nodeSkinToBody(:)
         aster_logical, intent(in) :: lApplyRota
         real(kind=8), intent(in) :: rotaMatr(3, 3)
         type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
-        integer :: iNodeMast, iGeomDime, jGeomDime
+        integer(kind=8) :: iNodeMast, iGeomDime, jGeomDime
         real(kind=8) :: normal(3)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -701,10 +701,10 @@ contains
 ! - Parameters
         character(len=8), intent(in) :: meshDebugJv
         character(len=*), intent(in) :: fileBaseNameZ
-        integer, intent(in) :: fileIndx
+        integer(kind=8), intent(in) :: fileIndx
 ! - Local
         character(len=8) :: fileBaseName
-        integer :: fileUnit
+        integer(kind=8) :: fileUnit
         character(len=4) :: fileIndxStr
         character(len=80) :: fileName
         character(len=8), parameter :: k8dummy = ' '
@@ -738,14 +738,14 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: physQuanNameZ
-        integer, intent(out) :: nbEc
-        integer, optional, intent(out) :: dofDZIndx_
+        integer(kind=8), intent(out) :: nbEc
+        integer(kind=8), optional, intent(out) :: dofDZIndx_
 ! - Local
-        integer, parameter :: nbDofMaxi = 300
+        integer(kind=8), parameter :: nbDofMaxi = 300
         character(len=8) :: physQuanDofName(nbDofMaxi)
         character(len=8) :: physQuanName
-        integer :: dofDZIndx, jvPhysQuanDofName
-        integer :: physQuanSize, physQuanNbDof, iQuanDof
+        integer(kind=8) :: dofDZIndx, jvPhysQuanDofName
+        integer(kind=8) :: physQuanSize, physQuanNbDof, iQuanDof
 !   ------------------------------------------------------------------------------------------------
 !
         physQuanName = physQuanNameZ
@@ -794,23 +794,23 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ, modelZ
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=*), intent(in) :: factorKeywordZ
-        integer, intent(in) :: iOcc
-        integer, pointer :: coni(:)
+        integer(kind=8), intent(in) :: iOcc
+        integer(kind=8), pointer :: coni(:)
         character(len=*), intent(in) :: conrJvZ
 ! - Local
         character(len=8) :: mesh, model
         character(len=24) :: conrJv
-        integer :: jvGeom
-        integer :: iNode, iDime, nbNode, inoma
-        integer :: nodeMastNume, nodeSlavNume
+        integer(kind=8) :: jvGeom
+        integer(kind=8) :: iNode, iDime, nbNode, inoma
+        integer(kind=8) :: nodeMastNume, nodeSlavNume
         real(kind=8) :: normMast(3), normSlav(3)
         real(kind=8) :: normDumm, jeu
         real(kind=8), pointer :: normNode(:) => null()
         character(len=24) :: cellMastJv, cellSlavJv
-        integer :: nbCellMast, nbCellSlav
-        integer, pointer :: cellMast(:) => null(), cellSlav(:) => null()
+        integer(kind=8) :: nbCellMast, nbCellSlav
+        integer(kind=8), pointer :: cellMast(:) => null(), cellSlav(:) => null()
 
 !   ------------------------------------------------------------------------------------------------
 !
@@ -913,19 +913,19 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ, factorKeywordZ
-        integer, intent(in) :: iOcc
-        integer, pointer :: coni(:)
+        integer(kind=8), intent(in) :: iOcc
+        integer(kind=8), pointer :: coni(:)
 ! - Local
         character(len=8) :: mesh
-        integer, parameter :: nbKeywordExcl = 2
+        integer(kind=8), parameter :: nbKeywordExcl = 2
         character(len=24), parameter :: keywordExcl(nbKeywordExcl) = (/'SANS_GROUP_NO   ', &
                                                                        'SANS_NOEUD      '/)
         character(len=16), parameter :: keywordExclType(nbKeywordExcl) = (/'GROUP_NO        ', &
                                                                            'NOEUD           '/)
-        integer :: iNodeInit, iNodeExcl
+        integer(kind=8) :: iNodeInit, iNodeExcl
         character(len=24), parameter :: nodeExclJv = '&&CAEXNO.LISTENOEUD'
-        integer, pointer :: nodeExcl(:) => null()
-        integer :: nbNodeInit, nbNodeExcl, nbNode
+        integer(kind=8), pointer :: nodeExcl(:) => null()
+        integer(kind=8) :: nbNodeInit, nbNodeExcl, nbNode
 !   ------------------------------------------------------------------------------------------------
 !
         mesh = meshZ
@@ -985,18 +985,18 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(in) :: geomDime
-        integer, intent(in) :: nodeMastNume, nbCellMast
-        integer, pointer :: cellMast(:)
-        integer, intent(in) :: nodeSlavNume, nbCellSlav
-        integer, pointer :: cellSlav(:)
-        integer, intent(out) :: inoma
+        integer(kind=8), intent(in) :: geomDime
+        integer(kind=8), intent(in) :: nodeMastNume, nbCellMast
+        integer(kind=8), pointer :: cellMast(:)
+        integer(kind=8), intent(in) :: nodeSlavNume, nbCellSlav
+        integer(kind=8), pointer :: cellSlav(:)
+        integer(kind=8), intent(out) :: inoma
         real(kind=8), intent(out) :: normMast(3), normSlav(3)
 ! - Local
         character(len=8) :: mesh
-        integer, pointer :: connex(:) => null(), cellNbNode(:) => null(), typmail(:) => null()
-        integer, parameter :: normNorm = 1
-        integer :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode, cellMastNume, cellSlavNume
+        integer(kind=8), pointer :: connex(:) => null(), cellNbNode(:) => null(), typmail(:) => null()
+        integer(kind=8), parameter :: normNorm = 1
+        integer(kind=8) :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode, cellMastNume, cellSlavNume
         aster_logical :: mastHasPOI1, slavHasPOI1
         real(kind=8) :: normCell(3), cellCoor(27)
 !   ------------------------------------------------------------------------------------------------
@@ -1088,14 +1088,14 @@ contains
                                       dofExist, oneDofDoesntExist)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: jvPrnm, nodeNume
-        integer, intent(in) :: physQuanNbCmp, nbec, nbDof
+        integer(kind=8), intent(in) :: jvPrnm, nodeNume
+        integer(kind=8), intent(in) :: physQuanNbCmp, nbec, nbDof
         character(len=8), pointer :: dofName(:)
-        integer, intent(in) :: jvPhysQuanCmpName
+        integer(kind=8), intent(in) :: jvPhysQuanCmpName
         aster_logical, pointer :: dofExist(:)
         aster_logical, intent(out) :: oneDofDoesntExist
 ! - Local
-        integer :: iDof, idxCmp
+        integer(kind=8) :: iDof, idxCmp
 !   ------------------------------------------------------------------------------------------------
 !
         dofExist = ASTER_TRUE
@@ -1122,11 +1122,11 @@ contains
                                          iTerm, kineListRela)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: iDime
+        integer(kind=8), intent(in) :: iDime
         character(len=*), intent(in) :: nodeNameZ, rotaCmpNameZ
         real(kind=8), intent(in) :: coef, coefZero
         real(kind=8), intent(in) :: xyzom(3)
-        integer, intent(inout) :: iTerm
+        integer(kind=8), intent(inout) :: iTerm
         type(KINE_LIST_RELA), intent(inout) :: kineListRela
 ! - Local
         character(len=8) :: rotaCmpName, nodeName

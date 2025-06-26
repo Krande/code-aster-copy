@@ -24,7 +24,7 @@ subroutine wp2biy(lm, lc, lk, s2, dsr, &
 #include "asterfort/mrmult.h"
     real(kind=8) :: u1(*), u2(*), u3(*), u4(*), yh(*), yb(*), zh(*), zb(*)
     real(kind=8) :: s2, dsr, isi
-    integer :: lm, lc, lk, n, lbloq(*)
+    integer(kind=8) :: lm, lc, lk, n, lbloq(*)
 !                    T               T
 !     CALCUL (ZH  ZB)   = B * (YH YB)
 !     OU B EST L' OPERATEUR (REEL) DU PSEUDO PRODUIT SCALAIRE POUR
@@ -47,7 +47,7 @@ subroutine wp2biy(lm, lc, lk, s2, dsr, &
 ! VAR U3   : R : VECTEUR DE TRAVAIL
 ! VAR U4   : R : VECTEUR DE TRAVAIL
 !     ------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: zero
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------

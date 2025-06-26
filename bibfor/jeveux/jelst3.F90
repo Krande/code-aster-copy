@@ -24,7 +24,7 @@ subroutine jelst3(base, dest, nmax, ntotal)
 #include "asterfort/jemarq.h"
     character(len=1) :: base
     character(len=24) :: dest(*)
-    integer :: nmax, ntotal
+    integer(kind=8) :: nmax, ntotal
 ! BUT : FABRIQUER UNE LISTE DE NOMS CONTENANT LE NOM DE TOUS LES OBJETS
 !       TROUVES SUR UNE BASE ET DONT LE NOM CONTIENT UNE CERTAINE CHAINE
 ! ----------------------------------------------------------------------
@@ -35,7 +35,7 @@ subroutine jelst3(base, dest, nmax, ntotal)
 ! BASE2  IN  K1 : NOM DE LA BASE POUR LA CREATION DE PTNOM
 ! PTNOM  IN/JXOUT K24 : NOM DU POINTEUR DE NOM A CREER.
 ! ----------------------------------------------------------------------
-    integer :: nbval
+    integer(kind=8) :: nbval
 !
     call jemarq()
 !

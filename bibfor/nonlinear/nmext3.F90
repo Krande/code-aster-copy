@@ -42,10 +42,10 @@ subroutine nmext3(mesh, field, field_type, field_s, &
     character(len=19), intent(in) :: field
     character(len=24), intent(in) :: field_type
     character(len=24), intent(in) :: field_s
-    integer, intent(in) :: nb_cmp
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: nb_poin
-    integer, intent(in) :: nb_spoi
+    integer(kind=8), intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_elem
+    integer(kind=8), intent(in) :: nb_poin
+    integer(kind=8), intent(in) :: nb_spoi
     character(len=8), intent(in) :: type_extr_elem
     character(len=8), intent(in) :: type_extr
     character(len=8), intent(in) :: type_extr_cmp
@@ -86,17 +86,17 @@ subroutine nmext3(mesh, field, field_type, field_s, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para_maxi = 20
+    integer(kind=8), parameter :: nb_para_maxi = 20
     real(kind=8) :: vale_resu(nb_para_maxi)
-    integer :: i_elem, i_poin, i_spoi, i_elem_r, i_poin_r, i_spoi_r, elem_nume
-    integer :: poin_nume, spoi_nume, iret
-    integer :: nb_elem_poin, nb_elem_spoi, nb_poin_r, nb_spoi_r, nb_elem_effe
-    integer :: i_vale, nb_vale
+    integer(kind=8) :: i_elem, i_poin, i_spoi, i_elem_r, i_poin_r, i_spoi_r, elem_nume
+    integer(kind=8) :: poin_nume, spoi_nume, iret
+    integer(kind=8) :: nb_elem_poin, nb_elem_spoi, nb_poin_r, nb_spoi_r, nb_elem_effe
+    integer(kind=8) :: i_vale, nb_vale
     real(kind=8) :: valr, val2r
-    integer :: jcesd, jcesl, jcesv, jcesc
-    integer, pointer :: v_list_elem(:) => null()
-    integer, pointer :: v_list_poin(:) => null()
-    integer, pointer :: v_list_spoi(:) => null()
+    integer(kind=8) :: jcesd, jcesl, jcesv, jcesc
+    integer(kind=8), pointer :: v_list_elem(:) => null()
+    integer(kind=8), pointer :: v_list_poin(:) => null()
+    integer(kind=8), pointer :: v_list_spoi(:) => null()
     real(kind=8), pointer :: v_work_poin(:) => null()
     real(kind=8), pointer :: v_work_elem(:) => null()
     real(kind=8), pointer :: v_init_poin(:) => null()

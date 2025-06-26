@@ -22,7 +22,7 @@ subroutine defgen(testl1, testl2, nno, r, x3, &
     implicit none
 #include "asterf_types.h"
 !
-    integer :: nno
+    integer(kind=8) :: nno
     aster_logical :: testl1, testl2
     real(kind=8) :: r, x3, sina, cosa, cour, vf(*), dfds(*), depl(*), eps(*)
     real(kind=8) :: epsx3
@@ -35,7 +35,7 @@ subroutine defgen(testl1, testl2, nno, r, x3, &
 !
 !     DO 10 INO=1,NNO
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: betas, dbtds, duxds, duyds, rhos, rhot, ux
     real(kind=8) :: uy
 !-----------------------------------------------------------------------

@@ -45,16 +45,16 @@ subroutine lecgrp(ifl, icl, iv, rv, cv, &
 #include "asterfort/verdbl.h"
 #include "asterfort/vermot.h"
     real(kind=8) :: rv
-    integer :: nbm
+    integer(kind=8) :: nbm
     character(len=8) :: mcl(nbm)
-    integer :: dim(nbm), nbt(nbm), deblig
+    integer(kind=8) :: dim(nbm), nbt(nbm), deblig
     character(len=14) :: cnl
     character(len=24) :: valk(2), nom
     character(len=*) :: cv
 !-----------------------------------------------------------------------
-    integer :: i, icl, ier, ifl, ifm, ifn, ilec
-    integer :: inom, irtet, irteti, iv, nbg
-    integer :: nbtav, numtcl
+    integer(kind=8) :: i, icl, ier, ifl, ifm, ifn, ilec
+    integer(kind=8) :: inom, irtet, irteti, iv, nbg
+    integer(kind=8) :: nbtav, numtcl
 !-----------------------------------------------------------------------
     irteti = 0
 !

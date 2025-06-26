@@ -152,11 +152,11 @@ subroutine te0490(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 !-----------------------------------------------------------------------
-    integer :: idconm, idene1, idene2, idepl, ideplm, idepmm
-    integer :: idfde, idsig, idsigm, idvari, igau, igeom, imate, itemps
-    integer :: ipoids, iret1, ivf, jgano, jprol, jvale, mxcmel
-    integer :: nbsgm, nbsig, nbsig2, nbval, nbvari, ndim, nno
-    integer :: nnos, npg, iret, i, jtab(7), icodre(5)
+    integer(kind=8) :: idconm, idene1, idene2, idepl, ideplm, idepmm
+    integer(kind=8) :: idfde, idsig, idsigm, idvari, igau, igeom, imate, itemps
+    integer(kind=8) :: ipoids, iret1, ivf, jgano, jprol, jvale, mxcmel
+    integer(kind=8) :: nbsgm, nbsig, nbsig2, nbval, nbvari, ndim, nno
+    integer(kind=8) :: nnos, npg, iret, i, jtab(7), icodre(5)
     parameter(mxcmel=162)
     parameter(nbsgm=6)
     real(kind=8) :: airep, c1, c2, deux, deuxmu, dsde, e

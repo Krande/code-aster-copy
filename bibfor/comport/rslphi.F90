@@ -50,7 +50,7 @@ subroutine rslphi(fami, kpg, ksp, loi, imat, &
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterfort/rsliso.h"
-    integer :: imat, kpg, ksp
+    integer(kind=8) :: imat, kpg, ksp
 !
     character(len=16) :: loi
     character(len=*) :: fami

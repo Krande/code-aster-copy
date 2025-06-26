@@ -29,7 +29,7 @@ subroutine nmimci(ds_print, col_name_, vali, l_affe)
 !
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=*), intent(in) :: col_name_
-    integer, intent(in) :: vali
+    integer(kind=8), intent(in) :: vali
     aster_logical, intent(in) :: l_affe
 !
 ! --------------------------------------------------------------------------------------------------

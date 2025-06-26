@@ -23,7 +23,7 @@
 interface
     function lisico(genchz, genrec)
         character(len=*) :: genchz
-        integer :: genrec
+        integer(kind=8) :: genrec
         aster_logical :: lisico
     end function lisico
 end interface

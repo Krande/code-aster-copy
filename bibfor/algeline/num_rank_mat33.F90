@@ -26,7 +26,7 @@ function num_rank_mat33(m, prec, indic)
 #include "asterfort/mat_com.h"
 #include "asterfort/trace_mat.h"
 !
-    integer :: num_rank_mat33
+    integer(kind=8) :: num_rank_mat33
     real(kind=8), intent(in) :: m(3, 3)
     real(kind=8), intent(in) :: prec
     real(kind=8), intent(out) :: indic
@@ -39,7 +39,7 @@ function num_rank_mat33(m, prec, indic)
 !           QUE LA MATRICE EST SINGULIERE
 ! OUT INDIC : ESTIMATION DU CONDITIONNEMENT
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: det_m, norm_m, com_m(3, 3), sec_inv
 !
     ndim = 3

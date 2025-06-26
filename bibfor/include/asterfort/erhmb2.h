@@ -25,9 +25,9 @@ interface
                       sielnm, adsip, iagd, tbref2, iade2,&
                       iava2, ncmpm2, iaptm2, iade3, iava3,&
                       ncmpm3, iaptm3, tm2h1b)
-        integer :: ndim
-        integer :: ino
-        integer :: nbs
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ino
+        integer(kind=8) :: nbs
         real(kind=8) :: theta
         real(kind=8) :: instpm(2)
         real(kind=8) :: jac(3)
@@ -35,22 +35,22 @@ interface
         real(kind=8) :: ny(3)
         real(kind=8) :: tx(3)
         real(kind=8) :: ty(3)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         real(kind=8) :: geom(ndim, *)
-        integer :: ivois
+        integer(kind=8) :: ivois
         real(kind=8) :: sielnp(140)
         real(kind=8) :: sielnm(140)
-        integer :: adsip
-        integer :: iagd
-        integer :: tbref2(12)
-        integer :: iade2
-        integer :: iava2
-        integer :: ncmpm2
-        integer :: iaptm2
-        integer :: iade3
-        integer :: iava3
-        integer :: ncmpm3
-        integer :: iaptm3
+        integer(kind=8) :: adsip
+        integer(kind=8) :: iagd
+        integer(kind=8) :: tbref2(12)
+        integer(kind=8) :: iade2
+        integer(kind=8) :: iava2
+        integer(kind=8) :: ncmpm2
+        integer(kind=8) :: iaptm2
+        integer(kind=8) :: iade3
+        integer(kind=8) :: iava3
+        integer(kind=8) :: ncmpm3
+        integer(kind=8) :: iaptm3
         real(kind=8) :: tm2h1b(3)
     end subroutine erhmb2
 end interface

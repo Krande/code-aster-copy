@@ -34,9 +34,9 @@ subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast, &
 #include "asterfort/wkvect.h"
 !
     med_idt :: fid
-    integer :: typgeo(*), nmatyp(*)
-    integer :: nbnoeu, nbmail, nbgrno, nbgrma
-    integer :: infmed
+    integer(kind=8) :: typgeo(*), nmatyp(*)
+    integer(kind=8) :: nbnoeu, nbmail, nbgrno, nbgrma
+    integer(kind=8) :: infmed
     character(len=6) :: prefix
     character(len=8) :: nomast
     character(len=24) :: nomgno(*), nomgma(*)
@@ -76,14 +76,14 @@ subroutine irmmfa(fid, nomamd, nbnoeu, nbmail, nomast, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMMFA'
-    integer :: tygeno
-    integer :: codret
-    integer :: iaux
-    integer :: numfam
-    integer :: natt
-    integer :: jnofam
-    integer :: jmafam
-    integer :: ifm, niv
+    integer(kind=8) :: tygeno
+    integer(kind=8) :: codret
+    integer(kind=8) :: iaux
+    integer(kind=8) :: numfam
+    integer(kind=8) :: natt
+    integer(kind=8) :: jnofam
+    integer(kind=8) :: jmafam
+    integer(kind=8) :: ifm, niv
     character(len=8) :: saux08
     character(len=24) :: nufano, nufama
     character(len=64) :: nomfam

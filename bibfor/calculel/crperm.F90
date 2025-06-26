@@ -52,8 +52,8 @@ subroutine crperm()
 !
 !
 !
-    integer :: n1, nbcham, iord1(1), iord2, nbperm, nbtrou, ip, ibid, ic
-    integer :: iret, jlim1, jlim2, nbma, jlino, nbno2, nncp
+    integer(kind=8) :: n1, nbcham, iord1(1), iord2, nbperm, nbtrou, ip, ibid, ic
+    integer(kind=8) :: iret, jlim1, jlim2, nbma, jlino, nbno2, nncp
     real(kind=8) :: inst1, tran(3), prec
     real(kind=8) :: valr
     complex(kind=8) :: cbid
@@ -63,7 +63,7 @@ subroutine crperm()
     character(len=19) :: numeq
     character(len=24) :: ch1, ch2, chs1, chs2, linoeu, gma1, gma2, lima1, lima2
     character(len=24) :: ligrel, chsi1(4), chsi2(4)
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

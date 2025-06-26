@@ -35,7 +35,7 @@ subroutine gcnco2(nomk8)
 ! IN/OUT NOMK8 : K8 : NOM A INCREMENTER :
 ! person_in_charge: jacques.pellet at edf.fr
 !     ------------------------------------------------------------------
-    integer :: num
+    integer(kind=8) :: num
 !     ------------------------------------------------------------------
     read (nomk8(2:8), '(I7)') num
     call codent(num+1, 'D0', nomk8(2:8))

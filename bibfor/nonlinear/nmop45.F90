@@ -48,7 +48,7 @@ subroutine nmop45(eigsol, l_hpp, mod45, modes, modes2, ds_posttimestep_, nfreq_c
     character(len=8), intent(in) :: modes, modes2
     character(len=19), intent(in) :: eigsol
     type(NL_DS_PostTimeStep), optional, intent(in) :: ds_posttimestep_
-    integer, optional, intent(out) :: nfreq_calibr_
+    integer(kind=8), optional, intent(out) :: nfreq_calibr_
 !
 ! ======================================================================
 !        ROUTINE DE CALCUL DE CRITERE DE STABILITE VIA UNE RESOLUTION
@@ -65,12 +65,12 @@ subroutine nmop45(eigsol, l_hpp, mod45, modes, modes2, ds_posttimestep_, nfreq_c
 !-----------------------------------------------------------------------
 !
 !
-    integer :: nbpari, nbparr, nbpark
+    integer(kind=8) :: nbpari, nbparr, nbpark
     parameter(nbpari=8, nbparr=16, nbpark=3)
 !
-    integer           :: iret, ibid, npivot, neqact, mxresf, nblagr, nbddl, nbddl2, un, lresur
-    integer           :: nconv, neq, lraide, eddl, eddl2, jstab, iauxr
-    integer           :: nsta, nddle, nfreq_calibr
+    integer(kind=8)           :: iret, ibid, npivot, neqact, mxresf, nblagr, nbddl, nbddl2, un, lresur
+    integer(kind=8)           :: nconv, neq, lraide, eddl, eddl2, jstab, iauxr
+    integer(kind=8)           :: nsta, nddle, nfreq_calibr
     real(kind=8)      :: omemin, omemax, omeshi, vpinf, vpmax, r8bid, csta
     complex(kind=8)   :: cbid
     character(len=4)  :: mod45b

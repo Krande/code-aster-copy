@@ -20,7 +20,7 @@ interface
     subroutine cagene(load, command, model, mesh, geomDime)
         character(len=8), intent(in) :: load
         character(len=16), intent(in) :: command
-        integer, intent(out) :: geomDime
+        integer(kind=8), intent(out) :: geomDime
         character(len=8), intent(out) :: mesh
         character(len=8), intent(out) :: model
     end subroutine cagene

@@ -27,8 +27,8 @@ interface
         character(len=*) :: nocmp
         character(len=*) :: typrez
         real(kind=8) :: valr
-        integer :: vali
+        integer(kind=8) :: vali
         complex(kind=8) :: valc
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine utchca
 end interface

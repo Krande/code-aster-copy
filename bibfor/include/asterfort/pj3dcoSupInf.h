@@ -23,9 +23,9 @@ interface
                             corre1, corre2, corre3,&
                             chnormZ, thickness)
         character(len=*), intent(in) :: modelZ
-        integer, intent(in):: meshNbNode
-        integer, intent(in) :: nbCellMast, cellMast(nbCellMast)
-        integer, intent(in) :: nbNodeSlav, nodeSlav(nbNodeSlav)
+        integer(kind=8), intent(in):: meshNbNode
+        integer(kind=8), intent(in) :: nbCellMast, cellMast(nbCellMast)
+        integer(kind=8), intent(in) :: nbNodeSlav, nodeSlav(nbNodeSlav)
         character(len=24), intent(in) :: geomSlavJv
         character(len=16), intent(in) :: corre1, corre2, corre3
         character(len=*), intent(in) :: chnormZ

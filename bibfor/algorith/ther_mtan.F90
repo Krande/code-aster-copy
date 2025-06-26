@@ -66,7 +66,7 @@ subroutine ther_mtan(l_stat, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: optionRigi = 'RIGI_THER_TANG', optionMass = 'MASS_THER_TANG'
-    integer, parameter :: nbIn = 7, nbout = 1
+    integer(kind=8), parameter :: nbIn = 7, nbout = 1
     character(len=8) :: lpain(nbIn), lpaout(nbout)
     character(len=24) :: lchin(nbIn), lchout(nbout)
     character(len=24) :: ligrel_model

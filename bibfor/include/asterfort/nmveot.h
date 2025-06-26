@@ -22,8 +22,8 @@ interface
     subroutine nmveot(drbdb, drbdp, drpdb, drpdp, drbde,&
                       drpde, dsgde, dsgdb, dsgdp, np,&
                       nb, nr, dsidep)
-        integer :: nb
-        integer :: np
+        integer(kind=8) :: nb
+        integer(kind=8) :: np
         real(kind=8) :: drbdb(nb, nb)
         real(kind=8) :: drbdp(nb, np)
         real(kind=8) :: drpdb(np, nb)
@@ -33,7 +33,7 @@ interface
         real(kind=8) :: dsgde(nb, nb)
         real(kind=8) :: dsgdb(nb, nb)
         real(kind=8) :: dsgdp(nb, np)
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: dsidep(nb, nb)
     end subroutine nmveot
 end interface

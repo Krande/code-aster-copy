@@ -25,9 +25,9 @@ interface
                       fabord)
         character(len=8) :: noma
         character(len=19) :: cnxinv
-        integer :: nunoa
-        integer :: nunob
-        integer :: nunoc
+        integer(kind=8) :: nunoa
+        integer(kind=8) :: nunob
+        integer(kind=8) :: nunoc
         aster_logical :: fabord
     end subroutine xfabor
 end interface

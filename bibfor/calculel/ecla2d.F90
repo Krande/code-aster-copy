@@ -31,10 +31,10 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini, &
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
-    integer :: npg, connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
-    integer :: nterm1(mxnbpi), nbno2(mxnbse), npoini, tyma(mxnbse)
-    integer :: nbsel, corsel(mxnbse)
+    integer(kind=8) :: mxnbn2, mxnbpi, mxnbte, mxnbse
+    integer(kind=8) :: npg, connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
+    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), npoini, tyma(mxnbse)
+    integer(kind=8) :: nbsel, corsel(mxnbse)
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
     character(len=16) :: nomte
     character(len=8) :: elrefa, fapg
@@ -60,7 +60,7 @@ subroutine ecla2d(nomte, elrefa, fapg, npg, npoini, &
 !           NTERMES <= 27 (HEXA27)
 !
 ! ---------------------------------------------------------------------
-    integer :: k, itria3, iquad4
+    integer(kind=8) :: k, itria3, iquad4
     character(len=24) :: valk(3)
 ! ---------------------------------------------------------------------
     call jemarq()

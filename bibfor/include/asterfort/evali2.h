@@ -24,13 +24,13 @@ interface
                       sphi)
         character(len=8) :: isz
         character(len=19) :: pg
-        integer :: nma
+        integer(kind=8) :: nma
         character(len=19) :: phi
         real(kind=8) :: valpar(7)
-        integer :: posmai
-        integer :: ipg
+        integer(kind=8) :: posmai
+        integer(kind=8) :: ipg
         real(kind=8) :: pdgi
-        integer :: icmp
+        integer(kind=8) :: icmp
         character(len=8) :: nocmpi
         character(len=19) :: sphi
     end subroutine evali2

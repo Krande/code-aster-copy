@@ -50,23 +50,23 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 #include "asterfort/jexatr.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: ifi
+    integer(kind=8), intent(in) :: ifi
     character(len=64), intent(in) :: field_med
     character(len=19), intent(in) :: vari_elga
     character(len=8), intent(in) :: field_loca
     character(len=8), intent(in) :: model
-    integer, intent(in) :: nb_cmp_sele
+    integer(kind=8), intent(in) :: nb_cmp_sele
     character(len=*), intent(in) :: cmp_name_sele(*)
     character(len=*), intent(in) :: partie
-    integer, intent(in) :: numpt
+    integer(kind=8), intent(in) :: numpt
     real(kind=8), intent(in) :: instan
-    integer, intent(in) :: nume_store
-    integer, intent(in) :: nbmaec
-    integer, intent(in) :: limaec(*)
+    integer(kind=8), intent(in) :: nume_store
+    integer(kind=8), intent(in) :: nbmaec
+    integer(kind=8), intent(in) :: limaec(*)
     character(len=8), intent(in) :: result
     character(len=8), intent(in) :: cara_elem, carael
     aster_logical, intent(in) :: lfichUniq
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,13 +99,13 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iMapZone, iCell, i_pt, i_vari, i_vari_redu, i_spt
-    integer :: nb_vari, nb_pt, nb_spt, nb_vari_zone
-    integer :: nb_vari_redu, nbMapZone, nbCell, nb_vari_maxi, nbCellMesh, nb_elem_zone
-    integer :: nt_vari, codret_dummy, nbCmpDyna
-    integer :: posit, iret, affe_type, affe_indx, nume_elem
-    integer :: jv_elga_cesd, jv_elga_cesl, jv_elgr_cesd, jv_elgr_cesl, jv_elga, jv_elgr
-    integer :: ncmpvl, jicmp, poscmp, iCmp
+    integer(kind=8) :: iMapZone, iCell, i_pt, i_vari, i_vari_redu, i_spt
+    integer(kind=8) :: nb_vari, nb_pt, nb_spt, nb_vari_zone
+    integer(kind=8) :: nb_vari_redu, nbMapZone, nbCell, nb_vari_maxi, nbCellMesh, nb_elem_zone
+    integer(kind=8) :: nt_vari, codret_dummy, nbCmpDyna
+    integer(kind=8) :: posit, iret, affe_type, affe_indx, nume_elem
+    integer(kind=8) :: jv_elga_cesd, jv_elga_cesl, jv_elgr_cesd, jv_elgr_cesl, jv_elga, jv_elgr
+    integer(kind=8) :: ncmpvl, jicmp, poscmp, iCmp
     character(len=7) :: saux07
     character(len=8) :: saux08
     character(len=8), parameter :: base_name = '&&IRVARI'
@@ -115,7 +115,7 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     character(len=19), parameter :: vari_elgr_s = '&&IRVARI.VARIELGR_S'
     character(len=19) :: vari_link
     character(len=19), parameter :: vari_redu = '&&IRVARI.VARIREDU'
-    integer, pointer :: v_vari_link(:) => null()
+    integer(kind=8), pointer :: v_vari_link(:) => null()
     character(len=16), pointer :: v_vari_redu(:) => null()
     character(len=19), parameter :: label_med = '&&IRVARI.LABELMED'
     character(len=19), parameter :: label_vxx = '&&IRVARI.LABELVXX'
@@ -124,12 +124,12 @@ subroutine irvari(ifi, field_med, vari_elga, field_loca, model, &
     character(len=64) :: nomres
     real(kind=8), pointer :: v_elgr_cesv(:) => null()
     real(kind=8), pointer :: v_elga_cesv(:) => null()
-    integer, pointer :: v_compor_desc(:) => null()
-    integer, pointer :: v_compor_lima(:) => null()
-    integer, pointer :: v_compor_lima_lc(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
+    integer(kind=8), pointer :: v_compor_lima(:) => null()
+    integer(kind=8), pointer :: v_compor_lima_lc(:) => null()
     character(len=19), parameter :: comporInfo = '&&IRVARI.INFO'
-    integer, pointer :: comporInfoInfo(:) => null()
-    integer, pointer :: comporInfoZone(:) => null()
+    integer(kind=8), pointer :: comporInfoInfo(:) => null()
+    integer(kind=8), pointer :: comporInfoZone(:) => null()
     character(len=16) :: field_type
     character(len=24)  :: indcmp
     character(len=32)  :: nomgd

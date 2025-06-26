@@ -25,7 +25,7 @@ interface
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Print), intent(in) :: ds_print
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=24), intent(in) :: sderro
     end subroutine nmstat
 end interface

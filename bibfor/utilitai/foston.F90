@@ -28,7 +28,7 @@ subroutine foston(chval, vecnom, nbfonc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: nbfonc
+    integer(kind=8) :: nbfonc
     character(len=*) :: chval, vecnom(nbfonc)
 !     STOCKAGE DANS LA COLLECTION CHVAL DES FONCTIONS COMPOSANT LA NAPPE
 !     ACCES PAR NOM OU NUMERO DANS LA COLLECTION
@@ -42,7 +42,7 @@ subroutine foston(chval, vecnom, nbfonc)
 !     OBJETS SIMPLES CREES
 !         JEXNUM(CHVAL,I)
 !     ------------------------------------------------------------------
-    integer :: i, j, nbp, lvaln, lvalf, nbpt
+    integer(kind=8) :: i, j, nbp, lvaln, lvalf, nbpt
     character(len=24) :: chfval
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------

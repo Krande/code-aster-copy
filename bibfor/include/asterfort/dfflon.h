@@ -24,8 +24,8 @@ interface
         real(kind=8) :: geom(*)
         character(len=8) :: nonoff(*)
         character(len=24) :: nomnoe
-        integer :: inoff
-        integer :: nbnoff
+        integer(kind=8) :: inoff
+        integer(kind=8) :: nbnoff
         character(len=8) :: typfon
         real(kind=8) :: d
     end subroutine dfflon

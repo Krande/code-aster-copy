@@ -23,7 +23,7 @@ subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx, &
 #include "asterc/r8gaem.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: dfrdk(1), coor(*), dfdx(1)
     real(kind=8) :: dxdk, dydk, cour, jac, jacp, poids, sina, cosa
 ! ......................................................................
@@ -51,10 +51,10 @@ subroutine dfdm1d(nno, poids, dfrdk, coor, dfdx, &
 !    - LES SEGMENTS DOIVENT ETRE CONTENUS DANS UN PLAN (DANS OXY)
 !
     character(len=8) :: nomail
-    integer :: i
+    integer(kind=8) :: i
 !
 !-----------------------------------------------------------------------
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     real(kind=8) :: d2xdk, d2ydk
 !-----------------------------------------------------------------------
     dxdk = 0.d0

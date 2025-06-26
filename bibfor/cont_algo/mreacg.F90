@@ -45,7 +45,7 @@ subroutine mreacg(mesh, ds_contact, field_update)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: oldgeo
     character(len=19) :: newgeo
 !

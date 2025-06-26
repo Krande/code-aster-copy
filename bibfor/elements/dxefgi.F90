@@ -42,7 +42,7 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
 !                        DANS L'ORDRE : EPXX, EPYY, EPXY, KXX, KYY, KXY
 !     OUT SIGT(1)      : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
 !                        AUX POINTS D'INTEGRATION
-    integer :: multic
+    integer(kind=8) :: multic
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: kxx, kyy, kxy, t2iu(4), t2ui(4), t1ve(9)
@@ -52,7 +52,7 @@ subroutine dxefgi(nomte, pgl, epsini, sigt)
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, igau, nno, npg, ncomp
+    integer(kind=8) :: i, igau, nno, npg, ncomp
     real(kind=8) :: epxx, epxy, epyy, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

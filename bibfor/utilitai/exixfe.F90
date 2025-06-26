@@ -23,7 +23,7 @@ subroutine exixfe(modele, iret)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
     character(len=*) :: modele
-    integer :: iret
+    integer(kind=8) :: iret
 !
 !     BUT:
 !         DETECTER SI LE MODELE EST UNE MODELISATION XFEM.
@@ -46,7 +46,7 @@ subroutine exixfe(modele, iret)
 !      CHARACTER*32 JEEXIN
 !
 !
-    integer :: ifiss
+    integer(kind=8) :: ifiss
 !
 ! ......................................................................
 !

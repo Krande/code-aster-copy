@@ -23,7 +23,7 @@
 interface
     subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                       lcoc, base, ces3z)
-        integer :: nbchs
+        integer(kind=8) :: nbchs
         character(len=*) :: lichs(nbchs)
         aster_logical :: lcumul(nbchs)
         real(kind=8) :: lcoefr(nbchs)

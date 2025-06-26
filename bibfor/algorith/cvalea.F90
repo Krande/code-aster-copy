@@ -38,11 +38,11 @@ subroutine cvalea(ndim, cmod, ndimax, nbmod)
 !-----------------------------------------------------------------------
 !
 #include "asterfort/ggubs.h"
-    integer :: ndimax
-    integer :: ndim, nbmod
+    integer(kind=8) :: ndimax
+    integer(kind=8) :: ndim, nbmod
     complex(kind=8) :: cmod(ndimax, nbmod)
     real(kind=8) :: r(2), dseed
-    integer :: i, k
+    integer(kind=8) :: i, k
 !
 !-----------------------------------------------------------------------
     dseed = 24331.d0

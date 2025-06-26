@@ -23,11 +23,11 @@ interface
                       ds_inout  , ds_errorindic, ds_algorom_, lStoringInitState_)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=24) :: modele
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24) :: carele
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         type(NL_DS_Print), intent(in) :: ds_print
         character(len=19) :: sddisc
         character(len=19) :: sdcrit

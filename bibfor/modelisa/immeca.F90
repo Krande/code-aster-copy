@@ -94,36 +94,36 @@ subroutine immeca(tablca, lirela, mailla, nbnobe, nunobe, &
 !
     character(len=8) :: mailla
     character(len=19) :: lirela, nunobe, xnoca, ynoca, znoca, tablca
-    integer :: nbnobe, icabl, nbnoca(*)
+    integer(kind=8) :: nbnobe, icabl, nbnoca(*)
     character(len=24) :: ncncin, nmabet, gromai
     character(len=24) :: valk(2)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: nselec, nbnob2
+    integer(kind=8) :: nselec, nbnob2
     parameter(nselec=5)
-    integer :: ideca, immer, inob1, inob2, inobe, inoca, ipara, itetra, jcoor
-    integer :: jnoca, jnunob, jxca
-    integer :: jyca, jzca, nbcnx, nblign, nbno, nbpara, nnomax, noe
-    integer :: noebe(nselec), numail, nbval, nbval2, iret, ibid, noebec
+    integer(kind=8) :: ideca, immer, inob1, inob2, inobe, inoca, ipara, itetra, jcoor
+    integer(kind=8) :: jnoca, jnunob, jxca
+    integer(kind=8) :: jyca, jzca, nbcnx, nblign, nbno, nbpara, nnomax, noe
+    integer(kind=8) :: noebe(nselec), numail, nbval, nbval2, iret, ibid, noebec
     real(kind=8) :: d2, d2min(nselec), dx, dy, dz, rbid, x3dca(3), d2_max
     real(kind=8) :: x3dca2(3), axe(3), xnorm, xnorm2, zero, xbar(4)
     real(kind=8) :: rayon
     real(kind=8) :: long, longcy, longca, d2minc
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: nnoec2, k8b, presen(2), k8vide, noancr(2)
     complex(kind=8) :: cbid
     character(len=3) :: k3b
     character(len=8) :: nnoeca, voisin(2)
     character(len=24) :: coorno, nonoca, nogrna(2)
-    integer :: n1, ibe, jbe, jgmai
+    integer(kind=8) :: n1, ibe, jbe, jgmai
 !
     character(len=24) :: param(3), parcr
-    integer, pointer :: cnx_maille(:) => null()
+    integer(kind=8), pointer :: cnx_maille(:) => null()
     real(kind=8), pointer :: d2_min_max(:) => null()
-    integer, pointer :: no_min_max(:) => null()
+    integer(kind=8), pointer :: no_min_max(:) => null()
     real(kind=8), pointer :: xyz_noemai(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     data param/'MAILLE_BETON_VOISINE    ',&
      &                     'NOEUD_BETON_VOISIN      ',&

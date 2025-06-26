@@ -27,9 +27,9 @@ interface
         character(len=*), intent(in) :: chamgd
         character(len=8), intent(in) :: typtes
         character(len=*), intent(in) :: typres
-        integer, intent(in) :: nbref
+        integer(kind=8), intent(in) :: nbref
         character(len=16), intent(in) :: tbtxt(2)
-        integer, intent(in) :: refi(nbref)
+        integer(kind=8), intent(in) :: refi(nbref)
         real(kind=8), intent(in) :: refr(nbref)
         complex(kind=8), intent(in) :: refc(nbref)
         real(kind=8), intent(in) :: epsi

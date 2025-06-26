@@ -22,9 +22,9 @@ interface
     subroutine srdgde(val, vintr, dt, seuive, ucrim,&
                       im, sm, vinm, nvi, nbmat, mater,&
                       tmp, depsv, dgamv, retcom)
-        integer :: nbmat
-        integer :: val
-        integer :: nvi
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: val
+        integer(kind=8) :: nvi
         real(kind=8) :: vintr
         real(kind=8) :: dt
         real(kind=8) :: seuive
@@ -36,6 +36,6 @@ interface
         real(kind=8) :: tmp
         real(kind=8) :: depsv(6)
         real(kind=8) :: dgamv
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine srdgde
 end interface

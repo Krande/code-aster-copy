@@ -44,19 +44,19 @@ subroutine te0399(option, nomte)
 ! IN  OPTION : OPTION DE CALCUL
 ! IN  NOMTE  : NOM DU TYPE ELEMENT
 
-    integer :: nbnomx
+    integer(kind=8) :: nbnomx
     parameter(nbnomx=27)
-    integer :: nbgamx
+    integer(kind=8) :: nbgamx
     parameter(nbgamx=64)
 
-    integer :: nns, nnos
-    integer :: npgs, ipoids, ivfs, idfdes, jrefe1, jrefe2
-    integer :: jfamil, jinfor, jcoopg, jdfd2, jgano
-    integer :: ndim
+    integer(kind=8) :: nns, nnos
+    integer(kind=8) :: npgs, ipoids, ivfs, idfdes, jrefe1, jrefe2
+    integer(kind=8) :: jfamil, jinfor, jcoopg, jdfd2, jgano
+    integer(kind=8) :: ndim
     character(len=8) :: nomfam, elrfs
     character(len=8) :: elrf1, elrf2
     character(len=16) :: nomte1, nomte2
-    integer :: nn1, nn2
+    integer(kind=8) :: nn1, nn2
 
 ! ----------------------------------------------------------------------
 

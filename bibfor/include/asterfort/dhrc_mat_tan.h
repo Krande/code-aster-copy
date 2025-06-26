@@ -31,7 +31,7 @@ interface
         real(kind=8), intent(in) :: bocaj(6, 6)
         real(kind=8), intent(in) :: neta1(2)
         real(kind=8), intent(in) :: neta2(2)
-        integer, intent(in) :: indip(6)
+        integer(kind=8), intent(in) :: indip(6)
         real(kind=8), intent(in) :: cstseu(6)
         real(kind=8), intent(in) :: eps(8)
         real(kind=8), intent(in) :: vint(*)

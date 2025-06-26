@@ -20,7 +20,7 @@
 !
 interface
     subroutine gmeneu(imod, nbnode)
-        integer :: imod
-        integer :: nbnode
+        integer(kind=8) :: imod
+        integer(kind=8) :: nbnode
     end subroutine gmeneu
 end interface

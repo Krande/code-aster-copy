@@ -31,7 +31,7 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: codret
+    integer(kind=8) :: codret
     character(len=8) :: ma2
     character(len=19) :: ces1, ces2
     character(len=*) :: corrm
@@ -50,11 +50,11 @@ subroutine rdtces(ma2, corrm, ces1, base, ces2, &
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jcorrm, nbma2, jnbpt, jnbsp, jnbcmp
-    integer :: jce1d, jce1v, jce1l, ima1, ima2, nbpt, nbsp, iad1
-    integer :: jce2d, jce2v, jce2l, jce2c
-    integer :: ipt, isp, iad2
-    integer :: ncmp, icmp
+    integer(kind=8) :: jcorrm, nbma2, jnbpt, jnbsp, jnbcmp
+    integer(kind=8) :: jce1d, jce1v, jce1l, ima1, ima2, nbpt, nbsp, iad1
+    integer(kind=8) :: jce2d, jce2v, jce2l, jce2c
+    integer(kind=8) :: ipt, isp, iad2
+    integer(kind=8) :: ncmp, icmp
     character(len=8) :: nomgd, typces
     character(len=3) :: tsca
     aster_logical :: isvide

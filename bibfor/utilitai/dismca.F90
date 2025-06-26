@@ -34,7 +34,7 @@ subroutine dismca(question_, object_, answeri, answerk_, ierd)
 !
     character(len=*), intent(in) :: question_
     character(len=*), intent(in) :: object_
-    integer, intent(out) :: answeri, ierd
+    integer(kind=8), intent(out) :: answeri, ierd
     character(len=*), intent(out)  :: answerk_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,11 +56,11 @@ subroutine dismca(question_, object_, answeri, answerk_, ierd)
     character(len=24)   :: question
     character(len=32)   :: answerk
     character(len=19)   :: object, func_name, field
-    integer, parameter  :: max_para_name = 15
+    integer(kind=8), parameter  :: max_para_name = 15
     character(len=8)    :: func_type, para_name(max_para_name), type, nogd
-    integer             :: iexi, iret, repi
-    integer             :: jvale, i_zone, i_para, nb_zone, ltyp, nb_para
-    integer, pointer            :: v_desc(:) => null()
+    integer(kind=8)             :: iexi, iret, repi
+    integer(kind=8)             :: jvale, i_zone, i_para, nb_zone, ltyp, nb_para
+    integer(kind=8), pointer            :: v_desc(:) => null()
     character(len=24), pointer  :: v_prol(:) => null()
     character(len=8), pointer   :: v_noma(:) => null()
 !

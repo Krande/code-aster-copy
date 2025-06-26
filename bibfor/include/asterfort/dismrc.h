@@ -22,8 +22,8 @@ interface
     subroutine dismrc(questi, nomobz, repi, repk, ierd)
         character(len=*) :: questi
         character(len=*) :: nomobz
-        integer :: repi
+        integer(kind=8) :: repi
         character(len=*) :: repk
-        integer :: ierd
+        integer(kind=8) :: ierd
     end subroutine dismrc
 end interface

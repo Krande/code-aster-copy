@@ -63,9 +63,9 @@ subroutine matthm(ds_thm, ndim, axi, nno1, nno2, dimuel, &
 !
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer :: ndim, nno1, nno2, dimuel, dimdef
-    integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
-    integer :: addep1, addlh1
+    integer(kind=8) :: ndim, nno1, nno2, dimuel, dimdef
+    integer(kind=8) :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
+    integer(kind=8) :: addep1, addlh1
     real(kind=8) :: vff1(nno1), vff2(nno2), dffr2(ndim-1, nno2)
     real(kind=8) :: wref, geom(ndim, nno2), ang(24)
     aster_logical :: axi
@@ -75,7 +75,7 @@ subroutine matthm(ds_thm, ndim, axi, nno1, nno2, dimuel, &
     real(kind=8) :: q(dimdef, dimuel), wi
 !
 ! - VARIABLES LOCALES
-    integer :: i, j, n, kj, f
+    integer(kind=8) :: i, j, n, kj, f
     real(kind=8) :: b(3, 3, 2*nno1), cour, jacp, sina, cosa, dfdx(nno2)
 !
 ! ======================================================================

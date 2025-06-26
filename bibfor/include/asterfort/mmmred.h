@@ -22,10 +22,10 @@
 !
 interface
     subroutine mmmred(ndimg, lctfc, champ, champr, ndd1)
-        integer :: ndimg
+        integer(kind=8) :: ndimg
         aster_logical :: lctfc
         character(len=19) :: champ
         character(len=19) :: champr
-        integer :: ndd1
+        integer(kind=8) :: ndd1
     end subroutine mmmred
 end interface

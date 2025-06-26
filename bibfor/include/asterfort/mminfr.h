@@ -22,7 +22,7 @@ interface
     function mminfr(sdcont_defi_, question_, i_zone_)
         character(len=*), intent(in) :: sdcont_defi_
         character(len=*), intent(in) :: question_
-        integer, optional, intent(in) :: i_zone_
+        integer(kind=8), optional, intent(in) :: i_zone_
         real(kind=8) :: mminfr
     end function mminfr
 end interface

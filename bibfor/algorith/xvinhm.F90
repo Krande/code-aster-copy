@@ -43,7 +43,7 @@ subroutine xvinhm(ds_thm, jmate, ndim, &
 ! ----------------------------------------------------------------------
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: jmate, ndim, i, ipgf
+    integer(kind=8) :: jmate, ndim, i, ipgf
     real(kind=8) :: cliq, vim(2), vip(2), cohes(5), rho11, rho11m
     real(kind=8) :: dsidep(6, 6), delta(6), eps, vim2(9), vip2(9), rela
     real(kind=8) :: w11, w11m, varbio, dpf, psp, psm, saut(3), lamb(3)

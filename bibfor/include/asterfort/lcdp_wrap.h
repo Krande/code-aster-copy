@@ -29,7 +29,7 @@ interface
 
         use lcdp_module, only: dp_material
 
-        integer      :: imate, ndim, kpg, ksp, codret, neps
+        integer(kind=8)      :: imate, ndim, kpg, ksp, codret, neps
         real(kind=8) :: instam,instap
         real(kind=8) :: crit(*)
         real(kind=8) :: epsm(neps), deps(neps)

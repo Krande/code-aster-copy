@@ -20,9 +20,9 @@
 !
 interface
     subroutine xmoajo(jj, nfiss, itypx, ntypx)
-        integer :: jj
-        integer :: nfiss
-        integer :: itypx(*)
-        integer :: ntypx(*)
+        integer(kind=8) :: jj
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: itypx(*)
+        integer(kind=8) :: ntypx(*)
     end subroutine xmoajo
 end interface

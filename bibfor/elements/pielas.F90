@@ -45,11 +45,11 @@ subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
 #include "blas/daxpy.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: ndim, kpg, npg
-    integer :: mate
+    integer(kind=8) :: ndim, kpg, npg
+    integer(kind=8) :: mate
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*)
-    integer :: lgpg
+    integer(kind=8) :: lgpg
     real(kind=8) :: vim(lgpg, npg)
     real(kind=8) :: epsm(6), epsp(6), epsd(6)
     real(kind=8) :: copilo(5, npg)
@@ -83,7 +83,7 @@ subroutine pielas(BEHinteg, ndim, npg, kpg, compor, &
 ! IN  TAU    : 2ND MEMBRE DE L'EQUATION F(ETA)=TAU
 ! OUT COPILO : COEFFICIENTS A0 ET A1 POUR CHAQUE POINT DE GAUSS
 ! ---------------------------------------------------------------------
-    integer :: ndimsi, nsol, sgn(2)
+    integer(kind=8) :: ndimsi, nsol, sgn(2)
     real(kind=8) :: sol(2), eps0(2*ndim), eps1(2*ndim)
     type(ELE_LAW) :: ELE_ldc
     type(VINL_LAW) :: VINL_ldc

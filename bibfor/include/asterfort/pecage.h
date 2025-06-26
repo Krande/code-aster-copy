@@ -22,6 +22,6 @@ interface
     subroutine pecage(resu, modele, nbocc)
         character(len=*) :: resu
         character(len=*) :: modele
-        integer :: nbocc
+        integer(kind=8) :: nbocc
     end subroutine pecage
 end interface

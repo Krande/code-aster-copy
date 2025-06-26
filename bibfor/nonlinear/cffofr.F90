@@ -47,7 +47,7 @@ subroutine cffofr(numedd, resoco, cnfofr)
 !
 !
 !
-    integer :: neq, iconta, i
+    integer(kind=8) :: neq, iconta, i
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: afmu(:) => null()
 !

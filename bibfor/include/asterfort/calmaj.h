@@ -34,8 +34,8 @@ interface
         character(len=*) :: chamno
         character(len=14) :: num
         aster_logical :: vrai
-        integer :: i
-        integer :: j
+        integer(kind=8) :: i
+        integer(kind=8) :: j
         real(kind=8) :: mij
     end subroutine calmaj
 end interface

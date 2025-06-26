@@ -25,10 +25,10 @@ interface
                      deps, sigd, vind, opt, sigf,&
                      vinf, dsde, iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: typmod(*)
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: carcri(*)
         real(kind=8) :: angmas(3)
         real(kind=8) :: epsd(6)
@@ -39,6 +39,6 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(50)
         real(kind=8) :: dsde(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmhuj
 end interface

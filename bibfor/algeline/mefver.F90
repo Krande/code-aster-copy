@@ -22,7 +22,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
 !
 #include "asterc/r8pi.h"
 #include "asterfort/utmess.h"
-    integer :: ndim(14)
+    integer(kind=8) :: ndim(14)
     real(kind=8) :: som(9), xint(*), yint(*), rint(*)
 !     VERIFICATION DE L'ORDRE ET DE LA BONNE DISPOSITION DES SOMMETS DE
 !     L ENCEINTE RECTANGULAIRE
@@ -43,7 +43,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
 !                LE REPERE AXIAL
 ! IN  : RINT   : RAYONS DES CYLINDRES
 ! ----------------------------------------------------------------------
-    integer :: ind(3)
+    integer(kind=8) :: ind(3)
     real(kind=8) :: xsom(4), ysom(4), ux(4), uy(4), norm, a1, a(4)
     real(kind=8) :: vect(4), long(4)
     character(len=3) :: note
@@ -51,7 +51,7 @@ subroutine mefver(ndim, som, xint, yint, rint)
 !
 ! --- LECTURE DES DIMENSIONS
 !-----------------------------------------------------------------------
-    integer :: i, iencei, j, nbcyl
+    integer(kind=8) :: i, iencei, j, nbcyl
     real(kind=8) :: diff, epsit, pi, pis2, proj, rext
     real(kind=8) :: xext, yext
 !-----------------------------------------------------------------------

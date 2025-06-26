@@ -20,9 +20,9 @@
 !
 interface
     subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: nomaz
         character(len=*) :: lisnoz
-        integer :: nbno
+        integer(kind=8) :: nbno
     end subroutine cgnoiv
 end interface

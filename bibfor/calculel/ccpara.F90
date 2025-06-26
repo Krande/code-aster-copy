@@ -37,13 +37,13 @@ subroutine ccpara(option, modele, resuin, resuou, numord, &
 #include "asterfort/vrcref.h"
 #include "asterc/isnnem.h"
 !
-    integer :: numord, nordm1
+    integer(kind=8) :: numord, nordm1
     character(len=8) :: modele, resuin, resuou, mater, carael
     character(len=16) :: option
     aster_logical :: exitim
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: nparin, iret, ibid, jainst, jfreq, iaopds, iaoplo, ipara
-    integer :: jnmo, opt, inume, jains2, iundef
+    integer(kind=8) :: nparin, iret, ibid, jainst, jfreq, iaopds, iaoplo, ipara
+    integer(kind=8) :: jnmo, opt, inume, jains2, iundef
 !
     real(kind=8) :: tps(6), rundf, omega2, freq, time, zero
     parameter(zero=0.0d0)

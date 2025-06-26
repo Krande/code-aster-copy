@@ -54,11 +54,11 @@ subroutine hujmid(mod, crit, mater, nvi, deps, &
 #include "asterfort/mgauss.h"
 #include "asterfort/utlcal.h"
 !
-    integer :: ndt, ndi, nvi, nr, nmod, iret, nbmect
-    integer :: i, j, k, kk, iter, indi(7), ndec0, ndec
-    integer :: nitimp, nbmeca, compt, msup(4), niter
-    integer :: umess, ifm, niv
-    integer :: essai, essmax, resi, nmax, imin
+    integer(kind=8) :: ndt, ndi, nvi, nr, nmod, iret, nbmect
+    integer(kind=8) :: i, j, k, kk, iter, indi(7), ndec0, ndec
+    integer(kind=8) :: nitimp, nbmeca, compt, msup(4), niter
+    integer(kind=8) :: umess, ifm, niv
+    integer(kind=8) :: essai, essmax, resi, nmax, imin
     aster_logical :: debug, noconv, aredec, stopnc, negmul(8), subd
     aster_logical :: loop, euler
 !

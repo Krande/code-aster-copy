@@ -34,8 +34,8 @@ subroutine nonlinDSPrintSepLine()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: line_width
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: line_width
     character(len=512) :: sep_line
 !
 ! --------------------------------------------------------------------------------------------------

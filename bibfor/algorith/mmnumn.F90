@@ -29,8 +29,8 @@ subroutine mmnumn(noma, typint, nummae, nnomae, iptm, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
     character(len=8) :: noma
-    integer :: typint
-    integer :: nummae, iptm, numnoe, nnomae
+    integer(kind=8) :: typint
+    integer(kind=8) :: nummae, iptm, numnoe, nnomae
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine mmnumn(noma, typint, nummae, nnomae, iptm, &
 !
 !
 !
-    integer :: inoe, jconnx
+    integer(kind=8) :: inoe, jconnx
 !
 ! ----------------------------------------------------------------------
 !

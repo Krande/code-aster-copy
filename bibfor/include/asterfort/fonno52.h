@@ -22,9 +22,9 @@ interface
     subroutine fonno52(noma,na, nb, ndim, vnor,vdir)
 
         character(len=8) :: noma
-        integer :: na
-        integer :: nb
-        integer :: ndim
+        integer(kind=8) :: na
+        integer(kind=8) :: nb
+        integer(kind=8) :: ndim
         real(kind=8) :: vnor(2, 3)
         real(kind=8) :: vdir(2, 3)
     end subroutine fonno52

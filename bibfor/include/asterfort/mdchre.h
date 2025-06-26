@@ -24,8 +24,8 @@ interface
     subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum,&
                       repere, lnoue2)
         character(len=*) :: nlcase
-        integer :: ioc
-        integer :: iliai
+        integer(kind=8) :: ioc
+        integer(kind=8) :: iliai
         character(len=24) :: mdgene
         character(len=16) :: typnum
         character(len=8) :: repere

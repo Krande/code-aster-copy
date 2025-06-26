@@ -22,7 +22,7 @@ interface
     subroutine pmfk21(sk, casect, a, xl, &
                   xjx, xig, g, alfay,&
                   alfaz, ey, ez)
-        integer :: id
+        integer(kind=8) :: id
         real(kind=8) :: sk(*)
         real(kind=8) :: casect(6)
         real(kind=8) :: a

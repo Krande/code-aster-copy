@@ -20,8 +20,8 @@
 !
 interface
     subroutine cpnptr3(main,numa,coor,ind,nomnoe)
-        integer, intent(in) :: ind
-        integer, intent(in) :: numa
+        integer(kind=8), intent(in) :: ind
+        integer(kind=8), intent(in) :: numa
         real(kind=8),intent(out) :: coor(3, *)
         character(len=8), intent(in) :: main
         character(len=24), intent(in) :: nomnoe

@@ -22,12 +22,12 @@ interface
     subroutine rkdvec(fami, kpg, ksp, imat, matcst,&
                       nvi, vini, coeft, x, dtime,&
                       nmat, sigi, dvin)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imat
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imat
         character(len=3) :: matcst
         real(kind=8) :: vini(nvi)
         real(kind=8) :: coeft(nmat)

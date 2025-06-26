@@ -22,7 +22,7 @@ interface
     subroutine betini(materf, nmat, sig, sigeq, sigh,&
                       coefa, coefb, coefar, coefbr, coneco,&
                       conetr)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: sig(6)
         real(kind=8) :: sigeq

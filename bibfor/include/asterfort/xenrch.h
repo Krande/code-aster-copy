@@ -30,7 +30,7 @@ interface
         character(len=19) :: cnslj
         character(len=19) :: cnsen
         character(len=19) :: cnsenr
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: fiss
         aster_logical :: goinop
         character(len=24) :: lismae

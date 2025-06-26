@@ -26,7 +26,7 @@ interface
         character(len=19), intent(in) :: sddisc
         character(len=4), intent(in) :: loop_name
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=19), intent(in) :: valinc(*)
     end subroutine nmevev
 end interface

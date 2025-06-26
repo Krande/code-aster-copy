@@ -20,7 +20,7 @@
 !
 interface
     subroutine dtminfo_choc(nlcase, nbnoli)
-        integer, intent(in)   :: nlcase
-        integer, intent(in)   :: nbnoli
+        integer(kind=8), intent(in)   :: nlcase
+        integer(kind=8), intent(in)   :: nbnoli
     end subroutine dtminfo_choc
 end interface

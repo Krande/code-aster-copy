@@ -26,7 +26,7 @@ interface
                             base  , vect_elemz)
         character(len=*), intent(in) :: modelz, chsithz
         aster_logical, intent(in)  :: l_temp, l_hydr, l_ptot, l_sech, l_epsa
-        integer, intent(in) :: nbin, nbout
+        integer(kind=8), intent(in) :: nbin, nbout
         character(len=8), intent(in) :: lpain(*), lpaout(*)
         character(len=19), intent(in) :: lchin(*)
         character(len=19), intent(inout) :: lchout(*)

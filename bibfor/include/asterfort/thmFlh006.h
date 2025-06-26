@@ -30,9 +30,9 @@ interface
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
         aster_logical, intent(in) :: lMatr, lSigm
-        integer, intent(in) :: j_mater
-        integer, intent(in) :: ndim, dimdef, dimcon
-        integer, intent(in) :: addeme, addep1, addete, adcp11
+        integer(kind=8), intent(in) :: j_mater
+        integer(kind=8), intent(in) :: ndim, dimdef, dimcon
+        integer(kind=8), intent(in) :: addeme, addep1, addete, adcp11
         real(kind=8), intent(in) :: rho11, satur, dsatur
         real(kind=8), intent(in) :: grap1(3)
         real(kind=8), intent(in) :: p2, t

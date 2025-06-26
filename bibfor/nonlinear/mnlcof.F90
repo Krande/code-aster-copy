@@ -72,7 +72,7 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: imat(2), ninc, nd, nchoc, h, hf, ordman, nextr
+    integer(kind=8) :: imat(2), ninc, nd, nchoc, h, hf, ordman, nextr
     real(kind=8) :: epsbif
     character(len=14) :: numdrv, xcdl, parcho, adime, xvecu0, xtang, xups, xfpnla
     character(len=19) :: matdrv
@@ -80,13 +80,13 @@ subroutine mnlcof(imat, numdrv, matdrv, xcdl, parcho, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: ivecu0, iups, itang, p, r, ivecu1, ivecu2, iqnl, iret
-    integer :: ifpnla
+    integer(kind=8) :: ivecu0, iups, itang, p, r, ivecu1, ivecu2, iqnl, iret
+    integer(kind=8) :: ifpnla
     character(len=14) :: xvecu1, xvecu2, xqnl
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES POUR EXTRACTION GEOMETRIQUE
 ! ----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
 !
     character(len=19) :: solveu
     real(kind=8) :: nvec, nratio, necar, ac, nudom

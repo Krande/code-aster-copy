@@ -19,7 +19,7 @@
 subroutine xminte(ndim, integ, fpg)
 !
     implicit none
-    integer :: ndim, integ
+    integer(kind=8) :: ndim, integ
     character(len=8) :: fpg
 !
 !

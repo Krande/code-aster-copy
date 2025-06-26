@@ -30,8 +30,8 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, &
 !
     character(len=*), intent(in) :: nomopt, nomgd, statut
     character(len=8), intent(out) :: nompar
-    integer, intent(in), optional :: istop
-    integer, intent(out), optional :: iret
+    integer(kind=8), intent(in), optional :: istop
+    integer(kind=8), intent(out), optional :: iret
 !
 ! ----------------------------------------------------------------------
 !     ENTREES:
@@ -59,8 +59,8 @@ subroutine nopar2(nomopt, nomgd, statut, nompar, istop, &
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: opt, nbin, nbout, nbtrou, itrou, gd, gd2, iadesc, iaoppa, kk
-    integer :: istop2
+    integer(kind=8) :: opt, nbin, nbout, nbtrou, itrou, gd, gd2, iadesc, iaoppa, kk
+    integer(kind=8) :: istop2
     character(len=16) :: nomop2
     character(len=8) :: nomgd2
     character(len=8) :: statu2, outrou

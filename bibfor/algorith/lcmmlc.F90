@@ -57,9 +57,9 @@ subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
 #include "asterfort/lcmmfc.h"
 #include "asterfort/lcmmfe.h"
 #include "asterfort/lcmmfi.h"
-    integer :: nmat, nvi, nsfv, iret, ifl, nfs, nsg
-    integer :: nuvi, ifa, nbsys, is, itmax, iexp, irk
-    integer :: nbcomm(nmat, 3), nsfa, nuecou
+    integer(kind=8) :: nmat, nvi, nsfv, iret, ifl, nfs, nsg
+    integer(kind=8) :: nuvi, ifa, nbsys, is, itmax, iexp, irk
+    integer(kind=8) :: nbcomm(nmat, 3), nsfa, nuecou
     real(kind=8) :: dt, vind(nvi)
     real(kind=8) :: materf(nmat*2), dy(*), yd(*), toler
     real(kind=8) :: taus, dgamma, dalpha, dp, rp
@@ -68,7 +68,7 @@ subroutine lcmmlc(nmat, nbcomm, cpmono, nfs, nsg, &
     real(kind=8) :: crit, alphap, sgns, gammap, expbp(nsg)
     character(len=24) :: cpmono(5*nmat+1)
     character(len=16) :: necoul, necris, necrci
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
 !

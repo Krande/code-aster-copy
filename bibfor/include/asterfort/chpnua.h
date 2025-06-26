@@ -20,7 +20,7 @@
 !
 interface
     subroutine chpnua(nx, chpt, lno, nuage)
-        integer :: nx
+        integer(kind=8) :: nx
         character(len=*) :: chpt
         character(len=*) :: lno
         character(len=*) :: nuage

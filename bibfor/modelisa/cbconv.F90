@@ -45,7 +45,7 @@ subroutine cbconv(char)
 !     CREATION ET CHARGEMENT DE L'OBJET 'CHAR'.CHTH.CONVE
 !
 !-----------------------------------------------------------------------
-    integer ::  ier, nconv, nvites
+    integer(kind=8) ::  ier, nconv, nvites
     character(len=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

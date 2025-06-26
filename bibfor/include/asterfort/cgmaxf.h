@@ -21,9 +21,9 @@
 interface
     subroutine cgmaxf(mofaz, iocc, nomaz, lismaz, nbma)
         character(len=*) :: mofaz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: nomaz
         character(len=*) :: lismaz
-        integer :: nbma
+        integer(kind=8) :: nbma
     end subroutine cgmaxf
 end interface

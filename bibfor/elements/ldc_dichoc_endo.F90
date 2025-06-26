@@ -58,7 +58,7 @@ subroutine ldc_dichoc_endo(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     implicit none
 #include "asterf_types.h"
     real(kind=8)     :: ppr(*)
-    integer          :: ppi(*)
+    integer(kind=8)          :: ppi(*)
     character(len=*) :: ppc(*)
     real(kind=8)     :: yy0(*)
     real(kind=8)     :: dy0(*)
@@ -69,12 +69,12 @@ subroutine ldc_dichoc_endo(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 !
 #include "asterfort/assert.h"
 !   système d'équations
-    integer, parameter  :: iux = 1, ifx = 2, ivx = 3, ip = 4, iuanx = 5, ije = 6
+    integer(kind=8), parameter  :: iux = 1, ifx = 2, ivx = 3, ip = 4, iuanx = 5, ije = 6
     real(kind=8)        :: Seuil, DSeuil, Raide, DRaide, Ftilde
     real(kind=8)        :: leseuil, ksif, ksiv, nume, deno, xjeu, legap, Raide0
     real(kind=8)        :: Amort_in, DAmort_in, Amort, DAmort
 !   Paramètres de la loi : jeu
-    integer, parameter   :: ijeu = 1
+    integer(kind=8), parameter   :: ijeu = 1
 ! --------------------------------------------------------------------------------------------------
     decoup = .false.
 !   Les incréments de pilotage
@@ -162,7 +162,7 @@ subroutine ldc_dichoc_endo(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 contains
 !
     subroutine val_fct_dfct(info_fct, p, vfct, dfct, vfct0)
-        integer, intent(in)    :: info_fct(2)
+        integer(kind=8), intent(in)    :: info_fct(2)
         real(kind=8), intent(in)    :: p
         real(kind=8), intent(out)           :: vfct, dfct
         real(kind=8), intent(out), optional :: vfct0
@@ -170,7 +170,7 @@ contains
 #include "jeveux.h"
 #include "asterfort/utmess.h"
 !
-        integer      :: ip, jr, jp, nbvale, i0, i1
+        integer(kind=8)      :: ip, jr, jp, nbvale, i0, i1
         real(kind=8) :: peq, p0, p1, f0, f1
 !
         nbvale = info_fct(1)

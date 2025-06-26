@@ -35,7 +35,7 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=*) :: numdlz, chargz, lisrez
 !
 ! ----------------------------------------------------------------------
@@ -66,10 +66,10 @@ subroutine caarle(numdlz, iocc, lisrez, chargz)
     character(len=10) :: noma, nomb, nom1, nom2
     character(len=8) :: nomo, mail, model(3), cine(3)
     character(len=8) :: k8bid
-    integer :: dime, nocc, iop
-    integer :: nbtyp
-    integer :: zocc, ibid, i
-    integer :: jtypm, jlgrf
+    integer(kind=8) :: dime, nocc, iop
+    integer(kind=8) :: nbtyp
+    integer(kind=8) :: zocc, ibid, i
+    integer(kind=8) :: jtypm, jlgrf
     character(len=16) :: motfac, option
 !
     data typmai/'&&CAARLE.NOMTM'/

@@ -66,7 +66,7 @@ subroutine harm75(nomres, typres, nomin, basemo)
 #include "asterfort/as_allocate.h"
 !
 !
-    integer :: ibid, nbmode, itresu(8)
+    integer(kind=8) :: ibid, nbmode, itresu(8)
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
     character(len=1) :: type1
@@ -79,16 +79,16 @@ subroutine harm75(nomres, typres, nomin, basemo)
     character(len=24) :: matric, chamno, crefe(2), chmod, nomcha, objve1, objve2
     character(len=24) :: objve3, objve4
     aster_logical :: tousno, leffor, prems
-    integer :: inocmp, inoecp, inumno, inuddl, indice, taille, inst
-    integer :: j, jc, i, iarchi, ich
-    integer :: idvecg, iret, iretou, jfreq
-    integer :: jnume, lfreq, lvale, nbcham, nbinsg
-    integer :: n1, n2, n3, n4, idec, idefm, idinsg, idresu
-    integer :: nbfreq, neq, nbnoeu, ncmp
+    integer(kind=8) :: inocmp, inoecp, inumno, inuddl, indice, taille, inst
+    integer(kind=8) :: j, jc, i, iarchi, ich
+    integer(kind=8) :: idvecg, iret, iretou, jfreq
+    integer(kind=8) :: jnume, lfreq, lvale, nbcham, nbinsg
+    integer(kind=8) :: n1, n2, n3, n4, idec, idefm, idinsg, idresu
+    integer(kind=8) :: nbfreq, neq, nbnoeu, ncmp
     real(kind=8), pointer :: base(:) => null()
     character(len=24), pointer :: refn(:) => null()
     character(len=4) :: kacce, kprof, kprofold
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ------------------------------------------------------------------
 !

@@ -43,7 +43,7 @@ subroutine calamr(phib24, phi1j, bi, num, j, &
 !-----------PLONGEMENT DE LA PRESSION----
 !---------------SUR LE MODELE THERMIQUE D INTERFACE--------------
 !-----------------------------------------------------------------------
-    integer :: j
+    integer(kind=8) :: j
 !-----------------------------------------------------------------------
     phib19 = 'PHIB19'
     incr = 'BID'

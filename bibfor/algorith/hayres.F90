@@ -40,7 +40,7 @@ subroutine hayres(mod, nmat, materd, materf, timed, &
 #include "asterfort/lcopli.h"
 #include "blas/dscal.h"
     character(len=8) :: mod
-    integer :: iret, itens, ndi, nmat, ndt, ndim
+    integer(kind=8) :: iret, itens, ndi, nmat, ndt, ndim
     real(kind=8) :: hookf(6, 6), res(10), crit(*), theta, alphad
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), timed, timef, deps(6), dt
     real(kind=8) :: dtot

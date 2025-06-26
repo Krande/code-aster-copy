@@ -28,7 +28,7 @@ subroutine mmGetProjection(i_reso_geom, wpg, &
 #include "asterfort/jevech.h"
 #include "Contact_type.h"
 !
-    integer, intent(in) :: i_reso_geom
+    integer(kind=8), intent(in) :: i_reso_geom
     real(kind=8), intent(out) :: wpg
     real(kind=8), intent(out) :: xpc, ypc, xpr, ypr
     real(kind=8), intent(out) :: tau1(3), tau2(3)
@@ -61,7 +61,7 @@ subroutine mmGetProjection(i_reso_geom, wpg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jpcf
+    integer(kind=8) :: jpcf
     real(kind=8) :: xpc_prev, ypc_prev, xpr_prev, ypr_prev
     real(kind=8) :: tau1_prev(3), tau2_prev(3)
 !

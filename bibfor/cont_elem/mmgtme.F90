@@ -28,7 +28,7 @@ subroutine mmgtme(ndim, nne, nnm, &
 !
 #include "asterf_types.h"
 !
-    integer, intent(in) :: ndim, nnm, nne
+    integer(kind=8), intent(in) :: ndim, nnm, nne
     real(kind=8), intent(in) :: wpg, ffe(9), ddffm(3, 9)
     real(kind=8), intent(in) :: jacobi, coefac, coefff, jeu, dlagrc
     real(kind=8), intent(in) :: mprt11(3, 3), mprt22(3, 3), mprt21(3, 3), mprt12(3, 3)
@@ -72,7 +72,7 @@ subroutine mmgtme(ndim, nne, nnm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k, l, ii, jj
+    integer(kind=8) :: i, j, k, l, ii, jj
     real(kind=8) :: g(3, 3), e(3, 3), d(3, 3), f(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------

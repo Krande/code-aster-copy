@@ -20,8 +20,8 @@
 !
 interface
     subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
-        integer :: nnoff
-        integer :: nchthe
+        integer(kind=8) :: nnoff
+        integer(kind=8) :: nchthe
         character(len=24) :: matr
         real(kind=8) :: gthi(nnoff)
         real(kind=8) :: gi(nchthe)

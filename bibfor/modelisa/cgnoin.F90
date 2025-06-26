@@ -39,7 +39,7 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: iocc, nbno
+    integer(kind=8) :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 !
 !       CGNOIN -- TRAITEMENT DE L'OPTION INCLUSION
@@ -54,9 +54,9 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer :: nbmc, nbno1, jma1, nbno2, jno2
-    integer :: n1
-    integer :: ino2, jlisno, i, ibid, iret
+    integer(kind=8) :: nbmc, nbno1, jma1, nbno2, jno2
+    integer(kind=8) :: n1
+    integer(kind=8) :: ino2, jlisno, i, ibid, iret
     complex(kind=8) :: c16b
     character(len=8) :: noma2, k8bid, ncas, noma1
     character(len=16) :: motcle(2), tymocl(2)
@@ -66,8 +66,8 @@ subroutine cgnoin(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=19) :: tablg
     aster_logical :: l_dmax
     real(kind=8) :: dmax, armin, r8b
-    integer, pointer :: litrav(:) => null()
-    integer, pointer :: pjef_nb(:) => null()
+    integer(kind=8), pointer :: litrav(:) => null()
+    integer(kind=8), pointer :: pjef_nb(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()

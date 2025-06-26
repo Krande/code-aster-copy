@@ -25,16 +25,16 @@ interface
                       nz, tx, ty, hf)
         character(len=2) :: chdim
         real(kind=8) :: geom(*)
-        integer :: iare
-        integer :: nnos
-        integer :: nnoa
+        integer(kind=8) :: iare
+        integer(kind=8) :: nnos
+        integer(kind=8) :: nnoa
         real(kind=8) :: orien
-        integer :: nno
-        integer :: npg
-        integer :: noe(9, 6, 4)
-        integer :: ifa
-        integer :: tymvol
-        integer :: idfde
+        integer(kind=8) :: nno
+        integer(kind=8) :: npg
+        integer(kind=8) :: noe(9, 6, 4)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: tymvol
+        integer(kind=8) :: idfde
         real(kind=8) :: jac(9)
         real(kind=8) :: nx(9)
         real(kind=8) :: ny(9)

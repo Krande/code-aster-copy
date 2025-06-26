@@ -21,10 +21,10 @@ interface
                                        grnode_, nbNode_ , listNode_)
         use Rom_Datastructure_type
         type(ROM_DS_Field), intent(in) :: field
-        integer, pointer :: listEqua(:)
+        integer(kind=8), pointer :: listEqua(:)
         character(len=24), intent(in) :: numeDof
         character(len=24), optional, intent(in) :: grnode_
-        integer, optional, intent(in) :: nbNode_
-        integer, pointer, optional :: listNode_(:)
+        integer(kind=8), optional, intent(in) :: nbNode_
+        integer(kind=8), pointer, optional :: listNode_(:)
     end subroutine romFieldNodesAreDefined
 end interface

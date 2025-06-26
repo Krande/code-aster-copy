@@ -26,7 +26,7 @@ interface
                       etamax, vide, nsol, sol, sgn)
         real(kind=8),intent(in) :: a, b, l0, l1, etamin, etamax 
         aster_logical,intent(out)     :: vide
-        integer,intent(out)     :: nsol, sgn(2)
+        integer(kind=8),intent(out)     :: nsol, sgn(2)
         real(kind=8),intent(out):: sol(2)
     end subroutine lcrkbo
 end interface 

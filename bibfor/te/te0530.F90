@@ -36,10 +36,10 @@ subroutine te0530(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: r1, rvid
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, ipg, iret
-    integer :: jpvarc, ivrc
-    integer :: nbvarc
-    integer :: jtab(7), idx, nbsp, isp
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, ipg, iret
+    integer(kind=8) :: jpvarc, ivrc
+    integer(kind=8) :: nbvarc
+    integer(kind=8) :: jtab(7), idx, nbsp, isp
     parameter(nbvarc=8)
     character(len=8) :: nomvrc(nbvarc)
 !

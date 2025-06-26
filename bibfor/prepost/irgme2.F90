@@ -29,8 +29,8 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd, &
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 !
-    integer :: numold(*), tabd(*), tabl(*), tabv(*), nbno
-    integer :: listno(*), nbcmp, ifi, ima, nbord2, iadmax, jtype
+    integer(kind=8) :: numold(*), tabd(*), tabl(*), tabv(*), nbno
+    integer(kind=8) :: listno(*), nbcmp, ifi, ima, nbord2, iadmax, jtype
     character(len=24) :: connex
     character(len=*) :: partie
 !
@@ -55,8 +55,8 @@ subroutine irgme2(numold, ima, connex, nbord2, tabd, &
 !     IADMAX  : I   : MAX DES IAD SI >0 LE CHAMP EXISTE POUR LA MAILLE
 !
 !     ------------------------------------------------------------------
-    integer :: imaold, jcnold, ior, jcesd, jcesl, jcesv, nbpt, nbsp, j, ino
-    integer :: itrou, ipt, inold, isp, iad, k
+    integer(kind=8) :: imaold, jcnold, ior, jcesd, jcesl, jcesv, nbpt, nbsp, j, ino
+    integer(kind=8) :: itrou, ipt, inold, isp, iad, k
     real(kind=8) :: vale
     real(kind=8) :: val2(6)
 !

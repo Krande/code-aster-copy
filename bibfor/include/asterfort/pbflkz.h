@@ -20,7 +20,7 @@
 !
 interface
     function pbflkz(i, z, long, ln, kcalcu)
-        integer :: i
+        integer(kind=8) :: i
         real(kind=8) :: z
         real(kind=8) :: long
         real(kind=8) :: ln

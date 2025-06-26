@@ -22,9 +22,9 @@
 !
 interface
     subroutine cfelpv(numlia, sdcont_solv, nbliai, lelpiv)
-        integer :: numlia
+        integer(kind=8) :: numlia
         character(len=24) :: sdcont_solv
-        integer :: nbliai
+        integer(kind=8) :: nbliai
         aster_logical :: lelpiv
     end subroutine cfelpv
 end interface

@@ -24,13 +24,13 @@ interface
         character(len=*), intent(in) :: interp
         real(kind=8), intent(in) :: prec
         character(len=*), intent(in) :: crit
-        integer, intent(in) :: nbinst
+        integer(kind=8), intent(in) :: nbinst
         real(kind=8), intent(in) :: ti(*)
         real(kind=8), intent(in) :: temps
-        integer, intent(in) :: neq
+        integer(kind=8), intent(in) :: neq
         real(kind=8), intent(in) :: y(nbinst*neq)
         real(kind=8), intent(out) :: xtract(neq)
-        integer, intent(out) :: ier
-        integer, optional, intent(out) :: index
+        integer(kind=8), intent(out) :: ier
+        integer(kind=8), optional, intent(out) :: index
     end subroutine extrac
 end interface

@@ -53,32 +53,32 @@ subroutine cfmxr0_lac(mesh, ds_contact, ds_measure_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ncmp = 5
-    integer, parameter :: nceld1 = 4
-    integer, parameter :: nceld2 = 4
-    integer, parameter :: nceld3 = 4
-    integer :: ifm, niv
-    integer :: nt_patch, nb_grel, nb_liel, nbliac
-    integer :: i_liel, i_grel, patch_indx, elem_slav_nume, iret, vale_indx, decal
+    integer(kind=8), parameter :: ncmp = 5
+    integer(kind=8), parameter :: nceld1 = 4
+    integer(kind=8), parameter :: nceld2 = 4
+    integer(kind=8), parameter :: nceld3 = 4
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nt_patch, nb_grel, nb_liel, nbliac
+    integer(kind=8) :: i_liel, i_grel, patch_indx, elem_slav_nume, iret, vale_indx, decal
     real(kind=8) :: lagc, gapi, coef
-    integer :: indi_cont
+    integer(kind=8) :: indi_cont
     character(len=19) :: celinr
     character(len=24) :: celinr_celv
-    integer :: jv_celinr_celv
+    integer(kind=8) :: jv_celinr_celv
     character(len=24) :: celinr_celd
-    integer, pointer :: v_celinr_celd(:) => null()
+    integer(kind=8), pointer :: v_celinr_celd(:) => null()
     character(len=8)  :: ligrel_link_slav
-    integer, pointer :: v_ligrel_liel(:) => null()
+    integer(kind=8), pointer :: v_ligrel_liel(:) => null()
     character(len=19) :: sdappa
     character(len=24) :: sdappa_coef
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     character(len=24) :: sdcont_stat
-    integer, pointer :: v_sdcont_stat(:) => null()
+    integer(kind=8), pointer :: v_sdcont_stat(:) => null()
     character(len=24) :: sdcont_lagc
     real(kind=8), pointer :: v_sdcont_lagc(:) => null()
     character(len=24) :: sdappa_gapi
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
-    integer, pointer :: v_mesh_comapa(:) => null()
+    integer(kind=8), pointer :: v_mesh_comapa(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

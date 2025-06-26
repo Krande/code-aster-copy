@@ -38,8 +38,8 @@ subroutine te0496(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    integer :: nbcou, npgh, nbsect, nbfibr, nbvari, jcompo, jdcel, jnbsp
-    integer :: itab(2), iret
+    integer(kind=8) :: nbcou, npgh, nbsect, nbfibr, nbvari, jcompo, jdcel, jnbsp
+    integer(kind=8) :: itab(2), iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

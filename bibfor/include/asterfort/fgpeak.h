@@ -23,7 +23,7 @@ interface
         character(len=*) :: nomfon
         real(kind=8) :: pseuil
         real(kind=8) :: coemul
-        integer :: nbpoin
+        integer(kind=8) :: nbpoin
         real(kind=8) :: valpoi(*)
     end subroutine fgpeak
 end interface

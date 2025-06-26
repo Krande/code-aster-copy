@@ -64,12 +64,12 @@ subroutine ancrca(icabl, nbno, s, alpha, f0, &
 ! ---------
 #include "asterfort/utmess.h"
 #include "asterfort/wdefca.h"
-    integer :: icabl, nbno
+    integer(kind=8) :: icabl, nbno
     real(kind=8) :: s(*), alpha(*), f0, delta, ea, frco, frli, sa, d, f(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: iinf, ino, isup
+    integer(kind=8) :: iinf, ino, isup
     real(kind=8) :: alphad, alphai, alphas, df, ds, epsw, f2, pente, wcr, wdef
     real(kind=8) :: winf, wsup
     character(len=3) :: k3b

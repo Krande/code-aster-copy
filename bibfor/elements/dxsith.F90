@@ -27,7 +27,7 @@ subroutine dxsith(nomte, mater, sigma)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    integer :: mater
+    integer(kind=8) :: mater
     real(kind=8) :: sigma(*)
     character(len=16) :: nomte
 !
@@ -40,13 +40,13 @@ subroutine dxsith(nomte, mater, sigma)
 !
 !
 !
-    integer :: nbepsg
+    integer(kind=8) :: nbepsg
     parameter(nbepsg=8)
 !
-    integer :: ndim, nnoel, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: i, j, icou, icpg, igauh, ipg, ipgh, iret, ibid, nbcmp, nbcou
-    integer :: npgh
-    integer :: jnbspi, itab(8)
+    integer(kind=8) :: ndim, nnoel, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: i, j, icou, icpg, igauh, ipg, ipgh, iret, ibid, nbcmp, nbcou
+    integer(kind=8) :: npgh
+    integer(kind=8) :: jnbspi, itab(8)
 !
     real(kind=8) :: d(4, 4), angl_naut(3), inst, zero, epsth(nbepsg)
 !

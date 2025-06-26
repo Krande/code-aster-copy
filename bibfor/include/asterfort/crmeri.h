@@ -21,6 +21,6 @@
 interface
     subroutine crmeri(promes, iakpee)
         character(len=8) :: promes
-        integer :: iakpee
+        integer(kind=8) :: iakpee
     end subroutine crmeri
 end interface

@@ -32,9 +32,9 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc, &
 #include "asterfort/tecach.h"
 #include "asterfort/xxbsig.h"
 !
-    integer :: ndim, nnop, nfh, nfe, ddlc, ddlm, igeom, nbsig, ivectu
-    integer :: nfiss, jstno
-    integer :: cnset(*), heavt(*), lonch(*), jpintt, jpmilt, jheavn
+    integer(kind=8) :: ndim, nnop, nfh, nfe, ddlc, ddlm, igeom, nbsig, ivectu
+    integer(kind=8) :: nfiss, jstno
+    integer(kind=8) :: cnset(*), heavt(*), lonch(*), jpintt, jpmilt, jheavn
     real(kind=8) :: basloc(*), sigref(*), lsn(*), lst(*)
 !
 !
@@ -69,10 +69,10 @@ subroutine xbsir(ndim, nnop, nfh, nfe, ddlc, &
 !     VARIABLES LOCALES
     real(kind=8) :: he(nfiss), coorse(81)
     character(len=8) :: elrefp, elrese(6), fami(6)
-    integer :: nse, jtab(7), ncomp, iret
-    integer :: ncompn, heavn(nnop, 5)
-    integer :: ise, in, ino, npg, j, codopt
-    integer :: irese, nno, ifiss, ig
+    integer(kind=8) :: nse, jtab(7), ncomp, iret
+    integer(kind=8) :: ncompn, heavn(nnop, 5)
+    integer(kind=8) :: ise, in, ino, npg, j, codopt
+    integer(kind=8) :: irese, nno, ifiss, ig
 !
     data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
     data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/

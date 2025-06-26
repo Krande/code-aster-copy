@@ -21,9 +21,9 @@
 interface
     subroutine catang(noma, nbma, listma,  nbno, listno)
         character(len=8), intent(in) :: noma
-        integer, intent(in) :: nbma
-        integer, intent(in) :: listma(*)
-        integer, intent(in) :: nbno
-        integer, intent(in) :: listno(*)
+        integer(kind=8), intent(in) :: nbma
+        integer(kind=8), intent(in) :: listma(*)
+        integer(kind=8), intent(in) :: nbno
+        integer(kind=8), intent(in) :: listno(*)
     end subroutine catang
 end interface

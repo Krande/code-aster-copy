@@ -21,7 +21,7 @@
 interface
     subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
                       vim, vp, vecp, dsidep)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         character(len=8) :: mod(*)
         real(kind=8) :: materf(nbmat, 2)
         real(kind=8) :: sigp(6)

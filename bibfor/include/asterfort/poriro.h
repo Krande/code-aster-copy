@@ -23,7 +23,7 @@ interface
                       a1, a2, xl, xiy1, xiy2,&
                       xiz1, xiz2, g, alfay1, alfay2,&
                       alfaz1, alfaz2)
-        integer :: itype
+        integer(kind=8) :: itype
         real(kind=8) :: m(*)
         real(kind=8) :: rho
         real(kind=8) :: omega(3)

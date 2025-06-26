@@ -25,9 +25,9 @@ subroutine arlcnn(nummai, connex, loncum, nbno, cxno)
 #include "asterfort/assert.h"
 #include "asterfort/arlcns.h"
 !
-    integer :: nummai, connex(*), loncum(*)
-    integer :: nbno
-    integer :: cxno(*)
+    integer(kind=8) :: nummai, connex(*), loncum(*)
+    integer(kind=8) :: nbno
+    integer(kind=8) :: cxno(*)
 !
 ! ----------------------------------------------------------------------
 !

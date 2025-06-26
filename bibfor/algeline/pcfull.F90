@@ -61,10 +61,10 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp, &
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     implicit none
 #include "asterfort/pctrii.h"
-    integer :: n
+    integer(kind=8) :: n
     integer(kind=4) :: icpc(*)
-    integer :: icpl(0:n), icpd(n)
-    integer :: icplp(0:n), icpcp(*), ind(n)
+    integer(kind=8) :: icpl(0:n), icpd(n)
+    integer(kind=8) :: icplp(0:n), icpcp(*), ind(n)
 !
 !=======================================================================
 !
@@ -102,9 +102,9 @@ subroutine pcfull(n, icpl, icpc, icpd, icplp, &
 !=======================================================================
 !
 !-----------------------------------------------------------------------
-    integer :: i, ic1, ic2, ier, istop, j, jj
-    integer :: k, k1, k2, kp1, kp2, l, lca
-    integer :: ncremx, nzero
+    integer(kind=8) :: i, ic1, ic2, ier, istop, j, jj
+    integer(kind=8) :: k, k1, k2, kp1, kp2, l, lca
+    integer(kind=8) :: ncremx, nzero
 !-----------------------------------------------------------------------
     do i = 1, n
         ind(i) = 0

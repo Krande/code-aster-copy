@@ -29,14 +29,14 @@ function grdeur(nompar)
 #include "asterfort/utmess.h"
 
     character(len=8) :: nompar
-    integer :: grdeur
+    integer(kind=8) :: grdeur
 !-----------------------------------------------------------------------
 !   entrees:
 !      nompar : nom d'1 parametre de l'option que l'on calcule.
 !   sorties:
 !      grdeur : grandeur associee au parametre
 !-----------------------------------------------------------------------
-    integer :: jpar, nbpar
+    integer(kind=8) :: jpar, nbpar
 !-------------------------------------------------------------------
 
     nbpar = zi(ca_iaopds_-1+2)+zi(ca_iaopds_-1+3)+zi(ca_iaopds_-1+4)

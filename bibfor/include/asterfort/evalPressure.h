@@ -22,8 +22,8 @@ interface
                             jvShapFunc, jvGeom  , jvPres   ,&
                             pres      , cisa_   , geomCurr_)
         aster_logical, intent(in) :: lFunc, lTime
-        integer, intent(in) :: cellDime, nbNode, ipg
-        integer, intent(in) :: jvGeom, jvShapFunc, jvPres
+        integer(kind=8), intent(in) :: cellDime, nbNode, ipg
+        integer(kind=8), intent(in) :: jvGeom, jvShapFunc, jvPres
         real(kind=8), intent(in) :: time
         real(kind=8), intent(out) :: pres
         real(kind=8), optional, intent(out) :: cisa_

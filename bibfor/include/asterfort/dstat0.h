@@ -21,7 +21,7 @@
 interface
     subroutine dstat0(nbpt, d, dmoy, detyp, drms,&
                       dmax, dmin)
-        integer :: nbpt
+        integer(kind=8) :: nbpt
         real(kind=8) :: d(*)
         real(kind=8) :: dmoy
         real(kind=8) :: detyp

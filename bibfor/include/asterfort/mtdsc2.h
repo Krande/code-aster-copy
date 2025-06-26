@@ -23,6 +23,6 @@ interface
         character(len=*) :: matas
         character(len=*) :: objet
         character(len=*) :: eoul
-        integer :: adress
+        integer(kind=8) :: adress
     end subroutine mtdsc2
 end interface

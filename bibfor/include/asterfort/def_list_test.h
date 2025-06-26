@@ -20,10 +20,10 @@
 !
 interface
     subroutine def_list_test(nbma,jcninv , lima, liout, nbout)
-        integer, intent(in)  :: nbma
-        integer, intent(in)  :: lima(nbma)
-        integer, intent(in)  :: jcninv
-        integer, intent(inout)  :: liout(nbma)
-        integer, intent(inout) :: nbout
+        integer(kind=8), intent(in)  :: nbma
+        integer(kind=8), intent(in)  :: lima(nbma)
+        integer(kind=8), intent(in)  :: jcninv
+        integer(kind=8), intent(inout)  :: liout(nbma)
+        integer(kind=8), intent(inout) :: nbout
     end subroutine def_list_test
 end interface

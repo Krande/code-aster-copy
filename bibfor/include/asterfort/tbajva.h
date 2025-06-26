@@ -23,10 +23,10 @@ interface
                       vr, livr, vc, livc, vk,&
                       livk)
         character(len=*) :: table
-        integer :: nbpara
+        integer(kind=8) :: nbpara
         character(len=*) :: nompar
-        integer :: vi
-        integer :: livi(*)
+        integer(kind=8) :: vi
+        integer(kind=8) :: livi(*)
         real(kind=8) :: vr
         real(kind=8) :: livr(*)
         complex(kind=8) :: vc

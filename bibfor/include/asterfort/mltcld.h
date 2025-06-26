@@ -21,12 +21,12 @@
 interface
     subroutine mltcld(n, front, adper, t1, ad,&
                       eps, ier)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: front(*)
-        integer :: adper(*)
+        integer(kind=8) :: adper(*)
         complex(kind=8) :: t1(*)
-        integer :: ad(*)
+        integer(kind=8) :: ad(*)
         real(kind=8) :: eps
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine mltcld
 end interface

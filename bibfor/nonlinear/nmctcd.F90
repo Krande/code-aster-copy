@@ -32,7 +32,7 @@ subroutine nmctcd(list_func_acti, ds_contact, nume_dof)
 #include "asterfort/cufoco.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=24), intent(in) :: nume_dof
 !
@@ -50,7 +50,7 @@ subroutine nmctcd(list_func_acti, ds_contact, nume_dof)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_unil, l_cont_disc, l_frot_disc, l_all_verif
     aster_logical :: l_cont_pena
     character(len=24) :: vect_asse

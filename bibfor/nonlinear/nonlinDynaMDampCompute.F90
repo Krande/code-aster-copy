@@ -39,7 +39,7 @@ subroutine nonlinDynaMDampCompute(phaseType, &
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: phaseType
+    integer(kind=8), intent(in) :: phaseType
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -66,10 +66,10 @@ subroutine nonlinDynaMDampCompute(phaseType, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: vectAsse, viteIter, viteCurr
     real(kind=8), pointer :: valeVectAsse(:) => null()
-    integer :: nb_equa
+    integer(kind=8) :: nb_equa
     type(MODAL_DAMPING) :: modalDamping
     character(len=24) :: jvDataDamp
     character(len=24) :: valmod, basmod

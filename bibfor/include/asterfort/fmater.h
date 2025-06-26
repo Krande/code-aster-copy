@@ -20,8 +20,8 @@
 !
 interface
     subroutine fmater(nbfmax, nftab, tab)
-        integer :: nbfmax
-        integer :: nftab
+        integer(kind=8) :: nbfmax
+        integer(kind=8) :: nftab
         character(len=8) :: tab(*)
     end subroutine fmater
 end interface

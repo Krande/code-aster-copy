@@ -44,7 +44,7 @@ subroutine op0169()
     character(len=24) :: fsic, fsvr, prol, vale
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, lfsic, lfsvr, lprol, lvale
+    integer(kind=8) :: ibid, lfsic, lfsvr, lprol, lvale
 !-----------------------------------------------------------------------
     call jemarq()
     call infmaj()

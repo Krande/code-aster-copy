@@ -44,8 +44,8 @@ subroutine romFSINumberingInit(field, algoGreedy)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: cmpNume
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: cmpNume
 !
 ! --------------------------------------------------------------------------------------------------
 !

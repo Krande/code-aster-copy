@@ -22,19 +22,19 @@ interface
     subroutine prmama(iprod, amat, na, na1, na2,&
                       bmat, nb, nb1, nb2, cmat,&
                       nc, nc1, nc2, ier)
-        integer :: nc
-        integer :: nb
-        integer :: na
-        integer :: iprod
+        integer(kind=8) :: nc
+        integer(kind=8) :: nb
+        integer(kind=8) :: na
+        integer(kind=8) :: iprod
         real(kind=8) :: amat(na, *)
-        integer :: na1
-        integer :: na2
+        integer(kind=8) :: na1
+        integer(kind=8) :: na2
         real(kind=8) :: bmat(nb, *)
-        integer :: nb1
-        integer :: nb2
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nb2
         real(kind=8) :: cmat(nc, *)
-        integer :: nc1
-        integer :: nc2
-        integer :: ier
+        integer(kind=8) :: nc1
+        integer(kind=8) :: nc2
+        integer(kind=8) :: ier
     end subroutine prmama
 end interface

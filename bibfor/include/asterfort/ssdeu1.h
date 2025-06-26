@@ -22,7 +22,7 @@ interface
     subroutine ssdeu1(motcle, noma, nbno, iliste)
         character(len=*) :: motcle
         character(len=8) :: noma
-        integer :: nbno
-        integer :: iliste(*)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: iliste(*)
     end subroutine ssdeu1
 end interface

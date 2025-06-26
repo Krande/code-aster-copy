@@ -21,7 +21,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
     implicit none
 !
 #include "asterfort/rcvala.h"
-    integer :: imate
+    integer(kind=8) :: imate
     real(kind=8) :: xhi, kxhi, dkxidx
 !
 ! ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine nmvekx(imate, tp, xhi, kxhi, dkxidx)
     real(kind=8) :: vpar(2), tp, wrk(1)
     real(kind=8) :: zero
     parameter(zero=0.d0)
-    integer :: ok(1)
+    integer(kind=8) :: ok(1)
     character(len=8) :: nompar(2), nom
 !
     data nom/'K_D'/

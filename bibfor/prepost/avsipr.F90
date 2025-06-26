@@ -24,9 +24,9 @@ subroutine avsipr(nbordr, vwork, tdisp, kwork, sommw, &
 #include "asterfort/jacobi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbordr, tdisp, kwork, sommw, tspaq, i
+    integer(kind=8) :: nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vwork(tdisp)
-    integer :: jvsipr, jvepsn
+    integer(kind=8) :: jvsipr, jvepsn
 ! , vsipr(nbordr), vepsn(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE PRINCIPALE ET DEFORMATION NOMRMALE ASSOCIE
@@ -52,8 +52,8 @@ subroutine avsipr(nbordr, vwork, tdisp, kwork, sommw, &
 !  JSIPR : OUT  I  : ADDRESS VECTEUR CONTENANTA
 !                     TOUS LES INSTANTS.
 ! ----------------------------------------------------------------------
-    integer :: iordr, adrs, nvp, nperm, nitjac, j, iordre, itype
-    integer :: decal
+    integer(kind=8) :: iordr, adrs, nvp, nperm, nitjac, j, iordre, itype
+    integer(kind=8) :: decal
     real(kind=8) :: sig(6), eps(6), tol, toldyn, ar(6), br(6)
     real(kind=8) :: vecpro(3, 3), valpro(3), nm1x, nm1y, nm1z, exm, eym, ezm
     real(kind=8) :: jacaux(3)

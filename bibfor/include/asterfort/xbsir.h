@@ -23,26 +23,26 @@ interface
                      heavt, lonch, basloc, sigref, nbsig,&
                      lsn, lst, ivectu, jpmilt,&
                      nfiss, jheavn, jstno)
-        integer :: nfiss
-        integer :: nnop
-        integer :: ndim
-        integer :: nfh
-        integer :: nfe
-        integer :: ddlc
-        integer :: ddlm
-        integer :: igeom
-        integer :: jpintt
-        integer :: cnset(*)
-        integer :: heavt(*)
-        integer :: lonch(*)
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nfe
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jpintt
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: heavt(*)
+        integer(kind=8) :: lonch(*)
         real(kind=8) :: basloc(*)
         real(kind=8) :: sigref(*)
-        integer :: nbsig
+        integer(kind=8) :: nbsig
         real(kind=8) :: lsn(*)
         real(kind=8) :: lst(*)
-        integer :: ivectu
-        integer :: jpmilt
-        integer :: jheavn
-        integer :: jstno
+        integer(kind=8) :: ivectu
+        integer(kind=8) :: jpmilt
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: jstno
     end subroutine xbsir
 end interface

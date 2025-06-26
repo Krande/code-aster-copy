@@ -31,7 +31,7 @@ subroutine nonlinDSAlgoParaInit(list_func_acti, ds_algopara, ds_contact)
 #include "asterfort/isfonc.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     type(NL_DS_Contact), intent(inout) :: ds_contact
 !
@@ -48,7 +48,7 @@ subroutine nonlinDSAlgoParaInit(list_func_acti, ds_algopara, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: reli_rho_mini, reli_rho_maxi, reli_rho_excl, swap
     aster_logical :: l_cont_disc, l_unil, l_unil_pena
 !

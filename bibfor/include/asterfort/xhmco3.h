@@ -21,10 +21,10 @@
 interface
     subroutine xhmco3(ino, ndim, dsidep, pla, p,&
                       ffc, jac, raug, mmat)
-        integer :: ino
-        integer :: ndim
+        integer(kind=8) :: ino
+        integer(kind=8) :: ndim
         real(kind=8) :: dsidep(6,6)
-        integer :: pla(27)
+        integer(kind=8) :: pla(27)
         real(kind=8) :: p(3,3)
         real(kind=8) :: ffc(16)
         real(kind=8) :: jac

@@ -23,11 +23,11 @@ interface
                       kuc, kut, ke)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: pc
         real(kind=8) :: pt
-        integer :: nseuil
+        integer(kind=8) :: nseuil
         real(kind=8) :: fc
         real(kind=8) :: ft
         real(kind=8) :: dfcdlc

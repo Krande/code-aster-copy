@@ -27,7 +27,7 @@ subroutine cgcrio(resu, vecord, nbnume)
 #include "asterfort/rsutnu.h"
     character(len=8) :: resu
     character(len=19) :: vecord
-    integer, optional :: nbnume
+    integer(kind=8), optional :: nbnume
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -41,7 +41,7 @@ subroutine cgcrio(resu, vecord, nbnume)
 !     VECORD : VECTEUR DES NUME_ORDRE DU RESU
 ! ======================================================================
 !
-    integer :: ier, nbord
+    integer(kind=8) :: ier, nbord
     real(kind=8) :: prec
     character(len=8) :: crit
 !

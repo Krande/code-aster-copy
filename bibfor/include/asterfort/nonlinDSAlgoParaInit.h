@@ -19,7 +19,7 @@
 interface
     subroutine nonlinDSAlgoParaInit(list_func_acti, ds_algopara, ds_contact)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)        
+        integer(kind=8), intent(in) :: list_func_acti(*)        
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
         type(NL_DS_Contact), intent(inout) :: ds_contact
     end subroutine nonlinDSAlgoParaInit

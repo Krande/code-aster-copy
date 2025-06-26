@@ -36,8 +36,8 @@ module czm_elas_module
 
     ! CZM_ELAS class
     type CONSTITUTIVE_LAW
-        integer       :: exception = 0
-        integer       :: ndim
+        integer(kind=8)       :: exception = 0
+        integer(kind=8)       :: ndim
         real(kind=8)  :: r
         real(kind=8), dimension(:), allocatable:: phi
         type(MATERIAL):: mat
@@ -54,7 +54,7 @@ contains
 
         implicit none
 
-        integer, intent(in)          :: kpg, ksp, imate, ndim
+        integer(kind=8), intent(in)          :: kpg, ksp, imate, ndim
         real(kind=8), intent(in)     :: t(:), su(:)
         character(len=*), intent(in) :: fami
         type(CONSTITUTIVE_LAW)      :: self
@@ -67,9 +67,9 @@ contains
 ! t         cohesive forces (local co-ordinates)
 ! su        displacement jump (local co-ordinates)
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter   :: nbel = 6, nblg = 1
+        integer(kind=8), parameter   :: nbel = 6, nblg = 1
 ! --------------------------------------------------------------------------------------------------
-        integer             :: iok(nbel+nblg)
+        integer(kind=8)             :: iok(nbel+nblg)
         real(kind=8)        :: valel(nbel), vallg(nblg)
         character(len=16)   :: nomel(nbel), nomlg(nblg)
 ! --------------------------------------------------------------------------------------------------
@@ -146,7 +146,7 @@ contains
 ! dphi_delta    derivative d(delta)/d(phi)
 ! vi            internal variable (post-treatment only)
 ! --------------------------------------------------------------------------------------------------
-        integer         :: i
+        integer(kind=8)         :: i
         real(kind=8)    :: rigi_norm
 ! --------------------------------------------------------------------------------------------------
 

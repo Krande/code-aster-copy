@@ -23,10 +23,10 @@ interface
                       nparpg, formar)
         character(len=*) :: table
         character(len=*) :: formaz
-        integer :: ifr
-        integer :: nparim
+        integer(kind=8) :: ifr
+        integer(kind=8) :: nparim
         character(len=*) :: lipaim(*)
-        integer :: nparpg
+        integer(kind=8) :: nparpg
         character(len=*) :: formar
     end subroutine tbimpr
 end interface

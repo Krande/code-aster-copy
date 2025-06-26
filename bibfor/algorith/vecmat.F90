@@ -56,12 +56,12 @@ subroutine vecmat(fami, kpg, ksp, mod, loi, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
-    integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi
-    integer :: ioptio, idnr
+    integer(kind=8) :: kpg, ksp, nmat, ndt, ndi, nr, nvi
+    integer(kind=8) :: ioptio, idnr
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: epsi
     character(len=8) :: mod, nomc(12), typma
-    integer :: cerr(12)
+    integer(kind=8) :: cerr(12)
     character(len=3) :: matcst
     character(len=11) :: meting
     character(len=16) :: loi
@@ -70,8 +70,8 @@ subroutine vecmat(fami, kpg, ksp, mod, loi, &
     common/opti/ioptio, idnr
     common/meti/meting
 !   ----------------------------------------------------------------
-    integer :: lmat, lfct, ipi, ipif, ik, imat, ivalk, i, j, jpro, il, jmat
-    integer :: nbmat
+    integer(kind=8) :: lmat, lfct, ipi, ipif, ik, imat, ivalk, i, j, jpro, il, jmat
+    integer(kind=8) :: nbmat
     parameter(lmat=9, lfct=10)
     data epsi/1.d-15/
 !   ----------------------------------------------------------------

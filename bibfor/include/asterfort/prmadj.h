@@ -21,14 +21,14 @@
 interface
     subroutine prmadj(nbnd, neq, n2, adjncy, xadj,&
                       xadjd, liste, q, noeud)
-        integer :: n2
-        integer :: neq
-        integer :: nbnd
-        integer :: adjncy(*)
-        integer :: xadj(neq+1)
-        integer :: xadjd(*)
-        integer :: liste(neq)
-        integer :: q(n2)
-        integer :: noeud(*)
+        integer(kind=8) :: n2
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbnd
+        integer(kind=8) :: adjncy(*)
+        integer(kind=8) :: xadj(neq+1)
+        integer(kind=8) :: xadjd(*)
+        integer(kind=8) :: liste(neq)
+        integer(kind=8) :: q(n2)
+        integer(kind=8) :: noeud(*)
     end subroutine prmadj
 end interface

@@ -22,7 +22,7 @@ interface
     subroutine cfleqb(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: nb_cont_zone
-        integer, intent(in) :: nt_node_middle
+        integer(kind=8), intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: nt_node_middle
     end subroutine cfleqb
 end interface

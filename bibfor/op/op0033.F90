@@ -72,13 +72,13 @@ subroutine op0033()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbmat, nbvari, nbpar, i, ier
-    integer :: imate, iter, pred, ncmp, imptgt
-    integer :: matrel, irota, defimp, liccvg(5)
-    integer :: indimp(9), numeInst, actite, action, itgt, iforta
+    integer(kind=8) :: iret, nbmat, nbvari, nbpar, i, ier
+    integer(kind=8) :: imate, iter, pred, ncmp, imptgt
+    integer(kind=8) :: matrel, irota, defimp, liccvg(5)
+    integer(kind=8) :: indimp(9), numeInst, actite, action, itgt, iforta
 !     NOMBRE MAXI DE COLONNES DANS UNE TABLE 9999 (CF D4.02.05)
-    integer, parameter :: ntamax = 9999
-    integer :: igrad, nbvita
+    integer(kind=8), parameter :: ntamax = 9999
+    integer(kind=8) :: igrad, nbvita
     character(len=4) :: cargau
     character(len=8) :: typmod(2), mater(30), table, fonimp(9), typpar(ntamax)
     character(len=16) :: option, compor(COMPOR_SIZE), nompar(ntamax), opt2
@@ -92,7 +92,7 @@ subroutine op0033()
     real(kind=8) :: matper(36), varia(2*36), epsilo, pgl(3, 3), vimp33(3, 3)
     real(kind=8) :: vimp2(3, 3), coef, jm, jp, jd, coefextra
     aster_logical :: lastTimeStep, itemax, conver
-    integer :: lvim, lvip, lvim2, lsvip, lnomvi
+    integer(kind=8) :: lvim, lvip, lvim2, lsvip, lnomvi
     type(NL_DS_Conv) :: ds_conv
     type(NL_DS_AlgoPara) :: ds_algopara
     type(Behaviour_Integ) :: BEHinteg
@@ -105,10 +105,10 @@ subroutine op0033()
     character(len=19), parameter :: vip = '&&OP0033.VIP'
     character(len=19), parameter :: svip = '&&OP0033.SVIP'
     character(len=19), parameter :: vim2 = '&&OP0033.VIM2'
-    integer, parameter :: ndim = 3
+    integer(kind=8), parameter :: ndim = 3
     character(len=4), parameter :: fami = "PMAT"
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer, parameter :: ksp = 1, kpg = 1
+    integer(kind=8), parameter :: ksp = 1, kpg = 1
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -22,11 +22,11 @@ interface
     subroutine cfaca2(nbliac, spliai, &
                       indfac, sdcont_solv, lmat,&
                       xjvmax)
-        integer :: nbliac
-        integer :: spliai
-        integer :: indfac
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: spliai
+        integer(kind=8) :: indfac
         character(len=24) :: sdcont_solv
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: xjvmax
     end subroutine cfaca2
 end interface

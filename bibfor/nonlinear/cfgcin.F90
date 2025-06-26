@@ -30,7 +30,7 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 #include "blas/daxpy.h"
 #include "blas/ddot.h"
     character(len=24) :: resoco
-    integer :: neq, nbliai
+    integer(kind=8) :: neq, nbliai
     character(len=19) :: matass, solveu
 !
 ! ----------------------------------------------------------------------
@@ -52,17 +52,17 @@ subroutine cfgcin(resoco, matass, solveu, neq, nbliai)
 !
 !
     real(kind=8) :: norme2
-    integer :: iliai, jdecal, nbddl
+    integer(kind=8) :: iliai, jdecal, nbddl
     character(len=19) :: mu
-    integer :: jmu
+    integer(kind=8) :: jmu
     character(len=24) :: apcoef, apddl, appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=24) :: secmbr, cncin0
-    integer :: jsecmb
+    integer(kind=8) :: jsecmb
     character(len=19) :: ddeplc, ddelt
     complex(kind=8) :: c16bid
     character(len=19) :: k19bla
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()
     blas_int :: b_incx, b_incy, b_n

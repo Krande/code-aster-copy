@@ -24,11 +24,11 @@ interface
     subroutine nmcrit(nomsd, nbinst, typsel, nume, inst,&
                       freq, tole, lselec)
         character(len=19) :: nomsd
-        integer :: nbinst
+        integer(kind=8) :: nbinst
         character(len=4) :: typsel
-        integer :: nume
+        integer(kind=8) :: nume
         real(kind=8) :: inst
-        integer :: freq
+        integer(kind=8) :: freq
         real(kind=8) :: tole
         aster_logical :: lselec
     end subroutine nmcrit

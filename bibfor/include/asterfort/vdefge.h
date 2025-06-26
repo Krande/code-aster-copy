@@ -22,8 +22,8 @@ interface
     subroutine vdefge(nomte, nb1, npgsr, xr, epais,&
                       sigma, effgt)
         character(len=16) :: nomte
-        integer :: nb1
-        integer :: npgsr
+        integer(kind=8) :: nb1
+        integer(kind=8) :: npgsr
         real(kind=8) :: xr(*)
         real(kind=8) :: epais
         real(kind=8) :: sigma(6, *)

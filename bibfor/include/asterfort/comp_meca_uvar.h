@@ -23,7 +23,7 @@ interface
         character(len=19), intent(in) :: compor_info
         character(len=8), intent(in) :: vari_link_base
         character(len=19), intent(in) :: vari_redu
-        integer, intent(out) :: nb_vari_redu
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: nb_vari_redu
+        integer(kind=8), intent(out) :: codret
     end subroutine comp_meca_uvar
 end interface

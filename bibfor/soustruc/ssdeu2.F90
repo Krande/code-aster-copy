@@ -28,7 +28,7 @@ subroutine ssdeu2(nval, iliste, nvalap)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: nval, iliste(nval), nvalap
+    integer(kind=8) :: nval, iliste(nval), nvalap
 ! ----------------------------------------------------------------------
 !     BUT:
 !        - ENLEVER LES DOUBLONS D'UNE LISTE D'ENTIERS.
@@ -51,7 +51,7 @@ subroutine ssdeu2(nval, iliste, nvalap)
 !        DES ENTIERS A ELIMINER.
 !     ---------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iawk1, idecal, iret, j, ndim
+    integer(kind=8) :: i, iawk1, idecal, iret, j, ndim
 !-----------------------------------------------------------------------
     call jemarq()
     call jeexin('&&SSDEU2.WK1', iret)

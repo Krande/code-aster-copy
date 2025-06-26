@@ -24,6 +24,6 @@ interface
     subroutine apcinv(mesh, sdappa, i_zone)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
     end subroutine apcinv
 end interface

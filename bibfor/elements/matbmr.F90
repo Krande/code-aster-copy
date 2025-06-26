@@ -24,11 +24,11 @@ subroutine matbmr(nb1, vectt, dudxri, intsr, jdn1ri, &
 #include "asterfort/hsame.h"
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
-    integer :: nb1
+    integer(kind=8) :: nb1
 !
-    integer :: intsr
+    integer(kind=8) :: intsr
 !
     real(kind=8) :: vectt(3, 3)
 !

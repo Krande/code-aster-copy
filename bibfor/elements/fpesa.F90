@@ -29,13 +29,13 @@ subroutine fpesa(nomte, xi, nb1, vecl)
     character(len=16) :: nomte
 !
 !
-    integer :: nb1, npgsn
+    integer(kind=8) :: nb1, npgsn
     real(kind=8) :: rho, epais, pesan, rnormc
     real(kind=8) :: xi(3, *), vpesan(3), vecl(51), vecl1(42)
 !     REAL*8 VECTC(3),VECPTX(3,3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, intsn, jpesa, lzi, lzr
+    integer(kind=8) :: i, intsn, jpesa, lzi, lzr
 !-----------------------------------------------------------------------
     call jevech('PPESANR', 'L', jpesa)
     pesan = zr(jpesa)

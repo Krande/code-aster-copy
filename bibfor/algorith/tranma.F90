@@ -37,7 +37,7 @@ subroutine tranma(geomi, d, bidim)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: n1, i, iadcoo
+    integer(kind=8) :: n1, i, iadcoo
     aster_logical :: bidim
     character(len=19) :: geomi
     character(len=24) :: coorjv

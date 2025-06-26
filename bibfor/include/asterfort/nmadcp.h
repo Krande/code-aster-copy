@@ -21,9 +21,9 @@
 interface
     subroutine nmadcp(sddisc, ds_contact, i_event_acti, retpen)
         use NonLin_Datastructure_type
-        integer, intent(in) :: i_event_acti
+        integer(kind=8), intent(in) :: i_event_acti
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: sddisc
-        integer, intent(out) :: retpen
+        integer(kind=8), intent(out) :: retpen
     end subroutine nmadcp
 end interface

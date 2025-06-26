@@ -45,13 +45,13 @@ subroutine tstvec(perm, iad, nlong, type, sommi, &
 !
     character(len=3) :: type
     real(kind=8) :: sommr
-    integer :: sommi, nbign
+    integer(kind=8) :: sommi, nbign
     character(len=24) :: k24
     aster_logical :: l
     character(len=*) :: perm
     character(len=8) :: k8
     real(kind=8) :: x
-    integer :: iad, ix, c1, nlong, ico, k
+    integer(kind=8) :: iad, ix, c1, nlong, ico, k
     integer(kind=8) :: sommi2, i8
 !
     equivalence(x, ix)

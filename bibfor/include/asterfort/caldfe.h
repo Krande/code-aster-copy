@@ -21,9 +21,9 @@
 interface
     subroutine caldfe(df, nr, nvi, vind, dfpds,&
                       fe, dfpdbs, msdgdt, drdy)
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: df(3, 3)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
         real(kind=8) :: dfpds(3, 3, 3, 3)
         real(kind=8) :: fe(3, 3)

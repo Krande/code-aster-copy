@@ -21,14 +21,14 @@
 interface
     subroutine prnchk(nbsn, adress, global, fils, frere,&
                       lgsn, lfront, invsup, seq)
-        integer :: nbsn
-        integer :: adress(*)
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: adress(*)
         integer(kind=4) :: global(*)
-        integer :: fils(*)
-        integer :: frere(*)
-        integer :: lgsn(*)
-        integer :: lfront(*)
-        integer :: invsup(*)
-        integer :: seq(*)
+        integer(kind=8) :: fils(*)
+        integer(kind=8) :: frere(*)
+        integer(kind=8) :: lgsn(*)
+        integer(kind=8) :: lfront(*)
+        integer(kind=8) :: invsup(*)
+        integer(kind=8) :: seq(*)
     end subroutine prnchk
 end interface

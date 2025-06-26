@@ -22,14 +22,14 @@ interface
     subroutine evala1(fami, kpg, ksp, mod, relcom,&
                       sig, vin, imat, module, icode)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
         character(len=16) :: relcom
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(50)
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: module
-        integer :: icode
+        integer(kind=8) :: icode
     end subroutine evala1
 end interface

@@ -44,7 +44,7 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm, &
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma, nonoe(*)
-    integer :: ifc, versio
+    integer(kind=8) :: ifc, versio
     aster_logical :: lgmsh
 !
 !
@@ -68,28 +68,28 @@ subroutine irmgms(ifc, ndim, nno, noma, nbgrm, &
     character(len=8) :: nomaou, nomtyp
     character(len=8) :: k8nno, k8nbma
     character(len=24) :: typmai, nomail, valk, nomgrm
-    integer :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
+    integer(kind=8) :: typpoi, typseg, typtri, typtet, typqua, typpyr, typpri, typhex
 !
 !     --- TABLEAU DE DECOUPAGE
-    integer :: ntyele
+    integer(kind=8) :: ntyele
 !-----------------------------------------------------------------------
-    integer :: i, iatyma, ibid, idgm, idgrma, idlima, idm
-    integer :: idn, ier, igm, ima, ino, ipoin
-    integer :: itype, itypgm, j, jpoin
-    integer :: nbelgm, nbgrm, nbm, nbma2, nbmli, ndim, nno
-    integer :: nnoe, numgrm, numgrx
+    integer(kind=8) :: i, iatyma, ibid, idgm, idgrma, idlima, idm
+    integer(kind=8) :: idn, ier, igm, ima, ino, ipoin
+    integer(kind=8) :: itype, itypgm, j, jpoin
+    integer(kind=8) :: nbelgm, nbgrm, nbm, nbma2, nbmli, ndim, nno
+    integer(kind=8) :: nnoe, numgrm, numgrx
 !-----------------------------------------------------------------------
     parameter(ntyele=28)
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
-    integer :: nbel(ntyele)
+    integer(kind=8) :: nbel(ntyele)
     character(len=24) :: nobj(ntyele)
     character(len=7) :: k7no, k7ma, tk7no(ntyele)
     character(len=8) :: nmtyp(ntyele), blanc8
-    integer :: nbtyp(ntyele), ifm, niv, vali
-    integer, pointer :: numgrma(:) => null()
+    integer(kind=8) :: nbtyp(ntyele), ifm, niv, vali
+    integer(kind=8), pointer :: numgrma(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: nbnune(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: nbnune(:) => null()
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)

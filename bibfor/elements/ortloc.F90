@@ -20,7 +20,7 @@ subroutine ortloc(dsidep, i1, j1, r)
     implicit none
 #include "asterfort/utbtab.h"
     real(kind=8) :: trav(3, 3), xab(3, 3), dsidep(6, 6), r(9)
-    integer :: i, j, i1, j1
+    integer(kind=8) :: i, j, i1, j1
 !       PASSAGE DE LA MATRICE TANGENTE DU REPERE D'ORTHOTROPIE AU REPERE
 !       LOCAL DE L'ELEMENT. CE PASSAGE SE FAIT PAR SOUS MATRICES
 !

@@ -21,8 +21,8 @@
 !
 interface
     function exisdg(dg, cmp)
-        integer :: dg(*)
-        integer :: cmp
+        integer(kind=8) :: dg(*)
+        integer(kind=8) :: cmp
         aster_logical :: exisdg
     end function exisdg
 end interface

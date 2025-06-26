@@ -23,7 +23,7 @@
 interface
     subroutine infdis(quest, ivale, rvale, kvale)
         character(len=4) :: quest
-        integer :: ivale
+        integer(kind=8) :: ivale
         real(kind=8) :: rvale
         character(len=*) :: kvale
     end subroutine infdis

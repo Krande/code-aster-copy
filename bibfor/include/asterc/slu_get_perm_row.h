@@ -20,7 +20,7 @@
 !
 interface
     subroutine slu_get_perm_row( f_factors, perm_row, info )
-        integer         :: f_factors
+        integer(kind=8)         :: f_factors
         integer(kind=4) :: perm_row(*)
         integer(kind=4) :: info
     end subroutine slu_get_perm_row

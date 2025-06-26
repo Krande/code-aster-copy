@@ -19,8 +19,8 @@
 interface
     subroutine romConvertEquaToNode(field_refe, list_length, v_list_equa, v_list_node)
         character(len=24), intent(in) :: field_refe
-        integer, intent(in) :: list_length
-        integer, pointer :: v_list_equa(:)
-        integer, pointer :: v_list_node(:)
+        integer(kind=8), intent(in) :: list_length
+        integer(kind=8), pointer :: v_list_equa(:)
+        integer(kind=8), pointer :: v_list_node(:)
     end subroutine romConvertEquaToNode
 end interface

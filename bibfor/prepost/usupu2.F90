@@ -50,28 +50,28 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp, &
     character(len=8) :: noeu
     character(len=16) :: nomk16
     character(len=19) :: trange
-    integer :: nbpair, nbinst
+    integer(kind=8) :: nbpair, nbinst
     real(kind=8) :: coef(*), ang(*), temps(*)
     real(kind=8) :: vustub(nbpair, nbinst), vusob(nbpair, nbinst)
     real(kind=8) :: pus(*), pmoye, pourpu(*), poupre(*)
 !-----------------------------------------------------------------------
-    integer :: ichoc, idebut, ifin, ifires, isupp, j
-    integer :: nbtot, jwk1, i, ic
-    integer :: jwk2, jwk3, jwk4, jwk5, jwk6, lg
-    integer :: n1, n2, n3, n4, nbchoc, nbloc
-    integer :: nbpas, nbpt, nbval, nt, nbvint, dec, nbnoli, shift, long
+    integer(kind=8) :: ichoc, idebut, ifin, ifires, isupp, j
+    integer(kind=8) :: nbtot, jwk1, i, ic
+    integer(kind=8) :: jwk2, jwk3, jwk4, jwk5, jwk6, lg
+    integer(kind=8) :: n1, n2, n3, n4, nbchoc, nbloc
+    integer(kind=8) :: nbpas, nbpt, nbval, nt, nbvint, dec, nbnoli, shift, long
     real(kind=8) :: puusur, tdebut, tfin, tmax, tmin
 !
-    integer, pointer :: chindx(:) => null()
+    integer(kind=8), pointer :: chindx(:) => null()
     real(kind=8), pointer :: fcho(:) => null()
     real(kind=8), pointer :: dloc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     character(len=8), pointer :: ncho(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: vcho(:) => null()
     real(kind=8), pointer :: vint(:) => null()
-    integer, pointer :: nltype(:) => null()
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: nltype(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     character(len=24), pointer :: nlname(:) => null()
     real(kind=8), pointer :: v_disc(:) => null()
     type(DynaGene) :: dyna_gene

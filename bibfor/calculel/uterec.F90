@@ -59,15 +59,15 @@ subroutine uterec(ndim, iflup, iflum, ino, mno, &
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
 #include "jeveux.h"
-    integer :: iflup, iflum, ndim, ino, mno, jno, nsomm, ityp, itemp, itemm
-    integer :: noe(9, 6, 3), niv, ifm
+    integer(kind=8) :: iflup, iflum, ndim, ino, mno, jno, nsomm, ityp, itemp, itemm
+    integer(kind=8) :: noe(9, 6, 3), niv, ifm
     real(kind=8) :: jac(9), term22, aux, valthe, valunt, xn(9), yn(9), zn(9)
     real(kind=8) :: valhp(9), valhm(9), valtp(9), valtm(9)
     aster_logical :: ltheta
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ij, in, iino, i1, i2
+    integer(kind=8) :: ij, in, iino, i1, i2
     real(kind=8) :: aux1, aux2, aux3, aux4, term23
 !
 ! INIT.

@@ -48,14 +48,14 @@ subroutine srdfds(nbmat, mater, para, var, ds2hds, ucri, dfdsig)
     !!! Variables globales
     !!!
 
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), para(3), var(4), ucri, ds2hds(6), dfdsig(6)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
     real(kind=8) :: sigc, gamma, beta, r0c, pi, fact1
     real(kind=8) :: a(6), kron(6), fact3
     common/tdim/ndt, ndi

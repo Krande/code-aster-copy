@@ -99,7 +99,7 @@ subroutine ar_dlartg(f, g, cs, sn, r)
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: first
-    integer :: count, i
+    integer(kind=8) :: count, i
     real(kind=8) :: eps, f1, g1, safmin, safmn2, safmx2, scale, base
 !     ..
 !     .. EXTERNAL FUNCTIONS ..

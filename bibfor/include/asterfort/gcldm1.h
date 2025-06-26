@@ -20,13 +20,13 @@
 !
           interface 
             subroutine gcldm1(m,in,ip,prec,x,y,perm,xtrav,ytrav)
-              integer, intent(in) :: m
-              integer, intent(in) :: in(*)
+              integer(kind=8), intent(in) :: m
+              integer(kind=8), intent(in) :: in(*)
               integer(kind=4), intent(in) :: ip(*)
               real(kind=8), intent(in) :: prec(*)
               real(kind=8), intent(in) :: x(*)
               real(kind=8), intent(out) :: y(*)
-              integer, intent(in) :: perm(*)
+              integer(kind=8), intent(in) :: perm(*)
               real(kind=8), intent(inout) :: xtrav(*)
               real(kind=8), intent(inout) :: ytrav(*)
             end subroutine gcldm1

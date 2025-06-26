@@ -25,15 +25,15 @@ interface
                       deltat, nbrpas, dtmin, ldcext, durdec,&
                       retdec)
         character(len=19) :: sddisc
-        integer :: iterat
-        integer :: ievdac
+        integer(kind=8) :: iterat
+        integer(kind=8) :: ievdac
         character(len=24) :: nomlis
         real(kind=8) :: instam
         real(kind=8) :: deltat
-        integer :: nbrpas
+        integer(kind=8) :: nbrpas
         real(kind=8) :: dtmin
         aster_logical :: ldcext
         real(kind=8) :: durdec
-        integer :: retdec
+        integer(kind=8) :: retdec
     end subroutine nmdeca
 end interface

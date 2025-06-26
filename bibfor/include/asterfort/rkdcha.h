@@ -21,8 +21,8 @@
 interface
     subroutine rkdcha(nvi, vini, coeft, nmat, sigi,&
                       dvin)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         real(kind=8) :: vini(*)
         real(kind=8) :: coeft(nmat)
         real(kind=8) :: sigi(6)

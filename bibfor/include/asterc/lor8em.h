@@ -20,6 +20,6 @@
 !
 interface
     function lor8em()
-        integer :: lor8em
+        integer(kind=8) :: lor8em
     end function lor8em
 end interface

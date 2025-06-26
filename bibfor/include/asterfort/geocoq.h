@@ -23,7 +23,7 @@ interface
         character(len=8) :: noma
         character(len=24) :: nomgrp(*)
         character(len=8) :: caelem
-        integer :: iaxe
+        integer(kind=8) :: iaxe
         real(kind=8) :: geom(9)
     end subroutine geocoq
 end interface

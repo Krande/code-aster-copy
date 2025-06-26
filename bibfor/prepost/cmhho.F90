@@ -25,7 +25,7 @@ subroutine cmhho(mesh_in, mesh_out, nb_list_elem, list_elem)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-    integer, intent(in) :: nb_list_elem, list_elem(nb_list_elem)
+    integer(kind=8), intent(in) :: nb_list_elem, list_elem(nb_list_elem)
     character(len=8), intent(in) :: mesh_in, mesh_out
 !
 ! ----------------------------------------------------------------------

@@ -24,8 +24,8 @@ interface
     subroutine nmveso(rb, nb, rp, np, drbdb,&
                       drbdp, drpdb, drpdp, dp, dbeta,&
                       nr, cplan)
-        integer :: np
-        integer :: nb
+        integer(kind=8) :: np
+        integer(kind=8) :: nb
         real(kind=8) :: rb(nb)
         real(kind=8) :: rp(np)
         real(kind=8) :: drbdb(nb, nb)
@@ -34,7 +34,7 @@ interface
         real(kind=8) :: drpdp(np, np)
         real(kind=8) :: dp(np)
         real(kind=8) :: dbeta(nb)
-        integer :: nr
+        integer(kind=8) :: nr
         aster_logical :: cplan
     end subroutine nmveso
 end interface

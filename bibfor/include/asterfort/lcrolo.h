@@ -23,9 +23,9 @@ interface
                       carcri, fm, df, vim, vip,&
                       taup, dtaudf, iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: mate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: mate
         character(len=16) :: option
         real(kind=8) :: carcri(3)
         real(kind=8) :: fm(3, 3)
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: vip(9)
         real(kind=8) :: taup(6)
         real(kind=8) :: dtaudf(6, 3, 3)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcrolo
 end interface

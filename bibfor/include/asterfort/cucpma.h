@@ -22,8 +22,8 @@ interface
     subroutine cucpma(deficu, resocu, neq, nbliai, numedd, matrcu)
         character(len=24) :: deficu
         character(len=24) :: resocu
-        integer :: neq
-        integer :: nbliai
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
         character(len=14) :: numedd
         character(len=19) :: matrcu
     end subroutine cucpma

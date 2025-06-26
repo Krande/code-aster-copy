@@ -21,12 +21,12 @@
 interface
     subroutine cgnop0(nbnoe, coor, x0, vecnor, prec,&
                       nbno, lisnoe)
-        integer :: nbnoe
+        integer(kind=8) :: nbnoe
         real(kind=8) :: coor(*)
         real(kind=8) :: x0(*)
         real(kind=8) :: vecnor(*)
         real(kind=8) :: prec
-        integer :: nbno
-        integer :: lisnoe(*)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: lisnoe(*)
     end subroutine cgnop0
 end interface

@@ -36,7 +36,7 @@ subroutine impfic(vale, nomnoe, rcmp, unit, lxfem)
 !                    TRUE SI ON EST DANS UN CALCUL X-FEM
 ! ......................................................................
 !
-    integer :: i, k1phi, k2phi, gphi, unit
+    integer(kind=8) :: i, k1phi, k2phi, gphi, unit
     real(kind=8) :: g, fic1, fic2, k1, k2, girwin, rcmp(6), vale(5)
     real(kind=8) :: k11(10), k21(10), k12(10), k22(10), k1max, k1min
     real(kind=8) :: k2min, k2sup, gmax, k1dev, k2dev, gdev, fic1d, fic2d

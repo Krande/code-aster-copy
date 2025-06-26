@@ -18,13 +18,13 @@
 !
 function somint(n, x)
     implicit none
-    integer :: somint
+    integer(kind=8) :: somint
 !     SOMME DES TERMES DU VECTEUR D'ENTIER   X
 !     IN  N      :  DIMENSION DE X
 !     IN X       :  VECTEUR D'ENTIER
 !     ----------------------------------------------------------------
-    integer :: n, i, s
-    integer :: x(n)
+    integer(kind=8) :: n, i, s
+    integer(kind=8) :: x(n)
 !
     s = 0
     do i = 1, n

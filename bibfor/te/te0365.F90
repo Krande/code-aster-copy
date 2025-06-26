@@ -52,11 +52,11 @@ subroutine te0365(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nne, nnm, nnl
-    integer :: nddl, ndim, nbcps, nbdm
-    integer :: i_reso_fric, i_reso_geom, ialgoc, ialgof
-    integer :: ndexfr
-    integer :: indco
+    integer(kind=8) :: nne, nnm, nnl
+    integer(kind=8) :: nddl, ndim, nbcps, nbdm
+    integer(kind=8) :: i_reso_fric, i_reso_geom, ialgoc, ialgof
+    integer(kind=8) :: ndexfr
+    integer(kind=8) :: indco
     character(len=8) :: typmae, typmam
     character(len=4) :: phase
     aster_logical :: laxis, leltf

@@ -21,6 +21,6 @@
 interface
     subroutine fetskp(mod, meth, nbpart)
     character(len=8), intent(in) :: mod, meth
-    integer, intent(in) :: nbpart
+    integer(kind=8), intent(in) :: nbpart
     end subroutine fetskp
 end interface

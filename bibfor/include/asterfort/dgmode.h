@@ -20,10 +20,10 @@
 !
 interface
     subroutine dgmode(mode, imodel, ilong, nec, dg)
-        integer :: mode
-        integer :: imodel
-        integer :: ilong
-        integer :: nec
-        integer :: dg(*)
+        integer(kind=8) :: mode
+        integer(kind=8) :: imodel
+        integer(kind=8) :: ilong
+        integer(kind=8) :: nec
+        integer(kind=8) :: dg(*)
     end subroutine dgmode
 end interface

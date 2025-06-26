@@ -23,7 +23,7 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b, &
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
     implicit none
-    integer, intent(in) :: indip(6)
+    integer(kind=8), intent(in) :: indip(6)
     real(kind=8), intent(in) :: eps(8), vint(*)
     real(kind=8), intent(in) :: a(6, 6), ap1(6, 6), ap2(6, 6)
     real(kind=8), intent(in) :: b(6, 2, 2), bp1(6, 2), bp2(6, 2)
@@ -65,7 +65,7 @@ subroutine dhrc_mat_tan(a, ap1, ap2, b, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, jb, k, l, lb
+    integer(kind=8) :: i, j, jb, k, l, lb
     real(kind=8) :: dsida(6, 6), dsedep(6, 6)
 !
     do k = 1, 6

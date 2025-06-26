@@ -21,6 +21,6 @@
 interface
     subroutine rvmoye(nomres, iocc)
         character(len=*) :: nomres
-        integer :: iocc
+        integer(kind=8) :: iocc
     end subroutine rvmoye
 end interface

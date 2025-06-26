@@ -45,7 +45,7 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nupo, ivari, iddl, nusp
+    integer(kind=8) :: nupo, ivari, iddl, nusp
     character(len=*) :: cham19, nomma, nomail, nonoeu, nocmp1
     aster_logical, intent(in), optional :: nogranz
 ! ----------------------------------------------------------------------
@@ -70,21 +70,21 @@ subroutine utchdl(cham19, nomma, nomail, nonoeu, nupo, &
 !   CONVENTION : IDDL=0 -> ON N'A PAS TROUVE LE DDL CHERCHE
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: ibid, gd, incmp
-    integer :: vali(2)
-    integer :: nec, icmp, ncmpmx, iancmp, ima
-    integer :: ino, iaconx, nbno, ipo, nupo2, igr, iel
-    integer :: imolo, jmolo, ispt, jlpt, nbpt, ipt, ico
-    integer :: k, iadg, kcmp, cumu, nbspt, adiel, lgcata, ncdyn
+    integer(kind=8) :: ibid, gd, incmp
+    integer(kind=8) :: vali(2)
+    integer(kind=8) :: nec, icmp, ncmpmx, iancmp, ima
+    integer(kind=8) :: ino, iaconx, nbno, ipo, nupo2, igr, iel
+    integer(kind=8) :: imolo, jmolo, ispt, jlpt, nbpt, ipt, ico
+    integer(kind=8) :: k, iadg, kcmp, cumu, nbspt, adiel, lgcata, ncdyn
     character(len=1) :: aof
     character(len=24) :: valk(2)
     character(len=8) :: k8b, nocmp, nomaiz, nonoez, nommaz, nomgd
     character(len=16) :: nomcmd
     character(len=19) :: noligr, chm19z, ncmp
     aster_logical :: diff, trouve, nogran, l_parallel_mesh
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
-    integer, pointer :: long_pt_cumu(:) => null()
+    integer(kind=8), pointer :: long_pt_cumu(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

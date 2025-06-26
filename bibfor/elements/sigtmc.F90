@@ -52,15 +52,15 @@ subroutine sigtmc(fami, ndim, nbsig, npg, &
     character(len=*) :: fami
 ! -----  VARIABLES LOCALES
     real(kind=8) :: d(36), epsth(6)
-    integer :: iepsv
+    integer(kind=8) :: iepsv
     character(len=2) :: k2bid
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, igau, j, mater, nbsig, ndim
-    integer :: ndim2, npg
+    integer(kind=8) :: i, igau, j, mater, nbsig, ndim
+    integer(kind=8) :: ndim2, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     k2bid = '  '

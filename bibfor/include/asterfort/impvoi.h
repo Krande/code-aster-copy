@@ -21,8 +21,8 @@
 interface
     subroutine impvoi(texte, nbma, iaddvo, iadvoi)
         character(len=*) :: texte
-        integer :: nbma
-        integer :: iaddvo
-        integer :: iadvoi
+        integer(kind=8) :: nbma
+        integer(kind=8) :: iaddvo
+        integer(kind=8) :: iadvoi
     end subroutine impvoi
 end interface

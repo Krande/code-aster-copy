@@ -24,7 +24,7 @@ interface
                       instam, instap)
             use Behaviour_type
             type(Behaviour_Integ), intent(in) :: BEHinteg
-            integer, intent(in) :: imate, ndim, kpg, ksp
+            integer(kind=8), intent(in) :: imate, ndim, kpg, ksp
             real(kind=8), intent(in) :: epsm(ndim), deps(ndim), sigm(6), vim(*)
             real(kind=8), intent(in) :: instam, instap
             character(len=8), intent(in) :: typmod(*)

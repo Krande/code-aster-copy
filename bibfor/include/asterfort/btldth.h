@@ -24,11 +24,11 @@ interface
                       temper, forthi)
         character(len=4) :: fami
         real(kind=8) :: xi3
-        integer :: nb1
-        integer :: kpg
+        integer(kind=8) :: nb1
+        integer(kind=8) :: kpg
         real(kind=8) :: btild(5, 42)
         real(kind=8) :: wgt
-        integer :: indic
+        integer(kind=8) :: indic
         real(kind=8) :: young
         real(kind=8) :: nu
         real(kind=8) :: alpha

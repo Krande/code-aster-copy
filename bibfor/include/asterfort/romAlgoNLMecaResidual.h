@@ -24,7 +24,7 @@ interface
         real(kind=8), pointer :: v_cnequi(:)
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         aster_logical, intent(in) :: l_cine
-        integer, pointer :: v_ccid(:)
+        integer(kind=8), pointer :: v_ccid(:)
         real(kind=8), intent(out) :: resi
     end subroutine romAlgoNLMecaResidual
 end interface

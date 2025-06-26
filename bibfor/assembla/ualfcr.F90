@@ -53,27 +53,27 @@ subroutine ualfcr(mataz, basz)
     character(len=4) :: kmpic
     character(len=14) :: nu
     character(len=19) :: stomor, stolci, matas
-    integer ::  neq, nbloc, nblocm, nbloclc
-    integer :: jsmhc, jschc, ico
-    integer :: itbloc, jcollc, jcolm, ibloc, jualf, jvalm
-    integer :: kterm, nbterm, iligm, iliglc, k1, n1, ii1, ii2
-    integer :: ismdi, ismdim1, iscdi, kblocm, iret
-    integer :: iliglc2, jcollc2, iblo2, iscdi2, nnz, iexi
+    integer(kind=8) ::  neq, nbloc, nblocm, nbloclc
+    integer(kind=8) :: jsmhc, jschc, ico
+    integer(kind=8) :: itbloc, jcollc, jcolm, ibloc, jualf, jvalm
+    integer(kind=8) :: kterm, nbterm, iligm, iliglc, k1, n1, ii1, ii2
+    integer(kind=8) :: ismdi, ismdim1, iscdi, kblocm, iret
+    integer(kind=8) :: iliglc2, jcollc2, iblo2, iscdi2, nnz, iexi
     real(kind=8) :: rtbloc
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: smde(:) => null()
-    integer, pointer :: scde(:) => null()
-    integer, pointer :: scib(:) => null()
-    integer, pointer :: scdi(:) => null()
-    integer, pointer :: lc2m(:) => null()
-    integer, pointer :: m2lc(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
+    integer(kind=8), pointer :: scde(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
+    integer(kind=8), pointer :: scdi(:) => null()
+    integer(kind=8), pointer :: lc2m(:) => null()
+    integer(kind=8), pointer :: m2lc(:) => null()
     real(kind=8), pointer :: digs(:) => null()
     real(kind=8), pointer :: dig2(:) => null()
     complex(kind=8), pointer :: digsc(:) => null()
     complex(kind=8), pointer :: digc2(:) => null()
     integer(kind=4), pointer :: copier(:) => null()
-    integer, pointer :: nbterm_lc(:, :) => null()
-    integer, pointer :: decal(:, :) => null()
+    integer(kind=8), pointer :: nbterm_lc(:, :) => null()
+    integer(kind=8), pointer :: decal(:, :) => null()
     character(len=24), pointer :: refa(:) => null()
     logical :: sym
 !     ------------------------------------------------------------------

@@ -19,6 +19,6 @@
 interface
     subroutine mgis_get_isvs_types(extern_addr, types)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(out) :: types(*)
+        integer(kind=8), intent(out) :: types(*)
     end subroutine mgis_get_isvs_types
 end interface

@@ -70,7 +70,7 @@ subroutine lcotan(opt, etatd, etatf, fami, &
 #include "asterfort/lcjpla.h"
 #include "asterfort/lcjplc.h"
 #include "asterfort/Behaviour_type.h"
-    integer :: nmat, nsg, nfs, nbcomm(nmat, 3)
+    integer(kind=8) :: nmat, nsg, nfs, nbcomm(nmat, 3)
 !
     character(len=*) :: fami
     character(len=7) :: etatd, etatf
@@ -80,7 +80,7 @@ subroutine lcotan(opt, etatd, etatf, fami, &
     character(len=16) :: opt
     character(len=24) :: cpmono(5*nmat+1)
 !
-    integer :: imat, ndt, ndi, nr, nvi, itmax, kpg, ksp, codret, k, l
+    integer(kind=8) :: imat, ndt, ndi, nr, nvi, itmax, kpg, ksp, codret, k, l
     real(kind=8) :: toler, materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: vind(*), vinf(*), timed, timef, epsd(9), deps(9), sigd(6)
     real(kind=8) :: sigf(6)

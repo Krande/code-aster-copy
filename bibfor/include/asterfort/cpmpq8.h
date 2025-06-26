@@ -20,9 +20,9 @@
 !
 interface
     subroutine cpmpq8(conloc, numa, indno, indma)
-        integer, intent(in) :: indma
-        integer, intent(in) :: indno
-        integer, intent(in) :: numa
+        integer(kind=8), intent(in) :: indma
+        integer(kind=8), intent(in) :: indno
+        integer(kind=8), intent(in) :: numa
         character(len=24), intent(in) :: conloc
     end subroutine cpmpq8
 end interface

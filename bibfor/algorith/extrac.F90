@@ -26,14 +26,14 @@ subroutine extrac(interp, prec, crit, nbinst, ti, &
     character(len=*), intent(in) :: interp
     real(kind=8), intent(in) :: prec
     character(len=*), intent(in) :: crit
-    integer, intent(in) :: nbinst
+    integer(kind=8), intent(in) :: nbinst
     real(kind=8), intent(in) :: ti(*)
     real(kind=8), intent(in) :: temps
-    integer, intent(in) :: neq
+    integer(kind=8), intent(in) :: neq
     real(kind=8), intent(in) :: y(nbinst*neq)
     real(kind=8), intent(out) :: xtract(neq)
-    integer, intent(out) :: ier
-    integer, optional, intent(out) :: index
+    integer(kind=8), intent(out) :: ier
+    integer(kind=8), optional, intent(out) :: index
 !
 !     EXTRACTION DANS UN TABLEAU CONTENANT DES VECTEURS A DES INSTANTS
 !     SUCESSIFS DU VECTEUR EVENTUELLEMENT INTERPOLLE A L INSTANT SOUHAIT
@@ -54,7 +54,7 @@ subroutine extrac(interp, prec, crit, nbinst, ti, &
     real(kind=8) :: prec2
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: alpha
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

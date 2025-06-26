@@ -22,9 +22,9 @@ interface
     subroutine nmtama(fami, kpg, ksp, imate, instam,&
                       instap, matm, mat)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: matm(3)

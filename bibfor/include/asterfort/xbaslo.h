@@ -24,6 +24,6 @@ interface
         character(len=8) :: fiss
         character(len=19) :: grlt
         character(len=19) :: grln
-        integer :: ndim
+        integer(kind=8) :: ndim
     end subroutine xbaslo
 end interface

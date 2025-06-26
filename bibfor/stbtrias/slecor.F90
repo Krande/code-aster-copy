@@ -40,7 +40,7 @@ subroutine slecor(iunv, datset)
     character(len=6) :: moins1
     character(len=80) :: cbuf, kbid
     real(kind=8) :: rbid
-    integer :: datset, ibid, iunv, inus, inum, icoor, jsys, iret, icol, ibid2
+    integer(kind=8) :: datset, ibid, iunv, inus, inum, icoor, jsys, iret, icol, ibid2
 !
 !  ------------ FIN DECLARATION -------------
 !

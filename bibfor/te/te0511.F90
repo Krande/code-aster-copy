@@ -42,16 +42,16 @@ subroutine te0511(option, nomte)
 ! =====================================================================
 ! =====================================================================
     aster_logical :: logthm
-    integer :: imate, ivarip, icontp, ilocal, ic, iv
-    integer :: nbvari, kpg, nbsig, imat, ibid
-    integer :: icode, iret, tabthm(3), dimmax, npgu
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: imate, ivarip, icontp, ilocal, ic, iv
+    integer(kind=8) :: nbvari, kpg, nbsig, imat, ibid
+    integer(kind=8) :: icode, iret, tabthm(3), dimmax, npgu
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     real(kind=8) :: module, sig(6)
     real(kind=8) :: vin(100)
     character(len=8) :: mod, alias8
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: relcom
-    integer, parameter :: rindic = 1
+    integer(kind=8), parameter :: rindic = 1
 ! =====================================================================
 ! --- RINDIC EST LE NOMBRE DE PARAMETRE DE LOCALISATION DEFINIT -------
 ! --- SOUS LE MOT-CLE INDL_R DANS GRANDEUR_SIMPLE.CATA --------------

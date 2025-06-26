@@ -22,8 +22,8 @@ interface
     function indk24(lk24, k24z, rang, nbk24)
         character(len=*) :: lk24(*)
         character(len=*) :: k24z
-        integer :: rang
-        integer :: nbk24
-        integer :: indk24
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbk24
+        integer(kind=8) :: indk24
     end function indk24
 end interface

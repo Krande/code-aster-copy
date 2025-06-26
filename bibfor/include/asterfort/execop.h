@@ -18,6 +18,6 @@
 
 interface
     subroutine execop( num )
-        integer, intent(in), optional :: num
+        integer(kind=8), intent(in), optional :: num
     end subroutine execop
 end interface

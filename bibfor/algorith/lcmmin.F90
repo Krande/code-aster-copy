@@ -57,7 +57,7 @@ subroutine lcmmin(typess, essai, mod, nmat, materf, &
 #include "asterfort/tnsvec.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
-    integer :: ndt, ndi, typess, nmat, nr, nvi, types0, nfs, nsg
+    integer(kind=8) :: ndt, ndi, typess, nmat, nr, nvi, types0, nfs, nsg
 !
     real(kind=8) :: yd(nr), dy(nr), essai
     real(kind=8) :: hook(6, 6)
@@ -72,14 +72,14 @@ subroutine lcmmin(typess, essai, mod, nmat, materf, &
 !     ----------------------------------------------------------------
     common/tdim/ndt, ndi
 !     ----------------------------------------------------------------
-    integer :: i, nbfsys, nbsys, is, nbcomm(nmat, 3), ifa, nums
+    integer(kind=8) :: i, nbfsys, nbsys, is, nbcomm(nmat, 3), ifa, nums
     real(kind=8) :: evp(6), fe(3, 3), df(3, 3), fe1(3, 3), fe1t(3, 3)
     real(kind=8) :: pgl(3, 3), ms(6), ng(3), q(3, 3), lg(3), fetfe(3, 3)
     character(len=16) :: comp(*)
     character(len=24) :: cpmono(5*nmat+1)
     character(len=24) :: nomfam
     real(kind=8) :: timed, timef, vind(*), sigd(6), sigdn(6)
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !

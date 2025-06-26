@@ -20,8 +20,8 @@
 interface
     subroutine irmpar(nomcon, ifichi, paraListNb, paraListName)
         character(len=*) :: nomcon
-        integer :: ifichi
-        integer, intent(in) :: paraListNb
+        integer(kind=8) :: ifichi
+        integer(kind=8), intent(in) :: paraListNb
         character(len=16), pointer :: paraListName(:)
     end subroutine irmpar
 end interface

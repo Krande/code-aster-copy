@@ -23,7 +23,7 @@
 interface
     function didern(sddisc, numins)
         character(len=19) :: sddisc
-        integer :: numins
+        integer(kind=8) :: numins
         aster_logical :: didern
     end function didern
 end interface

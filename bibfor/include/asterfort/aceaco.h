@@ -25,9 +25,9 @@ interface
                       nbocc)
         character(len=8) :: nomu
         character(len=8) :: noma
-        integer :: lmax
+        integer(kind=8) :: lmax
         aster_logical :: locagb
         aster_logical :: locamb
-        integer :: nbocc
+        integer(kind=8) :: nbocc
     end subroutine aceaco
 end interface

@@ -45,9 +45,9 @@ subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex, &
 !
 #include "asterfort/codent.h"
 #include "asterfort/lxlgut.h"
-    integer :: numfam
-    integer :: nbgf
-    integer :: nbfaex
+    integer(kind=8) :: numfam
+    integer(kind=8) :: nbgf
+    integer(kind=8) :: nbfaex
     character(len=*) :: nogrf(*)
     character(len=*) :: nomfam
     character(len=*) :: nofaex(*)
@@ -56,9 +56,9 @@ subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex, &
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: iaux, jaux
-    integer :: ideb, ifin
-    integer :: lgnofa, lgnofx
+    integer(kind=8) :: iaux, jaux
+    integer(kind=8) :: ideb, ifin
+    integer(kind=8) :: lgnofa, lgnofx
 !
     character(len=8) :: saux08
 !

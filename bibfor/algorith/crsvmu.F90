@@ -38,7 +38,7 @@ subroutine crsvmu(motfac, solveu, istop, nprec, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: istop, nprec
+    integer(kind=8) :: istop, nprec
     real(kind=8) :: epsmat
     character(len=3) :: mixpre, kellag
     character(len=8) :: kxfem
@@ -57,25 +57,25 @@ subroutine crsvmu(motfac, solveu, istop, nprec, &
 ! IN  K8 KXFEM   :                           PRE_COND_XFEM
 ! ----------------------------------------------------------
 !
-    integer :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux
-    integer :: monit(12), vali(2), compt, nbma
+    integer(kind=8) :: ibid, ifm, niv, i, pcpiv, nbproc, rang, iaux
+    integer(kind=8) :: monit(12), vali(2), compt, nbma
     real(kind=8) :: eps, blreps
     character(len=5) :: klag2
     character(len=8) :: ktypr, ktyps, ktyprn, ktypp, modele, matra, kacmum
     character(len=12) :: kooc
     character(len=19) :: k19b, partsd
     character(len=24) :: kmonit(12)
-    integer :: eximo1, eximo2, eximo3, eximod
-    integer :: iexi, redmpi, nbrhs
+    integer(kind=8) :: eximo1, eximo2, eximo3, eximod
+    integer(kind=8) :: iexi, redmpi, nbrhs
     aster_logical :: ldgrel
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: prtk(:) => null()
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: prti(:) => null()
+    integer(kind=8), pointer :: prti(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: mail(:) => null()
-    integer, pointer :: numsd(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: mail(:) => null()
+    integer(kind=8), pointer :: numsd(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     mpi_int :: mrank, msize
 !------------------------------------------------------------------
     call jemarq()

@@ -33,7 +33,7 @@ subroutine nmassd(list_func_acti, hval_veasse, cnpilo, cndonn)
 #include "asterfort/nonlinDSVectCombCompute.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: hval_veasse(*)
     character(len=19), intent(in) :: cnpilo, cndonn
 !
@@ -52,7 +52,7 @@ subroutine nmassd(list_func_acti, hval_veasse, cnpilo, cndonn)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_didi, l_pilo
     type(NL_DS_VectComb) :: ds_vectcomb
 !

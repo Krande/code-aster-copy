@@ -22,16 +22,16 @@ interface
     subroutine mnlru(imat, xcdl, parcho, adime, xvect,&
                      ninc, nd, nchoc, h, hf,&
                      xru)
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=14) :: xcdl
         character(len=14) :: parcho
         character(len=14) :: adime
         character(len=14) :: xvect
-        integer :: ninc
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
+        integer(kind=8) :: ninc
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
         character(len=14) :: xru
     end subroutine mnlru
 end interface 

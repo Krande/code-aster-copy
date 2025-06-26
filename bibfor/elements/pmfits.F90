@@ -50,12 +50,12 @@ subroutine pmfits(typfib, nf, ncarf, vf, vsig, vs)
     implicit none
 #include "asterfort/utmess.h"
 !
-    integer :: typfib, nf, ncarf
+    integer(kind=8) :: typfib, nf, ncarf
     real(kind=8) :: vf(ncarf, nf), vsig(nf), vs(3)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii
+    integer(kind=8) :: ii
     real(kind=8) :: sigsf, yy, zz, aire
 !
 ! --------------------------------------------------------------------------------------------------

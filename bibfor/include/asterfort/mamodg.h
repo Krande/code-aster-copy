@@ -25,15 +25,15 @@ interface
         character(len=2) :: model
         character(len=19) :: stolci
         character(len=8) :: nomres
-        integer :: itxsto
-        integer :: itysto
-        integer :: itzsto
-        integer :: iprsto
-        integer :: iadirg
-        integer :: nbmo
+        integer(kind=8) :: itxsto
+        integer(kind=8) :: itysto
+        integer(kind=8) :: itzsto
+        integer(kind=8) :: iprsto
+        integer(kind=8) :: iadirg
+        integer(kind=8) :: nbmo
         character(len=19) :: max
         character(len=19) :: may
         character(len=19) :: maz
-        integer :: nbloc
+        integer(kind=8) :: nbloc
     end subroutine mamodg
 end interface

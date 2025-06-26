@@ -27,8 +27,8 @@ interface
         character(len=19) :: profno
         character(len=24) :: indirf
         character(len=8) :: mailsk
-        integer :: nbsec
-        integer :: numdia
-        integer :: nbmode
+        integer(kind=8) :: nbsec
+        integer(kind=8) :: numdia
+        integer(kind=8) :: nbmode
     end subroutine exphgl
 end interface

@@ -23,16 +23,16 @@ interface
                       imat, mater, deps, sigd,&
                       sigf, vind, iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=7) :: etat
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: mater(22, 2)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
         real(kind=8) :: vind(*)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine hujpre
 end interface

@@ -27,13 +27,13 @@ subroutine jelibz(clas)
 ! IN  CLAS   : CLASSE DES OBJETS A LIBERER
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
-    integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
-    integer :: jtype, n, nmax
+    integer(kind=8) :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
+    integer(kind=8) :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
+    integer(kind=8) :: jtype, n, nmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -45,20 +45,20 @@ subroutine jelibz(clas)
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
-    integer :: ivnmax, idiadm, idmarq, idnum
+    integer(kind=8) :: ivnmax, idiadm, idmarq, idnum
     parameter(ivnmax=0, idiadm=3,&
      &               idmarq=4,&
      &                 idnum=10)
 ! ----------------------------------------------------------------------
-    integer :: ncla1, ncla2, ibacol, ibmarq, ic, id, ix
-    integer :: j, k, marqi, iclasi
+    integer(kind=8) :: ncla1, ncla2, ibacol, ibmarq, ic, id, ix
+    integer(kind=8) :: j, k, marqi, iclasi
     character(len=32) :: crnom, d32
     character(len=1) :: kclas
     data d32/'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/

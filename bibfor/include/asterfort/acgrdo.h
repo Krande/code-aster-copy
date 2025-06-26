@@ -24,13 +24,13 @@ interface
                       nommet, nommat,&
                       nomcri, vala, coefpa, nomfor, grdvie,&
                       forvie,forcri, valpar, vresu)
-        integer :: nbordr
-        integer :: ordini
-        integer :: kwork
-        integer :: sompgw
-        integer :: jrwork
-        integer :: tspaq
-        integer :: ipg
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: ordini
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sompgw
+        integer(kind=8) :: jrwork
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: ipg
         character(len=16) :: nommet
         character(len=8) :: nommat
         character(len=16) :: nomcri

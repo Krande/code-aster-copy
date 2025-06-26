@@ -58,15 +58,15 @@ subroutine ss2mme(modelz, vesstrz, base)
 !
     character(len=16), parameter :: keywfact = 'SOUS_STRUC'
     character(len=8) :: mesh, model, k8bid, nosma, nomcas, nomacr
-    integer :: nbssa, nbsma, n1, n2, nboc
-    integer ::   ialsch, imas
-    integer :: ier0, ioc, i, iret
+    integer(kind=8) :: nbssa, nbsma, n1, n2, nboc
+    integer(kind=8) ::   ialsch, imas
+    integer(kind=8) :: ier0, ioc, i, iret
     character(len=19) :: vesstr
     character(len=16) :: valk(2)
     character(len=8), pointer :: lmai(:) => null()
     character(len=24), pointer :: rerr(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
-    integer, pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

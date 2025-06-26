@@ -105,7 +105,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0, &
     character(len=19) :: tablca
     character(len=4) :: regl, analy
     character(len=24) :: typrel
-    integer :: icabl, nbnoca, nbf0
+    integer(kind=8) :: icabl, nbnoca, nbf0
     real(kind=8) :: f0, delta, trelax, xflu, xret, ea, rh1000, mu0, fprg, frco
     real(kind=8) :: frli, sa
 !
@@ -114,8 +114,8 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0, &
 ! -----------------
     real(kind=8), parameter:: prec = 1.d-6
 
-    integer :: ibid, idecno, ino, ipara, jabsc, jalph, jf, nblign
-    integer :: nbpara, n1, irt, jtabx, jtaby, nbval
+    integer(kind=8) :: ibid, idecno, ino, ipara, jabsc, jalph, jf, nblign
+    integer(kind=8) :: nbpara, n1, irt, jtabx, jtaby, nbval
     real(kind=8) :: df, flim, krelax, fi, f2, lg_ref
     complex(kind=8) :: cbid
     aster_logical :: trouv1, trouv2, exi1, exi2
@@ -126,7 +126,7 @@ subroutine tensca(tablca, icabl, nbnoca, nbf0, f0, &
     character(len=24) :: tabx, taby
 !
     character(len=24) :: param, parcr(2)
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     data param/'TENSION                 '/
     data parcr/'ABSC_CURV               ',&

@@ -21,8 +21,8 @@ interface
     subroutine cleanListOfGrpMa(mesh, listGrpMa, nbGrpMa, l_stop, iret)
         character(len=*), intent(in)    :: mesh
         character(len=*), intent(inout) :: listGrpMa(*)
-        integer, intent(inout)          :: nbGrpMa
+        integer(kind=8), intent(inout)          :: nbGrpMa
         aster_logical, intent(in)       :: l_stop
-        integer, intent(out)            :: iret
+        integer(kind=8), intent(out)            :: iret
     end subroutine cleanListOfGrpMa
 end interface

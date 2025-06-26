@@ -31,18 +31,18 @@ interface
                       drde, retcom)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=8), intent(in) :: nomail
         character(len=16), intent(in) :: option
-        integer, intent(in) :: dimdef, dimcon, npg, kpi, npi, ndim
-        integer, intent(in) :: nbvari
-        integer, intent(in) :: addeme, addep1, addep2, addete, adcop1, addlh1
-        integer, intent(in) :: adcome, adcp11, adcp12, adcp21, adcp22, adcote
+        integer(kind=8), intent(in) :: dimdef, dimcon, npg, kpi, npi, ndim
+        integer(kind=8), intent(in) :: nbvari
+        integer(kind=8), intent(in) :: addeme, addep1, addep2, addete, adcop1, addlh1
+        integer(kind=8), intent(in) :: adcome, adcp11, adcp12, adcp21, adcp22, adcote
         real(kind=8), intent(in) :: defgem(1:dimdef), defgep(1:dimdef)
         real(kind=8), intent(in) :: varim(nbvari), time_prev, time_curr
         real(kind=8), intent(in) :: sigm(dimcon)
         aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
-        integer, intent(out) :: retcom
+        integer(kind=8), intent(out) :: retcom
         real(kind=8), intent(inout) :: sigp(dimcon), varip(nbvari)
         real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
     end subroutine coeihm

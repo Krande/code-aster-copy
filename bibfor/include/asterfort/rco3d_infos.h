@@ -24,8 +24,8 @@ interface
         use raco3d_module
         character(len=8), intent(in) :: typmaco, typma3d
         real(kind=8), intent(in) :: epai
-        integer, intent(in) :: j_geom
-        integer, intent(out) :: nb_gauss
+        integer(kind=8), intent(in) :: j_geom
+        integer(kind=8), intent(out) :: nb_gauss
         real(kind=8), intent(out) :: gauss_coor(2, NB_GAUSS_MAX)
         real(kind=8), intent(out) :: jac_det(NB_GAUSS_MAX)
         real(kind=8), intent(out) :: gauss_weight(NB_GAUSS_MAX)

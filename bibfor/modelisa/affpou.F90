@@ -62,8 +62,8 @@ subroutine affpou(tmp, tmpf, fcx, nom, isec, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ier, iisec, iivar, isec, ivar, j
-    integer :: jdge, jdgef, nbo, ncar, num
+    integer(kind=8) :: i, ier, iisec, iivar, isec, ivar, j
+    integer(kind=8) :: jdge, jdgef, nbo, ncar, num
 !-----------------------------------------------------------------------
     call jemarq()
     tst = r8maem()

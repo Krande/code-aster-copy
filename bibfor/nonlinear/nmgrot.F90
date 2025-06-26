@@ -28,7 +28,7 @@ subroutine nmgrot(iran, deldet, theta, chamaj)
 #include "asterfort/quavro.h"
 #include "asterfort/vroqua.h"
     real(kind=8) :: theta(3), deldet(3)
-    integer :: iran(3)
+    integer(kind=8) :: iran(3)
     real(kind=8) :: chamaj(*)
 !
 ! ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine nmgrot(iran, deldet, theta, chamaj)
 !
 !
 !
-    integer :: ic
+    integer(kind=8) :: ic
     real(kind=8) :: quapro(4), quarot(4), delqua(4)
 !
 ! ----------------------------------------------------------------------

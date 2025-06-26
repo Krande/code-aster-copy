@@ -21,8 +21,8 @@ interface
                                      fieldBuild)
         use Rom_Datastructure_type
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nbNodeMesh
-        integer, pointer  :: listNode(:)
+        integer(kind=8), intent(in) :: nbNodeMesh
+        integer(kind=8), pointer  :: listNode(:)
         type(ROM_DS_FieldBuild), intent(inout) :: fieldBuild
     end subroutine romFieldBuildPrepNume
 end interface

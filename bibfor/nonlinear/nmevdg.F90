@@ -34,7 +34,7 @@ subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
 #include "asterfort/tbliva.h"
 #include "asterfort/utdidt.h"
 !
-    integer :: i_echec, i_echec_acti
+    integer(kind=8) :: i_echec, i_echec_acti
     character(len=19) :: sddisc, vale(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -55,11 +55,11 @@ subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, ier
-    integer :: deb, fin, etat_loca
-    integer, pointer:: loca(:) => null()
+    integer(kind=8) :: ifm, niv, ier
+    integer(kind=8) :: deb, fin, etat_loca
+    integer(kind=8), pointer:: loca(:) => null()
     real(kind=8) :: valref, dval, r8bid
-    integer :: ibid
+    integer(kind=8) :: ibid
     character(len=8) :: k8bid, crit, typext
     complex(kind=8) :: c16bid
     character(len=16) :: nocham, nocmp

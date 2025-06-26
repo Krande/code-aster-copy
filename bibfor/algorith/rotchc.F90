@@ -57,9 +57,9 @@ subroutine rotchc(profno, cvale, tetss, nbss, invsk, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iax, ibid, icomp, inueq, j
-    integer :: k, llnueq, llprno, ltidec, nbcmp, nbcmpm, nbec
-    integer :: nbnot, nbss, numsec
+    integer(kind=8) :: i, iax, ibid, icomp, inueq, j
+    integer(kind=8) :: k, llnueq, llprno, ltidec, nbcmp, nbcmpm, nbec
+    integer(kind=8) :: nbnot, nbss, numsec
     real(kind=8) :: tetac, tetcou
 !-----------------------------------------------------------------------
     parameter(nbcmpm=10)
@@ -67,7 +67,7 @@ subroutine rotchc(profno, cvale, tetss, nbss, invsk, &
     character(len=8) :: nomg
     character(len=19) :: profno
     character(len=24) :: prno, nueq
-    integer :: invsk(nbnot, 2), ieq(nbcmpm)
+    integer(kind=8) :: invsk(nbnot, 2), ieq(nbcmpm)
     real(kind=8) :: tetss(nbss), tet0(nbcmpm, nbcmpm)
     complex(kind=8) :: cvale(*), udep(nbcmpm)
 !

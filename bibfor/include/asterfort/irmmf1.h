@@ -20,20 +20,20 @@ interface
     subroutine irmmf1(fid, nomamd, typent, nbrent, nbgrou,&
                       nomgen, nufaen, nomast, prefix, typgeo,&
                       nomtyp, nmatyp, infmed, ifm, nosdfu)
-        integer :: nbrent
+        integer(kind=8) :: nbrent
         med_idt :: fid
         character(len=*) :: nomamd
-        integer :: typent
-        integer :: nbgrou
+        integer(kind=8) :: typent
+        integer(kind=8) :: nbgrou
         character(len=24) :: nomgen(*)
-        integer :: nufaen(nbrent)
+        integer(kind=8) :: nufaen(nbrent)
         character(len=8) :: nomast
         character(len=6) :: prefix
-        integer :: typgeo(*)
+        integer(kind=8) :: typgeo(*)
         character(len=8) :: nomtyp(*)
-        integer :: nmatyp(*)
-        integer :: infmed
-        integer :: ifm
+        integer(kind=8) :: nmatyp(*)
+        integer(kind=8) :: infmed
+        integer(kind=8) :: ifm
         character(len=8) :: nosdfu
     end subroutine irmmf1
 end interface

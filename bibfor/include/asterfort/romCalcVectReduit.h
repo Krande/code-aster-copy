@@ -21,7 +21,7 @@ interface
     subroutine romCalcVectReduit(i_mode     , nb_equa    , nb_vect,&
                                  l_vect_name, l_vect_type, l_vect_redu,&
                                  mode_type  , vc_mode    , vr_mode)
-        integer, intent(in) :: i_mode, nb_vect, nb_equa
+        integer(kind=8), intent(in) :: i_mode, nb_vect, nb_equa
         character(len=8), intent(in) :: l_vect_name(:)
         character(len=8), intent(in) :: l_vect_type(:)
         character(len=24), intent(in) :: l_vect_redu(:)

@@ -49,15 +49,15 @@ subroutine pecage(resu, modele, nbocc)
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbocc
+    integer(kind=8) :: nbocc
     character(len=*) :: resu, modele
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "CARA_GEOM"
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nm, nbgrma, jgr
-    integer :: ig, nbma, jad, nbmail, jma, im, nume, ndim, ns1, ns2, nbparc
-    integer :: np, ifm, niv, iorig, i, icage, nbMaiT
+    integer(kind=8) :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nm, nbgrma, jgr
+    integer(kind=8) :: ig, nbma, jad, nbmail, jma, im, nume, ndim, ns1, ns2, nbparc
+    integer(kind=8) :: np, ifm, niv, iorig, i, icage, nbMaiT
     parameter(mxvale=29, nbparr=48)
     real(kind=8) :: valpar(nbparr), r8b, xyp(2), orig(3), zero
     character(len=3) :: symex, symey

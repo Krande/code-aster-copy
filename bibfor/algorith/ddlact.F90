@@ -67,9 +67,9 @@ subroutine ddlact(nomres, numddl)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iec, ino, j, ldact, lldeeq
-    integer :: lldes, llnoe, ltcono, ltidec, ltmat, ltnono
-    integer :: nbcmp, nbec, nbint, nbno, nbnot, neq, nomax
+    integer(kind=8) :: i, iec, ino, j, ldact, lldeeq
+    integer(kind=8) :: lldes, llnoe, ltcono, ltidec, ltmat, ltnono
+    integer(kind=8) :: nbcmp, nbec, nbint, nbno, nbnot, neq, nomax
     character(len=8), pointer :: idc_type(:) => null()
 !
 !-----------------------------------------------------------------------

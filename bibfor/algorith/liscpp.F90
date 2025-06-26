@@ -26,9 +26,9 @@ subroutine liscpp(lischa, ichar, phase, npuis)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
-    integer :: ichar
+    integer(kind=8) :: ichar
     real(kind=8) :: phase
-    integer :: npuis
+    integer(kind=8) :: npuis
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,8 +49,8 @@ subroutine liscpp(lischa, ichar, phase, npuis)
 !
 !
     character(len=24) :: valfon
-    integer :: jvfon
-    integer :: nbchar
+    integer(kind=8) :: jvfon
+    integer(kind=8) :: nbchar
 !
 ! ----------------------------------------------------------------------
 !

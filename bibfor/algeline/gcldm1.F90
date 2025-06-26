@@ -20,12 +20,12 @@ subroutine gcldm1(m, in, ip, prec, x, &
                   y, perm, xtrav, ytrav)
     implicit none
 !
-    integer, intent(in) :: m
+    integer(kind=8), intent(in) :: m
     real(kind=8), intent(in) :: prec(*), x(*)
     real(kind=8), intent(out) :: y(*)
     integer(kind=4), intent(in) :: ip(*)
-    integer, intent(in) :: in(*)
-    integer, intent(in) :: perm(*)
+    integer(kind=8), intent(in) :: in(*)
+    integer(kind=8), intent(in) :: perm(*)
     real(kind=8), intent(inout) :: xtrav(*)
     real(kind=8), intent(inout) :: ytrav(*)
 !-----------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine gcldm1(m, in, ip, prec, x, &
 !                                    T -1
 !                          Y = (L D L ) * X
 !-----------------------------------------------------------------------
-    integer :: i, kdeb, kfin, ki
+    integer(kind=8) :: i, kdeb, kfin, ki
     real(kind=8) :: som, fac
 !-----------------------------------------------------------------------
 !

@@ -29,8 +29,8 @@ subroutine lc0040(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/assert.h"
 #include "asterfort/lcdp_wrap.h"
 
-    integer      :: imate, ndim, kpg, ksp, codret, icomp
-    integer      :: nvi, neps, nsig, ndsde
+    integer(kind=8)      :: imate, ndim, kpg, ksp, codret, icomp
+    integer(kind=8)      :: nvi, neps, nsig, ndsde
     real(kind=8) :: carcri(*), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(*), deps(*)

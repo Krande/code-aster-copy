@@ -24,7 +24,7 @@ subroutine tridia(n, a, lda, d, e, &
 #include "asterfort/zader2.h"
 #include "asterfort/zmvpy.h"
 #include "blas/zdotc.h"
-    integer :: n, lda
+    integer(kind=8) :: n, lda
     real(kind=8) :: d(*), e(*)
     complex(kind=8) :: a(lda, *), tau(*), w(*)
 !      REDUCTION D'UNE MATRICE HERMITIENNE EN UNE MATRICE TRIDIAGONALE
@@ -42,7 +42,7 @@ subroutine tridia(n, a, lda, d, e, &
 !              DE LA MATRICE UNITAIRE T
 !     : W    : VECTEUR COMPLEXE DE DIMENSION N (VECTEUR DE TRAVAIL)
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: bb, delta, dgamma, ratio, rho, root, tol, vr
     complex(kind=8) :: temp1
     complex(kind=8) :: vc

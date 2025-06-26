@@ -20,7 +20,7 @@
 !
 interface
     subroutine dc_polycristal(nboccp, sdcomp)
-        integer, intent(in) :: nboccp
+        integer(kind=8), intent(in) :: nboccp
         character(len=8), intent(in) :: sdcomp
     end subroutine dc_polycristal
 end interface

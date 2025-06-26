@@ -35,8 +35,8 @@ subroutine rc32env(lieu, futotenv, fuseis_in)
 !
 !
 !  ------------------------------------------------------------------
-    integer :: ndim, jfact, num1, num2, k, noccpris, ind1, ind2, jmax
-    integer :: i, jfactenv, nb
+    integer(kind=8) :: ndim, jfact, num1, num2, k, noccpris, ind1, ind2, jmax
+    integer(kind=8) :: i, jfactenv, nb
     real(kind=8) :: fuseism, fuunit, ke, fen, fenel
 !
 ! DEB ------------------------------------------------------------------

@@ -33,11 +33,11 @@ subroutine op0160()
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
-    integer :: versio, n1, ific, vali(2)
+    integer(kind=8) :: versio, n1, ific, vali(2)
     character(len=8) :: format, macrel, basemo, k8b
     character(len=16) :: fichie
-    integer ::  nbmodt, nbvect
-    integer, pointer :: desm(:) => null()
+    integer(kind=8) ::  nbmodt, nbvect
+    integer(kind=8), pointer :: desm(:) => null()
     character(len=24), pointer :: mael_refe(:) => null()
 !     ------------------------------------------------------------------
     call infmaj()

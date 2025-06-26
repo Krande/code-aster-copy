@@ -22,18 +22,18 @@
             subroutine noligr(ligrz,igrel,numel,nunoeu,code,inema, &
                        &nbno,jlgns,rapide,jliel0,jlielc,jnema0,jnemac,l_lag1)
               character(len=*), intent(in) :: ligrz
-              integer, intent(in) :: igrel
-              integer, intent(in) :: numel
-              integer, intent(in) :: nunoeu
-              integer, intent(in) :: code
-              integer, intent(inout) :: inema
-              integer, intent(inout) :: nbno
-              integer, intent(in) :: jlgns
+              integer(kind=8), intent(in) :: igrel
+              integer(kind=8), intent(in) :: numel
+              integer(kind=8), intent(in) :: nunoeu
+              integer(kind=8), intent(in) :: code
+              integer(kind=8), intent(inout) :: inema
+              integer(kind=8), intent(inout) :: nbno
+              integer(kind=8), intent(in) :: jlgns
               character(len=3) ,optional, intent(in) :: rapide
-              integer ,optional, intent(in) :: jliel0
-              integer ,optional, intent(in) :: jlielc
-              integer ,optional, intent(in) :: jnema0
-              integer ,optional, intent(in) :: jnemac
+              integer(kind=8) ,optional, intent(in) :: jliel0
+              integer(kind=8) ,optional, intent(in) :: jlielc
+              integer(kind=8) ,optional, intent(in) :: jnema0
+              integer(kind=8) ,optional, intent(in) :: jnemac
               aster_logical, intent(in), optional :: l_lag1
             end subroutine noligr
           end interface 

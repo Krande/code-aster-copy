@@ -24,9 +24,9 @@ interface
         real(kind=8) :: x(*)
         real(kind=8) :: y(*)
         real(kind=8) :: d2y(*)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: ptx
         real(kind=8) :: dyptx
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine splin1
 end interface

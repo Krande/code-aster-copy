@@ -23,12 +23,12 @@ subroutine assert(cond, str_cond, fname, line)
     aster_logical :: cond
     character(len=*) :: str_cond
     character(len=*) :: fname
-    integer :: line
+    integer(kind=8) :: line
 !
 ! person_in_charge: mathieu.courtois@edf.fr
 !
     character(len=256) :: valk(2)
-    integer :: vali(1)
+    integer(kind=8) :: vali(1)
     real(kind=8) :: rbid(1)
     if (.not. cond) then
         valk(1) = str_cond

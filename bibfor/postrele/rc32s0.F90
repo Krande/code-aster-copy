@@ -45,8 +45,8 @@ subroutine rc32s0(option, lieu, seis)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jinfois, numcha, jchars, k, jsigu, j, typseis
-    integer :: iret, n0, i, nbabsc, jabsc, ibid
+    integer(kind=8) :: jinfois, numcha, jchars, k, jsigu, j, typseis
+    integer(kind=8) :: iret, n0, i, nbabsc, jabsc, ibid
     real(kind=8) :: ms(12), seisfx(6), seisfy(6), seisfz(6)
     real(kind=8) :: seismx(6), seismy(6), seismz(6), seisfx2(6)
     real(kind=8) :: seisfy2(6), seisfz2(6), seismx2(6), seismy2(6)

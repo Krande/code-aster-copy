@@ -45,7 +45,7 @@ subroutine nonlinDSInOutInit(phenom, ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbPara = 2
+    integer(kind=8), parameter :: nbPara = 2
     character(len=24), parameter :: paraName(nbPara) = (/'NUME_REUSE', 'INST      '/)
     character(len=8), parameter :: paraType(nbPara) = (/'I', 'R'/)
 !

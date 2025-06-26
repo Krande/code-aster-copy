@@ -57,18 +57,18 @@ subroutine bmrdda(basmod, intf, nomint, numint, nbddl, &
 !
 !
 !
-    integer :: nbcpmx, nbddl, nbdif, numint, i, j, nbec, nbcmp, neq
-    integer :: nunoe, iran(1), ord, nliais, llint3, llint4, llact, llnoe
-    integer ::  nbnoe, inoe
+    integer(kind=8) :: nbcpmx, nbddl, nbdif, numint, i, j, nbec, nbcmp, neq
+    integer(kind=8) :: nunoe, iran(1), ord, nliais, llint3, llint4, llact, llnoe
+    integer(kind=8) ::  nbnoe, inoe
     parameter(nbcpmx=300)
-    integer :: idec(nbcpmx), ivddl(nbddl)
+    integer(kind=8) :: idec(nbcpmx), ivddl(nbddl)
     character(len=4) :: nliai
     character(len=8) :: basmod, nomint, intf, temp
     character(len=19) :: numddl
     character(len=24) :: noeint, actint, ordol, ordod
     character(len=24) :: valk(2)
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: idc_defo(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: idc_defo(:) => null()
 !
 !-----------------------------------------------------------------------
 !

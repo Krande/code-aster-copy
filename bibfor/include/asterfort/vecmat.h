@@ -22,20 +22,20 @@ interface
     subroutine vecmat(fami, kpg, ksp, mod, loi,&
                       jmat, nmat, materd, materf, matcst,&
                       typma, ndt, ndi, nr, nvi)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
         character(len=16) :: loi
-        integer :: jmat
+        integer(kind=8) :: jmat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         character(len=3) :: matcst
         character(len=8) :: typma
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
-        integer :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nvi
     end subroutine vecmat
 end interface

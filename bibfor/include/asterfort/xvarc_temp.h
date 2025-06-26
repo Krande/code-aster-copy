@@ -20,7 +20,7 @@ interface
     subroutine xvarc_temp(affeType, dsName, funcExtrLeft, funcExtrRight, funcResult, &
                           nbAffe, exteVariMap2)
         character(len=8), intent(in) :: affeType, dsName, funcResult
-        integer, intent(in) :: nbAffe
+        integer(kind=8), intent(in) :: nbAffe
         character(len=16), intent(in) :: funcExtrLeft, funcExtrRight
         character(len=19), intent(in) :: exteVariMap2
     end subroutine xvarc_temp

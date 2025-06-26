@@ -72,15 +72,15 @@ subroutine nmrefe(model, compor, mate, cara_elem, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbout = 1
-    integer, parameter :: nb_in_maxi = 29
+    integer(kind=8), parameter :: nbout = 1
+    integer(kind=8), parameter :: nb_in_maxi = 29
     character(len=8) :: lpaout(nbout), lpain(nb_in_maxi)
     character(len=19) :: lchout(nbout), lchin(nb_in_maxi)
 !
     character(len=19) :: vect_elem, vect_asse, disp_prev
     character(len=19) :: ligrmo, resu_elem, chrefe
     character(len=24) :: chgeom, chcara(18)
-    integer :: i_refe, nb_refe, nb_in_prep, ier
+    integer(kind=8) :: i_refe, nb_refe, nb_in_prep, ier
     character(len=8), pointer :: list_cmp(:) => null()
     real(kind=8), pointer :: list_vale(:) => null()
     character(len=16) :: option

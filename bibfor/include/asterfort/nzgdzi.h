@@ -23,10 +23,10 @@ interface
                       df, sigm, vim, option, sigp,&
                       vip, dsigdf, iret)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer, intent(in) :: ndim
-        integer, intent(in) :: imat
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: imat
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: instam
@@ -39,6 +39,6 @@ interface
         real(kind=8), intent(out) :: sigp(*)
         real(kind=8), intent(out) :: vip(*)
         real(kind=8), intent(out) :: dsigdf(6, 3, 3)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine nzgdzi
 end interface

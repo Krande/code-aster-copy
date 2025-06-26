@@ -20,7 +20,7 @@
 !
 interface
     subroutine pmpitp(typfib, flp, nbpout, yj, zj, fl)
-        integer :: nbpout, typfib
+        integer(kind=8) :: nbpout, typfib
         real(kind=8) :: flp(12,*)
         real(kind=8) :: yj(*)
         real(kind=8) :: zj(*)

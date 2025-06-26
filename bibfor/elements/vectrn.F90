@@ -24,11 +24,11 @@ subroutine vectrn(nb2, vectpt, vectn, vecthe, vecnph, &
 #include "asterfort/marota.h"
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
-    integer :: nb2
+    integer(kind=8) :: nb2
 !
-    integer :: ii, jj
+    integer(kind=8) :: ii, jj
 !
-    integer :: in
+    integer(kind=8) :: in
 !
     real(kind=8) :: vectn(9, 3)
 !

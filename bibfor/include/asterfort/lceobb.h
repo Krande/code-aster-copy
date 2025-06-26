@@ -25,7 +25,7 @@ interface
                       dm, lambda, mu, alpha, ecrob,&
                       ecrod, rk, rk1, rk2, b,&
                       d, mult, elas, dbloq, iret)
-        integer :: intmax
+        integer(kind=8) :: intmax
         real(kind=8) :: toler
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
@@ -44,6 +44,6 @@ interface
         real(kind=8) :: mult
         aster_logical :: elas
         aster_logical :: dbloq
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lceobb
 end interface

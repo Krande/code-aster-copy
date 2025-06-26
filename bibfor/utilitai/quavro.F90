@@ -44,7 +44,7 @@ subroutine quavro(quater, theta)
     real(kind=8) :: reste, zero, epsil, deux, coef
     real(kind=8) :: pi
     real(kind=8) :: prosca, anorx
-    integer :: i
+    integer(kind=8) :: i
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

@@ -78,14 +78,14 @@ subroutine regegc(nomres, resgen, mailsk, profno)
 !
 !
 !
-    integer :: i, iad, iar, ibid, idep, ieq, ier, iord, iret, j, jbid, k, l
-    integer ::  llchab, llchol, llind, llmass, i1, k1
-    integer ::  llors, llprs, llrot
-    integer ::  nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod(1), nbnot, nbsst
-    integer :: neq, neqs, nno, numo, nutars, elim, lmoet
-    integer :: neqet, lmapro, neqred, lsilia, numsst, lsst, lrevind
-    integer :: iadpar(12)
-    integer :: vali(2), i_ligr_ss
+    integer(kind=8) :: i, iad, iar, ibid, idep, ieq, ier, iord, iret, j, jbid, k, l
+    integer(kind=8) ::  llchab, llchol, llind, llmass, i1, k1
+    integer(kind=8) ::  llors, llprs, llrot
+    integer(kind=8) ::  nbbas, nbcmp, nbcou, nbmas, nbmax, nbmod(1), nbnot, nbsst
+    integer(kind=8) :: neq, neqs, nno, numo, nutars, elim, lmoet
+    integer(kind=8) :: neqet, lmapro, neqred, lsilia, numsst, lsst, lrevind
+    integer(kind=8) :: iadpar(12)
+    integer(kind=8) :: vali(2), i_ligr_ss
     real(kind=8) :: compx, compy, compz, efmasx, efmasy, efmasz, freq, genek
     real(kind=8) :: genem, genec, mat(3, 3), omeg2, rbid, amor
     character(len=8) :: basmod, macrel, model_gene, kbid
@@ -99,11 +99,11 @@ subroutine regegc(nomres, resgen, mailsk, profno)
     real(kind=8), pointer :: roty(:) => null()
     real(kind=8), pointer :: rotz(:) => null()
     complex(kind=8), pointer :: trav(:) => null()
-    integer, pointer :: skeleton(:) => null()
+    integer(kind=8), pointer :: skeleton(:) => null()
     character(len=24), pointer :: refa(:) => null()
     complex(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: idc_type(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
     real(kind=8), pointer :: mael_iner_vale(:) => null()
     character(len=24), pointer :: refn(:) => null()
 !

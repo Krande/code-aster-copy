@@ -20,9 +20,9 @@
 !
 interface
     subroutine lecvec(iad, long, type, unite)
-        integer :: iad
-        integer :: long
+        integer(kind=8) :: iad
+        integer(kind=8) :: long
         character(len=3) :: type
-        integer :: unite
+        integer(kind=8) :: unite
     end subroutine lecvec
 end interface

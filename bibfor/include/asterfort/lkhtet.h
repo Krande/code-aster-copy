@@ -21,7 +21,7 @@
 interface
     subroutine lkhtet(nbmat, mater, rcos3t, h0e, h0c,&
                       htheta)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: rcos3t
         real(kind=8) :: h0e

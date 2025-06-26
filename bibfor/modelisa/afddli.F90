@@ -38,28 +38,28 @@ subroutine afddli(model, geomDime, gran_cmp_nb, gran_cmp_name, node_nume, node_n
 #include "asterfort/xddlim.h"
 !
     character(len=8), intent(in) :: model
-    integer, intent(in) :: geomDime
-    integer, intent(in) :: gran_cmp_nb
+    integer(kind=8), intent(in) :: geomDime
+    integer(kind=8), intent(in) :: gran_cmp_nb
     character(len=8), intent(in) :: gran_cmp_name(gran_cmp_nb)
-    integer, intent(in) :: node_nume
+    integer(kind=8), intent(in) :: node_nume
     character(len=8), intent(in) :: node_name
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: prnm(*)
-    integer, intent(in) :: repe_type
+    integer(kind=8), intent(in) :: prnm(*)
+    integer(kind=8), intent(in) :: repe_type
     real(kind=8), intent(in) :: repe_defi(3)
     character(len=4), intent(in) :: coef_type
-    integer, intent(in) :: cmp_nb
+    integer(kind=8), intent(in) :: cmp_nb
     character(len=16), intent(in) :: cmp_name(cmp_nb)
-    integer, intent(in) :: cmp_acti(cmp_nb)
+    integer(kind=8), intent(in) :: cmp_acti(cmp_nb)
     character(len=4), intent(in) :: vale_type
     real(kind=8), intent(in) :: vale_real(cmp_nb)
     character(len=8), intent(in) :: vale_func(cmp_nb)
     complex(kind=8), intent(in) :: vale_cplx(cmp_nb)
-    integer, intent(inout) :: cmp_count(cmp_nb)
+    integer(kind=8), intent(inout) :: cmp_count(cmp_nb)
     character(len=19), intent(in) :: list_rela
     aster_logical, intent(in) :: lxfem
-    integer, intent(in) :: jnoxfl
-    integer, intent(in) :: jnoxfv
+    integer(kind=8), intent(in) :: jnoxfl
+    integer(kind=8), intent(in) :: jnoxfv
     character(len=19), intent(in) :: connex_inv
     character(len=19), intent(in) :: ch_xfem_stat
     character(len=19), intent(in) :: ch_xfem_lnno
@@ -109,7 +109,7 @@ subroutine afddli(model, geomDime, gran_cmp_nb, gran_cmp_name, node_nume, node_n
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_cmp, cmp_index
+    integer(kind=8) :: i_cmp, cmp_index
     real(kind=8) :: rbid(3)
     real(kind=8), parameter :: coef_real_unit = 1.d0
     complex(kind=8), parameter :: coef_cplx_unit = dcmplx(1.d0, 0.d0)

@@ -43,15 +43,15 @@ subroutine te0373(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom, jv_mate, jv_onde, jv_vect
+    integer(kind=8) :: jv_geom, jv_mate, jv_onde, jv_vect
     real(kind=8) :: nx, ny
     real(kind=8) :: poids, celer
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim, ndofbynode
-    integer :: i, ii, ipg, ldec
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg, ndim, ndofbynode
+    integer(kind=8) :: i, ii, ipg, ldec
     aster_logical :: l_axis
     real(kind=8) :: r
-    integer :: j_mater, iret
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------

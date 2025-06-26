@@ -21,12 +21,12 @@
 interface
     subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn,&
                       nbmail, nbgrou)
-        integer :: imod
-        integer :: nbtyma
+        integer(kind=8) :: imod
+        integer(kind=8) :: nbtyma
         character(len=8) :: nomail(*)
-        integer :: nbnoma(19)
-        integer :: nuconn(19, 32)
-        integer :: nbmail
-        integer, intent(in) :: nbgrou
+        integer(kind=8) :: nbnoma(19)
+        integer(kind=8) :: nuconn(19, 32)
+        integer(kind=8) :: nbmail
+        integer(kind=8), intent(in) :: nbgrou
     end subroutine gmeelt
 end interface

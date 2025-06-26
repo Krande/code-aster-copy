@@ -45,7 +45,7 @@ subroutine srdvds(dt, nbmat, mater, gv, dfdsv, seuilv, dvds)
     !!! Variables globales
     !!!
 
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), dvds(6, 6), dt
     real(kind=8) :: gv(6), dfdsv(6), seuilv
 
@@ -53,7 +53,7 @@ subroutine srdvds(dt, nbmat, mater, gv, dfdsv, seuilv, dvds)
     !!! Variables locales
     !!!
 
-    integer :: i, k, ndi, ndt
+    integer(kind=8) :: i, k, ndi, ndt
     real(kind=8) :: pa, aa(6, 6), a, n, a0, z, r, tpp, trr
     common/tdim/ndt, ndi
 

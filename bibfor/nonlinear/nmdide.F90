@@ -28,7 +28,7 @@ subroutine nmdide(l_reuse, result, nume_last, inst_last)
 !
     character(len=8), intent(in) :: result
     aster_logical, intent(in) :: l_reuse
-    integer, intent(out) :: nume_last
+    integer(kind=8), intent(out) :: nume_last
     real(kind=8), intent(out) :: inst_last
 !
 ! --------------------------------------------------------------------------------------------------

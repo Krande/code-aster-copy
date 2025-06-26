@@ -22,7 +22,7 @@
 interface 
     function lcesrf(am, gameps, r, v, prec, itemax, iret)
         real(kind=8) :: lcesrf
-        integer :: itemax, iret
+        integer(kind=8) :: itemax, iret
         real(kind=8) :: gameps, r, v, am, prec
     end function lcesrf
 end interface 

@@ -22,12 +22,12 @@ interface
     subroutine srresi(nmat, materf, timed, timef,&
                       nvi, vind, vinf, yd, yf,&
                       deps, nr, r)
-        integer :: nr
-        integer :: nmat
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: timed
         real(kind=8) :: timef
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(nvi)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: yd(nr)

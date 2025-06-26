@@ -24,14 +24,14 @@ interface
     subroutine nmholi(ndim, axi, nno, npg, ipoids,&
                       ivf, idfde, imate, inst, geom,&
                       depl, chlim)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         aster_logical :: axi
-        integer :: npg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
-        integer :: imate
+        integer(kind=8) :: npg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
+        integer(kind=8) :: imate
         real(kind=8) :: inst
         real(kind=8) :: geom(ndim, nno)
         real(kind=8) :: depl(ndim, nno)

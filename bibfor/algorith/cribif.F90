@@ -25,13 +25,13 @@ subroutine cribif(mod, dsidep, vbifur, nbrac4, racine)
 #include "asterfort/utmess.h"
 #include "asterfort/zerop3.h"
 #include "asterfort/zeropn.h"
-    integer :: nbrac4
+    integer(kind=8) :: nbrac4
     real(kind=8) :: dsidep(6, 6), racine(4), vbifur
     character(len=8) :: mod
 ! =====================================================================
 ! --- RECHERCHE DE ZONES DE LOCALISATION PAR LE CRITERE DE RICE -------
 ! =====================================================================
-    integer :: ii, degre, compt, nbrac3, ier
+    integer(kind=8) :: ii, degre, compt, nbrac3, ier
     real(kind=8) :: zero, un, deux, trois, quatre
     real(kind=8) :: a0, a1, a2, a3, a4, lamba, lambb, lambc
     real(kind=8) :: valeur

@@ -43,10 +43,10 @@ subroutine rfrcha()
 #include "asterfort/utcmp1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
-    integer ::  lg1, lg2, iddl, inoeud, nch
-    integer :: n1, iret, ivari
-    integer :: nm, ngm, npoint, np, nn
-    integer :: ngn, nc, ifm, niv, nusp
+    integer(kind=8) ::  lg1, lg2, iddl, inoeud, nch
+    integer(kind=8) :: n1, iret, ivari
+    integer(kind=8) :: nm, ngm, npoint, np, nn
+    integer(kind=8) :: ngn, nc, ifm, niv, nusp
     real(kind=8) :: epsi, valr
     complex(kind=8) :: valc
     character(len=1) :: type
@@ -57,7 +57,7 @@ subroutine rfrcha()
     character(len=16) :: nomcmd, typcon, typcha, nom_vari
     character(len=19) :: nomfon, cham19
     character(len=24) :: nogno, nogma
-    integer :: vali
+    integer(kind=8) :: vali
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()

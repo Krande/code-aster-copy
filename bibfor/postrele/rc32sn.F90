@@ -28,7 +28,7 @@ subroutine rc32sn(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet, &
 #include "asterfort/rc32snb.h"
 
     character(len=4) :: lieu
-    integer :: iocc1, iocc2, ns
+    integer(kind=8) :: iocc1, iocc2, ns
     real(kind=8) :: sn, instsn(4), snet, sigmoypres, snther, sp3, spmeca3
     aster_logical :: ze200
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
@@ -38,7 +38,7 @@ subroutine rc32sn(ze200, lieu, iocc1, iocc2, ns, sn, instsn, snet, &
 ! IN  : LIEU   : ='ORIG' : ORIGINE DU SEGEMNT, ='EXTR' : EXTREMITE
 ! OUT : SN     : PARTIE B3200 du SN
 !
-    integer :: n1
+    integer(kind=8) :: n1
     character(len=8) :: methode
 
 !

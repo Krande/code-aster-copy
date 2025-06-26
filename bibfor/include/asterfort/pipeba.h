@@ -20,8 +20,8 @@
 interface
     subroutine pipeba(ndim, mate, sup, sud, vim,&
                       dtau, copilo)
-        integer, intent(in) :: ndim
-        integer, intent(in) :: mate
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: mate
         real(kind=8), intent(in) :: sup(ndim)
         real(kind=8), intent(in) :: sud(ndim)
         real(kind=8), intent(in) :: vim

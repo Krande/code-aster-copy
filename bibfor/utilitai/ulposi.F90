@@ -22,7 +22,7 @@ subroutine ulposi(unit, posi, ierr)
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
     character(len=*) :: posi
-    integer :: unit, ierr
+    integer(kind=8) :: unit, ierr
 !     ------------------------------------------------------------------
 !
 !     POSITIONNEMENT DANS UN FICHIER ET VERIFICATION DE L'ETAT
@@ -39,7 +39,7 @@ subroutine ulposi(unit, posi, ierr)
     character(len=4) :: k4b
     character(len=1) :: k1
     character(len=24) :: valk(2)
-    integer :: ios, iend
+    integer(kind=8) :: ios, iend
     aster_logical :: lop, lnom
 !     ------------------------------------------------------------------
 !

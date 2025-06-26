@@ -25,7 +25,7 @@ function knindi(long, kn, lkn, nbkn)
 #include "asterfort/assert.h"
 #include "asterfort/indk16.h"
 #include "asterfort/indk24.h"
-    integer :: nbkn, knindi, long
+    integer(kind=8) :: nbkn, knindi, long
     character(len=*) :: kn, lkn(*)
 ! ----------------------------------------------------------------------
 ! BUT: TROUVER LE RANG D'UNE CHAINE DE CARACTERES DANS UNE LISTE DE

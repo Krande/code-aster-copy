@@ -25,7 +25,7 @@ interface
         character(len=24) :: chfond
         character(len=24) :: basfon
         character(len=24) :: fonoeu
-        integer :: lnoff
+        integer(kind=8) :: lnoff
         character(len=8) :: conf
     end subroutine xrecff
 end interface

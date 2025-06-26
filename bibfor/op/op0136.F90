@@ -26,7 +26,7 @@ subroutine op0136()
 #include "asterfort/pofaqu.h"
 #include "asterfort/pofaun.h"
 #include "asterfort/titre.h"
-    integer :: n1
+    integer(kind=8) :: n1
     character(len=8) :: typcha
 !     ------------------------------------------------------------------
 !

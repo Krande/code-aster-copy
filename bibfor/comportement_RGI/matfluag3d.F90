@@ -31,7 +31,7 @@ subroutine matfluag3d(epse06, epsk06, sig06, &
 #include "asterfort/matcc3d.h"
 
     real(kind=8) :: avean, aveve, deltak, deltakb
-    integer i, j
+    integer(kind=8) i, j
 
 !     pas de temps et theta de theta methode
     real(kind=8) :: dt, theta

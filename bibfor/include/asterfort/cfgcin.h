@@ -23,7 +23,7 @@ interface
         character(len=24) :: resoco
         character(len=19) :: matass
         character(len=19) :: solveu
-        integer :: neq
-        integer :: nbliai
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
     end subroutine cfgcin
 end interface

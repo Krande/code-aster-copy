@@ -42,7 +42,7 @@ subroutine xfem_pc_detr(matass)
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refa_pc_0(:) => null()
     character(len=24), pointer :: refa_pc_1(:) => null()
-    integer :: iret_0, iret_1
+    integer(kind=8) :: iret_0, iret_1
 !-----------------------------------------------------------------------
 !
     call jemarq()

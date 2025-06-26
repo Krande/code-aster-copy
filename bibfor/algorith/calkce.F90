@@ -25,7 +25,7 @@ subroutine calkce(nno, ndim, kbp, kbb, pm, &
 #include "asterfort/matinv.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/transp.h"
-    integer :: nno, ndim
+    integer(kind=8) :: nno, ndim
     real(kind=8) :: kbp(ndim, nno), kbb(ndim, ndim), rce(nno)
     real(kind=8) :: kce(nno, nno), pm(nno), dp(nno)
 !-----------------------------------------------------------------------
@@ -42,7 +42,7 @@ subroutine calkce(nno, ndim, kbp, kbb, pm, &
 ! OUT RCE     : PRODUIT MATRICE DE CONDENSATION-PRESSION
 !-----------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: kpb(nno, ndim), kbbi(ndim, ndim)
     real(kind=8) :: det, pp(nno), prod(ndim, nno)
 !-----------------------------------------------------------------------

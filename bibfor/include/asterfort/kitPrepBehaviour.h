@@ -21,7 +21,7 @@
 interface
     subroutine kitPrepBehaviour(compor, nvi_tot, compor_creep, compor_plas)
         character(len=16), intent(in) :: compor(*)
-        integer, intent(in) :: nvi_tot
+        integer(kind=8), intent(in) :: nvi_tot
         character(len=16), intent(out) :: compor_creep(:)
         character(len=16), intent(out) :: compor_plas(:)
     end subroutine kitPrepBehaviour

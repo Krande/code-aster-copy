@@ -22,12 +22,12 @@ interface
     subroutine nm1dpm(fami, kpg, ksp, imate, option,&
                       nvar, ncstpm, cstpm, sigm, vim,&
                       deps, vip, sigp, dsde)
-        integer :: ncstpm
-        integer :: nvar
+        integer(kind=8) :: ncstpm
+        integer(kind=8) :: nvar
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
         character(len=*) :: option
         real(kind=8) :: cstpm(ncstpm)
         real(kind=8) :: sigm

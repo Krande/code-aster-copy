@@ -22,11 +22,11 @@ interface
                       epsm, deps, sigm, nvi, vim, option,&
                       sigp, vip, dsidep, iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
@@ -35,11 +35,11 @@ interface
         real(kind=8) :: deps(6)
         real(kind=8) :: sigm(6)
         real(kind=8) :: vim(*)
-        integer, intent(in):: nvi
+        integer(kind=8), intent(in):: nvi
         character(len=16) :: option
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmveei
 end interface

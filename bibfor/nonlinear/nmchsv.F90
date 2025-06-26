@@ -33,7 +33,7 @@ subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 !
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=19) :: sddyna
     character(len=19) :: veasse(*)
     type(NL_DS_System), intent(in) :: ds_system

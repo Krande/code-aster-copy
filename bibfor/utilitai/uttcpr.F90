@@ -27,7 +27,7 @@ subroutine uttcpr(nommes, nbv, temps)
 #include "asterfort/jexnom.h"
 !
     character(len=*) :: nommes
-    integer :: nbv
+    integer(kind=8) :: nbv
     real(kind=8) :: temps(nbv)
 ! ----------------------------------------------------------------------
 ! ROUTINE DE MESURE DU TEMPS CPU.
@@ -49,11 +49,11 @@ subroutine uttcpr(nommes, nbv, temps)
 ! RQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
 ! ----------------------------------------------------------------------
     aster_logical :: ljev
-    integer :: indi, jvalms, k
+    integer(kind=8) :: indi, jvalms, k
 !
 !
 !     -- COMMONS POUR MESURE DE TEMPS :
-    integer :: mtpniv, mtpsta, indmax
+    integer(kind=8) :: mtpniv, mtpsta, indmax
     parameter(indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)

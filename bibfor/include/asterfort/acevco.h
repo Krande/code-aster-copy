@@ -20,8 +20,8 @@
 !
 interface
     subroutine acevco(nbocc, nlg, ier)
-        integer :: nbocc
-        integer :: nlg
-        integer :: ier
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: nlg
+        integer(kind=8) :: ier
     end subroutine acevco
 end interface

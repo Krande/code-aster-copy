@@ -20,6 +20,6 @@
 !
 interface
     function etausr()
-        integer :: etausr
+        integer(kind=8) :: etausr
     end function etausr
 end interface

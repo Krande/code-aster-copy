@@ -21,7 +21,7 @@
 interface
     subroutine chsut1(chs1, nomgd2, ncmp, lcmp1, lcmp2,&
                       base, chs2)
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: chs1
         character(len=*) :: nomgd2
         character(len=8) :: lcmp1(ncmp)

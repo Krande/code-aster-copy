@@ -19,7 +19,7 @@
 function mefac2(n, m)
     implicit none
 !
-    integer :: n, m
+    integer(kind=8) :: n, m
     real(kind=8) :: mefac2
 !     CALCUL DE L'EXPRESSION FACTORIELLE SUIVANTE :
 !     (N+M-1)!/(M-1)!/(N-1)! = N(N+1)...(N+M-1)/(M-1)/.../1
@@ -32,7 +32,7 @@ function mefac2(n, m)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     mefac2 = n
     do i = 1, m-1

@@ -21,7 +21,7 @@
 interface
     subroutine vtcmbl(nbcmb, typcst, const, typech, nomch,&
                       typres, chpres, basez)
-        integer, intent(in) :: nbcmb
+        integer(kind=8), intent(in) :: nbcmb
         character(len=*), intent(in) :: typcst(*)
         real(kind=8), intent(in) :: const(*)
         character(len=*), intent(in) :: typech(*)

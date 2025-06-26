@@ -19,7 +19,7 @@
 subroutine foec1n(iuni, nomf, vec, nbfonc, verif)
     implicit none
 #include "asterfort/fopro1.h"
-    integer :: iuni, nbfonc
+    integer(kind=8) :: iuni, nbfonc
     character(len=*) :: nomf, vec(*), verif
 !     ECRITURE DE NIVEAU 1 (IMPR=1) D'UNE NAPPE: ATTRIBUTS
 !     ------------------------------------------------------------------
@@ -35,7 +35,7 @@ subroutine foec1n(iuni, nomf, vec, nbfonc, verif)
     character(len=8) :: nompan, nomres, nompaf
     character(len=19) :: nomfon
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     data tprol/'CONSTANT', 'LINEAIRE', 'EXCLU'/
 !

@@ -24,9 +24,9 @@ interface
                       vale_l_)
         character(len=24), intent(in) :: sdcont_defi
         character(len=*), intent(in) :: question_
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
         real(kind=8), optional, intent(out) :: vale_r_
-        integer, optional, intent(out) :: vale_i_
+        integer(kind=8), optional, intent(out) :: vale_i_
         aster_logical, optional, intent(out) :: vale_l_
     end subroutine mminfp
 end interface

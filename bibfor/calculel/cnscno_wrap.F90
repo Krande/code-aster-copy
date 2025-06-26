@@ -26,7 +26,7 @@ subroutine cnscno_wrap(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret)
     !
     character(len=*) :: cnsz, cnoz, basez, nume_equaz, prol0
     character(len=1) :: kstop
-    integer :: iret
+    integer(kind=8) :: iret
 !
     call cnscno(cnsz, nume_equaz, prol0, basez, cnoz, kstop, iret, lprofconst=ASTER_FALSE)
     ! create numbering

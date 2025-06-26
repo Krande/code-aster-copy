@@ -63,11 +63,11 @@ subroutine tstobj(ob, perm, resume, sommi, sommr, &
     character(len=24) :: ob1
     character(len=1) :: xous, typ1
     real(kind=8) :: sommr, sommr2
-    integer :: resume, sommi, iret0, lonuti, lonmax
-    integer :: sommi2, ltyp, ni
+    integer(kind=8) :: resume, sommi, iret0, lonuti, lonmax
+    integer(kind=8) :: sommi2, ltyp, ni
     integer(kind=8) :: sommi3
-    integer :: iret, iadm, iadd, long, lon2, iad, kk, nbign
-    integer :: nbob2, itrou, iobj
+    integer(kind=8) :: iret, iadm, iadd, long, lon2, iad, kk, nbign
+    integer(kind=8) :: nbob2, itrou, iobj
     aster_logical :: contig
     character(len=24) :: k24
     character(len=8) :: stock

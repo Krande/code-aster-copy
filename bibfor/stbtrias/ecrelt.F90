@@ -82,11 +82,11 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jjmmaa.h"
-    integer :: maxnod, nbtyma
+    integer(kind=8) :: maxnod, nbtyma
     character(len=1) :: prfnoe, prfmai
     character(len=8) :: nomail(nbtyma)
-    integer :: nbmail(nbtyma)
-    integer :: mint(nbtyma), mant(nbtyma), limail(nbtyma)
+    integer(kind=8) :: nbmail(nbtyma)
+    integer(kind=8) :: mint(nbtyma), mant(nbtyma), limail(nbtyma)
 !
 !  --> DECLARATION DES VARIABLES LOCALES
 !
@@ -95,22 +95,22 @@ subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail, &
     character(len=12) :: chnomi, chnoma, chenti, aut
     character(len=13) :: chlign, chlige
     character(len=80) :: chfoma(35)
-    integer :: irest, idiv, nblit, nblie, nblif
-    integer :: neu2(32), inum, ityp, neul
-    integer :: l
+    integer(kind=8) :: irest, idiv, nblit, nblie, nblif
+    integer(kind=8) :: neu2(32), inum, ityp, neul
+    integer(kind=8) :: l
 !
 !  --> DECLARATION DES INDICES DE BOUCLES
 !
-    integer :: in, nte
+    integer(kind=8) :: in, nte
 !
 !  ------------- FIN DECLARATION ------------
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifo, ima, imod, ipos
-    integer :: k, nbmtot
-    integer, pointer :: conn(:) => null()
-    integer, pointer :: info(:) => null()
+    integer(kind=8) :: i, ifo, ima, imod, ipos
+    integer(kind=8) :: k, nbmtot
+    integer(kind=8), pointer :: conn(:) => null()
+    integer(kind=8), pointer :: info(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     prfnoe = 'N'

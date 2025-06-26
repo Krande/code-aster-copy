@@ -47,7 +47,7 @@ subroutine cbsint(load, mesh)
 !
     character(len=16), parameter :: keywordFact = 'PRE_SIGM'
     character(len=5), parameter :: param = 'SIINT'
-    integer :: ibid, nbOcc, ncmp
+    integer(kind=8) :: ibid, nbOcc, ncmp
     character(len=19) :: carte
     character(len=24) :: chsig
     character(len=8), pointer :: valv(:) => null()

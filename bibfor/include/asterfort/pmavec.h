@@ -20,7 +20,7 @@
 !
 interface
     subroutine pmavec(cumul, n, a, x, y)
-        integer :: n
+        integer(kind=8) :: n
         character(len=*) :: cumul
         real(kind=8) :: a(n, n)
         real(kind=8) :: x(n)

@@ -20,7 +20,7 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
     implicit none
 #include "asterfort/rcrot.h"
 #include "asterc/r8pi.h"
-    integer :: nbabsc
+    integer(kind=8) :: nbabsc
     real(kind=8) :: absc(nbabsc), vale(4, nbabsc), xcoo(nbabsc)
     real(kind=8) :: ycoo(nbabsc), momen0_axis(4), momen1_axis(4), momen2_axis(4), rho
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3200
@@ -30,7 +30,7 @@ subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, mo
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbsgt
+    integer(kind=8) :: nbsgt
     real(kind=8) :: sigm(4, nbabsc), f(nbabsc)
     real(kind=8) :: l, x1, x2, y1, y2, phi, pi, mid_rad, xf, xh, dx
 ! DEB ------------------------------------------------------------------

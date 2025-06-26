@@ -22,10 +22,10 @@ interface
     subroutine hujpic(kk, k, tin, vin, mater,&
                       yf, pc)
         common/tdim/ ndt,ndi
-        integer :: ndt
-        integer :: ndi
-        integer :: kk
-        integer :: k
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: kk
+        integer(kind=8) :: k
         real(kind=8) :: tin(ndt)
         real(kind=8) :: vin(*)
         real(kind=8) :: mater(22, 2)

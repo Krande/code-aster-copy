@@ -20,7 +20,7 @@
 !
 interface
     subroutine ordis(listis, nbterm)
-        integer :: listis(*)
-        integer :: nbterm
+        integer(kind=8) :: listis(*)
+        integer(kind=8) :: nbterm
     end subroutine ordis
 end interface

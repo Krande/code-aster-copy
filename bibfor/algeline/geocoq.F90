@@ -33,7 +33,7 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 #include "asterfort/utmess.h"
     character(len=8) :: noma, caelem
     character(len=24) :: nomgrp(*)
-    integer :: iaxe
+    integer(kind=8) :: iaxe
     real(kind=8) :: geom(9)
 !     DETERMINATION DES GRANDEURS GEOMETRIQUES CARACTERISTIQUES D'UNE
 !              CONFIGURATION "COQUES CYLINDRIQUES COAXIALES"
@@ -64,11 +64,11 @@ subroutine geocoq(noma, nomgrp, caelem, iaxe, geom)
 !-----------------------------------------------------------------------
 !
 !
-    integer :: ias, iascqi, iascqx, iasedi, iasmax, icmp, icode
-    integer :: icoor, idesc, idir1, idir2, idir3
-    integer :: ino, inomcp, inunoe, inunoi, irang, iranv, iret
-    integer :: ivale, nbcmp, nbec, nbnoex, nbnoin, nucoqi
-    integer :: nucoqx, nuenti, nunoe, nunoex, nunoi, nunoin
+    integer(kind=8) :: ias, iascqi, iascqx, iasedi, iasmax, icmp, icode
+    integer(kind=8) :: icoor, idesc, idir1, idir2, idir3
+    integer(kind=8) :: ino, inomcp, inunoe, inunoi, irang, iranv, iret
+    integer(kind=8) :: ivale, nbcmp, nbec, nbnoex, nbnoin, nucoqi
+    integer(kind=8) :: nucoqx, nuenti, nunoe, nunoex, nunoi, nunoin
 !
 !
     real(kind=8) :: difz, difz1, difz2, epext, epint, hmoy

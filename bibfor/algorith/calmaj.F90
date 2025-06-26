@@ -30,7 +30,7 @@ subroutine calmaj(option, max, may, maz, model, &
 #include "asterfort/calcin.h"
 #include "asterfort/ploint.h"
     aster_logical :: vrai
-    integer :: i, j
+    integer(kind=8) :: i, j
     character(len=*) :: modmec, chamno, model
     character(len=9) :: option
     character(len=14) :: num

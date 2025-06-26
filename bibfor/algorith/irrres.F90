@@ -28,7 +28,7 @@ subroutine irrres(fami, kpg, ksp, mod, nmat, &
 #include "asterfort/lcopli.h"
     character(len=8) :: mod
     character(len=*) :: fami
-    integer :: nmat, kpg, ksp
+    integer(kind=8) :: nmat, kpg, ksp
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: yd(*), yf(*), deps(6), dy(*), r(*)
 !
@@ -43,7 +43,7 @@ subroutine irrres(fami, kpg, ksp, mod, nmat, &
     real(kind=8) :: rs(6), rp, re, rpi, rg, qf, r8aux
     real(kind=8) :: pk, penpe, spe, seqd
     real(kind=8) :: etaid, agdi, agfi
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
 !     ----------------------------------------------------------------
     common/tdim/ndt, ndi
 !     ----------------------------------------------------------------

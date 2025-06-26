@@ -22,10 +22,10 @@
 !
 interface 
     subroutine mnlcdl(imat, numedd, xcdl, nd, lcine)
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=14) :: numedd
         character(len=14) :: xcdl
-        integer :: nd
+        integer(kind=8) :: nd
         aster_logical :: lcine
     end subroutine mnlcdl
 end interface 

@@ -34,7 +34,7 @@ subroutine caecha(load, model, mesh, geomDime, valeType)
 #include "asterfort/tecart.h"
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,8 +54,8 @@ subroutine caecha(load, model, mesh, geomDime, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'ECHANGE'
-    integer :: necha, ncmp, jvalv1, jvalv2, n, ncmp1, ncmp2, ncmps(2)
-    integer :: iocc
+    integer(kind=8) :: necha, ncmp, jvalv1, jvalv2, n, ncmp1, ncmp2, ncmps(2)
+    integer(kind=8) :: iocc
     real(kind=8) :: r8b
     character(len=8) :: k8b
     character(len=19) :: carte1, carte2, cartes(2)

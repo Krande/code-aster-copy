@@ -50,22 +50,22 @@ subroutine te0442(option, nomte)
 ! ......................................................................
     !
     !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, iret(4)
-    integer :: jgeom, jin, jout, jang, np, itab(7), iret1, iret2, nbsp
-    integer :: jcara, ncmp, vali(2)
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, iret(4)
+    integer(kind=8) :: jgeom, jin, jout, jang, np, itab(7), iret1, iret2, nbsp
+    integer(kind=8) :: jcara, ncmp, vali(2)
     real(kind=8) :: alpha, beta, c, s
     real(kind=8), dimension(3, 3) :: pig, pgcyl, picyl
     real(kind=8), dimension(2, 2) :: t2iu1, t2ui1
     real(kind=8), dimension(2, 2) :: t2iu2, t2ui2
-    integer, parameter :: nptmax = 9, nspmax = 162
+    integer(kind=8), parameter :: nptmax = 9, nspmax = 162
     real(kind=8), dimension(3) :: axe_z, orig, x, xsp, xbary
     real(kind=8) :: rep
     character(len=4) :: fami
     character(len=8) :: pain, paout
-    integer :: ipt, ino, joff, type_pt, ipaxe, ipaxe2
+    integer(kind=8) :: ipt, ino, joff, type_pt, ipaxe, ipaxe2
     real(kind=8) :: a, b, xnorm, epais, excen, zic, hicou
-    integer, parameter :: pt_gauss = 1, pt_noeud = 2
-    integer :: jnbspi, nbcou, icou, isp
+    integer(kind=8), parameter :: pt_gauss = 1, pt_noeud = 2
+    integer(kind=8) :: jnbspi, nbcou, icou, isp
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
     !
     if (option .ne. 'REPE_TENS' .and. option .ne. 'REPE_GENE') then

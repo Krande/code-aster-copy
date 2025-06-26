@@ -20,9 +20,9 @@
 !
 interface
     subroutine pmfits(typfib, nf, ncarf, vf, vsig, vs)
-        integer :: typfib
-        integer :: nf
-        integer :: ncarf
+        integer(kind=8) :: typfib
+        integer(kind=8) :: nf
+        integer(kind=8) :: ncarf
         real(kind=8) :: vf(ncarf, nf)
         real(kind=8) :: vsig(nf)
         real(kind=8) :: vs(3)

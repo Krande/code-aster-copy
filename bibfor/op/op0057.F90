@@ -30,7 +30,7 @@ subroutine op0057()
 #include "asterfort/dglrda.h"
 #include "asterfort/dglrdm.h"
 #include "asterfort/getvtx.h"
-    integer :: ibid
+    integer(kind=8) :: ibid
     character(len=16) :: relat
 !
     call getvtx(' ', 'RELATION', scal=relat, nbret=ibid)

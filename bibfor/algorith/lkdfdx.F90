@@ -21,7 +21,7 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s, &
     implicit none
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2)
     real(kind=8) :: ucrip, invar, s(6), paraep(3), varpl(4), derpar(3)
     real(kind=8) :: dfdxip
@@ -48,7 +48,7 @@ subroutine lkdfdx(nbmat, mater, ucrip, invar, s, &
 ! OUT : DFDXIP : dF/dXIP ---------------------------------------------
 ! ====================================================================
     common/tdim/ndt, ndi
-    integer :: ndi, ndt
+    integer(kind=8) :: ndi, ndt
     real(kind=8) :: pref, sigc, rcos3t, h0c, h0e, htheta
     real(kind=8) :: sii
     real(kind=8) :: un, lgleps, zero

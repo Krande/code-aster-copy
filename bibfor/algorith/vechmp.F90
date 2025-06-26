@@ -29,7 +29,7 @@ subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem, &
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
 #include "asterfort/mecoor.h"
-    integer :: nbin_maxi, lastin
+    integer(kind=8) :: nbin_maxi, lastin
     character(len=8) :: lpain(nbin_maxi)
     character(len=19) :: lchin(nbin_maxi)
     character(len=8) :: nomo

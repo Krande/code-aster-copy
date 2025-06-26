@@ -21,13 +21,13 @@
 interface
     subroutine wp1dft(lmat, imode, zeropo, z, detnor,&
                       det, idet, isturm)
-        integer :: lmat
-        integer :: imode
+        integer(kind=8) :: lmat
+        integer(kind=8) :: imode
         complex(kind=8) :: zeropo(*)
         complex(kind=8) :: z
         complex(kind=8) :: detnor
         real(kind=8) :: det
-        integer :: idet
-        integer :: isturm
+        integer(kind=8) :: idet
+        integer(kind=8) :: isturm
     end subroutine wp1dft
 end interface

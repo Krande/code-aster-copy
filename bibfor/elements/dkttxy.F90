@@ -21,7 +21,7 @@ subroutine dkttxy(codi, lcot, hft2, depf, vt)
     real(kind=8) :: codi(*), lcot(*), hft2(2, 6), depf(9), vt(2)
 !     EFFORT TRANCHANT L'ELEMENT DE PLAQUE DKT
 !     ------------------------------------------------------------------
-    integer :: i, j, k, nno, nc
+    integer(kind=8) :: i, j, k, nno, nc
     real(kind=8) :: tkt(6, 9), cl(3), sl(3), cs(3), cu(3), su(3), bc(2, 9)
 !     ------------------------------------------------------------------
 !

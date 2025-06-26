@@ -38,9 +38,9 @@ subroutine te0164(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: coef, jacobi, nx, ytywpq(9), w(9), forref
-    integer :: nno, kp, i, ipoids, ivf, igeom, nc, nordre, k
-    integer :: ivectu, ino, ndim, nnos, npg
-    integer :: idfdk, jgano, iyty, jvDisp, jvSief, jefint
+    integer(kind=8) :: nno, kp, i, ipoids, ivf, igeom, nc, nordre, k
+    integer(kind=8) :: ivectu, ino, ndim, nnos, npg
+    integer(kind=8) :: idfdk, jgano, iyty, jvDisp, jvSief, jefint
 ! ----------------------------------------------------------------------
 !
     if (option .eq. 'REFE_FORC_NODA') then

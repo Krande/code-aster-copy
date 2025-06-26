@@ -43,9 +43,9 @@ subroutine comp_meta_read(metaPrepBehaviour)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: factorKeyword
-    integer :: iFactorKeyword, nbFactorKeyword
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: metaType, metaLaw
-    integer :: nbCompElem, numeComp, nbVari, idummy, idummy2, iret, nbPhase
+    integer(kind=8) :: nbCompElem, numeComp, nbVari, idummy, idummy2, iret, nbPhase
     character(len=16) :: compElem(2), compCodePY, metaCodePY
     aster_logical :: hasTemper
 !

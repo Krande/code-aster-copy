@@ -62,7 +62,7 @@ subroutine op0154()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, n2, nbocc, iOcc, nbDime, ier, iOrieShell
+    integer(kind=8) :: n1, n2, nbocc, iOcc, nbDime, ier, iOrieShell
     aster_logical :: bidim, lModiTopo
     character(len=8) :: mesh, meshReuse, dispMesh
     character(len=16) :: kbi1, kbi2, option

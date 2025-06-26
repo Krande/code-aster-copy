@@ -31,7 +31,7 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
 #include "blas/daxpy.h"
 !
     character(len=24) :: resoco
-    integer :: nbliai, ndim, nesmax
+    integer(kind=8) :: nbliai, ndim, nesmax
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,21 +50,21 @@ subroutine cffpm1(resoco, nbliai, ndim, nesmax)
 !
 !
 !
-    integer :: ndlmax
+    integer(kind=8) :: ndlmax
     parameter(ndlmax=30)
-    integer :: jdecal, nbddl
+    integer(kind=8) :: jdecal, nbddl
     real(kind=8) :: xmu, jeuini
-    integer :: iliai
+    integer(kind=8) :: iliai
     character(len=19) :: mu
-    integer :: jmu
+    integer(kind=8) :: jmu
     character(len=24) :: appoin
-    integer :: japptr
+    integer(kind=8) :: japptr
     character(len=24) :: apcofr
-    integer :: japcof
+    integer(kind=8) :: japcof
     character(len=24) :: jeux
-    integer :: jjeux
+    integer(kind=8) :: jjeux
     character(len=19) :: fro1
-    integer :: jfro11, jfro12
+    integer(kind=8) :: jfro11, jfro12
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

@@ -40,22 +40,22 @@ subroutine te0324(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbres, nbpar
+    integer(kind=8) :: nbres, nbpar
     parameter(nbres=4)
     parameter(nbpar=3)
 !
-    integer :: iret, nbval, nbddl
-    integer :: i, j, irigi, jma, i2, i3
-    integer :: iresu, ins, irns, ivari
-    integer :: idresu(5), idrigi(2), idgeo(5)
-    integer :: igeom
-    integer :: ndim, nno, nnos
+    integer(kind=8) :: iret, nbval, nbddl
+    integer(kind=8) :: i, j, irigi, jma, i2, i3
+    integer(kind=8) :: iresu, ins, irns, ivari
+    integer(kind=8) :: idresu(5), idrigi(2), idgeo(5)
+    integer(kind=8) :: igeom
+    integer(kind=8) :: ndim, nno, nnos
 !
     real(kind=8) :: valres(nbres), valpar(nbpar)
 !
     real(kind=8) :: x(4), y(4), z(4), c1(3), c2(3), c3(3)
     real(kind=8) :: a(3), b(3), surf, surf2
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     aster_logical :: ljfr
     blas_int :: b_incx, b_incy, b_n

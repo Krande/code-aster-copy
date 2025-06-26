@@ -23,7 +23,7 @@ subroutine fext(t, neq, nvect, liad, lifo, &
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
-    integer :: neq, nvect, liad(*)
+    integer(kind=8) :: neq, nvect, liad(*)
     real(kind=8) :: t, f(*)
     character(len=24) :: lifo(*)
 !
@@ -40,7 +40,7 @@ subroutine fext(t, neq, nvect, liad, lifo, &
 !        F        : VECTEUR FORCE EXTERIEURE (NEQ)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ier
+    integer(kind=8) :: i, ier
     real(kind=8) :: zero, alpha
     character(len=8) :: nompar
     blas_int :: b_incx, b_incy, b_n

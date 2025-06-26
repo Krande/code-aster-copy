@@ -23,10 +23,10 @@ interface
                       scal, nbret)
         character(len=*), intent(in) :: motfac
         character(len=*), intent(in) :: motcle
-        integer, intent(in), optional :: iocc
-        integer, intent(in), optional :: nbval
+        integer(kind=8), intent(in), optional :: iocc
+        integer(kind=8), intent(in), optional :: nbval
         complex(kind=8), intent(inout), optional :: vect(*)
         complex(kind=8), intent(inout), optional :: scal
-        integer, intent(out), optional :: nbret
+        integer(kind=8), intent(out), optional :: nbret
     end subroutine getvc8
 end interface

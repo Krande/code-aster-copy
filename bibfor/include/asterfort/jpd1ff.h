@@ -20,7 +20,7 @@
 !
 interface
     subroutine jpd1ff(ip, xl, phiy, phiz, b)
-        integer :: ip
+        integer(kind=8) :: ip
         real(kind=8) :: xl
         real(kind=8) :: phiy
         real(kind=8) :: phiz

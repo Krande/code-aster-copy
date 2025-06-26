@@ -18,7 +18,7 @@
 !
 subroutine ggubs(dseed, nr, r)
     implicit none
-    integer :: nr
+    integer(kind=8) :: nr
     real(kind=8) :: dseed, r(nr)
 !     GENERATEUR DE NOMBRES (PSEUDO-)ALEATOIRES UNIFORMEMENT REPARTIS
 !     ENTRE (0,1)                                     (CF GGUBS DE IMSL)
@@ -34,7 +34,7 @@ subroutine ggubs(dseed, nr, r)
 !             D2P31M=(2**31)-1,    D2P31 =(2**31)
     real(kind=8) :: d2p31m, d2p31
 !-----------------------------------------------------------------------
-    integer :: i, idseed
+    integer(kind=8) :: i, idseed
 !-----------------------------------------------------------------------
     data d2p31m/2147483647.d0/, d2p31/2147483648.d0/
 !     ------------------------------------------------------------------

@@ -42,9 +42,9 @@ subroutine mm_cycl_d2(ds_contact, i_cont_poin, &
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: i_cont_poin
-    integer, intent(in) :: indi_cont_eval
-    integer, intent(in) :: indi_frot_eval
+    integer(kind=8), intent(in) :: i_cont_poin
+    integer(kind=8), intent(in) :: indi_cont_eval
+    integer(kind=8), intent(in) :: indi_frot_eval
     real(kind=8), intent(in)  :: pres_frot_curr(3), pres_frot_prev(3)
     real(kind=8), intent(in)  :: dist_frot_curr(3), dist_frot_prev(3)
     real(kind=8), intent(in)  :: coef_frot_prev
@@ -66,16 +66,16 @@ subroutine mm_cycl_d2(ds_contact, i_cont_poin, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_cyclis
-    integer, pointer :: p_sdcont_cyclis(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cyclis(:) => null()
     character(len=24) :: sdcont_cycnbr
-    integer, pointer :: p_sdcont_cycnbr(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cycnbr(:) => null()
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: statut(30)
-    integer :: cycl_type, cycl_long_acti
-    integer :: cycl_ecod(1), cycl_long, cycl_stat
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8) :: statut(30)
+    integer(kind=8) :: cycl_type, cycl_long_acti
+    integer(kind=8) :: cycl_ecod(1), cycl_long, cycl_stat
     aster_logical :: detect
-    integer       :: zone_frot_prev, zone_frot_curr
+    integer(kind=8)       :: zone_frot_prev, zone_frot_curr
     real(kind=8)  :: nrese_curr, nrese_prev
 !
 ! --------------------------------------------------------------------------------------------------

@@ -53,23 +53,23 @@ subroutine intinivec(sd_int_, ip, lonvec, iocc, vi, &
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_int_
-    integer, intent(in) :: ip
-    integer, intent(in) :: lonvec
-    integer, optional, intent(in) :: iocc
-    integer, pointer, optional :: vi(:)
+    integer(kind=8), intent(in) :: ip
+    integer(kind=8), intent(in) :: lonvec
+    integer(kind=8), optional, intent(in) :: iocc
+    integer(kind=8), pointer, optional :: vi(:)
     real(kind=8), pointer, optional :: vr(:)
     complex(kind=8), pointer, optional :: vc(:)
     character(len=8), pointer, optional :: vk8(:)
     character(len=16), pointer, optional :: vk16(:)
     character(len=24), pointer, optional :: vk24(:)
-    integer, optional, intent(out) :: address
+    integer(kind=8), optional, intent(out) :: address
 !
 !   -0.2- Local variables
 !   --- For strings copying
     character(len=8) :: sd_int
 
 !   --- For general usage
-    integer           :: iret, add, i
+    integer(kind=8)           :: iret, add, i
     character(len=6)  :: k_iocc
     character(len=24) :: savename
 !

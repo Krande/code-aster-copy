@@ -22,9 +22,9 @@ interface
     subroutine nmevcc(sddisc, nume_inst, ds_contact, i_echec, i_echec_acti)
         use NonLin_Datastructure_type
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_echec
-        integer, intent(out) :: i_echec_acti
+        integer(kind=8), intent(in) :: i_echec
+        integer(kind=8), intent(out) :: i_echec_acti
     end subroutine nmevcc
 end interface

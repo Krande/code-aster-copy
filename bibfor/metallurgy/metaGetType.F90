@@ -25,8 +25,8 @@ subroutine metaGetType(meta_type, nb_phasis)
 #include "asterfort/rcvarc.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(out) :: meta_type
-    integer, intent(out) :: nb_phasis
+    integer(kind=8), intent(out) :: meta_type
+    integer(kind=8), intent(out) :: nb_phasis
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -42,8 +42,8 @@ subroutine metaGetType(meta_type, nb_phasis)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: steel, zirc, fami
-    integer :: kpg, ksp
-    integer :: iret_steel, iret_zirc
+    integer(kind=8) :: kpg, ksp
+    integer(kind=8) :: iret_steel, iret_zirc
     real(kind=8) :: r8dummy
 !
     data steel/'PFERRITE'/

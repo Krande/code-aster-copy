@@ -27,7 +27,7 @@ subroutine matsa(dudx, sa1, sa2)
     implicit none
 !
 #include "asterfort/r8inir.h"
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     real(kind=8) :: dudx(9)
 !

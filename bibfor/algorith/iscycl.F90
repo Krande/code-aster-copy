@@ -24,7 +24,7 @@ function iscycl(ccycle, longcy)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
     aster_logical :: iscycl
-    integer :: ccycle, longcy
+    integer(kind=8) :: ccycle, longcy
 !
 ! ----------------------------------------------------------------------
 !

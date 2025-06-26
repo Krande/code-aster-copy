@@ -23,7 +23,7 @@ interface
         character(len=16) :: typtab
         character(len=8) :: nommat
         real(kind=8) :: symax
-        integer :: nbopt
+        integer(kind=8) :: nbopt
         character(len=16) :: option(*)
         aster_logical, intent(in) :: lsymm
     end subroutine rcevol

@@ -40,7 +40,7 @@ subroutine getTimeListBounds(sddisc, t_ini, t_end)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_time
+    integer(kind=8) :: nb_time
     character(len=24) :: sddisc_ditr
     real(kind=8), pointer :: v_sddisc_ditr(:) => null()
 !

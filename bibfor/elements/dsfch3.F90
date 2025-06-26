@@ -26,7 +26,7 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf, &
     implicit none
 #include "asterfort/utmess.h"
     real(kind=8) :: valr
-    integer :: nno, nnf
+    integer(kind=8) :: nno, nnf
     real(kind=8) :: poids, dpdeg(1), dpdng(1), dpdkg(1), dsdeeg(1), dsdnng(1)
     real(kind=8) :: dsdkkg(1), dsdeng(1), dsdnkg(1), dsdekg(1), coor(1)
     real(kind=8) :: dpdef(1), dpdnf(1), dpdkf(1), dsdeef(1), dsdnnf(1)
@@ -59,7 +59,7 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf, &
 !          JAC           <--  JACOBIEN AU POINT DE GAUSS
 ! ......................................................................
 !
-    integer :: i, j, k, ii
+    integer(kind=8) :: i, j, k, ii
     real(kind=8) :: g(3, 3), de, dk, dn, jac2iv, j11, j12, j13, j21, j22, j23
     real(kind=8) :: j31, j32, j33, t2(6, 6), t1(6, 3), cj(6, 3), c2(6, 3)
 !

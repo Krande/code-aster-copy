@@ -53,8 +53,8 @@ subroutine ssrige(macrElem)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24), parameter :: renumRCMK = "RCMK"
-    integer :: nbLoad
-    integer, parameter :: nbMatrElem = 1
+    integer(kind=8) :: nbLoad
+    integer(kind=8), parameter :: nbMatrElem = 1
     character(len=24), pointer :: listMatrElem(:) => null()
     real(kind=8) :: rtbloc
     character(len=1), parameter :: base = 'V'
@@ -65,8 +65,8 @@ subroutine ssrige(macrElem)
     character(len=19) :: matrAsse
     character(len=24) :: mateco
     real(kind=8) :: time
-    integer, parameter :: modeFourier = 0
-    integer, pointer :: desm(:) => null()
+    integer(kind=8), parameter :: modeFourier = 0
+    integer(kind=8), pointer :: desm(:) => null()
     real(kind=8), pointer :: varm(:) => null()
     character(len=8), pointer :: refm(:) => null()
     character(len=24), pointer :: listLoadK24(:) => null()

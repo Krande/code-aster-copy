@@ -30,13 +30,13 @@ subroutine adjust_memlimit(show)
 ! ----------------------------------------------------------------------
     aster_logical, intent(in) :: show
 
-    integer, parameter :: n = 5
-    integer :: lfic(n), mfic
+    integer(kind=8), parameter :: n = 5
+    integer(kind=8) :: lfic(n), mfic
     common/fenvje/lfic, mfic
 
     aster_logical :: init, dbg
-    integer :: i, iret
-    integer, parameter :: npar = 6
+    integer(kind=8) :: i, iret
+    integer(kind=8), parameter :: npar = 6
     real(kind=8), parameter :: jv_syst = 512.0
     real(kind=8) :: rval(npar), added, sizf
     character(len=8) :: k8tab(npar)

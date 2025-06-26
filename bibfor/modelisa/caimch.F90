@@ -64,12 +64,12 @@ subroutine caimch(chargz)
     character(len=19) :: lisrel, numeq, chamno
     real(kind=8) :: beta, coef_impo
     complex(kind=8) :: betac
-    integer :: idcoec, idcoer, idddl, idimen, idirec
-    integer :: idnoeu, iequa, ino, inocmp, iocc
-    integer :: iret, k, nb, nbcmp, nbec, nbnoeu, nbterm
-    integer :: nequa, nliai, nucmp
+    integer(kind=8) :: idcoec, idcoer, idddl, idimen, idirec
+    integer(kind=8) :: idnoeu, iequa, ino, inocmp, iocc
+    integer(kind=8) :: iret, k, nb, nbcmp, nbec, nbnoeu, nbterm
+    integer(kind=8) :: nequa, nliai, nucmp
     real(kind=8) :: vale, zero
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     real(kind=8), pointer :: vvale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

@@ -65,17 +65,17 @@ subroutine numgen(nugene, modgen)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icomp, icompl, icomps, ifimes, i_ligr_sstr, i_ligr_link
-    integer :: j, k, lddeeq, ldnueq
-    integer :: lldefl, lldesc, llprof, nb_sstr, nb_link
-    integer :: ltlia, ltoras, ltssnb, ltsst, nbddl, nblia, nblig
-    integer :: nbmod, neq, ntail, nuas, nulia, null2
-    integer :: nult, nusst, nusst1, nusst2, nut, nutarl
+    integer(kind=8) :: i, ibid, icomp, icompl, icomps, ifimes, i_ligr_sstr, i_ligr_link
+    integer(kind=8) :: j, k, lddeeq, ldnueq
+    integer(kind=8) :: lldefl, lldesc, llprof, nb_sstr, nb_link
+    integer(kind=8) :: ltlia, ltoras, ltssnb, ltsst, nbddl, nblia, nblig
+    integer(kind=8) :: nbmod, neq, ntail, nuas, nulia, null2
+    integer(kind=8) :: nult, nusst, nusst1, nusst2, nut, nutarl
     character(len=24) :: lili, prno, orig, deeq, nueq
-    integer, pointer :: nume_equa_gene_orig_s(:) => null()
-    integer, pointer :: nume_equa_gene_orig_l(:) => null()
-    integer, pointer :: nume_equa_gene_prno_s(:) => null()
-    integer, pointer :: nume_equa_gene_prno_l(:) => null()
+    integer(kind=8), pointer :: nume_equa_gene_orig_s(:) => null()
+    integer(kind=8), pointer :: nume_equa_gene_orig_l(:) => null()
+    integer(kind=8), pointer :: nume_equa_gene_prno_s(:) => null()
+    integer(kind=8), pointer :: nume_equa_gene_prno_l(:) => null()
 
 !-----------------------------------------------------------------------
     data pgc/'NUMGEN'/

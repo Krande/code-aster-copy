@@ -42,7 +42,7 @@ subroutine gdjrg0(kp, nno, enprim, x00, y0, &
     real(kind=8) :: enprim(3, 2), x00(3, 3), y0(3), rot(3, 3), rot0(3, 3), e1(3)
 !
 !-----------------------------------------------------------------------
-    integer :: ic, kp, ne, nno
+    integer(kind=8) :: ic, kp, ne, nno
     real(kind=8) :: ajacob, zero
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

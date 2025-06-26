@@ -52,7 +52,7 @@ subroutine srimat(mod, imat, nmat, tempd, tempf, tref, materd, materf, &
     !!! Variables globales
     !!!
 
-    integer :: imat, nmat, ndt, ndi, nr, nvi
+    integer(kind=8) :: imat, nmat, ndt, ndi, nr, nvi
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf, tref
     character(len=8) :: mod
     character(len=3) :: matcst
@@ -61,7 +61,7 @@ subroutine srimat(mod, imat, nmat, tempd, tempf, tref, materd, materf, &
     !!! Variables locales
     !!!
 
-    integer :: indal
+    integer(kind=8) :: indal
 
     !!!
     !!! Appel a srlmat pour recup de mater., ndt, ndi, nvi

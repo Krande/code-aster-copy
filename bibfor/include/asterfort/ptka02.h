@@ -23,7 +23,7 @@ interface
                       xl, xiy, xiy2, xiz, xiz2,&
                       xjx, xjx2, g, alfay1, alfay2,&
                       alfaz1, alfaz2, ey, ez, ist)
-        integer :: id
+        integer(kind=8) :: id
         real(kind=8) :: sk(*)
         real(kind=8) :: e
         real(kind=8) :: a1
@@ -42,6 +42,6 @@ interface
         real(kind=8) :: alfaz2
         real(kind=8) :: ey
         real(kind=8) :: ez
-        integer :: ist
+        integer(kind=8) :: ist
     end subroutine ptka02
 end interface

@@ -21,7 +21,7 @@
 interface
     subroutine matbmn(nb1, vectt, dudxnx, jdn1nx, jdn2nx,&
                       b1mnx, b2mnx)
-        integer :: nb1
+        integer(kind=8) :: nb1
         real(kind=8) :: vectt(3, 3)
         real(kind=8) :: dudxnx(9)
         real(kind=8) :: jdn1nx(9, 51)

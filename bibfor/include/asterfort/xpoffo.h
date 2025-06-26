@@ -21,11 +21,11 @@
 interface
     subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom,&
                       co, ff)
-        integer :: nnop
-        integer :: ndim
-        integer :: ndime
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ndime
         character(len=8) :: elrefp
-        integer :: igeom
+        integer(kind=8) :: igeom
         real(kind=8) :: co(ndim)
         real(kind=8) :: ff(nnop)
     end subroutine xpoffo

@@ -38,22 +38,22 @@ interface
         character(len=19) :: lischa
         character(len=8)  :: symech
         character(len=24) :: chfond
-        integer           :: nnoff
-        integer           :: iord
-        integer           :: ndeg
+        integer(kind=8)           :: nnoff
+        integer(kind=8)           :: iord
+        integer(kind=8)           :: ndeg
         aster_logical     :: lincr
         character(len=24) :: liss
         aster_logical     :: milieu
-        integer           :: ndimte
+        integer(kind=8)           :: ndimte
         aster_logical     :: extim
         real(kind=8)      :: time
-        integer           :: nbprup
+        integer(kind=8)           :: nbprup
         character(len=16) :: noprup(*)
         character(len=24) :: chvite
         character(len=24) :: chacce
         character(len=8)  :: kcalc
         character(len=24) :: fonoeu
-        integer           :: coor
+        integer(kind=8)           :: coor
         character(len=24) :: norfon
         aster_logical     :: connex
     end subroutine mecagl

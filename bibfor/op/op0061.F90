@@ -79,7 +79,7 @@ subroutine op0061()
 !                   123456789012345678901234
 !     -----------------------------------------------------------------
 !
-    integer :: imat(2), ordman, nbpt, nchoc, h, hf, itemax, nbran, nbranf, nextr
+    integer(kind=8) :: imat(2), ordman, nbpt, nchoc, h, hf, itemax, nbran, nbranf, nextr
     real(kind=8) :: epsman, epscor, epsbif
     character(len=24) :: numedd
     character(len=14) :: numdrv
@@ -87,19 +87,19 @@ subroutine op0061()
     character(len=8) :: modini, modrep, vk8, typval, lnm, mailla
     character(len=24) :: masse, grno
 !
-    integer :: neq, nd, ijmax, iadim, ier, ninc, p, i, k, j, jj, ii, nbordr0, nbordr
-    integer :: prodsci, iexi, jrefa
+    integer(kind=8) :: neq, nd, ijmax, iadim, ier, ninc, p, i, k, j, jj, ii, nbordr0, nbordr
+    integer(kind=8) :: prodsci, iexi, jrefa
     character(len=14) :: xcdl, parcho, adime
     real(kind=8) :: ampl, amax, ap, epscor2, vr
     aster_logical :: cor, lbif, reprise, lcine
-    integer :: iraid, ireg, iorig, ijeu, inddl, ifres, vi, num_ordr, num_lig, nbno, info
-    integer :: ivec, iutj, iut1, iups, ius, ifpnl, ieng, isort, icdl, ivect, numrep, ntab
+    integer(kind=8) :: iraid, ireg, iorig, ijeu, inddl, ifres, vi, num_ordr, num_lig, nbno, info
+    integer(kind=8) :: ivec, iutj, iut1, iups, ius, ifpnl, ieng, isort, icdl, ivect, numrep, ntab
     character(len=14) :: xvect, xut1, xutj, xups, xus, xfpnl, xeng, xsort, xbif
 !
     real(kind=8) :: omega, err, prodsc
     complex(kind=8) :: vc
 !
-    integer :: ibif
+    integer(kind=8) :: ibif
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------------------------
 !

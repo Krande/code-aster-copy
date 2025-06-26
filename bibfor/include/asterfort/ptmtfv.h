@@ -45,7 +45,7 @@ interface
         real(kind=8) :: alfaz2
         real(kind=8) :: ey
         real(kind=8) :: ez
-        integer :: itype
-        integer :: isect
+        integer(kind=8) :: itype
+        integer(kind=8) :: isect
     end subroutine ptmtfv
 end interface

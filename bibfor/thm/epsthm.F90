@@ -38,17 +38,17 @@ subroutine epsthm(ds_thm, l_axi, ndim, &
 !
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: l_axi
-    integer, intent(in) :: ndim
-    integer, intent(in) :: addeme, addep1, addep2, addete, adde2nd
-    integer, intent(in) :: nno, nnos
-    integer, intent(in) :: dimuel, dimdef
-    integer, intent(in) :: nddls, nddlm
-    integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-    integer, intent(in) :: npi
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: addeme, addep1, addep2, addete, adde2nd
+    integer(kind=8), intent(in) :: nno, nnos
+    integer(kind=8), intent(in) :: dimuel, dimdef
+    integer(kind=8), intent(in) :: nddls, nddlm
+    integer(kind=8), intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+    integer(kind=8), intent(in) :: npi
     real(kind=8), intent(in) :: elem_coor(ndim, nno)
     real(kind=8), intent(in) :: disp(*)
-    integer, intent(in) :: jv_poids, jv_poids2
-    integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
+    integer(kind=8), intent(in) :: jv_poids, jv_poids2
+    integer(kind=8), intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
     real(kind=8), intent(out) :: epsm(6, 27)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -90,7 +90,7 @@ subroutine epsthm(ds_thm, l_axi, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kpi, i_cmp, i_dim
+    integer(kind=8) :: kpi, i_cmp, i_dim
     real(kind=8) :: dfdi(20, 3), dfdi2(20, 3)
     real(kind=8) :: poids, poids2
     real(kind=8) :: b(dimdef, dimuel)

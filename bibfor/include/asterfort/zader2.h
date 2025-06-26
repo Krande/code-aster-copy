@@ -21,14 +21,14 @@
 interface
     subroutine zader2(uplo, n, alpha, x, incx,&
                       y, incy, a, lda)
-        integer :: lda
+        integer(kind=8) :: lda
         character(len=*) :: uplo
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: alpha
         complex(kind=8) :: x(*)
-        integer :: incx
+        integer(kind=8) :: incx
         complex(kind=8) :: y(*)
-        integer :: incy
+        integer(kind=8) :: incy
         complex(kind=8) :: a(lda, *)
     end subroutine zader2
 end interface

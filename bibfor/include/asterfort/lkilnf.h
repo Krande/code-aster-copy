@@ -22,13 +22,13 @@ interface
     subroutine lkilnf(nvi, vind, nmat, materf, dt,&
                       sigd, nr, yd, yf, deps,&
                       vinf)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: dt
         real(kind=8) :: sigd(6)
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: yd(*)
         real(kind=8) :: yf(*)
         real(kind=8) :: deps(6)

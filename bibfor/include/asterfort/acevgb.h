@@ -20,8 +20,8 @@
 !
 interface
     subroutine acevgb(nbocc, nlm, nlg)
-        integer :: nbocc
-        integer :: nlm
-        integer :: nlg
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: nlm
+        integer(kind=8) :: nlg
     end subroutine acevgb
 end interface

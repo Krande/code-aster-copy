@@ -49,13 +49,13 @@ subroutine te0201(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ndim = 2
+    integer(kind=8), parameter :: ndim = 2
     character(len=4), parameter :: fami = "RIGI"
-    integer :: kk, i, j, npg
-    integer :: igeom, imater, icarcr, idepm, iddep, icoret
-    integer :: icontm, icontp, ivect, imatr
-    integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
-    integer :: lgpg, codret
+    integer(kind=8) :: kk, i, j, npg
+    integer(kind=8) :: igeom, imater, icarcr, idepm, iddep, icoret
+    integer(kind=8) :: icontm, icontp, ivect, imatr
+    integer(kind=8) :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
+    integer(kind=8) :: lgpg, codret
     real(kind=8) :: mat(8, 8), fint(8), sigmo(6, 2), sigma(6, 2)
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2)

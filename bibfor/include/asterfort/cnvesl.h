@@ -23,7 +23,7 @@ interface
                       cnvass)
         character(len=19) :: lischa
         character(len=1) :: typres
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=8) :: nompar
         real(kind=8) :: valpar
         character(len=19) :: cnvass

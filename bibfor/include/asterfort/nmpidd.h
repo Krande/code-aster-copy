@@ -28,7 +28,7 @@ interface
         character(len=19) :: ddepl0
         character(len=19) :: ddepl1
         real(kind=8) :: eta
-        integer :: pilcvg
-        integer :: nbeffe
+        integer(kind=8) :: pilcvg
+        integer(kind=8) :: nbeffe
     end subroutine nmpidd
 end interface

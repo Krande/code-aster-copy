@@ -179,8 +179,8 @@ subroutine znapps(n, kev, np, shift, v, &
 #include "blas/zlacpy.h"
 #include "blas/zlanhs.h"
 #include "blas/zlaset.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -189,7 +189,7 @@ subroutine znapps(n, kev, np, shift, v, &
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    integer :: kev, ldh, ldq, ldv, n, np
+    integer(kind=8) :: kev, ldh, ldq, ldv, n, np
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
@@ -211,7 +211,7 @@ subroutine znapps(n, kev, np, shift, v, &
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    integer :: i, iend, istart, j, jj, kplusp, msglvl
+    integer(kind=8) :: i, iend, istart, j, jj, kplusp, msglvl
     aster_logical :: first
     complex(kind=8) :: f, g, h11, h21, r, s, sigma(1), t
     real(kind=8) :: c, smlnum, ulp, unfl, tst1, rbid(1)

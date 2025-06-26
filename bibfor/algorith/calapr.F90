@@ -20,7 +20,7 @@ subroutine calapr(nbddl, mu, afmu, ddl, atmu)
 !
     implicit none
 !
-    integer :: nbddl, ddl(nbddl)
+    integer(kind=8) :: nbddl, ddl(nbddl)
     real(kind=8) :: mu, afmu(*), atmu(*)
 !
 ! ----------------------------------------------------------------------
@@ -36,7 +36,7 @@ subroutine calapr(nbddl, mu, afmu, ddl, atmu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: j
+    integer(kind=8) :: j
 !
 ! ----------------------------------------------------------------------
 !

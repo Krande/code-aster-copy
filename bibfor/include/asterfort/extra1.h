@@ -20,7 +20,7 @@
 !
 interface
     subroutine extra1(nin, lchin, lpain)
-        integer :: nin
+        integer(kind=8) :: nin
         character(len=*) :: lchin(*)
         character(len=8) :: lpain(*)
     end subroutine extra1

@@ -34,7 +34,7 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, &
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: champ
-    integer :: long, nbmail, nummai(*), nbgr, option
+    integer(kind=8) :: long, nbmail, nummai(*), nbgr, option
     real(kind=8) :: vr(long), ztot
     character(len=19) :: ligrel
 !     FAIRE DES OPERATIONS SUR UN CHAM_ELEM DE TYPE ENERGIE
@@ -48,13 +48,13 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, &
 ! IN  : NUMMAI : NUMEROS DES MAILLES
 !
 !-----------------------------------------------------------------------
-    integer :: icoef, idecgr, iel, im, inum, j, k, nel, longt, mode
-    integer :: ind, iaux, nbproc, rang, nbpas2, jldist2, iaux1, numim, ind1
-    integer :: jad, jnbgr
+    integer(kind=8) :: icoef, idecgr, iel, im, inum, j, k, nel, longt, mode
+    integer(kind=8) :: ind, iaux, nbproc, rang, nbpas2, jldist2, iaux1, numim, ind1
+    integer(kind=8) :: jad, jnbgr
     aster_logical :: ldist2, lluck
     real(kind=8), pointer :: celv(:) => null()
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
 !-----------------------------------------------------------------------
 ! Init.
     call jemarq()

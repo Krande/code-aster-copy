@@ -32,10 +32,10 @@ subroutine calcj0(t, sigpri, valp)
     real(kind=8) :: valp(3), jacaux(3)
     real(kind=8) :: tol, toldyn
     real(kind=8) :: sigpri
-    integer :: nbvec, nperm
-    integer :: i, itype, iordre
+    integer(kind=8) :: nbvec, nperm
+    integer(kind=8) :: i, itype, iordre
 !-----------------------------------------------------------------------
-    integer :: nitjac
+    integer(kind=8) :: nitjac
 !-----------------------------------------------------------------------
     data nperm, tol, toldyn/12, 1.d-10, 1.d-2/
 ! ----------------------------------------------------------------------

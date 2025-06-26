@@ -41,7 +41,7 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu, &
     character(len=8) :: char
     character(len=8) :: noma
     character(len=8) :: nomo
-    integer :: nzocu, nnocu
+    integer(kind=8) :: nzocu, nnocu
     character(len=24) :: lisnoe
     character(len=24) :: poinoe
     character(len=24) :: nbgdcu
@@ -80,26 +80,26 @@ subroutine creaun(char, noma, nomo, nzocu, nnocu, &
 !
 !
 !
-    integer :: nbgau
+    integer(kind=8) :: nbgau
     character(len=24) :: deficu
-    integer :: jmult, jnoe, jpoi, jnbgd
-    integer :: jcoef, jncmp
-    integer :: ino, icmp, izone
+    integer(kind=8) :: jmult, jnoe, jpoi, jnbgd
+    integer(kind=8) :: jcoef, jncmp
+    integer(kind=8) :: ino, icmp, izone
     character(len=24) :: noeucu
     character(len=24) :: valk(2)
-    integer :: jnoeu
-    integer :: numnd, exist(1), nbsup
-    integer :: nbno, nbcmp
-    integer :: jdebcp, jdebnd
+    integer(kind=8) :: jnoeu
+    integer(kind=8) :: numnd, exist(1), nbsup
+    integer(kind=8) :: nbno, nbcmp
+    integer(kind=8) :: jdebcp, jdebnd
     character(len=8) :: cmp, k8bla, nomno
-    integer :: cptd, ncmpg, cptnd
+    integer(kind=8) :: cptd, ncmpg, cptnd
     character(len=24) :: cmpgcu, ndimcu, coegcu, coedcu, poincu
-    integer :: jcmpg, jdim, jcoefg, jcoefd, jpoin, jpena
-    integer :: ifm, niv
+    integer(kind=8) :: jcmpg, jdim, jcoefg, jcoefd, jpoin, jpena
+    integer(kind=8) :: ifm, niv
     character(len=8), pointer :: cmpg(:) => null()
     character(len=8), pointer :: coefd(:) => null()
     character(len=8), pointer :: coefg(:) => null()
-    integer, pointer :: indir(:) => null()
+    integer(kind=8), pointer :: indir(:) => null()
     real(kind=8), pointer :: cpena(:) => null()
 !
 ! ----------------------------------------------------------------------

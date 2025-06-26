@@ -59,17 +59,17 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
 #include "asterc/r8prem.h"
 #include "asterfort/mgauss.h"
 !
-    integer      :: nbVloc, nbPara, iret
+    integer(kind=8)      :: nbVloc, nbPara, iret
     real(kind=8) :: vpara(nbPara), tirela(6), raidTang(6), vloc(nbVloc), klr(78), errmax, dulmat(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   nombre et compteur de critères à vérifier
-    integer :: nbDDL, nbDDLii, nbDDLjj
+    integer(kind=8) :: nbDDL, nbDDLii, nbDDLjj
 !   Compteurs
-    integer :: compt, ii, jj
+    integer(kind=8) :: compt, ii, jj
 !   numérotation pour savoir quels critères sont concernés H et H- pour le transfert
-    integer :: etatG, etatHCP, etatMxCP, etatMyCP
+    integer(kind=8) :: etatG, etatHCP, etatMxCP, etatMyCP
 !   valeur avec le signe des moments et de l'effort horizontal pour le calcul
 !     des différents critères
     real(kind=8) :: valH, valMx, valMy, valMxPabs, valMyPabs
@@ -91,7 +91,7 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
 !   fsInverse       : les deltas(finaux)
 !   dfOrdo          : récupération des dérivés des critères uniquement utiles au calcul
     real(kind=8), allocatable :: MatAinverser(:, :), fsInverse(:, :), dfOrdo(:, :)
-    integer, allocatable :: assoddl(:)
+    integer(kind=8), allocatable :: assoddl(:)
 !   La partie plastique de la raideur
     real(kind=8) :: Kplastique(5, 5)
 !   factor  de linéarisation,reste dans des division euclidienne

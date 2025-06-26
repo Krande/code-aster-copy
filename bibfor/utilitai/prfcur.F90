@@ -28,13 +28,13 @@ subroutine prfcur(vec1, nbn, vec2, nbp, interp, &
 !     IN  : INTERP : TYPE INTERPOLATION DE LA FONCTION
 !     IN  : PROLGD : TYPE DE PROLONGEMENT DE LA FONCTION
 #include "jeveux.h"
-    integer :: nbn, nbp
-    integer :: vec1(nbn)
+    integer(kind=8) :: nbn, nbp
+    integer(kind=8) :: vec1(nbn)
     real(kind=8) :: vec2(nbp)
     character(len=2) :: prolgd
     character(len=8) :: interp
-    integer :: i, ide, ifi, ip, j, i01
-    integer :: nbp2
+    integer(kind=8) :: i, ide, ifi, ip, j, i01
+    integer(kind=8) :: nbp2
     real(kind=8) :: resu
 !-----------------------------------------------------------------------
 #define xline(x,x1,y1,x2,y2) y1+(x-x1)*(y2-y1)/(x2-x1)

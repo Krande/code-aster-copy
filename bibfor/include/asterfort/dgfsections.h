@@ -21,13 +21,13 @@
 interface
     subroutine dgfsections(nboccsec, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgrp, &
                        ulnbnoeuds, ulnbmailles, nbfibres1)
-        integer :: nboccsec
-        integer :: iinbgf
-        integer :: maxmailgrp
-        integer :: ulnbnoeuds
-        integer :: ulnbmailles
-        integer :: nbfibres1
-        integer :: tousgroupesnbf(*)
+        integer(kind=8) :: nboccsec
+        integer(kind=8) :: iinbgf
+        integer(kind=8) :: maxmailgrp
+        integer(kind=8) :: ulnbnoeuds
+        integer(kind=8) :: ulnbmailles
+        integer(kind=8) :: nbfibres1
+        integer(kind=8) :: tousgroupesnbf(*)
         character(len=24) :: tousgroupesnom(*)
     end subroutine dgfsections
 end interface

@@ -26,7 +26,7 @@ subroutine fmodam(neq, vite, valmod, basmod, force)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
-    integer :: neq
+    integer(kind=8) :: neq
     character(len=24) :: valmod, basmod
     real(kind=8) :: vite(neq), force(neq)
 !
@@ -48,9 +48,9 @@ subroutine fmodam(neq, vite, valmod, basmod, force)
 !
 !
 !
-    integer :: imode, n1, nbmode
+    integer(kind=8) :: imode, n1, nbmode
     real(kind=8) :: amor, masgen, puls, somme
-    integer :: jvalmo, jbasmo
+    integer(kind=8) :: jvalmo, jbasmo
 !
 ! ----------------------------------------------------------------------
 !

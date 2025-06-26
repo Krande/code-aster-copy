@@ -21,6 +21,6 @@
 interface
     function hdfclg(i)
         hid_t :: i
-        integer :: hdfclg
+        integer(kind=8) :: hdfclg
     end function hdfclg
 end interface

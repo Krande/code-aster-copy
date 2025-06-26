@@ -23,6 +23,6 @@ interface
         character(len=1) :: bas1
         character(len=*) :: nomsd
         character(len=*) :: typsd
-        integer :: nbordr
+        integer(kind=8) :: nbordr
     end subroutine utpara
 end interface

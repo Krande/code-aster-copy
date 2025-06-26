@@ -20,7 +20,7 @@ subroutine xerfis(ndime, ninter, npts, nptm)
     implicit none
 !
 #include "asterfort/utmess.h"
-    integer :: ndime, ninter, npts, nptm
+    integer(kind=8) :: ndime, ninter, npts, nptm
 !
 !
 !                 AFFICHER DES MESSAGES D'ERREUR LORSQUE LES

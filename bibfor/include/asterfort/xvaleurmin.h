@@ -20,10 +20,10 @@
 !
 interface
    subroutine xvaleurmin(jcalculs, jvtemp, jnodto, nbno, minlo)
-        integer           :: jcalculs 
-        integer           :: jvtemp 
-        integer           :: jnodto 
-        integer           :: nbno
-        integer           :: minlo
+        integer(kind=8)           :: jcalculs 
+        integer(kind=8)           :: jvtemp 
+        integer(kind=8)           :: jnodto 
+        integer(kind=8)           :: nbno
+        integer(kind=8)           :: minlo
    end subroutine
 end interface 

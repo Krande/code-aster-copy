@@ -63,17 +63,17 @@ subroutine assgcy(nomres, nugene)
     character(len=14) :: nugene
     character(len=19) :: stomor, resu
 !
-    integer :: iblo, neq, ntbloc, nbloc, iaconl, jrefa, iadesc
-    integer ::   ldblo, n1bloc, n2bloc, i, j, hc
+    integer(kind=8) :: iblo, neq, ntbloc, nbloc, iaconl, jrefa, iadesc
+    integer(kind=8) ::   ldblo, n1bloc, n2bloc, i, j, hc
 !
 !-----------------------------------------------------------------------
 !
 !--------------------------CREATION DU .REFA----------------------------
 !
 !-----------------------------------------------------------------------
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

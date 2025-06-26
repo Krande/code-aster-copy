@@ -24,13 +24,13 @@ subroutine def_list_test(nbma, jcninv, lima, liout, nbout)
 #include "jeveux.h"
 #include "asterfort/utlisi.h"
 
-    integer, intent(in)  :: nbma
-    integer, intent(in)  :: lima(nbma)
-    integer, intent(in)  :: jcninv
-    integer, intent(inout)  :: liout(nbma)
-    integer, intent(inout) :: nbout
+    integer(kind=8), intent(in)  :: nbma
+    integer(kind=8), intent(in)  :: lima(nbma)
+    integer(kind=8), intent(in)  :: jcninv
+    integer(kind=8), intent(inout)  :: liout(nbma)
+    integer(kind=8), intent(inout) :: nbout
 !
-    integer :: nb_doubl, nbin, res(1)
+    integer(kind=8) :: nb_doubl, nbin, res(1)
 
     nbin = nbout
     nbout = 1

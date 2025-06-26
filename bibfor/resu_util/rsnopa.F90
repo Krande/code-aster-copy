@@ -34,7 +34,7 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: icode, nbacc, nbpara
+    integer(kind=8) :: icode, nbacc, nbpara
     character(len=*) :: nomsd, nomjv
 !      RECUPERATION DU NOMBRE DE VARIABLES D'ACCES ET DU NOMBRE
 !      DE PARAMETRES D'UN RESULTAT AINSI QUE DE LEUR NOMS
@@ -58,8 +58,8 @@ subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
 !  --- INITIALISATIONS ---
 !
 !-----------------------------------------------------------------------
-    integer :: iacc, iatava, ibid, ipar, iret
-    integer :: jpara, nbpar
+    integer(kind=8) :: iacc, iatava, ibid, ipar, iret
+    integer(kind=8) :: jpara, nbpar
     character(len=16), pointer :: nom_acce(:) => null()
     character(len=16), pointer :: nom_para(:) => null()
 !-----------------------------------------------------------------------

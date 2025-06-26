@@ -26,12 +26,12 @@ interface
         use NonLin_Datastructure_type
         character(len=19) :: sddisc
         type(NL_DS_Conv), intent(in) :: ds_conv
-        integer :: iterat
-        integer :: numins
+        integer(kind=8) :: iterat
+        integer(kind=8) :: numins
         aster_logical :: itemax
         character(len=24) :: sderro
-        integer :: liccvg(5)
-        integer :: actite
-        integer :: action
+        integer(kind=8) :: liccvg(5)
+        integer(kind=8) :: actite
+        integer(kind=8) :: action
     end subroutine pmactn
 end interface

@@ -57,13 +57,13 @@ subroutine nurota(modelz, nume_ddl, compor, sdnuro)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem_type, nbCmp, nb_node_found, nbEqua
+    integer(kind=8) :: nb_elem_type, nbCmp, nb_node_found, nbEqua
     character(len=16) :: defo_comp
     character(len=8), pointer :: listCmp(:) => null()
-    integer, pointer :: listEqua(:) => null()
-    integer, pointer :: listNode(:) => null()
+    integer(kind=8), pointer :: listEqua(:) => null()
+    integer(kind=8), pointer :: listNode(:) => null()
     character(len=16), pointer :: list_elem_type(:) => null()
-    integer, pointer :: list_elem_comp(:) => null()
+    integer(kind=8), pointer :: list_elem_comp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

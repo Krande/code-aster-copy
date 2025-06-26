@@ -85,21 +85,21 @@ subroutine mdgepc(neq, nbmode, bmodal, xgene, u, &
 #include "asterfort/vecinc.h"
 #include "asterfort/wkvect.h"
 ! PARAMETRES
-    integer, intent(in) :: neq, nbmode
+    integer(kind=8), intent(in) :: neq, nbmode
     real(kind=8), intent(in) :: bmodal(neq, nbmode)
     complex(kind=8), intent(in) :: xgene(nbmode)
     complex(kind=8), intent(out) :: u(neq)
-    integer, intent(in), optional :: inst, instt
-    integer, intent(inout), optional :: indice, taille
+    integer(kind=8), intent(in), optional :: inst, instt
+    integer(kind=8), intent(inout), optional :: indice, taille
     character(len=4), intent(in), optional :: kacce, kprof
     character(len=24), intent(in), optional :: kcham
 ! VARIABLES LOCALES
 ! Taille du bloc d'instants si KACCE='CAS3'
-    integer :: nbinst
+    integer(kind=8) :: nbinst
 !
-    integer :: i, j, rang, nbproc, ja, jb, jc, nbloc, iaux, nrest, m
-    integer :: ietdeb, ietrat, ietmax, ietfin, ifm, niv, instl, insttl
-    integer :: nbloci, nresti, jchamno, jkchamno, borne1, borne2, iloc
+    integer(kind=8) :: i, j, rang, nbproc, ja, jb, jc, nbloc, iaux, nrest, m
+    integer(kind=8) :: ietdeb, ietrat, ietmax, ietfin, ifm, niv, instl, insttl
+    integer(kind=8) :: nbloci, nresti, jchamno, jkchamno, borne1, borne2, iloc
     real(kind=8) :: tempsl, tempst
     complex(kind=8) :: zero, un
     character(len=4) :: kaccl, kprol

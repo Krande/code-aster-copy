@@ -21,8 +21,8 @@
 interface
     function dis2no(geom, ino1, ino2)
         real(kind=8) :: geom(*)
-        integer :: ino1
-        integer :: ino2
+        integer(kind=8) :: ino1
+        integer(kind=8) :: ino2
         real(kind=8) :: dis2no
     end function dis2no
 end interface

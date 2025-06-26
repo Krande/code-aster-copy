@@ -34,7 +34,7 @@ subroutine gnoms2(noojb, k1, k2)
 #include "asterfort/codent.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/utmess.h"
-    integer :: inum, iret, k1, k2, nessai, ndigit, iessai
+    integer(kind=8) :: inum, iret, k1, k2, nessai, ndigit, iessai
     character(len=24) :: noojb, noojb1
 !     -----------------------------------------------------------------
     ASSERT(k2 .gt. k1)

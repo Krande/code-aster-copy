@@ -35,12 +35,12 @@ subroutine dcalph(x, y, nbpts, pe)
 !
 ! DECLARATION GLOBALE
 !
-    integer :: nbpts
+    integer(kind=8) :: nbpts
     real(kind=8) :: x(nbpts), y(nbpts), pe
 !
 ! DECLARATION LOCALE
 !
-    integer :: ipt, iter
+    integer(kind=8) :: ipt, iter
     real(kind=8) :: xmoy, ymoy, vx, vxy, a, b, c, c1, f, ymin
 !
 ! 1 - INITIALISATION

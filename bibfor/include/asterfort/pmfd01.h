@@ -25,6 +25,6 @@ interface
         character(len=24) :: vmailfib
         character(len=8) :: sdgf
         character(len=19) :: cesdec
-        integer :: ngmxel
+        integer(kind=8) :: ngmxel
     end subroutine pmfd01
 end interface

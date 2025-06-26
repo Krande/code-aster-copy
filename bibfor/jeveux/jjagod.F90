@@ -26,7 +26,7 @@ subroutine jjagod(iclas, nblnew)
 #include "asterfort/jjecrs.h"
 #include "asterfort/jjlidy.h"
 #include "asterfort/jxlibd.h"
-    integer, intent(in) :: iclas, nblnew
+    integer(kind=8), intent(in) :: iclas, nblnew
 ! ----------------------------------------------------------------------
 !     PERMET D'AGRANDIR LES OBJETS SYSTEME ASSOCIES AUX ENREGISTREMENTS
 !     ADRESSE DISQUE ($$IUSADI) ET NOMBRE D'ACCES ($$ACCE)
@@ -35,17 +35,17 @@ subroutine jjagod(iclas, nblnew)
 !     IN    NBLNEW : NOUVELLE TAILLE DES OBJETS
 !
 ! ----------------------------------------------------------------------
-    integer :: n
-    integer :: igenr(1), itype(1), idocu(1), iorig(1), irnom(4)
+    integer(kind=8) :: n
+    integer(kind=8) :: igenr(1), itype(1), idocu(1), iorig(1), irnom(4)
     equivalence(igenr, genr), (itype, type),&
      &                 (idocu, docu), (iorig, orig), (irnom, rnom)
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: ic, jusadi, jiacce, nbacce
-    integer :: ipgca, jcara, jdate, jdocu, jtype
-    integer :: jgenr, jhcod, jiadd, jiadm, jindir, jlong
-    integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom
+    integer(kind=8) :: ic, jusadi, jiacce, nbacce
+    integer(kind=8) :: ipgca, jcara, jdate, jdocu, jtype
+    integer(kind=8) :: jgenr, jhcod, jiadd, jiadm, jindir, jlong
+    integer(kind=8) :: jlono, jltyp, jluti, jmarq, jorig, jrnom
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -53,8 +53,8 @@ subroutine jjagod(iclas, nblnew)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 ! ----------------------------------------------------------------------
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &               kitlec(n), kitecr(n), kiadm(n),&
      &               iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -64,18 +64,18 @@ subroutine jjagod(iclas, nblnew)
     common/jusadi/jusadi(n)
     common/jiacce/jiacce(n), nbacce(2*n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: indiq_jjagod, indiq_jjldyn
+    integer(kind=8) :: indiq_jjagod, indiq_jjldyn
     common/idagod/indiq_jjagod, indiq_jjldyn
 
 ! ----------------------------------------------------------------------
-    integer :: iad14, kat14, kdy14, iad15, kat15, kdy15, l, lonoi_av
-    integer :: lon, irt, iadmi, iadyn, imq(2)
+    integer(kind=8) :: iad14, kat14, kdy14, iad15, kat15, kdy15, l, lonoi_av
+    integer(kind=8) :: lon, irt, iadmi, iadyn, imq(2)
 ! DEB ------------------------------------------------------------------
     ic = iclas
     ASSERT(nblnew .gt. nblmax(ic))

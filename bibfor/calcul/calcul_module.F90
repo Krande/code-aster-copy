@@ -34,8 +34,8 @@ module calcul_module
 !         ca_nomtm_  : type_maille associe au type_element courant
 
 !======================================================================
-    integer :: ca_igd_, ca_nec_, ca_ncmpmx_, ca_iachin_, ca_iachlo_, ca_iichin_
-    integer :: ca_ilchlo_, ca_itypgd_, ca_ianueq_, ca_lprno_
+    integer(kind=8) :: ca_igd_, ca_nec_, ca_ncmpmx_, ca_iachin_, ca_iachlo_, ca_iichin_
+    integer(kind=8) :: ca_ilchlo_, ca_itypgd_, ca_ianueq_, ca_lprno_
     character(len=8) :: ca_typegd_
 !     ca_igd_ : numero de la grandeur associee au champ a extraire
 !     ca_nec_ : nombre d'entiers codes de ca_igd_
@@ -56,8 +56,8 @@ module calcul_module
 !             la convention est ecrite dans extra1
 
 !======================================================================
-    integer :: ca_iaoptt_, ca_lgco_, ca_iaopmo_, ca_ilopmo_, ca_iaopno_, ca_ilopno_, ca_iaopds_
-    integer :: ca_iaoppa_, ca_npario_, ca_nparin_, ca_iamloc_, ca_ilmloc_, ca_iadsgd_
+    integer(kind=8) :: ca_iaoptt_, ca_lgco_, ca_iaopmo_, ca_ilopmo_, ca_iaopno_, ca_ilopno_, ca_iaopds_
+    integer(kind=8) :: ca_iaoppa_, ca_npario_, ca_nparin_, ca_iamloc_, ca_ilmloc_, ca_iadsgd_
 !     ca_iaoptt_ : adresse de l'objet du catalogue : '&CATA.TE.OPTTE'
 !     ca_lgco_   : longueur d'une colonne de '&CATA.TE.OPTTE'
 !              ( nombre total d'options possibles du catalogue)
@@ -77,7 +77,7 @@ module calcul_module
 !     ca_iadsgd_ : adresse de '&CATA.GD.DESCRIGD'
 
 !======================================================================
-    integer :: ca_iamaco_, ca_ilmaco_, ca_iamsco_, ca_ilmsco_, ca_ialiel_, ca_illiel_
+    integer(kind=8) :: ca_iamaco_, ca_ilmaco_, ca_iamsco_, ca_ilmsco_, ca_ialiel_, ca_illiel_
 !     ca_iamaco_  : adresse de la connectivite du maillage
 !     ca_ilmaco_  : adresse du pointeur de longueur de ca_iamaco_
 !     ca_iamsco_  : adresse de la connectivite des mailles suppl. d'1 ligrel
@@ -86,8 +86,8 @@ module calcul_module
 !     ca_illiel_  : adresse du pointeur de longueur de '.liel'.
 
 !======================================================================
-    integer, parameter :: ca_iachid_ = 12
-    integer :: ca_iachii_, ca_iachik_, ca_iachix_
+    integer(kind=8), parameter :: ca_iachid_ = 12
+    integer(kind=8) :: ca_iachii_, ca_iachik_, ca_iachix_
 !     ca_iachii_ : adresse de '&&CALCUL.LCHIN_I'
 !     ca_iachik_ : adresse de '&&CALCUL.LCHIN_K8'
 !     ca_iachix_ : adresse de '&&CALCUL.LCHIN_EXI'
@@ -118,7 +118,7 @@ module calcul_module
 !                           jeveuo(jexnum('&CATA.GD.NOMCMP', ca_igd_), 'L', v(12) )
 
 !======================================================================
-    integer :: ca_ianoop_, ca_ianote_, ca_nbobtr_, ca_iaobtr_, ca_nbobmx_
+    integer(kind=8) :: ca_ianoop_, ca_ianote_, ca_nbobtr_, ca_iaobtr_, ca_nbobmx_
 !     ca_ianoop_ : adresse dans zk16 de '&&CALCUL.NOMOP' v(k16)
 !          v(iop) --> nom de l'option iop
 !     ca_ianote_ : adresse dans zk16 de '&&CALCUL.NOMTE' v(k16)
@@ -129,8 +129,8 @@ module calcul_module
 !          ca_nbobmx_ : longueur de l'objet '&&CALCUL.OBJETS_TRAV'
 
 !======================================================================
-    integer :: ca_nbgr_, ca_igr_, ca_nbelgr_, ca_nbelmx_, ca_jcteat_
-    integer :: ca_lcteat_, ca_iawloc_, ca_iawlo2_, ca_iawtyp_
+    integer(kind=8) :: ca_nbgr_, ca_igr_, ca_nbelgr_, ca_nbelmx_, ca_jcteat_
+    integer(kind=8) :: ca_lcteat_, ca_iawloc_, ca_iawlo2_, ca_iawtyp_
 
 !     ca_nbgr_   : nombre de grel du ligrel
 !     ca_igr_    : numero du grel courant
@@ -182,7 +182,7 @@ module calcul_module
 !          v(ipar) --> type_scalaire du champ_local
 
 !======================================================================
-    integer :: ca_iachoi_, ca_iachok_
+    integer(kind=8) :: ca_iachoi_, ca_iachok_
 !     ca_iachoi_ : adresse de '&&CALCUL.LCHOU_I'
 !     ca_iachok_ : adresse de '&&CALCUL.LCHOU_K8'
 
@@ -198,12 +198,12 @@ module calcul_module
 !             v(1) :  adresse de l_chout(i).desc
 
 !======================================================================
-    integer :: ca_iel_
+    integer(kind=8) :: ca_iel_
 !     ca_iel_    : numero de l'element courant (dans le grel ca_igr_)
 !         (ca_iel_ est mis a jour par extrai,te0000,montee,...)
 
 !======================================================================
-    integer :: ca_nbobj_, ca_iainel_, ca_ininel_
+    integer(kind=8) :: ca_nbobj_, ca_iainel_, ca_ininel_
 !     ca_nbobj_  : nombre d'objets '&inel.xxxx' cree par l'initialisation
 !              du type_elem
 !     ca_ininel_ : adresse dans zk24 de l'objet '&&CALCUL.NOM_&INEL'
@@ -212,7 +212,7 @@ module calcul_module
 !              qui contient les adresses des objets '&inel.xxxx'
 
 !======================================================================
-    integer :: ca_icaeli_, ca_icaelk_
+    integer(kind=8) :: ca_icaeli_, ca_icaelk_
 !     ca_icaelk_ est l'adresse d'un vecteur de k24 contenant :
 !       v(1) : nom du maillage  (k8)
 !       v(2) : nom du ligrel    (k19)
@@ -231,8 +231,8 @@ module calcul_module
 !       v(2+nbno +2) : numero de l'element dans le grel
 
 !======================================================================
-    integer :: ca_nute_, ca_nuop_, ca_jnbelr_, ca_jnoelr_, ca_iactif_
-    integer :: ca_jpnlfp_, ca_jnolfp_, ca_nblfpg_
+    integer(kind=8) :: ca_nute_, ca_nuop_, ca_jnbelr_, ca_jnoelr_, ca_iactif_
+    integer(kind=8) :: ca_jpnlfp_, ca_jnolfp_, ca_nblfpg_
 !     ca_nute_ : numero du type_elem ca_nomte_.
 !     ca_nuop_ : numero de l'option ca_option_.
 !     ca_jnbelr_ : adresse dans zi  de '&CATA.TE.NBELREFE'
@@ -252,32 +252,32 @@ module calcul_module
 !     ca_jnolfp_ : adresse dans zi de '&CATA.TE.NOLOCFPG'
 !     ca_nblfpg_ : dimension des objets pnlocfpg et nolocfpg
 !======================================================================
-    integer :: ca_caindz_(512), ca_capoiz_
+    integer(kind=8) :: ca_caindz_(512), ca_capoiz_
 !======================================================================
-    integer :: ca_nbsav_
+    integer(kind=8) :: ca_nbsav_
 !======================================================================
-    integer :: ca_nbcvrc_, ca_jvcnom_, ca_jvcfon_, ca_jvcval_
+    integer(kind=8) :: ca_nbcvrc_, ca_jvcnom_, ca_jvcfon_, ca_jvcval_
 !     ca_nbcvrc_ : nombre de cvrc (variable de commande scalaire)
 !     ca_jvcnom_ : adresse dans ZK8 des noms des cvrc
 !     ca_jvcfon_ : adresse dans zk8 de '&&OP0033.TVCFON' (CALC_POINT_MAT)
 !     ca_jvcval_ : adresse dans ZR  de '&&OP0033.TVCVAL' (CALC_POINT_MAT)
 !======================================================================
-    integer :: ca_ctempl_
+    integer(kind=8) :: ca_ctempl_
     real(kind=8) :: ca_ctempr_, ca_ctempm_, ca_ctempp_
 !     ca_ctempl_ : 1 if temperature is coupled variable (non external state variable)
 !     ca_ctempr_ : for reference temperature when coupled variable (non external state variable)
 !     ca_ctempm_ : for previous temperature when coupled variable (non external state variable)
 !     ca_ctempp_ : for end temperature when coupled variable (non external state variable)
 !======================================================================
-    integer :: ca_cpcapl_
+    integer(kind=8) :: ca_cpcapl_
     real(kind=8) :: ca_cpcapm_, ca_cpcapp_
 !     ca_cpcapl_ : 1 if capillar pressure is coupled variable (non external state variable)
 !     ca_cpcapm_ : for previous pressure when coupled variable (non external state variable)
 !     ca_cpcapp_ : for end pressure when coupled variable (non external state variable)
 !======================================================================
-    integer :: ca_nfpgmx_
+    integer(kind=8) :: ca_nfpgmx_
     parameter(ca_nfpgmx_=10)
-    integer :: ca_nfpg_, ca_jfpgl_, ca_decala_(ca_nfpgmx_), ca_km_, ca_kp_, ca_kr_, ca_iredec_
+    integer(kind=8) :: ca_nfpg_, ca_jfpgl_, ca_decala_(ca_nfpgmx_), ca_km_, ca_kp_, ca_kr_, ca_iredec_
 !     ca_nfpg_   : nombre de familles de la famille liste "mater"
 !     ca_jfpgl_  : adresse dans zk8 de la liste des noms des familles
 !     ca_decala_ : tableau des decalage des numeros des pg :
@@ -295,7 +295,7 @@ module calcul_module
 !     td      : valeur de l'instant "-" du "petit" pas de temps
 !     tf      : valeur de l'instant "+" du "petit" pas de temps
 !======================================================================
-    integer :: ca_calvoi_, ca_jrepe_, ca_jptvoi_, ca_jelvoi_
+    integer(kind=8) :: ca_calvoi_, ca_jrepe_, ca_jptvoi_, ca_jelvoi_
 
 !     ca_calvoi_  = 1 : dans une routine te00ij, on veut pouvoir acceder
 !                   aux champs des elements voisins (tecac2.f)
@@ -309,8 +309,8 @@ module calcul_module
 !   Gestion du parallelisme :
 !   =========================
     aster_logical :: ca_ldist_, ca_ldgrel_, ca_lparal_
-    integer :: ca_nbproc_, ca_rang_
-    integer, pointer :: ca_numsd_(:) => null()
+    integer(kind=8) :: ca_nbproc_, ca_rang_
+    integer(kind=8), pointer :: ca_numsd_(:) => null()
     aster_logical, pointer :: ca_paral_(:) => null()
 
 !      * ca_nbproc_  : nombre de processeurs
@@ -342,7 +342,7 @@ contains
 
 !>  Dit si on se trouve sous *calcul*  (ou SIMU_POINT_MAT)
     function calcul_status()
-        integer :: calcul_status
+        integer(kind=8) :: calcul_status
         calcul_status = ca_iactif_
     end function calcul_status
 

@@ -25,9 +25,9 @@ interface
         character(len=*) :: nomcha
         character(len=*) :: nomobj
         character(len=*) :: motfac
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: formr
         character(len=*), optional, intent(in) :: nomsym
-        integer, optional, intent(in) :: iordr
+        integer(kind=8), optional, intent(in) :: iordr
     end subroutine titre2
 end interface

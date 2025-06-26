@@ -38,19 +38,19 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, ty
 !
     character(len=19), intent(in) :: field_in_s
     character(len=19), intent(in) :: field_out_s
-    integer, intent(in) :: nb_elem
+    integer(kind=8), intent(in) :: nb_elem
     character(len=24), intent(in) :: list_elem
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=16), intent(in) :: type_comp
     character(len=16), intent(in) :: crit
-    integer, intent(in) :: nb_form
+    integer(kind=8), intent(in) :: nb_form
     character(len=8), intent(in) :: name_form(nb_form)
     character(len=8), intent(in) :: name_gd
-    integer, intent(in) :: nb_cmp_resu
+    integer(kind=8), intent(in) :: nb_cmp_resu
     character(len=24), intent(in) :: work_out_val
     character(len=24), intent(in) :: work_out_ele
-    integer, intent(out) :: ichk
-    integer, intent(out) :: nb_elem_out
+    integer(kind=8), intent(out) :: ichk
+    integer(kind=8), intent(out) :: nb_elem_out
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,13 +78,13 @@ subroutine ccchuc_chamel(field_in_s, field_out_s, nb_elem, list_elem, nb_cmp, ty
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ima, ipt, isp, icmp, iad, nb_val_in
-    integer :: nbpt, nbsp, nbcmp, ichk_elem, ichk_sp
-    integer :: j_resu, j_elem, i_list_elem, j_elemin, iel
+    integer(kind=8) :: ima, ipt, isp, icmp, iad, nb_val_in
+    integer(kind=8) :: nbpt, nbsp, nbcmp, ichk_elem, ichk_sp
+    integer(kind=8) :: j_resu, j_elem, i_list_elem, j_elemin, iel
     character(len=24) :: work_val, work_cmp
-    integer :: j_val, j_cmp
-    integer ::   jchsl, jchsd
-    integer :: jchrd, jchrl
+    integer(kind=8) :: j_val, j_cmp
+    integer(kind=8) ::   jchsl, jchsd
+    integer(kind=8) :: jchrd, jchrl
     real(kind=8), pointer :: chrv(:) => null()
     real(kind=8), pointer :: chsv(:) => null()
     character(len=8), pointer :: cesc(:) => null()

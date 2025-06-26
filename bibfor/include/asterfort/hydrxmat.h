@@ -26,6 +26,6 @@ interface
         real(kind=8), intent(in) :: hydra1
         real(kind=8), intent(in) :: hydras
         real(kind=8), intent(in) :: n
-        integer, intent(out) :: erreur
+        integer(kind=8), intent(out) :: erreur
     end subroutine hydrxmat
 end interface

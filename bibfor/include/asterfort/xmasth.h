@@ -23,22 +23,22 @@ interface
                       igeom, lonch, cnset, jpintt, lsn,&
                       lst, heavn, basloc, heavt, nfh, nfe,&
                       mattt)
-        integer :: nfe
-        integer :: nfh
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfe
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
-        integer :: imate
-        integer :: itemps
-        integer :: igeom
-        integer :: lonch(10)
-        integer :: cnset(128)
-        integer :: jpintt
-        integer :: heavn(27,5)
+        integer(kind=8) :: imate
+        integer(kind=8) :: itemps
+        integer(kind=8) :: igeom
+        integer(kind=8) :: lonch(10)
+        integer(kind=8) :: cnset(128)
+        integer(kind=8) :: jpintt
+        integer(kind=8) :: heavn(27,5)
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: basloc(*)
-        integer :: heavt(36)
+        integer(kind=8) :: heavt(36)
         real(kind=8) :: mattt(*)
     end subroutine xmasth
 end interface

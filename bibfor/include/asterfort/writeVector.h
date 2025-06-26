@@ -19,7 +19,7 @@
 interface
     subroutine writeVector(name, nb_value, vect)
         character(len=*), intent(in) :: name
-        integer, intent(in)          :: nb_value
+        integer(kind=8), intent(in)          :: nb_value
         real(kind=8), intent(in)     :: vect(*)
     end subroutine writeVector
 end interface

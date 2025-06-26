@@ -31,7 +31,7 @@ subroutine symt46(ftot, ftos)
 ! OUT FTOS    : TENSEUR (6,6)
 ! - ------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k, l, ijk(3, 3)
+    integer(kind=8) :: i, j, k, l, ijk(3, 3)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !
 ! -- tableau de correspondance

@@ -47,8 +47,8 @@ subroutine nonlinDSEnergyInit(resultName, ds_energy)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_col
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_col
     character(len=24) :: col_name
     type(NL_DS_Table) :: table
 !

@@ -22,19 +22,19 @@ interface
     subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma,&
                       nmaabs, pinter, ainter, nface,&
                       nptf, cface, nbtot, nfiss, ifiss)
-        integer :: jlsn
-        integer :: jlst
-        integer :: jgrlsn
-        integer :: igeom
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jlst
+        integer(kind=8) :: jgrlsn
+        integer(kind=8) :: igeom
         character(len=8) :: noma
-        integer :: nmaabs
+        integer(kind=8) :: nmaabs
         real(kind=8) :: pinter(*)
         real(kind=8) :: ainter(*)
-        integer :: nface
-        integer :: nptf
-        integer :: cface(30, 6)
-        integer :: nbtot
-        integer :: nfiss
-        integer :: ifiss
+        integer(kind=8) :: nface
+        integer(kind=8) :: nptf
+        integer(kind=8) :: cface(30, 6)
+        integer(kind=8) :: nbtot
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ifiss
     end subroutine xcfaq2
 end interface

@@ -48,14 +48,14 @@ subroutine op0149()
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iamo1, iamo2, iamor, ibid, idec, ifm
-    integer :: ifsic, ifsvi, imasse, imin, inumo, inuo1, inuo2
-    integer :: inuor, ireffl, itypfl, j, jpara, k
-    integer :: na1, nbamo1, nbamun, nbmfl, nbmod2, nbmode, nbnuo1
-    integer :: nbnuo2, nbnuor, nbvite, niv, numode, numvit, nuomin
+    integer(kind=8) :: i, iamo1, iamo2, iamor, ibid, idec, ifm
+    integer(kind=8) :: ifsic, ifsvi, imasse, imin, inumo, inuo1, inuo2
+    integer(kind=8) :: inuor, ireffl, itypfl, j, jpara, k
+    integer(kind=8) :: na1, nbamo1, nbamun, nbmfl, nbmod2, nbmode, nbnuo1
+    integer(kind=8) :: nbnuo2, nbnuor, nbvite, niv, numode, numvit, nuomin
 !
     real(kind=8) :: amorun, rtamp
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

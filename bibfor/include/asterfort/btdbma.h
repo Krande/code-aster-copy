@@ -21,8 +21,8 @@
 interface
     subroutine btdbma(b, d, jacob, nbsig, nbinco,&
                       btdb)
-        integer :: nbinco
-        integer :: nbsig
+        integer(kind=8) :: nbinco
+        integer(kind=8) :: nbsig
         real(kind=8) :: b(nbsig, nbinco)
         real(kind=8) :: d(nbsig, nbsig)
         real(kind=8) :: jacob

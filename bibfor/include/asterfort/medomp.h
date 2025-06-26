@@ -24,6 +24,6 @@ interface
         character(len=8), intent(out) :: modele
         character(len=24), optional, intent(out) :: mater, mateco
         character(len=8), optional, intent(out) :: carele
-        integer, optional, intent(out) ::  nh
+        integer(kind=8), optional, intent(out) ::  nh
     end subroutine medomp
 end interface

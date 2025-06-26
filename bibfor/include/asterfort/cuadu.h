@@ -22,7 +22,7 @@ interface
     subroutine cuadu(deficu, resocu, neq, nbliac)
         character(len=24) :: deficu
         character(len=24) :: resocu
-        integer :: neq
-        integer :: nbliac
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliac
     end subroutine cuadu
 end interface

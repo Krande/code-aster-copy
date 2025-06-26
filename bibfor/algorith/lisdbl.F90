@@ -42,7 +42,7 @@ subroutine lisdbl(lischa)
 !
 !
 !
-    integer :: ichar1, ichar2, nbchar
+    integer(kind=8) :: ichar1, ichar2, nbchar
     character(len=8) :: charg1, charg2
 !
 ! ----------------------------------------------------------------------

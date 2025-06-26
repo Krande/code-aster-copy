@@ -32,9 +32,9 @@ subroutine xhvco5(ndim, nnop, nnops, pla, nd, &
 #include "asterfort/transp.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_saut.h"
-    integer :: ndim, nnop, nnops, nddlm
-    integer :: nddls, pla(27), ifiss, nfiss, nfh, ifa, ncompn
-    integer :: jheafa, ncomph, jheavn
+    integer(kind=8) :: ndim, nnop, nnops, nddlm
+    integer(kind=8) :: nddls, pla(27), ifiss, nfiss, nfh, ifa, ncompn
+    integer(kind=8) :: jheafa, ncomph, jheavn
     real(kind=8) :: vect(560)
     real(kind=8) :: ffp(27), jac, pf
     real(kind=8) :: mu(3), wsaut(3), saut(3)
@@ -69,7 +69,7 @@ subroutine xhvco5(ndim, nnop, nnops, pla, nd, &
 ! IN  WSAUT  : SAUT DE DEPLACEMENT MOYEN W (BASE LOCAL)
 ! I/O VTMP   : VECTEUR ELEMENTAIRE DE COHESION
 !
-    integer :: i, j, pli, ier, hea_fa(2), in, dec, ifh
+    integer(kind=8) :: i, j, pli, ier, hea_fa(2), in, dec, ifh
     real(kind=8) :: p(3, 3), ptr(3, 3), mug(3), am(3), coefi, ffi
     aster_logical :: lmultc
 !

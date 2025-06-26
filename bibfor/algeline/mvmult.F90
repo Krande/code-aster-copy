@@ -43,7 +43,7 @@ subroutine mvmult(mat, vec, res)
 !
     character(len=1) :: typmat, typres1, typres2
     character(len=19) :: vec19, res19, mat19
-    integer:: jchin, jchout, lmat
+    integer(kind=8):: jchin, jchout, lmat
 !
     call jemarq()
 

@@ -30,7 +30,7 @@ subroutine pmmaco(nommat, nbmat, codi)
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: nommat(*)
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     character(len=19) :: codi
 
 !-----------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine pmmaco(nommat, nbmat, codi)
 ! ----------------------------------------------------------------------
 !
     aster_logical :: l_ther
-    integer :: indmat, imate, igrp, ingrp, i
+    integer(kind=8) :: indmat, imate, igrp, ingrp, i
     character(len=8) :: nommats, matercod
 ! ----------------------------------------------------------------------
 !

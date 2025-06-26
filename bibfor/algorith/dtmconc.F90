@@ -44,19 +44,19 @@ subroutine dtmconc(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: iarch_sd, i_bloc, nbmode, nbnoli, nbvint, l_disc, l_ordr, i_disc
-    integer           :: ordr, ordr_prec
+    integer(kind=8)           :: iarch_sd, i_bloc, nbmode, nbnoli, nbvint, l_disc, l_ordr, i_disc
+    integer(kind=8)           :: ordr, ordr_prec
     real(kind=8)      :: disc, disc_prec
     character(len=7)  :: intk7
     character(len=8)  :: sd_dtm
     character(len=8)  :: nomres, sd_nl
     character(len=16) :: nomres16
-    integer, pointer  :: isto(:) => null()
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer  :: isto(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer  :: v_bloc(:) => null()
     real(kind=8), pointer  :: v_disc(:) => null()
-    integer, pointer  :: v_blo2(:) => null()
-    integer, pointer  :: v_ordr(:) => null()
+    integer(kind=8), pointer  :: v_blo2(:) => null()
+    integer(kind=8), pointer  :: v_ordr(:) => null()
 !
 !   0 - Initializations
     call jemarq()

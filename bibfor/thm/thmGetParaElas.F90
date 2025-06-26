@@ -30,10 +30,10 @@ subroutine thmGetParaElas(j_mater, kpi, temp, ndim, ds_thm)
 #include "asterfort/utmess.h"
 #include "asterfort/THM_type.h"
 !
-    integer, intent(in) :: j_mater
-    integer, intent(in) :: kpi
+    integer(kind=8), intent(in) :: j_mater
+    integer(kind=8), intent(in) :: kpi
     real(kind=8), intent(in) :: temp
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------

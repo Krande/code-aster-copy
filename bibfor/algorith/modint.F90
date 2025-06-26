@@ -98,7 +98,7 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 #include "blas/ddot.h"
 #include "blas/dgeev.h"
 #include "blas/dggev.h"
-    integer :: nddlin, nbmod, nnoint, neq, switch, jfreq
+    integer(kind=8) :: nddlin, nbmod, nnoint, neq, switch, jfreq
     real(kind=8) :: shift
     character(len=6) :: k6bid
     character(len=8) :: modes
@@ -108,10 +108,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 !
 !-- VARIABLES DE LA ROUTINE
     aster_logical :: l_hpp
-    integer :: lmatmo, i1, j1, k1, m1, lmakry, nsekry, nsekry2, nsekry3, nbborn
-    integer :: lmatk, lmatm, lmapro, nbrss, lkpro, lmatrm, lmatrk, lwork
-    integer :: limped, lmatma, iret, nbvect, ibid, no, nbsst, lindin, coeff, lvp
-    integer :: ifm, niv, mode_symetrique, maxitr, nbvec2
+    integer(kind=8) :: lmatmo, i1, j1, k1, m1, lmakry, nsekry, nsekry2, nsekry3, nbborn
+    integer(kind=8) :: lmatk, lmatm, lmapro, nbrss, lkpro, lmatrm, lmatrk, lwork
+    integer(kind=8) :: limped, lmatma, iret, nbvect, ibid, no, nbsst, lindin, coeff, lvp
+    integer(kind=8) :: ifm, niv, mode_symetrique, maxitr, nbvec2
     integer(kind=4) :: info
     real(kind=8) :: temp, rbid, norm, lambda, comlin(2), swork(1), max, omecor
     real(kind=8) :: bande(2), freq1, freq2, alpha, tolsor, precsh, fcorig, precdc
@@ -125,10 +125,10 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
     character(len=19) :: raide2, masse2
     character(len=24) :: valk, k24bid
 !
-    integer, pointer :: v_ind_lag(:) => null()
-    integer, pointer :: delg(:) => null()
-    integer, pointer :: ddl_actif_int(:) => null()
-    integer, pointer :: v_ind_f_pro(:) => null()
+    integer(kind=8), pointer :: v_ind_lag(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
+    integer(kind=8), pointer :: ddl_actif_int(:) => null()
+    integer(kind=8), pointer :: v_ind_f_pro(:) => null()
     real(kind=8), pointer :: matr_mod_red(:) => null()
     real(kind=8), pointer :: matr_work_dggev(:) => null()
     real(kind=8), pointer :: vect_alphai(:) => null()

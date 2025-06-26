@@ -21,7 +21,7 @@
 interface
     subroutine opendr(dfname, mode, ierr)
         character(len=*) :: dfname
-        integer :: mode
-        integer :: ierr
+        integer(kind=8) :: mode
+        integer(kind=8) :: ierr
     end subroutine opendr
 end interface

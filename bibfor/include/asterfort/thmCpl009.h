@@ -38,10 +38,10 @@ interface
         type(THM_DS), intent(inout) :: ds_thm
         aster_logical, intent(in) :: lMatr, lSigm, lVari
         real(kind=8), intent(in) :: angl_naut(3)
-        integer, intent(in) :: j_mater, ndim, nbvari
-        integer, intent(in) :: dimdef, dimcon
-        integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
-        integer, intent(in) :: addeme, addete, addep1, addep2
+        integer(kind=8), intent(in) :: j_mater, ndim, nbvari
+        integer(kind=8), intent(in) :: dimdef, dimcon
+        integer(kind=8), intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22
+        integer(kind=8), intent(in) :: addeme, addete, addep1, addep2
         real(kind=8), intent(in) :: temp, p1, p2
         real(kind=8), intent(in) :: dtemp, dp1, dp2
         real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
@@ -52,6 +52,6 @@ interface
         real(kind=8), intent(in) :: vintm(nbvari)
         real(kind=8), intent(inout) :: vintp(nbvari)
         real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-        integer, intent(out)  :: retcom
+        integer(kind=8), intent(out)  :: retcom
     end subroutine thmCpl009
 end interface 

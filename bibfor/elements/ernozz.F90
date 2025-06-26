@@ -22,7 +22,7 @@ subroutine ernozz(modele, sigma, mateco, signo, chvarc, &
     implicit none
 #include "asterfort/erglob.h"
 #include "asterfort/zzloca.h"
-    integer :: iordr
+    integer(kind=8) :: iordr
     character(len=*) :: modele, sigma, mateco, signo, option, ligrel
     character(len=*) :: champ, resuco
     character(len=19) :: resuc1, chvarc

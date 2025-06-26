@@ -64,7 +64,7 @@ subroutine te0038(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codres(1)
+    integer(kind=8) :: codres(1)
     character(len=16) :: phenom
     real(kind=8) :: rho(1), a1, iy1, iz1, a2, cdg(3), ab2, ab3, ab4, amb, apb, ep
     real(kind=8) :: angs2, xl, xl2, matinl(6)
@@ -78,25 +78,25 @@ subroutine te0038(option, nomte)
     real(kind=8) :: coo1(3), coo2(3), coo3(3), prec, omega
     real(kind=8) :: casect(6), yg, zg, p1gl(3), p1gg(3), rbid
 !
-    integer :: lmater, igeom, lorien, nno, nc, lcastr, itype, icoude
-    integer :: i, n1, n2, iadzi, iazk24, nn2
+    integer(kind=8) :: lmater, igeom, lorien, nno, nc, lcastr, itype, icoude
+    integer(kind=8) :: i, n1, n2, iadzi, iazk24, nn2
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 9
+    integer(kind=8), parameter :: nb_cara = 9
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'RY1', 'RZ1', 'A2', 'RY2', 'RZ2', 'TVAR'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/
 !
 !
-    integer             :: retp(2), iret
+    integer(kind=8)             :: retp(2), iret
     real(kind=8)        :: valr(2)
     character(len=8)    :: valp(2)
 !

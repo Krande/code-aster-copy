@@ -23,11 +23,11 @@ interface
                       gap_user  , node_slav_indx_)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_zone
-        integer, intent(in) :: elem_slav_indx
+        integer(kind=8), intent(in) :: i_zone
+        integer(kind=8), intent(in) :: elem_slav_indx
         real(kind=8), intent(in) :: poin_coor(3)
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(out) :: gap_user
-        integer, optional, intent(in) :: node_slav_indx_
+        integer(kind=8), optional, intent(in) :: node_slav_indx_
     end subroutine cfdist
 end interface

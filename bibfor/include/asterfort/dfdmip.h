@@ -24,14 +24,14 @@ interface
     subroutine dfdmip(ndim, nno, axi, geom, g,&
                       iw, vff, idfde, r, w,&
                       dfdi)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         aster_logical :: axi
         real(kind=8) :: geom(ndim, nno)
-        integer :: g
-        integer :: iw
+        integer(kind=8) :: g
+        integer(kind=8) :: iw
         real(kind=8) :: vff(nno)
-        integer :: idfde
+        integer(kind=8) :: idfde
         real(kind=8) :: r
         real(kind=8) :: w
         real(kind=8) :: dfdi(nno, ndim)

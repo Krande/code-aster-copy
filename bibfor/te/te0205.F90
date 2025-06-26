@@ -45,16 +45,16 @@ subroutine te0205(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxnpg = 27
+    integer(kind=8), parameter :: mxnpg = 27
     aster_logical :: l_func, l_time
-    integer :: jv_geom, jv_pres, jv_time, jv_vect
+    integer(kind=8) :: jv_geom, jv_pres, jv_time, jv_vect
     real(kind=8) :: time
     real(kind=8) :: pres
     real(kind=8) :: pres_pg(mxnpg)
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim, ndofbynode
-    integer :: ldec, iret
-    integer :: i, ipg
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg, ndim, ndofbynode
+    integer(kind=8) :: ldec, iret
+    integer(kind=8) :: i, ipg
     character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------

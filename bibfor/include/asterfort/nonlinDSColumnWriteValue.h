@@ -24,11 +24,11 @@ interface
                                         value_k_    ,&
                                         time_   )
         use NonLin_Datastructure_type
-        integer, intent(in) :: length
+        integer(kind=8), intent(in) :: length
         character(len=*), optional, intent(out) :: output_string_
-        integer, optional, intent(in) :: output_unit_
+        integer(kind=8), optional, intent(in) :: output_unit_
         real(kind=8), optional, intent(in) :: value_r_
-        integer, optional, intent(in) :: value_i_
+        integer(kind=8), optional, intent(in) :: value_i_
         character(len=*), optional, intent(in) :: value_k_
         real(kind=8), optional, intent(in) :: time_
     end subroutine nonlinDSColumnWriteValue

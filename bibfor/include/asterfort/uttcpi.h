@@ -21,7 +21,7 @@
 interface
     subroutine uttcpi(nommes, ifm, typimp)
         character(len=*) :: nommes
-        integer :: ifm
+        integer(kind=8) :: ifm
         character(len=*) :: typimp
     end subroutine uttcpi
 end interface

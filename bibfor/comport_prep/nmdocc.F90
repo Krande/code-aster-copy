@@ -61,7 +61,7 @@ subroutine nmdocc(model, chmate, lInitialState, compor, base, l_verbose)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: verbose
     character(len=8) :: mesh
     character(len=19), parameter :: fullElemField = '&&NMDOCC.FULL_ELEM'

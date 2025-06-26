@@ -21,7 +21,7 @@
 !
 interface
     subroutine xcoocy(ndim, xg, pfon, p, rg, tg, l_not_zero)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: rg
         real(kind=8) :: tg
         real(kind=8) :: xg(ndim)

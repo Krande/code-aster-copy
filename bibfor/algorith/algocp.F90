@@ -76,12 +76,12 @@ subroutine algocp(ds_measure, resoco, numedd, matass)
 !
 !
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: afmu
-    integer :: jafmu
-    integer :: nbliai, neq, nbliac
-    integer :: iter
-    integer :: lmat
+    integer(kind=8) :: jafmu
+    integer(kind=8) :: nbliai, neq, nbliac
+    integer(kind=8) :: iter
+    integer(kind=8) :: lmat
     character(len=19) :: matrcf
 !
 ! ----------------------------------------------------------------------

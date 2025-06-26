@@ -22,12 +22,12 @@ subroutine dkqlxy(qsi, eta, hlt2, depf, codi, &
     real(kind=8) :: qsi, eta, codi(*), lcot(*), hlt2(4, 6), depf(12), lambda(4)
 !     'LAMBDA' DE L'ELEMENT DE PLAQUE DKQ
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: pqsi, mqsi, peta, meta
     real(kind=8) :: cl(4), sl(4), cs(4), cu(4), su(4)
     real(kind=8) :: tkq(6, 12), bl(4, 12)
 !     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-    integer :: nno, nc
+    integer(kind=8) :: nno, nc
     parameter(nno=4)
     parameter(nc=4)
 !     ------------------------------------------------------------------

@@ -76,9 +76,9 @@ subroutine cgmacy(mofaz, iocc, nomaz, lismaz, nbma)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idlima, idnoeu, ima, ino
-    integer :: iocc, iret, nangle, nb, nbma, nbmai, nbno
-    integer :: nbnod, ndim, nrayon, numnoe, nv, nvect
+    integer(kind=8) :: ibid, idlima, idnoeu, ima, ino
+    integer(kind=8) :: iocc, iret, nangle, nb, nbma, nbmai, nbno
+    integer(kind=8) :: nbnod, ndim, nrayon, numnoe, nv, nvect
     real(kind=8) :: ang, d2, eps, psca
     real(kind=8) :: rayon, un, xnorm, xnorm2, xnoxx0, xnoxx2, zero
     real(kind=8), pointer :: vale(:) => null()

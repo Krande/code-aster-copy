@@ -21,8 +21,8 @@
 interface
     subroutine nmhoff(ndim, imate, inst, epsm, deps,&
                       option, sigp, dsidep)
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         real(kind=8) :: inst
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)

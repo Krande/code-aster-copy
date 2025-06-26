@@ -21,13 +21,13 @@
 interface
     subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
                       mxresf, resufi, resufr, vauc)
-        integer :: mxresf
-        integer :: neq
-        integer :: nbfreq
-        integer :: nbvect
+        integer(kind=8) :: mxresf
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbfreq
+        integer(kind=8) :: nbvect
         complex(kind=8) :: vp(*)
         complex(kind=8) :: vecp(neq, *)
-        integer :: resufi(mxresf, *)
+        integer(kind=8) :: resufi(mxresf, *)
         real(kind=8) :: resufr(mxresf, *)
         complex(kind=8) :: vauc(2*neq, *)
     end subroutine wp5vec

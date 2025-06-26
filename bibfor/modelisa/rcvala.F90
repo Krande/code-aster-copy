@@ -30,10 +30,10 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar, &
 #include "asterc/r8nnem.h"
 ! ----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
-    integer, intent(in) :: jmat, nbpar, nbres, iarret
+    integer(kind=8), intent(in) :: jmat, nbpar, nbres, iarret
     real(kind=8), intent(in) :: valpar(nbpar)
     real(kind=8), intent(out) :: valres(nbres)
-    integer, intent(out) :: icodre(nbres)
+    integer(kind=8), intent(out) :: icodre(nbres)
     character(len=*), intent(in) :: nomat, phenom, nompar(nbpar), nomres(nbres)
     character(len=3), intent(in), optional :: nan
 !
@@ -68,11 +68,11 @@ subroutine rcvala(jmat, nomat, phenom, nbpar, nompar, &
 !
 ! ----------------------------------------------------------------------
 !   -- parameters associes au materiau code :
-    integer :: lmat, lfct, lsup
+    integer(kind=8) :: lmat, lfct, lsup
     parameter(lmat=9, lfct=10, lsup=2)
 
-    integer :: ires, icomp, ipi, iadzi, iazk24, nbobj, nbr, nbc, nbf, ivalk
-    integer :: ivalr, ir, ipif, ik, nbmat, imat, kmat, inom
+    integer(kind=8) :: ires, icomp, ipi, iadzi, iazk24, nbobj, nbr, nbc, nbf, ivalk
+    integer(kind=8) :: ivalr, ir, ipif, ik, nbmat, imat, kmat, inom
     character(len=8) :: nomail, nomi
     character(len=24) :: nomphe
     character(len=24) :: valk(2)

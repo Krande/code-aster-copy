@@ -18,8 +18,8 @@
 !
 subroutine testli(ima, numa, nma, kma, ierr)
     implicit none
-    integer :: ierr, ima, jma, kma, nma
-    integer :: numa(nma)
+    integer(kind=8) :: ierr, ima, jma, kma, nma
+    integer(kind=8) :: numa(nma)
 !-----------------------------------------------------------------------
     ierr = 0
     do jma = 1, nma

@@ -23,18 +23,18 @@ interface
                       rval, kval, cval, epsi, crit,&
                       nbordr, nbtrou, nutrou, ndim)
         character(len=4) :: tysca
-        integer :: iaobj
-        integer :: paobj
-        integer :: jordr
-        integer :: ival
+        integer(kind=8) :: iaobj
+        integer(kind=8) :: paobj
+        integer(kind=8) :: jordr
+        integer(kind=8) :: ival
         real(kind=8) :: rval
         character(len=*) :: kval
         complex(kind=8) :: cval
         real(kind=8) :: epsi
         character(len=*) :: crit
-        integer :: nbordr
-        integer :: nbtrou
-        integer :: nutrou(*)
-        integer :: ndim
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbtrou
+        integer(kind=8) :: nutrou(*)
+        integer(kind=8) :: ndim
     end subroutine rsindi
 end interface

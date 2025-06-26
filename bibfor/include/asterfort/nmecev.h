@@ -20,7 +20,7 @@ interface
     subroutine nmecev(sderro, acces, failType, actionType)
         character(len=24), intent(in) :: sderro
         character(len=1), intent(in) :: acces
-        integer, intent(inout) :: failType
-        integer, intent(inout) :: actionType
+        integer(kind=8), intent(inout) :: failType
+        integer(kind=8), intent(inout) :: actionType
     end subroutine nmecev
 end interface

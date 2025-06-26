@@ -23,19 +23,19 @@ interface
                       nomma, pref, gd, mailla, nec,&
                       ncmp, ilimo, nlili, nbelm, nume_)
         character(len=1) :: kstop
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         character(len=*) :: vlimat(nbmat)
         character(len=*) :: lili
         character(len=1) :: base
         character(len=*) :: nomma
         character(len=*) :: pref
-        integer :: gd
+        integer(kind=8) :: gd
         character(len=*) :: mailla
-        integer :: nec
-        integer :: ncmp
-        integer :: ilimo
-        integer :: nlili
-        integer :: nbelm
+        integer(kind=8) :: nec
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: ilimo
+        integer(kind=8) :: nlili
+        integer(kind=8) :: nbelm
         character(len=14), optional :: nume_
     end subroutine crelil
 end interface

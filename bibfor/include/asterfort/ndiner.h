@@ -18,7 +18,7 @@
 !
 interface
     subroutine ndiner(nbEqua, sddyna, hval_incr, hval_measse, cniner)
-        integer, intent(in) :: nbEqua
+        integer(kind=8), intent(in) :: nbEqua
         character(len=19), intent(in) :: sddyna
         character(len=19), intent(in) :: hval_incr(*), hval_measse(*)
         character(len=19), intent(in) :: cniner

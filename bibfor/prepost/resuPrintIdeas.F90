@@ -39,21 +39,21 @@ subroutine resuPrintIdeas(fileUnit, dsName, lResu, &
 #include "asterfort/jedetr.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: dsName
     aster_logical, intent(in) :: lResu
-    integer, intent(in) :: storeNb, storeListIndx(:)
-    integer, intent(in) :: fieldListNb
+    integer(kind=8), intent(in) :: storeNb, storeListIndx(:)
+    integer(kind=8), intent(in) :: fieldListNb
     character(len=*), intent(in) :: fieldListType(*)
     character(len=*), optional, intent(in) :: title_, titleKeywf_
-    integer, optional, intent(in) :: titleKeywfIocc_
+    integer(kind=8), optional, intent(in) :: titleKeywfIocc_
     character(len=*), optional, intent(in) :: realFormat_
-    integer, optional, intent(in) :: cmpUserNb_
+    integer(kind=8), optional, intent(in) :: cmpUserNb_
     character(len=8), optional, pointer :: cmpUserName_(:)
-    integer, optional, intent(in) :: cellUserNb_
-    integer, optional, pointer :: cellUserNume_(:)
-    integer, optional, intent(in) :: nodeUserNb_
-    integer, optional, pointer :: nodeUserNume_(:)
+    integer(kind=8), optional, intent(in) :: cellUserNb_
+    integer(kind=8), optional, pointer :: cellUserNume_(:)
+    integer(kind=8), optional, intent(in) :: nodeUserNb_
+    integer(kind=8), optional, pointer :: nodeUserNume_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,16 +87,16 @@ subroutine resuPrintIdeas(fileUnit, dsName, lResu, &
     character(len=16) :: resultType
     character(len=4) :: fieldSupport
     character(len=24) :: subtitleJvName
-    integer :: storeIndx, iret
-    integer :: iStore, iField
-    integer :: cmpUserNb, nodeUserNb, cellUserNb
+    integer(kind=8) :: storeIndx, iret
+    integer(kind=8) :: iStore, iField
+    integer(kind=8) :: cmpUserNb, nodeUserNb, cellUserNb
     character(len=8), pointer :: cmpUserName(:) => null()
-    integer, pointer :: nodeUserNume(:) => null()
-    integer, pointer :: cellUserNume(:) => null()
+    integer(kind=8), pointer :: nodeUserNume(:) => null()
+    integer(kind=8), pointer :: cellUserNume(:) => null()
     character(len=80) :: title
     character(len=8) :: realFormat
     character(len=16) :: titleKeywf
-    integer :: titleKeywfIocc
+    integer(kind=8) :: titleKeywfIocc
 !
 ! --------------------------------------------------------------------------------------------------
 !

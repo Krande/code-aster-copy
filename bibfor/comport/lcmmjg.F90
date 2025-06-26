@@ -55,8 +55,8 @@ subroutine lcmmjg(nmat, nbcomm, cpmono, hsr, dt, &
 #include "asterfort/lcmmsg.h"
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
-    integer :: nvi, nmat, nbfsys, nsfa, nsfv, nbsys, is, nfs, nsg
-    integer :: nbcomm(nmat, 3), ifa, iret, itmax
+    integer(kind=8) :: nvi, nmat, nbfsys, nsfa, nsfv, nbsys, is, nfs, nsg
+    integer(kind=8) :: nbcomm(nmat, 3), ifa, iret, itmax
     real(kind=8) :: vind(*), dy(*), materf(nmat*2)
     real(kind=8) :: pgl(3, 3), toutms(nfs, nsg, 6), hsr(nsg, nsg), gamsns(3, 3)
     real(kind=8) :: dt, fkooh(6, 6), sigf(6), toler, taus, dp, crit, sgns, rp

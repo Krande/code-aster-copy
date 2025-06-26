@@ -44,8 +44,8 @@ subroutine imptou(base, tous, mess)
     character(len=1) :: bas1
     character(len=8) :: kbid
     character(len=24) :: obj, dejavu
-    integer :: i, iret, nbval, nbobj
-    integer :: nuobj
+    integer(kind=8) :: i, iret, nbval, nbobj
+    integer(kind=8) :: nuobj
     character(len=24), pointer :: liste(:) => null()
 !
     call jemarq()

@@ -96,10 +96,10 @@ subroutine op0019()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: elem_supp_num(ACE_NB_TYPE_ELEM)
+    integer(kind=8)             :: elem_supp_num(ACE_NB_TYPE_ELEM)
     character(len=16)   :: elem_supp_nom(ACE_NB_TYPE_ELEM)
-    integer             :: elem_supp_typ(ACE_NB_TYPE_ELEM)
-    integer             :: nb_type_elem(ACE_NB_ELEMENT)
+    integer(kind=8)             :: elem_supp_typ(ACE_NB_TYPE_ELEM)
+    integer(kind=8)             :: nb_type_elem(ACE_NB_ELEMENT)
 ! --------------------------------------------------------------------------------------------------
 !   Pour les cartes :
     type(cara_elem_carte)   :: info_carte(ACE_NB_CARTE)
@@ -107,18 +107,18 @@ subroutine op0019()
     type(cara_elem_info) :: info_concept
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbocc(ACE_NB_MCLEF)
-    integer :: nbtout(ACE_NB_MCLEF)
+    integer(kind=8) :: nbocc(ACE_NB_MCLEF)
+    integer(kind=8) :: nbtout(ACE_NB_MCLEF)
     character(len=8) :: mclef_type
 !
-    integer :: ivr(4), nbcart, iret, jadr, ii, nbtel, ireponse, nbelemdi
-    integer :: nbver, nlm, nlg, lxc, lxo, nln, nlj
-    integer :: lxb, lxm, lxpf, lxgb, lxmb, lmax, ifm, niv, lxp, nbvm
-    integer :: lxd, nboccd, lxrp, noemaf, lxrm, noemf2, nbmail, nbnoeu
-    integer :: lxmr, noemf3
-    integer :: npoutr, ncable, nbarre, nbdisc
-    integer :: iclf, ioc, icle, ng, nocc, nocctout, nocctot
-    integer :: depart, jdnm
+    integer(kind=8) :: ivr(4), nbcart, iret, jadr, ii, nbtel, ireponse, nbelemdi
+    integer(kind=8) :: nbver, nlm, nlg, lxc, lxo, nln, nlj
+    integer(kind=8) :: lxb, lxm, lxpf, lxgb, lxmb, lmax, ifm, niv, lxp, nbvm
+    integer(kind=8) :: lxd, nboccd, lxrp, noemaf, lxrm, noemf2, nbmail, nbnoeu
+    integer(kind=8) :: lxmr, noemf3
+    integer(kind=8) :: npoutr, ncable, nbarre, nbdisc
+    integer(kind=8) :: iclf, ioc, icle, ng, nocc, nocctout, nocctot
+    integer(kind=8) :: depart, jdnm
     aster_logical :: locaco, locagb, locamb, l_pmesh
     character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
     character(len=16) :: concep, cmd, mclef, k16bid
@@ -126,7 +126,7 @@ subroutine op0019()
     character(len=24) :: mlgnma, modnom, tmpncf, mlgnno
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, pointer            :: affe_mail(:) => null()
+    integer(kind=8), pointer            :: affe_mail(:) => null()
     character(len=24), pointer  :: grp_lmax(:) => null()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()

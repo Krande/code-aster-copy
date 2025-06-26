@@ -27,7 +27,7 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2, &
 #include "asterfort/rc36sa.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
-    integer :: nbsig1, noc1(*), sit1(*), nbsig2, noc2(*), sit2(*), ns, nscy
+    integer(kind=8) :: nbsig1, noc1(*), sit1(*), nbsig2, noc2(*), sit2(*), ns, nscy
     real(kind=8) :: saltij(*), matse(*), mse(*), sn(*), c(*), k(*), cara(*), ug
     character(len=8) :: nommat
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3600
@@ -35,13 +35,13 @@ subroutine rc36fs(nbsig1, noc1, sit1, nbsig2, noc2, &
 !     CALCUL DU FACTEUR D'USAGE
 !
 !     ------------------------------------------------------------------
-    integer :: is1, is2, is3, i, i1, i2, ind1, ind2, ifm, l, niv, ns2, icmp
-    integer :: icomp
+    integer(kind=8) :: is1, is2, is3, i, i1, i2, ind1, ind2, ifm, l, niv, ns2, icmp
+    integer(kind=8) :: icomp
     real(kind=8) :: salt, saltm, nadm(1), u1kl, u2kl, sp, snkl, saltkl, mij, sm
     real(kind=8) :: vale(2)
     aster_logical :: trouve, endur
     real(kind=8) :: typeke, spmeca, spther
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=8) :: kbid
 !     ------------------------------------------------------------------

@@ -20,7 +20,7 @@
 interface
     subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(in) :: nbVariMeca
+        integer(kind=8), intent(in) :: nbVariMeca
         character(len=16), pointer :: infoVari(:)
     end subroutine comp_mfront_vname
 end interface

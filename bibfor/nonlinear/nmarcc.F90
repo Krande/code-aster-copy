@@ -30,7 +30,7 @@ subroutine nmarcc(result, numarc, typchz, nomchz)
 #include "asterfort/rsnoch.h"
     character(len=8) :: result
     character(len=*) :: typchz, nomchz
-    integer :: numarc
+    integer(kind=8) :: numarc
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine nmarcc(result, numarc, typchz, nomchz)
 !
 !
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=19) :: champ, nomcha
     character(len=24) :: typcha
 !

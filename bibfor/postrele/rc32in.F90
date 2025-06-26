@@ -32,9 +32,9 @@ subroutine rc32in()
 !          DE  KT_SN, KT_SP                SOUS FACT_SIGM
 !     ------------------------------------------------------------------
 !
-    integer :: ndim, jvalin, n1, ktsn, ktsp, n2, n2a, n2b, n2c, n2d
+    integer(kind=8) :: ndim, jvalin, n1, ktsn, ktsp, n2, n2a, n2b, n2c, n2d
     real(kind=8) :: bid
-    integer :: n2e, n2f, n2g, n2h, i, j, n1a, n1b, n1c
+    integer(kind=8) :: n2e, n2f, n2g, n2h, i, j, n1a, n1b, n1c
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()

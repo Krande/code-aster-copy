@@ -33,11 +33,11 @@ subroutine lkd2sh(nmat, materf, varh, dhds, devsig, &
 !     ------------------------------------------------------------------
 #include "asterfort/lcprte.h"
 #include "asterfort/lkd2hs.h"
-    integer :: iret, nmat
+    integer(kind=8) :: iret, nmat
     real(kind=8) :: materf(nmat, 2), varh(3), d2shds(6, 6), dhds(6)
     real(kind=8) :: devsig(6), rcos3t
 !
-    integer :: ndi, ndt, i, j
+    integer(kind=8) :: ndi, ndt, i, j
     real(kind=8) :: h0ext, coefh, sii, un, zero, dikdjl(6, 6), dijdkl(6, 6)
     real(kind=8) :: trois, dsiids(6), dsdsig(6, 6), mat1(6, 6), d2hds2(6, 6)
     real(kind=8) :: mat2(6, 6), mat3(6, 6), dhtds(6), mat4(6, 6), mat5(6, 6)

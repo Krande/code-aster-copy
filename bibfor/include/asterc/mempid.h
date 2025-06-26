@@ -20,7 +20,7 @@
 !
 interface
     function mempid(i)
-        integer :: i(2)
-        integer :: mempid
+        integer(kind=8) :: i(2)
+        integer(kind=8) :: mempid
     end function mempid
 end interface

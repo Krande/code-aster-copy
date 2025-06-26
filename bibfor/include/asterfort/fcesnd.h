@@ -22,7 +22,7 @@ interface
     subroutine fcesnd(nomte, ind, xi1, xi2, xi3,&
                       char, vf)
         character(len=8) :: nomte
-        integer :: ind
+        integer(kind=8) :: ind
         real(kind=8) :: xi1
         real(kind=8) :: xi2
         real(kind=8) :: xi3

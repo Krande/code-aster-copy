@@ -45,22 +45,22 @@ subroutine criter3d(sig16p, bg, pg, bw, pw, &
     real(kind=8) :: delta, beta, bw, pw
     real(kind=8) :: souplesse66p(6, 6)
     real(kind=8) :: kg, hpla, ekdc, hplg, hplg1, hplg2
-    integer err1, irr, ic, ia
+    integer(kind=8) err1, irr, ic, ia
     real(kind=8) :: tauc, rpiceff, hpev
 
 !          gestion des contraintes principales negative pour DP(critere 10)
     real(kind=8) :: indict3(3), x3(3)
 
 !          nombre de critere de plasticites, nombre de boucles a realiser dans les criteres
-    integer nc, nb, i, j, k
+    integer(kind=8) nc, nb, i, j, k
 !          critere en numerotation globale
     real(kind=8) :: fg(nc)
 !          critere en numerotation reduite sur critere actif
     real(kind=8) :: fa(nc)
 !          correspondante actif-global
-    integer ig(nc)
+    integer(kind=8) ig(nc)
 !          nombre d actif
-    integer na
+    integer(kind=8) na
 !          derivee fonction seuil et pseudo potentiel
     real(kind=8) ::  dpfa_ds(nc, 6), dgfa_ds(nc, 6), dpfa_dpg(nc), dpfa_dr(nc)
 !          derivee de la resistance / multiplicateur plastique

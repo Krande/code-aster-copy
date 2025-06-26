@@ -22,6 +22,6 @@ interface
         real(kind=8), intent(out) :: tole
         real(kind=8), intent(out), optional :: prec
         character(len=*), intent(in), optional :: mcf
-        integer, intent(in), optional :: iocc
+        integer(kind=8), intent(in), optional :: iocc
     end subroutine tresu_tole
 end interface

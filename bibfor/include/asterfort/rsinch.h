@@ -28,10 +28,10 @@ interface
         character(len=*), intent(in) :: chextr
         character(len=*), intent(in) :: proldr
         character(len=*), intent(in) :: prolga
-        integer, intent(in) :: istop
+        integer(kind=8), intent(in) :: istop
         character(len=*), intent(in) :: base
         real(kind=8), intent(in) :: prec
         character(len=8), intent(in) :: crit
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine rsinch
 end interface

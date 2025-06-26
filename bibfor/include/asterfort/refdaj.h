@@ -25,7 +25,7 @@ interface
         character(len=*) :: numer
         character(len=*) :: typre
         character(len=*) :: conre(3)
-        integer      :: nbordr
-        integer      :: codret
+        integer(kind=8)      :: nbordr
+        integer(kind=8)      :: codret
     end subroutine refdaj
 end interface

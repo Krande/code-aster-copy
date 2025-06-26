@@ -63,11 +63,11 @@ subroutine assvec(jvBase, vectAsseZ, &
 !
     character(len=1), intent(in) :: jvBase
     character(len=*), intent(in) :: vectAsseZ
-    integer, intent(in) :: nbVectElem
+    integer(kind=8), intent(in) :: nbVectElem
     character(len=*), intent(in) :: listVectElem(nbVectElem)
     real(kind=8), intent(in) :: coefVectElem(nbVectElem)
     character(len=*), optional, intent(in) :: vectAsseForNumeZ_, numeDofZ_
-    integer, optional, intent(in) :: vectScalType_
+    integer(kind=8), optional, intent(in) :: vectScalType_
     character(len=24), optional, intent(in) :: maskElem_
     aster_logical, optional, intent(in) :: maskInve_
 !
@@ -87,11 +87,11 @@ subroutine assvec(jvBase, vectAsseZ, &
 !
 ! --------------------------------------------------------------------------------------------------
 ! - Convention: first LIGREL (model) is on mesh
-    integer, parameter :: ligrelMeshIndx = 1
+    integer(kind=8), parameter :: ligrelMeshIndx = 1
     character(len=24), parameter :: ligrelMesh = '&MAILLA'
     aster_logical, parameter :: dbg = ASTER_FALSE
-    integer :: physQuan, nec, nlili
-    integer, parameter :: nbecmx = 10
+    integer(kind=8) :: physQuan, nec, nlili
+    integer(kind=8), parameter :: nbecmx = 10
     character(len=8) :: mesh, model, vectElemModel, nogdsi, nogdco
     character(len=14) :: numeDof, answer
     character(len=24) :: vectRefeJv, vectValeJv
@@ -101,35 +101,35 @@ subroutine assvec(jvBase, vectAsseZ, &
     character(len=24) :: numePrnoJv, numeNueqJv, numeNequJv, numeCrcoJv, numeRefpJv
     character(len=24) :: numeLiliJv, vectAsseLili, ligrelName
     aster_logical :: ldist, ldgrel, compSuperElement, lparallel_mesh, lligrel_cp
-    integer :: iDofMode, iVectElem
-    integer :: iancmp, ianueq, iapsdl, iad1
-    integer :: icmp, iconx2
-    integer :: idprn1, idprn2, jresl, iElem
-    integer :: iGrel, iDof, ilim
-    integer :: liliNume, liliNume2, ligrelNume, jvVectElem
-    integer :: iResuElem, iret, jec, jvale, iNodeMode
-    integer :: lgncmp, mode, nbNode, nbNode2, meshNbCell
-    integer :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem, nbEqua, nbDof
-    integer :: meshNbNode, nmxcmp, nbNodeMode, nugd, elemNume, iexi
-    integer :: icodla(nbecmx), icodge(nbecmx), lshift
-    integer :: admodl, lcmodl, ifm, niv, rang, nbproc
+    integer(kind=8) :: iDofMode, iVectElem
+    integer(kind=8) :: iancmp, ianueq, iapsdl, iad1
+    integer(kind=8) :: icmp, iconx2
+    integer(kind=8) :: idprn1, idprn2, jresl, iElem
+    integer(kind=8) :: iGrel, iDof, ilim
+    integer(kind=8) :: liliNume, liliNume2, ligrelNume, jvVectElem
+    integer(kind=8) :: iResuElem, iret, jec, jvale, iNodeMode
+    integer(kind=8) :: lgncmp, mode, nbNode, nbNode2, meshNbCell
+    integer(kind=8) :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem, nbEqua, nbDof
+    integer(kind=8) :: meshNbNode, nmxcmp, nbNodeMode, nugd, elemNume, iexi
+    integer(kind=8) :: icodla(nbecmx), icodge(nbecmx), lshift
+    integer(kind=8) :: admodl, lcmodl, ifm, niv, rang, nbproc
     real(kind=8) :: temps(7)
     character(len=24), pointer :: refe(:) => null(), noli(:) => null()
-    integer, pointer :: adli(:) => null(), adne(:) => null()
+    integer(kind=8), pointer :: adli(:) => null(), adne(:) => null()
     character(len=24), pointer :: relr(:) => null()
-    integer, pointer :: numsd(:) => null()
-    integer, pointer :: desc(:) => null(), nequ(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: numsd(:) => null()
+    integer(kind=8), pointer :: desc(:) => null(), nequ(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=8), pointer :: nomacr(:) => null()
     real(kind=8) :: vectElemCoef, elemCoef
-    integer :: vectScalType
+    integer(kind=8) :: vectScalType
     character(len=24) :: coefLigrelName
     character(len=24), pointer :: celk(:) => null()
-    integer, pointer :: celd(:) => null(), celv(:) => null()
-    integer, pointer :: v_crco(:) => null()
-    integer, pointer :: v_refp(:) => null()
+    integer(kind=8), pointer :: celd(:) => null(), celv(:) => null()
+    integer(kind=8), pointer :: v_crco(:) => null()
+    integer(kind=8), pointer :: v_refp(:) => null()
     character(len=24), pointer :: v_tco(:) => null()
-    integer :: coefPond
+    integer(kind=8) :: coefPond
     aster_logical :: maskInve
 
 ! --------------------------------------------------------------------------------------------------

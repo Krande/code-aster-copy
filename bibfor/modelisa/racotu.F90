@@ -42,22 +42,22 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: lonlis, iprno(*)
+    integer(kind=8) :: lonlis, iprno(*)
     character(len=8) :: klisno(lonlis), noepou, noma, cara, mod
     character(len=14) :: numddl
     character(len=19) :: ligrel, lisrel
     real(kind=8) :: coorig(3)
 !     RACCORD COQUE_TUYAU PAR DES RELATIONS LINEAIRES
 !
-    integer :: nbcmp, nbmode, numno1
+    integer(kind=8) :: nbcmp, nbmode, numno1
     parameter(nbmode=3, nbcmp=6*(nbmode-1))
     character(len=8) :: nocmp(nbcmp), lpain(6), lpaout(3), nomddl(4)
     character(len=24) :: lchin(6), lchout(3), valech
     real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3)
     real(kind=8) :: rayon, coori1(3), gp1(3)
-    integer :: imod, info, ifm, idch1, idch2
-    integer :: iwi1wo1, iwo1vi1, k
-    integer :: nbcoef, idec, ival, nbec, ino, i
+    integer(kind=8) :: imod, info, ifm, idch1, idch2
+    integer(kind=8) :: iwi1wo1, iwo1vi1, k
+    integer(kind=8) :: nbcoef, idec, ival, nbec, ino, i
     real(kind=8), pointer :: vale(:) => null()
 !
     call jemarq()

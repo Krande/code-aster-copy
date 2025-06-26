@@ -23,9 +23,9 @@ interface
                            baseNumeSlice_)
         use Rom_Datastructure_type
         type(ROM_DS_Empi), intent(in) :: base
-        integer, intent(in) :: nbMode, nbSnap
+        integer(kind=8), intent(in) :: nbMode, nbSnap
         real(kind=8), pointer :: baseValeR(:)
         real(kind=8), optional, pointer :: baseSing_(:)
-        integer, optional, pointer      :: baseNumeSlice_(:)
+        integer(kind=8), optional, pointer      :: baseNumeSlice_(:)
     end subroutine romBaseSave
 end interface

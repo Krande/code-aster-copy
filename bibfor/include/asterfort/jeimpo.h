@@ -20,7 +20,7 @@
 !
 interface
     subroutine jeimpo(unit, nomlu, mess)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: nomlu
         character(len=*) :: mess
     end subroutine jeimpo

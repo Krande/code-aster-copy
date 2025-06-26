@@ -45,7 +45,7 @@ subroutine op0069()
     character(len=8) :: k8bid
     character(len=3) :: kellag
     real(kind=8) :: r8bid
-    integer ::  ifm, niv, jrefa, jslvk, iautre
+    integer(kind=8) ::  ifm, niv, jrefa, jslvk, iautre
 !   ------------------------------------------------------------------
     call jemarq()
 

@@ -32,7 +32,7 @@ subroutine cazouu(keywf, nb_cont_zone, keyw_, keyw_type_)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_zone
     character(len=*), intent(in) :: keyw_
     character(len=*), intent(in) :: keyw_type_
 !
@@ -53,12 +53,12 @@ subroutine cazouu(keywf, nb_cont_zone, keyw_, keyw_type_)
 !
     character(len=16) :: keyw
     aster_logical :: l_error
-    integer :: i_zone, noc
+    integer(kind=8) :: i_zone, noc
     real(kind=8) :: vale_r
-    integer :: vale_i
+    integer(kind=8) :: vale_i
     character(len=16) :: vale_k
     real(kind=8) :: vale_refe_r
-    integer :: vale_refe_i
+    integer(kind=8) :: vale_refe_i
     character(len=16) :: vale_refe_k
     character(len=1) :: keyw_type
 !

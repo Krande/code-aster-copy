@@ -32,10 +32,10 @@ subroutine ef0033(nomte)
     character(len=16) :: nomte
 !     CALCUL DE EFGE_ELNO EN LINEAIRE
 !     ------------------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: jcara
-    integer :: jdepg, jeffg, jgeom
-    integer :: np
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: jcara
+    integer(kind=8) :: jdepg, jeffg, jgeom
+    integer(kind=8) :: np
 !
     real(kind=8) :: alpha, beta
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)

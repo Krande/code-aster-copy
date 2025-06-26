@@ -45,10 +45,10 @@ subroutine rc32rs(lfat, lefat)
     character(len=4) :: lieu(2)
     character(len=8) :: nomres, k8b, mater
     character(len=16) :: concep, nomcmd, typtab, valek(5)
-    integer :: ibid, n1, npar1, npar0, npar2, im, valei(7), nb, i, jval
-    integer :: ns, jnom, jresu, jmax, jresus, k, icodre(1), iocc1, iocc2
-    integer :: jcombi, jresucomb, jresucombs, npar3, jfact, npar4
-    integer :: num1, num2, noccpris, ind1, ind2, n5, jfactenv
+    integer(kind=8) :: ibid, n1, npar1, npar0, npar2, im, valei(7), nb, i, jval
+    integer(kind=8) :: ns, jnom, jresu, jmax, jresus, k, icodre(1), iocc1, iocc2
+    integer(kind=8) :: jcombi, jresucomb, jresucombs, npar3, jfact, npar4
+    integer(kind=8) :: num1, num2, noccpris, ind1, ind2, n5, jfactenv
     complex(kind=8) :: c16b
     parameter(npar0=55, npar1=18, npar2=29, npar3=29, npar4=32)
     character(len=16) :: nopar1(npar1), nopar0(npar0), nopar2(npar2)

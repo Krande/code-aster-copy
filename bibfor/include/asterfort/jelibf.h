@@ -22,6 +22,6 @@ interface
     subroutine jelibf(cond, clas, info)
         character(len=*), intent(in) :: cond
         character(len=*), intent(in) :: clas
-        integer, intent(in) :: info
+        integer(kind=8), intent(in) :: info
     end subroutine jelibf
 end interface

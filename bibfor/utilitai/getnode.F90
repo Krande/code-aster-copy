@@ -34,9 +34,9 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
 !
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=1), intent(in) :: stop_void
-    integer, intent(out) :: nb_node
+    integer(kind=8), intent(out) :: nb_node
     character(len=24), intent(in) :: list_node
     character(len=8), intent(in), optional :: model
     character(len=*), intent(in), optional :: suffix
@@ -81,16 +81,16 @@ subroutine getnode(mesh, keywordfact, iocc, stop_void, list_node, &
     character(len=24) :: moclm(5)
     character(len=16) :: typmcl(5)
     character(len=24) :: list_lect
-    integer, pointer :: p_list_lect(:) => null()
+    integer(kind=8), pointer :: p_list_lect(:) => null()
     character(len=24) :: list_excl
-    integer, pointer :: p_list_excl(:) => null()
-    integer, pointer :: p_list_node(:) => null()
+    integer(kind=8), pointer :: p_list_excl(:) => null()
+    integer(kind=8), pointer :: p_list_node(:) => null()
     character(len=24) :: keyword
     character(len=8) :: model_name, suffix_name
-    integer :: nb_mocl
-    integer :: nb_lect, nb_excl, nb_elim
-    integer :: nume_lect, nume_excl
-    integer :: i_lect, i_excl, i_node, nb_node_gl
+    integer(kind=8) :: nb_mocl
+    integer(kind=8) :: nb_lect, nb_excl, nb_elim
+    integer(kind=8) :: nume_lect, nume_excl
+    integer(kind=8) :: i_lect, i_excl, i_node, nb_node_gl
     aster_logical :: l_read_elem
 !
 ! --------------------------------------------------------------------------------------------------

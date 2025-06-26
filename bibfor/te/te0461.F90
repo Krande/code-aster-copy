@@ -63,7 +63,7 @@ subroutine te0461(option, nomte)
 !
 !---------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxpara = 4
+    integer(kind=8), parameter :: maxpara = 4
     real(kind=8) :: valpar(maxpara)
     character(len=8) :: nompar(maxpara)
     type(HHO_Data) :: hhoData
@@ -76,8 +76,8 @@ subroutine te0461(option, nomte)
     real(kind=8) :: NeumValuesQP(MAX_QP_FACE)
     real(kind=8) :: time_curr, theta, temp_eval_curr, tz0
     real(kind=8) :: sigma(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid
-    integer :: fbs, celldim, ipg, nbpara, npg
-    integer :: j_time, j_coefh, j_para
+    integer(kind=8) :: fbs, celldim, ipg, nbpara, npg
+    integer(kind=8) :: j_time, j_coefh, j_para
 !
 !
 ! -- Get number of Gauss points

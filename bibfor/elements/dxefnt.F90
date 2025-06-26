@@ -41,19 +41,19 @@ subroutine dxefnt(nomte, pgl, sigt)
 !                        LOCAL
 !     OUT SIGT(1)      : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
 !                        AUX NOEUDS
-    integer :: icodre(56)
+    integer(kind=8) :: icodre(56)
     character(len=10) :: phenom
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
     real(kind=8) :: tsup(4), tinf(4), tmoy(4), rbid
-    integer :: multic, nbcou, jcou, imoy
+    integer(kind=8) :: multic, nbcou, jcou, imoy
 !     ------------------------------------------------------------------
 !
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: indith, ino, iret1, iret2, iret3, iret4
-    integer :: jcara, jmate, nno
+    integer(kind=8) :: indith, ino, iret1, iret2, iret3, iret4
+    integer(kind=8) :: jcara, jmate, nno
     real(kind=8) :: coe1, coe2, epais, somire, tref, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

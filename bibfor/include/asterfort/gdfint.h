@@ -21,8 +21,8 @@
 interface
     subroutine gdfint(kp, nno, ajacob, pjacob, en,&
                       enprim, x0pg, pn, pm, fint)
-        integer :: kp
-        integer :: nno
+        integer(kind=8) :: kp
+        integer(kind=8) :: nno
         real(kind=8) :: ajacob
         real(kind=8) :: pjacob
         real(kind=8) :: en(3, 2)

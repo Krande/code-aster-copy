@@ -23,7 +23,7 @@ subroutine dfdde(eps, endo, ndim, lambda, mu, &
     implicit none
 #include "asterfort/diago3.h"
 #include "asterfort/r8inir.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: eps(6), lambda, mu
     real(kind=8) :: dfde(6), endo
 !
@@ -44,7 +44,7 @@ subroutine dfdde(eps, endo, ndim, lambda, mu, &
     real(kind=8) :: treps, rtemp, rac2
     real(kind=8) :: tu(6), vpe(3)
     real(kind=8) :: valeps(3), veceps(3, 3), phid
-    integer :: i, j, k, t(3, 3)
+    integer(kind=8) :: i, j, k, t(3, 3)
 !
     t(1, 1) = 1
     t(1, 2) = 4

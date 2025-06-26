@@ -42,16 +42,16 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig, &
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: info, ifm
+    integer(kind=8) :: info, ifm
     character(len=8) :: noepou, noma, cara
     character(len=19) :: ligrel
     real(kind=8) :: coorig(3), eg1(3), eg2(3), eg3(3), r
 !     POUR LE RACCORD (COQUE OU 3D)_TUYAU
 !
 !
-    integer :: nma, ima, inopou, iconex, nbno, ier, i, j, ntseg3, nutyma
-    integer :: idesc, ncmpmx, ivale, igd, idebgd
-    integer :: inopo1, inopo2, icoude, nno, ntseg4
+    integer(kind=8) :: nma, ima, inopou, iconex, nbno, ier, i, j, ntseg3, nutyma
+    integer(kind=8) :: idesc, ncmpmx, ivale, igd, idebgd
+    integer(kind=8) :: inopo1, inopo2, icoude, nno, ntseg4
     character(len=8) :: nomgd, nocmp(3), noepo1, noepo2, typrac
     character(len=19) :: chcara
     real(kind=8) :: coorif(3), gpl(3), gpg(3), pgl(3, 3)
@@ -59,9 +59,9 @@ subroutine raorfi(noma, ligrel, noepou, cara, coorig, &
     real(kind=8) :: rayon
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), l, omega, theta
     real(kind=8) :: pgl4(3, 3)
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: coor(:) => null()
-    integer, pointer :: ptma(:) => null()
+    integer(kind=8), pointer :: ptma(:) => null()
 !
     call jemarq()
     call infniv(ifm, info)

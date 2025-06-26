@@ -21,12 +21,12 @@
 interface
     subroutine mecumu(scal, ncmp, iad1, iad2, nec,&
                       dg1, dg2)
-        integer :: nec
+        integer(kind=8) :: nec
         character(len=8) :: scal
-        integer :: ncmp
-        integer :: iad1
-        integer :: iad2
-        integer :: dg1(nec)
-        integer :: dg2(nec)
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: iad1
+        integer(kind=8) :: iad2
+        integer(kind=8) :: dg1(nec)
+        integer(kind=8) :: dg2(nec)
     end subroutine mecumu
 end interface

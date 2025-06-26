@@ -25,14 +25,14 @@ interface
                       nnoini, nbnop, tspaq, nommet, nomcri,&
                       nomfor, grdvie, forvie,forcri, nommai, cnsr,&
                       nommap, post, valpar, vresu)
-        integer :: nbnot
-        integer :: jrwork
-        integer :: lisnoe(nbnot)
-        integer :: nbordr
-        integer :: ordini
-        integer :: nnoini
-        integer :: nbnop
-        integer :: tspaq
+        integer(kind=8) :: nbnot
+        integer(kind=8) :: jrwork
+        integer(kind=8) :: lisnoe(nbnot)
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: ordini
+        integer(kind=8) :: nnoini
+        integer(kind=8) :: nbnop
+        integer(kind=8) :: tspaq
         character(len=16) :: nommet
         character(len=16) :: nomcri
         character(len=16) :: nomfor

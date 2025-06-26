@@ -30,13 +30,13 @@ subroutine genale(vec1, vec2, r, v, x, &
 !           NALEA : NOMBRE ALEATOIRE POUR INITIALISER LE GENERATEUR
 #include "jeveux.h"
 #include "asterfort/genere.h"
-    integer :: dim, long, lonv
+    integer(kind=8) :: dim, long, lonv
     real(kind=8) :: vec1(long), vec2(lonv)
     complex(kind=8) :: r(dim, dim), v(dim), x(dim)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, icomp, ix, iy, j, kf, kk
-    integer :: ln, ln2
+    integer(kind=8) :: i, icomp, ix, iy, j, kf, kk
+    integer(kind=8) :: ln, ln2
 !-----------------------------------------------------------------------
     ln2 = ln*2
     do kf = 1, ln

@@ -22,11 +22,11 @@ subroutine vecmap(mv, n, mp, m)
 !       IN      MV = VECTEUR MATRICE STOCKE COLONNE , LONGUEUR N
 !       OUT     MP = MATRICE PLEINE (M*M)
 !       ----------------------------------------------------------------
-    integer :: m, n
+    integer(kind=8) :: m, n
     real(kind=8) :: mv(n), mp(m, m)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     k = 0
     do j = 1, m

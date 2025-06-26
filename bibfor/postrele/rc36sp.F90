@@ -25,7 +25,7 @@ subroutine rc36sp(nbm, ima, ipt, c, k, &
     implicit none
 #include "asterfort/rcsp01.h"
 #include "asterfort/utmess.h"
-    integer :: nbm, ima(*), ipt, nbthp, nbthq
+    integer(kind=8) :: nbm, ima(*), ipt, nbthp, nbthq
     real(kind=8) :: c(*), k(*), cara(*), mati(*), matj(*), pi, mi(*), pj, mj(*)
     real(kind=8) :: mse(*), spij, typeke, spmeca, spther
 !
@@ -52,7 +52,7 @@ subroutine rc36sp(nbm, ima, ipt, c, k, &
 ! OUT : SPIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES TOTALES
 !     ------------------------------------------------------------------
 !
-    integer :: icmp, ioc1, ioc2
+    integer(kind=8) :: icmp, ioc1, ioc2
     real(kind=8) :: pij, d0, ep, inert, nu, e, alpha, mij, eab, xx, alphaa
     real(kind=8) :: alphab, sp1, sp2, sp3, sp4, sp5, sp6, spp, spq
 ! DEB ------------------------------------------------------------------

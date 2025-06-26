@@ -22,6 +22,6 @@ interface
     function ndynin(sddyna, chaine)
         character(len=19) :: sddyna
         character(len=*) :: chaine
-        integer :: ndynin
+        integer(kind=8) :: ndynin
     end function ndynin
 end interface

@@ -49,17 +49,17 @@ subroutine evalis(isz, pg, phi, sphi, freq, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: ima, nma, nbpg, nbsp, ivpg, ipg, posma, lvale
-    integer :: im1, im2, ivfi, ivsfi, nbval, iphi, isphi, nbm, icmp, idfi, ilfi
-    integer :: iret, nbcmp, ival, ind, iff
-    integer :: posmai, nbpoin
-    integer :: lnumi, lnumj, nbabs
+    integer(kind=8) :: ima, nma, nbpg, nbsp, ivpg, ipg, posma, lvale
+    integer(kind=8) :: im1, im2, ivfi, ivsfi, nbval, iphi, isphi, nbm, icmp, idfi, ilfi
+    integer(kind=8) :: iret, nbcmp, ival, ind, iff
+    integer(kind=8) :: posmai, nbpoin
+    integer(kind=8) :: lnumi, lnumj, nbabs
     real(kind=8) :: valpar(7), freq, pdgi
     complex(kind=8) :: val
     character(len=8) :: isz, nocmpi, nomres
     character(len=19) :: pg, phi, sphi, phii, sphii
     character(len=24) :: chnumi, chnumj, chfreq, chvale
-    integer, pointer :: vpg(:) => null()
+    integer(kind=8), pointer :: vpg(:) => null()
     character(len=8), pointer :: cesc(:) => null()
 !
 !-----------------------------------------------------------------------

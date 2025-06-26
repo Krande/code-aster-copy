@@ -22,7 +22,7 @@ interface
     subroutine cfnomm(noma, defico, typent, posent, noment)
         character(len=8), intent(in) :: noma
         character(len=24), intent(in) :: defico
-        integer, intent(in) :: posent
+        integer(kind=8), intent(in) :: posent
         character(len=4), intent(in) :: typent
         character(len=8), intent(out) :: noment
     end subroutine cfnomm

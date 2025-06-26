@@ -21,8 +21,8 @@
 interface 
     subroutine xveri0(ndime, elrefp, ksi, iret)
          character(len=8) :: elrefp
-         integer :: ndime
-         integer :: iret
+         integer(kind=8) :: ndime
+         integer(kind=8) :: iret
          real(kind=8) :: ksi(*)
     end subroutine xveri0
 end interface 

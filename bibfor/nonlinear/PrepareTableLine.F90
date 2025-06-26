@@ -44,7 +44,7 @@ subroutine PrepareTableLine(table, col_sep, table_line)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, nb_cols, width, total_width, line_width
+    integer(kind=8) :: i_col, nb_cols, width, total_width, line_width
 !
 ! --------------------------------------------------------------------------------------------------
 !

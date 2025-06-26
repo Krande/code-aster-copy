@@ -37,7 +37,7 @@ subroutine concom(macor, nblir, macoc, nblic, nbnoco, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbnoco, nblir, inr, nblic, inc, nococ(*)
+    integer(kind=8) :: nbnoco, nblir, inr, nblic, inc, nococ(*)
 !
     character(len=8) :: macor(nblir+2), macoc(nblic+2)
 !

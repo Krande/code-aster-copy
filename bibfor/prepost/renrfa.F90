@@ -28,7 +28,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 #include "asterfort/utmess.h"
 !
     character(len=16) :: nomfor
-    integer :: icodre
+    integer(kind=8) :: icodre
     real(kind=8) :: valgrd, nrupt
 !     OBTENTION DU NOMBRE DE CYLE A LA RUPTURE A PARTIR D'UN GRANDEUR
 !     EQUIVALENT ET UNE COURBE DE GRANDEUR_DUREE DE VIE
@@ -48,7 +48,7 @@ subroutine renrfa(nomfor, valgrd, nrupt, icodre)
 !
 !
 !
-    integer :: jprol, np, nbmx, ndat, i
+    integer(kind=8) :: jprol, np, nbmx, ndat, i
     character(len=24) :: chnom, cbid
     character(len=8) :: nompf, typfon, nompfi
     real(kind=8) :: lnf(20), grd(20), lnrup, grdmax

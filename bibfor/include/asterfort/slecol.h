@@ -20,7 +20,7 @@
 !
 interface
     subroutine slecol(imod, nbmail)
-        integer :: imod
-        integer :: nbmail
+        integer(kind=8) :: imod
+        integer(kind=8) :: nbmail
     end subroutine slecol
 end interface

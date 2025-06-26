@@ -20,8 +20,8 @@
 !
 interface
     subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
-        integer :: iocc1
-        integer :: iocc2
+        integer(kind=8) :: iocc1
+        integer(kind=8) :: iocc2
         real(kind=8) :: ke_pond
         character(len=4) :: lieu
         real(kind=8) :: fen

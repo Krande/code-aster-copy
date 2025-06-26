@@ -24,7 +24,7 @@ subroutine cdatrc(vr, xsi, coefcd, cd)
 #include "asterfort/routhc.h"
     real(kind=8) :: vr, xsi, coefcd(1, 11), cd
 !
-    integer :: ior
+    integer(kind=8) :: ior
     real(kind=8) :: dcldy, cd0, a0(2), dr(2)
     real(kind=8) :: pi, hr, hi, xcor, omr
     complex(kind=8) :: pr

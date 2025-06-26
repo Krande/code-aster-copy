@@ -22,10 +22,10 @@ interface
                       instam, instap, deps, vim, &
                       sigp, vip, dsidep)
         character(len=*),intent(in) :: fami
-        integer,intent(in)          :: kpg
-        integer,intent(in)          :: ksp
-        integer,intent(in)          :: ndim
-        integer,intent(in)          :: imate
+        integer(kind=8),intent(in)          :: kpg
+        integer(kind=8),intent(in)          :: ksp
+        integer(kind=8),intent(in)          :: ndim
+        integer(kind=8),intent(in)          :: imate
         aster_logical, intent(in)   :: lSigm
         aster_logical, intent(in)   :: lMatr
         aster_logical, intent(in)   :: lVari

@@ -45,13 +45,13 @@ subroutine equthm(ds_thm, option, j_mater, &
     type(THM_DS), intent(inout) :: ds_thm
     character(len=16), intent(in) :: option
     aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=8), intent(in) :: typmod(2)
     real(kind=8), intent(in)  :: angl_naut(3), parm_theta
-    integer, intent(in) :: ndim, nbvari
-    integer, intent(in) :: npg, kpi
-    integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8), intent(in) :: ndim, nbvari
+    integer(kind=8), intent(in) :: npg, kpi
+    integer(kind=8), intent(in) :: dimdef, dimcon
+    integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: defgem(dimdef), defgep(dimdef)
     real(kind=8), intent(inout) :: congem(dimcon), congep(dimcon)
@@ -60,7 +60,7 @@ subroutine equthm(ds_thm, option, j_mater, &
     real(kind=8), intent(in) :: time_prev, time_curr, time_incr
     real(kind=8), intent(out) :: r(dimdef+1)
     real(kind=8), intent(out) :: drds(dimdef+1, dimcon), dsde(dimcon, dimdef)
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -103,10 +103,10 @@ subroutine equthm(ds_thm, option, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
-    integer :: addeme, addete, addep1, addep2, adde2nd
-    integer :: adcp11, adcp12, adcp21, adcp22
-    integer :: adcome, adcote, adco2nd
+    integer(kind=8) :: i
+    integer(kind=8) :: addeme, addete, addep1, addep2, adde2nd
+    integer(kind=8) :: adcp11, adcp12, adcp21, adcp22
+    integer(kind=8) :: adcome, adcote, adco2nd
     real(kind=8) :: gravity(3)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !

@@ -21,7 +21,7 @@
 
 interface 
     function lcesvf(mode, a)
-        integer,intent(in) :: mode
+        integer(kind=8),intent(in) :: mode
         real(kind=8),intent(in) :: a
         real(kind=8) :: lcesvf
     end function lcesvf

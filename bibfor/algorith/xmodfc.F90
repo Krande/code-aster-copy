@@ -25,8 +25,8 @@ subroutine xmodfc(lact, nlact, nno, dfdic, dffc, ndim)
 
 ! person_in_charge: daniele.colombo at ifpen.fr
 
-    integer :: i, j, k
-    integer :: lact(16), nlact(2), nno, ndim
+    integer(kind=8) :: i, j, k
+    integer(kind=8) :: lact(16), nlact(2), nno, ndim
     real(kind=8) :: dfdic(nno, 3), dffc(16, 3)
 !
 ! ----------------------------------------------------------------------

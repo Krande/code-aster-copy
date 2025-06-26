@@ -23,7 +23,7 @@ interface
                       metaPrev, metaCurr)
         use Metallurgy_type
         type(META_SteelParameters), intent(in) :: metaSteelPara
-        integer, intent(in) :: nbPhase, nbVari
+        integer(kind=8), intent(in) :: nbPhase, nbVari
         real(kind=8), intent(in) :: tpg0, tpg1, tpg2
         real(kind=8), intent(in) :: dt10, dt21
         real(kind=8), intent(in) :: metaPrev(nbVari)

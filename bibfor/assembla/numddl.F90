@@ -32,7 +32,7 @@ subroutine numddl(numeDofZ, renumZ, base, nbMatrElem, listMatrElem)
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: numeDofZ, renumZ
     character(len=24), pointer :: listMatrElem(:)
-    integer, intent(in) :: nbMatrElem
+    integer(kind=8), intent(in) :: nbMatrElem
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,9 +52,9 @@ subroutine numddl(numeDofZ, renumZ, base, nbMatrElem, listMatrElem)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
-    integer :: iMatrElem
+    integer(kind=8) :: iMatrElem
     character(len=8) :: mesh, model, modelNew
     character(len=14) :: numeDof
     character(len=16) :: typsd

@@ -22,6 +22,6 @@ interface
     subroutine trfmot(mot, field, ifield)
         character(len=*) :: mot
         character(len=*) :: field
-        integer :: ifield
+        integer(kind=8) :: ifield
     end subroutine trfmot
 end interface

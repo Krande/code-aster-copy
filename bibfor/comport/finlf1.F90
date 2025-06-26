@@ -21,7 +21,7 @@ subroutine finlf1(ndim, delta, plasti, alpha, kn, kt, &
 !
     implicit none
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: delta(ndim), plasti(ndim), alpha
     real(kind=8) :: kn, kt, mu, Bn, Bt, m1, m2, cbar, D1
     real(kind=8) :: res
@@ -36,7 +36,7 @@ subroutine finlf1(ndim, delta, plasti, alpha, kn, kt, &
 ! IN : D1 - ENERGIE MAXIMALE DISSIPE PAR ENDOMMAGEMENT
 ! OUT : RES - VALUE OF THE FUNCTION
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: wvec(ndim-1), wnorm, frwvec(ndim-1)
     real(kind=8) :: part1, part2, num1, den1, disc, disc2, den2
 !

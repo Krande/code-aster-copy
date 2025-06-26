@@ -24,9 +24,9 @@ subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc, &
 #include "asterfort/jeveut.h"
 #include "asterfort/juveca.h"
     aster_logical :: lmasym
-    integer :: jtmp2, lgtmp2, nbterm, jsmhc, jsmdi
-    integer :: ideb, ifin, imil
-    integer :: nbi1, ti1(nbi1), ti2(nbi1)
+    integer(kind=8) :: jtmp2, lgtmp2, nbterm, jsmhc, jsmdi
+    integer(kind=8) :: ideb, ifin, imil
+    integer(kind=8) :: nbi1, ti1(nbi1), ti2(nbi1)
 !     ROUTINE SERVANT A RETENIR OU S'ACCUMULENT LES TERMES ELEMENTAIRES:
 !     DANS LE CAS D'UN STOCKAGE MORSE SYMETRIQUE
 ! -----------------------------------------------------------------
@@ -38,7 +38,7 @@ subroutine asret2(lmasym, jtmp2, lgtmp2, nbterm, jsmhc, &
 ! IN/OUT I NBTERM   : NOMBRE DE TERMES (R/C) A RECOPIER
 !                     (ISSU DE LA MATRICE ELEMENTAIRE)
 ! -----------------------------------------------------------------
-    integer :: ili, jco, icoefc, icoefl, i, ncoefc, nubloc, k, i1, i2
+    integer(kind=8) :: ili, jco, icoefc, icoefl, i, ncoefc, nubloc, k, i1, i2
 ! -----------------------------------------------------------------
     do k = 1, nbi1
         i1 = ti1(k)

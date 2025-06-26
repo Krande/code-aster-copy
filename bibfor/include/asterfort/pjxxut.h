@@ -27,9 +27,9 @@ interface
         character(len=2), intent(in) :: projDime
         character(len=*), intent(in) :: typeSelect
         character(len=8), intent(in) :: entity1, entity2
-        integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+        integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
         character(len=8), intent(out) :: mesh1, mesh2
-        integer, intent(out) :: nbCellType, cellListNume(MT_NTYMAX)
+        integer(kind=8), intent(out) :: nbCellType, cellListNume(MT_NTYMAX)
         character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
     end subroutine pjxxut
 end interface

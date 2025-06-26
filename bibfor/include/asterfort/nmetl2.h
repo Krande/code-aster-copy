@@ -20,7 +20,7 @@ interface
     subroutine nmetl2(model, i_field, ds_inout)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: model
-        integer, intent(in) :: i_field
+        integer(kind=8), intent(in) :: i_field
         type(NL_DS_InOut), intent(inout) :: ds_inout
     end subroutine nmetl2
 end interface

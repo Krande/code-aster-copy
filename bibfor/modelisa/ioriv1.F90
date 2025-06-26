@@ -29,9 +29,9 @@ function ioriv1(num, noeud, vect, coor)
 !   CODE RETOUR IORIV1 : 0 SI LA MAILLE NE CONTIENT PAS LE NOEUD
 !                       -1 OU 1 SINON (SELON QU'IL AIT OU NON
 !                                      FALLU REORIENTER)
-    integer :: num(2)
+    integer(kind=8) :: num(2)
     real(kind=8) :: vect(2), coor(3, *)
-    integer :: i, ioriv1, k, l, n1, n2, noeud
+    integer(kind=8) :: i, ioriv1, k, l, n1, n2, noeud
     real(kind=8) :: scal, x1, x2, xn, y1, y2, yn
 #define x(i) coor(1,i)
 #define y(i) coor(2,i)

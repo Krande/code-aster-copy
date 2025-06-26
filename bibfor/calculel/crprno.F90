@@ -31,7 +31,7 @@ subroutine crprno(nume_equaz, base, meshz, gran_namez, nb_equa)
     character(len=1), intent(in) :: base
     character(len=*), intent(in) :: gran_namez
     character(len=*), intent(in) :: meshz
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine crprno(nume_equaz, base, meshz, gran_namez, nb_equa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_ligr_mesh
+    integer(kind=8) :: i_ligr_mesh
     character(len=24) :: lili
 !
 ! --------------------------------------------------------------------------------------------------

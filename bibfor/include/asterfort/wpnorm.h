@@ -21,12 +21,12 @@
 interface
     subroutine wpnorm(norm, para, lmatr, neq, nbmode,&
                       ddlexc, vecpro, resufr, coef)
-        integer :: nbmode
-        integer :: neq
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: neq
         character(len=*) :: norm
         character(len=*) :: para
-        integer :: lmatr(*)
-        integer :: ddlexc(*)
+        integer(kind=8) :: lmatr(*)
+        integer(kind=8) :: ddlexc(*)
         complex(kind=8) :: vecpro(neq, *)
         real(kind=8) :: resufr(nbmode, *)
         real(kind=8) :: coef(*)

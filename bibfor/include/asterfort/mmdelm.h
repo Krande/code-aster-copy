@@ -22,17 +22,17 @@ interface
     subroutine mmdelm(mdnode, xadj, adjncy, dhead, dforw,&
                       dbakw, qsize, llist, marker, maxint,&
                       tag, parent)
-        integer :: mdnode
-        integer :: xadj(*)
-        integer :: adjncy(*)
-        integer :: dhead(*)
-        integer :: dforw(*)
-        integer :: dbakw(*)
-        integer :: qsize(*)
-        integer :: llist(*)
-        integer :: marker(*)
-        integer :: maxint
-        integer :: tag
-        integer :: parent(*)
+        integer(kind=8) :: mdnode
+        integer(kind=8) :: xadj(*)
+        integer(kind=8) :: adjncy(*)
+        integer(kind=8) :: dhead(*)
+        integer(kind=8) :: dforw(*)
+        integer(kind=8) :: dbakw(*)
+        integer(kind=8) :: qsize(*)
+        integer(kind=8) :: llist(*)
+        integer(kind=8) :: marker(*)
+        integer(kind=8) :: maxint
+        integer(kind=8) :: tag
+        integer(kind=8) :: parent(*)
     end subroutine mmdelm
 end interface

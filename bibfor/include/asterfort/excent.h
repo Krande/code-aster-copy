@@ -25,8 +25,8 @@ interface
                       reffin, reffou, ceffin, ceffou)
         character(len=*) :: sens
         real(kind=8) :: excen
-        integer :: nbpoin
-        integer :: nbcmp
+        integer(kind=8) :: nbpoin
+        integer(kind=8) :: nbcmp
         aster_logical :: lreel
         real(kind=8) :: reffin(*)
         real(kind=8) :: reffou(*)

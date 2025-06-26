@@ -20,9 +20,9 @@
 !
 interface
     subroutine irvcmp(ncmpmx, nomcgd, nomcmp, nbcmpt)
-        integer :: ncmpmx
+        integer(kind=8) :: ncmpmx
         character(len=*) :: nomcgd(*)
         character(len=*) :: nomcmp
-        integer :: nbcmpt
+        integer(kind=8) :: nbcmpt
     end subroutine irvcmp
 end interface

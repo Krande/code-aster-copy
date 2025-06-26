@@ -71,9 +71,9 @@ subroutine nmobse(meshz, sd_obsv, time, &
     character(len=14) :: sdextr_obsv
     character(len=19) :: tabl_name
     character(len=16) :: title
-    integer :: nb_cmp, nb_node, nb_elem, nb_field, nb_field_comp
-    integer :: nb_poin, nb_spoi
-    integer :: i_keyw_fact, nb_keyw_fact, nb_obsf_effe, i_field, i_field_comp
+    integer(kind=8) :: nb_cmp, nb_node, nb_elem, nb_field, nb_field_comp
+    integer(kind=8) :: nb_poin, nb_spoi
+    integer(kind=8) :: i_keyw_fact, nb_keyw_fact, nb_obsf_effe, i_field, i_field_comp
     character(len=2) :: chaine
     character(len=24) :: field_type, field_s
     character(len=4) :: field_disc
@@ -86,7 +86,7 @@ subroutine nmobse(meshz, sd_obsv, time, &
     character(len=24) :: obsv_tabl
     character(len=24), pointer :: v_obsv_tabl(:) => null()
     character(len=24) :: extr_info, extr_type, extr_flag, extr_field, extr_comp
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
     character(len=8), pointer :: v_extr_type(:) => null()
     aster_logical, pointer :: v_extr_flag(:) => null()
     character(len=24), pointer :: v_extr_field(:) => null()

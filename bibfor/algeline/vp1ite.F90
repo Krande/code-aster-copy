@@ -29,11 +29,11 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode, &
 #include "asterfort/vpmort.h"
 #include "asterfort/vpstur.h"
 !
-    integer :: neq
+    integer(kind=8) :: neq
     real(kind=8) :: x(neq, 1), mx(neq, *), err, x0(neq)
     real(kind=8) :: valp
-    integer :: place, iexcl(*), imode, mxiter, iter
-    integer :: lmasse, lraide, ldynam
+    integer(kind=8) :: place, iexcl(*), imode, mxiter, iter
+    integer(kind=8) :: lmasse, lraide, ldynam
     character(len=19) :: solveu
 !     CALCUL D'UN COUPLE VECTEUR ET VALEUR PROPRE PAR ITERATION INVERSE
 !     ------------------------------------------------------------------
@@ -65,9 +65,9 @@ subroutine vp1ite(lmasse, lraide, ldynam, x, imode, &
 !
 !     INIT. OBJETS ASTER
 !-----------------------------------------------------------------------
-    integer :: idet0, ieq, ier, iquoti, jter
+    integer(kind=8) :: idet0, ieq, ier, iquoti, jter
     real(kind=8) :: dseed, tol
-    integer :: iret
+    integer(kind=8) :: iret
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
     matass = zk24(zi(ldynam+1))

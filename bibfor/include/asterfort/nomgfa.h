@@ -20,10 +20,10 @@
 !
 interface
     subroutine nomgfa(nogr, nbgr, dgf, nogrf, nbgf)
-        integer :: nbgr
+        integer(kind=8) :: nbgr
         character(len=24) :: nogr(nbgr)
-        integer :: dgf(*)
+        integer(kind=8) :: dgf(*)
         character(len=80) :: nogrf(*)
-        integer :: nbgf
+        integer(kind=8) :: nbgf
     end subroutine nomgfa
 end interface

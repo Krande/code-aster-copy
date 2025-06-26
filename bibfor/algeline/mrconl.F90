@@ -26,7 +26,7 @@ subroutine mrconl(oper, lmat, neq2, typev, rvect, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: lmat, neq2, nvect
+    integer(kind=8) :: lmat, neq2, nvect
     character(len=1) :: typev
     character(len=4) :: oper
     real(kind=8) :: rvect(*)
@@ -53,7 +53,7 @@ subroutine mrconl(oper, lmat, neq2, typev, rvect, &
     character(len=1) :: ftype(2), type, typecn
     character(len=24) :: conl
     complex(kind=8) :: c8cst
-    integer :: ieq, ii, ind, iret, ive, jconl, neq
+    integer(kind=8) :: ieq, ii, ind, iret, ive, jconl, neq
 !     ------------------------------------------------------------------
     data ftype/'R', 'C'/
 !     ------------------------------------------------------------------

@@ -26,7 +26,7 @@ subroutine cengra(noma, nmaabs, coorg)
 #include "asterfort/jexatr.h"
 #include "asterfort/panbno.h"
 !
-    integer :: nmaabs
+    integer(kind=8) :: nmaabs
     real(kind=8) :: coorg(3)
     character(len=8) :: noma
 !
@@ -42,10 +42,10 @@ subroutine cengra(noma, nmaabs, coorg)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ino, itypma, jconx2, nbnott(3), nuno
-    integer, pointer :: connex(:) => null()
+    integer(kind=8) :: ino, itypma, jconx2, nbnott(3), nuno
+    integer(kind=8), pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
 !

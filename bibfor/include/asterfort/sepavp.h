@@ -21,13 +21,13 @@
 interface
     subroutine sepavp(ck, cm, cmat, ndim, alpha,&
                       beta, nbmod, lambd1, lambd2, interv)
-        integer :: ndim
+        integer(kind=8) :: ndim
         complex(kind=8) :: ck(*)
         complex(kind=8) :: cm(*)
         complex(kind=8) :: cmat(*)
         real(kind=8) :: alpha(ndim+1)
         real(kind=8) :: beta(ndim+1)
-        integer :: nbmod
+        integer(kind=8) :: nbmod
         real(kind=8) :: lambd1
         real(kind=8) :: lambd2
         real(kind=8) :: interv

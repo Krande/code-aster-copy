@@ -20,7 +20,7 @@
 !
 interface
     function nltype(inttyp)
-        integer :: inttyp
+        integer(kind=8) :: inttyp
         character(len=16) :: nltype
     end function nltype
 end interface

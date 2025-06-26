@@ -29,7 +29,7 @@ subroutine cfnoap(noma, defico, typapp, entapp, nomapp, &
 #include "asterfort/jemarq.h"
     character(len=24) :: defico
     character(len=8) :: noma
-    integer :: entapp, typapp
+    integer(kind=8) :: entapp, typapp
     character(len=8) :: nomapp
     character(len=4) :: type2
 !
@@ -55,7 +55,7 @@ subroutine cfnoap(noma, defico, typapp, entapp, nomapp, &
 !
 !
 !
-    integer :: posnom, posmam
+    integer(kind=8) :: posnom, posmam
     character(len=8) :: nomnom, nommam
 !
 ! ----------------------------------------------------------------------

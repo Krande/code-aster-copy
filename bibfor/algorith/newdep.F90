@@ -45,7 +45,7 @@ subroutine newdep(neq, c, dt, d0, v0, &
 #include "blas/dcopy.h"
     real(kind=8) :: d0(*), d1(*), v0(*), a0(*), a1(*), c, dt
 !-----------------------------------------------------------------------
-    integer :: neq
+    integer(kind=8) :: neq
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     b_n = to_blas_int(neq)

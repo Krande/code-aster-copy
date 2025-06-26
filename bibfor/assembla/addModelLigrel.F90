@@ -26,7 +26,7 @@ subroutine addModelLigrel(modelZ, nbLigr, listLigr)
 #include "asterfort/dismoi.h"
 !
     character(len=*), intent(in) :: modelZ
-    integer, intent(inout) :: nbLigr
+    integer(kind=8), intent(inout) :: nbLigr
     character(len=24), pointer :: listLigr(:)
 !
 ! --------------------------------------------------------------------------------------------------

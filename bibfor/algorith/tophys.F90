@@ -28,7 +28,7 @@ subroutine tophys(dplmod, xgene, xphys)
     real(kind=8), pointer  :: xgene(:)
     real(kind=8), intent(out) :: xphys(:)
 !-----------------------------------------------------------------------
-    integer :: i, j, nbmode
+    integer(kind=8) :: i, j, nbmode
 !-----------------------------------------------------------------------
     nbmode = size(dplmod)/3
 

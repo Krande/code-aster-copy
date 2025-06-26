@@ -23,24 +23,24 @@ interface
                       is, nbsys, nfs, nsg, hsr,&
                       vind, dy, dt, rp, nuecou,&
                       dalpha, dgamma, dp, iret)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         real(kind=8) :: taus
         real(kind=8) :: coeft(nmat)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
-        integer :: is
-        integer :: nbsys
-        integer :: nfs
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
+        integer(kind=8) :: is
+        integer(kind=8) :: nbsys
+        integer(kind=8) :: nfs
         real(kind=8) :: hsr(nsg, nsg)
         real(kind=8) :: vind(*)
         real(kind=8) :: dy(12)
         real(kind=8) :: dt
         real(kind=8) :: rp
-        integer :: nuecou
+        integer(kind=8) :: nuecou
         real(kind=8) :: dalpha
         real(kind=8) :: dgamma
         real(kind=8) :: dp
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmdd
 end interface

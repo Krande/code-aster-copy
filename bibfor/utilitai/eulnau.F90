@@ -29,7 +29,7 @@ subroutine eulnau(angeul, angnau)
     real(kind=8) :: costhe
     real(kind=8) :: xg(3), yg(3), cosphi, phi, sinphi, sinthe
     real(kind=8) :: psi, theta, cospsi, sinpsi
-    integer :: i
+    integer(kind=8) :: i
 !
     psi = angeul(1)*r8dgrd()
     theta = angeul(2)*r8dgrd()

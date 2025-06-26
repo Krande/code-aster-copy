@@ -28,7 +28,7 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/wkvect.h"
-    integer :: lmax, nbocc
+    integer(kind=8) :: lmax, nbocc
     character(len=8) :: nomu, noma
 !     AFFE_CARA_ELEM
 !     AFFECTATION DES CARACTERISTIQUES POUR L'ELEMENT POUTRE_FLUIDE
@@ -44,8 +44,8 @@ subroutine aceapf(nomu, noma, lmax, nbocc)
 !
 ! --- CONSTRUCTION DES CARTES ET ALLOCATION
 !-----------------------------------------------------------------------
-    integer :: i, ioc, jdcc, jdls, jdvc, nace, nafl
-    integer :: nb1, nb2, nb3, ng, nm, nr
+    integer(kind=8) :: i, ioc, jdcc, jdls, jdvc, nace, nafl
+    integer(kind=8) :: nb1, nb2, nb3, ng, nm, nr
 !-----------------------------------------------------------------------
     call jemarq()
     cartpf = nomu//'.CARPOUFL'

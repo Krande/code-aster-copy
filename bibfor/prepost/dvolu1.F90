@@ -34,12 +34,12 @@ function dvolu1(numele, coord, norm, volt)
 !
 ! DECLARATION GLOBALE
 !
-    integer :: numele, norm(2, 4)
+    integer(kind=8) :: numele, norm(2, 4)
     real(kind=8) :: coord(3, 12), volt(*), dvolu1
 !
 ! DECLARATION LOCALE
 !
-    integer :: i, j, k, l
+    integer(kind=8) :: i, j, k, l
 !
 ! 1 - RECHERCHE DU POINT INTERNE (NUMELE<0) OU EXTERNE (NUMELE>0)
 !

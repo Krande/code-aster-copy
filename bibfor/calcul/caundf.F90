@@ -34,7 +34,7 @@ subroutine caundf(code, opt, te)
 #include "asterfort/nopara.h"
 #include "asterfort/utmess.h"
 
-    integer :: opt, te
+    integer(kind=8) :: opt, te
     character(len=5) :: code
 !-----------------------------------------------------------------------
 !     entrees:
@@ -43,14 +43,14 @@ subroutine caundf(code, opt, te)
 !        opt  : option
 !        te   : type_element
 !-----------------------------------------------------------------------
-    integer :: innem
-    integer :: np, ipar
-    integer ::  iparg, lggrel, iachlo
+    integer(kind=8) :: innem
+    integer(kind=8) :: np, ipar
+    integer(kind=8) ::  iparg, lggrel, iachlo
     character(len=3) :: typsca
     character(len=8) :: nompar
     aster_logical :: arret, ecras
     character(len=16) :: nomte, nomopt
-    integer :: ich, debugr, lgcata
+    integer(kind=8) :: ich, debugr, lgcata
     real(kind=8) :: rnnem
     character(len=8) :: knnem
     character(len=24) :: valk(3)

@@ -23,8 +23,8 @@ subroutine cusign(jcmpg, icmp, sign)
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: jcmpg
-    integer :: icmp
+    integer(kind=8) :: jcmpg
+    integer(kind=8) :: icmp
     real(kind=8) :: sign
 !
 ! ----------------------------------------------------------------------

@@ -22,6 +22,6 @@ interface
     subroutine jeecra_wrap(nomlu, catr, ival)
         character(len=*), intent(in) :: nomlu
         character(len=*), intent(in) :: catr
-        integer, intent(in) :: ival
+        integer(kind=8), intent(in) :: ival
     end subroutine jeecra_wrap
 end interface

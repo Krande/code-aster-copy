@@ -48,14 +48,14 @@ subroutine srcnvx(sigd, sigf, nvi, vind, nmat, mater, seuil, vinf)
     !!! Variables globales
     !!!
 
-    integer :: nmat, nvi
+    integer(kind=8) :: nmat, nvi
     real(kind=8) :: mater(nmat, 2), seuil, sigd(6), sigf(6), vind(nvi), vinf(nvi)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: i1, devsig(6), ubid, sigt(6), sigu(6), xit, seuilp, seuilv, somme
     real(kind=8) :: tmm, tpp
     common/tdim/ndt, ndi

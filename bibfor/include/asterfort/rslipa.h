@@ -23,7 +23,7 @@ interface
         character(len=*) :: nomsd
         character(len=*) :: nopara
         character(len=*) :: nomobj
-        integer :: jadd
-        integer :: nbval
+        integer(kind=8) :: jadd
+        integer(kind=8) :: nbval
     end subroutine rslipa
 end interface

@@ -21,7 +21,7 @@ subroutine q4glxy(hlt2, depf, lambda)
     real(kind=8) :: hlt2(4, 6), depf(12), lambda(4)
 !     'LAMBDA' DE L'ELEMENT DE PLAQUE Q4G
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: tb(6, 12)
     real(kind=8) :: blb(4, 12)
 !     ------------------------------------------------------------------

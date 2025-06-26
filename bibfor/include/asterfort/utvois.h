@@ -25,11 +25,11 @@ interface
                       poinc2, elrefe, ndegre)
         character(len=8) :: typmac
         aster_logical :: lmaj
-        integer :: nbf
-        integer :: nsomf
+        integer(kind=8) :: nbf
+        integer(kind=8) :: nsomf
         real(kind=8) :: poinc1
         real(kind=8) :: poinc2
         character(len=8) :: elrefe
-        integer :: ndegre
+        integer(kind=8) :: ndegre
     end subroutine utvois
 end interface

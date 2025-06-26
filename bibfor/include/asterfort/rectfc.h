@@ -21,15 +21,15 @@
 interface
     subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr,&
                       valpro, nvpro, resufi, resufr, nfreq)
-        integer :: nfreq
-        integer :: nvpro
-        integer :: nbmode
-        integer :: nbvect
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: nvpro
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbvect
         complex(kind=8) :: omeshi
-        integer :: npivot
-        integer :: nblagr
+        integer(kind=8) :: npivot
+        integer(kind=8) :: nblagr
         complex(kind=8) :: valpro(nvpro)
-        integer :: resufi(nfreq, *)
+        integer(kind=8) :: resufi(nfreq, *)
         real(kind=8) :: resufr(nfreq, *)
     end subroutine rectfc
 end interface

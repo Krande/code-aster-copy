@@ -35,22 +35,22 @@ subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     character(len=*) :: cham19, list_cmp, list_name
 !
 !     RENVOIE UN LIEN iCMP -> NOM
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
-    integer ::  iad, kcmp, igr, mode, nnoe, nbgrel, nbel
-    integer :: jmod, imodel, ilong, idescr, jcmp
+    integer(kind=8) :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
+    integer(kind=8) ::  iad, kcmp, igr, mode, nnoe, nbgrel, nbel
+    integer(kind=8) :: jmod, imodel, ilong, idescr, jcmp
     character(len=4) :: tych
     character(len=24) :: valk(2)
     character(len=8) :: noma
     character(len=19) :: ch19, prno, noligr
-    integer, pointer :: vicmp(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: vicmp(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

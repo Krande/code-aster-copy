@@ -22,6 +22,6 @@ interface
     subroutine liscn2(lisold, nbchar, ichar, typapp)
         character(len=19) :: lisold
         character(len=16) :: typapp
-        integer :: ichar, nbchar
+        integer(kind=8) :: ichar, nbchar
     end subroutine liscn2
 end interface

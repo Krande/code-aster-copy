@@ -25,6 +25,6 @@ interface
         character(len=16),intent(in) :: nocham
         character(len=16),intent(in) :: nocmp
         real(kind=8),intent(out) :: dval
-        integer,optional,intent(in) :: lst_loca(:)
+        integer(kind=8),optional,intent(in) :: lst_loca(:)
     end subroutine extdch
 end interface

@@ -48,23 +48,23 @@ subroutine irecri(fileUnit, dsName, lResu, &
 #include "asterfort/titre2.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: dsName, titleKeywf
-    integer, intent(in) :: titleKeywfIocc
+    integer(kind=8), intent(in) :: titleKeywfIocc
     aster_logical, intent(in) :: lResu
-    integer, intent(in) :: storeNb
-    integer, pointer :: storeListIndx(:)
-    integer, intent(in) :: fieldListNb
+    integer(kind=8), intent(in) :: storeNb
+    integer(kind=8), pointer :: storeListIndx(:)
+    integer(kind=8), intent(in) :: fieldListNb
     character(len=*), pointer :: fieldListType(:)
-    integer, intent(in) :: paraNb
+    integer(kind=8), intent(in) :: paraNb
     character(len=*), pointer :: paraName(:)
     character(len=1), intent(in) :: paraFormat
-    integer, intent(in) :: cmpUserNb
+    integer(kind=8), intent(in) :: cmpUserNb
     character(len=8), pointer :: cmpUserName(:)
-    integer, intent(in) :: nodeUserNb
-    integer, pointer :: nodeUserNume(:)
-    integer, intent(in) :: cellUserNb
-    integer, pointer :: cellUserNume(:)
+    integer(kind=8), intent(in) :: nodeUserNb
+    integer(kind=8), pointer :: nodeUserNume(:)
+    integer(kind=8), intent(in) :: cellUserNb
+    integer(kind=8), pointer :: cellUserNume(:)
     aster_logical, intent(in) :: lMeshCoor
     aster_logical, intent(in) :: lsup, linf, lmax, lmin
     real(kind=8), intent(in) :: borsup, borinf
@@ -117,11 +117,11 @@ subroutine irecri(fileUnit, dsName, lResu, &
     character(len=4) :: fieldSupport
     character(len=24) :: subtitleJvName
     character(len=8) :: resultName
-    integer :: storeIndx, iret, ibid
-    integer :: iStore, iField, iLine
+    integer(kind=8) :: storeIndx, iret, ibid
+    integer(kind=8) :: iStore, iField, iLine
     aster_logical :: lordr
     character(len=80), pointer :: titleLine(:) => null()
-    integer :: titleLineNb
+    integer(kind=8) :: titleLineNb
 !
 ! --------------------------------------------------------------------------------------------------
 !

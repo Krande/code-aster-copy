@@ -53,12 +53,12 @@ subroutine mm_cycl_init(ds_contact)
     character(len=24) :: sdcont_cyccoe
     real(kind=8), pointer :: p_sdcont_cyccoe(:) => null()
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: i_cont_poin
-    integer :: i_cyc
-    integer :: zone_index, nb_cont_zone
-    integer :: slave_elt_index, slave_elt_nb, slave_elt_shift, slave_elt_num
-    integer :: slave_pt_index, slave_pt_nb
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8) :: i_cont_poin
+    integer(kind=8) :: i_cyc
+    integer(kind=8) :: zone_index, nb_cont_zone
+    integer(kind=8) :: slave_elt_index, slave_elt_nb, slave_elt_shift, slave_elt_num
+    integer(kind=8) :: slave_pt_index, slave_pt_nb
     real(kind=8) :: coef_cont, coef_frot, coef_init
     aster_logical :: lveri
 !

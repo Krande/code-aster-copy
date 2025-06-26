@@ -23,9 +23,9 @@ interface
                       oldn)
         character(len=8) :: mo
         character(len=8) :: ma
-        integer :: nm
-        integer :: nl
-        integer :: newn(*)
-        integer :: oldn(*)
+        integer(kind=8) :: nm
+        integer(kind=8) :: nl
+        integer(kind=8) :: newn(*)
+        integer(kind=8) :: oldn(*)
     end subroutine relagm
 end interface

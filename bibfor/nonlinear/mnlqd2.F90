@@ -47,22 +47,22 @@ subroutine mnlqd2(ind, imat, neq, ninc, nd, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: ind, imat(2), neq, ninc, nd, nchoc, h, hf
+    integer(kind=8) :: ind, imat(2), neq, ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, xcdl, adime, xvect, xtemp
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: jeu, alpha, coef
-    integer :: iq2, itemp1, itemp2, itemp3, itemp4
-    integer :: iddl, i, nddl
-    integer :: icdl, iadim, itemp, k, ivec, nt, ih, puismax
-    integer :: neqs, deb, hind, ddl, nddlx, nddly
+    integer(kind=8) :: iq2, itemp1, itemp2, itemp3, itemp4
+    integer(kind=8) :: iddl, i, nddl
+    integer(kind=8) :: icdl, iadim, itemp, k, ivec, nt, ih, puismax
+    integer(kind=8) :: neqs, deb, hind, ddl, nddlx, nddly
     aster_logical :: stp
-    integer, pointer :: vneqs(:) => null()
+    integer(kind=8), pointer :: vneqs(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
     character(len=8), pointer :: type(:) => null()
-    integer, pointer :: vnddl(:) => null()
+    integer(kind=8), pointer :: vnddl(:) => null()
     real(kind=8), pointer :: raid(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !

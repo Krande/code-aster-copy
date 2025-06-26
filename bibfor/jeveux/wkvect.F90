@@ -34,11 +34,11 @@ subroutine wkvect(nom, carac, dim, jadr, vl, &
 !
     character(len=*), intent(in) :: nom
     character(len=*), intent(in) :: carac
-    integer, intent(in) :: dim
-    integer, intent(out), optional :: jadr
+    integer(kind=8), intent(in) :: dim
+    integer(kind=8), intent(out), optional :: jadr
 !
     aster_logical, pointer, optional :: vl(:)
-    integer, pointer, optional :: vi(:)
+    integer(kind=8), pointer, optional :: vi(:)
     integer(kind=4), pointer, optional :: vi4(:)
     real(kind=8), pointer, optional :: vr(:)
     complex(kind=8), pointer, optional :: vc(:)
@@ -66,7 +66,7 @@ subroutine wkvect(nom, carac, dim, jadr, vl, &
 ! 2) recuperation du contenu de l'objet 'XXX' dans le vecteur XXX
 !    call wkvect('XXX', 'V V R', 10, vr=XXX)
 !-----------------------------------------------------------------------
-    integer :: jad
+    integer(kind=8) :: jad
     character(len=8) :: ktyp
     type(c_ptr) :: pc
 !---------------------------------------------------------------------------

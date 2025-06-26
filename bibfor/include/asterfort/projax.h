@@ -21,12 +21,12 @@
 interface
     subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag,&
                       rmima, jraxe)
-        integer :: nbordr
-        integer :: nbvec
-        integer :: jvecpg
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jvecpg
         character(len=16) :: proaxe
-        integer :: iflag(nbvec)
+        integer(kind=8) :: iflag(nbvec)
         real(kind=8) :: rmima(4*nbvec)
-        integer :: jraxe
+        integer(kind=8) :: jraxe
     end subroutine projax
 end interface

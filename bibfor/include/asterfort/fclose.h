@@ -20,6 +20,6 @@
 !
 interface
     subroutine fclose(unit)
-        integer :: unit
+        integer(kind=8) :: unit
     end subroutine fclose
 end interface

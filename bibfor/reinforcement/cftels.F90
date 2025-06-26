@@ -79,8 +79,8 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
 #include "asterfort/utmess.h"
 !
 !
-    integer ::typco
-    integer :: typstru
+    integer(kind=8) ::typco
+    integer(kind=8) :: typstru
     real(kind=8) :: effrts(8)
     real(kind=8) :: effm
     real(kind=8) :: effn
@@ -102,14 +102,14 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
     real(kind=8) :: scmaxi
     real(kind=8) :: scmaxs
     real(kind=8) :: ssmax
-    integer :: uc
-    integer :: um
-    integer :: compress
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
+    integer(kind=8) :: compress
     real(kind=8) :: dnstra
     real(kind=8) :: thetab
     real(kind=8) :: ak
     real(kind=8) :: uk
-    integer :: ierr
+    integer(kind=8) :: ierr
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL
@@ -121,7 +121,7 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
     real(kind=8) :: Nu, Nu1, kBAR, vmin, CRdc, k1, rhoL, vCALC
     real(kind=8), dimension(0:232) :: thetab_ITER, eq_ITER, dnstra_ITER
     real(kind=8) :: gammac, gammas, denom, pi
-    integer :: countV, j
+    integer(kind=8) :: countV, j
 !------------------------------------------------------------------------
 
     pi = r8pi()

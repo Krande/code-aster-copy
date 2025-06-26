@@ -19,8 +19,8 @@
 subroutine moinip(nch, ncoef, iich, iisuiv, ilig, &
                   ilig2)
     implicit none
-    integer :: iich(*), iisuiv(*), ilig(*)
-    integer :: nch, ncoef, ii2, j, ii1
+    integer(kind=8) :: iich(*), iisuiv(*), ilig(*)
+    integer(kind=8) :: nch, ncoef, ii2, j, ii1
     integer(kind=4) :: ilig2(1)
 !     DESIMBRICATION DES CHAINES DE LA STRUCTURE (IICH, IISUIV,ILIG) :
 !     ------------------------------------------------------------------

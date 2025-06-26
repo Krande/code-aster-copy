@@ -39,8 +39,8 @@ subroutine te0203(option, nomte)
 !
 !
 !
-    integer :: igeom, imater, ideplm, ivarim, npg, jtab(7), iret, lgpg
-    integer :: iddepl, idepl0, idepl1, ictau, icopil
+    integer(kind=8) :: igeom, imater, ideplm, ivarim, npg, jtab(7), iret, lgpg
+    integer(kind=8) :: iddepl, idepl0, idepl1, ictau, icopil
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2)
 !

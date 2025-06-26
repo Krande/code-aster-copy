@@ -21,11 +21,11 @@ subroutine pcdiag(n, icpl, icpc, icpd)
 !  DE L (DIAGONALE A PART)
 !-----------------------------------------------------------------------
     implicit none
-    integer :: n
+    integer(kind=8) :: n
     integer(kind=4) :: icpc(*)
-    integer :: icpd(n), icpl(0:n)
+    integer(kind=8) :: icpd(n), icpl(0:n)
 !-----------------------------------------------------------------------
-    integer :: i, k, k1, k2
+    integer(kind=8) :: i, k, k1, k2
 !-----------------------------------------------------------------------
     k1 = 1
     do i = 1, n

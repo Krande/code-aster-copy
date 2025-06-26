@@ -22,11 +22,11 @@ subroutine op0137()
 #include "asterc/jdcset.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
 ! ----------------------------------------------------------------------
     character(len=3) :: repons
-    integer :: l
+    integer(kind=8) :: l
 !
 !
 !

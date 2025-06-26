@@ -22,12 +22,12 @@ interface
     subroutine acgrpc(nbordr, kwork,&
                       sompgw, jrwork, tspaq, ipg, &
                       nommet, forcri,nompar, vanocr, respc,vnmax)
-        integer :: nbordr
-        integer :: kwork
-        integer :: sompgw
-        integer :: jrwork
-        integer :: tspaq
-        integer :: ipg
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sompgw
+        integer(kind=8) :: jrwork
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: ipg
         character(len=16) :: nommet
         character(len=16) :: forcri
         character(len=8) ::nompar(35)

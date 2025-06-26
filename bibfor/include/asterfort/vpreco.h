@@ -20,8 +20,8 @@
 !
 interface
     subroutine vpreco(nbvect, neq, vecred, vect)
-        integer :: neq
-        integer :: nbvect
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbvect
         real(kind=8) :: vecred(nbvect, nbvect)
         real(kind=8) :: vect(neq, nbvect)
     end subroutine vpreco

@@ -21,6 +21,6 @@
 interface
     function rsmxno(nomsd)
         character(len=*) :: nomsd
-        integer :: rsmxno
+        integer(kind=8) :: rsmxno
     end function rsmxno
 end interface

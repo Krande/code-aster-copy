@@ -22,7 +22,7 @@ interface
     subroutine dikfin(nbt, dnsdu, dnsdt, dmsdt, dnsdu2,&
                       dnsdt2, dmsdt2, ky, kz, krx,&
                       krz, klv, klv2)
-        integer :: nbt
+        integer(kind=8) :: nbt
         real(kind=8) :: dnsdu
         real(kind=8) :: dnsdt
         real(kind=8) :: dmsdt

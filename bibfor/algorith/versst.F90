@@ -43,7 +43,7 @@ subroutine versst(nomres)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
 !
 !
 !
@@ -53,8 +53,8 @@ subroutine versst(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, lddesc, lldesc, nbcmpr, nbecr, nbsst
-    integer :: numgd, numgdr
+    integer(kind=8) :: i, ibid, lddesc, lldesc, nbcmpr, nbecr, nbsst
+    integer(kind=8) :: numgd, numgdr
 !-----------------------------------------------------------------------
     data blanc/'        '/
 !-----------------------------------------------------------------------

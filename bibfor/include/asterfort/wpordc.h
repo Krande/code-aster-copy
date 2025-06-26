@@ -21,9 +21,9 @@
 interface
     subroutine wpordc(type, shift, vp, x, m,&
                       neq)
-        integer :: neq
-        integer :: m
-        integer :: type
+        integer(kind=8) :: neq
+        integer(kind=8) :: m
+        integer(kind=8) :: type
         complex(kind=8) :: shift
         complex(kind=8) :: vp(*)
         complex(kind=8) :: x(neq, m)

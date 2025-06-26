@@ -20,7 +20,7 @@
 !
 interface
     subroutine ultype(unit, type)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=1) :: type
     end subroutine ultype
 end interface

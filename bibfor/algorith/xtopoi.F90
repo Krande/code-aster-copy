@@ -53,7 +53,7 @@ subroutine xtopoi(noma, modele)
 !
 !
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=7, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin), licmp(2)
     character(len=16) :: option
@@ -62,11 +62,11 @@ subroutine xtopoi(noma, modele)
     character(len=19) :: ligrel, chgeom, painto
     character(len=19) :: pintto, cnseto, heavto, loncha, pmilto, joncno
     aster_logical :: debug
-    integer :: ifm, niv, ifmdbg, nivdbg, ima, nbma
-    integer :: jcesd, jcesl, iad
-    integer, pointer :: nbsp(:) => null()
+    integer(kind=8) :: ifm, niv, ifmdbg, nivdbg, ima, nbma
+    integer(kind=8) :: jcesd, jcesl, iad
+    integer(kind=8), pointer :: nbsp(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

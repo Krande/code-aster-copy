@@ -22,7 +22,7 @@ interface
     subroutine nmtaxi(ndimsi, crit, mat, sigel, vim,&
                       epm, dp, sp, xi, g,&
                       iret)
-        integer :: ndimsi
+        integer(kind=8) :: ndimsi
         real(kind=8) :: crit(3)
         real(kind=8) :: mat(14)
         real(kind=8) :: sigel(*)
@@ -32,6 +32,6 @@ interface
         real(kind=8) :: sp
         real(kind=8) :: xi
         real(kind=8) :: g
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmtaxi
 end interface

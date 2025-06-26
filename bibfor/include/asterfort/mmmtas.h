@@ -22,7 +22,7 @@ interface
                       matrme , matrce , matrcm , matrmc , matrec ,&
                       matr   ,&
                       matrff_, matrfe_, matrfm_, matrmf_, matref_)
-        integer, intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
+        integer(kind=8), intent(in) :: nbdm, ndim, nnl, nne, nnm, nbcps
         real(kind=8), intent(in) :: matrcc(9, 9), matree(27, 27), matrmm(27, 27)
         real(kind=8), intent(in) :: matrem(27, 27), matrme(27, 27), matrce(9, 27), matrcm(9, 27)
         real(kind=8), intent(in) :: matrec(27, 9), matrmc(27, 9)

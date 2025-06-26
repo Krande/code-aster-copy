@@ -30,15 +30,15 @@ subroutine rcZ2s0(typ, ma, mb, presa, presb, &
 #include "asterfort/utmess.h"
     character(len=2) :: typ
     real(kind=8) :: ma(12), mb(12), presa, presb, s2
-    integer :: ns
+    integer(kind=8) :: ns
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_ZE200
 !     CALCUL de la partie simplifiée (B3600) DU SN ou du SP
 !
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: s2p, s2m, racine, racicor, k1, c1, k2, c2
-    integer :: jvalin, i, i0, i1, i2, i3, i4, i5, i6, jinfois, numcha
-    integer :: iret, jchars, k
+    integer(kind=8) :: jvalin, i, i0, i1, i2, i3, i4, i5, i6, jinfois, numcha
+    integer(kind=8) :: iret, jchars, k
     real(kind=8) :: rayon, ep, inertie, k2tub, c2tub, k2cor
     real(kind=8) :: c2cor, rtub, itub, rcor, icor, coefp, coefm
     real(kind=8) :: coefcor, coeftub, pij, mij(3), mijcor(3)

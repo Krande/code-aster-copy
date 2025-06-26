@@ -29,7 +29,7 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsdocu.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=19) :: nomob
     character(len=*) :: questi
     character(len=32) :: repk
@@ -50,8 +50,8 @@ subroutine dismic(questi, nomobz, repi, repkz, ierd)
 !
 !
 !-----------------------------------------------------------------------
-    integer ::  ire1, ire2, ire3, ire4, ire5, ire6
-    integer :: ire7, iret
+    integer(kind=8) ::  ire1, ire2, ire3, ire4, ire5, ire6
+    integer(kind=8) :: ire7, iret
     character(len=24), pointer :: prol(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

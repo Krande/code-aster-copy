@@ -23,8 +23,8 @@ interface
                       axez)
         character(len=*) :: deplaz
         character(len=*) :: nomjv
-        integer :: nbno
-        integer :: numnd(*)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: numnd(*)
         real(kind=8) :: orig(3)
         real(kind=8) :: axez(3)
     end subroutine rvchn2

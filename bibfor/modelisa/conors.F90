@@ -59,17 +59,17 @@ subroutine conors(i1, i2, i3, macoc, nbcoc, &
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: i1, i2, i3
+    integer(kind=8) :: i1, i2, i3
     character(len=8) :: mailla
-    integer :: nbcoc
+    integer(kind=8) :: nbcoc
     character(len=8) :: macoc(2+nbcoc)
     aster_logical :: loreor
-    integer :: nbcor
+    integer(kind=8) :: nbcor
     character(len=8) :: macor(2+nbcor)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: jcoor, no, no1, no2, no3, inor
+    integer(kind=8) :: jcoor, no, no1, no2, no3, inor
     character(len=24) :: coorno
     real(kind=8) :: x1, y1, z1, x2, y2, z2, x3, y3, z3, scal
     real(kind=8) :: xg, yg, zg, vnx, vny, vnz, vrx, vry, vrz

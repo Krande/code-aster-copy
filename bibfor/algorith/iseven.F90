@@ -26,7 +26,7 @@ subroutine iseven(sddisc, event_type_in, lacti)
 #include "asterfort/getFailEvent.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: event_type_in
+    integer(kind=8), intent(in) :: event_type_in
     aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------
@@ -45,8 +45,8 @@ subroutine iseven(sddisc, event_type_in, lacti)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i_fail, nb_fail
-    integer :: eventType
+    integer(kind=8) :: i_fail, nb_fail
+    integer(kind=8) :: eventType
 !
 ! ----------------------------------------------------------------------
 !

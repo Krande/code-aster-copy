@@ -55,8 +55,8 @@ subroutine lcumfs(vari, nvari, cmat, nmat, iflu, &
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/lcump1.h"
-    integer :: nvari, nmat
-    integer :: iflu, ifpo, isph
+    integer(kind=8) :: nvari, nmat
+    integer(kind=8) :: iflu, ifpo, isph
     real(kind=8) :: afps, bfps, cfps
     real(kind=8) :: vari(nvari), cmat(nmat)
     real(kind=8) :: ambda1, ambda2

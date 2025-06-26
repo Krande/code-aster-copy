@@ -53,16 +53,16 @@ subroutine remome(promes, modmes, nommac)
     character(len=19) :: chamno, chs
     character(len=24) :: vnoeud, vrange, vmes, vorien, vref
 !
-    integer :: nbmesu, nbmtot, numord, lmesu, imes, lrange, lori, ii
-    integer :: iret, icmp, ino, lnoeud, gd, nbcmp, ibid, lref
-    integer :: jcnsv, jcnsl, jcnsk, tord(1)
+    integer(kind=8) :: nbmesu, nbmtot, numord, lmesu, imes, lrange, lori, ii
+    integer(kind=8) :: iret, icmp, ino, lnoeud, gd, nbcmp, ibid, lref
+    integer(kind=8) :: jcnsv, jcnsl, jcnsk, tord(1)
 !
     real(kind=8) :: rbid, vori(3), val, vect(3)
 !
     complex(kind=8) :: cbid, valc, vectc(3)
     character(len=8), pointer :: cnsc(:) => null()
-    integer, pointer :: cnsd(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

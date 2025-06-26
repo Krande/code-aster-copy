@@ -19,7 +19,7 @@
 subroutine tbajvr(table, nbpara, nompar, vr, livr)
     implicit none
 #include "asterfort/tbajva.h"
-    integer :: nbpara
+    integer(kind=8) :: nbpara
     real(kind=8) :: vr, livr(*)
     character(len=*) :: table, nompar
 !
@@ -28,7 +28,7 @@ subroutine tbajvr(table, nbpara, nompar, vr, livr)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: vi, livi(1)
+    integer(kind=8) :: vi, livi(1)
 !
     character(len=8) :: vk, livk(1)
 !

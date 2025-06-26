@@ -40,11 +40,11 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: connex_inv
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=8), intent(in) :: node_name
-    integer, intent(in) :: node_nume
-    integer, intent(in) :: nb_repe_elem
-    integer, intent(in) :: list_repe_elem(*)
+    integer(kind=8), intent(in) :: node_nume
+    integer(kind=8), intent(in) :: nb_repe_elem
+    integer(kind=8), intent(in) :: list_repe_elem(*)
     real(kind=8), intent(out) :: matr_glob_loca(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -67,15 +67,15 @@ subroutine matloc(mesh, connex_inv, keywordfact, iocc, node_nume, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc, i, j, jadrm, jadrvlc
-    integer :: nb_conn_elem, elem_nume
-    integer :: node_nume_1, node_nume_2
+    integer(kind=8) :: nocc, i, j, jadrm, jadrvlc
+    integer(kind=8) :: nb_conn_elem, elem_nume
+    integer(kind=8) :: node_nume_1, node_nume_2
     real(kind=8) :: vx(3), vy(3), vz(3), vecty(3), vxn, vyn, vyp, dgrd, angl_naut(3)
     real(kind=8) :: alpha, beta, gamma
     character(len=8) :: k8bid, type_elem, elem_name, valk(2)
     character(len=24) :: connex
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

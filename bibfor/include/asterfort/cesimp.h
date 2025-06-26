@@ -21,8 +21,8 @@
 interface
     subroutine cesimp(cesz, unite, nbmat, nummai)
         character(len=*) :: cesz
-        integer :: unite
-        integer :: nbmat
-        integer :: nummai(*)
+        integer(kind=8) :: unite
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nummai(*)
     end subroutine cesimp
 end interface

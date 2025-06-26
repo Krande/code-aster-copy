@@ -26,7 +26,7 @@ subroutine hujtel(mod, mater, sig, hook)
 !       SIG   :  CONTRAINTES
 !  OUT  HOOK  :  OPERATEUR RIGIDITE ELASTIQUE
 !  ---------------------------------------------------------------
-    integer :: ndt, ndi, i, j
+    integer(kind=8) :: ndt, ndi, i, j
     real(kind=8) :: sig(6), hook(6, 6), mater(22, 2), i1, coef
     real(kind=8) :: e, nu, al, demu, la
     real(kind=8) :: un, d13, zero, deux

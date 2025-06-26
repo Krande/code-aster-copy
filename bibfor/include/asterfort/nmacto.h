@@ -21,6 +21,6 @@
 interface
     subroutine nmacto(sddisc, i_echec_acti)
         character(len=19), intent(in) :: sddisc
-        integer, intent(out) :: i_echec_acti
+        integer(kind=8), intent(out) :: i_echec_acti
     end subroutine nmacto
 end interface

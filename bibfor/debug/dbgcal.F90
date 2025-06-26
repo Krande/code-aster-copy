@@ -26,8 +26,8 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz, &
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
     character(len=*) :: optioz
-    integer :: ifm
-    integer :: nbin, nbout
+    integer(kind=8) :: ifm
+    integer(kind=8) :: nbin, nbout
     character(len=*) :: lpaiz(nbin), lpaouz(nbout)
     character(len=*) :: lchiz(nbin), lchouz(nbout)
 !
@@ -51,11 +51,11 @@ subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ich
+    integer(kind=8) :: ich
     character(len=16) :: option
 !
     character(len=8) :: k8bid
-    integer :: nbval, nbobj
+    integer(kind=8) :: nbval, nbobj
 !
 ! ---------------------------------------------------------------------
 !

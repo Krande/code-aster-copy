@@ -21,7 +21,7 @@
 interface
     subroutine xprfon(fiss, numfon, nvit, nbeta)
         character(len=8) :: fiss
-        integer :: numfon
+        integer(kind=8) :: numfon
         character(len=24) :: nvit
         character(len=24) :: nbeta
     end subroutine xprfon

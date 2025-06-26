@@ -63,10 +63,10 @@ subroutine op0045()
 ! --- DECLARATION DES VARIABLES LOCALES
 !
     mpi_int :: mpicou, mpicow
-    integer :: nbpari, nbparr, nbpark
+    integer(kind=8) :: nbpari, nbparr, nbpark
     parameter(nbpari=8, nbparr=16, nbpark=3)
-    integer :: iret, ibid, npivot, neqact, mxresf, nblagr, nstoc, nconv, nbvecg, nfreqg
-    integer :: rangl, icom1, icom2
+    integer(kind=8) :: iret, ibid, npivot, neqact, mxresf, nblagr, nstoc, nconv, nbvecg, nfreqg
+    integer(kind=8) :: rangl, icom1, icom2
     real(kind=8) :: omemin, omemax, omeshi, vpinf, vpmax, rbid
     complex(kind=8) :: sigma
     character(len=4) :: mod45, mod45b

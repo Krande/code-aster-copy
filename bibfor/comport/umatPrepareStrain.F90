@@ -27,7 +27,7 @@ subroutine umatPrepareStrain(neps, epsm, deps, stran, dstran, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    integer, intent(in) :: neps
+    integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps), deps(neps)
     real(kind=8), intent(out) :: stran(neps), dstran(neps)
     real(kind=8), intent(out) :: dfgrd0(3, 3), dfgrd1(3, 3)

@@ -21,7 +21,7 @@ subroutine jacopo(long, tpscaz, iad1, iad2)
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: long, iad1, iad2
+    integer(kind=8) :: long, iad1, iad2
     character(len=*) :: tpscaz
 ! ----------------------------------------------------------------------
 !     IN:
@@ -36,7 +36,7 @@ subroutine jacopo(long, tpscaz, iad1, iad2)
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     typsca = tpscaz
 !

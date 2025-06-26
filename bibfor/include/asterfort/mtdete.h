@@ -21,11 +21,11 @@
 interface
     subroutine mtdete(option, method, lmat, mantis, expo,&
                       cmod)
-        integer :: option
+        integer(kind=8) :: option
         character(len=24) :: method
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: mantis
-        integer :: expo
+        integer(kind=8) :: expo
         complex(kind=8) :: cmod
     end subroutine mtdete
 end interface

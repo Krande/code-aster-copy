@@ -26,13 +26,13 @@ subroutine nocart_c(carte, code, ncmp, groupma, mode, &
 #include "asterfort/nocart.h"
 !
     character(len=*), intent(in) :: carte
-    integer, intent(in) :: code
-    integer, intent(in) :: ncmp
+    integer(kind=8), intent(in) :: code
+    integer(kind=8), intent(in) :: ncmp
     character(len=*), intent(in) :: groupma
     character(len=*), intent(in) :: mode
-    integer, intent(in) :: nma
+    integer(kind=8), intent(in) :: nma
     character(len=*), intent(in) :: limano(*)
-    integer, intent(in) :: limanu(*)
+    integer(kind=8), intent(in) :: limanu(*)
     character(len=*), intent(in) :: ligrel
 !-----------------------------------------------------------------------
     call nocart(carte, code, ncmp, groupma, mode, &

@@ -56,8 +56,8 @@ subroutine exmali(basmod, nomint, numint, nommat, base, &
     character(len=6) :: pgc
     character(len=8) :: basmod, nomint, lintf, kbid
     character(len=24) :: chamva, nommat
-    integer :: ord, ii, numint, nbdef, nbcol, ibid, nbddl, nblig, ltrang
-    integer :: llcham, iran, iad, i, j, ldmat
+    integer(kind=8) :: ord, ii, numint, nbdef, nbcol, ibid, nbddl, nblig, ltrang
+    integer(kind=8) :: llcham, iran, iad, i, j, ldmat
 !
 !-----------------------------------------------------------------------
     data pgc/'EXMALI'/

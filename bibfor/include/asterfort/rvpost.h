@@ -23,10 +23,10 @@ interface
                       ncheff, xnomcp, nresu, nch19, nlsmac,&
                       nlsnac, nomtab, xnovar)
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=2) :: dim
-        integer :: i1
-        integer :: i2
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
         character(len=16) :: ncheff
         character(len=24) :: xnomcp
         character(len=8) :: nresu

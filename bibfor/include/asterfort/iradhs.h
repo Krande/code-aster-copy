@@ -18,6 +18,6 @@
 !
 interface
     subroutine iradhs(versio)
-        integer, intent(in) :: versio
+        integer(kind=8), intent(in) :: versio
     end subroutine iradhs
 end interface

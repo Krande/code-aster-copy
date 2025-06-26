@@ -21,15 +21,15 @@
 interface 
     subroutine mnleng(imat, xcdl, parcho, xus, ninc,&
                       nd, nchoc, h, nbpt, xeng)
-        integer :: h
-        integer :: nd
-        integer :: imat(2)
+        integer(kind=8) :: h
+        integer(kind=8) :: nd
+        integer(kind=8) :: imat(2)
         character(len=14) :: xcdl
         character(len=14) :: parcho
         character(len=14) :: xus
-        integer :: ninc
-        integer :: nchoc
-        integer :: nbpt
+        integer(kind=8) :: ninc
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: nbpt
         character(len=14) :: xeng
     end subroutine mnleng
 end interface 

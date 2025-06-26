@@ -21,6 +21,6 @@
 interface
     subroutine crmeam(promes, iaapee)
         character(len=8) :: promes
-        integer :: iaapee
+        integer(kind=8) :: iaapee
     end subroutine crmeam
 end interface

@@ -31,7 +31,7 @@ subroutine tbajco(nomta, para, type, nbval, vi, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbval, vi(*), llign(*)
+    integer(kind=8) :: nbval, vi(*), llign(*)
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
     character(len=*) :: nomta, para, type, vk(*), action
@@ -53,12 +53,12 @@ subroutine tbajco(nomta, para, type, nbval, vi, &
 !                 SI PREMIERE VALEUR =-1, ON AJOUTE SANS DECALAGE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, iret, nbpara, jvale, jlogq, nblign, iind
+    integer(kind=8) :: i, iret, nbpara, jvale, jlogq, nblign, iind
     character(len=1) :: actioz
     character(len=3) :: typez, typev
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, paraz, indic
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 ! ----------------------------------------------------------------------
 !

@@ -26,9 +26,9 @@ interface
         character(len=8) :: masse
         character(len=8) :: noma
         character(len=8) :: basemo
-        integer :: nbmode
-        integer :: nbmods
-        integer :: iamor
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbmods
+        integer(kind=8) :: iamor
         real(kind=8) :: mass(*)
         real(kind=8) :: rigi(*)
         real(kind=8) :: amored(*)

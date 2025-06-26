@@ -20,7 +20,7 @@
 !
 interface
     subroutine ndmuap(numins, numedd, sddyna, sddisc)
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=24) :: numedd
         character(len=19) :: sddyna
         character(len=19) :: sddisc

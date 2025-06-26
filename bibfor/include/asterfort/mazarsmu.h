@@ -25,7 +25,7 @@ interface
         character(len=16)   :: option
         real(kind=8)        :: epsela(6)
         real(kind=8)        :: deps(6)
-        integer             :: dimloc
+        integer(kind=8)             :: dimloc
         real(kind=8)        :: mazars(*)
         real(kind=8)        :: varm(*)
         real(kind=8)        :: varp(*)

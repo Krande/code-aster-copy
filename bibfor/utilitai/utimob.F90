@@ -27,7 +27,7 @@ subroutine utimob(unit, obin, nivo, lattr, lcont, &
 #include "asterfort/utimos.h"
 #include "asterfort/utmess.h"
     character(len=*) :: obin, xous
-    integer :: nivo, unit
+    integer(kind=8) :: nivo, unit
     aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:

@@ -64,9 +64,9 @@ subroutine cgnoec(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer ::  idlino, ino, iocc, iret, nangle
-    integer :: nb, nbno, nbnoe, ndim, nprec, nrayon, nv
-    integer :: nvect
+    integer(kind=8) ::  idlino, ino, iocc, iret, nangle
+    integer(kind=8) :: nb, nbno, nbnoe, ndim, nprec, nrayon, nv
+    integer(kind=8) :: nvect
     real(kind=8) :: ang, d2, dist, eps, prec, psca
     real(kind=8) :: rayon, un, xnorm, xnorm2, xnoxx0
     real(kind=8) :: xnoxx2, zero

@@ -32,25 +32,25 @@ subroutine jerecu(clas)
 !
 ! IN  CLAS   : NOM DE CLASSE ASSOCIEE
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ic, idco, idcol, idec, idos, idosl
-    integer :: jcara, jdate, jdocu, jgenr, jhcod
-    integer :: jiadd, jiadm, jlong, jlono, jltyp, jluti, jmarq
-    integer :: jorig, jrnom, jtype, jusadi, k, lgl, n
-    integer :: nbdet, nbgros, nblim, nbpeti, ncla1, ncla2
+    integer(kind=8) :: ic, idco, idcol, idec, idos, idosl
+    integer(kind=8) :: jcara, jdate, jdocu, jgenr, jhcod
+    integer(kind=8) :: jiadd, jiadm, jlong, jlono, jltyp, jluti, jmarq
+    integer(kind=8) :: jorig, jrnom, jtype, jusadi, k, lgl, n
+    integer(kind=8) :: nbdet, nbgros, nblim, nbpeti, ncla1, ncla2
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -58,8 +58,8 @@ subroutine jerecu(clas)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -77,7 +77,7 @@ subroutine jerecu(clas)
 !     ------------------------------------------------------------------
     aster_logical :: actu
     character(len=1) :: kclas
-    integer :: itp(1), jitp, iaditp, iaddi(2), lgbl, iadyn
+    integer(kind=8) :: itp(1), jitp, iaditp, iaddi(2), lgbl, iadyn
 ! DEB ------------------------------------------------------------------
     iaddi(2) = 0
     kclas = clas

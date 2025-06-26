@@ -20,10 +20,10 @@
 !
 interface
     subroutine peenca(champ, long, vr, nbmail, nummai)
-        integer :: long
+        integer(kind=8) :: long
         character(len=*) :: champ
         real(kind=8) :: vr(long)
-        integer :: nbmail
-        integer :: nummai(*)
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: nummai(*)
     end subroutine peenca
 end interface

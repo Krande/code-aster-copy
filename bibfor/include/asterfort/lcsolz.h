@@ -21,11 +21,11 @@
 interface
     subroutine lcsolz(a, b, ndim, n, nbscmb,&
                       iret)
-        integer :: nbscmb
-        integer :: ndim
+        integer(kind=8) :: nbscmb
+        integer(kind=8) :: ndim
         complex(kind=8) :: a(ndim, ndim)
         complex(kind=8) :: b(ndim, nbscmb)
-        integer :: n
-        integer :: iret
+        integer(kind=8) :: n
+        integer(kind=8) :: iret
     end subroutine lcsolz
 end interface

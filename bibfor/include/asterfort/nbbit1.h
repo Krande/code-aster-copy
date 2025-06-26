@@ -20,7 +20,7 @@
 !
 interface
     subroutine nbbit1(ec, nb1)
-        integer :: ec
-        integer :: nb1
+        integer(kind=8) :: ec
+        integer(kind=8) :: nb1
     end subroutine nbbit1
 end interface

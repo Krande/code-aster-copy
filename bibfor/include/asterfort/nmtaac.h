@@ -22,8 +22,8 @@ interface
     subroutine nmtaac(type, ndimsi, mat, sigel, vim,&
                       epm, dp, sp, xi, sigp,&
                       vip)
-        integer :: ndimsi
-        integer :: type
+        integer(kind=8) :: ndimsi
+        integer(kind=8) :: type
         real(kind=8) :: mat(14)
         real(kind=8) :: sigel(ndimsi)
         real(kind=8) :: vim(9)

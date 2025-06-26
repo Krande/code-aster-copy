@@ -19,14 +19,14 @@
 subroutine acevmb(nbocc, nlg)
     implicit none
 #include "asterfort/getvtx.h"
-    integer :: nbocc, nlg
+    integer(kind=8) :: nbocc, nlg
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR L'ELEMENT "MEMBRANE"
 ! ----------------------------------------------------------------------
 ! IN  : NBOCC  : NOMBRE D'OCCURENCE
 ! OUT : NLG    : NOMBRE TOTAL DE GROUPE DE MAILLE
 ! ----------------------------------------------------------------------
-    integer :: ioc, ng
+    integer(kind=8) :: ioc, ng
 !     ------------------------------------------------------------------
 !
     nlg = 0

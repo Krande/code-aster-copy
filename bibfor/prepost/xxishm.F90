@@ -39,9 +39,9 @@ function xxishm(mailc, mailx, mo)
     character(len=8) :: k8b, mo
     character(len=16) :: notype, notyp2
     character(len=24) :: mailc, mailx
-    integer :: nbmac1, nbmac2
-    integer :: jmac, jmail, ima, i, itypel
-    integer :: jmax
+    integer(kind=8) :: nbmac1, nbmac2
+    integer(kind=8) :: jmac, jmail, ima, i, itypel
+    integer(kind=8) :: jmax
     aster_logical :: pre1
 !-----------------------------------------------------------------------
 !

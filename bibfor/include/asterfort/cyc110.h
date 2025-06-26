@@ -22,6 +22,6 @@ interface
     subroutine cyc110(nomres, mailla, nbsect)
         character(len=8) :: nomres
         character(len=8) :: mailla
-        integer :: nbsect
+        integer(kind=8) :: nbsect
     end subroutine cyc110
 end interface

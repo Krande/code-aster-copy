@@ -56,7 +56,7 @@ subroutine calipj(load, model)
     character(len=4), parameter :: valeType = 'REEL'
     character(len=16), parameter :: factorKeyword = 'LIAISON_PROJ'
     character(len=19) :: listLineRela
-    integer :: nbOcc
+    integer(kind=8) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !

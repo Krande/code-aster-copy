@@ -48,7 +48,7 @@ subroutine srdepv(depsv, ddepsv, dgamv, ddgamv)
     !!! Variables locales
     !!!
 
-    integer :: i, k, ndi, ndt
+    integer(kind=8) :: i, k, ndi, ndt
     real(kind=8) :: devia(6, 6), deviat(6, 6)
     common/tdim/ndt, ndi
 

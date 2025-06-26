@@ -23,12 +23,12 @@ subroutine irgmor(tord, vers)
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 !
-    integer :: ntyele, neletr
+    integer(kind=8) :: ntyele, neletr
     parameter(ntyele=28)
     parameter(neletr=8)
 !
-    integer :: tord(neletr)
-    integer :: vers
+    integer(kind=8) :: tord(neletr)
+    integer(kind=8) :: vers
 !     IN  : VERS
 !     OUT : TORD
 !
@@ -52,7 +52,7 @@ subroutine irgmor(tord, vers)
 !        pyramid     ET POUR CHAQUE scalar, vector, puis tensor
 !
 !     ------------------------------------------------------------------
-    integer :: i, ind
+    integer(kind=8) :: i, ind
 !
 ! --- DATA QUI DEFINIT L'ORDRE
 !     (IDENTIQUE EN VERSION 1.0 ET 1.2 PUISQUE ON AURA ZERO ELEMENT SUR

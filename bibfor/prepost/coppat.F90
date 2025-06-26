@@ -35,16 +35,16 @@ subroutine coppat(main, maout, nbma, nbpain, lenpat, same_zone)
 
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: nbma
-    integer, intent(in) :: lenpat
-    integer, intent(out) :: nbpain
+    integer(kind=8), intent(in) :: nbma
+    integer(kind=8), intent(in) :: lenpat
+    integer(kind=8), intent(out) :: nbpain
     aster_logical, intent(in) :: same_zone
 ! -------------------------------------------------------------------------------------------------
 !   RECUPERATION ET MISE A JOUR DE LA COLLECTION .PATH
 ! -------------------------------------------------------------------------------------------------
-    integer :: nbpatch, nbzone, nbinfo, patch
-    integer :: nwpath, odpath, lonpat
-    integer :: inc1, inc2
+    integer(kind=8) :: nbpatch, nbzone, nbinfo, patch
+    integer(kind=8) :: nwpath, odpath, lonpat
+    integer(kind=8) :: inc1, inc2
 
 ! -------------------------------------------------------------------------------------------------
     call jemarq()

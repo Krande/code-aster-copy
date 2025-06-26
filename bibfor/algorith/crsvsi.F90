@@ -40,9 +40,9 @@ subroutine crsvsi(solveu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nprec
+    integer(kind=8) :: nprec
     character(len=24) :: nomslv
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !
 ! ----------------------------------------------------------------------

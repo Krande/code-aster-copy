@@ -38,15 +38,15 @@ subroutine amppr(amat, nb1, nb2, bmat, n1, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nb1, nb2, n1, n2, i, j
+    integer(kind=8) :: nb1, nb2, n1, n2, i, j
     real(kind=8) :: amat(nb1, nb2), bmat(n1, n2)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ideb, ifin, ii, iideb, iifin
-    integer :: jdeb, jfin, jj, jjdeb, jjfin
+    integer(kind=8) :: ideb, ifin, ii, iideb, iifin
+    integer(kind=8) :: jdeb, jfin, jj, jjdeb, jjfin
 !-----------------------------------------------------------------------
     jdeb = j
     jfin = min(j+n2-1, nb2)

@@ -22,8 +22,8 @@
 !
 interface
     subroutine xkamat(imate, ndim, axi, ka, mu, famiz)
-        integer :: imate
-        integer :: ndim
+        integer(kind=8) :: imate
+        integer(kind=8) :: ndim
         aster_logical :: axi
         real(kind=8) :: ka
         real(kind=8) :: mu

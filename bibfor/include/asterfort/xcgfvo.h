@@ -20,8 +20,8 @@
 !
 interface
     subroutine xcgfvo(option, ndim, nnop, fno)
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=16) :: option
         real(kind=8) :: fno(ndim*nnop)
     end subroutine xcgfvo

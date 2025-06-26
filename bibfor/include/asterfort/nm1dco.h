@@ -24,10 +24,10 @@ interface
                       vim, sigp, vip, dsde, crildc,&
                       codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: option
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=*) :: materi
         real(kind=8) :: e
         real(kind=8) :: sigm
@@ -38,6 +38,6 @@ interface
         real(kind=8) :: vip(*)
         real(kind=8) :: dsde
         real(kind=8) :: crildc(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine nm1dco
 end interface

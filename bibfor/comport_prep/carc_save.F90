@@ -53,12 +53,12 @@ subroutine carc_save(mesh, carcri, prepMapCarcri)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
-    integer, parameter :: nbCmp = CARCRI_SIZE
+    integer(kind=8), parameter :: nbCmp = CARCRI_SIZE
     character(len=24), parameter :: list_elem_affe = '&&CARCSAVE.LIST'
     aster_logical :: l_affe_all, l_parallel_mesh
-    integer :: nb_elem_affe
-    integer, pointer :: v_elem_affe(:) => null()
-    integer :: iFactorKeyword, nbFactorKeyword
+    integer(kind=8) :: nb_elem_affe
+    integer(kind=8), pointer :: v_elem_affe(:) => null()
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword
     real(kind=8), pointer :: carcriValv(:) => null()
     real(kind=8) :: parm_theta_thm, parm_alpha_thm
 !

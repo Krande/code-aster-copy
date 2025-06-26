@@ -20,6 +20,6 @@
 !
 interface
     subroutine gtalrm(nb)
-        integer :: nb
+        integer(kind=8) :: nb
     end subroutine gtalrm
 end interface

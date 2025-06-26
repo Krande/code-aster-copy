@@ -30,7 +30,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax, &
     character(len=*) :: nommat, nomnap
     real(kind=8) :: epsmin(*), epsmax(*)
     real(kind=8) :: dom(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
 !     CALCUL DU DOMMAGE ELEMENTAIRE POUR TAHERI_MIXTE
 !     ------------------------------------------------------------------
 ! IN  NOMMAT : K   : NOM DU MATERIAU
@@ -41,8 +41,8 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax, &
 ! OUT DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: icodre(10), icodwo
-    integer :: icodba, icodhs
+    integer(kind=8) :: icodre(10), icodwo
+    integer(kind=8) :: icodba, icodhs
     character(len=4) :: mode
     character(len=8) :: nompa1, nomp(2)
     character(len=16) :: nomre1, nomre2, nomres(10), cara
@@ -52,7 +52,7 @@ subroutine fgtaes(nommat, nomnap, nbcycl, epsmin, epsmax, &
     real(kind=8) :: salt, x, re(1), slmodi, y
     aster_logical :: endur
 !-----------------------------------------------------------------------
-    integer :: i, ier, nbpar
+    integer(kind=8) :: i, ier, nbpar
     real(kind=8) :: rbid, zero
 !-----------------------------------------------------------------------
     data zero/1.d-13/

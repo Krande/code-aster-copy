@@ -20,12 +20,12 @@ subroutine vectan(nb1, nb2, xi, xr, vecta, &
                   vectn, vectpt)
     implicit none
 !
-    integer :: nb1, nb2, l1, l2, i1, i2, j, i, k
+    integer(kind=8) :: nb1, nb2, l1, l2, i1, i2, j, i, k
     real(kind=8) :: xi(3, *), xr(*)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: ib, l
+    integer(kind=8) :: ib, l
     real(kind=8) :: rnorm
 !-----------------------------------------------------------------------
     l1 = 828

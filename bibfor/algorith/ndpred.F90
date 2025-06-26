@@ -55,14 +55,14 @@ subroutine ndpred(sddyna, valinc, solalg)
 !
 !
     aster_logical :: ldepl, lvite, lacce
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
     character(len=24) :: vect(3)
     character(len=19) :: depdel, vitdel, accdel
     character(len=19) :: depkm1, vitkm1, acckm1, romkm1, romk
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depmoi, vitmoi, accmoi
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !

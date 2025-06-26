@@ -77,8 +77,8 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad, &
 #include "asterfort/megeom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ncharp, nchard
-    integer :: tabido(5)
+    integer(kind=8) :: ncharp, nchard
+    integer(kind=8) :: tabido(5)
     character(len=8) :: modele, lcharp(1), lchard(1)
     character(len=24) :: sigmap, sigmad
     character(len=24) :: chtime, chs, chvois, chelem
@@ -89,23 +89,23 @@ subroutine qires1(modele, ligrel, chtime, sigmap, sigmad, &
     character(len=6) :: nompro
     parameter(nompro='QIRES1')
 !
-    integer :: nbcmp
+    integer(kind=8) :: nbcmp
     parameter(nbcmp=12)
 !
-    integer :: nbchix
+    integer(kind=8) :: nbchix
     parameter(nbchix=17)
 !
-    integer :: i, iret, iret1, iret2, iret3, iret4, iret5, iret6, iret7
-    integer :: iret8, iret9, iret10, iret11, iret12, iret13, iret14
-    integer :: ibid, iarepe
-    integer :: iatyma, iagd, iacmp, iconx1, iconx2
-    integer :: iadep1, iadep2, iavap1, iavap2
-    integer :: iaded1, iaded2, iavad1, iavad2
-    integer :: jceldp, jcelvp, jceldd, jcelvd
-    integer :: iptmp1, iptmp2, numgp1, numgp2
-    integer :: iptmd1, iptmd2, numgd1, numgd2
-    integer :: icmpp(nbcmp), icmpd(nbcmp)
-    integer :: nbrin
+    integer(kind=8) :: i, iret, iret1, iret2, iret3, iret4, iret5, iret6, iret7
+    integer(kind=8) :: iret8, iret9, iret10, iret11, iret12, iret13, iret14
+    integer(kind=8) :: ibid, iarepe
+    integer(kind=8) :: iatyma, iagd, iacmp, iconx1, iconx2
+    integer(kind=8) :: iadep1, iadep2, iavap1, iavap2
+    integer(kind=8) :: iaded1, iaded2, iavad1, iavad2
+    integer(kind=8) :: jceldp, jcelvp, jceldd, jcelvd
+    integer(kind=8) :: iptmp1, iptmp2, numgp1, numgp2
+    integer(kind=8) :: iptmd1, iptmd2, numgd1, numgd2
+    integer(kind=8) :: icmpp(nbcmp), icmpd(nbcmp)
+    integer(kind=8) :: nbrin
     character(len=1) :: base
     character(len=8) :: lpain(nbchix), lpaout(1)
     character(len=8) :: licmpp(nbcmp), licmpd(nbcmp)

@@ -62,13 +62,13 @@ subroutine te0147(option, nomte)
 !                       DECLARATION DES VARIABLES
 ! =====================================================================
 !
-    integer           :: i, j, kp, k, ind, iret
-    integer           :: ndim, nno, nnos, npg, compt
-    integer           :: ipoids, ivf, idfde, jgano
-    integer           :: ithet, igthet, igeom, idepl
-    integer           :: ipref, itemps, iforf, ipres, iforc
-    integer           :: icode, imate, jlsn, jlst, ibalo, ideg, ilag
-    integer           :: nbpara, reeldim, icodre(3)
+    integer(kind=8)           :: i, j, kp, k, ind, iret
+    integer(kind=8)           :: ndim, nno, nnos, npg, compt
+    integer(kind=8)           :: ipoids, ivf, idfde, jgano
+    integer(kind=8)           :: ithet, igthet, igeom, idepl
+    integer(kind=8)           :: ipref, itemps, iforf, ipres, iforc
+    integer(kind=8)           :: icode, imate, jlsn, jlst, ibalo, ideg, ilag
+    integer(kind=8)           :: nbpara, reeldim, icodre(3)
     real(kind=8)      :: xno1, xno2, yno1, yno2, d1, d2
     real(kind=8)      :: epsi, valpar(4), coor(18)
     real(kind=8)      :: a1(3), a2(3), a3(3), i1(3), i2(3), depl(3)

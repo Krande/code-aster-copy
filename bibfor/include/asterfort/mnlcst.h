@@ -23,11 +23,11 @@ interface
                       h, hf, xcst)
         character(len=14) :: parcho
         character(len=14) :: adime
-        integer :: ninc
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
+        integer(kind=8) :: ninc
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
         character(len=14) :: xcst
     end subroutine mnlcst
 end interface 

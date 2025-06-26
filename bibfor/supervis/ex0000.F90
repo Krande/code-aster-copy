@@ -174,9 +174,9 @@ subroutine ex0000(nuoper)
 #include "asterfort/op0197.h"
 #include "asterfort/op0199.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: nuoper
+    integer(kind=8), intent(in) :: nuoper
 !     EXECUTION DES OPERATEURS (NUMEROTES DE 0 A 199)
-    integer :: vali
+    integer(kind=8) :: vali
 !
     select case (nuoper)
     case (0)

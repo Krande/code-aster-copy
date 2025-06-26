@@ -58,11 +58,11 @@ subroutine phi2el(modele, carele, mate, mateco, accel, phibar, &
     character(len=19) :: vecel
     character(len=24) :: chgeom, chtime
     character(len=24) :: ligrmo, lchin(5), lchout(1), phib24, ve2
-    integer :: iret
+    integer(kind=8) :: iret
     aster_logical :: prem
 !
 !-----------------------------------------------------------------------
-    integer :: jlve, nbchte
+    integer(kind=8) :: jlve, nbchte
 !-----------------------------------------------------------------------
     call jemarq()
 !

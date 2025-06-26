@@ -23,9 +23,9 @@ interface
                       typmod, imate, carcri, option,&
                       dstrai0, stresm0, stres, vim, vip,&
                       dsidep, codret)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: option
         real(kind=8) :: carcri(*)
         real(kind=8) :: dstrai0(6)
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsidep(6,6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lcmohr
 end interface

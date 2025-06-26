@@ -58,7 +58,7 @@ subroutine srdgds(nmat, materf, para, vara, devsig, &
     !!! Variables globales
     !!!
 
-    integer :: nmat, nvi, val
+    integer(kind=8) :: nmat, nvi, val
     real(kind=8) :: materf(nmat, 2), dgds(6, 6), vecn(6), dfds(6), vint(nvi)
     real(kind=8) :: para(3), vara(4), ds2hds(6), devsig(6), i1, bprimp
     real(kind=8) :: dhds(6), tmp
@@ -67,7 +67,7 @@ subroutine srdgds(nmat, materf, para, vara, devsig, &
     !!! Variables locales
     !!!
 
-    integer :: i, j, ndi, ndt
+    integer(kind=8) :: i, j, ndi, ndt
     real(kind=8) :: d2fds2(6, 6), d2fdsn(6)
     real(kind=8) :: dfdnpn(6, 6), dfpndn(6, 6)
     real(kind=8) :: dfdsdn(6), dfdsvn, d2shds(6, 6), varh(2)

@@ -20,8 +20,8 @@
 !
 interface
     subroutine pgyty(nno, npg, dfde, yty)
-        integer :: nno
-        integer :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: npg
         real(kind=8) :: dfde(*)
         real(kind=8) :: yty(*)
     end subroutine pgyty

@@ -24,6 +24,6 @@ interface
     subroutine dfc_chck(sdcont, mesh, model_ndim)
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: model_ndim
+        integer(kind=8), intent(in) :: model_ndim
     end subroutine dfc_chck
 end interface

@@ -43,8 +43,8 @@ subroutine tbcopi(base, sd1, sd2)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, nbpm, nbpu, jnjv, knjv, kvale, jvale, nbpara, jtbba, ktbnp
-    integer :: nblign, jtbnp, ndim, jtblp, ktblp
+    integer(kind=8) :: i, j, nbpm, nbpu, jnjv, knjv, kvale, jvale, nbpara, jtbba, ktbnp
+    integer(kind=8) :: nblign, jtbnp, ndim, jtblp, ktblp
     character(len=1) :: bas2
     character(len=4) :: type, knume
     character(len=19) :: tab1, tab2

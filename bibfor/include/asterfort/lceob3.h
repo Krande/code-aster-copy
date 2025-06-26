@@ -25,7 +25,7 @@ interface
                       lambda, mu, alpha, ecrob, ecrod,&
                       seuil, bdim, b, d, mult,&
                       elas, dbloq, iret)
-        integer :: intmax
+        integer(kind=8) :: intmax
         real(kind=8) :: tole
         real(kind=8) :: eps(6)
         real(kind=8) :: bm(6)
@@ -36,12 +36,12 @@ interface
         real(kind=8) :: ecrob
         real(kind=8) :: ecrod
         real(kind=8) :: seuil
-        integer :: bdim
+        integer(kind=8) :: bdim
         real(kind=8) :: b(6)
         real(kind=8) :: d
         real(kind=8) :: mult
         aster_logical :: elas
         aster_logical :: dbloq
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lceob3
 end interface

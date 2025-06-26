@@ -22,7 +22,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre, &
     implicit none
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
-    integer :: ndim, nelem, nbr(nelem), nalpha, degre
+    integer(kind=8) :: ndim, nelem, nbr(nelem), nalpha, degre
     real(kind=8) :: prec, erreur(nelem), alpha(nelem), re(nelem)
     character(len=16) :: types
 !
@@ -54,7 +54,7 @@ subroutine rsingu(ndim, nelem, nbr, nalpha, degre, &
 !
 ! ......................................................................
 !
-    integer :: inel, iter
+    integer(kind=8) :: inel, iter
     real(kind=8) :: errtot, prec0, cumm, ordre, ae(nelem), be(nelem)
     real(kind=8) :: d, mu, fonc, dfonc
     aster_logical :: lqi

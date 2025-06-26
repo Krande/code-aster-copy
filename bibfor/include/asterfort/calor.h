@@ -30,7 +30,7 @@ interface
         real(kind=8), intent(in) :: alp11
         real(kind=8), intent(in) :: alp12
         real(kind=8), intent(in) :: coeps
-        integer, intent(in) ::  ndim
+        integer(kind=8), intent(in) ::  ndim
         real(kind=8) :: calor
     end function calor
 end interface 

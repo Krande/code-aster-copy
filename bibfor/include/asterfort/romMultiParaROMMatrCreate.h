@@ -21,7 +21,7 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_Empi), intent(in) :: base
         type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-        integer, intent(in) :: i_coef
+        integer(kind=8), intent(in) :: i_coef
         character(len=19), intent(in) :: syst_matr
     end subroutine romMultiParaROMMatrCreate
 end interface

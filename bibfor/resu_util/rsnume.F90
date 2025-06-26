@@ -33,7 +33,7 @@ subroutine rsnume(resu, nomsy, nu)
 ! OUT  K14  NU      : NOM DU NUME_DDL  TROUVE (OU ' ' SINON)
 ! ----------------------------------------------------------------------
 !
-    integer :: nume_last, icode, iret, luti, iret2
+    integer(kind=8) :: nume_last, icode, iret, luti, iret2
     character(len=19) :: chamno, resu2
     character(len=24), pointer :: refe(:) => null()
 !

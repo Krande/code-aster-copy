@@ -36,7 +36,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
 !
 !
     character(len=*) :: fami
-    integer :: kpg, ksp, ndim, imate
+    integer(kind=8) :: kpg, ksp, ndim, imate
     character(len=16) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8) :: instam, instap
@@ -46,26 +46,26 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: sigp(6), vip(*)
     character(len=8) :: typmod(*)
     real(kind=8) :: dsidep(6, 6)
-    integer :: codret
+    integer(kind=8) :: codret
 
 !
 ! DECLARATIONS LOCALES
-    integer :: nvarflumax, nmatflumax
+    integer(kind=8) :: nvarflumax, nmatflumax
     parameter(nvarflumax=158, nmatflumax=165)
 !
-    integer :: nmatbe, nmatac, nmatflu, nvarflu, nmatbe2, nmatbe3
+    integer(kind=8) :: nmatbe, nmatac, nmatflu, nvarflu, nmatbe2, nmatbe3
 !   Nombre de paramètres relatifs au beton
     parameter(nmatbe=57, nmatbe2=59)
 !   Nombre de paramtre relatif a l'acier (1+21*5)
     parameter(nmatac=106)
 !
-    integer :: nbelas3d
+    integer(kind=8) :: nbelas3d
     parameter(nbelas3d=4)
 
     character(len=12) :: nomres(nmatflumax), nomres1(nbelas3d)
     real(kind=8) :: valres(nmatflumax), xmat(nbelas3d+nmatflumax), valres1(nbelas3d)
-    integer :: nstrs, mfr, i, j
-    integer :: retour(nmatflumax), retour1(nbelas3d), iteflumaxi
+    integer(kind=8) :: nstrs, mfr, i, j
+    integer(kind=8) :: retour(nmatflumax), retour1(nbelas3d), iteflumaxi
     real(kind=8) :: d(6, 6), e, nu, coef, coef1, coef2, coef3
     real(kind=8) :: zero, un, deux, rac2, var0(6), sig0(6)
 !
@@ -74,12 +74,12 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: alpham, alphap, teta13d, teta23d, sech, epstf3d(6)
 !
 !
-    integer :: iret, ifour, ifour11
+    integer(kind=8) :: iret, ifour, ifour11
     real(kind=8) :: epsmc(6), depsc(6), epsc(6)
     real(kind=8) :: tm, tp, tref
 
 !   variables de transfert de donnees ( a declarer suivant idvar4 et idvisc)
-    integer :: nmat3dmax, nmat3d, nstrs3d, nvari3dmax, nvari3d, ierr1, mfr11
+    integer(kind=8) :: nmat3dmax, nmat3d, nstrs3d, nvari3dmax, nvari3d, ierr1, mfr11
 !
 
 !   taille du pseudo vecteur des contraintes pour fluendo3d (tjrs 6
@@ -88,7 +88,7 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate, &
 !
 !   mettre a jour ici le nbre de parametres materiaux et variables
 !   interne de l option du modele
-    integer :: NMATAILX, NMATRAG, NVARRAG
+    integer(kind=8) :: NMATAILX, NMATRAG, NVARRAG
     parameter(NMATRAG=0)
     parameter(NVARRAG=0)
     parameter(NMATAILX=0)

@@ -20,16 +20,16 @@ subroutine rk5app(nbeq, vparam_real, vparam_int, vparam_car, dtemps, yinit, dyin
                   rk5fct, solu, decoup)
     implicit none
 #include "asterf_types.h"
-    integer :: nbeq
+    integer(kind=8) :: nbeq
     real(kind=8)     :: vparam_real(*), dtemps, yinit(nbeq), dyinit(nbeq), solu(3*nbeq)
-    integer          :: vparam_int(*)
+    integer(kind=8)          :: vparam_int(*)
     character(len=*) :: vparam_car(*)
     aster_logical    :: decoup
 !
     interface
         subroutine rk5fct(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
             real(kind=8)     :: ppr(*)
-            integer          :: ppi(*)
+            integer(kind=8)          :: ppi(*)
             character(len=*) :: ppc(*)
             real(kind=8)     :: yy0(*)
             real(kind=8)     :: dy0(*)
@@ -68,7 +68,7 @@ subroutine rk5app(nbeq, vparam_real, vparam_int, vparam_car, dtemps, yinit, dyin
 ! --------------------------------------------------------------------------------------------------
 !
 !   niveau du runge-kutta
-    integer :: nivrk, nn, niv, ii
+    integer(kind=8) :: nivrk, nn, niv, ii
     parameter(nivrk=6)
     real(kind=8) :: yy(nbeq), rr(nbeq, nivrk)
 !   tables de cash-karp

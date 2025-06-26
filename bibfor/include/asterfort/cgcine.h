@@ -22,8 +22,8 @@ interface
     subroutine cgcine(ndim, nno1, vff1, wref,&
                       dffr1, geom, tang, wg, l,&
                       b, nornor)
-        integer :: nno1
-        integer :: ndim
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
         real(kind=8) :: vff1(nno1)
         real(kind=8) :: wref
         real(kind=8) :: dffr1(nno1)

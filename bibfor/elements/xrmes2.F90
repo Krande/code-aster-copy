@@ -22,7 +22,7 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois, &
 ! aslint: disable=W1306
     implicit none
 #include "jeveux.h"
-    integer :: ndim, nbnase, cpt, in, ivois, jsigse, nno, nbcmp, jcnset
+    integer(kind=8) :: ndim, nbnase, cpt, in, ivois, jsigse, nno, nbcmp, jcnset
     real(kind=8) :: dsg11(nbnase), dsg22(nbnase), dsg12(nbnase)
 !  XFEM - ERREUR EN MECANIQUE - TERME DE SAUT - DIMENSION 2
 !  *       *        **                   *                *
@@ -61,7 +61,7 @@ subroutine xrmes2(ndim, nbnase, cpt, in, ivois, &
 !
     real(kind=8) :: sig11(nbnase), sig22(nbnase), sig12(nbnase)
     real(kind=8) :: sigv11(nbnase), sigv22(nbnase), sigv12(nbnase)
-    integer :: j, k, insui, inv, invsui, inx, inxv, insux
+    integer(kind=8) :: j, k, insui, inv, invsui, inx, inxv, insux
 !
 ! ----------------------------------------------------------------------
 !

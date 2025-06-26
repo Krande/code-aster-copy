@@ -24,7 +24,7 @@ subroutine ptka01(sk, e, a, xl, xiy, &
 #include "asterfort/utmess.h"
     real(kind=8) :: sk(*)
     real(kind=8) :: e, a, xl, xiy, xiz, xjx, g, alfay, alfaz, ey, ez
-    integer :: ist
+    integer(kind=8) :: ist
 !    -------------------------------------------------------------------
 !    * CE SOUS PROGRAMME CALCULE LA MATRICE DE RAIDEUR DE L'ELEMENT DE
 !    POUTRE DROITE A SECTION CONSTANTE.
@@ -72,7 +72,7 @@ subroutine ptka01(sk, e, a, xl, xiy, &
 ! LOC ------------------------------------------------------------------
 ! LOC I   ! IP     !   12    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 !     ------------------------------------------------------------------
-    integer :: ip(12), i
+    integer(kind=8) :: ip(12), i
     real(kind=8) :: zero, xl2, xl3, phiy, phiz, eiy, eiz
 !--- -------------------------------------------------------------------
     parameter(zero=0.d0)

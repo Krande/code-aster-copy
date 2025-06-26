@@ -27,7 +27,7 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp, &
 #include "asterfort/jemarq.h"
 #include "asterfort/mefin1.h"
 #include "asterfort/wkvect.h"
-    integer :: nbz, nbmod, nbcyl, nbgrp, numgrp(*)
+    integer(kind=8) :: nbz, nbmod, nbcyl, nbgrp, numgrp(*)
     real(kind=8) :: z(*), freq0(*), rho(*), visc(*), rint(*), phix(*), phiy(*)
     real(kind=8) :: dcent(*), matma(*)
 !     CALCUL DE L'AMORTISSEMENT AJOUTE DU AU FLUIDE AU REPOS
@@ -64,12 +64,12 @@ subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp, &
 !                SONT PERTURBES PAR LA CONTRIBUTION DU FLUIDE AU REPOS
 !-----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: imod, igrp, jgrp, icyl, ncyl
+    integer(kind=8) :: imod, igrp, jgrp, icyl, ncyl
     real(kind=8) :: amor, rayo
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ifct, ippxx, ippxy, ippyx, ippyy, ivnxx, ivnxy
-    integer :: ivnyx, ivnyy, nz
+    integer(kind=8) :: ifct, ippxx, ippxy, ippyx, ippyy, ivnxx, ivnxy
+    integer(kind=8) :: ivnyx, ivnyy, nz
     real(kind=8) :: pi
 !-----------------------------------------------------------------------
     call jemarq()

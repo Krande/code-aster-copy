@@ -26,15 +26,15 @@ interface
         character(len=8) :: typflu
         character(len=8) :: base
         character(len=8) :: noma
-        integer :: nuor(*)
+        integer(kind=8) :: nuor(*)
         real(kind=8) :: amor(*)
         real(kind=8) :: freq(*)
         real(kind=8) :: masg(*)
         real(kind=8) :: fact(*)
         real(kind=8) :: vite(*)
-        integer :: nbm
-        integer :: npv
-        integer :: nivpar
-        integer :: nivdef
+        integer(kind=8) :: nbm
+        integer(kind=8) :: npv
+        integer(kind=8) :: nivpar
+        integer(kind=8) :: nivdef
     end subroutine flust4
 end interface

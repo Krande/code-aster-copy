@@ -29,7 +29,7 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe, &
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"
     real(kind=8) :: he, lsng, lstg, baslog(3*3), fe(4), dgdgl(4, 3)
-    integer :: iret
+    integer(kind=8) :: iret
 !
 !
 !
@@ -52,7 +52,7 @@ subroutine xcalfe(he, lsng, lstg, baslog, fe, &
 !
 !----------------------------------------------------------------
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: p(3, 3), invp(3, 3)
     real(kind=8) :: rg, tg, dgdpo(4, 2), dgdlo(4, 3)
 !

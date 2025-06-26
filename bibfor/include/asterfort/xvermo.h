@@ -20,7 +20,7 @@
 !
 interface
     subroutine xvermo(nfiss, fiss, mai)
-        integer :: nfiss
+        integer(kind=8) :: nfiss
         character(len=8) :: fiss(nfiss)
         character(len=8) :: mai
     end subroutine xvermo

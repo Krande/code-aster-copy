@@ -21,6 +21,6 @@
 interface
     function nbgrel(ligrlz)
         character(len=*) :: ligrlz
-        integer :: nbgrel
+        integer(kind=8) :: nbgrel
     end function nbgrel
 end interface

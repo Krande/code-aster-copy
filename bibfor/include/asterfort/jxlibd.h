@@ -20,10 +20,10 @@
 !
 interface
     subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
-        integer :: idco
-        integer :: idos
-        integer :: ic
-        integer :: iaddi(2)
-        integer :: lonoi
+        integer(kind=8) :: idco
+        integer(kind=8) :: idos
+        integer(kind=8) :: ic
+        integer(kind=8) :: iaddi(2)
+        integer(kind=8) :: lonoi
     end subroutine jxlibd
 end interface

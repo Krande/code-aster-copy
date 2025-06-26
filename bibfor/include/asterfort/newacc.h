@@ -21,7 +21,7 @@
 interface
     subroutine newacc(neq, c1, c2, c3, d0,&
                       v0, a0, d1, a1)
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: c1
         real(kind=8) :: c2
         real(kind=8) :: c3

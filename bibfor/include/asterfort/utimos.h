@@ -22,7 +22,7 @@
 !
 interface
     subroutine utimos(unit, obin, lattr, lcont)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: obin
         aster_logical :: lattr
         aster_logical :: lcont

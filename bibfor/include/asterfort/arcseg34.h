@@ -20,7 +20,7 @@
 !
           interface 
             subroutine arcseg34(nbno,coor,abscur)
-              integer, intent(in) :: nbno
+              integer(kind=8), intent(in) :: nbno
               real(kind=8), intent(in) :: coor(3,nbno)
               real(kind=8), intent(out) :: abscur(nbno)
             end subroutine arcseg34

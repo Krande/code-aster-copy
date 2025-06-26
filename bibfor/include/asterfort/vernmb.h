@@ -20,9 +20,9 @@
 !
 interface
     subroutine vernmb(icl, cnl, ier, irteti)
-        integer :: icl
+        integer(kind=8) :: icl
         character(len=14) :: cnl
-        integer :: ier
-        integer :: irteti
+        integer(kind=8) :: ier
+        integer(kind=8) :: irteti
     end subroutine vernmb
 end interface

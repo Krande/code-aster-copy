@@ -33,7 +33,7 @@ subroutine matdis(matd, verbose)
     character(len=3) :: matd
     aster_logical, intent(in), optional :: verbose
 ! ----------------------------------------------------------------------
-    integer :: ibid, eximc, eximo
+    integer(kind=8) :: ibid, eximc, eximo
     aster_logical :: verbose_loc
     character(len=8) :: modele
     character(len=19) :: ligrmo, partit

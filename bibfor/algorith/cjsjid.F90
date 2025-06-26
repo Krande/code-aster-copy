@@ -56,7 +56,7 @@ subroutine cjsjid(mod, mater, epsd, deps, yd, &
 #include "asterfort/lcicma.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nmod, i, j, k, codret
+    integer(kind=8) :: ndt, ndi, nmod, i, j, k, codret
     parameter(nmod=16)
     real(kind=8) :: epsd(6), deps(6), depse(6), depsdp(6)
     real(kind=8) :: dsignl(6), dsigl(6), sigf(6)

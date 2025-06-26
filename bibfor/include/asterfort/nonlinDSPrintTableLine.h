@@ -21,6 +21,6 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Table), intent(in) :: table
         character(len=1), intent(in) :: col_sep
-        integer, intent(in) :: unit_print
+        integer(kind=8), intent(in) :: unit_print
     end subroutine nonlinDSPrintTableLine
 end interface

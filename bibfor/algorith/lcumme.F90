@@ -35,7 +35,7 @@ subroutine lcumme(youn, xnu, ifou, dep)
 !
     implicit none
 #include "asterfort/assert.h"
-    integer :: ifou
+    integer(kind=8) :: ifou
 ! MODIFI DU 6 JANVIER 2002 - YLP SUPPRESSION DES DECLARATIONS
 ! IMPLICITES DES TABLEAUX
 !      REAL*8 DEP(NSTRS,NSTRS)

@@ -23,7 +23,7 @@
 interface
     subroutine chsfus(nbchs, lichs, lcumul, lcoefr, lcoefc,&
                       lcoc, base, chs3)
-        integer :: nbchs
+        integer(kind=8) :: nbchs
         character(len=*) :: lichs(nbchs)
         aster_logical :: lcumul(nbchs)
         real(kind=8) :: lcoefr(nbchs)

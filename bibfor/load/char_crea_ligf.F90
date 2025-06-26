@@ -28,8 +28,8 @@ subroutine char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
 !
     character(len=19), intent(in) :: ligrch
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_elem_late
-    integer, intent(in) :: nb_noel_maxi
+    integer(kind=8), intent(in) :: nb_elem_late
+    integer(kind=8), intent(in) :: nb_noel_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,11 +46,11 @@ subroutine char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_grel, iret
-    integer :: lont_liel, lont_nema, nb_node_late
+    integer(kind=8) :: nb_grel, iret
+    integer(kind=8) :: lont_liel, lont_nema, nb_node_late
     character(len=8), pointer :: p_ligrch_lgrf(:) => null()
-    integer, pointer :: p_ligrch_nbno(:) => null()
-    integer, pointer :: p_ligrch_lgns(:) => null()
+    integer(kind=8), pointer :: p_ligrch_nbno(:) => null()
+    integer(kind=8), pointer :: p_ligrch_lgns(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

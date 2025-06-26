@@ -21,8 +21,8 @@
 interface
     subroutine zzcala(npg, nno, wi, x, y,&
                       xmin, xmax, ymin, ymax, a)
-        integer :: npg
-        integer :: nno
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
         real(kind=8) :: wi(1)
         real(kind=8) :: x(1)
         real(kind=8) :: y(1)

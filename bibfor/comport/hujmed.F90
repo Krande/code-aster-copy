@@ -29,7 +29,7 @@ subroutine hujmed(k, mater, vin, sig)
 !   --------------------------------------------------------------------
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-    integer :: ndt, ndi, k, i, j, kp
+    integer(kind=8) :: ndt, ndi, k, i, j, kp
     real(kind=8) :: dd, beta, b, m, pcr, rc
     real(kind=8) :: sig(6), phi, pcref, ptrac
     real(kind=8) :: vin(*), tou(3), p, d12

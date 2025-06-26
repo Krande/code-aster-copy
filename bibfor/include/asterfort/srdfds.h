@@ -20,7 +20,7 @@
 !
 interface
     subroutine srdfds(nbmat, mater, para, var, ds2hds, ucri, dfdsig)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: para(3)
         real(kind=8) :: var(4)

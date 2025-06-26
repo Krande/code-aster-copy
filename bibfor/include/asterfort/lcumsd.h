@@ -22,12 +22,12 @@ interface
     subroutine lcumsd(vari, nvari, cmat, nmat, nstrs,&
                       isph, tdt, hini, hfin, afp,&
                       bfp, cfp, cfps, cfpd)
-        integer :: nmat
-        integer :: nvari
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvari
         real(kind=8) :: vari(nvari)
         real(kind=8) :: cmat(nmat)
-        integer :: nstrs
-        integer :: isph
+        integer(kind=8) :: nstrs
+        integer(kind=8) :: isph
         real(kind=8) :: tdt
         real(kind=8) :: hini
         real(kind=8) :: hfin

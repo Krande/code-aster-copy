@@ -21,7 +21,7 @@
 interface
     subroutine foattr(motcle, iocc, nomfon)
         character(len=*) :: motcle
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: nomfon
     end subroutine foattr
 end interface

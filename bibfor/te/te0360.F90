@@ -55,12 +55,12 @@ subroutine te0360(option, nomte)
     character(len=16) :: defo_comp
     character(len=8) :: typmod(2), lielrf(10)
     aster_logical :: axi, matsym, lVect, lMatr, lVari, lSigm
-    integer :: iret, ntrou, codret, jtab(7)
-    integer :: ndim, nno1, nno2, npg, lgpg, nddl, neps
-    integer :: jv_w, jv_vff1, jv_geom, jv_mate, jv_vff2, jv_dff2
-    integer :: jv_varim, jv_varip, jv_instm, jv_instp, jv_codret
-    integer :: jv_ddlm, jv_ddld, jv_carcri, jv_angmas
-    integer :: jv_vectu, jv_contp, jv_varix, jv_matuu, jv_matns
+    integer(kind=8) :: iret, ntrou, codret, jtab(7)
+    integer(kind=8) :: ndim, nno1, nno2, npg, lgpg, nddl, neps
+    integer(kind=8) :: jv_w, jv_vff1, jv_geom, jv_mate, jv_vff2, jv_dff2
+    integer(kind=8) :: jv_varim, jv_varip, jv_instm, jv_instp, jv_codret
+    integer(kind=8) :: jv_ddlm, jv_ddld, jv_carcri, jv_angmas
+    integer(kind=8) :: jv_vectu, jv_contp, jv_varix, jv_matuu, jv_matns
     character(len=16), pointer :: compor(:) => null()
     real(kind=8):: ang_zero(3)
     real(kind=8), allocatable:: wg(:, :), ni2ldc(:, :), b(:, :, :), ang(:, :)

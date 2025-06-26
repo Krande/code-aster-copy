@@ -23,7 +23,7 @@ subroutine usubis(type, para, crit, epsi, x1, &
     real(kind=8) :: para(*)
     character(len=*) :: type, crit
 !-----------------------------------------------------------------------
-    integer :: i, iret, maxit
+    integer(kind=8) :: i, iret, maxit
     real(kind=8) :: df, df1, df2, epsi, f, f1, f2
     real(kind=8) :: resu, x, x1, x2, xd, xg
 !-----------------------------------------------------------------------

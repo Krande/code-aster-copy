@@ -21,12 +21,12 @@
 interface 
     subroutine dhrc_calc_a_term(i, j, sup_s, inf_s,a0, aa_t, ga_t, aa_c, ga_c, vint, &
                                 a, ap1, ap2, as1, as2, rvp, sup_d, inf_d)
-        integer, intent(in) :: i
-        integer, intent(in) :: j
-        integer, intent(in) :: sup_s
-        integer, intent(in) :: inf_s
-        integer, optional, intent(in) :: sup_d
-        integer, optional, intent(in) :: inf_d
+        integer(kind=8), intent(in) :: i
+        integer(kind=8), intent(in) :: j
+        integer(kind=8), intent(in) :: sup_s
+        integer(kind=8), intent(in) :: inf_s
+        integer(kind=8), optional, intent(in) :: sup_d
+        integer(kind=8), optional, intent(in) :: inf_d
         real(kind=8), optional, intent(in) :: rvp
         real(kind=8), intent(in) :: vint(*)
         real(kind=8), intent(in) :: a0(6, 6)

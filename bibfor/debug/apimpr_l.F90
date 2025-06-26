@@ -35,7 +35,7 @@ subroutine apimpr_l(ifm, mesh, ds_contact)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: ifm
+    integer(kind=8), intent(in) :: ifm
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
@@ -54,20 +54,20 @@ subroutine apimpr_l(ifm, mesh, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: knuzo
-    integer :: nb_elem_mast, nb_elem_slav, nb_node_slav, nb_node_mast, nb_cont_pair
-    integer :: nb_elem_patch
-    integer :: list_elem(5)
+    integer(kind=8) :: nb_elem_mast, nb_elem_slav, nb_node_slav, nb_node_mast, nb_cont_pair
+    integer(kind=8) :: nb_elem_patch
+    integer(kind=8) :: list_elem(5)
     character(len=24) :: sdappa_mast, sdappa_slav
-    integer, pointer :: v_sdappa_mast(:) => null()
-    integer, pointer :: v_sdappa_slav(:) => null()
-    integer, pointer :: v_mesh_comapa(:) => null()
-    integer, pointer :: v_mesh_lpatch(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
-    integer :: i_cont_zone, i_patch, i_node, i_elem_slav, i_cont_pair, i_elem_patch, i_elem
-    integer :: patch_jdec, patch_indx, patch_nume
-    integer :: nb_cont_zone, elem_nbnode
-    integer :: nt_patch, nt_node_slav, nt_node_mast
-    integer :: node_nume(9), elem_slav_nume, elem_mast_nume, elem_nume
+    integer(kind=8), pointer :: v_sdappa_mast(:) => null()
+    integer(kind=8), pointer :: v_sdappa_slav(:) => null()
+    integer(kind=8), pointer :: v_mesh_comapa(:) => null()
+    integer(kind=8), pointer :: v_mesh_lpatch(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
+    integer(kind=8) :: i_cont_zone, i_patch, i_node, i_elem_slav, i_cont_pair, i_elem_patch, i_elem
+    integer(kind=8) :: patch_jdec, patch_indx, patch_nume
+    integer(kind=8) :: nb_cont_zone, elem_nbnode
+    integer(kind=8) :: nt_patch, nt_node_slav, nt_node_mast
+    integer(kind=8) :: node_nume(9), elem_slav_nume, elem_mast_nume, elem_nume
     character(len=8) :: node_name(9), elem_name(9), elem_slav_name, elem_mast_name
     real(kind=8) :: coefint, gap, weight, weight_total
     character(len=19) :: sdappa
@@ -76,7 +76,7 @@ subroutine apimpr_l(ifm, mesh, ds_contact)
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     real(kind=8), pointer :: v_sdappa_poid(:) => null()
     character(len=24) :: sdappa_apli
-    integer, pointer :: v_sdappa_apli(:) => null()
+    integer(kind=8), pointer :: v_sdappa_apli(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

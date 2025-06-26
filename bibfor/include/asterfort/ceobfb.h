@@ -26,7 +26,7 @@ interface
         real(kind=8) :: lambda
         real(kind=8) :: mu
         real(kind=8) :: ecrob
-        integer :: bdim
+        integer(kind=8) :: bdim
         real(kind=8) :: fb(6)
         real(kind=8) :: nofbm
         real(kind=8) :: fbm(6)

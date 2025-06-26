@@ -21,7 +21,7 @@ subroutine transpos1(xt, x, jdim)
 !=====================================================================
 !=====================================================================
     implicit none
-    integer :: jdim, i, j
+    integer(kind=8) :: jdim, i, j
     real(kind=8) :: xt(jdim, jdim), x(jdim, jdim)
     do i = 1, jdim
         do j = 1, jdim

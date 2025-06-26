@@ -24,9 +24,9 @@ interface
     subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu,&
                       coef, xabs, lfonct, ceta, cetap,&
                       ceta2p)
-        integer :: nbabs
-        integer :: nbmode
-        integer :: nbmesu
+        integer(kind=8) :: nbabs
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbmesu
         real(kind=8) :: phi(nbmesu, nbmode)
         complex(kind=8) :: cmesu(nbmesu, nbabs)
         real(kind=8) :: coef(*)

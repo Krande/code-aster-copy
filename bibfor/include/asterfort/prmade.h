@@ -20,10 +20,10 @@
 !
 interface
     subroutine prmade(deblis, liste, adjncy, xadjd, ndi)
-        integer :: deblis
-        integer :: liste(*)
-        integer :: adjncy(*)
-        integer :: xadjd(*)
-        integer :: ndi
+        integer(kind=8) :: deblis
+        integer(kind=8) :: liste(*)
+        integer(kind=8) :: adjncy(*)
+        integer(kind=8) :: xadjd(*)
+        integer(kind=8) :: ndi
     end subroutine prmade
 end interface

@@ -54,8 +54,8 @@ subroutine cfmxme(nume_dof, sddyna, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nt_cont_poin
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nt_cont_poin
     aster_logical :: l_dyna, l_cont_node
     character(len=24) :: sdcont_etatct
     real(kind=8), pointer :: v_sdcont_etatct(:) => null()
@@ -64,7 +64,7 @@ subroutine cfmxme(nume_dof, sddyna, ds_contact)
     character(len=24) :: sdcont_apjeu
     real(kind=8), pointer :: v_sdcont_apjeu(:) => null()
     character(len=24) :: sdcont_vitini, sdcont_accini
-    integer :: ztabf, zetat
+    integer(kind=8) :: ztabf, zetat
     aster_logical :: l_pena_cont, l_fric
 !
 ! --------------------------------------------------------------------------------------------------

@@ -33,25 +33,25 @@ interface
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: lischa
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19) :: sdpilo
-        integer :: iterat
+        integer(kind=8) :: iterat
         character(len=19) :: sdnume
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
         character(len=19) :: sddisc
-        integer :: nbeffe
+        integer(kind=8) :: nbeffe
         aster_logical :: irecli
         real(kind=8) :: proeta(2)
         real(kind=8) :: offset
         real(kind=8) :: rho
         real(kind=8) :: etaf
-        integer :: ldccvg
-        integer :: pilcvg
+        integer(kind=8) :: ldccvg
+        integer(kind=8) :: pilcvg
         real(kind=8) :: residu
         character(len=19) :: matass
     end subroutine nmceta

@@ -29,6 +29,6 @@ interface
         character(len=24) :: vcn
         character(len=24) :: grlr
         real(kind=8)      :: lcmin
-        integer           :: ndim
+        integer(kind=8)           :: ndim
     end subroutine xprini
 end interface

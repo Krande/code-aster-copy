@@ -18,7 +18,7 @@
 !
 interface
     subroutine mmmvex(nnl, nbcps, ndexfr, vectff)
-        integer, intent(in) :: nnl, nbcps, ndexfr
+        integer(kind=8), intent(in) :: nnl, nbcps, ndexfr
         real(kind=8), intent(inout) :: vectff(18)
     end subroutine mmmvex
 end interface

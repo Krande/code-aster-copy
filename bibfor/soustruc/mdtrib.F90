@@ -18,7 +18,7 @@
 !
 subroutine mdtrib(ind, a, n)
     implicit none
-    integer :: n, ind(n)
+    integer(kind=8) :: n, ind(n)
     real(kind=8) :: a(n)
 !
 !     CLASSEMENT DE VALEURS (TRI BULLE)
@@ -28,7 +28,7 @@ subroutine mdtrib(ind, a, n)
 ! IN  : A
 ! OUT : IND
 ! ----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !     ------------------------------------------------------------------
 !
     do i = n-1, 1, -1

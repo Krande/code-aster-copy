@@ -37,13 +37,13 @@ subroutine jefini(cond, close)
     aster_logical, intent(in), optional :: close
 ! ======================================================================
 !
-    integer :: i, n
+    integer(kind=8) :: i, n
 !-----------------------------------------------------------------------
     parameter(n=5)
 !
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: nbfic
+    integer(kind=8) :: nbfic
     common/iparje/nbfic
 !     ------------------------------------------------------------------
     character(len=2) :: dn2
@@ -52,18 +52,18 @@ subroutine jefini(cond, close)
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 !
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
-    integer :: icdyn, mxltot
+    integer(kind=8) :: icdyn, mxltot
     common/xdynje/icdyn, mxltot
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
 !     ==================================================================
-    integer :: vali(7), info, ifm, ires, iret
+    integer(kind=8) :: vali(7), info, ifm, ires, iret
     aster_logical :: close_base
     character(len=8) :: kcond, staou, k8tab(3)
     character(len=24) :: ladate

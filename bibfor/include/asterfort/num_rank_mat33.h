@@ -23,6 +23,6 @@ interface
       real(kind=8), intent(in) :: m(3,3)
       real(kind=8), intent(in) :: prec
       real(kind=8), intent(out) :: indic
-      integer :: num_rank_mat33
+      integer(kind=8) :: num_rank_mat33
     end function num_rank_mat33
 end interface

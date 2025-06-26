@@ -28,7 +28,7 @@ interface
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sddyna
         character(len=19), intent(in) :: sdnume
-        integer, intent(in) :: nume_inst
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: list_func_acti(*)
     end subroutine mminit
 end interface

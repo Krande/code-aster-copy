@@ -26,13 +26,13 @@ subroutine mmtole(alias, nno, ndim, coorma, toleou, &
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmtang.h"
     character(len=8) :: alias
-    integer :: nno
-    integer :: ndim
+    integer(kind=8) :: nno
+    integer(kind=8) :: ndim
     real(kind=8) :: coorma(27)
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: toleou
-    integer :: iproj
+    integer(kind=8) :: iproj
 !
 ! ----------------------------------------------------------------------
 !

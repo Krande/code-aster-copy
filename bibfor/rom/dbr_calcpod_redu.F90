@@ -32,11 +32,11 @@ subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nb_snap
-    integer, intent(in) :: m
+    integer(kind=8), intent(in) :: nb_snap
+    integer(kind=8), intent(in) :: m
     real(kind=8), pointer :: q(:)
     real(kind=8), pointer :: v(:)
-    integer, intent(in) :: nb_mode
+    integer(kind=8), intent(in) :: nb_mode
     real(kind=8), pointer :: v_gamma(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,9 +56,9 @@ subroutine dbr_calcpod_redu(nb_snap, m, q, v, nb_mode, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8), pointer :: v_pod(:) => null()
-    integer :: ieq, i_mode
+    integer(kind=8) :: ieq, i_mode
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------

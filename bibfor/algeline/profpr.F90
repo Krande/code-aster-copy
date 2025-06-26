@@ -33,14 +33,14 @@ subroutine profpr(icoq, rki, r1, r2, coepr1, &
 ! OUT : COEPR2 : COEFFICIENT PONDERATEUR POUR LA PRESSION EN R2
 ! OUT : WPR    : VALEUR MOYENNE DU PROFIL DE PRESSION
 !-----------------------------------------------------------------------
-    integer :: icoq
+    integer(kind=8) :: icoq
     real(kind=8) :: rki, r1, r2, coepr1, coepr2, wpr
 !-----------------------------------------------------------------------
 !
 ! --- 1.INITIALISATIONS
 !
 !-----------------------------------------------------------------------
-    integer :: ki
+    integer(kind=8) :: ki
     real(kind=8) :: a, h0, r0, rc, t, x, y
     real(kind=8) :: z, z1, z2
 !-----------------------------------------------------------------------

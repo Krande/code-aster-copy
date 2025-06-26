@@ -28,7 +28,7 @@ subroutine cfzone(defico, izone, typsur, isurf)
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
     character(len=4) :: typsur
-    integer :: izone, isurf
+    integer(kind=8) :: izone, isurf
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ subroutine cfzone(defico, izone, typsur, isurf)
 !
 !
     character(len=24) :: pzone
-    integer :: jzone
+    integer(kind=8) :: jzone
 !
 ! ----------------------------------------------------------------------
 !

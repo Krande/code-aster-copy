@@ -20,11 +20,11 @@ interface
     subroutine romModeParaRead(resultName, numeMode     ,&
                                model_    , modeSymbName_, modeSing_, numeSlice_, nbSnap_)
         character(len=8), intent(in) :: resultName
-        integer, intent(in) :: numeMode
+        integer(kind=8), intent(in) :: numeMode
         character(len=8), optional, intent(out)  :: model_
         character(len=24), optional, intent(out) :: modeSymbName_
-        integer, optional, intent(out)           :: numeSlice_
+        integer(kind=8), optional, intent(out)           :: numeSlice_
         real(kind=8), optional, intent(out)      :: modeSing_
-        integer, optional, intent(out)           :: nbSnap_
+        integer(kind=8), optional, intent(out)           :: nbSnap_
     end subroutine romModeParaRead
 end interface

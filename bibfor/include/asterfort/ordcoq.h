@@ -22,17 +22,17 @@ interface
     subroutine ordcoq(imod, nbm, icoq, nbno, numno,&
                       inomax, nbnoto, coordo, iaxe, defm,&
                       nunoe0, drmax, torco)
-        integer :: nbnoto
-        integer :: nbno
-        integer :: nbm
-        integer :: imod
-        integer :: icoq
-        integer :: numno(nbno)
-        integer :: inomax
+        integer(kind=8) :: nbnoto
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbm
+        integer(kind=8) :: imod
+        integer(kind=8) :: icoq
+        integer(kind=8) :: numno(nbno)
+        integer(kind=8) :: inomax
         real(kind=8) :: coordo(3, nbnoto)
-        integer :: iaxe
+        integer(kind=8) :: iaxe
         real(kind=8) :: defm(2, nbnoto, nbm)
-        integer :: nunoe0
+        integer(kind=8) :: nunoe0
         real(kind=8) :: drmax
         real(kind=8) :: torco(4, nbm)
     end subroutine ordcoq

@@ -24,7 +24,7 @@ interface
     subroutine chauxi(ndim, mu, ka, r, t,&
                       invp, lcour, courb, du1dm, du2dm,&
                       du3dm, u1l, u2l, u3l, r_courb)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: mu
         real(kind=8) :: ka
         real(kind=8) :: r

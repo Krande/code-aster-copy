@@ -34,7 +34,7 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
 #include "asterfort/char8_to_int.h"
 !
     character(len=*), intent(in) :: meshz, typez_objet
-    integer, intent(inout) :: list_size
+    integer(kind=8), intent(inout) :: list_size
     character(len=*), intent(inout) :: list_obj(list_size)
 !
 !     VERIFICATION DE L'APPARTENANCE DES OBJETS DE LA LISTE
@@ -48,7 +48,7 @@ subroutine verima(meshz, list_obj, list_size, typez_objet)
 !                       MAILLE OU NOEUD OU GROUP_NO OU GROUP_MA
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, ino, ima, nbno, nbma, ier2
+    integer(kind=8) :: iret, ino, ima, nbno, nbma, ier2
     character(len=8) :: mesh, type_obj
     character(len=24) :: noeuma, grnoma, mailma, grmama, object
     character(len=24) :: valk(2)

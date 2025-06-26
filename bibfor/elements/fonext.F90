@@ -38,8 +38,8 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg, &
 #include "asterfort/xfabor.h"
 #include "asterfort/xnorme.h"
 !
-    integer :: jbasno, inoext, inoseg, nbnoff, jborl, jdirol
-    integer :: jnvdir, iseg
+    integer(kind=8) :: jbasno, inoext, inoseg, nbnoff, jborl, jdirol
+    integer(kind=8) :: jnvdir, iseg
     character(len=8) :: noma
     character(len=19) :: cnxinv
 !
@@ -74,16 +74,16 @@ subroutine fonext(noma, cnxinv, jbasno, inoext, inoseg, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, ifa, ima, ino, itypma
-    integer :: jconx2, jcoor, jmanoe
-    integer :: nbf, nbfacb, nbno, ndime, nmaext, nmanoe, nuno
-    integer :: nunoa, nunob, nunoc, numpt
-    integer :: ibid3(12, 3), inobor(2), fa(6, 8)
+    integer(kind=8) :: ibid, ifa, ima, ino, itypma
+    integer(kind=8) :: jconx2, jcoor, jmanoe
+    integer(kind=8) :: nbf, nbfacb, nbno, ndime, nmaext, nmanoe, nuno
+    integer(kind=8) :: nunoa, nunob, nunoc, numpt
+    integer(kind=8) :: ibid3(12, 3), inobor(2), fa(6, 8)
     real(kind=8) :: coorg(3), vectn(12), norme, vect(3), proj
     character(len=8) :: typma
     aster_logical :: fabord, nofac
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()

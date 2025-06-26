@@ -25,9 +25,9 @@ subroutine tpermh(ndim, angl_naut, aniso, perm_coef, &
 #include "asterfort/matrot.h"
 #include "asterfort/utbtab.h"
 !
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: angl_naut(3)
-    integer, intent(in) :: aniso
+    integer(kind=8), intent(in) :: aniso
     real(kind=8), intent(in) :: perm_coef(4)
     real(kind=8), intent(out) :: tperm(ndim, ndim)
 !

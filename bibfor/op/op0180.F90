@@ -71,9 +71,9 @@ subroutine op0180()
 #include "asterfort/voisca.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ibid, icabl, icmp, irana1, iret, jcaba, jnbno
-    integer :: n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
-    integer :: ncaba, nbmabe, jlimab, nbnoca
+    integer(kind=8) :: ibid, icabl, icmp, irana1, iret, jcaba, jnbno
+    integer(kind=8) :: n1, n2, nbancr, nbcabl, nbf0, nbmama, nbnobe, nbnoma
+    integer(kind=8) :: ncaba, nbmabe, jlimab, nbnoca
     real(kind=8) :: delta, ea, f0, frco, frli, mu0, rh1000, sa, fprg, xflu, xret
     real(kind=8) :: trelax, valr(2), rbid
     aster_logical :: mail2d, relax, quad, eval
@@ -86,8 +86,8 @@ subroutine op0180()
     character(len=24) :: cadesc, ncncin, nmabet, comima, gromai, noancr(2)
     character(len=8) :: aire, effnor(3), valk(8)
     complex(kind=8) :: cbid
-    integer :: nbpar, nbnobi, sens, nbpar2, nbcmp, prem, nbgd
-    integer :: nbnoca_total, nbmaca_total
+    integer(kind=8) :: nbpar, nbnobi, sens, nbpar2, nbcmp, prem, nbgd
+    integer(kind=8) :: nbnoca_total, nbmaca_total
     parameter(nbpar=14)
     character(len=3) :: typpar(nbpar)
     character(len=24) :: nompar(nbpar), typrel

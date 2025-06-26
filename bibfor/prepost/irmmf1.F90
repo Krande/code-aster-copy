@@ -30,11 +30,11 @@ subroutine irmmf1(fid, nomamd, typent, nbrent, nbgrou, &
 #include "asterfort/wkvect.h"
 !
     med_idt :: fid
-    integer :: typent, nbrent, nbgrou
-    integer :: nufaen(nbrent)
-    integer :: typgeo(*), nmatyp(*)
-    integer :: infmed
-    integer :: ifm
+    integer(kind=8) :: typent, nbrent, nbgrou
+    integer(kind=8) :: nufaen(nbrent)
+    integer(kind=8) :: typgeo(*), nmatyp(*)
+    integer(kind=8) :: infmed
+    integer(kind=8) :: ifm
     character(len=6) :: prefix
     character(len=8) :: nomast
     character(len=24) :: nomgen(*)
@@ -78,10 +78,10 @@ subroutine irmmf1(fid, nomamd, typent, nbrent, nbgrou, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMMF1'
-    integer :: tygeno
-    integer :: iaux
-    integer :: nbec
-    integer :: adtabx, adnufa, adnogr, adnofe
+    integer(kind=8) :: tygeno
+    integer(kind=8) :: iaux
+    integer(kind=8) :: nbec
+    integer(kind=8) :: adtabx, adnufa, adnogr, adnofe
     real(kind=8) :: raux
     character(len=7) :: saux07
     character(len=24) :: nufacr, nogrfa, nofaex, tabaux

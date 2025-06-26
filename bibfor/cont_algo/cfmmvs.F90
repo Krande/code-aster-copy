@@ -32,10 +32,10 @@ subroutine cfmmvs(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_loca, v_ncomp
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: nt_ncomp_poin
+    integer(kind=8), intent(in) :: nt_ncomp_poin
     real(kind=8), pointer :: v_ncomp_jeux(:)
-    integer, pointer :: v_ncomp_loca(:)
-    integer, pointer :: v_ncomp_zone(:)
+    integer(kind=8), pointer :: v_ncomp_loca(:)
+    integer(kind=8), pointer :: v_ncomp_zone(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,10 +54,10 @@ subroutine cfmmvs(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_loca, v_ncomp
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: cnsinr
-    integer :: i_ncomp_poin, i_zone
+    integer(kind=8) :: i_ncomp_poin, i_zone
     real(kind=8) :: gap, node_status, tole_interp
-    integer :: node_slav_nume
-    integer :: zresu
+    integer(kind=8) :: node_slav_nume
+    integer(kind=8) :: zresu
     aster_logical :: l_save
     real(kind=8), pointer :: v_cnsinr_cnsv(:) => null()
     aster_logical, pointer :: v_cnsinr_cnsl(:) => null()

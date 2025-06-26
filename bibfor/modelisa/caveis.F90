@@ -49,7 +49,7 @@ subroutine caveis(chargz)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: idveis, iffor, ifmis, n1, ng, nm, nv, npasm, ibin
+    integer(kind=8) :: idveis, iffor, ifmis, n1, ng, nm, nv, npasm, ibin
 !
 !-----------------------------------------------------------------------
     call jemarq()

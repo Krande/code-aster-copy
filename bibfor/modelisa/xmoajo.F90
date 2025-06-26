@@ -23,7 +23,7 @@ subroutine xmoajo(jj, nfiss, itypx, ntypx)
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: jj, nfiss, itypx(*), ntypx(*)
+    integer(kind=8) :: jj, nfiss, itypx(*), ntypx(*)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !

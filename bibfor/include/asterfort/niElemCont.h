@@ -39,4 +39,3 @@ interface
         real(kind=8), intent(out), optional :: dStress_nn(MAX_NITS_DOFS)
     end subroutine niElemCont
 end interface
-

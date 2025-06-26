@@ -20,7 +20,7 @@
 !
 interface
     subroutine chkmsg(i1, iret)
-        integer :: i1
-        integer :: iret
+        integer(kind=8) :: i1
+        integer(kind=8) :: iret
     end subroutine chkmsg
 end interface

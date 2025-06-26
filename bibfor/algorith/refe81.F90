@@ -55,9 +55,9 @@ subroutine refe81(nomres, basmod, raid, mass, amor, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadref, ioc, iret, lddesc
-    integer ::  nbval
-    integer, pointer :: idc_desc(:) => null()
+    integer(kind=8) :: iadref, ioc, iret, lddesc
+    integer(kind=8) ::  nbval
+    integer(kind=8), pointer :: idc_desc(:) => null()
     character(len=24), pointer :: idc_refe(:) => null()
 !-----------------------------------------------------------------------
     data bl8/'        '/

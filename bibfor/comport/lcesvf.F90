@@ -22,7 +22,7 @@ function lcesvf(mode, a)
     implicit none
     real(kind=8) :: lcesvf
 #include "asterfort/assert.h"
-    integer, intent(in) :: mode
+    integer(kind=8), intent(in) :: mode
     real(kind=8), intent(in) :: a
 ! ----------------------------------------------------------------------
 !  CALCUL DES FONCTIONS R(A) POUR LA ENDO_SCALAIRE AVEC GRAD_VARI

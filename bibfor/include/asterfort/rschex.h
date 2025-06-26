@@ -22,6 +22,6 @@ interface
     subroutine rschex(noresz, nomsym, codret)
         character(len=*) :: noresz
         character(len=*) :: nomsym
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine rschex
 end interface

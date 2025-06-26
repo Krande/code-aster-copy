@@ -44,8 +44,8 @@ subroutine pewext(resu)
     character(len=*) :: resu
 ! ----------------------------------------------------------------------
 !
-    integer :: i, iret, jinst
-    integer :: nbord, jord, numord
+    integer(kind=8) :: i, iret, jinst
+    integer(kind=8) :: nbord, jord, numord
     real(kind=8) :: inst, prec, f0u0, f1u0, f0u1, f1u1, w, valer(3)
     complex(kind=8) :: c16b
     character(len=8) :: crit, result
@@ -54,7 +54,7 @@ subroutine pewext(resu)
     character(len=19) :: depla1, force1
     character(len=19) :: depls0, depls1, forcs0, forcs1
     character(len=24) :: lisord
-    integer :: ier
+    integer(kind=8) :: ier
 !
 !-----------------------------------------------------------------------
 !

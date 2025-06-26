@@ -37,11 +37,11 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none
-    integer :: igeom
+    integer(kind=8) :: igeom
     character(len=8) :: nomai
     character(len=24) :: geomi
     character(len=*) :: motfac
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=8) :: ncas
 !
 #include "asterf_types.h"
@@ -68,8 +68,8 @@ subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, nbnoi, ifonc, ibid, niveau, nkcar
-    integer :: nfonc, jgeomi, inoi, ier, unite
+    integer(kind=8) :: n1, nbnoi, ifonc, ibid, niveau, nkcar
+    integer(kind=8) :: nfonc, jgeomi, inoi, ier, unite
     real(kind=8) :: vx(3)
     character(len=1) :: kgeom
     character(len=8) :: lfonc(3), lparx(3), maili, k8bid

@@ -27,8 +27,8 @@ interface
         character(len=24) :: nkcha
         character(len=8) :: typac
         aster_logical :: toucmp
-        integer :: nbcmp
-        integer :: nbval
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: nbval
         character(len=24) :: nkcmp
         character(len=24) :: nkvari
     end subroutine ctcrtb

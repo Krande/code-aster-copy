@@ -25,7 +25,7 @@ interface
         character(len=*), intent(in) :: resu
         character(len=*), intent(in) :: node_name
         character(len=*), intent(in) :: cmp_name
-        integer, intent(out) :: node_nume
-        integer, intent(out) :: dof_nume
+        integer(kind=8), intent(out) :: node_nume
+        integer(kind=8), intent(out) :: dof_nume
     end subroutine posddl
 end interface

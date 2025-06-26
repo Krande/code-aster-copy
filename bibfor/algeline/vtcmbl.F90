@@ -52,19 +52,19 @@ subroutine vtcmbl(nbcmb, typcst, const, typech, nomch, &
 #include "asterfort/sdchgd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer, intent(in) :: nbcmb
+    integer(kind=8), intent(in) :: nbcmb
     real(kind=8), intent(in) :: const(*)
     character(len=*), intent(in) :: typcst(*), typech(*), nomch(*), typres, chpres
     character(len=1), intent(in), optional :: basez
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ifm, niv, i
-    integer :: icmb, iret, ival, lvale, iconst
-    integer :: jdesc, jrefe, jvale
-    integer :: kdesc, krefe, kvale
-    integer :: nbdesc, nbrefe, nbvale
-    integer :: nbdes1, nbref1, nbval1
+    integer(kind=8) :: ifm, niv, i
+    integer(kind=8) :: icmb, iret, ival, lvale, iconst
+    integer(kind=8) :: jdesc, jrefe, jvale
+    integer(kind=8) :: kdesc, krefe, kvale
+    integer(kind=8) :: nbdesc, nbrefe, nbvale
+    integer(kind=8) :: nbdes1, nbref1, nbval1
     real(kind=8) :: dimag
     complex(kind=8) :: c8cst
     character(len=1) :: base

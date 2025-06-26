@@ -20,8 +20,8 @@
 !
 interface
     subroutine impus(isor, ibl, pusee)
-        integer :: isor
-        integer :: ibl
+        integer(kind=8) :: isor
+        integer(kind=8) :: ibl
         real(kind=8) :: pusee
     end subroutine impus
 end interface

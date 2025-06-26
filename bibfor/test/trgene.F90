@@ -24,8 +24,8 @@ subroutine trgene(ific, nocc)
     use DynaGene_module
 
     implicit none
-    integer, intent(in) :: ific
-    integer, intent(in) :: nocc
+    integer(kind=8), intent(in) :: ific
+    integer(kind=8), intent(in) :: nocc
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -58,11 +58,11 @@ subroutine trgene(ific, nocc)
 !
     character(len=6) :: nompro
     parameter(nompro='TRGENE')
-    integer :: vali, iocc, iret, jlue, jordr, jdesc, jrefe, n1, n2, n3
-    integer :: nbordr, numord, ncmp, nbinst, im, jcham, nbmode, jvecg
-    integer :: jnume, jdeeq, istru, i, irefr, irefi, irefc, nref, nl1, nl2
-    integer :: jfreq, nbfreq
-    integer :: n1r, n2r, n3r, irefrr, irefir, irefcr, i_cham, i_bloc
+    integer(kind=8) :: vali, iocc, iret, jlue, jordr, jdesc, jrefe, n1, n2, n3
+    integer(kind=8) :: nbordr, numord, ncmp, nbinst, im, jcham, nbmode, jvecg
+    integer(kind=8) :: jnume, jdeeq, istru, i, irefr, irefi, irefc, nref, nl1, nl2
+    integer(kind=8) :: jfreq, nbfreq
+    integer(kind=8) :: n1r, n2r, n3r, irefrr, irefir, irefcr, i_cham, i_bloc
     real(kind=8) :: valr, epsi, epsir, prec, temps, freq
     complex(kind=8) :: valc
     character(len=1) :: typres
@@ -78,7 +78,7 @@ subroutine trgene(ific, nocc)
     aster_logical :: lref
     aster_logical :: skip
     real(kind=8) :: ordgrd
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: resu(:) => null()
 

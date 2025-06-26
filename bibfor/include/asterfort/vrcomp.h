@@ -21,7 +21,7 @@ interface
                       comporPrevZ_, typeStop_,  verbose_,&
                       lModiVari_)
         character(len=*), intent(in) :: comporCurrZ, variZ, ligrelCurrZ
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
         character(len=*), optional, intent(in) :: comporPrevZ_
         character(len=1), optional, intent(in) :: typeStop_
         aster_logical, intent(in), optional :: verbose_

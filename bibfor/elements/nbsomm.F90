@@ -19,7 +19,7 @@
 subroutine nbsomm(typema, nbso)
     implicit none
     character(len=8) :: typema
-    integer :: nbso
+    integer(kind=8) :: nbso
 !
 !     DONNE LE NOMBRE DE SOMMETS POUR UN TYPE DE MAILLES
 !

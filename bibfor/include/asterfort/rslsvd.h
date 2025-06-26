@@ -22,17 +22,17 @@ interface
     subroutine rslsvd(nm, m, n, a, w,&
                       u, v, nb, b, eps,&
                       ierr, rvnm)
-        integer :: nb
-        integer :: n
-        integer :: m
-        integer :: nm
+        integer(kind=8) :: nb
+        integer(kind=8) :: n
+        integer(kind=8) :: m
+        integer(kind=8) :: nm
         real(kind=8) :: a(nm, n)
         real(kind=8) :: w(n)
         real(kind=8) :: u(nm, m)
         real(kind=8) :: v(nm, n)
         real(kind=8) :: b(nm, nb)
         real(kind=8) :: eps
-        integer :: ierr
+        integer(kind=8) :: ierr
         real(kind=8) :: rvnm(nm)
     end subroutine rslsvd
 end interface

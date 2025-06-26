@@ -22,8 +22,8 @@ interface
     subroutine canorm(coor, normal, ndim, ityp, inorm)
         real(kind=8) :: coor(*)
         real(kind=8) :: normal(3)
-        integer :: ndim
-        integer :: ityp
-        integer :: inorm
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ityp
+        integer(kind=8) :: inorm
     end subroutine canorm
 end interface

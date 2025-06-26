@@ -21,13 +21,13 @@
 interface
     subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag,&
                       npoin, jvalpo, jvalor)
-        integer :: nbordr
-        integer :: nbvec
-        integer :: jvalax
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jvalax
         real(kind=8) :: pseuil
-        integer :: iflag(nbvec)
-        integer :: npoin(nbvec)
-        integer :: jvalpo
-        integer :: jvalor
+        integer(kind=8) :: iflag(nbvec)
+        integer(kind=8) :: npoin(nbvec)
+        integer(kind=8) :: jvalpo
+        integer(kind=8) :: jvalor
     end subroutine avpeak
 end interface

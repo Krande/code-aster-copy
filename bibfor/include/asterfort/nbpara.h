@@ -20,9 +20,9 @@
 !
 interface
     function nbpara(opt, te, statut)
-        integer :: opt
-        integer :: te
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
         character(len=3) :: statut
-        integer :: nbpara
+        integer(kind=8) :: nbpara
     end function nbpara
 end interface

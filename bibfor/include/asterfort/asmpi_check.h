@@ -20,6 +20,6 @@
 #include "asterf_types.h"
 interface
     subroutine asmpi_check(iret)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine asmpi_check
 end interface

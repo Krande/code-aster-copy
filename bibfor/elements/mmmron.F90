@@ -24,7 +24,7 @@ subroutine mmmron(ndim, norm, tau1, tau2)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/provec.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: tau1(3)
     real(kind=8) :: tau2(3)
     real(kind=8) :: norm(3)

@@ -23,9 +23,9 @@
 interface
     subroutine utimob(unit, obin, nivo, lattr, lcont,&
                       xous)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: obin
-        integer :: nivo
+        integer(kind=8) :: nivo
         aster_logical :: lattr
         aster_logical :: lcont
         character(len=*) :: xous

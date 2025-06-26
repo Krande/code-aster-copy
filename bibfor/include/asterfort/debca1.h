@@ -20,6 +20,6 @@
 !
 interface
     subroutine debca1(nin)
-        integer :: nin
+        integer(kind=8) :: nin
     end subroutine debca1
 end interface

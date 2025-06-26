@@ -21,11 +21,11 @@
 interface
     subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                       prec, erreur, alpha, types, re)
-        integer :: nelem
-        integer :: ndim
-        integer :: nbr(nelem)
-        integer :: nalpha
-        integer :: degre
+        integer(kind=8) :: nelem
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbr(nelem)
+        integer(kind=8) :: nalpha
+        integer(kind=8) :: degre
         real(kind=8) :: prec
         real(kind=8) :: erreur(nelem)
         real(kind=8) :: alpha(nelem)

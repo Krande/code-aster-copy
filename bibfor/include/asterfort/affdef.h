@@ -23,9 +23,9 @@ interface
                       ier)
         character(len=24) :: tmp
         character(len=24) :: nom
-        integer :: nel
-        integer :: ntel(*)
+        integer(kind=8) :: nel
+        integer(kind=8) :: ntel(*)
         character(len=8) :: tab(*)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine affdef
 end interface

@@ -95,7 +95,7 @@ subroutine pecap3(chgeoz, tempez, iomega)
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i, iret, nbordr
+    integer(kind=8) :: i, iret, nbordr
     real(kind=8) :: prec, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

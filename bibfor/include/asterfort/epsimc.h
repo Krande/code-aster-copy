@@ -23,10 +23,10 @@ interface
                       nbsig, ni, eps)
         character(len=16) :: option
         real(kind=8) :: xyz(*)
-        integer :: nno
-        integer :: npg
-        integer :: ndim
-        integer :: nbsig
+        integer(kind=8) :: nno
+        integer(kind=8) :: npg
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbsig
         real(kind=8) :: ni(*)
         real(kind=8) :: eps(*)
     end subroutine epsimc

@@ -24,10 +24,10 @@ interface
                       coef_fric_x   , coef_fric_y, nb_dof_tot  , dof_indx)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: model_ndim
-        integer, intent(in) :: nb_node_mast
-        integer, intent(in) :: nods_mast_indx(9)
-        integer, intent(in) :: node_slav_indx
+        integer(kind=8), intent(in) :: model_ndim
+        integer(kind=8), intent(in) :: nb_node_mast
+        integer(kind=8), intent(in) :: nods_mast_indx(9)
+        integer(kind=8), intent(in) :: node_slav_indx
         real(kind=8), intent(in) :: coef_node(9)
         real(kind=8), intent(in) :: norm(3)
         real(kind=8), intent(in) :: tau1(3)
@@ -35,7 +35,7 @@ interface
         real(kind=8), intent(out) :: coef_cont(30)
         real(kind=8), intent(out) :: coef_fric_x(30)
         real(kind=8), intent(out) :: coef_fric_y(30)
-        integer, intent(out) :: dof_indx(30)
-        integer, intent(out) :: nb_dof_tot
+        integer(kind=8), intent(out) :: dof_indx(30)
+        integer(kind=8), intent(out) :: nb_dof_tot
     end subroutine cfcoef
 end interface

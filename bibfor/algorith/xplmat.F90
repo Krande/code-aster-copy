@@ -22,7 +22,7 @@ subroutine xplmat(ddls, ddlc, ddlm, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: ddls, ddlc, nnos, nnom, n, pl, ddlm
+    integer(kind=8) :: ddls, ddlc, nnos, nnom, n, pl, ddlm
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !

@@ -32,21 +32,21 @@ subroutine preml2(n1, diag, col, delg, xadj1, &
 #include "asterfort/mltblc.h"
 #include "asterfort/mltpas.h"
 #include "asterfort/mltpos.h"
-    integer :: col(*)
-    integer :: n1, diag(0:n1), adpile(n1), estim, lgind
-    integer :: xadj1(n1+1), adjnc1(*), decal(*), mxfact
-    integer :: delg(*), adress(*), parend(*)
+    integer(kind=8) :: col(*)
+    integer(kind=8) :: n1, diag(0:n1), adpile(n1), estim, lgind
+    integer(kind=8) :: xadj1(n1+1), adjnc1(*), decal(*), mxfact
+    integer(kind=8) :: delg(*), adress(*), parend(*)
     integer(kind=4) :: local(*), global(*)
-    integer :: fils(n1), frere(n1)
-    integer :: lfront(n1), nblign(n1), lgsn(n1), debfac(n1+1), debfsn(n1)
-    integer :: chaine(n1), suiv(n1), place(n1), nbass(n1)
-    integer :: anc(n1), nouv(n1), supnd(n1), ier
-    integer :: invsup(n1), lmat, seq(n1)
-    integer :: ncbloc(*), lgbloc(*), nbloc
+    integer(kind=8) :: fils(n1), frere(n1)
+    integer(kind=8) :: lfront(n1), nblign(n1), lgsn(n1), debfac(n1+1), debfsn(n1)
+    integer(kind=8) :: chaine(n1), suiv(n1), place(n1), nbass(n1)
+    integer(kind=8) :: anc(n1), nouv(n1), supnd(n1), ier
+    integer(kind=8) :: invsup(n1), lmat, seq(n1)
+    integer(kind=8) :: ncbloc(*), lgbloc(*), nbloc
 !     VARIABLES LOCALES
-    integer :: dhead(*), qsize(*), llist(*), marker(*)
-    integer :: nbsnd, i, long
-    integer :: ifm, niv
+    integer(kind=8) :: dhead(*), qsize(*), llist(*), marker(*)
+    integer(kind=8) :: nbsnd, i, long
+    integer(kind=8) :: ifm, niv
 !
 !
 !------------------------------------------------------------

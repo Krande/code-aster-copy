@@ -21,7 +21,7 @@
 interface
     subroutine lisltc(lischa, ichar, typech)
         character(len=19) :: lischa
-        integer :: ichar
+        integer(kind=8) :: ichar
         character(len=8) :: typech
     end subroutine lisltc
 end interface

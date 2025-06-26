@@ -36,11 +36,11 @@ subroutine dbgobj(ojbz, perm, iunit, mess)
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/tstobj.h"
-    integer :: iunit, ni
+    integer(kind=8) :: iunit, ni
     character(len=24) :: ojb
     character(len=3) :: type
     character(len=*) :: mess, ojbz, perm
-    integer :: sommi, resume, lonmax, lonuti, iret
+    integer(kind=8) :: sommi, resume, lonmax, lonuti, iret
     real(kind=8) :: sommr
 !
 ! DEB-------------------------------------------------------------------

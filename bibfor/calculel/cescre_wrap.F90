@@ -25,8 +25,8 @@ subroutine cescre_wrap(basez, cesz, typcez, maz, nomgdz, &
 #include "jeveux.h"
 #include "asterfort/cescre.h"
     character(len=*) :: maz, nomgdz, cesz, basez, typcez
-    integer :: npg(*)
-    integer :: nspt, ncmp, ncmpg
+    integer(kind=8) :: npg(*)
+    integer(kind=8) :: nspt, ncmp, ncmpg
     character(len=8) :: licmp(*)
     aster_logical, intent(in) :: undf0
 

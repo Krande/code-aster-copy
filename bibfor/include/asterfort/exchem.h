@@ -21,12 +21,12 @@
 interface
     subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
                       valcmp, taberr)
-        integer :: modloc(*)
-        integer :: tcmp(*)
-        integer :: nbc
-        integer :: nbsp
+        integer(kind=8) :: modloc(*)
+        integer(kind=8) :: tcmp(*)
+        integer(kind=8) :: nbc
+        integer(kind=8) :: nbsp
         real(kind=8) :: tvale(*)
         real(kind=8) :: valcmp(*)
-        integer :: taberr(*)
+        integer(kind=8) :: taberr(*)
     end subroutine exchem
 end interface

@@ -27,7 +27,7 @@ subroutine nzcomp_prep(jvMaterCode, metaType, metaPara)
 #include "asterfort/assert.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: jvMaterCode
+    integer(kind=8), intent(in) :: jvMaterCode
     character(len=16), intent(in) :: metaType
     type(META_MaterialParameters), intent(out) :: metaPara
 !

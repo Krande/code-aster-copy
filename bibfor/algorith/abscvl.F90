@@ -24,7 +24,7 @@ subroutine abscvl(ndim, tabar, xg, s)
 #include "asterfort/assert.h"
 #include "asterfort/reereg.h"
 #include "asterfort/utmess.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: xg(ndim), s, tabar(*)
 !
 !                      TROUVER L'ABSCISSE CURVILIGNE D'UN POINT
@@ -43,7 +43,7 @@ subroutine abscvl(ndim, tabar, xg, s)
 !
     real(kind=8) :: xgg, a, b, ksider
     real(kind=8) :: tabelt(3), xe(1)
-    integer :: iret, k
+    integer(kind=8) :: iret, k
     character(len=8) :: elp
 !
 !......................................................................

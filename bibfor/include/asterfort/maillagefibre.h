@@ -22,16 +22,16 @@ interface
     subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds, &
                              vigroup, vngroup, vmailgrp, vimailles, ulnbmailles, ncarma )
         character(len=8), intent(in) :: nogfma
-        integer, intent(in) :: ulnbnoeuds
-        integer, intent(in) :: maxmailgrp
-        integer, intent(in) :: nbgf
-        integer, intent(in) :: ulnbmailles
+        integer(kind=8), intent(in) :: ulnbnoeuds
+        integer(kind=8), intent(in) :: maxmailgrp
+        integer(kind=8), intent(in) :: nbgf
+        integer(kind=8), intent(in) :: ulnbmailles
         real(kind=8), intent(in) :: vcoord(2*ulnbnoeuds)
-        integer, intent(in) :: nbnoeuds
-        integer, intent(in) :: vmailgrp(nbgf)
-        integer, intent(in) :: vigroup(nbgf*maxmailgrp)
+        integer(kind=8), intent(in) :: nbnoeuds
+        integer(kind=8), intent(in) :: vmailgrp(nbgf)
+        integer(kind=8), intent(in) :: vigroup(nbgf*maxmailgrp)
         character(len=24), intent(in) :: vngroup(nbgf)
-        integer, intent(in) :: ncarma
-        integer, intent(in) :: vimailles(ulnbmailles*ncarma)
+        integer(kind=8), intent(in) :: ncarma
+        integer(kind=8), intent(in) :: vimailles(ulnbmailles*ncarma)
     end subroutine maillagefibre
 end interface

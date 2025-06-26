@@ -21,7 +21,7 @@
 interface
     subroutine dxiner(nnoe, xyzg1, rho, epais, mass,&
                       cdg, inerti)
-        integer :: nnoe
+        integer(kind=8) :: nnoe
         real(kind=8) :: xyzg1(3, *)
         real(kind=8) :: rho
         real(kind=8) :: epais

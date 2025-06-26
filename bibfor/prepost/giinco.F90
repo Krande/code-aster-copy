@@ -41,7 +41,7 @@ subroutine giinco()
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iacorr
+    integer(kind=8) :: iacorr
 !-----------------------------------------------------------------------
     call jemarq()
     nomcol = '&&GILIRE.CORR_GIBI_ASTER'

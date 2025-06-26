@@ -54,7 +54,7 @@ subroutine lcumvi(cmp, vim, epsfm)
     implicit none
     character(len=*) :: cmp
     real(kind=8) :: vim(20), epsfm(6)
-    integer :: i
+    integer(kind=8) :: i
 !
     if (cmp(1:2) .eq. 'FP') then
         do i = 1, 3

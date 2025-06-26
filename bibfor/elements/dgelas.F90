@@ -20,7 +20,7 @@ subroutine dgelas(eb, nub, h, b, a, em, num, ef, nuf, icisai)
 !
     implicit none
 !
-    integer :: icisai
+    integer(kind=8) :: icisai
 !
     real(kind=8) :: eb, nub, b, a, h
     real(kind=8) :: em, num, ef, nuf

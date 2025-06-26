@@ -57,7 +57,7 @@ subroutine dxefgv(nomte, option, xyzl, pgl, depl, effgt)
 ! --- AUX POINTS DE CALCUL
 !     --------------------
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     character(len=16) :: opti16
 !
     opti16 = option

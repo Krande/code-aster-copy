@@ -59,8 +59,8 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: idbeta, idcoef, iddl, idnbre, idnoeu, idpoin, idsurc
-    integer :: idterm, idtyco, idtyva, iret, lvecrl, nbrela
+    integer(kind=8) :: idbeta, idcoef, iddl, idnbre, idnoeu, idpoin, idsurc
+    integer(kind=8) :: idterm, idtyco, idtyva, iret, lvecrl, nbrela
 !
 !-----------------------------------------------------------------------
     parameter(lvecrl=10000)

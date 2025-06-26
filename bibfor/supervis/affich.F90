@@ -25,7 +25,7 @@ subroutine affich(nomfic, texte)
 #include "asterfort/uldefi.h"
     character(len=*) :: texte
     character(len=*) :: nomfic
-    integer :: ifm, ier
+    integer(kind=8) :: ifm, ier
     aster_logical :: ouvert
 !     ----------------------------------------------------------------
     ouvert = .true.

@@ -22,12 +22,12 @@ interface
     subroutine lcumfs(vari, nvari, cmat, nmat, iflu,&
                       isph, tdt, hini, hfin, afps,&
                       bfps, cfps)
-        integer :: nmat
-        integer :: nvari
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvari
         real(kind=8) :: vari(nvari)
         real(kind=8) :: cmat(nmat)
-        integer :: iflu
-        integer :: isph
+        integer(kind=8) :: iflu
+        integer(kind=8) :: isph
         real(kind=8) :: tdt
         real(kind=8) :: hini
         real(kind=8) :: hfin

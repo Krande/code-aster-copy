@@ -45,13 +45,13 @@ subroutine te0232(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre(1), kpg, spt
+    integer(kind=8) :: icodre(1), kpg, spt
     real(kind=8) :: zero, dfdx(3), nx, ny, poids, cour, rx, ry
-    integer :: nno, kp, k, npg, i
-    integer :: ipoids, ivf, idfdk
-    integer :: jgano, ndim, nnos
+    integer(kind=8) :: nno, kp, k, npg, i
+    integer(kind=8) :: ipoids, ivf, idfdk
+    integer(kind=8) :: jgano, ndim, nnos
     real(kind=8) :: rho(1)
-    integer :: j_geom, j_rota, j_vect, j_mate, j_caco
+    integer(kind=8) :: j_geom, j_rota, j_vect, j_mate, j_caco
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
 ! --------------------------------------------------------------------------------------------------

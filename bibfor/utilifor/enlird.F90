@@ -26,7 +26,7 @@ subroutine enlird(dateur)
 !   - AUTEUR : PRIS A SIVA POUR ASTER
 ! ......................................................................
 #include "asterc/kloklo.h"
-    integer :: i, date9(9)
+    integer(kind=8) :: i, date9(9)
     character(len=2) :: jour2(0:6), date2(2:7)
     character(len=4) :: mois4(12), annee
     character(len=*) :: dateur

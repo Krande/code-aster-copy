@@ -20,9 +20,9 @@
 !
 interface
     subroutine dffnor(ndim, baslo, inoff, vnor)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: baslo(*)
-        integer :: inoff
+        integer(kind=8) :: inoff
         real(kind=8) :: vnor(ndim)
     end subroutine dffnor
 end interface

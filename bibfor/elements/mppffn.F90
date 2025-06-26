@@ -34,7 +34,7 @@ subroutine mppffn(zimat, nmnbn, nmplas, nmzef, nmzeg, &
 !
 #include "asterfort/cdnfon.h"
 #include "asterfort/rcvalb.h"
-    integer :: i, ier, nmief, zimat, icodre(4)
+    integer(kind=8) :: i, ier, nmief, zimat, icodre(4)
 !
     real(kind=8) :: nmnbn(6), nmplas(2, 3)
     real(kind=8) :: nmzef, nmzeg, zero, normm

@@ -32,7 +32,7 @@ subroutine zacier(metaSteelPara, nbPhase, nbVari, &
 #include "asterfort/zwaeckel.h"
 !
     type(META_SteelParameters), intent(in) :: metaSteelPara
-    integer, intent(in) :: nbPhase, nbVari
+    integer(kind=8), intent(in) :: nbPhase, nbVari
     real(kind=8), intent(in) :: temp0, temp1, temp2
     real(kind=8), intent(in) :: deltaTime01, deltaTime12
     real(kind=8), intent(in) :: metaPrev(nbVari)

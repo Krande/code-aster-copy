@@ -25,7 +25,7 @@ subroutine expass(jxvrf)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jxveri.h"
-    integer :: jxvrf
+    integer(kind=8) :: jxvrf
 !
 !     Execution d'une passe specifique d'operateurs
 !

@@ -33,8 +33,8 @@ subroutine cumuma(i, j, pmat, coef, gmat)
     real(kind=8) :: pmat(6, 6), gmat(18, 18)
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, ii, j, j1, j2
-    integer :: jj
+    integer(kind=8) :: i, i1, i2, ii, j, j1, j2
+    integer(kind=8) :: jj
     real(kind=8) :: coef
 !-----------------------------------------------------------------------
     i1 = (i-1)*6

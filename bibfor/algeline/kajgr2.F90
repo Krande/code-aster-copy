@@ -41,7 +41,7 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
     character(len=8) :: typflu
     common/kop144/typflu
 !
-    integer :: igrap, nkamax, iflag, unit
+    integer(kind=8) :: igrap, nkamax, iflag, unit
     real(kind=8) :: vr, cokaj1, cokaj2
     real(kind=8) :: coeca1(20, 11), coeca2(20, 11)
     real(kind=8) :: coef1(20, 11), coef2(20, 11)
@@ -51,7 +51,7 @@ subroutine kajgr2(igrap, vr, cokaj1, cokaj2)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iret, iunit, j, nbloc, nbomax
+    integer(kind=8) :: i, iret, iunit, j, nbloc, nbomax
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     call jemarq()

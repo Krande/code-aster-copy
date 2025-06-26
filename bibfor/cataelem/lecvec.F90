@@ -24,11 +24,11 @@ subroutine lecvec(iad, long, type, unite)
 #include "jeveux.h"
 #include "asterfort/assert.h"
     character(len=3) :: type
-    integer :: unite
+    integer(kind=8) :: unite
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iad, k, long
+    integer(kind=8) :: iad, k, long
 !-----------------------------------------------------------------------
     if (type .eq. 'R') then
         do k = 1, long

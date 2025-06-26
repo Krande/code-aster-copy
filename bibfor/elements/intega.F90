@@ -21,7 +21,7 @@ subroutine intega(npgf, jac, poidsf, vectx, vecty, &
                   mat13, mat23, nx, ny, nz, &
                   inte)
     implicit none
-    integer :: npgf
+    integer(kind=8) :: npgf
     real(kind=8) :: jac(9), poidsf(9)
     real(kind=8) :: vectx(9), vecty(9), vectz(9)
     real(kind=8) :: mat11(9), mat22(9), mat33(9), mat12(9), mat13(9), mat23(9)
@@ -57,7 +57,7 @@ subroutine intega(npgf, jac, poidsf, vectx, vecty, &
 ! OUT  INTE  : TERME INTEGRE POUR UNE FACE
 !
 ! ......................................................................
-    integer :: ipgf
+    integer(kind=8) :: ipgf
 ! ----------------------------------------------------------------------
 !
     inte = 0.0d0

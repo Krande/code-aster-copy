@@ -50,7 +50,7 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
     character(len=19) :: vecel
     character(len=4) :: motcle
     character(len=24) :: fomult
-    integer :: type
+    integer(kind=8) :: type
     real(kind=8) :: instap
 ! ----------------------------------------------------------------------
 ! OUT K19 VEC   : NOM DU CHAM_NO RESULTAT
@@ -67,16 +67,16 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
 !----------------------------------------------------------------------
     character(len=8) :: nomacr, exiele
     character(len=14) :: num2
-    integer :: gd, nec, nlili
+    integer(kind=8) :: gd, nec, nlili
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad1, iadlie, iadnem, iadval
-    integer :: ialcha, iamail, iancmp, ianueq, ianulo, iaprol
-    integer :: iapsdl, ichar, icmp, iconx1, iconx2, idnequ
-    integer :: idprn1, idprn2, idresl, idverf, iec
-    integer :: ierd, il, ilim, ilimnu, ilivec, ima
-    integer :: inold, iret, jec, k1, lgncmp, n1, nbchar
-    integer :: nbecmx, nbelm, nbnoss, nbsma, nbssa, ncmp, ncmpel
-    integer :: nddl1, nequa, nm, nmxcmp, nnoe, nugd
+    integer(kind=8) :: i, i1, iad1, iadlie, iadnem, iadval
+    integer(kind=8) :: ialcha, iamail, iancmp, ianueq, ianulo, iaprol
+    integer(kind=8) :: iapsdl, ichar, icmp, iconx1, iconx2, idnequ
+    integer(kind=8) :: idprn1, idprn2, idresl, idverf, iec
+    integer(kind=8) :: ierd, il, ilim, ilimnu, ilivec, ima
+    integer(kind=8) :: inold, iret, jec, k1, lgncmp, n1, nbchar
+    integer(kind=8) :: nbecmx, nbelm, nbnoss, nbsma, nbssa, ncmp, ncmpel
+    integer(kind=8) :: nddl1, nequa, nm, nmxcmp, nnoe, nugd
 !-----------------------------------------------------------------------
     parameter(nbecmx=10)
 !
@@ -86,14 +86,14 @@ subroutine assvss(base, vec, vecel, nu, vecpro, &
     character(len=19) :: vecas, vprof
     character(len=24) :: knueq, kmaila, k24prn
     character(len=24) :: kvelil, kveref, knequa, kvale
-    integer :: icodla(nbecmx), icodge(nbecmx)
-    integer :: admodl, lcmodl, ifm, niv
-    integer :: jfonct
+    integer(kind=8) :: icodla(nbecmx), icodge(nbecmx)
+    integer(kind=8) :: admodl, lcmodl, ifm, niv
+    integer(kind=8) :: jfonct
     real(kind=8) :: rcoef
     character(len=24), pointer :: refe(:) => null()
-    integer, pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
-    integer, pointer :: conx(:) => null()
+    integer(kind=8), pointer :: conx(:) => null()
 !
 ! --- DEBUT ------------------------------------------------------------
     call jemarq()

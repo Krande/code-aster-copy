@@ -22,7 +22,7 @@ interface
     subroutine nbzoco(keywf, mesh, i_zone, nb_cont_surf)
         character(len=8), intent(in) :: mesh
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_zone
-        integer, intent(out) :: nb_cont_surf
+        integer(kind=8), intent(in) :: i_zone
+        integer(kind=8), intent(out) :: nb_cont_surf
     end subroutine nbzoco
 end interface

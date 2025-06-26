@@ -43,11 +43,11 @@ subroutine op0115()
 !
 !     DEFINITION D'UNE MATRICE INTERSPECTRALE (DEFI_INTE_SPEC)
 !     ------------------------------------------------------------------
-    integer :: iocpf, iockt, ioccs
-    integer :: ipf, ifonc, inum, ifreq, ikt, ics, ispec
-    integer :: mxval, ibid, nbabs, nbfreq, nbval, nbfreqold
-    integer :: lnumi, lnumj, lfonc, lfreq, lrefe, nbvalr
-    integer :: lnoei, lnoej, lcmpi, lcmpj, n2, n3, n4, n5, n6, n7
+    integer(kind=8) :: iocpf, iockt, ioccs
+    integer(kind=8) :: ipf, ifonc, inum, ifreq, ikt, ics, ispec
+    integer(kind=8) :: mxval, ibid, nbabs, nbfreq, nbval, nbfreqold
+    integer(kind=8) :: lnumi, lnumj, lfonc, lfreq, lrefe, nbvalr
+    integer(kind=8) :: lnoei, lnoej, lcmpi, lcmpj, n2, n3, n4, n5, n6, n7
 !
     real(kind=8) :: valr, fmoy, ared, fmin, fmax, pas, freq, depi, num, den
     real(kind=8) :: rbid

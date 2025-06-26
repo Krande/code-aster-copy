@@ -25,8 +25,8 @@ interface
                       ht, bw, enrobi, enrobs, facier, fbeton,&
                       scmaxi, scmaxs, ssmax, uc, um,&
                       compress, dnstra, thetab, ak, uk, ierr)
-        integer ::typco
-        integer :: typstru
+        integer(kind=8) ::typco
+        integer(kind=8) :: typstru
         real(kind=8) :: effrts(8)
         real(kind=8) :: effm
         real(kind=8) :: effn
@@ -48,13 +48,13 @@ interface
         real(kind=8) :: scmaxi
         real(kind=8) :: scmaxs
         real(kind=8) :: ssmax
-        integer :: uc
-        integer :: um
-        integer :: compress
+        integer(kind=8) :: uc
+        integer(kind=8) :: um
+        integer(kind=8) :: compress
         real(kind=8) :: dnstra
         real(kind=8) :: thetab
         real(kind=8) :: ak
         real(kind=8) :: uk
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine cftels
 end interface

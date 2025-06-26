@@ -32,7 +32,7 @@ subroutine uttcpi(nommes, ifm, typimp)
 #include "asterfort/stati1.h"
 !
     character(len=*) :: nommes, typimp
-    integer :: ifm
+    integer(kind=8) :: ifm
 ! ----------------------------------------------------------------------
 ! BUT : IMPRIMER UNE MESURE DE TEMPS
 !
@@ -47,8 +47,8 @@ subroutine uttcpi(nommes, ifm, typimp)
 ! ----------------------------------------------------------------------
 ! REMARQUE : LES VALEURS STOCKEES SONT ACCUMUEES VIA UTTCPU
     aster_logical :: ljev
-    integer :: indi, jvalms, k, nbfois, jvalmi
-    integer :: rang, nbproc, i1
+    integer(kind=8) :: indi, jvalms, k, nbfois, jvalmi
+    integer(kind=8) :: rang, nbproc, i1
     character(len=8) :: numes
     character(len=50) :: nommel
     real(kind=8) :: xtota, xuser, xsyst, xelap, moyenn(3), ectype(3)
@@ -57,7 +57,7 @@ subroutine uttcpi(nommes, ifm, typimp)
 !
 !
 !     -- COMMONS POUR MESURE DE TEMPS :
-    integer :: mtpniv, mtpsta, indmax
+    integer(kind=8) :: mtpniv, mtpsta, indmax
     parameter(indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)

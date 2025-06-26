@@ -46,7 +46,7 @@ subroutine cgvein(compor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, jcald, jcall, nbma, iadc, ima
+    integer(kind=8) :: iret, jcald, jcall, nbma, iadc, ima
     character(len=8) :: noma
     character(len=16) :: k16ldc
     character(len=19) :: chcalc, chtmp

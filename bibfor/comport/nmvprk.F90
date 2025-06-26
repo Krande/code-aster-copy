@@ -118,10 +118,10 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=*) :: fami
-    integer, intent(in) :: nvi
-    integer :: imat, ndim, ndt, ndi, nr, kpg, ksp, i, nbphas, itmax
-    integer :: nmat, ioptio, idnr, nsg, nfs, nhsr, neps
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8), intent(in) :: nvi
+    integer(kind=8) :: imat, ndim, ndt, ndi, nr, kpg, ksp, i, nbphas, itmax
+    integer(kind=8) :: nmat, ioptio, idnr, nsg, nfs, nhsr, neps
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     character(len=16), optional, intent(in) :: mult_comp_
 !     POUR POLYCRISTAL, POUR POUVOIR STOCKER JUSQU'A 1000 PHASES
     parameter(nmat=6000)
@@ -131,7 +131,7 @@ subroutine nmvprk(fami, kpg, ksp, ndim, &
     parameter(nsg=30)
     parameter(nfs=5)
     parameter(nhsr=5)
-    integer :: nbcomm(nmat, 3), numhsr(nmat), iret
+    integer(kind=8) :: nbcomm(nmat, 3), numhsr(nmat), iret
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsdt(neps), depst(neps)
     real(kind=8) :: rbid
     real(kind=8) :: toler, ymfs, crit(*), vind(*), vinf(*), timed, timef

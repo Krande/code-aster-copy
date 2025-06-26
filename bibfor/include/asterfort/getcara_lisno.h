@@ -21,11 +21,11 @@
           interface 
             subroutine getcara_lisno(noma,nno,lisno,dist_mini,dim,      &
      &linocara)
-              integer, intent(in) :: nno
+              integer(kind=8), intent(in) :: nno
               character(len=8), intent(in) :: noma
-              integer, intent(in) :: lisno(nno)
+              integer(kind=8), intent(in) :: lisno(nno)
               real(kind=8), intent(in) :: dist_mini
-              integer, intent(out) :: dim
-              integer, intent(out) :: linocara(*)
+              integer(kind=8), intent(out) :: dim
+              integer(kind=8), intent(out) :: linocara(*)
             end subroutine getcara_lisno
           end interface 

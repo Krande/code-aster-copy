@@ -21,6 +21,6 @@
 interface
     function sdeiso(vect)
         character(len=5) :: vect
-        integer :: sdeiso
+        integer(kind=8) :: sdeiso
     end function sdeiso
 end interface

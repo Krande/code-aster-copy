@@ -28,7 +28,7 @@ function mminfr(sdcont_defi_, question_, i_zone_)
     real(kind=8) :: mminfr
     character(len=*), intent(in) :: sdcont_defi_
     character(len=*), intent(in) :: question_
-    integer, optional, intent(in) :: i_zone_
+    integer(kind=8), optional, intent(in) :: i_zone_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ function mminfr(sdcont_defi_, question_, i_zone_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_zone
+    integer(kind=8) :: i_zone
     real(kind=8) :: vale_r
     character(len=24) :: sdcont_defi
 !

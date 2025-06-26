@@ -47,8 +47,8 @@ subroutine dktrig(nomte, xyzl, option, pgl, rig, &
 !     OUT RIG    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM)
 !     ------------------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: multic, i, jcoqu, jdepg
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: multic, i, jcoqu, jdepg
     real(kind=8) :: wgt, aire
     real(kind=8) :: dm(9), df(9), dmf(9), df2(9), dmf2(9), dc(4), dci(4)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)

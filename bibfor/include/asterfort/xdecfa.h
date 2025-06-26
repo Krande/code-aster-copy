@@ -23,17 +23,17 @@ interface
                       pinter, pinref, ainter, cooree, cooref, rainter,&
                       noeud, npts, nintar, lst ,lonref, ndim, zxain,&
                       jgrlsn, mipos)
-        integer :: ndim
-        integer :: jlsn
-        integer :: jlst
-        integer :: igeom
-        integer :: nno
-        integer :: npi
-        integer :: npis
-        integer :: noeud(9)
-        integer :: npts
-        integer :: nintar
-        integer :: zxain
+        integer(kind=8) :: ndim
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jlst
+        integer(kind=8) :: igeom
+        integer(kind=8) :: nno
+        integer(kind=8) :: npi
+        integer(kind=8) :: npis
+        integer(kind=8) :: noeud(9)
+        integer(kind=8) :: npts
+        integer(kind=8) :: nintar
+        integer(kind=8) :: zxain
         real(kind=8) :: pinter(*)
         real(kind=8) :: pinref(43*ndim)
         real(kind=8) :: ainter(*)
@@ -43,7 +43,7 @@ interface
         real(kind=8) :: lst(6)
         real(kind=8) :: lonref
         character(len=8) :: elp
-        integer :: jgrlsn
+        integer(kind=8) :: jgrlsn
         aster_logical :: mipos
     end subroutine xdecfa
 end interface

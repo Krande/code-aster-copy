@@ -19,10 +19,10 @@
 !
 interface
     function xcalc_saut(id_no, id_escl, id_mait, iflag)
-       integer :: id_no
-       integer :: id_escl
-       integer :: id_mait
-       integer, optional ::  iflag
+       integer(kind=8) :: id_no
+       integer(kind=8) :: id_escl
+       integer(kind=8) :: id_mait
+       integer(kind=8), optional ::  iflag
        real(kind=8) :: xcalc_saut
     end function xcalc_saut
 end interface

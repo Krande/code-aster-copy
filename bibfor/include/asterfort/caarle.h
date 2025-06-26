@@ -21,7 +21,7 @@
 interface
     subroutine caarle(numdlz, iocc, lisrez, chargz)
         character(len=*) :: numdlz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: lisrez
         character(len=*) :: chargz
     end subroutine caarle

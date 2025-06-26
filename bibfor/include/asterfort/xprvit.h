@@ -28,7 +28,7 @@ interface
                       ucnsln)
         character(len=8) :: noma
         character(len=8) :: fiss
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=24) :: nvit
         character(len=24) :: nbeta
         real(kind=8) :: lcmin

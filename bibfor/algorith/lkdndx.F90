@@ -36,11 +36,11 @@ subroutine lkdndx(nmat, mater, i1, devsig, bprime, &
 #include "asterc/r8pi.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
-    integer :: nmat, val
+    integer(kind=8) :: nmat, val
     real(kind=8) :: i1, devsig(6), dndxi(6), bprime, mater(nmat, 2)
     real(kind=8) :: para(3), dpardx(3), xi
 !
-    integer :: i, ndt, ndi
+    integer(kind=8) :: i, ndt, ndi
     real(kind=8) :: sii, trois, deux, vident(6), un, zero, dbpdxi, six
     real(kind=8) :: sinpsi, dsindx, pi, pref, sigc, h0ext, s0, mult
     real(kind=8) :: xie, mvmax, mu0v, xi0v, mu1, xi1, alres, rcos3t

@@ -67,7 +67,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbnoto, nbrepg, nbsp, ndim, typgeo
+    integer(kind=8) :: nbnoto, nbrepg, nbsp, ndim, typgeo
 !
     real(kind=8) :: refcoo(*), gscoo(*), wg(*)
     real(kind=8) :: raux1(*), raux2(*), raux3(*)
@@ -77,7 +77,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
     character(len=*) :: nofimd
     aster_logical :: lfichUniq
 !
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 ! 0.3. ==> VARIABLES LOCALES
@@ -85,17 +85,17 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
     character(len=6) :: nompro
     parameter(nompro='IRMPG1')
 !
-    integer :: edfuin
+    integer(kind=8) :: edfuin
     parameter(edfuin=0)
-    integer :: edleaj
+    integer(kind=8) :: edleaj
     parameter(edleaj=1)
 !
-    integer :: ifm, nivinf
-    integer :: iaux, jaux, kaux
-    integer :: nblopg
+    integer(kind=8) :: ifm, nivinf
+    integer(kind=8) :: iaux, jaux, kaux
+    integer(kind=8) :: nblopg
     med_idt :: idfimd
-    integer :: typgel, nbrepl, ndim2
-    integer :: lgnofa
+    integer(kind=8) :: typgel, nbrepl, ndim2
+    integer(kind=8) :: lgnofa
 !
 !
     character(len=8) :: saux08

@@ -46,16 +46,16 @@ subroutine te0573(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxnoeu = 3, mxnpg = 4, mxvect = 2*3, mxmatr = 2*3*2*3
+    integer(kind=8), parameter :: mxnoeu = 3, mxnpg = 4, mxvect = 2*3, mxmatr = 2*3*2*3
     aster_logical :: l_func, l_time
     aster_logical :: l_axis
-    integer :: jv_geom, jv_time, jv_pres
-    integer :: jv_depm, jv_depp
-    integer :: jv_vect, jv_matr
+    integer(kind=8) :: jv_geom, jv_time, jv_pres
+    integer(kind=8) :: jv_depm, jv_depp
+    integer(kind=8) :: jv_vect, jv_matr
     real(kind=8) :: time
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim, ndofbynode, ndof
-    integer :: iret, kpg, idof, i, j, k
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg, ndim, ndofbynode, ndof
+    integer(kind=8) :: iret, kpg, idof, i, j, k
     real(kind=8) :: vect(mxvect), matr(mxmatr), geomCurr(mxvect)
     real(kind=8) :: pres, pres_pg(mxnpg)
     real(kind=8) :: cisa, cisa_pg(mxnpg)

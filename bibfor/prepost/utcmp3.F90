@@ -20,7 +20,7 @@ subroutine utcmp3(nbcmp, nomcmp, numcmp)
     implicit none
 #include "asterfort/lxliis.h"
 #include "asterfort/utmess.h"
-    integer :: nbcmp, numcmp(*)
+    integer(kind=8) :: nbcmp, numcmp(*)
     character(len=*) :: nomcmp(*)
 ! BUT :  VERIFIER QUE LES COMPOSANTES DE LA GRANDEUR VARI_R S'APPELLENT
 !        BIEN V1, V2, .... ET RETOURNER LA LISTE DES NUMEROS CONCERNES
@@ -32,7 +32,7 @@ subroutine utcmp3(nbcmp, nomcmp, numcmp)
 !
 !
 ! ----------------------------------------------------------------------
-    integer :: i, iret
+    integer(kind=8) :: i, iret
     character(len=8) :: nom
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------

@@ -30,11 +30,11 @@ subroutine tail_reel(l3, vss33, dim3, ndim, ifour)
 #include "asterfort/jevech.h"
 #include "asterfort/tecael.h"
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
 !
 !
-    integer :: ima, nbno, iadzi, iazk24, a, IGEOM, ndim, ifour
+    integer(kind=8) :: ima, nbno, iadzi, iazk24, a, IGEOM, ndim, ifour
     real(kind=8) :: coorproj(27), s, maxi, mini, maximu, l3(3), dim3
     real(kind=8) :: vss33(3, 3)
 !

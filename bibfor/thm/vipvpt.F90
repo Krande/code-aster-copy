@@ -37,9 +37,9 @@ subroutine vipvpt(ds_thm, &
 #include "asterc/r8prem.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: ndim, nbvari, dimcon
-    integer, intent(in) :: adcp11, adcp12
-    integer, intent(in) :: advico, vicpvp
+    integer(kind=8), intent(in) :: ndim, nbvari, dimcon
+    integer(kind=8), intent(in) :: adcp11, adcp12
+    integer(kind=8), intent(in) :: advico, vicpvp
     real(kind=8), intent(in) :: congem(dimcon)
     real(kind=8), intent(in) :: mamolv, rgaz, rho11, kh
     real(kind=8), intent(in) :: signe, cp11, cp12
@@ -49,7 +49,7 @@ subroutine vipvpt(ds_thm, &
     real(kind=8), intent(in) :: pvp0
     real(kind=8), intent(out) :: pvp1
     real(kind=8), intent(out) :: vintp(nbvari)
-    integer, intent(out)  :: retcom
+    integer(kind=8), intent(out)  :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !

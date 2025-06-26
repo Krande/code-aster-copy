@@ -44,9 +44,9 @@ subroutine mmdeco(ds_contact)
 ! In  ds_contact       : datastructure for contact management
 !
     character(len=24) :: tabfin, etatct
-    integer :: jtabf, jetat
-    integer :: zetat, ztabf
-    integer :: ntpc, ipc
+    integer(kind=8) :: jtabf, jetat
+    integer(kind=8) :: zetat, ztabf
+    integer(kind=8) :: ntpc, ipc
 !
 ! ----------------------------------------------------------------------
 !

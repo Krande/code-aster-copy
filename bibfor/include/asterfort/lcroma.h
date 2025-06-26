@@ -21,9 +21,9 @@
 interface
     subroutine lcroma(fami, kpg, ksp, poum, mate)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=*) :: poum
-        integer :: mate
+        integer(kind=8) :: mate
     end subroutine lcroma
 end interface

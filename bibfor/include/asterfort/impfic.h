@@ -25,7 +25,7 @@ interface
         real(kind=8) :: vale(5)
         character(len=8) :: nomnoe
         real(kind=8) :: rcmp(6)
-        integer :: unit
+        integer(kind=8) :: unit
         aster_logical :: lxfem
     end subroutine impfic
 end interface

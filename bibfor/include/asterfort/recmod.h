@@ -22,8 +22,8 @@ interface
     subroutine recmod(modmec, nbmode, nbamor, bande, tymmec,&
                       grdmod)
         character(len=8) :: modmec
-        integer :: nbmode
-        integer :: nbamor
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbamor
         real(kind=8) :: bande(2)
         character(len=8) :: tymmec
         character(len=16) :: grdmod

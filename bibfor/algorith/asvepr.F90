@@ -77,12 +77,12 @@ subroutine asvepr(lischa, vecelz, typres, numedd)
 !
     character(len=19) :: vecele, chamno
     character(len=24) :: vachar
-    integer :: jvacha
+    integer(kind=8) :: jvacha
     character(len=24) :: resuElem
     character(len=8) :: newnom, modele, typech, typsca
-    integer :: ivach, nbvach
-    integer :: nbvec
-    integer :: iret, ivec, ichar, ityprs
+    integer(kind=8) :: ivach, nbvach
+    integer(kind=8) :: nbvec
+    integer(kind=8) :: iret, ivec, ichar, ityprs
     character(len=4) :: tyresl
     character(len=1) :: typchn
     character(len=24), pointer :: relr(:) => null()

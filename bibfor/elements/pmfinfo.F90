@@ -42,12 +42,12 @@ subroutine pmfinfo(nbfibr, nbgrfi, tygrfi, nbcarm, nug, jacf, nbassfi)
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(out) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(*)
-    integer, intent(out), optional :: jacf, nbassfi
+    integer(kind=8), intent(out) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(*)
+    integer(kind=8), intent(out), optional :: jacf, nbassfi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jnbspi, ii, numgr, jacf_loc
+    integer(kind=8) :: jnbspi, ii, numgr, jacf_loc
 !
 ! --------------------------------------------------------------------------------------------------
 !

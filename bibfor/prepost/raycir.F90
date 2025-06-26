@@ -34,7 +34,7 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec, &
 #include "asterfort/jerazo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: jvecpg, jdtau, jvecn, nbordr, nbvec
+    integer(kind=8) :: jvecpg, jdtau, jvecn, nbordr, nbvec
     character(len=16) :: nommet
 ! ---------------------------------------------------------------------
 ! BUT: DETERMINER LE PLUS PETIT CERCLE CIRCONSCRIT AUX POINTS
@@ -56,11 +56,11 @@ subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec, &
 !
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: i, ivect, iordr, k, n1
-    integer :: jsec1, jsec2, jsec3, jsec4, jdom1
-    integer :: jdom2, jcoorp
-    integer :: nbpts1, nbpts2, nbpts3, nbpts4, nbptd1, nbptd2
-    integer :: indsec, n, ireth, iretv, nboucl, nbr, iret3p
+    integer(kind=8) :: i, ivect, iordr, k, n1
+    integer(kind=8) :: jsec1, jsec2, jsec3, jsec4, jdom1
+    integer(kind=8) :: jdom2, jcoorp
+    integer(kind=8) :: nbpts1, nbpts2, nbpts3, nbpts4, nbptd1, nbptd2
+    integer(kind=8) :: indsec, n, ireth, iretv, nboucl, nbr, iret3p
 !
     real(kind=8) :: cumin, cumax, cvmin, cvmax, cui, cvi, diamin
     real(kind=8) :: raymin, cuomi1, cvomi1, cuomi2, cvomi2, cuo1, cvo1

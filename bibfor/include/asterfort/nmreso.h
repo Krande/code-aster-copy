@@ -21,7 +21,7 @@
 interface
     subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu,&
                       maprec, matass, depso1, depso2, rescvg)
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: cndonn
         character(len=19) :: cnpilo
         character(len=19) :: cncine
@@ -30,6 +30,6 @@ interface
         character(len=19) :: matass
         character(len=19) :: depso1
         character(len=19) :: depso2
-        integer :: rescvg
+        integer(kind=8) :: rescvg
     end subroutine nmreso
 end interface

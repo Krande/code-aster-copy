@@ -44,11 +44,11 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
     character(len=8) :: nomo
     character(len=24) :: tabcor
 !
-    integer :: ima, nbma, ibid
-    integer :: jnbno, jad, jlgrf, jdime, jtyel, jtabco
+    integer(kind=8) :: ima, nbma, ibid
+    integer(kind=8) :: jnbno, jad, jlgrf, jdime, jtyel, jtabco
     character(len=8) :: k8bid
     character(len=19) :: ligarl
-    integer :: numori, ityel, iret
+    integer(kind=8) :: numori, ityel, iret
 !
 ! ----------------------------------------------------------------------
 !

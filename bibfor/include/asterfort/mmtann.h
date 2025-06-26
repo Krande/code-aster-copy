@@ -20,9 +20,9 @@
 !
 interface
     subroutine mmtann(ndim, tau1, tau2, iret)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine mmtann
 end interface

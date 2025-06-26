@@ -22,6 +22,6 @@ interface
     subroutine lxlir8(chaine, rval, ier)
         character(len=*) :: chaine
         real(kind=8) :: rval
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine lxlir8
 end interface

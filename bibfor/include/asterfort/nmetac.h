@@ -23,7 +23,7 @@
 interface
     subroutine nmetac(list_func_acti, sddyna, ds_contact, ds_inout)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: sddyna
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_InOut), intent(inout) :: ds_inout

@@ -56,7 +56,7 @@ subroutine pmfbkb(cars, b, wi, gxjx, sk)
 ! LOC ------------------------------------------------------------------
 ! LOC I   ! IP     !   12    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 !     ------------------------------------------------------------------
-    integer :: ip(12)
+    integer(kind=8) :: ip(12)
     real(kind=8) :: sk(78), cars(6), gxjx, b(4), wi
     real(kind=8) :: ks11, ks12, ks13, ks22, ks33, ks23
     real(kind=8) :: b1b1, b1b2, b1b3, b1b4, b2b2, b2b3, b2b4, b3b3, b3b4, b4b4

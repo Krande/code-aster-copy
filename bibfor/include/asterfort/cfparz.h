@@ -24,15 +24,15 @@ interface
                       posnoe)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: iliai
+        integer(kind=8) :: iliai
         real(kind=8) :: coefff
         real(kind=8) :: coefpn
         real(kind=8) :: coefpt
         real(kind=8) :: coefte
         real(kind=8) :: dissup
-        integer :: izone
-        integer :: ip
-        integer :: numnoe
-        integer :: posnoe
+        integer(kind=8) :: izone
+        integer(kind=8) :: ip
+        integer(kind=8) :: numnoe
+        integer(kind=8) :: posnoe
     end subroutine cfparz
 end interface

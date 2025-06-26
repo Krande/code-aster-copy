@@ -70,7 +70,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: ipg
+        integer(kind=8) :: ipg
         real(kind=8), dimension(MAX_BS) :: BSEval
         real(kind=8) :: coeff
 !
@@ -112,7 +112,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: ipg, idim
+        integer(kind=8) :: ipg, idim
         real(kind=8), dimension(MAX_BS) :: BSEval
         real(kind=8) :: coeff(3)
 !

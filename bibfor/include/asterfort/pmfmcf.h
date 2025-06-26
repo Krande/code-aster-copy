@@ -24,17 +24,17 @@ interface
                       icdmat, nbvalc, defam, defap, varim,&
                       varimp, contm, defm, defp, epsm,&
                       modf, sigf, varip, codret)
-        integer :: ip
-        integer :: nbgf
-        integer :: nbfib
-        integer :: nugf(*)
+        integer(kind=8) :: ip
+        integer(kind=8) :: nbgf
+        integer(kind=8) :: nbfib
+        integer(kind=8) :: nugf(*)
         character(len=24) :: sdcomp(*)
         real(kind=8) :: crit(*)
         character(len=16) :: option
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: icdmat
-        integer :: nbvalc
+        integer(kind=8) :: icdmat
+        integer(kind=8) :: nbvalc
         real(kind=8) :: defam(*)
         real(kind=8) :: defap(*)
         real(kind=8) :: varim(*)
@@ -46,6 +46,6 @@ interface
         real(kind=8) :: modf(*)
         real(kind=8) :: sigf(*)
         real(kind=8) :: varip(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine pmfmcf
 end interface

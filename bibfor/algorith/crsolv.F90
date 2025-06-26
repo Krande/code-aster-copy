@@ -31,11 +31,11 @@ subroutine crsolv(method, renum, kacmum, blreps, solve, bas)
 !     CREATION D'UNE STRUCTURE SOLVEUR
 !
 !-----------------------------------------------------------------------
-    integer :: islvi, islvk, islvr, islvo, nprec
+    integer(kind=8) :: islvi, islvk, islvr, islvo, nprec
     real(kind=8) :: resire
 !-----------------------------------------------------------------------
 !
-    integer :: zslvk, zslvr, zslvi, zslvo
+    integer(kind=8) :: zslvk, zslvr, zslvi, zslvo
     real(kind=8) :: epsmat
     character(len=1) :: base
     character(len=8) :: preco

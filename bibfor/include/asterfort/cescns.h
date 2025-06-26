@@ -26,6 +26,6 @@ interface
         character(len=*) :: base
         character(len=*) :: cnsz
         character(len=1) :: comp
-        integer :: cret
+        integer(kind=8) :: cret
     end subroutine cescns
 end interface

@@ -19,7 +19,7 @@
 interface
     subroutine mecham(optionZ, modelZ, cara, nh, chgeoz,&
                       chcara, chharz, iret)
-        integer :: iret, nh
+        integer(kind=8) :: iret, nh
         character(len=*), intent(in) :: optionZ, modelZ
         character(len=*) :: cara
         character(len=*) :: chgeoz, chcara(*), chharz

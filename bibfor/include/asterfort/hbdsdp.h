@@ -22,7 +22,7 @@ interface
     subroutine hbdsdp(se, dg, etap, sigeqe, vp,&
                       parame, derive, nbmat, materf, sig3,&
                       detadg, dgdl, dsdsip)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: se(6)
         real(kind=8) :: dg
         real(kind=8) :: etap

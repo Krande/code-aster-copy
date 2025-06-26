@@ -18,7 +18,7 @@
 !
 interface
     subroutine norm_frobenius(nb, tab, norm)
-        integer, intent(in)       :: nb
+        integer(kind=8), intent(in)       :: nb
         real(kind=8), intent(in)  :: tab(*)
         real(kind=8), intent(out) :: norm
     end subroutine norm_frobenius

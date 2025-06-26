@@ -21,6 +21,6 @@
 interface
     subroutine xerbla(srname, info)
         character(len=6) :: srname
-        integer :: info
+        integer(kind=8) :: info
     end subroutine xerbla
 end interface

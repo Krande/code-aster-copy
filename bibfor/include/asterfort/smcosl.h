@@ -20,9 +20,9 @@ interface
     subroutine smcosl(x, nb_hist, trc, ind,&
                       a, b)
         real(kind=8), intent(in) :: x(5)
-        integer, intent(in) :: nb_hist
+        integer(kind=8), intent(in) :: nb_hist
         real(kind=8), intent(in) :: trc((3*nb_hist), 5)
-        integer, intent(in) :: ind(6)
+        integer(kind=8), intent(in) :: ind(6)
         real(kind=8), intent(out) :: a(6, 6), b(6)
     end subroutine smcosl
 end interface

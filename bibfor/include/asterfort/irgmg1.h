@@ -24,18 +24,18 @@ interface
     subroutine irgmg1(numold, ima, nbord2, tabd, tabl,&
                       tabv, partie, jtype, nbno, icmp,&
                       ifi, iwri, iadmax)
-        integer :: numold(*)
-        integer :: ima
-        integer :: nbord2
-        integer :: tabd(*)
-        integer :: tabl(*)
-        integer :: tabv(*)
+        integer(kind=8) :: numold(*)
+        integer(kind=8) :: ima
+        integer(kind=8) :: nbord2
+        integer(kind=8) :: tabd(*)
+        integer(kind=8) :: tabl(*)
+        integer(kind=8) :: tabv(*)
         character(len=*) :: partie
-        integer :: jtype
-        integer :: nbno
-        integer :: icmp
-        integer :: ifi
+        integer(kind=8) :: jtype
+        integer(kind=8) :: nbno
+        integer(kind=8) :: icmp
+        integer(kind=8) :: ifi
         aster_logical :: iwri
-        integer :: iadmax
+        integer(kind=8) :: iadmax
     end subroutine irgmg1
 end interface

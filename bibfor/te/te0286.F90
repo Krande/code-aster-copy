@@ -52,9 +52,9 @@ subroutine te0286(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idepl, idfde, iener, igeom, iharmo, imate
-    integer :: ipoids, iret, ivf, jgano, nbsig, ndim, ndim2
-    integer :: nh, nno, nnos, npg
+    integer(kind=8) :: i, idepl, idfde, iener, igeom, iharmo, imate
+    integer(kind=8) :: ipoids, iret, ivf, jgano, nbsig, ndim, ndim2
+    integer(kind=8) :: nh, nno, nnos, npg
     real(kind=8) :: enthth, epot, undemi, zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'

@@ -19,7 +19,7 @@
 subroutine dfdm2j(nno, ipg, idfde, coor, jac)
     implicit none
 #include "jeveux.h"
-    integer :: nno, ipg, idfde
+    integer(kind=8) :: nno, ipg, idfde
     real(kind=8) :: coor(*), jac
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DU JACOBIEN (AVEC SIGNE)
@@ -33,7 +33,7 @@ subroutine dfdm2j(nno, ipg, idfde, coor, jac)
 !        RESULTATS:   JAC           <--  JACOBIEN AU POINT DE GAUSS
 ! ......................................................................
 !
-    integer :: i, ii, k
+    integer(kind=8) :: i, ii, k
     real(kind=8) :: de, dk, dxde, dxdk, dyde, dydk
 !
 !

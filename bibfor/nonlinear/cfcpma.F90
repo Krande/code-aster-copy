@@ -24,7 +24,7 @@ subroutine cfcpma(resoco, neq, nbliai, numedd, matrcf)
 #include "asterfort/cfmata.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: neq, nbliai
+    integer(kind=8) :: neq, nbliai
     character(len=24) :: resoco
     character(len=14) :: numedd
     character(len=19) :: matrcf
@@ -47,7 +47,7 @@ subroutine cfcpma(resoco, neq, nbliai, numedd, matrcf)
 !
 !
 !
-    integer :: nmult
+    integer(kind=8) :: nmult
     character(len=24) :: enat
     character(len=14) :: numecf
 !

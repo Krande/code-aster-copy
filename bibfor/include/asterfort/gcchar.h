@@ -32,8 +32,8 @@ interface
         character(len=24) :: oldfon
         character(len=8) ::  nomfct
         character(len=8) ::  newfct
-        integer :: ichar
-        integer :: iprec
+        integer(kind=8) :: ichar
+        integer(kind=8) :: iprec
         real(kind=8) :: time
         character(len=19) :: cartei
         character(len=19) :: carteo

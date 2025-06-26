@@ -27,8 +27,8 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom, &
 #include "asterfort/iselli.h"
 #include "asterfort/xmase2.h"
 #include "asterfort/xmase3.h"
-    integer :: nnop, imate, igeom, jpmilt, jstno, ddlm, nnops
-    integer :: nfh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10), heavn(27, 5)
+    integer(kind=8) :: nnop, imate, igeom, jpmilt, jstno, ddlm, nnops
+    integer(kind=8) :: nfh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10), heavn(27, 5)
     real(kind=8) :: pintt(3*11), lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), basloc(*)
 !
@@ -62,9 +62,9 @@ subroutine xmasel(nnop, nfh, nfe, ddlc, igeom, &
 !
 !
 !
-    integer :: nse, npg, ndim
-    integer :: j, ise, in, ino
-    integer :: irese, nno
+    integer(kind=8) :: nse, npg, ndim
+    integer(kind=8) :: j, ise, in, ino
+    integer(kind=8) :: irese, nno
 !
     real(kind=8) :: he, coorse(81)
 !

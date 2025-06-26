@@ -41,7 +41,7 @@ subroutine op0006()
     character(len=8) :: chmat, nomail, nomode, nomai2
     character(len=16) :: nomcmd, type
     character(len=24) :: valk(3)
-    integer ::  ifm, n1, niv
+    integer(kind=8) ::  ifm, n1, niv
 ! ----------------------------------------------------------------------
 !
     call jemarq()

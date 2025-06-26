@@ -43,7 +43,7 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
 #include "asterfort/char8_to_int.h"
 !
     character(len=24) :: xdicmp, xdncmp, vcheff
-    integer :: i, ier
+    integer(kind=8) :: i, ier
 !     VERIFICATION DE COHERENCE DES ARGUMENTS D' APPEL DE LA COMMANDE
 !     DE CALCUL DU POST TRAITEMENT (OP0051)
 !       1. EXISTENCE DES CHAM_GD MIS EN JEU
@@ -65,9 +65,9 @@ subroutine rvcohe(xdicmp, xdncmp, vcheff, i, ier)
     character(len=15) :: nrepnd
     character(len=8) :: nresu, nomcmp, nmaich, nomnd
     character(len=4) :: docu
-    integer :: acheff, alneud, anumcp, anomcp, nbcmp
-    integer :: nbgrpn, nbneud, grel, nbgrel, jceld, amod, mod
-    integer :: j, k, n1, ngrn, iexi, ier2
+    integer(kind=8) :: acheff, alneud, anumcp, anomcp, nbcmp
+    integer(kind=8) :: nbgrpn, nbneud, grel, nbgrel, jceld, amod, mod
+    integer(kind=8) :: j, k, n1, ngrn, iexi, ier2
     aster_logical :: chelok, parMesh, lnomnoe
     character(len=24), pointer :: grpn(:) => null()
 !

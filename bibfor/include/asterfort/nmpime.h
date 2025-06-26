@@ -23,11 +23,11 @@ interface
                       xlong0, a, xlongm, dlong0, ncstpm,&
                       cstpm, vim, effnom, vip, effnop,&
                       klv, fono)
-        integer :: ncstpm
+        integer(kind=8) :: ncstpm
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
         character(len=*) :: option
         real(kind=8) :: xlong0
         real(kind=8) :: a

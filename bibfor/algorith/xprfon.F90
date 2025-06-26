@@ -33,7 +33,7 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
     character(len=8) :: fiss
 !
     character(len=24) :: nvit, nbeta
-    integer :: numfon
+    integer(kind=8) :: numfon
 !
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
@@ -52,22 +52,22 @@ subroutine xprfon(fiss, numfon, nvit, nbeta)
 !        NUMFON  : NOMBRE DE FONDS DE FISSURE
 !
 !     ------------------------------------------------------------------
-    integer :: i, j, k, ifm, niv, nbnol
-    integer ::    jbeta, jvit
-    integer :: long, nptfg, nbptff, ivalue, nval
-    integer :: npoin, npoinp, npoino, nponop
+    integer(kind=8) :: i, j, k, ifm, niv, nbnol
+    integer(kind=8) ::    jbeta, jvit
+    integer(kind=8) :: long, nptfg, nbptff, ivalue, nval
+    integer(kind=8) :: npoin, npoinp, npoino, nponop
     real(kind=8) :: a1(4), b1(4), m1(3), a2(4), b2(4), m2(3)
     real(kind=8) :: prosca, normab, coeffk, mem(5), memo(5)
     real(kind=8) :: vect1, vect2
     real(kind=8), pointer :: vjbaso(:) => null()
     real(kind=8), pointer :: vjbetao(:) => null()
-    integer, pointer :: vjfmulo(:) => null()
+    integer(kind=8), pointer :: vjfmulo(:) => null()
     real(kind=8), pointer :: vjfono(:) => null()
     real(kind=8), pointer :: vjvito(:) => null()
     real(kind=8), pointer :: vmemo(:) => null()
     real(kind=8), pointer :: fondfisg(:) => null()
     real(kind=8), pointer :: fondfiss(:) => null()
-    integer, pointer :: fondmult(:) => null()
+    integer(kind=8), pointer :: fondmult(:) => null()
     real(kind=8), pointer :: basefond(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT

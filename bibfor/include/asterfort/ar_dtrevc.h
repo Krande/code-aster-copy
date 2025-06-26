@@ -24,19 +24,19 @@ interface
     subroutine ar_dtrevc(side, howmny, select, n, t,&
                       ldt, vl, ldvl, vr, ldvr,&
                       mm, m, work, info)
-        integer :: ldvr
-        integer :: ldvl
-        integer :: ldt
+        integer(kind=8) :: ldvr
+        integer(kind=8) :: ldvl
+        integer(kind=8) :: ldt
         character(len=1) :: side
         character(len=1) :: howmny
         aster_logical :: select(*)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: t(ldt, *)
         real(kind=8) :: vl(ldvl, *)
         real(kind=8) :: vr(ldvr, *)
-        integer :: mm
-        integer :: m
+        integer(kind=8) :: mm
+        integer(kind=8) :: m
         real(kind=8) :: work(*)
-        integer :: info
+        integer(kind=8) :: info
     end subroutine ar_dtrevc
 end interface

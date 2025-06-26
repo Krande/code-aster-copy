@@ -22,8 +22,8 @@ interface
     subroutine acedat(motfac, in, npara, sec, exp,&
                       tab, car)
         character(len=*) :: motfac
-        integer :: in
-        integer :: npara(*)
+        integer(kind=8) :: in
+        integer(kind=8) :: npara(*)
         character(len=*) :: sec(*)
         character(len=*) :: exp(*)
         character(len=*) :: tab(*)

@@ -24,10 +24,10 @@ interface
         real(kind=8) :: xmin
         real(kind=8) :: xmax
         real(kind=8) :: prec
-        integer :: niter
+        integer(kind=8) :: niter
         real(kind=8) :: dp
-        integer :: iret
-        integer :: nit
+        integer(kind=8) :: iret
+        integer(kind=8) :: nit
         interface
             function func(x)
                 real(kind=8) :: x

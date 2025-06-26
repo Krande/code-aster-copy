@@ -91,7 +91,7 @@ subroutine charme(load, valeType)
     character(len=4), parameter :: phenomS = 'MECA'
     character(len=16), parameter :: command = 'AFFE_CHAR_MECA'
     character(len=16), parameter :: keywFactEnforceDOF = 'DDL_IMPO'
-    integer :: geomDime, iret
+    integer(kind=8) :: geomDime, iret
     character(len=3) :: answer
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase

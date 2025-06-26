@@ -29,7 +29,7 @@ function gplass(nmnbn, nmplas, bend)
 !
 ! OUT GPLASS : CONDITIONS DE PLASTICITE G
 !
-    integer :: bend
+    integer(kind=8) :: bend
 !
     real(kind=8) :: gplass, nmnbn(6), nmplas(2, 3)
     real(kind=8) :: x, y, coef

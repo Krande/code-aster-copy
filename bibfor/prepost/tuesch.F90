@@ -37,7 +37,7 @@ subroutine tuesch(nssch)
 !   -------------------------
 !
 !
-    integer :: iret
+    integer(kind=8) :: iret
 !
 !====================== CORPS DE LA ROUTINE ========================
 !

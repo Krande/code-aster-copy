@@ -25,8 +25,8 @@ subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1, &
 #include "asterfort/utmess.h"
 !
     character(len=8) :: elrefv
-    integer :: tymvol, ndegre
-    integer :: nbf
+    integer(kind=8) :: tymvol, ndegre
+    integer(kind=8) :: nbf
     character(len=8) :: elref1, elref2
 !
 !

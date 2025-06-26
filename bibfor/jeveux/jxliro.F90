@@ -25,7 +25,7 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
 #include "asterfort/jxecrb.h"
 #include "asterfort/jxlirb.h"
 #include "asterfort/utmess.h"
-    integer :: ic, iadmi, iaddi(2), lso
+    integer(kind=8) :: ic, iadmi, iaddi(2), lso
 ! ----------------------------------------------------------------------
 ! LECTURE D'UN SEGMENT DE VALEUR
 !
@@ -35,18 +35,18 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
 ! IN  LSO   : LONGUEUR EN OCTET DU SEGMENT DE VALEURS
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: jadm, jusadi, ladm, n, nde
+    integer(kind=8) :: jadm, jusadi, ladm, n, nde
 !-----------------------------------------------------------------------
     parameter(n=5)
 !
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -54,7 +54,7 @@ subroutine jxliro(ic, iadmi, iaddi, lso)
     common/lficje/litlec(n)
     common/jusadi/jusadi(n)
 ! ----------------------------------------------------------------------
-    integer :: iadmo, kadd, ladd, lgbl, lso2
+    integer(kind=8) :: iadmo, kadd, ladd, lgbl, lso2
     aster_logical :: lpetit
     parameter(nde=6)
 ! ----------------------------------------------------------------------

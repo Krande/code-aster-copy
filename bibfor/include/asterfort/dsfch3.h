@@ -25,8 +25,8 @@ interface
                       dpdkg, dsdeeg, dsdnng, dsdkkg, dsdeng,&
                       dsdekg, dsdnkg, dsdxxf, dsdyyf, dsdzzf,&
                       dsdxyf, dsdyzf, dsdxzf, jac)
-        integer :: nno
-        integer :: nnf
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnf
         real(kind=8) :: poids
         real(kind=8) :: dpdef(1)
         real(kind=8) :: dpdnf(1)

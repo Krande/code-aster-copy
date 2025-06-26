@@ -21,7 +21,7 @@
 interface
     subroutine mbhesv(imate,kpg,fami,aini,metrini,metrdef,sigpk2,dsigpk2)
     character(len=4) :: fami
-    integer :: kpg, imate
+    integer(kind=8) :: kpg, imate
     real(kind=8) :: aini(2, 2),metrini(2, 2)
     real(kind=8) :: metrdef(2, 2)
     real(kind=8) :: sigpk2(2, 2), dsigpk2(2, 2, 2, 2)

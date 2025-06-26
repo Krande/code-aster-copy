@@ -20,8 +20,8 @@ subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr, &
                   valpro, nvpro, resufi, resufr, nfreq)
     implicit none
 #include "asterc/r8miem.h"
-    integer :: nbmode, nbvect, npivot, nblagr, nvpro, nfreq
-    integer :: resufi(nfreq, *)
+    integer(kind=8) :: nbmode, nbvect, npivot, nblagr, nvpro, nfreq
+    integer(kind=8) :: resufi(nfreq, *)
     complex(kind=8) :: omeshi, valpro(nvpro)
     real(kind=8) :: resufr(nfreq, *)
 !     RECTIFIE LES VALEURS PROPRES COMPLEXES
@@ -38,7 +38,7 @@ subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr, &
 !     OUT : RESUFR  : ON RANGE DANS LA STRUCTURE RESULTAT
 !     IN  : NFREQ   : PREMIERE DIMENSION DU TABLEAU RESUFR
 !     ------------------------------------------------------------------
-    integer :: ineg, ip, im, in, ivec, ifreq
+    integer(kind=8) :: ineg, ip, im, in, ivec, ifreq
     complex(kind=8) :: om
     real(kind=8) :: prec
 !     ------------------------------------------------------------------

@@ -20,7 +20,7 @@
 !
 interface
     function cfmmvd(vect)
-        integer :: cfmmvd
+        integer(kind=8) :: cfmmvd
         character(len=5), intent(in) :: vect
     end function cfmmvd
 end interface

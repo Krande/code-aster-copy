@@ -23,18 +23,18 @@ interface
                       ipoids, ivf, idfde, xyz, depl,&
                       instan, angl_naut, mater, option, enthth)
         character(len=*) :: fami
-        integer :: nno
-        integer :: ndim
-        integer :: nbsig
-        integer :: npg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbsig
+        integer(kind=8) :: npg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: xyz(*)
         real(kind=8) :: depl(*)
         real(kind=8) :: instan
         real(kind=8) :: angl_naut(3)
-        integer :: mater
+        integer(kind=8) :: mater
         character(len=16) :: option
         real(kind=8) :: enthth
     end subroutine ethdst

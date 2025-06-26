@@ -25,8 +25,8 @@
               character(len=8) :: sst1
               character(len=24) :: indin1
               character(len=24) :: lino1
-              integer :: nbmod
-              integer :: numlia
+              integer(kind=8) :: nbmod
+              integer(kind=8) :: numlia
               character(len=24) :: tramod
               character(len=24) :: modet
               character(len=19) :: solveu

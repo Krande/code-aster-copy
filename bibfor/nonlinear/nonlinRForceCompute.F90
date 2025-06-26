@@ -66,7 +66,7 @@ subroutine nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: vediri, cndiri
 !
 ! --------------------------------------------------------------------------------------------------

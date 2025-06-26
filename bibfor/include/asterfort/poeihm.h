@@ -24,11 +24,11 @@ interface
         character(len=16) :: nomte
         character(len=16) :: option
         character(len=3) :: modint
-        integer :: jgao
-        integer :: nno1
-        integer :: nno2
-        integer :: ncmp
-        integer :: nvim
+        integer(kind=8) :: jgao
+        integer(kind=8) :: nno1
+        integer(kind=8) :: nno2
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: nvim
         real(kind=8) :: vpg(*)
         real(kind=8) :: vno(*)
     end subroutine poeihm

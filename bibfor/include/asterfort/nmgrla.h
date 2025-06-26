@@ -38,8 +38,8 @@ type(FE_Quadrature), intent(in) :: FEQuad
 type(FE_basis), intent(in) :: FEBasis
         character(len=16), intent(in) :: option
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: imate
-        integer, intent(in) :: ndim, nno, npg, lgpg
+        integer(kind=8), intent(in) :: imate
+        integer(kind=8), intent(in) :: ndim, nno, npg, lgpg
         character(len=16), intent(in) :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
         character(len=16), intent(in) :: mult_comp
@@ -50,6 +50,6 @@ type(FE_basis), intent(in) :: FEBasis
         aster_logical, intent(in) :: matsym
         real(kind=8), intent(inout) :: matuu(*)
         real(kind=8), intent(inout) :: vectu(ndim*nno)
-        integer, intent(inout) :: codret
+        integer(kind=8), intent(inout) :: codret
     end subroutine nmgrla
 end interface

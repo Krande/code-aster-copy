@@ -21,7 +21,7 @@
 interface
     subroutine irrjpl(model, nmat, mater, sigf, vind,&
                       vinf, dsde)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=8) :: model
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sigf(6)

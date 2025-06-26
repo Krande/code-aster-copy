@@ -66,12 +66,12 @@ subroutine pascou(mate, mateco, carele, sddyna, sddisc)
 !
 !
 !
-    integer, parameter :: nbFieldInMax = 4, nbFieldOutMax = 1
+    integer(kind=8), parameter :: nbFieldInMax = 4, nbFieldOutMax = 1
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=24) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
-    integer :: ibid, jcesd, jcesl, n1, i, numins, nbFieldIn, nbFieldOut
-    integer :: nbma, ima, iad, nbinst, nbmcfl
+    integer(kind=8) :: ibid, jcesd, jcesl, n1, i, numins, nbFieldIn, nbFieldOut
+    integer(kind=8) :: nbma, ima, iad, nbinst, nbmcfl
     real(kind=8) :: dtcou, valeur, phi, instin
     aster_logical :: booneg, boopos
     character(len=2) :: codret

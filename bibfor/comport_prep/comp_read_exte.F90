@@ -26,10 +26,10 @@ subroutine comp_read_exte(keywf, i_comp, libr_name, subr_name, nb_vari_umat)
 #include "asterfort/getvtx.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: i_comp
+    integer(kind=8), intent(in) :: i_comp
     character(len=255), intent(out) :: libr_name
     character(len=255), intent(out) :: subr_name
-    integer, intent(out) :: nb_vari_umat
+    integer(kind=8), intent(out) :: nb_vari_umat
 !
 ! --------------------------------------------------------------------------------------------------
 !

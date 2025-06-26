@@ -29,8 +29,8 @@ subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "blas/ddot.h"
-    integer :: nbeffe
-    integer :: pilcvg
+    integer(kind=8) :: nbeffe
+    integer(kind=8) :: pilcvg
     real(kind=8) :: eta, dtau
     character(len=19) :: sdpilo
     character(len=19) :: ddepl0, ddepl1, depdel
@@ -63,9 +63,9 @@ subroutine nmpidd(numedd, sdpilo, dtau, depdel, ddepl0, &
 !
 !
     real(kind=8) :: du, rn, rd
-    integer :: neq
+    integer(kind=8) :: neq
     character(len=19) :: chapil
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8), pointer :: coef(:) => null()
     real(kind=8), pointer :: dep0(:) => null()
     real(kind=8), pointer :: dep1(:) => null()

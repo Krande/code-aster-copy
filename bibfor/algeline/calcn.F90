@@ -31,7 +31,7 @@ subroutine calcn(s, b, vecn)
 ! --- : B      : PARAMETRE DU CALCUL DE LA NORMALE ---------------------
 ! OUT : VECN   : N = (B*S/SII+I)/SQRT(B**2+3) --------------------------
 ! ======================================================================
-    integer :: ii, ndt, ndi
+    integer(kind=8) :: ii, ndt, ndi
     real(kind=8) :: sii, racine, un, trois
     blas_int :: b_incx, b_incy, b_n
 ! ======================================================================

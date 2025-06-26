@@ -23,22 +23,22 @@ interface
                       motfac, jce2d, jce2l, jce2v, jce5d,&
                       jce5l, jce5v, ksp1, ksp2, c1,&
                       c2, iret)
-        integer :: numa
-        integer :: nucou
+        integer(kind=8) :: numa
+        integer(kind=8) :: nucou
         character(len=3) :: nicou
-        integer :: nangl
-        integer :: nufib
+        integer(kind=8) :: nangl
+        integer(kind=8) :: nufib
         character(len=16) :: motfac
-        integer :: jce2d
-        integer :: jce2l
-        integer :: jce2v
-        integer :: jce5d
-        integer :: jce5l
-        integer :: jce5v
-        integer :: ksp1
-        integer :: ksp2
+        integer(kind=8) :: jce2d
+        integer(kind=8) :: jce2l
+        integer(kind=8) :: jce2v
+        integer(kind=8) :: jce5d
+        integer(kind=8) :: jce5l
+        integer(kind=8) :: jce5v
+        integer(kind=8) :: ksp1
+        integer(kind=8) :: ksp2
         real(kind=8) :: c1
         real(kind=8) :: c2
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine w155ma
 end interface

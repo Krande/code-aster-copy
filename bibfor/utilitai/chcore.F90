@@ -40,7 +40,7 @@ subroutine chcore(chou)
 #include "asterfort/sdchgd.h"
 #include "asterfort/utmess.h"
 
-    integer :: iret, jvale, nbval, jvalin, i, jrefe
+    integer(kind=8) :: iret, jvale, nbval, jvalin, i, jrefe
     real(kind=8) :: zero
     parameter(zero=0.d0)
     character(len=3) :: tsca

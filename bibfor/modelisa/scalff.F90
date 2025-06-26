@@ -30,9 +30,9 @@ subroutine scalff(nbfonc, nbp, disc, vale, a)
 !
 !
 #include "jeveux.h"
-    integer :: nbfonc, nbp
+    integer(kind=8) :: nbfonc, nbp
     real(kind=8) :: disc(nbp), vale(nbp, nbfonc), a(nbfonc, nbfonc)
-    integer :: ifo1, ifo2, ip
+    integer(kind=8) :: ifo1, ifo2, ip
     real(kind=8) :: dx, y1, y2, yy
 !-----------------------------------------------------------------------
 !

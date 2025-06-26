@@ -23,9 +23,9 @@ interface
                       nblign)
         character(len=*) :: nomta
         character(len=*) :: baseta
-        integer :: nbpar
+        integer(kind=8) :: nbpar
         character(len=*) :: nompar(*)
         character(len=*) :: typpar(*)
-        integer :: nblign
+        integer(kind=8) :: nblign
     end subroutine tbcrsv
 end interface

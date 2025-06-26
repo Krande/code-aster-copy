@@ -23,7 +23,7 @@
               character(len=8) :: noma
               character(len=8) :: noma2
               character(len=1) :: base
-              integer :: nbno
-              integer :: lino(*)
+              integer(kind=8) :: nbno
+              integer(kind=8) :: lino(*)
             end subroutine crea_maillage
           end interface 

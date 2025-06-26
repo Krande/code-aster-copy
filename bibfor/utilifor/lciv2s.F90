@@ -26,7 +26,7 @@ function lciv2s(a)
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-    integer :: n, nd
+    integer(kind=8) :: n, nd
     real(kind=8) :: a(6), dev(6)
     real(kind=8) :: lciv2s
     common/tdim/n, nd

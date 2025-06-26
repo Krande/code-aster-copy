@@ -30,10 +30,10 @@ subroutine nmimin(list_func_acti, sddisc, sdsuiv, nume_inst, ds_print)
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddisc
     character(len=24), intent(in) :: sdsuiv
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine nmimin(list_func_acti, sddisc, sdsuiv, nume_inst, ds_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

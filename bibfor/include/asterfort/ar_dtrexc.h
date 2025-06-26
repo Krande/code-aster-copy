@@ -21,15 +21,15 @@
 interface
     subroutine ar_dtrexc(compq, n, t, ldt, q,&
                       ldq, ifst, ilst, work, info)
-        integer :: ldq
-        integer :: ldt
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldt
         character(len=1) :: compq
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: t(ldt, *)
         real(kind=8) :: q(ldq, *)
-        integer :: ifst
-        integer :: ilst
+        integer(kind=8) :: ifst
+        integer(kind=8) :: ilst
         real(kind=8) :: work(*)
-        integer :: info
+        integer(kind=8) :: info
     end subroutine ar_dtrexc
 end interface

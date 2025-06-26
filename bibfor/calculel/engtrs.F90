@@ -37,7 +37,7 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ific
+    integer(kind=8) :: ific
     character(len=8) :: typtes
     character(len=10) :: preci, formr
     character(len=19) :: nomsd
@@ -50,8 +50,8 @@ subroutine engtrs(ific, nomsd, typtes, preci, formr)
 ! IN  : PRECI  : PRECISION POUR LE TEST_RESU
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, nbordt(1), vali, jordr, nbnosy, isy, iatach, lg, i, j, iord
-    integer :: iret, jvale, long, lg1, lg2
+    integer(kind=8) :: ibid, nbordt(1), vali, jordr, nbnosy, isy, iatach, lg, i, j, iord
+    integer(kind=8) :: iret, jvale, long, lg1, lg2
     real(kind=8) :: r8b, valr
     complex(kind=8) :: c16b
     character(len=3) :: type

@@ -31,7 +31,7 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
 #include "asterfort/nmlecv.h"
 #include "asterfort/NonLinear_type.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: sderro
     character(len=4), intent(in) :: loopName
 !
@@ -55,7 +55,7 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: cveven
-    integer :: iEvent
+    integer(kind=8) :: iEvent
     character(len=24) :: eventENIVJv, eventENOMJv, eventEFCTJv
     character(len=9) :: eventName, eventLevel
     character(len=24) :: eventActiFunc
@@ -67,7 +67,7 @@ subroutine nmevcv(sderro, list_func_acti, loopName)
     character(len=16), pointer :: eventENOM(:) => null()
     character(len=24), pointer :: eventEFCT(:) => null()
     character(len=24) :: eventCONVJv
-    integer, pointer :: eventCONV(:) => null()
+    integer(kind=8), pointer :: eventCONV(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

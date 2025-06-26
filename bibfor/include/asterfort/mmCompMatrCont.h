@@ -31,9 +31,9 @@ interface
                               matr_cont)
         character(len=4), intent(in) :: phase
         aster_logical, intent(in) :: l_pena_cont
-        integer, intent(in) :: i_reso_geom
-        integer, intent(in) :: nbdm
-        integer, intent(in) :: ndim, nne, nnm, nnl
+        integer(kind=8), intent(in) :: i_reso_geom
+        integer(kind=8), intent(in) :: nbdm
+        integer(kind=8), intent(in) :: ndim, nne, nnm, nnl
         real(kind=8), intent(in) :: wpg, jacobi, coefac
         real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2, 9)
         real(kind=8), intent(in) :: norm(3), mprojn(3, 3)

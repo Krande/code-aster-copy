@@ -23,15 +23,15 @@
 interface
     subroutine calsvd(nm, m, n, a, w,&
                       matu, u, matv, v, ierr)
-        integer :: n
-        integer :: m
-        integer :: nm
+        integer(kind=8) :: n
+        integer(kind=8) :: m
+        integer(kind=8) :: nm
         real(kind=8) :: a(nm, n)
         real(kind=8) :: w(n)
         aster_logical :: matu
         real(kind=8) :: u(nm, m)
         aster_logical :: matv
         real(kind=8) :: v(nm, n)
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine calsvd
 end interface

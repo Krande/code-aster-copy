@@ -20,9 +20,9 @@
 !
 interface
     subroutine r8inir(n, sa, sx, incx)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: sa
         real(kind=8) :: sx(*)
-        integer :: incx
+        integer(kind=8) :: incx
     end subroutine r8inir
 end interface

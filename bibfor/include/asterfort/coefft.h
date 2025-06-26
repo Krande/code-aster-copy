@@ -21,7 +21,7 @@
 interface
     subroutine coefft(cothe, coeff, dcothe, dcoeff, x,&
                       dtime, coeft, nmat, coel)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: cothe(nmat)
         real(kind=8) :: coeff(nmat)
         real(kind=8) :: dcothe(nmat)

@@ -27,26 +27,26 @@ interface
                       nbcomm, cpmono, pgl, nfs, nsg,&
                       toutms, hsr, nr, itmax, toler,&
                       typma, dsde, codret)
-        integer :: nsg
-        integer :: nfs
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nmat
         character(len=16) :: opt
         character(len=7) :: etatd
         character(len=7) :: etatf
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: epsd(9)
         real(kind=8) :: deps(9)
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
         real(kind=8) :: drdy(*)
@@ -58,16 +58,16 @@ interface
         real(kind=8) :: devgii
         real(kind=8) :: timed
         real(kind=8) :: timef
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
         real(kind=8) :: hsr(nsg, nsg)
-        integer :: nr
-        integer :: itmax
+        integer(kind=8) :: nr
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
         character(len=8) :: typma
         real(kind=8) :: dsde(6, *)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lcotan
 end interface

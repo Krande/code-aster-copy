@@ -25,8 +25,8 @@ interface
         character(len=19), intent(in) :: sddisc
         character(len=4), intent(in) :: ques_type
         character(len=*), intent(in) :: question
-        integer, intent(in), optional :: index_
-        integer, intent(inout), optional :: vali_
+        integer(kind=8), intent(in), optional :: index_
+        integer(kind=8), intent(inout), optional :: vali_
         real(kind=8), intent(inout), optional :: valr_
         character(len=*), intent(inout), optional :: valk_
     end subroutine utdidt

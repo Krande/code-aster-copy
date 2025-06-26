@@ -20,9 +20,9 @@
 !
 interface
     subroutine barpyr(i1, i2, coor, poin)
-        integer :: i1
-        integer :: i2
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
         real(kind=8) :: coor(*)
-        integer :: poin(*)
+        integer(kind=8) :: poin(*)
     end subroutine barpyr
 end interface

@@ -23,12 +23,12 @@ interface
                       deps, sigm, vinm,&
                       option, sigp, vinp, dside, retcom,&
                       invi)
-        integer :: invi
+        integer(kind=8) :: invi
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: deps(6)
@@ -38,6 +38,6 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vinp(invi)
         real(kind=8) :: dside(6, 6)
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine lkcomp
 end interface

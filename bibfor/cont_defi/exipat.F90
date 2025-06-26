@@ -25,7 +25,7 @@ subroutine exipat(mesh, iret)
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,7 +40,7 @@ subroutine exipat(mesh, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ipatch
+    integer(kind=8) :: ipatch
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -21,8 +21,8 @@
 interface
     subroutine mudirx(nbsom, geom, idim, al1, al2,&
                       axe, ang)
-        integer :: idim
-        integer :: nbsom
+        integer(kind=8) :: idim
+        integer(kind=8) :: nbsom
         real(kind=8) :: geom(idim, nbsom)
         real(kind=8) :: al1
         real(kind=8) :: al2

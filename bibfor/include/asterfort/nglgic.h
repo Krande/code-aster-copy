@@ -29,14 +29,14 @@ interface
         character(len=8), intent(in) :: typmod(2)
         character(len=*), intent(in) :: fami
         character(len=16), intent(in):: option, compor(COMPOR_SIZE)
-        integer, intent(in)          :: ndim, nno, nnob, npg, nddl, lgpg
-        integer, intent(in)          :: mate, iw, idff, idffb
+        integer(kind=8), intent(in)          :: ndim, nno, nnob, npg, nddl, lgpg
+        integer(kind=8), intent(in)          :: mate, iw, idff, idffb
         real(kind=8), intent(in)     :: geomi(ndim, nno), carcri(CARCRI_SIZE), instm, instp
         real(kind=8), intent(in)     :: vff(nno, npg), vffb(nnob, npg)
         real(kind=8), intent(in)     :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+4, npg)
         real(kind=8), intent(in)     :: vim(lgpg, npg)
   real(kind=8), intent(out)    :: fint(nddl), matr(nddl, nddl), siefp(3*ndim+4, npg), vip(lgpg, npg)
         aster_logical, intent(in)    :: lMatr, lVect, lSigm, lVari
-        integer, intent(out)         :: codret
+        integer(kind=8), intent(out)         :: codret
     end subroutine nglgic
 end interface

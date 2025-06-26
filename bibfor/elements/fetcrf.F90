@@ -47,21 +47,21 @@ subroutine fetcrf(nomo, nbsd)
 #include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: nomo
-    integer, intent(in) :: nbsd
+    integer(kind=8), intent(in) :: nbsd
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: nbno, lstgma, nomsd, jadr, i
-    integer :: j, intbuf, nec30
-    integer :: nbnot2, nbnoto, ialino, jtrav, ianbno
-    integer :: nbmail, ialima, nbnosd, nb, ianbma, is9, incrs, l, xt
-    integer :: yt, zt, k, nbma, linoma, jprnm
-    integer :: nec, n, ino, ialsk, ialspo, ipos, jtmp
-    integer ::  nbmato
-    integer :: nbmama
-    integer ::  nbmatr
-    integer :: vali(5), iafeta, ial, ials, itma, nber, lil, lils
-    integer :: iao, iaos, iexi
+    integer(kind=8) :: nbno, lstgma, nomsd, jadr, i
+    integer(kind=8) :: j, intbuf, nec30
+    integer(kind=8) :: nbnot2, nbnoto, ialino, jtrav, ianbno
+    integer(kind=8) :: nbmail, ialima, nbnosd, nb, ianbma, is9, incrs, l, xt
+    integer(kind=8) :: yt, zt, k, nbma, linoma, jprnm
+    integer(kind=8) :: nec, n, ino, ialsk, ialspo, ipos, jtmp
+    integer(kind=8) ::  nbmato
+    integer(kind=8) :: nbmama
+    integer(kind=8) ::  nbmatr
+    integer(kind=8) :: vali(5), iafeta, ial, ials, itma, nber, lil, lils
+    integer(kind=8) :: iao, iaos, iexi
     character(len=8) :: k8bid, ma
     character(len=19) :: sdpart, ligrmo
     character(len=24) :: nomsda, nomsdm

@@ -21,13 +21,13 @@
 interface
     subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc,&
                       decal, lgbloc, ncbloc)
-        integer :: nbsn
-        integer :: debfsn(nbsn+1)
-        integer :: mxbloc
-        integer :: seq(nbsn)
-        integer :: nbloc
-        integer :: decal(nbsn)
-        integer :: lgbloc(*)
-        integer :: ncbloc(*)
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: debfsn(nbsn+1)
+        integer(kind=8) :: mxbloc
+        integer(kind=8) :: seq(nbsn)
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: decal(nbsn)
+        integer(kind=8) :: lgbloc(*)
+        integer(kind=8) :: ncbloc(*)
     end subroutine mltblc
 end interface

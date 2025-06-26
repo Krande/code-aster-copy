@@ -72,13 +72,13 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz, &
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ima, ncmp, icmp
-    integer :: jcesd, jcesv, jcesl, nbma, iret, nbsp, nbno, ico
-    integer :: iad, ino, isp, nbpg2, nbno2, iad1
-    integer ::   ilcnx1, iacnx1, nbpg, ipg
-    integer :: mnogal, mnogad, nbno1, imaref
-    integer ::  jces1d, jces1l, jces1v
-    integer :: nbpt, nbpt1, nbsp1, ipt, ipt1, nbv
+    integer(kind=8) :: ima, ncmp, icmp
+    integer(kind=8) :: jcesd, jcesv, jcesl, nbma, iret, nbsp, nbno, ico
+    integer(kind=8) :: iad, ino, isp, nbpg2, nbno2, iad1
+    integer(kind=8) ::   ilcnx1, iacnx1, nbpg, ipg
+    integer(kind=8) :: mnogal, mnogad, nbno1, imaref
+    integer(kind=8) ::  jces1d, jces1l, jces1v
+    integer(kind=8) :: nbpt, nbpt1, nbsp1, ipt, ipt1, nbv
     character(len=4) :: typce1
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
@@ -86,15 +86,15 @@ subroutine cesces(cesa, typces, cesmoz, mnogaz, celfpz, &
     character(len=24) :: celfpg
     real(kind=8) :: vr, v1r
     complex(kind=8) :: vc, v1c
-    integer, pointer :: cemd(:) => null()
+    integer(kind=8), pointer :: cemd(:) => null()
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: bref(:) => null()
     character(len=8), pointer :: ces1k(:) => null()
     character(len=8), pointer :: nmnogak(:) => null()
     real(kind=8), pointer :: nmnogav(:) => null()
-    integer, pointer :: nbcmp(:) => null()
-    integer, pointer :: vnbpt(:) => null()
-    integer, pointer :: vnbsp(:) => null()
+    integer(kind=8), pointer :: nbcmp(:) => null()
+    integer(kind=8), pointer :: vnbpt(:) => null()
+    integer(kind=8), pointer :: vnbsp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

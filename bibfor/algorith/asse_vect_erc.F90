@@ -64,9 +64,9 @@ subroutine asse_vect_erc(baseno, nom_vect_erc, nommes, matobs, obsdim, &
     character(len=11) :: bl11
     character(len=19), intent(in) :: nom_vect_erc
     character(len=19) :: nom_objev_mes
-    integer, intent(in) :: obsdim(3), n_ordre_mes
-    integer :: occ, i_tach, i_mes, ii, idesc, nvect_mes, nvale_norme, ivale_norm
-    integer :: iaux1, iaux2, iobsfil, iobscol, iobsval, ivecterc, n_fil, n_col
+    integer(kind=8), intent(in) :: obsdim(3), n_ordre_mes
+    integer(kind=8) :: occ, i_tach, i_mes, ii, idesc, nvect_mes, nvale_norme, ivale_norm
+    integer(kind=8) :: iaux1, iaux2, iobsfil, iobscol, iobsval, ivecterc, n_fil, n_col
     real(kind=8), intent(in) :: alpha, omega
     real(kind=8) :: coeff_alpha, coef_mes
     character(len=24), intent(in) :: matobs(3)

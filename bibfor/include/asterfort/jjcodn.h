@@ -21,13 +21,13 @@
 interface
     function jjcodn(icre, nomrep, nomec, irep, crep,&
                     nmax, nuti)
-        integer :: icre
+        integer(kind=8) :: icre
         character(len=*) :: nomrep
         character(len=*) :: nomec
-        integer :: irep(*)
+        integer(kind=8) :: irep(*)
         character(len=*) :: crep(*)
-        integer :: nmax
-        integer :: nuti
-        integer :: jjcodn
+        integer(kind=8) :: nmax
+        integer(kind=8) :: nuti
+        integer(kind=8) :: jjcodn
     end function jjcodn
 end interface

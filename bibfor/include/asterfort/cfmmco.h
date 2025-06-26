@@ -24,7 +24,7 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=*), intent(in) :: coef_type_
         character(len=1), intent(in) :: action
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
         real(kind=8), intent(inout) :: valr
     end subroutine cfmmco
 end interface

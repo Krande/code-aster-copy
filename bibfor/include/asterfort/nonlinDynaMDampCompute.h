@@ -23,7 +23,7 @@ interface
                                       hval_incr, hval_veasse)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer, intent(in) :: phaseType
+        integer(kind=8), intent(in) :: phaseType
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=24), intent(in) :: nume_dof
         type(NL_DS_Measure), intent(inout) :: ds_measure

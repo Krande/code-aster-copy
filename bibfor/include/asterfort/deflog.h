@@ -21,12 +21,12 @@
 interface
     subroutine deflog(ndim, f, epsl, gn, lamb,&
                       logl, iret)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: f(3,3)
         real(kind=8), intent(out) :: epsl(6)
         real(kind=8), intent(out) :: gn(3, 3)
         real(kind=8), intent(out) :: lamb(3)
         real(kind=8), intent(out) :: logl(3)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine deflog
 end interface

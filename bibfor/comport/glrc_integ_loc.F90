@@ -29,7 +29,7 @@ subroutine glrc_integ_loc(lambda, deuxmu, seuil, alf, &
 !
 #include "asterf_types.h"
 #include "asterfort/glrc_calc_eps33.h"
-    integer :: kdmax, codret
+    integer(kind=8) :: kdmax, codret
     real(kind=8) :: vim(*), gmt, gmc, tr2d, eps33
     real(kind=8) :: lambda, deuxmu, seuil, alf, qff(2), told
     real(kind=8) :: de33d1, de33d2, ksi2d, dksi1, dksi2, da1, da2, treps, treps2
@@ -69,7 +69,7 @@ subroutine glrc_integ_loc(lambda, deuxmu, seuil, alf, &
 !
     aster_logical :: lconv1, lconv2
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     real(kind=8) :: qm1, qm2
     real(kind=8) :: rd1, rd2, dr1d, dr2d, dd1, dd2, seuilr

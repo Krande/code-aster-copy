@@ -19,7 +19,7 @@
 interface
     subroutine nmassd(list_func_acti, hval_veasse, cnpilo, cndonn)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: hval_veasse(*)
         character(len=19), intent(in) :: cnpilo, cndonn
     end subroutine nmassd

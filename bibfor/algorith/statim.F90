@@ -31,7 +31,7 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli, &
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
-    integer :: nbobst, nbpt, nbloc, nbvint
+    integer(kind=8) :: nbobst, nbpt, nbloc, nbvint
     real(kind=8) :: temps(*), fcho(*), vgli(*)
     real(kind=8) :: wk1(*), wk2(*), wk3(*), fnmaxa, fnmety, fnmmoy
     real(kind=8) :: offset, trepos, vint(*)
@@ -51,10 +51,10 @@ subroutine statim(nbobst, nbpt, temps, fcho, vgli, &
 !     NBCLAS       : NOMBRE DE CLASSES
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, nbpara, nparg, nparp, nparf
+    integer(kind=8) :: ibid, nbpara, nparg, nparp, nparf
 !-----------------------------------------------------------------------
-    integer :: i, idebut, idec, ifin, ipas, nbchoc, nbclas
-    integer :: nbpas, ndec, npari
+    integer(kind=8) :: i, idebut, idec, ifin, ipas, nbchoc, nbclas
+    integer(kind=8) :: nbpas, ndec, npari
     real(kind=8) :: dt, fmax, fmin
 !-----------------------------------------------------------------------
     parameter(nparg=6, nparp=7, npari=10, nbpara=20)

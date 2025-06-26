@@ -88,8 +88,8 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca, &
 #include "asterfort/megeom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nchar
-    integer :: tabido(5)
+    integer(kind=8) :: nchar
+    integer(kind=8) :: tabido(5)
     character(len=8) :: modele, lchar(1)
     character(len=24) :: sigmam, sigmap, chdepm, chdepp, cherrm
     character(len=24) :: chtime, chvois, chsigx, cvoisx, chelem
@@ -102,21 +102,21 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca, &
     character(len=6) :: nompro
     parameter(nompro='RESLOC')
 !
-    integer :: nbcmp
+    integer(kind=8) :: nbcmp
     parameter(nbcmp=12)
 !
-    integer :: nbchix
+    integer(kind=8) :: nbchix
     parameter(nbchix=20)
 !
-    integer :: i, j, icmp(nbcmp), iatyma, iagd, iacmp, iconx1, iconx2
-    integer :: iret, iret1, iret2, iret4, iret5, iret6, iret7
-    integer :: jceldp, jcelvp, jceldm, jcelvm
-    integer :: iade1, iaptm1, iava1, numgd1
-    integer :: iade2, iaptm2, iava2, numgd2
-    integer :: iade3, iaptm3, iava3, numgd3
-    integer :: iarepe
-    integer :: ibid
-    integer :: nbrin
+    integer(kind=8) :: i, j, icmp(nbcmp), iatyma, iagd, iacmp, iconx1, iconx2
+    integer(kind=8) :: iret, iret1, iret2, iret4, iret5, iret6, iret7
+    integer(kind=8) :: jceldp, jcelvp, jceldm, jcelvm
+    integer(kind=8) :: iade1, iaptm1, iava1, numgd1
+    integer(kind=8) :: iade2, iaptm2, iava2, numgd2
+    integer(kind=8) :: iade3, iaptm3, iava3, numgd3
+    integer(kind=8) :: iarepe
+    integer(kind=8) :: ibid
+    integer(kind=8) :: nbrin
     real(kind=8) :: rcmp(2)
     character(len=1) :: base
     character(len=8) :: licmp(nbcmp), lpain(nbchix), lpaout(1)
@@ -127,9 +127,9 @@ subroutine resloc(modele, ligrel, yaxfem, yathm, tbgrca, &
     character(len=24) :: chgeom, lchin(nbchix), lchout(1), chfor1, chfor2
     character(len=24) :: chfor3
 !
-    integer :: ntychx
+    integer(kind=8) :: ntychx
     parameter(ntychx=9)
-    integer :: itycha(ntychx)
+    integer(kind=8) :: itycha(ntychx)
     character(len=5) :: ktych(ntychx)
 !
 ! DEB-------------------------------------------------------------------

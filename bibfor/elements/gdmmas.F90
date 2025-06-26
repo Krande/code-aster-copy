@@ -42,7 +42,7 @@ subroutine gdmmas(kp, nno, pjacob, en, grani, &
     real(kind=8) :: iro(3, 3), amat1(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, kp, nno
+    integer(kind=8) :: i, j, kp, nno
     real(kind=8) :: coef, pjacob, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

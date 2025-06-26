@@ -28,12 +28,12 @@ subroutine mefsma(matm, mata, matr, nugene, masgen, &
     real(kind=8) :: matm(*), mata(*), matr(*)
     character(len=19) :: masgen, amogen, riggen
 !
-    integer ::   nbmode, nterm, nbloc
+    integer(kind=8) ::   nbmode, nterm, nbloc
     character(len=1) :: base
     character(len=14) :: nugene
     character(len=19) :: nomnum, nomsto
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: scde(:) => null()
+    integer(kind=8), pointer :: scde(:) => null()
 ! DEB------------------------------------------------------------------
 !
     call jemarq()

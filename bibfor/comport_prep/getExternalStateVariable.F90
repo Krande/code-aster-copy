@@ -39,7 +39,7 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
     character(len=16), intent(in) :: rela_comp, rela_code_py
     aster_logical, intent(in) :: l_mfront_offi, l_mfront_proto
     character(len=16), intent(in) :: extern_addr
-    integer, intent(out) :: variExteCode(2)
+    integer(kind=8), intent(out) :: variExteCode(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,11 +58,11 @@ subroutine getExternalStateVariable(rela_comp, rela_code_py, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_exte, i_exte, idummy1, idummy2, i_exte_list
-    integer, parameter :: nb_exte_list = 31
+    integer(kind=8) :: nb_exte, i_exte, idummy1, idummy2, i_exte_list
+    integer(kind=8), parameter :: nb_exte_list = 31
     character(len=64) :: name_exte(ESVA_EXTE_NBMAXI)
     character(len=8) :: varc_aster
-    integer :: tabcod(60)
+    integer(kind=8) :: tabcod(60)
     character(len=8), parameter :: name_varc(nb_exte_list) = (/ &
                                    'ELTSIZE1', 'COORGA  ', &
                                    'GRADVELO', 'HYGR    ', 'NEUT1   ', &

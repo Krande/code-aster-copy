@@ -31,8 +31,8 @@ subroutine poinco(sdcont, keywf, mesh, nb_cont_zone, nb_cont_surf)
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(out) :: nb_cont_surf
+    integer(kind=8), intent(in) :: nb_cont_zone
+    integer(kind=8), intent(out) :: nb_cont_surf
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,11 +50,11 @@ subroutine poinco(sdcont, keywf, mesh, nb_cont_zone, nb_cont_surf)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_zone, nb_surf
+    integer(kind=8) :: i_zone, nb_surf
     character(len=24) :: sdcont_pzoneco
-    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pzoneco(:) => null()
     character(len=24) :: sdcont_psumaco, sdcont_psunoco
-    integer :: j_sdcont_psumaco, j_sdcont_psunoco
+    integer(kind=8) :: j_sdcont_psumaco, j_sdcont_psunoco
     character(len=24) :: sdcont_defi
 !
 ! --------------------------------------------------------------------------------------------------

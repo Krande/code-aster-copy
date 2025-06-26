@@ -28,7 +28,7 @@ subroutine rkcah1(rela_comp, y, pas, nvi, w, &
 !         PAS     :  INTERVALLE DE TEMPS TF-TD
 !     OUT H       :  PAS DE TEMPS
 !
-    integer :: ne, ny, na, nvi, ii, iret
+    integer(kind=8) :: ne, ny, na, nvi, ii, iret
     character(len=16) :: rela_comp
     real(kind=8) :: pas, h, w, dmg0, eps, maxout, maxdom, wk(*), y(*)
     parameter(maxdom=9.90d-01)

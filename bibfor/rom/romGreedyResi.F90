@@ -31,7 +31,7 @@ subroutine romGreedyResi(ds_multipara, ds_algoGreedy, &
 !
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
     type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
-    integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
+    integer(kind=8), intent(in) :: i_mode_until, i_mode_coef, i_coef
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,8 +49,8 @@ subroutine romGreedyResi(ds_multipara, ds_algoGreedy, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_mode, i_matr, i_equa
-    integer :: nb_mode, nb_coef, nb_matr, nb_equa
+    integer(kind=8) :: i_mode, i_matr, i_equa
+    integer(kind=8) :: nb_mode, nb_coef, nb_matr, nb_equa
     aster_logical :: l_coef_cplx, l_coef_real
     real(kind=8) :: coef_r
     complex(kind=8) :: coef_c, coef_cplx

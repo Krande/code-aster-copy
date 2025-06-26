@@ -22,7 +22,7 @@ interface
     subroutine cfimp2(sdcont_defi, sdcont_solv, mesh, iliai, typeou)
         character(len=8) :: mesh
         character(len=24) :: sdcont_defi, sdcont_solv
-        integer :: iliai
+        integer(kind=8) :: iliai
         character(len=3) :: typeou
     end subroutine cfimp2
 end interface

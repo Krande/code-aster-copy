@@ -27,39 +27,39 @@ interface
                       nfiss, heavn, jstno,&
                       l_line, l_nonlin, lMatr, lVect, lSigm)
         aster_logical, intent(in) :: l_line, l_nonlin, lMatr, lVect, lSigm
-        integer :: nfiss
-        integer :: lgpg
-        integer :: npg
-        integer :: nnop
-        integer :: nfe
-        integer :: nfh
-        integer :: ndim
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nfe
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         character(len=8) :: elrese
         real(kind=8) :: coorse(*)
-        integer :: igeom
+        integer(kind=8) :: igeom
         real(kind=8) :: he(nfiss)
-        integer :: ddlc
-        integer :: ddlm
-        integer :: nnops
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nnops
         real(kind=8) :: basloc(3*ndim*nnop)
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: idepl
+        integer(kind=8) :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: idecpg
+        integer(kind=8) :: idecpg
         real(kind=8) :: sig(2*ndim, npg)
         real(kind=8) :: vi(lgpg, npg)
         real(kind=8) :: matuu(*)
-        integer :: ivectu
-        integer :: codret
-        integer :: heavn(nnop, 5)
-        integer :: jstno
+        integer(kind=8) :: ivectu
+        integer(kind=8) :: codret
+        integer(kind=8) :: heavn(nnop, 5)
+        integer(kind=8) :: jstno
     end subroutine xxnmel
 end interface

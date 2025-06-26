@@ -43,28 +43,28 @@ subroutine coefmo(typflu, zrigi, nbm, nmode, indic, &
     character(len=8) :: typflu
     real(kind=8) :: xsi0, vgap, x(2), pulsc, xmf, xcf, rkf
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
-    integer :: nbm, nmode, indic, veci1(*)
+    integer(kind=8) :: nbm, nmode, indic, veci1(*)
     aster_logical :: zrigi
     complex(kind=8) :: xkf
 !
 ! ----------------------------------------------------------------------
     real(kind=8) :: depi, vrmin, vrmax, vred
     real(kind=8) :: mcf0, kaj1, kaj2
-    integer :: jvired, jcompt, jextr, jvrzo, jalarm, iret
-    integer :: izone, nzone, n1, n2
+    integer(kind=8) :: jvired, jcompt, jextr, jvrzo, jalarm, iret
+    integer(kind=8) :: izone, nzone, n1, n2
     complex(kind=8) :: bii, biie, poids, z
     character(len=24) :: fsic, fsvi, fsvr, nom1, nom2, nom3, nom4, nom5
 ! ----------------------------------------------------------------------
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, imasse, imatb, imod, imode, ipas, ires
-    integer :: itypfl, ivecc, j, jmod, lfsic, lfsvi, lfsvr
-    integer :: nbp
+    integer(kind=8) :: i, imasse, imatb, imod, imode, ipas, ires
+    integer(kind=8) :: itypfl, ivecc, j, jmod, lfsic, lfsvi, lfsvr
+    integer(kind=8) :: nbp
     real(kind=8) :: aire, caj1, caj2, cd, cf0, ck, cocaj1
     real(kind=8) :: cocaj2, cokaj1, cokaj2, de, hmoy, p1, p2
     real(kind=8) :: phie, rug, val1, val2, visc, vr
-    integer, pointer :: tempo(:) => null()
+    integer(kind=8), pointer :: tempo(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     depi = r8depi()

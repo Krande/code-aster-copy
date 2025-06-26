@@ -23,7 +23,7 @@ interface
         character(len=24) :: modele
         character(len=24) :: numedd
         type(NL_DS_Material), intent(in) :: ds_material
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: valinc(*)

@@ -42,7 +42,7 @@ subroutine haymat(fami, kpg, ksp, mod, imat, &
 !         NVI    :  NB DE VARIABLES INTERNES
 !     ----------------------------------------------------------------
 #include "asterfort/rcvalb.h"
-    integer :: kpg, ksp, nmat, nvi, imat, cerr(16), nr, ndt, ndi
+    integer(kind=8) :: kpg, ksp, nmat, nvi, imat, cerr(16), nr, ndt, ndi
     real(kind=8) :: coefel(nmat), coefpl(nmat)
     character(len=*) :: fami, poum
     character(len=8) :: mod, nomc(16)

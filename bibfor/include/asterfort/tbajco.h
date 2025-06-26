@@ -24,12 +24,12 @@ interface
         character(len=*) :: nomta
         character(len=*) :: para
         character(len=*) :: type
-        integer :: nbval
-        integer :: vi(*)
+        integer(kind=8) :: nbval
+        integer(kind=8) :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
         character(len=*) :: vk(*)
         character(len=*) :: action
-        integer :: llign(*)
+        integer(kind=8) :: llign(*)
     end subroutine tbajco
 end interface

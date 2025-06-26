@@ -66,16 +66,16 @@ subroutine op0072()
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadesc, iadvec, iamatr, iarefe
-    integer :: iavale, ibid, icod, idbase, iddeeq, idvec1, idvec2
-    integer :: idvec3, idvec4, idvect, iret, j
-    integer :: n0, n1, n2, n3, n4, nbid, nbmode, tmod(1)
-    integer :: neq
+    integer(kind=8) :: i, iadesc, iadvec, iamatr, iarefe
+    integer(kind=8) :: iavale, ibid, icod, idbase, iddeeq, idvec1, idvec2
+    integer(kind=8) :: idvec3, idvec4, idvect, iret, j
+    integer(kind=8) :: n0, n1, n2, n3, n4, nbid, nbmode, tmod(1)
+    integer(kind=8) :: neq
     real(kind=8) :: bid, ebid, pij
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refe(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()

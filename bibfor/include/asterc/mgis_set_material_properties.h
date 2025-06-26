@@ -21,8 +21,8 @@
 interface
     subroutine mgis_set_material_properties(extern_addr, state, values, nbprop)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(in) :: state
+        integer(kind=8), intent(in) :: state
         real(kind=8), intent(in) :: values(*)
-        integer, intent(in) :: nbprop
+        integer(kind=8), intent(in) :: nbprop
     end subroutine mgis_set_material_properties
 end interface

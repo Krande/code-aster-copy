@@ -20,6 +20,6 @@ interface
     subroutine casour(load, mesh, model, geomDime, valeType)
         character(len=8), intent(in) :: load, mesh, model
         character(len=4), intent(in) :: valeType
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
     end subroutine casour
 end interface

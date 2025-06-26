@@ -22,9 +22,9 @@ interface
     subroutine tbadap(nomta, nbpar, nompar, vi, vr,&
                        vc, vk)
         character(len=*) :: nomta
-        integer :: nbpar
+        integer(kind=8) :: nbpar
         character(len=*) :: nompar(*)
-        integer :: vi(*)
+        integer(kind=8) :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
         character(len=*) :: vk(*)

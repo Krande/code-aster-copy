@@ -34,7 +34,7 @@ interface
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19) :: lischa
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         type(NL_DS_InOut), intent(in) :: ds_inout
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -43,7 +43,7 @@ interface
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=24) :: sderro
         character(len=19) :: valinc(*)
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=19) :: solalg(*)
         character(len=19) :: solveu
         character(len=19) :: matass
@@ -52,6 +52,6 @@ interface
         character(len=19) :: measse(*)
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
-        integer :: nbiter
+        integer(kind=8) :: nbiter
     end subroutine ndexpl
 end interface

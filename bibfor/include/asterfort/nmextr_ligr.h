@@ -23,7 +23,7 @@ interface
         character(len=*), intent(in) :: modelz
         character(len=*), intent(in) :: meshz
         character(len=*), intent(in) :: sdextrz
-        integer, intent(in) :: nb_keyw_fact
-        integer, intent(in) :: nb_field_comp
+        integer(kind=8), intent(in) :: nb_keyw_fact
+        integer(kind=8), intent(in) :: nb_field_comp
     end subroutine nmextr_ligr
 end interface

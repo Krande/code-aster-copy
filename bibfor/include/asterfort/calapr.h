@@ -20,10 +20,10 @@
 !
 interface
     subroutine calapr(nbddl, mu, afmu, ddl, atmu)
-        integer :: nbddl
+        integer(kind=8) :: nbddl
         real(kind=8) :: mu
         real(kind=8) :: afmu(*)
-        integer :: ddl(nbddl)
+        integer(kind=8) :: ddl(nbddl)
         real(kind=8) :: atmu(*)
     end subroutine calapr
 end interface

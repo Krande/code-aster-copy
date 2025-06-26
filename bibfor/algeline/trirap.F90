@@ -38,8 +38,8 @@ subroutine trirap(clef, tab, ntab, n, g, &
     implicit none
 !
 ! --- VARIABLES
-    integer :: n, ntab, g, d, m, clef(*), tab(n, *)
-    integer :: pivot, gp, dp, i, tmp
+    integer(kind=8) :: n, ntab, g, d, m, clef(*), tab(n, *)
+    integer(kind=8) :: pivot, gp, dp, i, tmp
 !
 ! --- CHOIX DU PIVOT
 !

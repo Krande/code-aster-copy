@@ -23,6 +23,6 @@ interface
         character(len=*) :: niv
         character(len=*) :: nomcon
         character(len=*) :: nomcha
-        integer :: nbtitr
+        integer(kind=8) :: nbtitr
     end subroutine titred
 end interface

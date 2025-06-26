@@ -19,7 +19,7 @@
 !
 interface
     subroutine irgmor(tord, vers)
-        integer :: tord(8)
-        integer :: vers
+        integer(kind=8) :: tord(8)
+        integer(kind=8) :: vers
     end subroutine irgmor
 end interface

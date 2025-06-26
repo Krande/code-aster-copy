@@ -33,7 +33,7 @@ subroutine romMultiCoefRead(ds_multicoef, keywfact, iocc)
 !
     type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
     character(len=16), intent(in) :: keywfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine romMultiCoefRead(ds_multicoef, keywfact, iocc)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cplx, l_real, l_func, l_cste
-    integer :: nocc_coef_r, nocc_coef_c, nocc_func_r, nocc_func_c
+    integer(kind=8) :: nocc_coef_r, nocc_coef_c, nocc_func_r, nocc_func_c
 !
 ! --------------------------------------------------------------------------------------------------
 !

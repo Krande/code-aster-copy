@@ -55,7 +55,7 @@ subroutine cyc110(nomres, mailla, nbsect)
 !
 !
 !
-    integer :: ligne(2)
+    integer(kind=8) :: ligne(2)
     real(kind=8) :: depi
     character(len=3) :: knusec
     character(len=6) :: kchiff
@@ -65,18 +65,18 @@ subroutine cyc110(nomres, mailla, nbsect)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iatyma, ibid, icomp, igd, ioctou
-    integer :: itcon, j, k, ldcoo, lddesc, lddime
-    integer :: ldgrma, ldskin, llcona, llcox
-    integer :: lltitr, lltyp, ltnmgr, ltnmma, ltnuma, ltnuno, nbcon
-    integer :: nbgr, nbid, nbma, nbmato, nbno, nbnoto, nbsect
-    integer :: nbskma, nbskno, nbtemp, nbtout, nbuf, ntacon, ntemna
-    integer :: ntemno, numa, numma, numno, nunew
+    integer(kind=8) :: i, iatyma, ibid, icomp, igd, ioctou
+    integer(kind=8) :: itcon, j, k, ldcoo, lddesc, lddime
+    integer(kind=8) :: ldgrma, ldskin, llcona, llcox
+    integer(kind=8) :: lltitr, lltyp, ltnmgr, ltnmma, ltnuma, ltnuno, nbcon
+    integer(kind=8) :: nbgr, nbid, nbma, nbmato, nbno, nbnoto, nbsect
+    integer(kind=8) :: nbskma, nbskno, nbtemp, nbtout, nbuf, ntacon, ntemna
+    integer(kind=8) :: ntemno, numa, numma, numno, nunew
     real(kind=8) :: teta, tetsec, xanc, xnew, yanc, ynew, zanc
     real(kind=8) :: znew
-    integer, pointer :: nldtyp(:) => null()
+    integer(kind=8), pointer :: nldtyp(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     depi = r8depi()

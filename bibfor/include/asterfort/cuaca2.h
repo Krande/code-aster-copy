@@ -23,10 +23,10 @@ interface
                       lmat, xjvmax)
         character(len=24) :: deficu
         character(len=24) :: resocu
-        integer :: nbliac
-        integer :: spliai
-        integer :: indfac
-        integer :: lmat
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: spliai
+        integer(kind=8) :: indfac
+        integer(kind=8) :: lmat
         real(kind=8) :: xjvmax
     end subroutine cuaca2
 end interface

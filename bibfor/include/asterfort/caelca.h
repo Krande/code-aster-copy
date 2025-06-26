@@ -28,9 +28,9 @@ interface
         character(len=8) :: modele
         character(len=8) :: chmat
         character(len=8) :: caelem
-        integer :: irana1
-        integer :: icabl
-        integer :: nbnoca(*)
+        integer(kind=8) :: irana1
+        integer(kind=8) :: icabl
+        integer(kind=8) :: nbnoca(*)
         character(len=19) :: numaca
         aster_logical :: quad
         character(len=4) :: regl

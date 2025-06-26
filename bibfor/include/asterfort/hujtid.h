@@ -22,13 +22,13 @@ interface
     subroutine hujtid(fami, kpg, ksp, mod, imat,&
                       sigr, vin, dsde, iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: sigr(6)
         real(kind=8) :: vin(*)
         real(kind=8) :: dsde(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine hujtid
 end interface

@@ -27,13 +27,13 @@ interface
 
         aster_logical,intent(in)     :: resi,rigi,elas
         type(dp_material),intent(in) :: m
-        integer,intent(in)           :: itemax
+        integer(kind=8),intent(in)           :: itemax
         real(kind=8),intent(in)      :: prec
         real(kind=8),intent(in)      :: eps(:)
         real(kind=8),intent(inout)   :: ep(:),ka
-        integer,intent(inout)        :: state
+        integer(kind=8),intent(inout)        :: state
         real(kind=8),intent(out)     :: s(:),deps_s(:,:)
-        integer                      :: iret
+        integer(kind=8)                      :: iret
         real(kind=8) :: vip(9)
     end function
 end interface

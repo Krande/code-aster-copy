@@ -26,8 +26,8 @@ subroutine nmecev(sderro, acces, failType, actionType)
 !
     character(len=24), intent(in) :: sderro
     character(len=1), intent(in) :: acces
-    integer, intent(inout) :: failType
-    integer, intent(inout) :: actionType
+    integer(kind=8), intent(inout) :: failType
+    integer(kind=8), intent(inout) :: actionType
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ subroutine nmecev(sderro, acces, failType, actionType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: eventEEVTJv
-    integer, pointer :: eventEEVT(:) => null()
+    integer(kind=8), pointer :: eventEEVT(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

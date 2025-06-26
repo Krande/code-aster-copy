@@ -24,11 +24,11 @@ interface
         character(len=*) :: nomma
         character(len=*) :: nomail
         character(len=*) :: nonoeu
-        integer :: nupo
-        integer :: nusp
-        integer :: ivari
+        integer(kind=8) :: nupo
+        integer(kind=8) :: nusp
+        integer(kind=8) :: ivari
         character(len=*) :: nocmp1
-        integer :: iddl
+        integer(kind=8) :: iddl
         aster_logical, intent(in), optional :: nogranz
     end subroutine utchdl
 end interface

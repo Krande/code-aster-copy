@@ -26,17 +26,17 @@ interface
         character(len=8) :: elrefp
         character(len=8) :: elrefc
         character(len=8) :: elc
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: fpg
-        integer :: jinter
-        integer :: ifa
-        integer :: cface(30, 6)
-        integer :: nptf
-        integer :: ipg
-        integer :: nnop
-        integer :: nnops
-        integer :: igeom
-        integer :: jbasec
+        integer(kind=8) :: jinter
+        integer(kind=8) :: ifa
+        integer(kind=8) :: cface(30, 6)
+        integer(kind=8) :: nptf
+        integer(kind=8) :: ipg
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnops
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jbasec
         real(kind=8) :: xg(3)
         real(kind=8) :: jac
         real(kind=8) :: ffp(27)

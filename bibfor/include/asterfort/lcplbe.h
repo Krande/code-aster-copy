@@ -23,15 +23,15 @@ interface
                       irteti)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: toler
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: materf(nmat, 2)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
-        integer :: nseuil
-        integer :: irteti
+        integer(kind=8) :: nseuil
+        integer(kind=8) :: irteti
     end subroutine lcplbe
 end interface

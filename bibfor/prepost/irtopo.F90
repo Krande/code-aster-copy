@@ -40,16 +40,16 @@ subroutine irtopo(keywf, keywfIocc, &
 #include "asterfort/as_allocate.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: keywfIocc
+    integer(kind=8), intent(in) :: keywfIocc
     aster_logical, intent(in) :: lField, lResu, lfichUniq
     character(len=8), intent(in) :: dsName
-    integer, intent(out) :: cellListNb
-    integer, pointer :: cellListNume(:)
-    integer, intent(out) :: nodeListNb
-    integer, pointer :: nodeListNume(:)
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(out) :: cellListNb
+    integer(kind=8), pointer :: cellListNume(:)
+    integer(kind=8), intent(out) :: nodeListNb
+    integer(kind=8), pointer :: nodeListNume(:)
+    integer(kind=8), intent(in) :: fileUnit
     character(len=8), intent(in) :: fileFormat
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,12 +73,12 @@ subroutine irtopo(keywf, keywfIocc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: meshNbNode, meshNbCell
-    integer :: nbCellSelect, nbNodeSelect, nbNodeComm, nbCellComm
-    integer :: iGrCell, iGrNode, iCell, iNode
-    integer :: nbCell, nbGrCell, nbNode, nbGrNode
-    integer :: nbOcc, nodeNume, cellNume
-    integer :: imxno, imxgn, imxma, imxgm, idebu, iutil
+    integer(kind=8) :: meshNbNode, meshNbCell
+    integer(kind=8) :: nbCellSelect, nbNodeSelect, nbNodeComm, nbCellComm
+    integer(kind=8) :: iGrCell, iGrNode, iCell, iNode
+    integer(kind=8) :: nbCell, nbGrCell, nbNode, nbGrNode
+    integer(kind=8) :: nbOcc, nodeNume, cellNume
+    integer(kind=8) :: imxno, imxgn, imxma, imxgm, idebu, iutil
     character(len=8) :: meshName
     aster_logical, pointer :: nodeFlag(:) => null()
     aster_logical, pointer :: cellFlag(:) => null()

@@ -23,6 +23,6 @@ interface
         character(len=8), intent(in) :: sdresu_in
         character(len=8), intent(in) :: sdresu_out
         character(len=19), intent(in) :: list_ordr
-        integer, intent(in) :: nb_ordr
+        integer(kind=8), intent(in) :: nb_ordr
     end subroutine ccchut
 end interface

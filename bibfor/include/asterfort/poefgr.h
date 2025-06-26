@@ -23,7 +23,7 @@ interface
                       rho, effo)
         character(len=*) :: nomte
         real(kind=8) :: klc(12, 12)
-        integer :: mater
+        integer(kind=8) :: mater
         real(kind=8) :: e
         real(kind=8) :: xnu
         real(kind=8) :: rho

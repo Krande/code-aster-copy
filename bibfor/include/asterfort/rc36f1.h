@@ -24,20 +24,20 @@ interface
     subroutine rc36f1(nbsigr, nocc, saltij, isk, isl,&
                       nk, nl, n0, nbp12, nbp23,&
                       nbp13, sigr, yapass, typass, nsitup)
-        integer :: nbsigr
-        integer :: nocc(*)
+        integer(kind=8) :: nbsigr
+        integer(kind=8) :: nocc(*)
         real(kind=8) :: saltij(*)
-        integer :: isk
-        integer :: isl
-        integer :: nk
-        integer :: nl
-        integer :: n0
-        integer :: nbp12
-        integer :: nbp23
-        integer :: nbp13
-        integer :: sigr(*)
+        integer(kind=8) :: isk
+        integer(kind=8) :: isl
+        integer(kind=8) :: nk
+        integer(kind=8) :: nl
+        integer(kind=8) :: n0
+        integer(kind=8) :: nbp12
+        integer(kind=8) :: nbp23
+        integer(kind=8) :: nbp13
+        integer(kind=8) :: sigr(*)
         aster_logical :: yapass
         character(len=3) :: typass
-        integer :: nsitup
+        integer(kind=8) :: nsitup
     end subroutine rc36f1
 end interface

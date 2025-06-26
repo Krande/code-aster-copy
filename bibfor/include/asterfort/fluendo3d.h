@@ -29,24 +29,24 @@ interface
         real(kind=8) :: sig0(6)
         real(kind=8) :: sigf(:)
         real(kind=8) :: deps(:)
-        integer, intent(in) :: nstrs
+        integer(kind=8), intent(in) :: nstrs
         real(kind=8) :: var0(:)
         real(kind=8) :: varf(:)
-        integer, intent(in) :: nvari
-        integer, intent(in) :: nbelas3d 
+        integer(kind=8), intent(in) :: nvari
+        integer(kind=8), intent(in) :: nbelas3d 
         real(kind=8) :: teta1
         real(kind=8) :: teta2
         real(kind=8) :: dt
         real(kind=8) :: epstf(6)
-        integer, intent(out) :: ierr1
+        integer(kind=8), intent(out) :: ierr1
         aster_logical :: iso
-        integer, intent(in) :: mfr
+        integer(kind=8), intent(in) :: mfr
         aster_logical, intent(in) :: end3d
         aster_logical, intent(in) :: fl3d
         aster_logical, intent(in) :: local
-        integer, intent(in) :: ndim
-        integer, intent(in) :: nmatbe2
-        integer, intent(in) :: iteflumax
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: nmatbe2
+        integer(kind=8), intent(in) :: iteflumax
         real(kind=8) :: sech
         aster_logical :: matrEndo
         real(kind=8) :: matdech(6,6)

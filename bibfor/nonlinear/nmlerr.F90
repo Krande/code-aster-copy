@@ -29,7 +29,7 @@ subroutine nmlerr(sddisc, action, infz, valr, vali)
     character(len=19) :: sddisc
     character(len=1) :: action
     character(len=*) :: infz
-    integer :: vali
+    integer(kind=8) :: vali
     real(kind=8) :: valr
 !
 ! ----------------------------------------------------------------------
@@ -64,7 +64,7 @@ subroutine nmlerr(sddisc, action, infz, valr, vali)
 !
 !
     character(len=24) :: infocv
-    integer :: jifcv
+    integer(kind=8) :: jifcv
     character(len=24) :: info
 !
 ! ----------------------------------------------------------------------

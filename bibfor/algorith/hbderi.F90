@@ -20,7 +20,7 @@ subroutine hbderi(gamma, nbmat, materf, vg, eta, &
                   param2, parame)
     implicit none
 #include "asterc/r8dgrd.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: gamma, materf(nbmat, 2), parame(5), vg, eta, param2(4)
 ! ======================================================================
 ! --- HOEK BROWN : CALCUL DES DERIVEES DES FONCTIONS DE LA VARIABLES ---

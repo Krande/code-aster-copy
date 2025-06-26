@@ -23,7 +23,7 @@
 interface
     subroutine iscoqu(nomo, numail, lcoque)
         character(len=8) :: nomo
-        integer :: numail
+        integer(kind=8) :: numail
         aster_logical :: lcoque
     end subroutine iscoqu
 end interface

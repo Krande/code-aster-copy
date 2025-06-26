@@ -41,7 +41,7 @@ subroutine comp_meta_info(factorKeyword, metaPrepBehaviour)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_info_comp, nbFactorKeyword
+    integer(kind=8) :: nb_info_comp, nbFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !

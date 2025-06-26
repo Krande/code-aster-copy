@@ -21,7 +21,7 @@ subroutine pj2da2(ino2, geom2, i, geom1, tria3, &
     implicit none
 #include "asterc/r8maem.h"
     real(kind=8) :: cobary(3), geom1(*), geom2(*), d2, surf
-    integer :: ino2, i, tria3(*)
+    integer(kind=8) :: ino2, i, tria3(*)
 
 !  but :
 !    determiner la distance d2 entre le noeud ino2 et le tria3 i.

@@ -25,7 +25,7 @@ subroutine cjssmi(mater, sig, vin, seuili)
 !       IN  VIN    :  VARIABLES INTERNES = ( Q, R, X, ETAT)
 !       OUT SEUILI :  SEUIL  ELASTICITE DU MECANISME ISOTROPE
 !       ----------------------------------------------------------------
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: mater(14, 2), qiso, i1, sig(6), vin(*), seuili, trois
 !
     common/tdim/ndt, ndi

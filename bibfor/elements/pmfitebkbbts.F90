@@ -77,7 +77,7 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
 #include "asterfort/pmpitp.h"
 #include "asterfort/r8inir.h"
 !
-    integer :: typfib, nf, ncarf, maxfipoutre, nbassepou, nbfipoutre(*)
+    integer(kind=8) :: typfib, nf, ncarf, maxfipoutre, nbassepou, nbfipoutre(*)
 
     real(kind=8) :: vf(ncarf, nf), ve(nf), vs(6), b(4), wi, gxjx, gg, vv(*)
     real(kind=8) :: ksg(3), sk(*), skt(78), vvt(12), g
@@ -87,7 +87,7 @@ subroutine pmfitebkbbts(typfib, nf, ncarf, vf, ve, b, wi, gxjx, gxjxpou, g, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, ii, pos, posfib
+    integer(kind=8) :: i, ii, pos, posfib
 !
 ! --------------------------------------------------------------------------------------------------
 !

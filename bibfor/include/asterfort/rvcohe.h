@@ -23,7 +23,7 @@ interface
         character(len=24) :: xdicmp
         character(len=24) :: xdncmp
         character(len=24) :: vcheff
-        integer :: i
-        integer :: ier
+        integer(kind=8) :: i
+        integer(kind=8) :: ier
     end subroutine rvcohe
 end interface

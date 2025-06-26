@@ -25,7 +25,7 @@ interface
                       sigp, dsidep, dsidp1, dsidp2, iret)
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: carcri(*)
         real(kind=8) :: sigm(6)
         real(kind=8) :: epsm(6)
@@ -39,6 +39,6 @@ interface
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: dsidp1(6)
         real(kind=8) :: dsidp2(6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lchbr2
 end interface

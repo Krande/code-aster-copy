@@ -20,8 +20,8 @@
 !
 interface
     function somint(n, x)
-        integer :: n
-        integer :: x(n)
-        integer :: somint
+        integer(kind=8) :: n
+        integer(kind=8) :: x(n)
+        integer(kind=8) :: somint
     end function somint
 end interface

@@ -46,14 +46,14 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- INPUT
 !
-    integer, intent(in) :: mxresf, npivot, nblagr
+    integer(kind=8), intent(in) :: mxresf, npivot, nblagr
     real(kind=8), intent(in) :: omemax, omemin, omeshi
     character(len=19), intent(in) :: eigsol, matopa, matpsc, solveu
     character(len=24), intent(in) :: vecrer, vecrei, vecrek, vecvp, vecblo
 !
 ! --- OUTPUT
 !
-    integer, intent(out) :: nconv
+    integer(kind=8), intent(out) :: nconv
     real(kind=8), intent(out) :: vpinf, vpmax
     aster_logical, intent(out) :: flage
 !
@@ -62,10 +62,10 @@ subroutine vpcalj(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- VARIABLES LOCALES
 !
-    integer :: iret, imet, lmasse, lmatra, lraide, nbvect, neq, nfreq
-    integer :: lprod, lmtpsc, lvalpr, itemax, nperm, nitbat, nitjac
-    integer :: mfreq, ifreq
-    integer :: lresui, lresur, lresuk, lvec
+    integer(kind=8) :: iret, imet, lmasse, lmatra, lraide, nbvect, neq, nfreq
+    integer(kind=8) :: lprod, lmtpsc, lvalpr, itemax, nperm, nitbat, nitjac
+    integer(kind=8) :: mfreq, ifreq
+    integer(kind=8) :: lresui, lresur, lresuk, lvec
     real(kind=8) :: quapi2, omecor, precdc, rzero, tol, toldyn
     character(len=8) :: method
     character(len=16) :: optiof, typres

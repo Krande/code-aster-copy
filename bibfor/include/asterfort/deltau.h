@@ -22,15 +22,15 @@ interface
     subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini,&
                       nmaini, nbmap, numpaq, tspaq, nommet,&
                       nomcri, nomfor, grdvie, forvie,forcri, cesr)
-        integer :: jrwork
-        integer :: jnbpg
-        integer :: nbpgt
-        integer :: nbordr
-        integer :: ordini
-        integer :: nmaini
-        integer :: nbmap
-        integer :: numpaq
-        integer :: tspaq
+        integer(kind=8) :: jrwork
+        integer(kind=8) :: jnbpg
+        integer(kind=8) :: nbpgt
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: ordini
+        integer(kind=8) :: nmaini
+        integer(kind=8) :: nbmap
+        integer(kind=8) :: numpaq
+        integer(kind=8) :: tspaq
         character(len=16) :: nommet
         character(len=16) :: nomcri
         character(len=16) :: nomfor

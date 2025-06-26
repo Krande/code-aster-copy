@@ -23,7 +23,7 @@ interface
         use HHO_type
         character(len=*) :: nomci
         character(len=*) :: nume_ddlz
-        integer :: nbchci
+        integer(kind=8) :: nbchci
         character(len=*) :: lchci(*)
         real(kind=8) :: vpara
         character(len=1) :: base

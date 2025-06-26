@@ -23,9 +23,9 @@ interface
                       nb_cont_node)
         character(len=24), intent(in) :: sdcont_defi
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: unit_msg
-        integer, intent(in) :: nb_cont_elem
-        integer, intent(in) :: nb_cont_node
-        integer, intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: unit_msg
+        integer(kind=8), intent(in) :: nb_cont_elem
+        integer(kind=8), intent(in) :: nb_cont_node
+        integer(kind=8), intent(in) :: nb_cont_zone
     end subroutine surfll
 end interface

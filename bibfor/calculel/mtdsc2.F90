@@ -24,7 +24,7 @@ subroutine mtdsc2(matas, objet, eoul, adress)
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
     character(len=*) :: matas, objet, eoul
-    integer :: adress
+    integer(kind=8) :: adress
 !
 ! -----------------------------------------------------------
 !   BUT : RECUPERER L'ADRESSE D'UN OBJET D'UNE MATR_ASSE
@@ -42,7 +42,7 @@ subroutine mtdsc2(matas, objet, eoul, adress)
     character(len=19) :: mat
     character(len=14) :: nu
     character(len=4) :: obj
-    integer :: i1, i2
+    integer(kind=8) :: i1, i2
     character(len=24), pointer :: refa(:) => null()
 !
     mat = matas

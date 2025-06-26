@@ -30,7 +30,7 @@ subroutine ef0156(nomte)
 ! REALISE  EFGE_ELNO pour barres et membranes
 ! ----------------------------------------------------------------------
 !
-    integer :: itabin(2), itabou(2), iret, k, ibid, jgano, npg, nno
+    integer(kind=8) :: itabin(2), itabou(2), iret, k, ibid, jgano, npg, nno
     character(len=8) :: alias8
     aster_logical :: lbarre
 !------------------------------------------------------------------------

@@ -21,15 +21,15 @@
 interface
     subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt,&
                      typfon, jfon, jnofaf, jbas, jtail)
-        integer :: nfon
-        integer :: jfono
-        integer :: jbaso
-        integer :: jtailo
-        integer :: jindpt
+        integer(kind=8) :: nfon
+        integer(kind=8) :: jfono
+        integer(kind=8) :: jbaso
+        integer(kind=8) :: jtailo
+        integer(kind=8) :: jindpt
         character(len=19) :: typfon
-        integer :: jfon
-        integer :: jnofaf
-        integer :: jbas
-        integer :: jtail
+        integer(kind=8) :: jfon
+        integer(kind=8) :: jnofaf
+        integer(kind=8) :: jbas
+        integer(kind=8) :: jtail
     end subroutine xffcr
 end interface

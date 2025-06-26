@@ -50,7 +50,7 @@ subroutine pjefch(corres, ch1, ch2, tychv, prfchn, &
     character(len=8) :: param
     character(len=4) :: tych, tychv
     character(len=1) :: base
-    integer :: iret, ibid, nncp
+    integer(kind=8) :: iret, ibid, nncp
     character(len=24), pointer :: celk(:) => null()
 !
     type(prolongation)  :: prolong

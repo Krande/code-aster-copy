@@ -22,9 +22,9 @@ interface
                       nbtrou)
         character(len=*), intent(in) :: nomsd
         character(len=*), intent(in) :: nomsy
-        integer, intent(in) :: nbvale
+        integer(kind=8), intent(in) :: nbvale
         character(len=*), intent(out) :: tabnom(*)
-        integer, intent(out) :: tabord(*)
-        integer, intent(out) :: nbtrou
+        integer(kind=8), intent(out) :: tabord(*)
+        integer(kind=8), intent(out) :: nbtrou
     end subroutine rsutnc
 end interface

@@ -20,7 +20,7 @@
 !
 interface
     subroutine irgmpf(ifi, versio)
-        integer :: ifi
-        integer :: versio
+        integer(kind=8) :: ifi
+        integer(kind=8) :: versio
     end subroutine irgmpf
 end interface

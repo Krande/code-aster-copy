@@ -26,7 +26,7 @@ interface
                       drdy, iret)
         character(len=8) :: mod
         real(kind=8) :: mater(22, 2)
-        integer :: indi(7)
+        integer(kind=8) :: indi(7)
         real(kind=8) :: deps(6)
         aster_logical :: prox(4)
         aster_logical :: proxc(4)
@@ -35,6 +35,6 @@ interface
         real(kind=8) :: vind(*)
         real(kind=8) :: r(18)
         real(kind=8) :: drdy(18, 18)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine hujjid
 end interface

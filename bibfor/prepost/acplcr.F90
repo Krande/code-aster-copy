@@ -28,10 +28,10 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
 #include "asterfort/raycir.h"
 #include "asterfort/taurlo.h"
 !
-    integer :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
-    integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma
+    integer(kind=8) :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
+    integer(kind=8) :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma
     aster_logical :: rayon
-    integer :: dectau, jresun, jdtaum, jtauma, jsgnma, jdsgma
+    integer(kind=8) :: dectau, jresun, jdtaum, jtauma, jsgnma, jdsgma
     character(len=16) :: nommet
 ! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
@@ -74,7 +74,7 @@ subroutine acplcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
 !     jsgnma  : OUT: ADRESSS D_SIGN OU D_EPSN POUR TOUTE ORIETATION
 !     jdsgma  : OUT: ADRESSS SIGN_MAX OU EPSN_MAX POUR TOUTE ORIETATION
 ! ----------------------------------------------------------------------
-    integer :: ivect, iordr, n
+    integer(kind=8) :: ivect, iordr, n
     real(kind=8) :: norm, cutau, cvtau
     real(kind=8) :: epsilo, tau, dnomin, dnomax
 !

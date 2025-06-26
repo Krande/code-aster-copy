@@ -25,8 +25,8 @@ function binomial(n, k)
 #include "asterfort/factorial.h"
 !
 !
-    integer, intent(in) :: n, k
-    integer             :: binomial
+    integer(kind=8), intent(in) :: n, k
+    integer(kind=8)             :: binomial
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,7 +40,7 @@ function binomial(n, k)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, dimension(20) :: coeff
+    integer(kind=8), dimension(20) :: coeff
 !
 !
     ASSERT(k .lt. n)

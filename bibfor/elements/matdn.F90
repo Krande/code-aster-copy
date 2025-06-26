@@ -39,12 +39,12 @@ subroutine matdn(nb1, xr, intsn, madn, nks1, &
     real(kind=8) :: nks2(3, 51)
     real(kind=8) :: xr(*)
 !
-    integer :: jn
+    integer(kind=8) :: jn
 !
-    integer :: intsn
+    integer(kind=8) :: intsn
 !
-    integer :: nb1
-    integer :: ii
+    integer(kind=8) :: nb1
+    integer(kind=8) :: ii
 !
 !DEB
 !

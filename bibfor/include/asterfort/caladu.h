@@ -21,10 +21,10 @@
 interface
     subroutine caladu(neq, nbddl, coef, ddl, depl,&
                       val)
-        integer :: nbddl
-        integer :: neq
+        integer(kind=8) :: nbddl
+        integer(kind=8) :: neq
         real(kind=8) :: coef(nbddl)
-        integer :: ddl(nbddl)
+        integer(kind=8) :: ddl(nbddl)
         real(kind=8) :: depl(neq)
         real(kind=8) :: val
     end subroutine caladu

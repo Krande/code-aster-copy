@@ -24,8 +24,8 @@ interface
         complex(kind=8) :: ck(*)
         complex(kind=8) :: cm(*)
         complex(kind=8) :: cmat(*)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: lambda
-        integer :: nb
+        integer(kind=8) :: nb
     end subroutine nbval
 end interface

@@ -26,7 +26,7 @@ subroutine cfcorn(newgeo, numno, coorno)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=19) :: newgeo
-    integer :: numno
+    integer(kind=8) :: numno
     real(kind=8) :: coorno(3)
 !
 ! ----------------------------------------------------------------------

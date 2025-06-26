@@ -41,7 +41,7 @@ subroutine xvecha(ds_thm, ndim, pla, nnops, saut, &
 ! ----------------------------------------------------------------------
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: k, i, ndim, pli, pla(27), nnops
+    integer(kind=8) :: k, i, ndim, pli, pla(27), nnops
     real(kind=8) :: ps, psm, saut(3), sautm(3)
     real(kind=8) :: nd(3), ffc(16), ffi, w11, w11m
     real(kind=8) :: jac, q1, dt, ta, q1m, ta1, q2, q2m

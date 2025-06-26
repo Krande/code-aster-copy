@@ -22,9 +22,9 @@ interface
     subroutine lcjoba(ndim, typmod, imate, crit, sum,&
                       dsu, vim, option, sig, vip,&
                       dsidep, iret)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(2)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: crit(3)
         real(kind=8) :: sum(2)
         real(kind=8) :: dsu(2)
@@ -33,6 +33,6 @@ interface
         real(kind=8) :: sig(6)
         real(kind=8) :: vip(6)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcjoba
 end interface

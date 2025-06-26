@@ -33,7 +33,7 @@ subroutine cvmcvx(nmat, mater, sig, vin, seuil)
 !       ----------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
-    integer :: ndt, ndi, nmat
+    integer(kind=8) :: ndt, ndi, nmat
     real(kind=8) :: sig(6), x1(6), x2(6), dev(6), vin(*)
     real(kind=8) :: difc1, difc2
     real(kind=8) :: ar, r, k, c1d, c2d

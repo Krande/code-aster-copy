@@ -26,6 +26,6 @@ interface
         real(kind=8) :: pgl(3, *)
         real(kind=8) :: depl(*)
         real(kind=8) :: edgl(*)
-        integer :: multic
+        integer(kind=8) :: multic
     end subroutine dktedg
 end interface

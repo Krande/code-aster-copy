@@ -53,11 +53,11 @@ subroutine dtmforc_decr(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
 !
 !   -0.1- Input/output arguments
-    integer, intent(in) :: nl_ind
+    integer(kind=8), intent(in) :: nl_ind
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffnl(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffnl(:)
     real(kind=8), intent(in) :: time
     real(kind=8), intent(in) :: step
     real(kind=8), pointer :: depl(:)
@@ -66,21 +66,21 @@ subroutine dtmforc_decr(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
 !   -0.2- Local variables
     aster_logical :: multi_support
-    integer :: i, iex, nbexci, ier, nbno
-    integer :: ino, iret, start, finish
+    integer(kind=8) :: i, iex, nbexci, ier, nbno
+    integer(kind=8) :: ino, iret, start, finish
     real(kind=8) :: sina, cosa, sinb, cosb, sing
     real(kind=8) :: cosg, depglo(3), vitglo(3), deploc(6), vitloc(6)
     real(kind=8) :: dvitlo(3), flocal(3), fgloba(3)
     character(len=8) :: sd_dtm, sd_nl, monmot, obst_typ, ldccar(1)
     character(len=19) :: nomres
 !   Dimension for the system equations
-    integer :: nbequa, nbdecp, iloi
+    integer(kind=8) :: nbequa, nbdecp, iloi
     parameter(nbequa=14)
     real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2), ynorme(nbequa)
     real(kind=8) :: errmax
 !
-    integer, pointer :: vindx(:) => null()
-    integer, pointer :: ldcfct(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: ldcfct(:) => null()
     real(kind=8), pointer :: ldcpar(:) => null()
     real(kind=8), pointer :: origob(:) => null()
     real(kind=8), pointer :: coedep(:) => null()

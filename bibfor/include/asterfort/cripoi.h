@@ -20,7 +20,7 @@
 !
 interface
     subroutine cripoi(nbm, b, crit)
-        integer :: nbm
+        integer(kind=8) :: nbm
         complex(kind=8) :: b(nbm, nbm)
         real(kind=8) :: crit
     end subroutine cripoi

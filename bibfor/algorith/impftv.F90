@@ -25,13 +25,13 @@ subroutine impftv(isor, ift, ibl, fmoyt, fetypt, &
 !
 !
     implicit none
-    integer :: isor, ift
+    integer(kind=8) :: isor, ift
     real(kind=8) :: fmoyt, frmst, fetypt, fmoyc, frmsc, fetypc, fmax, fmin
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibl
+    integer(kind=8) :: ibl
 !-----------------------------------------------------------------------
     if (ift .eq. 1) then
         if (ibl .eq. 1) then

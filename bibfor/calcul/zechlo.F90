@@ -28,17 +28,17 @@ subroutine zechlo(opt, te)
 #include "asterfort/nbpara.h"
 #include "asterfort/nopara.h"
 
-    integer :: opt, te
+    integer(kind=8) :: opt, te
 !-----------------------------------------------------------------------
 !     But:
 !      Remettre les champs locaux de sortie a zero (entre 2 grels)
 !-----------------------------------------------------------------------
-    integer :: np, ipar
-    integer :: lggrel, i, iachlo
-    integer ::  iparg
+    integer(kind=8) :: np, ipar
+    integer(kind=8) :: lggrel, i, iachlo
+    integer(kind=8) ::  iparg
     character(len=1) :: typsca
     character(len=8) :: nompar
-    integer :: debugr
+    integer(kind=8) :: debugr
 !----------------------------------------------------------------------
 
 !   -- si calvoi==1 : il n'y a rien a faire car les champs locaux

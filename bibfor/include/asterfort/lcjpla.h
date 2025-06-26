@@ -24,16 +24,16 @@ interface
                       deps, sigf, vin, dsde, sigd,&
                       vind, vp, vecp, theta, dt,&
                       devg, devgii, codret)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: loi
         character(len=8) :: mod
-        integer :: nr
-        integer :: imat
+        integer(kind=8) :: nr
+        integer(kind=8) :: imat
         real(kind=8) :: mater(nmat, 2)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: deps(6)
         real(kind=8) :: sigf(6)
         real(kind=8) :: vin(*)
@@ -46,6 +46,6 @@ interface
         real(kind=8) :: dt
         real(kind=8) :: devg(*)
         real(kind=8) :: devgii
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lcjpla
 end interface

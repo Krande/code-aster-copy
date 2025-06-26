@@ -27,12 +27,12 @@ subroutine apelem_inside(pair_tole, elem_dime, elem_code, elem_coor, &
 !
 !
     real(kind=8), intent(in) :: pair_tole
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
     real(kind=8), intent(in) :: elem_coor(elem_dime-1, 4)
-    integer, intent(in) :: nb_poin_coor
+    integer(kind=8), intent(in) :: nb_poin_coor
     real(kind=8), intent(in) :: poin_coor(elem_dime-1, 4)
-    integer, intent(inout) :: nb_poin_inte
+    integer(kind=8), intent(inout) :: nb_poin_inte
     real(kind=8), intent(inout) :: poin_inte(elem_dime-1, 16)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ subroutine apelem_inside(pair_tole, elem_dime, elem_code, elem_coor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, test
+    integer(kind=8) :: i_node, test
     real(kind=8) :: xpt, ypt
 !
 ! --------------------------------------------------------------------------------------------------

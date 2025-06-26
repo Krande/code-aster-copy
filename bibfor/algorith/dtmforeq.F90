@@ -34,13 +34,13 @@ subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, intent(in) :: index
-    integer, pointer :: buffdtm(:)
-    integer, pointer              :: buffint(:)
+    integer(kind=8), intent(in) :: index
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer              :: buffint(:)
 !
 !   -0.2- Local variables
     aster_logical    :: mdiag, kdiag, cdiag
-    integer          :: nbmode, i, iret
+    integer(kind=8)          :: nbmode, i, iret
     character(len=8) :: sd_dtm, sd_int
 !
     real(kind=8), pointer :: depl(:) => null()

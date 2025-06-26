@@ -23,6 +23,6 @@ interface
         character(len=*), intent(in) :: modelz
         character(len=24), intent(in) :: compor
         character(len=16), intent(in) :: defo_comp
-        integer, pointer :: list_elem_comp(:)
+        integer(kind=8), pointer :: list_elem_comp(:)
     end subroutine sele_elem_comp
 end interface

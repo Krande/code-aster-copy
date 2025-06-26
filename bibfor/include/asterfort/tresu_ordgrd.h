@@ -26,6 +26,6 @@ interface
         aster_logical, intent(out) :: ignore
         real(kind=8), intent(out) :: compare
         character(len=*), intent(in), optional :: mcf
-        integer, intent(in), optional :: iocc
+        integer(kind=8), intent(in), optional :: iocc
     end subroutine tresu_ordgrd
 end interface

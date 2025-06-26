@@ -20,6 +20,6 @@
 !
 interface
     subroutine jxferm(iclas)
-        integer :: iclas
+        integer(kind=8) :: iclas
     end subroutine jxferm
 end interface

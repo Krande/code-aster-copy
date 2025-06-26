@@ -50,10 +50,10 @@ subroutine dltins(nbgrpa, lispas, libint, linbpa, npatot, &
     real(kind=8) :: valr(4)
     character(len=8) :: nomres, dyna, li
     character(len=16) :: typres, nomcmd
-    integer :: i, ibid, iint, ip, iv, j, jbin2
-    integer :: jbint, jlpa2, jlpas, jnbp2, jnbpa, jval2, jvale
-    integer :: jvalr, k, n1, nbgrpa, nbinsr, nbinst, nbintn
-    integer :: nbp, nbpd, nbpf, ndy, npatot, numef
+    integer(kind=8) :: i, ibid, iint, ip, iv, j, jbin2
+    integer(kind=8) :: jbint, jlpa2, jlpas, jnbp2, jnbpa, jval2, jvale
+    integer(kind=8) :: jvalr, k, n1, nbgrpa, nbinsr, nbinst, nbintn
+    integer(kind=8) :: nbp, nbpd, nbpf, ndy, npatot, numef
     real(kind=8) :: dt, eps, t0, tfin, tinit
 !
 ! --------------------------------------------------------------------------------------------------

@@ -24,9 +24,9 @@ interface
         use NonLin_Datastructure_type
             type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=*), intent(in) :: sdextrz
-        integer, intent(in) :: nb_keyw_fact
+        integer(kind=8), intent(in) :: nb_keyw_fact
         character(len=24), pointer :: list_field(:)
-        integer, pointer :: rela_field_keyw(:)
-        integer, intent(in) :: nb_field_comp
+        integer(kind=8), pointer :: rela_field_keyw(:)
+        integer(kind=8), intent(in) :: nb_field_comp
     end subroutine nmextr_read_2
 end interface

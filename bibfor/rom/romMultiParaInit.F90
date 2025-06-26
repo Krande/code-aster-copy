@@ -31,7 +31,7 @@ subroutine romMultiParaInit(ds_multipara, nb_mode_maxi)
 #include "asterfort/romMultiParaCoefInit.h"
 !
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-    integer, intent(in) :: nb_mode_maxi
+    integer(kind=8), intent(in) :: nb_mode_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine romMultiParaInit(ds_multipara, nb_mode_maxi)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

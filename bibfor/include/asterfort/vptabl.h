@@ -26,7 +26,7 @@ interface
         real(kind=8) :: fmin
         real(kind=8) :: fmax
         real(kind=8) :: precdc
-        integer :: nfreq
+        integer(kind=8) :: nfreq
         real(kind=8) :: effmin
         real(kind=8) :: effmax
     end subroutine vptabl

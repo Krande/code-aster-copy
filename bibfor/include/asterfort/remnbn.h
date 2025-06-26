@@ -22,10 +22,10 @@ interface
     subroutine remnbn(basmod, nbmod, nbddr, nbdax, flexdr,&
                       flexga, flexax, tetgd, tetax, cmode,&
                       vecmod, neq, beta)
-        integer :: neq
-        integer :: nbdax
-        integer :: nbddr
-        integer :: nbmod
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbdax
+        integer(kind=8) :: nbddr
+        integer(kind=8) :: nbmod
         character(len=8) :: basmod
         character(len=24) :: flexdr
         character(len=24) :: flexga

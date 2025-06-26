@@ -22,8 +22,8 @@ interface
     function indk32(lk32, k32z, rang, nbk32)
         character(len=*) :: lk32(*)
         character(len=*) :: k32z
-        integer :: rang
-        integer :: nbk32
-        integer :: indk32
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbk32
+        integer(kind=8) :: indk32
     end function indk32
 end interface

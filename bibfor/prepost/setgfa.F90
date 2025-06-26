@@ -18,14 +18,14 @@
 
 subroutine setgfa(dgf, ngf)
     implicit none
-    integer :: dgf(*), ngf
+    integer(kind=8) :: dgf(*), ngf
 !     MET A 1 LE BIT DE PRESENCE DUNE ENTITE DANS LE GROUPE NUMERO NGF
 !     DONT LE DESCRIPTEUR-GROUPE EST LE VECTEUR D'ENTIERS DGF
 !     DGF    = DESCRIPTEUR-GROUPE DE LA FAMILLE (VECTEUR ENTIERS)
 !     NGF    = NUMERO DU GROUPE
 !     ------------------------------------------------------------------
-    integer :: ior
-    integer :: iec, reste, code
+    integer(kind=8) :: ior
+    integer(kind=8) :: iec, reste, code
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

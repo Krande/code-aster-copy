@@ -33,10 +33,10 @@ subroutine mdlibe(nomres, nbnli, sd_index)
 #include "asterfort/jeexin.h"
 !   Input arguments
     character(len=8), intent(in) :: nomres
-    integer, intent(in) :: nbnli
-    integer, optional, intent(in) :: sd_index
+    integer(kind=8), intent(in) :: nbnli
+    integer(kind=8), optional, intent(in) :: sd_index
 !   Local variables
-    integer           :: iret, sd_ind
+    integer(kind=8)           :: iret, sd_ind
     character(len=4)  :: bl3pt
     character(len=7)  :: intk7
     character(len=16) :: nomres16

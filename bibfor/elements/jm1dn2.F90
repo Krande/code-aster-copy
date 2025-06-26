@@ -42,20 +42,20 @@ subroutine jm1dn2(indn, indc, nb1, nb2, xr, &
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/valfor.h"
-    integer :: jn
+    integer(kind=8) :: jn
 !
-    integer :: nb1, nb2
+    integer(kind=8) :: nb1, nb2
 !
-    integer :: indn, indc
+    integer(kind=8) :: indn, indc
 !
-    integer :: intsx
-    integer :: intsx1, intsx2
+    integer(kind=8) :: intsx
+    integer(kind=8) :: intsx1, intsx2
 !
-    integer :: lt1, lt2
-    integer :: i1, i2
+    integer(kind=8) :: lt1, lt2
+    integer(kind=8) :: i1, i2
 !
-    integer :: l1, l2, l3
-    integer :: i3, i4, i5
+    integer(kind=8) :: l1, l2, l3
+    integer(kind=8) :: i3, i4, i5
 !
     real(kind=8) :: vi(3)
 !

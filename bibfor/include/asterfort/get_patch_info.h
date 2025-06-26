@@ -23,8 +23,8 @@
 interface
     subroutine get_patch_info(sdappa, patch_indx, nb_elem_patch, list_elem)
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: patch_indx
-        integer, intent(out) :: nb_elem_patch
-        integer, intent(out) :: list_elem(5)
+        integer(kind=8), intent(in) :: patch_indx
+        integer(kind=8), intent(out) :: nb_elem_patch
+        integer(kind=8), intent(out) :: list_elem(5)
     end subroutine get_patch_info
 end interface

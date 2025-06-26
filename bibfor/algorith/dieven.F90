@@ -27,7 +27,7 @@ subroutine dieven(sddisc, i_event, lacti)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: i_event
+    integer(kind=8), intent(in) :: i_event
     aster_logical :: lacti
 !
 ! --------------------------------------------------------------------------------------------------

@@ -48,8 +48,8 @@ subroutine nxdomt(ds_algopara, ds_algorom)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: reac_iter, iter_line_maxi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: reac_iter, iter_line_maxi
     real(kind=8) :: resi_line_rela
     character(len=16) :: keywf, algo_meth
 !

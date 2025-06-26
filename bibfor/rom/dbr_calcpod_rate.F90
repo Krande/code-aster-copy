@@ -27,7 +27,7 @@ subroutine dbr_calcpod_rate(s, nb_sing, rate)
 #include "asterc/r8prem.h"
 !
     real(kind=8), pointer, intent(in) :: s(:)
-    integer, intent(in) :: nb_sing
+    integer(kind=8), intent(in) :: nb_sing
     real(kind=8), intent(out) :: rate
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ subroutine dbr_calcpod_rate(s, nb_sing, rate)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: N(nb_sing), Y(nb_sing)
-    integer :: i, nb_pos
+    integer(kind=8) :: i, nb_pos
 !
 !
 !

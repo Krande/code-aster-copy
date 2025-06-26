@@ -43,11 +43,11 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
 #include "asterfort/wkvect.h"
 !
     med_idt :: fid
-    integer :: nbCell, nbtyp
-    integer :: connex(*), typma(*), point(*)
-    integer :: typgeo(*), nnotyp(*), nbCellType(MT_NTYMAX)
-    integer :: renumd(*), modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
-    integer :: infmed
+    integer(kind=8) :: nbCell, nbtyp
+    integer(kind=8) :: connex(*), typma(*), point(*)
+    integer(kind=8) :: typgeo(*), nnotyp(*), nbCellType(MT_NTYMAX)
+    integer(kind=8) :: renumd(*), modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+    integer(kind=8) :: infmed
     character(len=6) :: prefix
     character(len=8) :: nommai(*)
     character(len=8) :: nomtyp(*)
@@ -91,13 +91,13 @@ subroutine irmmma(fid, nomamd, nbCell, connex, point, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMMMA'
-    integer :: edfuin, edmail, ednoda
-    integer :: codret
-    integer :: ipoin, iCellType, letype
-    integer :: ino, iCell, nbCellTypeTotal, nbbloc
-    integer :: jnomma(MT_NTYMAX), jnumma(MT_NTYMAX), jcnxma(MT_NTYMAX)
-    integer :: ifm, niv, jma, rang, nbproc, jtyp, nbmat, nbmal, start, jno
-    integer :: filter(1), numno
+    integer(kind=8) :: edfuin, edmail, ednoda
+    integer(kind=8) :: codret
+    integer(kind=8) :: ipoin, iCellType, letype
+    integer(kind=8) :: ino, iCell, nbCellTypeTotal, nbbloc
+    integer(kind=8) :: jnomma(MT_NTYMAX), jnumma(MT_NTYMAX), jcnxma(MT_NTYMAX)
+    integer(kind=8) :: ifm, niv, jma, rang, nbproc, jtyp, nbmat, nbmal, start, jno
+    integer(kind=8) :: filter(1), numno
     mpi_int :: mrank, msize
     character(len=8) :: saux08
     aster_logical :: lnocen, lfu

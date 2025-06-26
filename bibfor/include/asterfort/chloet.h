@@ -22,8 +22,8 @@
 !
 interface
     subroutine chloet(iparg, etendu, jceld)
-        integer :: iparg
+        integer(kind=8) :: iparg
         aster_logical :: etendu
-        integer :: jceld
+        integer(kind=8) :: jceld
     end subroutine chloet
 end interface

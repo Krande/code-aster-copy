@@ -34,8 +34,8 @@ subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1, &
 ! OUT  DEFGEM  : TABLEAU ASSEMBLE A L'INSTANT -
 ! OUT  DEFGEP  : TABLEAU ASSEMBLE A L'INSTANT +
 !     ------------------------------------------------------------------
-    integer :: dimdef, dimenr, addeme, adenme, ndim, addep1, i, adenhy
-    integer :: nfh, ifh
+    integer(kind=8) :: dimdef, dimenr, addeme, adenme, ndim, addep1, i, adenhy
+    integer(kind=8) :: nfh, ifh
     real(kind=8) :: degem1(dimenr), degep1(dimenr)
     real(kind=8) :: defgem(dimdef), defgep(dimdef)
 !

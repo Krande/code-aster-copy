@@ -49,15 +49,15 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nh, nbocc
+    integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara, deform
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "MASS_INER"
 !     ------------------------------------------------------------------
 !
-    integer :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
-    integer :: nbmail, jma, im, nume, nb, ifm, niv, mxval1, nbpar1, mxval2, nbpar2, iorig, nre
-    integer :: icage, nbtot, nbMaiT
+    integer(kind=8) :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
+    integer(kind=8) :: nbmail, jma, im, nume, nb, ifm, niv, mxval1, nbpar1, mxval2, nbpar2, iorig, nre
+    integer(kind=8) :: icage, nbtot, nbMaiT
     parameter(mxval1=16, nbpar1=18)
     parameter(mxval2=25, nbpar2=27)
     real(kind=8) :: zero, orig(3), r8b
@@ -68,7 +68,7 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh, &
     character(len=24) :: chgeom, chgeo2, chcara(18), chharm, ligrel
     complex(kind=8) :: c16b
     real(kind=8), pointer :: trav1(:) => null()
-    integer, pointer :: v_allma(:) => null()
+    integer(kind=8), pointer :: v_allma(:) => null()
 !
     data noparr/'LIEU', 'ENTITE', 'MASSE', 'CDG_X', 'CDG_Y', 'CDG_Z', &
         'IX_G', 'IY_G', 'IZ_G', 'IXY_G', 'IXZ_G', 'IYZ_G', 'IX_PRIN_G', &

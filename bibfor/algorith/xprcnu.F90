@@ -83,25 +83,25 @@ subroutine xprcnu(noma, cnxinv, base, vcn, grlr, lcmin)
 !
 !
 !     MESH INFORMATION RETREIVING AND GENERAL PURPOSE VARIABLES
-    integer :: nbno, nbma, jconx2, itypma
-    integer :: ifm, niv, ndim, ndime, dimuns
+    integer(kind=8) :: nbno, nbma, jconx2, itypma
+    integer(kind=8) :: ifm, niv, ndim, ndime, dimuns
     character(len=8) :: typma
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !     LOCAL REFERENCE SYSTEM
     real(kind=8) :: locref(3, 3), nodref(4, 3), modvec, partol
     parameter(partol=1.d-2)
-    integer :: elmori, notpar, jref
+    integer(kind=8) :: elmori, notpar, jref
 !
 !     CREATION OF THE CONNECTION TABLE OF THE NODES
-    integer :: jgrlr, jvcn, jvcnd
-    integer :: node, nodeps, nodedg, nbelno, elno, jelno, elnol
+    integer(kind=8) :: jgrlr, jvcn, jvcnd
+    integer(kind=8) :: node, nodeps, nodedg, nbelno, elno, jelno, elnol
     real(kind=8) :: nodxyz(2, 3), absxyz(3), locxyz(3)
-    integer :: nodcon(3), eldef(8), nocur, orph, unsupp, ar(12, 3), nbar
-    integer :: maxedg(3), numnod(3)
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: tmdim(:) => null()
+    integer(kind=8) :: nodcon(3), eldef(8), nocur, orph, unsupp, ar(12, 3), nbar
+    integer(kind=8) :: maxedg(3), numnod(3)
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------

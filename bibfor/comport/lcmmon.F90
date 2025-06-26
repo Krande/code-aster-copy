@@ -37,7 +37,7 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    integer :: kpg, ksp, nmat, nbcomm(nmat, 3), nvi, itmax, iret, nfs, nsg, neps
+    integer(kind=8) :: kpg, ksp, nmat, nbcomm(nmat, 3), nvi, itmax, iret, nfs, nsg, neps
     real(kind=8) :: vini(*), dvin(*), x, dtime, coeft(nmat), coel(nmat)
     real(kind=8) :: sigi(6), epsd(neps), detot(neps), pgl(3, 3), toler
     real(kind=8) :: hsr(nsg, nsg, 1)
@@ -75,9 +75,9 @@ subroutine lcmmon(fami, kpg, ksp, rela_comp, nbcomm, &
     real(kind=8) :: yd(6+nsg)
     real(kind=8) :: fkooh(6, 6), materf(nmat*2), msns(3, 3), gamsns(3, 3), lg(3)
     real(kind=8) :: toutms(nfs, nsg, 6), fp(3, 3), fp1(3, 3), deps(6), depsdt
-    integer :: itens, nbfsys, i, nuvi, ifa, nbsys, is, nsfa, nsfv
+    integer(kind=8) :: itens, nbfsys, i, nuvi, ifa, nbsys, is, nsfa, nsfv
     common/deps6/depsdt
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ------------------------------------------------------------------

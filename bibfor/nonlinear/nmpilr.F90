@@ -34,7 +34,7 @@ subroutine nmpilr(list_func_acti, nume_dof, matass, hval_veasse, ds_contact, cnf
 #include "asterfort/nmpcin.h"
 #include "asterfort/nmequi.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: matass, hval_veasse(*), cnfint
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -61,9 +61,9 @@ subroutine nmpilr(list_func_acti, nume_dof, matass, hval_veasse, ds_contact, cnf
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: cnfext, cndiri, cnbudi, cndipi, cndfdo, cnequi, cnsstr
-    integer :: i_equa, nb_equa
+    integer(kind=8) :: i_equa, nb_equa
     aster_logical :: l_load_cine, l_disp, l_pilo, l_macr
-    integer, pointer :: v_ccid(:) => null()
+    integer(kind=8), pointer :: v_ccid(:) => null()
     real(kind=8), pointer :: v_cnequi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

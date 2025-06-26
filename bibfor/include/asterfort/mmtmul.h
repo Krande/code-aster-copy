@@ -24,10 +24,10 @@ interface
     subroutine mmtmul(cumul, lmat, vect, xsol, nbvect,&
                       prepos)
         character(len=*) :: cumul
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: vect(*)
         real(kind=8) :: xsol(*)
-        integer :: nbvect
+        integer(kind=8) :: nbvect
         aster_logical :: prepos
     end subroutine mmtmul
 end interface

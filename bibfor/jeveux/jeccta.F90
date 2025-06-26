@@ -42,8 +42,8 @@ subroutine jeccta(colle1)
 !
     character(len=8) :: base, type, acces, stock, modelo
     character(len=24) :: colle2
-    integer :: k, nbobj, lont1, lont2, jloncu
-    integer :: n1, jcoll1, jcoll2
+    integer(kind=8) :: k, nbobj, lont1, lont2, jloncu
+    integer(kind=8) :: n1, jcoll1, jcoll2
 !-----------------------------------------------------------------------
     call jemarq()
 !

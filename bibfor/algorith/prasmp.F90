@@ -88,17 +88,17 @@ subroutine prasmp(option, nugene, tminbl, nomprn, modgen, &
     character(len=24) :: tmadbl, tmnobl, tminbl, knombl(*)
     character(len=24) :: valk
     character(len=10) :: adnom
-    integer :: inumbl(*)
+    integer(kind=8) :: inumbl(*)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad, ibid, ibl1, ieqc, inuc, inul, iret, i_ligr_ss
-    integer :: j, lc, ll, llors, llprs, i_ligr
-    integer :: ltadbl, ltinbl, ltnobl, nbcol, nblig, nbsst
-    integer :: ntail, ntprno, nusst, ntria
+    integer(kind=8) :: iad, ibid, ibl1, ieqc, inuc, inul, iret, i_ligr_ss
+    integer(kind=8) :: j, lc, ll, llors, llprs, i_ligr
+    integer(kind=8) :: ltadbl, ltinbl, ltnobl, nbcol, nblig, nbsst
+    integer(kind=8) :: ntail, ntprno, nusst, ntria
     real(kind=8) :: ssmax
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
 !-----------------------------------------------------------------------
     data rigopt, ricopt, masopt, amoopt/'RIGI_GENE', 'RIGI_GENE_C',&
      &                                 'MASS_GENE', 'AMOR_GENE'/

@@ -43,8 +43,8 @@ subroutine dbrReadTrunc(paraTrunc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nocc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nocc
     character(len=8) :: modelRom, baseInitName
 !
 ! --------------------------------------------------------------------------------------------------

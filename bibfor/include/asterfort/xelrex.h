@@ -21,8 +21,8 @@
 interface
     subroutine xelrex(elrefp, nno, xref, ndime)
          character(len=8) :: elrefp
-         integer :: nno
-         integer, optional :: ndime
+         integer(kind=8) :: nno
+         integer(kind=8), optional :: ndime
          real(kind=8) :: xref(81)
     end subroutine xelrex
 end interface

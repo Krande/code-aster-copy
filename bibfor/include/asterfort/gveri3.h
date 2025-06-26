@@ -26,9 +26,9 @@ interface
         character(len=24) :: chfond
         character(len=24) :: taillr
         character(len=8) :: config
-        integer :: lnoff
+        integer(kind=8) :: lnoff
         character(len=24) :: liss
-        integer :: ndeg
+        integer(kind=8) :: ndeg
         character(len=24) :: trav1
         character(len=24) :: trav2
         character(len=24) :: trav3

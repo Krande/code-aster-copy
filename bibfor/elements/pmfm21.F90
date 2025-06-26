@@ -22,7 +22,7 @@ subroutine pmfm21(kanl, m, casrho, casece, a, &
     implicit none
 #include "asterc/r8gaem.h"
 #include "asterfort/utmess.h"
-    integer :: kanl
+    integer(kind=8) :: kanl
     real(kind=8) :: casece(6), a, xl, xiy, xiz, g
     real(kind=8) :: m(*), alfay, alfaz, ey, ez, casrho(6)
 !     CALCUL DE LA MATRICE DE MASSE DES ELEMENTS POU_D_TGM
@@ -60,7 +60,7 @@ subroutine pmfm21(kanl, m, casrho, casece, a, &
     real(kind=8) :: c070, c105, c120, c140
     real(kind=8) :: c210, c420
 !
-    integer :: ip(12), i
+    integer(kind=8) :: ip(12), i
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/

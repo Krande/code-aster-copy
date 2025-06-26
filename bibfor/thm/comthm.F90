@@ -61,14 +61,14 @@ subroutine comthm(ds_thm, &
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred
     character(len=16), intent(in) :: option
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=8), intent(in) :: type_elem(2)
     real(kind=8), intent(in) :: angl_naut(3)
-    integer, intent(in) :: ndim, nbvari
-    integer, intent(in) :: dimdef, dimcon
-    integer, intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
-    integer, intent(in) :: addeme, addete, addep1, addep2, adde2nd
-    integer, intent(in) :: kpi, npg
+    integer(kind=8), intent(in) :: ndim, nbvari
+    integer(kind=8), intent(in) :: dimdef, dimcon
+    integer(kind=8), intent(in) :: adcome, adcote, adcp11, adcp12, adcp21, adcp22, adco2nd
+    integer(kind=8), intent(in) :: addeme, addete, addep1, addep2, adde2nd
+    integer(kind=8), intent(in) :: kpi, npg
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: defgem(1:dimdef), defgep(1:dimdef)
     real(kind=8), intent(in) :: congem(1:dimcon)
@@ -78,7 +78,7 @@ subroutine comthm(ds_thm, &
     real(kind=8), intent(in) :: time_prev, time_curr
     real(kind=8), intent(inout) :: dsde(1:dimcon, 1:dimdef)
     real(kind=8), intent(out) :: gravity(3)
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !

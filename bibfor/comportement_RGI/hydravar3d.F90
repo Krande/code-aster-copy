@@ -38,7 +38,7 @@ subroutine hydravar3d(hyd0, hydr, hyds, phi00, phi0, dth00, dth0, &
     real(kind=8) :: epsk006(6), epsk06(6)
     real(kind=8) :: epsm006(6), epsm06(6)
     real(kind=8) :: ett600(6), ett60(6)
-    integer j
+    integer(kind=8) j
     real(kind=8) :: wplt006(6), wplt06(6), wpltx006(6), wpltx06(6)
     real(kind=8) :: dth00, dth0, epleq00, epleq0
 

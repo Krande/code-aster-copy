@@ -27,7 +27,7 @@ subroutine ptfop1(itype, nc, coef1, coef2, xl, qq, fe)
 !
     implicit none
 !
-    integer :: itype, nc
+    integer(kind=8) :: itype, nc
     real(kind=8) :: coef1, coef2, xl, fe(12), qq(12)
 !
 #include "asterfort/assert.h"

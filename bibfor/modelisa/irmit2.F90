@@ -34,8 +34,8 @@ subroutine irmit2(nbmode, ifmis, freq, tabrig)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, ic, ifmis, ifreq, jfrq, jri0
-    integer :: jri2, jrig, nbmode, nfreq
+    integer(kind=8) :: i, i1, ic, ifmis, ifreq, jfrq, jri0
+    integer(kind=8) :: jri2, jrig, nbmode, nfreq
     real(kind=8) :: freq, pas
 !-----------------------------------------------------------------------
     call jemarq()

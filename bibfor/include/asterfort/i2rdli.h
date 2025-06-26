@@ -20,8 +20,8 @@
 !
 interface
     subroutine i2rdli(n, t, adr)
-        integer :: n
-        integer :: t(*)
-        integer :: adr
+        integer(kind=8) :: n
+        integer(kind=8) :: t(*)
+        integer(kind=8) :: adr
     end subroutine i2rdli
 end interface

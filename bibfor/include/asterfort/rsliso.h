@@ -22,10 +22,10 @@ interface
     subroutine rsliso(fami, kpg, ksp, poum, imat,&
                       p, rp, drdp)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=1) :: poum
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: p
         real(kind=8) :: rp
         real(kind=8) :: drdp

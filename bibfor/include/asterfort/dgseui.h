@@ -31,7 +31,7 @@ interface
         real(kind=8) :: nub
         real(kind=8) :: ftj
         real(kind=8) :: h
-        integer :: icisai
+        integer(kind=8) :: icisai
         real(kind=8) :: syt
         real(kind=8) :: dxd
         real(kind=8) :: syf

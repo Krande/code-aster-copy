@@ -22,7 +22,7 @@
 !
 interface
     subroutine zsortc(which, apply, n, x, y)
-        integer :: n
+        integer(kind=8) :: n
         character(len=2) :: which
         aster_logical :: apply
         complex(kind=8) :: x(0:n-1)

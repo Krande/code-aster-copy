@@ -26,15 +26,15 @@ interface
         character(len=24) :: tmpf
         character(len=8) :: fcx
         character(len=24) :: nom
-        integer :: isec
-        integer :: ivar
+        integer(kind=8) :: isec
+        integer(kind=8) :: ivar
         character(len=8) :: car(*)
-        integer :: ncar
+        integer(kind=8) :: ncar
         real(kind=8) :: val(*)
         character(len=8) :: tab(*)
         character(len=8) :: exp(*)
-        integer :: nbo
+        integer(kind=8) :: nbo
         character(len=6) :: ioc
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine affpou
 end interface

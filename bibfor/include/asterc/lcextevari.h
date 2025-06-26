@@ -19,7 +19,7 @@
 interface
     subroutine lcextevari(compor, nb_vari, vari)
         character(len=*), intent(in) :: compor
-        integer, intent(out) :: nb_vari
+        integer(kind=8), intent(out) :: nb_vari
         character(len=*), intent(out) :: vari(*)
     end subroutine lcextevari
 end interface

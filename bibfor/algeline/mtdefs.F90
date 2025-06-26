@@ -54,13 +54,13 @@ subroutine mtdefs(matout, matin, base, typc)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: nbval, ival, jrefao, jrefai
+    integer(kind=8) :: nbval, ival, jrefao, jrefai
     character(len=1) :: classe, type
     character(len=19) :: nomout, nomin
     character(len=24) :: valm, refa
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibloc, jvalm, lgbloc, nbbloc
+    integer(kind=8) :: ibloc, jvalm, lgbloc, nbbloc
 !-----------------------------------------------------------------------
     call jemarq()
     classe = base(1:1)

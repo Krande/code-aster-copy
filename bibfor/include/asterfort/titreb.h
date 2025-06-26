@@ -22,14 +22,14 @@ interface
     subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                       iligs, icols, formr, nomsym, iordr)
         character(len=*) :: donnee(*)
-        integer :: iligd
-        integer :: icold
-        integer :: nbtitr
+        integer(kind=8) :: iligd
+        integer(kind=8) :: icold
+        integer(kind=8) :: nbtitr
         character(len=*) :: sortie(*)
-        integer :: iligs
-        integer :: icols
+        integer(kind=8) :: iligs
+        integer(kind=8) :: icols
         character(len=*) :: formr
         character(len=*), optional, intent(in) :: nomsym
-        integer, optional, intent(in) :: iordr
+        integer(kind=8), optional, intent(in) :: iordr
     end subroutine titreb
 end interface

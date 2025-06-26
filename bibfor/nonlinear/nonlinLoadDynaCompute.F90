@@ -73,7 +73,7 @@ subroutine nonlinLoadDynaCompute(mode, sddyna, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: vect_elem, vect_asse
     character(len=24) :: vect_alem
     aster_logical :: l_wave, l_viss

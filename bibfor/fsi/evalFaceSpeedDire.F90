@@ -33,7 +33,7 @@ subroutine evalFaceSpeedDire(FEForm, cellDime, jvLoad, speedDire, &
 #include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: FEForm
-    integer, intent(in) :: cellDime, jvLoad
+    integer(kind=8), intent(in) :: cellDime, jvLoad
     real(kind=8), intent(out) :: speedDire
     real(kind=8), intent(in) :: nx, ny
     aster_logical, optional, intent(in) :: lFunc_, lReal_, lCplx_, lTime_
@@ -68,7 +68,7 @@ subroutine evalFaceSpeedDire(FEForm, cellDime, jvLoad, speedDire, &
     real(kind=8) :: time, x, y, z, nz
     real(kind=8) :: nvx, nvy, nvz, normVect
     real(kind=8) :: nxNorm, nyNorm, nzNorm
-    integer :: nbPara, iret
+    integer(kind=8) :: nbPara, iret
     character(len=8), parameter :: paraName2d(3) = (/'X   ', 'Y   ', 'INST'/)
     character(len=8), parameter :: paraName3d(4) = (/'X   ', 'Y   ', 'Z   ', 'INST'/)
     real(kind=8) :: paraVale2d(3)

@@ -23,7 +23,7 @@
 interface
     function cfcald(defico, izone, typnoe)
         character(len=24) :: defico
-        integer :: izone
+        integer(kind=8) :: izone
         character(len=4) :: typnoe
         aster_logical :: cfcald
     end function cfcald

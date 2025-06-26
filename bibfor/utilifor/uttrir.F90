@@ -18,7 +18,7 @@
 !
 subroutine uttrir(nbvale, vale, eps)
     implicit none
-    integer :: nbvale
+    integer(kind=8) :: nbvale
     real(kind=8) :: vale(*), eps
 !     TRIE PAR ORDRE CROISSANT, (METHODE DE REMONTEE DES BULLES)
 !     ET SUPPRIME LES VALEURS MULTIPLES .
@@ -29,14 +29,14 @@ subroutine uttrir(nbvale, vale, eps)
 ! IN  EPS    : R8 : VALEUR DE SEPARATION ADMISE ENTRE DEUX VALEURS
 !                 : (SI EPS < 0 ALORS ON GARDE LES VALEURS MULTIPLES)
 !     ------------------------------------------------------------------
-    integer :: incrs, is9
+    integer(kind=8) :: incrs, is9
     real(kind=8) :: diff
 !
 !     --- RIEN A FAIRE SI NBVALE=0 OU 1 (ET NE PAS MODIFIER NBVALE)
 !
 !     --- TRI BULLE ---
 !-----------------------------------------------------------------------
-    integer :: i, j, l
+    integer(kind=8) :: i, j, l
 !-----------------------------------------------------------------------
     if (nbvale .gt. 1) then
 !        --- CHOIX DE L'INCREMENT ---

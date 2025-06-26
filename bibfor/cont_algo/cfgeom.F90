@@ -35,7 +35,7 @@ subroutine cfgeom(iter_newt, mesh, ds_measure, ds_contact, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: iter_newt
     character(len=8), intent(in) :: mesh
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(inout) :: ds_contact
@@ -59,7 +59,7 @@ subroutine cfgeom(iter_newt, mesh, ds_measure, ds_contact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_pair
 !
 ! --------------------------------------------------------------------------------------------------

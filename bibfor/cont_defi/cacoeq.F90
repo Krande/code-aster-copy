@@ -57,23 +57,23 @@ subroutine cacoeq(sdcont, mesh, lLineRela, listRela)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: node_nume(3), iret
+    integer(kind=8) :: node_nume(3), iret
     complex(kind=8) :: vale_cplx, coef_cplx(3)
     character(len=4) :: vale_type, type_coef
     character(len=8) :: vale_func, dof_name(3), node_name(3), type_name, type_name_c
     real(kind=8) :: coef_real(3), repe_defi(6), vale_real
-    integer :: i_excl, i_zone, i_node_quad, i_elem, i_elem_c
-    integer :: elem_nume, type_nume, repe_type(3)
-    integer :: suppo1, suppo2, suppo3
-    integer :: nb_cont_zone, nb_cont_node, nb_node_quad, nb_node_elem, nb_excl
-    integer, pointer :: v_list_excl(:) => null()
+    integer(kind=8) :: i_excl, i_zone, i_node_quad, i_elem, i_elem_c
+    integer(kind=8) :: elem_nume, type_nume, repe_type(3)
+    integer(kind=8) :: suppo1, suppo2, suppo3
+    integer(kind=8) :: nb_cont_zone, nb_cont_node, nb_node_quad, nb_node_elem, nb_excl
+    integer(kind=8), pointer :: v_list_excl(:) => null()
     character(len=19) :: connex_inv
-    integer, pointer :: v_coninv(:) => null()
-    integer, pointer :: v_coninv_longcum(:) => null()
-    integer, pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_coninv(:) => null()
+    integer(kind=8), pointer :: v_coninv_longcum(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_noeuqu
-    integer, pointer :: v_sdcont_noeuqu(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuqu(:) => null()
 !
     data repe_defi/0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0, 0.0d0/
 !

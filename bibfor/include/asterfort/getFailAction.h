@@ -19,7 +19,7 @@
 interface
     subroutine getFailAction(sddisc, i_fail, action_type)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: i_fail
-        integer, intent(out) :: action_type
+        integer(kind=8), intent(in) :: i_fail
+        integer(kind=8), intent(out) :: action_type
     end subroutine getFailAction
 end interface

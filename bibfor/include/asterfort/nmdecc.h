@@ -31,9 +31,9 @@ interface
         real(kind=8) :: instam
         real(kind=8) :: ratio
         character(len=4) :: typdec
-        integer :: nbrpas
+        integer(kind=8) :: nbrpas
         real(kind=8) :: deltac
         real(kind=8) :: dtmin
-        integer :: retdec
+        integer(kind=8) :: retdec
     end subroutine nmdecc
 end interface

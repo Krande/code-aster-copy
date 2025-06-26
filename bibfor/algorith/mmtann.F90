@@ -24,7 +24,7 @@ subroutine mmtann(ndim, tau1, tau2, iret)
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/normev.h"
-    integer :: ndim, iret
+    integer(kind=8) :: ndim, iret
     real(kind=8) :: tau1(3), tau2(3)
 !
 ! ----------------------------------------------------------------------

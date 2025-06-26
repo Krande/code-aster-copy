@@ -28,9 +28,9 @@ subroutine metaGetPhase(fami, poum, ipg, ispg, meta_type, &
 !
     character(len=*), intent(in) :: fami
     character(len=1), intent(in) :: poum
-    integer, intent(in) :: ipg, ispg
-    integer, intent(in) :: meta_type
-    integer, intent(in) :: nb_phase
+    integer(kind=8), intent(in) :: ipg, ispg
+    integer(kind=8), intent(in) :: meta_type
+    integer(kind=8), intent(in) :: nb_phase
     real(kind=8), optional, intent(out) :: phase_(*)
     real(kind=8), optional, intent(out) :: zcold_
     real(kind=8), optional, intent(out) :: zhot_
@@ -62,7 +62,7 @@ subroutine metaGetPhase(fami, poum, ipg, ispg, meta_type, &
                                                 'PAUSTENI', 'PCOLDSUM'/)
     character(len=8), parameter :: zirc(3) = (/'ALPHPUR ', 'ALPHBETA', &
                                                'BETA    '/)
-    integer :: i_phase_c, i_phase, iret, nb_phase_c
+    integer(kind=8) :: i_phase_c, i_phase, iret, nb_phase_c
     real(kind=8) :: zcold, zhot, phase(5), tole_bound
 !
 ! --------------------------------------------------------------------------------------------------

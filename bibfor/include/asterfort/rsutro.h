@@ -21,8 +21,8 @@
 interface
     subroutine rsutro(nomsd, iordg, iordr, ierr)
         character(len=*) :: nomsd
-        integer :: iordg
-        integer :: iordr
-        integer :: ierr
+        integer(kind=8) :: iordg
+        integer(kind=8) :: iordr
+        integer(kind=8) :: ierr
     end subroutine rsutro
 end interface

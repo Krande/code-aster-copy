@@ -68,18 +68,18 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps, &
 !
     character(len=4) :: fonree
     character(len=8) :: elrefp
-    integer :: ndim, nnop, igeom, itps, ihechp, jptint, jcface, jlonch
-    integer :: jlst, jbasec, nfh, nfe, imattt, heavn(27, 5)
+    integer(kind=8) :: ndim, nnop, igeom, itps, ihechp, jptint, jcface, jlonch
+    integer(kind=8) :: jlst, jbasec, nfh, nfe, imattt, heavn(27, 5)
 !
 !-----------------------------------------------------------------------
 !
     character(len=8) :: fpg, elc, elrefc, nompar(4)
     aster_logical :: axi
-    integer :: nbddl, zxain
-    integer :: cface(30, 6), ninter, nface, nptf
-    integer :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
-    integer :: ipgf, ilev, inp, jnp, kddl, lddl, ind1, ind2, iddlma, ier
-    integer :: mxstac, hea_fa(2), ifh, ife
+    integer(kind=8) :: nbddl, zxain
+    integer(kind=8) :: cface(30, 6), ninter, nface, nptf
+    integer(kind=8) :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
+    integer(kind=8) :: ipgf, ilev, inp, jnp, kddl, lddl, ind1, ind2, iddlma, ier
+    integer(kind=8) :: mxstac, hea_fa(2), ifh, ife
 !
     parameter(mxstac=1000)
 !

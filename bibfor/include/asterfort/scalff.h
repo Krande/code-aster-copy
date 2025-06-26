@@ -20,8 +20,8 @@
 !
 interface
     subroutine scalff(nbfonc, nbp, disc, vale, a)
-        integer :: nbp
-        integer :: nbfonc
+        integer(kind=8) :: nbp
+        integer(kind=8) :: nbfonc
         real(kind=8) :: disc(nbp)
         real(kind=8) :: vale(nbp, nbfonc)
         real(kind=8) :: a(nbfonc, nbfonc)

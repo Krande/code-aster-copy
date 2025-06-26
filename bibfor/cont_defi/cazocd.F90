@@ -32,9 +32,9 @@ subroutine cazocd(sdcont, keywf, i_zone, nb_cont_zone)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,9 +51,9 @@ subroutine cazocd(sdcont, keywf, i_zone, nb_cont_zone)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: zcmdf
+    integer(kind=8) :: zcmdf
     character(len=24) :: sdcont_defi
-    integer :: noc
+    integer(kind=8) :: noc
     character(len=16) :: s_glis
     real(kind=8) :: glis_alarm
     real(kind=8) :: coef_pena_frot, coef_pena_cont, coef_frot, coef_matr_frot

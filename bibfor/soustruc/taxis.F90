@@ -35,8 +35,8 @@ subroutine taxis(noma, indic, nbma)
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma
-    integer :: indic(*)
-    integer :: nbma
+    integer(kind=8) :: indic(*)
+    integer(kind=8) :: nbma
 ! ----------------------------------------------------------------------
 !     BUT: VERIFIER QUE LES COORDONNEES SONT POSITIVES
 !
@@ -54,7 +54,7 @@ subroutine taxis(noma, indic, nbma)
     character(len=19) :: tablg
 !
 !-----------------------------------------------------------------------
-    integer :: iacnex, ier, ima, ino, nbnoma, numno, iret, ibid
+    integer(kind=8) :: iacnex, ier, ima, ino, nbnoma, numno, iret, ibid
     real(kind=8), pointer :: vale(:) => null()
 !
 !-----------------------------------------------------------------------

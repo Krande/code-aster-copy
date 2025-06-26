@@ -48,16 +48,16 @@ subroutine mnlgen(numdrv, matdrv, ninc)
 ! ----------------------------------------------------------------------
     character(len=14) :: numdrv
     character(len=19) :: matdrv
-    integer :: ninc
+    integer(kind=8) :: ninc
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     character(len=19) :: nume_equa_gene, solveu
     character(len=24) :: lili, orig, prno
-    integer :: i_ligr_link, i_ligr_sstr
-    integer, pointer :: prgene_orig(:) => null()
-    integer, pointer :: prgene_prno(:) => null()
-    integer :: ibid, mrefa, mdesc, ismde
+    integer(kind=8) :: i_ligr_link, i_ligr_sstr
+    integer(kind=8), pointer :: prgene_orig(:) => null()
+    integer(kind=8), pointer :: prgene_prno(:) => null()
+    integer(kind=8) :: ibid, mrefa, mdesc, ismde
 !
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES PARAMETRES ET CREATION DU SOLVEUR

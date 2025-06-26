@@ -24,11 +24,11 @@ subroutine cgnop0(nbnoe, coor, x0, vecnor, prec, &
 !.========================= DEBUT DES DECLARATIONS ====================
 !
 ! -----  ARGUMENTS
-    integer :: nbnoe, nbno, lisnoe(*)
+    integer(kind=8) :: nbnoe, nbno, lisnoe(*)
     real(kind=8) :: coor(*), x0(*), vecnor(*), prec
 !
 ! --------- VARIABLES LOCALES ---------------------------
-    integer :: ino
+    integer(kind=8) :: ino
     real(kind=8) :: x(3), xx0(3), d
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

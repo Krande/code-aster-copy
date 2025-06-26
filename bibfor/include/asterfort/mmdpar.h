@@ -21,13 +21,13 @@
 interface
     subroutine mmdpar(nd, nbsn, nbsn1, supnd, nouv,&
                       parent, prov, invsup)
-        integer :: nbsn1
-        integer :: nd
-        integer :: nbsn
-        integer :: supnd(nbsn1)
-        integer :: nouv(nd)
-        integer :: parent(nd)
-        integer :: prov(nd)
-        integer :: invsup(nd)
+        integer(kind=8) :: nbsn1
+        integer(kind=8) :: nd
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: supnd(nbsn1)
+        integer(kind=8) :: nouv(nd)
+        integer(kind=8) :: parent(nd)
+        integer(kind=8) :: prov(nd)
+        integer(kind=8) :: invsup(nd)
     end subroutine mmdpar
 end interface

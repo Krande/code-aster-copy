@@ -30,10 +30,10 @@ subroutine nmgrib(nno, geom, dff, dir11, lexc, &
 #include "asterfort/sumetr.h"
 #include "asterfort/utmess.h"
     aster_logical :: lexc
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: geom(3, nno), dff(2, nno), dir11(3)
     real(kind=8) :: b(6, nno), vecn(3), p(3, 6)
-    integer :: i, j, n, alpha, beta, gamma
+    integer(kind=8) :: i, j, n, alpha, beta, gamma
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2), a(2, 2), r1(3)
     real(kind=8) :: projn
     real(kind=8) :: mtemp(3, nno), denomi

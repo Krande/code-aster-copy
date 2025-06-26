@@ -32,7 +32,7 @@ subroutine nmresx(sddisc, sderro, iter_newt)
 !
     character(len=19), intent(in) :: sddisc
     character(len=24), intent(in) :: sderro
-    integer, intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: iter_newt
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,8 +50,8 @@ subroutine nmresx(sddisc, sderro, iter_newt)
 !
     real(kind=8) :: r(1), vale_resi
     aster_logical :: l_resi_maxi
-    integer :: nb_fail, i_fail, i_fail_acti
-    integer :: eventType
+    integer(kind=8) :: nb_fail, i_fail, i_fail_acti
+    integer(kind=8) :: eventType
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -21,6 +21,6 @@
 interface
     subroutine lisimp(lischa, ifm)
         character(len=19) :: lischa
-        integer :: ifm
+        integer(kind=8) :: ifm
     end subroutine lisimp
 end interface

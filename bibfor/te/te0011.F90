@@ -44,14 +44,14 @@ subroutine te0011(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, igau, imate, imatuu, j
-    integer :: k, nbinco, nbsig, ndim, nno
-    integer :: nnos, npg1
+    integer(kind=8) :: i, igau, imate, imatuu, j
+    integer(kind=8) :: k, nbinco, nbsig, ndim, nno
+    integer(kind=8) :: nnos, npg1
     real(kind=8) :: b(486), btdb(81, 81), d(36), jacgau
     real(kind=8) :: angl_naut(3), instan, nharm
-    integer :: igeom, ipoids, ivf, idfde
+    integer(kind=8) :: igeom, ipoids, ivf, idfde
     character(len=4) :: fami
-    integer :: elas_id, iret, itemps
+    integer(kind=8) :: elas_id, iret, itemps
 !
 ! --------------------------------------------------------------------------------------------------
 !

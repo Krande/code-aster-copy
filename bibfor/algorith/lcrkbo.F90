@@ -24,7 +24,7 @@ subroutine lcrkbo(a, b, l0, l1, etamin, &
 #include "asterfort/utmess.h"
     real(kind=8), intent(in) :: a, b, l0, l1, etamin, etamax
     aster_logical, intent(out) :: vide
-    integer, intent(out) :: nsol, sgn(2)
+    integer(kind=8), intent(out) :: nsol, sgn(2)
     real(kind=8), intent(out) :: sol(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ subroutine lcrkbo(a, b, l0, l1, etamin, &
     real(kind=8), parameter :: zero = 0.d0
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: vide1, vide2
-    integer :: i, nsol1, nsol2, sgn1(2), sgn2(2), ptr
+    integer(kind=8) :: i, nsol1, nsol2, sgn1(2), sgn2(2), ptr
     real(kind=8) :: smin, smax, etas, sol1(2), sol2(2)
 ! --------------------------------------------------------------------------------------------------
 !

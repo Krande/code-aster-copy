@@ -65,7 +65,7 @@ subroutine lcmohr(ndim, &
 !
     character(len=8)  :: typmod(*)
     character(len=16) :: option
-    integer           :: ndim, imate, codret
+    integer(kind=8)           :: ndim, imate, codret
     real(kind=8)      :: carcri(*)
     real(kind=8)      :: dstrai(6), dstrai0(6)
     real(kind=8)      :: stresm(6), stresm0(6), stres(6)
@@ -84,7 +84,7 @@ subroutine lcmohr(ndim, &
 #include "asterfort/get_varc.h"
 !
 ! Declaration of constant parameters
-    integer      :: mmax, nmax
+    integer(kind=8)      :: mmax, nmax
     real(kind=8) :: degr
     parameter(degr=0.017453292519943295d0, mmax=3, nmax=6)
 !
@@ -107,8 +107,8 @@ subroutine lcmohr(ndim, &
     real(kind=8) :: tr(nmax), p, r1nu, r1ny, tolcv
 !
 ! Declaration of integer type variables
-    integer :: icode(nmax), ndt, ndi, ii, jj, mm
-    integer :: mxiter, i
+    integer(kind=8) :: icode(nmax), ndt, ndi, ii, jj, mm
+    integer(kind=8) :: mxiter, i
 !
 ! Declaration of integer type variables
 !     aster_logical :: epflag

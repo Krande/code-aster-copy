@@ -19,7 +19,7 @@
 subroutine acedat(motfac, in, npara, sec, exp, &
                   tab, car)
     implicit none
-    integer :: in, npara(*)
+    integer(kind=8) :: in, npara(*)
     character(len=*) :: motfac, sec(*), exp(*), tab(*), car(*)
 !     AFFE_CARA_ELEM
 !     INITIALISATION DES PARAMETRES ET DES DATAS
@@ -27,8 +27,8 @@ subroutine acedat(motfac, in, npara, sec, exp, &
 !
 !     --- MOT CLE FACTEUR "POUTRE"-------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, k, nbobar, nbopou, ncerba, ncerpo, ngenba
-    integer :: ngenpo, nrecba, nrecpo, nsecba, nsecpo, ntseba, ntsepo
+    integer(kind=8) :: i, k, nbobar, nbopou, ncerba, ncerpo, ngenba
+    integer(kind=8) :: ngenpo, nrecba, nrecpo, nsecba, nsecpo, ntseba, ntsepo
 !
 !-----------------------------------------------------------------------
     parameter(ngenpo=15, nrecpo=6, ncerpo=2)

@@ -20,10 +20,10 @@
 !
 interface
     function modatt(opt, te, statut, ipar)
-        integer :: opt
-        integer :: te
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
         character(len=3) :: statut
-        integer :: ipar
-        integer :: modatt
+        integer(kind=8) :: ipar
+        integer(kind=8) :: modatt
     end function modatt
 end interface

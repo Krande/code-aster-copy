@@ -23,9 +23,9 @@ subroutine prmadj(nbnd, neq, n2, adjncy, xadj, &
 #include "asterf_types.h"
 #include "asterfort/prmade.h"
 #include "asterfort/prmadl.h"
-    integer :: nbnd, neq, n2
-    integer :: adjncy(*), xadj(neq+1), xadjd(*), liste(neq), q(n2)
-    integer :: noeud(*), nbnoeu, ndi, ndj, deb, fin, deblis, i, j, ndsuiv
+    integer(kind=8) :: nbnd, neq, n2
+    integer(kind=8) :: adjncy(*), xadj(neq+1), xadjd(*), liste(neq), q(n2)
+    integer(kind=8) :: noeud(*), nbnoeu, ndi, ndj, deb, fin, deblis, i, j, ndsuiv
     aster_logical :: vider
     vider = .false.
     nbnoeu = 0

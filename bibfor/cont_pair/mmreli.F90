@@ -24,7 +24,7 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt, &
 #include "asterfort/assert.h"
 #include "asterfort/mmresi.h"
     character(len=8) :: alias
-    integer :: nno, ndim
+    integer(kind=8) :: nno, ndim
     real(kind=8) :: coorma(27), coorpt(3)
     real(kind=8) :: ksi1, ksi2, dksi1, dksi2
     real(kind=8) :: alpha
@@ -61,7 +61,7 @@ subroutine mmreli(alias, nno, ndim, coorma, coorpt, &
     real(kind=8) :: coeffa, coeffb, unsdet
     real(kind=8) :: omega1, amin, amax
     parameter(omega1=1.d-4, amin=1.d-1, amax=5.d-1)
-    integer :: nadamx, iada
+    integer(kind=8) :: nadamx, iada
     parameter(nadamx=2)
 !
 ! ----------------------------------------------------------------------

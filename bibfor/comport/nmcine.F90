@@ -28,7 +28,7 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    integer :: kpg, ksp, ndim, imate
+    integer(kind=8) :: kpg, ksp, ndim, imate
     character(len=*) :: fami
     character(len=16) :: compor(*), option
     real(kind=8) :: crit(10), instam, instap, radi
@@ -65,13 +65,13 @@ subroutine nmcine(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: sieleq, sigeps, seuil, dp, coef, dsde, sigy
     real(kind=8) :: troisk, valrm(2)
     real(kind=8) :: em, num, troikm, deumum, plasti
-    integer :: ndimsi
-    integer :: icodre(3)
+    integer(kind=8) :: ndimsi
+    integer(kind=8) :: icodre(3)
     character(len=16) :: nomres(3)
     character(len=10) :: phenom
     real(kind=8) :: rac2
 !-----------------------------------------------------------------------
-    integer :: iret, k, l
+    integer(kind=8) :: iret, k, l
     real(kind=8) :: a1, a2, cpragp, cpragm, dsdem
 !-----------------------------------------------------------------------
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)

@@ -28,7 +28,7 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw, &
 #include "asterfort/nmmabu.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/terefe.h"
-    integer :: ndim, nno1, nno2, npg, idfde1, iw
+    integer(kind=8) :: ndim, nno1, nno2, npg, idfde1, iw
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     real(kind=8) :: geom(ndim, nno1)
     real(kind=8) :: vect(*)
@@ -50,8 +50,8 @@ subroutine nmforn(ndim, nno1, nno2, npg, iw, &
 ! ---------------------------------------------------------------------
 !
     aster_logical :: grand, axi
-    integer :: nddl, ndimsi, g, n, i, kl, kk
-    integer :: iu(3*27), ia(8)
+    integer(kind=8) :: nddl, ndimsi, g, n, i, kl, kk
+    integer(kind=8) :: iu(3*27), ia(8)
     real(kind=8) :: dfdi1(27, 3)
     real(kind=8) :: r, wg, b(6, 3, 27)
     real(kind=8) :: t1, sigref, varref

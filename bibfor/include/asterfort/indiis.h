@@ -20,10 +20,10 @@
 !
 interface
     function indiis(lis, is, rang, nbis)
-        integer :: lis(*)
-        integer :: is
-        integer :: rang
-        integer :: nbis
-        integer :: indiis
+        integer(kind=8) :: lis(*)
+        integer(kind=8) :: is
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbis
+        integer(kind=8) :: indiis
     end function indiis
 end interface

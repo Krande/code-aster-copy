@@ -50,10 +50,10 @@ subroutine transft(modein, kvec, neq, nbpt, nomres)
     character(len=24) :: chamno
     character(len=24) :: numedd, rigid, masse, amort, matrice(3)
 !
-    integer :: nbordr, lvect, ier
-    integer :: iadd, iarchi, ieq, itps
-    integer :: nbmode, neq, nbpt
-    integer :: iaux, jaux, nt, nbhar, lrep
+    integer(kind=8) :: nbordr, lvect, ier
+    integer(kind=8) :: iadd, iarchi, ieq, itps
+    integer(kind=8) :: nbmode, neq, nbpt
+    integer(kind=8) :: iaux, jaux, nt, nbhar, lrep
     real(kind=8) :: freq, deltat, temps
 !     -----------------------------------------------------------------
     call jemarq()

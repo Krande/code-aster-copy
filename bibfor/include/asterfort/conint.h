@@ -24,9 +24,9 @@ interface
         character(len=14) :: nume
         character(len=19) :: raide
         character(len=24) :: coint
-        integer :: connec
+        integer(kind=8) :: connec
         character(len=24) :: noddli
-        integer :: nnoint
+        integer(kind=8) :: nnoint
         character(len=14) :: nume_gene
         character(len=19) :: raiint
         character(len=19) :: ssami

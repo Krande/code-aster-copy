@@ -22,7 +22,7 @@ subroutine exlim1(lismai, nbmail, modelz, basez, ligrez)
 #include "asterfort/exlim2.h"
 #include "asterfort/dismoi.h"
 !
-    integer :: lismai(*), nbmail
+    integer(kind=8) :: lismai(*), nbmail
     character(len=*) :: modelz, basez, ligrez
 
 ! But : Creer le ligrel "reduit" correspondant au ligrel d'un modele

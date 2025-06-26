@@ -26,10 +26,10 @@ interface
                       sigp, vip, typmod, icomp,&
                       nvi, numlc, dsidep, codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
@@ -42,10 +42,10 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*)
         character(len=8) :: typmod(*)
-        integer :: icomp
-        integer :: nvi
-        integer :: numlc
+        integer(kind=8) :: icomp
+        integer(kind=8) :: nvi
+        integer(kind=8) :: numlc
         real(kind=8) :: dsidep(6, 6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lc0025
 end interface

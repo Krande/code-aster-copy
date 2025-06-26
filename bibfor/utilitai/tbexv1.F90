@@ -29,7 +29,7 @@ subroutine tbexv1(nomta, para, nomobj, basobj, nbval, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbval
+    integer(kind=8) :: nbval
     character(len=*) :: nomta, para, nomobj, basobj, typval
 !      LECTURE DES VALEURS D'UNE COLONNE D'UNE TABLE
 !              EN ELIMINANT LES DOUBLONS.
@@ -42,15 +42,15 @@ subroutine tbexv1(nomta, para, nomobj, basobj, nbval, &
 ! OUT : TYPVAL : TYPE JEVEUX DES VALEURS EXTRAITES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, ipar
-    integer :: i, j, iv, jvale, jvall, kvale
+    integer(kind=8) :: iret, nbpara, nblign, ipar
+    integer(kind=8) :: i, j, iv, jvale, jvall, kvale
     character(len=1) :: base
     character(len=4) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     character(len=24) :: valk
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 ! DEB------------------------------------------------------------------
 !
     call jemarq()

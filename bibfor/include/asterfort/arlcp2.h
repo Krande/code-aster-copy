@@ -25,9 +25,9 @@ interface
                       nom1,nom2,marlel,modarl, &
                       jma1,jma2,tabcor,mailar,proj)
         aster_logical :: proj
-        integer :: jma1
-        integer :: jma2
-        integer :: iocc
+        integer(kind=8) :: jma1
+        integer(kind=8) :: jma2
+        integer(kind=8) :: iocc
         character(len=16) :: typmai
         character(len=8) :: mail
         character(len=8) :: nomo

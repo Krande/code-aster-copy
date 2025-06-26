@@ -42,9 +42,9 @@ subroutine nonlinDSErrorIndicRead(ds_errorindic)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=16) :: keywf, answer
-    integer :: nocc
+    integer(kind=8) :: nocc
 !
 ! --------------------------------------------------------------------------------------------------
 !

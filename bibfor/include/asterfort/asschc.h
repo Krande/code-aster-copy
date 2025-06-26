@@ -21,7 +21,7 @@
 interface
     subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
         character(len=*) :: matas
-        integer :: nbchc
+        integer(kind=8) :: nbchc
         character(len=*) :: lchci(*)
         character(len=*) :: nomnu
         character(len=4) :: cumul

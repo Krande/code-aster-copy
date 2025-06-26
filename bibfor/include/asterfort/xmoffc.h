@@ -20,9 +20,9 @@
 !
 interface
     subroutine xmoffc(lact, nlact, nno, ffe, ffc)
-        integer :: lact(*)
-        integer :: nlact
-        integer :: nno
+        integer(kind=8) :: lact(*)
+        integer(kind=8) :: nlact
+        integer(kind=8) :: nno
         real(kind=8) :: ffe(*)
         real(kind=8) :: ffc(*)
     end subroutine xmoffc

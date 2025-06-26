@@ -51,8 +51,8 @@ subroutine limend(nommaz, salt, nomres, forvie, limit)
 !
 !
 !
-    integer :: iret, ivalr, nbr, nbc, ivalk, nbk, nbf, ik, ivalf, iprol
-    integer :: jprof, nbmx, np, ibid
+    integer(kind=8) :: iret, ivalr, nbr, nbc, ivalk, nbk, nbf, ik, ivalf, iprol
+    integer(kind=8) :: jprof, nbmx, np, ibid
     real(kind=8) :: vallim, nlimim
     character(len=11) :: k11
     character(len=32) :: nomphe

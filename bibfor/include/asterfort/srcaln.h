@@ -23,6 +23,6 @@ interface
         real(kind=8) :: s(6)
         real(kind=8) :: b
         real(kind=8) :: vecn(6)
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine srcaln
 end interface

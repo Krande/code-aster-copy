@@ -23,10 +23,10 @@ interface
                       e, a1, a2, xl, xiy1,&
                       xiy2, xiz1, xiz2, g, alfay1,&
                       alfay2, alfaz1, alfaz2, ey, ez)
-        integer :: kanl
-        integer :: itype
+        integer(kind=8) :: kanl
+        integer(kind=8) :: itype
         real(kind=8) :: m(*)
-        integer :: ist
+        integer(kind=8) :: ist
         real(kind=8) :: rho
         real(kind=8) :: e
         real(kind=8) :: a1

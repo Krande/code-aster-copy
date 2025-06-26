@@ -24,31 +24,31 @@ interface
                       pmilie, nmilie, mfis, tx, txlsn,&
                       pintt, pmitt, ifiss, nfiss, fisco,&
                       nfisc, cut, coupe, exit, joncno, condition_joncno)
-        integer :: ndim
-        integer :: nnose
-        integer :: it
-        integer :: cnset(*)
-        integer :: jlsn
-        integer :: igeom
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnose
+        integer(kind=8) :: it
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: igeom
         real(kind=8) :: pinter(*)
-        integer :: ninter
-        integer :: npts
+        integer(kind=8) :: ninter
+        integer(kind=8) :: npts
         real(kind=8) :: ainter(*)
         real(kind=8) :: pmilie(*)
-        integer :: nmilie
-        integer :: mfis
+        integer(kind=8) :: nmilie
+        integer(kind=8) :: mfis
         real(kind=8) :: tx(3, 7)
         real(kind=8) :: txlsn(28)
         real(kind=8) :: pintt(*)
         real(kind=8) :: pmitt(*)
-        integer :: ifiss
-        integer :: nfiss
-        integer :: fisco(*)
-        integer :: nfisc
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: fisco(*)
+        integer(kind=8) :: nfisc
         aster_logical :: cut
-        integer :: coupe(nfiss)
-        integer :: exit(2)
-        integer :: joncno
+        integer(kind=8) :: coupe(nfiss)
+        integer(kind=8) :: exit(2)
+        integer(kind=8) :: joncno
         aster_logical :: condition_joncno
     end subroutine xdecqu
 end interface

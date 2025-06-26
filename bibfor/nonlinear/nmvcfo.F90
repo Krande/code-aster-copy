@@ -66,7 +66,7 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: mxchin, mxchout, nbin, nbout
+    integer(kind=8) :: mxchin, mxchout, nbin, nbout
     parameter(mxchout=2, mxchin=34)
     character(len=8) :: lpaout(mxchout), lpain(mxchin)
     character(len=19) :: lchout(mxchout), lchin(mxchin)
@@ -74,7 +74,7 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
     aster_logical :: exis_temp, exis_hydr, exis_ptot, exis_sech, exis_epsa
     aster_logical :: exis_meta_zirc, exis_meta_acier, exis_meta, calc_meta
     character(len=19) :: sigm_prev, vari_prev, varc_prev, varc_curr
-    integer :: iret, nume_harm
+    integer(kind=8) :: iret, nume_harm
 !
 ! --------------------------------------------------------------------------------------------------
 !

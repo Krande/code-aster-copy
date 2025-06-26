@@ -19,8 +19,8 @@
 interface
     subroutine capres(load, mesh, model, geomDime, valeType, nbOccPresRep)
         character(len=8), intent(in)  :: load, mesh, model
-        integer, intent(in)           :: geomDime
+        integer(kind=8), intent(in)           :: geomDime
         character(len=4), intent(in)  :: valeType
-        integer, intent(in)           :: nbOccPresRep
+        integer(kind=8), intent(in)           :: nbOccPresRep
     end subroutine capres
 end interface

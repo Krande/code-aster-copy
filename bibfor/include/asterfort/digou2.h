@@ -20,6 +20,6 @@ interface
     subroutine digou2(for_discret, iret)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
-        integer, intent(out)          :: iret
+        integer(kind=8), intent(out)          :: iret
     end subroutine digou2
 end interface

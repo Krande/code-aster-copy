@@ -23,7 +23,7 @@
 interface
     subroutine eneven(sddisc, i_event, lacti)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: i_event
+        integer(kind=8), intent(in) :: i_event
         aster_logical :: lacti
     end subroutine eneven
 end interface

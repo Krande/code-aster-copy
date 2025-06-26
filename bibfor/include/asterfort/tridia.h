@@ -21,8 +21,8 @@
 interface
     subroutine tridia(n, a, lda, d, e,&
                       tau, w)
-        integer :: lda
-        integer :: n
+        integer(kind=8) :: lda
+        integer(kind=8) :: n
         complex(kind=8) :: a(lda, *)
         real(kind=8) :: d(*)
         real(kind=8) :: e(*)

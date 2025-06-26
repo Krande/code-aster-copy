@@ -25,9 +25,9 @@ interface
                       jv_poids, jv_func, jv_dfunc)
         character(len=16), intent(in) :: option
         aster_logical, intent(in) :: l_axi
-        integer, intent(in) :: nno, nnos
-        integer, intent(in) :: npg
-        integer, intent(in) :: nddls, nddlm
-        integer, intent(in) :: jv_poids, jv_func, jv_dfunc
+        integer(kind=8), intent(in) :: nno, nnos
+        integer(kind=8), intent(in) :: npg
+        integer(kind=8), intent(in) :: nddls, nddlm
+        integer(kind=8), intent(in) :: jv_poids, jv_func, jv_dfunc
     end subroutine thmevc
 end interface

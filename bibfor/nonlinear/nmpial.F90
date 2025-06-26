@@ -29,7 +29,7 @@ subroutine nmpial(numedd, depdel, depmoi, cnfepi, ddepl0, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "blas/ddot.h"
-    integer :: nbeffe, pilcvg
+    integer(kind=8) :: nbeffe, pilcvg
     real(kind=8) :: eta
     character(len=19) :: ddepl0, ddepl1, depdel, cnfepi
     character(len=19) :: depmoi
@@ -62,8 +62,8 @@ subroutine nmpial(numedd, depdel, depmoi, cnfepi, ddepl0, &
 !
 !
     real(kind=8) :: du, rn, rd, um
-    integer :: neq
-    integer :: ifm, niv
+    integer(kind=8) :: neq
+    integer(kind=8) :: ifm, niv
     real(kind=8), pointer :: dep0(:) => null()
     real(kind=8), pointer :: dep1(:) => null()
     real(kind=8), pointer :: depde(:) => null()

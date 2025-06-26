@@ -29,10 +29,10 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale, &
 !
 !
     character(len=1), intent(in) :: quest
-    integer, intent(in) :: ktrac
-    integer, intent(in) :: jprol
-    integer, intent(in) :: jvale
-    integer, intent(in) :: nbvale
+    integer(kind=8), intent(in) :: ktrac
+    integer(kind=8), intent(in) :: jprol
+    integer(kind=8), intent(in) :: jvale
+    integer(kind=8), intent(in) :: nbvale
     real(kind=8), optional, intent(in) :: e
     real(kind=8), optional, intent(in) :: nu
     real(kind=8), optional, intent(in) :: sieleq
@@ -76,7 +76,7 @@ subroutine rcfonc(quest, ktrac, jprol, jvale, nbvale, &
     aster_logical :: tessup
     character(len=1) :: type_prol
     character(len=24) :: func_name
-    integer :: jp, jr, i, i0
+    integer(kind=8) :: jp, jr, i, i0
     real(kind=8) :: troimu, p0, rp0, pp, equ, airerp_int, rprim_int, rp_int
 !
 ! --------------------------------------------------------------------------------------------------

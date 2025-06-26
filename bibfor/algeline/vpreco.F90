@@ -23,7 +23,7 @@ subroutine vpreco(nbvect, neq, vecred, vect)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvect, neq
+    integer(kind=8) :: nbvect, neq
     real(kind=8) :: vect(neq, nbvect), vecred(nbvect, nbvect)
 !     EFFECTUE LE PROLONGEMENT DES VECTEURS PROPRES : CALCUL DES
 !     VECTEURS PROPRES DU SYSTEME COMPLET A PARTIR DES VECTEURS
@@ -38,7 +38,7 @@ subroutine vpreco(nbvect, neq, vecred, vect)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k, l
+    integer(kind=8) :: i, j, k, l
     real(kind=8) :: rt
     real(kind=8), pointer :: vilig(:) => null()
 !-----------------------------------------------------------------------

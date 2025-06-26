@@ -22,7 +22,7 @@ subroutine mdidisisot(sd_nl_, nbnoli, nomres)
 
     implicit none
     character(len=*) :: sd_nl_
-    integer          :: nbnoli
+    integer(kind=8)          :: nbnoli
     character(len=8) :: nomres
 !
 #include "jeveux.h"
@@ -50,10 +50,10 @@ subroutine mdidisisot(sd_nl_, nbnoli, nomres)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ific, nbocc, iocc, iret, ii, i_bloc, nbsauv, bloc_ini
-    integer :: nbvint, it, indx
-    integer :: vv, nltype_i, start, jvindx, jdesc
-    integer :: imprredir(7)
+    integer(kind=8) :: ific, nbocc, iocc, iret, ii, i_bloc, nbsauv, bloc_ini
+    integer(kind=8) :: nbvint, it, indx
+    integer(kind=8) :: vv, nltype_i, start, jvindx, jdesc
+    integer(kind=8) :: imprredir(7)
     character(len=8) :: noeud1, noeud2, sd_nl
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: vint(:) => null()

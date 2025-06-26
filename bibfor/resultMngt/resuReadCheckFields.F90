@@ -27,7 +27,7 @@ subroutine resuReadCheckFields(resultName, resultType, fieldNb, fieldList)
 !
     character(len=8), intent(in) :: resultName
     character(len=16), intent(in) :: resultType
-    integer, intent(in) :: fieldNb
+    integer(kind=8), intent(in) :: fieldNb
     character(len=16), intent(in) :: fieldList(100)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine resuReadCheckFields(resultName, resultType, fieldNb, fieldList)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iField, iexi
+    integer(kind=8) :: iField, iexi
     character(len=16) :: fieldType
     character(len=19) :: resu19
 !

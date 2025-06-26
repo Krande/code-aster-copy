@@ -22,13 +22,13 @@ subroutine lceibt(ndimsi, eps, epsf, dep, invn, &
 #include "asterfort/r8inir.h"
     real(kind=8) :: eps(6), epsf(6), dep(6, 12), dsidep(6, 6), invn(6, 6)
     real(kind=8) :: cn(6, 6)
-    integer :: ndimsi
+    integer(kind=8) :: ndimsi
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT ENDO_ISOT_BETON - TERME COMPLEMENTAIRE DE
 !                                           LA MATRICE TANGENTE POUR
 !                                           LES LOIS COUPLES
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, l
+    integer(kind=8) :: i, j, k, l
     real(kind=8) :: sigel(6), sigme(6), temp1(6, 6)
 !
     call r8inir(ndimsi, 0.d0, sigel, 1)

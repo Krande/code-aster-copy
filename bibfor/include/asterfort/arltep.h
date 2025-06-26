@@ -23,11 +23,11 @@ interface
                       nns   ,fctfs   , &
                       elrefc,nnc   ,coorc , &
                       fctfc ,dfdxc ,dfdyc ,dfdzc)
-        integer :: ndim
-        integer :: npgs
-        integer :: kpgs
-        integer :: nns
-        integer :: nnc
+        integer(kind=8) :: ndim
+        integer(kind=8) :: npgs
+        integer(kind=8) :: kpgs
+        integer(kind=8) :: nns
+        integer(kind=8) :: nnc
         character(len=8) :: elrefc
         real(kind=8) :: coorc(ndim*nnc)
         real(kind=8) :: coors(ndim*nns)

@@ -21,7 +21,7 @@
 interface
     subroutine arlmas(nomte,e,xnu,rho,kanl,mlv)
         character(len=12) :: nomte
-        integer :: kanl
+        integer(kind=8) :: kanl
         real(kind=8) :: rho
         real(kind=8) :: xnu
         real(kind=8) :: e

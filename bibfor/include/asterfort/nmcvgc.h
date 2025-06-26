@@ -22,7 +22,7 @@ interface
     subroutine nmcvgc(sddisc, sderro, numins, fonact)
         character(len=19) :: sddisc
         character(len=24) :: sderro
-        integer :: numins
-        integer :: fonact(*)
+        integer(kind=8) :: numins
+        integer(kind=8) :: fonact(*)
     end subroutine nmcvgc
 end interface

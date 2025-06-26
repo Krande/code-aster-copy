@@ -18,7 +18,7 @@
 !
 interface
     subroutine lckitread(nbkit, lkit, rela)
-        integer, intent(in) :: nbkit
+        integer(kind=8), intent(in) :: nbkit
         character(len=*), intent(in) :: lkit(*)
         character(len=*), intent(out) :: rela(*)
     end subroutine lckitread

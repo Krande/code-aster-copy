@@ -35,7 +35,7 @@ function exi_thms(model, l_affe_all, list_elem_affe, nb_elem_affe)
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: list_elem_affe
     aster_logical, intent(in) :: l_affe_all
-    integer, intent(in) :: nb_elem_affe
+    integer(kind=8), intent(in) :: nb_elem_affe
     aster_logical :: exi_thms
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,11 +54,11 @@ function exi_thms(model, l_affe_all, list_elem_affe, nb_elem_affe)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_elem, nb_elem_mesh, iret, ielem, nume_elem, nutyel
-    integer :: j_elem_affe
+    integer(kind=8) :: nb_elem, nb_elem_mesh, iret, ielem, nume_elem, nutyel
+    integer(kind=8) :: j_elem_affe
     character(len=8) :: mesh, rep
     character(len=16) :: notype
-    integer, pointer :: maille(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

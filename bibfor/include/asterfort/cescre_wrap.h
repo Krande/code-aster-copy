@@ -21,8 +21,8 @@ interface
     subroutine cescre_wrap(basez, cesz, typcez, maz, nomgdz, &
         ncmpg, licmp, npg, nspt, ncmp, undf0)
         character(len=*) :: maz, nomgdz, cesz, basez, typcez
-    integer :: npg(*)
-    integer :: nspt, ncmp
+    integer(kind=8) :: npg(*)
+    integer(kind=8) :: nspt, ncmp
     character(len=8) :: licmp(*)
     aster_logical, intent(in) :: undf0
     end subroutine cescre_wrap

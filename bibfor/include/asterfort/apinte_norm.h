@@ -21,8 +21,8 @@ interface
                            elem_mast_nbnode, elem_mast_coor, elem_mast_code,&
                            elem_slav_coor  , elem_slav_code,&
                            mast_norm       , slav_norm)
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: elem_mast_nbnode
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_mast_nbnode
         real(kind=8), intent(in) :: elem_mast_coor(3,9)
         character(len=8), intent(in) :: elem_mast_code
         real(kind=8), intent(in) :: elem_slav_coor(3,9)

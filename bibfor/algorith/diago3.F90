@@ -33,7 +33,7 @@ subroutine diago3(tens, vecp, valp)
 !
     real(kind=8) :: tol, toldyn
     real(kind=8) :: tr(6), tu(6), jacaux(3)
-    integer :: nperm, nitjac, ttrij, otrij, nbind
+    integer(kind=8) :: nperm, nitjac, ttrij, otrij, nbind
 !
     data nperm, nbind/12, 3/
     data tol, toldyn/1.0d-10, 1.0d-02/

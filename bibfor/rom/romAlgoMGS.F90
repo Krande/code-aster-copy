@@ -28,7 +28,7 @@ subroutine romAlgoMGS(nb_mode, nb_equa, syst_type, field_iden, base, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 !
-    integer, intent(in) :: nb_mode, nb_equa
+    integer(kind=8), intent(in) :: nb_mode, nb_equa
     character(len=1), intent(in) :: syst_type
     character(len=8), intent(in) :: base
     character(len=24), intent(in) :: field_iden
@@ -60,7 +60,7 @@ subroutine romAlgoMGS(nb_mode, nb_equa, syst_type, field_iden, base, &
     real(kind=8), pointer :: vr_mode(:) => null()
     complex(kind=8), pointer :: vc_mode(:) => null()
     character(len=19) :: mode
-    integer :: i_mode, iret
+    integer(kind=8) :: i_mode, iret
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

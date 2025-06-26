@@ -28,12 +28,12 @@ subroutine apchoi(dist, dist_mini, elem_indx, elem_indx_mini, tau1, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: proj_stat
-    integer, intent(inout) :: proj_stat_mini
+    integer(kind=8), intent(in) :: proj_stat
+    integer(kind=8), intent(inout) :: proj_stat_mini
     real(kind=8), intent(in) :: dist
     real(kind=8), intent(inout) :: dist_mini
-    integer, intent(in) :: elem_indx
-    integer, intent(inout) :: elem_indx_mini
+    integer(kind=8), intent(in) :: elem_indx
+    integer(kind=8), intent(inout) :: elem_indx_mini
     real(kind=8), intent(in) :: tau1(3)
     real(kind=8), intent(inout) :: tau1_mini(3)
     real(kind=8), intent(in) :: tau2(3)

@@ -21,7 +21,7 @@
 interface
     subroutine pmfm01(kanl, xl, kk12, kk13, cars,&
                       m)
-        integer :: kanl
+        integer(kind=8) :: kanl
         real(kind=8) :: xl
         real(kind=8) :: kk12
         real(kind=8) :: kk13

@@ -40,8 +40,8 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec, &
     character(len=*), intent(in) :: modes, nomsy, nomvec, nopara
     character(len=*), intent(out) :: typmod
     character(len=*), intent(in) :: nomvai, nomvar, nomvak
-    integer, intent(in) :: nbvect, lposi(*), nbpara
-    integer, intent(out) :: neq, nbmode, nbpari, nbparr, nbpark
+    integer(kind=8), intent(in) :: nbvect, lposi(*), nbpara
+    integer(kind=8), intent(out) :: neq, nbmode, nbpari, nbparr, nbpark
 !     RECUPERATION DES VALEURS ET VECTEURS PROPRES
 !     ------------------------------------------------------------------
 ! IN  MODES  : K8 : NOM DE LA STRUCTURE MODE_MECA
@@ -88,10 +88,10 @@ subroutine vprecu(modes, nomsy, nbvect, lposi, nomvec, &
     aster_logical :: recunp
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ieq, ii, ik, imode, ir, tmod(1)
-    integer :: iret, j, jpara, lmode, lnopar, lnume, lnumor
-    integer :: lresui, lresuk, lresur, lvale, nbmodt, nbout, nbtpar
-    integer :: nbtrou, neq1, nordr
+    integer(kind=8) :: i, ibid, ieq, ii, ik, imode, ir, tmod(1)
+    integer(kind=8) :: iret, j, jpara, lmode, lnopar, lnume, lnumor
+    integer(kind=8) :: lresui, lresuk, lresur, lvale, nbmodt, nbout, nbtpar
+    integer(kind=8) :: nbtrou, neq1, nordr
 !-----------------------------------------------------------------------
     data vale/'                   .VALE'/
 !     ------------------------------------------------------------------

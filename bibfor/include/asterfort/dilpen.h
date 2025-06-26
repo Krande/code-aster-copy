@@ -20,7 +20,7 @@
 !
 interface
     subroutine dilpen(imate, rpena)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: rpena
     end subroutine dilpen
 end interface

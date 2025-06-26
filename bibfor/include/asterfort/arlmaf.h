@@ -21,13 +21,13 @@
 interface
     subroutine arlmaf(mail  ,mailar,dime  ,ngrma  ,ima   , &
                       connex,loncum,imail ,nummai ,cxcumu)
-        integer :: dime
-        integer :: ima
-        integer :: imail
-        integer :: connex(*)
-        integer :: loncum(*)
-        integer :: nummai
-        integer :: cxcumu
+        integer(kind=8) :: dime
+        integer(kind=8) :: ima
+        integer(kind=8) :: imail
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: loncum(*)
+        integer(kind=8) :: nummai
+        integer(kind=8) :: cxcumu
         character(len=8) :: mail
         character(len=8) :: mailar
         character(len=19) :: ngrma

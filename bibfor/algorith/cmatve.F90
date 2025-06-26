@@ -36,8 +36,8 @@ subroutine cmatve(mat, vectin, vectou, ndim)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim
-    integer :: i, j
+    integer(kind=8) :: ndim
+    integer(kind=8) :: i, j
     complex(kind=8) :: mat(ndim, ndim), vectin(ndim), vectou(ndim)
 !
 !-----------------------------------------------------------------------

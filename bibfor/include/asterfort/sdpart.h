@@ -20,8 +20,8 @@
 !
 interface
     subroutine sdpart(nbsd, nbsdp0, sdloc)
-        integer :: nbsd
-        integer :: nbsdp0
-        integer :: sdloc(nbsd)
+        integer(kind=8) :: nbsd
+        integer(kind=8) :: nbsdp0
+        integer(kind=8) :: sdloc(nbsd)
     end subroutine sdpart
 end interface

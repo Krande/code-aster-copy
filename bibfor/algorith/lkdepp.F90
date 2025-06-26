@@ -19,7 +19,7 @@
 subroutine lkdepp(vin, nbmat, mater, paraep, derpar)
 !
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: vin(7), paraep(3), mater(nbmat, 2), derpar(3)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE----------------------------
 ! ===================================================================

@@ -41,16 +41,16 @@ subroutine nlbuff(sd_nl, addrs, level)
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in)  :: sd_nl
-    integer, pointer :: addrs(:)
-    integer, optional, intent(in)  :: level
+    integer(kind=8), pointer :: addrs(:)
+    integer(kind=8), optional, intent(in)  :: level
 !
 !   -0.2- Local variables
 !   --- For strings copying
     character(len=8) :: sd_nl_
 
 !   --- For general usage
-    integer           :: ip, iret, addr, long, jbuff
-    integer           :: ilev, lvl, dec
+    integer(kind=8)           :: ip, iret, addr, long, jbuff
+    integer(kind=8)           :: ilev, lvl, dec
     character(len=6)  :: k_iocc
     character(len=24) :: savename
     type(c_ptr) :: pc

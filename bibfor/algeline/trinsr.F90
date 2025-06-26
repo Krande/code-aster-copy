@@ -35,9 +35,9 @@ subroutine trinsr(clef, tab, ntab, n)
 !
 ! --- VARIABLES
 !
-    integer :: n, ntab, clef(*)
+    integer(kind=8) :: n, ntab, clef(*)
     real(kind=8) :: tab(n, *)
-    integer :: g, d, i, j, inser
+    integer(kind=8) :: g, d, i, j, inser
     real(kind=8) :: tmpr
 !
 ! --- TRI PAR INSERTION

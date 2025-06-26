@@ -19,7 +19,7 @@
 !
 interface
     subroutine getInterCont(nbPoinInte, poinInteSlav)
-        integer, intent(out) :: nbPoinInte
+        integer(kind=8), intent(out) :: nbPoinInte
         real(kind=8), intent(out) :: poinInteSlav(2, MAX_NB_INTE)
     end subroutine getInterCont
 end interface

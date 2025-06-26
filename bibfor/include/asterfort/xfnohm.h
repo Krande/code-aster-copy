@@ -30,18 +30,18 @@ interface
                       nfiss, nfh, jfisno)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: nnops
-        integer :: nnop
-        integer :: dimenr
-        integer :: ndim
-        integer :: dimuel
+        integer(kind=8) :: nnops
+        integer(kind=8) :: nnop
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: ndim
+        integer(kind=8) :: dimuel
         aster_logical :: fnoevo
         real(kind=8) :: deltat
-        integer :: nno
-        integer :: npg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: nno
+        integer(kind=8) :: npg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: geom(ndim, nnop)
         real(kind=8) :: congem(*)
         real(kind=8) :: b(dimenr, dimuel)
@@ -49,27 +49,27 @@ interface
         real(kind=8) :: dfdi2(nnops, ndim)
         real(kind=8) :: r(1:dimenr)
         real(kind=8) :: vectu(dimuel)
-        integer :: imate
-        integer :: mecani(5)
-        integer :: press1(7)
-        integer :: dimcon
-        integer :: nddls
-        integer :: nddlm
-        integer :: nmec
-        integer :: np1
-        integer :: jheavn
+        integer(kind=8) :: imate
+        integer(kind=8) :: mecani(5)
+        integer(kind=8) :: press1(7)
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: nddls
+        integer(kind=8) :: nddlm
+        integer(kind=8) :: nmec
+        integer(kind=8) :: np1
+        integer(kind=8) :: jheavn
         aster_logical :: axi
-        integer :: nnopm
-        integer :: igeom
-        integer :: jpintt
-        integer :: jpmilt
-        integer :: lonch(10)
-        integer :: cnset(*)
-        integer :: heavt(*)
-        integer :: enrmec(3)
-        integer :: enrhyd(3)
-        integer :: nfiss
-        integer :: nfh
-        integer :: jfisno
+        integer(kind=8) :: nnopm
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jpintt
+        integer(kind=8) :: jpmilt
+        integer(kind=8) :: lonch(10)
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: heavt(*)
+        integer(kind=8) :: enrmec(3)
+        integer(kind=8) :: enrhyd(3)
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nfh
+        integer(kind=8) :: jfisno
     end subroutine xfnohm
 end interface 

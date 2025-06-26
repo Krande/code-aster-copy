@@ -28,9 +28,9 @@ subroutine rs_get_mate(result_, nume, chmate, codret)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
-    integer, intent(in) :: nume
+    integer(kind=8), intent(in) :: nume
     character(len=*), intent(out) :: chmate
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine rs_get_mate(result_, nume, chmate, codret)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: result, chmate_resu, chmate_comm
-    integer :: nocc, jv_para
+    integer(kind=8) :: nocc, jv_para
 !
 ! --------------------------------------------------------------------------------------------------
 !

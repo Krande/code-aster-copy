@@ -20,7 +20,7 @@
 !
 interface
     subroutine medomg(result, numord, modele, mate, mateco, lischa)
-        integer :: numord
+        integer(kind=8) :: numord
         character(len=8) :: modele, result
         character(len=24) :: mate, mateco
         character(len=19) :: lischa

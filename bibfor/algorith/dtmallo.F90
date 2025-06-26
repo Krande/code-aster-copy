@@ -43,10 +43,10 @@ subroutine dtmallo(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer           :: nbsauv, nbmode, iret, nbnli, nbvint, nbsteps
-    integer           :: jordr, jdisc, jptem, jdepl
-    integer           :: jvite, jacce, jvint
-    integer           :: adapt, iarch_sd, iret1, iret2, nltreat
+    integer(kind=8)           :: nbsauv, nbmode, iret, nbnli, nbvint, nbsteps
+    integer(kind=8)           :: jordr, jdisc, jptem, jdepl
+    integer(kind=8)           :: jvite, jacce, jvint
+    integer(kind=8)           :: adapt, iarch_sd, iret1, iret2, nltreat
     real(kind=8)      :: dt, dtmin, dtmax, deltadt, epsi, taille, taille2
     character(len=8)  :: sd_dtm, nomres, basemo, riggen, masgen
     character(len=8)  :: amogen, sd_nl
@@ -57,9 +57,9 @@ subroutine dtmallo(sd_dtm_)
     character(len=8), pointer :: fonred(:) => null()
     character(len=8), pointer :: fonrev(:) => null()
     character(len=8), target  :: blanc(1)
-    integer, pointer :: vindx(:) => null()
-    integer, pointer :: allocs(:) => null()
-    integer :: ordr
+    integer(kind=8), pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: allocs(:) => null()
+    integer(kind=8) :: ordr
     real(kind=8) :: disc, ptem
     real(kind=8), pointer :: v_depl(:) => null()
     real(kind=8), pointer :: v_vite(:) => null()

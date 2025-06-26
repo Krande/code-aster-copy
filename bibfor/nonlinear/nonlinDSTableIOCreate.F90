@@ -44,7 +44,7 @@ subroutine nonlinDSTableIOCreate(tableio)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=8) :: resultName
     character(len=24) :: tablName
 !

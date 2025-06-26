@@ -25,7 +25,7 @@ interface
                       iret)
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
@@ -35,6 +35,6 @@ interface
         real(kind=8) :: sig(6)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine dpvplc
 end interface

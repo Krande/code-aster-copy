@@ -21,7 +21,7 @@
 interface
     function diadap(sddisc, i_adap)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: i_adap
+        integer(kind=8), intent(in) :: i_adap
         aster_logical :: diadap
     end function diadap
 end interface

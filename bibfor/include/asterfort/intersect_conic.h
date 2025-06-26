@@ -22,7 +22,7 @@ interface
     subroutine intersect_conic(m, line, nb, point1, point2)
       real(kind=8), intent(in) :: m(3,3)
       real(kind=8), intent(in) :: line(3)
-      integer, intent(out) :: nb
+      integer(kind=8), intent(out) :: nb
       real(kind=8), intent(out) :: point1(3)
       real(kind=8), intent(out) :: point2(3)
     end subroutine intersect_conic

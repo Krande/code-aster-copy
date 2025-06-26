@@ -20,9 +20,9 @@
 !
 interface
     subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
-        integer :: ifc
-        integer :: versio
-        integer :: nstat
+        integer(kind=8) :: ifc
+        integer(kind=8) :: versio
+        integer(kind=8) :: nstat
         character(len=*) :: chamno(*)
         character(len=*) :: nomsym
     end subroutine irmad0

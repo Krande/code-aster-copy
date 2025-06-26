@@ -22,7 +22,7 @@ subroutine dimax2(jdom, nbpt, cuon, cvon, rayon, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: jdom, nbpt, iret
+    integer(kind=8) :: jdom, nbpt, iret
     real(kind=8) :: cuon, cvon, rayon, cupn, cvpn
 ! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine dimax2(jdom, nbpt, cuon, cvon, rayon, &
 !                     IRET = 1 => IL Y A AUMOINS UN POINT PLUS ELOIGNE.
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: cui, cvi, ray0, dist, epsilo
 !     ------------------------------------------------------------------
 !

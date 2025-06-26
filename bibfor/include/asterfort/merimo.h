@@ -28,13 +28,13 @@ interface
         character(len=1), intent(in) :: base
         aster_logical, intent(in) :: l_xfem, l_macr_elem
         character(len=24), intent(in) :: model, cara_elem
-        integer, intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: iter_newt
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
         character(len=*), intent(in) :: optioz
-        integer, intent(out) :: ldccvg
+        integer(kind=8), intent(out) :: ldccvg
         character(len=*), optional, intent(in) :: sddynz_
     end subroutine merimo
 end interface

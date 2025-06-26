@@ -20,9 +20,9 @@
 !
 interface
     subroutine trir(clef, tab, ntab, n)
-        integer :: n
-        integer :: clef(*)
+        integer(kind=8) :: n
+        integer(kind=8) :: clef(*)
         real(kind=8) :: tab(n, *)
-        integer :: ntab
+        integer(kind=8) :: ntab
     end subroutine trir
 end interface

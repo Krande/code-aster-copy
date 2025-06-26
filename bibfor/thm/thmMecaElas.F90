@@ -31,7 +31,7 @@ subroutine thmMecaElas(ds_thm, lMatr, lSigm, angl_naut, dtemp, &
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm
     real(kind=8), intent(in) :: dtemp
-    integer, intent(in) :: dimcon, adcome
+    integer(kind=8), intent(in) :: dimcon, adcome
     real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(in) :: deps(6)
     real(kind=8), intent(inout) :: congep(dimcon)
@@ -62,7 +62,7 @@ subroutine thmMecaElas(ds_thm, lMatr, lSigm, angl_naut, dtemp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: depstr(6), ther_dila
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !

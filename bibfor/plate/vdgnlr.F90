@@ -84,10 +84,10 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
 !---- DECLARATIONS LOCALES
 !
-    integer :: i, j
-    integer :: in
-    integer :: jd
-    integer :: ii, jj
+    integer(kind=8) :: i, j
+    integer(kind=8) :: in
+    integer(kind=8) :: jd
+    integer(kind=8) :: ii, jj
 !
 !---- DECLARATIONS RIGIDITE GEOMETRIQUE
 !
@@ -101,19 +101,19 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
 !---- DECLARATIONS STANDARDS
 !
-    integer :: igeom, icontp, imatun, ivectu, ivarip
-    integer :: lzi, lzr, jcara
-    integer :: nb1, nb2
-    integer :: iinstm, iinstp, jmate
+    integer(kind=8) :: igeom, icontp, imatun, ivectu, ivarip
+    integer(kind=8) :: lzi, lzr, jcara
+    integer(kind=8) :: nb1, nb2
+    integer(kind=8) :: iinstm, iinstp, jmate
     real(kind=8) :: valpar, epsthe
 !
 !---- DECLARATIONS PROPRES COQUE_3D NON LINEAIRE
 !
     real(kind=8) :: matc(5, 5)
-    integer :: inte, intsr, intsn, jnbspi
-    integer :: kntsr
+    integer(kind=8) :: inte, intsr, intsn, jnbspi
+    integer(kind=8) :: kntsr
     real(kind=8) :: eptot, kappa, ctor
-    integer :: npge, npgsr, npgsn
+    integer(kind=8) :: npge, npgsr, npgsn
     parameter(npge=3)
     real(kind=8) :: vecta(9, 2, 3)
     real(kind=8) :: vectn(9, 3), vectpt(9, 2, 3)
@@ -131,7 +131,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
 !
 !---- DECLARATIONS COUCHES
 !
-    integer :: nbcou, icou, k1
+    integer(kind=8) :: nbcou, icou, k1
     real(kind=8) :: zic, zmin, epais, coef
 !
 !---- DECLARATIONS COQUE NON LINEAIRE
@@ -139,7 +139,7 @@ subroutine vdgnlr(lMatr, lVect, lSigm, lVari, rela_comp, &
     real(kind=8) :: vrignc(2601), vrigni(2601)
     real(kind=8) :: vrigrc(2601), vrigri(2601)
     real(kind=8) :: knn
-    integer :: iup, ium, iret
+    integer(kind=8) :: iup, ium, iret
     real(kind=8) :: b1su(5, 51), b2su(5, 51)
     real(kind=8) :: b1src(2, 51, 4)
     real(kind=8) :: b2src(2, 51, 4)

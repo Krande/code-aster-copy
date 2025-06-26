@@ -31,13 +31,13 @@ subroutine reereg(stop, elrefp, nnop, coor, xg, &
 !
     character(len=1) :: stop
     character(len=8) :: elrefp
-    integer :: nnop, ndim
+    integer(kind=8) :: nnop, ndim
     real(kind=8) :: coor(*)
     real(kind=8) :: xg(ndim)
     real(kind=8) :: xe(ndim)
     real(kind=8), optional, intent(in) :: toler
-    integer :: iret
-    integer, optional, intent(in) :: ndim_coor_
+    integer(kind=8) :: iret
+    integer(kind=8), optional, intent(in) :: ndim_coor_
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,12 +60,12 @@ subroutine reereg(stop, elrefp, nnop, coor, xg, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbnomx, itermx, ndim_coor
+    integer(kind=8) :: nbnomx, itermx, ndim_coor
     parameter(nbnomx=27, itermx=50)
 !
     real(kind=8) :: zero, tolerc
-    integer :: iter, i, k, idim, ino, ipb
-    integer :: nno, nderiv
+    integer(kind=8) :: iter, i, k, idim, ino, ipb
+    integer(kind=8) :: nno, nderiv
     real(kind=8) :: etmp(3), err
     real(kind=8) :: point(ndim), xenew(ndim), invjac(3, 3)
     real(kind=8) :: dff(3, nbnomx)

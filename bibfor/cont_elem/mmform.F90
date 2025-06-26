@@ -29,9 +29,9 @@ subroutine mmform(ndim, &
 !
 #include "asterfort/mmfonf.h"
 !
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     character(len=8), intent(in) :: typmae, typmam
-    integer, intent(in) :: nne, nnm
+    integer(kind=8), intent(in) :: nne, nnm
     real(kind=8), intent(in) :: xpc, ypc, xpr, ypr
     real(kind=8), intent(out) :: ffe(9), dffe(2, 9), ddffe(3, 9)
     real(kind=8), intent(out) :: ffm(9), dffm(2, 9), ddffm(3, 9)

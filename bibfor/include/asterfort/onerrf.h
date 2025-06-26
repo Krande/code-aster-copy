@@ -22,6 +22,6 @@ interface
     subroutine onerrf(set, get, long)
         character(len=*) :: set
         character(len=16) :: get
-        integer :: long
+        integer(kind=8) :: long
     end subroutine onerrf
 end interface

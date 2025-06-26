@@ -20,8 +20,8 @@
 !
 interface
     subroutine fmdevi(nbfonc, nbptot, sigm, dev)
-        integer :: nbptot
-        integer :: nbfonc
+        integer(kind=8) :: nbptot
+        integer(kind=8) :: nbfonc
         real(kind=8) :: sigm(nbfonc*nbptot)
         real(kind=8) :: dev(nbfonc*nbptot)
     end subroutine fmdevi

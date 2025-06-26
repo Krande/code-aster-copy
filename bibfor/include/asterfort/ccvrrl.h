@@ -27,6 +27,6 @@ interface
         character(len=24) :: mesmai
         character(len=19) :: chames
         character(len=1) :: cmperr
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine ccvrrl
 end interface

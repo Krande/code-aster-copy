@@ -22,8 +22,8 @@ interface
     subroutine cvmini(typess, essai, mod, nmat, materf,&
                       timed, timef, yd, epsd, deps,&
                       dy)
-        integer :: nmat
-        integer :: typess
+        integer(kind=8) :: nmat
+        integer(kind=8) :: typess
         real(kind=8) :: essai
         character(len=8) :: mod
         real(kind=8) :: materf(nmat, 2)

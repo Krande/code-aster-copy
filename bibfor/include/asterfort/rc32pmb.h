@@ -21,8 +21,8 @@
 interface
     subroutine rc32pmb(lieu, iocc, ns, pm, pb, pmpb)
         character(len=4) :: lieu
-        integer :: iocc
-        integer :: ns
+        integer(kind=8) :: iocc
+        integer(kind=8) :: ns
         real(kind=8) :: pm
         real(kind=8) :: pb
         real(kind=8) :: pmpb

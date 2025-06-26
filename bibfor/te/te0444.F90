@@ -59,10 +59,10 @@ subroutine te0444(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: multic
-    integer :: i, j, ivectu
-    integer :: nno, igeom, imatuu, jener, jfreq, iacce
-    integer :: nddl, nvec, ndim, n1, ni, n2
+    integer(kind=8) :: multic
+    integer(kind=8) :: i, j, ivectu
+    integer(kind=8) :: nno, igeom, imatuu, jener, jfreq, iacce
+    integer(kind=8) :: nddl, nvec, ndim, n1, ni, n2
     real(kind=8) :: rho, epais
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: ener(3), matp(24, 24), matv(300)

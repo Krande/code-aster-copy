@@ -29,7 +29,7 @@ interface
         character(len=8)  :: noma
         character(len=24) :: nomno
         character(len=24) :: coorn
-        integer           :: nbnoeu
+        integer(kind=8)           :: nbnoeu
         character(len=24) :: trav1
         character(len=24) :: trav2
         character(len=24) :: trav3
@@ -40,9 +40,9 @@ interface
         aster_logical     :: connex
         character(len=24) :: stok4
         character(len=24) :: liss
-        integer           :: nbre
+        integer(kind=8)           :: nbre
         aster_logical     :: milieu
-        integer           :: ndimte
+        integer(kind=8)           :: ndimte
         character(len=24) :: norfon
     end subroutine gcour2
 end interface

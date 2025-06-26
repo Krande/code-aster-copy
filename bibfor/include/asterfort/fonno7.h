@@ -23,8 +23,8 @@ interface
                       hmax)
         character(len=8) :: noma
         character(len=19) :: cnxinv
-        integer :: ndim
-        integer :: na
+        integer(kind=8) :: ndim
+        integer(kind=8) :: na
         real(kind=8) :: vecdir(3)
         real(kind=8) :: hmax
     end subroutine fonno7

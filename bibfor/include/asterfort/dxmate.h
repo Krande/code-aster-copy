@@ -32,9 +32,9 @@ interface
         real(kind=8) :: dci(2, 2)
         real(kind=8) :: dmc(3, 2)
         real(kind=8) :: dfc(3, 2)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: pgl(3, 3)
-        integer :: multic
+        integer(kind=8) :: multic
         aster_logical :: coupmf
         real(kind=8) :: t2iu(4)
         real(kind=8) :: t2ui(4)

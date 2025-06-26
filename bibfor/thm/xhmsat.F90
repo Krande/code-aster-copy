@@ -45,16 +45,16 @@ subroutine xhmsat(ds_thm, option, &
 #include "asterfort/virhol.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer :: ndim, dimcon, nbvari
-    integer :: adcome, adcp11, nfh
-    integer :: addeme, addep1, retcom
+    integer(kind=8) :: ndim, dimcon, nbvari
+    integer(kind=8) :: adcome, adcp11, nfh
+    integer(kind=8) :: addeme, addep1, retcom
     real(kind=8) :: congem(dimcon), congep(dimcon)
     real(kind=8) :: vintm(nbvari), vintp(nbvari)
     real(kind=8) :: epsv, depsv, dp1, dt
     real(kind=8) :: phi, rho11
     real(kind=8) :: angl_naut(3)
     character(len=16) :: option
-    integer :: dimenr
+    integer(kind=8) :: dimenr
     real(kind=8) :: dsde(dimcon, dimenr)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ subroutine xhmsat(ds_thm, option, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, yaenrh, adenhy, ifh
+    integer(kind=8) :: i, yaenrh, adenhy, ifh
     real(kind=8) :: epsvm, phim, rho11m, rho110
     real(kind=8) :: tbiot(6), cs, alpha0, alpliq, cliq, satur
     real(kind=8) :: bid, dpad
@@ -82,7 +82,7 @@ subroutine xhmsat(ds_thm, option, &
     real(kind=8) :: dp2, signe, phi0
     real(kind=8) :: dmdeps(6), dsdp1(6), sigmp(6)
     aster_logical :: emmag
-    integer :: advico, advihy, vicphi, vihrho
+    integer(kind=8) :: advico, advihy, vicphi, vihrho
     real(kind=8) :: ep, surf, shut, sbjh, wbjh, dpi
 
 !

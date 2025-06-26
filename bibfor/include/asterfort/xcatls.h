@@ -24,13 +24,13 @@ interface
     subroutine xcatls(ndim, geofis, callst, jltsv, jltsl,&
                       jlnsv, jlnsl, noma, vect1, vect2,&
                       noeud, a, b, r, cote)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=16) :: geofis
         aster_logical :: callst
-        integer :: jltsv
-        integer :: jltsl
-        integer :: jlnsv
-        integer :: jlnsl
+        integer(kind=8) :: jltsv
+        integer(kind=8) :: jltsl
+        integer(kind=8) :: jlnsv
+        integer(kind=8) :: jlnsl
         character(len=8) :: noma
         real(kind=8) :: vect1(3)
         real(kind=8) :: vect2(3)

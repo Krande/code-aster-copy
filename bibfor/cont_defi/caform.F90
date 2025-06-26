@@ -26,7 +26,7 @@ subroutine caform(cont_form)
 #include "asterfort/cazouu.h"
 #include "asterfort/getvtx.h"
 !
-    integer, intent(out) :: cont_form
+    integer(kind=8), intent(out) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,7 +41,7 @@ subroutine caform(cont_form)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: s_formul, keywf, s_algo_cont
-    integer :: noc, nb_cont_zone
+    integer(kind=8) :: noc, nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !

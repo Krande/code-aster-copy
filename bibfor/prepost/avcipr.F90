@@ -36,14 +36,14 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr, &
 #include "asterfort/projax.h"
 #include "asterfort/propla.h"
 #include "asterfort/wkvect.h"
-    integer :: nbvec, nbordr, kwork
-    integer :: sommw, tdisp, tspaq, ipgn
+    integer(kind=8) :: nbvec, nbordr, kwork
+    integer(kind=8) :: sommw, tdisp, tspaq, ipgn
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
     real(kind=8) :: vwork(tdisp), fatsoc, pseuil
     character(len=16) :: nomcri, nomfor, proaxe
     character(len=8) :: method
-    integer :: ncycl(nbvec)
-    integer :: jomin, jomax, jvmin, jvmax
+    integer(kind=8) :: ncycl(nbvec)
+    integer(kind=8) :: jomin, jomax, jvmin, jvmax
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
     aster_logical :: fordef
@@ -159,12 +159,12 @@ subroutine avcipr(nbvec, vectn, vectu, vectv, nbordr, &
 !    real(kind=8) :: pic(nbvec*(nbordr+2)), rtrv(nbordr+2)
 !
     real(kind=8) :: rmima(4*nbvec)
-    integer :: iflag(nbvec)
+    integer(kind=8) :: iflag(nbvec)
     aster_logical :: lsig0
-    integer :: npoin(nbvec)
-    integer :: npic(nbvec)
+    integer(kind=8) :: npoin(nbvec)
+    integer(kind=8) :: npic(nbvec)
 !
-    integer :: jvectr, jitrv, jraxe, jvalpo, jvalor, jordpi, jpic, jrtrv
+    integer(kind=8) :: jvectr, jitrv, jraxe, jvalpo, jvalor, jordpi, jpic, jrtrv
 !
 !      REAL*8        CUDOMX, NXM, NYM, NZM
 !     ------------------------------------------------------------------

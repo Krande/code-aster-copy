@@ -41,8 +41,8 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon, &
     character(len=19) :: nomsd
     character(len=*) :: mexpic, mcompt, mdomag
     real(kind=8) :: vdomag(*)
-    integer :: nbpt, nbcmp, numcmp(*), nbord
-    integer :: ntcmp, impr
+    integer(kind=8) :: nbpt, nbcmp, numcmp(*), nbord
+    integer(kind=8) :: ntcmp, impr
 !       CREATION D UN VECTEUR AUX NOEUDS/PG  DE DOMMAGE
 !       POUR LE MOMENT :
 !       GRANDEUR 1D EQUIVALENTE (EQUI_GD)  = /VMIS_SG
@@ -86,15 +86,15 @@ subroutine fgvdmg(nomsym, nomsd, nommat, nomnap, nomfon, &
     real(kind=8) :: dommag
     real(kind=8) :: valr(2)
 !
-    integer :: ipt, iord, icmp
-    integer :: ivch, ivord, ivpic, ivitv, ivrtv, ivpt
-    integer :: numsym, ibid
-    integer :: vali
+    integer(kind=8) :: ipt, iord, icmp
+    integer(kind=8) :: ivch, ivord, ivpic, ivitv, ivrtv, ivpt
+    integer(kind=8) :: numsym, ibid
+    integer(kind=8) :: vali
 !
 ! ---   VECTEURS DE TRAVAIL
 !
 !-----------------------------------------------------------------------
-    integer :: ivmax, ivmin, j, ncyc, npic
+    integer(kind=8) :: ivmax, ivmin, j, ncyc, npic
 !-----------------------------------------------------------------------
     call jemarq()
     nomdmg = '&&OP0151.EQUI_GD'

@@ -28,9 +28,9 @@ subroutine cfmmex(defico, typexc, izone, numnoe, suppok)
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
     character(len=4) :: typexc
-    integer :: izone
-    integer :: numnoe
-    integer :: suppok
+    integer(kind=8) :: izone
+    integer(kind=8) :: numnoe
+    integer(kind=8) :: suppok
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,9 +55,9 @@ subroutine cfmmex(defico, typexc, izone, numnoe, suppok)
 !
 !
     character(len=24) :: sansno, psans, frotno, pfrot
-    integer :: jsanc, jpsanc, jsanf, jpsanf
-    integer :: jsans, jpsans
-    integer :: nsans, numsan, k
+    integer(kind=8) :: jsanc, jpsanc, jsanf, jpsanf
+    integer(kind=8) :: jsans, jpsans
+    integer(kind=8) :: nsans, numsan, k
 !
 ! ----------------------------------------------------------------------
 !

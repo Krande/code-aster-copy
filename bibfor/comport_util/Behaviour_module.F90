@@ -136,7 +136,7 @@ contains
         type(BehaviourESVA), intent(out) :: behavESVA
 ! ----- Locam
         aster_logical :: lGeomInESVA
-        integer :: iField
+        integer(kind=8) :: iField
 !   ------------------------------------------------------------------------------------------------
 !
 
@@ -199,17 +199,17 @@ contains
                                     BEHinteg)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: ldcDime
+        integer(kind=8), intent(in) :: ldcDime
         character(len=8), intent(in) :: typmod(2)
         character(len=16), intent(in) :: option
         character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: timePrev, timeCurr
         character(len=4), intent(in) :: fami
-        integer, intent(in) :: jvMaterCode
+        integer(kind=8), intent(in) :: jvMaterCode
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Local
-        integer :: elasType, icodre
+        integer(kind=8) :: elasType, icodre
         character(len=16) :: elasKeyword
 !   ------------------------------------------------------------------------------------------------
 !
@@ -390,7 +390,7 @@ contains
         character(len=8), intent(in) :: typmod(2)
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Locals
-        integer :: lawOffset
+        integer(kind=8) :: lawOffset
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -448,7 +448,7 @@ contains
     subroutine behaviourPrepStrain(neps, epsm, deps, BEHinteg)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: neps
+        integer(kind=8), intent(in) :: neps
         real(kind=8), intent(inout) :: epsm(neps), deps(neps)
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Local
@@ -491,7 +491,7 @@ contains
     subroutine behaviourSetParaPoin(kpg, ksp, BEHinteg)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: kpg, ksp
+        integer(kind=8), intent(in) :: kpg, ksp
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 !   ------------------------------------------------------------------------------------------------
 !
@@ -550,9 +550,9 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-        integer, intent(out) :: tabcod(60)
+        integer(kind=8), intent(out) :: tabcod(60)
 ! ----- Local
-        integer :: jvariext1, jvariext2, variextecode(2)
+        integer(kind=8) :: jvariext1, jvariext2, variextecode(2)
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -592,8 +592,8 @@ contains
                                      deplm_, ddepl_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nno, npg, ndim
-        integer, intent(in) :: jv_poids, jv_func, jv_dfunc
+        integer(kind=8), intent(in) :: nno, npg, ndim
+        integer(kind=8), intent(in) :: jv_poids, jv_func, jv_dfunc
         real(kind=8), intent(in) :: geom(ndim, nno)
         type(Behaviour_Integ), intent(inout) :: BEHinteg
         real(kind=8), optional, intent(in) :: deplm_(ndim, nno), ddepl_(ndim, nno)
@@ -644,7 +644,7 @@ contains
         type(Behaviour_Integ), intent(inout) :: BEHinteg
 ! ----- Local
         aster_logical :: lExteSolver, lStrainMeca, lhasInelasticStrains
-        integer :: iField
+        integer(kind=8) :: iField
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -720,7 +720,7 @@ contains
 ! ----- Parameters
         character(len=64), intent(in) :: exteNameAster
 ! ----- Local
-        integer :: iEsva
+        integer(kind=8) :: iEsva
 !   ------------------------------------------------------------------------------------------------
 !
         getMFrontVariableName = exteNameAster
@@ -747,7 +747,7 @@ contains
         character(len=64), intent(in) :: exteNameMGIS
 ! ----- Local
         character(len=64) :: exteNameAster
-        integer :: iEsva
+        integer(kind=8) :: iEsva
 !   ------------------------------------------------------------------------------------------------
 !
         exteNameAster = exteNameMGIS
@@ -809,11 +809,11 @@ contains
         character(len=64) :: exteNameMGIS
         character(len=8) :: exteNameAster
         real(kind=8) :: valePrev, valeCurr
-        integer :: iESVA, nbESVA, indxField, iret
+        integer(kind=8) :: iESVA, nbESVA, indxField, iret
         aster_logical :: lMGIS, lUMAT, exist
         character(len=16) :: mgisAddr
         character(len=4) :: fami
-        integer :: ksp, kpg
+        integer(kind=8) :: ksp, kpg
 !   ------------------------------------------------------------------------------------------------
 !
         if (LDC_PREP_DEBUG .eq. 1) then
@@ -1011,19 +1011,19 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, imate
+        integer(kind=8), intent(in) :: kpg, ksp, imate
         type(BehaviourESVA), intent(inout) :: behavESVA
 ! ----- Local
-        integer, parameter :: indxField = ESVA_FIELD_PTOT
-        integer, parameter :: nbComp = 1
-        integer :: iret
+        integer(kind=8), parameter :: indxField = ESVA_FIELD_PTOT
+        integer(kind=8), parameter :: nbComp = 1
+        integer(kind=8) :: iret
         aster_logical :: exist
-        integer, parameter :: nbParaBiot = 1
-        integer  :: codretBiot(nbParaBiot)
+        integer(kind=8), parameter :: nbParaBiot = 1
+        integer(kind=8)  :: codretBiot(nbParaBiot)
         real(kind=8) :: paraValeBiot(nbParaBiot)
         character(len=16), parameter :: paraNameBiot(nbParaBiot) = (/'BIOT_COEF'/)
-        integer, parameter :: nbParaElas = 2
-        integer  :: codretElas(nbParaElas)
+        integer(kind=8), parameter :: nbParaElas = 2
+        integer(kind=8)  :: codretElas(nbParaElas)
         real(kind=8) :: paraValeElas(nbParaElas)
         character(len=16), parameter :: paraNameElas(nbParaElas) = (/'E ', 'NU'/)
         real(kind=8) :: ptotPrev, ptotCurr
@@ -1145,11 +1145,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, imate
+        integer(kind=8), intent(in) :: kpg, ksp, imate
         type(BehaviourESVA), intent(inout) :: behavESVA
 ! ----- Local
-        integer, parameter :: nbPara = 1
-        integer  :: codret(nbPara)
+        integer(kind=8), parameter :: nbPara = 1
+        integer(kind=8)  :: codret(nbPara)
         real(kind=8) :: paraVale(nbPara)
         character(len=16), parameter :: paraName(nbPara) = (/'FONC_DESORP'/)
         character(len=16) :: phenom
@@ -1223,12 +1223,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, imate
+        integer(kind=8), intent(in) :: kpg, ksp, imate
         type(Behaviour_Para), intent(in) :: behavPara
         type(BehaviourESVA), intent(inout) :: behavESVA
 ! ----- Local
-        integer, parameter :: indxField = ESVA_FIELD_TEMP
-        integer :: iret, nbComp
+        integer(kind=8), parameter :: indxField = ESVA_FIELD_TEMP
+        integer(kind=8) :: iret, nbComp
         aster_logical :: exist
         real(kind=8) :: tempRefe, tempPrev, tempCurr
         real(kind=8) :: tempFieldIncr(ESVA_FIELD_TEMP_NBCMP)
@@ -1357,17 +1357,17 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, imate
+        integer(kind=8), intent(in) :: kpg, ksp, imate
         type(BehaviourESVA), intent(inout) :: behavESVA
 ! ----- Local
-        integer, parameter :: indxField = ESVA_FIELD_SECH
-        integer, parameter :: nbComp = 1
-        integer :: iret
+        integer(kind=8), parameter :: indxField = ESVA_FIELD_SECH
+        integer(kind=8), parameter :: nbComp = 1
+        integer(kind=8) :: iret
         aster_logical :: exist
-        integer, parameter :: nbPara = 1
+        integer(kind=8), parameter :: nbPara = 1
         real(kind=8) :: paraVale(nbPara)
         character(len=16), parameter :: paraName(nbPara) = ('K_DESSIC')
-        integer :: codret(nbPara)
+        integer(kind=8) :: codret(nbPara)
         real(kind=8) :: sechRefe, sechPrev, sechCurr
         real(kind=8) :: sechFieldIncr, sechFieldPrev, sechFieldCurr
         real(kind=8) :: kdessm, kdessp
@@ -1461,17 +1461,17 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, imate
+        integer(kind=8), intent(in) :: kpg, ksp, imate
         type(BehaviourESVA), intent(inout) :: behavESVA
 ! ----- Local
-        integer, parameter :: indxField = ESVA_FIELD_HYDR
-        integer, parameter :: nbComp = 1
-        integer :: iret
+        integer(kind=8), parameter :: indxField = ESVA_FIELD_HYDR
+        integer(kind=8), parameter :: nbComp = 1
+        integer(kind=8) :: iret
         aster_logical :: exist
-        integer, parameter :: nbPara = 1
+        integer(kind=8), parameter :: nbPara = 1
         real(kind=8) :: paraVale(nbPara)
         character(len=16), parameter :: paraName(nbPara) = ('B_ENDOGE')
-        integer :: codret(nbPara)
+        integer(kind=8) :: codret(nbPara)
         real(kind=8) :: hydrPrev, hydrCurr
         real(kind=8) :: hydrFieldIncr, hydrFieldPrev, hydrFieldCurr
         real(kind=8) :: bendom, bendop
@@ -1558,13 +1558,13 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp
+        integer(kind=8), intent(in) :: kpg, ksp
         type(Behaviour_Para), intent(in) :: behavPara
         type(BehaviourESVA), intent(inout) :: behavESVA
 ! ----- Local
-        integer, parameter :: indxField = ESVA_FIELD_EPSA
+        integer(kind=8), parameter :: indxField = ESVA_FIELD_EPSA
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
-        integer :: iret, iComp, nbComp
+        integer(kind=8) :: iret, iComp, nbComp
         aster_logical :: exist
         character(len=6), parameter :: epsaName(ESVA_FIELD_EPSA_NBCMP) = &
                                        (/'EPSAXX', 'EPSAYY', 'EPSAZZ', &
@@ -1656,7 +1656,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, imate
+        integer(kind=8), intent(in) :: kpg, ksp, imate
         type(Behaviour_Para), intent(in) :: behavPara
         type(BehaviourESVA), intent(inout) :: behavESVA
 !   ------------------------------------------------------------------------------------------------
@@ -1701,7 +1701,7 @@ contains
         real(kind=8), intent(in) :: dsidep(:, :)
         real(kind=8), intent(inout) :: sig(:)
 ! ----- Local
-        integer :: ndimsi
+        integer(kind=8) :: ndimsi
 !   ------------------------------------------------------------------------------------------------
 !
         if (ca_nbcvrc_ .ne. 0) then
@@ -1740,13 +1740,13 @@ contains
                             behavESVAGeom)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nno, npg, ndim
-        integer, intent(in) :: jv_poids, jv_func, jv_dfunc
+        integer(kind=8), intent(in) :: nno, npg, ndim
+        integer(kind=8), intent(in) :: jv_poids, jv_func, jv_dfunc
         real(kind=8), intent(in) :: geom(ndim, nno)
         type(Behaviour_Para), intent(in) :: behavPara
         type(BehaviourESVA_Geom), intent(inout) :: behavESVAGeom
 ! ----- Local
-        integer :: kpg, iComp, i
+        integer(kind=8) :: kpg, iComp, i
         real(kind=8) :: lc, dfdx(MT_NNOMAX3D), dfdy(MT_NNOMAX3D), dfdz(MT_NNOMAX3D), poids, r
         real(kind=8) :: volume, surfac
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
@@ -1825,13 +1825,13 @@ contains
                             behavESVAGeom)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nno, npg, ndim
-        integer, intent(in) :: jv_poids, jv_func, jv_dfunc
+        integer(kind=8), intent(in) :: nno, npg, ndim
+        integer(kind=8), intent(in) :: jv_poids, jv_func, jv_dfunc
         real(kind=8), intent(in) :: geom(ndim, nno)
         real(kind=8), intent(in) :: deplm(ndim, nno), ddepl(ndim, nno)
         type(BehaviourESVA_Geom), intent(inout) :: behavESVAGeom
 ! ----- Local
-        integer :: nddl, kpg, i, j
+        integer(kind=8) :: nddl, kpg, i, j
         real(kind=8) :: l(3, 3), fmm(3, 3), df(3, 3), f(3, 3), r8bid, r
         real(kind=8) :: deplp(3, MT_NNOMAX3D), geomm(3, MT_NNOMAX3D), epsbid(6)
         real(kind=8) :: dfdi(nno, 3)
@@ -1906,12 +1906,12 @@ contains
                                   behavESVAGeom)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nno, npg, ndim
-        integer, intent(in) :: jv_func
+        integer(kind=8), intent(in) :: nno, npg, ndim
+        integer(kind=8), intent(in) :: jv_func
         real(kind=8), intent(in) :: geom(ndim, nno)
         type(BehaviourESVA_Geom), intent(inout) :: behavESVAGeom
 ! ----- Local
-        integer :: i, iComp, kpg
+        integer(kind=8) :: i, iComp, kpg
 !   ------------------------------------------------------------------------------------------------
 !
         behavESVAGeom%coorElga = 0.d0
@@ -1947,12 +1947,12 @@ contains
 !   -----------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(BehaviourESVA), intent(inout) :: behavESVA
-        integer, intent(in) :: ldcDime
-        integer, intent(in) :: neps
+        integer(kind=8), intent(in) :: ldcDime
+        integer(kind=8), intent(in) :: neps
 ! ----- Local
-        integer :: iComp, iField, iDime
+        integer(kind=8) :: iComp, iField, iDime
         aster_logical :: exist, hasAnelastiStrains
-        integer :: nbComp, typeForStrain
+        integer(kind=8) :: nbComp, typeForStrain
         real(kind=8) :: valePrev(ESVA_FIELD_NBCMPMAXI)
         real(kind=8) :: valeIncr(ESVA_FIELD_NBCMPMAXI)
 !   ------------------------------------------------------------------------------------------------
@@ -2043,11 +2043,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer, intent(in) :: neps
+        integer(kind=8), intent(in) :: neps
         real(kind=8), intent(inout) :: epsm(neps), deps(neps)
 ! ----- Local
         real(kind=8) :: stran(12), dstran(12)
-        integer :: nepu
+        integer(kind=8) :: nepu
         aster_logical :: lGradVari, lCZM, lEpsa
 !   ------------------------------------------------------------------------------------------------
 !
@@ -2114,7 +2114,7 @@ contains
         aster_logical, intent(inout) :: lGeomInESVA
 ! ----- Local
         character(len=8), parameter :: varc_geom = 'X'
-        integer :: varc_indx
+        integer(kind=8) :: varc_indx
 !   ------------------------------------------------------------------------------------------------
 !
         lGeomInESVA = ASTER_FALSE
@@ -2187,11 +2187,11 @@ contains
         character(len=16), intent(in) :: option
         character(len=16), dimension(COMPOR_SIZE), intent(in) :: compor
         aster_logical, intent(out) :: lMatr, lVect, lVari, lSigm
-        integer, optional, intent(out) :: codret_
+        integer(kind=8), optional, intent(out) :: codret_
 ! ----- Local
 !   ------------------------------------------------------------------------------------------------
         aster_logical :: lPred
-        integer :: copred, jv_copred, codret
+        integer(kind=8) :: copred, jv_copred, codret
 !   ------------------------------------------------------------------------------------------------
         lVari = L_VARI(option)
         lSigm = L_SIGM(option)

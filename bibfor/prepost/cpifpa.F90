@@ -37,9 +37,9 @@ subroutine cpifpa(main, maout)
 ! -------------------------------------------------------------------------------------------------
 !   RECOPIE DES INFORMATIONS CONCERNANT LES PATCHS
 ! -------------------------------------------------------------------------------------------------
-    integer :: nbpatch, nbinfo, odcnpa, odcmpa
-    integer :: nwpath, odpath, jcnnpa, jcnmpa
-    integer :: inc1, inc2, nbma, nbno, info, lonpat
+    integer(kind=8) :: nbpatch, nbinfo, odcnpa, odcmpa
+    integer(kind=8) :: nwpath, odpath, jcnnpa, jcnmpa
+    integer(kind=8) :: inc1, inc2, nbma, nbno, info, lonpat
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 !

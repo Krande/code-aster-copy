@@ -34,7 +34,7 @@ subroutine xthpoc(modele, chtn, chtpg)
 ! OUT CHTPG   : CHAMP DE TEMPERATURE AUX PG
 !
 ! ----------------------------------------------------------------------
-    integer :: nbin, nbout
+    integer(kind=8) :: nbin, nbout
     parameter(nbin=10)
     parameter(nbout=1)
     character(len=8) :: lpain(nbin), lpaout(nbout)

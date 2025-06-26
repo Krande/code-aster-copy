@@ -39,7 +39,7 @@ subroutine vroqua(theta, quater)
 !
     real(kind=8) :: epsil, demi, un
     real(kind=8) :: angle, coef, prosca
-    integer :: i
+    integer(kind=8) :: i
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

@@ -45,7 +45,7 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: nbfonc, nbp1, nbp2
+    integer(kind=8) :: nbfonc, nbp1, nbp2
     character(len=8) :: nomfon(nbfonc)
     character(len=19) :: tbfonc, fonc1, fonc2
     real(kind=8) :: disc(nbp1+nbp2), vale(nbp1+nbp2, nbfonc)
@@ -54,8 +54,8 @@ subroutine discff(nbfonc, nomfon, nbp1, nbp2, disc, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ier1, ier2, ifo, ip, itblp, ilfon
-    integer :: ifabs1, iford1, ifpro1, ifabs2, iford2, ifpro2
+    integer(kind=8) :: ier1, ier2, ifo, ip, itblp, ilfon
+    integer(kind=8) :: ifabs1, iford1, ifpro1, ifabs2, iford2, ifpro2
     real(kind=8) :: long
 !-----------------------------------------------------------------------
     call jemarq()

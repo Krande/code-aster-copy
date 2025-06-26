@@ -28,8 +28,8 @@ interface
         use NonLin_Datastructure_type
         use ROM_Datastructure_type
         use NonLinearDyna_type
-        integer :: list_func_acti(*)
-        integer :: nume_inst, faccvg, rescvg, ldccvg
+        integer(kind=8) :: list_func_acti(*)
+        integer(kind=8) :: nume_inst, faccvg, rescvg, ldccvg
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_Measure), intent(inout) :: ds_measure

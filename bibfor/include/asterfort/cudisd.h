@@ -22,6 +22,6 @@ interface
     function cudisd(resocu, questz)
         character(len=24) :: resocu
         character(len=*) :: questz
-        integer :: cudisd
+        integer(kind=8) :: cudisd
     end function cudisd
 end interface

@@ -20,11 +20,11 @@
 !
 interface
     function ioriv2(num, n, noeud, vect, coor)
-        integer :: n
-        integer :: num(n)
-        integer :: noeud
+        integer(kind=8) :: n
+        integer(kind=8) :: num(n)
+        integer(kind=8) :: noeud
         real(kind=8) :: vect(3)
         real(kind=8) :: coor(3, *)
-        integer :: ioriv2
+        integer(kind=8) :: ioriv2
     end function ioriv2
 end interface

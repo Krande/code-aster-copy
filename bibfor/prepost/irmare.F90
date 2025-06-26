@@ -38,7 +38,7 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma, &
     character(len=8) :: nomai(*), nonoe(*), noma
     character(len=16) :: formar
     real(kind=8) :: coordo(*)
-    integer :: connex(*), typma(*), point(*), typel(*), ifc, nbtitr
+    integer(kind=8) :: connex(*), typma(*), point(*), typel(*), ifc, nbtitr
     aster_logical :: lmod
 !
 !
@@ -74,11 +74,11 @@ subroutine irmare(ifc, ndim, nno, coordo, nbma, &
 !     ECRITURE DU TITRE
 !
 !-----------------------------------------------------------------------
-    integer :: i, iagrma, iagrno, ico, ifin, igm, ign
-    integer :: ima, ino, ipo, ipoin, it, itype, itypp
-    integer :: j, jm, jmai, jn, k, nbfois, nbgrm
-    integer :: nbgrn, nbm, nbma, nbn, nbrest, ndim, nno
-    integer :: nnoe
+    integer(kind=8) :: i, iagrma, iagrno, ico, ifin, igm, ign
+    integer(kind=8) :: ima, ino, ipo, ipoin, it, itype, itypp
+    integer(kind=8) :: j, jm, jmai, jn, k, nbfois, nbgrm
+    integer(kind=8) :: nbgrn, nbm, nbma, nbn, nbrest, ndim, nno
+    integer(kind=8) :: nnoe
 !-----------------------------------------------------------------------
     call jemarq()
     format = formar

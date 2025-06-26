@@ -23,6 +23,6 @@ interface
         character(len=*) :: resu
         character(len=*) :: modele
         character(len=*) :: cara
-        integer :: nh
+        integer(kind=8) :: nh
     end subroutine pecapo
 end interface

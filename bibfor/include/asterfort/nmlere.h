@@ -23,7 +23,7 @@ interface
         character(len=19) :: sddisc
         character(len=1) :: action
         character(len=*) :: infz
-        integer :: iterat
+        integer(kind=8) :: iterat
         real(kind=8) :: valr(*)
     end subroutine nmlere
 end interface

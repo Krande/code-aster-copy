@@ -36,9 +36,9 @@ subroutine capres_skin(load, mesh, model, geomDime, valeType, nbOccPresRep)
 #include "asterfort/xvelfm.h"
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
-    integer, intent(in) :: nbOccPresRep
+    integer(kind=8), intent(in) :: nbOccPresRep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,20 +58,20 @@ subroutine capres_skin(load, mesh, model, geomDime, valeType, nbOccPresRep)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'PRES_REP'
-    integer, parameter :: nbCmp = 2
+    integer(kind=8), parameter :: nbCmp = 2
     character(len=8), parameter :: cmpName(nbCmp) = (/'PRES', 'CISA'/)
     character(len=8), pointer :: mapCmpName(:) => null()
     real(kind=8), pointer :: mapCmpValeR(:) => null()
     character(len=8), pointer :: mapCmpValeK(:) => null()
-    integer :: iocc, nbCisa, nbPres, nbma, jma, nbCrack
-    integer, parameter :: nfismx = 100
+    integer(kind=8) :: iocc, nbCisa, nbPres, nbma, jma, nbCrack
+    integer(kind=8), parameter :: nfismx = 100
     character(len=8) :: fiss(nfismx)
     character(len=19) :: carte
     character(len=24), parameter :: mesmai = '&&CAPRES.MES_MAILLES'
     character(len=24), parameter :: lismai = '&&CAPRES.NUM_MAILLES'
-    integer, parameter :: mapListNb = 1
+    integer(kind=8), parameter :: mapListNb = 1
     character(len=19) :: mapListName(mapListNb)
-    integer :: mapListNbCmp(mapListNb)
+    integer(kind=8) :: mapListNbCmp(mapListNb)
 !
 ! --------------------------------------------------------------------------------------------------
 !

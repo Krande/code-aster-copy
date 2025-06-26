@@ -23,8 +23,8 @@ interface
         character(len=16), intent(in) :: factorKeyword
         character(len=19), intent(in) :: listInstJv
         real(kind=8), intent(in) :: tole
-        integer, intent(in) :: nbInst
-        integer, intent(out) :: numeInstInit
+        integer(kind=8), intent(in) :: nbInst
+        integer(kind=8), intent(out) :: numeInstInit
         real(kind=8), intent(out) :: instInit
     end subroutine nmdini
 end interface

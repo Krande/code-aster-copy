@@ -21,7 +21,7 @@ subroutine zader2(uplo, n, alpha, x, incx, &
     implicit none
 #include "asterf_types.h"
 #include "blas/zaxpy.h"
-    integer :: n, incx, incy, lda
+    integer(kind=8) :: n, incx, incy, lda
     complex(kind=8) :: alpha, x(*), y(*), a(lda, *)
     character(len=*) :: uplo
 !   CALCUL DE A: MATRICE HERMITIENNE
@@ -40,7 +40,7 @@ subroutine zader2(uplo, n, alpha, x, incx, &
 ! I/O : A    : MATRICE COMPLEXE DE DIMENSION N.
 ! IN  : LDA  : DIMENSION DE A
 !-----------------------------------------------------------------------
-    integer :: ix, iy, j
+    integer(kind=8) :: ix, iy, j
     complex(kind=8) :: tempx, tempy, temp1
     aster_logical :: upper
     real(kind=8) :: dble

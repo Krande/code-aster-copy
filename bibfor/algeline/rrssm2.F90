@@ -23,12 +23,12 @@ subroutine rrssm2(neq, smhcr, smhci, smdir, smdii, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
     integer(kind=4) :: smhci(*), smhcr(*)
-    integer :: idlexc(*)
-    integer :: smdir(*), smdii(*)
-    integer :: neq, idebl1, idebl2, kin1, kin2, iequa, ifinl1
-    integer :: ifinl2, j2, k, i2, i1, j1, ind1
+    integer(kind=8) :: idlexc(*)
+    integer(kind=8) :: smdir(*), smdii(*)
+    integer(kind=8) :: neq, idebl1, idebl2, kin1, kin2, iequa, ifinl1
+    integer(kind=8) :: ifinl2, j2, k, i2, i1, j1, ind1
     real(kind=8) :: coef, valmi(*), valmr(*)
-    integer, pointer :: ind_lig(:) => null()
+    integer(kind=8), pointer :: ind_lig(:) => null()
 !--------------------------------------------------------
 !
 !

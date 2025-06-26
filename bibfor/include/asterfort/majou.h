@@ -30,8 +30,8 @@ interface
         character(len=8) :: ma
         character(len=*) :: mate, mateco
         character(len=8) :: moint
-        integer :: ndble
-        integer :: icor(2)
-        integer :: tabad(5)
+        integer(kind=8) :: ndble
+        integer(kind=8) :: icor(2)
+        integer(kind=8) :: tabad(5)
     end subroutine majou
 end interface

@@ -25,24 +25,24 @@ interface
                       ddlh, ddlc, singu, nnop, jlsn,&
                       jlst, heavn, iforc, itemps, ivectu, fonc,&
                       fono, imate, jbaslo, jstno)
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         real(kind=8) :: coorse(*)
-        integer :: igeom
+        integer(kind=8) :: igeom
         real(kind=8) :: he
-        integer :: ddlh
-        integer :: ddlc
-        integer :: singu
-        integer :: jlsn
-        integer :: jlst
-        integer :: iforc
-        integer :: itemps
-        integer :: ivectu
-        integer :: imate
-        integer :: jbaslo
-        integer :: jstno
-        integer :: heavn(27,5)
+        integer(kind=8) :: ddlh
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: singu
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jlst
+        integer(kind=8) :: iforc
+        integer(kind=8) :: itemps
+        integer(kind=8) :: ivectu
+        integer(kind=8) :: imate
+        integer(kind=8) :: jbaslo
+        integer(kind=8) :: jstno
+        integer(kind=8) :: heavn(27,5)
         aster_logical :: fonc
         aster_logical :: fono
     end subroutine xfovol

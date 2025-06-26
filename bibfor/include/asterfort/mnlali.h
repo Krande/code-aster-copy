@@ -27,19 +27,19 @@ interface
                       ampl, xvect,lnm,num_ordr)
         aster_logical :: reprise
         character(len=8) :: modini
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=14) :: xcdl
         character(len=14) :: parcho
         character(len=14) :: adime
-        integer :: nmnl
-        integer :: ninc
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
+        integer(kind=8) :: nmnl
+        integer(kind=8) :: ninc
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
         real(kind=8) :: ampl
         character(len=14) :: xvect
         character(len=8) :: lnm
-        integer :: num_ordr
+        integer(kind=8) :: num_ordr
     end subroutine mnlali
 end interface 

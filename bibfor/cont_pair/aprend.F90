@@ -54,25 +54,25 @@ subroutine aprend(sdappa, sdcont_defi, newgeo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     mpi_int :: i_proc, nb_proc, mpicou
-    integer :: nb_poin_mpi, nbr_poin_mpi, idx_start, idx_end
-    integer :: i_node_mast, i_zone, i, i_poin
-    integer :: nb_cont_zone, nt_poin
-    integer :: nb_node_mast, nb_poin
+    integer(kind=8) :: nb_poin_mpi, nbr_poin_mpi, idx_start, idx_end
+    integer(kind=8) :: i_node_mast, i_zone, i, i_poin
+    integer(kind=8) :: nb_cont_zone, nt_poin
+    integer(kind=8) :: nb_node_mast, nb_poin
     real(kind=8) :: node_mast_coor(3), poin_coor(3)
     real(kind=8) :: dist_mini, dist
     real(kind=8) :: normd, normv, pair_vect(3), pair_tole
     real(kind=8) :: vect_pm(3), vect_pm_mini(3)
-    integer :: jdecnm, node_mast_nume, node_mast_indx
-    integer :: node_mini_indx, pair_type
+    integer(kind=8) :: jdecnm, node_mast_nume, node_mast_indx
+    integer(kind=8) :: node_mini_indx, pair_type
     aster_logical :: l_pair_dire, l_proj_tole, l_poin_excl, one_proc
     character(len=24) :: sdappa_infp, sdcont_noeuco, newgeo_vale
-    integer, pointer :: v_sdappa_infp(:) => null()
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdappa_infp(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
     real(kind=8), pointer :: v_newgeo_vale(:) => null()
     character(len=24) :: sdappa_dist, sdappa_appa
-    integer, pointer :: v_sdappa_appa(:) => null()
+    integer(kind=8), pointer :: v_sdappa_appa(:) => null()
     real(kind=8), pointer :: v_sdappa_dist(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !

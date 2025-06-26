@@ -23,7 +23,7 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur, &
 #include "asterf_types.h"
 #include "asterfort/fcweib.h"
 #include "asterfort/utmess.h"
-    integer :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp, ifm
+    integer(kind=8) :: nrupt, nur(*), nt(*), nbres, indtp(*), nbtp, ifm
     real(kind=8) :: sigw(*), x1, x2, xacc, rtsafe, sk(*)
     aster_logical :: cals, impr
 !     AUTEUR : M. BONNAMY
@@ -61,8 +61,8 @@ subroutine ntweib(nrupt, cals, sk, sigw, nur, &
 !
     real(kind=8) :: df, dx, dxold, f, fh, fl, temp, xh, xl, dfl, dfh
     real(kind=8) :: valr(4)
-    integer :: maxit, j
-    integer :: vali
+    integer(kind=8) :: maxit, j
+    integer(kind=8) :: vali
     parameter(maxit=100)
 !     ----------------------------------------------------------------
 !

@@ -26,10 +26,10 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: result
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         aster_logical, intent(in) :: force
-        integer, intent(out) :: nume_store
-        integer, optional, intent(out) :: nume_reuse_
+        integer(kind=8), intent(out) :: nume_store
+        integer(kind=8), optional, intent(out) :: nume_reuse_
         aster_logical, intent(in), optional :: lStoringInitState_
     end subroutine dinuar
 end interface

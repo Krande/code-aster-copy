@@ -20,7 +20,7 @@
 !
 interface
     subroutine dfpdf(dim, f, dsidep)
-        integer :: dim
+        integer(kind=8) :: dim
         real(kind=8) :: f(dim)
         real(kind=8) :: dsidep(dim, dim)
     end subroutine dfpdf

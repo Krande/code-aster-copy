@@ -59,20 +59,20 @@ subroutine slegeo(iunv, imod)
     character(len=13) :: chlign, chlige
     character(len=80) :: chfogn
     character(len=80) :: chfogm
-    integer :: ind, indic, inum, ityp, nbenti, itest, nblign
-    integer :: nblit, nblie, nblif
-    integer :: icompc, icompa, icompv
-    integer :: nument(8)
-    integer :: iunv, imes
+    integer(kind=8) :: ind, indic, inum, ityp, nbenti, itest, nblign
+    integer(kind=8) :: nblit, nblie, nblif
+    integer(kind=8) :: icompc, icompa, icompv
+    integer(kind=8) :: nument(8)
+    integer(kind=8) :: iunv, imes
 !
 !  --> DECLARATION INDICE DE BOUCLES
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !  ------------ FIN DECLARATION ---------------
 !
 !  --> N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
 !-----------------------------------------------------------------------
-    integer :: idiv, ilong, imod, irest
+    integer(kind=8) :: idiv, ilong, imod, irest
 !-----------------------------------------------------------------------
     imes = iunifi('MESSAGE')
 !

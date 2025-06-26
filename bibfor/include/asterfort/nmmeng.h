@@ -23,7 +23,7 @@ interface
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         use HHO_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Energy), intent(inout) :: ds_energy

@@ -39,8 +39,8 @@ subroutine te0417(option, nomte)
 !
     real(kind=8) :: xi(3, 9), xg(3), ix2(3), ix1x2, ix1x3, ix2x3, matine(6)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
-    integer :: i, intsn, intsx, j, jgeom, k, l1
-    integer :: l2, lcastr, lzi, lzr, nb1, nb2, npgsn
+    integer(kind=8) :: i, intsn, intsx, j, jgeom, k, l1
+    integer(kind=8) :: l2, lcastr, lzi, lzr, nb1, nb2, npgsn
     real(kind=8) :: epais, epais2, epais3, rho, rnormc, volume, wgt
     real(kind=8) :: xx, xy, xz, yy, yz, zz
 !

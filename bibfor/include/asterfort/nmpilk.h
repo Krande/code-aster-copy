@@ -24,7 +24,7 @@ interface
         character(len=19) :: incpr1
         character(len=19) :: incpr2
         character(len=19) :: ddincc
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: eta
         real(kind=8) :: rho
         real(kind=8) :: offset

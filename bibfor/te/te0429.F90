@@ -57,7 +57,7 @@ subroutine te0429(nomopt, nomte)
     type(HHO_Quadrature) :: hhoQuadCellMass
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
-    integer :: cbs, fbs, total_dofs, npg
+    integer(kind=8) :: cbs, fbs, total_dofs, npg
     character(len=8), parameter :: fami = 'MASS'
     type(HHO_matrix) :: lhs
     real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: rhs

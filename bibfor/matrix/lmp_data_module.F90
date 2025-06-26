@@ -30,6 +30,6 @@ module lmp_data_module
 !
     aster_logical :: lmp_is_setup = .false.
     type(lmp_ctxt) :: lmp_context
-    integer, public :: reac_lmp = 15
+    integer(kind=8), public :: reac_lmp = 15
 !
 end module lmp_data_module

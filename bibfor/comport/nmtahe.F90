@@ -31,7 +31,7 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/nmtarl.h"
 #include "asterfort/nmtasp.h"
 #include "asterfort/nmtaxi.h"
-    integer :: kpg, ksp, ndim, imate
+    integer(kind=8) :: kpg, ksp, ndim, imate
     character(len=*) :: fami
     character(len=16) :: compor(*), option
     real(kind=8) :: crit(*), instam, instap
@@ -66,8 +66,8 @@ subroutine nmtahe(fami, kpg, ksp, ndim, imate, &
 !               L'ORDRE :  XX YY ZZ XY XZ YZ
 ! ----------------------------------------------------------------------
 !
-    integer :: ndimsi, niter, k, iret
-    integer :: ind
+    integer(kind=8) :: ndimsi, niter, k, iret
+    integer(kind=8) :: ind
 !
     real(kind=8) :: rac2
     real(kind=8) :: matm(3), mat(14)

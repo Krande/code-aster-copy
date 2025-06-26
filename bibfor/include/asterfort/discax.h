@@ -20,10 +20,10 @@
 !
 interface
     subroutine discax(noma, nbn, iaxe, nuno, diax)
-        integer :: nbn
+        integer(kind=8) :: nbn
         character(len=8) :: noma
-        integer :: iaxe
-        integer :: nuno(nbn)
+        integer(kind=8) :: iaxe
+        integer(kind=8) :: nuno(nbn)
         real(kind=8) :: diax(nbn)
     end subroutine discax
 end interface

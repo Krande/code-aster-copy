@@ -24,7 +24,7 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: nb_dof
+        integer(kind=8), intent(in) :: nb_dof
         real(kind=8), pointer :: v_disp_cumu(:)
         real(kind=8), pointer :: v_slav_slide(:)
         real(kind=8), pointer :: v_mast_slide(:)

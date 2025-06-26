@@ -20,10 +20,10 @@
 !
 interface
     subroutine cnomax(cnoz, ncmp, licmp, rmax, numno)
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: cnoz
         character(len=8) :: licmp(ncmp)
         real(kind=8) :: rmax
-        integer :: numno
+        integer(kind=8) :: numno
     end subroutine cnomax
 end interface

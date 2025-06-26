@@ -20,11 +20,11 @@
 !
 interface
     subroutine irgmtb(tdec, typd, vers)
-        integer, parameter :: ntyele=28
-        integer, parameter :: maxel=48
-        integer, parameter :: maxno=8
-        integer :: tdec(ntyele, maxel, maxno)
-        integer :: typd(ntyele, 3)
-        integer :: vers
+        integer(kind=8), parameter :: ntyele=28
+        integer(kind=8), parameter :: maxel=48
+        integer(kind=8), parameter :: maxno=8
+        integer(kind=8) :: tdec(ntyele, maxel, maxno)
+        integer(kind=8) :: typd(ntyele, 3)
+        integer(kind=8) :: vers
     end subroutine irgmtb
 end interface

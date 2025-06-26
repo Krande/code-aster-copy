@@ -26,7 +26,7 @@ subroutine lisnch(lischa, nchar)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
     character(len=19) :: lischa
-    integer :: nchar
+    integer(kind=8) :: nchar
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine lisnch(lischa, nchar)
 !
 !
     character(len=24) :: charge
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! ----------------------------------------------------------------------
 !

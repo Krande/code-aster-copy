@@ -65,16 +65,16 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iret, ichs, nbchs, jcesd, jcesl
-    integer :: nbcmp, kcmp, kcvrc
-    integer :: nbma, ima, nbpt, nbsp, ipt, isp, iad, iad1
-    integer :: jce1d, jce1l, nncp, n1, k
+    integer(kind=8) :: iret, ichs, nbchs, jcesd, jcesl
+    integer(kind=8) :: nbcmp, kcmp, kcvrc
+    integer(kind=8) :: nbma, ima, nbpt, nbsp, ipt, isp, iad, iad1
+    integer(kind=8) :: jce1d, jce1l, nncp, n1, k
     real(kind=8) :: valeur, rundef
     character(len=19) :: chvars, ligrmo, chs
     character(len=24) :: valk(5)
     character(len=16) :: nomte
     aster_logical :: avrc, dbg
-    integer :: ibid, nbcvrc, nute, jmaille, vali(2)
+    integer(kind=8) :: ibid, nbcvrc, nute, jmaille, vali(2)
     character(len=8) :: modele, chmat, carele, varc1, varc2, nocmp1, nocmp2, noma, nomail
     character(len=8) :: nompar
     character(len=8), pointer :: cvrcvarc(:) => null()
@@ -83,7 +83,7 @@ subroutine vrcins(modelz, chmatz, carelz, inst, chvarc, &
     character(len=16), pointer :: liste_sd(:) => null()
     character(len=8), pointer :: cvrccmp(:) => null()
     character(len=1) :: base
-    integer, pointer :: cesvi(:) => null()
+    integer(kind=8), pointer :: cesvi(:) => null()
     real(kind=8), pointer :: ce1v(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     aster_logical :: exival

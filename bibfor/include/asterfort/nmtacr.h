@@ -23,8 +23,8 @@ interface
                       epm, dp, sp, xi, f,&
                       g, fds, gds, fdp, gdp,&
                       fdx, gdx, dpmax, sig, tang)
-        integer :: ndimsi
-        integer :: mode
+        integer(kind=8) :: ndimsi
+        integer(kind=8) :: mode
         real(kind=8) :: mat(14)
         real(kind=8) :: sigel(ndimsi)
         real(kind=8) :: vim(9)

@@ -20,6 +20,6 @@
 !
 interface
     subroutine kloklo(date)
-        integer :: date(*)
+        integer(kind=8) :: date(*)
     end subroutine kloklo
 end interface

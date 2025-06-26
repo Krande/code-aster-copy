@@ -22,11 +22,11 @@ interface
     subroutine tstvec(perm, iad, nlong, type, sommi,&
                       sommr, nbign)
         character(len=*) :: perm
-        integer :: iad
-        integer :: nlong
+        integer(kind=8) :: iad
+        integer(kind=8) :: nlong
         character(len=3) :: type
-        integer :: sommi
+        integer(kind=8) :: sommi
         real(kind=8) :: sommr
-        integer :: nbign
+        integer(kind=8) :: nbign
     end subroutine tstvec
 end interface

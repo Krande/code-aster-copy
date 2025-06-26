@@ -21,7 +21,7 @@
 interface
     subroutine uttrif(vale, nb, typfon)
         real(kind=8) :: vale(*)
-        integer :: nb
+        integer(kind=8) :: nb
         character(len=*) :: typfon
     end subroutine uttrif
 end interface

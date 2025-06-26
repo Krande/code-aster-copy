@@ -27,7 +27,7 @@ subroutine elrfvf(elrefz, x, ff, nno_)
     character(len=*), intent(in)   :: elrefz
     real(kind=8), intent(in)       :: x(*)
     real(kind=8), intent(out)      :: ff(*)
-    integer, optional, intent(out) :: nno_
+    integer(kind=8), optional, intent(out) :: nno_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine elrfvf(elrefz, x, ff, nno_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: x0, y0, z0, al, z01, z02, z04, pface1
     real(kind=8) :: pface2
     real(kind=8) :: pface3, pface4, pmili1, pmili2, pmili3, pmili4

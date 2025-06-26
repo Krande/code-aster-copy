@@ -39,7 +39,7 @@ subroutine srvarp(vin, nvi, nbmat, mater, tmp, paraep)
     !!! Variables globales
     !!!
 
-    integer :: nbmat, nvi
+    integer(kind=8) :: nbmat, nvi
     real(kind=8) :: vin(nvi), mater(nbmat, 2), paraep(3), tmp
 
     !!!

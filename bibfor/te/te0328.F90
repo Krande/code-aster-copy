@@ -40,9 +40,9 @@ subroutine te0328(option, nomte)
     aster_logical :: posi, nega
     character(len=24) :: valk(2)
     real(kind=8) :: poids
-    integer :: igeom, ipoids, ivf, idfde, ndim, npg, nno, jgano, nnos
-    integer :: kp, icodr
-    integer :: iadzi, iazk24, codret
+    integer(kind=8) :: igeom, ipoids, ivf, idfde, ndim, npg, nno, jgano, nnos
+    integer(kind=8) :: kp, icodr
+    integer(kind=8) :: iadzi, iazk24, codret
 !
     codret = 0
     call jevech('PGEOMER', 'L', igeom)

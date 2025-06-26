@@ -26,11 +26,11 @@ subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk, &
 #include "asterc/r8gaem.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: poids, sdfrde(4, 4), sdfrdk(4, 4)
     real(kind=8) :: geom(2, 4), jac
 !
-    integer :: i, kpg, iadzi, iazk24
+    integer(kind=8) :: i, kpg, iadzi, iazk24
     real(kind=8) :: sdxde, sdxdk, sdyde, sdydk
     real(kind=8) :: sdedx(4), sdkdx(4), sdkdy(4), sdedy(4)
     real(kind=8) :: sdfdy(4, 4), sdfdx(4, 4)

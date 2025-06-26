@@ -24,7 +24,7 @@ interface
         character(len=*), intent(in)   :: nomgd
         character(len=*), intent(in)   :: statut
         character(len=8), intent(out)  :: nompar
-        integer, intent(in), optional  :: istop
-        integer, intent(out), optional :: iret
+        integer(kind=8), intent(in), optional  :: istop
+        integer(kind=8), intent(out), optional :: iret
     end subroutine nopar2
 end interface

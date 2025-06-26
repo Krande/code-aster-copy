@@ -75,11 +75,11 @@ subroutine te0565(nomopt, nomte)
 #include "asterfort/teattr.h"
 #include "asterfort/ltequa.h"
 !-----------------------------------------------------------------------
-    integer :: idene1
-    integer :: idfde, idsig, idvari, igeom, imate, itemps
-    integer :: ipoids, ivf
-    integer :: nbsgm, nbsig, nbvari, ndim, nno
-    integer :: npg, iret, i, jtab(7)
+    integer(kind=8) :: idene1
+    integer(kind=8) :: idfde, idsig, idvari, igeom, imate, itemps
+    integer(kind=8) :: ipoids, ivf
+    integer(kind=8) :: nbsgm, nbsig, nbvari, ndim, nno
+    integer(kind=8) :: npg, iret, i, jtab(7)
     parameter(nbsgm=6)
     real(kind=8) :: enelas
     real(kind=8) :: deux, trois
@@ -89,13 +89,13 @@ subroutine te0565(nomopt, nomte)
     real(kind=8) :: angl_naut(3), instan
     real(kind=8) :: f(3, 3), r
     character(len=16) :: compor(3)
-    integer :: jpintt, jpmilt, jcnset, jlonch
-    integer :: nse, nnop
+    integer(kind=8) :: jpintt, jpmilt, jcnset, jlonch
+    integer(kind=8) :: nse, nnop
     character(len=8) :: elrefp, elrese(6), fami(6), enr
     real(kind=8) :: coorse(81), xg(3), xe(3), ff(27)
     real(kind=8) :: jac
-    integer :: irese, idecpg, idebs, idebv
-    integer :: j, in, ino, ise, kpg, n
+    integer(kind=8) :: irese, idecpg, idebs, idebv
+    integer(kind=8) :: j, in, ino, ise, kpg, n
     aster_logical :: grand, axi
 !
     data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/

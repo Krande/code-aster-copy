@@ -22,8 +22,8 @@
 interface
     subroutine asmpi_reduce_i(sendbuf, recvbuf, count, op, root,&
                               comm)
-        integer, intent(in) :: sendbuf(*)
-        integer, intent(out) :: recvbuf(*)
+        integer(kind=8), intent(in) :: sendbuf(*)
+        integer(kind=8), intent(out) :: recvbuf(*)
         mpi_int, intent(in) :: count
         mpi_int, intent(in) :: op
         mpi_int, intent(in) :: root

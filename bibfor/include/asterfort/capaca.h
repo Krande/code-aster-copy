@@ -36,6 +36,6 @@ interface
         real(kind=8), intent(in) :: temp
         real(kind=8), intent(in) :: dalal
         real(kind=8), intent(out) :: coeps
-        integer, intent(out) :: retcom
+        integer(kind=8), intent(out) :: retcom
     end subroutine capaca
 end interface 

@@ -21,6 +21,6 @@
 interface
     subroutine gverfo(cartei, ier)
         character(len=19) :: cartei
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine gverfo
 end interface

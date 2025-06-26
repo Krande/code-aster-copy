@@ -20,8 +20,8 @@
 #include "asterf_types.h"
 interface 
     subroutine indice0(i, k, l)
-        integer :: i
-        integer :: k
-        integer :: l
+        integer(kind=8) :: i
+        integer(kind=8) :: k
+        integer(kind=8) :: l
     end subroutine indice0
 end interface 

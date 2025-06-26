@@ -55,24 +55,24 @@ subroutine mdexcv(nofimd, idfimd, nochmd, numpt, numord, &
 #include "asterfort/utmess.h"
     character(len=*) :: nofimd, nochmd
 !
-    integer :: numpt, numord, typent, typgeo, nbval
+    integer(kind=8) :: numpt, numord, typent, typgeo, nbval
 !
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: edlect
+    integer(kind=8) :: edlect
     parameter(edlect=0)
-    integer :: edcomp
+    integer(kind=8) :: edcomp
     parameter(edcomp=2)
-    integer :: iterma
+    integer(kind=8) :: iterma
     parameter(iterma=1)
 !
     med_idt :: idfimd
-    integer :: nbprof, iprof, iaux, npr, nip, ntmp
+    integer(kind=8) :: nbprof, iprof, iaux, npr, nip, ntmp
 !
     character(len=8) :: saux08
     character(len=64) :: nompro, nomloc, nomamd

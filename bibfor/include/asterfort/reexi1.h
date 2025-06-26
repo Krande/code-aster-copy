@@ -24,9 +24,9 @@ interface
         character(len=14) :: nu
         character(len=8) :: mo
         character(len=8) :: ma
-        integer :: nlili
-        integer :: nm
-        integer :: nl
-        integer :: nbntt
+        integer(kind=8) :: nlili
+        integer(kind=8) :: nm
+        integer(kind=8) :: nl
+        integer(kind=8) :: nbntt
     end subroutine reexi1
 end interface

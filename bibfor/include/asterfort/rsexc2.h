@@ -21,13 +21,13 @@
 interface
     subroutine rsexc2(i1, i2, nomsd, nomsy, iordr,&
                       chextr, option, iret)
-        integer :: i1
-        integer :: i2
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
         character(len=*) :: nomsd
         character(len=*) :: nomsy
-        integer :: iordr
+        integer(kind=8) :: iordr
         character(len=24) :: chextr
         character(len=16) :: option
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rsexc2
 end interface

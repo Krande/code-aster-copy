@@ -42,7 +42,7 @@ subroutine trabck(cmess, iexit)
     character(len=*) :: cmess
     integer(kind=4) :: iexit
 !   Dummy argument if ASTER_HAVE_TRACEBACKQQ is not defined
-    integer :: dummy
+    integer(kind=8) :: dummy
     dummy = len(cmess)+iexit
 !
     call print_trace()
@@ -52,7 +52,7 @@ subroutine trabck(cmess, iexit)
     character(len=*) :: cmess
     integer(kind=4) :: iexit
 !   Dummy argument if ASTER_HAVE_TRACEBACKQQ is not defined
-    integer :: dummy
+    integer(kind=8) :: dummy
     dummy = len(cmess)+iexit
 !   do not call utmess (recursivity)
     write (6, *) 'Traceback is not provided by the compiler'

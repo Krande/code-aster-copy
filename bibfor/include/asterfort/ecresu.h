@@ -23,9 +23,9 @@ interface
                       ier)
         character(len=*) :: resin
         character(len=19) :: vectot
-        integer :: nbva
+        integer(kind=8) :: nbva
         character(len=*) :: grand
         character(len=*) :: resou
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine ecresu
 end interface

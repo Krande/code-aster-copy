@@ -32,7 +32,7 @@ function cfcald(defico, izone, typnoe)
     aster_logical :: cfcald
     character(len=4) :: typnoe
     character(len=24) :: defico
-    integer :: izone
+    integer(kind=8) :: izone
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ function cfcald(defico, izone, typnoe)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iappa
+    integer(kind=8) :: iappa
     aster_logical :: lliss, lmait, lescl, lmaes
 !
 ! ----------------------------------------------------------------------

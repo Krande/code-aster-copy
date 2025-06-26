@@ -69,9 +69,9 @@ subroutine cheddl(ideeq, neq, ino, ityp, iran, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nbran, neq
-    integer :: ideeq(2, neq), iran(nbran)
-    integer :: i, icomp, ino, inobis, itybis, ityp, k
+    integer(kind=8) :: nbran, neq
+    integer(kind=8) :: ideeq(2, neq), iran(nbran)
+    integer(kind=8) :: i, icomp, ino, inobis, itybis, ityp, k
 !-----------------------------------------------------------------------
 !
 !    MISE A ZERO PREALABLE DES RANGS

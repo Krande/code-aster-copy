@@ -60,14 +60,14 @@ subroutine op0030()
 ! --------------------------------------------------------------------------------------------------
 !
     mpi_int :: nb_proc, mpicou
-    integer :: iret, geomDime
+    integer(kind=8) :: iret, geomDime
     character(len=24) :: phenomenon
     character(len=4), parameter :: valeType = 'REEL'
     character(len=8) :: mesh, model, sdcont
     character(len=16) :: k16dummy
     character(len=19), parameter :: slavElemLigr = '&&OP0030.LIGRET', ligrelTmp = '&&OP0030.LIGREL'
     character(len=19) :: contLigrel, partit
-    integer :: cont_form, algo_cont
+    integer(kind=8) :: cont_form, algo_cont
     aster_logical :: lallv
     character(len=24) :: sdcont_defi
     aster_logical :: lLineRela

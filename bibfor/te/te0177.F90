@@ -39,8 +39,8 @@ subroutine te0177(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: kp, i, j, k, ij, imattt, igeom, imate
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: kp, i, j, k, ij, imattt, igeom, imate
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     real(kind=8) :: poids, r, cele_r, cele_i
     complex(kind=8) :: cele_c
 !

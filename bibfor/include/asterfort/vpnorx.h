@@ -20,9 +20,9 @@
 !
 interface
     subroutine vpnorx(nbmode, neq, exclus, vecp, resufk)
-        integer :: neq
-        integer :: nbmode
-        integer :: exclus(*)
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: exclus(*)
         real(kind=8) :: vecp(neq, *)
         character(len=*) :: resufk(*)
     end subroutine vpnorx

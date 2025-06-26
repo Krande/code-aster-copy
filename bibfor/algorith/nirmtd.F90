@@ -31,10 +31,10 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, &
 #include "asterfort/nbsigm.h"
 #include "asterfort/getElemOrientation.h"
 #include "blas/dscal.h"
-    integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
-    integer :: mate
-    integer :: vu(3, 27), vg(27), vp(27)
-    integer :: ivf1, igeom
+    integer(kind=8) :: ndim, nno1, nno2, nno3, npg, iw, idff1
+    integer(kind=8) :: mate
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27)
+    integer(kind=8) :: ivf1, igeom
     real(kind=8) :: vff2(nno2, npg), vff3(nno3, npg)
     real(kind=8) :: matr(*)
 !-----------------------------------------------------------------------
@@ -60,11 +60,11 @@ subroutine nirmtd(ndim, nno1, nno2, nno3, npg, &
 ! OUT MATR    : MATRICE DE RIGIDITE
 !-----------------------------------------------------------------------
 !
-    integer :: g
-    integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
-    integer :: os, kk
-    integer :: vuiana, vgra, vpsa
-    integer :: nbsig
+    integer(kind=8) :: g
+    integer(kind=8) :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
+    integer(kind=8) :: os, kk
+    integer(kind=8) :: vuiana, vgra, vpsa
+    integer(kind=8) :: nbsig
     real(kind=8) :: w
     real(kind=8) :: dsidep(2*ndim, 2*ndim)
     real(kind=8) :: b(2*ndim, 81), def(2*ndim, nno1, ndim), deftr(nno1, ndim)

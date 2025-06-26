@@ -20,7 +20,7 @@
 !
 interface
     subroutine cmbqbq(main, maout, degree, info)
-        integer, intent(in) :: degree, info
+        integer(kind=8), intent(in) :: degree, info
         character(len=8), intent(in) :: main, maout
     end subroutine cmbqbq
 end interface

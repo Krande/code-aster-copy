@@ -36,7 +36,7 @@ subroutine rsrusd(nomsd, iordr)
 #include "asterfort/jexnum.h"
 #include "asterfort/rsutch.h"
 #include "asterfort/rsutrg.h"
-    integer :: iordr
+    integer(kind=8) :: iordr
     character(len=*) :: nomsd
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -62,10 +62,10 @@ subroutine rsrusd(nomsd, iordr)
     character(len=16) :: nomsy
     character(len=19) :: noms2, chextr
     character(len=24) :: nomobj
-    integer ::  kordr, krang, irang, nbcham, nbordr, k, ibid, jtach
-    integer :: nbormx, n1, n2, kk, iundef, jpara, ier1
+    integer(kind=8) ::  kordr, krang, irang, nbcham, nbordr, k, ibid, jtach
+    integer(kind=8) :: nbormx, n1, n2, kk, iundef, jpara, ier1
     real(kind=8) :: rundef
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
 !

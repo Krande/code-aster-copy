@@ -20,7 +20,7 @@
 !
 interface
     subroutine fgordo(nbextr, ext, ord)
-        integer :: nbextr
+        integer(kind=8) :: nbextr
         real(kind=8) :: ext(*)
         real(kind=8) :: ord(*)
     end subroutine fgordo

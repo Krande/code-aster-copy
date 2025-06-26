@@ -21,10 +21,10 @@ interface
     subroutine cylrep(ndim, x, axe_z, orig, pgcyl,&
                       ipaxe)
 !
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), dimension(:), intent(in) :: x, axe_z, orig
         real(kind=8), dimension(:, :), intent(inout) :: pgcyl
-        integer, intent(inout), optional :: ipaxe
+        integer(kind=8), intent(inout), optional :: ipaxe
 !
     end subroutine cylrep
 end interface

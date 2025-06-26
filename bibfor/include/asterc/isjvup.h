@@ -20,6 +20,6 @@
 !
 interface
     function isjvup()
-        integer :: isjvup
+        integer(kind=8) :: isjvup
     end function isjvup
 end interface

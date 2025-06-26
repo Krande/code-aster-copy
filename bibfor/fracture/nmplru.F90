@@ -31,7 +31,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 !
-    integer :: kpg, ksp, ndim, imate
+    integer(kind=8) :: kpg, ksp, ndim, imate
     character(len=*) :: fami, poum
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*)
@@ -56,7 +56,7 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim, &
 ! OUT ENER(1) : DERIVEE DE L'ENERGIE LIBRE / A LA TEMPERATURE
 !.......................................................................
 !
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=16) :: nomres(3)
 !
     real(kind=8) :: e, nu, demu, k, k3, alpha
@@ -67,13 +67,13 @@ subroutine nmplru(fami, kpg, ksp, poum, ndim, &
     real(kind=8) :: epsth(6), epsdv(6), epseq, kron(6)
     real(kind=8) :: ther, divu, epsmo, temp, tref
 !
-    integer :: i, jprol, jvale, nbval
+    integer(kind=8) :: i, jprol, jvale, nbval
 !
     aster_logical :: cp, trac, line, elas
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iret1, iret2
+    integer(kind=8) :: iret1, iret2
 !-----------------------------------------------------------------------
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !

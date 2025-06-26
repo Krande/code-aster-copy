@@ -55,9 +55,9 @@ subroutine phi152(model, option, mate, mateco, phibar, ma, &
 #include "asterfort/rsorac.h"
 #include "asterfort/tabcor.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, nbvale, nbrefe, nbmode, iret
-    integer :: ilires, j, nbid, ivalk, indice, tabad(5), tmod(1)
-    integer :: iphi1, iphi2, n5, n6, n7, n1, icor(2), n2, ndble
+    integer(kind=8) :: ibid, nbvale, nbrefe, nbmode, iret
+    integer(kind=8) :: ilires, j, nbid, ivalk, indice, tabad(5), tmod(1)
+    integer(kind=8) :: iphi1, iphi2, n5, n6, n7, n1, icor(2), n2, ndble
     real(kind=8) :: bid, ebid
     character(len=*) :: option, mate, mateco, phibar, solvez
     character(len=2) :: model

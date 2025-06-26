@@ -22,8 +22,8 @@ interface
         character(len=19), intent(in) :: sddisc
         real(kind=8) :: insref
         real(kind=8) :: durdec
-        integer :: ievdac
+        integer(kind=8) :: ievdac
         real(kind=8) :: deltac
-        integer :: retdex
+        integer(kind=8) :: retdex
     end subroutine nmdcex
 end interface

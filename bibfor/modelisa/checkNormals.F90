@@ -51,19 +51,19 @@ subroutine checkNormals(model, slave, master)
 !     V2 : ON VERIFIE QUE LES NORMALES SONT SORTANTES
 !
 !-----------------------------------------------------------------------
-    integer, parameter :: nbobj = 2
-    integer :: ier
-    integer :: ndim, ndim1, vali
-    integer :: iobj, iCell, nbCell, nconex
-    integer :: cellNume, cellTypeNume, nbmapr, nbmabo, ntrait
-    integer ::  jmab, norien, jlima, nbmamo
+    integer(kind=8), parameter :: nbobj = 2
+    integer(kind=8) :: ier
+    integer(kind=8) :: ndim, ndim1, vali
+    integer(kind=8) :: iobj, iCell, nbCell, nconex
+    integer(kind=8) :: cellNume, cellTypeNume, nbmapr, nbmabo, ntrait
+    integer(kind=8) ::  jmab, norien, jlima, nbmamo
     aster_logical, parameter :: reorie = ASTER_FALSE
     aster_logical :: l_exi, l_exi_p
     character(len=8) ::  cellTypeName, mesh
     character(len=24) :: grmama, nogr
     character(len=24) :: valk(2)
     character(len=24) :: objet(nbobj)
-    integer, pointer :: listCellNume(:) => null(), typmail(:) => null()
+    integer(kind=8), pointer :: listCellNume(:) => null(), typmail(:) => null()
 !
 !     INITIALISATIONS
     ier = 0

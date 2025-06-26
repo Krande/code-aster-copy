@@ -32,7 +32,7 @@ subroutine rsliso(fami, kpg, ksp, poum, imat, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: temp, p, rp, e, drdp, airerp, para_vale
-    integer :: imat, jprol, jvale, nbvale, kpg, ksp, iret
+    integer(kind=8) :: imat, jprol, jvale, nbvale, kpg, ksp, iret
     character(len=*) :: fami
     character(len=1) :: poum
     character(len=8) :: para_type

@@ -22,14 +22,14 @@ interface
                            elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                            proj_coor       , iret)
         real(kind=8), intent(in) :: proj_tole
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: elem_mast_nbnode
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_mast_nbnode
         real(kind=8), intent(in) :: elem_mast_coor(3,9)
-        integer, intent(in) :: elem_slav_nbnode
+        integer(kind=8), intent(in) :: elem_slav_nbnode
         real(kind=8), intent(in) :: elem_slav_coor(3,9)
         character(len=8), intent(in) :: elem_slav_code
         real(kind=8), intent(out) :: proj_coor(elem_dime-1,4)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine apinte_prsl
 
 end interface

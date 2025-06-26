@@ -24,29 +24,29 @@ subroutine jeexin(nomlu, iret)
 #include "asterfort/jjvern.h"
 #include "asterfort/jxveuo.h"
     character(len=*), intent(in) :: nomlu
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR : TESTE L'EXISTENCE DU DESCRIPTEUR CREE PAR
 !                       JECREO OU JECROC
 ! IN  NOMLU  : NOM DE L'OBJET JEVEUX
 ! OUT IRET   : =0 LE DESCRIPTEUR N'EXISTE PAS
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibacol, iblong, ibnum, ic, icre, id, ilong
-    integer :: itab(1), ixlong, ixnom, ixnum, jcara, jctab, jdate
-    integer :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
-    integer :: jmarq, n, nuti
+    integer(kind=8) :: ibacol, iblong, ibnum, ic, icre, id, ilong
+    integer(kind=8) :: itab(1), ixlong, ixnom, ixnum, jcara, jctab, jdate
+    integer(kind=8) :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
+    integer(kind=8) :: jmarq, n, nuti
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 ! ----------------------------------------------------------------------
-    integer :: idnom, idlong, idnum
+    integer(kind=8) :: idnom, idlong, idnum
     parameter(idnom=5, idlong=7, idnum=10)
 ! ----------------------------------------------------------------------
     character(len=32) :: noml32

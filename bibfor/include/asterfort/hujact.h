@@ -31,6 +31,6 @@ interface
         real(kind=8) :: sigf(6)
         aster_logical :: negmul(8)
         aster_logical :: chgmec
-        integer :: indi(7)
+        integer(kind=8) :: indi(7)
     end subroutine hujact
 end interface

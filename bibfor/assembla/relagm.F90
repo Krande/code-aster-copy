@@ -36,7 +36,7 @@ subroutine relagm(mo, ma, nm, nl, newn, &
 #include "asterfort/as_allocate.h"
 !
     character(len=8) :: mo, ma
-    integer :: nm, nl, newn(*), oldn(*)
+    integer(kind=8) :: nm, nl, newn(*), oldn(*)
 ! ----------------------------------------------------------------------
 !     BUT:
 !           RENUMEROTER  LES NOEUDS TARDIFS DU MAILLAGE
@@ -50,7 +50,7 @@ subroutine relagm(mo, ma, nm, nl, newn, &
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: nbnoma, nbnore
+    integer(kind=8) :: nbnoma, nbnore
     aster_logical :: exilag
 !
 !
@@ -58,13 +58,13 @@ subroutine relagm(mo, ma, nm, nl, newn, &
 !     -- SI LE MODELE N'A PAS DE SOUS-STRUCTURES ON RESSORT :
 !     --------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iamail, ico
-    integer :: icol, il, ima, ino, inomax, inomin
-    integer :: iold, iprem, iret, itypi, nbnm, nbsma, nbssa
-    integer, pointer :: avap(:) => null()
-    integer, pointer :: oldt(:) => null()
-    integer, pointer :: sssa(:) => null()
-    integer, pointer :: typl(:) => null()
+    integer(kind=8) :: i, iamail, ico
+    integer(kind=8) :: icol, il, ima, ino, inomax, inomin
+    integer(kind=8) :: iold, iprem, iret, itypi, nbnm, nbsma, nbssa
+    integer(kind=8), pointer :: avap(:) => null()
+    integer(kind=8), pointer :: oldt(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: typl(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()

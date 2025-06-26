@@ -249,8 +249,8 @@ contains
         type(SSH_STAB_HEXA), intent(inout) :: stabHexa
 
 ! - Local
-        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-        integer :: iNodeGeom, jNodeGeom
+        integer(kind=8), parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer(kind=8) :: iNodeGeom, jNodeGeom
         real(kind=8) :: const, coef1, coef2
         real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS)
         real(kind=8) :: GCartXI(SSH_SIZE_TENS), GCartETA(SSH_SIZE_TENS)

@@ -19,6 +19,6 @@
 !
 interface
     subroutine asmpi_warn(iexc)
-        integer, intent(in) :: iexc
+        integer(kind=8), intent(in) :: iexc
     end subroutine asmpi_warn
 end interface

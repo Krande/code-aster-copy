@@ -32,7 +32,7 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 #include "asterfort/zerod2.h"
 #include "blas/ddot.h"
     character(len=8) :: typmod(*)
-    integer :: ndim, mate
+    integer(kind=8) :: ndim, mate
     real(kind=8) :: vim(2), epsm(6), epspc(6), epsdc(6)
     real(kind=8) :: etamax, tau, etamin
     real(kind=8) :: a0, a1, a2, a3, etas
@@ -64,15 +64,15 @@ subroutine pipeds(ndim, typmod, tau, mate, vim, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=3)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     character(len=8) :: fami, poum
     real(kind=8) :: valres(nbres)
 !
     aster_logical :: cplan
-    integer :: ndimsi, k, iter, nitmax, ifm, niv, kpg, spt
+    integer(kind=8) :: ndimsi, k, iter, nitmax, ifm, niv, kpg, spt
     real(kind=8) :: trepsd, coplan, sigeld(6)
     real(kind=8) :: tr(6), vecp(3, 3), rac2
     real(kind=8) :: fpd, dm, d, eta, epm(3)

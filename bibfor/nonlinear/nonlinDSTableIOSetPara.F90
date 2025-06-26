@@ -31,7 +31,7 @@ subroutine nonlinDSTableIOSetPara(table_, &
 !
     type(NL_DS_Table), optional, intent(inout) :: table_
     type(NL_DS_TableIO), optional, intent(inout) :: tableio_
-    integer, optional :: nbPara_
+    integer(kind=8), optional :: nbPara_
     character(len=24), optional :: paraName_(:)
     character(len=8), optional :: paraType_(:)
 !
@@ -48,8 +48,8 @@ subroutine nonlinDSTableIOSetPara(table_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_all_col, i_col, i_para
-    integer :: nb_cols, nbPara_real, nbPara_inte, nbPara_strg, nb_para, nb_cols_acti
+    integer(kind=8) :: i_all_col, i_col, i_para
+    integer(kind=8) :: nb_cols, nbPara_real, nbPara_inte, nbPara_strg, nb_para, nb_cols_acti
     aster_logical :: l_acti
     character(len=24) :: col_name
 !

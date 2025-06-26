@@ -20,7 +20,7 @@
 interface
     subroutine mtcmbl(nbcomb, typcst, const, limat, matrez,&
                       ddlexc, numedd, elim)
-        integer :: nbcomb
+        integer(kind=8) :: nbcomb
         character(len=*) :: typcst(nbcomb)
         real(kind=8) :: const(*)
         character(len=*) :: limat(nbcomb)

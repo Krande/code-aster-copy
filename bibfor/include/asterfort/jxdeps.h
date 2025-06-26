@@ -20,8 +20,8 @@
 !
 interface
     subroutine jxdeps(iadini, iadfin, lso)
-        integer :: iadini
-        integer :: iadfin
-        integer :: lso
+        integer(kind=8) :: iadini
+        integer(kind=8) :: iadfin
+        integer(kind=8) :: lso
     end subroutine jxdeps
 end interface

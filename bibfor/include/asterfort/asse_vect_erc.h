@@ -23,7 +23,7 @@ interface
         
     character(len=8),intent(in) :: nommes,baseno
     character(len=19),intent(in) :: nom_vect_erc
-    integer,intent(in) :: obsdim(3),n_ordre_mes
+    integer(kind=8),intent(in) :: obsdim(3),n_ordre_mes
     real(kind=8),intent(in) :: alpha,omega
     character(len=24),intent(in) :: matobs(3)
         

@@ -28,9 +28,9 @@ subroutine cfnumn(defico, nno, posnno, numnno)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: defico
-    integer, intent(in) :: nno
-    integer, intent(in) :: posnno(nno)
-    integer, intent(out) :: numnno(nno)
+    integer(kind=8), intent(in) :: nno
+    integer(kind=8), intent(in) :: posnno(nno)
+    integer(kind=8), intent(out) :: numnno(nno)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,9 +48,9 @@ subroutine cfnumn(defico, nno, posnno, numnno)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ino, posno
+    integer(kind=8) :: ino, posno
     character(len=24) :: contno
-    integer :: jnoco
+    integer(kind=8) :: jnoco
 !
 ! --------------------------------------------------------------------------------------------------
 !

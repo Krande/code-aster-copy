@@ -41,15 +41,15 @@ subroutine te0137(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe, alias8
     real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg
     real(kind=8) :: coenp1, sigma, epsil, tz0
     real(kind=8) :: coorse(18), vectt(9)
-    integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
-    integer :: itemps, iveres, i, j, l, li, iech, iray, itemp, icode, ier
-    integer :: nnop2, c(6, 9), ise, nse, ibid
+    integer(kind=8) :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
+    integer(kind=8) :: itemps, iveres, i, j, l, li, iech, iray, itemp, icode, ier
+    integer(kind=8) :: nnop2, c(6, 9), ise, nse, ibid
     aster_logical :: laxi
 !
 !

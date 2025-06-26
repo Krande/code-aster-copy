@@ -20,7 +20,7 @@ subroutine pscvec(n, s, x, y)
     implicit none
 !       PRODUIT SCALAIRE * VECTEUR  Y = S * X
 !       ----------------------------------------------------------------
-    integer :: i, n
+    integer(kind=8) :: i, n
 !-----------------------------------------------------------------------
     real(kind=8) :: x(n), y(n), s
     do i = 1, n

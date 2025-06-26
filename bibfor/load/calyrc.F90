@@ -54,7 +54,7 @@ subroutine calyrc(load, mesh, model, geomDime)
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,14 +71,14 @@ subroutine calyrc(load, mesh, model, geomDime)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: k, kk, nuno1, nuno2, ino1, ino2, nocc, iocc
-    integer :: nnomx, idmax
-    integer :: nbma1, nbma2
-    integer :: nbno2, idcal1, idcal2, nul
-    integer :: nno11, nno12, i, indire, lno
-    integer :: nbtyp, nddl2, jlistk, jdim, ndim1
-    integer :: idim, ij, norien, ntrait
-    integer :: icoef1, icoef2, icoef3, iagno3, nbno3, nbma3
+    integer(kind=8) :: k, kk, nuno1, nuno2, ino1, ino2, nocc, iocc
+    integer(kind=8) :: nnomx, idmax
+    integer(kind=8) :: nbma1, nbma2
+    integer(kind=8) :: nbno2, idcal1, idcal2, nul
+    integer(kind=8) :: nno11, nno12, i, indire, lno
+    integer(kind=8) :: nbtyp, nddl2, jlistk, jdim, ndim1
+    integer(kind=8) :: idim, ij, norien, ntrait
+    integer(kind=8) :: icoef1, icoef2, icoef3, iagno3, nbno3, nbma3
     aster_logical :: lrota, dnor, lreori
     real(kind=8) :: beta, coef1, mrota(3, 3), zero, normal(3)
     real(kind=8) :: r8b
@@ -100,21 +100,21 @@ subroutine calyrc(load, mesh, model, geomDime)
     character(len=24) :: list_node
     real(kind=8), pointer :: coef(:) => null()
     complex(kind=8), pointer :: coemuc(:) => null()
-    integer, pointer :: dim(:) => null()
+    integer(kind=8), pointer :: dim(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()
-    integer, pointer :: conu1(:) => null()
-    integer, pointer :: conu2(:) => null()
-    integer, pointer :: limanu3(:) => null()
-    integer, pointer :: ln(:) => null()
-    integer, pointer :: limanu2(:) => null()
+    integer(kind=8), pointer :: conu1(:) => null()
+    integer(kind=8), pointer :: conu2(:) => null()
+    integer(kind=8), pointer :: limanu3(:) => null()
+    integer(kind=8), pointer :: ln(:) => null()
+    integer(kind=8), pointer :: limanu2(:) => null()
     real(kind=8), pointer :: cocf1(:) => null()
     real(kind=8), pointer :: cocf2(:) => null()
     real(kind=8), pointer :: normale(:) => null()
-    integer, pointer :: conb1(:) => null()
-    integer, pointer :: conb2(:) => null()
-    integer, pointer :: limanu1(:) => null()
+    integer(kind=8), pointer :: conb1(:) => null()
+    integer(kind=8), pointer :: conb2(:) => null()
+    integer(kind=8), pointer :: limanu1(:) => null()
     aster_logical :: l_error
     character(len=8) :: elem_error
 !

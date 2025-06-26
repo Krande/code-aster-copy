@@ -21,7 +21,7 @@
 interface
     subroutine w039c1(carte, ifi, form, ligrel, titre)
         character(len=*) :: carte
-        integer :: ifi
+        integer(kind=8) :: ifi
         character(len=*) :: form
         character(len=19) :: ligrel
         character(len=*) :: titre

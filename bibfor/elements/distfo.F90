@@ -33,13 +33,13 @@ function distfo(zimat, kfonc, xx, yy, normx, &
 !
 #include "asterfort/cdnfon.h"
 #include "asterfort/rcvalb.h"
-    integer :: i, itmax, ier, zimat, kpg, spt
+    integer(kind=8) :: i, itmax, ier, zimat, kpg, spt
 !
     real(kind=8) :: distfo, xx, yy, normx, normy, x0, y0
     real(kind=8) :: xi, yi, xm1, res, ym1, rp, dym1, tol
     real(kind=8) :: xm2, ym2, dyi, val(1)
 !
-    integer :: codres(1)
+    integer(kind=8) :: codres(1)
     character(len=8) :: kfonc, fami, poum
     character(len=16) :: phenom
 !

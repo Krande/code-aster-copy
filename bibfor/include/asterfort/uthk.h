@@ -20,15 +20,15 @@
 interface
     subroutine uthk(nomte, geom, hk, ndim, niv,&
                     noe, nsomm, tymvol, ifa)
-        integer, parameter :: l1=9, l2=6, l3=4
+        integer(kind=8), parameter :: l1=9, l2=6, l3=4
         character(len=16), intent(in) :: nomte
         real(kind=8), intent(in) :: geom(*)
         real(kind=8), intent(out) :: hk
-        integer, intent(in) :: ndim
-        integer, intent(in) :: niv
-        integer, intent(in), optional :: noe(l1*l2*l3)
-        integer, intent(in), optional :: nsomm
-        integer, intent(in), optional :: tymvol
-        integer, intent(in), optional :: ifa
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: niv
+        integer(kind=8), intent(in), optional :: noe(l1*l2*l3)
+        integer(kind=8), intent(in), optional :: nsomm
+        integer(kind=8), intent(in), optional :: tymvol
+        integer(kind=8), intent(in), optional :: ifa
     end subroutine uthk
 end interface

@@ -20,7 +20,7 @@ subroutine utacli(x, liste, indmax, tole, indice)
 !
 !
     implicit none
-    integer :: indmax, indice
+    integer(kind=8) :: indmax, indice
     real(kind=8) :: x, liste(0:indmax-1), tole
 !
 ! ----------------------------------------------------------------------
@@ -34,7 +34,7 @@ subroutine utacli(x, liste, indmax, tole, indice)
 !               INDICE = -1 : REEL NON TROUVE
 ! ----------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: delta, delmin
 ! ----------------------------------------------------------------------
 !

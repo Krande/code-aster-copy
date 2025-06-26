@@ -21,7 +21,7 @@
 interface
     subroutine utvtsv(raz, n, s, v, vtsv)
         character(len=*) :: raz
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: s(*)
         real(kind=8) :: v(*)
         real(kind=8) :: vtsv

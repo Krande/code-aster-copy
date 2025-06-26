@@ -20,9 +20,9 @@
 !
 interface
     subroutine compma(mailla, nbgr, nomgr, nbto)
-        integer :: nbgr
+        integer(kind=8) :: nbgr
         character(len=8) :: mailla
         character(len=24) :: nomgr(nbgr)
-        integer :: nbto
+        integer(kind=8) :: nbto
     end subroutine compma
 end interface

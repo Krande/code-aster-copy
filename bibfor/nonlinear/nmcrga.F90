@@ -73,7 +73,7 @@ subroutine nmcrga(sderro)
                                                               'RES', 'XXX', 'XXX', &
                                                               'XXX'/)
 ! - Return code (value)
-    integer, parameter :: eventReturnValue(ZEVEN) = (/1, 2, 3, &
+    integer(kind=8), parameter :: eventReturnValue(ZEVEN) = (/1, 2, 3, &
                                                       4, 99, &
                                                       1, 2, 1, &
                                                       2, 1, 2, &
@@ -148,11 +148,11 @@ subroutine nmcrga(sderro)
                                     'MECANONLINE10_12', '                ', '                ', &
                                     'MECANONLINE10_14'/)
 !
-    integer :: iEvent
+    integer(kind=8) :: iEvent
     character(len=24) :: eventECONJv, eventECOVJv, eventENIVJv, eventEFCTJv, eventEMSGJv
     character(len=24) :: eventCONVJv, eventEEVTJv, eventENOMJv, eventEACTJv
-    integer, pointer :: eventEACT(:) => null(), eventECOV(:) => null(), eventCONV(:) => null()
-    integer, pointer :: eventEEVT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null(), eventECOV(:) => null(), eventCONV(:) => null()
+    integer(kind=8), pointer :: eventEEVT(:) => null()
     character(len=16), pointer :: eventENOM(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()
     character(len=24), pointer :: eventEMSG(:) => null(), eventEFCT(:) => null()

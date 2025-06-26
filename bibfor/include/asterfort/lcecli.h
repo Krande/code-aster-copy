@@ -22,11 +22,11 @@ interface
     subroutine lcecli(fami, kpg, ksp, ndim, mate,&
                       option, lamb, saut, sigma, dsidep,&
                       vim, vip, r)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: mate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: mate
         character(len=16) :: option
         real(kind=8) :: lamb(ndim)
         real(kind=8) :: saut(ndim)

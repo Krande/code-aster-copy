@@ -24,7 +24,7 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-    integer :: ncmpmx, nbchs, nbcmps(*), ipcmps(*)
+    integer(kind=8) :: ncmpmx, nbchs, nbcmps(*), ipcmps(*)
     character(len=*) :: nomcmp(*), nomsym, nomchs(*), nomgds(*)
 !
 !       RECHERCHE DE LA GRANDEUR SUPERTAB REPRESENTANT UNE GRANDEUR ASTER
@@ -40,15 +40,15 @@ subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs, &
 !         IPCMPS: POSITION DES COMPOSANTES SUPERTAB DANS LA COMPOSANTE
 !                 ASTER
 !-----------------------------------------------------------------------
-    integer :: nbdepl, nbtemp, nbvari, nbsigm, nbepsm, nbflu, nbpres
-    integer :: i, icmas, ient, ires, iva, ivar, j
-    integer, pointer :: videpl(:) => null()
-    integer, pointer :: viepsm(:) => null()
-    integer, pointer :: vitemp(:) => null()
-    integer, pointer :: viflu(:) => null()
-    integer, pointer :: visigm(:) => null()
-    integer, pointer :: vipres(:) => null()
-    integer, pointer :: vivari(:) => null()
+    integer(kind=8) :: nbdepl, nbtemp, nbvari, nbsigm, nbepsm, nbflu, nbpres
+    integer(kind=8) :: i, icmas, ient, ires, iva, ivar, j
+    integer(kind=8), pointer :: videpl(:) => null()
+    integer(kind=8), pointer :: viepsm(:) => null()
+    integer(kind=8), pointer :: vitemp(:) => null()
+    integer(kind=8), pointer :: viflu(:) => null()
+    integer(kind=8), pointer :: visigm(:) => null()
+    integer(kind=8), pointer :: vipres(:) => null()
+    integer(kind=8), pointer :: vivari(:) => null()
     AS_ALLOCATE(vi=videpl, size=6)
     AS_ALLOCATE(vi=vitemp, size=1)
     AS_ALLOCATE(vi=visigm, size=6)

@@ -24,13 +24,13 @@ subroutine impft0(isor, ift, ibl, fmoy, fetyp, &
 !
 !
     implicit none
-    integer :: isor, ift
+    integer(kind=8) :: isor, ift
     real(kind=8) :: fmoy, frms, fetyp, fmax, fmin
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibl
+    integer(kind=8) :: ibl
 !-----------------------------------------------------------------------
     if (ift .eq. 1) then
         if (ibl .eq. 1) then

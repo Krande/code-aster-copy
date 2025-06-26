@@ -34,7 +34,7 @@ subroutine split_string(instring, delim, string1, string2)
     character(len=*), intent(out), optional:: string2
 
     character(len=80) :: instr, part1, part2
-    integer :: index
+    integer(kind=8) :: index
 
     instr = instring
     instr = trim(instr)

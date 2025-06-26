@@ -54,8 +54,8 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
 #include "blas/ddot.h"
 !
     character(len=8) :: elrefp
-    integer :: igeom, ndim, nfh, ddlc, ddlm, nfe, nnop, idecpg, idepl, jheavn
-    integer :: nfiss, jheavt, ise, jstno
+    integer(kind=8) :: igeom, ndim, nfh, ddlc, ddlm, nfe, nnop, idecpg, idepl, jheavn
+    integer(kind=8) :: nfiss, jheavt, ise, jstno
     real(kind=8) :: fno(ndim*nnop), coorse(*)
     real(kind=8) :: basloc(3*ndim*nnop), lsn(nnop), lst(nnop), puls
 !
@@ -84,14 +84,14 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
 ! OUT IGTHET  : G, K1, K2, K3
 !
 !
-    integer :: ithet, imate, icomp, icour, igthet, jtab(7), ncomp
-    integer :: ipoids, jcoopg, ivf, idfde, jdfd2, jgano, jsigse
-    integer :: i, j, k, kpg, n, ino, iret, cpt, ig, ipg, in
-    integer :: ndimb, nno, nnos, npgbis, ddld, ddls
-    integer :: ifiss, isigi, ncmp
-    integer :: heavn(nnop, 5), ncompn, hea_se
-    integer :: iret1, iret2, iret3
-    integer :: singu, alp
+    integer(kind=8) :: ithet, imate, icomp, icour, igthet, jtab(7), ncomp
+    integer(kind=8) :: ipoids, jcoopg, ivf, idfde, jdfd2, jgano, jsigse
+    integer(kind=8) :: i, j, k, kpg, n, ino, iret, cpt, ig, ipg, in
+    integer(kind=8) :: ndimb, nno, nnos, npgbis, ddld, ddls
+    integer(kind=8) :: ifiss, isigi, ncmp
+    integer(kind=8) :: heavn(nnop, 5), ncompn, hea_se
+    integer(kind=8) :: iret1, iret2, iret3
+    integer(kind=8) :: singu, alp
     real(kind=8) :: g, k1, k2, k3, coefk, coeff3, valres(4), alpha, he(nfiss)
     real(kind=8) :: devres(4), e, nu, lambda, mu, ka, c1, c2, c3, xg(ndim)
     real(kind=8) :: k3a
@@ -109,11 +109,11 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
     real(kind=8) :: ttrgu, ttrgv, dfdm(3, 4), cs, coef, rho, rac2
     real(kind=8) :: dtx, dty, dtz
     real(kind=8) :: fk(27, 3, 3), dkdgl(27, 3, 3, 3)
-    integer :: icodre(4)
+    integer(kind=8) :: icodre(4)
     character(len=16) :: nomres(4)
     character(len=8) :: elrese(6), fami(6), fami_se
     aster_logical :: lcour, axi, l_temp_noeu, l_not_zero
-    integer :: irese, nnops, indenn, mxstac
+    integer(kind=8) :: irese, nnops, indenn, mxstac
     parameter(mxstac=1000)
 !
     data nomres/'E', 'NU', 'ALPHA', 'RHO'/

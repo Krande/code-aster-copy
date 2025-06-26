@@ -22,12 +22,12 @@ interface
     subroutine usupu2(nbpt, nbpair, coef, ang, isupp,&
                       nbinst, temps, puusur, vustub, vusob,&
                       pus, pmoye, pourpu, poupre)
-        integer :: nbinst
-        integer :: nbpair
-        integer :: nbpt
+        integer(kind=8) :: nbinst
+        integer(kind=8) :: nbpair
+        integer(kind=8) :: nbpt
         real(kind=8) :: coef(*)
         real(kind=8) :: ang(*)
-        integer :: isupp
+        integer(kind=8) :: isupp
         real(kind=8) :: temps(*)
         real(kind=8) :: puusur
         real(kind=8) :: vustub(nbpair, nbinst)

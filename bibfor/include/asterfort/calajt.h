@@ -22,16 +22,16 @@ interface
     subroutine calajt(j1, j, diag, col, n,&
                       itab, deb, tab, suiv, lt,&
                       ier)
-        integer :: n
-        integer :: j1
-        integer :: j
-        integer :: diag(0:n)
-        integer :: col(*)
-        integer :: itab
-        integer :: deb(1:n)
-        integer :: tab(*)
-        integer :: suiv(*)
-        integer :: lt
-        integer :: ier
+        integer(kind=8) :: n
+        integer(kind=8) :: j1
+        integer(kind=8) :: j
+        integer(kind=8) :: diag(0:n)
+        integer(kind=8) :: col(*)
+        integer(kind=8) :: itab
+        integer(kind=8) :: deb(1:n)
+        integer(kind=8) :: tab(*)
+        integer(kind=8) :: suiv(*)
+        integer(kind=8) :: lt
+        integer(kind=8) :: ier
     end subroutine calajt
 end interface

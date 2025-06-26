@@ -28,7 +28,7 @@ subroutine mm_cycl_t3(pres_frot_prev, dist_frot_prev, coef_frot_prev, &
     real(kind=8), intent(in) :: pres_frot_prev(3)
     real(kind=8), intent(in) :: dist_frot_prev(3)
     real(kind=8), intent(in) :: coef_frot_prev
-    integer, intent(out) :: cycl_stat_curr
+    integer(kind=8), intent(out) :: cycl_stat_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine mm_cycl_t3(pres_frot_prev, dist_frot_prev, coef_frot_prev, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cycl_type, idim
+    integer(kind=8) :: cycl_type, idim
     real(kind=8) :: laug_frot_curr(3), laug_frot_prev(3)
     real(kind=8) :: nrese_curr, nrese_prev
 !

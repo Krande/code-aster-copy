@@ -21,7 +21,7 @@
 interface
     subroutine utncmp2(cham19, ncmp, list_cmp, list_name)
         character(len=*) :: cham19
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: list_cmp, list_name
     end subroutine utncmp2
 end interface

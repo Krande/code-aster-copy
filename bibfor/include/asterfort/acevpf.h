@@ -20,7 +20,7 @@
 !
 interface
     subroutine acevpf(nbocc, nlg)
-        integer :: nbocc
-        integer :: nlg
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: nlg
     end subroutine acevpf
 end interface

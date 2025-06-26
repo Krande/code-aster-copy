@@ -21,6 +21,6 @@
 interface
     subroutine chlici(chaine, long)
         character(len=*) :: chaine
-        integer :: long
+        integer(kind=8) :: long
     end subroutine chlici
 end interface

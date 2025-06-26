@@ -24,9 +24,9 @@ subroutine xhvco4(ino, ndim, sigma, lamb, pla, &
 #include "jeveux.h"
 #include "asterfort/prmave.h"
 #include "asterfort/transp.h"
-    integer :: ino
-    integer :: ndim
-    integer :: pla(27)
+    integer(kind=8) :: ino
+    integer(kind=8) :: ndim
+    integer(kind=8) :: pla(27)
     real(kind=8) :: vect(560), sigma(6)
     real(kind=8) :: jac, lamb(3), raug
     real(kind=8) :: ffc(16), p(3, 3)
@@ -54,7 +54,7 @@ subroutine xhvco4(ino, ndim, sigma, lamb, pla, &
 !
 !
 !
-    integer :: k, pli, ier
+    integer(kind=8) :: k, pli, ier
     real(kind=8) :: ptr(3, 3), sigglo(3), ffi
 !
 ! ---------------------------------------------------------------------

@@ -24,8 +24,8 @@ interface
         character(len=16) :: nomte
         real(kind=8) :: xi(3, 9)
         real(kind=8) :: rig(51, 51)
-        integer :: nb1
-        integer :: indm
-        integer :: indf
+        integer(kind=8) :: nb1
+        integer(kind=8) :: indm
+        integer(kind=8) :: indf
     end subroutine vdxrig
 end interface

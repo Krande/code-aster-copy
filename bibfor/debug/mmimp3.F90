@@ -29,10 +29,10 @@ subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
-    integer :: ifm
+    integer(kind=8) :: ifm
     character(len=8) :: noma
-    integer :: iptc
-    integer :: jvalv, jtabf
+    integer(kind=8) :: iptc
+    integer(kind=8) :: jvalv, jtabf
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,14 +52,14 @@ subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
 !
 !
 !
-    integer :: ztabf
-    integer :: nummae, nummam
+    integer(kind=8) :: ztabf
+    integer(kind=8) :: nummae, nummam
     character(len=8) :: nomesc, nommai
     real(kind=8) :: lambda
     real(kind=8) :: coefac, coefaf
     real(kind=8) :: deltat, theta
     real(kind=8) :: jeusup
-    integer :: iform
+    integer(kind=8) :: iform
 !
 ! ----------------------------------------------------------------------
 !

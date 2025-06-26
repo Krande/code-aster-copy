@@ -78,15 +78,15 @@ subroutine te0222(option, nomte)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     character(len=16), parameter :: nomres(4) = ['E    ', 'NU   ', 'ALPHA', 'RHO  ']
 !
-    integer           :: i, j, k, j1, j2, m, kk, l
-    integer           :: ier, icodre(4), kp, ncmp
-    integer           :: ipoids, ivf, idfde, jgano
-    integer           :: ndim, nno, nnos, npg, compt
-    integer           :: ivites, iaccel, ithet, igthet, icour, ipuls
-    integer           :: igeom, idepl, imate, matcod, ideplinco
-    integer           :: iforf, itemps, iepsf, iforc, iepsr
-    integer           :: irota, ipesa, isigi, isigm
-    integer           :: iret, ireth, ibalo, ideg, ilag, iray, ieli
+    integer(kind=8)           :: i, j, k, j1, j2, m, kk, l
+    integer(kind=8)           :: ier, icodre(4), kp, ncmp
+    integer(kind=8)           :: ipoids, ivf, idfde, jgano
+    integer(kind=8)           :: ndim, nno, nnos, npg, compt
+    integer(kind=8)           :: ivites, iaccel, ithet, igthet, icour, ipuls
+    integer(kind=8)           :: igeom, idepl, imate, matcod, ideplinco
+    integer(kind=8)           :: iforf, itemps, iepsf, iforc, iepsr
+    integer(kind=8)           :: irota, ipesa, isigi, isigm
+    integer(kind=8)           :: iret, ireth, ibalo, ideg, ilag, iray, ieli
     real(kind=8)      :: tcla, tthe, tfor, tini, thet, poids, f(3, 3)
     real(kind=8)      :: der(4), energi(2), divt, mu, angle, a, b
     real(kind=8)      :: epsi, valpar(4), accele(3), dsigin(6, 3)

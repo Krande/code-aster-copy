@@ -31,7 +31,7 @@ subroutine desymt46(ftos, ftot)
 !               F_IJKL=F_JIKL et F_IJKL=F_IJLK
 ! --------------------------------------------------------------------------------------------------
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer :: i, j, k, l, ijk(3, 3)
+    integer(kind=8) :: i, j, k, l, ijk(3, 3)
     real(kind=8) :: fnew(6, 6)
 ! ---------------------------------------------------------------------
 !

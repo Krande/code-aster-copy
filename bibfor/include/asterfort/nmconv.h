@@ -32,7 +32,7 @@ interface
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24) :: numedd
         character(len=19) :: sdnume
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_Conv), intent(inout) :: ds_conv
@@ -46,8 +46,8 @@ interface
         character(len=19) :: matass
         character(len=19) :: solveu
         type(NL_DS_System), intent(in) :: ds_system
-        integer :: numins
-        integer :: iterat
+        integer(kind=8) :: numins
+        integer(kind=8) :: iterat
         real(kind=8) :: eta
         type(NL_DS_Contact), intent(inout) :: ds_contact
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom

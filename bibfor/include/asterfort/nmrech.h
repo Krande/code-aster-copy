@@ -36,10 +36,10 @@ interface
         real(kind=8) :: rhom
         real(kind=8) :: rho
         real(kind=8) :: rhoopt
-        integer :: ldcopt
-        integer :: ldccvg
-        integer :: opt
-        integer :: act
+        integer(kind=8) :: ldcopt
+        integer(kind=8) :: ldccvg
+        integer(kind=8) :: opt
+        integer(kind=8) :: act
         aster_logical :: stite
     end subroutine nmrech
 end interface

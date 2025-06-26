@@ -21,9 +21,9 @@
 interface 
     subroutine lisccc(nomcmd, motclc, nbauth, nbnaut, mclaut)
         character(len=16) :: nomcmd
-        integer :: motclc(2)
-        integer :: nbauth
-        integer :: nbnaut
-        integer :: mclaut(2)
+        integer(kind=8) :: motclc(2)
+        integer(kind=8) :: nbauth
+        integer(kind=8) :: nbnaut
+        integer(kind=8) :: mclaut(2)
     end subroutine lisccc
 end interface 

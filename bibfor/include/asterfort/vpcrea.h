@@ -21,12 +21,12 @@
 interface
     subroutine vpcrea(icond, modes, masse, amor, raide,&
                       nume, ier)
-        integer :: icond
+        integer(kind=8) :: icond
         character(len=*) :: modes
         character(len=*) :: masse
         character(len=*) :: amor
         character(len=*) :: raide
         character(len=*) :: nume
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine vpcrea
 end interface

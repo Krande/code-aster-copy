@@ -39,7 +39,7 @@ subroutine srlnvi(mod, ndt, ndi, nvi)
     !!! Variables globales
     !!!
 
-    integer :: ndt, ndi, nvi
+    integer(kind=8) :: ndt, ndi, nvi
     character(len=8) :: mod
 
     !!!

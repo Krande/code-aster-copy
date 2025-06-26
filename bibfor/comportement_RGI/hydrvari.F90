@@ -23,7 +23,7 @@ subroutine hydrvari(vari0, vari1, hydra0, hydra1, hydras)
 !   declaration externes
     implicit none
     real(kind=8) :: vari0, vari1, hydra0, hydra1, hydras
-    integer erreur
+    integer(kind=8) erreur
 !   varibles locales
     real(kind=8) :: yymin
     parameter(yymin=1.d-3)

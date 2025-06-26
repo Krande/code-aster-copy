@@ -21,13 +21,13 @@
 interface
     subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                       jvale, nbvale, e, materi)
-        integer :: jmat
-        integer :: ktrac
+        integer(kind=8) :: jmat
+        integer(kind=8) :: ktrac
         character(len=*) :: nomcl
         real(kind=8) :: temp
-        integer :: jprol
-        integer :: jvale
-        integer :: nbvale
+        integer(kind=8) :: jprol
+        integer(kind=8) :: jvale
+        integer(kind=8) :: nbvale
         real(kind=8) :: e
         character(len=*), optional, intent(in) :: materi
     end subroutine rctrac

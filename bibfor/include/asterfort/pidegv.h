@@ -21,7 +21,7 @@
 interface
     subroutine pidegv(neps, tau, epsm, epsp, epsd,&
                       copilo)
-        integer :: neps
+        integer(kind=8) :: neps
         real(kind=8) :: tau
         real(kind=8) :: epsm(neps)
         real(kind=8) :: epsp(neps)

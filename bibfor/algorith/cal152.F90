@@ -32,9 +32,9 @@ subroutine cal152(option, max, may, maz, model, &
 #include "asterfort/calmaj.h"
 #include "asterfort/utmess.h"
     aster_logical :: vrai
-    integer :: i, j
-    integer :: imade
-    integer :: iphi1, iphi2
+    integer(kind=8) :: i, j
+    integer(kind=8) :: imade
+    integer(kind=8) :: iphi1, iphi2
     real(kind=8) :: mij, cij, kij, kij1, cij1, cij2
     real(kind=8) :: valr(2)
     character(len=2) :: model

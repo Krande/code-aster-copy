@@ -21,7 +21,7 @@
 interface 
       subroutine bwpw3d(mfr,biotw,poro,vw,xnsat,&
             mw,pw,bw,srw)
-        integer, intent(in) :: mfr
+        integer(kind=8), intent(in) :: mfr
         real(kind=8), intent(in) :: biotw
         real(kind=8), intent(in) :: poro
         real(kind=8), intent(in) :: vw

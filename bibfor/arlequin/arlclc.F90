@@ -32,7 +32,7 @@ subroutine arlclc(modarl, nbchel, chamel, marlel)
 !     ARGUMENTS:
 !     ----------
     character(len=8) ::  modarl
-    integer ::      nbchel
+    integer(kind=8) ::      nbchel
     character(len=19) :: chamel(nbchel)
     character(len=8) ::  marlel
 
@@ -52,7 +52,7 @@ subroutine arlclc(modarl, nbchel, chamel, marlel)
 
 ! ----------------------------------------------------------------------
 
-    integer ::      nbout, nbin
+    integer(kind=8) ::      nbout, nbin
     parameter(nbout=2, nbin=7)
     character(len=8) ::  lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -60,7 +60,7 @@ subroutine arlclc(modarl, nbchel, chamel, marlel)
     character(len=19) :: ligarl
     character(len=16) :: option
     character(len=19) :: ctfami, ctinfo, ctref1, ctcoo1, ctref2, ctcoo2, chgeom
-    integer ::      jarlm1, jarlm2
+    integer(kind=8) ::      jarlm1, jarlm2
     parameter(option='ARLQ_MATR')
 
 ! ----------------------------------------------------------------------

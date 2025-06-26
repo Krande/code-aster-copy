@@ -28,7 +28,7 @@ subroutine nmpro2(fonact, numedd, numfix)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     character(len=24) :: numedd, numfix
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
 !
 ! ----------------------------------------------------------------------
 !

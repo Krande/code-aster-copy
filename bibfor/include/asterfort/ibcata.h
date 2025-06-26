@@ -20,6 +20,6 @@
 !
 interface
     subroutine ibcata(ier)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine ibcata
 end interface

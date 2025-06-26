@@ -22,9 +22,9 @@ interface
     subroutine coppat(main, maout, nbma, nbpain, lenpat,same_zone)
         character(len=8), intent(in) :: main
         character(len=8), intent(in) :: maout
-        integer, intent(in) :: nbma
-        integer, intent(out) :: nbpain
-        integer, intent(in) :: lenpat
+        integer(kind=8), intent(in) :: nbma
+        integer(kind=8), intent(out) :: nbpain
+        integer(kind=8), intent(in) :: lenpat
         aster_logical, intent(in) :: same_zone
     end subroutine coppat
 end interface

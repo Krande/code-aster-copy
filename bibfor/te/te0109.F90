@@ -38,14 +38,14 @@ subroutine te0109(option, nomte)
 !
 !
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=3)
 !
-    integer :: icodre(nbres)
-    integer :: i, kp, itempe, icacoq, imate, iflupg, inbspi
-    integer :: ivf, igeom, idfde, ipoids, ndim
-    integer :: nno, nnos, npg, jgano, kpg, spt
-    integer :: itemps, k, mater, nbcmp, cdec, nbcou, nivc
+    integer(kind=8) :: icodre(nbres)
+    integer(kind=8) :: i, kp, itempe, icacoq, imate, iflupg, inbspi
+    integer(kind=8) :: ivf, igeom, idfde, ipoids, ndim
+    integer(kind=8) :: nno, nnos, npg, jgano, kpg, spt
+    integer(kind=8) :: itemps, k, mater, nbcmp, cdec, nbcou, nivc
 !
     real(kind=8) :: valres(nbres), conduc, h, ord
     real(kind=8) :: coor2d(14), dfdx(7), dfdy(7), poids, dtdx, dtdy, dtdz

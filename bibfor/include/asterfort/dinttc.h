@@ -29,11 +29,11 @@ interface
         real(kind=8) :: zo1o2
         real(kind=8) :: do1o2
         real(kind=8) :: r
-        integer :: norm(2, 4)
-        integer :: nint
-        integer :: nhop
-        integer :: npir
+        integer(kind=8) :: norm(2, 4)
+        integer(kind=8) :: nint
+        integer(kind=8) :: nhop
+        integer(kind=8) :: npir
         real(kind=8) :: coord(3, 12)
-        integer :: nbi
+        integer(kind=8) :: nbi
     end subroutine dinttc
 end interface

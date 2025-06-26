@@ -47,9 +47,9 @@ subroutine lisver(lischa)
 !
 !
 !
-    integer :: ichar, nbchar
+    integer(kind=8) :: ichar, nbchar
     character(len=8) :: charge
-    integer :: genrec
+    integer(kind=8) :: genrec
     character(len=16) :: typapp, typfct
     aster_logical :: lelim, ldual, levoc
 !

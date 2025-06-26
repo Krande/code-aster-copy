@@ -24,8 +24,8 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp, &
 #include "asterc/r8pi.h"
 #include "asterfort/mefac2.h"
 #include "asterfort/trigom.h"
-    integer :: ndim(14), nbcyl, nbgrp, nbtron, numgrp(*), idir, igrp
-    integer :: sgn(*), orig(*)
+    integer(kind=8) :: ndim(14), nbcyl, nbgrp, nbtron, numgrp(*), idir, igrp
+    integer(kind=8) :: sgn(*), orig(*)
     real(kind=8) :: xint(*), yint(*), rint(*), beta(*)
     real(kind=8) :: a(2*nbtron*nbcyl, *), b(*)
 !     ASSEMBLAGE POUR L ENCEINTE RECTANGULAIRE
@@ -57,7 +57,7 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp, &
 ! IN  : A      : TABLEAU DE TRAVAIL: SOUS MATRICE DU SYSTEME A.X = B
 ! IN  : B      : TABLEAU DE TRAVAIL: SECOND MEMBRE DU SYSTEME A.X = B
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, l, nj, nl, m, nm
+    integer(kind=8) :: i, j, k, l, nj, nl, m, nm
     real(kind=8) :: fic, dc, dc1
     real(kind=8) :: coef, coef1, coef2
     real(kind=8) :: rayk, rayi, arg
@@ -66,7 +66,7 @@ subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp, &
 !
 ! --- LECTURE DES DIMENSIONS
 !-----------------------------------------------------------------------
-    integer :: nbfin, nbtot, nima, nima2
+    integer(kind=8) :: nbfin, nbtot, nima, nima2
     real(kind=8) :: epsit
 !-----------------------------------------------------------------------
     nbcyl = ndim(3)

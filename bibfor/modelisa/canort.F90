@@ -45,12 +45,12 @@ subroutine canort(noma, nbma, listma, ndim, nbno, &
 !
 !
     character(len=8), intent(in) :: noma
-    integer, intent(in) :: nbma
-    integer, intent(in) :: listma(*)
-    integer, intent(in) :: ndim
-    integer, intent(in) :: nbno
-    integer, intent(in) :: listno(*)
-    integer, intent(in) :: type_calc
+    integer(kind=8), intent(in) :: nbma
+    integer(kind=8), intent(in) :: listma(*)
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: nbno
+    integer(kind=8), intent(in) :: listno(*)
+    integer(kind=8), intent(in) :: type_calc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,10 +75,10 @@ subroutine canort(noma, nbma, listma, ndim, nbno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: dimcoo, i, ifonc, ibid, jnorm, isom, in
-    integer :: idobj2, ij, ino
-    integer :: n, nocc, nno, nnos, nnn
-    integer :: iinver, imail, numail, ityp, jdes, nn, numno, lino(9)
+    integer(kind=8) :: dimcoo, i, ifonc, ibid, jnorm, isom, in
+    integer(kind=8) :: idobj2, ij, ino
+    integer(kind=8) :: n, nocc, nno, nnos, nnn
+    integer(kind=8) :: iinver, imail, numail, ityp, jdes, nn, numno, lino(9)
     real(kind=8) :: coor(3, 9), a, b, c, pvec(3), norme
     character(len=8) :: kangl, knumai
     character(len=8) :: nomtyp, nomnoe
@@ -90,8 +90,8 @@ subroutine canort(noma, nbma, listma, ndim, nbno, &
     real(kind=8) :: eksix, eksiy, eksiz, eetax, eetay, eetaz
     real(kind=8) :: vnorm, cosvec, sinvec, angl, atan2
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -21,7 +21,7 @@
 interface
     subroutine mefgmn(noma, nbgma, ligrma)
         character(len=8) :: noma
-        integer :: nbgma
+        integer(kind=8) :: nbgma
         character(len=24) :: ligrma(*)
     end subroutine mefgmn
 end interface

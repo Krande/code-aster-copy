@@ -35,6 +35,6 @@ interface
         character(len=19) :: chrota
         aster_logical :: lfonc
         real(kind=8) :: time
-        integer :: iord
+        integer(kind=8) :: iord
     end subroutine gcharg
 end interface

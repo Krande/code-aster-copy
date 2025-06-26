@@ -42,15 +42,15 @@ subroutine calcin(option, max, may, maz, model, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: mij
     character(len=*) :: model, option
     character(len=19) :: modx, mody, modz, veprj, max, may, maz
 !--------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: imatx, imaty, imatz
-    integer :: nbpres
+    integer(kind=8) :: imatx, imaty, imatz
+    integer(kind=8) :: nbpres
     real(kind=8) :: rx, ry, rz
     real(kind=8), pointer :: vectx(:) => null()
     real(kind=8), pointer :: vecty(:) => null()

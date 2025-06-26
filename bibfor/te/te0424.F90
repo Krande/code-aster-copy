@@ -49,16 +49,16 @@ subroutine te0424(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxnoeu = 9, mxnpg = 27, mxmatr = 3*9*3*9, mxvect = 3*9
+    integer(kind=8), parameter :: mxnoeu = 9, mxnpg = 27, mxmatr = 3*9*3*9, mxvect = 3*9
     aster_logical :: l_func, l_time, l_efff
-    integer :: jv_geom, jv_time, jv_pres, jv_effe
-    integer :: jv_depm, jv_depp
-    integer :: jv_vect, jv_matr
+    integer(kind=8) :: jv_geom, jv_time, jv_pres, jv_effe
+    integer(kind=8) :: jv_depm, jv_depp
+    integer(kind=8) :: jv_vect, jv_matr
     real(kind=8) :: time
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim, ndofbynode, ndof
-    integer :: iret, kpg
-    integer :: i, j, k, idof
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg, ndim, ndofbynode, ndof
+    integer(kind=8) :: iret, kpg
+    integer(kind=8) :: i, j, k, idof
     real(kind=8) :: matr(mxmatr), geomCurr(mxvect)
     real(kind=8) :: pres, pres_pg(mxnpg), coef_mult
 !

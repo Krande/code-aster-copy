@@ -133,8 +133,8 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 #include "blas/dlapy2.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -143,7 +143,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    integer :: ierr, n, ldh, ldq
+    integer(kind=8) :: ierr, n, ldh, ldq
     real(kind=8) :: rnorm
 !
 !     %-----------------%
@@ -165,7 +165,7 @@ subroutine dneigh(rnorm, n, h, ldh, ritzr, &
 !     %------------------------%
 !
     aster_logical :: select(1)
-    integer :: i, iconj, msglvl
+    integer(kind=8) :: i, iconj, msglvl
     real(kind=8) :: temp, vl(1)
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
     blas_int :: b_ldb

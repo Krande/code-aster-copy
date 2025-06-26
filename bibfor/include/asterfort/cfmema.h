@@ -22,10 +22,10 @@ interface
     subroutine cfmema(sdcont_defi , nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
                       nb_cont_elem)
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: nb_cont_surf
-        integer, intent(in) :: nb_cont_elem0
-        integer, intent(in) :: nb_cont_elem
-        integer, pointer :: v_poin_elem(:)
-        integer, pointer :: v_list_elem(:)
+        integer(kind=8), intent(in) :: nb_cont_surf
+        integer(kind=8), intent(in) :: nb_cont_elem0
+        integer(kind=8), intent(in) :: nb_cont_elem
+        integer(kind=8), pointer :: v_poin_elem(:)
+        integer(kind=8), pointer :: v_list_elem(:)
     end subroutine cfmema
 end interface

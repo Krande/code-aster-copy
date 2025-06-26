@@ -21,7 +21,7 @@
 interface
     subroutine matide(matz, nbcmp, licmp, modlag, tdiag,&
                       vdiag)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=*) :: matz
         character(len=8) :: licmp(nbcmp)
         character(len=16) :: modlag

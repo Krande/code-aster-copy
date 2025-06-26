@@ -31,7 +31,7 @@ subroutine mmgeom(ndim, &
 #include "asterfort/mmcaln.h"
 #include "asterfort/assert.h"
 !
-    integer, intent(in) :: ndim, nne, nnm
+    integer(kind=8), intent(in) :: ndim, nne, nnm
     real(kind=8), intent(in) :: ffe(9), ffm(9)
     real(kind=8), intent(in) :: elem_slav_coor(9, 3), elem_mast_coor(9, 3)
     real(kind=8), intent(in) :: tau1(3), tau2(3)
@@ -63,7 +63,7 @@ subroutine mmgeom(ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idim, inoe, inom
+    integer(kind=8) :: idim, inoe, inom
 !
 ! --------------------------------------------------------------------------------------------------
 !

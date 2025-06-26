@@ -26,6 +26,6 @@ interface
         real(kind=8) :: dirprj(3,3)
         real(kind=8) :: edge
         real(kind=8) :: apex
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine mcordo
 end interface

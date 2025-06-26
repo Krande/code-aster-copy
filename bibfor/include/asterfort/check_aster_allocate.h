@@ -19,6 +19,6 @@
 !
 interface
     subroutine check_aster_allocate(stage)
-        integer, intent(in) :: stage
+        integer(kind=8), intent(in) :: stage
     end subroutine check_aster_allocate
 end interface

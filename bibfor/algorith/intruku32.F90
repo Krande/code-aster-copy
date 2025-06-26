@@ -41,13 +41,13 @@ subroutine intruku32(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer :: i, nbequ, ind1, iret1, iret2
-    integer :: ee, ss, j_kde, j_kvi, nbvint
-    integer :: nbnoli, iret, iret3
+    integer(kind=8) :: i, nbequ, ind1, iret1, iret2
+    integer(kind=8) :: ee, ss, j_kde, j_kvi, nbvint
+    integer(kind=8) :: nbnoli, iret, iret3
     real(kind=8) :: t1, dt, t2, dt2, coeff
     real(kind=8) :: errd, errde, errv, errvi, errt
     real(kind=8) :: seuil1, seuil2, skd, skv, epsi
@@ -67,7 +67,7 @@ subroutine intruku32(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8), pointer :: nlsav1(:) => null()
 !
     real(kind=8), pointer :: par(:) => null()
-    integer, pointer :: buffnl(:) => null()
+    integer(kind=8), pointer :: buffnl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 ! Algorithm parameters saved in a linear vector, easily accessible using the defines

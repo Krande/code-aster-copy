@@ -20,8 +20,8 @@
 !
 interface
     function tstk2i(nlong, chaine)
-        integer :: nlong
+        integer(kind=8) :: nlong
         character(len=*) :: chaine
-        integer :: tstk2i
+        integer(kind=8) :: tstk2i
     end function tstk2i
 end interface

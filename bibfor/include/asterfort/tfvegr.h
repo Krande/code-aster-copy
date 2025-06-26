@@ -21,6 +21,6 @@
 interface
     subroutine tfvegr(nommcf, ocgril)
         character(len=16) :: nommcf
-        integer :: ocgril
+        integer(kind=8) :: ocgril
     end subroutine tfvegr
 end interface

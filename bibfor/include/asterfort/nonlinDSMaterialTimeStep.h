@@ -27,6 +27,6 @@ interface
         character(len=19), intent(in) :: hval_incr(*)
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
     end subroutine nonlinDSMaterialTimeStep
 end interface

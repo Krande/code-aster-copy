@@ -28,7 +28,7 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: ncmpg
+    integer(kind=8) :: ncmpg
     character(len=*) :: cesz, basez, typcez, nomgdz, cesmz
     character(len=*) :: licmp(*)
 ! ----------------------------------------------------------------------
@@ -51,15 +51,15 @@ subroutine cescrm(basez, cesz, typcez, nomgdz, ncmpg, &
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: i, ima, nbma
-    integer :: j1, j2, jcmps
+    integer(kind=8) :: i, ima, nbma
+    integer(kind=8) :: j1, j2, jcmps
     character(len=1) :: base
     character(len=4) :: cnum
     character(len=4) :: typces
     character(len=8) :: nomgd
     character(len=19) :: ces, cesm, wk1, wk2, cmps
     character(len=8), pointer :: cesk(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

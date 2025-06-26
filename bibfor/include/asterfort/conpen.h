@@ -23,8 +23,8 @@
 interface
     subroutine conpen(macor, nbcor, macoc, nbcoc, lface,&
                       locorr, loreor, ma)
-        integer :: nbcoc
-        integer :: nbcor
+        integer(kind=8) :: nbcoc
+        integer(kind=8) :: nbcor
         character(len=8) :: macor(nbcor+2)
         character(len=8) :: macoc(nbcoc+2)
         aster_logical :: lface

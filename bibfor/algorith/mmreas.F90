@@ -62,21 +62,21 @@ subroutine mmreas(mesh, ds_contact, hval_incr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: ztabf
-    integer :: ibid
-    integer :: posmae, jdecme, nummae
-    integer :: iptc
-    integer :: izone, imae, iptm
-    integer :: nne, nbmae, nptm
-    integer :: ndimg, nzoco
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ztabf
+    integer(kind=8) :: ibid
+    integer(kind=8) :: posmae, jdecme, nummae
+    integer(kind=8) :: iptc
+    integer(kind=8) :: izone, imae, iptm
+    integer(kind=8) :: nne, nbmae, nptm
+    integer(kind=8) :: ndimg, nzoco
     aster_logical :: lveri
     real(kind=8) :: lambdc, ksipc1, ksipc2
     real(kind=8) :: mlagc(9)
     character(len=8) :: aliase
     character(len=19) :: cnslbd, depplu
     character(len=24) :: tabfin
-    integer :: jtabf
+    integer(kind=8) :: jtabf
 !
 ! --------------------------------------------------------------------------------------------------
 !

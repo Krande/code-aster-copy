@@ -87,7 +87,7 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum, &
 #include "asterfort/mecact.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: niveau, ifm, niv, iaux
+    integer(kind=8) :: niveau, ifm, niv, iaux
     real(kind=8) :: valthe, insold, inst
     aster_logical :: evol
     character(len=8) :: ma, psourc
@@ -98,9 +98,9 @@ subroutine resthe(ligrel, evol, chtemm, chtemp, chflum, &
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: nbcmp, nbin, nbout, iarepe, mceld, mcelv, pceld, pcelv, igd
-    integer :: iadef, iavaf, ncmpf, iadeh, iavah, ncmph, ncmpt, iadet, iavat
-    integer :: nbjeve, ijeveo
+    integer(kind=8) :: nbcmp, nbin, nbout, iarepe, mceld, mcelv, pceld, pcelv, igd
+    integer(kind=8) :: iadef, iavaf, ncmpf, iadeh, iavah, ncmph, ncmpt, iadet, iavat
+    integer(kind=8) :: nbjeve, ijeveo
     character(len=1) :: base
     character(len=8) :: lpain(9), lpaout(1), licmp(19)
     character(len=24) :: lchin(9), lchout(1), kcmp(19), charev

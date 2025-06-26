@@ -20,7 +20,7 @@ subroutine xmofhm(lact, nlact, nno, ffe, ffc)
 ! person_in_charge: daniele.colombo at ifpen.fr
     implicit none
 #include "asterfort/assert.h"
-    integer :: lact(16), nlact(2), nno
+    integer(kind=8) :: lact(16), nlact(2), nno
     real(kind=8) :: ffe(*), ffc(16)
 !
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine xmofhm(lact, nlact, nno, ffe, ffc)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 ! ----------------------------------------------------------------------
 !

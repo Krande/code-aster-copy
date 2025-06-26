@@ -21,15 +21,15 @@
 interface
     subroutine ptforp(itype, option, nomte, a, a2, &
                       xl, ist, nno, ncf, pgl, fer,  fei)
-        integer             :: itype
+        integer(kind=8)             :: itype
         character(len=*)    :: option
         character(len=*)    :: nomte
         real(kind=8)        :: a
         real(kind=8)        :: a2
         real(kind=8)        :: xl
-        integer             :: ist
-        integer             :: nno
-        integer             :: ncf
+        integer(kind=8)             :: ist
+        integer(kind=8)             :: nno
+        integer(kind=8)             :: ncf
         real(kind=8)        :: pgl(3, 3)
         real(kind=8)        :: fer(*)
         real(kind=8)        :: fei(*)

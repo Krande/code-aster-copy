@@ -25,8 +25,8 @@ interface
                       newfct,lformu)
         aster_logical, intent(in) :: lfmult
         aster_logical, intent(in) :: lfchar
-        integer, intent(in) :: ichar
-        integer, intent(in) :: iord
+        integer(kind=8), intent(in) :: ichar
+        integer(kind=8), intent(in) :: iord
         character(len=8), intent(out) :: newfct
         character(len=19), intent(in) :: cartei
         aster_logical, intent(out) :: lformu

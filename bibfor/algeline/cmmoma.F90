@@ -31,23 +31,23 @@ subroutine cmmoma(meshOutZ, nbCellModi, modiCellNume, modiCellType, nbNodeIn)
 #include "blas/ddot.h"
 !
     character(len=*), intent(in) :: meshOutZ
-    integer, intent(in) :: nbNodeIn, nbCellModi
-    integer, pointer :: modiCellNume(:), modiCellType(:)
+    integer(kind=8), intent(in) :: nbNodeIn, nbCellModi
+    integer(kind=8), pointer :: modiCellNume(:), modiCellType(:)
 !
 !     OPERATEUR CREA_MAILLAGE   MOT CLE FACTEUR "MODI_MAILLE"
 !     ------------------------------------------------------------------
 !
-    integer :: cellNume, cellType, nodeAddIndx, nodeNume
-    integer :: iDime, iCell
+    integer(kind=8) :: cellNume, cellType, nodeAddIndx, nodeNume
+    integer(kind=8) :: iDime, iCell
     real(kind=8) :: w
     character(len=8) :: meshOut
     real(kind=8) :: coo1(3), coo2(3), coo3(3), theta, epsi, t13(3), t32(3)
     real(kind=8) :: normen, norme1, norme2, n(3), om(3), oc(3), c2, c6, t2, t6
     real(kind=8) :: t12(3)
     real(kind=8) :: n3m(3), mc(3), mp(3), mr(3), x3(3), x4(3), costet, dn1n2
-    integer :: icoude, iNode, nodeNume1, nodeNume2, nodeNume3, nodeNume4, cellModiType
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8) :: icoude, iNode, nodeNume1, nodeNume2, nodeNume3, nodeNume4, cellModiType
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------

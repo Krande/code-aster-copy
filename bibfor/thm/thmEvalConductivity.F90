@@ -34,9 +34,9 @@ subroutine thmEvalConductivity(ds_thm, &
 #include "asterfort/tlambc.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: angl_naut(3)
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: satur, phi
     real(kind=8), intent(out) :: lambs, dlambs
     real(kind=8), intent(out) :: lambp, dlambp
@@ -71,14 +71,14 @@ subroutine thmEvalConductivity(ds_thm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para = 2
+    integer(kind=8), parameter :: nb_para = 2
     real(kind=8) :: para_vale(nb_para)
     character(len=4), parameter :: para_name(nb_para) = (/'SAT ', 'PORO'/)
-    integer, parameter :: nb_resu = 4
+    integer(kind=8), parameter :: nb_resu = 4
     real(kind=8) :: resu_vale(nb_resu)
     character(len=16), parameter :: resu_name(nb_resu) = (/'LAMB_S  ', 'D_LB_S  ', &
                                                            'LAMB_PHI', 'D_LB_PHI'/)
-    integer :: icodre(nb_resu)
+    integer(kind=8) :: icodre(nb_resu)
 !
 ! --------------------------------------------------------------------------------------------------
 !

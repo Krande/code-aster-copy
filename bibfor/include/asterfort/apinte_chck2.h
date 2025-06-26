@@ -23,10 +23,10 @@ interface
                             norm_pside       , norm_sside     ,&
                             proj_coor        , l_inter)
         real(kind=8), intent(in) :: proj_tole
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: elem_sside_nbnode
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_sside_nbnode
         real(kind=8), intent(in) :: elem_sside_coor(3,9)
-        integer, intent(in) :: elem_pside_nbnode
+        integer(kind=8), intent(in) :: elem_pside_nbnode
         real(kind=8), intent(in) :: elem_pside_coor(3,9)
         character(len=8), intent(in) :: elem_pside_code
         real(kind=8), intent(in) :: norm_pside(3)

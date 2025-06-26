@@ -31,7 +31,7 @@ subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
 #include "asterfort/rccoma.h"
 #include "asterfort/tecach.h"
 !
-    integer :: ndim, nbsig, lonch(10)
+    integer(kind=8) :: ndim, nbsig, lonch(10)
     real(kind=8) :: sigth(*), inst
 !
 ! ----------------------------------------------------------------------
@@ -53,8 +53,8 @@ subroutine xsigth(ndim, lonch, inst, nbsig, sigth)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: r8bi3(3), epsth(6), d(36)
-    integer :: nse, idecpg, idebs, iret, ipg, i, ise, npg, j
-    integer :: imate, irese, nno, ibid, kpg
+    integer(kind=8) :: nse, idecpg, idebs, iret, ipg, i, ise, npg, j
+    integer(kind=8) :: imate, irese, nno, ibid, kpg
     character(len=8) :: elrefp, elrese(6), fami(6)
     character(len=16) :: phenom, option
 !

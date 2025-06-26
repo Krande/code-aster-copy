@@ -23,7 +23,7 @@ interface
                    chg,matr,effg,                   &
                    nbcou,npgsn,npgsr,npge,nso,npgt)
         character(len=16) :: nomte
-        integer :: nb1,nb2,npgsn,nso,nbcou,npgt,npgsr,npge
+        integer(kind=8) :: nb1,nb2,npgsn,nso,nbcou,npgt,npgsr,npge
         real(kind=8) :: geom(*),cara(*),lzr(*),matr(*),chg(*),effg(*)
     end subroutine efcoq3d
 end interface

@@ -47,15 +47,15 @@ subroutine pcstru(n, in, ip, icpl, icpc, &
 #include "asterfort/pcfull.h"
 #include "asterfort/pcinfe.h"
 !
-    integer :: n, in(n)
+    integer(kind=8) :: n, in(n)
     integer(kind=4) :: ip(*), icpc(*)
-    integer :: icpl(0:n), icpd(n)
-    integer :: icplx(0:n), icpcx(*)
+    integer(kind=8) :: icpl(0:n), icpd(n)
+    integer(kind=8) :: icplx(0:n), icpcx(*)
 !
     aster_logical :: complt
-    integer :: i, ier, imp, k, k1, k2
-    integer :: kk, lca, niv, niveau, nz
-    integer, pointer :: ind(:) => null()
+    integer(kind=8) :: i, ier, imp, k, k1, k2
+    integer(kind=8) :: kk, lca, niv, niveau, nz
+    integer(kind=8), pointer :: ind(:) => null()
 !-----------------------------------------------------------------------
 !
 ! IN-IP---> IPL-IPC

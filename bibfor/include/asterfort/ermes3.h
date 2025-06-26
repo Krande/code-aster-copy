@@ -22,15 +22,15 @@ interface
     subroutine ermes3(noe, ifa, tymvol, nnof, typmav,&
                       iref1, ivois, isig, nbcmp, dsg11,&
                       dsg22, dsg33, dsg12, dsg13, dsg23)
-        integer :: noe(9, 6, 4)
-        integer :: ifa
-        integer :: tymvol
-        integer :: nnof
+        integer(kind=8) :: noe(9, 6, 4)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: tymvol
+        integer(kind=8) :: nnof
         character(len=8) :: typmav
-        integer :: iref1
-        integer :: ivois
-        integer :: isig
-        integer :: nbcmp
+        integer(kind=8) :: iref1
+        integer(kind=8) :: ivois
+        integer(kind=8) :: isig
+        integer(kind=8) :: nbcmp
         real(kind=8) :: dsg11(9)
         real(kind=8) :: dsg22(9)
         real(kind=8) :: dsg33(9)

@@ -31,7 +31,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
 #include "asterfort/assert.h"
     character(len=*), intent(in) :: nomlu
     character(len=*), intent(in) :: catr
-    integer, intent(in), optional :: ival
+    integer(kind=8), intent(in), optional :: ival
     character(len=*), intent(in), optional :: cval
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'AFFECTATION D'UN ATTRIBUT
@@ -42,19 +42,19 @@ subroutine jeecra(nomlu, catr, ival, cval)
 ! IN  CVAL   : VALEUR EN CARACTERE DE L'ATTRIBUT
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadmi, iadyn, iblong, iblono, ibluti, ic, id, ibnum
-    integer :: il0, il1, ixlono, ixluti, jcara, jdate, jdocu, ixnum
-    integer :: jgenr, jhcod, jiadd, jiadm, jitab, jlong
-    integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
-    integer :: longi, longj, lonoi, lonoj, lonok, lont, lonti
-    integer :: ltypi, n, nbl, nhc, nmaxi, nbv
+    integer(kind=8) :: iadmi, iadyn, iblong, iblono, ibluti, ic, id, ibnum
+    integer(kind=8) :: il0, il1, ixlono, ixluti, jcara, jdate, jdocu, ixnum
+    integer(kind=8) :: jgenr, jhcod, jiadd, jiadm, jitab, jlong
+    integer(kind=8) :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
+    integer(kind=8) :: longi, longj, lonoi, lonoj, lonok, lont, lonti
+    integer(kind=8) :: ltypi, n, nbl, nhc, nmaxi, nbv
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -62,7 +62,7 @@ subroutine jeecra(nomlu, catr, ival, cval)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
@@ -70,14 +70,14 @@ subroutine jeecra(nomlu, catr, ival, cval)
     character(len=8) :: catrlu
     character(len=32), dimension(2) :: lvalk
     aster_logical :: lconst, lconti, llong, lluti
-    integer :: icre, iret, itab(1), jtab, irt
-    integer :: ibacol, ixiadd, ixdeso, ixlong, ii
+    integer(kind=8) :: icre, iret, itab(1), jtab, irt
+    integer(kind=8) :: ibacol, ixiadd, ixdeso, ixlong, ii
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idlong, idlono, idluti, idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idlong, idlono, idluti, idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2,&
      &               idlong=7,&
      &               idlono=8, idluti=9, idnum=10)
-    integer :: ilorep, ideno, ilnom, ilmax, iluti, idehc
+    integer(kind=8) :: ilorep, ideno, ilnom, ilmax, iluti, idehc
     parameter(ilorep=1, ideno=2, ilnom=3, ilmax=4, iluti=5, idehc=6)
 ! DEB ------------------------------------------------------------------
 !

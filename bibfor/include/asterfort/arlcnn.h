@@ -20,10 +20,10 @@
 !
 interface
     subroutine arlcnn(nummai,connex,loncum,nbno,cxno)
-        integer :: nummai
-        integer :: nbno
-        integer :: connex(*)
-        integer :: loncum(*)
-        integer :: cxno(*)
+        integer(kind=8) :: nummai
+        integer(kind=8) :: nbno
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: loncum(*)
+        integer(kind=8) :: cxno(*)
     end subroutine arlcnn
 end interface

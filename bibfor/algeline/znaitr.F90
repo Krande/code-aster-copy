@@ -251,12 +251,12 @@ subroutine znaitr(ido, bmat, n, k, np, &
 #include "blas/zgemv.h"
 #include "blas/zlanhs.h"
 #include "blas/zlascl.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    integer :: nopx, nbx, nrorth, nitref, nrstrt
+    integer(kind=8) :: nopx, nbx, nrorth, nitref, nrstrt
     common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
@@ -265,14 +265,14 @@ subroutine znaitr(ido, bmat, n, k, np, &
 !     %------------------%
 !
     character(len=1) :: bmat
-    integer :: ido, info, k, ldh, ldv, n, np
+    integer(kind=8) :: ido, info, k, ldh, ldv, n, np
     real(kind=8) :: rnorm, alpha
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: ipntr(3)
+    integer(kind=8) :: ipntr(3)
     complex(kind=8) :: h(ldh, k+np), resid(n), v(ldv, k+np), workd(3*n)
 !
 !     %------------%
@@ -296,7 +296,7 @@ subroutine znaitr(ido, bmat, n, k, np, &
 !
     aster_logical :: first, orth1, orth2, rstart, step3, step4
     integer(kind=4) :: infol4
-    integer :: ierr, i, ipj, irj, ivj, iter, itry, j, msglvl, jj
+    integer(kind=8) :: ierr, i, ipj, irj, ivj, iter, itry, j, msglvl, jj
     real(kind=8) :: smlnum, tst1, ulp, unfl, betaj, temp1, rnorm1, wnorm, rbid(1)
     complex(kind=8) :: cnorm
     blas_int :: b_incx, b_incy, b_n

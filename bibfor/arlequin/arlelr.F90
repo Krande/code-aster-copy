@@ -28,7 +28,7 @@ subroutine arlelr(elrefz, x, dimf, ff, nno)
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 
-    integer :: dimf, nno
+    integer(kind=8) :: dimf, nno
     real(kind=8) :: x(*), ff(*)
     character(len=8) elrefz
 

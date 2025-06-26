@@ -25,12 +25,12 @@ subroutine lcloca(coeft, nmat, nbcomm, nphas, sigi, &
 #include "asterfort/lcdevi.h"
 #include "asterfort/lcnrts.h"
 #include "asterfort/utmess.h"
-    integer :: nphas, nmat, nbcomm(nmat, 3), iphas
+    integer(kind=8) :: nphas, nmat, nbcomm(nmat, 3), iphas
     real(kind=8) :: vini(*), coeft(nmat)
     real(kind=8) :: sigi(6), alpha, sigg(6)
     character(len=16) :: loca
     real(kind=8) :: mu, dev(6), norme, evpcum, granb(6)
-    integer :: ievpg, i
+    integer(kind=8) :: ievpg, i
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
 !       in

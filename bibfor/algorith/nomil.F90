@@ -23,7 +23,7 @@ subroutine nomil(typma, nm, nbar)
 #include "jeveux.h"
 #include "asterfort/utmess.h"
     character(len=8), intent(in):: typma
-    integer, intent(out) :: nm(12), nbar
+    integer(kind=8), intent(out) :: nm(12), nbar
 !
 !-----------------------------------------------------------------------
 !     BUT: RETOURNE UN TABLEAU DONNANT LE NUMÉRO LOCAL D'UN NOEUD
@@ -40,7 +40,7 @@ subroutine nomil(typma, nm, nbar)
 !
 ! --- VARIABLES
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     nbar = 0
     do i = 1, 12

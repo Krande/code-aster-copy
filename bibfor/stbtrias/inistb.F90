@@ -101,14 +101,14 @@ subroutine inistb(maxnod, nbtyma, nomail, indic, permut, &
 !
 !  --> DECLARATIONS DES ARGUMENTS
     character(len=8) :: nomail(*)
-    integer :: maxfa, maxnod, nbtyma, limail(*)
-    integer :: permut(maxnod, *), indic(*), permuf(maxfa, *), indicf(*)
+    integer(kind=8) :: maxfa, maxnod, nbtyma, limail(*)
+    integer(kind=8) :: permut(maxnod, *), indic(*), permuf(maxfa, *), indicf(*)
 !  --> DECLARATIONS DES VARIABLES LOCALES
-    integer :: permu2(20, 3:35), nbnoma(3:35)
-    integer :: permu3(6, 14:21), nbnomf(14:21)
+    integer(kind=8) :: permu2(20, 3:35), nbnoma(3:35)
+    integer(kind=8) :: permu3(6, 14:21), nbnomf(14:21)
 !
 !  --> DECLARATIONS DES INDICES DE BOUCLES
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !
 !======================= SUPERTAB I-DEAS 4.0 ========================

@@ -49,7 +49,7 @@ subroutine te0309(option, nomte)
     type(FE_basis) :: FEBasis
 !
     real(kind=8) :: normal(3)
-    integer :: index, kp
+    integer(kind=8) :: index, kp
     real(kind=8) :: mass(MAX_BS, MAX_BS)
     real(kind=8) :: valQP(MAX_QP)
 !-----------------------------------------------------------------------

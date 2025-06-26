@@ -30,10 +30,10 @@ subroutine lcsees(elem_dime, nb_node_slav, nb_lagr, &
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: nb_node_slav, nb_lagr
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: nb_node_slav, nb_lagr
     aster_logical, intent(in) :: l_norm_smooth
-    integer, intent(in) :: indi_lagc(10)
+    integer(kind=8), intent(in) :: indi_lagc(10)
     real(kind=8), intent(in) :: lagrc
     real(kind=8), intent(in) :: poidpg
     real(kind=8), intent(in) :: shape_slav_func(9)
@@ -62,9 +62,9 @@ subroutine lcsees(elem_dime, nb_node_slav, nb_lagr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node_slav, i_dime, jj, shift
+    integer(kind=8) :: i_node_slav, i_dime, jj, shift
     real(kind=8) :: r_nb_lagr
-    integer :: jv_norm
+    integer(kind=8) :: jv_norm
 !
 ! --------------------------------------------------------------------------------------------------
 !

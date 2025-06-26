@@ -23,25 +23,25 @@ interface
                       nbsn, nbnd, supnd, adress, global,&
                       lgsn, factol, factou, sm, x,&
                       invp, perm, ad, trav, typsym)
-        integer :: nbnd
-        integer :: nbsn
-        integer :: nbloc
-        integer :: lgbloc(nbsn)
-        integer :: ncbloc(nbnd)
-        integer :: decal(nbsn)
-        integer :: seq(nbsn)
-        integer :: supnd(nbsn+1)
-        integer :: adress(nbsn+1)
+        integer(kind=8) :: nbnd
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: lgbloc(nbsn)
+        integer(kind=8) :: ncbloc(nbnd)
+        integer(kind=8) :: decal(nbsn)
+        integer(kind=8) :: seq(nbsn)
+        integer(kind=8) :: supnd(nbsn+1)
+        integer(kind=8) :: adress(nbsn+1)
         integer(kind=4) :: global(*)
-        integer :: lgsn(nbsn)
+        integer(kind=8) :: lgsn(nbsn)
         character(len=24) :: factol
         character(len=24) :: factou
         complex(kind=8) :: sm(nbnd)
         complex(kind=8) :: x(nbnd)
-        integer :: invp(nbnd)
-        integer :: perm(nbnd)
-        integer :: ad(nbnd)
+        integer(kind=8) :: invp(nbnd)
+        integer(kind=8) :: perm(nbnd)
+        integer(kind=8) :: ad(nbnd)
         complex(kind=8) :: trav(nbnd)
-        integer :: typsym
+        integer(kind=8) :: typsym
     end subroutine mltdca
 end interface

@@ -21,6 +21,6 @@
 interface
     subroutine cfcpes(resoco, jsecmb)
         character(len=24) :: resoco
-        integer :: jsecmb
+        integer(kind=8) :: jsecmb
     end subroutine cfcpes
 end interface

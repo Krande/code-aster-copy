@@ -21,6 +21,6 @@
 interface
     subroutine mxmoam(sddyna, nbmodp)
         character(len=19) :: sddyna
-        integer :: nbmodp
+        integer(kind=8) :: nbmodp
     end subroutine mxmoam
 end interface

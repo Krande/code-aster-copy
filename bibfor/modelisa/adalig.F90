@@ -72,14 +72,14 @@ subroutine adalig(ligrz, partsdz)
     character(len=8) :: noma
     character(len=16) :: typsd
     character(len=24) :: liel, tliel
-    integer :: i, iret, nbtg, iad, iadp, iadt, iadtp, jliel, jtlie2
-    integer ::  jtliel, igrel, itype, j, jtype
-    integer :: nbel, nbelem, nbg, nbgrel, nbtype, nel, nelem, ntot
-    integer :: nbelmx, rang, nbproc, np1, nspaq, nbelgr, igre2
-    integer :: ktype, k, nbelgv, lont
-    integer, pointer :: gteut(:) => null()
-    integer, pointer :: nteut(:) => null()
-    integer, pointer :: teut(:) => null()
+    integer(kind=8) :: i, iret, nbtg, iad, iadp, iadt, iadtp, jliel, jtlie2
+    integer(kind=8) ::  jtliel, igrel, itype, j, jtype
+    integer(kind=8) :: nbel, nbelem, nbg, nbgrel, nbtype, nel, nelem, ntot
+    integer(kind=8) :: nbelmx, rang, nbproc, np1, nspaq, nbelgr, igre2
+    integer(kind=8) :: ktype, k, nbelgv, lont
+    integer(kind=8), pointer :: gteut(:) => null()
+    integer(kind=8), pointer :: nteut(:) => null()
+    integer(kind=8), pointer :: teut(:) => null()
     mpi_int :: mrank, msize
     aster_logical :: lhpc
 !----------------------------------------------------------------------

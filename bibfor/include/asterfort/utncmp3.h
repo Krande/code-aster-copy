@@ -21,7 +21,7 @@
 interface
     subroutine utncmp3(prno, ncmp, list_cmp, list_name)
         character(len=*) :: prno
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: list_cmp, list_name
     end subroutine utncmp3
 end interface

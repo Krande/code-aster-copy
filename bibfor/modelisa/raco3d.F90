@@ -53,7 +53,7 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
 #include "asterfort/rco3d_crealigrel.h"
 #include "asterfort/rco3d_clcrela.h"
 !
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=8) :: charge
     character(len=14) :: numddl
     character(len=19) :: lisrel
@@ -78,20 +78,20 @@ subroutine raco3d(numdlz, iocc, fonrez, lisrez, chargz)
     character(len=19) :: ligrmo, ligrel, chmlrac
     character(len=24) :: lismaco, lismavo, lisnoco
     character(len=8)  :: mod, noma
-    integer :: nbmavo, nbmaco, nt_nodes
+    integer(kind=8) :: nbmavo, nbmaco, nt_nodes
     character(len=8), pointer :: lgrf(:) => null()
-    integer :: nb_pairs, iret
-    integer :: i, n1
+    integer(kind=8) :: nb_pairs, iret
+    integer(kind=8) :: i, n1
     real(kind=8) :: epai, crig
-    integer, pointer :: list_pairs(:) => null()
+    integer(kind=8), pointer :: list_pairs(:) => null()
     character(len=8) :: lpain(2), lpaout(1)
     character(len=24) :: lchin(2), lchout(1)
-    integer :: nbnocot, jlisnoco
-    integer, allocatable :: map_noco_pair(:, :, :)
-    integer, allocatable :: map_noco_nbnoco(:, :, :)
-    integer, allocatable :: map_noco_nbelem(:, :)
+    integer(kind=8) :: nbnocot, jlisnoco
+    integer(kind=8), allocatable :: map_noco_pair(:, :, :)
+    integer(kind=8), allocatable :: map_noco_nbnoco(:, :, :)
+    integer(kind=8), allocatable :: map_noco_nbelem(:, :)
     real(kind=8), pointer ::  v_epai(:) => null()
-    integer, pointer :: list_total_no_co(:) => null()
+    integer(kind=8), pointer :: list_total_no_co(:) => null()
     character(len=8) :: cara_elem
 
     call jemarq()

@@ -22,8 +22,8 @@ interface
     subroutine rccome(nommat, pheno, icodre, iarret, k11_ind_nomrc)
         character(len=*), intent(in) :: nommat
         character(len=*), intent(in) :: pheno
-        integer, intent(out) :: icodre
-        integer, intent(in), optional :: iarret
+        integer(kind=8), intent(out) :: icodre
+        integer(kind=8), intent(in), optional :: iarret
         character(len=11), intent(out), optional :: k11_ind_nomrc
     end subroutine rccome
 end interface

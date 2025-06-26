@@ -26,12 +26,12 @@ interface
                       bmat, n, which, nev, tol,&
                       resid, ncv, v, ldv, iparam,&
                       ipntr, workd, workl, lworkl, info)
-        integer :: lworkl
-        integer :: ldv
-        integer :: ncv
-        integer :: nev
-        integer :: n
-        integer :: ldz
+        integer(kind=8) :: lworkl
+        integer(kind=8) :: ldv
+        integer(kind=8) :: ncv
+        integer(kind=8) :: nev
+        integer(kind=8) :: n
+        integer(kind=8) :: ldz
         aster_logical :: rvec
         character(len=1) :: howmny
         aster_logical :: select(ncv)
@@ -46,10 +46,10 @@ interface
         real(kind=8) :: tol
         real(kind=8) :: resid(n)
         real(kind=8) :: v(ldv, ncv)
-        integer :: iparam(11)
-        integer :: ipntr(14)
+        integer(kind=8) :: iparam(11)
+        integer(kind=8) :: ipntr(14)
         real(kind=8) :: workd(3*n)
         real(kind=8) :: workl(lworkl)
-        integer :: info
+        integer(kind=8) :: info
     end subroutine dneupd
 end interface

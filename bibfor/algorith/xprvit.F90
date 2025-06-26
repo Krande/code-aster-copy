@@ -54,7 +54,7 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
     character(len=19) :: cnsvt, cnsvn, vpoint, disfr, cnsbl, cnsdis, cnsbet
     character(len=19) :: listp, delta, ucnslt, ucnsln
     character(len=24) :: nvit, nbeta
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: lcmin, damax, rdimp, rdtor
     aster_logical :: locdom
 !
@@ -109,15 +109,15 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, j, nbno, jmin, nbptff, ibid, jdelta
-    integer :: jfonf, jvtl, jvnl, ifm, niv, jvit
-    integer :: jbeta, jdisfr, cfv, bfv, vfv, afv, nfv
+    integer(kind=8) :: i, j, nbno, jmin, nbptff, ibid, jdelta
+    integer(kind=8) :: jfonf, jvtl, jvnl, ifm, niv, jvit
+    integer(kind=8) :: jbeta, jdisfr, cfv, bfv, vfv, afv, nfv
     real(kind=8) :: eps, xm, ym, zm, dmin, smin, xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, xim, yim, zim, s, norm2, xn, yn, zn, d
     real(kind=8) :: radimp, radtor
     character(len=8) :: typcmp(6), method
     character(len=16) :: operation
-    integer :: jbasef, k, ier
+    integer(kind=8) :: jbasef, k, ier
 !
     real(kind=8) :: bast(3), tast(3), n(3), t(3), b(3), mtast, ppi(3), normij
     real(kind=8) :: lsnth(2), lstth(2), normkl, modnor, modtan
@@ -126,19 +126,19 @@ subroutine xprvit(noma, fiss, ndim, nvit, nbeta, &
     character(len=19) :: covir, bavir, vitvir, angvir, numvir
 !
 !     EULER AXIS AND EULER ANGLE CALCULATIONS
-    integer :: jcnsb, jlistp, jvp
+    integer(kind=8) :: jcnsb, jlistp, jvp
     real(kind=8) :: ni(3), ti(3), bi(3), nj(3), tj(3), bj(3), rij(3, 3), tpl(3)
     real(kind=8) :: npl(3), bpl(3), axeul(3), calfa, salfa, modvec
     real(kind=8) :: t0, t180, alfa
     aster_logical :: endpnt
 !
 !     MULTIPLE CRACK FRONTS
-    integer :: jfmult, numfon, fon
+    integer(kind=8) :: jfmult, numfon, fon
 !
 !     BISECTION METHOD AND VELOCITY INTERPOLATION
     real(kind=8) :: tolld, dprec, ds, vp, betap
     real(kind=8) :: ptang(3, 3), sens, npp(3), tpp(3), norme
-    integer :: maxite, jlimsx, jlimdx
+    integer(kind=8) :: maxite, jlimsx, jlimdx
     real(kind=8), pointer :: euler(:) => null()
     real(kind=8), pointer :: vn_propa_ff(:) => null()
     real(kind=8), pointer :: v_propa_ff(:) => null()

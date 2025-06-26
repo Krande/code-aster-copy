@@ -24,9 +24,9 @@ interface
     subroutine wpfopr(lmasse, lamor, lraide, appr, fmin,&
                       sigma, matopa, matpsc, raide, lqz,&
                       solveu)
-        integer :: lmasse
-        integer :: lamor
-        integer :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
+        integer(kind=8) :: lraide
         character(len=*) :: appr
         real(kind=8) :: fmin
         complex(kind=8) :: sigma

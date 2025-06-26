@@ -35,7 +35,7 @@ subroutine rsllin(mod, nmat, materd, materf, matcst, &
 !       ----------------------------------------------------------------
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: sigd(6), sigf(6)
@@ -48,7 +48,7 @@ subroutine rsllin(mod, nmat, materd, materf, matcst, &
 !
     character(len=8) :: mod
     character(len=3) :: matcst
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !

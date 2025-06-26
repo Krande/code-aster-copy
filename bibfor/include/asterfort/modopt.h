@@ -23,6 +23,6 @@ interface
         character(len=8) :: resuco
         character(len=8) :: modele
         character(len=24) :: lesopt
-        integer :: nbopt
+        integer(kind=8) :: nbopt
     end subroutine modopt
 end interface

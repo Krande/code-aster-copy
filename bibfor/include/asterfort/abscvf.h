@@ -20,7 +20,7 @@
 !
 interface
     subroutine abscvf(ndim, tabar, xe, s)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: tabar(*)
         real(kind=8) :: xe
         real(kind=8) :: s

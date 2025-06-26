@@ -28,7 +28,7 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma, &
     character(len=1) :: appr
     complex(kind=8) :: v(*), sigma
     real(kind=8) :: u1(*), u2(*), u3(*), u4(*), yh(*), yb(*), zh(*), zb(*)
-    integer :: lmatra, lmasse, lamor, n, lbloq(*)
+    integer(kind=8) :: lmatra, lmasse, lamor, n, lbloq(*)
     character(len=19) :: solveu
 !                   T               T
 !     CALCUL (ZH,ZB)   = A * (YH,YB)
@@ -57,11 +57,11 @@ subroutine wp2ayl(appr, lmatra, lmasse, lamor, sigma, &
 !
 !
     real(kind=8) :: zero, sr
-    integer :: i
+    integer(kind=8) :: i
     complex(kind=8) :: cbid
     character(len=1) :: kbid
     character(len=19) :: k19bid, matass, chcine, criter
-    integer :: iret
+    integer(kind=8) :: iret
 !     ------------------------------------------------------------------
 ! INIT. OBJETS ASTER
 !-----------------------------------------------------------------------

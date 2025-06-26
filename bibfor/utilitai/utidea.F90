@@ -18,7 +18,7 @@
 
 subroutine utidea(nom, itype, versio)
     implicit none
-    integer :: itype, versio
+    integer(kind=8) :: itype, versio
     character(len=*) :: nom
 !     CORRESPONDANCE NOM DE MAILLE "ASTER" AVEC NUMERO "IDEAS"
 !     ------------------------------------------------------------------

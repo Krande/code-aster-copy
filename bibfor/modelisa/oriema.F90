@@ -26,7 +26,7 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
 #include "asterfort/provec.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    integer :: nbnmai, lnmail(*), lnm3d(*), ndim, norien, ifm, niv
+    integer(kind=8) :: nbnmai, lnmail(*), lnm3d(*), ndim, norien, ifm, niv
     real(kind=8) :: coor(*)
     aster_logical :: reorie
     character(len=8) :: nomail, tpmail, typ3d
@@ -47,9 +47,9 @@ subroutine oriema(nomail, tpmail, nbnmai, lnmail, typ3d, &
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 !
-    integer, parameter :: nbnomx = 27
-    integer :: i, ic, n1, n2, n3, nbnsm, nbns3d, ino, nbnoe
-    integer :: lisnoe(nbnomx)
+    integer(kind=8), parameter :: nbnomx = 27
+    integer(kind=8) :: i, ic, n1, n2, n3, nbnsm, nbns3d, ino, nbnoe
+    integer(kind=8) :: lisnoe(nbnomx)
     real(kind=8) :: coon1(3), coon2(3), coon3(3), n1n2(3), n1n3(3)
     real(kind=8) :: n(3), norme, n1g(3), xg3d(3), xgm(3), xgn, zero
     blas_int :: b_incx, b_incy, b_n

@@ -21,11 +21,11 @@
 interface
     subroutine i2tgrm(voisn1, voisn2, nbm, stchm, ptchm,&
                       nbchm)
-        integer :: voisn1(*)
-        integer :: voisn2(*)
-        integer :: nbm
-        integer :: stchm(*)
-        integer :: ptchm(*)
-        integer :: nbchm
+        integer(kind=8) :: voisn1(*)
+        integer(kind=8) :: voisn2(*)
+        integer(kind=8) :: nbm
+        integer(kind=8) :: stchm(*)
+        integer(kind=8) :: ptchm(*)
+        integer(kind=8) :: nbchm
     end subroutine i2tgrm
 end interface

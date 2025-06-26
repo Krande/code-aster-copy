@@ -21,8 +21,8 @@
 interface
     subroutine nmdcdc(sddisc, numins, nomlis, nbrpas)
         character(len=19) :: sddisc
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=24) :: nomlis
-        integer :: nbrpas
+        integer(kind=8) :: nbrpas
     end subroutine nmdcdc
 end interface

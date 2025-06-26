@@ -24,7 +24,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option, &
 #include "asterf_types.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-    integer :: mat, kpg, ksp, codret
+    integer(kind=8) :: mat, kpg, ksp, codret
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6)
     real(kind=8) :: vim(*), vip(*), r
     character(len=16) :: option
@@ -46,7 +46,7 @@ subroutine lceiab(fami, kpg, ksp, mat, option, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: resi, rigi, elas
-    integer :: regime, regm, i, j, cod(6), cinema
+    integer(kind=8) :: regime, regm, i, j, cod(6), cinema
     real(kind=8) :: sc, dc, alpha, beta, s0, d0, ka, sk, val(6)
     real(kind=8) :: t(3), pr(3, 3), tpo(3), tpon(3), tno, tnon
     real(kind=8) :: dno, ddno, dnon, dsidno

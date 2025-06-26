@@ -39,7 +39,7 @@ subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: disp_prev
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: incr_esti
     character(len=19), intent(in) :: disp_esti
 !
@@ -61,8 +61,8 @@ subroutine nmprdc(ds_algopara, nume_dof, disp_prev, sddisc, nume_inst, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_equa, iret
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_equa, iret
     real(kind=8) :: time
     character(len=19) :: disp_extr
     character(len=8) :: result_extr

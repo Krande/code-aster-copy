@@ -22,20 +22,20 @@ interface
     subroutine xmmab4(ndim, nno, nnos, ffp, jac,&
                       ptknp, nfh, seuil, mu, singu,&
                       fk, coefbu, ddls, ddlm, mmat)
-        integer :: ndim
-        integer :: nno
-        integer :: nnos
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnos
         real(kind=8) :: ffp(27)
         real(kind=8) :: jac
         real(kind=8) :: ptknp(3, 3)
-        integer :: nfh
+        integer(kind=8) :: nfh
         real(kind=8) :: seuil
         real(kind=8) :: mu
-        integer :: singu
+        integer(kind=8) :: singu
         real(kind=8) :: fk(27,3,3)
         real(kind=8) :: coefbu
-        integer :: ddls
-        integer :: ddlm
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlm
         real(kind=8) :: mmat(216, 216)
     end subroutine xmmab4
 end interface

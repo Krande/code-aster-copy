@@ -71,10 +71,10 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: base, mater1, mater2, noma
-    integer :: nbm, nuor(nbm), iaxe, kec, vicoq(nbm)
+    integer(kind=8) :: nbm, nuor(nbm), iaxe, kec, vicoq(nbm)
     real(kind=8) :: geom(9), torco(4, nbm), tcoef(10, nbm)
 !
-    integer :: iddl(2)
+    integer(kind=8) :: iddl(2)
     character(len=3) :: kmod
     character(len=11) :: k11
     character(len=16) :: nompar(3)
@@ -83,11 +83,11 @@ subroutine modcoq(base, nuor, nbm, mater1, mater2, &
     character(len=32) :: grpno
 !
 !-----------------------------------------------------------------------
-    integer :: icoor, icoq, idec, idecm, idecmn, idefm
-    integer :: ifm, ifreba, imod, inmaxe, inmaxi, ino, inunoe
-    integer :: inunoi, iok1, iok2, iok3, ipara, iret
-    integer :: ivalk, ivalr, nbeq, nbnoex, nbnoin, nbnoto
-    integer :: nbpara, numnoe, numod, nunoe0
+    integer(kind=8) :: icoor, icoq, idec, idecm, idecmn, idefm
+    integer(kind=8) :: ifm, ifreba, imod, inmaxe, inmaxi, ino, inunoe
+    integer(kind=8) :: inunoi, iok1, iok2, iok3, ipara, iret
+    integer(kind=8) :: ivalk, ivalr, nbeq, nbnoex, nbnoin, nbnoto
+    integer(kind=8) :: nbpara, numnoe, numod, nunoe0
     real(kind=8) :: dpmaxe, dpmaxi, dpnorm, drmax, dx1, dx2, fremod
     real(kind=8) :: poiss1, poiss2, rho1, rho2, rtemp, tole, young1
     real(kind=8) :: young2

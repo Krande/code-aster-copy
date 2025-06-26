@@ -21,14 +21,14 @@ interface
                       vale_ref , nom_cham      , nom_cmp    , crit_cmp, lst_loca, &
                       etat_loca, pene_maxi, resi_glob_maxi)
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_fail
+        integer(kind=8), intent(in) :: i_fail
         character(len=16), intent(in) :: event_typek
         real(kind=8), intent(out) :: vale_ref
         character(len=16), intent(out) :: nom_cham
         character(len=16), intent(out) :: nom_cmp
         character(len=16), intent(out) :: crit_cmp
         character(len=24), intent(out)  :: lst_loca
-        integer, intent(out):: etat_loca
+        integer(kind=8), intent(out):: etat_loca
         real(kind=8), intent(out) :: pene_maxi
         real(kind=8), intent(out) :: resi_glob_maxi
     end subroutine dfllpe

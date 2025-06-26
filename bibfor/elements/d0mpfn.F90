@@ -27,7 +27,7 @@ subroutine d0mpfn(zimat, nmnbn, nmdpla)
 ! OUT NMDPLA : DERIVEES DES MOMENTS LIMITES DE PLASTICITE
 !
 #include "asterfort/cdnfon.h"
-    integer :: i, ier0, ier1, zimat
+    integer(kind=8) :: i, ier0, ier1, zimat
 !
     real(kind=8) :: nmnbn(6)
     real(kind=8) :: nmdpla(2, 2)

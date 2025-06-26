@@ -69,10 +69,10 @@ subroutine lcplbe(BEHinteg, &
 !           IRTETI = 1:  CONTROLE DU REDECOUPAGE DU PAS DE TEMPS
 !       ----------------------------------------------------------------
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: nmat, nseuil
+    integer(kind=8) :: nmat, nseuil
 !
-    integer :: itmax, nprojs, nessai, osci
-    integer :: ndt, ndi, nvi, iter1, iter2, iter3, iter4
+    integer(kind=8) :: itmax, nprojs, nessai, osci
+    integer(kind=8) :: ndt, ndi, nvi, iter1, iter2, iter3, iter4
 !
     real(kind=8) :: toler, zero, precm
     parameter(zero=0.d0)
@@ -91,7 +91,7 @@ subroutine lcplbe(BEHinteg, &
     real(kind=8) :: ddpt0, ddpc0, ftrac2, ftrac1, fcomp1, fcomp2
     character(len=10) :: ctol, citer, cerr
     character(len=24) :: valk(3)
-    integer :: irteti
+    integer(kind=8) :: irteti
     aster_logical :: conver
 !       ----------------------------------------------------------------
     common/tdim/ndt, ndi

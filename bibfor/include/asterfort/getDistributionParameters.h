@@ -21,10 +21,10 @@ interface
                                      ldist, ldgrel,&
                                      rang, nbproc,&
                                      numsd)
-        integer, intent(in) :: nbElem
+        integer(kind=8), intent(in) :: nbElem
         character(len=*), intent(in) :: listElem(nbElem)
         aster_logical, intent(out) :: ldist, ldgrel
-        integer, intent(out) :: rang, nbproc
-        integer, pointer :: numsd(:)
+        integer(kind=8), intent(out) :: rang, nbproc
+        integer(kind=8), pointer :: numsd(:)
     end subroutine getDistributionParameters
 end interface

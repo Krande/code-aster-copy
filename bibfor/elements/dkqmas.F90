@@ -62,14 +62,14 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !     OUT MAS    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_CIN (ECIN_ELEM)
 !     ------------------------------------------------------------------
-    integer, parameter :: ii(8) = [1, 10, 19, 28, 37, 46, 55, 64]
-    integer, parameter :: jj(8) = [5, 14, 23, 32, 33, 42, 51, 60]
-    integer, parameter :: ll(16) = [3, 7, 12, 16, 17, 21, 26, 30, 35, 39, 44, 48, 49, 53, 58, 62]
+    integer(kind=8), parameter :: ii(8) = [1, 10, 19, 28, 37, 46, 55, 64]
+    integer(kind=8), parameter :: jj(8) = [5, 14, 23, 32, 33, 42, 51, 60]
+    integer(kind=8), parameter :: ll(16) = [3, 7, 12, 16, 17, 21, 26, 30, 35, 39, 44, 48, 49, 53, 58, 62]
     real(kind=8), parameter :: zero = 0.d0, un = 1.d0, neuf = 9.d0
     real(kind=8), parameter :: douze = 12.d0, unquar = 0.25d0, undemi = 0.5d0
-    integer :: i, j, k, i1, i2, i0
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: jdepg, jcoqu, jvitg, iret
+    integer(kind=8) :: i, j, k, i1, i2, i0
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: jdepg, jcoqu, jvitg, iret
     real(kind=8) :: roe, rho, epais, rof
     real(kind=8) :: qsi, eta
     real(kind=8) :: detj, wgt
@@ -85,8 +85,8 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
 !
 !WARNING BB local variable is not used !
 !   LOCAL VARIABLES FOR COEF_RIGI_DRZ
-    integer, parameter :: npgmx = 9
-    integer :: iishp, jjshp
+    integer(kind=8), parameter :: npgmx = 9
+    integer(kind=8) :: iishp, jjshp
     real(kind=8) :: shp(3, 4, npgmx), shpr1(3, 4, npgmx), shpr2(3, 4, npgmx), bb(12, npgmx)
     real(kind=8) :: gshp1(3, 4), gshp2(3, 4)
     real(kind=8) :: dArea
@@ -98,7 +98,7 @@ subroutine dkqmas(xyzl, option, pgl, mas, ener)
     real(kind=8) :: dmf2(9)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
-    integer :: multic, irot
+    integer(kind=8) :: multic, irot
     real(kind=8) :: xab1(3, 12), bf(3, 12), bm(3, 8)
     aster_logical :: dri, coupmf
     blas_int :: b_incx, b_incy, b_n

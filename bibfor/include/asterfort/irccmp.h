@@ -23,11 +23,11 @@ interface
                       cmpNb    , cmpIndx)
         character(len=1), intent(in) :: errorType
         character(len=8), intent(in):: quantityName
-        integer, intent(in) :: cmpCataNb
+        integer(kind=8), intent(in) :: cmpCataNb
         character(len=8), pointer :: cmpCataName(:)
-        integer, intent(in) :: cmpUserNb
+        integer(kind=8), intent(in) :: cmpUserNb
         character(len=8), pointer :: cmpUserName(:)
-        integer, intent(out) :: cmpNb
-        integer, pointer :: cmpIndx(:)
+        integer(kind=8), intent(out) :: cmpNb
+        integer(kind=8), pointer :: cmpIndx(:)
     end subroutine irccmp
 end interface

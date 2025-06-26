@@ -45,7 +45,7 @@ subroutine ntdcom(result_dry, l_dry)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbocc, iocc, n1, nbcham
+    integer(kind=8) :: nbocc, iocc, n1, nbcham
     character(len=16) :: comp_rela, tysd
     aster_logical :: lrela
     character(len=16), parameter :: keywfact = 'COMPORTEMENT'

@@ -19,6 +19,6 @@
 interface
     subroutine calyrc(load, mesh, model, geomDime)
         character(len=8), intent(in) :: load, mesh, model
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
     end subroutine calyrc
 end interface

@@ -22,16 +22,16 @@
             subroutine mnlcho(reprise,imat,numedd,xcdl,nd,nchoc,h,hf,   &
      &parcho,adime,ninc,tabchoc,lcine,solveu)
               aster_logical :: reprise
-              integer :: imat(2)
+              integer(kind=8) :: imat(2)
               character(len=14) :: numedd
               character(len=14) :: xcdl
-              integer :: nd
-              integer :: nchoc
-              integer :: h
-              integer :: hf
+              integer(kind=8) :: nd
+              integer(kind=8) :: nchoc
+              integer(kind=8) :: h
+              integer(kind=8) :: hf
               character(len=14) :: parcho
               character(len=14) :: adime
-              integer :: ninc
+              integer(kind=8) :: ninc
               character(len=8) :: tabchoc
               aster_logical :: lcine
               character(len=19) :: solveu

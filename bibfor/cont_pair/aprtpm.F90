@@ -36,18 +36,18 @@ subroutine aprtpm(pair_tole, elem_dime, &
 !
 
     real(kind=8), intent(in) :: pair_tole
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: elem_mast_nbnode
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_mast_nbnode
     real(kind=8), intent(in) :: elem_mast_coor(3, 9)
     character(len=8), intent(in) :: elem_mast_code
-    integer, intent(in) :: elem_slav_nbnode
+    integer(kind=8), intent(in) :: elem_slav_nbnode
     real(kind=8), intent(in) :: elem_slav_coor(3, 9)
     character(len=8), intent(in) :: elem_slav_code
-    integer, intent(in) :: nb_poin_inte
+    integer(kind=8), intent(in) :: nb_poin_inte
     real(kind=8), intent(out) :: poin_inte_ma(elem_dime-1, 8)
     real(kind=8), intent(out) :: poin_gaus_ma(elem_dime-1, 36)
     real(kind=8), intent(in) :: poin_inte_sl(elem_dime-1, 8)
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,17 +58,17 @@ subroutine aprtpm(pair_tole, elem_dime, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_poin_inte, nb_poin_gaus
+    integer(kind=8) :: i_poin_inte, nb_poin_gaus
     real(kind=8) :: node_real(3), ksi(2), ksi_ma(2)
     real(kind=8) :: norm(3)
     real(kind=8) :: dff(2, 9)
-    integer :: iret_
+    integer(kind=8) :: iret_
     real(kind=8) :: tria_coor_es(2, 3)
-    integer :: i_tria, i_gauss, nb_tria, nb_gauss, i_node, i_dime
+    integer(kind=8) :: i_tria, i_gauss, nb_tria, nb_gauss, i_node, i_dime
     real(kind=8) :: gauss_weight_es(12), gauss_coor_es(2, 12)
     real(kind=8) :: gauss_coou(3), dire_norm(3), gauss_coot(2)
     real(kind=8) :: tau1(3), tau2(3), ksi1, ksi2, elem_slav_coot(27)
-    integer :: tria_node(6, 3)
+    integer(kind=8) :: tria_node(6, 3)
     character(len=8) :: gauss_family
     real(kind=8) :: shape_dfunc(2, 9)
     aster_logical :: debug

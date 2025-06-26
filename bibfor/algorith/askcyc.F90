@@ -59,10 +59,10 @@ subroutine askcyc(craid, ndim, soumat, beta, ni, &
 !
     character(len=24) :: soumat
     complex(kind=8) :: craid(*)
-    integer :: nbliax, libid(*), liax(nbliax)
+    integer(kind=8) :: nbliax, libid(*), liax(nbliax)
     aster_logical :: axok, vrai, faux
-    integer :: i, ia, ibid, id, na, ndim
-    integer :: ni, nj
+    integer(kind=8) :: i, ia, ibid, id, na, ndim
+    integer(kind=8) :: ni, nj
     real(kind=8) :: beta
 !-----------------------------------------------------------------------
     data vrai, faux/.true._1, .false./

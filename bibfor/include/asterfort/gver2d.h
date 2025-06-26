@@ -20,7 +20,7 @@
 !
 interface
     subroutine gver2d(nocc, noeud,rinf, rsup)
-        integer :: nocc
+        integer(kind=8) :: nocc
         character(len=8) :: noeud
         real(kind=8) :: rinf
         real(kind=8) :: rsup

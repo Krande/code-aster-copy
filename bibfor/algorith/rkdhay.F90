@@ -43,7 +43,7 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat, &
 #include "blas/dscal.h"
     character(len=8) :: mod
 !
-    integer :: iret, itens, ndi, nmat, nvi, ndt, ndim
+    integer(kind=8) :: iret, itens, ndi, nmat, nvi, ndt, ndim
 !
     real(kind=8) :: coeft(nmat), vini(nvi), dvin(nvi), smx(6), sigi(*)
     real(kind=8) :: ecrou(2), h, dmg, dmgmi

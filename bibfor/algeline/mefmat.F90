@@ -38,15 +38,15 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod, &
 #include "asterfort/mefin4.h"
 #include "asterfort/mefin5.h"
 #include "asterfort/wkvect.h"
-    integer :: ndim(14), numgrp(*), nbmod, nbz
+    integer(kind=8) :: ndim(14), numgrp(*), nbmod, nbz
     real(kind=8) :: matma(*), dcent(*)
     real(kind=8) :: cp(*), cf(*), vit(0:*), rho(0:*), pstat(*), dpstat(*)
-    integer :: nbgrp
+    integer(kind=8) :: nbgrp
     real(kind=8) :: matm(nbmod, nbmod), rint(*), phix(nbz*nbgrp, nbmod)
     real(kind=8) :: phiy(nbz*nbgrp, nbmod), z(*)
     real(kind=8) :: matr(nbmod, nbmod), mata(nbmod, nbmod)
 !
-    integer :: itypg(*)
+    integer(kind=8) :: itypg(*)
     real(kind=8) :: zg(*), axg(*), rhog(*), vitg(*), cdg(*), cpg(*)
 !     CALCUL DES MATRICES DE MASSE, DE RAIDEUR, D AMORTISSEMENT SOUS
 !     ECOULEMENT
@@ -97,19 +97,19 @@ subroutine mefmat(ndim, numgrp, nbz, nbgrp, nbmod, &
 ! IN  : CPG    : PENTE DU COEFF DE PORTANCE POUR CHAQUE TYPE DE GRILLES
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, j
-    integer :: imod, igrp, jmod, jgrp
-    integer :: ncyl
+    integer(kind=8) :: i, j
+    integer(kind=8) :: imod, igrp, jmod, jgrp
+    integer(kind=8) :: ncyl
     real(kind=8) :: rayo
 !
-    integer :: kg, k, ngz1, ngz2
+    integer(kind=8) :: kg, k, ngz1, ngz2
     real(kind=8) :: ecart
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: idphxg, idphyg, ig, ih, imataa, imatra
-    integer :: iphixg, iphiyg, ippxx, ippxy, ippyx, ippyy, ivnxx
-    integer :: ivnxy, ivnyx, ivnyy, nbcyl, nbgtot
-    integer :: ntypg
+    integer(kind=8) :: idphxg, idphyg, ig, ih, imataa, imatra
+    integer(kind=8) :: iphixg, iphiyg, ippxx, ippxy, ippyx, ippyy, ivnxx
+    integer(kind=8) :: ivnxy, ivnyx, ivnyy, nbcyl, nbgtot
+    integer(kind=8) :: ntypg
     real(kind=8) :: aire, pi, rho0, vit0
     real(kind=8), pointer :: aireg(:) => null()
 !-----------------------------------------------------------------------

@@ -20,9 +20,9 @@
 !
 interface
     subroutine cnmpmc(main,nbma, lima,mpmc)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=8) :: main
-        integer :: lima(nbma)
-        integer :: mpmc(nbma)
+        integer(kind=8) :: lima(nbma)
+        integer(kind=8) :: mpmc(nbma)
     end subroutine cnmpmc
 end interface

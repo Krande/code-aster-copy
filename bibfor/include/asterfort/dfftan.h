@@ -20,9 +20,9 @@
 !
 interface
     subroutine dfftan(ndim, baslo, inoff, vtan)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: baslo(*)
-        integer :: inoff
+        integer(kind=8) :: inoff
         real(kind=8) :: vtan(3)
     end subroutine dfftan
 end interface

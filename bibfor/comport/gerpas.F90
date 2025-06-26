@@ -61,8 +61,8 @@ subroutine gerpas(fami, kpg, ksp, rela_comp, mod, &
 #include "asterfort/rk21co.h"
 #include "asterfort/rkcah1.h"
 #include "asterfort/rkcah2.h"
-    integer :: nmat, imat, nbcomm(nmat, 3), ne, ny, na, nvi, kpok, ip, i, neps
-    integer :: nbphas, nfs, kpg, ksp, itmax, iret, nsg, nhsr, numhsr(*), irota
+    integer(kind=8) :: nmat, imat, nbcomm(nmat, 3), ne, ny, na, nvi, kpok, ip, i, neps
+    integer(kind=8) :: nbphas, nfs, kpg, ksp, itmax, iret, nsg, nhsr, numhsr(*), irota
     character(len=16) :: rela_comp
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod

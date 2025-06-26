@@ -35,9 +35,9 @@ subroutine te0303(option, nomte)
 !     ENTREES  ---> OPTION : OPTION DE CALCUL
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, i, j
-    integer :: ndim, nno, ipg, npg1, ivectt, ihechp, ino, jno, nnos, jgano
-    integer :: idec, jdec, kdec, ldec, itemps, itemp
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, i, j
+    integer(kind=8) :: ndim, nno, ipg, npg1, ivectt, ihechp, ino, jno, nnos, jgano
+    integer(kind=8) :: idec, jdec, kdec, ldec, itemps, itemp
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: jac, tem, theta, h
 !     ------------------------------------------------------------------

@@ -36,8 +36,8 @@ subroutine asseVectField(vectAsse, numeDof, vectScalType, &
 !
     character(len=19), intent(in) :: vectAsse
     character(len=14), intent(in) :: numeDof
-    integer, intent(in) :: vectScalType
-    integer, intent(in) :: nbVectElem
+    integer(kind=8), intent(in) :: vectScalType
+    integer(kind=8), intent(in) :: nbVectElem
     character(len=*), intent(in) :: listVectElem(nbVectElem)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -47,9 +47,9 @@ subroutine asseVectField(vectAsse, numeDof, vectScalType, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19), parameter :: vectAsseWork = '&&ASSVEC.CHAMNO'
-    integer :: iVectElem, iNode, iEqua
-    integer :: iexi, iret
-    integer :: nbNode, nbEqua
+    integer(kind=8) :: iVectElem, iNode, iEqua
+    integer(kind=8) :: iexi, iret
+    integer(kind=8) :: nbNode, nbEqua
     character(len=19) :: vectElem, nodeField
     character(len=24), pointer :: relr(:) => null()
     character(len=1) :: ktyp

@@ -34,7 +34,7 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval, &
 #include "asterfort/rsorac.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbval
+    integer(kind=8) :: nbval
     character(len=24) :: nival, nrval, niord, nkcha
     character(len=8) :: typac, resu
     character(len=16) :: nsymb
@@ -54,9 +54,9 @@ subroutine ctacce(nsymb, typac, nbval, nival, nrval, &
 ! ----------------------------------------------------------------------
     character(len=16) :: concep
     character(len=8) :: k8b
-    integer :: n0, n1, jkcha, jrval, jival, jniord, nbto, nbno, nblo, nbni, nbli
-    integer :: nbnm, nblm, nbnf, nblf, nbis, nbr8, jlist, ibid, nbtrou, i
-    integer :: vali, n2, jinst, kk, nuord, tord(1)
+    integer(kind=8) :: n0, n1, jkcha, jrval, jival, jniord, nbto, nbno, nblo, nbni, nbli
+    integer(kind=8) :: nbnm, nblm, nbnf, nblf, nbis, nbr8, jlist, ibid, nbtrou, i
+    integer(kind=8) :: vali, n2, jinst, kk, nuord, tord(1)
     real(kind=8) :: r8b, epsi, valr, rinst
     complex(kind=8) :: cbid
     character(len=8) :: crit

@@ -38,7 +38,7 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-    integer :: it, jt
+    integer(kind=8) :: it, jt
     real(kind=8) :: sm, symax
     aster_logical :: lfatig, lpmpb, lsn, flexio, lrocht, kemixt, lsymm
     character(len=16) :: kinti
@@ -50,10 +50,10 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ncmp, jsigm, jinst, nbinst, jsno, jsne, ind, i1, i2, icmp, l1, l2
-    integer :: l3, l4, l5, npara, ik, ir, i, vaio(5), vaie(5), npar1, jresp
-    integer :: jsnee, jspo, jspe, jfao, jfae, jnoc, jresu, jspto, jspte, jspmo
-    integer :: jspme, jsneo
+    integer(kind=8) :: ncmp, jsigm, jinst, nbinst, jsno, jsne, ind, i1, i2, icmp, l1, l2
+    integer(kind=8) :: l3, l4, l5, npara, ik, ir, i, vaio(5), vaie(5), npar1, jresp
+    integer(kind=8) :: jsnee, jspo, jspe, jfao, jfae, jnoc, jresu, jspto, jspte, jspmo
+    integer(kind=8) :: jspme, jsneo
     parameter(ncmp=6)
     real(kind=8) :: tpm(ncmp), tpb(ncmp), tpmpbo(ncmp), tpmpbe(ncmp), dco, dce
     real(kind=8) :: tresca, valo(39), vale(39), stlin, stpar
@@ -61,8 +61,8 @@ subroutine rcevod(csigm, cinst, cnoc, sm, lfatig, &
     character(len=8) :: nomres, typara(39)
     character(len=16) :: nomcmd, concep, nopara(39), vako(5), vake(5)
 !
-    integer :: nparen, nparpm, nparsn, nparse, nparf1, nparf2, nparf3, nparrt
-    integer :: ifm, niv
+    integer(kind=8) :: nparen, nparpm, nparsn, nparse, nparf1, nparf2, nparf3, nparrt
+    integer(kind=8) :: ifm, niv
     parameter(nparen=4, nparpm=5, nparsn=5, nparse=1,&
      &             nparf1=14, nparf2=13, nparrt=6, nparf3=17)
     character(len=8) :: typaen(nparen), typapm(nparpm), typasn(nparsn)

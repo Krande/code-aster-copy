@@ -23,8 +23,8 @@
 interface
     subroutine porea1(nno, nc, deplm, deplp, geom,&
                       gamma, vecteu, pgl, xl1, angp)
-        integer :: nc
-        integer :: nno
+        integer(kind=8) :: nc
+        integer(kind=8) :: nno
         real(kind=8) :: deplm(nno*nc)
         real(kind=8) :: deplp(nno*nc)
         real(kind=8) :: geom(3, nno)

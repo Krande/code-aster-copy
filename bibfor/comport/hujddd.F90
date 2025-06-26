@@ -46,9 +46,9 @@ subroutine hujddd(carac, k, mater, ind, yf, &
 #include "asterfort/infniv.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, i, j, k, mod, kk, nbmect
-    integer :: ind(7), nbmeca, iret, iadzi, iazk24
-    integer :: ifm, niv
+    integer(kind=8) :: ndt, ndi, i, j, k, mod, kk, nbmect
+    integer(kind=8) :: ind(7), nbmeca, iret, iadzi, iazk24
+    integer(kind=8) :: ifm, niv
     parameter(mod=18)
     real(kind=8) :: beta, m, pco, pcoh, pc, pref, alpha
     real(kind=8) :: epsvpd, b, phi, angdil

@@ -21,9 +21,9 @@
 interface
     subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
         character(len=8) :: modele
-        integer :: mftot
-        integer :: nftot
-        integer :: nfcomf
-        integer :: ngfon
+        integer(kind=8) :: mftot
+        integer(kind=8) :: nftot
+        integer(kind=8) :: nfcomf
+        integer(kind=8) :: ngfon
     end subroutine xpofon
 end interface

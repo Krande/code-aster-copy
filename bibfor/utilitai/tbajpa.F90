@@ -29,7 +29,7 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     character(len=*) :: nomta, nompar(*), typpar(*)
 !      AJOUTER DES PARAMETRES A UNE TABLE.
 ! ----------------------------------------------------------------------
@@ -38,15 +38,15 @@ subroutine tbajpa(nomta, nbpar, nompar, typpar)
 ! IN  : NOMPAR : NOMS DES PARAMETRES.
 ! IN  : TYPPAR : TYPES DES PARAMETRES.
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, nbpm, nbpu, nbligu
-    integer :: ndim, jtblp, i, j, k, ideb, jnjv, nbpar1
+    integer(kind=8) :: iret, nbpara, nblign, nbpm, nbpu, nbligu
+    integer(kind=8) :: ndim, jtblp, i, j, k, ideb, jnjv, nbpar1
     character(len=1) :: base
     character(len=3) :: type
     character(len=4) :: knume
     character(len=19) :: nomtab
     character(len=24) :: nomjv, inpar, jnpar
     character(len=8), pointer :: tbba(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

@@ -22,8 +22,8 @@ interface
     subroutine racotu(iprno, lonlis, klisno, noepou, noma,&
                       ligrel, mod, cara, numddl, lisrel,&
                       coorig)
-        integer :: lonlis
-        integer :: iprno(*)
+        integer(kind=8) :: lonlis
+        integer(kind=8) :: iprno(*)
         character(len=8) :: klisno(lonlis)
         character(len=8) :: noepou
         character(len=8) :: noma

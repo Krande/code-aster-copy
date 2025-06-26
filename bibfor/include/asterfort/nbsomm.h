@@ -21,6 +21,6 @@
 interface
     subroutine nbsomm(typema, nbso)
         character(len=8) :: typema
-        integer :: nbso
+        integer(kind=8) :: nbso
     end subroutine nbsomm
 end interface

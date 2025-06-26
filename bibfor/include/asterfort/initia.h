@@ -22,9 +22,9 @@
 !
 interface
     subroutine initia(neq, lgrot, indro, chamro, chamin)
-        integer :: neq
+        integer(kind=8) :: neq
         aster_logical :: lgrot
-        integer :: indro(*)
+        integer(kind=8) :: indro(*)
         real(kind=8) :: chamro(*)
         real(kind=8) :: chamin(*)
     end subroutine initia

@@ -50,9 +50,9 @@ subroutine ssafmo(model)
     character(len=8) :: mesh, name_super_elem
     character(len=24) :: valk(2)
     character(len=16) :: keywordfact
-    integer :: ielem, nume_super_elem, ioc, isuperelem
-    integer :: n_affe_all, n1, nb_super_elem, nb_ss_acti, nb_node_lagr
-    integer, pointer          :: p_model_sssa(:) => null()
+    integer(kind=8) :: ielem, nume_super_elem, ioc, isuperelem
+    integer(kind=8) :: n_affe_all, n1, nb_super_elem, nb_ss_acti, nb_node_lagr
+    integer(kind=8), pointer          :: p_model_sssa(:) => null()
     character(len=8), pointer :: p_list_elem(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

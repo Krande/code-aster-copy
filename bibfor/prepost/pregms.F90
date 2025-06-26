@@ -33,7 +33,7 @@ subroutine pregms(igmsh, imod)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 
-    integer :: igmsh, imod
+    integer(kind=8) :: igmsh, imod
 !.======================================================================
 !
 !      PREGMS --   INTERFACE GMSH --> ASTER
@@ -53,18 +53,18 @@ subroutine pregms(igmsh, imod)
     character(len=8) :: rquoi
     character(len=12) :: aut, debfic, finnod, debelm
     character(len=14) :: aut1, current_line
-    integer :: i, imes, nbmail, nbnode, versio, maxnod, nbtyma
-    integer :: vali(1), nbgrou, gr_tag, ibid
+    integer(kind=8) :: i, imes, nbmail, nbnode, versio, maxnod, nbtyma
+    integer(kind=8) :: vali(1), nbgrou, gr_tag, ibid
     aster_logical :: exigr
 !
     parameter(maxnod=32, nbtyma=19)
-    integer :: nbnoma(nbtyma), nuconn(nbtyma, maxnod), i_gr, ipos
-    integer :: gr_dim, igr, ima
+    integer(kind=8) :: nbnoma(nbtyma), nuconn(nbtyma, maxnod), i_gr, ipos
+    integer(kind=8) :: gr_dim, igr, ima
     character(len=8) :: nomail(nbtyma), gr_name, gr_name_raw, group_name
 !
-    integer, pointer :: list_nums_gr(:) => null()
-    integer, pointer :: list_dims_gr(:) => null()
-    integer, pointer :: list_indice_gr(:) => null()
+    integer(kind=8), pointer :: list_nums_gr(:) => null()
+    integer(kind=8), pointer :: list_dims_gr(:) => null()
+    integer(kind=8), pointer :: list_indice_gr(:) => null()
     character(len=8), pointer :: list_noms_gr(:) => null()
 !
 ! ----------------------------------------------------------------------

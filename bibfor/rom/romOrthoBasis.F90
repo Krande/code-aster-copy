@@ -51,7 +51,7 @@ subroutine romOrthoBasis(ds_multipara, base, new_basis)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbMode, nbEqua
+    integer(kind=8) :: nbMode, nbEqua
     complex(kind=8), pointer :: vc_new_mode(:) => null()
     real(kind=8), pointer :: vr_new_mode(:) => null()
     complex(kind=8), pointer :: vc_new_mode1(:) => null()

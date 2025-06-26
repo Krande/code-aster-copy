@@ -34,7 +34,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
 ! ----------------------------------------------------------------------
@@ -55,7 +55,7 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
     character(len=2) :: typmat
     character(len=8) :: nommai
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier
+    integer(kind=8) :: i, ibid, ier
     character(len=16) :: typeco
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()

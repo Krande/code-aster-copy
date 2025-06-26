@@ -42,7 +42,7 @@ subroutine cgtyfi(typfis, nomfis, typdis)
 !            'FISSURE' OU 'COHESIF'
 ! ======================================================================
 !
-    integer ::  ifond, ifiss
+    integer(kind=8) ::  ifond, ifiss
 !
     call jemarq()
 !

@@ -41,7 +41,7 @@ subroutine nmmacv(disp, matr_sstr, cnsstr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jrsst
+    integer(kind=8) :: jrsst
     real(kind=8), pointer :: v_cnsstr(:) => null()
     real(kind=8), pointer :: v_disp(:) => null()
 !

@@ -21,7 +21,7 @@
 interface
     subroutine d1pa3d(angl, irep, passag)
         real(kind=8) :: angl(3)
-        integer :: irep
+        integer(kind=8) :: irep
         real(kind=8) :: passag(6, 6)
     end subroutine d1pa3d
 end interface

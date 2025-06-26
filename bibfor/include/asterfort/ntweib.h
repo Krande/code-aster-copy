@@ -24,20 +24,20 @@ interface
     subroutine ntweib(nrupt, cals, sk, sigw, nur,&
                       nt, nbres, x1, x2, xacc,&
                       rtsafe, impr, ifm, indtp, nbtp)
-        integer :: nrupt
+        integer(kind=8) :: nrupt
         aster_logical :: cals
         real(kind=8) :: sk(*)
         real(kind=8) :: sigw(*)
-        integer :: nur(*)
-        integer :: nt(*)
-        integer :: nbres
+        integer(kind=8) :: nur(*)
+        integer(kind=8) :: nt(*)
+        integer(kind=8) :: nbres
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: xacc
         real(kind=8) :: rtsafe
         aster_logical :: impr
-        integer :: ifm
-        integer :: indtp(*)
-        integer :: nbtp
+        integer(kind=8) :: ifm
+        integer(kind=8) :: indtp(*)
+        integer(kind=8) :: nbtp
     end subroutine ntweib
 end interface

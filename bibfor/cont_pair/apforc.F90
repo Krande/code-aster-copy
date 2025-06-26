@@ -31,7 +31,7 @@ subroutine apforc(mesh, ds_contact, err_appa)
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(inout) :: err_appa
+    integer(kind=8), intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine apforc(mesh, ds_contact, err_appa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: newgeo, sdappa
 !
 ! --------------------------------------------------------------------------------------------------

@@ -44,21 +44,21 @@ subroutine mltcc1(nbloc, ncbloc, decal, supnd, fils, &
 #include "asterfort/mltclm.h"
 #include "asterfort/mltcmj.h"
 !
-    integer :: pmin, nbb
+    integer(kind=8) :: pmin, nbb
     parameter(pmin=10)
-    integer :: nbloc, ncbloc(*), decal(*)
-    integer :: lgsn(*), lfront(*), lgpile, typsym
+    integer(kind=8) :: nbloc, ncbloc(*), decal(*)
+    integer(kind=8) :: lgsn(*), lfront(*), lgpile, typsym
     integer(kind=4) :: local(*)
-    integer :: nbass(*), adpile(*), fils(*), supnd(*)
-    integer :: adress(*), frere(*), seq(*), ad(*), ier
+    integer(kind=8) :: nbass(*), adpile(*), fils(*), supnd(*)
+    integer(kind=8) :: adress(*), frere(*), seq(*), ad(*), ier
     complex(kind=8) :: pile(*), cl(nbb, nbb, *), cu(nbb, nbb, *)
     real(kind=8) :: eps
     character(len=24) :: factol, factou
 !
     complex(kind=8) :: t1(*), t2(*)
-    integer :: adper(*), ifacl, ifacu, lmatf
-    integer :: itemp, i, j, isnd, sni, sn, n, m, p, nl, nc, mem, adfacl, ib, nb
-    integer :: lm1, lm2, adfacu
+    integer(kind=8) :: adper(*), ifacl, ifacu, lmatf
+    integer(kind=8) :: itemp, i, j, isnd, sni, sn, n, m, p, nl, nc, mem, adfacl, ib, nb
+    integer(kind=8) :: lm1, lm2, adfacu
     call jemarq()
     itemp = 1
     mem = 0

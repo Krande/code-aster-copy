@@ -25,10 +25,10 @@ interface
                       listInterc_, nbInterc_)
         character(len=16), intent(in) :: corrMesh, corrMeshTemp
         character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
-        integer, intent(in) :: cellListType(MT_NTYMAX), spacedim
+        integer(kind=8), intent(in) :: cellListType(MT_NTYMAX), spacedim
         real(kind=8), intent(in) :: geom1(*), geom2(*)
         real(kind=8), intent(in) :: dala
         character(len=16), optional, intent(in)  :: listInterc_
-        integer, optional, intent(in)  :: nbInterc_
+        integer(kind=8), optional, intent(in)  :: nbInterc_
     end subroutine pj2dtr
 end interface 

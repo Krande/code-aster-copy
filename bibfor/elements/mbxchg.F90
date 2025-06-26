@@ -33,10 +33,10 @@ subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoi
 !
     character(len=16) :: option
     character(len=4) :: fami
-    integer :: nddl, nno, ncomp, npg
-    integer :: kpg
-    integer :: ipoids, igeom, imate, ipesa, iepsin, itemps
-    integer :: ivectu, jvSief
+    integer(kind=8) :: nddl, nno, ncomp, npg
+    integer(kind=8) :: kpg
+    integer(kind=8) :: ipoids, igeom, imate, ipesa, iepsin, itemps
+    integer(kind=8) :: ivectu, jvSief
     real(kind=8) :: dff(2, nno), alpha, beta, vff(nno)
 ! ----------------------------------------------------------------------
 !    - FONCTION REALISEE:  CALCUL DES OPTIONS DE DE CHARGEMENT :
@@ -73,8 +73,8 @@ subroutine mbxchg(option, fami, nddl, nno, ncomp, kpg, npg, iepsin, itemps, ipoi
 ! OUT ***          ***
 ! ----------------------------------------------------------------------
 !
-    integer :: i, n, c, cc, ier
-    integer :: codres(2)
+    integer(kind=8) :: i, n, c, cc, ier
+    integer(kind=8) :: codres(2)
     real(kind=8) :: b(3, 3, 9), jac
     real(kind=8) :: rig(3, 3), rho(1)
     real(kind=8) :: epsthe, epsref, sgmref, sig(3)

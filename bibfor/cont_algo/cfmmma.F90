@@ -46,10 +46,10 @@ subroutine cfmmma(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_cont_poin, nb_cont_node_c, nb_cont_zone
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_cont_poin, nb_cont_node_c, nb_cont_zone
     aster_logical :: l_cont_disc
-    integer :: zeven, ztaco
+    integer(kind=8) :: zeven, ztaco
     character(len=24) :: sdcont_evenco
     real(kind=8), pointer :: v_sdcont_evenco(:) => null()
     character(len=24) :: sdcont_evenpe

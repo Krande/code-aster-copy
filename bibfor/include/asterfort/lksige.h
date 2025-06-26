@@ -21,7 +21,7 @@
 interface
     subroutine lksige(mod, nmat, materd, deps, sigd,&
                       sigf)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: deps(6)

@@ -21,12 +21,12 @@
 interface
     subroutine ajchca(para, cham, lpara, lcham, nbent,&
                       maxent, surch)
-        integer :: maxent
+        integer(kind=8) :: maxent
         character(len=*) :: para
         character(len=*) :: cham
         character(len=*) :: lpara(maxent)
         character(len=*) :: lcham(maxent)
-        integer :: nbent
+        integer(kind=8) :: nbent
         character(len=*) :: surch
     end subroutine ajchca
 end interface

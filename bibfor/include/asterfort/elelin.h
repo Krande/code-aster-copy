@@ -20,10 +20,10 @@
 !
 interface
     subroutine elelin(nconta, elref1, elref2, nnop, nnops)
-        integer :: nconta
+        integer(kind=8) :: nconta
         character(len=8) :: elref1
         character(len=8) :: elref2
-        integer :: nnop
-        integer :: nnops
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnops
     end subroutine elelin
 end interface

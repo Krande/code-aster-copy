@@ -35,8 +35,8 @@ function xcalc_heav(id_no, hea_se, iflag)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 !-----------------------------------------------------------------------
-    integer :: id_no, hea_se
-    integer :: iflag
+    integer(kind=8) :: id_no, hea_se
+    integer(kind=8) :: iflag
     real(kind=8) :: xcalc_heav
 !-----------------------------------------------------------------------
 !

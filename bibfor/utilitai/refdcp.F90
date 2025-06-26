@@ -32,7 +32,7 @@ subroutine refdcp(resin, resout)
 !
 !   COPIER LE CONTENU DE REFERENCES DYNAMIQUE DE resin DANS resout
 !
-    integer :: ir1, ir2
+    integer(kind=8) :: ir1, ir2
     character(len=16) :: refd, indi
     character(len=1) :: jvb
 !

@@ -20,8 +20,8 @@
 !
 interface
     subroutine giecas(nfic, ndim, nbobj)
-        integer :: nfic
-        integer :: ndim
-        integer :: nbobj
+        integer(kind=8) :: nfic
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbobj
     end subroutine giecas
 end interface

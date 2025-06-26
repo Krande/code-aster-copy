@@ -34,7 +34,7 @@ subroutine nmassp(listFuncActi, &
 #include "asterfort/nsassp.h"
 #include "asterfort/vtzero.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping

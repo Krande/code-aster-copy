@@ -25,7 +25,7 @@ subroutine ptka02(id, sk, e, a1, a2, &
 #include "asterfort/fun1.h"
 #include "asterfort/fun2.h"
 #include "asterfort/utmess.h"
-    integer :: id, ist
+    integer(kind=8) :: id, ist
     real(kind=8) :: sk(*), e, a1, a2, xl, xiy, xiy2
     real(kind=8) :: xiz, xiz2, xjx, xjx2, g, alfay1, alfay2
     real(kind=8) :: alfaz1, alfaz2, ey, ez
@@ -100,7 +100,7 @@ subroutine ptka02(id, sk, e, a1, a2, &
 ! BBL  FUN1     - AIRES ET CONSTANTE DE TORSION EQUIVALENTES
 ! BBL  FUN2     - MOMENTS D INERTIE EQUIVALENTS
 !     ------------------------------------------------------------------
-    integer :: ip(12), i, k
+    integer(kind=8) :: ip(12), i, k
     real(kind=8) :: exl, xl2, xl3, phiy, phiz, asy, asz
     real(kind=8) :: aa, aas1, aas2, as1, as2, tk, vt, q, xkk, zero
 !-----------------------------------------------------------------------

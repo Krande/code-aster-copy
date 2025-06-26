@@ -25,14 +25,14 @@ subroutine pmppr(amat, na1, na2, ka, bmat, &
 #include "asterfort/assert.h"
 !
 !
-    integer, intent(in) :: ka
-    integer, intent(in) :: kb
-    integer, intent(in) :: na1
-    integer, intent(in) :: na2
-    integer, intent(in) :: nb1
-    integer, intent(in) :: nb2
-    integer, intent(in) :: nc1
-    integer, intent(in) :: nc2
+    integer(kind=8), intent(in) :: ka
+    integer(kind=8), intent(in) :: kb
+    integer(kind=8), intent(in) :: na1
+    integer(kind=8), intent(in) :: na2
+    integer(kind=8), intent(in) :: nb1
+    integer(kind=8), intent(in) :: nb2
+    integer(kind=8), intent(in) :: nc1
+    integer(kind=8), intent(in) :: nc2
     real(kind=8), intent(in) :: amat(na1, na2)
     real(kind=8), intent(in) :: bmat(nb1, nb2)
     real(kind=8), intent(out) :: cmat(nc1, nc2)
@@ -58,7 +58,7 @@ subroutine pmppr(amat, na1, na2, ka, bmat, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !
 ! --------------------------------------------------------------------------------------------------
 !

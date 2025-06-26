@@ -18,7 +18,7 @@
 
 subroutine sndbg(ifm, iclass, ival, rval, kval)
     implicit none
-    integer :: ifm, iclass, ival
+    integer(kind=8) :: ifm, iclass, ival
     real(kind=8) :: rval(*)
     character(len=*) :: kval
 !     ------------------------------------------------------------------

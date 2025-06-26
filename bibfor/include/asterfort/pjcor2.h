@@ -28,6 +28,6 @@ interface
         character(len=19) :: ligrel
         character(len=16) :: corres
         character(len=16) :: option
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine pjcor2
 end interface

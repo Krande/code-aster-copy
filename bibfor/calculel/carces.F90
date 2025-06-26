@@ -69,19 +69,19 @@ subroutine carces(cartz, typces, cesmoz, base, cesz, &
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ima, iret, nec, nb_cmp_mx, jdesc, jvale, ngrmx, nb_cmp
-    integer ::  jcesd, jcesc, jcesv, jcesl, nbma, ient, debgd, deb1, ico
-    integer :: cmp, ieq, iad, cmp2, nbpt, ipt
-    integer ::   jconx2, isp, nbsp, kcmp, iret2
+    integer(kind=8) :: ima, iret, nec, nb_cmp_mx, jdesc, jvale, ngrmx, nb_cmp
+    integer(kind=8) ::  jcesd, jcesc, jcesv, jcesl, nbma, ient, debgd, deb1, ico
+    integer(kind=8) :: cmp, ieq, iad, cmp2, nbpt, ipt
+    integer(kind=8) ::   jconx2, isp, nbsp, kcmp, iret2
     character(len=8) :: ma, nomgd
     character(len=3) :: tsca
     character(len=19) :: cart, ces, cesmod
-    integer, pointer :: cemd(:) => null()
-    integer, pointer :: ptma(:) => null()
-    integer, pointer :: vnbpt(:) => null()
-    integer, pointer :: vnbsp(:) => null()
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: cemd(:) => null()
+    integer(kind=8), pointer :: ptma(:) => null()
+    integer(kind=8), pointer :: vnbpt(:) => null()
+    integer(kind=8), pointer :: vnbsp(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
 
 !     ------------------------------------------------------------------

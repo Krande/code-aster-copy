@@ -20,7 +20,7 @@
 interface
     subroutine romGreedyResiNormCalc(i_coef, nb_equa, ds_algoGreedy)
         use Rom_Datastructure_type
-        integer, intent(in) :: i_coef, nb_equa
+        integer(kind=8), intent(in) :: i_coef, nb_equa
         type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
     end subroutine romGreedyResiNormCalc
 end interface

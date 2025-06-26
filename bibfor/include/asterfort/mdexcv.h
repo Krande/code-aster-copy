@@ -24,12 +24,12 @@ interface
         character(len=*) :: nofimd
         med_idt :: idfimd
         character(len=*) :: nochmd
-        integer :: numpt
-        integer :: numord
-        integer :: typent
-        integer :: typgeo
-        integer :: nbval
-        integer :: nbprof
-        integer :: codret
+        integer(kind=8) :: numpt
+        integer(kind=8) :: numord
+        integer(kind=8) :: typent
+        integer(kind=8) :: typgeo
+        integer(kind=8) :: nbval
+        integer(kind=8) :: nbprof
+        integer(kind=8) :: codret
     end subroutine mdexcv
 end interface

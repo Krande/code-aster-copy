@@ -44,15 +44,15 @@ subroutine varaff(noma, gran, base, ceselz)
 !  - TRAITER L'OPTION 'AFFE' DE LA COMMANDE CREA_CHAMP POUR VARI_R
 !  - CREER LE CHAM_ELEM_S / ELEM  (CESELZ)
 !-----------------------------------------------------------------------
-    integer :: nocc, nbtou, n1
-    integer :: iad, k, iocc, nbmail
+    integer(kind=8) :: nocc, nbtou, n1
+    integer(kind=8) :: iad, k, iocc, nbmail
     character(len=8) :: kbid, typmcl(2)
     character(len=6) :: knuva
     character(len=16) :: motclf, motcls(2)
     character(len=19) :: ceselm
     character(len=24) :: mesmai
-    integer :: nvarmx, jcesd, jcesl, jlvavx
-    integer :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
+    integer(kind=8) :: nvarmx, jcesd, jcesl, jlvavx
+    integer(kind=8) :: jmesma, kvari, n2, numa, nuva, nuvamx, nbmato
     parameter(nvarmx=10000)
     aster_logical :: ltou
     character(len=8), pointer :: lnova(:) => null()

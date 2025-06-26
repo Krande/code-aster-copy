@@ -37,11 +37,11 @@ subroutine lcrksg(rela_comp, nvi, vinf, fd, df, &
 #include "blas/dcopy.h"
     character(len=8) :: mod
     character(len=16) :: rela_comp
-    integer :: nmat, nvi
+    integer(kind=8) :: nmat, nvi
     real(kind=8) :: hook(6, 6), sigi(6), fd(9), df(9), coefl(nmat)
     real(kind=8) :: vinf(*), fp(3, 3), fpm(3, 3), fe(3, 3), detp, f(3, 3)
     real(kind=8) :: epsgl(6)
-    integer :: irr, decirr, nbsyst, decal, gdef, ndi, ndt
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef, ndi, ndt
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     common/tdim/ndt, ndi

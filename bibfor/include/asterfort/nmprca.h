@@ -27,8 +27,8 @@ interface
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         use NonLinearDyna_type
-        integer :: fonact(*)
-        integer :: numins, ldccvg, faccvg, rescvg
+        integer(kind=8) :: fonact(*)
+        integer(kind=8) :: numins, ldccvg, faccvg, rescvg
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=19) :: maprec, matass

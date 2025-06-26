@@ -31,7 +31,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps, &
 #include "blas/ddot.h"
     character(len=16) :: option
     character(len=*) :: fami
-    integer :: ndim, neps, imate, ksp, kpg
+    integer(kind=8) :: ndim, neps, imate, ksp, kpg
     real(kind=8) :: epsm(neps), deps(neps), vim(2)
     real(kind=8) :: sig(neps), vip(2), dsidep(neps, neps)
 ! ----------------------------------------------------------------------
@@ -60,7 +60,7 @@ subroutine lceigv(fami, kpg, ksp, ndim, neps, &
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
     aster_logical :: rigi, resi, elas, coup, secant
-    integer :: ndimsi, k, l, i, j, m, n, t(3, 3), iret, nrac, iok(2)
+    integer(kind=8) :: ndimsi, k, l, i, j, m, n, t(3, 3), iret, nrac, iok(2)
     real(kind=8) :: eps(6), treps, sigel(6), sigma(6), kron(6)
     real(kind=8) :: rac2
     real(kind=8) :: rigmin, told, fd, d, ener

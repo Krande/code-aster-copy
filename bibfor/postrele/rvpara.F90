@@ -55,7 +55,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
 #include "asterfort/wkvect.h"
     character(len=6) :: mcf
     character(len=8) :: nomtab
-    integer :: nbpost
+    integer(kind=8) :: nbpost
 !
 !
 ! 0.3. ==> VARIABLES LOCALES
@@ -63,14 +63,14 @@ subroutine rvpara(nomtab, mcf, nbpost)
     character(len=6) :: nompro
     parameter(nompro='RVPARA')
 !
-    integer :: ifm, niv
-    integer :: iocc, ibid, tord(1)
-    integer :: jcham, jresu, jncmp, ncmp, i
-    integer :: jinva, jprin, jmome, jmail, jmoye, j, jtrad
-    integer :: jtran, n1, n2, n3, jcmp1, jcmp2, jcmp3, nbc, nume
-    integer :: iret, nbp, jinst, jordr, jmode, jabsc, jfreq
-    integer :: jnoeu, n11, n12, n13, n14, n15, n16, n17, n18
-    integer :: jncas, jangl, jnocp, numcmp, jnucp, nbordr, jnume
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iocc, ibid, tord(1)
+    integer(kind=8) :: jcham, jresu, jncmp, ncmp, i
+    integer(kind=8) :: jinva, jprin, jmome, jmail, jmoye, j, jtrad
+    integer(kind=8) :: jtran, n1, n2, n3, jcmp1, jcmp2, jcmp3, nbc, nume
+    integer(kind=8) :: iret, nbp, jinst, jordr, jmode, jabsc, jfreq
+    integer(kind=8) :: jnoeu, n11, n12, n13, n14, n15, n16, n17, n18
+    integer(kind=8) :: jncas, jangl, jnocp, numcmp, jnucp, nbordr, jnume
     real(kind=8) :: r8b
     aster_logical :: lmima, lmoye, lextr, lmoygr
     complex(kind=8) :: c16b
@@ -81,7 +81,7 @@ subroutine rvpara(nomtab, mcf, nbpost)
     character(len=24) :: k24bid
 !
     character(len=24) :: nocmp
-    integer :: jnocmp, ncmpmx
+    integer(kind=8) :: jnocmp, ncmpmx
 !     ------------------------------------------------------------------
 !
 !====

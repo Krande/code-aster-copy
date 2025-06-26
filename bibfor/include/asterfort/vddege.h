@@ -22,8 +22,8 @@ interface
     subroutine vddege(nomte, nb2, npgsn, xr, deggtg,&
                       deggt)
         character(len=16) :: nomte
-        integer :: nb2
-        integer :: npgsn
+        integer(kind=8) :: nb2
+        integer(kind=8) :: npgsn
         real(kind=8) :: xr(*)
         real(kind=8) :: deggtg(72)
         real(kind=8) :: deggt(8, 9)

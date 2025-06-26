@@ -21,7 +21,7 @@
 interface
     subroutine lkcrip(invar, s, vin, nbmat, mater,&
                       ucrip, seuil)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: invar
         real(kind=8) :: s(6)
         real(kind=8) :: vin(7)

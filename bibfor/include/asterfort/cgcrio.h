@@ -22,6 +22,6 @@ interface
     subroutine cgcrio(resu, vecord, nbnume)
         character(len=8) :: resu
         character(len=19) :: vecord
-        integer, optional :: nbnume
+        integer(kind=8), optional :: nbnume
     end subroutine cgcrio
 end interface

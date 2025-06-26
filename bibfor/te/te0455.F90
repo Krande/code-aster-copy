@@ -61,9 +61,9 @@ subroutine te0455(nomopt, nomte)
     type(HHO_Quadrature) :: hhoQuadCellRigi
     type(HHO_Compor_State) :: hhoCS
 !
-    integer :: cbs, fbs, total_dofs
-    integer :: jmatt, npg
-    integer :: jcret
+    integer(kind=8) :: cbs, fbs, total_dofs
+    integer(kind=8) :: jmatt, npg
+    integer(kind=8) :: jcret
     aster_logical :: l_largestrains, lMatr, lVect, lSigm, lVari, matsym
     character(len=4), parameter :: fami = 'RIGI'
     real(kind=8) :: rhs(MSIZE_TDOFS_VEC)

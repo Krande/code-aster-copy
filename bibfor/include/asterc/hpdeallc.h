@@ -20,7 +20,7 @@
 !
 interface
     subroutine hpdeallc(addr, ierr)
-        integer :: addr
-        integer :: ierr
+        integer(kind=8) :: addr
+        integer(kind=8) :: ierr
     end subroutine hpdeallc
 end interface

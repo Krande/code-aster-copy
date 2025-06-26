@@ -23,18 +23,18 @@
 interface 
     subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, nbpt, neq,&
                       nbhar, imat, numedd, parcho, nbchoc, vk8, modrep)
-        integer :: nbhar
-        integer :: numrep
-        integer :: neq
+        integer(kind=8) :: nbhar
+        integer(kind=8) :: numrep
+        integer(kind=8) :: neq
         aster_logical :: reprise
         character(len=8) :: baseno
-        integer :: nbordr0
-        integer :: nbordr
-        integer :: nbpt
-        integer :: imat(2)
+        integer(kind=8) :: nbordr0
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbpt
+        integer(kind=8) :: imat(2)
         character(len=24) :: numedd
         character(len=14) :: parcho
-        integer :: nbchoc
+        integer(kind=8) :: nbchoc
         character(len=8) :: vk8
         character(len=8) :: modrep
     end subroutine cremnl

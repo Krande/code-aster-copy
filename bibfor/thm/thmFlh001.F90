@@ -31,8 +31,8 @@ subroutine thmFlh001(ds_thm, lMatr, lSigm, ndim, &
 !
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm
-    integer, intent(in) :: ndim, dimdef, dimcon
-    integer, intent(in) :: addeme, addep1, addete, adcp11
+    integer(kind=8), intent(in) :: ndim, dimdef, dimcon
+    integer(kind=8), intent(in) :: addeme, addep1, addete, adcp11
     real(kind=8), intent(in) :: rho11, grap1(3)
     real(kind=8), intent(in) :: gravity(3), tperm(ndim, ndim)
     real(kind=8), intent(inout) :: congep(1:dimcon)
@@ -63,7 +63,7 @@ subroutine thmFlh001(ds_thm, lMatr, lSigm, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: lambd1(5)
     real(kind=8) :: krel1, dkrel1
     real(kind=8) :: dr11p1, dr11t

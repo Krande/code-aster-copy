@@ -60,13 +60,13 @@ subroutine cnocns(cnoz, basez, cnsz, undf0_)
     character(len=3) :: tsca
     character(len=8) :: mesh, gran_name
     character(len=19) :: cno, cns, nume_equa
-    integer :: nb_ec, idx_gd, nb_cmp_mx, nb_node, jvale, ierr
-    integer :: iadg, jprno, i_node, ncmp, nb_cmp, jcnsl, jcnsv
-    integer :: ival, ico, ieq, i_cmp_cata, i_cmp_field, i_cmp
+    integer(kind=8) :: nb_ec, idx_gd, nb_cmp_mx, nb_node, jvale, ierr
+    integer(kind=8) :: iadg, jprno, i_node, ncmp, nb_cmp, jcnsl, jcnsv
+    integer(kind=8) :: ival, ico, ieq, i_cmp_cata, i_cmp_field, i_cmp
     logical :: sdveri
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
     aster_logical :: undf0
 !

@@ -48,8 +48,8 @@ subroutine cgComputeFactors(cgField, cgTheta, cgStat)
     type(CalcG_theta), intent(inout) :: cgTheta
     type(CalcG_stat), intent(inout) :: cgStat
 
-    integer :: i
-    integer :: nbel, iret, jcnsl
+    integer(kind=8) :: i
+    integer(kind=8) :: nbel, iret, jcnsl
 
     real(kind=8) :: d, xm, ym, zm, xn, yn, zn, eps, alpha
     real(kind=8) :: valpar(1), valres_i, valres_s

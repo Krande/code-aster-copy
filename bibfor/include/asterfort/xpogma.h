@@ -20,10 +20,10 @@
 !
 interface
     subroutine xpogma(nbgma, nb, listgr, ima, jlogma)
-        integer :: nbgma
-        integer :: nb
+        integer(kind=8) :: nbgma
+        integer(kind=8) :: nb
         character(len=24) :: listgr
-        integer :: ima
-        integer :: jlogma
+        integer(kind=8) :: ima
+        integer(kind=8) :: jlogma
     end subroutine xpogma
 end interface

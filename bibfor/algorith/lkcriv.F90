@@ -24,7 +24,7 @@ subroutine lkcriv(vintr, invar, s, vin, nbmat, &
 #include "asterfort/lkhtet.h"
 #include "asterfort/lkvacv.h"
 #include "asterfort/lkvarv.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: invar, s(6), mater(nbmat, 2), vin(7), seuil
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
 ! =================================================================
@@ -40,7 +40,7 @@ subroutine lkcriv(vintr, invar, s, vin, nbmat, &
 ! ----------- :  MATER(*,2) = CARACTERISTIQUES PLASTIQUES ---------
 ! OUT : SEUIL :  VALEUR DE F(S) VISQUEUX  -------------------------
 ! =================================================================
-    integer :: ndi, ndt
+    integer(kind=8) :: ndi, ndt
     real(kind=8) :: sii, sigc, pref, lgleps
     real(kind=8) :: h0e, h0c, htheta
     real(kind=8) :: rcos3t, ucriv

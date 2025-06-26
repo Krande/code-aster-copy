@@ -42,7 +42,7 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor, &
 #include "asterfort/tbexip.h"
 #include "asterfort/utmess.h"
 !
-    integer :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1
+    integer(kind=8) :: itcopt(*), itsppt(*), nbcmp, nbpoin, iocc, i1
     real(kind=8) :: releve(*), absc(*), coor(*)
     character(len=4) :: docu
     character(len=8) :: nomnoe(*)
@@ -61,9 +61,9 @@ subroutine rvtec2(releve, absc, itcopt, itsppt, coor, &
 ! IN  : NBPOIN : NOMBRE DE POINT D'EVALUATION
 ! IN  : DOCU   : 'LSTN'
 !     ------------------------------------------------------------------
-    integer :: nbvari, nbpar, ilign, ipt, nbsp, i, nbco, lc, ln, ic, i2, valei(12)
-    integer :: n1, adrval, ind, lck, adracc, jacc, ik, ir, ii, ivari(3000), nbcmp2, jvari
-    integer :: nbacc, nbpr, jaces, iac, iadr, lcr, iord(1)
+    integer(kind=8) :: nbvari, nbpar, ilign, ipt, nbsp, i, nbco, lc, ln, ic, i2, valei(12)
+    integer(kind=8) :: n1, adrval, ind, lck, adracc, jacc, ik, ir, ii, ivari(3000), nbcmp2, jvari
+    integer(kind=8) :: nbacc, nbpr, jaces, iac, iadr, lcr, iord(1)
     real(kind=8) :: prec
     aster_logical :: exist
     character(len=3) :: typpar

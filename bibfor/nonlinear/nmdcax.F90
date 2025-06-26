@@ -31,7 +31,7 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=19) :: sddisc
-    integer :: numins
+    integer(kind=8) :: numins
     real(kind=8) :: durdec, insref, deltac
 !
 ! ----------------------------------------------------------------------
@@ -53,11 +53,11 @@ subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
 !
     real(kind=8) :: valr(2)
     character(len=24) :: tpsext, tpsdit
-    integer :: jtpsex
+    integer(kind=8) :: jtpsex
     real(kind=8) :: instap, instam, inst
     real(kind=8) :: insfin
     real(kind=8) :: oldref
-    integer :: nummax, nbrpas
+    integer(kind=8) :: nummax, nbrpas
 !
 ! ----------------------------------------------------------------------
 !

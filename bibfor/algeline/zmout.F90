@@ -47,12 +47,12 @@ subroutine zmout(lout, m, n, a, lda, &
     implicit none
 !
 !     ... SPECIFICATIONS FOR ARGUMENTS
-    integer :: m, n, idigit, lda, lout
+    integer(kind=8) :: m, n, idigit, lda, lout
     complex(kind=8) :: a(lda, *)
     character(len=*) :: ifmt
 !
 !     ... SPECIFICATIONS FOR LOCAL VARIABLES
-    integer :: i, j, ndigit, k1, k2, lll
+    integer(kind=8) :: i, j, ndigit, k1, k2, lll
     character(len=1) :: icol(3)
     character(len=80) :: line
 !     ...
@@ -274,9 +274,9 @@ subroutine zmout(lout, m, n, a, lda, &
 !            DISPLAY 13 SIGNIFICANT DIGIT
 !
 9971 format(1x, ' ROW', i4, ':', 1x, 1p, 2('(', d20.13, ',', d20.13,&
-    &        ')  '))
+   &        ')  '))
 9961 format(1x, ' ROW', i4, ':', 1x, 1p, 1('(', d20.13, ',', d20.13,&
-    &        ')  '))
+   &        ')  '))
 !
 !
 !

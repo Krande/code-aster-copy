@@ -74,7 +74,7 @@ subroutine chligr(chel1z, ligr2z, optioz, paramz, base2, &
     character(len=4) :: tych
     character(len=19) :: ces, chelv
     character(len=19) :: ligr1, ligr2
-    integer :: ibid, iret, nncp, nbma
+    integer(kind=8) :: ibid, iret, nncp, nbma
     character(len=19) :: chel2, chel1, optio, param
     character(len=24) :: valk(2)
     character(len=8) :: noma

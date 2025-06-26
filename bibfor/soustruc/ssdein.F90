@@ -65,21 +65,21 @@ subroutine ssdein(chno_lz, chno_gz, mail, nocas)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadgg, iadgl, ialica
-    integer :: ialich, iaphi0, iaphie
-    integer :: iaprng, iaprnl, iarefe, iasupm, iavall, iavalp
-    integer :: ibid, iblph, icmp, icog, icol
-    integer :: ieqg, ieql, iiblph, ili, inoe, inog
-    integer :: inol, iret, isma, j, lgblph, nblph
-    integer :: nbnoet, ncmpmx, nddle, nddli, nddlt, nec, nlblph
-    integer :: nueqg, nueql
-    integer, pointer :: desm(:) => null()
+    integer(kind=8) :: i, iadgg, iadgl, ialica
+    integer(kind=8) :: ialich, iaphi0, iaphie
+    integer(kind=8) :: iaprng, iaprnl, iarefe, iasupm, iavall, iavalp
+    integer(kind=8) :: ibid, iblph, icmp, icog, icol
+    integer(kind=8) :: ieqg, ieql, iiblph, ili, inoe, inog
+    integer(kind=8) :: inol, iret, isma, j, lgblph, nblph
+    integer(kind=8) :: nbnoet, ncmpmx, nddle, nddli, nddlt, nec, nlblph
+    integer(kind=8) :: nueqg, nueql
+    integer(kind=8), pointer :: desm(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
     character(len=24), pointer :: refe(:) => null()
     real(kind=8), pointer :: para_r(:) => null()
-    integer, pointer :: nueg(:) => null()
-    integer, pointer :: nuel(:) => null()
-    integer, pointer :: conx(:) => null()
+    integer(kind=8), pointer :: nueg(:) => null()
+    integer(kind=8), pointer :: nuel(:) => null()
+    integer(kind=8), pointer :: conx(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

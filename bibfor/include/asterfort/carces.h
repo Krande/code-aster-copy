@@ -27,6 +27,6 @@ interface
         character(len=*) :: base
         character(len=*) :: cesz
         character(len=1) :: kstop
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine carces
 end interface

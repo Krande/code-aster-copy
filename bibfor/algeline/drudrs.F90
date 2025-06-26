@@ -33,7 +33,7 @@ subroutine drudrs(parame, q, h0, sigc, dudsig)
 ! OUT : DUDSIG : DUDSIG = - M(GAMP)*K(GAMP)*Q/(RAC(6)*SIGC*H0) ---------
 ! ------------ :          - K(GAMP)*M(GAMP)*I/(3*SIGC) -----------------
 ! ======================================================================
-    integer :: ii, ndt, ndi
+    integer(kind=8) :: ii, ndt, ndi
     real(kind=8) :: mgamp, kgamp, fact1, fact2, mun, trois, six
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------

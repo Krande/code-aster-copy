@@ -33,7 +33,7 @@ subroutine iscoqu(nomo, numail, lcoque)
 #include "asterfort/jexnum.h"
 !
     character(len=8) :: nomo
-    integer :: numail
+    integer(kind=8) :: numail
     aster_logical :: lcoque
 !
 ! ----------------------------------------------------------------------
@@ -52,9 +52,9 @@ subroutine iscoqu(nomo, numail, lcoque)
 !
 !
 !
-    integer :: iret, igrel, iel
-    integer :: ialiel, itypel
-    integer :: nbgrel, nel, numai2
+    integer(kind=8) :: iret, igrel, iel
+    integer(kind=8) :: ialiel, itypel
+    integer(kind=8) :: nbgrel, nel, numai2
     character(len=8) :: nomte
     character(len=19) :: ligrmo
 !

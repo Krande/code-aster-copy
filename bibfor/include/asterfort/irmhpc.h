@@ -22,6 +22,6 @@ interface
     subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
         med_idt :: idfimd
         character(len=*) :: nomamd, nomast
-        integer :: nbnoeu
+        integer(kind=8) :: nbnoeu
     end subroutine irmhpc
 end interface

@@ -20,8 +20,8 @@
 !
 interface
     subroutine casurf(ndim, nno, geom, surff)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: geom(ndim, nno)
         real(kind=8) :: surff
     end subroutine casurf

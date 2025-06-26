@@ -22,16 +22,16 @@ interface
     subroutine premld(n1, diag, col, xadj1, adjnc1,&
                       nnz, deb, voisin, suiv, ladjn,&
                       nrl)
-        integer :: n1
-        integer :: diag(0:*)
-        integer :: col(*)
-        integer :: xadj1(n1+1)
-        integer :: adjnc1(*)
-        integer :: nnz(1:n1)
-        integer :: deb(1:n1)
-        integer :: voisin(*)
-        integer :: suiv(*)
-        integer :: ladjn
-        integer :: nrl
+        integer(kind=8) :: n1
+        integer(kind=8) :: diag(0:*)
+        integer(kind=8) :: col(*)
+        integer(kind=8) :: xadj1(n1+1)
+        integer(kind=8) :: adjnc1(*)
+        integer(kind=8) :: nnz(1:n1)
+        integer(kind=8) :: deb(1:n1)
+        integer(kind=8) :: voisin(*)
+        integer(kind=8) :: suiv(*)
+        integer(kind=8) :: ladjn
+        integer(kind=8) :: nrl
     end subroutine premld
 end interface

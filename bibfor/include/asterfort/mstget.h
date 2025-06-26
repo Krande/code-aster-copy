@@ -22,7 +22,7 @@ interface
     subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
         character(len=*), intent(in) :: keywordfactz
         character(len=*), intent(in) :: matrix
-        integer, intent(in) :: nbocc
-        integer, intent(inout) :: ddlsta(*)
+        integer(kind=8), intent(in) :: nbocc
+        integer(kind=8), intent(inout) :: ddlsta(*)
     end subroutine mstget
 end interface

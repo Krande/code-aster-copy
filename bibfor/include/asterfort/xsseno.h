@@ -21,14 +21,14 @@
 interface
     subroutine xsseno(nno, nbsig, nse, npg, jgano,&
                       jsigpg, siseno)
-        integer :: mxval
+        integer(kind=8) :: mxval
         parameter (mxval=32*10*6)
-        integer :: nno
-        integer :: nbsig
-        integer :: nse
-        integer :: npg
-        integer :: jgano
-        integer :: jsigpg
+        integer(kind=8) :: nno
+        integer(kind=8) :: nbsig
+        integer(kind=8) :: nse
+        integer(kind=8) :: npg
+        integer(kind=8) :: jgano
+        integer(kind=8) :: jsigpg
         real(kind=8) :: siseno(mxval)
     end subroutine xsseno
 end interface

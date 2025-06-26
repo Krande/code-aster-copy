@@ -32,7 +32,7 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 #include "asterfort/utmess.h"
 !
     character(len=*) :: obin
-    integer :: nivo, unit
+    integer(kind=8) :: nivo, unit
     aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
@@ -51,7 +51,7 @@ subroutine utimco(unit, obin, nivo, lattr, lcont)
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ioc, iret, nmaxoc
+    integer(kind=8) :: ioc, iret, nmaxoc
 !-----------------------------------------------------------------------
     ob1 = obin
 !

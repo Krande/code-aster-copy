@@ -21,9 +21,9 @@
 interface
     subroutine diaghr(n, a, lda, eval, evec,&
                       ldevec, acopy, rwk, cwk)
-        integer :: ldevec
-        integer :: lda
-        integer :: n
+        integer(kind=8) :: ldevec
+        integer(kind=8) :: lda
+        integer(kind=8) :: n
         complex(kind=8) :: a(lda, *)
         real(kind=8) :: eval(*)
         complex(kind=8) :: evec(ldevec, *)

@@ -19,7 +19,7 @@
 subroutine lkvarp(vin, nbmat, mater, paraep)
 !
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: vin(7), paraep(3), mater(nbmat, 2)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE-------------------------
 ! ================================================================

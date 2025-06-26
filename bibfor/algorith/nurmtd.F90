@@ -34,10 +34,10 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, &
 #include "asterfort/r8inir.h"
 #include "asterfort/tanbul.h"
     aster_logical :: mini
-    integer :: ndim, nno1, nno2, npg, iw, idff1
-    integer :: mate
-    integer :: vu(3, 27), vp(27)
-    integer :: ivf1, igeom
+    integer(kind=8) :: ndim, nno1, nno2, npg, iw, idff1
+    integer(kind=8) :: mate
+    integer(kind=8) :: vu(3, 27), vp(27)
+    integer(kind=8) :: ivf1, igeom
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     character(len=8) :: typmod(*)
     real(kind=8) :: matr(*)
@@ -66,11 +66,11 @@ subroutine nurmtd(ndim, nno1, nno2, npg, iw, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: axi
-    integer :: g
-    integer :: ia, na, sa, ib, nb, sb, ja, jb
-    integer :: os, kk
-    integer :: vuiana, vpsa
-    integer :: idim
+    integer(kind=8) :: g
+    integer(kind=8) :: ia, na, sa, ib, nb, sb, ja, jb
+    integer(kind=8) :: os, kk
+    integer(kind=8) :: vuiana, vpsa
+    integer(kind=8) :: idim
     real(kind=8) :: rac2
     real(kind=8) :: r, w, dff1(nno1, ndim)
     real(kind=8) :: dsidep(2*ndim, 2*ndim)

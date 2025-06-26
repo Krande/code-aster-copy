@@ -25,6 +25,6 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
     end subroutine mmopti
 end interface

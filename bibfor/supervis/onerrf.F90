@@ -38,9 +38,9 @@ subroutine onerrf(set, get, long)
 #include "asterfort/lxlgut.h"
     character(len=*) :: set
     character(len=16) :: get
-    integer :: long
+    integer(kind=8) :: long
 !     ----------------------------------------------------------------
-    integer :: vexcf, vini
+    integer(kind=8) :: vexcf, vini
     save vexcf, vini
     data vexcf/0/
     data vini/-1/

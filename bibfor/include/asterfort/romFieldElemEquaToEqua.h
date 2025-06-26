@@ -20,6 +20,6 @@ interface
     subroutine romFieldElemEquaToEqua(fieldA, fieldB, equaAToB)
         use Rom_Datastructure_type
         type(ROM_DS_Field), intent(in) :: fieldA, fieldB
-        integer, pointer :: equaAToB(:)
+        integer(kind=8), pointer :: equaAToB(:)
     end subroutine romFieldElemEquaToEqua
 end interface

@@ -20,6 +20,6 @@
 !
 interface
     function lolsem()
-        integer :: lolsem
+        integer(kind=8) :: lolsem
     end function lolsem
 end interface

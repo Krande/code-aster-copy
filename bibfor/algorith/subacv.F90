@@ -33,7 +33,7 @@ subroutine subacv(cova, metr, jac, cnva, a)
 !     A       MATRICE PRODUIT SCALAIRE
 !.......................................................................
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: det
 !
 !

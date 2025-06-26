@@ -22,11 +22,11 @@ interface
     subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp,&
                       ndimen, itype)
         character(len=*) :: nomte
-        integer :: symetr
-        integer :: nbterm
-        integer :: nbnoeu
-        integer :: nbcomp
-        integer :: ndimen
-        integer :: itype
+        integer(kind=8) :: symetr
+        integer(kind=8) :: nbterm
+        integer(kind=8) :: nbnoeu
+        integer(kind=8) :: nbcomp
+        integer(kind=8) :: ndimen
+        integer(kind=8) :: itype
     end subroutine infted
 end interface

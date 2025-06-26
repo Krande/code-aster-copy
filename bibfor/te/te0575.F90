@@ -54,18 +54,18 @@ subroutine te0575(option, nomte)
 !.......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: i, idener, idepl, ideplm, idepmm, idfde, idvari
-    integer :: idsig, idsigm, igau, igeom, imate, ipoids, isig, nbvari
-    integer :: itemps, ivf, jgano, k, mxcmel, nbcont
-    integer :: nbnomx, nbsig, ndim, nno, nnos, npg, jtab(7)
+    integer(kind=8) :: i, idener, idepl, ideplm, idepmm, idfde, idvari
+    integer(kind=8) :: idsig, idsigm, igau, igeom, imate, ipoids, isig, nbvari
+    integer(kind=8) :: itemps, ivf, jgano, k, mxcmel, nbcont
+    integer(kind=8) :: nbnomx, nbsig, ndim, nno, nnos, npg, jtab(7)
 !
     real(kind=8) :: deux, enelem, poids, rayon, undemi, zero
 !-----------------------------------------------------------------------
     parameter(mxcmel=162)
     parameter(nbnomx=27)
     parameter(nbcont=6)
-    integer :: iharmo, nh, iret
-    integer :: idenem
+    integer(kind=8) :: iharmo, nh, iret
+    integer(kind=8) :: idenem
     real(kind=8) :: epsi(nbcont), epsim(nbcont), delta(nbcont)
     real(kind=8) :: nharm, angl_naut(3), instan
     real(kind=8) :: enerpg(nbnomx), epss(mxcmel), r

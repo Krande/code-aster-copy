@@ -19,7 +19,7 @@
 interface
     subroutine verima(meshz, list_obj, list_size, typez_objet)
         character(len=*), intent(in) :: meshz, typez_objet
-        integer, intent(inout) :: list_size
+        integer(kind=8), intent(inout) :: list_size
         character(len=*), intent(inout) :: list_obj(list_size)
     end subroutine verima
 end interface

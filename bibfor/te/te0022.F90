@@ -38,8 +38,8 @@ subroutine te0022(option, nomte)
 #include "asterfort/getElemOrientation.h"
 #include "asterfort/sigvmc.h"
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
-    integer :: i, icont, idepl, igeom, imate, nbsig
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: i, icont, idepl, igeom, imate, nbsig
 !
     real(kind=8) :: sigma(162), angl_naut(3), instan, nharm
     real(kind=8) :: zero

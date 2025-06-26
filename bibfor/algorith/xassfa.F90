@@ -25,7 +25,7 @@ subroutine xassfa(elp, npts, nintar, lst, noeud, &
 #include "asterfort/iselli.h"
 #include "blas/ddot.h"
 !
-    integer :: npts, nintar, noeud(9), cface(30, 6), nface, jgrlsn
+    integer(kind=8) :: npts, nintar, noeud(9), cface(30, 6), nface, jgrlsn
     real(kind=8) :: lst(6), pinter(*)
     character(len=8) :: elp
 !

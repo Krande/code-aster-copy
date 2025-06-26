@@ -22,18 +22,18 @@ interface
     subroutine unista(h, ldh, v, ldv, ddlsta,&
                       n, vectp, csta, beta, etat,&
                       ldynfa, ddlexc, redem)
-        integer :: n
-        integer :: ldv
-        integer :: ldh
+        integer(kind=8) :: n
+        integer(kind=8) :: ldv
+        integer(kind=8) :: ldh
         real(kind=8) :: h(ldh, ldh)
         real(kind=8) :: v(ldv, ldh)
-        integer :: ddlsta(n)
+        integer(kind=8) :: ddlsta(n)
         real(kind=8) :: vectp(ldv)
         real(kind=8) :: csta
         real(kind=8) :: beta
-        integer :: etat
-        integer :: ldynfa
-        integer :: ddlexc(n)
-        integer :: redem
+        integer(kind=8) :: etat
+        integer(kind=8) :: ldynfa
+        integer(kind=8) :: ddlexc(n)
+        integer(kind=8) :: redem
     end subroutine unista
 end interface

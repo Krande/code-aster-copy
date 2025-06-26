@@ -21,12 +21,12 @@
 interface
     subroutine trirap(clef, tab, ntab, n, g,&
                       d, m)
-        integer :: n
-        integer :: clef(*)
-        integer :: tab(n, *)
-        integer :: ntab
-        integer :: g
-        integer :: d
-        integer :: m
+        integer(kind=8) :: n
+        integer(kind=8) :: clef(*)
+        integer(kind=8) :: tab(n, *)
+        integer(kind=8) :: ntab
+        integer(kind=8) :: g
+        integer(kind=8) :: d
+        integer(kind=8) :: m
     end subroutine trirap
 end interface

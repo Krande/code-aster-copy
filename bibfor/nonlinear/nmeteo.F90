@@ -36,8 +36,8 @@ subroutine nmeteo(result, sddisc, ds_inout, force, nume_store, &
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(in) :: sddisc
     character(len=8), intent(in) :: result
-    integer, intent(in) :: i_field
-    integer, intent(in) :: nume_store
+    integer(kind=8), intent(in) :: i_field
+    integer(kind=8), intent(in) :: nume_store
     real(kind=8), intent(in) :: time
     aster_logical, intent(in) :: force
     type(NL_DS_Print), optional, intent(in) :: ds_print_
@@ -61,7 +61,7 @@ subroutine nmeteo(result, sddisc, ds_inout, force, nume_store, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: algo_name, field_algo, field_type
     aster_logical :: l_print, l_store, l_acti
 !

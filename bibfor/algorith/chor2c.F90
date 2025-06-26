@@ -54,13 +54,13 @@ subroutine chor2c(lischa, vecele)
 !
 !
     character(len=24) :: vachar
-    integer :: jvacha
+    integer(kind=8) :: jvacha
     character(len=19) :: chamno, nume_equa, nume_equa_new, nume_equa_prev
-    integer :: jcn, jrefn
+    integer(kind=8) :: jcn, jrefn
     character(len=24) :: resuel, noojb
     character(len=8) :: typech, typsca, nomgd
-    integer :: iret, ichar
-    integer :: ivec, nbvec, nbvdim, ivale, nbvale
+    integer(kind=8) :: iret, ichar
+    integer(kind=8) :: ivec, nbvec, nbvdim, ivale, nbvale
     character(len=4) :: tyresl
     character(len=1) :: typchn
     real(kind=8), pointer :: copie_travail(:) => null()

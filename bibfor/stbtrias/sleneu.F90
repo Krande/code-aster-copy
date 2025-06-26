@@ -86,19 +86,19 @@ subroutine sleneu(iunv, nbnode, ama, bma, cma, &
 #include "asterfort/juveca.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbnode, mix, man, ites, datset
+    integer(kind=8) :: nbnode, mix, man, ites, datset
     real(kind=8) :: ama, bma, cma, ami, bmi, cmi
 !  --> DECLARATION DES VARIABLES LOCALES
     character(len=80) :: cbuf
-    integer :: node, i, icnode, ind, j, itmp, inus
+    integer(kind=8) :: node, i, icnode, ind, j, itmp, inus
     real(kind=8) :: x, y, z
 !
 !  ---------- FIN DECLARATION -----------
 !
 !-----------------------------------------------------------------------
-    integer :: imes, ire1, ire2, iret, isyst, iter
-    integer :: iunv, jcoor, jinfo, ndeca, niter, ntail
-    integer, pointer :: syst(:) => null()
+    integer(kind=8) :: imes, ire1, ire2, iret, isyst, iter
+    integer(kind=8) :: iunv, jcoor, jinfo, ndeca, niter, ntail
+    integer(kind=8), pointer :: syst(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nbnode = 0

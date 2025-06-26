@@ -49,9 +49,9 @@ subroutine te0134(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jgeom, jrepl1, jrepl2, jrepl3, jmatpas, jcacoq
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: ii, iret
+    integer(kind=8) :: jgeom, jrepl1, jrepl2, jrepl3, jmatpas, jcacoq
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: ii, iret
     real(kind=8) :: pgl(3, 3), t2iu(4), t2ui(4)
     real(kind=8) :: pulx(3), puly(3), pulz(3), ux(3), uy(3), uz(3)
     real(kind=8) :: coor(12), alpha, beta, c, s

@@ -22,7 +22,7 @@ interface
     subroutine archi_erc(result,ifreq,matmas,obsdim,vecterc,freq,eval,cout_fon,cout_uv)
 #include "asterf_types.h"
            character(len=8),intent(in) :: result,matmas
-           integer,intent(in) :: ifreq,obsdim(3)
+           integer(kind=8),intent(in) :: ifreq,obsdim(3)
            real(kind=8),intent(in) :: vecterc(*),freq,cout_fon,cout_uv
            aster_logical,intent(in) :: eval
     end subroutine archi_erc

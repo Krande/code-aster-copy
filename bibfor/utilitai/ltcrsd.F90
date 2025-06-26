@@ -36,7 +36,7 @@ subroutine ltcrsd(litab, base)
 !     ------------------------------------------------------------------
     character(len=1) :: baselt
     character(len=19) :: listab
-    integer :: jbid
+    integer(kind=8) :: jbid
 ! DEB------------------------------------------------------------------
 !
     baselt = base(1:1)

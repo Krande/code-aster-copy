@@ -24,9 +24,9 @@ interface
         character(len=4), intent(in) :: mod45
         character(len=19), intent(in) :: matrAsse, matrGeom
         character(len=16), intent(in) :: optionModal, calcLevel
-        integer, intent(in) :: nbFreq
+        integer(kind=8), intent(in) :: nbFreq
         real(kind=8), intent(in) :: bande(2)
-        integer, intent(in) :: coefDimSpace
+        integer(kind=8), intent(in) :: coefDimSpace
         character(len=19), intent(in) :: eigsol
     end subroutine vpSorensen
 end interface

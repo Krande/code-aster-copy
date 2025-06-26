@@ -23,21 +23,21 @@ interface
                       nborto, prorto, ddlexc, ddllag, alpha,&
                       beta, signes, vect, prsudg, nstoc,&
                       omeshi, solveu)
-        integer :: neq
-        integer :: ldynam
-        integer :: lmasse
-        integer :: ldynfa
-        integer :: nbvect
-        integer :: nborto
+        integer(kind=8) :: neq
+        integer(kind=8) :: ldynam
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: ldynfa
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: nborto
         real(kind=8) :: prorto
-        integer :: ddlexc(*)
-        integer :: ddllag(*)
+        integer(kind=8) :: ddlexc(*)
+        integer(kind=8) :: ddllag(*)
         real(kind=8) :: alpha(*)
         real(kind=8) :: beta(*)
         real(kind=8) :: signes(*)
         real(kind=8) :: vect(neq, *)
         real(kind=8) :: prsudg
-        integer :: nstoc
+        integer(kind=8) :: nstoc
         real(kind=8) :: omeshi
         character(len=19) :: solveu
     end subroutine vp2ini

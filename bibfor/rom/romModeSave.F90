@@ -36,13 +36,13 @@ subroutine romModeSave(resultName, numeMode, &
 #include "asterfort/rsnoch.h"
 !
     character(len=8), intent(in) :: resultName
-    integer, intent(in) :: numeMode
+    integer(kind=8), intent(in) :: numeMode
     type(ROM_DS_Field), intent(in) :: mode
     character(len=24), intent(in) :: fieldIden
     real(kind=8), optional, pointer :: modeValeR_(:)
     complex(kind=8), optional, pointer :: modeValeC_(:)
     real(kind=8), optional, intent(in) :: modeSing_
-    integer, optional, intent(in) :: numeSlice_, nbSnap_
+    integer(kind=8), optional, intent(in) :: numeSlice_, nbSnap_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,7 +64,7 @@ subroutine romModeSave(resultName, numeMode, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, numeSlice, nbSnap, nbEqua
+    integer(kind=8) :: iret, numeSlice, nbSnap, nbEqua
     real(kind=8) :: modeSing
     real(kind=8), pointer :: resuFieldValeR(:) => null()
     complex(kind=8), pointer :: resuFieldValeC(:) => null()

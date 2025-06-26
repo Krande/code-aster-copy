@@ -29,10 +29,10 @@ interface
         character(len=19), intent(in) :: solver
         character(len=19), intent(in) :: matr_asse
         character(len=19), intent(in) :: cncine
-        integer, intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: iter_newt
         real(kind=8), intent(in) :: time_curr
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=14), intent(in) :: nume_dof
-        integer, intent(out) :: ctccvg
+        integer(kind=8), intent(out) :: ctccvg
     end subroutine nmunil
 end interface

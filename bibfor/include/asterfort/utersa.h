@@ -27,34 +27,34 @@ interface
                       ltheta, valthe, valunt, niv, ifm,&
                       ityp, xn, yn, zn, term22,&
                       aux, jad, jadv, noe)
-        integer :: ndim
-        integer :: iflup
-        integer :: iflum
-        integer :: ino
-        integer :: mno
-        integer :: jno
-        integer :: ivois
+        integer(kind=8) :: ndim
+        integer(kind=8) :: iflup
+        integer(kind=8) :: iflum
+        integer(kind=8) :: ino
+        integer(kind=8) :: mno
+        integer(kind=8) :: jno
+        integer(kind=8) :: ivois
         character(len=8) :: ma
-        integer :: iel
-        integer :: nbnv
-        integer :: nbsv
-        integer :: iavalp
-        integer :: iavalm
-        integer :: nsomm
+        integer(kind=8) :: iel
+        integer(kind=8) :: nbnv
+        integer(kind=8) :: nbsv
+        integer(kind=8) :: iavalp
+        integer(kind=8) :: iavalm
+        integer(kind=8) :: nsomm
         real(kind=8) :: jac(9)
         aster_logical :: ltheta
         real(kind=8) :: valthe
         real(kind=8) :: valunt
-        integer :: niv
-        integer :: ifm
-        integer :: ityp
+        integer(kind=8) :: niv
+        integer(kind=8) :: ifm
+        integer(kind=8) :: ityp
         real(kind=8) :: xn(9)
         real(kind=8) :: yn(9)
         real(kind=8) :: zn(9)
         real(kind=8) :: term22
         real(kind=8) :: aux
-        integer :: jad
-        integer :: jadv
-        integer :: noe(9, 6, 3)
+        integer(kind=8) :: jad
+        integer(kind=8) :: jadv
+        integer(kind=8) :: noe(9, 6, 3)
     end subroutine utersa
 end interface

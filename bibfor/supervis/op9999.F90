@@ -20,7 +20,7 @@ subroutine op9999(options)
     use parameters_module, only: ST_OK
     use allocate_module
     implicit none
-    integer, intent(in) :: options
+    integer(kind=8), intent(in) :: options
 #include "asterc/chkmsg.h"
 #include "asterc/dllcls.h"
 #include "asterc/lcdiscard.h"
@@ -47,7 +47,7 @@ subroutine op9999(options)
 !   Warning: 'options' has not necessarly the same value on all processes
 !   but OnlyProc0 must be set everywhere with the same value.
 !   Options:
-    integer, parameter :: SaveBase = 1, Repack = 4, OnlyProc0 = 8, InfoBase = 16
+    integer(kind=8), parameter :: SaveBase = 1, Repack = 4, OnlyProc0 = 8, InfoBase = 16
 !   InfoResu = 2, Set = 32 not used here
 !   - InfoBase:
 !       If enabled, list the objects existing in the database
@@ -62,8 +62,8 @@ subroutine op9999(options)
 !   Same values are in 'fin.py'
 
     character(len=512) :: path
-    integer :: iunres, iunmes
-    integer :: idx, iret, nbext
+    integer(kind=8) :: iunres, iunmes
+    integer(kind=8) :: idx, iret, nbext
     aster_logical :: info_base, close_base
 
     call jemarq()

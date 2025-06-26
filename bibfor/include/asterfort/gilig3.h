@@ -20,9 +20,9 @@
 !
 interface
     subroutine gilig3(nfic, nbnono, niv, nboblu)
-        integer :: nfic
-        integer :: nbnono
-        integer :: niv
-        integer :: nboblu
+        integer(kind=8) :: nfic
+        integer(kind=8) :: nbnono
+        integer(kind=8) :: niv
+        integer(kind=8) :: nboblu
     end subroutine gilig3
 end interface

@@ -23,10 +23,10 @@ interface
                               nddls    , nddlm  , &
                               nddl_meca, nddl_p1, nddl_p2, nddl_2nd, &
                               dimdep   , dimdef , dimcon , dimuel)
-        integer, intent(in) :: ndim, nnos, nnom
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-        integer, intent(out) :: nddls, nddlm
-        integer, intent(out) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-        integer, intent(out) :: dimdep, dimdef, dimcon, dimuel
+        integer(kind=8), intent(in) :: ndim, nnos, nnom
+        integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+        integer(kind=8), intent(out) :: nddls, nddlm
+        integer(kind=8), intent(out) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+        integer(kind=8), intent(out) :: dimdep, dimdef, dimcon, dimuel
     end subroutine thmGetElemDime
 end interface

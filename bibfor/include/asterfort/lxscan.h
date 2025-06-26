@@ -22,9 +22,9 @@ interface
     subroutine lxscan(chin, ideb, iclass, ival, rval,&
                       cval)
         character(len=*) :: chin
-        integer :: ideb
-        integer :: iclass
-        integer :: ival
+        integer(kind=8) :: ideb
+        integer(kind=8) :: iclass
+        integer(kind=8) :: ival
         real(kind=8) :: rval
         character(len=*) :: cval
     end subroutine lxscan

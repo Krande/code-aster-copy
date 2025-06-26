@@ -21,9 +21,9 @@
 interface
     subroutine permnoe(maillage, deform, nbmod, nbno, nbddl)
         character(len=8), intent(in) :: maillage
-        integer, intent(in) :: nbmod
-        integer, intent(in) :: nbno
-        integer, intent(in) :: nbddl
+        integer(kind=8), intent(in) :: nbmod
+        integer(kind=8), intent(in) :: nbno
+        integer(kind=8), intent(in) :: nbddl
         real(kind=8) :: deform(nbno*nbmod*nbddl)
     end subroutine permnoe
 end interface

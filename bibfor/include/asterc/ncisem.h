@@ -20,6 +20,6 @@
 !
 interface
     function ncisem()
-        integer :: ncisem
+        integer(kind=8) :: ncisem
     end function ncisem
 end interface

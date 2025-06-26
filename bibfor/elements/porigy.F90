@@ -39,14 +39,14 @@ subroutine porigy(nomte, rho, xnu, icdmat, klv, nl)
 #include "asterfort/utmess.h"
 #include "asterfort/lteatt.h"
 !
-    integer :: icdmat
+    integer(kind=8) :: icdmat
     character(len=*) :: nomte
     real(kind=8) :: rho, xnu, klv(*)
-    integer :: nl
+    integer(kind=8) :: nl
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: istruc, itype
+    integer(kind=8) :: istruc, itype
     real(kind=8) :: rbid, casect(6)
     real(kind=8) :: ey, ez, xl
     real(kind=8) :: a, xiy, xiz, xjx, alfay, alfaz, alfinv
@@ -56,7 +56,7 @@ subroutine porigy(nomte, rho, xnu, icdmat, klv, nl)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 17
+    integer(kind=8), parameter :: nb_cara = 17
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1', 'JX1', &

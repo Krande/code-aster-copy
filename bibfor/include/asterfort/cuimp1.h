@@ -22,6 +22,6 @@ interface
     subroutine cuimp1(deficu, resocu, ifm)
         character(len=24) :: deficu
         character(len=24) :: resocu
-        integer :: ifm
+        integer(kind=8) :: ifm
     end subroutine cuimp1
 end interface

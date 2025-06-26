@@ -34,28 +34,28 @@ subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
 #include "asterfort/utmess.h"
 #include "asterfort/utpsgl.h"
 !
-    integer :: nbel, numail(*)
+    integer(kind=8) :: nbel, numail(*)
     character(len=*) :: chelez, nomjv
     real(kind=8) :: pgl(3, 3)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: debugr
-    integer ::  gd, iad, ncmpmx, nec, tabec(10), iavale
-    integer ::  im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
-    integer :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
-    integer :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, jlongr
-    integer ::  jpnt, ipoin, imodel, ilong
+    integer(kind=8) :: debugr
+    integer(kind=8) ::  gd, iad, ncmpmx, nec, tabec(10), iavale
+    integer(kind=8) ::  im, imail, igrel, ielg, mode, nscal, icoef, nsca, nnoe
+    integer(kind=8) :: ncmpp, icmp, npcalc, iel, ncou, iachml, icou, ino, icmpt, nbgrel
+    integer(kind=8) :: numxx, numyy, numzz, numxy, numxz, numyz, nuddl, jlongr
+    integer(kind=8) ::  jpnt, ipoin, imodel, ilong
     real(kind=8) :: sg(6), sl(6)
     character(len=8) :: nomcmp, nomma
     character(len=24) :: valk(2)
     character(len=16) :: option
     character(len=19) :: chelm, noligr
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: celd(:) => null()
-    integer, pointer :: liel(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
     character(len=24), pointer :: celk(:) => null()
-    integer, pointer :: repe(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

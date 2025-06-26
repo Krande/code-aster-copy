@@ -40,7 +40,7 @@ subroutine inidbg()
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    integer :: ifm, niv, n, i, jdbg
+    integer(kind=8) :: ifm, niv, n, i, jdbg
     character(len=16) :: czcont, czmeca, czpilo, czfact, czappa, czsolv
     common/czdbg/czcont, czmeca, czpilo, czfact, czappa, czsolv
 !

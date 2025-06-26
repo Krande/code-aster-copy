@@ -20,7 +20,7 @@
 interface
     subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
         character(len=16), intent(out) :: compor(COMPOR_SIZE)
-        integer, intent(out) :: nbVari
+        integer(kind=8), intent(out) :: nbVari
         character(len=16), intent(out) :: type_comp, mult_comp
     end subroutine pmdocc
 end interface

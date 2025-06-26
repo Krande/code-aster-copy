@@ -78,9 +78,9 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, ifm, niv, nbno, jltno, jgrtno, jgrnno, ndim, j
-    integer :: jelcal, jnodto, node, nbnoma, ier
-    integer :: ibid, neleto, jdelta
+    integer(kind=8) :: i, ifm, niv, nbno, jltno, jgrtno, jgrnno, ndim, j
+    integer(kind=8) :: jelcal, jnodto, node, nbnoma, ier
+    integer(kind=8) :: ibid, neleto, jdelta
     character(len=8) :: lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, cnolt, cnoln
     character(len=24) :: lchin(2), lchout(1)
@@ -89,7 +89,7 @@ subroutine xprls(noma, cnsln, cnslt, grln, grlt, &
     real(kind=8) :: vnscgn, vtscgt
     character(len=8) :: typcmp(3)
     character(len=19) :: cnsvvt, cnsvvn
-    integer ::  jvtl, jvnl
+    integer(kind=8) ::  jvtl, jvnl
 !
     real(kind=8), pointer :: bl(:) => null()
     real(kind=8), pointer :: vcnsvn(:) => null()

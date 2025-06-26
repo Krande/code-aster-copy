@@ -25,11 +25,11 @@ interface
                       phiy, z, matm, matr, mata,&
                       itypg, axg, zg, rhog, vitg,&
                       cdg, cpg)
-        integer :: nbmod
-        integer :: nbgrp
-        integer :: nbz
-        integer :: ndim(14)
-        integer :: numgrp(*)
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: nbgrp
+        integer(kind=8) :: nbz
+        integer(kind=8) :: ndim(14)
+        integer(kind=8) :: numgrp(*)
         real(kind=8) :: matma(*)
         real(kind=8) :: dcent(*)
         real(kind=8) :: cp(*)
@@ -45,7 +45,7 @@ interface
         real(kind=8) :: matm(nbmod, nbmod)
         real(kind=8) :: matr(nbmod, nbmod)
         real(kind=8) :: mata(nbmod, nbmod)
-        integer :: itypg(*)
+        integer(kind=8) :: itypg(*)
         real(kind=8) :: axg(*)
         real(kind=8) :: zg(*)
         real(kind=8) :: rhog(*)

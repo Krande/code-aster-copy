@@ -21,11 +21,11 @@
 interface
     subroutine irrjac(fami, kpg, ksp, mod, nmat,&
                       mater, yf, dy, nmod, drdy)
-        integer :: nmod
-        integer :: nmat
+        integer(kind=8) :: nmod
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: yf(*)

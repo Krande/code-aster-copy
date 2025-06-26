@@ -24,7 +24,7 @@ subroutine vmci1d(fami, kpg, ksp, imate, em, &
     implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: kpg, ksp, imate
+    integer(kind=8) :: kpg, ksp, imate
     real(kind=8) :: ep, em, sigm, deps, sigp, dsde
     real(kind=8) :: vim(*), vip(*)
     character(len=16) :: option
@@ -63,13 +63,13 @@ subroutine vmci1d(fami, kpg, ksp, imate, em, &
 !   index des variables internes
 !           'CRITSIG', 'CRITEPS', 'EPSPEQ', 'INDIPLAS', 'DISSIP', 'DISSTHER',
 !           'XCINXX',  'XCINYY',  'XCINZZ', 'XCINXY', 'XCINXZ', 'XCINYZ',
-    integer, parameter :: icels = 1, icelu = 2, iepsq = 3, iplas = 4, idiss = 5, iwthe = 6
-    integer, parameter :: ixxm = 7
-    integer, parameter :: nbvari = 12
+    integer(kind=8), parameter :: icels = 1, icelu = 2, iepsq = 3, iplas = 4, idiss = 5, iwthe = 6
+    integer(kind=8), parameter :: ixxm = 7
+    integer(kind=8), parameter :: nbvari = 12
 ! --------------------------------------------------------------------------------------------------
     real(kind=8)        :: sigy, sieleq, sige, dp, etm, etp, xp, xm, hm, hp, sgels, epelu
     character(len=16)   :: valkm(3)
-    integer             :: icodre(4)
+    integer(kind=8)             :: icodre(4)
     real(kind=8)        :: valres(4)
     character(len=16)   :: nomecl(4)
 !

@@ -29,7 +29,7 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 #include "asterfort/nume_equa_gene_crsd.h"
 !
 !
-    integer, intent(in) :: nbmode
+    integer(kind=8), intent(in) :: nbmode
     character(len=8), intent(in) :: modmec
     character(len=*), intent(in) :: typrof
     character(len=14), intent(in) :: nugene
@@ -50,9 +50,9 @@ subroutine nummo1(nugene, modmec, nbmode, typrof)
 !
     character(len=19) :: nume_equa_gene, stomor
     character(len=24) :: lili, orig, prno
-    integer :: i_ligr_link, i_ligr_sstr
-    integer, pointer :: prgene_orig(:) => null()
-    integer, pointer :: prgene_prno(:) => null()
+    integer(kind=8) :: i_ligr_link, i_ligr_sstr
+    integer(kind=8), pointer :: prgene_orig(:) => null()
+    integer(kind=8), pointer :: prgene_prno(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -50,9 +50,9 @@ subroutine nmmuap(sddyna)
 !
     character(len=8) :: k8bid, rep, multSuppMode
     character(len=24) :: matrix
-    integer :: nbmd, nbEqua, na, nd, nbexci, nf, nv, iExci
+    integer(kind=8) :: nbmd, nbEqua, na, nd, nbexci, nf, nv, iExci
     character(len=19) :: mafdep, mafvit, mafacc, mamula, mapsid
-    integer :: jnodep, jnovit, jnoacc, jmltap, jpsdel
+    integer(kind=8) :: jnodep, jnovit, jnoacc, jmltap, jpsdel
     aster_logical :: lMultAppui
     character(len=24) :: dynaNOSD
     character(len=24), pointer :: vDynaNOSD(:) => null()

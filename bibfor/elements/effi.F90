@@ -27,7 +27,7 @@ subroutine effi(nomte, sigmtd, vf, dfds, jacp, &
 !     CALCULS DES EFFORTS INTERIEURS
 !
 !-----------------------------------------------------------------------
-    integer :: i, k
+    integer(kind=8) :: i, k
 !-----------------------------------------------------------------------
     if (nomte .eq. 'MECXSE3') then
 !

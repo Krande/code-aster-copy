@@ -23,9 +23,9 @@ interface
                         reinteg)
         character(len=*),          intent(in)  :: sd_dtm_
         character(len=*),          intent(in)  :: sd_int_
-        integer, pointer                       :: buffdtm(:)
-        integer, pointer                       :: buffint(:)
-        integer,          optional             :: nlcase
-        integer,          optional, intent(out):: reinteg
+        integer(kind=8), pointer                       :: buffdtm(:)
+        integer(kind=8), pointer                       :: buffint(:)
+        integer(kind=8),          optional             :: nlcase
+        integer(kind=8),          optional, intent(out):: reinteg
     end subroutine dtmupmat
 end interface

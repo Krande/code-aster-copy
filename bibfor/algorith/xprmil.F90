@@ -57,15 +57,15 @@ subroutine xprmil(noma, cnslt, cnsln)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, nbma, jma, jconx2, ima
-    integer :: ar(12, 3), nbar, ia, na, nb, nunoa, nunob, nmil, nunom
-    integer :: nm(12), nbar2
+    integer(kind=8) :: ifm, niv, nbma, jma, jconx2, ima
+    integer(kind=8) :: ar(12, 3), nbar, ia, na, nb, nunoa, nunob, nmil, nunom
+    integer(kind=8) :: nm(12), nbar2
     real(kind=8) :: lsna, lsnb, lsta, lstb
     character(len=8) :: typma
     character(len=19) :: mai
     real(kind=8), pointer :: lnno(:) => null()
     real(kind=8), pointer :: ltno(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT

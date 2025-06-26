@@ -28,7 +28,7 @@ subroutine cfreli(noma, nummai, nbnom, ksi1, ksi2, &
     character(len=8) :: noma
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: coefno(9)
-    integer :: nummai, nbnom
+    integer(kind=8) :: nummai, nbnom
 !
 ! ----------------------------------------------------------------------
 !

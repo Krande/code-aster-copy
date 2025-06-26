@@ -21,7 +21,7 @@
 #include "asterf_types.h"
 interface
     subroutine asmpi_bcast_i(buffer, count, root, comm)
-        integer, intent(inout) :: buffer(*)
+        integer(kind=8), intent(inout) :: buffer(*)
         mpi_int, intent(in) :: count
         mpi_int, intent(in) :: root
         mpi_int, intent(in) :: comm

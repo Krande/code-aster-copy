@@ -60,15 +60,15 @@ subroutine peecin(resu, modele, mate, mateco, cara, nh, nbocc)
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nh, nbocc
+    integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "ENER_CIN"
 !     ------------------------------------------------------------------
 !
-    integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
-    integer :: ie, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, lfreq, nbparr, nbpard
-    integer :: nbpaep, iocc, jma, nf, inume, ier, nbMaiT
+    integer(kind=8) :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
+    integer(kind=8) :: ie, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, lfreq, nbparr, nbpard
+    integer(kind=8) :: nbpaep, iocc, jma, nf, inume, ier, nbMaiT
     parameter(nbpaep=2, nbparr=6, nbpard=4)
     real(kind=8) :: prec, xfreq, varpep(nbpaep), valer(3), inst
     real(kind=8) :: rundf

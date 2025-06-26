@@ -36,7 +36,7 @@ subroutine lcdvmi(sigma, y, f, dfds, d2fds, &
 !    D2FDS : DERIVEE SECONDE DE F PAR RAPPORT AUX CONTRAINTES
 !    SEQ   : CONTRAINTE EQUIVALENTE (= Y A LA CONVERGENCE)
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: s23, s31, s12, t12, t23, t31
 !-----------------------------------------------------------------------
 !  CALCUL DE F

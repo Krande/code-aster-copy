@@ -25,10 +25,10 @@ interface
                       ds_energy, ds_material, sderro)
         use NonLin_Datastructure_type
         character(len=19), intent(out) :: matass
-        integer, intent(out) :: nume_inst
+        integer(kind=8), intent(out) :: nume_inst
         real(kind=8), intent(out) :: eta
-        integer, intent(in) :: zmeelm, zmeass, zveelm
-        integer, intent(in) :: zveass, zsolal, zvalin
+        integer(kind=8), intent(in) :: zmeelm, zmeass, zveelm
+        integer(kind=8), intent(in) :: zveass, zsolal, zvalin
         type(NL_DS_Print), intent(out) :: ds_print
         type(NL_DS_Conv), intent(out) :: ds_conv
         type(NL_DS_AlgoPara), intent(out) :: ds_algopara

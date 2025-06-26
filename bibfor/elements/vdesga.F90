@@ -32,8 +32,8 @@ subroutine vdesga(kwgt, nb1, nb2, depl, btild, &
     real(kind=8) :: kappa
 !
 !-----------------------------------------------------------------------
-    integer :: i, indith, jcara, k, kwgt
-    integer :: nb1, nb2
+    integer(kind=8) :: i, indith, jcara, k, kwgt
+    integer(kind=8) :: nb1, nb2
     real(kind=8) :: alpha, deux
 !-----------------------------------------------------------------------
     deux = 2.0d0

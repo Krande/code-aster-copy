@@ -24,11 +24,11 @@ interface
                       deps, sigm, vim, option, sigp,&
                       vip, dsidep, demu, cinco, iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: crit(6)
         real(kind=8) :: instam
@@ -42,6 +42,6 @@ interface
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: demu
         real(kind=8) :: cinco
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmtevp
 end interface

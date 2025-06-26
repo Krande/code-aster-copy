@@ -30,7 +30,7 @@ subroutine chloet(iparg, etendu, jceld)
 #include "asterf_types.h"
 #include "jeveux.h"
     aster_logical :: etendu
-    integer :: iparg, jceld
+    integer(kind=8) :: iparg, jceld
 !------------------------------------------------------------------
 !     Entrees:
 !        iparg  : numero du parametre (dans le catalogue de l'option)
@@ -41,8 +41,8 @@ subroutine chloet(iparg, etendu, jceld)
 !        jceld : si le champ local est etendu, jceld est l'adresse
 !                dans zi de l'objet champ_global.CELD
 !------------------------------------------------------------------
-    integer ::  iachlo
-    integer ::      ich
+    integer(kind=8) ::  iachlo
+    integer(kind=8) ::      ich
     character(len=8) :: tych
 !------------------------------------------------------------------
 

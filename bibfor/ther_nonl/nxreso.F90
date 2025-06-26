@@ -45,7 +45,7 @@ subroutine nxreso(matass, maprec, solver, cnchci, cn2mbr, &
 ! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8), parameter :: cbid = dcmplx(0.d0, 0.d0)
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: criter
 !
 ! --------------------------------------------------------------------------------------------------

@@ -18,7 +18,7 @@
 !
 subroutine irvcmp(ncmpmx, nomcgd, nomcmp, nbcmpt)
     implicit none
-    integer :: ncmpmx, nbcmpt
+    integer(kind=8) :: ncmpmx, nbcmpt
     character(len=*) :: nomcgd(*), nomcmp
 !     BUT :   TROUVER SI UNE COMPOSANTE EST PRESENTE DANS LA GRANDEUR
 !     ENTREES:
@@ -28,7 +28,7 @@ subroutine irvcmp(ncmpmx, nomcgd, nomcmp, nbcmpt)
 !     SORTIES:
 !        NBCMPT : COMPOSANTE PRESENTE DANS LA GRANDEUR
 ! ----------------------------------------------------------------------
-    integer :: icmp
+    integer(kind=8) :: icmp
 !
     do icmp = 1, ncmpmx
         if (nomcmp .eq. nomcgd(icmp)) then

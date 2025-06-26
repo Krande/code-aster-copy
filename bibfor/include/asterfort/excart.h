@@ -20,7 +20,7 @@
 !
 interface
     subroutine excart(imodat, iparg)
-        integer :: imodat
-        integer :: iparg
+        integer(kind=8) :: imodat
+        integer(kind=8) :: iparg
     end subroutine excart
 end interface

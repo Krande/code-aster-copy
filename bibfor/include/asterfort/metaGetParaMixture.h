@@ -23,11 +23,11 @@ interface
                                   sy)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer, intent(in) :: j_mater
-        integer, intent(in) :: meta_type
-        integer, intent(in) :: nb_phasis
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: j_mater
+        integer(kind=8), intent(in) :: meta_type
+        integer(kind=8), intent(in) :: nb_phasis
         aster_logical, intent(in) :: l_visc
         real(kind=8), intent(in) :: zalpha
         real(kind=8), intent(out) :: fmel

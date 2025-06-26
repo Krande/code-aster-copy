@@ -22,11 +22,11 @@
 interface
     subroutine xfem_count_no(neq, deeq, k8cmp, nbnomax, ino_xfem, is_xfem, nbnoxfem)
         character(len=8) :: k8cmp(*)
-        integer :: deeq(*)
-        integer :: neq
-        integer :: ino_xfem(nbnomax)
+        integer(kind=8) :: deeq(*)
+        integer(kind=8) :: neq
+        integer(kind=8) :: ino_xfem(nbnomax)
         aster_logical :: is_xfem(nbnomax)
-        integer :: nbnomax
-        integer :: nbnoxfem
+        integer(kind=8) :: nbnomax
+        integer(kind=8) :: nbnoxfem
     end subroutine xfem_count_no
 end interface

@@ -35,9 +35,9 @@ subroutine pj3dcoSupInf(modelZ, meshNbNode, &
 #include "asterfort/wkvect.h"
 !
     character(len=*), intent(in) :: modelZ
-    integer, intent(in):: meshNbNode
-    integer, intent(in) :: nbCellMast, cellMast(nbCellMast)
-    integer, intent(in) :: nbNodeSlav, nodeSlav(nbNodeSlav)
+    integer(kind=8), intent(in):: meshNbNode
+    integer(kind=8), intent(in) :: nbCellMast, cellMast(nbCellMast)
+    integer(kind=8), intent(in) :: nbNodeSlav, nodeSlav(nbNodeSlav)
     character(len=24), intent(in) :: geomSlavJv
     character(len=16), intent(in) :: corre1, corre2, corre3
     character(len=*), intent(in) :: chnormZ
@@ -51,10 +51,10 @@ subroutine pj3dcoSupInf(modelZ, meshNbNode, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: model
-    integer :: iNodeSlav, nodeNume, iDime, nbCmp
+    integer(kind=8) :: iNodeSlav, nodeNume, iDime, nbCmp
     character(len=19) :: chnorm
     character(len=19), parameter :: csnorm = '&&CALIR3.CSNORM'
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
     aster_logical, pointer :: cnsl(:) => null()
     real(kind=8), pointer :: geomSlav(:) => null()

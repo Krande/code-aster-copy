@@ -25,7 +25,7 @@ subroutine rsexpa(resu, icode, nompar, iret)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsnopa.h"
-    integer :: icode, iret
+    integer(kind=8) :: icode, iret
     character(len=*) :: resu, nompar
 ! ----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
@@ -41,10 +41,10 @@ subroutine rsexpa(resu, icode, nompar, iret)
 ! OUT : IRET   : = 0  LE NOM SYMBOLIQUE N'EXISTE PAS
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: nbac, nbpa
+    integer(kind=8) :: nbac, nbpa
 !
 !-----------------------------------------------------------------------
-    integer :: ipa, ire1
+    integer(kind=8) :: ipa, ire1
     character(len=16), pointer :: nom_par(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

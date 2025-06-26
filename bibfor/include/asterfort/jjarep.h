@@ -20,7 +20,7 @@
 !
 interface
     subroutine jjarep(iclas, nrmax)
-        integer :: iclas
-        integer :: nrmax
+        integer(kind=8) :: iclas
+        integer(kind=8) :: nrmax
     end subroutine jjarep
 end interface

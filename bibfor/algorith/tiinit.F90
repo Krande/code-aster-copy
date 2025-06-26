@@ -53,7 +53,7 @@ subroutine tiinit(ds_inout, sddisc, lostat, l_evol)
 !
     character(len=8) :: result
     character(len=19) :: listInst
-    integer :: nocc
+    integer(kind=8) :: nocc
     aster_logical :: l_reuse
 !
 ! --------------------------------------------------------------------------------------------------

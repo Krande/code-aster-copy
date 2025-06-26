@@ -21,13 +21,13 @@
 interface
     subroutine inschn(andi, ndi, xadj, adjncy, chaine,&
                       nouv, place, debut)
-        integer :: andi
-        integer :: ndi
-        integer :: xadj(*)
-        integer :: adjncy(*)
-        integer :: chaine(*)
-        integer :: nouv(*)
-        integer :: place(*)
-        integer :: debut
+        integer(kind=8) :: andi
+        integer(kind=8) :: ndi
+        integer(kind=8) :: xadj(*)
+        integer(kind=8) :: adjncy(*)
+        integer(kind=8) :: chaine(*)
+        integer(kind=8) :: nouv(*)
+        integer(kind=8) :: place(*)
+        integer(kind=8) :: debut
     end subroutine inschn
 end interface

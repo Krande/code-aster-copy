@@ -25,8 +25,8 @@ interface
         character(len=8) :: char
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: nzocu
-        integer :: nnocu
+        integer(kind=8) :: nzocu
+        integer(kind=8) :: nnocu
         character(len=24) :: lisnoe
         character(len=24) :: poinoe
         character(len=24) :: nbgdcu

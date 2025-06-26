@@ -26,7 +26,7 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
 #include "asterc/readdr.h"
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
-    integer :: ic, iaddi, iadmo, lso
+    integer(kind=8) :: ic, iaddi, iadmo, lso
 ! ----------------------------------------------------------------------
 ! LECTURE D'UN BLOC DU FICHIER D'ACCES DIRECT ASSOCIE A UNE BASE
 !
@@ -37,19 +37,19 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
 ! IN  LSO   : LONGUEUR EN OCTETS
 ! ----------------------------------------------------------------------
 !
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadloc, ierr, jiacce, jiecr, n
-    integer :: nbacce, nblent, numext
+    integer(kind=8) :: i, iadloc, ierr, jiacce, jiecr, n
+    integer(kind=8) :: nbacce, nblent, numext
 !-----------------------------------------------------------------------
     parameter(n=5)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -63,15 +63,15 @@ subroutine jxlirb(ic, iaddi, iadmo, lso)
     common/kbasje/nombas(n)
     character(len=128) :: repglo, repvol
     common/banvje/repglo, repvol
-    integer :: lrepgl, lrepvo
+    integer(kind=8) :: lrepgl, lrepvo
     common/balvje/lrepgl, lrepvo
-    integer :: idn, iext, nbenrg
+    integer(kind=8) :: idn, iext, nbenrg
     common/iextje/idn(n), iext(n), nbenrg(n)
     common/jiacce/jiacce(n), nbacce(2*n)
 !     ------------------------------------------------------------------
     aster_logical :: lrab
     character(len=512) :: nom512
-    integer :: lgbl, vali(3)
+    integer(kind=8) :: lgbl, vali(3)
 ! DEB ------------------------------------------------------------------
     ierr = 0
     lgbl = 1024*longbl(ic)*lois

@@ -21,6 +21,6 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: compor
         character(len=16), intent(in) :: v_info_valk(:)
-        integer, intent(in) :: v_info_vali(:)
+        integer(kind=8), intent(in) :: v_info_vali(:)
     end subroutine comp_comp_save
 end interface

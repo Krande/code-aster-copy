@@ -55,7 +55,7 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option, &
     character(len=16), intent(in) :: option
     aster_logical, intent(in) :: debug
 !
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
     real(kind=8), intent(out) :: sig(8), vip(*)
     real(kind=8), intent(out) :: dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -101,8 +101,8 @@ subroutine dhrc_lc(epsm, deps, vim, pgl, option, &
     aster_logical :: rigi, resi
     aster_logical :: lelas
 !
-    integer :: k, itmax, indi(6), nbact, l, i, iret, iter, iter2
-    integer :: jcara
+    integer(kind=8) :: k, itmax, indi(6), nbact, l, i, iret, iter, iter2
+    integer(kind=8) :: jcara
     blas_int :: info
     real(kind=8) :: wr(6), wi(6), work(18), vl(1), vr(1)
 !

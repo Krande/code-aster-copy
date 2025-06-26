@@ -40,8 +40,8 @@ subroutine defContactCreateObjects(sdcont)
 !
     character(len=1) :: jv_base
     character(len=24) :: sdcont_paraci, sdcont_paracr
-    integer :: j_sdcont_paracr, j_sdcont_paraci
-    integer :: zparr, zpari
+    integer(kind=8) :: j_sdcont_paracr, j_sdcont_paraci
+    integer(kind=8) :: zparr, zpari
 !
 ! --------------------------------------------------------------------------------------------------
 !

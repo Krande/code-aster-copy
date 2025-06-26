@@ -26,18 +26,18 @@ interface
                            storeTimeNb , storeTime   ,&
                            storeEpsi   , storeCrit   ,&
                            storePara   , fieldStoreNb)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=8), intent(in) :: resultName
         character(len=8), intent(in) :: model, meshAst
-        integer, intent(in) :: fieldNb
+        integer(kind=8), intent(in) :: fieldNb
         character(len=16), intent(in) :: fieldList(100)
-        integer, intent(in) :: storeIndxNb, storeTimeNb
+        integer(kind=8), intent(in) :: storeIndxNb, storeTimeNb
         character(len=10), intent(in) :: storeAccess
-        integer, intent(in) :: storeCreaNb
+        integer(kind=8), intent(in) :: storeCreaNb
         character(len=19), intent(in) :: storeIndx, storeTime
         real(kind=8), intent(in) :: storeEpsi
         character(len=8), intent(in) :: storeCrit
         character(len=4), intent(in) :: storePara
-        integer, intent(out) :: fieldStoreNb(100)
+        integer(kind=8), intent(out) :: fieldStoreNb(100)
     end subroutine resuReadMed
 end interface

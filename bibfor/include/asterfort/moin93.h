@@ -24,7 +24,7 @@ interface
         character(len=19) :: masse
         character(len=19) :: raide
         character(len=19) :: raidfa
-        integer :: nbmoin
+        integer(kind=8) :: nbmoin
         character(len=24) :: matmod
         character(len=24) :: vefreq
     end subroutine moin93

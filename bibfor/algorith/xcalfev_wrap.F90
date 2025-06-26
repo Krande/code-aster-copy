@@ -35,7 +35,7 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he, &
 #include "asterfort/reeref.h"
 #include "asterfort/is_enr_line.h"
 !
-    integer :: ndim, nnop, stano(*)
+    integer(kind=8) :: ndim, nnop, stano(*)
     real(kind=8) :: he, lsn(*), basloc(*), fk(27, 3, 3), lst(*)
     real(kind=8) :: kappa, ff(*), geom(*), mu
     real(kind=8), optional :: dkdgl(27, 3, 3, 3)
@@ -43,7 +43,7 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he, &
     character(len=1), optional :: kstop
     character(len=4), optional :: face
     character(len=8), optional :: elref
-    integer, optional :: nnop2
+    integer(kind=8), optional :: nnop2
     real(kind=8), optional :: ff2(:), dfdi2(:, :)
 !
 !
@@ -73,7 +73,7 @@ subroutine xcalfev_wrap(ndim, nnop, basloc, stano, he, &
 !----------------------------------------------------------------
 !
     aster_logical :: lderiv, lstop
-    integer :: ino, nnop_lin, j
+    integer(kind=8) :: ino, nnop_lin, j
     character(len=4) :: fac2
     character(len=8) :: elrefp, elrefp_lin
     real(kind=8) :: ff_lin(8), dfdi_lin(8, 3), xe_lin(ndim), xg(ndim)

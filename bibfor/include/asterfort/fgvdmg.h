@@ -30,12 +30,12 @@ interface
         character(len=*) :: mexpic
         character(len=*) :: mcompt
         character(len=*) :: mdomag
-        integer :: nbord
-        integer :: nbpt
-        integer :: ntcmp
-        integer :: nbcmp
-        integer :: numcmp(*)
-        integer :: impr
+        integer(kind=8) :: nbord
+        integer(kind=8) :: nbpt
+        integer(kind=8) :: ntcmp
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: numcmp(*)
+        integer(kind=8) :: impr
         real(kind=8) :: vdomag(*)
     end subroutine fgvdmg
 end interface

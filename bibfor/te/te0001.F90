@@ -39,8 +39,8 @@ subroutine te0001(option, nomte)
     aster_logical :: langl
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ier, j, jdimp, jgeom, jtime, jvec
-    integer :: nbpar, nddl, nddl1
+    integer(kind=8) :: i, ier, j, jdimp, jgeom, jtime, jvec
+    integer(kind=8) :: nbpar, nddl, nddl1
 !-----------------------------------------------------------------------
     if (nomte .eq. 'FORCE_NOD_6DDL') nddl1 = 6
     if (nomte .eq. 'FORCE_NOD_3DDL') nddl1 = 3

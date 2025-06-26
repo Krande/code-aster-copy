@@ -25,28 +25,28 @@ interface
                       sigf, vinf, ndsde, dsde, iret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: ndsde
+        integer(kind=8) :: ndsde
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=16), intent(in) :: compor_plas(*)
         character(len=16), intent(in) :: compor_creep(*)
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8) :: timed
         real(kind=8) :: timef
-        integer :: neps
+        integer(kind=8) :: neps
         real(kind=8) :: epsdt(6)
         real(kind=8) :: depst(6)
-        integer :: nsig
+        integer(kind=8) :: nsig
         real(kind=8) :: sigd(6)
         real(kind=8) :: vind(*)
         character(len=16) :: option
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
         real(kind=8) :: dsde(ndsde)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmcpla
 end interface

@@ -23,13 +23,13 @@ interface
                       nbc, indic, nsschn, mcf, iocc)
         character(len=19) :: nchmno
         character(len=8) :: nnoeud(*)
-        integer :: numnd(*)
+        integer(kind=8) :: numnd(*)
         character(len=8) :: ncmp(*)
-        integer :: nbn
-        integer :: nbc
+        integer(kind=8) :: nbn
+        integer(kind=8) :: nbc
         character(len=6) :: indic
         character(len=19) :: nsschn
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
     end subroutine extchn
 end interface

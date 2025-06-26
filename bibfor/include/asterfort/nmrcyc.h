@@ -23,7 +23,7 @@
 interface
     function nmrcyc(sddisc, iterat, prec)
         character(len=19) :: sddisc
-        integer :: iterat
+        integer(kind=8) :: iterat
         real(kind=8) :: prec
         aster_logical :: nmrcyc
     end function nmrcyc

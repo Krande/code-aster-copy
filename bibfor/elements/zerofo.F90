@@ -27,7 +27,7 @@ subroutine zerofo(func, x0, xap, epsi, nitmax, &
         end function
     end interface
     real(kind=8) :: x0, xap, epsi, solu
-    integer :: nitmax, iret, n
+    integer(kind=8) :: nitmax, iret, n
 !
 !
 ! ----------------------------------------------------------------------

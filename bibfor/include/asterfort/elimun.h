@@ -25,13 +25,13 @@ interface
         character(len=8) :: noma
         character(len=8) :: nomo
         character(len=16) :: motfac
-        integer :: nzocu
+        integer(kind=8) :: nzocu
         character(len=24) :: nbgdcu
         character(len=24) :: compcu
         character(len=24) :: nopono
         character(len=24) :: nolino
         character(len=24) :: lisnoe
         character(len=24) :: poinoe
-        integer :: nnoco
+        integer(kind=8) :: nnoco
     end subroutine elimun
 end interface

@@ -22,13 +22,13 @@ interface
     subroutine rsacpa(nomsdz, numva, icode, nomva, ctype,&
                       ival, rval, kval, ier)
         character(len=*) :: nomsdz
-        integer :: numva
-        integer :: icode
+        integer(kind=8) :: numva
+        integer(kind=8) :: icode
         character(len=16) :: nomva
-        integer :: ctype
-        integer :: ival(*)
+        integer(kind=8) :: ctype
+        integer(kind=8) :: ival(*)
         real(kind=8) :: rval(*)
         character(len=80) :: kval(*)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine rsacpa
 end interface

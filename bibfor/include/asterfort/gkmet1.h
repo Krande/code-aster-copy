@@ -21,12 +21,12 @@
 interface
     subroutine gkmet1(ndeg, nnoff, chfond, iadrgk, iadgks,&
                       iadgki, abscur)
-        integer           :: ndeg
-        integer           :: nnoff
+        integer(kind=8)           :: ndeg
+        integer(kind=8)           :: nnoff
         character(len=24) :: chfond
-        integer           :: iadrgk
-        integer           :: iadgks
-        integer           :: iadgki
+        integer(kind=8)           :: iadrgk
+        integer(kind=8)           :: iadgks
+        integer(kind=8)           :: iadgki
         character(len=24) :: abscur
     end subroutine gkmet1
 end interface

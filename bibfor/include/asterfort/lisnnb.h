@@ -21,6 +21,6 @@
 interface
     subroutine lisnnb(lischa, nbchar)
         character(len=19) :: lischa
-        integer :: nbchar
+        integer(kind=8) :: nbchar
     end subroutine lisnnb
 end interface

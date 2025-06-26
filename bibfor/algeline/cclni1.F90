@@ -21,11 +21,11 @@ subroutine cclni1(col, n, d1, t, eps, &
 ! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION COMPLEXE DE COLNI1
     implicit none
-    integer :: n, ier
+    integer(kind=8) :: n, ier
     complex(kind=8) :: col(n), d1, t(n)
     real(kind=8) :: eps
 !
-    integer :: i
+    integer(kind=8) :: i
     if (abs(d1) .le. eps) then
         ier = 1
     else

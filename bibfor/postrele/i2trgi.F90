@@ -21,7 +21,7 @@ subroutine i2trgi(t1, t2, n2, pt)
 !
 !
 #include "asterfort/i2rdli.h"
-    integer :: t1(*), t2(*), n2, pt
+    integer(kind=8) :: t1(*), t2(*), n2, pt
 !
 !**********************************************************************
 !
@@ -39,7 +39,7 @@ subroutine i2trgi(t1, t2, n2, pt)
 !
 !**********************************************************************
 !
-    integer :: i, val
+    integer(kind=8) :: i, val
 !
     do i = 1, n2, 1
 !

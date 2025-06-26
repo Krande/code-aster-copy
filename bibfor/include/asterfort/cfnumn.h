@@ -21,8 +21,8 @@
 interface
     subroutine cfnumn(defico, nno, posnno, numnno)
         character(len=24), intent(in) :: defico
-        integer, intent(in) :: nno
-        integer, intent(in) :: posnno(nno)
-        integer, intent(out) :: numnno(nno)
+        integer(kind=8), intent(in) :: nno
+        integer(kind=8), intent(in) :: posnno(nno)
+        integer(kind=8), intent(out) :: numnno(nno)
     end subroutine cfnumn
 end interface

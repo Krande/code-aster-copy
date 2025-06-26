@@ -22,18 +22,18 @@ interface
     subroutine mltpos(nbsn, parent, fils, frere, pile,&
                       lfront, seq, flag, estim, u,&
                       w, tab, liste)
-        integer :: nbsn
-        integer :: parent(*)
-        integer :: fils(*)
-        integer :: frere(*)
-        integer :: pile(*)
-        integer :: lfront(*)
-        integer :: seq(*)
-        integer :: flag(*)
-        integer :: estim
-        integer :: u(nbsn)
-        integer :: w(nbsn)
-        integer :: tab(nbsn)
-        integer :: liste(nbsn)
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: parent(*)
+        integer(kind=8) :: fils(*)
+        integer(kind=8) :: frere(*)
+        integer(kind=8) :: pile(*)
+        integer(kind=8) :: lfront(*)
+        integer(kind=8) :: seq(*)
+        integer(kind=8) :: flag(*)
+        integer(kind=8) :: estim
+        integer(kind=8) :: u(nbsn)
+        integer(kind=8) :: w(nbsn)
+        integer(kind=8) :: tab(nbsn)
+        integer(kind=8) :: liste(nbsn)
     end subroutine mltpos
 end interface

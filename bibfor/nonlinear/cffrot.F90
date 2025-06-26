@@ -52,7 +52,7 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
 !
 !
 !
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8) :: coefmu(2)
     character(len=1) :: typcst(2)
     character(len=14) :: numedf, numef1, numef2

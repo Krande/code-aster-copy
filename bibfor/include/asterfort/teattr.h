@@ -21,7 +21,7 @@ interface
         character(len=1), intent(in) :: kstop
         character(len=*), intent(in) :: noattr
         character(len=*), intent(out):: vattr
-        integer, optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: iret_
         character(len=*), intent(in), optional :: typel
     end subroutine teattr
 end interface

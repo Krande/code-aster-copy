@@ -46,8 +46,8 @@ subroutine dbrInitBaseGreedy(resultName, paraGreedy, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbEqua, nbModeMaxi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbEqua, nbModeMaxi
     character(len=8)  :: model, mesh, matrName
     character(len=24) :: fieldRefe, fieldName
     character(len=4) :: fieldSupp

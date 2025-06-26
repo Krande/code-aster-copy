@@ -22,7 +22,7 @@ interface
     subroutine mm_cycl_erase(ds_contact, cycl_type, point_curr)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: cycl_type
-        integer, intent(in) :: point_curr
+        integer(kind=8), intent(in) :: cycl_type
+        integer(kind=8), intent(in) :: point_curr
     end subroutine mm_cycl_erase
 end interface

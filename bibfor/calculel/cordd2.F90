@@ -41,15 +41,15 @@ subroutine cordd2(jprn1, jprn2, ili, ecodl, nec, &
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: nbecmx, ncmp
+    integer(kind=8) :: nbecmx, ncmp
     parameter(nbecmx=10)
-    integer :: ifin(nbecmx)
-    integer :: pos(1)
-    integer :: ecodg, ecodl(*)
+    integer(kind=8) :: ifin(nbecmx)
+    integer(kind=8) :: pos(1)
+    integer(kind=8) :: ecodg, ecodl(*)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ili, jprn1, jprn2, nec, iec, in
-    integer :: nddloc, n, i, iecdg, iecdl
+    integer(kind=8) :: ili, jprn1, jprn2, nec, iec, in
+    integer(kind=8) :: nddloc, n, i, iecdg, iecdl
 !
 !     FONCTION D ACCES A PRNO
 #define prno(ili,nunoel,l) zi(jprn1-1+zi(jprn2+ili-1)+ (nunoel-1)* (nec+2)+l-1)

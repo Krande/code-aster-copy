@@ -23,10 +23,10 @@ subroutine premla(neq, diag, col, lt, nrl, &
     implicit none
 #include "asterfort/calajt.h"
 #include "asterfort/infniv.h"
-    integer :: neq, diag(0:neq), col(*), deb(neq)
-    integer :: vois(*), suit(*), lt, nrl, rl(4, nrl), ier
+    integer(kind=8) :: neq, diag(0:neq), col(*), deb(neq)
+    integer(kind=8) :: vois(*), suit(*), lt, nrl, rl(4, nrl), ier
 !     VARIABLES LOCALES
-    integer :: i, j, j1, j2, k, illist, ifm, niv, lbd2
+    integer(kind=8) :: i, j, j1, j2, k, illist, ifm, niv, lbd2
 !****************************************************************
 !-----RECUPERATION DU NIVEAU D'IMPRESSION
 !

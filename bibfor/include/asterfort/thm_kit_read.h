@@ -22,7 +22,7 @@ interface
     subroutine thm_kit_read(keywordfact, iocc     , rela_comp, rela_thmc, rela_hydr, &
                             rela_meca  , rela_ther)
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(out) :: rela_thmc
         character(len=16), intent(out) :: rela_hydr

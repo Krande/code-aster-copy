@@ -26,14 +26,14 @@ interface
         character(len=*) :: nomma
         character(len=*) :: nomail
         character(len=*) :: nonoeu
-        integer :: nupo
-        integer :: nusp
-        integer :: ivari
+        integer(kind=8) :: nupo
+        integer(kind=8) :: nusp
+        integer(kind=8) :: ivari
         character(len=*) :: nocmp
         character(len=*) :: typres
         real(kind=8) :: valr
         complex(kind=8) :: valc
-        integer :: vali
-        integer :: ier
+        integer(kind=8) :: vali
+        integer(kind=8) :: ier
     end subroutine utch19
 end interface

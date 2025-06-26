@@ -21,7 +21,7 @@ interface
     subroutine mateMFrontToAsterProperties(mfront_name, aster_name_, index_, l_anis_)
         character(len=16), intent(inout) :: mfront_name
         character(len=16), optional, intent(inout) :: aster_name_
-        integer, optional, intent(out) :: index_
+        integer(kind=8), optional, intent(out) :: index_
         aster_logical, optional, intent(out) :: l_anis_
     end subroutine mateMFrontToAsterProperties
 end interface

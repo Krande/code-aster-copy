@@ -22,6 +22,6 @@ interface
     subroutine mnlgen(numdrv, matdrv, ninc)
         character(len=14) :: numdrv
         character(len=19) :: matdrv
-        integer :: ninc
+        integer(kind=8) :: ninc
     end subroutine mnlgen
 end interface 

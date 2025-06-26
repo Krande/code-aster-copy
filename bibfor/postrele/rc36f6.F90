@@ -24,8 +24,8 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/rc36f4.h"
 #include "asterfort/utmess.h"
-    integer :: nbp12, nbp23, nbp13, nbsigr, nocc(*), nbsg1, nbsg2, nbsg3
-    integer :: sigr(*)
+    integer(kind=8) :: nbp12, nbp23, nbp13, nbsigr, nocc(*), nbsg1, nbsg2, nbsg3
+    integer(kind=8) :: sigr(*)
     real(kind=8) :: saltij(*)
 !
 !     CALCUL DU FACTEUR D'USAGE POUR LES SITUATIONS DE PASSAGE
@@ -34,7 +34,7 @@ subroutine rc36f6(nbp12, nbp23, nbp13, nbsigr, nbsg1, &
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: nbsips, jnpass, i, k, ioc1, nsitup
+    integer(kind=8) :: nbsips, jnpass, i, k, ioc1, nsitup
     character(len=3) :: typass
 !     ------------------------------------------------------------------
 !

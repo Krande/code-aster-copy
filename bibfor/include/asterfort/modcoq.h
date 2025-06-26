@@ -22,19 +22,19 @@ interface
     subroutine modcoq(base, nuor, nbm, mater1, mater2,&
                       noma, nomgrp, iaxe, kec, geom,&
                       vicoq, torco, tcoef, ifreba)
-        integer :: nbm
+        integer(kind=8) :: nbm
         character(len=8) :: base
-        integer :: nuor(nbm)
+        integer(kind=8) :: nuor(nbm)
         character(len=8) :: mater1
         character(len=8) :: mater2
         character(len=8) :: noma
         character(len=24) :: nomgrp(*)
-        integer :: iaxe
-        integer :: kec
+        integer(kind=8) :: iaxe
+        integer(kind=8) :: kec
         real(kind=8) :: geom(9)
-        integer :: vicoq(nbm)
+        integer(kind=8) :: vicoq(nbm)
         real(kind=8) :: torco(4, nbm)
         real(kind=8) :: tcoef(10, nbm)
-        integer :: ifreba
+        integer(kind=8) :: ifreba
     end subroutine modcoq
 end interface

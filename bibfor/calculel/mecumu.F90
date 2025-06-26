@@ -33,7 +33,7 @@ subroutine mecumu(scal, ncmp, iad1, iad2, nec, &
 #include "asterfort/exisdg.h"
 #include "asterfort/utmess.h"
     character(len=8) :: scal
-    integer :: ncmp, iad1, iad2, nec, dg1(nec), dg2(nec)
+    integer(kind=8) :: ncmp, iad1, iad2, nec, dg1(nec), dg2(nec)
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !       SCAL : TYPE SCALAIRE : 'R  ', 'C  ', 'I  ', 'K8 ' ,'K16 '
@@ -58,7 +58,7 @@ subroutine mecumu(scal, ncmp, iad1, iad2, nec, &
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ico
+    integer(kind=8) :: i, ico
 !-----------------------------------------------------------------------
     ico = 0
     if (scal(1:1) .eq. 'I') then

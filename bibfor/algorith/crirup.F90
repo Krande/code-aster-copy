@@ -44,7 +44,7 @@ subroutine crirup(fami, imat, ndim, npg, lgpg, &
 #include "asterfort/fgequi.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-    integer :: npg, kpg, i, ndim, lgpg, imat, ivp, cerr(1)
+    integer(kind=8) :: npg, kpg, i, ndim, lgpg, imat, ivp, cerr(1)
 !
     real(kind=8) :: sigmoy(6), sigp(2*ndim, npg), equi(20), sc(1), prin1
     real(kind=8) :: vip(lgpg, npg), vim(lgpg, npg), pm, pp, dp, instam, instap

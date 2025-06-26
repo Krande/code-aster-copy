@@ -48,13 +48,13 @@ subroutine nmcrel(sderro, eventName, eventFlag)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iEvent
+    integer(kind=8) :: iEvent
     character(len=24) :: eventENOMJv, eventENIVJv, eventEACTJv
-    integer, pointer :: eventEACT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null()
     character(len=16), pointer :: eventENOM(:) => null(), eventENIV(:) => null()
     character(len=16) :: eventLevel
     character(len=4) :: loopName
-    integer :: eventIndx
+    integer(kind=8) :: eventIndx
 !
 ! --------------------------------------------------------------------------------------------------
 !

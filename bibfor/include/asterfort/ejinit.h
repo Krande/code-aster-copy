@@ -21,7 +21,7 @@
 interface
     subroutine ejinit(nomte, iu, ip)
         character(len=16) :: nomte
-        integer :: iu(3, 16)
-        integer :: ip(8)
+        integer(kind=8) :: iu(3, 16)
+        integer(kind=8) :: ip(8)
     end subroutine ejinit
 end interface

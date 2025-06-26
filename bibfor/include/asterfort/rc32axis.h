@@ -20,7 +20,7 @@
 !
 interface
     subroutine rc32axis(nbabsc, absc, xcoo, ycoo, vale, momen0_axis, momen1_axis, momen2_axis,rho)
-        integer :: nbabsc
+        integer(kind=8) :: nbabsc
         real(kind=8) :: absc(nbabsc)
         real(kind=8) :: vale(4,nbabsc)
         real(kind=8) :: xcoo(nbabsc)

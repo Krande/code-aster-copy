@@ -24,6 +24,6 @@ interface
     subroutine cfinal(ds_contact, nbliac)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: nbliac
+        integer(kind=8) :: nbliac
     end subroutine cfinal
 end interface

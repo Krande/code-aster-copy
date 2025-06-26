@@ -21,14 +21,14 @@
 interface
     subroutine xnorme(indipt, iptbor, vectn, nbfacb, nunoa,&
                       nunob, nunoc, jcoor, coorg)
-        integer :: indipt
-        integer :: iptbor(2)
+        integer(kind=8) :: indipt
+        integer(kind=8) :: iptbor(2)
         real(kind=8) :: vectn(12)
-        integer :: nbfacb
-        integer :: nunoa
-        integer :: nunob
-        integer :: nunoc
-        integer :: jcoor
+        integer(kind=8) :: nbfacb
+        integer(kind=8) :: nunoa
+        integer(kind=8) :: nunob
+        integer(kind=8) :: nunoc
+        integer(kind=8) :: jcoor
         real(kind=8) :: coorg(3)
     end subroutine xnorme
 end interface

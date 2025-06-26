@@ -53,8 +53,8 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax, &
 #include "asterfort/lcsomh.h"
 #include "asterfort/rsliso.h"
 #include "asterfort/rslphi.h"
-    integer :: kpg, ksp, imat, nmat, irtet, itmax, ncompt, nvi
-    integer :: nint, testcv, convp
+    integer(kind=8) :: kpg, ksp, imat, nmat, irtet, itmax, ncompt, nvi
+    integer(kind=8) :: nint, testcv, convp
 !
     real(kind=8) :: mun, zero, un, deux, trois, d13, ann, dt
     real(kind=8) :: toler, delta, d, s1, acc
@@ -91,7 +91,7 @@ subroutine lcrous(fami, kpg, ksp, toler, itmax, &
 !
     character(len=*) :: fami
     character(len=16) :: loi
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !
 !       ---------------------------------------------------------------

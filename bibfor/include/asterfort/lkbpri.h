@@ -21,8 +21,8 @@
 interface
     function lkbpri(val, vin, nbmat, mater, para,&
                     invar, s)
-        integer :: nbmat
-        integer :: val
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: val
         real(kind=8) :: vin(7)
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: para(3)

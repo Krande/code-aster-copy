@@ -22,12 +22,12 @@ interface
     subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
                       nelem, xy, prec, ligrmo, chelem,&
                       types)
-        integer :: nelem
-        integer :: nnoem
+        integer(kind=8) :: nelem
+        integer(kind=8) :: nnoem
         character(len=19) :: cherrs
         character(len=19) :: chenes
         character(len=8) :: nomail
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: xy(3, nnoem)
         real(kind=8) :: prec
         character(len=24) :: ligrmo

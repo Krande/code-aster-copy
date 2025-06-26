@@ -32,7 +32,7 @@ subroutine rsinchpre(nomsd, nomch, acces, ier)
 #include "asterfort/lxliis.h"
 !
     character(len=*), intent(in) :: nomsd, nomch, acces
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
 !      VERIFICATION DE FAISABILITE
 !      INTERPOLATION D'UN CHAMP_19 A PARTIR D'1 SD RESULTAT-COMPOSE
 ! ----------------------------------------------------------------------
@@ -52,9 +52,9 @@ subroutine rsinchpre(nomsd, nomch, acces, ier)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacces, iatach
-    integer :: iatava, iadesc, idebu, ier1, ier2
-    integer :: iloty, imaxi, nbordr
+    integer(kind=8) :: i, iacces, iatach
+    integer(kind=8) :: iatava, iadesc, idebu, ier1, ier2
+    integer(kind=8) :: iloty, imaxi, nbordr
     aster_logical :: vide
 
 !-----------------------------------------------------------------------

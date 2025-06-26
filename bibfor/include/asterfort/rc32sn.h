@@ -26,9 +26,9 @@ interface
                       sp3, spmeca3)
         aster_logical :: ze200
         character(len=4) :: lieu
-        integer :: iocc1
-        integer :: iocc2
-        integer :: ns
+        integer(kind=8) :: iocc1
+        integer(kind=8) :: iocc2
+        integer(kind=8) :: ns
         real(kind=8) :: sn
         real(kind=8) :: instsn(4)
         real(kind=8) :: snet

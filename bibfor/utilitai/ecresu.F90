@@ -41,7 +41,7 @@ subroutine ecresu(resin, vectot, nbva, grand, resou, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: npara, nbva
+    integer(kind=8) :: npara, nbva
     character(len=*) :: resin, resou, grand
     character(len=19) :: vectot
 !     REALISATION N.GREFFET
@@ -61,12 +61,12 @@ subroutine ecresu(resin, vectot, nbva, grand, resou, &
 !
 !
 !     ------------------------------------------------------------------
-    integer :: nbordr, jordr, ibid, i, nbsym
-    integer :: ltps2, ieq, ier, neq, lval, lvals, iret, nbva2
-    integer :: nbsauv, iarchi, isto1, isto2, isto3, isto4
-    integer :: jdeps, jvits, jaccs, jpass, jinst
-    integer :: ires, n1, jdesc, nbmode, lvalv, lvala, j, lv1, lv2, lv3
-    integer :: jrefam, jvint, jfreq
+    integer(kind=8) :: nbordr, jordr, ibid, i, nbsym
+    integer(kind=8) :: ltps2, ieq, ier, neq, lval, lvals, iret, nbva2
+    integer(kind=8) :: nbsauv, iarchi, isto1, isto2, isto3, isto4
+    integer(kind=8) :: jdeps, jvits, jaccs, jpass, jinst
+    integer(kind=8) :: ires, n1, jdesc, nbmode, lvalv, lvala, j, lv1, lv2, lv3
+    integer(kind=8) :: jrefam, jvint, jfreq
     real(kind=8) :: r1
     real(kind=8) :: dt
     character(len=1) :: ktyp

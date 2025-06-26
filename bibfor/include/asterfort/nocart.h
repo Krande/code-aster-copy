@@ -26,30 +26,30 @@ subroutine nocart(carte, code, ncmp, groupma, mode, nma,&
                   jlima0,jlimac,lontav)
 
     character(len=*), intent(in) :: carte
-    integer, intent(in) :: code
-    integer, intent(in) :: ncmp
+    integer(kind=8), intent(in) :: code
+    integer(kind=8), intent(in) :: ncmp
     character(len=*), intent(in), optional :: groupma
     character(len=*),intent(in), optional :: mode
-    integer, intent(in), optional :: nma
+    integer(kind=8), intent(in), optional :: nma
     character(len=*), intent(in), optional :: limano(*)
-    integer, intent(in), optional :: limanu(*)
+    integer(kind=8), intent(in), optional :: limanu(*)
     character(len=*), intent(in), optional ::  ligrel
 
 !   -- arguments optionnels pour gagner du CPU :
     character(len=3), intent(in), optional ::  rapide
-    integer, intent(inout), optional ::  jdesc
-    integer, intent(inout), optional ::  jnoma
-    integer, intent(inout), optional ::  jncmp
-    integer, intent(inout), optional ::  jnoli
-    integer, intent(inout), optional ::  jvale
-    integer, intent(inout), optional ::  jvalv
-    integer, intent(in)   , optional ::  jnocmp
-    integer, intent(in)   , optional ::  ncmpmx
-    integer, intent(in)   , optional ::  nec
+    integer(kind=8), intent(inout), optional ::  jdesc
+    integer(kind=8), intent(inout), optional ::  jnoma
+    integer(kind=8), intent(inout), optional ::  jncmp
+    integer(kind=8), intent(inout), optional ::  jnoli
+    integer(kind=8), intent(inout), optional ::  jvale
+    integer(kind=8), intent(inout), optional ::  jvalv
+    integer(kind=8), intent(in)   , optional ::  jnocmp
+    integer(kind=8), intent(in)   , optional ::  ncmpmx
+    integer(kind=8), intent(in)   , optional ::  nec
     character(len=8), intent(in), optional ::  ctype
-    integer, intent(inout), optional ::  jlima0
-    integer, intent(inout), optional ::  jlimac
-    integer, intent(inout), optional ::  lontav
+    integer(kind=8), intent(inout), optional ::  jlima0
+    integer(kind=8), intent(inout), optional ::  jlimac
+    integer(kind=8), intent(inout), optional ::  lontav
 
 end subroutine nocart
 end interface

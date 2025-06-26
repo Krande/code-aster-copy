@@ -24,6 +24,6 @@ interface
         character(len=24) :: indirf
         character(len=8) :: modcyc
         character(len=8) :: mailsk
-        integer :: nbsec
+        integer(kind=8) :: nbsec
     end subroutine cynupl
 end interface

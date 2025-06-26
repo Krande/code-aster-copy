@@ -47,7 +47,7 @@ subroutine romSolveDOMSystSolve(solver, ds_solve)
 ! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
-    integer :: icode, ibid, ifm, niv
+    integer(kind=8) :: icode, ibid, ifm, niv
     character(len=19) :: maprec, crgc, vect_zero
     character(len=19) :: syst_matr, syst_2mbr, syst_solu
 !

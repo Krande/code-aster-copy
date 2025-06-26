@@ -59,20 +59,20 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI, &
 #include "asterfort/setIntVect.h"
 #include "asterfort/getLogVect.h"
 !   declaration des arguments
-    integer, intent(in) :: inputI(*), ngf
+    integer(kind=8), intent(in) :: inputI(*), ngf
     aster_logical, intent(in) :: inputL(*)
     real(kind=8), intent(in) :: xmat(*), var0(*), inputR(*), inputVR6(6, *)
     real(kind=8), intent(in) :: inputMat33(3, 3, *), raideur66(6, 6), souplesse66(6, 6)
     real(kind=8), intent(inout) :: A(ngf, ngf+1), B(ngf), X(ngf), varf(*)
     real(kind=8), intent(out) :: outputR(*), outputVR6(6, *), outputMat33(3, 3, *)
-    integer, intent(out) :: outputI(*)
-    integer, intent(inout) :: ipzero(ngf)
+    integer(kind=8), intent(out) :: outputI(*)
+    integer(kind=8), intent(inout) :: ipzero(ngf)
 ! ----------------------------------------------------------------------
 !   variables internes
 !   irr : longeur de lelement dans la base des direction principales
 !   controle des actions de criter3d et stockage des directions d ecoule
-    integer :: irr, ipla2, err1, nf0, vali(2), ifour, ierr1, ipla
-    integer :: i, j, iplalim, mfr, nstrs, ndim
+    integer(kind=8) :: irr, ipla2, err1, nf0, vali(2), ifour, ierr1, ipla
+    integer(kind=8) :: i, j, iplalim, mfr, nstrs, ndim
 !   logic1 : logique pour le controle de coherence de dissipation par fluage
     aster_logical :: fl3d, ppas, iso, local, end3d
     aster_logical :: indic2, referm3(3), limit1, logic1, goto20
@@ -107,22 +107,22 @@ subroutine plasti3d(xmat, inputR, inputVR6, inputMat33, inputI, &
     real(kind=8) :: ref33(3, 3), rtg33(3, 3), rt33(3, 3), vwpl33(3, 3), vwpl33t(3, 3)
     real(kind=8) :: wpl3(3), wplx3(3)
 !   nombres de criteres totaux et actifs
-    integer :: nc
+    integer(kind=8) :: nc
     parameter(nc=10)
 !   ig(nc) : correspondance entre n° de critere actif et n° global
 !   suivant ordre defini dans criter3d.f
-    integer :: na, ig(nc), supr(nc)
+    integer(kind=8) :: na, ig(nc), supr(nc)
     real(kind=8) :: fa(nc), dpfa_ds(nc, 6), dgfa_ds(nc, 6), dpfa_dpg(nc)
 !   derivee de la resistance / multiplicateur plastique
     real(kind=8) :: dra_dl(nc), fg(nc), fglim(nc)
 !   derivee fonction seuil / resistance
     real(kind=8) :: dpfa_dr(nc)
 !   nombre maxi de sous iterations plastique : imax
-    integer :: imax
+    integer(kind=8) :: imax
     parameter(imax=1000)
     real(kind=8) :: hpla
     parameter(hpla=1.0d-3)
-    integer :: vectind0(17), vectind1(17)
+    integer(kind=8) :: vectind0(17), vectind1(17)
     data vectind0/VVRG, TAUG, NRJG, TRAG, SRSG, VRAG, TDEF, NRJD, SRSD, VDEF, &
         CNAD, NRJP, TTRD, TFID, TTDD, TDID, EXMD/
     data vectind1/EXND, CNAB, CNAK, SSAD, TTKF, NRJF, ALAT, KGEL, SFLD, EPC, &

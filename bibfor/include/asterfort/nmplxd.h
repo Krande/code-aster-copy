@@ -34,13 +34,13 @@ interface
                       type(FE_Cell), intent(in) :: FECell
 type(FE_Quadrature), intent(in) :: FEQuad
 type(FE_basis), intent(in) :: FEBasis
-        integer, intent(in) :: nno, npg, ndim
+        integer(kind=8), intent(in) :: nno, npg, ndim
         character(len=8), intent(in) :: typmod(*)
         character(len=16), intent(in) :: option
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(*), mult_comp
         real(kind=8), intent(in) :: carcri(*)
-        integer, intent(in) :: lgpg
+        integer(kind=8), intent(in) :: lgpg
         real(kind=8), intent(in) :: instam, instap
         real(kind=8), intent(inout) :: dispPrev(ndim, nno), dispIncr(ndim, nno)
         real(kind=8), intent(in) :: angmas(*)
@@ -48,6 +48,6 @@ type(FE_basis), intent(in) :: FEBasis
         aster_logical, intent(in) :: matsym
         real(kind=8), intent(inout) :: sigmCurr(2*ndim, npg), vip(lgpg, npg)
         real(kind=8), intent(inout) :: matuu(*), vectu(ndim, nno)
-        integer, intent(inout) :: codret
+        integer(kind=8), intent(inout) :: codret
     end subroutine nmplxd
 end interface

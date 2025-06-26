@@ -35,12 +35,12 @@ interface
        real(kind=8) :: scmaxi
        real(kind=8) :: scmaxs
        real(kind=8) :: ssmax
-       integer :: ferrcomp
-       integer :: precs
-       integer :: ferrsyme
+       integer(kind=8) :: ferrcomp
+       integer(kind=8) :: precs
+       integer(kind=8) :: ferrsyme
        real(kind=8) :: slsyme
-       integer :: uc
-       integer :: um
+       integer(kind=8) :: uc
+       integer(kind=8) :: um
        logical :: condns
        real(kind=8) :: astend
        real(kind=8) :: ascomp
@@ -49,8 +49,8 @@ interface
        real(kind=8) :: sctend
        real(kind=8) :: sccomp
        real(kind=8) :: alpha
-       integer :: pivot
-       integer :: etat
-       integer :: ierr
+       integer(kind=8) :: pivot
+       integer(kind=8) :: etat
+       integer(kind=8) :: ierr
     end subroutine cafelsiter
 end interface

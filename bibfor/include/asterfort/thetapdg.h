@@ -20,14 +20,14 @@
 !
 interface
     subroutine thetapdg(ndim, nno, discr, ff, dfdi, ideg, ilag, ithet, dtdm)
-        integer, intent(in)       :: ndim
-        integer, intent(in)       :: nno
+        integer(kind=8), intent(in)       :: ndim
+        integer(kind=8), intent(in)       :: nno
         character(len=8)          :: discr
         real(kind=8), intent(in)  :: ff(nno)
         real(kind=8), intent(in)  :: dfdi(nno, ndim)
-        integer, intent(in)       :: ideg
-        integer, intent(in)       :: ilag
-        integer, intent(in)       :: ithet
+        integer(kind=8), intent(in)       :: ideg
+        integer(kind=8), intent(in)       :: ilag
+        integer(kind=8), intent(in)       :: ithet
         real(kind=8), intent(out) :: dtdm(3, 4)
     end subroutine thetapdg
 end interface

@@ -44,12 +44,12 @@ interface
         real(kind=8) :: wmaxys
         real(kind=8) :: wmaxzi
         real(kind=8) :: wmaxzs
-        integer :: ferrcomp
-        integer :: precs
-        integer :: ferrsyme
+        integer(kind=8) :: ferrcomp
+        integer(kind=8) :: precs
+        integer(kind=8) :: ferrsyme
         real(kind=8) :: slsyme
-        integer :: uc
-        integer :: um
+        integer(kind=8) :: uc
+        integer(kind=8) :: um
         real(kind=8) :: kt
         real(kind=8) :: eys
         real(kind=8) :: facier
@@ -73,16 +73,16 @@ interface
         real(kind=8) :: sigmczs
         real(kind=8) :: alphay
         real(kind=8) :: alphaz
-        integer :: pivoty
-        integer :: pivotz
-        integer :: etaty
-        integer :: etatz
+        integer(kind=8) :: pivoty
+        integer(kind=8) :: pivotz
+        integer(kind=8) :: etaty
+        integer(kind=8) :: etatz
         real(kind=8) :: wfinyi
         real(kind=8) :: wfinys
         real(kind=8) :: wfinzi
         real(kind=8) :: wfinzs
         real(kind=8) :: kvarfy
         real(kind=8) :: kvarfz
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine breselsqp
 end interface

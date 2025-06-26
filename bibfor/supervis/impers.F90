@@ -27,7 +27,7 @@ subroutine impers()
 ! ----------------------------------------------------------------------
 !
 #include "asterfort/iunifi.h"
-    integer :: iunerr
+    integer(kind=8) :: iunerr
 !
     iunerr = iunifi('ERREUR')
     if (iunerr .gt. 0) write (iunerr, *) '<S> ERREUR UTILISATEUR RECUPEREE PAR LE SUPERVISEUR'

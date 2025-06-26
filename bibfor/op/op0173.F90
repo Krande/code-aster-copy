@@ -45,7 +45,7 @@ subroutine op0173()
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ibid, n1, iret, nparfi, vali
+    integer(kind=8) :: ibid, n1, iret, nparfi, vali
     real(kind=8) :: r8b, valr
     complex(kind=8) :: cbid, valc
     character(len=8) :: k8b, nomres, ctype, table

@@ -20,7 +20,7 @@ subroutine mtexis(mat, ier)
     implicit none
 #include "asterfort/exisd.h"
     character(len=*) :: mat
-    integer :: ier
+    integer(kind=8) :: ier
 !     VERIFIE L'EXIXTENCE D'UNE MATRICE
 !     ------------------------------------------------------------------
 ! IN  MAT    : CH* : NOM DE LA MATRICE

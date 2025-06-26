@@ -23,9 +23,9 @@ interface
                   dgamv, im, sm, vinm, nvi, de,&
                   ucrip, seuilp, gp, devgii, paraep,&
                   varpl, dfdsp, dlam)
-        integer :: nbmat
-        integer :: varv
-        integer :: nvi
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: varv
+        integer(kind=8) :: nvi
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: deps(6)
         real(kind=8) :: depsv(6)

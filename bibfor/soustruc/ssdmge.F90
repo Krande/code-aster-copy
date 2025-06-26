@@ -21,7 +21,7 @@ subroutine ssdmge(geo1, geo2, para, dimgeo)
 !     ARGUMENTS:
 !     ----------
 #include "asterfort/matrot.h"
-    integer :: dimgeo
+    integer(kind=8) :: dimgeo
     real(kind=8) :: geo1(*), geo2(*), para(*)
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -45,7 +45,7 @@ subroutine ssdmge(geo1, geo2, para, dimgeo)
 !     CONVENTION IMPORTANTE : ON FAIT LA ROTATION AVANT LA TRANSLATION
 ! ======================================================================
     real(kind=8) :: geop(3), lambda(3, 3)
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
 !
 !     -- ROTATION:

@@ -47,8 +47,8 @@ subroutine romBaseGetInfo(resultName, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: numeModeRefe = 1
-    integer :: iret, numeModeFirst, numeSlice, nbSnap, nbMode
+    integer(kind=8), parameter :: numeModeRefe = 1
+    integer(kind=8) :: iret, numeModeFirst, numeSlice, nbSnap, nbMode
     character(len=8)  :: model, lineicAxis, baseType
     character(len=24) :: lineicSect, fieldRefe, modeSymbName
     type(ROM_DS_Field) :: mode

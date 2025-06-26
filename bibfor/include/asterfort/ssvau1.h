@@ -21,7 +21,7 @@
 interface
     subroutine ssvau1(nomacr, iavein, iaveou)
         character(len=8) :: nomacr
-        integer :: iavein
-        integer :: iaveou
+        integer(kind=8) :: iavein
+        integer(kind=8) :: iaveou
     end subroutine ssvau1
 end interface

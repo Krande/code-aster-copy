@@ -28,7 +28,7 @@ interface
                        sigmsyi, sigmsys, ecyi, ecys,&
                        sigmszi, sigmszs, eczi, eczs,&
                        alphay, alphaz, pivoty, pivotz, etaty, etatz, ierr)
-        integer :: typco
+        integer(kind=8) :: typco
         real(kind=8) :: alphacc
         real(kind=8) :: effmy
         real(kind=8) :: effmz
@@ -43,15 +43,15 @@ interface
         real(kind=8) :: fbeton
         real(kind=8) :: gammas
         real(kind=8) :: gammac
-        integer :: clacier
+        integer(kind=8) :: clacier
         real(kind=8) :: eys
-        integer :: typdiag
-        integer :: ferrcomp
-        integer :: precs
-        integer :: ferrsyme
+        integer(kind=8) :: typdiag
+        integer(kind=8) :: ferrcomp
+        integer(kind=8) :: precs
+        integer(kind=8) :: ferrsyme
         real(kind=8) :: slsyme
-        integer :: uc
-        integer :: um
+        integer(kind=8) :: uc
+        integer(kind=8) :: um
         real(kind=8) :: dnsyi
         real(kind=8) :: dnsys
         real(kind=8) :: dnszi
@@ -66,10 +66,10 @@ interface
         real(kind=8) :: eczs
         real(kind=8) :: alphay
         real(kind=8) :: alphaz
-        integer :: pivoty
-        integer :: pivotz
-        integer :: etaty
-        integer :: etatz
-        integer :: ierr
+        integer(kind=8) :: pivoty
+        integer(kind=8) :: pivotz
+        integer(kind=8) :: etaty
+        integer(kind=8) :: etatz
+        integer(kind=8) :: ierr
     end subroutine breselu
 end interface

@@ -22,11 +22,11 @@ interface
     subroutine cupivo(xjvmax, indic, nbliac, ajliai, spliai,&
                       spavan, deficu, resocu)
         real(kind=8) :: xjvmax
-        integer :: indic
-        integer :: nbliac
-        integer :: ajliai
-        integer :: spliai
-        integer :: spavan
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ajliai
+        integer(kind=8) :: spliai
+        integer(kind=8) :: spavan
         character(len=24) :: deficu
         character(len=24) :: resocu
     end subroutine cupivo

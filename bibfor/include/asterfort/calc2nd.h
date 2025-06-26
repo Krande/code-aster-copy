@@ -28,8 +28,8 @@ interface
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
         aster_logical, intent(in) :: lMatr, lSigm
-        integer, intent(in) :: j_mater, ndim, dimdef, dimcon
-        integer, intent(in) :: adde2nd, adco2nd
+        integer(kind=8), intent(in) :: j_mater, ndim, dimdef, dimcon
+        integer(kind=8), intent(in) :: adde2nd, adco2nd
         real(kind=8), intent(in) :: defgem(dimdef)
         real(kind=8), intent(in) :: defgep(dimdef)
         real(kind=8), intent(in) :: congem(dimcon)

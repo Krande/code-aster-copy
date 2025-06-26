@@ -18,7 +18,7 @@
 
 function cudisd(resocu, questz)
     implicit none
-    integer :: cudisd
+    integer(kind=8) :: cudisd
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -45,7 +45,7 @@ function cudisd(resocu, questz)
 !
     character(len=24) :: questi
     character(len=24) :: coco
-    integer :: jcoco
+    integer(kind=8) :: jcoco
 !
 ! ----------------------------------------------------------------------
 !

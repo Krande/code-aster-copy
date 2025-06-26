@@ -23,13 +23,13 @@ interface
                       alarm, temps, nbtyar, typear, masse,&
                       depl, vite, acce, fexte, famor,&
                       fliai)
-        integer :: nbtyar
-        integer :: neq
+        integer(kind=8) :: nbtyar
+        integer(kind=8) :: neq
         character(len=8) :: result
-        integer :: istoc
-        integer :: iarchi
+        integer(kind=8) :: istoc
+        integer(kind=8) :: iarchi
         character(len=*) :: texte
-        integer :: alarm
+        integer(kind=8) :: alarm
         real(kind=8) :: temps
         character(len=16) :: typear(nbtyar)
         character(len=8) :: masse

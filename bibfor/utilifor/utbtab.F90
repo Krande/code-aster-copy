@@ -21,7 +21,7 @@ subroutine utbtab(raz, na, mb, a, b, &
     implicit none
 #include "asterfort/r8inir.h"
     character(len=*) :: raz
-    integer :: na, mb
+    integer(kind=8) :: na, mb
     real(kind=8) :: a(na, na), b(na, mb), xab(na, mb)
     real(kind=8) :: btab(mb, mb)
 !     ------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine utbtab(raz, na, mb, a, b, &
     character(len=4) :: raz2
 ! --DEB
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     raz2 = raz
 !

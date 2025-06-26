@@ -23,11 +23,11 @@ interface
         character(len=16) :: concep
         character(len=14) :: nume
         character(len=19) :: raide
-        integer :: nbmodd
-        integer :: nbmodf
-        integer :: nbmoda
-        integer :: nbmoad
-        integer :: nbmodi
-        integer :: nbpsmo
+        integer(kind=8) :: nbmodd
+        integer(kind=8) :: nbmodf
+        integer(kind=8) :: nbmoda
+        integer(kind=8) :: nbmoad
+        integer(kind=8) :: nbmodi
+        integer(kind=8) :: nbpsmo
     end subroutine arch93
 end interface

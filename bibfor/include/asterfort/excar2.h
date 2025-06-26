@@ -20,10 +20,10 @@
 !
 interface
     subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
-        integer :: ngrmx
-        integer :: desc
-        integer :: dg(*)
-        integer :: ncmp
-        integer :: debugr
+        integer(kind=8) :: ngrmx
+        integer(kind=8) :: desc
+        integer(kind=8) :: dg(*)
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: debugr
     end subroutine excar2
 end interface

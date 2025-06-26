@@ -28,7 +28,7 @@ subroutine lc0031(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/nmvprk.h"
 #include "asterfort/utlcal.h"
 !
-    integer :: imate, ndim, kpg, ksp, codret, nvi, neps
+    integer(kind=8) :: imate, ndim, kpg, ksp, codret, nvi, neps
     real(kind=8) :: carcri(*), angmas(*), instam, instap
     real(kind=8) :: epsm(6), deps(6), sigm(6), sigp(6), vim(*), vip(*)
     real(kind=8) :: dsidep(6, 6)

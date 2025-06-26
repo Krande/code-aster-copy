@@ -23,11 +23,11 @@
 interface
     subroutine mdallr(resu1, resu2, basemo, nbmode, nbsauv,&
                       vecpr8, vecpc8, zcmplx)
-        integer :: nbmode
+        integer(kind=8) :: nbmode
         character(len=8) :: resu1
         character(len=8) :: resu2
         character(len=8) :: basemo
-        integer :: nbsauv
+        integer(kind=8) :: nbsauv
         real(kind=8) :: vecpr8(nbmode, *)
         complex(kind=8) :: vecpc8(nbmode, *)
         aster_logical :: zcmplx

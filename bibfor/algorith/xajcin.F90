@@ -24,12 +24,12 @@ subroutine xajcin(model, option, mxchin, lchin, lpain, &
 #include "asterfort/assert.h"
 !
 !
-    integer, intent(in) :: mxchin
+    integer(kind=8), intent(in) :: mxchin
     character(len=*), intent(in) :: model
     character(len=*), intent(in) :: option
     character(len=*), intent(inout) :: lpain(mxchin)
     character(len=*), intent(inout) :: lchin(mxchin)
-    integer, intent(inout) :: nchin
+    integer(kind=8), intent(inout) :: nchin
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ subroutine xajcin(model, option, mxchin, lchin, lpain, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbadd
+    integer(kind=8) :: nbadd
 !
 ! --------------------------------------------------------------------------------------------------
 !

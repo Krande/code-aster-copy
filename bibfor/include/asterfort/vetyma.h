@@ -19,9 +19,9 @@
 interface
     subroutine vetyma(mesh, ndim, loadType, listCell, nbCell)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nbCell
+        integer(kind=8), intent(in) :: nbCell
         character(len=24), intent(in) :: listCell
         character(len=16), intent(in) :: loadType
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
     end subroutine vetyma
 end interface

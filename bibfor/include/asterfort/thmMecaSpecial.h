@@ -32,10 +32,10 @@ interface
         character(len=16), intent(in) :: option, meca
         aster_logical, intent(in) :: lMatr
         real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=8), intent(in) :: typmod(2)
         real(kind=8), intent(in) :: carcri(*)
-        integer, intent(in) :: ndim, dimdef, dimcon, addeme, adcome, addep1, addep2
+        integer(kind=8), intent(in) :: ndim, dimdef, dimcon, addeme, adcome, addep1, addep2
         real(kind=8), intent(in) :: vintm(*)
         real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
         real(kind=8), intent(inout) :: congep(dimcon)
@@ -43,6 +43,6 @@ interface
         real(kind=8), intent(in) :: time_prev, time_curr
         real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
         real(kind=8), intent(out) :: ther_meca(6)
-        integer, intent(out) :: retcom
+        integer(kind=8), intent(out) :: retcom
     end subroutine thmMecaSpecial
 end interface

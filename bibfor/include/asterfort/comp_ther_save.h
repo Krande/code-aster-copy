@@ -22,7 +22,7 @@ interface
     subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: compor
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=19), intent(in) :: list_vale
     end subroutine comp_ther_save
 end interface

@@ -36,7 +36,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
 #include "asterfort/isParallelMatrix.h"
 !
     character(len=*) :: nommat, vcine
-    integer :: nsecm
+    integer(kind=8) :: nsecm
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
     aster_logical :: prepos
@@ -64,7 +64,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
     character(len=16) :: metres
     character(len=19) :: vci19, solveu
     complex(kind=8) :: cbid
-    integer :: k, kdeb, idvalc, lmat, neq, nimpo
+    integer(kind=8) :: k, kdeb, idvalc, lmat, neq, nimpo
     character(len=24), pointer :: slvk(:) => null()
     aster_logical :: l_parallel_matrix
     cbid = dcmplx(0.d0, 0.d0)

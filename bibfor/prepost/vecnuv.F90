@@ -24,7 +24,7 @@ subroutine vecnuv(ipre, ider, gamma, phinit, dphi, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: ipre, ider, n, k, dim
+    integer(kind=8) :: ipre, ider, n, k, dim
     real(kind=8) :: gamma, phinit, dphi, vectn(dim), vectu(dim)
     real(kind=8) :: vectv(dim)
 ! ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine vecnuv(ipre, ider, gamma, phinit, dphi, &
 !  VECTV    OUT  R  : COORDONNEES DES VECTEURS TANGENTS, COMPOSANTES V.
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: phi
 !     ------------------------------------------------------------------
 !

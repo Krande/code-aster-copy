@@ -23,7 +23,7 @@ interface
         real(kind=8) :: crit(*)
         real(kind=8) :: seuil
         real(kind=8) :: dp
-        integer :: iret
-        integer :: iter
+        integer(kind=8) :: iret
+        integer(kind=8) :: iter
     end subroutine nmchdp
 end interface

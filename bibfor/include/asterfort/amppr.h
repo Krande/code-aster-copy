@@ -20,13 +20,13 @@
 interface
     subroutine amppr(amat, nb1, nb2, bmat, n1,&
                      n2, i, j)
-        integer :: n2
-        integer :: n1
-        integer :: nb2
-        integer :: nb1
+        integer(kind=8) :: n2
+        integer(kind=8) :: n1
+        integer(kind=8) :: nb2
+        integer(kind=8) :: nb1
         real(kind=8) :: amat(nb1, nb2)
         real(kind=8) :: bmat(n1, n2)
-        integer :: i
-        integer :: j
+        integer(kind=8) :: i
+        integer(kind=8) :: j
     end subroutine amppr
 end interface

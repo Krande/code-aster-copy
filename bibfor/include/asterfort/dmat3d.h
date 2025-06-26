@@ -21,11 +21,11 @@ interface
     subroutine dmat3d(fami, mater , time  , poum, ipg,&
                       ispg, angl, dr_, di_)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: mater
+        integer(kind=8), intent(in) :: mater
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: ipg
-        integer, intent(in) :: ispg
+        integer(kind=8), intent(in) :: ipg
+        integer(kind=8), intent(in) :: ispg
         real(kind=8), intent(in) :: angl(3)
         real(kind=8), optional, intent(out) :: dr_(6, 6)
         real(kind=8), optional, intent(out) :: di_(6, 6)

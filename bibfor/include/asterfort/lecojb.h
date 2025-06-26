@@ -21,8 +21,8 @@
 interface
     subroutine lecojb(ob, unite, base, iret)
         character(len=*) :: ob
-        integer :: unite
+        integer(kind=8) :: unite
         character(len=1) :: base
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lecojb
 end interface

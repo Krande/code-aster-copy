@@ -48,13 +48,13 @@ subroutine te0075(option, nomte)
     type(FE_Quadrature) :: FEQuad
     type(FE_Basis) :: FEBasis
 !
-    integer, parameter :: nbres = 4
+    integer(kind=8), parameter :: nbres = 4
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), theta, time_curr, time_prev
     real(kind=8) :: rhs(MAX_BS), valQP(MAX_QP)
     real(kind=8) :: valQPC(MAX_BS), valQPP(MAX_QP)
     real(kind=8) :: para1, para2, para3, tz0, tpg, normal(3)
-    integer :: kp, itemps, ipara, icode, ipara2
+    integer(kind=8) :: kp, itemps, ipara, icode, ipara2
     real(kind=8), pointer :: tempi(:) => null()
 !
     call FESkin%init()

@@ -22,8 +22,8 @@ interface
     function indk16(lk16, k16z, rang, nbk16)
         character(len=*) :: lk16(*)
         character(len=*) :: k16z
-        integer :: rang
-        integer :: nbk16
-        integer :: indk16
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbk16
+        integer(kind=8) :: indk16
     end function indk16
 end interface

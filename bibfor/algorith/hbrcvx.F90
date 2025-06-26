@@ -25,7 +25,7 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil, &
 #include "asterfort/lcdevi.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: sig(6), vid(3), materf(nmat, 2), seuil, vp(3), vecp(3, 3)
 ! =====================================================================
 ! --- HOEK-BROWN : VALEUR SEUIL POUR LE CONVEXE ELASTO-PLASTIQUE ------
@@ -46,7 +46,7 @@ subroutine hbrcvx(sig, vid, nmat, materf, seuil, &
     real(kind=8) :: gamma, i1e, se(6), tu(6), tol, toldyn, jacaux(3)
     character(len=10) :: cvp1, cvp2, cvp3
     character(len=24) :: valk(3)
-    integer :: ndt, ndi, nperm, ttrij, otrij, nitjac
+    integer(kind=8) :: ndt, ndi, nperm, ttrij, otrij, nitjac
 ! ======================================================================
     parameter(deux=2.0d0)
 ! ======================================================================

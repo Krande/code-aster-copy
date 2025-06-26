@@ -23,8 +23,8 @@ interface
         use iso_c_binding, only:  c_loc, c_ptr, c_f_pointer
         character(len=*) :: nomc
         character(len=*) :: nooc
-        integer :: nuoc
-        integer :: dim
+        integer(kind=8) :: nuoc
+        integer(kind=8) :: dim
         type(c_ptr) :: pc
     end subroutine jucroc_wrap
 end interface

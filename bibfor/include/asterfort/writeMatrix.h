@@ -19,7 +19,7 @@
 interface
     subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
         character(len=*), intent(in)              :: name
-        integer, intent(in)                       :: nrows, ncols
+        integer(kind=8), intent(in)                       :: nrows, ncols
         aster_logical, intent(in)                 :: l_sym
         real(kind=8), dimension(:,:), intent(in)  :: mat
     end subroutine writeMatrix

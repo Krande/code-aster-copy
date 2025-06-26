@@ -33,9 +33,9 @@ subroutine vpSorensen(mod45, matrAsse, matrGeom, &
     character(len=4), intent(in) :: mod45
     character(len=19), intent(in) :: matrAsse, matrGeom
     character(len=16), intent(in) :: optionModal, calcLevel
-    integer, intent(in) :: nbFreq
+    integer(kind=8), intent(in) :: nbFreq
     real(kind=8), intent(in) :: bande(2)
-    integer, intent(in) :: coefDimSpace
+    integer(kind=8), intent(in) :: coefDimSpace
     character(len=19), intent(in) :: eigsol
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine vpSorensen(mod45, matrAsse, matrGeom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, nbborn, nbvec2
+    integer(kind=8) :: ibid, nbborn, nbvec2
     real(kind=8) :: r8bid, omecor, bandeLocal(2)
     character(len=1), parameter :: k1bid = 'R'
     character(len=16) :: typres
@@ -53,10 +53,10 @@ subroutine vpSorensen(mod45, matrAsse, matrGeom, &
     character(len=19) :: matrA, matrB
 ! - Valeurs en dur
     character(len=8), parameter :: method = 'SORENSEN'
-    integer, parameter :: nbvect = 0
-    integer, parameter :: nbrss = 5
+    integer(kind=8), parameter :: nbvect = 0
+    integer(kind=8), parameter :: nbrss = 5
     real(kind=8), parameter :: alpha = 0.717d0
-    integer, parameter :: maxitr = 200
+    integer(kind=8), parameter :: maxitr = 200
     real(kind=8), parameter :: tolsor = 0.d0, precsh = 5.d-2, fcorig = 1.d-2, precdc = 5.d-2
     character(len=8), parameter :: arret = 'NON'
     character(len=16), parameter :: sturm = 'NON'

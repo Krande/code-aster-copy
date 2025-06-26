@@ -56,12 +56,12 @@ subroutine defdda(nbec, nbcmp, numgd, ioc, motcle, &
     character(len=*) :: motcle
     character(len=24) :: temddl, temidc
     character(len=24) :: valk
-    integer :: nbec, icod(nbec)
+    integer(kind=8) :: nbec, icod(nbec)
     aster_logical :: ok, okg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iec, ioc, iopt, j, llncmp
-    integer :: ltddl, ltidec, nbcmp, nbval, numgd
+    integer(kind=8) :: i, ibid, iec, ioc, iopt, j, llncmp
+    integer(kind=8) :: ltddl, ltidec, nbcmp, nbval, numgd
 !-----------------------------------------------------------------------
     data okg/.false./
 !-----------------------------------------------------------------------

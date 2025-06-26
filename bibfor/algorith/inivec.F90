@@ -33,7 +33,7 @@ subroutine inivec(vec, neq, id, nbcp)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, nbcp, id(nbcp), neq
+    integer(kind=8) :: i, j, nbcp, id(nbcp), neq
     real(kind=8) :: vec(neq)
 !
 !-----------------------------------------------------------------------

@@ -24,11 +24,11 @@ interface
                       u1, u2, u3, u4, v,&
                       n, solveu)
         character(len=1) :: appr
-        integer :: lmatra
-        integer :: lmasse
-        integer :: lamor
+        integer(kind=8) :: lmatra
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
         complex(kind=8) :: sigma
-        integer :: lbloq(*)
+        integer(kind=8) :: lbloq(*)
         real(kind=8) :: yh(*)
         real(kind=8) :: yb(*)
         real(kind=8) :: zh(*)
@@ -38,7 +38,7 @@ interface
         real(kind=8) :: u3(*)
         real(kind=8) :: u4(*)
         complex(kind=8) :: v(*)
-        integer :: n
+        integer(kind=8) :: n
         character(len=19) :: solveu
     end subroutine wp2ayl
 end interface

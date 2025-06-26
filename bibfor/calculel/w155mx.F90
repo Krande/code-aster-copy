@@ -50,7 +50,7 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
 #include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: resultOut, resultIn
-    integer, intent(in) :: nbStore, listStore(nbStore)
+    integer(kind=8), intent(in) :: nbStore, listStore(nbStore)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,8 +58,8 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, ico, n1, nbCell, n2, n3
-    integer :: iret, iStore, numeStore, ibid, nocc, iocc, nchout, jcmp, nbVari
+    integer(kind=8) :: ifm, niv, ico, n1, nbCell, n2, n3
+    integer(kind=8) :: iret, iStore, numeStore, ibid, nocc, iocc, nchout, jcmp, nbVari
     character(len=8) :: model, caraElem, mesh
     character(len=8) :: modelPrev, cmpName, tymaxi
     character(len=4) :: fieldSupp
@@ -69,7 +69,7 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
     character(len=24) :: nompar, compor
     character(len=24), parameter :: listCell = '&&W155MX.LISMAI'
     character(len=24), parameter :: listVariNume = '&&W155MX.CMP'
-    integer, pointer :: cellNume(:) => null()
+    integer(kind=8), pointer :: cellNume(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

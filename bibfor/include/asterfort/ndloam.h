@@ -25,6 +25,6 @@ interface
         character(len=19) :: sddyna
         character(len=8) :: result
         aster_logical :: evonol
-        integer :: nume
+        integer(kind=8) :: nume
     end subroutine ndloam
 end interface

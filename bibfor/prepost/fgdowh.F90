@@ -28,7 +28,7 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke, &
     character(len=*) :: nommat
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rcorr(*), dom(*), rke(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
     aster_logical :: lhaigh, lke
 !     CALCUL DU DOMMAGE ELEMENTAIRE PAR INTERPOLATION SUR
 !     UNE COURBE DE WOHLER DONNEE POINT PAR POINT
@@ -44,7 +44,7 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke, &
 ! OUT DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: nompar, kbid
     character(len=16) :: nomres
     character(len=32) :: pheno
@@ -52,7 +52,7 @@ subroutine fgdowh(nommat, nbcycl, sigmin, sigmax, lke, &
     aster_logical :: endur
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbpar
+    integer(kind=8) :: i, nbpar
 !-----------------------------------------------------------------------
     call jemarq()
     do i = 1, nbcycl

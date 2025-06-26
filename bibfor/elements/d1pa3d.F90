@@ -49,7 +49,7 @@ subroutine d1pa3d(angl, irep, passag)
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: irep
+    integer(kind=8) :: irep
     real(kind=8) :: deux, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

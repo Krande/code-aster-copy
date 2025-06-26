@@ -46,7 +46,7 @@ subroutine te0499(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: fami, poum
-    integer :: icodre(5), kpg
+    integer(kind=8) :: icodre(5), kpg
     character(len=1) :: type
     real(kind=8) :: poids, nx, ny, valres(5), e, nu, lambda, mu, cp, cs
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal, sign_tan, nortan
@@ -60,14 +60,14 @@ subroutine te0499(option, nomte)
     real(kind=8) :: xsv, zsv, dist1, dist2, instd1, instd2, x0, z0, x1, z1
     real(kind=8) :: kr, nr
     real(kind=8) :: valfon1, valfon2, param1, param2
-    integer :: nno, npg, ipoids, ivf, idfde, igeom
-    integer :: ivectu, k, i, mater
-    integer :: ier, ii, imate, indic1, indic2, iondc, ionde
-    integer :: j, jgano, jinst, ndim, nnos, ndim2
+    integer(kind=8) :: nno, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: ivectu, k, i, mater
+    integer(kind=8) :: ier, ii, imate, indic1, indic2, iondc, ionde
+    integer(kind=8) :: j, jgano, jinst, ndim, nnos, ndim2
     character(len=8) :: nompar(2), lpar2(2)
     real(kind=8) :: vpar2(2)
     real(kind=8) :: xygau(2)
-    integer :: idecpg, idecno
+    integer(kind=8) :: idecpg, idecno
     character(len=16), parameter :: nomres(5) = (/'E        ', 'NU       ', &
                                                   'RHO      ', &
                                                   'COEF_AMOR', 'LONG_CARA'/)

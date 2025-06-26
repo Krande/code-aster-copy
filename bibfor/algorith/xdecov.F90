@@ -36,9 +36,9 @@ subroutine xdecov(ndim, elp, nnop, nnose, it, &
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
     real(kind=8) :: lsn(*), pintt(*), pinter(*), ainter(*)
-    integer :: ndim, nnop, nnose, it, cnset(*), heavt(*), ncomp, igeom
-    integer :: ninter, npts, nfiss, ifiss, nse, cnse(6, 10), fisco(*)
-    integer :: nsemax, nfisc
+    integer(kind=8) :: ndim, nnop, nnose, it, cnset(*), heavt(*), ncomp, igeom
+    integer(kind=8) :: ninter, npts, nfiss, ifiss, nse, cnse(6, 10), fisco(*)
+    integer(kind=8) :: nsemax, nfisc
     real(kind=8) :: heav(*)
     character(len=8) :: elp
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -65,10 +65,10 @@ subroutine xdecov(ndim, elp, nnop, nnose, it, &
 !
     real(kind=8) :: xyz(4, 3), ab(3), ac(3), ad(3), vn(3), ps, geom(3)
     real(kind=8) :: somlsn(nfisc+1), ff(nnop), rbid2(ndim)
-    integer :: in, inh, i, j, ar(12, 3), nbar, ise, npent(18)
-    integer :: a1, a2, a3, a4, a, b, c, d, ndime
+    integer(kind=8) :: in, inh, i, j, ar(12, 3), nbar, ise, npent(18)
+    integer(kind=8) :: a1, a2, a3, a4, a, b, c, d, ndime
     character(len=8) :: typma, elrese(3)
-    integer :: zxain, mxstac
+    integer(kind=8) :: zxain, mxstac
     aster_logical :: axi
     blas_int :: b_incx, b_incy, b_n
     parameter(mxstac=1000)

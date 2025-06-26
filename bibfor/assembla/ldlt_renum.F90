@@ -82,22 +82,22 @@ subroutine ldlt_renum(numeDof1Z, numeDof2Z_, perm_, permJvBase_)
     character(len=14) :: numeDof1, numeDof2, numeDofTrav
     character(len=8) :: nogd
     character(len=1) :: jvBase
-    integer :: nbLigr, k, neq2, ncmp1, ncmp2, nbno1, nbno2, iad1, iad2, icmp, ieq1, ieq2, nbec
-    integer :: nec1, nec2, n1, n2, ino, neq, iexi, ifm, niv
+    integer(kind=8) :: nbLigr, k, neq2, ncmp1, ncmp2, nbno1, nbno2, iad1, iad2, icmp, ieq1, ieq2, nbec
+    integer(kind=8) :: nec1, nec2, n1, n2, ino, neq, iexi, ifm, niv
     character(len=24), pointer :: listLigr(:) => null()
     character(len=24), pointer :: refn(:) => null()
     character(len=19) :: ligrName
     character(len=8) :: modeLoc, result, model
     character(len=16) :: command, resultType
     logical :: non_renum, limpr
-    integer, pointer :: prno1(:) => null()
-    integer, pointer :: prno2(:) => null()
-    integer, pointer :: nueq1(:) => null()
-    integer, pointer :: nueq2(:) => null()
-    integer, pointer :: m2lc(:) => null()
-    integer, pointer :: lc2m(:) => null()
+    integer(kind=8), pointer :: prno1(:) => null()
+    integer(kind=8), pointer :: prno2(:) => null()
+    integer(kind=8), pointer :: nueq1(:) => null()
+    integer(kind=8), pointer :: nueq2(:) => null()
+    integer(kind=8), pointer :: m2lc(:) => null()
+    integer(kind=8), pointer :: lc2m(:) => null()
     character(len=16), save :: commandSave = ' ', resultSave = ' '
-    integer, save :: neqSav = 0
+    integer(kind=8), save :: neqSav = 0
 !
 ! --------------------------------------------------------------------------------------------------
 !

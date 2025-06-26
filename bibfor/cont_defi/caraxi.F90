@@ -30,7 +30,7 @@ subroutine caraxi(sdcont, model, mesh, model_ndim)
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: model
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: model_ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,10 +48,10 @@ subroutine caraxi(sdcont, model, mesh, model_ndim)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_verif_all, l_elem_axis
-    integer :: nb_cont_elem
+    integer(kind=8) :: nb_cont_elem
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

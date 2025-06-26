@@ -21,11 +21,11 @@
 interface
     subroutine jjecrs(iadmi, iclas, idos, idco, cus,&
                       jmarq)
-        integer :: iadmi
-        integer :: iclas
-        integer :: idos
-        integer :: idco
+        integer(kind=8) :: iadmi
+        integer(kind=8) :: iclas
+        integer(kind=8) :: idos
+        integer(kind=8) :: idco
         character(len=*) :: cus
-        integer :: jmarq(2)
+        integer(kind=8) :: jmarq(2)
     end subroutine jjecrs
 end interface

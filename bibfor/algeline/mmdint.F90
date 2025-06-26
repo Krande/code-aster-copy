@@ -45,9 +45,9 @@ subroutine mmdint(neqns, xadj, dhead, dforw, dbakw, &
 !
 !***************************************************************
 !
-    integer :: dbakw(*), dforw(*), dhead(*), llist(*), marker(*), qsize(*)
-    integer :: xadj(*)
-    integer :: fnode, ndeg, neqns, node
+    integer(kind=8) :: dbakw(*), dforw(*), dhead(*), llist(*), marker(*), qsize(*)
+    integer(kind=8) :: xadj(*)
+    integer(kind=8) :: fnode, ndeg, neqns, node
 !
 !***************************************************************
 !

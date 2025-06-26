@@ -27,9 +27,9 @@ interface
         character(len=*) :: nocham
         character(len=*) :: ligrel
         character(len=*) :: tychas
-        integer :: numord
+        integer(kind=8) :: numord
         real(kind=8) :: iouf
-        integer :: numode
+        integer(kind=8) :: numode
         real(kind=8) :: masgen
         real(kind=8) :: amrge
         character(len=19) :: numeq

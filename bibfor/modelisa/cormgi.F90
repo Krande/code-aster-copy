@@ -54,8 +54,8 @@ subroutine cormgi(basez, ligrez)
 !**********************************************************************
 !
     character(len=8) :: nmaila
-    integer :: i, j, pt, nbmail, nbgrel, iret
-    integer :: jrepe, jgrel, nbmgre
+    integer(kind=8) :: i, j, pt, nbmail, nbgrel, iret
+    integer(kind=8) :: jrepe, jgrel, nbmgre
     aster_logical :: exima
 !
 !

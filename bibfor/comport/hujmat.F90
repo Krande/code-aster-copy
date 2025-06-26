@@ -46,13 +46,13 @@ subroutine hujmat(fami, kpg, ksp, mod, imat, &
 #include "asterfort/hujnvi.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-    integer :: ndt, ndi, nvi, imat, kpg, ksp
+    integer(kind=8) :: ndt, ndi, nvi, imat, kpg, ksp
     real(kind=8) :: materf(22, 2), tempf, nu21, nu31, nu32
     character(len=16) :: phenom
     character(len=8) :: mod, nomc(24)
     character(len=*) :: fami
-    integer :: icodre
-    integer :: cerr(24)
+    integer(kind=8) :: icodre
+    integer(kind=8) :: cerr(24)
 !
 !
 ! ---- RECUPERATION DU TYPE DU MATERIAU DANS PHENOM

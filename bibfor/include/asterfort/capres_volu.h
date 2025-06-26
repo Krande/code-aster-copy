@@ -20,6 +20,6 @@ interface
     subroutine capres_volu(load, mesh, valeType, nbOccPresRep)
         character(len=8), intent(in)  :: load, mesh
         character(len=4), intent(in)  :: valeType
-        integer, intent(in)           :: nbOccPresRep
+        integer(kind=8), intent(in)           :: nbOccPresRep
     end subroutine capres_volu
 end interface

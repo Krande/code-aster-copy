@@ -23,7 +23,7 @@ interface
                            deq,rhor,wpl3,vwpl33,vwpl33t,&
                            rc,sigrf,sigrfissp)
         aster_logical :: endo
-        integer :: nbrenf,numr,numf
+        integer(kind=8) :: nbrenf,numr,numf
         real(kind=8) :: vecr(nbrenf,3),deq(nbrenf),rhor(nbrenf)
         real(kind=8) :: wpl3(3),vwpl33(3,3),vwpl33t(3,3)
         real(kind=8), intent(in) :: rc

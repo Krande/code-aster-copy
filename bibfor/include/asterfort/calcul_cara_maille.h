@@ -23,8 +23,8 @@
 interface
     subroutine calcul_cara_maille( coord, noeuds, topologie, surface, centre, normale )
         real(kind=8),intent(in)    :: coord(*)
-        integer,intent(in)         :: noeuds(:)
-        integer,intent(in)         :: topologie
+        integer(kind=8),intent(in)         :: noeuds(:)
+        integer(kind=8),intent(in)         :: topologie
         real(kind=8),optional,intent(out)   :: surface(*)
         real(kind=8),optional,intent(out)   :: centre(*)
         real(kind=8),optional,intent(out)   :: normale(*)

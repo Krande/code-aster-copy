@@ -37,7 +37,7 @@ subroutine te0202(option, nomte)
 !-----------------------------------------------------------------------
 !
 !
-    integer :: igeom, jvSief, ivect, npg
+    integer(kind=8) :: igeom, jvSief, ivect, npg
     character(len=8) :: typmod(2)
 !
 !

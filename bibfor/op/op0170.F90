@@ -39,8 +39,8 @@ subroutine op0170()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, nbtab, nbmom, n1, nbpfat, ivmom, i, ilign, nbl0, inbl0
-    integer :: nbl2, inbl2, nbl4, inbl4
+    integer(kind=8) :: ibid, nbtab, nbmom, n1, nbpfat, ivmom, i, ilign, nbl0, inbl0
+    integer(kind=8) :: nbl2, inbl2, nbl4, inbl4
     parameter(nbpfat=5)
     real(kind=8) :: xm0, xm2, xm4, rundf, dom, rduree, valer(5)
     complex(kind=8) :: c16b

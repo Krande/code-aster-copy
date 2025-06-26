@@ -19,12 +19,12 @@
 interface
     subroutine matass2petsc(matasz, local, petscMatz, iret)
         character(len=*), intent(in) :: matasz
-        integer, intent(in) :: local
+        integer(kind=8), intent(in) :: local
 #ifdef ASTER_HAVE_PETSC
         PetscErrorCode, intent(out) :: iret
         Mat, intent(out) :: petscMatz
 #else
-        integer, intent(out) :: petscMatz, iret
+        integer(kind=8), intent(out) :: petscMatz, iret
 #endif
     end subroutine matass2petsc
 end interface

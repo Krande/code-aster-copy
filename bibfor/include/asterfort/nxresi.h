@@ -22,6 +22,6 @@ interface
                       resi_rela, resi_maxi, ieq_rela, ieq_maxi)
         character(len=24), intent(in) :: vec2nd, cnvabt, cnresi, cn2mbr, matass
         real(kind=8)     , intent(out):: resi_rela, resi_maxi
-        integer          , intent(out):: ieq_rela, ieq_maxi
+        integer(kind=8)          , intent(out):: ieq_rela, ieq_maxi
     end subroutine nxresi
 end interface

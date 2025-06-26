@@ -21,7 +21,7 @@
 !
 interface
     subroutine alrslt(nout, lchout, lpaout, base)
-        integer :: nout
+        integer(kind=8) :: nout
         character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
         character(len=*) :: base

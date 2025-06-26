@@ -31,9 +31,9 @@ subroutine nmcvgc(sddisc, sderro, numins, fonact)
 #include "asterfort/nmfinp.h"
 #include "asterfort/nmleeb.h"
 !
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=19) :: sddisc
-    integer :: numins
+    integer(kind=8) :: numins
     character(len=24) :: sderro
 !
 ! ----------------------------------------------------------------------

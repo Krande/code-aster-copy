@@ -48,7 +48,7 @@ subroutine cbprca(phenom_, load)
     character(len=24) :: object
     character(len=8), pointer :: p_object(:) => null()
     character(len=8) :: evol_char
-    integer :: nb_occ, nb_cham
+    integer(kind=8) :: nb_occ, nb_cham
     character(len=16) :: type_sd
     character(len=13) :: obje_pref
 !

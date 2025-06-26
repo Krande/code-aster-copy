@@ -20,7 +20,7 @@
 !
 interface
     subroutine nmfifi(npg, typmod, geom, sigma, fint)
-        integer :: npg
+        integer(kind=8) :: npg
         character(len=8) :: typmod(2)
         real(kind=8) :: geom(2, 4)
         real(kind=8) :: sigma(2, npg)

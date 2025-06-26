@@ -20,10 +20,10 @@
 !
 interface
     subroutine avdomt(nbvec, nbordr, ncycl, jdomel, domtot)
-        integer :: nbordr
-        integer :: nbvec
-        integer :: ncycl(nbvec)
-        integer :: jdomel
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: ncycl(nbvec)
+        integer(kind=8) :: jdomel
         real(kind=8) :: domtot(nbvec)
     end subroutine avdomt
 end interface

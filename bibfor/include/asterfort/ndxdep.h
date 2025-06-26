@@ -22,7 +22,7 @@ interface
                       sdnume, valinc, solalg, veasse)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer, intent(in) :: listFuncActi(*), numeTime
+        integer(kind=8), intent(in) :: listFuncActi(*), numeTime
         character(len=19), intent(in) :: sddisc, sdnume
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping

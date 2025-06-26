@@ -81,8 +81,8 @@ subroutine te0047(optioz, nomtez)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcret, lorien
-    integer :: iadzi, iazk24, ibid, infodi, codret
+    integer(kind=8) :: jcret, lorien
+    integer(kind=8) :: iadzi, iazk24, ibid, infodi, codret
     !
     real(kind=8) :: r8bid
     !

@@ -23,7 +23,7 @@ function jexnom(nomc, nomo)
     character(len=32) :: jexnom
     character(len=*), intent(in) :: nomc, nomo
 !     ------------------------------------------------------------------
-    integer :: numec
+    integer(kind=8) :: numec
     common/inumje/numec
     real(kind=8) :: reelc
     common/reelje/reelc

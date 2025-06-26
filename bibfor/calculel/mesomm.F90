@@ -39,10 +39,10 @@ subroutine mesomm(champ, long, vi, vr, vc, &
 #include "asterfort/utmess.h"
 !
     character(len=*) :: champ
-    integer, intent(in) :: long
-    integer, intent(in), optional :: nbma
-    integer, intent(in), optional :: linuma(*)
-    integer, intent(out), optional :: vi(*)
+    integer(kind=8), intent(in) :: long
+    integer(kind=8), intent(in), optional :: nbma
+    integer(kind=8), intent(in), optional :: linuma(*)
+    integer(kind=8), intent(out), optional :: vi(*)
     real(kind=8), intent(out), optional :: vr(*)
     complex(kind=8), intent(out), optional :: vc(*)
 !     but :  faire la "somme" d'un cham_elem (ou d'un resuelem)
@@ -73,14 +73,14 @@ subroutine mesomm(champ, long, vi, vr, vc, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: longt, ncmpel, mode, j, igd
+    integer(kind=8) :: longt, ncmpel, mode, j, igd
     real(kind=8) :: rzero
     character(len=4) :: typch, kmpic
     character(len=8) :: scal
     character(len=19) :: champ2, ligrel
     aster_logical :: first
-    integer :: i, iavale, ibid, icoef, idecgr, iel, ier1, ier2
-    integer :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi, nbmail
+    integer(kind=8) :: i, iavale, ibid, icoef, idecgr, iel, ier1, ier2
+    integer(kind=8) :: im, inum, jceld, jligr, k, nbgr, nel, numel1, iexi, nbmail
     character(len=24), pointer :: celk(:) => null()
 !
     call jemarq()

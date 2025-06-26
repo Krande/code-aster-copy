@@ -20,7 +20,7 @@ subroutine fgdomm(nbcycl, dom, rdomm)
     implicit none
 #include "jeveux.h"
     real(kind=8) :: dom(*), rdomm
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
 !     CUMUL DU DOMMAGE
 !     ------------------------------------------------------------------
 ! IN  NBCYCL : I   : NOMBRE DE CYCLES
@@ -29,7 +29,7 @@ subroutine fgdomm(nbcycl, dom, rdomm)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     rdomm = 0.d0
     do i = 1, nbcycl

@@ -74,14 +74,14 @@ subroutine lecelt(iunv, maxnod, nbtyma, indic, permut, &
 !
 !  --> DECLARATION DES ARGUMENTS
 #include "asterfort/iunifi.h"
-    integer :: maxnod, nbtyma
-    integer :: codgra, node(maxnod), nbnode
-    integer :: permut(maxnod, nbtyma), indic(nbtyma)
+    integer(kind=8) :: maxnod, nbtyma
+    integer(kind=8) :: codgra, node(maxnod), nbnode
+    integer(kind=8) :: permut(maxnod, nbtyma), indic(nbtyma)
 !  --> DECLARATION DES VARIABLES LOCALES
-    integer :: nodlu(32), ii
+    integer(kind=8) :: nodlu(32), ii
 !  --> DECLARATION DES INDICES DE BOUCLES
-    integer :: i
-    integer :: imes, iunv
+    integer(kind=8) :: i
+    integer(kind=8) :: imes, iunv
 !-----------------------------------------------------------------------
 !
     read (iunv, '(8I10)') (nodlu(i), i=1, nbnode)

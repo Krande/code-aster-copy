@@ -22,7 +22,7 @@ interface
     subroutine lcpopl(loi, nmat, materd, materf,&
                       mod, sigf, vind,&
                       vinf)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=16) :: loi
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)

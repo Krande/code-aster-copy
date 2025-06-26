@@ -21,7 +21,7 @@
 interface
     subroutine nmrep2(n, r, g, gu, rmin,&
                       rmax, rexm, rexp, posopt)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: r(*)
         real(kind=8) :: g(*)
         real(kind=8) :: gu
@@ -29,6 +29,6 @@ interface
         real(kind=8) :: rmax
         real(kind=8) :: rexm
         real(kind=8) :: rexp
-        integer :: posopt
+        integer(kind=8) :: posopt
     end subroutine nmrep2
 end interface

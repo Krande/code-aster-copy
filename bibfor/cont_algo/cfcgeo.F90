@@ -60,11 +60,11 @@ subroutine cfcgeo(mesh, hval_algo, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cmp_disp = 3
+    integer(kind=8), parameter :: nb_cmp_disp = 3
     character(len=8), parameter :: list_cmp_disp(nb_cmp_disp) = (/'DX', 'DY', 'DZ'/)
-    integer :: nb_equa, i_equa
-    integer :: rea1_node, rea2_node
-    integer :: loop_geom_count, nb_iter_geom, iter_geom_maxi
+    integer(kind=8) :: nb_equa, i_equa
+    integer(kind=8) :: rea1_node, rea2_node
+    integer(kind=8) :: loop_geom_count, nb_iter_geom, iter_geom_maxi
     real(kind=8) :: loop_geom_vale, rea1_maxi, rea2_maxi, geom_epsi_maxi, geom_mini, geom_maxi
     character(len=16) :: loop_geom_node
     aster_logical :: l_geom_sans, l_geom_manu, l_geom_auto

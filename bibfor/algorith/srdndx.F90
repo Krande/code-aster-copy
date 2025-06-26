@@ -48,7 +48,7 @@ subroutine srdndx(nmat, mater, i1, devsig, bprime, val, para, xi, tmp, dpardx, d
     !!! Variables globales
     !!!
 
-    integer :: nmat, val
+    integer(kind=8) :: nmat, val
     real(kind=8) :: i1, devsig(6), dndxi(6), bprime, mater(nmat, 2)
     real(kind=8) :: para(3), dpardx(3), xi, tmp
 
@@ -56,7 +56,7 @@ subroutine srdndx(nmat, mater, i1, devsig, bprime, val, para, xi, tmp, dpardx, d
     !!! Variables locales
     !!!
 
-    integer :: i, ndt, ndi
+    integer(kind=8) :: i, ndt, ndi
     real(kind=8) :: pref, sigc, m1, a2, a5, m5, s5
     real(kind=8) :: s1, qi, fi, m3, xi1, xi2, fp
     real(kind=8) :: rho_1, rho_2, rho_4

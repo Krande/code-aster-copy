@@ -20,12 +20,12 @@ subroutine barqua(i1, i2, coor, poin)
     implicit none
 #include "asterfort/barso1.h"
 #include "asterfort/utmess.h"
-    integer :: i1, i2, poin(*)
+    integer(kind=8) :: i1, i2, poin(*)
     real(kind=8) :: coor(*)
 !     BARSOUM : TRAITEMENT DES MAILLES "QUAD8" ET "QUAD9"
 !-----------------------------------------------------------------------
 !
-    integer :: i, n1, n2, n3
+    integer(kind=8) :: i, n1, n2, n3
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------

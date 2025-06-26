@@ -42,8 +42,8 @@ subroutine cpclma(nomain, nomaou, typcol, base)
 !
 !   But :  Recopie des collections .GROUPEMA ET .GROUPENO
 !
-    integer :: nbgmai, igroup, jnuma1, jnuma2, nbmail, jmaill
-    integer :: codret
+    integer(kind=8) :: nbgmai, igroup, jnuma1, jnuma2, nbmail, jmaill
+    integer(kind=8) :: codret
 !
     character(len=24) :: grmain, grmaou, ptnmou, nomgrp
 !------------------------------------------------------------------------

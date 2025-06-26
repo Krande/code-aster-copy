@@ -22,20 +22,20 @@ interface
     subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich,&
                       mxfreq, nfreq, valp, ieme, det,&
                       idet, nbpas, typres, nblagr, solveu)
-        integer :: lraide
-        integer :: lmasse
-        integer :: ldynam
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: ldynam
         real(kind=8) :: tol
-        integer :: mxdich
-        integer :: mxfreq
-        integer :: nfreq
+        integer(kind=8) :: mxdich
+        integer(kind=8) :: mxfreq
+        integer(kind=8) :: nfreq
         real(kind=8) :: valp(*)
-        integer :: ieme(*)
+        integer(kind=8) :: ieme(*)
         real(kind=8) :: det(*)
-        integer :: idet(*)
-        integer :: nbpas(*)
+        integer(kind=8) :: idet(*)
+        integer(kind=8) :: nbpas(*)
         character(len=16) :: typres
-        integer :: nblagr
+        integer(kind=8) :: nblagr
         character(len=19) :: solveu
     end subroutine vpdich
 end interface

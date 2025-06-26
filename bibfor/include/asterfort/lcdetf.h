@@ -20,7 +20,7 @@
 !
 interface
     subroutine lcdetf(ndim, fr, det)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: fr(3, 3)
         real(kind=8) :: det
     end subroutine lcdetf

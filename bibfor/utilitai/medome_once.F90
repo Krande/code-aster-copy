@@ -28,9 +28,9 @@ subroutine medome_once(result, v_list_store, nb_store, nume_user_, &
 !
 !
     character(len=8), intent(in) :: result
-    integer, pointer :: v_list_store(:)
-    integer, intent(in) :: nb_store
-    integer, optional, intent(in) :: nume_user_
+    integer(kind=8), pointer :: v_list_store(:)
+    integer(kind=8), intent(in) :: nb_store
+    integer(kind=8), optional, intent(in) :: nume_user_
     character(len=8), optional, intent(out) :: model_
     character(len=8), optional, intent(out) :: cara_elem_
     character(len=24), optional, intent(out) :: chmate_
@@ -45,7 +45,7 @@ subroutine medome_once(result, v_list_store, nb_store, nume_user_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_store, nume_store0, nume_store, iexcit
+    integer(kind=8) :: i_store, nume_store0, nume_store, iexcit
     character(len=8) :: model0, cara_elem0
     character(len=8) :: model, cara_elem
     character(len=24) :: chmate0, chmate

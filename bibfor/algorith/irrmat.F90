@@ -30,7 +30,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat, &
     character(len=8) :: model
     character(len=3) :: matcst
     character(len=*) :: fami
-    integer :: imat, nmat, ndt, ndi, nr, nvi, kpg, ksp, iret, itmax
+    integer(kind=8) :: imat, nmat, ndt, ndi, nr, nvi, kpg, ksp, iret, itmax
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), rela
 !
 !     ----------------------------------------------------------------
@@ -57,10 +57,10 @@ subroutine irrmat(fami, kpg, ksp, model, imat, &
 !         NR     :  NB DE COMPOSANTES SYSTEME NL
 !         NVI    :  NB DE VARIABLES INTERNES, DANS LE SYSTEME NL
 !     ----------------------------------------------------------------
-    integer :: iterat, nbcara
+    integer(kind=8) :: iterat, nbcara
 !     NOMBRE DE PARAMETRES DE LA LOI : NBCARA
     parameter(nbcara=12)
-    integer :: cerr(nbcara)
+    integer(kind=8) :: cerr(nbcara)
     character(len=8) :: nomcir(nbcara)
     real(kind=8) :: mat(nbcara)
     character(len=8) :: nomcel(3)
@@ -71,7 +71,7 @@ subroutine irrmat(fami, kpg, ksp, model, imat, &
     real(kind=8) :: n0, n1, f0, f1, fe, pasn, exph, exp0, spe, coeffa
 !
     real(kind=8) :: valrm(12)
-    integer :: valim(2)
+    integer(kind=8) :: valim(2)
     character(len=10) :: valkm(2)
 !
     data pe/2.0d-3/

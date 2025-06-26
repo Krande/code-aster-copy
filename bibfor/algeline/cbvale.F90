@@ -39,7 +39,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres, &
 #include "asterfort/vecini.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbcomb, lmat(*), lres
+    integer(kind=8) :: nbcomb, lmat(*), lres
     character(len=*) :: ddlexc, typcst(*), typres
     real(kind=8) :: const(*)
     aster_logical :: matd
@@ -61,7 +61,7 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres, &
 !
 !     -----------------------------------------------------------------
 !     LGBLOC = LONGUEUR DES BLOCS
-    integer :: lgbloc
+    integer(kind=8) :: lgbloc
     aster_logical :: symr, symi
 !     -----------------------------------------------------------------
     character(len=1) :: clas, typmat
@@ -71,8 +71,8 @@ subroutine cbvale(nbcomb, typcst, const, lmat, typres, &
     character(len=14) :: nume
     character(len=19) :: noma
     character(len=2) :: rouc
-    integer :: neq, mxddl, lddl, jsmdi, jsmhc
-    integer :: iconst, imat, jvamr1, jvamr2, jvami1, jvami2
+    integer(kind=8) :: neq, mxddl, lddl, jsmdi, jsmhc
+    integer(kind=8) :: iconst, imat, jvamr1, jvamr2, jvami1, jvami2
     real(kind=8) :: zero, r8cst, rbid
     complex(kind=8) :: czero, c8cst, cbid
     character(len=24), pointer :: refa(:) => null()

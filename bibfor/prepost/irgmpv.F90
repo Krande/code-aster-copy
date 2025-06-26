@@ -27,23 +27,23 @@ subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr, &
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lxlgut.h"
-    integer :: ifi, nbordr, lch, ich, versio
+    integer(kind=8) :: ifi, nbordr, lch, ich, versio
     real(kind=8) :: para(*)
     aster_logical :: lresu, scal, vect, tens
     character(len=8) :: nocmp
     character(len=*) :: nomcon, chamsy
 !     NBRE POUR CHAQUE TYPE D'ELEMENT
-    integer :: nbel(*)
+    integer(kind=8) :: nbel(*)
 !
 !     BUT :   ECRITURE D'UN RESULTAT AU FORMAT GMSH
 !
 !     ------------------------------------------------------------------
-    integer :: ior
+    integer(kind=8) :: ior
     character(len=8) :: nomsd
     character(len=50) :: k50b
-    integer :: nbpoi, nbseg, nbtri, nbtet, nbqua, nbpyr, nbpri, nbhex
-    integer :: typpoi, typseg, typtri, typtet, typqua
-    integer :: typpyr, typpri, typhex
+    integer(kind=8) :: nbpoi, nbseg, nbtri, nbtet, nbqua, nbpyr, nbpri, nbhex
+    integer(kind=8) :: typpoi, typseg, typtri, typtet, typqua
+    integer(kind=8) :: typpyr, typpri, typhex
 !     ------------------------------------------------------------------
 !
     call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), typpoi)

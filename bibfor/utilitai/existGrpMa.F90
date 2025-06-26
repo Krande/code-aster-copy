@@ -54,7 +54,7 @@ subroutine existGrpMa(mesh, group_ma, l_exi_in_grp, l_exi_in_grp_p)
 ! they are equal for a non-parallel mesh
 !
 !---------------------------------------------------------------------------------------------------
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: grmama, grmamap
     aster_logical :: l_parallel_mesh
 !-----------------------------------------------------------------------

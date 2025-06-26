@@ -30,7 +30,7 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/verift.h"
 #include "asterfort/vpalem.h"
 #include "asterfort/zerofr.h"
-    integer :: ndim, imate, iret, kpg, ksp
+    integer(kind=8) :: ndim, imate, iret, kpg, ksp
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
@@ -80,12 +80,12 @@ subroutine nmvple(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: em, num, troikm, deumum, sigmp(6)
     real(kind=8) :: deltkl, deltp2
     real(kind=8) :: degran(6)
-    integer :: k, l, iret1, ibid
-    integer :: ndimsi, iret2
+    integer(kind=8) :: k, l, iret1, ibid
+    integer(kind=8) :: ndimsi, iret2
     real(kind=8) :: a0, xap, x, tm, tp
     real(kind=8) :: fg, fdgdst, fdgdev, defam(6), defap(6)
     real(kind=8) :: coef1, coef2, deltev
-    integer :: icodre(5)
+    integer(kind=8) :: icodre(5)
     character(len=8) :: nompar(2)
     character(len=16) :: nomres(5)
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)

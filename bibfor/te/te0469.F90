@@ -40,9 +40,9 @@ subroutine te0469(option, nomte)
 #include "asterfort/vff3d.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, idecno, idecpg, idfdk, idflin, ier, igau
-    integer :: igeom, ino, ipoids, itemps, ivectu, ivf, jgano
-    integer :: nbnomx, ndim, nno, nnos, npg
+    integer(kind=8) :: i, idecno, idecpg, idfdk, idflin, ier, igau
+    integer(kind=8) :: igeom, ino, ipoids, itemps, ivectu, ivf, jgano
+    integer(kind=8) :: nbnomx, ndim, nno, nnos, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     parameter(nbnomx=27)

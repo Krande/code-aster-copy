@@ -29,18 +29,18 @@ interface
         character(len=24) , intent(in)    :: vecrei
         character(len=24) , intent(in)    :: vecrek
         character(len=24) , intent(in)    :: vecvp
-        integer           , intent(in)    :: mxresf
-        integer           , intent(in)    :: neqact
-        integer           , intent(in)    :: nblagr
+        integer(kind=8)           , intent(in)    :: mxresf
+        integer(kind=8)           , intent(in)    :: neqact
+        integer(kind=8)           , intent(in)    :: nblagr
         real(kind=8)      , intent(in)    :: omemax
         real(kind=8)      , intent(in)    :: omemin
         real(kind=8)      , intent(in)    :: omeshi
         character(len=24) , intent(in)    :: vecblo
         complex(kind=8)   , intent(in)    :: sigma
 !!
-        integer           , intent(inout) :: npivot
+        integer(kind=8)           , intent(inout) :: npivot
         aster_logical   , intent(out)   :: flage
-        integer           , intent(out)   :: nconv
+        integer(kind=8)           , intent(out)   :: nconv
         real(kind=8)      , intent(out)   :: vpinf
         real(kind=8)      , intent(out)   :: vpmax
     end subroutine vpcalq

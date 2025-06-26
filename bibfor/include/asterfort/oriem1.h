@@ -22,7 +22,7 @@ interface
     subroutine oriem1(ma,kdim,numa2d,numa3d)
     character(len=8),intent(in) :: ma
     character(len=2),intent(in) :: kdim
-    integer,intent(in) :: numa2d
-    integer,intent(inout) :: numa3d
+    integer(kind=8),intent(in) :: numa2d
+    integer(kind=8),intent(inout) :: numa3d
     end subroutine oriem1
 end interface

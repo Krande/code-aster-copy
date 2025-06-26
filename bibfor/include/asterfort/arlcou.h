@@ -22,8 +22,8 @@ interface
     subroutine arlcou(mail  ,iocc,  nomo  ,typmai,         &
                       nom1  ,nom2  ,cine  , &
                       dime, lisrel, charge)
-        integer :: dime
-        integer :: iocc
+        integer(kind=8) :: dime
+        integer(kind=8) :: iocc
         character(len=24) :: typmai
         character(len=8) :: mail
         character(len=8) :: nomo

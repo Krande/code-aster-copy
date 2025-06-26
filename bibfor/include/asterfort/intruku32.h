@@ -22,7 +22,7 @@ interface
     subroutine intruku32(sd_dtm_, sd_int_, buffdtm, buffint)
         character(len=*), intent(in):: sd_dtm_
         character(len=*), intent(in):: sd_int_
-        integer, pointer            :: buffdtm(:)
-        integer, pointer            :: buffint(:)
+        integer(kind=8), pointer            :: buffdtm(:)
+        integer(kind=8), pointer            :: buffint(:)
     end subroutine intruku32
 end interface

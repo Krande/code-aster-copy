@@ -56,18 +56,18 @@ subroutine te0312(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lmater, iret, ig, icp
-    integer :: icodre(2), kpg, spt
-    integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, jgano, igau
+    integer(kind=8) :: lmater, iret, ig, icp
+    integer(kind=8) :: icodre(2), kpg, spt
+    integer(kind=8) :: ndim, nno, nnos, npg1, ipoids, ivf, idfde, jgano, igau
     real(kind=8)      :: bendog(1), kdessi(1), alpha(1), epsa(6)
     character(len=8)  :: fami, poum, materi
     character(len=16) :: mult_comp
 !
     aster_logical     :: IsPmf
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
-    integer, pointer :: cpri(:) => null()
+    integer(kind=8), pointer :: cpri(:) => null()
     character(len=16), pointer :: compor(:) => null()
     character(len=24), pointer :: cprk24(:) => null()
 !.......................................................................

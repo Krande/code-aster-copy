@@ -20,8 +20,8 @@
 !
 interface
     subroutine te0000(numc, opt, te)
-        integer :: numc
-        integer :: opt
-        integer :: te
+        integer(kind=8) :: numc
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
     end subroutine te0000
 end interface

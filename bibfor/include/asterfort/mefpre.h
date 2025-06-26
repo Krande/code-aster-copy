@@ -24,7 +24,7 @@ interface
                       itypg, zg, hg, axg, pm,&
                       xig, afluid, cdg, cfg, vitg,&
                       rhog)
-        integer :: ndim(14)
+        integer(kind=8) :: ndim(14)
         real(kind=8) :: alpha
         real(kind=8) :: z(*)
         real(kind=8) :: cf(*)
@@ -34,7 +34,7 @@ interface
         real(kind=8) :: pstat(*)
         real(kind=8) :: dpstat(*)
         real(kind=8) :: dvit(*)
-        integer :: itypg(*)
+        integer(kind=8) :: itypg(*)
         real(kind=8) :: zg(*)
         real(kind=8) :: hg(*)
         real(kind=8) :: axg(*)

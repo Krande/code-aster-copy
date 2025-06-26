@@ -24,25 +24,25 @@ interface
                       hsr, nr, nvi, epsd, deps,&
                       itmax, toler, sigf, vinf, sigd,&
                       vind, dsde, drdy, option, iret)
-        integer :: nr
-        integer :: nsg
-        integer :: nfs
-        integer :: nmat
+        integer(kind=8) :: nr
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nmat
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         character(len=8) :: mod
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: timed
         real(kind=8) :: timef
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
         real(kind=8) :: hsr(nsg, nsg)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: epsd(*)
         real(kind=8) :: deps(*)
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
         real(kind=8) :: sigf(*)
         real(kind=8) :: vinf(*)
@@ -51,6 +51,6 @@ interface
         real(kind=8) :: dsde(6, 6)
         real(kind=8) :: drdy(nr, nr)
         character(len=16) :: option
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcjplc
 end interface

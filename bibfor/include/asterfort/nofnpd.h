@@ -24,21 +24,21 @@ interface
                       vu, vp, vpi, typmod, mate,&
                       compor, geomi, nomte, sig, ddl,&
                       vect)
-        integer :: npg
-        integer :: nno3
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
-        integer :: iw
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno3
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
+        integer(kind=8) :: iw
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)
         real(kind=8) :: vff3(nno3, npg)
-        integer :: idff1
-        integer :: vu(3, 27)
-        integer :: vp(27)
-        integer :: vpi(3, 27)
+        integer(kind=8) :: idff1
+        integer(kind=8) :: vu(3, 27)
+        integer(kind=8) :: vp(27)
+        integer(kind=8) :: vpi(3, 27)
         character(len=8) :: typmod(*)
-        integer :: mate
+        integer(kind=8) :: mate
         character(len=16) :: compor(*)
         real(kind=8) :: geomi(ndim, nno1)
         character(len=16) :: nomte

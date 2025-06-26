@@ -38,10 +38,10 @@ subroutine nmceta(modele, numedd, ds_material, carele, &
 #include "asterfort/nmcere.h"
 #include "asterfort/nmcese.h"
 !
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     aster_logical :: irecli
-    integer :: iterat, nbeffe
-    integer :: ldccvg, pilcvg
+    integer(kind=8) :: iterat, nbeffe
+    integer(kind=8) :: ldccvg, pilcvg
     real(kind=8) :: etaf, proeta(2), rho, offset, residu
     character(len=19) :: lischa, sdnume, sdpilo, matass
     character(len=24) :: modele, numedd, carele
@@ -98,14 +98,14 @@ subroutine nmceta(modele, numedd, ds_material, carele, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: bormin, bormax
-    integer :: j, i
-    integer :: licite(2)
+    integer(kind=8) :: j, i
+    integer(kind=8) :: licite(2)
     real(kind=8) :: infini
     real(kind=8) :: etamin, etamax, conmin, conmax
     real(kind=8) :: eta(2)
     character(len=24) :: projbo, typsel
     character(len=19) :: sddisc
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8), pointer :: plir(:) => null()
     character(len=24), pointer :: pltk(:) => null()
 !

@@ -21,9 +21,9 @@ subroutine calajt(j1, j, diag, col, n, &
                   ier)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-    integer :: j1, j, n, diag(0:n), col(*), itab, deb(1:n)
-    integer :: tab(*), suiv(*), lt, ier
-    integer :: k, l, ok, oj, pred, it
+    integer(kind=8) :: j1, j, n, diag(0:n), col(*), itab, deb(1:n)
+    integer(kind=8) :: tab(*), suiv(*), lt, ier
+    integer(kind=8) :: k, l, ok, oj, pred, it
 !     ON AJOUTE LES NOEUDS COL(J1) A COL(J-1) DANS LA LISTE
 !     DES VOISINS DE COL(J)
     oj = col(j)

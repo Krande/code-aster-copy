@@ -27,17 +27,17 @@ interface
         character(len=19) :: melflu
         character(len=8) :: typflu
         character(len=8) :: base
-        integer :: nuor(*)
+        integer(kind=8) :: nuor(*)
         real(kind=8) :: amor(*)
         real(kind=8) :: amoc(*)
         real(kind=8) :: freq(*)
         real(kind=8) :: masg(*)
         real(kind=8) :: fact(*)
         real(kind=8) :: vite(*)
-        integer :: nbm
+        integer(kind=8) :: nbm
         aster_logical :: calcul(2)
-        integer :: npv
-        integer :: nivpar
-        integer :: nivdef
+        integer(kind=8) :: npv
+        integer(kind=8) :: nivpar
+        integer(kind=8) :: nivdef
     end subroutine flust1
 end interface

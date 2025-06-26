@@ -31,9 +31,9 @@ interface
         character(len=24) :: mailc
         character(len=8) :: modvis
         character(len=24) :: licham
-        integer :: nsetot
-        integer :: nnntot
-        integer :: ncotot
+        integer(kind=8) :: nsetot
+        integer(kind=8) :: nnntot
+        integer(kind=8) :: ncotot
         character(len=24) :: listno
         character(len=19) :: cns1
         character(len=19) :: cns2
@@ -42,14 +42,14 @@ interface
         character(len=19) :: cel2
         character(len=19) :: cesvi1
         character(len=19) :: cesvi2
-        integer :: ior
+        integer(kind=8) :: ior
         character(len=8) :: resuco
-        integer :: nbnoc
-        integer :: nbmac
+        integer(kind=8) :: nbnoc
+        integer(kind=8) :: nbmac
         character(len=24) :: logrma
         character(len=24) :: dirgrm
         character(len=8) :: maxfem
-        integer :: ngfon
+        integer(kind=8) :: ngfon
         character(len=19) :: comps1
         character(len=19) :: comps2
         aster_logical :: pre1

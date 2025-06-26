@@ -22,6 +22,6 @@ interface
     subroutine facmtr(matin, matout, ier)
         character(len=19) :: matin
         character(len=19) :: matout
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine facmtr
 end interface

@@ -21,9 +21,9 @@
 interface
     subroutine mmvalp_scal(nb_dim   , elem_type, elem_nbno, ksi1, ksi2,&
                            vale_node, vale_poin)
-        integer, intent(in) :: nb_dim
+        integer(kind=8), intent(in) :: nb_dim
         character(len=8), intent(in) :: elem_type
-        integer, intent(in) :: elem_nbno
+        integer(kind=8), intent(in) :: elem_nbno
         real(kind=8), intent(in) :: ksi1
         real(kind=8), intent(in) :: ksi2
         real(kind=8), intent(in) :: vale_node(*)

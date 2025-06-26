@@ -24,15 +24,15 @@ interface
     subroutine fcweib(nrupt, cals, sk, sigw, nur,&
                       nt, nbres, indtp, nbtp, m,&
                       fc, dfc)
-        integer :: nrupt
+        integer(kind=8) :: nrupt
         aster_logical :: cals
         real(kind=8) :: sk(*)
         real(kind=8) :: sigw(*)
-        integer :: nur(*)
-        integer :: nt(*)
-        integer :: nbres
-        integer :: indtp(*)
-        integer :: nbtp
+        integer(kind=8) :: nur(*)
+        integer(kind=8) :: nt(*)
+        integer(kind=8) :: nbres
+        integer(kind=8) :: indtp(*)
+        integer(kind=8) :: nbtp
         real(kind=8) :: m
         real(kind=8) :: fc
         real(kind=8) :: dfc

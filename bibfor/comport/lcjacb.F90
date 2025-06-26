@@ -66,7 +66,7 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
 #include "asterfort/lcmmja.h"
 #include "asterfort/lkijac.h"
 #include "asterfort/srijac.h"
-    integer :: nr, nmat, kpg, ksp, itmax, iret, nvi, nfs, nsg
+    integer(kind=8) :: nr, nmat, kpg, ksp, itmax, iret, nvi, nfs, nsg
     real(kind=8) :: deps(*), epsd(*), toler, crit(*)
     real(kind=8) :: drdy(nr, nr), yf(nr), dy(nr), yd(nr)
 !
@@ -78,7 +78,7 @@ subroutine lcjacb(fami, kpg, ksp, rela_comp, mod, &
     character(len=8) :: mod
     character(len=16) :: rela_comp
 !
-    integer :: nbcomm(nmat, 3)
+    integer(kind=8) :: nbcomm(nmat, 3)
     real(kind=8) :: pgl(3, 3)
     character(len=24) :: cpmono(5*nmat+1)
 !

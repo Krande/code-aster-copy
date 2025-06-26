@@ -40,13 +40,13 @@ subroutine te0552(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter  :: mxnoeu = 4, mxnpg = 4, nbcompo = 6, nbdepl = 3
-    integer, parameter  :: sp_couche_dkt = 3, sp_couche_gri = 1
+    integer(kind=8), parameter  :: mxnoeu = 4, mxnpg = 4, nbcompo = 6, nbdepl = 3
+    integer(kind=8), parameter  :: sp_couche_dkt = 3, sp_couche_gri = 1
 !
-    integer             :: icmp, indga, indno, indx, ino, ipg, iptc, nbcou, icou
-    integer             :: ndim, nno, nnos, npg, kdec
-    integer             :: icacoq, jdeplga, jvf
-    integer             :: jdepg, jgeom, ipoids, idfdx, jgano, jnbspi
+    integer(kind=8)             :: icmp, indga, indno, indx, ino, ipg, iptc, nbcou, icou
+    integer(kind=8)             :: ndim, nno, nnos, npg, kdec
+    integer(kind=8)             :: icacoq, jdeplga, jvf
+    integer(kind=8)             :: jdepg, jgeom, ipoids, idfdx, jgano, jnbspi
 !
     logical             :: elem_dkt, elem_gri
 !

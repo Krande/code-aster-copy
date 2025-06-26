@@ -20,8 +20,8 @@
 !
 interface
     subroutine codere(cod, npg, codret)
-        integer :: npg
-        integer :: cod(npg)
-        integer :: codret
+        integer(kind=8) :: npg
+        integer(kind=8) :: cod(npg)
+        integer(kind=8) :: codret
     end subroutine codere
 end interface

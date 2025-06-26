@@ -25,13 +25,13 @@ interface
                       mclf, nbepo, ntyele, ivr, zjdlm)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: lmax
-        integer :: npoutr
-        integer :: nbocc
+        integer(kind=8) :: lmax
+        integer(kind=8) :: npoutr
+        integer(kind=8) :: nbocc
         character(len=*) :: mclf
-        integer :: nbepo
-        integer :: ntyele(*)
-        integer :: ivr(*)
-        integer :: zjdlm(*)
+        integer(kind=8) :: nbepo
+        integer(kind=8) :: ntyele(*)
+        integer(kind=8) :: ivr(*)
+        integer(kind=8) :: zjdlm(*)
     end subroutine aceapo
 end interface

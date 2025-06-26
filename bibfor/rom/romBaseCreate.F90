@@ -29,7 +29,7 @@ subroutine romBaseCreate(base, nbMode_)
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
-    integer, intent(in), optional :: nbMode_
+    integer(kind=8), intent(in), optional :: nbMode_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine romBaseCreate(base, nbMode_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbMode, ifm, niv
+    integer(kind=8) :: nbMode, ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -21,7 +21,7 @@
 interface
     subroutine iseven(sddisc, event_type_in, lacti)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: event_type_in
+        integer(kind=8), intent(in) :: event_type_in
         aster_logical :: lacti
     end subroutine iseven
 end interface

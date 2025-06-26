@@ -67,14 +67,14 @@ subroutine carc_read(prepMapCarcri, model_)
 !
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=16) :: answer
-    integer :: iFactorKeyword, iret, nbFactorKeyword
+    integer(kind=8) :: iFactorKeyword, iret, nbFactorKeyword
     character(len=16) :: type_matr_tang, method, post_iter
     real(kind=8) :: parm_theta, vale_pert_rela
     real(kind=8) :: resi_deborst_max
     real(kind=8) :: resi_radi_rela
     real(kind=8) :: parm_theta_thm, parm_alpha_thm
-    integer :: type_matr_t, iter_inte_pas, iter_deborst_max
-    integer :: ipostiter, iveriborne
+    integer(kind=8) :: type_matr_t, iter_inte_pas, iter_deborst_max
+    integer(kind=8) :: ipostiter, iveriborne
     character(len=8) :: mesh
     character(len=16) :: rela_code_py, defo_code_py, meca_code_py
     character(len=16) :: veri_borne
@@ -86,15 +86,15 @@ subroutine carc_read(prepMapCarcri, model_)
     aster_logical :: plane_stress, l_mfront_proto, l_mfront_offi
     character(len=24), parameter :: list_elem_affe = '&&CARCREAD.LIST'
     aster_logical :: l_affe_all, l_matr_unsymm
-    integer :: nb_elem_affe
-    integer :: extern_type
-    integer :: variExteCode(2), exte_strain
+    integer(kind=8) :: nb_elem_affe
+    integer(kind=8) :: extern_type
+    integer(kind=8) :: variExteCode(2), exte_strain
     character(len=16) :: texte(3)
-    integer, pointer :: modelCell(:) => null()
+    integer(kind=8), pointer :: modelCell(:) => null()
     character(len=16) :: algo_inte
     real(kind=8) :: algo_inte_r
     real(kind=8), pointer :: resi_inte_p => null()
-    integer, pointer :: iter_inte_maxi_p => null()
+    integer(kind=8), pointer :: iter_inte_maxi_p => null()
     type(BehaviourPrep_Exte) :: prepExte
 !
 ! --------------------------------------------------------------------------------------------------

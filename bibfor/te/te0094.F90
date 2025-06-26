@@ -36,8 +36,8 @@ subroutine te0094(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: ndim, nno, nnos, kp, npg, i, k, itemps, ifr2d, ivectu, icode
-    integer :: nbres, jgano, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: ndim, nno, nnos, kp, npg, i, k, itemps, ifr2d, ivectu, icode
+    integer(kind=8) :: nbres, jgano, ipoids, ivf, idfde, igeom
     parameter(nbres=3)
     real(kind=8) :: valpar(nbres)
     real(kind=8) :: poids, r, z, tx, ty

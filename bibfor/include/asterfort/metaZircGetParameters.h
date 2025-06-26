@@ -19,7 +19,7 @@
 interface
     subroutine metaZircGetParameters(jv_mater, temp, metaZircPara)
         use Metallurgy_type
-        integer, intent(in) :: jv_mater
+        integer(kind=8), intent(in) :: jv_mater
         real(kind=8), intent(in) :: temp
         type(META_ZircParameters), intent(out) :: metaZircPara
     end subroutine metaZircGetParameters

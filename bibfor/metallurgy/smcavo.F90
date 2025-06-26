@@ -21,9 +21,9 @@ subroutine smcavo(x, nb_hist, trc, ind)
     implicit none
 !
     real(kind=8), intent(in) :: x(5)
-    integer, intent(in) :: nb_hist
+    integer(kind=8), intent(in) :: nb_hist
     real(kind=8), intent(in) :: trc((3*nb_hist), 5)
-    integer, intent(out) :: ind(6)
+    integer(kind=8), intent(out) :: ind(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -41,7 +41,7 @@ subroutine smcavo(x, nb_hist, trc, ind)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: sdx, d(6), dx(5)
-    integer :: invois, i, j, i_hist
+    integer(kind=8) :: invois, i, j, i_hist
 !
 ! --------------------------------------------------------------------------------------------------
 !

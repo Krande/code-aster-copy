@@ -22,9 +22,9 @@ interface
     subroutine cfmata(resoco, neq, nbliai, nmult, numedz,&
                       matelz, numecz, matriz)
         character(len=24) :: resoco
-        integer :: neq
-        integer :: nbliai
-        integer :: nmult
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
+        integer(kind=8) :: nmult
         character(len=*) :: numedz
         character(len=*) :: matelz
         character(len=*) :: numecz

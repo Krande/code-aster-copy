@@ -29,8 +29,8 @@ interface
         character(len=8),intent(in) :: typmod(*)
         character(len=16),intent(in):: option, compor(*)
         type(dil_modelisation)      :: ds_dil
-        integer,intent(in)          :: ndim,nnos,nnom,npg,nddl,dimdef
-        integer,intent(in)          :: iw,idff,idffb
+        integer(kind=8),intent(in)          :: ndim,nnos,nnom,npg,nddl,dimdef
+        integer(kind=8),intent(in)          :: iw,idff,idffb
         real(kind=8),intent(in)     :: geomi(ndim,nnos+nnom)
         real(kind=8),intent(in)     :: vff(nnos+nnom, npg),vffb(nnos, npg)
         real(kind=8),intent(in)     :: sief(dimdef*npg)

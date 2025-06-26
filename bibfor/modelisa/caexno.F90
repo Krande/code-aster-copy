@@ -31,7 +31,7 @@ subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno, &
 !
     character(len=24) :: lvav, noma
     character(len=*) :: motfac, mcgrno, mcno, lvavz, nomaz
-    integer :: iocc
+    integer(kind=8) :: iocc
 !                 DATE 04/01/93   C.MENGONI
 !
 !     BUT : RETIRER DE LA LISTE DE VIS A VIS LVAV TOUS LES COUPLES
@@ -55,10 +55,10 @@ subroutine caexno(lvavz, nomaz, motfac, mcgrno, mcno, &
 !
     character(len=16) :: motf, mcgr, mcn
     character(len=24) :: listex
-    integer :: nbcpl, nbex
+    integer(kind=8) :: nbcpl, nbex
 ! --- DEBUT
 !-----------------------------------------------------------------------
-    integer :: i, idlex, idlvav, j, l, nlino
+    integer(kind=8) :: i, idlex, idlvav, j, l, nlino
 !-----------------------------------------------------------------------
     call jemarq()
     lvav = lvavz

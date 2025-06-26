@@ -30,7 +30,7 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz, &
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ifr, nparim
+    integer(kind=8) :: ifr, nparim
     character(len=*) :: table, lipaim(*), formaz, formar
 !      IMPRESSION D'UNE TABLE AU FORMAT "EXCEL" OU "AGRAF"
 ! ----------------------------------------------------------------------
@@ -42,9 +42,9 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz, &
 ! IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, j, ipar, jvale, jlogq, ideb, ifin
-    integer :: nblign, ilon, ilm, id, if, ir, ilmp, iaj, nbpara, npara
-    integer :: nparaf
+    integer(kind=8) :: i, j, ipar, jvale, jlogq, ideb, ifin
+    integer(kind=8) :: nblign, ilon, ilm, id, if, ir, ilmp, iaj, nbpara, npara
+    integer(kind=8) :: nparaf
     aster_logical :: erreur
     character(len=1) :: bacs
     character(len=3) :: type
@@ -55,11 +55,11 @@ subroutine tbimex(table, ifr, nparim, lipaim, formaz, &
     character(len=24) :: nomjv, nomjvl, inpar, knpar
     character(len=24) :: valk
     character(len=2000) :: chaine, chain2
-    integer, pointer :: log_para(:) => null()
-    integer, pointer :: nom_para(:) => null()
-    integer, pointer :: val_para(:) => null()
+    integer(kind=8), pointer :: log_para(:) => null()
+    integer(kind=8), pointer :: nom_para(:) => null()
+    integer(kind=8), pointer :: val_para(:) => null()
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

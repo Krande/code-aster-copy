@@ -20,7 +20,7 @@
 !
 interface
     subroutine slu_free_factors( f_factors, info )
-        integer         :: f_factors
+        integer(kind=8)         :: f_factors
         integer(kind=4) :: info
     end subroutine slu_free_factors
 end interface

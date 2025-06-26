@@ -22,10 +22,10 @@ interface
     subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                       nbcoor)
         character(len=8) :: nomu
-        integer :: ifm
-        integer :: ifl
-        integer :: nbnoeu
-        integer :: nbmail
-        integer :: nbcoor
+        integer(kind=8) :: ifm
+        integer(kind=8) :: ifl
+        integer(kind=8) :: nbnoeu
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: nbcoor
     end subroutine lrmast
 end interface

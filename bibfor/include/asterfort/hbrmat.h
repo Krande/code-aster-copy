@@ -22,16 +22,16 @@ interface
     subroutine hbrmat(mod, imat, nbmat, tempd, materd,&
                       materf, matcst, ndt, ndi, nr,&
                       nvi)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: tempd
         real(kind=8) :: materd(nbmat, 2)
         real(kind=8) :: materf(nbmat, 2)
         character(len=3) :: matcst
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
-        integer :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nvi
     end subroutine hbrmat
 end interface

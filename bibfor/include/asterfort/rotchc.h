@@ -21,13 +21,13 @@
 interface
     subroutine rotchc(profno, cvale, tetss, nbss, invsk,&
                       nbnot, nbcmp, iax)
-        integer :: nbnot
-        integer :: nbss
+        integer(kind=8) :: nbnot
+        integer(kind=8) :: nbss
         character(len=19) :: profno
         complex(kind=8) :: cvale(*)
         real(kind=8) :: tetss(nbss)
-        integer :: invsk(nbnot, 2)
-        integer :: nbcmp
-        integer :: iax
+        integer(kind=8) :: invsk(nbnot, 2)
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: iax
     end subroutine rotchc
 end interface

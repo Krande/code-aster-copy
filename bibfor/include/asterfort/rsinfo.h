@@ -21,6 +21,6 @@
 interface
     subroutine rsinfo(nomcon, ifi)
         character(len=*) :: nomcon
-        integer :: ifi
+        integer(kind=8) :: ifi
     end subroutine rsinfo
 end interface

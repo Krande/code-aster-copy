@@ -22,7 +22,7 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(inout) :: ds_inout
         character(len=24), intent(in) :: model
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=24), intent(in) :: compor
         character(len=19), intent(in) :: sddyna

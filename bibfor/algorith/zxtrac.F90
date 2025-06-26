@@ -21,7 +21,7 @@ subroutine zxtrac(interp, prec, crit, nbinst, ti, &
     implicit none
 #include "asterfort/utmess.h"
 #include "blas/zcopy.h"
-    integer :: nbinst, neq, ier
+    integer(kind=8) :: nbinst, neq, ier
     real(kind=8) :: prec, ti(*)
     complex(kind=8) :: xtract(*), y(*)
     character(len=*) :: interp, crit
@@ -42,7 +42,7 @@ subroutine zxtrac(interp, prec, crit, nbinst, ti, &
     real(kind=8) :: prec2
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: temps
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

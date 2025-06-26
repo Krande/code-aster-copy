@@ -21,7 +21,7 @@
 interface
     subroutine dpvpot(mod, vim, vip, nbmat, mater,&
                       sig, dt, dp, plas, dsidep)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         character(len=8) :: mod
         real(kind=8) :: vim(4)
         real(kind=8) :: vip(4)

@@ -19,7 +19,7 @@
 !
 interface
     subroutine xdelt3(ndim, ksi, tabls, delta)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: ksi(ndim)
         real(kind=8) :: tabls(3)
         real(kind=8) :: delta

@@ -21,7 +21,7 @@
 interface
     subroutine hbderi(gamma, nbmat, materf, vg, eta,&
                       param2, parame)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: gamma
         real(kind=8) :: materf(nbmat, 2)
         real(kind=8) :: vg

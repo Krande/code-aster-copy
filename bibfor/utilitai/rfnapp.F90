@@ -41,9 +41,9 @@ subroutine rfnapp(nappe)
 ! EXTRAIT UNE FONCTION D UNE NAPPE (ATTENTION, PAS D INTERPOLATION)
 ! POUR LE PARAMETRE DONNE
 ! ----------------------------------------------------------------------
-    integer :: ifm, niv
-    integer :: nv, np, nc, npar, indic, lpro, nbvr
-    integer :: jval, lval, ival
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nv, np, nc, npar, indic, lpro, nbvr
+    integer(kind=8) :: jval, lval, ival
     real(kind=8) :: valp, prec, vpar, delta
     character(len=8) :: k8b, crit
     character(len=16) :: nomcmd, typfon

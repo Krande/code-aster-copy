@@ -28,7 +28,7 @@ subroutine hyp3di(c11, c22, c33, c12, c13, &
     real(kind=8) :: c12, c13, c23
     real(kind=8) :: c10, c01, c20
     real(kind=8) :: ciso(6, 6)
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! ----------------------------------------------------------------------
 !

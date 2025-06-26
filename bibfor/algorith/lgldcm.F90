@@ -31,7 +31,7 @@ subroutine lgldcm(nbmat, mater, sig, vin)
 #include "asterfort/ucritp.h"
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: sig(6), mater(nbmat, 2), vin(*)
 ! --- BUT : CALCUL DU DOMAINE DE COMPORTEMENT DU MATERIAU ---------
 ! =================================================================
@@ -43,7 +43,7 @@ subroutine lgldcm(nbmat, mater, sig, vin)
 ! OUT : VIN   :  VARIABLES INTERNES -------------------------------
 ! =================================================================
 ! =================================================================
-    integer :: ndt, ndi, jpara, posdom
+    integer(kind=8) :: ndt, ndi, jpara, posdom
     real(kind=8) :: gamp, mun, zero, un, deux, trois, quatre
     real(kind=8) :: gammae, gamult, sigc, gamcjs, pref, lgleps
     real(kind=8) :: dev(6), invar1, sii, rcos3t

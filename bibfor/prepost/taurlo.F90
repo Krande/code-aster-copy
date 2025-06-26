@@ -23,8 +23,8 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
-    integer :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma, dectau
+    integer(kind=8) :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
+    integer(kind=8) :: sompgw, jrwork, tspaq, ipg, jvecpg, jnorma, dectau
 ! person_in_charge: van-xuan.tran at edf.fr
 ! ---------------------------------------------------------------------
 ! BUT: CONSTRUIRE LES COMPOSANTES u ET v DU VECTEUR DE CISAILLEMENT TAU
@@ -61,7 +61,7 @@ subroutine taurlo(nbvec, jvectn, jvectu, jvectv, nbordr, &
 !                     (CISAILLEMENT), POUR TOUS LES NUMEROS
 !                     D'ORDRE DE CHAQUE VECTEUR NORMAL.
 ! ----------------------------------------------------------------------
-    integer :: ivect, iordr, n, adrs, decal
+    integer(kind=8) :: ivect, iordr, n, adrs, decal
     real(kind=8) :: nx, ny, nz, ux, uy, uz, vx, vy, vz
     real(kind=8) :: sixx, siyy, sizz, sixy, sixz, siyz, fx, fy, fz
     real(kind=8) :: norm, taux, tauy, tauz, cutau, cvtau

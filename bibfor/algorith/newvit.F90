@@ -43,7 +43,7 @@ subroutine newvit(neq, c1, c2, v0, a0, &
     real(kind=8) :: v0(*), a0(*), v1(*), a1(*)
     real(kind=8) :: c1, c2
 !-----------------------------------------------------------------------
-    integer :: neq
+    integer(kind=8) :: neq
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     b_n = to_blas_int(neq)

@@ -20,10 +20,10 @@
 !
 interface
     subroutine srdhds(nbmat, mater, s, dhds, retcom)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: s(6)
         real(kind=8) :: dhds(6)
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine srdhds
 end interface

@@ -41,8 +41,8 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 !     POST-TRAITEMENT DE "RELA_EFFO_DEPL"
 !
 ! ----------------------------------------------------------------------
-    integer ::      nbpt, nbred, inume, nbnoli, nbvint, inl, start
-    integer ::    i, ii, ic, nbpara, bloc_ini, i_bloc
+    integer(kind=8) ::      nbpt, nbred, inume, nbnoli, nbvint, inl, start
+    integer(kind=8) ::    i, ii, ic, nbpara, bloc_ini, i_bloc
     parameter(nbpara=8)
     real(kind=8) :: para(nbpara), xmax, temd, temf, temm
     complex(kind=8) :: c16b
@@ -50,13 +50,13 @@ subroutine porefd(trange, noeu, cmp, nomrez)
     character(len=16) :: nopara(nbpara), nomk16
     character(len=19) :: nomk19
     character(len=24) :: identifier
-    integer :: nlin
+    integer(kind=8) :: nlin
     real(kind=8), pointer :: disc(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: rdindx(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: rdindx(:) => null()
 !
-    integer, pointer :: nltype(:) => null()
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: nltype(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     character(len=24), pointer :: nlname(:) => null()
     real(kind=8), pointer :: vint(:) => null()
     type(DynaGene) :: dyna_gene

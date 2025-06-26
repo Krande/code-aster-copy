@@ -23,23 +23,23 @@ interface
                       vecpr8, vecpc8, mxresf, nbpari, nbparr,&
                       nbpark, nopara, mod45, resufi, resufr,&
                       resufk, iprec, modelz, matez, caraz)
-        integer :: mxresf
-        integer :: neq
-        integer :: ineg
+        integer(kind=8) :: mxresf
+        integer(kind=8) :: neq
+        integer(kind=8) :: ineg
         character(len=*) :: typ
         character(len=*) :: modes
-        integer :: nbmode
+        integer(kind=8) :: nbmode
         real(kind=8) :: vecpr8(neq, *)
         complex(kind=8) :: vecpc8(neq, *)
-        integer :: nbpari
-        integer :: nbparr
-        integer :: nbpark
+        integer(kind=8) :: nbpari
+        integer(kind=8) :: nbparr
+        integer(kind=8) :: nbpark
         character(len=*) :: nopara(*)
         character(len=4) :: mod45
-        integer :: resufi(mxresf, *)
+        integer(kind=8) :: resufi(mxresf, *)
         real(kind=8) :: resufr(mxresf, *)
         character(len=*) :: resufk(mxresf, *)
-        integer :: iprec
+        integer(kind=8) :: iprec
         character(len=8), intent(in), optional :: modelz
         character(len=8), intent(in), optional :: matez
         character(len=8), intent(in), optional :: caraz

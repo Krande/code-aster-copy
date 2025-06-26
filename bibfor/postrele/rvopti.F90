@@ -37,8 +37,8 @@ subroutine rvopti(mcf, iocc, nch19, nomgd, typegd, &
 ! OUT OPTION : K : NOM OPTION POUR CHLM OU ADAPTATION CHNO
 !     ------------------------------------------------------------------
 !
-    integer :: iocc, nc
-    integer :: lnch
+    integer(kind=8) :: iocc, nc
+    integer(kind=8) :: lnch
 !
 !======================================================================
 !

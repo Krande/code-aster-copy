@@ -23,12 +23,12 @@ interface
                       same_zone, dec)
         character(len=8), intent(in) :: main
         character(len=8), intent(in) :: maout
-        integer, intent(in) :: nbma
-        integer, intent(in) :: lima(nbma)
-        integer, intent(in) :: izone
-        integer, intent(in) :: typ_dec
-        integer, intent(in) :: jcninv
+        integer(kind=8), intent(in) :: nbma
+        integer(kind=8), intent(in) :: lima(nbma)
+        integer(kind=8), intent(in) :: izone
+        integer(kind=8), intent(in) :: typ_dec
+        integer(kind=8), intent(in) :: jcninv
         aster_logical, intent(in) :: same_zone
-        integer, intent(inout) :: dec
+        integer(kind=8), intent(inout) :: dec
     end subroutine cppagn
 end interface

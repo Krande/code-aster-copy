@@ -34,7 +34,7 @@ subroutine deflg3(gn, feta, xi, me, t, &
 #include "asterfort/tnsvec.h"
     real(kind=8) :: gn(3, 3), t(6), tl(3, 3, 3, 3)
     real(kind=8) :: dzeta(3, 3), t33(3, 3), me(3, 3, 3, 3), xi(3, 3), feta(4)
-    integer :: a, b, c, d
+    integer(kind=8) :: a, b, c, d
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DU TERME T.L

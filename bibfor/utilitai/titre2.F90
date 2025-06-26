@@ -22,8 +22,8 @@ subroutine titre2(nomcon, nomcha, nomobj, motfac, iocc, &
 #include "asterfort/titrea.h"
     character(len=*) :: nomcon, nomcha, nomobj, motfac, formr
     character(len=*), optional, intent(in) :: nomsym
-    integer, optional, intent(in) :: iordr
-    integer :: iocc
+    integer(kind=8), optional, intent(in) :: iordr
+    integer(kind=8) :: iocc
 !     CREATION D'UN SOUS-TITRE
 !     ------------------------------------------------------------------
 ! IN  NOMCON : K8  : NOM DU RESULTAT

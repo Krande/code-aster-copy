@@ -21,14 +21,14 @@
 interface
     subroutine avetpr(nbordr, vwork, tdisp, kwork, sommw,&
                       tspaq, i, jvetpr, jvsitn)
-        integer :: tdisp
-        integer :: nbordr
+        integer(kind=8) :: tdisp
+        integer(kind=8) :: nbordr
         real(kind=8) :: vwork(tdisp)
-        integer :: kwork
-        integer :: sommw
-        integer :: tspaq
-        integer :: i
-        integer :: jvetpr 
-        integer :: jvsitn 
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sommw
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: i
+        integer(kind=8) :: jvetpr 
+        integer(kind=8) :: jvsitn 
     end subroutine avetpr
 end interface

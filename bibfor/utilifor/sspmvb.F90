@@ -23,9 +23,9 @@ subroutine sspmvb(n, m, mat, ad, t1, &
 !
 ! DEB ------------------------------------------------------------------
     implicit none
-    integer :: n, m, ad(*)
+    integer(kind=8) :: n, m, ad(*)
     real(kind=8) :: mat(*), t1(*), y(*)
-    integer :: i, j, jmin, jmax, rest, k0, k1, k2, k3, k4, k5, k6, k7
+    integer(kind=8) :: i, j, jmin, jmax, rest, k0, k1, k2, k3, k4, k5, k6, k7
     rest = m-(m/8)*8
     if (rest .le. 3) then
 !

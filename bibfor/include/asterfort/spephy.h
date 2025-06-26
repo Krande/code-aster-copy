@@ -25,11 +25,11 @@ interface
                       freq, cham, specmr, specmi, disc,&
                       nnoe, nomcmp, nuor, nbmr, nbn,&
                       imod1, nbpf, nbm, ivitef)
-        integer :: nbm
-        integer :: nbpf
-        integer :: nbn
-        integer :: nbmr
-        integer :: ioptch
+        integer(kind=8) :: nbm
+        integer(kind=8) :: nbpf
+        integer(kind=8) :: nbn
+        integer(kind=8) :: nbmr
+        integer(kind=8) :: ioptch
         aster_logical :: intphy
         aster_logical :: intmod
         character(len=8) :: nomu
@@ -41,8 +41,8 @@ interface
         real(kind=8) :: disc(*)
         character(len=8) :: nnoe(nbn)
         character(len=8) :: nomcmp
-        integer :: nuor(nbmr)
-        integer :: imod1
-        integer :: ivitef
+        integer(kind=8) :: nuor(nbmr)
+        integer(kind=8) :: imod1
+        integer(kind=8) :: ivitef
     end subroutine spephy
 end interface

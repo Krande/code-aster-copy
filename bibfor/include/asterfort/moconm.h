@@ -22,7 +22,7 @@ interface
     subroutine moconm(dir, sigb, siga, hh, nlit,&
                       om, rr, nufsup, nufinf, nufsd1,&
                       nufid1, nufsd2, nufid2, prec)
-        integer :: nlit
+        integer(kind=8) :: nlit
         character(len=1) :: dir
         real(kind=8) :: sigb
         real(kind=8) :: siga(nlit)

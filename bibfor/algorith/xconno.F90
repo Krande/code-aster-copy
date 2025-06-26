@@ -61,12 +61,12 @@ subroutine xconno(mox, chfis, base, opt, param, &
 !
 !
 !
-    integer :: nfis, ifis, jj, ino, ii, kk, iret
-    integer :: ima, icmp, nbnom, jlcnx
-    integer :: ibid, jg, nmaenr, i
-    integer :: jcnsv, jcnsl, jcnsl2
-    integer :: ncmp1, jmofis, jcesd, jcesv, jcesl, iad, nncp
-    integer :: jcesd2, jcesl2, itypma, ndime, ndim
+    integer(kind=8) :: nfis, ifis, jj, ino, ii, kk, iret
+    integer(kind=8) :: ima, icmp, nbnom, jlcnx
+    integer(kind=8) :: ibid, jg, nmaenr, i
+    integer(kind=8) :: jcnsv, jcnsl, jcnsl2
+    integer(kind=8) :: ncmp1, jmofis, jcesd, jcesv, jcesl, iad, nncp
+    integer(kind=8) :: jcesd2, jcesl2, itypma, ndime, ndim
     character(len=3) :: tsca
     character(len=6) :: nompro
     parameter(nompro='XCONNO')
@@ -74,17 +74,17 @@ subroutine xconno(mox, chfis, base, opt, param, &
     character(len=24) :: grp(3), elfis_heav, elfis_ctip, elfis_hect
     aster_logical :: lstno
     character(len=8) :: ma, nomgd, nomfis, licmp(2)
-    integer, pointer :: nbsp(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: nbsp(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
-    integer, pointer :: vnfis(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: vnfis(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
-    integer, pointer :: cnsv2(:) => null()
-    integer, pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: cnsv2(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
     character(len=8), pointer :: cesv2(:) => null()
-    integer, pointer :: xfem_cont(:) => null()
+    integer(kind=8), pointer :: xfem_cont(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

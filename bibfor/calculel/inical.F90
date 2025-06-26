@@ -22,7 +22,7 @@ subroutine inical(nbin, lpain, lchin, nbout, lpaout, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    integer :: nbin, nbout
+    integer(kind=8) :: nbin, nbout
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchin(nbin), lchout(nbout)
 !
@@ -44,7 +44,7 @@ subroutine inical(nbin, lpain, lchin, nbout, lpaout, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ich
+    integer(kind=8) :: ich
     character(len=8) :: k8bla
     character(len=19) :: k19bla
 !

@@ -25,7 +25,7 @@ subroutine lc0026(fami, kpg, ksp, ndim, imate, &
     implicit none
 #include "asterfort/nmgran.h"
 #include "asterfort/rcvarc.h"
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
+    integer(kind=8) :: imate, ndim, kpg, ksp, codret, icomp, nvi, iret
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(6), deps(6)

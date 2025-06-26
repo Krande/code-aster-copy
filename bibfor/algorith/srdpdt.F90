@@ -39,7 +39,7 @@ subroutine srdpdt(vin, nvi, nbmat, mater, paraep, dpdt)
     !!! Variables globales
     !!!
 
-    integer :: nvi, nbmat
+    integer(kind=8) :: nvi, nbmat
     real(kind=8) :: vin(nvi), mater(nbmat, 2), paraep(3), dpdt(3)
 
     !!!

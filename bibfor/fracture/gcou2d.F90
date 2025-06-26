@@ -77,8 +77,8 @@ subroutine gcou2d(resu, noma, nomno, noeud, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: itheta, i, num, nbel, iret
-    integer :: ibid, numfon, n1, n2, ndim, jgtl, estbf
+    integer(kind=8) :: itheta, i, num, nbel, iret
+    integer(kind=8) :: ibid, numfon, n1, n2, ndim, jgtl, estbf
     parameter(ndim=2)
     real(kind=8) :: xm, ym, xi, yi, eps, d, norme, alpha, valx, valy, dir(3)
     character(len=8) :: k8b, fiss, fonfis

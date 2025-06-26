@@ -19,7 +19,7 @@
 interface
     subroutine corich(actionZ, fieldZ, ichin_, ichout_)
         character(len=*), intent(in) :: actionZ, fieldZ
-        integer, optional, intent(in) :: ichin_
-        integer, optional, intent(out) :: ichout_
+        integer(kind=8), optional, intent(in) :: ichin_
+        integer(kind=8), optional, intent(out) :: ichout_
     end subroutine corich
 end interface

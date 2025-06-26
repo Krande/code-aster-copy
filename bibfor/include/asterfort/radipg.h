@@ -24,14 +24,14 @@ interface
                       vari1, vari2)
         real(kind=8) :: sig1(*)
         real(kind=8) :: sig2(*)
-        integer :: npg
-        integer :: nbsig
+        integer(kind=8) :: npg
+        integer(kind=8) :: nbsig
         real(kind=8) :: radia(*)
         real(kind=8) :: cosang(*)
-        integer :: ind
+        integer(kind=8) :: ind
         character(len=16) :: compor
-        integer :: imate
-        integer :: nvi
+        integer(kind=8) :: imate
+        integer(kind=8) :: nvi
         real(kind=8) :: vari1(*)
         real(kind=8) :: vari2(*)
     end subroutine radipg

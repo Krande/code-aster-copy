@@ -22,10 +22,10 @@ interface
     subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex,&
                       lichex)
         character(len=*) :: resuz
-        integer :: nbnosy
-        integer :: nbarch
+        integer(kind=8) :: nbnosy
+        integer(kind=8) :: nbarch
         character(len=*) :: lisarc
-        integer :: nbchex
+        integer(kind=8) :: nbchex
         character(len=*) :: lichex
     end subroutine dyarc0
 end interface

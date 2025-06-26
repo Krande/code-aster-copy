@@ -21,6 +21,6 @@
 interface
     subroutine cnsimp(cnsz, unite)
         character(len=*) :: cnsz
-        integer :: unite
+        integer(kind=8) :: unite
     end subroutine cnsimp
 end interface

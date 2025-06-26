@@ -19,9 +19,9 @@
 !
 interface
     subroutine tldlg2(lmat, nprec, nmrig, vemrig)
-        integer :: lmat
-        integer :: nprec
-        integer :: nmrig
+        integer(kind=8) :: lmat
+        integer(kind=8) :: nprec
+        integer(kind=8) :: nmrig
         character(len=*) :: vemrig
     end subroutine tldlg2
 end interface

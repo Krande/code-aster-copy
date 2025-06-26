@@ -37,7 +37,7 @@ subroutine conso3d(epsmk, epser, ccmin, ccmax, epsm6, &
     real(kind=8), intent(out) :: ccmin, ccmax, cc3(3)
     real(kind=8), intent(out) :: vepsm33(3, 3), vepsm33t(3, 3)
 !
-    integer :: i
+    integer(kind=8) :: i
     aster_logical :: log1
     real(kind=8) :: xx1, xx2, xxk
 !     endommagement asymptotique pour le fluage non lineaire

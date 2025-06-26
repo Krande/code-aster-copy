@@ -19,8 +19,8 @@
 interface
     subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_, occ_)
         character(len=*), intent(in) :: modeMecaZ
-        integer, optional, intent(out) :: nbmode_, nbEqua_
+        integer(kind=8), optional, intent(out) :: nbmode_, nbEqua_
         character(len=14), optional, intent(out) :: numeDof_
-        integer, optional, intent(in) :: occ_
+        integer(kind=8), optional, intent(in) :: occ_
     end subroutine mginfo
 end interface

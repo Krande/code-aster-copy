@@ -28,7 +28,7 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/panbno.h"
-    integer :: nxmafi, nmafis
+    integer(kind=8) :: nxmafi, nmafis
     character(len=8) :: noma
     character(len=19) :: cnsln
     character(len=24) :: mafis, lisma
@@ -47,13 +47,13 @@ subroutine xmafis(noma, cnsln, nxmafi, mafis, nmafis, &
 !       NMAFIS   :  NOMBRE DE MAILLES DE LA ZONE FISSURE
 !     ------------------------------------------------------------------
 !
-    integer :: jdlima, jconx2, jmafis
-    integer :: i, imae, in, jma, itypma, nbnott(3)
-    integer :: nmaabs, nuno, nbmae, nnos
+    integer(kind=8) :: jdlima, jconx2, jmafis
+    integer(kind=8) :: i, imae, in, jma, itypma, nbnott(3)
+    integer(kind=8) :: nmaabs, nuno, nbmae, nnos
     real(kind=8) :: lsnp, lsn
     character(len=19) :: mai
     real(kind=8), pointer :: cnsv(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

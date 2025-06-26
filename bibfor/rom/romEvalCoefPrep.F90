@@ -28,7 +28,7 @@ subroutine romEvalCoefPrep(i_coef_list, ds_multipara)
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: i_coef_list
+    integer(kind=8), intent(in) :: i_coef_list
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,9 +44,9 @@ subroutine romEvalCoefPrep(i_coef_list, ds_multipara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_vari_para, i_eval_para
-    integer :: nb_vari_para
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_vari_para, i_eval_para
+    integer(kind=8) :: nb_vari_para
     character(len=16) :: para_name
 !
 ! --------------------------------------------------------------------------------------------------

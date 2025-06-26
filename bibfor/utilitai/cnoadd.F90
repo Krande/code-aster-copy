@@ -38,8 +38,8 @@ subroutine cnoadd(chno, chnop)
 #include "asterfort/assert.h"
 #include "asterfort/asmpi_info.h"
 
-    integer :: rang, nbproc
-    integer :: iaux, jvale, jprddl, nbeq
+    integer(kind=8) :: rang, nbproc
+    integer(kind=8) :: iaux, jvale, jprddl, nbeq
     mpi_int :: mrank, msize
     character(len=8)  :: k8bid
     character(len=16) :: typsd

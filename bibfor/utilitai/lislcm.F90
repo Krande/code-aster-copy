@@ -28,8 +28,8 @@ subroutine lislcm(lischa, ichar, motclc)
 !
 !
     character(len=19) :: lischa
-    integer :: ichar
-    integer :: motclc(2)
+    integer(kind=8) :: ichar
+    integer(kind=8) :: motclc(2)
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,8 +47,8 @@ subroutine lislcm(lischa, ichar, motclc)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: mocfch
-    integer :: jmcfc
-    integer :: nbchar
+    integer(kind=8) :: jmcfc
+    integer(kind=8) :: nbchar
 !
 ! ----------------------------------------------------------------------
 !

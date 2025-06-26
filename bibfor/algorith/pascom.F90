@@ -54,13 +54,13 @@ subroutine pascom(meca, sddyna, sddisc)
 !
 !
 !
-    integer :: n1, i
-    integer :: iad, nbinst
-    integer :: nbmode
-    integer :: iorol
+    integer(kind=8) :: n1, i
+    integer(kind=8) :: iad, nbinst
+    integer(kind=8) :: nbmode
+    integer(kind=8) :: iorol
     real(kind=8) :: dtcou, phi, dt
     character(len=8) :: k8bid, stocfl
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
     real(kind=8), pointer :: ditr(:) => null()
 !
 ! ---------------------------------------------------------------------

@@ -23,20 +23,20 @@ interface
                       vgli, iadh, wk1, wk2, wk3,&
                       iwk4, tdebut, tfin, nbloc, offset,&
                       noecho, intitu, nomres)
-        integer :: nbobst
-        integer :: nbpt
+        integer(kind=8) :: nbobst
+        integer(kind=8) :: nbpt
         real(kind=8) :: temps(*)
         real(kind=8) :: dloc(*)
         real(kind=8) :: fcho(*)
         real(kind=8) :: vgli(*)
-        integer :: iadh(*)
+        integer(kind=8) :: iadh(*)
         real(kind=8) :: wk1(*)
         real(kind=8) :: wk2(*)
         real(kind=8) :: wk3(*)
-        integer :: iwk4(*)
+        integer(kind=8) :: iwk4(*)
         real(kind=8) :: tdebut
         real(kind=8) :: tfin
-        integer :: nbloc
+        integer(kind=8) :: nbloc
         real(kind=8) :: offset
         character(len=8) :: noecho(*)
         character(len=24) :: intitu(*)

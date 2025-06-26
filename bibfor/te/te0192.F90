@@ -35,8 +35,8 @@ subroutine te0192(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: ipres, ivectu, k, i
+    integer(kind=8) :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: ipres, ivectu, k, i
     real(kind=8) :: poids, r, tx, ty, nx, ny, pres
 !     ------------------------------------------------------------------
 !

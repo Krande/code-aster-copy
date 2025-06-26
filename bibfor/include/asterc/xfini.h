@@ -20,6 +20,6 @@
 !
 interface
     subroutine xfini(retour)
-        integer :: retour
+        integer(kind=8) :: retour
     end subroutine xfini
 end interface

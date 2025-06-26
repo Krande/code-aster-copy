@@ -48,8 +48,8 @@ subroutine dbrInitProfTrunc(resultNameIn, resultNameOut, paraTrunc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: numeModeRefe = 1
-    integer :: iret, physNume
+    integer(kind=8), parameter :: numeModeRefe = 1
+    integer(kind=8) :: iret, physNume
     character(len=24) :: profChnoNew, modeSymbName, modeRefe
     character(len=19) :: profChnoRefe
 !

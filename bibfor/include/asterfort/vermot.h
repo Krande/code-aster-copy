@@ -21,11 +21,11 @@
 interface
     subroutine vermot(icl, iv, cv, cnl, ier,&
                       irteti)
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         character(len=*) :: cv
         character(len=14) :: cnl
-        integer :: ier
-        integer :: irteti
+        integer(kind=8) :: ier
+        integer(kind=8) :: irteti
     end subroutine vermot
 end interface

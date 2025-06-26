@@ -27,20 +27,20 @@ subroutine jxveri()
 ! VERIFIE L'INTEGRITE DU CHAINAGE AVANT DES SEGMENTS DE VALEURS ET DE LA
 ! ZONE MEMOIRE UTILISEE
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
-    integer :: isstat
+    integer(kind=8) :: isstat
     common/iconje/isstat
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
 !-----------------------------------------------------------------------
-    integer :: iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadm, ic
-    integer :: idm, il, iret, isd, isdc, isf
-    integer :: ixiadm, j, jcara, jdate, jdocu
-    integer :: jgenr, jhcod, jiadd, jiadm, jlong, jlono, jltyp
-    integer :: jluti, jmarq, jorig, jrnom, jtype, k, n
-    integer :: ncla1, ncla2, nmax
+    integer(kind=8) :: iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadm, ic
+    integer(kind=8) :: idm, il, iret, isd, isdc, isf
+    integer(kind=8) :: ixiadm, j, jcara, jdate, jdocu
+    integer(kind=8) :: jgenr, jhcod, jiadd, jiadm, jlong, jlono, jltyp
+    integer(kind=8) :: jluti, jmarq, jorig, jrnom, jtype, k, n
+    integer(kind=8) :: ncla1, ncla2, nmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -51,11 +51,11 @@ subroutine jxveri()
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
-    integer :: ivnmax, idiadm
+    integer(kind=8) :: ivnmax, idiadm
     parameter(ivnmax=0, idiadm=3)
 ! ----------------------------------------------------------------------
     character(len=32) :: nom32

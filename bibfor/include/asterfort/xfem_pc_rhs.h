@@ -20,7 +20,7 @@
 interface 
     subroutine xfem_pc_rhs(matas1, nsecm, secm, trav)
         character(len=19) :: matas1
-        integer :: nsecm
+        integer(kind=8) :: nsecm
         real(kind=8) :: secm(*)
         real(kind=8), optional ::  trav(*)
     end subroutine xfem_pc_rhs

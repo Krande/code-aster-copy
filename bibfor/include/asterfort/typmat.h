@@ -20,7 +20,7 @@
 !
 interface
     function typmat(nbmat, tlimat)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         character(len=*) :: tlimat(*)
         character(len=1) :: typmat
     end function typmat

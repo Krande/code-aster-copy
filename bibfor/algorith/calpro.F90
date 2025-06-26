@@ -69,13 +69,13 @@ subroutine calpro(nomres, classe, basmod, nommat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, idbase, ier, iret, jrefa
-    integer :: j, lddes, ldref, ldres, ldres2, lmat, ltvec1, nbdef
-    integer :: neq, ntail
+    integer(kind=8) :: i, iad, idbase, ier, iret, jrefa
+    integer(kind=8) :: j, lddes, ldref, ldres, ldres2, lmat, ltvec1, nbdef
+    integer(kind=8) :: neq, ntail
     aster_logical :: lsym
     real(kind=8) :: xprod
     complex(kind=8) :: cbid
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------

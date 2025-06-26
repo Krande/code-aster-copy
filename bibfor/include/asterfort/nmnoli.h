@@ -26,7 +26,7 @@ interface
         character(len=24) :: sderro
         type(NL_DS_Print), intent(in) :: ds_print
         character(len=19) :: sdcrit
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: sddyna
         character(len=24) :: modele
         type(NL_DS_Material), intent(in) :: ds_material

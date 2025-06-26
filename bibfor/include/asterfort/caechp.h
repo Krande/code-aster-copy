@@ -21,7 +21,7 @@ interface
         character(len=8), intent(in) :: load
         character(len=19), intent(in) :: loadLigrel
         character(len=8), intent(in) :: mesh, model
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=4), intent(in) :: valeType
     end subroutine caechp
 end interface

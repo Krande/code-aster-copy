@@ -53,16 +53,16 @@ subroutine mpinvc(nbmesu, nbmode, nbabs, phi, cmesu, &
 #include "asterfort/rslsvd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbmesu, nbmode, nbabs
-    integer :: vali
+    integer(kind=8) :: nbmesu, nbmode, nbabs
+    integer(kind=8) :: vali
     real(kind=8) :: phi(nbmesu, nbmode), xabs(nbabs), coef(*)
     real(kind=8) :: valr
     complex(kind=8) :: cmesu(nbmesu, nbabs), ceta(nbmode, nbabs)
     complex(kind=8) :: cetap(nbmode, nbabs), ceta2p(nbmode, nbabs)
     aster_logical :: lfonct
 !
-    integer :: imod, jmod, imes, iabs, ierr, ibid, jmes
-    integer :: lsecmb, lwks, lphiph, lphitp, lmatsy, lwork, leta, lvals, lu, lv
+    integer(kind=8) :: imod, jmod, imes, iabs, ierr, ibid, jmes
+    integer(kind=8) :: lsecmb, lwks, lphiph, lphitp, lmatsy, lwork, leta, lvals, lu, lv
     real(kind=8) :: alpha, eps
     real(kind=8) :: zero, depi, rval
     complex(kind=8) :: cval

@@ -24,8 +24,8 @@ interface
         character(len=*) :: resu
         character(len=16) :: nopara
         character(len=*) :: motcle
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: objveu
-        integer :: nbordr
+        integer(kind=8) :: nbordr
     end subroutine rsutn1
 end interface

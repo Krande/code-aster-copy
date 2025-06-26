@@ -32,7 +32,7 @@ subroutine marota(tetag, drot)
     real(kind=8) :: tetag(3), drot(3, 3), amat1(3, 3), amat2(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: coef, coef1, coef2, epsil, teta1
     real(kind=8) :: teta2, un, zero
     blas_int :: b_incx, b_incy, b_n

@@ -66,15 +66,15 @@ subroutine dtmeigen(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, intent(in) :: oldcase
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), intent(in) :: oldcase
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
 !
 !   -0.2- Local variables
     aster_logical :: l_hpp
-    integer :: nbmode, i, j, count, jrefa, nbnoli, nbvect, nbvec2, nbrss, maxitr
-    integer :: jdesc, lmatm, lmatk, lmatc, jbase, nbborn
-    integer :: ibid, nlcase, iret, fsichoc, info, ifm
+    integer(kind=8) :: nbmode, i, j, count, jrefa, nbnoli, nbvect, nbvec2, nbrss, maxitr
+    integer(kind=8) :: jdesc, lmatm, lmatk, lmatc, jbase, nbborn
+    integer(kind=8) :: ibid, nlcase, iret, fsichoc, info, ifm
     real(kind=8) :: time, bande(2), r8bid, alpha, tolsor, precsh, omecor, precdc, fcorig
     character(len=1) :: k1bid
     character(len=4) :: mod45

@@ -23,10 +23,10 @@ interface
                       numcmp, nbcmp)
         character(len=*) :: nomgd
         character(len=*) :: mcfac
-        integer :: iocc
-        integer :: dim
+        integer(kind=8) :: iocc
+        integer(kind=8) :: dim
         character(len=*) :: nomcmp(*)
-        integer :: numcmp(*)
-        integer :: nbcmp
+        integer(kind=8) :: numcmp(*)
+        integer(kind=8) :: nbcmp
     end subroutine utcmp2
 end interface

@@ -24,7 +24,7 @@ subroutine optimw(method, nrupt, x, y, prob, &
 #include "asterf_types.h"
 #include "asterfort/ntweib.h"
 #include "asterfort/utmess.h"
-    integer :: nrupt, nt(*), nbres, nur(*), ir, indtp(*), nbtp, ifm
+    integer(kind=8) :: nrupt, nt(*), nbres, nur(*), ir, indtp(*), nbtp, ifm
     real(kind=8) :: x(*), y(*), sigw(*), mk, sk(*), mkp, skp(*), prob(*)
     character(len=16) :: method
     aster_logical :: calm, cals, impr, dept
@@ -62,7 +62,7 @@ subroutine optimw(method, nrupt, x, y, prob, &
 !
     real(kind=8) :: syi, sxi, sxixi, sxiyi, sxiyj, sxixj, unsurn, unsurm
     real(kind=8) :: swm, prec, mg, md, prov, snt, s1, s2
-    integer :: i, j, k, itp, irg
+    integer(kind=8) :: i, j, k, itp, irg
 !     ----------------------------------------------------------------
 !
     if (method(1:9) .eq. 'REGR_LINE') then

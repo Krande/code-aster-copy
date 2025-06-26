@@ -20,7 +20,7 @@ interface
     subroutine dismca(question_, object_, answeri, answerk_, ierd)
         character(len=*), intent(in) :: question_
         character(len=*), intent(in) :: object_
-        integer, intent(out) :: answeri, ierd
+        integer(kind=8), intent(out) :: answeri, ierd
         character(len=*), intent(out)  :: answerk_
     end subroutine dismca
 end interface

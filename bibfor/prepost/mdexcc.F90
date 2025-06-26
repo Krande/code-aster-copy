@@ -70,9 +70,9 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc, &
     character(len=*) :: nofimd, nochmd
     character(len=*) :: nomcmc, nmcmfi
 !
-    integer :: nbcmpc, existc, nbcmfi
+    integer(kind=8) :: nbcmpc, existc, nbcmfi
 !
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
@@ -84,18 +84,18 @@ subroutine mdexcc(nofimd, idfimd, nochmd, nbcmpc, nomcmc, &
     character(len=6) :: nompro
     parameter(nompro='MDEXCC')
 !
-    integer :: edlect
-    integer :: vali(2)
+    integer(kind=8) :: edlect
+    integer(kind=8) :: vali(2)
     parameter(edlect=0)
-    integer :: mfloat
+    integer(kind=8) :: mfloat
     parameter(mfloat=6)
 !
 !
-    integer :: lnochm, jnbcha, jnocha, jcmpch
+    integer(kind=8) :: lnochm, jnbcha, jnocha, jcmpch
     med_idt :: idfimd
-    integer :: nbcham, nbcha2
-    integer :: iaux, jaux, kaux, iret, iouv
-    integer :: adncmp, aducmp, adncmc, adncfi, nseqca
+    integer(kind=8) :: nbcham, nbcha2
+    integer(kind=8) :: iaux, jaux, kaux, iret, iouv
+    integer(kind=8) :: adncmp, aducmp, adncmc, adncfi, nseqca
     aster_logical :: ficexi, dejouv
 !
     character(len=8) :: saux08

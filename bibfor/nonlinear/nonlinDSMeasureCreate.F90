@@ -41,9 +41,9 @@ subroutine nonlinDSMeasureCreate(ds_measure)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_device_defi = 24
-    integer, parameter :: nb_timer_defi = 8
-    integer :: i_device, i_timer, i_col
+    integer(kind=8), parameter :: nb_device_defi = 24
+    integer(kind=8), parameter :: nb_timer_defi = 8
+    integer(kind=8) :: i_device, i_timer, i_col
     aster_logical :: l_time, l_count
     type(NL_DS_Table) :: table
     type(NL_DS_Column) :: column
@@ -101,7 +101,7 @@ subroutine nonlinDSMeasureCreate(ds_measure)
 !
 ! - Flag for time measure: 2 by device - First = Step / Second = Total computation
 !
-    integer, parameter :: time_indi(2*nb_device_defi) = (/ &
+    integer(kind=8), parameter :: time_indi(2*nb_device_defi) = (/ &
                           0, 2, 0, 3, 1, 0, &
                           0, 0, 0, 16, 0, 15, &
                           7, 7, 6, 6, 11, 11, &
@@ -113,7 +113,7 @@ subroutine nonlinDSMeasureCreate(ds_measure)
 !
 ! - Flag for count measure: 2 by device - First = Step / Second = Total computation
 !
-    integer, parameter :: count_indi(2*nb_device_defi) = (/ &
+    integer(kind=8), parameter :: count_indi(2*nb_device_defi) = (/ &
                           0, 0, 0, 0, 0, 25, &
                           26, 26, 0, 0, 0, 0, &
                           7, 7, 6, 6, 0, 0, &

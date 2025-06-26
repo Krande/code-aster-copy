@@ -22,7 +22,7 @@ interface
     subroutine pmfm21(kanl, m, casrho, casece, a, &
                   xl, xiy, xiz, g, alfay,&
                   alfaz, ey, ez )
-        integer :: kanl
+        integer(kind=8) :: kanl
         real(kind=8) :: m(*)
         real(kind=8) :: casrho(6)
         real(kind=8) :: casece(6)

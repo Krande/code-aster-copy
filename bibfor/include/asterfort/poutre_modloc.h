@@ -23,10 +23,10 @@ interface
                              arret, retour)
         character(len=*), intent(in) :: modloc
         character(len=*), intent(in) :: lnomv(nbnomv)
-        integer, intent(in) :: nbnomv
+        integer(kind=8), intent(in) :: nbnomv
         real(kind=8), intent(out), optional :: lvaleur(nbnomv)
         real(kind=8), intent(out), optional :: valeur
         character(len=*), intent(in), optional :: arret
-        integer, intent(out), optional :: retour
+        integer(kind=8), intent(out), optional :: retour
     end subroutine poutre_modloc
 end interface

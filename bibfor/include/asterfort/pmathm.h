@@ -21,10 +21,10 @@
 interface
     subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
                       drds, ck, b, poids, work1, work2, matri)
-        integer :: dimuel
-        integer :: dimcon
-        integer :: dimdef
-        integer :: dimmat
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimmat
         real(kind=8) :: dsde(dimcon, dimdef)
         real(kind=8) :: drds(dimdef, dimcon)
         real(kind=8) :: ck(dimdef)

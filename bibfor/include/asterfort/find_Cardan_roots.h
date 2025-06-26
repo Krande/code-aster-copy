@@ -22,6 +22,6 @@ interface
     subroutine find_Cardan_roots(coef, roots, nbroot)
       real(kind=8), intent(in) :: coef(4)
       real(kind=8), intent(out) :: roots(3)
-      integer, intent(out) :: nbroot
+      integer(kind=8), intent(out) :: nbroot
     end subroutine find_Cardan_roots
 end interface

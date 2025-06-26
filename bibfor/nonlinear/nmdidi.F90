@@ -58,7 +58,7 @@ subroutine nmdidi(ds_inout, model, list_load, nume_dof, valinc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, didi_nume, codret
+    integer(kind=8) :: iret, didi_nume, codret
     character(len=19) :: disp_didi, disp_prev, vect_elem, vect_asse, fieldFromResult
 !
 ! --------------------------------------------------------------------------------------------------

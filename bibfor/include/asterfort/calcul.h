@@ -21,8 +21,8 @@ interface
     subroutine calcul(stop, option_, ligrel_, nin, lchin,&
                       lpain, nou, lchou, lpaou, base,&
                       mpic)
-        integer, intent(in) :: nou
-        integer, intent(in) :: nin
+        integer(kind=8), intent(in) :: nou
+        integer(kind=8), intent(in) :: nin
         character(len=1), intent(in) :: stop
         character(len=*), intent(in) :: option_
         character(len=*), intent(in) :: ligrel_

@@ -20,7 +20,7 @@
 !
 interface
     subroutine fgdomm(nbcycl, dom, rdomm)
-        integer :: nbcycl
+        integer(kind=8) :: nbcycl
         real(kind=8) :: dom(*)
         real(kind=8) :: rdomm
     end subroutine fgdomm

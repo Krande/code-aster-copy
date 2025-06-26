@@ -28,7 +28,7 @@ subroutine mm_cycl_zonf(lagr_frot_norm, tole_stick, tole_slide, zone_frot)
     real(kind=8), intent(in) :: lagr_frot_norm
     real(kind=8), intent(in) :: tole_stick
     real(kind=8), intent(in) :: tole_slide
-    integer, intent(out) :: zone_frot
+    integer(kind=8), intent(out) :: zone_frot
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -70,13 +70,13 @@ subroutine possvd(nm, m, n, w, matu, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 #include "blas/dswap.h"
-    integer :: nm, m, n, rg
+    integer(kind=8) :: nm, m, n, rg
     real(kind=8) :: w(n), u(nm, n), v(nm, n), eps, rv1(n)
     aster_logical :: matu, matv
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i, j, jmax, rgmax
+    integer(kind=8) :: i, j, jmax, rgmax
     real(kind=8) :: wmax
     blas_int :: b_incx, b_incy, b_n
 !

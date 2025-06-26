@@ -36,7 +36,7 @@ subroutine mmvape(phase, leltf, l_pena_cont, l_pena_fric, &
 !
     character(len=4), intent(in) :: phase
     aster_logical, intent(in) :: leltf, l_pena_cont, l_pena_fric
-    integer, intent(in) :: ndim, nnl, nbcps
+    integer(kind=8), intent(in) :: ndim, nnl, nbcps
     real(kind=8), intent(in) :: ffl(9)
     real(kind=8), intent(in) :: coefac, coefaf, coefff
     real(kind=8), intent(in) :: wpg, jacobi, jeu, lambda

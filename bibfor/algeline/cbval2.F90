@@ -35,7 +35,7 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbcomb, lmat(*), lres
+    integer(kind=8) :: nbcomb, lmat(*), lres
     character(len=*) :: typres, ddlexc, typcst(*)
     real(kind=8) :: const(*)
 !     COMBINAISON LINEAIRE DES .VALM DES MATRICES
@@ -57,20 +57,20 @@ subroutine cbval2(nbcomb, typcst, const, lmat, typres, &
 !
     aster_logical :: symr, symi, symrl
 !     -----------------------------------------------------------------
-    integer :: lgbloc
+    integer(kind=8) :: lgbloc
     character(len=1) :: clas, typmat
     character(len=8) :: nomddl
     character(len=14) :: numr, numi
     character(len=19) :: matres, mati
     character(len=24) :: valmi, valmr
-    integer :: neq, mxddl, lddl, jsmhcr
-    integer :: iconst, imat, jsmhci, jvlmi1, jvlmr1, k
-    integer :: jvlmi2, jvlmr2
+    integer(kind=8) :: neq, mxddl, lddl, jsmhcr
+    integer(kind=8) :: iconst, imat, jsmhci, jvlmi1, jvlmr1, k
+    integer(kind=8) :: jvlmi2, jvlmr2
     real(kind=8) :: zero
     character(len=24), pointer :: refai(:) => null()
     character(len=24), pointer :: refar(:) => null()
-    integer, pointer :: smdii(:) => null()
-    integer, pointer :: smdir(:) => null()
+    integer(kind=8), pointer :: smdii(:) => null()
+    integer(kind=8), pointer :: smdir(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
     zero = 0.d0

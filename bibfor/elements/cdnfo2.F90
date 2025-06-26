@@ -21,11 +21,11 @@ subroutine cdnfo2(mater, kfonc, xx, dn, fxx, ier)
     implicit none
 !
 #include "asterfort/rcvale.h"
-    integer :: dn, ier
+    integer(kind=8) :: dn, ier
     character(len=16) :: kfonc, kaux
     character(len=8) :: mater, k8b
     real(kind=8) :: xx, fxx, wfxx(1)
-    integer :: icodr2(1)
+    integer(kind=8) :: icodr2(1)
     character(len=32) :: phenom
 !
     phenom = 'GLRC_DAMAGE'

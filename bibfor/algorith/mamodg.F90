@@ -55,11 +55,11 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto, &
 #include "asterfort/mtdscr.h"
 #include "blas/ddot.h"
 !
-    integer :: nbpres, imatx, imaty, itxsto, itysto, itzsto
-    integer :: iprsto, imatz
-    integer :: irang, jrang, i, j, iblo, ldblo, iadirg
-    integer :: iblodi, nbloc, n1bloc, n2bloc, nbmo, nn
-    integer :: ifm, niv, iret1, hc
+    integer(kind=8) :: nbpres, imatx, imaty, itxsto, itysto, itzsto
+    integer(kind=8) :: iprsto, imatz
+    integer(kind=8) :: irang, jrang, i, j, iblo, ldblo, iadirg
+    integer(kind=8) :: iblodi, nbloc, n1bloc, n2bloc, nbmo, nn
+    integer(kind=8) :: ifm, niv, iret1, hc
     real(kind=8) :: mij, rx, ry, rz
     character(len=2) :: model
     character(len=8) :: repon
@@ -68,9 +68,9 @@ subroutine mamodg(model, stolci, nomres, itxsto, itysto, &
     real(kind=8), pointer :: vectx(:) => null()
     real(kind=8), pointer :: vecty(:) => null()
     real(kind=8), pointer :: vectz(:) => null()
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: smde(:) => null()
-    integer, pointer :: indic(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
+    integer(kind=8), pointer :: indic(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
     real(kind=8), pointer :: pres(:) => null()
     real(kind=8), pointer :: tpx(:) => null()

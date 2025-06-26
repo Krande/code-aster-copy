@@ -25,7 +25,7 @@ subroutine aveteq(nbordr, vwork, tdisp, kwork, sommw, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-    integer :: nbordr, tdisp, kwork, sommw, tspaq, i, jveteq
+    integer(kind=8) :: nbordr, tdisp, kwork, sommw, tspaq, i, jveteq
     real(kind=8) :: vwork(tdisp)
 !, veteq(nbordr)
 ! ----------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine aveteq(nbordr, vwork, tdisp, kwork, sommw, &
 !  VPHYDR : OUT  R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
 !                     TOUS LES INSTANTS.
 ! --------------------------------------------------------------------
-    integer :: iordr, adrs, j, decal
+    integer(kind=8) :: iordr, adrs, j, decal
     real(kind=8) :: eps(6), equi(17)
 !     ------------------------------------------------------------------
 !

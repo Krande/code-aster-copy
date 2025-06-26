@@ -40,8 +40,8 @@ module gdlog_module
 !
     type GDLOG_DS
         private
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         aster_logical :: init_ds
         aster_logical :: calc_defo
         aster_logical :: calc_matb
@@ -82,7 +82,7 @@ contains
 !
         implicit none
         type(GDLOG_DS) :: self
-        integer :: ndim, nno
+        integer(kind=8) :: ndim, nno
         aster_logical :: axi, rigi
 ! ---------------------------------------------------------------------
 !
@@ -116,7 +116,7 @@ contains
         type(GDLOG_DS) :: self
         real(kind=8), intent(in) :: f(3, 3)
         real(kind=8), intent(out) :: eps(:)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
 ! ----------------------------------------------------------------------
         real(kind=8) :: eps6(6), jac
 ! ----------------------------------------------------------------------
@@ -164,7 +164,7 @@ contains
         real(kind=8), intent(in) :: dff(:, :)
         real(kind=8), intent(out) :: matb(:, :, :)
 ! ---------------------------------------------------------------------
-        integer :: ndimsi, nno, ndim, kl
+        integer(kind=8) :: ndimsi, nno, ndim, kl
         real(kind=8), allocatable :: def(:, :, :)
         blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! ---------------------------------------------------------------------
@@ -225,7 +225,7 @@ contains
         real(kind=8), intent(in) :: t(:)
         real(kind=8) :: matr(self%ndim, self%nno, self%ndim, self%nno)
 ! ---------------------------------------------------------------------
-        integer :: ndimsi, nno, ndim, i
+        integer(kind=8) :: ndimsi, nno, ndim, i
         real(kind=8) :: t6(6), tls3(3, 3, 3, 3), tls(6, 6), pk2(6)
         real(kind=8), allocatable :: maax(:, :)
         real(kind=8), allocatable :: marg(:, :)
@@ -327,7 +327,7 @@ contains
         real(kind=8), intent(in) :: t(:)
         real(kind=8) :: cauchy(size(t))
 ! ----------------------------------------------------------------------
-        integer :: ndimsi
+        integer(kind=8) :: ndimsi
         real(kind=8) :: t6(6), pk2(6), jac, sig6(6)
 ! ---------------------------------------------------------------------
 !

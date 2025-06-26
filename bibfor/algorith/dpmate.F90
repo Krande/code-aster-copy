@@ -23,7 +23,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi, &
 #include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, imat, typedp
+    integer(kind=8) :: ndt, ndi, nvi, imat, typedp
     real(kind=8) :: materf(5, 2), ltyped(1)
     character(len=8) :: mod
 ! ======================================================================
@@ -38,7 +38,7 @@ subroutine dpmate(mod, imat, materf, ndt, ndi, &
 ! ======================================================================
     real(kind=8) :: trois, deux, un, six, alpha, sy, syult, c, a, phi
     real(kind=8) :: typed, tabtmp(4), coe, dilat(1), psi
-    integer :: icodre(8)
+    integer(kind=8) :: icodre(8)
     character(len=8) :: nomc(8)
 ! ======================================================================
     parameter(six=6.0d0)

@@ -55,11 +55,11 @@ subroutine splin2(x, d2y, n, ptx, d2yptx, &
 ! ---------
 !
     real(kind=8) :: x(*), d2y(*), ptx, d2yptx
-    integer :: n, iret
+    integer(kind=8) :: n, iret
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: k, kinf, ksup
+    integer(kind=8) :: k, kinf, ksup
     real(kind=8) :: a, b, h
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

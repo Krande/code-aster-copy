@@ -50,7 +50,7 @@ subroutine ratg3d(stress, strain, rprops, dsidep, ii, jj, mm, &
     real(kind=8) :: dsidep(6, 6)
     real(kind=8) :: edge
     real(kind=8) :: apex
-    integer :: codret
+    integer(kind=8) :: codret
 !
 #include "asterf_types.h"
 #include "asterfort/jacobi.h"
@@ -59,8 +59,8 @@ subroutine ratg3d(stress, strain, rprops, dsidep, ii, jj, mm, &
 #include "asterfort/mctgep.h"
 !
 ! Declaration of integer type variables
-    integer :: itri, iorder, mmax, nmax, mxiter, itjac1
-    integer :: ii, jj, mm
+    integer(kind=8) :: itri, iorder, mmax, nmax, mxiter, itjac1
+    integer(kind=8) :: ii, jj, mm
 !
 ! Declaration of integer type variables
 !     aster_logical :: epflag

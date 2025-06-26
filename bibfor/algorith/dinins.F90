@@ -26,8 +26,8 @@ function dinins(sddisc, nume_inst)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: dinins
-    integer, intent(in) :: nume_inst
+    integer(kind=8) :: dinins
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ function dinins(sddisc, nume_inst)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sddisc_dini
-    integer, pointer :: v_sddisc_dini(:) => null()
+    integer(kind=8), pointer :: v_sddisc_dini(:) => null()
     character(len=16) :: metlis
 !
 ! --------------------------------------------------------------------------------------------------

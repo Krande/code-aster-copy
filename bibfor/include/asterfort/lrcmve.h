@@ -24,34 +24,34 @@ interface
                       jnumma, nochmd, nbma, npgma, npgmm,&
                       nspmm, typech, nutyma, adsl, adsv, adsd,&
                       lrenum, nuanom, codret)
-        integer :: nbma
-        integer :: npgmax
-        integer :: ntypel
+        integer(kind=8) :: nbma
+        integer(kind=8) :: npgmax
+        integer(kind=8) :: ntypel
         character(len=*) :: ntvale
-        integer :: nmatyp
-        integer :: nbnoma
+        integer(kind=8) :: nmatyp
+        integer(kind=8) :: nbnoma
         character(len=*) :: ntproa
-        integer :: lgproa
-        integer :: ncmprf
+        integer(kind=8) :: lgproa
+        integer(kind=8) :: ncmprf
         character(len=*) :: nomcmr(*)
-        integer :: indpg(ntypel, npgmax)
-        integer :: nbcmfi
+        integer(kind=8) :: indpg(ntypel, npgmax)
+        integer(kind=8) :: nbcmfi
         character(len=*) :: nmcmfi
-        integer :: nbcmpv
+        integer(kind=8) :: nbcmpv
         character(len=*) :: ncmpvm
         character(len=*) :: numcmp
-        integer :: jnumma
+        integer(kind=8) :: jnumma
         character(len=*) :: nochmd
-        integer :: npgma(nbma)
-        integer :: npgmm(nbma)
-        integer :: nspmm(nbma)
+        integer(kind=8) :: npgma(nbma)
+        integer(kind=8) :: npgmm(nbma)
+        integer(kind=8) :: nspmm(nbma)
         character(len=*) :: typech
-        integer :: nutyma
-        integer :: adsl
-        integer :: adsv
-        integer :: adsd
-        integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
+        integer(kind=8) :: nutyma
+        integer(kind=8) :: adsl
+        integer(kind=8) :: adsv
+        integer(kind=8) :: adsd
+        integer(kind=8) :: nuanom(MT_NTYMAX, MT_NNOMAX)
         aster_logical :: lrenum
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lrcmve
 end interface

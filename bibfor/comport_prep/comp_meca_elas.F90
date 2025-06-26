@@ -43,7 +43,7 @@ subroutine comp_meca_elas(compElas, l_etat_init)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbCmp = COMPOR_SIZE
+    integer(kind=8), parameter :: nbCmp = COMPOR_SIZE
     character(len=16), pointer :: compElasValv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

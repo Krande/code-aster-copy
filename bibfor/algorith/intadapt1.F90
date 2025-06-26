@@ -43,12 +43,12 @@ subroutine intadapt1(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer :: i, nbequ, ind1, iret1, iret2
-    integer :: npper, nrmax, nr, nbnoli, nbvint
+    integer(kind=8) :: i, nbequ, ind1, iret1, iret2
+    integer(kind=8) :: npper, nrmax, nr, nbnoli, nbvint
     real(kind=8) :: t1, dt, dt1, dt2
     real(kind=8) :: coeff, err, epsi, pas1, norm
     real(kind=8) :: cpmin, freq
@@ -69,7 +69,7 @@ subroutine intadapt1(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8), pointer :: nlsav0(:) => null()
     real(kind=8), pointer :: nlsav1(:) => null()
 !
-    integer, pointer :: buffnl(:) => null()
+    integer(kind=8), pointer :: buffnl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 ! Algorithm parameters saved in a linear vector, easily accessible using the defines

@@ -20,8 +20,8 @@
 !
 interface
     subroutine cntran(linoeu, nbno, chs1, chs2)
-        integer :: linoeu(*)
-        integer :: nbno
+        integer(kind=8) :: linoeu(*)
+        integer(kind=8) :: nbno
         character(len=*) :: chs1
         character(len=*) :: chs2
     end subroutine cntran

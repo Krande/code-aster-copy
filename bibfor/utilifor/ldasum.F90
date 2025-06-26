@@ -38,7 +38,7 @@ function ldasum(n, dx, incx)
     real(kind=8) :: ldasum
 !
     real(kind=8) :: dx(1), dtemp
-    integer :: i, incx, ix, m, mp1, n
+    integer(kind=8) :: i, incx, ix, m, mp1, n
 !
     ldasum = 0.0d0
     dtemp = 0.0d0

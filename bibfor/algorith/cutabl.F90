@@ -25,12 +25,12 @@ subroutine cutabl(indic, nbliac, ajliai, spliai, resocu, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: indic
-    integer :: nbliac
-    integer :: ajliai
-    integer :: spliai
-    integer :: posit
-    integer :: liaiso
+    integer(kind=8) :: indic
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: ajliai
+    integer(kind=8) :: spliai
+    integer(kind=8) :: posit
+    integer(kind=8) :: liaiso
     character(len=1) :: typope
     character(len=24) :: resocu
 !
@@ -61,10 +61,10 @@ subroutine cutabl(indic, nbliac, ajliai, spliai, resocu, &
 !
 !
 !
-    integer :: ii
+    integer(kind=8) :: ii
     character(len=1) :: typeaj, typesp
     character(len=19) :: liac
-    integer :: jliac
+    integer(kind=8) :: jliac
 !
 ! ======================================================================
 !

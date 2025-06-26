@@ -20,7 +20,7 @@ subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro, &
                   isign, numddl, coef)
     implicit none
 #include "asterfort/utmess.h"
-    integer :: nbmode, neq, ddlexc(*), isign, numddl
+    integer(kind=8) :: nbmode, neq, ddlexc(*), isign, numddl
     real(kind=8) :: vecpro(neq, *), coef(*)
     character(len=*) :: norm
     character(len=24) :: valk
@@ -37,7 +37,7 @@ subroutine vpnor1(norm, neq, nbmode, ddlexc, vecpro, &
 ! VAR VECPRO : TABLEAU DES VECTEURS PROPRES
 ! OUT COEF   : COEFFICIENTS
 !     ------------------------------------------------------------------
-    integer :: im, ie
+    integer(kind=8) :: im, ie
     real(kind=8) :: xnorm, xx1
 ! DEB ------------------------------------------------------------------
 !

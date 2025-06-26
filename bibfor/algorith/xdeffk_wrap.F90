@@ -27,7 +27,7 @@ subroutine xdeffk_wrap(kappa, mu, r, theta, ndim, fkpo, option, istano)
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 !
-    integer :: ndim, istano
+    integer(kind=8) :: ndim, istano
     real(kind=8) :: r, theta, fkpo(ndim, ndim), kappa, mu
     character(len=*) :: option
 !

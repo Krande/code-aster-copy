@@ -21,7 +21,7 @@ function cfdisd(resoco, questz)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    integer :: cfdisd
+    integer(kind=8) :: cfdisd
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -55,7 +55,7 @@ function cfdisd(resoco, questz)
 !
     character(len=24) :: questi
     character(len=24) :: coco
-    integer :: jcoco
+    integer(kind=8) :: jcoco
 !
 ! ----------------------------------------------------------------------
 !

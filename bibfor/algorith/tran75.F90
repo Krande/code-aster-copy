@@ -85,8 +85,8 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/vtdefs.h"
 #include "asterfort/wkvect.h"
 ! ----------------------------------------------------------------------
-    integer :: i, j, itresu(8), i_cham(8)
-    integer :: foci, focf, fomi, fomf, fomo
+    integer(kind=8) :: i, j, itresu(8), i_cham(8)
+    integer(kind=8) :: foci, focf, fomi, fomf, fomo
     real(kind=8) :: r8b, epsi, alpha, xnorm, coef(3), direction(9), zero
     character(len=1) :: typ1
     character(len=8) :: k8b, blanc, basemo, crit, interp, basem2, mailla, nomres
@@ -98,26 +98,26 @@ subroutine tran75(nomres, typres, nomin, basemo)
     character(len=24) :: matric, chamno, crefe(2), nomcha, chamn2, objve1
     character(len=24) :: objve2, objve3, objve4, chmod, tmpcha, valk
     aster_logical :: tousno, multap, leffor, prems, l_corr_stat, l_multi_app
-    integer :: iexi
+    integer(kind=8) :: iexi
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iarchi, ibid, ich, id
-    integer :: idec, idefm, ie
-    integer :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
-    integer :: irou, jc, jinst
-    integer :: jnume, jpsdel, jvec, linst
-    integer :: lpsdel, lval2, lvale, n1, n2, n3, borne1, borne2
-    integer :: n4, nbcham, nbd, nbexci, nbinsg, nbinst
-    integer :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1
-    integer :: shift, i_bloc
-    integer :: indice, taille, inst, indice1, taille1, ifm, niv, jddl
+    integer(kind=8) :: iarchi, ibid, ich, id
+    integer(kind=8) :: idec, idefm, ie
+    integer(kind=8) :: ier, inocmp, inoecp, inuddl, inumno, ipsdel, ir
+    integer(kind=8) :: irou, jc, jinst
+    integer(kind=8) :: jnume, jpsdel, jvec, linst
+    integer(kind=8) :: lpsdel, lval2, lvale, n1, n2, n3, borne1, borne2
+    integer(kind=8) :: n4, nbcham, nbd, nbexci, nbinsg, nbinst
+    integer(kind=8) :: nbmode, nbnoeu, ncmp, neq, nfonct, neq0, ifonct, vali(2), neq1
+    integer(kind=8) :: shift, i_bloc
+    integer(kind=8) :: indice, taille, inst, indice1, taille1, ifm, niv, jddl
     complex(kind=8) :: cbid
     real(kind=8), pointer :: base(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
     character(len=8), pointer :: fvit(:) => null()
     character(len=24), pointer :: refn(:) => null()
     character(len=8), pointer :: facc(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: resu(:) => null()
     character(len=8), pointer :: fdep(:) => null()

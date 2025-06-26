@@ -18,7 +18,7 @@
 !
 interface
     subroutine nmacfi(list_func_acti, hval_veasse, cnffdo, cndfdo)
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: hval_veasse(*), cnffdo, cndfdo
     end subroutine nmacfi
 end interface

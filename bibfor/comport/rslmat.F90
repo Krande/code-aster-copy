@@ -50,8 +50,8 @@ subroutine rslmat(fami, kpg, ksp, mod, imat, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/rslnvi.h"
 #include "asterfort/utmess.h"
-    integer :: i, imat, nmat, ndt, ndi, nr, nvi, kpg, ksp
-    integer :: jprol, jvale, nbvale, iret
+    integer(kind=8) :: i, imat, nmat, ndt, ndi, nr, nvi, kpg, ksp
+    integer(kind=8) :: jprol, jvale, nbvale, iret
 !
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), tempd, tempf
     real(kind=8) :: epsi, vind(*), f0
@@ -59,7 +59,7 @@ subroutine rslmat(fami, kpg, ksp, mod, imat, &
 !
     character(len=16) :: nomc(14)
     character(len=8) :: mod, para_type
-    integer :: cerr(14)
+    integer(kind=8) :: cerr(14)
     character(len=3) :: matcst
     character(len=*) :: fami
 !

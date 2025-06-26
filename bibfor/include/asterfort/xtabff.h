@@ -20,9 +20,9 @@
 !
 interface
     subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
-        integer :: nbfond
-        integer :: nfon
-        integer :: ndim
+        integer(kind=8) :: nbfond
+        integer(kind=8) :: nfon
+        integer(kind=8) :: ndim
         character(len=8) :: fiss
         character(len=16) :: operation
     end subroutine xtabff

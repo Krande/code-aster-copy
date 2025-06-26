@@ -22,11 +22,11 @@ interface
     subroutine dmatdp(fami, mater, time, poum, ipg,&
                       ispg, angl_naut, dr_, di_)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: mater
+        integer(kind=8), intent(in) :: mater
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: ipg
-        integer, intent(in) :: ispg
+        integer(kind=8), intent(in) :: ipg
+        integer(kind=8), intent(in) :: ispg
         real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), optional, intent(out) :: dr_(4, 4)
         real(kind=8), optional, intent(out) :: di_(4, 4)

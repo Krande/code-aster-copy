@@ -22,8 +22,8 @@ interface
     subroutine mefeig(ndim, nbmod, matm, matr, mata,&
                       fre, ksi, mavr, alfr, alfi,&
                       mat1, mavi, w, z, ind)
-        integer :: nbmod
-        integer :: ndim(14)
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: ndim(14)
         real(kind=8) :: matm(nbmod, nbmod)
         real(kind=8) :: matr(nbmod, nbmod)
         real(kind=8) :: mata(nbmod, nbmod)
@@ -36,6 +36,6 @@ interface
         real(kind=8) :: mavi(2*nbmod, 2*nbmod)
         real(kind=8) :: w(4*nbmod)
         real(kind=8) :: z(4*nbmod, 2*nbmod)
-        integer :: ind(2*nbmod)
+        integer(kind=8) :: ind(2*nbmod)
     end subroutine mefeig
 end interface

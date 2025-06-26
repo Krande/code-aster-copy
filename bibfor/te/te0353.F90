@@ -51,19 +51,19 @@ subroutine te0353(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::  i, k, lgpg, iret, ispg
+    integer(kind=8) ::  i, k, lgpg, iret, ispg
     real(kind=8) :: sigmo
     character(len=4) :: fami
     character(len=16) :: metaPhasName, rela_comp, valk(2)
-    integer :: j_mate, j_mater
-    integer :: meta_type, nb_phasis
+    integer(kind=8) :: j_mate, j_mater
+    integer(kind=8) :: meta_type, nb_phasis
     real(kind=8) :: young, nu, deuxmu
-    integer :: j_sigm
-    integer :: nb_sigm, elas_id
-    integer :: j_poids, j_vf, j_dfde, j_geom
-    integer :: nno, ipg, npg, jtab(7)
-    integer :: j_vectu
-    integer :: j_vari
+    integer(kind=8) :: j_sigm
+    integer(kind=8) :: nb_sigm, elas_id
+    integer(kind=8) :: j_poids, j_vf, j_dfde, j_geom
+    integer(kind=8) :: nno, ipg, npg, jtab(7)
+    integer(kind=8) :: j_vectu
+    integer(kind=8) :: j_vari
     real(kind=8) :: sig(4), sigdv(4)
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, co_axis
     real(kind=8) :: coef, trans

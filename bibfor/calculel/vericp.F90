@@ -31,7 +31,7 @@ subroutine vericp(cmpglo, cmp, nbcmp, iret)
 !
 !+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     character(len=8) :: cmp, cmpglo(1)
-    integer :: i, iret, nbcmp
+    integer(kind=8) :: i, iret, nbcmp
 !-----------------------------------------------------------------------
 !
     do i = 1, nbcmp

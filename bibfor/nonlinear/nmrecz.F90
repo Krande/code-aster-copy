@@ -35,7 +35,7 @@ subroutine nmrecz(nume_dof, ds_contact, list_func_acti, &
 #include "asterfort/isfonc.h"
 #include "asterfort/isParallelMesh.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: cndiri, cnfint, cnfext, cnsstr, disp_iter
@@ -63,10 +63,10 @@ subroutine nmrecz(nume_dof, ds_contact, list_func_acti, &
 !
     character(len=19) :: cnequi, nommai, nume_equa
     real(kind=8), pointer :: v_cnequi(:) => null()
-    integer :: nb_equa, rang
+    integer(kind=8) :: nb_equa, rang
     aster_logical :: l_disp, l_pilo, l_macr, l_parallel_mesh
     real(kind=8), pointer :: v_disp_iter(:) => null()
-    integer, pointer :: pddl(:) => null()
+    integer(kind=8), pointer :: pddl(:) => null()
     real(kind=8), dimension(:), allocatable:: disp, resi
     mpi_int :: mrank
     !

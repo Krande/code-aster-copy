@@ -20,8 +20,8 @@
 !
 interface
     subroutine cfatmu(neq, nbliac, sdcont_solv)
-        integer :: neq
-        integer :: nbliac
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliac
         character(len=24) :: sdcont_solv
     end subroutine cfatmu
 end interface

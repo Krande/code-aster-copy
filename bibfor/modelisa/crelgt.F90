@@ -50,9 +50,9 @@ subroutine crelgt(basez, ligrez)
     character(len=*) :: basez, ligrez
 ! ----- VARIABLES LOCALES -------------------------------
 !-----------------------------------------------------------------------
-    integer :: idlima, idlino, idlity, idmata, idmode, idnbma, idpama
-    integer :: idpano, idphen, idpoma, idpono, iret, jlgrf, nbajel
-    integer :: nbmail
+    integer(kind=8) :: idlima, idlino, idlity, idmata, idmode, idnbma, idpama
+    integer(kind=8) :: idpano, idphen, idpoma, idpono, iret, jlgrf, nbajel
+    integer(kind=8) :: nbmail
 !-----------------------------------------------------------------------
     parameter(nbajel=1000)
     parameter(nbmail=10000)

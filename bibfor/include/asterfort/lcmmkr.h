@@ -23,16 +23,16 @@ interface
                       nbcomm, is, nbsys, nfs, nsg,&
                       hsr, vind, dy, dt, dalpha,&
                       dgamma, dp, crit, sgns, iret)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         real(kind=8) :: taus
         real(kind=8) :: coeft(nmat)
         real(kind=8) :: cisa2
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
-        integer :: is
-        integer :: nbsys
-        integer :: nfs
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
+        integer(kind=8) :: is
+        integer(kind=8) :: nbsys
+        integer(kind=8) :: nfs
         real(kind=8) :: hsr(nsg, nsg)
         real(kind=8) :: vind(*)
         real(kind=8) :: dy(*)
@@ -42,6 +42,6 @@ interface
         real(kind=8) :: dp
         real(kind=8) :: crit
         real(kind=8) :: sgns
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmkr
 end interface

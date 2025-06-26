@@ -34,15 +34,15 @@ interface
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
         aster_logical, intent(in) :: l_axi
-        integer, intent(in) :: ndim, nddls, nddlm
-        integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-        integer, intent(in) :: nno, nnos
-        integer, intent(in) :: dimuel, dimdef, kpi
-        integer, intent(in) :: addeme, addete, addep1, addep2, adde2nd
+        integer(kind=8), intent(in) :: ndim, nddls, nddlm
+        integer(kind=8), intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+        integer(kind=8), intent(in) :: nno, nnos
+        integer(kind=8), intent(in) :: dimuel, dimdef, kpi
+        integer(kind=8), intent(in) :: addeme, addete, addep1, addep2, adde2nd
         real(kind=8), intent(in) :: elem_coor(ndim, nno)
-        integer, intent(in) :: jv_poids, jv_poids2
-        integer, intent(in) :: jv_func, jv_func2
-        integer, intent(in) :: jv_dfunc, jv_dfunc2
+        integer(kind=8), intent(in) :: jv_poids, jv_poids2
+        integer(kind=8), intent(in) :: jv_func, jv_func2
+        integer(kind=8), intent(in) :: jv_dfunc, jv_dfunc2
         real(kind=8), intent(out) :: dfdi(nno, 3), dfdi2(nnos, 3)
         real(kind=8), intent(out) :: poids, poids2
         real(kind=8), intent(out) :: b(dimdef, dimuel)

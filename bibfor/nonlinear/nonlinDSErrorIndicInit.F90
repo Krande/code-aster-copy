@@ -50,11 +50,11 @@ subroutine nonlinDSErrorIndicInit(model, ds_constitutive, ds_errorindic)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8), pointer :: v_valv(:) => null()
-    integer :: nb_affe, i_affe, iret
+    integer(kind=8) :: nb_affe, i_affe, iret
     character(len=16), pointer :: v_compor_vale(:) => null()
-    integer, pointer :: v_compor_desc(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
     character(len=16) :: rela_comp, rela_thmc, rela_meca
     aster_logical :: l_kit_thm, l_erre_thm
     real(kind=8) :: tbgrca(3)

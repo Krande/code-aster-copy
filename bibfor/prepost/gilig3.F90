@@ -25,7 +25,7 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: nfic, nbnono, niv, nboblu
+    integer(kind=8) :: nfic, nbnono, niv, nboblu
 !
 !     BUT: LIRE LES N LIGNES DES POINTS DU MAILLAGE GIBI :
 !                 ( PROCEDURE SAUVER)
@@ -36,8 +36,8 @@ subroutine gilig3(nfic, nbnono, niv, nboblu)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbnom, nbnum, iaptno, iaptnu, nbfois, nbrest, icoj, i, j, iaptin
-    integer :: nbobj, iret
+    integer(kind=8) :: nbnom, nbnum, iaptno, iaptnu, nbfois, nbrest, icoj, i, j, iaptin
+    integer(kind=8) :: nbobj, iret
 !     ------------------------------------------------------------------
 !
     call jemarq()

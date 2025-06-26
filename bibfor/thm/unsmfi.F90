@@ -49,7 +49,7 @@ subroutine unsmfi(ds_thm, phi, tbiot, cs)
     real(kind=8) :: young1, young3, nu12, nu21, nu13, nu31, nu32, nu23, g13
     real(kind=8) :: youngs, biot1, biot3, delta, young2, g12, m33
     real(kind=8) :: k0
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8), parameter :: kron(6) = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8) :: skron(6)
     real(kind=8) :: nus

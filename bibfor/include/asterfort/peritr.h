@@ -23,7 +23,7 @@ interface
         character(len=*) :: resu
         character(len=*) :: modele
         character(len=*) :: cara
-        integer :: nh
-        integer :: nbocc
+        integer(kind=8) :: nh
+        integer(kind=8) :: nbocc
     end subroutine peritr
 end interface

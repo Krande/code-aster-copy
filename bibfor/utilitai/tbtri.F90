@@ -41,15 +41,15 @@ subroutine tbtri(ndim, tabint, tabchi, tabchr, tabchk)
 !                   DANS LE TABLEAU  TABCHA DANS L'ORDRE CROISSANT.
 !-----------------------------------------------------------------------
 !
-    integer, intent(in) :: ndim
-    integer, intent(in), optional, target :: tabchi(*)
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in), optional, target :: tabchi(*)
     real(kind=8), intent(in), optional, target :: tabchr(*)
     character(len=*), intent(in), optional, target :: tabchk(*)
-    integer, intent(out), optional, target :: tabint(*)
+    integer(kind=8), intent(out), optional, target :: tabint(*)
 !
 ! ----------------------------------------------------------------------
-    integer :: imin, j0, j1, i, j
-    integer, pointer :: masq(:) => null()
+    integer(kind=8) :: imin, j0, j1, i, j
+    integer(kind=8), pointer :: masq(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

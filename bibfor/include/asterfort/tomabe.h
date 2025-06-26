@@ -26,11 +26,11 @@ interface
                       regl)
         character(len=8) :: chmat
         character(len=24) :: nmabet
-        integer :: nbmabe
+        integer(kind=8) :: nbmabe
         character(len=8) :: mailla
-        integer :: nbnoma
+        integer(kind=8) :: nbnoma
         aster_logical :: mail2d
-        integer :: nbnobe
+        integer(kind=8) :: nbnobe
         character(len=19) :: nunobe
         real(kind=8) :: xflu
         real(kind=8) :: xret

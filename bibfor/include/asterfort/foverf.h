@@ -20,8 +20,8 @@
 !
 interface
     subroutine foverf(v, nc, ier)
-        integer :: nc
+        integer(kind=8) :: nc
         real(kind=8) :: v(nc)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine foverf
 end interface

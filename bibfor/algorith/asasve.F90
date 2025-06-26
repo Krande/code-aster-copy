@@ -75,8 +75,8 @@ subroutine asasve(vechar, numedd, typres, vachar)
 !
 !
 !
-    integer :: nbvec, ityp, jass, i, iret, icha
-    integer :: n1, jvacha
+    integer(kind=8) :: nbvec, ityp, jass, i, iret, icha
+    integer(kind=8) :: n1, jvacha
     aster_logical :: bidon
     character(len=4) :: tych
     character(len=8) :: modele, newnom, vacha8

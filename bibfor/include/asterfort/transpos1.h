@@ -20,7 +20,7 @@
 #include "asterf_types.h"
 interface 
     subroutine transpos1(xt, x, jdim)
-        integer :: jdim
+        integer(kind=8) :: jdim
         real(kind=8) :: xt(jdim, jdim)
         real(kind=8) :: x(jdim, jdim)
     end subroutine transpos1

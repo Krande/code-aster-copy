@@ -20,7 +20,7 @@ function ceil(x)
 !
 !
     implicit none
-    integer :: ceil
+    integer(kind=8) :: ceil
     real(kind=8) :: x
 !
 ! FONCTION CEIL (CEILING EN FORTRAN90) :
@@ -29,7 +29,7 @@ function ceil(x)
 ! IN  X      : VALEUR DU REEL A ARRONDIR
 ! OUT CEIL : VALEUR DE L'ENTIER IMMEDIATEMENT SUPERIEUR A X
 !
-    integer :: n
+    integer(kind=8) :: n
 !
     n = nint(x)
 !

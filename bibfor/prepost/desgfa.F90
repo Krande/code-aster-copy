@@ -47,10 +47,10 @@ subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf, &
 #include "asterfort/codent.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
-    integer :: numfam, typent, nbgf, nbaf
-    integer :: valatt(nbaf)
-    integer :: nbnofa, nbelfa
-    integer :: ifm, codret
+    integer(kind=8) :: numfam, typent, nbgf, nbaf
+    integer(kind=8) :: valatt(nbaf)
+    integer(kind=8) :: nbnofa, nbelfa
+    integer(kind=8) :: ifm, codret
 !
     character(len=*) :: nomfam
     character(len=*) :: nogrf(nbgf)
@@ -62,8 +62,8 @@ subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf, &
     character(len=7) :: noment(0:3)
 !
 !
-    integer :: iaux
-    integer :: lgnofa
+    integer(kind=8) :: iaux
+    integer(kind=8) :: lgnofa
 !
 ! 0.4. ==> INITIALISATIONS
 !

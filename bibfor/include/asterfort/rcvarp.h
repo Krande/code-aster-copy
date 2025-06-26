@@ -23,7 +23,7 @@ interface
         character(len=1), intent(in) :: arret
         character(len=*), intent(in) :: varc_name_
         character(len=*), intent(in) :: poum
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
         real(kind=8), intent(out) :: varc_vale
     end subroutine rcvarp
 end interface

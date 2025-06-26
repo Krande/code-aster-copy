@@ -33,7 +33,7 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, 
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-    integer, intent(in) :: nbMatr, modeNume
+    integer(kind=8), intent(in) :: nbMatr, modeNume
     type(ROM_DS_Empi), intent(in) :: base
     character(len=24), intent(in) :: matr_redu(:)
     character(len=24), intent(in) :: prod_matr_mode(:)
@@ -53,8 +53,8 @@ subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbModeMaxi, nbEqua, iEqua
-    integer :: iMatr, iMode, iret
+    integer(kind=8) :: nbModeMaxi, nbEqua, iEqua
+    integer(kind=8) :: iMatr, iMode, iret
     character(len=24) :: fieldIden
     character(len=8) :: resultName
     complex(kind=8) :: termc

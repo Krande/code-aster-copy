@@ -42,9 +42,9 @@ subroutine romMultiParaClean(ds_multipara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_matr, nb_matr
-    integer :: i_vect, nb_vect
-    integer :: i_vari_para, nb_vari_para
+    integer(kind=8) :: i_matr, nb_matr
+    integer(kind=8) :: i_vect, nb_vect
+    integer(kind=8) :: i_vari_para, nb_vari_para
 !
 ! --------------------------------------------------------------------------------------------------
 !

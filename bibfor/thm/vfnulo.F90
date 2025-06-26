@@ -24,9 +24,9 @@ subroutine vfnulo(maxfa, maxar, ndim, nnos, nface, &
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 !
-    integer, intent(in) :: maxfa, maxar, ndim, nnos, nface
-    integer, intent(out) :: nbnofa(1:nface)
-    integer, intent(out) :: nosar(1:maxar, 2), nosfa(1:maxfa, *), narfa(1:maxfa, *)
+    integer(kind=8), intent(in) :: maxfa, maxar, ndim, nnos, nface
+    integer(kind=8), intent(out) :: nbnofa(1:nface)
+    integer(kind=8), intent(out) :: nosar(1:maxar, 2), nosfa(1:maxfa, *), narfa(1:maxfa, *)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine vfnulo(maxfa, maxar, ndim, nnos, nface, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefe
-    integer :: ifa
+    integer(kind=8) :: ifa
 !
 ! --------------------------------------------------------------------------------------------------
 !

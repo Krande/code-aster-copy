@@ -66,18 +66,18 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
 ! In resuco => nom du résultat à post-traiter
 !
     real(kind=8) :: a(3), ab(3), ac(3)
-    integer :: ar(12, 3)
+    integer(kind=8) :: ar(12, 3)
     real(kind=8) :: b(3), c(3)
     character(len=19) :: carmat
     character(len=19) :: cesco, cnsco, cnsdet, cnsln, cnslt, cnsto
     character(len=24) :: cohee
     real(kind=8) :: deta, detb, detc, gc
-    integer :: i, ia, ibid, ils, ima, imafon, ino, nume_last, nume_first
-    integer :: iret, itypma, j, jcesd, jcesl, jcesv, jcnsd
-    integer :: jcnsl, jcnto, jconx1, jconx2, jcoor
-    integer :: jlisno, jlnsv, jltsv, jma, jmaco, jmafis
-    integer :: jmafon, jmaifo, jnscov, jnsdl, jnsdv, jvale
-    integer :: jvalk, jvalm, k
+    integer(kind=8) :: i, ia, ibid, ils, ima, imafon, ino, nume_last, nume_first
+    integer(kind=8) :: iret, itypma, j, jcesd, jcesl, jcesv, jcnsd
+    integer(kind=8) :: jcnsl, jcnto, jconx1, jconx2, jcoor
+    integer(kind=8) :: jlisno, jlnsv, jltsv, jma, jmaco, jmafis
+    integer(kind=8) :: jmafon, jmaifo, jnscov, jnsdl, jnsdv, jvale
+    integer(kind=8) :: jvalk, jvalm, k
     character(len=24) :: lismae
     character(len=19) :: lisno
     real(kind=8) :: lsna, lsnb, lsta, lstb
@@ -85,17 +85,17 @@ subroutine xdetfo(cnsdet, cnsln, cnslt, ndim, nmafon, &
     character(len=19) :: mai
     character(len=24) :: mater
     real(kind=8) :: maxdet, mindet
-    integer :: na, nb, nbar, nbls, nbma, nbno, ncmpa, ndim
-    integer :: nmaco, nmafis, nmafon, nmaifo
+    integer(kind=8) :: na, nb, nbar, nbls, nbma, nbno, ncmpa, ndim
+    integer(kind=8) :: nmaco, nmafis, nmafon, nmaifo
     character(len=8) :: noma, nomfis, nommat
-    integer :: nunoa, nunob
+    integer(kind=8) :: nunoa, nunob
     real(kind=8) :: d1, crilst
     character(len=8) :: resuco
     real(kind=8) :: sc, rr
     character(len=8) :: typma
     character(len=6) :: k6
     character(len=32) :: nomrc
-    integer :: irc, nbrc, ianorc
+    integer(kind=8) :: irc, nbrc, ianorc
     blas_int :: b_incx, b_incy, b_n
 ! ------------------------------------------------------------
 !

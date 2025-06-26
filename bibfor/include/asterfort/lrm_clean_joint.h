@@ -20,6 +20,6 @@
 interface
     subroutine lrm_clean_joint(mesh, v_noex)
         character(len=8) :: mesh
-        integer, intent(inout) :: v_noex(*)
+        integer(kind=8), intent(inout) :: v_noex(*)
     end subroutine lrm_clean_joint
 end interface

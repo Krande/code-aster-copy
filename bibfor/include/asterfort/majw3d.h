@@ -38,7 +38,7 @@ interface
         real(kind=8) :: vwplx33t(3,3)
         aster_logical :: local
         real(kind=8) ::  dim3
-        integer :: ndim
-        integer :: ifour     
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ifour     
     end subroutine majw3d
 end interface

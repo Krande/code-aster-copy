@@ -21,6 +21,6 @@ interface
         character(len=*), intent(in)   :: elrefz
         real(kind=8), intent(in)       :: x(*)
         real(kind=8), intent(out)      :: dff(3, *)
-        integer, optional, intent(out) :: nno_, ndim_
+        integer(kind=8), optional, intent(out) :: nno_, ndim_
     end subroutine elrfdf
 end interface

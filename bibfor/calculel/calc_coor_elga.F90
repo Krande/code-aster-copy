@@ -44,7 +44,7 @@ subroutine calc_coor_elga(modelZ, ligrel, chgeom, chgaus)
     character(len=8) :: lpain(5), lpaout(1)
     character(len=16) :: option
     character(len=19) :: lchin(5), lchout(1)
-    integer :: nbchin, nfiss
+    integer(kind=8) :: nbchin, nfiss
 !
 ! --------------------------------------------------------------------------------------------------
 !

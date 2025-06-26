@@ -23,6 +23,6 @@ interface
     function hdfnbo(i, knom1)
         hid_t :: i
         character(len=*) :: knom1
-        integer :: hdfnbo
+        integer(kind=8) :: hdfnbo
     end function hdfnbo
 end interface

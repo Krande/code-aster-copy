@@ -21,11 +21,11 @@ interface
                           numeDofZ_      , fieldNodeZ_      ,&
                           nbNodeToSelect_, listNodeToSelect_,&
                           nbCmpToSelect_ , listCmpToSelect_ )
-        integer, pointer, optional :: listEqua_(:), tablEqua_(:, :), tablCmp_(:)
+        integer(kind=8), pointer, optional :: listEqua_(:), tablEqua_(:, :), tablCmp_(:)
         character(len=*), optional, intent(in) :: numeDofZ_, fieldNodeZ_
-        integer, optional, intent(in) :: nbNodeToSelect_
-        integer, pointer, optional :: listNodeToSelect_(:)
-        integer, optional, intent(in) :: nbCmpToSelect_
+        integer(kind=8), optional, intent(in) :: nbNodeToSelect_
+        integer(kind=8), pointer, optional :: listNodeToSelect_(:)
+        integer(kind=8), optional, intent(in) :: nbCmpToSelect_
         character(len=8), pointer, optional :: listCmpToSelect_(:)
     end subroutine select_dof
 end interface

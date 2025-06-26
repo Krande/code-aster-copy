@@ -38,9 +38,9 @@ subroutine te0398(option, nomte)
 !
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), jac, gradx, grady, gradz
 !
-    integer :: ndim, nno, nnos, npg
-    integer :: ipoids, ivf, idfde, jgano, igeom, ineut, igr
-    integer :: i, kp, ino
+    integer(kind=8) :: ndim, nno, nnos, npg
+    integer(kind=8) :: ipoids, ivf, idfde, jgano, igeom, ineut, igr
+    integer(kind=8) :: i, kp, ino
 !
 !
 !

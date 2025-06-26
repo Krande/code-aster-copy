@@ -45,7 +45,7 @@ subroutine srijpl(nmat, mater, sigf, nr, drdy, dsde)
     !!! Variables globales
     !!!
 
-    integer :: nmat, nr
+    integer(kind=8) :: nmat, nr
     real(kind=8) :: dsde(6, 6), mater(nmat, 2)
     real(kind=8) :: drdy(nr, nr), sigf(6)
 
@@ -53,7 +53,7 @@ subroutine srijpl(nmat, mater, sigf, nr, drdy, dsde)
     !!! Variables locales
     !!!
 
-    integer :: i, j, iret, ier, ndt, ndi
+    integer(kind=8) :: i, j, iret, ier, ndt, ndi
     real(kind=8) :: jss(6, 6), jsz(6, 3), jzs(3, 6), jzz(3, 3)
     real(kind=8) :: hook(6, 6), hooknl(6, 6), i1, coefnl
     real(kind=8) :: patm, nelas, invjzz(3, 3), j3x6(3, 6)

@@ -22,16 +22,16 @@ interface
     subroutine lcmmji(coeft, ifa, nmat, nbcomm, necris,&
                       nfs, nsg, hsr, is, ir,&
                       pr, drdps)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         real(kind=8) :: coeft(nmat)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=16) :: necris
-        integer :: nfs
+        integer(kind=8) :: nfs
         real(kind=8) :: hsr(nsg, nsg)
-        integer :: is
-        integer :: ir
+        integer(kind=8) :: is
+        integer(kind=8) :: ir
         real(kind=8) :: pr
         real(kind=8) :: drdps
     end subroutine lcmmji

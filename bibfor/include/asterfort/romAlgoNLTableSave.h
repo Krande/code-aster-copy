@@ -19,7 +19,7 @@
 interface
     subroutine romAlgoNLTableSave(nume_store, time_curr, paraAlgo)
         use Rom_Datastructure_type
-        integer, intent(in) :: nume_store
+        integer(kind=8), intent(in) :: nume_store
         real(kind=8), intent(in) :: time_curr
         type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
     end subroutine romAlgoNLTableSave

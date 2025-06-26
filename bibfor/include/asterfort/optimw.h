@@ -26,14 +26,14 @@ interface
                       cals, mk, sk, mkp, skp,&
                       impr, ifm, dept, indtp, nbtp)
         character(len=16) :: method
-        integer :: nrupt
+        integer(kind=8) :: nrupt
         real(kind=8) :: x(*)
         real(kind=8) :: y(*)
         real(kind=8) :: prob(*)
         real(kind=8) :: sigw(*)
-        integer :: nt(*)
-        integer :: nur(*)
-        integer :: nbres
+        integer(kind=8) :: nt(*)
+        integer(kind=8) :: nur(*)
+        integer(kind=8) :: nbres
         aster_logical :: calm
         aster_logical :: cals
         real(kind=8) :: mk
@@ -41,9 +41,9 @@ interface
         real(kind=8) :: mkp
         real(kind=8) :: skp(*)
         aster_logical :: impr
-        integer :: ifm
+        integer(kind=8) :: ifm
         aster_logical :: dept
-        integer :: indtp(*)
-        integer :: nbtp
+        integer(kind=8) :: indtp(*)
+        integer(kind=8) :: nbtp
     end subroutine optimw
 end interface

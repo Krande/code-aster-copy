@@ -24,7 +24,7 @@ interface
         type(ROM_DS_Field), intent(in) :: field
         character(len=24), intent(inout) :: fieldObject
         character(len=8), optional, intent(in) :: resultName_
-        integer, optional, intent(in) :: numeStore_
+        integer(kind=8), optional, intent(in) :: numeStore_
         real(kind=8), optional, pointer :: fieldVale_(:)
     end subroutine romFieldRead
 end interface

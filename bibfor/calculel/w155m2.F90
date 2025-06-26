@@ -57,12 +57,12 @@ subroutine w155m2(chin, carele, ligrel, chextr, nomsym, &
     character(len=16) :: option
     character(len=8) :: licmp(4), ma, nomgd, tsca, nompar
     character(len=3) :: exituy
-    integer :: iret, nbma, nbmat, numa, kma
-    integer :: nbpt, kpt, kcmp, nncp, jlite
-    integer :: iad1, iad4, jlima, ncmp
-    integer :: jce2l, jce2d, jce2v, jce3k, jce3l, jce3d
-    integer :: jce4l, jce4d, nbspmx, nucmp
-    integer :: isp, nbsp, ksp, nusec, nucou, nufib, posic, posis, kcmp2
+    integer(kind=8) :: iret, nbma, nbmat, numa, kma
+    integer(kind=8) :: nbpt, kpt, kcmp, nncp, jlite
+    integer(kind=8) :: iad1, iad4, jlima, ncmp
+    integer(kind=8) :: jce2l, jce2d, jce2v, jce3k, jce3l, jce3d
+    integer(kind=8) :: jce4l, jce4d, nbspmx, nucmp
+    integer(kind=8) :: isp, nbsp, ksp, nusec, nucou, nufib, posic, posis, kcmp2
     real(kind=8) :: val, vmima
     character(len=8), pointer :: ce3c(:) => null()
     character(len=8), pointer :: ce4c(:) => null()

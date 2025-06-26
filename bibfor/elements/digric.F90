@@ -37,11 +37,11 @@ subroutine digric(DD, iret)
 #include "asterfort/utpslg.h"
 !
     type(te0047_dscr), intent(in) :: DD
-    integer, intent(out)          :: iret
+    integer(kind=8), intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iadzi, iazk24, imat, ivarim, ifono, icontp, ivarip
+    integer(kind=8) :: iadzi, iazk24, imat, ivarim, ifono, icontp, ivarip
     real(kind=8) :: klv(78)
     character(len=24) :: messak(5)
 !

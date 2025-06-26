@@ -65,17 +65,17 @@ subroutine specff(casint, nomu, spectr, base, nuor, &
 #include "asterfort/wkvect.h"
 !
     aster_logical :: casint, ltable, exiind
-    integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ival(2)
+    integer(kind=8) :: imodi, imodf, nbm, nuor(nbm), nbpf, ival(2)
     character(len=8) :: nomu, caelem, modele, table, nomnoa, noma
     character(len=19) :: spectr, base, typflu
 !
-    integer :: ibid, dim, dimint, mxval, itab, nbfreq, nbval
-    integer :: ire, iim, isre, isim, i1, ind, lnumi, lnumj, ier2, ij, iprol
-    integer :: iaxe, ideb, idebit, idec, idefm, idiax
-    integer :: idife, idiff, ifo, ifo1, ifo2, ifoi, ifsic, iinte, il, im1
-    integer :: imata, imatb, inofe, inomf, inuno, iremf, iret, im1b, im2, im2b
-    integer :: ispin, ispno, ispte, itypfl, iv, ivaff, ivale
-    integer :: lwr, nbfonc, nbmr, nbn, nbnfen, nbp, nbp1, nbp2
+    integer(kind=8) :: ibid, dim, dimint, mxval, itab, nbfreq, nbval
+    integer(kind=8) :: ire, iim, isre, isim, i1, ind, lnumi, lnumj, ier2, ij, iprol
+    integer(kind=8) :: iaxe, ideb, idebit, idec, idefm, idiax
+    integer(kind=8) :: idife, idiff, ifo, ifo1, ifo2, ifoi, ifsic, iinte, il, im1
+    integer(kind=8) :: imata, imatb, inofe, inomf, inuno, iremf, iret, im1b, im2, im2b
+    integer(kind=8) :: ispin, ispno, ispte, itypfl, iv, ivaff, ivale
+    integer(kind=8) :: lwr, nbfonc, nbmr, nbn, nbnfen, nbp, nbp1, nbp2
     real(kind=8) :: r8b, long, module, pla180(21), pla300(21), det
     real(kind=8) :: beta11, beta12, beta21, beta22, phase, ptf, s0
     character(len=24) :: spvain, spvate, spnnoe

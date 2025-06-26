@@ -29,14 +29,14 @@ subroutine mlnclm(nb, n, p, frontl, frontu, &
 #include "asterfort/mlncld.h"
 #include "asterfort/mlnclj.h"
 #include "blas/zgemv.h"
-    integer :: nb, n, p
-    integer :: adper(*), ad(*), ier
+    integer(kind=8) :: nb, n, p
+    integer(kind=8) :: adper(*), ad(*), ier
     real(kind=8) :: eps
     complex(kind=8) :: cl(nb, nb, *), cu(nb, nb, *), alpha, beta
     complex(kind=8) :: frontl(*), frontu(*), tu(*), tl(*)
 !
-    integer :: i, kb, adk, adki, decal, l, incx, incy
-    integer :: m, ll, k, ind, ia, j, restp, npb
+    integer(kind=8) :: i, kb, adk, adki, decal, l, incx, incy
+    integer(kind=8) :: m, ll, k, ind, ia, j, restp, npb
     character(len=1) :: tra
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
     npb = p/nb

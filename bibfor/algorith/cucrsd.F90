@@ -64,23 +64,23 @@ subroutine cucrsd(mesh, nume_dof, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdunil_defi, sdunil_solv
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: cmp, nomno
-    integer :: ino, iddl, cddl
+    integer(kind=8) :: ino, iddl, cddl
     character(len=24) :: ddlco, atmu, apjeu
     character(len=24) :: valk(2)
-    integer :: jddl, jatmu, japjeu
-    integer :: nnocu, nbcmp, ncmpg, numno
-    integer :: icmp
-    integer :: ier, iret, jdecal, i, neq
+    integer(kind=8) :: jddl, jatmu, japjeu
+    integer(kind=8) :: nnocu, nbcmp, ncmpg, numno
+    integer(kind=8) :: icmp
+    integer(kind=8) :: ier, iret, jdecal, i, neq
     character(len=24) :: cmpgcu, lisnoe, poinoe, apcoef, nomnoe, nomcmp
-    integer :: jcmpg, jnoe, jpoi, japcoe, jnomno, jnomcm
+    integer(kind=8) :: jcmpg, jnoe, jpoi, japcoe, jnomno, jnomcm
     character(len=24) :: coefmu
-    integer :: jcoef
+    integer(kind=8) :: jcoef
     character(len=24) :: cm1a, coco, liac, mu, delt0, delta, liot
-    integer :: jcoco, jliac, jmu, jdelt0, jdelta, jliot
+    integer(kind=8) :: jcoco, jliac, jmu, jdelt0, jdelta, jliot
 !
-    integer :: inoe
+    integer(kind=8) :: inoe
     character(len=19) :: enat
     aster_logical :: l_unil_pena
 !

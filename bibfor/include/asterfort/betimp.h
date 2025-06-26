@@ -23,15 +23,15 @@ interface
                       sige, sigd)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sig(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        integer :: nseui1
-        integer :: nseui2
-        integer :: nseui3
-        integer :: nseui4
+        integer(kind=8) :: nseui1
+        integer(kind=8) :: nseui2
+        integer(kind=8) :: nseui3
+        integer(kind=8) :: nseui4
         real(kind=8) :: sige(6)
         real(kind=8) :: sigd(6)
     end subroutine betimp

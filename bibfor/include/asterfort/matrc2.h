@@ -21,7 +21,7 @@
 interface
     subroutine matrc2(nbpar, nompar, valpar, kcis, matc,&
                       vectt)
-        integer :: nbpar
+        integer(kind=8) :: nbpar
         character(len=8) :: nompar(*)
         real(kind=8) :: valpar(*)
         real(kind=8) :: kcis

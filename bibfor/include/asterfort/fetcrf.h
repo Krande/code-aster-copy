@@ -20,6 +20,6 @@
 interface
     subroutine fetcrf(nomo,nbsd)
         character(len=8),intent(in) :: nomo
-        integer,intent(in) :: nbsd
+        integer(kind=8),intent(in) :: nbsd
     end subroutine fetcrf
 end interface

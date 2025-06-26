@@ -26,8 +26,8 @@ subroutine rctype(jmat, nb_para_list, para_list_name, para_list_vale, para_vale,
 #include "asterfort/utmess.h"
 !
 !
-    integer, intent(in) :: jmat
-    integer, intent(in) :: nb_para_list
+    integer(kind=8), intent(in) :: jmat
+    integer(kind=8), intent(in) :: nb_para_list
     character(len=*), intent(in) :: para_list_name(*)
     real(kind=8), intent(in) :: para_list_vale(*)
     real(kind=8), intent(out) :: para_vale
@@ -58,15 +58,15 @@ subroutine rctype(jmat, nb_para_list, para_list_name, para_list_vale, para_vale,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lfct, lmat, lsup
+    integer(kind=8) :: lfct, lmat, lsup
     parameter(lmat=9, lfct=10, lsup=2)
 !
-    integer :: icomp, ipi, idf, nbf, ivalk, ik, ipif, jpro, kmat, inom
-    integer :: imate, nbmat
+    integer(kind=8) :: icomp, ipi, idf, nbf, ivalk, ik, ipif, jpro, kmat, inom
+    integer(kind=8) :: imate, nbmat
     character(len=24) :: para_name(2)
     character(len=16) :: keyw_fact
     character(len=8) :: keyw, nomi
-    integer :: ipara, nb_para, i_para_list
+    integer(kind=8) :: ipara, nb_para, i_para_list
 !
 ! --------------------------------------------------------------------------------------------------
 !

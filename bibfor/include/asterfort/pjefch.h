@@ -33,7 +33,7 @@ interface
         type(prolongation)  :: prolong
         character(len=19)   :: ligrel
         character(len=1)    :: base
-        integer             :: iret
+        integer(kind=8)             :: iret
     end subroutine pjefch
 !
 end interface

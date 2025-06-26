@@ -22,8 +22,8 @@ interface
     subroutine cvmjac(mod, nmat, materf, timed, timef,&
                       yf, dy, nmod, epsd, deps,&
                       drdy)
-        integer :: nmod
-        integer :: nmat
+        integer(kind=8) :: nmod
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: timed

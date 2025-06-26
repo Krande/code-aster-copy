@@ -26,7 +26,7 @@ interface
         character(len=*), intent(in)      :: fami
         character(len=8), intent(in)      :: typmod(*)
         character(len=16), intent(in)     :: option
-        integer, intent(in)               :: imate, kpg, ksp
+        integer(kind=8), intent(in)               :: imate, kpg, ksp
         real(kind=8), intent(in)          :: sigm(:),deps(:)
         real(kind=8), intent(out)         :: sigp(:),vip(1),dsidep(:,:)
     end subroutine nmelas_incr

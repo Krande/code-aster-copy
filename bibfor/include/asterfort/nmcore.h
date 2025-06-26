@@ -24,10 +24,10 @@ interface
         use NonLin_Datastructure_type
         character(len=19), intent(in) :: sdcrit
         character(len=24), intent(in) :: sderro
-        integer, intent(in) :: list_func_acti(*)
-        integer, intent(in) :: nume_inst
-        integer, intent(in) :: iter_newt
-        integer, intent(in) :: line_sear_iter
+        integer(kind=8), intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: line_sear_iter
         real(kind=8), intent(in) :: eta
         real(kind=8), intent(in) :: resi_norm
         real(kind=8), intent(in) :: load_norm

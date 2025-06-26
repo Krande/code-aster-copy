@@ -21,15 +21,15 @@ interface
     subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi,&
                       modnum, nuanom, nomtyp, nnotyp, sdcarm,&
                       carael)
-        integer :: nbimpr
+        integer(kind=8) :: nbimpr
         med_idt :: idfimd
         character(len=8) :: nomaas
         character(len=64) :: nomamd
-        integer :: caimpi(10, nbimpr)
-        integer :: modnum(MT_NTYMAX)
-        integer :: nuanom(MT_NTYMAX, *)
+        integer(kind=8) :: caimpi(10, nbimpr)
+        integer(kind=8) :: modnum(MT_NTYMAX)
+        integer(kind=8) :: nuanom(MT_NTYMAX, *)
         character(len=8) :: nomtyp(*)
-        integer :: nnotyp(*)
+        integer(kind=8) :: nnotyp(*)
         character(len=8) :: sdcarm, carael
     end subroutine irmaes
 end interface

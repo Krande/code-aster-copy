@@ -28,7 +28,7 @@ subroutine cfecrd(resoco, questz, ival)
 #include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     character(len=*) :: questz
-    integer :: ival
+    integer(kind=8) :: ival
 !
 ! ----------------------------------------------------------------------
 !
@@ -56,7 +56,7 @@ subroutine cfecrd(resoco, questz, ival)
 !
     character(len=24) :: questi
     character(len=19) :: coco
-    integer :: jcoco
+    integer(kind=8) :: jcoco
 !
 ! ----------------------------------------------------------------------
 !

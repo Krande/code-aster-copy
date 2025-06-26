@@ -50,8 +50,8 @@ interface
         real(kind=8) :: a(ngf, ngf+1)
         real(kind=8) :: b(ngf)
         real(kind=8) :: x(ngf)
-        integer :: ipzero(ngf)
-        integer :: ngf
+        integer(kind=8) :: ipzero(ngf)
+        integer(kind=8) :: ngf
         real(kind=8) :: ekdc
         real(kind=8) :: epspc6(6)
         real(kind=8) :: dr3(3)
@@ -63,8 +63,8 @@ interface
         aster_logical :: dtiso
         real(kind=8) :: rt
         real(kind=8) :: dim3
-        integer :: ndim
-        integer :: ifour
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ifour
         real(kind=8) :: epeqpc
         real(kind=8) :: ept
         real(kind=8) :: errgf

@@ -20,9 +20,9 @@
 !
 interface
     subroutine jxlirb(ic, iaddi, iadmo, lso)
-        integer :: ic
-        integer :: iaddi
-        integer :: iadmo
-        integer :: lso
+        integer(kind=8) :: ic
+        integer(kind=8) :: iaddi
+        integer(kind=8) :: iadmo
+        integer(kind=8) :: lso
     end subroutine jxlirb
 end interface

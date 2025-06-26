@@ -21,6 +21,6 @@
 interface
     subroutine ordonn(nomfon, iret)
         character(len=19) :: nomfon
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine ordonn
 end interface

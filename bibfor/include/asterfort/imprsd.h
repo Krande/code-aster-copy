@@ -22,7 +22,7 @@ interface
     subroutine imprsd(typesd, nomsd, ific, titre)
         character(len=*) :: typesd
         character(len=*) :: nomsd
-        integer :: ific
+        integer(kind=8) :: ific
         character(len=*) :: titre
     end subroutine imprsd
 end interface

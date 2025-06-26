@@ -23,7 +23,7 @@ interface
                             lpaout, lchout    ,&
                             base  , vect_elemz)
         character(len=*), intent(in) :: modelz
-        integer, intent(in) :: nbin, nbout
+        integer(kind=8), intent(in) :: nbin, nbout
         character(len=8), intent(in) :: lpain(*), lpaout(*)
         character(len=19), intent(in) :: lchin(*)
         character(len=19), intent(inout) :: lchout(*)

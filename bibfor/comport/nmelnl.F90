@@ -46,7 +46,7 @@ subroutine nmelnl(BEHinteg, &
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*)
-    integer :: kpg, ksp, ndim, imate
+    integer(kind=8) :: kpg, ksp, ndim, imate
     real(kind=8) :: eps(:), gonf, pres, sig(:), energi(2)
 ! --------------------------------------------------------------------------------------------------
 !     REALISE LA LOI DE HENCKY POUR LES ELEMENTS ISOPARAMETRIQUES ET CALCULE L'ENERGIE
@@ -64,7 +64,7 @@ subroutine nmelnl(BEHinteg, &
 ! OUT SIG     : CONTRAINTES LAGRANGIENNES
 ! OUT P       : VARIABLE INTERNE (AUXILIAIRE DE CALCUL)
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter      :: niter = 300, elas_id = 1
+    integer(kind=8), parameter      :: niter = 300, elas_id = 1
     real(kind=8), parameter :: prec_rela = 1.d-3
     real(kind=8), dimension(6), parameter:: kron = [1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0]
     character(len=16), parameter :: elas_keyword = 'ELAS'
@@ -72,12 +72,12 @@ subroutine nmelnl(BEHinteg, &
                                                               'EPSAXY', 'EPSAXZ', 'EPSAYZ']
 ! --------------------------------------------------------------------------------------------------
     aster_logical:: cplan, line, nonlin, inco, puis, trac, elas
-    integer      :: iret, codret, isec, ihyd, ieps
+    integer(kind=8)      :: iret, codret, isec, ihyd, ieps
     real(kind=8) :: temp, hydr, sech
     real(kind=8) :: secref
-    integer      :: icodre(5)
+    integer(kind=8)      :: icodre(5)
     character(len=16) :: nomres(5)
-    integer :: jprol, jvale, nbvale, ndimsi, k, ibid
+    integer(kind=8) :: jprol, jvale, nbvale, ndimsi, k, ibid
     real(kind=8) :: valres(5), e, nu, troisk, deuxmu, sigy, dsde
     real(kind=8) :: kdess, bendo, ther, epsth(6), epsmo, epsdv(6), epseq, sieleq
     real(kind=8) :: p, rp, rprim, g, epsi, airerp
@@ -87,7 +87,7 @@ subroutine nmelnl(BEHinteg, &
 !====================================================================
 !---COMMONS NECESSAIRES A HENCKY C_PLAN (NMCRI1)
 !====================================================================
-    integer :: imate2, jprol2, jvale2, nbval2
+    integer(kind=8) :: imate2, jprol2, jvale2, nbval2
     real(kind=8) :: pm, sigel(6), lin, epsthe
     common/rconm1/deuxmu, nu, e, sigy, rprim, pm, sigel, lin
     common/kconm1/imate2, jprol2, jvale2, nbval2

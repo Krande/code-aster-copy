@@ -54,9 +54,9 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
 #include "blas/ddot.h"
 !
     character(len=24) :: trav
-    integer :: nfiss
+    integer(kind=8) :: nfiss
     character(len=8) :: fiss(nfiss), model
-    integer :: contac, ndim, iret
+    integer(kind=8) :: contac, ndim, iret
     aster_logical :: linter
 !
 ! ----------------------------------------------------------------------
@@ -73,14 +73,14 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
     real(kind=8) :: lsna, lsta, lsnb, lstb, lstc
     real(kind=8) :: a(ndim), b(ndim), ab(ndim), c(ndim), ac(ndim)
     real(kind=8) :: cmin(ndim), longar, m(ndim), rbid(ndim)
-    integer :: nmaenr, kk, jgrp(4*nfiss), nbma, indptf(3)
-    integer :: jmasup, jconx1, jconx2
-    integer :: nbcoup, nbcou2, ibid, ifiss, itypma, jtab, jnbpt, jnbpt2
-    integer :: nmasup, ndime, nbar, nbheav, jstnl(nfiss), jstnv(nfiss)
-    integer :: ino, ino2, nngl, nnot(3), nno, nno2, ima, ima2, ifis
-    integer :: i, j, k, l, icont(nfiss), jco2, jcont(nfiss), ncont
-    integer :: ar(12, 3), ia, nunoa, nunob, stna, stnb, nma, imae
-    integer :: fa(6, 8), ibid3(12, 3), nbf, ifq, codret, ilsn, ilst, igeom
+    integer(kind=8) :: nmaenr, kk, jgrp(4*nfiss), nbma, indptf(3)
+    integer(kind=8) :: jmasup, jconx1, jconx2
+    integer(kind=8) :: nbcoup, nbcou2, ibid, ifiss, itypma, jtab, jnbpt, jnbpt2
+    integer(kind=8) :: nmasup, ndime, nbar, nbheav, jstnl(nfiss), jstnv(nfiss)
+    integer(kind=8) :: ino, ino2, nngl, nnot(3), nno, nno2, ima, ima2, ifis
+    integer(kind=8) :: i, j, k, l, icont(nfiss), jco2, jcont(nfiss), ncont
+    integer(kind=8) :: ar(12, 3), ia, nunoa, nunob, stna, stnb, nma, imae
+    integer(kind=8) :: fa(6, 8), ibid3(12, 3), nbf, ifq, codret, ilsn, ilst, igeom
     character(len=2) :: ch2
     character(len=8) :: typma, k8bid, noma, nomail
     character(len=16) :: exithm
@@ -88,11 +88,11 @@ subroutine xtyele(model, trav, nfiss, fiss, contac, &
     character(len=24) :: grp(4*nfiss)
     character(len=24) :: elfis_heav(nfiss), elfis_ctip(nfiss), elfis_hect(nfiss)
     aster_logical :: lcont
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: vlsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
-    integer, pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

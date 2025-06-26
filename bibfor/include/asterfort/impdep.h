@@ -21,9 +21,9 @@
 interface
     subroutine impdep(isor, idep, ibl, dmoy, detyp,&
                       drms, dmax, dmin)
-        integer :: isor
-        integer :: idep
-        integer :: ibl
+        integer(kind=8) :: isor
+        integer(kind=8) :: idep
+        integer(kind=8) :: ibl
         real(kind=8) :: dmoy
         real(kind=8) :: detyp
         real(kind=8) :: drms

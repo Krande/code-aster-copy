@@ -22,7 +22,7 @@ interface
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
         aster_logical, intent(in) :: l_vf
-        integer, intent(in)  :: ndim
-        integer, intent(out) :: ndlno, ndlnm
+        integer(kind=8), intent(in)  :: ndim
+        integer(kind=8), intent(out) :: ndlno, ndlnm
     end subroutine dimthm
 end interface

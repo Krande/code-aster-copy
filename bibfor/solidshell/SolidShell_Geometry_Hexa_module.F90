@@ -354,8 +354,8 @@ contains
         real(kind=8), intent(out) :: J20(3), J2XI(3), J2ZETA(3), J2XIZETA(3)
         real(kind=8), intent(out) :: J30(3), J3ETA(3), J3XI(3), J3XIETA(3)
 ! - Local
-        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-        integer :: iNodeGeom
+        integer(kind=8), parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer(kind=8) :: iNodeGeom
         real(kind=8) :: XCurr(SSH_NBNODEG_HEXA), YCurr(SSH_NBNODEG_HEXA), ZCurr(SSH_NBNODEG_HEXA)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -435,8 +435,8 @@ contains
         type(SSH_CELL_GEOM), intent(in) :: cellGeom
         real(kind=8), intent(out) :: area
 ! - Local
-        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-        integer :: iNodeGeom
+        integer(kind=8), parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer(kind=8) :: iNodeGeom
         real(kind=8) :: XCurr(SSH_NBNODEG_HEXA), YCurr(SSH_NBNODEG_HEXA), ZCurr(SSH_NBNODEG_HEXA)
         real(kind=8) :: d, nX, nY, nZ, ps
         real(kind=8) :: U(3), V(3), W(3), vectAhmad2NonNorm(3)

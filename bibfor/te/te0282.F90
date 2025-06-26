@@ -47,10 +47,10 @@ subroutine te0282(option, nomte)
     character(len=16) :: option, nomte
 !
 !
-    integer :: nno, nnos, jgano, ndim, npg, kp, ipoids, ivf, idfdk, igeom, icode
-    integer :: idepl, iforc, ipres, ithet, igthet, itemps, compt, i, j, k
-    integer :: ipref, iforf
-    integer :: jdfd2, jcoopg
+    integer(kind=8) :: nno, nnos, jgano, ndim, npg, kp, ipoids, ivf, idfdk, igeom, icode
+    integer(kind=8) :: idepl, iforc, ipres, ithet, igthet, itemps, compt, i, j, k
+    integer(kind=8) :: ipref, iforf
+    integer(kind=8) :: jdfd2, jcoopg
 !
     real(kind=8) :: xg, yg, ux, uy, fx, fy, thx, thy, the
     real(kind=8) :: tcla, tsurf, tsurp, epsi, pres, cisa, divthe, valpar(3)

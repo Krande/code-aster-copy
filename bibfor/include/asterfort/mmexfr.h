@@ -24,8 +24,8 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_zone
-        integer, intent(in) :: elem_mast_indx
+        integer(kind=8), intent(in) :: i_zone
+        integer(kind=8), intent(in) :: elem_mast_indx
         real(kind=8), intent(out) :: tau1(3)
         real(kind=8), intent(out) :: tau2(3)
     end subroutine mmexfr

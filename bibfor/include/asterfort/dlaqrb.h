@@ -23,15 +23,15 @@
 interface
     subroutine dlaqrb(wantt, n, ilo, ihi, h,&
                       ldh, wr, wi, z, info)
-        integer :: ldh
+        integer(kind=8) :: ldh
         aster_logical :: wantt
-        integer :: n
-        integer :: ilo
-        integer :: ihi
+        integer(kind=8) :: n
+        integer(kind=8) :: ilo
+        integer(kind=8) :: ihi
         real(kind=8) :: h(ldh, *)
         real(kind=8) :: wr(*)
         real(kind=8) :: wi(*)
         real(kind=8) :: z(*)
-        integer :: info
+        integer(kind=8) :: info
     end subroutine dlaqrb
 end interface

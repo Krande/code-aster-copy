@@ -25,7 +25,7 @@ interface
                       iinst, numpt, numord, inst, crit,&
                       prec, nomgd, ncmprf, jnocmp, chames,&
                       codret)
-        integer :: nrofic
+        integer(kind=8) :: nrofic
         character(len=*) :: nochmd
         character(len=*) :: nomamd
         character(len=8) :: nomaas
@@ -33,23 +33,23 @@ interface
         character(len=24) :: option
         character(len=8) :: param
         character(len=*) :: typech
-        integer :: typen
-        integer :: npgma(*)
-        integer :: npgmm(*)
-        integer :: nspmm(*)
-        integer :: nbcmpv
+        integer(kind=8) :: typen
+        integer(kind=8) :: npgma(*)
+        integer(kind=8) :: npgmm(*)
+        integer(kind=8) :: nspmm(*)
+        integer(kind=8) :: nbcmpv
         character(len=*) :: ncmpva
         character(len=*) :: ncmpvm
-        integer :: iinst
-        integer :: numpt
-        integer :: numord
+        integer(kind=8) :: iinst
+        integer(kind=8) :: numpt
+        integer(kind=8) :: numord
         real(kind=8) :: inst
         character(len=8) :: crit
         real(kind=8) :: prec
         character(len=8) :: nomgd
-        integer :: ncmprf
-        integer :: jnocmp
+        integer(kind=8) :: ncmprf
+        integer(kind=8) :: jnocmp
         character(len=19) :: chames
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lrcame
 end interface

@@ -30,7 +30,7 @@ subroutine base3n(x1, mat33)
 !     REMARQUE : IL EXISTE DE NOMBREUSES BASES AYANT CETTE PROPRIETE.
 ! ======================================================================
     real(kind=8) :: v1(3), v2(3), v3(3)
-    integer :: k, k1
+    integer(kind=8) :: k, k1
 !
 !
 !     -- CALCUL DE V1 :

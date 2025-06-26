@@ -27,16 +27,16 @@ subroutine jxlir1(ic, caralu)
 #include "asterc/readdr.h"
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
-    integer :: ic, caralu(*)
+    integer(kind=8) :: ic, caralu(*)
 ! ----------------------------------------------------------------------
 ! RELECTURE DU PREMIER ENREGISTREMENT D UNE BASE JEVEUX
 !
 ! IN  IC    : CLASSE ASSOCIEE
 ! OUT CARALU: CARACTERISTIQUES DE LA BASE
 ! ----------------------------------------------------------------------
-    integer :: n
+    integer(kind=8) :: n
 !-----------------------------------------------------------------------
-    integer :: ierr, k
+    integer(kind=8) :: ierr, k
 !-----------------------------------------------------------------------
     parameter(n=5)
     character(len=2) :: dn2
@@ -48,14 +48,14 @@ subroutine jxlir1(ic, caralu)
     common/kbasje/nombas(n)
     character(len=128) :: repglo, repvol
     common/banvje/repglo, repvol
-    integer :: lrepgl, lrepvo
+    integer(kind=8) :: lrepgl, lrepvo
     common/balvje/lrepgl, lrepvo
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
-    integer :: ncar, np2
+    integer(kind=8) :: ncar, np2
     parameter(ncar=13, np2=ncar+3)
-    integer :: tampon(np2), mode
+    integer(kind=8) :: tampon(np2), mode
     aster_logical :: lexist
     character(len=8) :: nom
     character(len=512) :: nom512, valk(2)

@@ -22,7 +22,7 @@ subroutine mmmtdb(valr, typmat, ii, jj)
     implicit none
     real(kind=8) :: valr
     character(len=2) :: typmat
-    integer :: ii, jj
+    integer(kind=8) :: ii, jj
 !
 ! ----------------------------------------------------------------------
 !

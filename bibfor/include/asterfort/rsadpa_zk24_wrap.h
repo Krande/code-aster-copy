@@ -18,7 +18,7 @@
 
 interface
     subroutine rsadpa_zk24_wrap(nomsd, nuordr, value, typesd, cel)
-        integer, intent(in) :: nuordr
+        integer(kind=8), intent(in) :: nuordr
         character(len=8), intent(in) :: nomsd
         character(len=*), intent(inout) :: value
         character(len=*), intent(in) :: typesd

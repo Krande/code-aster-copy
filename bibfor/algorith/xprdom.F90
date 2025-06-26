@@ -97,33 +97,33 @@ subroutine xprdom(dnoma, dcnxin, disfr, noma, cnxinv, &
 !
 !
 !     CHARACTERISTICS OF THE MESHES
-    integer :: dnbno, dnbma
+    integer(kind=8) :: dnbno, dnbma
 !
 !     DOMAINE LEVEL SETS MESH (AUXILIARY GRID)
     real(kind=8) :: rayon
     character(len=24) :: econs
-    integer :: jecons, jdisfr, nbelno, jelno, nbelpr, jefrom, nodadj
+    integer(kind=8) :: jecons, jdisfr, nbelno, jelno, nbelpr, jefrom, nodadj
 !
 !     DOMAINE PHYSICAL MESH
-    integer ::  nbptff, nbno, jnto, nunopr, jnofla, jdist, node
-    integer :: numelm, itypma, jconx1, jconx2, ndim, jaux, jnofl1
-    integer :: eldim
+    integer(kind=8) ::  nbptff, nbno, jnto, nunopr, jnofla, jdist, node
+    integer(kind=8) :: numelm, itypma, jconx1, jconx2, ndim, jaux, jnofl1
+    integer(kind=8) :: eldim
     real(kind=8) :: eps, xm, ym, zm, xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij
     real(kind=8) :: xim, yim, zim, s, norm2, xn, yn, zn, d, dmin
     character(len=24) :: nodfla, nodfl1, distno
 !
 !     GENERAL PURPOSE
-    integer :: iret, i, j, k
-    integer :: ifm, niv
+    integer(kind=8) :: iret, i, j, k
+    integer(kind=8) :: ifm, niv
 !
 !     MULTIPLE CRACK FRONTS
-    integer ::  numfon, fon
-    integer, pointer :: tmdim(:) => null()
+    integer(kind=8) ::  numfon, fon
+    integer(kind=8), pointer :: tmdim(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: fondmult(:) => null()
+    integer(kind=8), pointer :: fondmult(:) => null()
     real(kind=8), pointer :: fondfiss(:) => null()
-    integer, pointer :: dmai(:) => null()
-    integer, pointer :: mai(:) => null()
+    integer(kind=8), pointer :: dmai(:) => null()
+    integer(kind=8), pointer :: mai(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT

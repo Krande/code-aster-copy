@@ -23,6 +23,6 @@ interface
         real(kind=8) :: b
         real(kind=8) :: c
         real(kind=8) :: x(2)
-        integer :: n
+        integer(kind=8) :: n
     end subroutine zerop2
 end interface

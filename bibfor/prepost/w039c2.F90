@@ -29,7 +29,7 @@ subroutine w039c2(nuzone, nuzonr, jvale, jdesc, nomgd, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 !
-    integer :: nuzone, nuzonr, jvale, jdesc, ifm, ifr
+    integer(kind=8) :: nuzone, nuzonr, jvale, jdesc, ifm, ifr
     character(len=8) :: nomgd
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine w039c2(nuzone, nuzonr, jvale, jdesc, nomgd, &
 !
 !
 !
-    integer :: nec, ncmpmx, kcmp, jcmp, nzonmx, dec1, ico, debgd
+    integer(kind=8) :: nec, ncmpmx, kcmp, jcmp, nzonmx, dec1, ico, debgd
     character(len=8) :: tsca, nocmp
 ! ----------------------------------------------------------------------
 !

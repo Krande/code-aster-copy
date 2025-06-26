@@ -21,7 +21,7 @@
 interface
     subroutine apimpr_l(ifm, mesh, ds_contact)
         use NonLin_Datastructure_type
-        integer, intent(in) :: ifm
+        integer(kind=8), intent(in) :: ifm
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
     end subroutine apimpr_l

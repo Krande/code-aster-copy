@@ -27,7 +27,7 @@ interface
         type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
         character(len=16), intent(out) :: optionModal
         character(len=4), intent(out) :: mod45
-        integer, intent(out) :: nbFreq, nbDofExcl, nbDofStab, coefDimSpace
+        integer(kind=8), intent(out) :: nbFreq, nbDofExcl, nbDofStab, coefDimSpace
         character(len=16), intent(out) :: matrType
         aster_logical, intent(out) :: lModiRigi
         real(kind=8), intent(out) :: bande(2)

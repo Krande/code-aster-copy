@@ -20,10 +20,10 @@
 !
 interface
     subroutine foec1n(iuni, nomf, vec, nbfonc, verif)
-        integer :: iuni
+        integer(kind=8) :: iuni
         character(len=*) :: nomf
         character(len=*) :: vec(*)
-        integer :: nbfonc
+        integer(kind=8) :: nbfonc
         character(len=*) :: verif
     end subroutine foec1n
 end interface

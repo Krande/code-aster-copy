@@ -46,7 +46,7 @@ subroutine rvpar0(nomtab, mcf, nbpost)
 #include "asterfort/wkvect.h"
     character(len=6) :: mcf
     character(len=8) :: nomtab
-    integer :: nbpost
+    integer(kind=8) :: nbpost
 !
 !
 ! 0.3. ==> VARIABLES LOCALES
@@ -54,10 +54,10 @@ subroutine rvpar0(nomtab, mcf, nbpost)
     character(len=6) :: nompro
     parameter(nompro='RVPAR0')
 !
-    integer :: ifm, niv
-    integer :: iocc, iaux
-    integer :: nbtbmx, admemo, nbtabl
-    integer :: nbresu
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iocc, iaux
+    integer(kind=8) :: nbtbmx, admemo, nbtabl
+    integer(kind=8) :: nbresu
 !
     character(len=18) :: nomstr
 !     ------------------------------------------------------------------

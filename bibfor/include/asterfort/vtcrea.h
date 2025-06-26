@@ -24,6 +24,6 @@ interface
         character(len=24) :: crefe(*)
         character(len=*) :: base
         character(len=*) :: typc
-        integer :: neq
+        integer(kind=8) :: neq
     end subroutine vtcrea
 end interface

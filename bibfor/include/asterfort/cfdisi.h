@@ -22,6 +22,6 @@ interface
     function cfdisi(sdcont_defi_, question_)
         character(len=*), intent(in) :: sdcont_defi_
         character(len=*), intent(in) :: question_
-        integer :: cfdisi
+        integer(kind=8) :: cfdisi
     end function cfdisi
 end interface

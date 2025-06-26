@@ -21,7 +21,7 @@ interface
                       ndim  , nno1, nno2, nno3, nno4,&
                       vu    , vg  , vp  , vpi)
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: ndim, nno1, nno2, nno3, nno4
-        integer, intent(out) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
+        integer(kind=8), intent(in) :: ndim, nno1, nno2, nno3, nno4
+        integer(kind=8), intent(out) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
     end subroutine niinit
 end interface

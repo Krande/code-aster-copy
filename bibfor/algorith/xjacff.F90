@@ -34,7 +34,7 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"
 #include "blas/ddot.h"
-    integer :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, ndim, nnops
+    integer(kind=8) :: jinter, ifa, cface(30, 6), ipg, nnop, igeom, jbasec, ndim, nnops
     real(kind=8) :: jac, ffp(27), ffpc(27), dfdi(nnop, 3)
     real(kind=8) :: nd(3), tau1(ndim), tau2(ndim), xg(3)
     character(len=8) :: elrefp, fpg, elrefc, elc
@@ -66,8 +66,8 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
 !
     real(kind=8) :: norme
     real(kind=8) :: grlt(3), grln(3), norm2, ps
-    integer :: ibid, nnoc
-    integer :: j, k, i, nno, ipoidf, ivff, idfdef, ndimf
+    integer(kind=8) :: ibid, nnoc
+    integer(kind=8) :: j, k, i, nno, ipoidf, ivff, idfdef, ndimf
     real(kind=8) :: xe(3), coor3d(3*6)
     character(len=8) :: k8bid
     blas_int :: b_incx, b_incy, b_n

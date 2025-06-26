@@ -36,7 +36,7 @@ subroutine ctresu(nomtb)
 !        IN/OUT : NOMTB (K8) : NOM DE LA TABLE
 !
 ! ----------------------------------------------------------------------
-    integer :: nbcmp, nbno, nbma, nbval
+    integer(kind=8) :: nbcmp, nbno, nbma, nbval
     aster_logical :: toucmp
     character(len=1) :: tygd
     character(len=4) :: tych

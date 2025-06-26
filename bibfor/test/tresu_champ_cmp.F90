@@ -46,17 +46,17 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt, &
     character(len=*), intent(in) :: chamgd
     character(len=8), intent(in) :: typtes
     character(len=*), intent(in) :: typres
-    integer, intent(in) :: nbref
+    integer(kind=8), intent(in) :: nbref
     character(len=16), intent(in) :: tbtxt(2)
-    integer, intent(in) :: refi(nbref)
+    integer(kind=8), intent(in) :: refi(nbref)
     real(kind=8), intent(in) :: refr(nbref)
     complex(kind=8), intent(in) :: refc(nbref)
     real(kind=8), intent(in) :: epsi
     character(len=200), intent(inout) :: lign1
     character(len=200), intent(inout) :: lign2
     character(len=*), intent(in) :: crit
-    integer, intent(in) :: ific
-    integer, intent(in) :: nbcmp
+    integer(kind=8), intent(in) :: ific
+    integer(kind=8), intent(in) :: nbcmp
     character(len=8), intent(in) :: nocmp(*)
     aster_logical, intent(in) :: llab
     character(len=*), intent(in) :: ssigne
@@ -77,9 +77,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt, &
 ! IN/OUT  : LIGN2  : DEUXIEME LIGNE D'IMPRESSION DU RESULTAT
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, neq, i, j, k, iret1, valii, icmp
-    integer :: ncmp, vnocmp, jcsd, jcsc, jcsv, jcsl, jcmp, ind
-    integer :: nl1, nl11, nl2, nl22, rank, nbno, nbno_list, nbma, nbma_list
+    integer(kind=8) :: vali, neq, i, j, k, iret1, valii, icmp
+    integer(kind=8) :: ncmp, vnocmp, jcsd, jcsc, jcsv, jcsl, jcmp, ind
+    integer(kind=8) :: nl1, nl11, nl2, nl22, rank, nbno, nbno_list, nbma, nbma_list
     real(kind=8) :: valr, valrr
     complex(kind=8) :: valc
     character(len=1) :: typrez
@@ -90,9 +90,9 @@ subroutine tresu_champ_cmp(chamgd, typtes, typres, nbref, tbtxt, &
     aster_logical :: skip, l_parallel_mesh
     real(kind=8) :: ordgrd
     mpi_int :: irank
-    integer, pointer :: v_noex(:) => null()
-    integer, pointer :: v_maex(:) => null()
-    integer, pointer :: v_list(:) => null()
+    integer(kind=8), pointer :: v_noex(:) => null()
+    integer(kind=8), pointer :: v_maex(:) => null()
+    integer(kind=8), pointer :: v_list(:) => null()
 !     ------------------------------------------------------------------
 !
     skip = .false.

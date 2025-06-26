@@ -52,7 +52,7 @@ subroutine romAlgoNLCorrEFTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mb
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_hrom
-    integer :: iEqua, nbEqua
+    integer(kind=8) :: iEqua, nbEqua
     real(kind=8) :: vnorm
     real(kind=8), pointer :: v_cn2mbr(:) => null()
     real(kind=8), pointer :: v_cn2mbrr(:) => null()

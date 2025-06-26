@@ -25,9 +25,9 @@ interface
         character(len=*) :: nomcmd
         character(len=*) :: masse
         character(len=*) :: modsta
-        integer :: nbdir
+        integer(kind=8) :: nbdir
         real(kind=8) :: dir(*)
         character(len=*) :: nomnoe(*)
-        integer :: nbno
+        integer(kind=8) :: nbno
     end subroutine simul2
 end interface

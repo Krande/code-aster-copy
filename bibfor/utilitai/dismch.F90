@@ -28,7 +28,7 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
@@ -52,7 +52,7 @@ subroutine dismch(questi, nomobz, repi, repkz, ierd)
 !
 !
 !-----------------------------------------------------------------------
-    integer ::   ier1, ier2, iphen
+    integer(kind=8) ::   ier1, ier2, iphen
     character(len=8), pointer :: type(:) => null()
     character(len=8), pointer :: nomo(:) => null()
     character(len=8), pointer :: afck(:) => null()

@@ -53,7 +53,7 @@ subroutine op0038()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ierd, iret, nh, nbRet, nbin
+    integer(kind=8) :: ierd, iret, nh, nbRet, nbin
     real(kind=8) :: time, rundf
     character(len=1), parameter :: base = 'G'
     character(len=2) :: chdret

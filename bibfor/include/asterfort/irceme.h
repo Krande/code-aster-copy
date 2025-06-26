@@ -21,24 +21,24 @@ interface
                       nbcmp, nomcmp, etiqcp, partie, numpt,&
                       instan, numord, nbmaec, limaec, sdcarm,&
                       carael, field_type, nbCmpDyna, lfichUniq, codret)
-        integer :: ifi
+        integer(kind=8) :: ifi
         character(len=64) :: nochmd
         character(len=19) :: chanom
         character(len=8) :: typech
         character(len=8) :: modele
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=*) :: nomcmp(*)
         character(len=*) :: etiqcp
         character(len=*) :: partie
-        integer :: numpt
+        integer(kind=8) :: numpt
         real(kind=8) :: instan
-        integer :: numord
-        integer :: nbmaec
-        integer :: limaec(*)
+        integer(kind=8) :: numord
+        integer(kind=8) :: nbmaec
+        integer(kind=8) :: limaec(*)
         character(len=8) :: sdcarm, carael
         character(len=16), intent(in) :: field_type
-        integer, intent(inout) :: nbCmpDyna
+        integer(kind=8), intent(inout) :: nbCmpDyna
         aster_logical :: lfichUniq
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine irceme
 end interface

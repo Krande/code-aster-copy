@@ -29,15 +29,15 @@ function lcdp_material(fami, kpg, ksp, imate, resi) result(mat)
 
     aster_logical, intent(in) :: resi
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: imate, kpg, ksp
+    integer(kind=8), intent(in) :: imate, kpg, ksp
     type(dp_material) :: mat
 ! ----------------------------------------------------------------------
 !  LOI DP - LECTURE DES PARAMETRES MATERIAUX
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer, parameter:: nbel = 2, nbdpli = 5, nbdpqua = 5, nbdpexp = 6
+    integer(kind=8), parameter:: nbel = 2, nbdpli = 5, nbdpqua = 5, nbdpexp = 6
 ! ----------------------------------------------------------------------
-    integer :: iok(nbel+nbdpexp)
+    integer(kind=8) :: iok(nbel+nbdpexp)
     real(kind=8) :: valel(nbel), valdpli(nbdpli), valdpqua(nbdpqua), valdpexp(nbdpexp)
     real(kind=8) :: ltyped(1)
     character(len=16) :: nomel(nbel), nomdpli(nbdpli), nomdpqua(nbdpqua), nomdpexp(nbdpexp)

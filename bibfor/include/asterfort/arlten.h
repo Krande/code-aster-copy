@@ -21,10 +21,10 @@
 interface
     subroutine arlten(coorc1,coorc2,npgs    , ndim , poijcs, &
                       ndml1,ndml2,fcpig1,dfdx1,dfdy1,dfdz1,mcpln1)
-        integer :: ndim
-        integer :: npgs
-        integer :: ndml1
-        integer :: ndml2
+        integer(kind=8) :: ndim
+        integer(kind=8) :: npgs
+        integer(kind=8) :: ndml1
+        integer(kind=8) :: ndml2
         real(kind=8) :: poijcs(npgs)
         real(kind=8) :: coorc1(ndim*ndml1)
         real(kind=8) :: fcpig1(npgs*ndim*ndim*ndml1)

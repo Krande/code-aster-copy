@@ -20,7 +20,7 @@
 !
 interface
     subroutine cnseva(cnsf, npara, lpara, cnsr)
-        integer :: npara
+        integer(kind=8) :: npara
         character(len=*) :: cnsf
         character(len=*) :: lpara(npara)
         character(len=*) :: cnsr

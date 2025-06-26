@@ -51,7 +51,7 @@ subroutine glrc_calc_cst(lamf, muf, alf, gf, efp, qff)
 !         GI(2)  : INTERMEDIAIRE DE CALCUL
 !----------------------------------------------------------------------
 !
-    integer :: k
+    integer(kind=8) :: k
     real(kind=8) :: qff(2), gf1, gf2
 !
 !-- ICI ON SUPPOSE QUE GF1=GF2, CE QUI N EST PAS NECESSAIRE

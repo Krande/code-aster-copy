@@ -20,7 +20,7 @@
 !
 interface
     subroutine srdfdx(nbmat, mater, ucrip, invar, s, paraep, varpl, derpar, dfdxip)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: ucrip
         real(kind=8) :: s(6)

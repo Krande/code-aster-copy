@@ -29,11 +29,11 @@ subroutine getDistributionParameters(nbElem, listElem, &
 #include "asterfort/utmess.h"
 #include "asterfort/parti0.h"
 !
-    integer, intent(in) :: nbElem
+    integer(kind=8), intent(in) :: nbElem
     character(len=*), intent(in) :: listElem(nbElem)
     aster_logical, intent(out) :: ldist, ldgrel
-    integer, intent(out) :: rang, nbproc
-    integer, pointer :: numsd(:)
+    integer(kind=8), intent(out) :: rang, nbproc
+    integer(kind=8), pointer :: numsd(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine getDistributionParameters(nbElem, listElem, &
     mpi_int :: mrank, msize
     character(len=19) :: partit
     character(len=24), pointer :: prtk(:) => null()
-    integer, pointer :: prti(:) => null()
+    integer(kind=8), pointer :: prti(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

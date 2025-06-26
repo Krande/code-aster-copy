@@ -22,20 +22,20 @@ interface
     subroutine amdbar(n, pe, iw, len, iwlen,&
                       pfree, nv, next, last, head,&
                       elen, degree, ncmpa, w, iovflo)
-        integer :: iwlen
-        integer :: n
-        integer :: pe(n)
-        integer :: iw(iwlen)
-        integer :: len(n)
-        integer :: pfree
-        integer :: nv(n)
-        integer :: next(n)
-        integer :: last(n)
-        integer :: head(n)
-        integer :: elen(n)
-        integer :: degree(n)
-        integer :: ncmpa
-        integer :: w(n)
-        integer :: iovflo
+        integer(kind=8) :: iwlen
+        integer(kind=8) :: n
+        integer(kind=8) :: pe(n)
+        integer(kind=8) :: iw(iwlen)
+        integer(kind=8) :: len(n)
+        integer(kind=8) :: pfree
+        integer(kind=8) :: nv(n)
+        integer(kind=8) :: next(n)
+        integer(kind=8) :: last(n)
+        integer(kind=8) :: head(n)
+        integer(kind=8) :: elen(n)
+        integer(kind=8) :: degree(n)
+        integer(kind=8) :: ncmpa
+        integer(kind=8) :: w(n)
+        integer(kind=8) :: iovflo
     end subroutine amdbar
 end interface

@@ -38,11 +38,11 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st, &
 #include "asterfort/wkvect.h"
     character(len=1) :: niv, st, base
     character(len=*) :: nomcon, nomcha, nomobj, motfac, formr
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=*), optional, intent(in) :: nomsym
-    integer, optional, intent(in) :: iordr
+    integer(kind=8), optional, intent(in) :: iordr
     character(len=80), optional, intent(in) :: defTitle
-    integer, optional, intent(in) :: lDefTitle
+    integer(kind=8), optional, intent(in) :: lDefTitle
 !     CREATION D'UN TITRE ATTACHE A UN CONCEPT
 !     ------------------------------------------------------------------
 ! IN  NIV    : K1  : NIVEAU DU TITRE 'T': TITRE 'S': SOUS-TITRE
@@ -60,7 +60,7 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st, &
 ! IN  LDEFTITLE: I: LONGUEUR DU TITRE PAR DEFAUT DONNE PAR L'OPERATEUR
 !     ------------------------------------------------------------------
 !
-    integer :: vali
+    integer(kind=8) :: vali
     character(len=8) :: cres
     character(len=24) :: valk
     character(len=16) :: nomcmd, cbid, motcle
@@ -68,7 +68,7 @@ subroutine titrea(niv, nomcon, nomcha, nomobj, st, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: l, ldon, llon, nbocc, nbtitr
+    integer(kind=8) :: l, ldon, llon, nbocc, nbtitr
 !-----------------------------------------------------------------------
     call jemarq()
     cbid = '  '

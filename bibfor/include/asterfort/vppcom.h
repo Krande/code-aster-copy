@@ -25,18 +25,18 @@ interface
                       resuk, nbpari, nbparr, nbpark, mxresf,&
                       vectr, nconv, neq, typres)
         aster_logical :: lcomod
-        integer :: icom1
-        integer :: icom2
-        integer :: resui(*)
+        integer(kind=8) :: icom1
+        integer(kind=8) :: icom2
+        integer(kind=8) :: resui(*)
         real(kind=8) :: resur(*)
         character(len=*) :: resuk(*)
-        integer :: nbpari
-        integer :: nbparr
-        integer :: nbpark
-        integer :: mxresf
+        integer(kind=8) :: nbpari
+        integer(kind=8) :: nbparr
+        integer(kind=8) :: nbpark
+        integer(kind=8) :: mxresf
         real(kind=8) :: vectr(*)
-        integer :: nconv
-        integer :: neq
+        integer(kind=8) :: nconv
+        integer(kind=8) :: neq
         character(len=16) :: typres
     end subroutine vppcom
 end interface

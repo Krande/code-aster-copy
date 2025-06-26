@@ -34,7 +34,7 @@ function pbflkz(i, z, long, ln, kcalcu)
 !-----------------------------------------------------------------------
 !
     complex(kind=8) :: pbflkz
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: z, long, ln
     complex(kind=8) :: kcalcu(3, 4)
 !

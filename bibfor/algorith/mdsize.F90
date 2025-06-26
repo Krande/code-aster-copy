@@ -33,7 +33,7 @@ subroutine mdsize(nomres, nbsauv, nbmode, nbnoli)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: nbsauv, nbmode, nbnoli, nbvint, jdesc, nbstoc
+    integer(kind=8) :: nbsauv, nbmode, nbnoli, nbvint, jdesc, nbstoc
 !-----------------------------------------------------------------------
     nbstoc = nbsauv*nbmode
     call jeecra(nomres//'           .DEPL', 'LONUTI', nbstoc)

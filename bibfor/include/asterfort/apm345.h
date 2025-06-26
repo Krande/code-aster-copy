@@ -25,22 +25,22 @@ interface
                       k24rc, pivot2, ltest, typcha, lraide,&
                       lmasse, ldynam, solveu, lamor, lc,&
                       impr, ifapm)
-        integer :: nbtetc
+        integer(kind=8) :: nbtetc
         character(len=8) :: typcon
         real(kind=8) :: rayonc
         complex(kind=8) :: centrc
-        integer :: nk
+        integer(kind=8) :: nk
         character(len=24) :: k24rc
-        integer :: pivot2
+        integer(kind=8) :: pivot2
         aster_logical :: ltest
         character(len=8) :: typcha
-        integer :: lraide
-        integer :: lmasse
-        integer :: ldynam
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: ldynam
         character(len=19) :: solveu
-        integer :: lamor
+        integer(kind=8) :: lamor
         aster_logical :: lc
         character(len=3) :: impr
-        integer :: ifapm
+        integer(kind=8) :: ifapm
     end subroutine apm345
 end interface

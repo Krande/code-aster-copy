@@ -25,7 +25,7 @@ interface
                       dupcol)
         character(len=*) :: clain
         character(len=*) :: schin
-        integer :: ipos
+        integer(kind=8) :: ipos
         character(len=*) :: claout
         character(len=*) :: schout
         aster_logical :: dupcol

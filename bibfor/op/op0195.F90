@@ -68,7 +68,7 @@ subroutine op0195()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, ifm, niv, iret, i11, i12, test, ibid, nocc
+    integer(kind=8) :: n1, ifm, niv, iret, i11, i12, test, ibid, nocc
     character(len=3) :: prol0
     character(len=4) :: tychr, tych
     character(len=8) :: kbid, model, mesh, chou, nomgd, nomgd2, carel

@@ -41,7 +41,7 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr, &
     character(len=*) :: sens
     aster_logical :: matrix
     character(len=4) :: typnoe
-    integer :: iadm1, iadm2
+    integer(kind=8) :: iadm1, iadm2
     real(kind=8) :: l(6, 6)
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -91,17 +91,17 @@ subroutine ssvaro(l, sens, matrix, typnoe, nomacr, &
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: long
+    integer(kind=8) :: long
     character(len=2) :: sens2
-    integer :: i, i1, iacagd, iaiino, icmp
-    integer :: icmpp, icumul, ieq, ieqdeb, ieqp, ier
-    integer :: ii, ino, iret, j, j1, jj, k
-    integer :: n1, nbno, nddle, nddli, nddlt, nulag, nuno
-    integer :: nunold, nunop
-    integer :: di, dj, dmi, dmj
+    integer(kind=8) :: i, i1, iacagd, iaiino, icmp
+    integer(kind=8) :: icmpp, icumul, ieq, ieqdeb, ieqp, ier
+    integer(kind=8) :: ii, ino, iret, j, j1, jj, k
+    integer(kind=8) :: n1, nbno, nddle, nddli, nddlt, nulag, nuno
+    integer(kind=8) :: nunold, nunop
+    integer(kind=8) :: di, dj, dmi, dmj
     real(kind=8) :: p1(10, 10), p2(10, 10), l2(6, 6), li(10, 10), lj(10, 10)
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: desm(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
 !-----------------------------------------------------------------------
 !
 !     P1 ET P2 MATRICES DE TRAVAIL.

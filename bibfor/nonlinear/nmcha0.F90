@@ -51,8 +51,8 @@ subroutine nmcha0(tychap, tyvarz, novarz, vachap)
 ! ----------------------------------------------------------------------
 !
     character(len=19) :: k19bla
-    integer :: i, nbvar
-    integer :: index
+    integer(kind=8) :: i, nbvar
+    integer(kind=8) :: index
     character(len=6) :: tyvari
     character(len=19) :: novari
 !

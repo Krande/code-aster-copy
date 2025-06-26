@@ -30,7 +30,7 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nbocc, nlm, nlg, ier
+    integer(kind=8) :: nbocc, nlm, nlg, ier
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR L'ELEMENT POUTRE
 ! ----------------------------------------------------------------------
@@ -41,12 +41,12 @@ subroutine acevpo(nbocc, nlm, nlg, ier)
     aster_logical :: bon
     character(len=8) :: nomu, cara(100), kioc
     character(len=16) :: sec, vsec, concep, cmd
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ioc, nc, ncar, ng, nm, ns
-    integer :: nsom, nv, nval, nvs
+    integer(kind=8) :: i, ioc, nc, ncar, ng, nm, ns
+    integer(kind=8) :: nsom, nv, nval, nvs
     real(kind=8) :: vale(100)
 !-----------------------------------------------------------------------
     call jemarq()

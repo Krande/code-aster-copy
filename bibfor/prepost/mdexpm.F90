@@ -55,21 +55,21 @@ subroutine mdexpm(nofimd, idfimd, nomamd, existm, ndim, &
 !
     aster_logical :: existm, ficexi, dejouv
 !
-    integer :: ndim, codret
+    integer(kind=8) :: ndim, codret
 !
 ! 0.2. ==> COMMUNS
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: edlect
+    integer(kind=8) :: edlect
     parameter(edlect=0)
-    integer :: ednstr
+    integer(kind=8) :: ednstr
     parameter(ednstr=0)
 !
 !
-    integer :: nbmaie
+    integer(kind=8) :: nbmaie
     med_idt :: idfimd
-    integer :: iaux, jaux, kaux, tyaux
+    integer(kind=8) :: iaux, jaux, kaux, tyaux
 !
     character(len=8) :: saux08
     character(len=64) :: saux64

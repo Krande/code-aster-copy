@@ -20,7 +20,7 @@
 !
 interface
     subroutine nummo1(nugene, modmec, nbmode, typrof)
-        integer, intent(in) :: nbmode
+        integer(kind=8), intent(in) :: nbmode
         character(len=8), intent(in) :: modmec
         character(len=*), intent(in) :: typrof
         character(len=14), intent(in) :: nugene

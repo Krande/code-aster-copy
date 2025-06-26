@@ -23,10 +23,10 @@
 interface
     subroutine cffact(ldscon, isto, nbliac, &
                       indfac, lechec)
-        integer :: ldscon
-        integer :: isto
-        integer :: nbliac
-        integer :: indfac
+        integer(kind=8) :: ldscon
+        integer(kind=8) :: isto
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: indfac
         aster_logical :: lechec
     end subroutine cffact
 end interface

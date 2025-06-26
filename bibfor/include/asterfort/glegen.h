@@ -20,8 +20,8 @@
 !
 interface
     subroutine glegen(nbre, lobj2, xl, absgam, legen)
-        integer :: nbre
-        integer :: lobj2
+        integer(kind=8) :: nbre
+        integer(kind=8) :: lobj2
         real(kind=8) :: xl
         character(len=24) :: absgam
         real(kind=8) :: legen(1)

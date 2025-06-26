@@ -38,7 +38,7 @@ subroutine t3gb(carat3, xyzl, bmat)
 !                         DANS LE REPERE LOCAL DE L'ELEMENT
 !     IN  IGAU          : INDICE DU POINT D'INTEGRATION
 !     OUT BMAT(6,1)     : MATRICE (B) AU POINT D'INTEGRATION COURANT
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     real(kind=8) :: bm(3, 6), bf(3, 9), bc(2, 9), qsi, eta
 ! ------------------------------------------------------------------
 !

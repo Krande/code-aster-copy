@@ -20,7 +20,7 @@ interface
     subroutine elraga(elrefz, fapz, ndim, nbpg, coopg,&
                       poipg)
         character(len=*), intent(in) :: elrefz, fapz
-        integer, intent(out) :: nbpg, ndim
+        integer(kind=8), intent(out) :: nbpg, ndim
         real(kind=8), intent(out) :: coopg(*), poipg(*)
     end subroutine elraga
 end interface

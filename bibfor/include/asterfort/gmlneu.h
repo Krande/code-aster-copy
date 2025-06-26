@@ -20,7 +20,7 @@
 !
 interface
     subroutine gmlneu(igmsh, nbnode)
-        integer :: igmsh
-        integer :: nbnode
+        integer(kind=8) :: igmsh
+        integer(kind=8) :: nbnode
     end subroutine gmlneu
 end interface

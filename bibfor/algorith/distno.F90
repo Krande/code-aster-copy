@@ -45,13 +45,13 @@ subroutine distno(xlocal, signe, typeob, xjeu, dist1, &
 ! OUT : SINT   : DIRECTION NORMALE A L'OBSTACLE
 !---------------------------------------------------------------------
     character(len=8) :: kbid, k8typ
-    integer :: ibid, irett, lval, lfon, nbval, nbpair
+    integer(kind=8) :: ibid, irett, lval, lfon, nbval, nbpair
     real(kind=8) :: r8bid
     complex(kind=8) :: cbid
     character(len=24) :: nomfon
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: cos2, cost, costno, depi, dist1, dist2, dnorm
     real(kind=8) :: dy, dz, r1, r2, sin2, sint
     real(kind=8) :: sintno, t1, t2, tetano, un, xjeu, xlg

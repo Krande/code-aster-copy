@@ -27,7 +27,7 @@ subroutine nmarpc(ds_energy, nume_reuse, time_curr)
 #include "asterfort/tbajli.h"
 !
     type(NL_DS_Energy), intent(in) :: ds_energy
-    integer, intent(in) :: nume_reuse
+    integer(kind=8), intent(in) :: nume_reuse
     real(kind=8), intent(in) :: time_curr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,8 +44,8 @@ subroutine nmarpc(ds_energy, nume_reuse, time_curr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cols, i_col, i_para_real
-    integer :: vali(1)
+    integer(kind=8) :: nb_cols, i_col, i_para_real
+    integer(kind=8) :: vali(1)
     character(len=8) :: k8bid
     complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     real(kind=8) :: valr(7), vale_r

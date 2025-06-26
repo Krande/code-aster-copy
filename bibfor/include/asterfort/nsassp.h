@@ -21,7 +21,7 @@ interface
                       hval_veasse   , cnpilo    , cndonn )
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19), intent(in) :: hval_veasse(*)

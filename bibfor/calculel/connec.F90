@@ -25,13 +25,13 @@ subroutine connec(nomte, nse, nnop2, c, typema_)
 #include "asterfort/tecael.h"
     character(len=16) :: nomte
     character(len=8), optional :: typema_
-    integer :: nsemax, nnomax
+    integer(kind=8) :: nsemax, nnomax
 !-----------------------------------------------------------------------
-    integer :: ibid
+    integer(kind=8) :: ibid
 !-----------------------------------------------------------------------
     parameter(nsemax=6)
     parameter(nnomax=9)
-    integer :: nse, nnop2, c(nsemax, nnomax)
+    integer(kind=8) :: nse, nnop2, c(nsemax, nnomax)
 !
 ! ......................................................................
 !    - FONCTION REALISEE:  INITIALISATION DES ELEMENTS ISO-P2
@@ -44,7 +44,7 @@ subroutine connec(nomte, nse, nnop2, c, typema_)
 ! ......................................................................
 !
 !
-    integer :: nno, i, j, iadzi, iazk24
+    integer(kind=8) :: nno, i, j, iadzi, iazk24
     character(len=8) :: alias8, typema
 !
     call tecael(iadzi, iazk24, noms=0)

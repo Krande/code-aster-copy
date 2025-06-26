@@ -24,19 +24,19 @@ interface
     subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho,&
                       adime, ninc, nd, nchoc, h,&
                       hf, itemax, epscor, xvect, cor, info)
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=14) :: numdrv
         character(len=19) :: matdrv
         character(len=14) :: xcdl
         character(len=14) :: parcho
         character(len=14) :: adime
-        integer :: ninc
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
-        integer :: itemax
-        integer :: info
+        integer(kind=8) :: ninc
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
+        integer(kind=8) :: itemax
+        integer(kind=8) :: info
         real(kind=8) :: epscor
         character(len=14) :: xvect
         aster_logical :: cor

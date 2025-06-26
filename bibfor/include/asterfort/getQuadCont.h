@@ -25,13 +25,13 @@ interface
                            nb_qp, coor_qp, &
                            l_axis_, nb_node_slav_, elem_slav_coor_, &
                            weight_qp_)
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_slav_code, elem_mast_code
-        integer, intent(in) :: nbPoinInte
+        integer(kind=8), intent(in) :: nbPoinInte
         real(kind=8), intent(in) :: poinInteSlav(2, MAX_NB_INTE)
         real(kind=8), intent(out) :: coor_qp(2, MAX_NB_QUAD)
-        integer, intent(out) :: nb_qp
-        integer, optional, intent(in) :: nb_node_slav_
+        integer(kind=8), intent(out) :: nb_qp
+        integer(kind=8), optional, intent(in) :: nb_node_slav_
         real(kind=8), optional, intent(in) :: elem_slav_coor_(3, 9)
         aster_logical, optional, intent(in) :: l_axis_
         real(kind=8), optional, intent(out) :: weight_qp_(MAX_NB_QUAD)

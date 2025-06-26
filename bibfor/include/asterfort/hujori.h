@@ -24,7 +24,7 @@ interface
     subroutine hujori(sens, nmat, reorie, angl_naut, vec,&
                       mat)
         character(len=5) :: sens
-        integer :: nmat
+        integer(kind=8) :: nmat
         aster_logical :: reorie
         real(kind=8) :: angl_naut(3)
         real(kind=8) :: vec(6)

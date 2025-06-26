@@ -22,8 +22,8 @@
 !
 interface
     function iscycl(ccycle, longcy)
-        integer :: ccycle
-        integer :: longcy
+        integer(kind=8) :: ccycle
+        integer(kind=8) :: longcy
         aster_logical :: iscycl
     end function iscycl
 end interface

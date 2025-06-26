@@ -49,13 +49,13 @@ subroutine op0131()
 #include "asterfort/vriale.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iderex, iderre, iret, ilnoex, ilcpex, i1, ilvaex, napexc, nindex
-    integer :: nnoeex, ncmpex, nvasex, i2, nbptmd, iadfrq, ilamor, ij1, igim
-    integer :: igre, ilmode, ilamsc, nmost1, iadsc3, n1, iadhii, imoddy
-    integer :: ifreq2, ifreq1, nmost3, ndimre, ni, itail1, iexp, isign, iadj, j
-    integer :: iadjs, iadg, iadjg, iadjgj, nj, ni1, ni2, i, nk, ij, nbmode
-    integer :: nbddl, nbamor, npdsc3
-    integer :: ispec, lfreq, lnumi, lnumj, lrefe, nbabs, num, ilfex2
+    integer(kind=8) :: iderex, iderre, iret, ilnoex, ilcpex, i1, ilvaex, napexc, nindex
+    integer(kind=8) :: nnoeex, ncmpex, nvasex, i2, nbptmd, iadfrq, ilamor, ij1, igim
+    integer(kind=8) :: igre, ilmode, ilamsc, nmost1, iadsc3, n1, iadhii, imoddy
+    integer(kind=8) :: ifreq2, ifreq1, nmost3, ndimre, ni, itail1, iexp, isign, iadj, j
+    integer(kind=8) :: iadjs, iadg, iadjg, iadjgj, nj, ni1, ni2, i, nk, ij, nbmode
+    integer(kind=8) :: nbddl, nbamor, npdsc3
+    integer(kind=8) :: ispec, lfreq, lnumi, lnumj, lrefe, nbabs, num, ilfex2
     real(kind=8) :: bande(2), depi, fremin, fremax, pas, r8amor, r8freq, r8bid1
     real(kind=8) :: r8sign, r8omeg, r8omg2, pim, frefin
     complex(kind=8) :: xcj, xcgrep, xcg, xch

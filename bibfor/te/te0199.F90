@@ -35,12 +35,12 @@ subroutine te0199(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: poids, r
-    integer :: nno, kp, npg1, i, ifr2d, ivectu, nnos, ndim, jgano
-    integer :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: nno, kp, npg1, i, ifr2d, ivectu, nnos, ndim, jgano
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
 !
 !
 !-----------------------------------------------------------------------
-    integer :: k, l
+    integer(kind=8) :: k, l
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg1, jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)

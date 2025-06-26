@@ -39,7 +39,7 @@ subroutine lcjplc(rela_comp, mod, nmat, &
 #include "asterfort/lkijpl.h"
 #include "asterfort/srijpl.h"
 #include "asterfort/Behaviour_type.h"
-    integer :: nmat, nr, nvi, itmax, iret, nfs, nsg, ndt, ndi, n2
+    integer(kind=8) :: nmat, nr, nvi, itmax, iret, nfs, nsg, ndt, ndi, n2
     real(kind=8) :: dsde(6, 6), epsd(*), deps(*), toler
     real(kind=8) :: mater(nmat, 2)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
@@ -47,7 +47,7 @@ subroutine lcjplc(rela_comp, mod, nmat, &
     character(len=16) :: option
     common/tdim/ndt, ndi
 !
-    integer :: nbcomm(nmat, 3)
+    integer(kind=8) :: nbcomm(nmat, 3)
     real(kind=8) :: sigf(*), sigd(*), vind(*), vinf(*), timed, timef, pgl(3, 3)
     real(kind=8) :: drdy(nr, nr)
     character(len=16), intent(in) :: rela_comp

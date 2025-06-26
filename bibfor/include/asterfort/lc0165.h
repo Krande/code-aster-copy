@@ -23,7 +23,7 @@ interface
                       sigp  , vip   , typmod,&
                       dsidep, codret)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, ndim, imate
+        integer(kind=8), intent(in) :: kpg, ksp, ndim, imate
         character(len=16), intent(in) :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: instam, instap
@@ -33,6 +33,6 @@ interface
         real(kind=8), intent(out) :: sigp(6), vip(*)
         character(len=8), intent(in) :: typmod(*)
         real(kind=8), intent(out) :: dsidep(6,6)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine lc0165
 end interface

@@ -21,8 +21,8 @@
 interface
     subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
         character(len=8), intent(in) :: sdcont
-        integer, intent(in) :: cont_form
-        integer, intent(in) :: cont_nbzone
+        integer(kind=8), intent(in) :: cont_form
+        integer(kind=8), intent(in) :: cont_nbzone
         character(len=16), intent(in) :: keywf
     end subroutine cazofm
 end interface

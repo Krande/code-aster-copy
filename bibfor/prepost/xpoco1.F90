@@ -39,7 +39,7 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
 #include "asterfort/jexnum.h"
 !
     character(len=8) :: ma1, ma2
-    integer :: nbma, dirma(nbma), nbno, dirno(nbno), jnivgr
+    integer(kind=8) :: nbma, dirma(nbma), nbno, dirno(nbno), jnivgr
 !
 !   COPIE DANS LE MAILLAGE MA2 DES MAILLES ET DES NOEUDS DU MAILLAGE MA1
 !   CONTENUS DANS LES TABLEAUX D'INDIRECTION DIRMA ET DIRNO
@@ -57,14 +57,14 @@ subroutine xpoco1(dirma, nbma, dirno, nbno, ma1, &
 !
 !
 !
-    integer :: i, j, ino1, iret, nbgn, iagno
-    integer :: iacon1, n, iacon2
-    integer :: ino2, nbgm2, i1, i2, iagma1, iagma2, n1, n2, ima
+    integer(kind=8) :: i, j, ino1, iret, nbgn, iagno
+    integer(kind=8) :: iacon1, n, iacon2
+    integer(kind=8) :: ino2, nbgm2, i1, i2, iagma1, iagma2, n1, n2, ima
     character(len=7) :: ch7
     character(len=8) :: noma2, nono2
     character(len=24) :: nogma
-    integer, pointer :: typm1(:) => null()
-    integer, pointer :: typm2(:) => null()
+    integer(kind=8), pointer :: typm1(:) => null()
+    integer(kind=8), pointer :: typm2(:) => null()
     real(kind=8), pointer :: coo1(:) => null()
     real(kind=8), pointer :: coo2(:) => null()
 !

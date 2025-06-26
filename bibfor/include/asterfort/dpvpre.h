@@ -23,8 +23,8 @@ interface
                       instap, nbmat, materf, sigm, deps,&
                       vim, vip, sig, nbre, dsidep,&
                       iret)
-        integer :: nbmat
-        integer :: nvi
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nvi
         character(len=8) :: mod
         character(len=16) :: option
         real(kind=8) :: crit(3)
@@ -36,8 +36,8 @@ interface
         real(kind=8) :: vim(nvi)
         real(kind=8) :: vip(nvi)
         real(kind=8) :: sig(6)
-        integer :: nbre
+        integer(kind=8) :: nbre
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine dpvpre
 end interface

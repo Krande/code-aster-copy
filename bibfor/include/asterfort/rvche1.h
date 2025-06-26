@@ -22,8 +22,8 @@ interface
     subroutine rvche1(chelez, nomjv, nbel, numail, pgl)
         character(len=*) :: chelez
         character(len=*) :: nomjv
-        integer :: nbel
-        integer :: numail(*)
+        integer(kind=8) :: nbel
+        integer(kind=8) :: numail(*)
         real(kind=8) :: pgl(3, 3)
     end subroutine rvche1
 end interface

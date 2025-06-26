@@ -21,13 +21,13 @@
 interface
     subroutine rldlc8(nommat, hcol, adia, ablo, neq,&
                       nbbloc, xsol, nbsol)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=*) :: nommat
-        integer :: hcol(*)
-        integer :: adia(*)
-        integer :: ablo(*)
-        integer :: nbbloc
+        integer(kind=8) :: hcol(*)
+        integer(kind=8) :: adia(*)
+        integer(kind=8) :: ablo(*)
+        integer(kind=8) :: nbbloc
         complex(kind=8) :: xsol(neq, *)
-        integer :: nbsol
+        integer(kind=8) :: nbsol
     end subroutine rldlc8
 end interface

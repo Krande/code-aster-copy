@@ -50,12 +50,12 @@ subroutine te0295(option, nomte)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: icodre(4)
-    integer :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos
-    integer :: jgano, ibalo, icour, isigi
-    integer :: igeom, ithet, ificg, irota, ipesa, idepl, iret, ncmp
-    integer :: imate, iforc, iforf, itemps, k, i, j, kk, l, ndim, ino, ipuls
-    integer :: jlsn, jlst, jtab(7)
+    integer(kind=8) :: icodre(4)
+    integer(kind=8) :: ipoids, ivf, idfde, nno, kp, npg, compt, ier, nnos
+    integer(kind=8) :: jgano, ibalo, icour, isigi
+    integer(kind=8) :: igeom, ithet, ificg, irota, ipesa, idepl, iret, ncmp
+    integer(kind=8) :: imate, iforc, iforf, itemps, k, i, j, kk, l, ndim, ino, ipuls
+    integer(kind=8) :: jlsn, jlst, jtab(7)
 !
 !
     real(kind=8) :: r8bid, rac2

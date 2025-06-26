@@ -50,8 +50,8 @@ subroutine contex_param(nomop, nompar)
 !
 !
     character(len=8) :: nompa2, nomail, nomgd
-    integer :: jdesop, iapara, nbin, nbou, iadzi, iazk24
-    integer :: nblig, indic, k, itrou, iopt, igd, jdsgd
+    integer(kind=8) :: jdesop, iapara, nbin, nbou, iadzi, iazk24
+    integer(kind=8) :: nblig, indic, k, itrou, iopt, igd, jdsgd
     aster_logical :: lopt, lpara, lgd
     character(len=80), pointer :: comlibr(:) => null()
 !

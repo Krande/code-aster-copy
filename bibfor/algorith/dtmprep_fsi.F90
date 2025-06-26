@@ -52,18 +52,18 @@ subroutine dtmprep_fsi(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer          :: iret, jremf, jfsic, ivtflu, jvite
-    integer          :: nbm, ifm, info, fsichoc, itypfl(2)
-    integer          :: icoupl, nbno, nbmcfc, jnumo, jfreq
-    integer          :: jmasg, i, j, im, nbmodd
+    integer(kind=8)          :: iret, jremf, jfsic, ivtflu, jvite
+    integer(kind=8)          :: nbm, ifm, info, fsichoc, itypfl(2)
+    integer(kind=8)          :: icoupl, nbno, nbmcfc, jnumo, jfreq
+    integer(kind=8)          :: jmasg, i, j, im, nbmodd
     real(kind=8)     :: deuxpi, vgap
     character(len=8) :: sd_dtm, basflu, typflu, nombm, noma
 !
     real(kind=8), pointer :: c_flu(:) => null()
 
-    integer, pointer :: icoupled(:) => null()
-    integer, pointer :: nuor(:) => null()
-    integer, pointer :: ires(:) => null()
+    integer(kind=8), pointer :: icoupled(:) => null()
+    integer(kind=8), pointer :: nuor(:) => null()
+    integer(kind=8), pointer :: ires(:) => null()
 
     real(kind=8), pointer :: masg(:) => null()
     real(kind=8), pointer :: rigg(:) => null()

@@ -37,12 +37,12 @@ subroutine coeime(ds_thm, j_mater, nomail, option, &
 #include "asterfort/rcvalb.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=8), intent(in) :: nomail
     character(len=16), intent(in) :: option
     aster_logical, intent(in) :: lSigm, lVari, lMatr
-    integer, intent(in) :: ndim, dimcon, dimdef
-    integer, intent(in) :: addeme, addep1, npg, kpi, npi, nbvari
+    integer(kind=8), intent(in) :: ndim, dimcon, dimdef
+    integer(kind=8), intent(in) :: addeme, addep1, npg, kpi, npi, nbvari
     real(kind=8), intent(in) :: defgem(dimdef), defgep(dimdef)
     real(kind=8), intent(in) :: sigm(dimcon)
     real(kind=8), intent(inout) :: sigp(dimcon)
@@ -50,7 +50,7 @@ subroutine coeime(ds_thm, j_mater, nomail, option, &
     real(kind=8), intent(inout) :: varip(nbvari)
     real(kind=8), intent(out) :: ouvh, tlint
     real(kind=8), intent(inout) :: drde(dimdef, dimdef)
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,12 +87,12 @@ subroutine coeime(ds_thm, j_mater, nomail, option, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, kpg, spt
+    integer(kind=8) :: i, j, kpg, spt
     real(kind=8) :: da(ndim), dsidep(6, 6), para(2), ouvfic, unsurn
     character(len=8) :: fami, poum
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=16) :: meca
-    integer :: advime, advico, vicphi
+    integer(kind=8) :: advime, advico, vicphi
     character(len=16), parameter :: ncra(2) = (/'OUV_FICT', 'UN_SUR_N'/)
 !
 ! --------------------------------------------------------------------------------------------------

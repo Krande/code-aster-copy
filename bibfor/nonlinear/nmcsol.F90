@@ -48,10 +48,10 @@ subroutine nmcsol(lischa, sddyna, lviss)
 !
     character(len=8) :: cnfsol
     character(len=24) :: charge, infcha
-    integer :: jalich, jinfch
-    integer :: nchar, ichar, nfsol
+    integer(kind=8) :: jalich, jinfch
+    integer(kind=8) :: nchar, ichar, nfsol
     character(len=24) :: nchsol
-    integer :: jchsol
+    integer(kind=8) :: jchsol
     character(len=15) :: sdexso
     character(len=19) :: sdexsz
 !

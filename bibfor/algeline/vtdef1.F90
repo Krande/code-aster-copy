@@ -55,7 +55,7 @@ subroutine vtdef1(chpout, chpin, base, typc)
     character(len=*) :: chpout, chpin, base, typc
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: nbval, ival, lchpou, lchpin, lchp, nbval1
+    integer(kind=8) :: nbval, ival, lchpou, lchpin, lchp, nbval1
     character(len=1) :: classe, type
     character(len=4) :: tych, docu
     character(len=19) :: ch19

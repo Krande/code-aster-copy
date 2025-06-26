@@ -28,7 +28,7 @@ subroutine op0020()
 #include "asterfort/ibcael.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
-    integer :: ouielt, impr, n1, nbocc
+    integer(kind=8) :: ouielt, impr, n1, nbocc
     character(len=24) :: fichie
 !     ------------------------------------------------------------------
 !

@@ -24,15 +24,15 @@ interface
                       nomprf, codret)
         med_idt :: idfimd
         character(len=*) :: nochmd
-        integer :: nbcmfi
-        integer :: nbvato
-        integer :: numpt
-        integer :: numord
-        integer :: typent
-        integer :: typgeo
-        integer :: iprof
+        integer(kind=8) :: nbcmfi
+        integer(kind=8) :: nbvato
+        integer(kind=8) :: numpt
+        integer(kind=8) :: numord
+        integer(kind=8) :: typent
+        integer(kind=8) :: typgeo
+        integer(kind=8) :: iprof
         character(len=*) :: ntvale
         character(len=*) :: nomprf
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lrcmle
 end interface

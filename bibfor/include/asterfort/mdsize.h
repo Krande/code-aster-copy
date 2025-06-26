@@ -21,8 +21,8 @@
 interface
     subroutine mdsize(nomres, nbsauv, nbmode, nbnoli)
         character(len=8) :: nomres
-        integer :: nbsauv
-        integer :: nbmode
-        integer :: nbnoli
+        integer(kind=8) :: nbsauv
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbnoli
     end subroutine mdsize
 end interface

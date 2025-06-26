@@ -20,9 +20,9 @@
 !
 interface
     subroutine chpve2(nomch, nbtyp, tabtyp, ier)
-        integer :: nbtyp
+        integer(kind=8) :: nbtyp
         character(len=*) :: nomch
         character(len=*) :: tabtyp(nbtyp)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine chpve2
 end interface

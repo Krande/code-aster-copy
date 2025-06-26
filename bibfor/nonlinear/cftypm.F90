@@ -28,7 +28,7 @@ subroutine cftypm(defico, posma, typma)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
-    integer :: posma
+    integer(kind=8) :: posma
     character(len=4) :: typma
 !
 ! ----------------------------------------------------------------------
@@ -48,8 +48,8 @@ subroutine cftypm(defico, posma, typma)
 !
 !
     character(len=24) :: typema
-    integer :: jtypma
-    integer :: ztypm
+    integer(kind=8) :: jtypma
+    integer(kind=8) :: ztypm
 !
 ! ----------------------------------------------------------------------
 !

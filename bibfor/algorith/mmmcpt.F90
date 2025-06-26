@@ -58,19 +58,19 @@ subroutine mmmcpt(mesh, ds_measure, ds_contact, cnsinr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_poin, i_zone, i_elem_slav, i_poin_elem
-    integer :: nb_poin_elem, nb_elem_slav, nb_cont_zone, nb_node_mesh
-    integer :: ztabf, zresu
-    integer :: node_slav_nume
-    integer :: elem_slav_indx
-    integer :: jdecme
-    integer :: node_status
+    integer(kind=8) :: i_poin, i_zone, i_elem_slav, i_poin_elem
+    integer(kind=8) :: nb_poin_elem, nb_elem_slav, nb_cont_zone, nb_node_mesh
+    integer(kind=8) :: ztabf, zresu
+    integer(kind=8) :: node_slav_nume
+    integer(kind=8) :: elem_slav_indx
+    integer(kind=8) :: jdecme
+    integer(kind=8) :: node_status
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_cnsinr_cnsv(:) => null()
-    integer, pointer :: v_work(:) => null()
+    integer(kind=8), pointer :: v_work(:) => null()
     aster_logical :: lveri
-    integer :: nbliac, nbliaf
+    integer(kind=8) :: nbliac, nbliaf
 !
 ! --------------------------------------------------------------------------------------------------
 !

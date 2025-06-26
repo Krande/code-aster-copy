@@ -22,7 +22,7 @@ interface
     subroutine w039c3(carele, modele, ifi, form, titre, aunoeud)
         character(len=8) :: carele
         character(len=8) :: modele
-        integer :: ifi
+        integer(kind=8) :: ifi
         character(len=*) :: form
         character(len=80) :: titre
         logical :: aunoeud

@@ -30,7 +30,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp, &
 #include "asterfort/wkvect.h"
     character(len=*) :: nommat
     real(kind=8) :: sig(*), defpla(*), temp(*), dom(*)
-    integer :: nbf, nbpoin
+    integer(kind=8) :: nbf, nbpoin
 !     CALCUL DU DOMMAGE DE LEMAITRE-SERMAGE
 !     NOTE: Routine identique à "CALCUL DU DOMMAGE DE LEMAITRE"
 !           avec prise en compte de l'exposant EXP_S dans la loi
@@ -47,7 +47,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=8) :: nompar
     character(len=16) :: nomres(3)
     character(len=32) :: pheno
@@ -56,7 +56,7 @@ subroutine fglema(nbf, nbpoin, sig, defpla, temp, &
     real(kind=8) :: vseuil(1), exps(1), expo
     real(kind=8) :: null, un, deux, trois
 !-----------------------------------------------------------------------
-    integer :: i, ide, idev, nbpar
+    integer(kind=8) :: i, ide, idev, nbpar
     real(kind=8) :: rbid, zero
 !-----------------------------------------------------------------------
     data zero/1.d-13/

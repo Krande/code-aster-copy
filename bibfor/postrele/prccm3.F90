@@ -33,7 +33,7 @@ subroutine prccm3(nommat, para, sm, sn, sp, &
     real(kind=8) :: un, xm, xn, sns3, troism, tnadm(1)
     character(len=8) :: kbid
     real(kind=8) :: valr(2)
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     aster_logical :: endur
 !     ------------------------------------------------------------------
 !

@@ -22,17 +22,17 @@ subroutine getvr8(motfac, motcle, iocc, nbval, vect, &
     implicit none
     character(len=*), intent(in) :: motfac
     character(len=*), intent(in) :: motcle
-    integer, intent(in), optional :: iocc
-    integer, intent(in), optional :: nbval
+    integer(kind=8), intent(in), optional :: iocc
+    integer(kind=8), intent(in), optional :: nbval
     real(kind=8), intent(inout), optional :: vect(*)
     real(kind=8), intent(inout), optional :: scal
-    integer, intent(out), optional :: nbret
+    integer(kind=8), intent(out), optional :: nbret
 #include "asterc/getvr8_wrap.h"
 #include "asterfort/assert.h"
 #include "asterc/getres.h"
 !
 !   really used variables
-    integer :: uioc, unbret, umax
+    integer(kind=8) :: uioc, unbret, umax
     real(kind=8) :: uvect(1)
     real(kind=8) :: vdummy(1)
 !

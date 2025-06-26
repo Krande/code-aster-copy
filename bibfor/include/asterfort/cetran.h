@@ -20,9 +20,9 @@
 !
 interface
     subroutine cetran(lima1, lima2, nbma, chs1, chs2)
-        integer :: lima1(*)
-        integer :: lima2(*)
-        integer :: nbma
+        integer(kind=8) :: lima1(*)
+        integer(kind=8) :: lima2(*)
+        integer(kind=8) :: nbma
         character(len=*) :: chs1
         character(len=*) :: chs2
     end subroutine cetran

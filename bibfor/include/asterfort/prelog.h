@@ -21,13 +21,13 @@ interface
     subroutine prelog(ndim, lgpg, vim, gn, lamb,&
                       logl, fPrev, fCurr, epslPrev, epslIncr,&
                       tlogPrev, lCorr, iret)
-        integer, intent(in) :: ndim, lgpg
+        integer(kind=8), intent(in) :: ndim, lgpg
         real(kind=8), intent(in) :: vim(lgpg)
         real(kind=8), intent(in) :: fPrev(3, 3), fCurr(3, 3)
         real(kind=8), intent(out) :: epslPrev(6), epslIncr(6)
         real(kind=8), intent(out) :: tlogPrev(6)
         real(kind=8), intent(out) :: gn(3, 3), lamb(3), logl(3)
         aster_logical, intent(in) :: lCorr
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine prelog
 end interface

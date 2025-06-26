@@ -24,6 +24,6 @@ interface
         character(len=1) :: action
         character(len=*) :: infz
         real(kind=8) :: valr
-        integer :: vali
+        integer(kind=8) :: vali
     end subroutine nmlerr
 end interface

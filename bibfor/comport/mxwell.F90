@@ -51,8 +51,8 @@ subroutine mxwell(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/verift.h"
 
     aster_logical :: cplan
-    integer :: ndim, imate, kpg, ksp, iret, ndimsi
-    integer :: k, l, icodre(3)
+    integer(kind=8) :: ndim, imate, kpg, ksp, iret, ndimsi
+    integer(kind=8) :: k, l, icodre(3)
 !
     real(kind=8) :: instam, instap, dt
     real(kind=8) :: rac2, valres(3)

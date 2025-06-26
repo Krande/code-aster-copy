@@ -28,7 +28,7 @@ subroutine nonlinDSPrintHeadTimeStep(sddisc, nume_inst, ds_print)
 #include "asterfort/nmimpx.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     type(NL_DS_Print), intent(inout) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------

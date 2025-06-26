@@ -28,7 +28,7 @@ function nmrcyc(sddisc, iterat, prec)
 #include "asterfort/nmlere.h"
 #include "asterfort/wkvect.h"
     aster_logical :: nmrcyc
-    integer :: iterat
+    integer(kind=8) :: iterat
     real(kind=8) :: prec
     character(len=19) :: sddisc
 !
@@ -42,7 +42,7 @@ function nmrcyc(sddisc, iterat, prec)
 !
 !
 !
-    integer :: itemax, maxseq, lenseq, finseq, offset, jres
+    integer(kind=8) :: itemax, maxseq, lenseq, finseq, offset, jres
     real(kind=8) :: res1, res2
     character(len=24) :: residu
 ! ----------------------------------------------------------------------

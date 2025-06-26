@@ -28,7 +28,7 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: elrefe
-    integer :: nmaxob, nbobj
+    integer(kind=8) :: nmaxob, nbobj
     character(len=24) :: liobj(nmaxob)
 !
 ! BUT :  INITIALISATION DES ELEMENTS HOMOGENEISES
@@ -36,12 +36,12 @@ subroutine jni015(elrefe, nmaxob, liobj, nbobj)
     character(len=24) :: carac, ff
     character(len=6) :: flui, pou, geom, alias
     parameter(flui='FLUIDE', pou='POUTRE', geom='HEXA8 ')
-    integer :: npg1(2, 2), npg2(2, 2), lcarac, nno1, nno2, iret, icarac, npg
-    integer :: lff, lfft, n, npgi(3)
-    integer :: iff, ifft, ipoids, ivf1, ivf12, ivf2, idpdx1, idpdy1, idpdz1
-    integer :: idsdx1, idsdy1, idsdz1, idsxy1, idsxz1, idsyz1, icopg, i, j, ider
-    integer :: idpdx2, idpdy2, idpdz2, idsdx2, idsdy2, idsdz2, idsxy2, idsxz2
-    integer :: idsyz2
+    integer(kind=8) :: npg1(2, 2), npg2(2, 2), lcarac, nno1, nno2, iret, icarac, npg
+    integer(kind=8) :: lff, lfft, n, npgi(3)
+    integer(kind=8) :: iff, ifft, ipoids, ivf1, ivf12, ivf2, idpdx1, idpdy1, idpdz1
+    integer(kind=8) :: idsdx1, idsdy1, idsdz1, idsxy1, idsxz1, idsyz1, icopg, i, j, ider
+    integer(kind=8) :: idpdx2, idpdy2, idpdz2, idsdx2, idsdy2, idsdz2, idsxy2, idsxz2
+    integer(kind=8) :: idsyz2
     real(kind=8) :: xin(20), yin(20), zin(20), xg, yg, zg, bid(1)
 !
 ! DEB ------------------------------------------------------------------

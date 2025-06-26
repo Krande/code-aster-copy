@@ -20,6 +20,6 @@
 !
 interface
     subroutine datetoi(dt)
-        integer :: dt(6)
+        integer(kind=8) :: dt(6)
     end subroutine datetoi
 end interface

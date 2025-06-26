@@ -41,8 +41,8 @@ subroutine nunueq(mesh, nume_equa, nb_equa, igds, sd_iden_relaz)
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: nume_equa
-    integer, intent(in) :: nb_equa
-    integer, intent(in) :: igds
+    integer(kind=8), intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: igds
     character(len=*), optional, intent(in) :: sd_iden_relaz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -61,23 +61,23 @@ subroutine nunueq(mesh, nume_equa, nb_equa, igds, sd_iden_relaz)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: length_prno, iexi
+    integer(kind=8) :: length_prno, iexi
     character(len=8) :: node_name_term, cmp_name_term
     character(len=8) :: cmp_name
-    integer :: i_equ, i_dof, i_ligr, i_node, i_rela, i_term, i_equ_old, i_in_rela, i_equ_sav
-    integer :: jprno, iadg, istart
-    integer :: nb_node, ncmpmx, nec, nb_dof, nb_ligr, nb_term, nb_iden_rela
-    integer :: i_cmp_glob, i_cmp_loca, i_cmp
+    integer(kind=8) :: i_equ, i_dof, i_ligr, i_node, i_rela, i_term, i_equ_old, i_in_rela, i_equ_sav
+    integer(kind=8) :: jprno, iadg, istart
+    integer(kind=8) :: nb_node, ncmpmx, nec, nb_dof, nb_ligr, nb_term, nb_iden_rela
+    integer(kind=8) :: i_cmp_glob, i_cmp_loca, i_cmp
     logical :: l_in_rela, l_new_equa
     character(len=24) :: sd_iden_rela
     character(len=24) :: prno, nueq
-    integer, pointer :: v_nueq(:) => null()
-    integer, pointer :: v_rela_dof(:) => null()
-    integer, pointer :: v_sdiden_info(:) => null()
-    integer, pointer :: v_sdiden_dime(:) => null()
-    integer, pointer :: v_sdiden_iset(:) => null()
-    integer, pointer :: v_sdiden_nueq(:) => null()
-    integer, pointer :: v_rela_aux(:) => null()
+    integer(kind=8), pointer :: v_nueq(:) => null()
+    integer(kind=8), pointer :: v_rela_dof(:) => null()
+    integer(kind=8), pointer :: v_sdiden_info(:) => null()
+    integer(kind=8), pointer :: v_sdiden_dime(:) => null()
+    integer(kind=8), pointer :: v_sdiden_iset(:) => null()
+    integer(kind=8), pointer :: v_sdiden_nueq(:) => null()
+    integer(kind=8), pointer :: v_rela_aux(:) => null()
     character(len=8), pointer :: v_sdiden_term(:) => null()
     character(len=8), pointer :: p_cata_cmp(:) => null()
 !

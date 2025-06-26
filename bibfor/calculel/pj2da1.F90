@@ -21,7 +21,7 @@ subroutine pj2da1(ino2, geom2, i, geom1, tria3, &
     implicit none
 #include "asterf_types.h"
     real(kind=8) :: cobar2(3), geom1(*), geom2(*)
-    integer :: i, tria3(*), ino2
+    integer(kind=8) :: i, tria3(*), ino2
     aster_logical :: ok
 
 !     BUT :

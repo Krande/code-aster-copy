@@ -39,7 +39,7 @@ subroutine compareFieldShape(fieldModelZ, fieldZ, &
     character(len=*), intent(in) :: fieldModelZ, fieldZ
     aster_logical, intent(in) :: projectOnLigrel
     character(len=*), intent(in) :: paraNameZ
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -62,12 +62,12 @@ subroutine compareFieldShape(fieldModelZ, fieldZ, &
     character(len=1) :: scalarType
     character(len=1), parameter :: jeveuxBase = "G"
     aster_logical :: noSameNpg, noSameCmp, noSameNspg
-    integer :: iadRefe, iad, iretZero
-    integer :: nncp, iCell, nbCell
-    integer :: npgRefe, nspgRefe, ncmpRefe
-    integer :: npg, nspg, ncmp
-    integer :: jvCesdRefe, jvCeslRefe, jvCesvRefe
-    integer :: jvCesd, jvCesl, jvCesv
+    integer(kind=8) :: iadRefe, iad, iretZero
+    integer(kind=8) :: nncp, iCell, nbCell
+    integer(kind=8) :: npgRefe, nspgRefe, ncmpRefe
+    integer(kind=8) :: npg, nspg, ncmp
+    integer(kind=8) :: jvCesdRefe, jvCeslRefe, jvCesvRefe
+    integer(kind=8) :: jvCesd, jvCesl, jvCesv
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -61,14 +61,14 @@ subroutine te0406(option, nomte)
 !
 !---- DECLARATIONS STANDARDS
 !
-    integer :: igeom
+    integer(kind=8) :: igeom
 !
-    integer :: lzi, lzr, jcara
+    integer(kind=8) :: lzi, lzr, jcara
 !
-    integer :: nb1, nb2
+    integer(kind=8) :: nb1, nb2
 !
-    integer :: intsn, npgsn
-    integer :: inte, npge
+    integer(kind=8) :: intsn, npgsn
+    integer(kind=8) :: inte, npge
 !
     real(kind=8) :: rho, epais, ctor
 !
@@ -79,13 +79,13 @@ subroutine te0406(option, nomte)
 !
     real(kind=8) :: jm1(3, 3), detj
 !
-    integer :: i, j, iret
-    integer :: jd
-    integer :: kompt
+    integer(kind=8) :: i, j, iret
+    integer(kind=8) :: jd
+    integer(kind=8) :: kompt
 !
-    integer :: imatuu, iacce, ivect
+    integer(kind=8) :: imatuu, iacce, ivect
 !
-    integer :: jener, jfreq, iu, iv
+    integer(kind=8) :: jener, jfreq, iu, iv
 !
     real(kind=8) :: mas(2601), masu(51), masv(51)
     real(kind=8) :: mantn(2601)
@@ -100,15 +100,15 @@ subroutine te0406(option, nomte)
     real(kind=8) :: xmin
 !
 !
-    integer :: in, icompo
+    integer(kind=8) :: in, icompo
 !
-    integer :: ii, jj
+    integer(kind=8) :: ii, jj
 !
     character(len=3) :: stopz
 !
 !---- DECLARATIONS ROTATION GLOBAL LOCAL AU NOEUDS
 !
-    integer :: imas
+    integer(kind=8) :: imas
 !
     real(kind=8) :: lam0(3, 3)
     real(kind=8) :: masrg(3, 3)

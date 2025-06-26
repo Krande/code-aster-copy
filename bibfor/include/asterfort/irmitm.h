@@ -20,9 +20,9 @@
 !
 interface
     subroutine irmitm(nbmode, ifmis, freq, tabrig, ibin)
-        integer :: nbmode
-        integer :: ifmis
-        integer :: ibin
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: ifmis
+        integer(kind=8) :: ibin
         real(kind=8) :: freq
         character(len=24) :: tabrig
     end subroutine irmitm

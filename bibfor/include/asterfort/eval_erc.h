@@ -23,7 +23,7 @@ interface
                         cout_fon,terme_uv)
         character(len=8),intent(in) :: baseno,nommes
         character(len=19),intent(in) :: dynam1
-        integer,intent(in) :: ifreq,obsdim(3)
+        integer(kind=8),intent(in) :: ifreq,obsdim(3)
         real(kind=8),intent(in) :: vecterc(*),omega,alpha
         real(kind=8),intent(out) :: cout_fon,terme_uv
         character(len=24),intent(in) :: matobs(3)

@@ -27,17 +27,17 @@ interface
                       codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nsg
-        integer :: nfs
-        integer :: nvi
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
         character(len=16) :: rela_comp
         real(kind=8) :: vind(*)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: materf(nmat, 2)
-        integer :: iter
-        integer :: itmax
+        integer(kind=8) :: iter
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
@@ -50,9 +50,9 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
         real(kind=8) :: deps(*)
-        integer :: nr
+        integer(kind=8) :: nr
         character(len=8) :: mod
         real(kind=8) :: timef
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lcplnf
 end interface

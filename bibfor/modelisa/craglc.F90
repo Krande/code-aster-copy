@@ -34,7 +34,7 @@ subroutine craglc(long, ligrch)
 #include "asterfort/wkvect.h"
 !
 !
-    integer, intent(in) :: long
+    integer(kind=8), intent(in) :: long
     character(len=19), intent(in) :: ligrch
 !
 ! ---------------------------------------------------------------------
@@ -56,9 +56,9 @@ subroutine craglc(long, ligrch)
 ! --------- FIN  DECLARATIONS  VARIABLES LOCALES ----------------------
 !
 !-----------------------------------------------------------------------
-    integer :: idlgns, idnbno, iret, lonema
-    integer :: longma, longut, lonlig, lont, nbeldi, nbelma, nbelut
-    integer :: nbmata, nbnomx
+    integer(kind=8) :: idlgns, idnbno, iret, lonema
+    integer(kind=8) :: longma, longut, lonlig, lont, nbeldi, nbelma, nbelut
+    integer(kind=8) :: nbmata, nbnomx
 !-----------------------------------------------------------------------
     call jemarq()
     ASSERT(long .gt. 0)

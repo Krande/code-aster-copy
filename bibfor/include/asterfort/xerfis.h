@@ -20,9 +20,9 @@
 !
 interface
     subroutine xerfis(ndime, ninter, npts, nptm)
-        integer :: ndime
-        integer :: ninter
-        integer :: npts
-        integer :: nptm
+        integer(kind=8) :: ndime
+        integer(kind=8) :: ninter
+        integer(kind=8) :: npts
+        integer(kind=8) :: nptm
     end subroutine xerfis
 end interface

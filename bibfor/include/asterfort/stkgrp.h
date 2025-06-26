@@ -22,18 +22,18 @@ interface
     subroutine stkgrp(ifl, icl, iv, rv, cv,&
                       cnl, mcl, nbm, numn, numm,&
                       grn, grm, irteti)
-        integer :: nbm
-        integer :: ifl
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: nbm
+        integer(kind=8) :: ifl
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         real(kind=8) :: rv
         character(len=*) :: cv
         character(len=14) :: cnl
         character(len=8) :: mcl(nbm)
-        integer :: numn
-        integer :: numm
+        integer(kind=8) :: numn
+        integer(kind=8) :: numm
         character(len=24) :: grn
         character(len=24) :: grm
-        integer :: irteti
+        integer(kind=8) :: irteti
     end subroutine stkgrp
 end interface

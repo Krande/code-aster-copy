@@ -27,8 +27,8 @@ subroutine modelNodeEF(modelz, nb_node, v_list_node_)
 #include "asterfort/as_allocate.h"
 !
     character(len=*), intent(in) :: modelz
-    integer, intent(out) :: nb_node
-    integer, pointer, optional :: v_list_node_(:)
+    integer(kind=8), intent(out) :: nb_node
+    integer(kind=8), pointer, optional :: v_list_node_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,12 +44,12 @@ subroutine modelNodeEF(modelz, nb_node, v_list_node_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbenc, nb_node_mesh, i_node, ient, idx
+    integer(kind=8) :: nbenc, nb_node_mesh, i_node, ient, idx
     character(len=8) :: nomgd, mesh, model
     character(len=16) :: phenom
     character(len=19) :: ligrmo
-    integer, pointer :: v_prnm(:) => null()
-    integer, pointer :: idx_node(:) => null()
+    integer(kind=8), pointer :: v_prnm(:) => null()
+    integer(kind=8), pointer :: idx_node(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

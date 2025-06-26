@@ -21,7 +21,7 @@
 interface
     subroutine dpassa(angl, irep, matr_tran)
         real(kind=8), intent(in) :: angl(3)
-        integer, intent(out) :: irep
+        integer(kind=8), intent(out) :: irep
         real(kind=8), intent(out) :: matr_tran(6, 6)
     end subroutine dpassa
 end interface

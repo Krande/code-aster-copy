@@ -21,7 +21,7 @@
 interface
     subroutine runge6(ipif, deltat, tpgp, tpgm, hpgm,&
                       hpgp, err)
-        integer :: ipif
+        integer(kind=8) :: ipif
         real(kind=8) :: deltat
         real(kind=8) :: tpgp
         real(kind=8) :: tpgm

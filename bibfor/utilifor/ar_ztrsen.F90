@@ -175,14 +175,14 @@ subroutine ar_ztrsen(select, n, t, ldt, q, &
 #include "blas/zlacon.h"
 #include "blas/zlacpy.h"
 #include "blas/zlange.h"
-    integer :: info, ldq, ldt, m, n
+    integer(kind=8) :: info, ldq, ldt, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     aster_logical :: select(*)
     complex(kind=8) :: q(ldq, *), t(ldt, *), w(*)
 !     ..
 !     .. LOCAL SCALARS ..
-    integer :: ierr, k, ks, n1, n2, nn
+    integer(kind=8) :: ierr, k, ks, n1, n2, nn
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !

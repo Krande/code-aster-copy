@@ -29,7 +29,7 @@ subroutine dpvplc(typmod, option, imate, carcri, instam, &
 #include "asterfort/get_varc.h"
 !
 !
-    integer :: imate, iret
+    integer(kind=8) :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sig(6), dsidep(6, 6)
     real(kind=8) :: sigm(6)
     real(kind=8) :: instam, instap, carcri(*)
@@ -53,7 +53,7 @@ subroutine dpvplc(typmod, option, imate, carcri, instam, &
 ! OUT DSIDEP  MATRICE TANGENTE
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! =====================================================================
-    integer :: nbmat, ndt, ndi, nvi, indal, nbre
+    integer(kind=8) :: nbmat, ndt, ndi, nvi, indal, nbre
     parameter(nbmat=50)
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), deps(6)
     real(kind=8) :: td, tf, tr

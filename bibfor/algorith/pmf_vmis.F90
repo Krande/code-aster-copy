@@ -66,7 +66,7 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
 ! --------------------------------------------------------------------------------------------------
 !
     type(pmfcom_user), intent(in) :: for_pmf
-    integer      :: nf, nbvalc, codret
+    integer(kind=8)      :: nf, nbvalc, codret
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
     real(kind=8) :: varimp(nbvalc*nf), varip(nbvalc*nf), varim(nbvalc*nf)
     real(kind=8) :: crit(*), defap(*), defam(*)
@@ -75,11 +75,11 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbval = 2
-    integer             :: icodre(nbval)
+    integer(kind=8), parameter :: nbval = 2
+    integer(kind=8)             :: icodre(nbval)
     real(kind=8)        :: valres(nbval)
 !
-    integer      :: ksp, fib, ivari, nbvari_grfibre
+    integer(kind=8)      :: ksp, fib, ivari, nbvari_grfibre
     real(kind=8) :: ep, em, depsth
     real(kind=8) :: depsm, nu
 !
@@ -91,9 +91,9 @@ subroutine pmf_vmis(for_pmf, nf, nbvalc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: kpg
-    integer             :: debsp
-    integer             :: icdmat
+    integer(kind=8)             :: kpg
+    integer(kind=8)             :: debsp
+    integer(kind=8)             :: icdmat
     real(kind=8)        :: instam
     real(kind=8)        :: instap
     real(kind=8)        :: epsm

@@ -22,12 +22,12 @@ interface
                                   nb_node_slice, coor_node_s1, coor_node_s2,&
                                   node_in_slice)
         real(kind=8), intent(in) :: tole
-        integer, intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_node
         real(kind=8), intent(in) :: coor_node1(nb_node)
         real(kind=8), intent(in) :: coor_node2(nb_node)
-        integer, intent(in) :: nb_node_slice
+        integer(kind=8), intent(in) :: nb_node_slice
         real(kind=8), intent(in) :: coor_node_s1(nb_node_slice)
         real(kind=8), intent(in) :: coor_node_s2(nb_node_slice)
-        integer, intent(out) :: node_in_slice(nb_node)
+        integer(kind=8), intent(out) :: node_in_slice(nb_node)
     end subroutine romLineicIndexSurf
 end interface

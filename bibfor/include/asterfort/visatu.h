@@ -18,10 +18,10 @@
 !
 interface
     subroutine visatu(nbvari, vintp, advico, vicsat, satur)
-        integer, intent(in) :: nbvari
+        integer(kind=8), intent(in) :: nbvari
         real(kind=8), intent(inout) :: vintp(nbvari)
-        integer, intent(in) :: advico
-        integer, intent(in) :: vicsat
+        integer(kind=8), intent(in) :: advico
+        integer(kind=8), intent(in) :: vicsat
         real(kind=8), intent(in) :: satur
     end subroutine visatu
 end interface

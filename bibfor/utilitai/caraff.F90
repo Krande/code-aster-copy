@@ -50,8 +50,8 @@ subroutine caraff(noma, gran, base, cartz)
 !    POUR LES CARTES ET LES CHAM_ELEM (SAUF POUR VARI_R)
 !  - CREER LA CARTE  (CARTZ)
 !-----------------------------------------------------------------------
-    integer :: gd, nocc, ncmpmx, nbtou, n1, vali(2)
-    integer :: iad, jncmp, jvalv, jmail, nbcmp, k, iocc, nbmail, nbvar
+    integer(kind=8) :: gd, nocc, ncmpmx, nbtou, n1, vali(2)
+    integer(kind=8) :: iad, jncmp, jvalv, jmail, nbcmp, k, iocc, nbmail, nbvar
     real(kind=8) :: rvid
     character(len=8) :: k8b, tsca, typmcl(2)
     character(len=16) :: motclf, motcls(2)

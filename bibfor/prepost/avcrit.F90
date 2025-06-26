@@ -42,12 +42,12 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbvec, nbordr, ncycl(nbvec)
-    integer :: tdisp, kwork, sommw, tspaq, i
+    integer(kind=8) :: nbvec, nbordr, ncycl(nbvec)
+    integer(kind=8) :: tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp)
     real(kind=8) :: vala, coefpa
-    integer :: jomin, jomax, jvmin, jvmax, jgdreq
+    integer(kind=8) :: jomin, jomax, jvmin, jvmax, jgdreq
     character(len=16) :: nomcri, nomfor
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE EQUIVALENTE POUR TOUS LES VECTEURS NORMAUX
@@ -73,11 +73,11 @@ subroutine avcrit(nbvec, nbordr, vectn, vwork, tdisp, &
 !                     EQUIVALENTE, POUR TOUS LES NUMEROS D'ORDRE
 !                     DE CHAQUE VECTEUR NORMAL.
 ! ----------------------------------------------------------------------
-    integer :: ivect, ad0, ad1, ad2, icycl, nval, ipar, j, np
-    integer :: ibid, nparma, jprof, paract(35)
+    integer(kind=8) :: ivect, ad0, ad1, ad2, icycl, nval, ipar, j, np
+    integer(kind=8) :: ibid, nparma, jprof, paract(35)
     real(kind=8) :: coepre, valpar(30), valpu(30)
-    integer :: jvsign, jvphyd, jvsipr, jvepsn, jvetpr, jvsitn, jveppr
-    integer :: jvsipn, jvsieq, jveteq
+    integer(kind=8) :: jvsign, jvphyd, jvsipr, jvepsn, jvetpr, jvsitn, jveppr
+    integer(kind=8) :: jvsipn, jvsieq, jveteq
 !
     aster_logical :: lbid
     character(len=8) :: nompf(30), nompar(30)

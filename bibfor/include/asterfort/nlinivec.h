@@ -23,15 +23,15 @@ interface
     subroutine nlinivec(sd_nl_, ip, lonvec, iocc, vi,&
                         vr, vc, vk8, vk16, vk24, address)
         character(len=*)                    , intent(in)  :: sd_nl_
-        integer                             , intent(in)  :: ip
-        integer,                              intent(in)  :: lonvec
-        integer,                    optional, intent(in)  :: iocc
-        integer          , pointer, optional :: vi(:)
+        integer(kind=8)                             , intent(in)  :: ip
+        integer(kind=8),                              intent(in)  :: lonvec
+        integer(kind=8),                    optional, intent(in)  :: iocc
+        integer(kind=8)          , pointer, optional :: vi(:)
         real(kind=8)     , pointer, optional :: vr(:)
         complex(kind=8)  , pointer, optional :: vc(:)
         character(len=8) , pointer, optional :: vk8(:)
         character(len=16), pointer, optional :: vk16(:)
         character(len=24), pointer, optional :: vk24(:)
-        integer                   , optional, intent(out) :: address
+        integer(kind=8)                   , optional, intent(out) :: address
     end subroutine nlinivec
 end interface

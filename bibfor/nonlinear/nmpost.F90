@@ -61,10 +61,10 @@ subroutine nmpost(model, mesh, cara_elem, list_load, &
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     real(kind=8), intent(in) :: eta
     character(len=19), intent(in) :: sd_obsv
     character(len=24), intent(in) :: sderro

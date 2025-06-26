@@ -19,7 +19,7 @@
 interface
     subroutine getFailEvent(sddisc, i_fail, event_type)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: i_fail
-        integer, intent(out) :: event_type
+        integer(kind=8), intent(in) :: i_fail
+        integer(kind=8), intent(out) :: event_type
     end subroutine getFailEvent
 end interface

@@ -52,7 +52,7 @@ subroutine nmdocr(model, carcri, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: mesh
     type(BehaviourPrep_MapCarcri) :: prepMapCarcri
 !

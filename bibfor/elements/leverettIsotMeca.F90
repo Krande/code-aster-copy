@@ -28,10 +28,10 @@ subroutine leverettIsotMeca(fami, kpg, ksp, imate, hygr_prev, hygr_curr)
 !   evaluation of hygrometry with leverett isotherm
 !.................................................................
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, imate
+    integer(kind=8), intent(in) :: kpg, ksp, imate
     real(kind=8), intent(out) :: hygr_prev, hygr_curr
 !
-    integer           :: codret(5), iret
+    integer(kind=8)           :: codret(5), iret
     real(kind=8)      :: valres(5)
     character(len=16) :: nomres(5)
     real(kind=8)      :: sech, temp, alpha, beta, ad, t0_C, poro

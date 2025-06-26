@@ -37,7 +37,7 @@ subroutine melima(chin, ma, icode, ient, lima, &
 #include "asterfort/jexnum.h"
     character(len=8) :: ma
     character(len=19) :: chin
-    integer :: icode, ient, lima, nb
+    integer(kind=8) :: icode, ient, lima, nb
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !     CHIN : NOM D'1 CARTE

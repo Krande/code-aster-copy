@@ -23,10 +23,10 @@ subroutine lceqvn(n, x, y)
 !       IN  N      :  DIMENSION DE X Y
 !       OUT Y      :  VECTEUR RESULTAT
 !       ----------------------------------------------------------------
-    integer, intent(in) :: n
+    integer(kind=8), intent(in) :: n
     real(kind=8), intent(in) :: x(n)
     real(kind=8), intent(out) :: y(n)
-    integer :: i
+    integer(kind=8) :: i
     do i = 1, n
         y(i) = x(i)
     end do

@@ -32,19 +32,19 @@ subroutine nmextj(field_type, nb_cmp, list_cmp, type_extr_cmp, type_sele_cmp, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: field_type
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=24), intent(in) :: list_cmp
     character(len=8), intent(in) :: type_extr_cmp
     character(len=8), intent(in) :: type_sele_cmp
-    integer, intent(in) :: poin_nume
-    integer, intent(in) :: i_elem
-    integer, intent(in):: elem_nume
-    integer, intent(in) :: spoi_nume
-    integer, intent(in) :: jcesd
-    integer, intent(in) :: jcesv
-    integer, intent(in) :: jcesl
-    integer, intent(in) :: jcesc
-    integer, intent(out) :: nb_vale
+    integer(kind=8), intent(in) :: poin_nume
+    integer(kind=8), intent(in) :: i_elem
+    integer(kind=8), intent(in):: elem_nume
+    integer(kind=8), intent(in) :: spoi_nume
+    integer(kind=8), intent(in) :: jcesd
+    integer(kind=8), intent(in) :: jcesv
+    integer(kind=8), intent(in) :: jcesl
+    integer(kind=8), intent(in) :: jcesc
+    integer(kind=8), intent(out) :: nb_vale
     real(kind=8), intent(out) :: vale_resu(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -73,12 +73,12 @@ subroutine nmextj(field_type, nb_cmp, list_cmp, type_extr_cmp, type_sele_cmp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para_maxi = 20
+    integer(kind=8), parameter :: nb_para_maxi = 20
     character(len=8) :: v_cmp_name(nb_para_maxi)
     real(kind=8) :: v_cmp_vale(nb_para_maxi)
-    integer :: nb_cmp_vale, nb_cmp_maxi
-    integer :: i_cmp, iret, i_cmp_vale, i_cmp_maxi, i_cmp_r, i_vari
-    integer :: iad
+    integer(kind=8) :: nb_cmp_vale, nb_cmp_maxi
+    integer(kind=8) :: i_cmp, iret, i_cmp_vale, i_cmp_maxi, i_cmp_r, i_vari
+    integer(kind=8) :: iad
     character(len=8) :: cmp_name, vari_name
     character(len=8), pointer :: v_list_cmp(:) => null()
 !

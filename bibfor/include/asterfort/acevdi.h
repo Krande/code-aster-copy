@@ -21,14 +21,14 @@
 interface
     subroutine acevdi(nbocc, nomaz, nomoz, mcf, nlm,&
                       nlg, nln, nlj, ier)
-        integer :: nbocc
+        integer(kind=8) :: nbocc
         character(len=*) :: nomaz
         character(len=*) :: nomoz
         character(len=*) :: mcf
-        integer :: nlm
-        integer :: nlg
-        integer :: nln
-        integer :: nlj
-        integer :: ier
+        integer(kind=8) :: nlm
+        integer(kind=8) :: nlg
+        integer(kind=8) :: nln
+        integer(kind=8) :: nlj
+        integer(kind=8) :: ier
     end subroutine acevdi
 end interface

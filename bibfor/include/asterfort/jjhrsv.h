@@ -21,7 +21,7 @@
 interface
     subroutine jjhrsv(idts, nbval, iadmi)
         hid_t :: idts
-        integer :: nbval
-        integer :: iadmi
+        integer(kind=8) :: nbval
+        integer(kind=8) :: iadmi
     end subroutine jjhrsv
 end interface

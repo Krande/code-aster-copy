@@ -18,7 +18,7 @@
 
 subroutine hfmss(ind, vectt, hsfm, hss)
     implicit none
-    integer :: ind
+    integer(kind=8) :: ind
     real(kind=8) :: vectt(3, 3)
     real(kind=8) :: hfm(3, 6), hs(2, 6), hsfm(3, 9), hss(2, 9)
 !

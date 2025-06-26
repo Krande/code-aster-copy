@@ -20,6 +20,6 @@
 !
 interface
     subroutine ststat(istat)
-        integer :: istat
+        integer(kind=8) :: istat
     end subroutine ststat
 end interface

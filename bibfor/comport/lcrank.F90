@@ -62,7 +62,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, &
 !
     character(len=8) :: typmod(*)
     character(len=16) :: option
-    integer :: ndim, imate, codret
+    integer(kind=8) :: ndim, imate, codret
     real(kind=8) :: tmpm, tmpp
     real(kind=8) :: dstrai(6), dstrai0(6)
     real(kind=8) :: stresm(6), stresm0(6), stres(6)
@@ -78,7 +78,7 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, &
 #include "asterfort/rcvala.h"
 !
 ! Declaration of constant parameters
-    integer :: mmax, nmax
+    integer(kind=8) :: mmax, nmax
     parameter(mmax=3, nmax=6)
 !
 ! Declaration of real type variables
@@ -99,8 +99,8 @@ subroutine lcrank(ndim, typmod, imate, option, tmpm, &
     real(kind=8) :: tr(nmax), p, r1nu, r1ny
 !
 ! Declaration of integer type variables
-    integer :: icode(nmax), ndt, ndi, i, ii, jj, mm
-    integer :: mxiter, indic(mmax), nbmeca
+    integer(kind=8) :: icode(nmax), ndt, ndi, i, ii, jj, mm
+    integer(kind=8) :: mxiter, indic(mmax), nbmeca
 !
 ! Declaration of integer type variables
     aster_logical :: epflag

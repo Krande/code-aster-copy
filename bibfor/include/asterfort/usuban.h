@@ -21,8 +21,8 @@
 interface
     subroutine usuban(mater, isupp, para, ier)
         character(len=*) :: mater
-        integer :: isupp
+        integer(kind=8) :: isupp
         real(kind=8) :: para(*)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine usuban
 end interface

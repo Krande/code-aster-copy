@@ -42,13 +42,13 @@ subroutine dylema(matr_rigi, matr_mass, matr_damp, matr_impe, &
 !
     character(len=19), intent(out) :: matr_mass, matr_rigi, matr_damp, matr_impe
     aster_logical, intent(out) :: l_damp_modal, l_damp, l_impe
-    integer, intent(out) :: nb_matr
+    integer(kind=8), intent(out) :: nb_matr
     character(len=24), intent(out) :: matr_list(*)
     character(len=1), intent(out) :: coef_type(*)
     real(kind=8), intent(out) :: coef_vale(*)
     character(len=19), intent(out) :: matr_resu
     character(len=14), intent(out) :: numddl
-    integer, intent(out) :: nb_equa
+    integer(kind=8), intent(out) :: nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,8 +75,8 @@ subroutine dylema(matr_rigi, matr_mass, matr_damp, matr_impe, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, n2, n
-    integer :: nb_damp_read, ibid
+    integer(kind=8) :: n1, n2, n
+    integer(kind=8) :: nb_damp_read, ibid
     character(len=1) :: ktyp, resu_type
     character(len=8) :: list_damp, matr_res8
     character(len=16) :: typobj, amor_flui
@@ -84,7 +84,7 @@ subroutine dylema(matr_rigi, matr_mass, matr_damp, matr_impe, &
     aster_logical :: l_cplx, l_harm
     real(kind=8), pointer :: l_damp_read(:) => null()
     real(kind=8), pointer :: v_list(:) => null()
-    integer, pointer :: v_matr_desc(:) => null()
+    integer(kind=8), pointer :: v_matr_desc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

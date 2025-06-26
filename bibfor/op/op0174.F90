@@ -46,9 +46,9 @@ subroutine op0174()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iret, lonord(1), iord, ipara, i, n, numord, ibid
-    integer :: nbpara, inom, ityp, ilong, itabi, itabr, itabc
-    integer :: pi, pc, pr, nbac, nbpa, inom2
+    integer(kind=8) :: iret, lonord(1), iord, ipara, i, n, numord, ibid
+    integer(kind=8) :: nbpara, inom, ityp, ilong, itabi, itabr, itabc
+    integer(kind=8) :: pi, pc, pr, nbac, nbpa, inom2
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=8) :: table, concpt, typ

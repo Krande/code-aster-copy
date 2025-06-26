@@ -21,8 +21,8 @@
 interface
     function nbelem(ligrlz, igrel, icalc)
         character(len=*), intent(in) :: ligrlz
-        integer, intent(in) :: igrel
-        integer, intent(in), optional :: icalc
-        integer :: nbelem
+        integer(kind=8), intent(in) :: igrel
+        integer(kind=8), intent(in), optional :: icalc
+        integer(kind=8) :: nbelem
     end function nbelem
 end interface

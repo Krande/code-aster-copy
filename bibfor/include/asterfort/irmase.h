@@ -23,9 +23,9 @@ interface
                       sdcarm, nomase)
         character(len=*) :: nofimd
         character(len=*) :: typsec
-        integer :: nbrcou
-        integer :: nbsect
-        integer :: nummai
+        integer(kind=8) :: nbrcou
+        integer(kind=8) :: nbsect
+        integer(kind=8) :: nummai
         character(len=8) :: sdcarm
         character(len=*) :: nomase
     end subroutine irmase

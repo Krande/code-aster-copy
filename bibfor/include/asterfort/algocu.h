@@ -24,10 +24,10 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: solver
-        integer, intent(in) :: lmat
-        integer, intent(in) :: ldscon
+        integer(kind=8), intent(in) :: lmat
+        integer(kind=8), intent(in) :: ldscon
         character(len=19), intent(in) :: cncine
         character(len=19), intent(in) :: disp_iter
-        integer, intent(out) :: ctccvg
+        integer(kind=8), intent(out) :: ctccvg
     end subroutine algocu
 end interface

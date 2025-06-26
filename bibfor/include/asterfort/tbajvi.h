@@ -21,9 +21,9 @@
 interface
     subroutine tbajvi(table, nbpara, nompar, vi, livi)
         character(len=*) :: table
-        integer :: nbpara
+        integer(kind=8) :: nbpara
         character(len=*) :: nompar
-        integer :: vi
-        integer :: livi(*)
+        integer(kind=8) :: vi
+        integer(kind=8) :: livi(*)
     end subroutine tbajvi
 end interface

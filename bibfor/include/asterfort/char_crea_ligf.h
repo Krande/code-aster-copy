@@ -22,7 +22,7 @@ interface
     subroutine char_crea_ligf(mesh, ligrch, nb_elem_late, nb_noel_maxi)
         character(len=19), intent(in) :: ligrch
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_elem_late
-        integer, intent(in) :: nb_noel_maxi
+        integer(kind=8), intent(in) :: nb_elem_late
+        integer(kind=8), intent(in) :: nb_noel_maxi
     end subroutine char_crea_ligf
 end interface

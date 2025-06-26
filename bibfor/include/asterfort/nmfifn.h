@@ -21,9 +21,9 @@
 interface
     subroutine nmfifn(nno, nddl, npg, wref, vff,&
                       dfde, geom, sigma, fint)
-        integer :: npg
-        integer :: nddl
-        integer :: nno
+        integer(kind=8) :: npg
+        integer(kind=8) :: nddl
+        integer(kind=8) :: nno
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff(nno, npg)
         real(kind=8) :: dfde(2, nno, npg)

@@ -39,12 +39,12 @@ subroutine rfinte(ispec)
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: ispec
-    integer :: nbval
-    integer :: lpro, i1, indi
-    integer :: i, kvale
-    integer :: ifm, niv, n2, n3, n4, n5, mxval, numi, numj, nbfreq, ifreq, num
-    integer :: lnumi, lnumj, lvale, lfreq, lnum
-    integer :: lnoei, lnoej, lcmpi, lcmpj
+    integer(kind=8) :: nbval
+    integer(kind=8) :: lpro, i1, indi
+    integer(kind=8) :: i, kvale
+    integer(kind=8) :: ifm, niv, n2, n3, n4, n5, mxval, numi, numj, nbfreq, ifreq, num
+    integer(kind=8) :: lnumi, lnumj, lvale, lfreq, lnum
+    integer(kind=8) :: lnoei, lnoej, lcmpi, lcmpj
     character(len=8) :: nospec, noei, noej, cmpi, cmpj
     character(len=16) :: nomcmd, typcon, noch, nocham, abscisse
     character(len=19) :: nomfon

@@ -22,20 +22,20 @@ interface
     subroutine lcmatt(fami, kpg, ksp, mod, imat,&
                       nmat, poum, rela_comp, coefel, coefpl,&
                       typma, ndt, ndi, nr, nvi)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=*) :: poum
         character(len=16) :: rela_comp
         real(kind=8) :: coefel(nmat)
         real(kind=8) :: coefpl(nmat)
         character(len=8) :: typma
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
-        integer :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nvi
     end subroutine lcmatt
 end interface

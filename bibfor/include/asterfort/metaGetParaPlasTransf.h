@@ -22,10 +22,10 @@ interface
                                      kpt      , fpt)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp
-        integer, intent(in) :: j_mater
-        integer, intent(in) :: meta_type
-        integer, intent(in) :: nb_phasis
+        integer(kind=8), intent(in) :: kpg, ksp
+        integer(kind=8), intent(in) :: j_mater
+        integer(kind=8), intent(in) :: meta_type
+        integer(kind=8), intent(in) :: nb_phasis
         real(kind=8), intent(in) :: phase_incr(*), phase_cold
         real(kind=8), intent(out) :: kpt(*), fpt(*)
     end subroutine metaGetParaPlasTransf

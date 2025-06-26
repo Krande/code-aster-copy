@@ -57,8 +57,8 @@ contains
         real(kind=8), intent(out) :: dN_dEta(SSH_NBNODEG_MAX)
         real(kind=8), intent(out) :: dN_dZeta(SSH_NBNODEG_MAX)
 ! - Local
-        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-        integer :: iNodeGeom
+        integer(kind=8), parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer(kind=8) :: iNodeGeom
 !   ------------------------------------------------------------------------------------------------
 !
         dN_dXsi = 0.d0
@@ -103,7 +103,7 @@ contains
         real(kind=8), intent(in)  :: geomCurr(SSH_NBDOFG_MAX), XI(3)
         real(kind=8), optional, intent(out) :: Jac_(3, 3), JacInv_(3, 3), det_
 ! - Local
-        integer :: iNodeGeom, nbNodeGeom
+        integer(kind=8) :: iNodeGeom, nbNodeGeom
        real(kind=8) :: dN_dXsi(SSH_NBNODEG_MAX), dN_dEta(SSH_NBNODEG_MAX), dN_dZeta(SSH_NBNODEG_MAX)
         real(kind=8) :: dX_dXsi, dX_dEta, dX_dZeta
         real(kind=8) :: dZ_dXsi, dZ_dEta, dZ_dZeta

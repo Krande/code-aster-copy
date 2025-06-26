@@ -20,6 +20,6 @@
 !
 interface
     subroutine jjagod(iclas, nblnew)
-        integer, intent(in) :: iclas, nblnew
+        integer(kind=8), intent(in) :: iclas, nblnew
     end subroutine jjagod
 end interface

@@ -24,7 +24,7 @@ subroutine rc36sn(nbm, adrm, ipt, c, cara, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/rcsn01.h"
-    integer :: nbm, adrm(*), ipt, nbthp, nbthq
+    integer(kind=8) :: nbm, adrm(*), ipt, nbthp, nbthq
     real(kind=8) :: c(*), cara(*), mati(*), matj(*), pi, mi(*), pj, mj(*)
     real(kind=8) :: mse(*), snij
 !
@@ -51,7 +51,7 @@ subroutine rc36sn(nbm, adrm, ipt, c, cara, &
 ! OUT : SNIJ   : AMPLITUDE DE VARIATION DES CONTRAINTES LINEARISEES
 !     ------------------------------------------------------------------
 !
-    integer :: icmp, ioc1, ioc2
+    integer(kind=8) :: icmp, ioc1, ioc2
     real(kind=8) :: pij, d0, ep, inert, nu, e, alpha, mij, eab, xx, alphaa
     real(kind=8) :: alphab, sn1, sn2, sn3, sn4, sn6, snp, snq
 ! DEB ------------------------------------------------------------------

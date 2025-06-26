@@ -37,9 +37,9 @@ subroutine hujprc(kk, k, tin, vin, mater, &
 #include "jeveux.h"
 #include "asterfort/infniv.h"
 #include "asterfort/tecael.h"
-    integer :: ndt, ndi, i, j, k, kk, nmod
+    integer(kind=8) :: ndt, ndi, i, j, k, kk, nmod
     parameter(nmod=18)
-    integer :: ifm, niv, iadzi, iazk24
+    integer(kind=8) :: ifm, niv, iadzi, iazk24
     real(kind=8) :: yf(nmod), d12, dd, deux, vin(*)
     real(kind=8) :: r, x(2), th(2), pa, ptrac
     real(kind=8) :: tin(6), tou(3), toud(3), p, pp, q

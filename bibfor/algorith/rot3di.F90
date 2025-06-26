@@ -25,7 +25,7 @@ subroutine rot3di(x, sina, cosa, sinb, cosb, &
     real(kind=8) :: rx(3, 3), ry(3, 3), rz(3, 3), rzyx(3, 3), p(3)
     real(kind=8) :: x(*), y(*)
 !-----------------------------------------------------------------------
-    integer :: i, j, k, l
+    integer(kind=8) :: i, j, k, l
     real(kind=8) :: cosa, cosb, cosg, sina, sinb, sing
 !-----------------------------------------------------------------------
     rz(1, 1) = 1.d0

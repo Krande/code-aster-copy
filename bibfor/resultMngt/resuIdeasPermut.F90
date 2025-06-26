@@ -26,8 +26,8 @@ subroutine resuIdeasPermut(permutJvName, versio, maxnod)
 #include "asterfort/jeveuo.h"
 !
     character(len=24), intent(in) :: permutJvName
-    integer, intent(in) :: versio
-    integer, intent(out) :: maxnod
+    integer(kind=8), intent(in) :: versio
+    integer(kind=8), intent(out) :: maxnod
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,8 +37,8 @@ subroutine resuIdeasPermut(permutJvName, versio, maxnod)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, lonl
-    integer, pointer :: permuta(:) => null()
+    integer(kind=8) :: iret, lonl
+    integer(kind=8), pointer :: permuta(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

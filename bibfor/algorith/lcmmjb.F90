@@ -58,14 +58,14 @@ subroutine lcmmjb(taur, materf, cpmono, ifa, nmat, &
 #include "asterfort/lcmmj2.h"
 #include "asterfort/lcmmjd.h"
 #include "asterfort/utmess.h"
-    integer :: nmat, nbcomm(nmat, 3), ifa, nbsys, is, iret, nfs, nsg
-    integer :: ir, nsfa, nsfv, nuecou, itmax, iexp
+    integer(kind=8) :: nmat, nbcomm(nmat, 3), ifa, nbsys, is, iret, nfs, nsg
+    integer(kind=8) :: ir, nsfa, nsfv, nuecou, itmax, iexp
     real(kind=8) :: dgsdts, dksdts, dgrdbs, dkrdbs, vind(*), hsr(nsg, nsg)
     real(kind=8) :: materf(nmat*2), dt, sgnr, hr, dpr, dpdtau, dprdas, dhrdas
     real(kind=8) :: toler
     real(kind=8) :: taur, dy(*), expbp(nsg)
     character(len=24) :: cpmono(5*nmat+1)
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
 !

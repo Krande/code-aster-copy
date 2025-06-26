@@ -91,9 +91,9 @@ subroutine lc0003(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/nmecmi.h"
 #include "asterfort/utmess.h"
 !
-    integer             :: kpg, ksp, ndim, imate
-    integer             :: nvi
-    integer             :: codret
+    integer(kind=8)             :: kpg, ksp, ndim, imate
+    integer(kind=8)             :: nvi
+    integer(kind=8)             :: codret
     character(len=8)    :: typmod(*)
     character(len=16)   :: compor(*), option
     character(len=*)    :: fami

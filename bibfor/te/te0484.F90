@@ -48,7 +48,7 @@ subroutine te0484(option, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_Quadrature) :: hhoQuad
-    integer :: cbs, fbs, total_dofs, npg
+    integer(kind=8) :: cbs, fbs, total_dofs, npg
     real(kind=8), dimension(MSIZE_TDOFS_VEC) :: coeff_L2Proj
     real(kind=8), dimension(MSIZE_CELL_SCAL) :: cell_L2Proj
     real(kind=8), pointer :: field(:) => null()

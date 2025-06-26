@@ -20,8 +20,8 @@
 !
 interface
     subroutine mbtgin(nno,kpg,dff,sigpk2,dsigpk2,ipoids,h,covadef,ktgt)
-    integer :: nno, kpg
-    integer :: ipoids
+    integer(kind=8) :: nno, kpg
+    integer(kind=8) :: ipoids
     real(kind=8) :: h
     real(kind=8) :: sigpk2(2, 2), dsigpk2(2, 2, 2, 2)
     real(kind=8) :: dff(2, nno), covadef(3,3)

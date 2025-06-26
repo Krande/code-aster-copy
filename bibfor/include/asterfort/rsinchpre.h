@@ -23,6 +23,6 @@ interface
         character(len=*), intent(in) :: nomsd
         character(len=*), intent(in) :: nomch
         character(len=*), intent(in) :: acces
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine rsinchpre
 end interface

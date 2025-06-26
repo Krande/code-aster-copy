@@ -23,8 +23,8 @@
 interface
     subroutine nmmabu(ndim, nno, axi, grand, dfdi,&
                       b)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         aster_logical :: axi
         aster_logical :: grand
         real(kind=8) :: dfdi(nno, ndim)

@@ -70,10 +70,10 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
     character(len=8) :: k8b, nresu, nchgd, granch, nomcp(50), nomail
     character(len=4) :: typech
     aster_logical :: existe, parMesh
-    integer :: anomcp, anumcp, ancpu1, ancpu2, acpgd, avchef
-    integer :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, avcodo
-    integer :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom
-    integer :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50), tord(1)
+    integer(kind=8) :: anomcp, anumcp, ancpu1, ancpu2, acpgd, avchef
+    integer(kind=8) :: n1, n2, i, iocc, gd, n3, adr, nbelp, nbinv, ibid, avcodo
+    integer(kind=8) :: nbpost, nbchgd, nbcpgd, nbcmp, nbresu, nbtcp, nbsom
+    integer(kind=8) :: ifr, j, jordr, jxvar, n4, nbc, nbnc, numecp(50), tord(1)
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
 !

@@ -32,7 +32,7 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis, &
 #include "asterfort/vpshif.h"
 !
     real(kind=8) :: valshi, mantis
-    integer :: lmatk, lmatm, lmatsh, expo, pivot, ier
+    integer(kind=8) :: lmatk, lmatm, lmatsh, expo, pivot, ier
     character(len=19) :: solveu
 !     EFFECTUE L'OPERATION DE STURM
 !        1) COMBINAISON LINEAIRE MSH =  K - W * M    (W ETANT LE SHIFT)
@@ -56,13 +56,13 @@ subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: iret, npvneg, iold, iold2
+    integer(kind=8) :: iret, npvneg, iold, iold2
     real(kind=8) :: valr
     complex(kind=8) :: cbid
     character(len=19) :: matpre, matass
     character(len=24) :: metres
     aster_logical :: caldet, calfac
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !     ------------------------------------------------------------------
 !

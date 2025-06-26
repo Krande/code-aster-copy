@@ -20,7 +20,7 @@ subroutine rsexis(nomsd, ier)
     implicit none
 #include "asterfort/jeexin.h"
     character(len=*) :: nomsd
-    integer :: ier
+    integer(kind=8) :: ier
 !     VERIFICATION DE L'EXISTENCE D'UNE STRUCTURE DE DONNEES
 !                  "RESULTAT-COMPOSE".
 !     ------------------------------------------------------------------

@@ -30,14 +30,14 @@ subroutine equa_print(mesh, i_equa, type_equa, name_node, name_cmp, &
 !
     character(len=8), intent(in) :: mesh
     character(len=1), intent(in) :: type_equa
-    integer, intent(in) :: i_equa
+    integer(kind=8), intent(in) :: i_equa
     character(len=8), intent(in) :: name_node
     character(len=8), intent(in) :: name_cmp
     character(len=8), intent(in) :: name_cmp_lagr
     character(len=8), intent(in) :: name_subs
-    integer, intent(in) :: nume_link
-    integer, intent(in) :: nb_node_lagr
-    integer, pointer :: list_node_lagr(:)
+    integer(kind=8), intent(in) :: nume_link
+    integer(kind=8), intent(in) :: nb_node_lagr
+    integer(kind=8), pointer :: list_node_lagr(:)
     character(len=8), intent(in) :: ligrel
 !
 ! --------------------------------------------------------------------------------------------------
@@ -66,7 +66,7 @@ subroutine equa_print(mesh, i_equa, type_equa, name_node, name_cmp, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: valk(2), name_node_lagr
-    integer :: i_node, nume_node, vali(2)
+    integer(kind=8) :: i_node, nume_node, vali(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !

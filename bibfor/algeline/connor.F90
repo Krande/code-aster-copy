@@ -61,8 +61,8 @@ subroutine connor(melflu, typflu, freq, base, nuor, &
 !
     character(len=19) :: melflu
     character(len=8) :: typflu, base, mailla
-    integer :: nbm
-    integer :: nuor(nbm), lnoe
+    integer(kind=8) :: nbm
+    integer(kind=8) :: nuor(nbm), lnoe
     real(kind=8) :: amoc(nbm), carac(2), freq(nbm)
     real(kind=8) :: vite(lnoe), abscur(lnoe), epsi
     real(kind=8) :: rho(2*lnoe)
@@ -70,10 +70,10 @@ subroutine connor(melflu, typflu, freq, base, nuor, &
 ! VARIABLES LOCALES
 ! -----------------
     real(kind=8) :: coef(nbm), delta(nbm), rhotub, rhos
-    integer :: imode, im, ifsvr, ifsvi, nbma, nbzex, nmamin, nmamax
-    integer :: iener, ima, izone, ivcn, iven, icste, modul, nbval, i, j
-    integer :: jconn, modul2, k, ifsvk, ide, neq, idep
-    integer :: ldepl(6), lmasg, increm, id, irap
+    integer(kind=8) :: imode, im, ifsvr, ifsvi, nbma, nbzex, nmamin, nmamax
+    integer(kind=8) :: iener, ima, izone, ivcn, iven, icste, modul, nbval, i, j
+    integer(kind=8) :: jconn, modul2, k, ifsvk, ide, neq, idep
+    integer(kind=8) :: ldepl(6), lmasg, increm, id, irap
     real(kind=8) :: di, de, mastub, ltube, numera(nbm), denomi
     real(kind=8) :: pas, correl, a, b, c, d, e, f, mphi2(nbm)
     real(kind=8) :: modetr(3*lnoe*nbm), mode(lnoe*nbm)
@@ -84,7 +84,7 @@ subroutine connor(melflu, typflu, freq, base, nuor, &
     character(len=14) :: numddl
     character(len=19) :: masse
     character(len=24) :: fsvr, fsvi, fsvk
-    integer, pointer :: tempo(:) => null()
+    integer(kind=8), pointer :: tempo(:) => null()
     data depla/'DX      ', 'DY      ', 'DZ      '/
     data ldepl/1, 2, 3, 4, 5, 6/
 

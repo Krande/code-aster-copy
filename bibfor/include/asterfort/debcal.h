@@ -20,8 +20,8 @@
 !
 interface
     subroutine debcal(nin, lchin, lpain, nout, lchout)
-        integer :: nout
-        integer :: nin
+        integer(kind=8) :: nout
+        integer(kind=8) :: nin
         character(len=19) :: lchin(nin)
         character(len=8) :: lpain(nin)
         character(len=19) :: lchout(nout)

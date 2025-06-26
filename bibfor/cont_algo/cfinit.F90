@@ -32,7 +32,7 @@ subroutine cfinit(ds_contact, nume_inst)
 #include "asterfort/vtzero.h"
 !
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine cfinit(ds_contact, nume_inst)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: sdcont_autoc1, sdcont_autoc2
 !
 ! --------------------------------------------------------------------------------------------------

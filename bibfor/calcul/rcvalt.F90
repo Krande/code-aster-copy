@@ -34,18 +34,18 @@ subroutine rcvalt(fami, kpg, ksp, poum, jmat, nomat, mfact, &
 #include "asterc/r8nnem.h"
 
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
     character(len=1), intent(in) :: poum
-    integer, intent(in)          :: jmat
+    integer(kind=8), intent(in)          :: jmat
     character(len=*), intent(in) :: nomat, mfact
-    integer, intent(in)          :: nbpar
+    integer(kind=8), intent(in)          :: nbpar
     character(len=*), intent(in) :: nompar(nbpar)
     real(kind=8), intent(in)     :: valpar(nbpar)
-    integer, intent(in)          :: nbres
-    integer, intent(out)         :: icodre(*)
+    integer(kind=8), intent(in)          :: nbres
+    integer(kind=8), intent(out)         :: icodre(*)
     real(kind=8), intent(out)    :: valres(*)
-    integer, intent(in)          :: iarret
+    integer(kind=8), intent(in)          :: iarret
 
 ! ------------------------------------------------------------------------
 !
@@ -78,10 +78,10 @@ subroutine rcvalt(fami, kpg, ksp, poum, jmat, nomat, mfact, &
 !       out  valres(*)  : valeur reelle du parametre (ou NaN)
 !       out  icodre(*)  : 0 si on a trouve, 1 sinon
 ! ----------------------------------------------------------------------
-    integer :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, nbr, nbc
-    integer :: lfct, imat, nbmat, n1, k, posi, nmcs
-    integer :: ier, jordr, jkord, ivalr, kr, kc, kf, ivalc
-    integer :: nbpamx, nbpar2, nbpart, ipar, kmat, inom
+    integer(kind=8) :: lmat, icomp, ipi, ipif, iadzi, iazk24, nbk, ivalk, nbr, nbc
+    integer(kind=8) :: lfct, imat, nbmat, n1, k, posi, nmcs
+    integer(kind=8) :: ier, jordr, jkord, ivalr, kr, kc, kf, ivalc
+    integer(kind=8) :: nbpamx, nbpar2, nbpart, ipar, kmat, inom
     parameter(nbpamx=10)
     real(kind=8) ::  valvrc, rundf, valeur, valpa2(nbpamx)
     character(len=8) :: nompa2(nbpamx), novrc, nomi

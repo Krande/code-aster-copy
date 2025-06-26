@@ -18,7 +18,7 @@
 
 function nutygm(nomtyp)
     implicit none
-    integer :: nutygm
+    integer(kind=8) :: nutygm
     character(len=8) :: nomtyp
 !-----------------------------------------------------------------------
 !

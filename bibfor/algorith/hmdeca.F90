@@ -20,7 +20,7 @@ subroutine hmdeca(i, ddls, ddlm, nnos, idec, dec)
 !
     implicit none
 !
-    integer :: i, ddls, ddlm, nnos, idec, dec
+    integer(kind=8) :: i, ddls, ddlm, nnos, idec, dec
 !
 !.......................................................................
 !

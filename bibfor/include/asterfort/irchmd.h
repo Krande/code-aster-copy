@@ -20,10 +20,10 @@
 !
 interface
     subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
-        integer :: ifichi
+        integer(kind=8) :: ifichi
         character(len=19) :: chanom
         character(len=*) :: partie
         character(len=*) :: nochmd
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine irchmd
 end interface

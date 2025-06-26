@@ -34,13 +34,13 @@ subroutine facint(nbpas, dim, longh, vec1, vec2, &
 #include "jeveux.h"
 #include "asterfort/diaghr.h"
 #include "asterfort/utmess.h"
-    integer :: dim, long, longh
+    integer(kind=8) :: dim, long, longh
     complex(kind=8) :: s(dim, dim), r(dim, dim), u(*), w(*)
     real(kind=8) :: d(dim), vec1(long), vec2(longh), v(*)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ico, icomp, ix, iy, j, k
-    integer :: l, nbpas, nbpt1, nbpt2
+    integer(kind=8) :: i, ico, icomp, ix, iy, j, k
+    integer(kind=8) :: l, nbpas, nbpt1, nbpt2
     real(kind=8) :: ai, ar, az, bz, si, sr, uu
 !
 !-----------------------------------------------------------------------

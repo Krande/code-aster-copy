@@ -26,7 +26,7 @@ interface
         character(len=1) :: loue
         character(len=2) :: sens
         character(len=1) :: goun
-        integer :: jtens
+        integer(kind=8) :: jtens
         character(len=1) :: sour
     end subroutine cosiro
 end interface

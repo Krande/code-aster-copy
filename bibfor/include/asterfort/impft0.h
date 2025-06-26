@@ -21,9 +21,9 @@
 interface
     subroutine impft0(isor, ift, ibl, fmoy, fetyp,&
                       frms, fmax, fmin)
-        integer :: isor
-        integer :: ift
-        integer :: ibl
+        integer(kind=8) :: isor
+        integer(kind=8) :: ift
+        integer(kind=8) :: ibl
         real(kind=8) :: fmoy
         real(kind=8) :: fetyp
         real(kind=8) :: frms

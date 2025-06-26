@@ -20,7 +20,7 @@
 !
 interface
     subroutine cragch(long, typcoe, typval, ligrch)
-        integer, intent(in) :: long
+        integer(kind=8), intent(in) :: long
         character(len=4), intent(in) :: typcoe
         character(len=4), intent(in) :: typval
         character(len=19), intent(in) :: ligrch

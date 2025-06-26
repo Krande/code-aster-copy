@@ -25,7 +25,7 @@ interface
         character(len=19) :: phi1j
         character(len=24) :: bi
         character(len=14) :: num
-        integer :: j
+        integer(kind=8) :: j
         real(kind=8) :: cij2
     end subroutine calamr
 end interface

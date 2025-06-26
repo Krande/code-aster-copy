@@ -23,14 +23,14 @@
 interface
     subroutine vpwecf(option, typres, nfreq, mxfreq, resufi,&
                       resufr, resufk, lamor, ktyp, lns)
-        integer :: mxfreq
+        integer(kind=8) :: mxfreq
         character(len=*) :: option
         character(len=*) :: typres
-        integer :: nfreq
-        integer :: resufi(mxfreq, *)
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: resufi(mxfreq, *)
         real(kind=8) :: resufr(mxfreq, *)
         character(len=*) :: resufk(mxfreq, *)
-        integer :: lamor
+        integer(kind=8) :: lamor
         character(len=1) :: ktyp
         aster_logical :: lns
     end subroutine vpwecf

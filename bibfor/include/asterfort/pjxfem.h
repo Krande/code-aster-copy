@@ -31,6 +31,6 @@ interface
         character(len=*) :: modz
         character(len=1) :: base
         real(kind=8) :: inst        
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine pjxfem
 end interface

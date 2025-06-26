@@ -21,7 +21,7 @@
 interface
     subroutine cpedb(icompo, cpiter, tf, numpas, nomvar,&
                      idim, paramr, info)
-        integer :: icompo
+        integer(kind=8) :: icompo
         integer(kind=4) :: cpiter
         real(kind=8) :: tf
         integer(kind=4) :: numpas

@@ -43,8 +43,8 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
 #include "blas/ddot.h"
 !
     real(kind=8) :: lsn(*), lst(*), pinter(*), ainter(*)
-    integer :: jgrlsn, igeom, ninter, nface, cface(30, 6), nptf
-    integer :: nfiss, ifiss, fisco(*), nfisc, nmaabs
+    integer(kind=8) :: jgrlsn, igeom, ninter, nface, cface(30, 6), nptf
+    integer(kind=8) :: nfiss, ifiss, fisco(*), nfisc, nmaabs
     character(len=8) :: noma
     character(len=16) :: enr, typdis
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -81,11 +81,11 @@ subroutine xcface(lsn, lst, jgrlsn, igeom, enr, &
     real(kind=8) :: ab(2), lsta, lstb, lstc, abprim(2), prec, pre2
     real(kind=8) :: lsja(nfisc+1), lsjb(nfisc+1), lsjc, beta
     real(kind=8) :: minlsn, minlst, maxlsn, lsnabs, lonref, cridist
-    integer :: j, ar(12, 3), nbar, na, nb, nc, ins
-    integer :: ia, i, ipt, ibid, pp, pd, nno, k, nnos, ibid2(12, 3)
-    integer :: iadzi, iazk24, ndim, ptmax, f(6, 8), nbf
+    integer(kind=8) :: j, ar(12, 3), nbar, na, nb, nc, ins
+    integer(kind=8) :: ia, i, ipt, ibid, pp, pd, nno, k, nnos, ibid2(12, 3)
+    integer(kind=8) :: iadzi, iazk24, ndim, ptmax, f(6, 8), nbf
     character(len=8) :: typma
-    integer :: zxain
+    integer(kind=8) :: zxain
     parameter(cridist=1.d-7)
     aster_logical :: lcont, lajpa, lajpb, lajpc, ajout, cut, arete
     blas_int :: b_incx, b_incy, b_n

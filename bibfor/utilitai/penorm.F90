@@ -71,17 +71,17 @@ subroutine penorm(resu, modele)
 !     TRAITEMENT DU MOT CLE-FACTEUR : "NORME"
 !     ------------------------------------------------------------------
 !
-    integer :: nb_cmp_max, nbpmax
+    integer(kind=8) :: nb_cmp_max, nbpmax
     parameter(nbpmax=13, nb_cmp_max=30)
     character(len=8) :: typpar(nbpmax)
     character(len=16) :: nompar(nbpmax)
 !
-    integer :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nb_coef_user
-    integer :: jno, jin, j_coef_user, tord(1)
-    integer :: nbpar, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
-    integer :: nn, nbmaf
-    integer :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
-    integer :: nb_cmp_act, nfiss, ndim
+    integer(kind=8) :: ibid, iret, nbmato, nr, nd, np, nc, ni, no, nli, nlo, nb_coef_user
+    integer(kind=8) :: jno, jin, j_coef_user, tord(1)
+    integer(kind=8) :: nbpar, inum, numo, iresma, nbordr, jlicmp, jlicm1, jma
+    integer(kind=8) :: nn, nbmaf
+    integer(kind=8) :: jlicm2, i, nncp, nbma, jvalk, jvalr, jvali, ncmpm, ifm, niv
+    integer(kind=8) :: nb_cmp_act, nfiss, ndim
     real(kind=8) :: prec, inst, vnorm(1)
     complex(kind=8) :: c16b
     aster_logical :: exiord, filtr, l_pmesh

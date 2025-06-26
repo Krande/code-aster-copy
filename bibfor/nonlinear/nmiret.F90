@@ -58,11 +58,11 @@ subroutine nmiret(codret, tabret)
     !
     !
     !
-    integer :: iret, jcesd, jcesl, nbmail, icmp
-    integer :: ima, iad, vali
+    integer(kind=8) :: iret, jcesd, jcesl, nbmail, icmp
+    integer(kind=8) :: ima, iad, vali
     character(len=8) :: nomgd, mesh
     character(len=19) :: chamns
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     !
     ! ----------------------------------------------------------------------

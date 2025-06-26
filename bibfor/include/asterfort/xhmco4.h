@@ -23,26 +23,26 @@ interface
                       tau2, ffc, nddls, jac, ffp,&
                       nddlm, mmat, ifiss, nfiss, nfh,&
                       ifa, jheafa, ncomph, jheavn, ncompn)
-        integer :: ndim
-        integer :: nnop
-        integer :: nnops
-        integer :: pla(27)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnops
+        integer(kind=8) :: pla(27)
         real(kind=8) :: nd(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
         real(kind=8) :: ffc(16)
-        integer :: nddls
+        integer(kind=8) :: nddls
         real(kind=8) :: jac
         real(kind=8) :: ffp(27)
-        integer :: nddlm
+        integer(kind=8) :: nddlm
         real(kind=8) :: mmat(560, 560)
-        integer :: ifiss
-        integer :: nfiss
-        integer :: nfh
-        integer :: ifa
-        integer :: jheafa
-        integer :: ncomph
-        integer :: jheavn
-        integer :: ncompn
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ifa
+        integer(kind=8) :: jheafa
+        integer(kind=8) :: ncomph
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: ncompn
     end subroutine xhmco4
 end interface

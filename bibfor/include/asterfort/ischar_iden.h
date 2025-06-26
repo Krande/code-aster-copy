@@ -22,9 +22,9 @@
 !
 interface
     function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, load_name)
-        integer, pointer :: v_load_info(:)
-        integer, intent(in) :: i_load
-        integer, intent(in) :: nb_load
+        integer(kind=8), pointer :: v_load_info(:)
+        integer(kind=8), intent(in) :: i_load
+        integer(kind=8), intent(in) :: nb_load
         aster_logical :: ischar_iden
         character(len=4), intent(in) :: load_type_1
         character(len=4), intent(in) :: load_type_2

@@ -25,6 +25,6 @@ interface
         type(ROM_DS_Empi), intent(in) :: base
         type(ROM_DS_ParaDBR_POD) , intent(in) :: paraPod
         real(kind=8), pointer :: q(:), s(:), v(:)
-        integer, intent(out) :: nbModeOut, nbSnapOut
+        integer(kind=8), intent(out) :: nbModeOut, nbSnapOut
     end subroutine dbr_pod_incr
 end interface

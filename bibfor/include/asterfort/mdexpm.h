@@ -27,7 +27,7 @@ interface
         med_idt :: idfimd
         character(len=*) :: nomamd
         aster_logical :: existm
-        integer :: ndim
-        integer :: codret
+        integer(kind=8) :: ndim
+        integer(kind=8) :: codret
     end subroutine mdexpm
 end interface

@@ -22,19 +22,19 @@ interface
     subroutine rslmat(fami, kpg, ksp, mod, imat,&
                       nmat, materd, materf, matcst, ndt,&
                       ndi, nr, nvi, vind)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         character(len=3) :: matcst
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
-        integer :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
     end subroutine rslmat
 end interface

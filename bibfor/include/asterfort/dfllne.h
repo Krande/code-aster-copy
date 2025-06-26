@@ -23,7 +23,7 @@
 interface
     subroutine dfllne(keywf, nb_fail, l_fail_error)
         character(len=16), intent(in) :: keywf
-        integer, intent(out) :: nb_fail
+        integer(kind=8), intent(out) :: nb_fail
         aster_logical, intent(out) :: l_fail_error
     end subroutine dfllne
 end interface

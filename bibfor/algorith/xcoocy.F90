@@ -26,7 +26,7 @@ subroutine xcoocy(ndim, xg, pfon, p, rg, tg, l_not_zero)
 #include "asterf_types.h"
 #include "asterfort/xnormv.h"
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: rg, tg, xg(ndim), pfon(ndim)
     real(kind=8) :: p(3, 3)
     aster_logical :: l_not_zero
@@ -37,7 +37,7 @@ subroutine xcoocy(ndim, xg, pfon, p, rg, tg, l_not_zero)
 !
 !----------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: cosi, og(ndim), sinu, tole
     parameter(tole=1.d-12)
 !----------------------------------------------------------------

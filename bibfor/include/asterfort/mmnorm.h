@@ -20,7 +20,7 @@
 !
 interface
     subroutine mmnorm(ndim, tau1, tau2, norm, noor_)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: tau1(3)
         real(kind=8), intent(in) :: tau2(3)
         real(kind=8), intent(out) :: norm(3)

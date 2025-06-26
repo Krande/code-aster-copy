@@ -21,7 +21,7 @@
 interface
     subroutine rapoco(numdlz, iocc, fonrez, lisrez, chargz)
         character(len=*) :: numdlz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: fonrez
         character(len=*) :: lisrez
         character(len=*) :: chargz

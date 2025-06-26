@@ -44,11 +44,11 @@ subroutine ivout(lout, n, ix, idigit, ifmt)
     implicit none
 !
 !     ... SPECIFICATIONS FOR ARGUMENTS
-    integer :: ix(*), n, idigit, lout
+    integer(kind=8) :: ix(*), n, idigit, lout
     character(len=*) :: ifmt
 !
 !     ... SPECIFICATIONS FOR LOCAL VARIABLES
-    integer :: i, ndigit, k1, k2, lll
+    integer(kind=8) :: i, ndigit, k1, k2, lll
     character(len=80) :: line
 !
     lll = min(len(ifmt), 80)

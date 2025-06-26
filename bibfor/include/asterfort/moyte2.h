@@ -21,9 +21,9 @@
 interface
     subroutine moyte2(fami, npg, poum, temp, iret)
         character(len=*) :: fami
-        integer :: npg
+        integer(kind=8) :: npg
         character(len=*) :: poum
         real(kind=8) :: temp
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine moyte2
 end interface

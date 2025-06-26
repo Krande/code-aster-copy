@@ -41,8 +41,8 @@ subroutine usuvus(puusur, vusur, nbinst, temps, isupp, &
     character(len=24) :: loi, mate
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifires, iret, isupp, n1, n2
-    integer :: n3, n4, n5, n6, nbinst, nbpt, nn
+    integer(kind=8) :: i, ifires, iret, isupp, n1, n2
+    integer(kind=8) :: n3, n4, n5, n6, nbinst, nbpt, nn
 !
     real(kind=8) :: puusur, t, v0, w, x1, xa, xb
     real(kind=8) :: xd, xk, xn, xs

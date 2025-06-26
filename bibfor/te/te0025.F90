@@ -42,8 +42,8 @@ subroutine te0025(option, nomte)
 !              ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    integer :: jgano, ndim, nno, i, nnos, npg, ipoids, ivf, idfde, nbsig, igau
-    integer :: isig, igeom, idepl, itemps, idefo, iret
+    integer(kind=8) :: jgano, ndim, nno, i, nnos, npg, ipoids, ivf, idfde, nbsig, igau
+    integer(kind=8) :: isig, igeom, idepl, itemps, idefo, iret
     real(kind=8) :: epsm(162), angl_naut(3)
     real(kind=8) :: nharm, instan, zero
 ! DEB ------------------------------------------------------------------

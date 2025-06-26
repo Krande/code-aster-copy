@@ -21,10 +21,10 @@
 interface
     subroutine cnsred(cns1z, nbno, lino, nbcmp, licmp,&
                       base, cns2z)
-        integer :: nbcmp
-        integer :: nbno
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: nbno
         character(len=*) :: cns1z
-        integer :: lino(nbno)
+        integer(kind=8) :: lino(nbno)
         character(len=*) :: licmp(nbcmp)
         character(len=*) :: base
         character(len=*) :: cns2z

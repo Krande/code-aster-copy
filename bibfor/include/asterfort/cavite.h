@@ -21,6 +21,6 @@ interface
         character(len=16), intent(in) :: phenom
         character(len=8), intent(in) :: load, mesh
         character(len=4), intent(in) :: valeType
-        integer, intent(in) :: nbOcc
+        integer(kind=8), intent(in) :: nbOcc
     end subroutine cavite
 end interface

@@ -28,7 +28,7 @@ subroutine cfgcac(resoco, tole, neq, nbliai, nbliac)
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
     character(len=24) :: resoco
-    integer :: neq, nbliai, nbliac
+    integer(kind=8) :: neq, nbliai, nbliac
     real(kind=8) :: tole
 !
 ! ----------------------------------------------------------------------
@@ -49,12 +49,12 @@ subroutine cfgcac(resoco, tole, neq, nbliai, nbliac)
 !
 !
 !
-    integer :: ifm, niv
-    integer :: iliai, jdecal, nbddl
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iliai, jdecal, nbddl
     character(len=24) :: apcoef, apddl, appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=19) :: mu, atmu, liac
-    integer :: jmu, jatmu, jliac
+    integer(kind=8) :: jmu, jatmu, jliac
 !
 ! ----------------------------------------------------------------------
 !

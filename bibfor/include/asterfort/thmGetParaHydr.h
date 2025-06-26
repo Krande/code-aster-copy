@@ -20,6 +20,6 @@ interface
     subroutine thmGetParaHydr(j_mater, ds_thm)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
     end subroutine thmGetParaHydr
 end interface 

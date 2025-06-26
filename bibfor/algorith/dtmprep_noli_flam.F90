@@ -67,16 +67,16 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, intent(in) :: icomp
+    integer(kind=8), intent(in) :: icomp
 !
 !   -0.2- Local variables
     aster_logical     :: lnoeu2
-    integer           :: i, n1, ibid, nbbuck, nbnoli
-    integer           :: iret, nbmcl, ier, nbno1, nbno2
-    integer           :: ino1, ino2, ind1, ind2, nbmode
-    integer           :: info, vali, j, neq, mxlevel
-    integer           :: nbchoc, nexcit, nl_type, tomove, k
-    integer           :: cntr, amorin
+    integer(kind=8)           :: i, n1, ibid, nbbuck, nbnoli
+    integer(kind=8)           :: iret, nbmcl, ier, nbno1, nbno2
+    integer(kind=8)           :: ino1, ino2, ind1, ind2, nbmode
+    integer(kind=8)           :: info, vali, j, neq, mxlevel
+    integer(kind=8)           :: nbchoc, nexcit, nl_type, tomove, k
+    integer(kind=8)           :: cntr, amorin
 !
     real(kind=8)      :: r8bid, gap, xjeu, sina, cosa
     real(kind=8)      :: sinb, cosb, sing, cosg, valr(10)
@@ -96,7 +96,7 @@ subroutine dtmprep_noli_flam(sd_dtm_, sd_nl_, icomp)
     character(len=24) :: nl_title, mdgene, jvname, jvname0
     character(len=3)  :: typamor
 !
-    integer, pointer  :: ddlcho(:) => null()
+    integer(kind=8), pointer  :: ddlcho(:) => null()
     real(kind=8), pointer  :: coor_no1(:) => null()
     real(kind=8), pointer  :: coor_no2(:) => null()
     real(kind=8), pointer  :: vale(:) => null()

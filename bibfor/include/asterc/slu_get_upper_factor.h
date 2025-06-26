@@ -20,7 +20,7 @@
 !
 interface
     subroutine slu_get_upper_factor( f_factors, values, rowind, colptr, info )
-        integer                       :: f_factors
+        integer(kind=8)                       :: f_factors
         real(kind=8)   :: values(*)
         integer(kind=4):: rowind(*)
         integer(kind=4):: colptr(*)

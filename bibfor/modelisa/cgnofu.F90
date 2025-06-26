@@ -37,7 +37,7 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
-    integer :: iocc, nbno
+    integer(kind=8) :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 !
 !       CGNOFU -- TRAITEMENT DE L'OPTION "TUNNEL"
@@ -59,9 +59,9 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
 ! ----------------------------------------------------------------------
     real(kind=8) :: vecori(3)
 !
-    integer :: nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j
-    integer :: jmail, idlino, idnono, ino1, ino2, ino
-    integer :: nbnor, irest, nbma
+    integer(kind=8) :: nrf, nlf, nbnot, nbmat, nbmb, nbnb, nbnc, i, j
+    integer(kind=8) :: jmail, idlino, idnono, ino1, ino2, ino
+    integer(kind=8) :: nbnor, irest, nbma
     real(kind=8) :: c1(3), c2(3), nb(3), c1nb(3), c1c2(3), lc1c2, psca, zero
     real(kind=8) :: rfut, rfut2, lfut, lcumul, xc1h, xc2h, r, c2nb(3), lc1nb, x
     real(kind=8) :: y, z, xmin, xmax, lc2nb, c2h(3), ymin, ymax, zmin, zmax
@@ -69,10 +69,10 @@ subroutine cgnofu(mofaz, iocc, nomaz, lisnoz, nbno)
     character(len=8) :: noma, prefix, typm, ndorig, ndextr
     character(len=16) :: motfac, motcle(3), typmcl(3)
     character(len=24) :: lisnoe, mesmai, lisnom, mafour
-    integer, pointer :: noeud_beton(:) => null()
-    integer, pointer :: noeuds_cube(:) => null()
-    integer, pointer :: noeuds_trouves(:) => null()
-    integer, pointer :: travail(:) => null()
+    integer(kind=8), pointer :: noeud_beton(:) => null()
+    integer(kind=8), pointer :: noeuds_cube(:) => null()
+    integer(kind=8), pointer :: noeuds_trouves(:) => null()
+    integer(kind=8), pointer :: travail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------

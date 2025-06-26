@@ -23,7 +23,7 @@ subroutine sigtopk1(ndim, Cauchy, F, PK1)
 #include "asterfort/assert.h"
 #include "asterfort/matinv.h"
 !
-    integer, intent(in)                         :: ndim
+    integer(kind=8), intent(in)                         :: ndim
     real(kind=8), dimension(6), intent(in)    :: Cauchy
     real(kind=8), dimension(3, 3), intent(in)    :: F
     real(kind=8), dimension(3, 3), intent(out)   :: PK1

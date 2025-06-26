@@ -30,11 +30,11 @@ subroutine rrlds(a, nmax, nordre, x, nves)
 !A    BUT :
 !A    ---
 !A    RESOLUTION DE  A * X = B ; B ETANT STOCKE DANS X A L'APPEL
-    integer :: nves, nmax, nordre
+    integer(kind=8) :: nves, nmax, nordre
     real(kind=8) :: a(nmax, nordre), x(nmax, nves), r8val
 !
 !-----------------------------------------------------------------------
-    integer :: i, ilign1, ilign2, in, nv
+    integer(kind=8) :: i, ilign1, ilign2, in, nv
 !-----------------------------------------------------------------------
     ilign1 = 1
     ilign2 = nordre

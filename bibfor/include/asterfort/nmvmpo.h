@@ -23,13 +23,13 @@ interface
                       xl, wgauss, icodma, sect, u, &
                       du, contm, contp, fl, klv)
         character(len=*) :: fami
-        integer :: npg
-        integer :: nno
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
         character(len=*) :: option
-        integer :: nc
+        integer(kind=8) :: nc
         real(kind=8) :: xl
         real(kind=8) :: wgauss(npg)
-        integer :: icodma
+        integer(kind=8) :: icodma
         real(kind=8) :: sect(*)
         real(kind=8) :: u(nno*nc)
         real(kind=8) :: du(nno*nc)

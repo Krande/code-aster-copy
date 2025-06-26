@@ -42,7 +42,7 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma, &
     character(len=8) :: mo, ma
     character(len=*) :: statut
     character(len=8) :: nomcas
-    integer :: isma, idresl
+    integer(kind=8) :: isma, idresl
     real(kind=8), optional :: instap
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -84,14 +84,14 @@ subroutine ssvalv(statut, nomcas, mo, ma, isma, &
 !     1- SI APPEL INITIAL : ON ALLOUE UN OBJET SUFFISANT :
 !     ----------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadesm, ialica, ialich, ianmcr
-    integer :: idres2, iret, j, jsma, long, nbsma
-    integer :: nbssa, nddle, nddli, nddlt, nmxval
-    integer :: nbinst, jresu, jinst
+    integer(kind=8) :: i, iadesm, ialica, ialich, ianmcr
+    integer(kind=8) :: idres2, iret, j, jsma, long, nbsma
+    integer(kind=8) :: nbssa, nddle, nddli, nddlt, nmxval
+    integer(kind=8) :: nbinst, jresu, jinst
     character(len=19) :: resuge
     real(kind=8) :: inst1, inst2, coecor
     real(kind=8), pointer :: para_r(:) => null()
-    integer, pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
     if (statut(1:5) .eq. 'DEBUT') then
         call dismoi('NB_SM_MAILLA', mo, 'MODELE', repi=nbsma)

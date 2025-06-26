@@ -31,7 +31,7 @@ subroutine romSolveROMSystSolve(ds_solve, size_to_solve_)
 #include "asterfort/zgauss.h"
 !
     type(ROM_DS_Solve), intent(in) :: ds_solve
-    integer, optional, intent(in) :: size_to_solve_
+    integer(kind=8), optional, intent(in) :: size_to_solve_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,10 +46,10 @@ subroutine romSolveROMSystSolve(ds_solve, size_to_solve_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: syst_matr, syst_2mbr, syst_solu
     character(len=1) :: syst_type
-    integer :: nhrs, syst_size, size_to_solve
+    integer(kind=8) :: nhrs, syst_size, size_to_solve
     complex(kind=8), pointer :: v_syst_matr(:) => null()
     complex(kind=8), pointer :: v_syst_2mbr(:) => null()
     complex(kind=8), pointer :: v_syst_solu(:) => null()

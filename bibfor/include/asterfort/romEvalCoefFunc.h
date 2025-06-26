@@ -23,6 +23,6 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_EvalCoef), intent(in) :: ds_evalcoef
         type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
-        integer, intent(in) :: i_coef_list
+        integer(kind=8), intent(in) :: i_coef_list
     end subroutine romEvalCoefFunc
 end interface

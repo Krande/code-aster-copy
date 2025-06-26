@@ -21,7 +21,7 @@
 interface
     subroutine jjcren(nomlu, icre, iret)
         character(len=*) :: nomlu
-        integer :: icre
-        integer :: iret
+        integer(kind=8) :: icre
+        integer(kind=8) :: iret
     end subroutine jjcren
 end interface

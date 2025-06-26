@@ -67,8 +67,8 @@ subroutine cvmjac(mod, nmat, materf, timed, timef, &
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprte.h"
-    integer :: ndt, ndi, nmat, nmod
-    integer :: ioptio, idnr, nopt
+    integer(kind=8) :: ndt, ndi, nmat, nmod
+    integer(kind=8) :: ioptio, idnr, nopt
 !
     real(kind=8) :: un, zero, d23, d13, mun
     parameter(un=1.d0)
@@ -119,7 +119,7 @@ subroutine cvmjac(mod, nmat, materf, timed, timef, &
     real(kind=8) :: dede3(6), mtmp(6, 6), mtmp1(6, 6)
     real(kind=8) :: x1df, jx1, x2df, jx2, dcin
     real(kind=8) :: jepxi, epxino(6), nnet
-    integer :: n1, n2, n3, n4, n5, n6, n7, n8
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, n7, n8
 !
     character(len=8) :: mod
 !       ----------------------------------------------------------------

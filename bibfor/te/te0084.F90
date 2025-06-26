@@ -46,12 +46,12 @@ subroutine te0084(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: phenom
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     real(kind=8) :: poids, rx, ry
-    integer :: nno, kp, k, npg1, i, jgano, ndim, nnos
-    integer :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, kp, k, npg1, i, jgano, ndim, nnos
+    integer(kind=8) :: ipoids, ivf, idfde
     real(kind=8) :: rho(1)
-    integer :: j_geom, j_rota, j_vect, j_mate
+    integer(kind=8) :: j_geom, j_rota, j_vect, j_mate
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !
 ! --------------------------------------------------------------------------------------------------

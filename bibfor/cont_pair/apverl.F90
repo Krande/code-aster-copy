@@ -63,13 +63,13 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: node_mast_name, elem_mast_name, node_old
-    integer :: nb_cont_zone, model_ndim
-    integer :: i_zone
-    integer :: jdecnm, nb_node_mast
-    integer :: i_node_mast, i_elem, i_node_curr, i_elem_node
-    integer :: jdeciv
-    integer :: elem_mast_indx, elem_mast_nume, node_mast_indx(1), node_mast_nume(1)
-    integer :: node_nbelem, elem_nbnode
+    integer(kind=8) :: nb_cont_zone, model_ndim
+    integer(kind=8) :: i_zone
+    integer(kind=8) :: jdecnm, nb_node_mast
+    integer(kind=8) :: i_node_mast, i_elem, i_node_curr, i_elem_node
+    integer(kind=8) :: jdeciv
+    integer(kind=8) :: elem_mast_indx, elem_mast_nume, node_mast_indx(1), node_mast_nume(1)
+    integer(kind=8) :: node_nbelem, elem_nbnode
     real(kind=8) :: tau1(3), tau2(3), norm(3)
     real(kind=8) :: tau1_node(3), tau2_node(3), normnd(3)
     real(kind=8) :: noor1, noor2
@@ -81,9 +81,9 @@ subroutine apverl(sdappa, mesh, sdcont_defi)
     character(len=8), pointer :: v_sdappa_verk(:) => null()
     character(len=24) :: sdappa_vera
     real(kind=8), pointer :: v_sdappa_vera(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
     real(kind=8) :: prosca, angle, angl_old, val
-    integer :: inoeu
+    integer(kind=8) :: inoeu
     aster_logical :: apcald
     blas_int :: b_incx, b_incy, b_n
 !

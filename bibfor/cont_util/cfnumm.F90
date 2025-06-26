@@ -26,8 +26,8 @@ subroutine cfnumm(defico, posnma, numnma)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24), intent(in) :: defico
-    integer, intent(in) :: posnma
-    integer, intent(out) :: numnma
+    integer(kind=8), intent(in) :: posnma
+    integer(kind=8), intent(out) :: numnma
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine cfnumm(defico, posnma, numnma)
 !
 !
     character(len=24) :: contma
-    integer :: jmaco
+    integer(kind=8) :: jmaco
 !
 ! ----------------------------------------------------------------------
 !

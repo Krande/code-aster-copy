@@ -30,7 +30,7 @@ subroutine dfc_chck(sdcont, mesh, model_ndim)
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: model_ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine dfc_chck(sdcont, mesh, model_ndim)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iform
+    integer(kind=8) :: iform
 !
 ! - Check common nodes
 !

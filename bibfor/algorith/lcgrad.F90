@@ -45,7 +45,7 @@ subroutine lcgrad(resi, rigi, sig, apg, lag, grad, aldc, &
 ! OUT SIEF     CONTRAINTES GENERALISEES
 ! OUT DSDE     MATRICE TANGENTE GENERALISEE
 ! ----------------------------------------------------------------------
-    integer :: i, neps, ndim, ndimsi
+    integer(kind=8) :: i, neps, ndim, ndimsi
 ! ----------------------------------------------------------------------
 
 ! Initialisation

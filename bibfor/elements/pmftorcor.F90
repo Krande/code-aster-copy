@@ -35,7 +35,7 @@ subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
 !       fl         : efforts nodaux corriges pour torsion
 
 ! -----------------------------------------------------------
-    integer :: tygrfi, nbpout, ii
+    integer(kind=8) :: tygrfi, nbpout, ii
     real(kind=8) :: gxjx, gxjxpout(*), deplm(*), deplp(*), xl, fl(*)
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

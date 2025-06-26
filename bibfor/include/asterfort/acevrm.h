@@ -20,9 +20,9 @@
 !
 interface
     subroutine acevrm(nbocc, noma, noemax, noemaf)
-        integer :: nbocc
+        integer(kind=8) :: nbocc
         character(len=8) :: noma
-        integer :: noemax
-        integer :: noemaf
+        integer(kind=8) :: noemax
+        integer(kind=8) :: noemaf
     end subroutine acevrm
 end interface

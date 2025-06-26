@@ -22,9 +22,9 @@ interface
                            ligrel_new)
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: list_elem_stor
-        integer, intent(in) :: nb_elem_old
+        integer(kind=8), intent(in) :: nb_elem_old
         character(len=24), intent(in) :: list_elem_new
-        integer, intent(in) :: nb_elem_new
+        integer(kind=8), intent(in) :: nb_elem_new
         character(len=19), intent(in) :: ligrel_old
         character(len=19), intent(out) :: ligrel_new
     end subroutine ccchuc_ligr

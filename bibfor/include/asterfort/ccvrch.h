@@ -21,7 +21,7 @@
 interface
     subroutine ccvrch(resuin, numor0, lforc_noda)
         character(len=8) :: resuin
-        integer :: numor0
+        integer(kind=8) :: numor0
         aster_logical :: lforc_noda
     end subroutine ccvrch
 end interface

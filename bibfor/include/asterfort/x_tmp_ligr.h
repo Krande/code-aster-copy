@@ -23,6 +23,6 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=19), intent(inout) :: ligrel
         character(len=19), optional, intent(in) :: list_cells
-        integer, optional, intent(in) :: n_list_cells
+        integer(kind=8), optional, intent(in) :: n_list_cells
     end subroutine x_tmp_ligr
 end interface

@@ -19,7 +19,7 @@
 interface
     subroutine dbr_calcpod_rate(s, nb_sing, rate)
         real(kind=8), pointer, intent(in) :: s(:)
-        integer, intent(in) :: nb_sing
+        integer(kind=8), intent(in) :: nb_sing
         real(kind=8), intent(out) :: rate
     end subroutine dbr_calcpod_rate
 end interface

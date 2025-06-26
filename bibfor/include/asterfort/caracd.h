@@ -21,6 +21,6 @@
 interface
     subroutine caracd(sdcont, nb_cont_zone)
         character(len=8), intent(in) :: sdcont
-        integer, intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: nb_cont_zone
     end subroutine caracd
 end interface

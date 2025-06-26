@@ -44,7 +44,7 @@ subroutine d1pa2d(angl, irep, passag)
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: irep
+    integer(kind=8) :: irep
     real(kind=8) :: cosa, deux, sina, un, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

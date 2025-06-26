@@ -42,14 +42,14 @@ subroutine calcva(ds_thm, ndim, &
 #include "jeveux.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: defgem(*), defgep(*)
-    integer, intent(in) :: addeme, addep1, addep2, addete
+    integer(kind=8), intent(in) :: addeme, addep1, addep2, addete
     real(kind=8), intent(out) :: depsv, epsv, deps(6)
     real(kind=8), intent(out) :: temp, dtemp, grad_temp(ndim)
     real(kind=8), intent(out) :: p1, dp1, grad_p1(ndim)
     real(kind=8), intent(out) :: p2, dp2, grad_p2(ndim)
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,7 +83,7 @@ subroutine calcva(ds_thm, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, iadzi, iazk24
+    integer(kind=8) :: i, iadzi, iazk24
     character(len=8) :: nomail
 !
 ! --------------------------------------------------------------------------------------------------

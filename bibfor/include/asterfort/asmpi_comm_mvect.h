@@ -23,13 +23,13 @@
      &,vi,vi4,vr,vc,sci,sci4,scr,scc)
               character(len=*), intent(in) :: optmpi
               character(len=*), intent(in) :: typsca
-              integer ,optional, intent(in) :: nbval
-              integer ,optional, intent(in) :: bcrank
-              integer ,optional, intent(inout) :: vi(*)
+              integer(kind=8) ,optional, intent(in) :: nbval
+              integer(kind=8) ,optional, intent(in) :: bcrank
+              integer(kind=8) ,optional, intent(inout) :: vi(*)
               integer(kind=4) ,optional, intent(inout) :: vi4(*)
               real(kind=8) ,optional, intent(inout) :: vr(*)
               complex(kind=8) ,optional, intent(inout) :: vc(*)
-              integer ,optional, intent(inout) :: sci
+              integer(kind=8) ,optional, intent(inout) :: sci
               integer(kind=4) ,optional, intent(inout) :: sci4
               real(kind=8) ,optional, intent(inout) :: scr
               complex(kind=8) ,optional, intent(inout) :: scc

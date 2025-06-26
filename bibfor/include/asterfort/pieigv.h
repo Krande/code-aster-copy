@@ -22,9 +22,9 @@ interface
     subroutine pieigv(neps, tau, imate, vim, epsm,&
                       epspc, epsdc, typmod, etamin, etamax,&
                       copilo)
-        integer :: neps
+        integer(kind=8) :: neps
         real(kind=8) :: tau
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: vim(2)
         real(kind=8) :: epsm(neps)
         real(kind=8) :: epspc(neps)

@@ -30,7 +30,7 @@ subroutine trprec(mcf, iocc, epsi, crit, prec, &
 !     epsi et crit  sont la tolérance et le critère du test
 !     prec et crit2 sont la précision et le critère de l'extraction
 ! ----------------------------------------------------------------------
-    integer :: iocc, nc
+    integer(kind=8) :: iocc, nc
     real(kind=8) :: epsi, prec
     character(len=8) :: crit, crit2, critr(2)
 !     ------------------------------------------------------------------

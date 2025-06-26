@@ -25,9 +25,9 @@ interface
         aster_logical, intent(in) :: l_mfront_proto
         aster_logical, intent(in) :: l_kit_thm
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_comp
+        integer(kind=8), intent(in) :: i_comp
         character(len=16), intent(in) :: algo_inte
-        integer, pointer :: iter_inte_maxi
+        integer(kind=8), pointer :: iter_inte_maxi
         real(kind=8), pointer :: resi_inte
     end subroutine getBehaviourPara
 end interface

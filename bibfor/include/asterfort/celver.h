@@ -23,6 +23,6 @@ interface
         character(len=*) :: celz
         character(len=*) :: typver
         character(len=*) :: arret
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine celver
 end interface

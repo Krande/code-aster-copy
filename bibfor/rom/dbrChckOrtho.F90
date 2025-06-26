@@ -45,7 +45,7 @@ subroutine dbrChckOrtho(paraOrtho, lReuse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(ROM_DS_Field) :: mode
     character(len=8) :: baseInitName
 !

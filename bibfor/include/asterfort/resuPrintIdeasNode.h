@@ -22,13 +22,13 @@ interface
                                   fieldType_ , fieldName_   ,&
                                   cmpUserNb_ , cmpUserName_ ,&
                                   nodeUserNb_, nodeUserNume_)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=*), intent(in) :: title, dsName
-        integer, intent(in) :: storeIndx
+        integer(kind=8), intent(in) :: storeIndx
         character(len=*), optional, intent(in) :: fieldName_, fieldType_
-        integer, optional, intent(in) :: cmpUserNb_
+        integer(kind=8), optional, intent(in) :: cmpUserNb_
         character(len=8), optional, pointer :: cmpUserName_(:)
-        integer, optional, intent(in) :: nodeUserNb_
-        integer, optional, pointer :: nodeUserNume_(:)
+        integer(kind=8), optional, intent(in) :: nodeUserNb_
+        integer(kind=8), optional, pointer :: nodeUserNume_(:)
     end subroutine resuPrintIdeasNode
 end interface

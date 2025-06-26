@@ -21,7 +21,7 @@
 interface
     subroutine apcond(newgeo, node_nume, node_coor)
         character(len=19), intent(in) :: newgeo
-        integer, intent(in) :: node_nume
+        integer(kind=8), intent(in) :: node_nume
         real(kind=8), intent(out) :: node_coor(3)
     end subroutine apcond
 end interface

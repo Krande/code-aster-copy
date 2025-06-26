@@ -27,8 +27,8 @@ subroutine apsvnl(sdcont_defi, sdappa, model_ndim, nt_node)
 !
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: sdappa
-    integer, intent(in) :: model_ndim
-    integer, intent(in) :: nt_node
+    integer(kind=8), intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: nt_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,8 +49,8 @@ subroutine apsvnl(sdcont_defi, sdappa, model_ndim, nt_node)
     character(len=24) :: sdappa_norl
     real(kind=8), pointer :: v_sdappa_psno(:) => null()
     real(kind=8), pointer :: v_sdappa_norl(:) => null()
-    integer :: i_node, i_dime, node_curr
-    integer :: node_indx(nt_node), node_nume(nt_node)
+    integer(kind=8) :: i_node, i_dime, node_curr
+    integer(kind=8) :: node_indx(nt_node), node_nume(nt_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !

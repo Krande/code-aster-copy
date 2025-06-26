@@ -64,11 +64,11 @@ subroutine ntnoli(model, mate, cara_elem, l_stat, l_evol, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: sdarch
     character(len=24) :: sdarchAinfJv
-    integer, pointer :: sdarchAinf(:) => null()
-    integer :: nume_store, nume_inst
+    integer(kind=8), pointer :: sdarchAinf(:) => null()
+    integer(kind=8) :: nume_store, nume_inst
     aster_logical :: force, lreuse
     character(len=8) :: result
 !

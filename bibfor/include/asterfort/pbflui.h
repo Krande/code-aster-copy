@@ -22,7 +22,7 @@ interface
     subroutine pbflui(umoy, hmoy, rmoy, long, cf0,&
                       mcf0, fsvr, icoq, imod, nbm,&
                       rki, tcoef, s1, s2, ysol)
-        integer :: nbm
+        integer(kind=8) :: nbm
         real(kind=8) :: umoy
         real(kind=8) :: hmoy
         real(kind=8) :: rmoy
@@ -30,8 +30,8 @@ interface
         real(kind=8) :: cf0
         real(kind=8) :: mcf0
         real(kind=8) :: fsvr(7)
-        integer :: icoq
-        integer :: imod
+        integer(kind=8) :: icoq
+        integer(kind=8) :: imod
         real(kind=8) :: rki
         real(kind=8) :: tcoef(10, nbm)
         real(kind=8) :: s1

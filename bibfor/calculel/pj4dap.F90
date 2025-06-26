@@ -27,7 +27,7 @@ subroutine pj4dap(ino2, geom2, geom1, tria3, cobary, &
 #include "asterfort/pj3dgb.h"
 #include "asterfort/pj4da2.h"
     real(kind=8) :: cobary(3), geom1(*), geom2(*), btvr(*)
-    integer :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*), tria3(*)
+    integer(kind=8) :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*), tria3(*)
 !  but :
 !    trouver le tria3 qui servira a interpoler le noeud ino2
 !    ainsi que les coordonnees barycentriques de ino2 dans ce tria3
@@ -61,7 +61,7 @@ subroutine pj4dap(ino2, geom2, geom1, tria3, cobary, &
 !
 !
     real(kind=8) :: cobar2(3), dmin, d2, surf, rtr3
-    integer :: p, q, r, p1, q1, p2, q2, r1, r2, ino2, i, k, iposi, nx, ny, ntrbt
+    integer(kind=8) :: p, q, r, p1, q1, p2, q2, r1, r2, ino2, i, k, iposi, nx, ny, ntrbt
 !
     aster_logical :: l_dmax, loin
     real(kind=8) :: dmax, dala

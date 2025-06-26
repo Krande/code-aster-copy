@@ -22,16 +22,16 @@ interface
     subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, nfiss, nfisc, fisco, nnops,&
                       txlsn, n, c)
         character(len=8) :: elrefp
-        integer :: ndim
-        integer :: joncno
-        integer :: jlsn
-        integer :: igeom
-        integer :: nfiss
-        integer :: nfisc
-        integer :: fisco(*)
-        integer :: nnops
+        integer(kind=8) :: ndim
+        integer(kind=8) :: joncno
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: igeom
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nfisc
+        integer(kind=8) :: fisco(*)
+        integer(kind=8) :: nnops
         real(kind=8) :: txlsn(28)
-        integer, intent(in), optional :: n
+        integer(kind=8), intent(in), optional :: n
         real(kind=8), intent(in), optional :: c(ndim)
     end subroutine xstjon
 end interface

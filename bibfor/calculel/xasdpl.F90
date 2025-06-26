@@ -66,22 +66,22 @@ subroutine xasdpl(model, celmod, prol0, chou)
 #include "asterfort/xnpgxx.h"
 #include "asterfort/rcmfmc.h"
 !
-    integer :: nboumx, nbinmx
+    integer(kind=8) :: nboumx, nbinmx
     parameter(nboumx=1, nbinmx=11)
     character(len=8) :: lpaout(nboumx), lpain(nbinmx)
     character(len=19) :: lchout(nboumx), lchin(nbinmx)
 !
-    integer :: nncp, iret, nbin, nbout
-    integer :: iopt, iopt1, iopt2, nute, numc, numc2, igr, nbgrel
-    integer :: imolo
-    integer :: nel, jliel
-    integer :: jcesd, jcesl, jcesddpl, jcesldpl
-    integer :: jcesddpx, jcesldpx, jcesdnpg, jceslnpg
-    integer :: jmofis, jnfiss
-    integer :: nfismo, ndime, ndim, npg, nfiss
-    integer :: ima, iadnpg, iaddpx, iaddpl, iad
-    integer :: iel, kpg
-    integer :: k, ifiss
+    integer(kind=8) :: nncp, iret, nbin, nbout
+    integer(kind=8) :: iopt, iopt1, iopt2, nute, numc, numc2, igr, nbgrel
+    integer(kind=8) :: imolo
+    integer(kind=8) :: nel, jliel
+    integer(kind=8) :: jcesd, jcesl, jcesddpl, jcesldpl
+    integer(kind=8) :: jcesddpx, jcesldpx, jcesdnpg, jceslnpg
+    integer(kind=8) :: jmofis, jnfiss
+    integer(kind=8) :: nfismo, ndime, ndim, npg, nfiss
+    integer(kind=8) :: ima, iadnpg, iaddpx, iaddpl, iad
+    integer(kind=8) :: iel, kpg
+    integer(kind=8) :: k, ifiss
     character(len=3) :: exixfm
     character(len=4) :: tychi
     character(len=5) :: phen
@@ -93,7 +93,7 @@ subroutine xasdpl(model, celmod, prol0, chou)
     character(len=19) :: chhno, chxpg, chdpx, chsdpx, chsnpg
     character(len=24) :: valk(4)
     aster_logical :: lxfem, ok, yathm, perman, lfiss, l_ther
-    integer, pointer :: cesvnpg(:) => null()
+    integer(kind=8), pointer :: cesvnpg(:) => null()
     real(kind=8), pointer :: cesvdpl(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: cesvdpx(:) => null()

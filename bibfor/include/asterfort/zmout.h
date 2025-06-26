@@ -21,12 +21,12 @@
 interface
     subroutine zmout(lout, m, n, a, lda,&
                      idigit, ifmt)
-        integer :: lda
-        integer :: lout
-        integer :: m
-        integer :: n
+        integer(kind=8) :: lda
+        integer(kind=8) :: lout
+        integer(kind=8) :: m
+        integer(kind=8) :: n
         complex(kind=8) :: a(lda, *)
-        integer :: idigit
+        integer(kind=8) :: idigit
         character(len=*) :: ifmt
     end subroutine zmout
 end interface

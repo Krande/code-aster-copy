@@ -24,15 +24,15 @@ interface
                       indcol, nbcol)
         character(len=8) :: nomres
         character(len=24) :: fmli
-        integer :: iblo
+        integer(kind=8) :: iblo
         character(len=24) :: liamod
-        integer :: nlilia
-        integer :: ncolia
+        integer(kind=8) :: nlilia
+        integer(kind=8) :: ncolia
         character(len=24) :: promod
-        integer :: nlipro
-        integer :: ncopro
-        integer :: taille(2)
+        integer(kind=8) :: nlipro
+        integer(kind=8) :: ncopro
+        integer(kind=8) :: taille(2)
         character(len=24) :: indcol
-        integer :: nbcol
+        integer(kind=8) :: nbcol
     end subroutine liared
 end interface

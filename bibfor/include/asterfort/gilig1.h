@@ -20,9 +20,9 @@
 !
 interface
     subroutine gilig1(nfic, ndim, nbval, nbpoin)
-        integer :: nfic
-        integer :: ndim
-        integer :: nbval
-        integer :: nbpoin
+        integer(kind=8) :: nfic
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbval
+        integer(kind=8) :: nbpoin
     end subroutine gilig1
 end interface

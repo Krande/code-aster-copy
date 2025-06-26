@@ -48,7 +48,7 @@ subroutine u195tb(chou)
 !
 !      ==> VARIABLES LOCALES
 !
-    integer :: n1, n2, ibid, nncp
+    integer(kind=8) :: n1, n2, ibid, nncp
     character(len=3) :: prol0
     character(len=8) :: nomgd, ma, mo
     character(len=16) :: tychlu, option, typchs, typch2

@@ -39,8 +39,8 @@ subroutine zreord(zmat, nbddg, nbmod, nbmob, nbddr, &
 ! ZVEC      /M/: VECTEUR DE TRAVAIL COMPLEXE DIMENSIONNE A NBDDG
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, nbddg, nbddr, nbliax, nbmob, nbmod
-    integer :: liax(nbliax)
+    integer(kind=8) :: i, j, nbddg, nbddr, nbliax, nbmob, nbmod
+    integer(kind=8) :: liax(nbliax)
     complex(kind=8) :: zmat(nbddg, nbmod), zvec(nbddg)
     aster_logical :: axok
 !-----------------------------------------------------------------------

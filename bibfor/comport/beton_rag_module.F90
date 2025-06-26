@@ -104,7 +104,7 @@ module beton_rag_module
         !   1 : Mécanique seule
         !   2 : Mécanique + Fluage
         !   3 : Mécanique + Fluage + RAG
-        integer      :: loi_integre = 0
+        integer(kind=8)      :: loi_integre = 0
         ! Calcul fait par perturbation ou pas
         aster_logical      :: perturbation = ASTER_FALSE
         ! Calcul de fluage
@@ -127,17 +127,17 @@ module beton_rag_module
     private :: BR_rk5app, BR_rk5adp, BR_Mecanique, BR_Mecanique_Fluage
     private :: beton_rag_raideur, beton_rag_mecanique_fluage, beton_rag_grd, pow
 
-    integer, parameter, private :: BR_VARI_SEUIL_ENDOMMAGEMENT = 1
-    integer, parameter, private :: BR_VARI_EPSI_FLUAGE = 8
-    integer, parameter, private :: BR_VARI_EPSI_FLUAGE_INTERNE = 15
-    integer, parameter, private :: BR_VARI_AVANCEMENT_CHIMIQUE = 22
-    integer, parameter, private :: BR_VARI_RAG_ENDOMMAGEMENT = 23
-    integer, parameter, private :: BR_VARI_EPSI_VISC_RAG = 26
-    integer, parameter, private :: BR_VARI_PRESSION_GEL = 32
-    integer, parameter, private :: BR_VARI_PRESSION_CAPIL = 33
+    integer(kind=8), parameter, private :: BR_VARI_SEUIL_ENDOMMAGEMENT = 1
+    integer(kind=8), parameter, private :: BR_VARI_EPSI_FLUAGE = 8
+    integer(kind=8), parameter, private :: BR_VARI_EPSI_FLUAGE_INTERNE = 15
+    integer(kind=8), parameter, private :: BR_VARI_AVANCEMENT_CHIMIQUE = 22
+    integer(kind=8), parameter, private :: BR_VARI_RAG_ENDOMMAGEMENT = 23
+    integer(kind=8), parameter, private :: BR_VARI_EPSI_VISC_RAG = 26
+    integer(kind=8), parameter, private :: BR_VARI_PRESSION_GEL = 32
+    integer(kind=8), parameter, private :: BR_VARI_PRESSION_CAPIL = 33
     !
-    integer, parameter          :: BR_VARI_LOI_INTEGRE = 34
-    integer, parameter          :: BR_VARI_NOMBRE = 34
+    integer(kind=8), parameter          :: BR_VARI_LOI_INTEGRE = 34
+    integer(kind=8), parameter          :: BR_VARI_NOMBRE = 34
 
 contains
 
@@ -229,7 +229,7 @@ contains
         real(kind=8), intent(in) :: epsm(6), deps(6), sigm(6), vim(*)
         type(beton_rag_materiau), intent(in) :: mater_br
         type(beton_rag_parametres), intent(in) :: param_br
-        integer, intent(inout)                 :: iret
+        integer(kind=8), intent(inout)                 :: iret
         !
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(*)
@@ -461,7 +461,7 @@ contains
         real(kind=8), intent(in)      :: epsm(6), deps(6), vim(*)
         type(beton_rag_materiau), intent(in)      :: mater_br
         type(beton_rag_parametres), intent(in)      :: param_br
-        integer, intent(inout)                      :: iret
+        integer(kind=8), intent(inout)                      :: iret
         !
         real(kind=8), intent(out) :: sigp(6)
         real(kind=8), intent(out) :: vip(*)
@@ -469,7 +469,7 @@ contains
         !
         ! ------------------------------------------------------------------------------------------
         !
-        integer, parameter  :: nbequa = 30
+        integer(kind=8), parameter  :: nbequa = 30
         real(kind=8)        :: y0(nbequa), dy0(nbequa), resu(nbequa*2), ynorme(nbequa)
         !
         real(kind=8) :: epsmeca(6), epsflua(6), epsanel(6), epsvrag(6)
@@ -582,7 +582,7 @@ contains
         real(kind=8)   :: k1, n1, k2, n2, sigma_sph, vaux1, xx1
         type(SpheDev)  :: TSpheDev
         type(beton_rag_parametres) :: param_br_loc
-        integer, parameter :: iflu = 10
+        integer(kind=8), parameter :: iflu = 10
         aster_logical      :: nofluag
         ! ------------------------------------------------------------------------------------------
         epsmeca(:) = 0.d0
@@ -703,7 +703,7 @@ contains
         ! ------------------------------------------------------------------------------------------
         implicit none
 #include "asterf_types.h"
-        integer          :: nbeq
+        integer(kind=8)          :: nbeq
         type(beton_rag_materiau), intent(in) :: mater_br
         type(beton_rag_parametres), intent(in) :: param_br
         type(beton_rag_pression), intent(inout) :: grd_press
@@ -712,9 +712,9 @@ contains
         real(kind=8), intent(in)  :: dy0(nbeq)
         real(kind=8), intent(in)  :: ynorme(nbeq)
         real(kind=8), intent(out) :: resu(2*nbeq)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
         !
-        integer :: nbbou, ii
+        integer(kind=8) :: nbbou, ii
         real(kind=8) :: t9, dt9, y9(nbeq), erreur, xbid1, solu(3*nbeq)
         aster_logical :: decoup
         !
@@ -829,7 +829,7 @@ contains
         ! ------------------------------------------------------------------------------------------
         implicit none
 #include "asterf_types.h"
-        integer, intent(in)      :: nbeq
+        integer(kind=8), intent(in)      :: nbeq
         real(kind=8), intent(in) :: dtemps, yinit(nbeq), dyinit(nbeq), vim(*)
         type(beton_rag_materiau), intent(in) :: mater_br
         type(beton_rag_parametres), intent(in) :: param_br
@@ -838,7 +838,7 @@ contains
         aster_logical, intent(inout) :: decoup
         !
         ! niveau du runge-kutta
-        integer :: nivrk, nn, niv, ii
+        integer(kind=8) :: nivrk, nn, niv, ii
         parameter(nivrk=6)
         real(kind=8) :: yy(nbeq), rr(nbeq, nivrk)
         ! tables de cash-karp

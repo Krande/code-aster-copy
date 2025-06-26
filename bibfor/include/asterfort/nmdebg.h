@@ -22,6 +22,6 @@ interface
     subroutine nmdebg(typobz, nomobz, ifm)
         character(len=*) :: typobz
         character(len=*) :: nomobz
-        integer :: ifm
+        integer(kind=8) :: ifm
     end subroutine nmdebg
 end interface

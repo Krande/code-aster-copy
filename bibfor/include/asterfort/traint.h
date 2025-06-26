@@ -23,13 +23,13 @@ interface
                       intf1, intf2, nbmod, nl, nc)
         character(len=8) :: resgen
         character(len=8) :: modgen
-        integer :: numlia
+        integer(kind=8) :: numlia
         character(len=8) :: sst1
         character(len=8) :: sst2
         character(len=8) :: intf1
         character(len=8) :: intf2
-        integer :: nbmod
-        integer :: nl
-        integer :: nc
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: nl
+        integer(kind=8) :: nc
     end subroutine traint
 end interface

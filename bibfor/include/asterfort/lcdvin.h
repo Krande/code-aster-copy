@@ -23,14 +23,14 @@ interface
                       imat, matcst, nvi, nmat, vini,&
                       coeft, x, dtime, sigi, dvin,&
                       iret)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: rela_comp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=3) :: matcst
         real(kind=8) :: vini(nvi)
         real(kind=8) :: coeft(nmat)
@@ -38,6 +38,6 @@ interface
         real(kind=8) :: dtime
         real(kind=8) :: sigi(6)
         real(kind=8) :: dvin(nvi)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcdvin
 end interface

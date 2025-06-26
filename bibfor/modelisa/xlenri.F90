@@ -54,7 +54,7 @@ subroutine xlenri(noma, fiss, goinop, lismae, lisnoe)
 !
 !
 !
-    integer :: nbmae, nbnoe, n, jmae, jnoe, i
+    integer(kind=8) :: nbmae, nbnoe, n, jmae, jnoe, i
     character(len=8) :: k8b
 !
 ! ----------------------------------------------------------------------

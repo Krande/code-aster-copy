@@ -22,20 +22,20 @@ interface
     subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm,&
                       cpmono, nmat, mod, nvi, sigd,&
                       sigf, vind, vinf, nbphas, iret)
-        integer :: nmat
-        integer :: ndim
+        integer(kind=8) :: nmat
+        integer(kind=8) :: ndim
         character(len=16) :: opt
         character(len=16) :: rela_comp
         real(kind=8) :: materf(nmat, 2)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         character(len=8) :: mod
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: sigd(*)
         real(kind=8) :: sigf(*)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        integer :: nbphas
-        integer :: iret
+        integer(kind=8) :: nbphas
+        integer(kind=8) :: iret
     end subroutine lcrkin
 end interface

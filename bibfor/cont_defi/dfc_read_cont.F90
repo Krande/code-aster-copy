@@ -39,9 +39,9 @@ subroutine dfc_read_cont(sdcont, zoneKeyword, mesh, model, model_ndim, &
 !
     character(len=8), intent(in) :: sdcont, mesh, model
     character(len=16), intent(in) :: zoneKeyword
-    integer, intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: model_ndim
     character(len=19), intent(in) :: slavElemLigr
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,7 +61,7 @@ subroutine dfc_read_cont(sdcont, zoneKeyword, mesh, model, model_ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_surf, nb_cont_elem, nb_cont_node, nb_node_coq3d
+    integer(kind=8) :: nb_cont_surf, nb_cont_elem, nb_cont_node, nb_node_coq3d
     aster_logical :: l_elim_coq3d
 !
 ! --------------------------------------------------------------------------------------------------

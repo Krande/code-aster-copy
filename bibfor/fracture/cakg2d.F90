@@ -67,7 +67,7 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
     character(len=24) :: depla, mate, mateco, theta, compor
     character(len=19) :: lischa
     real(kind=8) :: time, puls
-    integer :: iord, nbprup
+    integer(kind=8) :: iord, nbprup
     aster_logical :: lmoda
 ! ......................................................................
 !
@@ -96,19 +96,19 @@ subroutine cakg2d(optioz, result, modele, depla, theta, &
 ! ......................................................................
 ! CORPS DU PROGRAMME
 !
-    integer :: nbmxpa
+    integer(kind=8) :: nbmxpa
     parameter(nbmxpa=20)
 !
-    integer :: nbinmx, nboumx
+    integer(kind=8) :: nbinmx, nboumx
     parameter(nbinmx=50, nboumx=1)
     character(len=8) :: lpain(nbinmx), lpaout(nboumx)
     character(len=24) :: lchin(nbinmx), lchout(nboumx)
-    integer :: i, ibid, inorma, nsig, ifm, niv, jnor, jbasfo
-    integer :: iadrma, iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
-    integer :: lobj2, ndimte, nunoff, ndim, nchin, jfond, numfon
-    integer :: iret, livi(nbmxpa), nbchar, pbtype
+    integer(kind=8) :: i, ibid, inorma, nsig, ifm, niv, jnor, jbasfo
+    integer(kind=8) :: iadrma, iadrff, icoode, iadrco, iadrno, ino1, ino2, inga
+    integer(kind=8) :: lobj2, ndimte, nunoff, ndim, nchin, jfond, numfon
+    integer(kind=8) :: iret, livi(nbmxpa), nbchar, pbtype
     real(kind=8) :: fic(5), rcmp(6), livr(nbmxpa), girwin
-    integer :: mxstac
+    integer(kind=8) :: mxstac
     complex(kind=8) :: livc(nbmxpa)
     aster_logical :: lfonc, lxfem
     parameter(mxstac=1000)

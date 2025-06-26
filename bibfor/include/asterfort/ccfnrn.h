@@ -22,7 +22,7 @@ interface
         character(len=8) :: resuin
         character(len=8) :: resuou
         character(len=19) :: lisord
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=16) :: resultType
     end subroutine ccfnrn
 end interface

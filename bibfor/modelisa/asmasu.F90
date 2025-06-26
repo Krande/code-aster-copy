@@ -51,19 +51,19 @@ subroutine asmasu(ma1, ma2, mag)
     character(len=19) :: coordo
     character(len=8) :: noma, nono
     character(len=24) :: nogma, nogmab, nogno, nognob
-    integer :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
-    integer :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv
-    integer :: iadime
-    integer :: iagma1, iagma2, iagmax
-    integer :: iacon1, iacon2, iaconx
-    integer :: iagno1, iagno2, iagnox
-    integer :: iatyp1, iatyp2, iatypx
-    integer :: nbgno, nbgn1, nbgn2, ii, igeomr, iadesc, ibid
-    integer :: iatyma, iavale, iret, iret1, iret2
+    integer(kind=8) :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
+    integer(kind=8) :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv
+    integer(kind=8) :: iadime
+    integer(kind=8) :: iagma1, iagma2, iagmax
+    integer(kind=8) :: iacon1, iacon2, iaconx
+    integer(kind=8) :: iagno1, iagno2, iagnox
+    integer(kind=8) :: iatyp1, iatyp2, iatypx
+    integer(kind=8) :: nbgno, nbgn1, nbgn2, ii, igeomr, iadesc, ibid
+    integer(kind=8) :: iatyma, iavale, iret, iret1, iret2
     real(kind=8), pointer :: coo1(:) => null()
     real(kind=8), pointer :: coo2(:) => null()
-    integer, pointer :: dim1(:) => null()
-    integer, pointer :: dim2(:) => null()
+    integer(kind=8), pointer :: dim1(:) => null()
+    integer(kind=8), pointer :: dim2(:) => null()
 !
 !     ------------------------------------------------------------------
 !

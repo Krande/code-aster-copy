@@ -22,8 +22,8 @@
 !
 interface
     function exigfa(dgf, ngf)
-        integer :: dgf(*)
-        integer :: ngf
+        integer(kind=8) :: dgf(*)
+        integer(kind=8) :: ngf
         aster_logical :: exigfa
     end function exigfa
 end interface

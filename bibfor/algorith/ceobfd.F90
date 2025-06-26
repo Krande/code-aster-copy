@@ -38,7 +38,7 @@ subroutine ceobfd(dm, epsm, lambda, mu, ecrod, &
 ! OUT FD     : FORCE THERMODYNAMIQUE
 ! ----------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     real(kind=8) :: eps(6), d
     real(kind=8) :: un, deux, treps, trem, dcoefd, ene

@@ -21,8 +21,8 @@
 interface
     subroutine forpes(intsn, nb1, xr, rho, epais,&
                       vpesan, rnormc, vecl1)
-        integer :: intsn
-        integer :: nb1
+        integer(kind=8) :: intsn
+        integer(kind=8) :: nb1
         real(kind=8) :: xr(*)
         real(kind=8) :: rho
         real(kind=8) :: epais

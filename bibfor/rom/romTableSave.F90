@@ -30,11 +30,11 @@ subroutine romTableSave(tablResu, nbMode, v_gamma, &
 #include "asterfort/utmess.h"
 !
     type(NL_DS_TableIO), intent(in) :: tablResu
-    integer, intent(in) :: nbMode
+    integer(kind=8), intent(in) :: nbMode
     real(kind=8), pointer :: v_gamma(:)
-    integer, optional, intent(in) :: numeStore_
+    integer(kind=8), optional, intent(in) :: numeStore_
     real(kind=8), optional, intent(in) :: timeCurr_
-    integer, optional, intent(in) :: numeSnap_
+    integer(kind=8), optional, intent(in) :: numeSnap_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,8 +53,8 @@ subroutine romTableSave(tablResu, nbMode, v_gamma, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iMode, valInte(3), numeSnap, numeStore
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iMode, valInte(3), numeSnap, numeStore
     real(kind=8) :: valReal(2), timeCurr
 !
 ! --------------------------------------------------------------------------------------------------

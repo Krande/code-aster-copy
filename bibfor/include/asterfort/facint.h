@@ -22,10 +22,10 @@ interface
     subroutine facint(nbpas, dim, longh, vec1, vec2,&
                       long, s, r, d, u,&
                       v, w)
-        integer :: long
-        integer :: longh
-        integer :: dim
-        integer :: nbpas
+        integer(kind=8) :: long
+        integer(kind=8) :: longh
+        integer(kind=8) :: dim
+        integer(kind=8) :: nbpas
         real(kind=8) :: vec1(long)
         real(kind=8) :: vec2(longh)
         complex(kind=8) :: s(dim, dim)

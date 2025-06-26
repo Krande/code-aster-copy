@@ -21,6 +21,6 @@
 interface
     subroutine exipat(mesh, iret)
         character(len=8), intent(in) :: mesh
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine exipat
 end interface

@@ -24,9 +24,9 @@ interface
         character(len=24) :: deficu
         character(len=24) :: resocu
         character(len=19) :: solveu
-        integer :: lmat
+        integer(kind=8) :: lmat
         character(len=19) :: cncine
-        integer :: nbliac
-        integer :: ajliai
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ajliai
     end subroutine cuaca1
 end interface

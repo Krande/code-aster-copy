@@ -23,7 +23,7 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-    integer :: nbpara, nxpara
+    integer(kind=8) :: nbpara, nxpara
     character(len=*) :: para, notype, litypa(nxpara), linopa(nxpara)
 !
 !
@@ -44,7 +44,7 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
 !
 ! ----------------------------------------------------------------------
 !

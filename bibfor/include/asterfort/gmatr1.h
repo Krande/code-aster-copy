@@ -20,8 +20,8 @@
 !
 interface
     subroutine gmatr1(nnoff, ndeg, abscur, xl, matr)
-        integer           :: nnoff
-        integer           :: ndeg
+        integer(kind=8)           :: nnoff
+        integer(kind=8)           :: ndeg
         character(len=24) :: abscur
         real(kind=8)      :: xl
         character(len=24) :: matr

@@ -21,8 +21,8 @@
 interface
     subroutine calkce(nno, ndim, kbp, kbb, pm,&
                       dp, kce, rce)
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         real(kind=8) :: kbp(ndim, nno)
         real(kind=8) :: kbb(ndim, ndim)
         real(kind=8) :: pm(nno)

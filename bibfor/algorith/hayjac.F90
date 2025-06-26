@@ -45,13 +45,13 @@ subroutine hayjac(mod, nmat, coefel, coeft, timed, &
 #include "asterfort/lcprte.h"
 #include "asterfort/r8inir.h"
 #include "blas/dscal.h"
-    integer :: nr, nmat, iret, nvi, i, j
+    integer(kind=8) :: nr, nmat, iret, nvi, i, j
     real(kind=8) :: deps(6), drdy(nr, nr), yf(nr), dy(nr), yd(nr)
     real(kind=8) :: coefel(nmat), coeft(nmat), crit(*)
     real(kind=8) :: timed, timef, vind(nvi), vinf(nvi)
     character(len=8) :: mod
 !
-    integer :: ndt, ndi, itens, ndim
+    integer(kind=8) :: ndt, ndi, itens, ndim
     real(kind=8) :: dev(6), n(6)
     real(kind=8) :: kron(6), eps0, pk, ph1, ph2, delta1, delta2, h1st, h2st
     real(kind=8) :: biga, sig0, pkc, alphad, sequid, dt, theta, epsi, coef

@@ -20,9 +20,9 @@
 !
 interface
     subroutine mdnofa(numfam, nogrf, nbgf, nbfaex, nofaex, nomfam)
-        integer :: numfam
-        integer :: nbgf
-        integer :: nbfaex
+        integer(kind=8) :: numfam
+        integer(kind=8) :: nbgf
+        integer(kind=8) :: nbfaex
         character(len=*) :: nogrf(*)
         character(len=*) :: nofaex(*)
         character(len=*) :: nomfam

@@ -26,10 +26,10 @@ subroutine numoch(listMatrElem, nbMatrElem, listLigr, nbLigr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/as_allocate.h"
 !
-    integer, intent(in) :: nbMatrElem
+    integer(kind=8), intent(in) :: nbMatrElem
     character(len=24), pointer :: listMatrElem(:)
     character(len=24), pointer :: listLigr(:)
-    integer, intent(out) :: nbLigr
+    integer(kind=8), intent(out) :: nbLigr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,8 +49,8 @@ subroutine numoch(listMatrElem, nbMatrElem, listLigr, nbLigr)
     character(len=8) :: model
     character(len=19) :: matrElem, resuElem
     character(len=19) :: modelLigrel, ligrelName
-    integer :: nbResuLigr, iLigr
-    integer :: iMatrElem, iResuElem, iret, nb_subs, nbResuElem
+    integer(kind=8) :: nbResuLigr, iLigr
+    integer(kind=8) :: iMatrElem, iResuElem, iret, nb_subs, nbResuElem
     aster_logical :: l_found
     character(len=24), pointer :: resuElemNoli(:) => null()
     character(len=24), pointer :: listResuElem(:) => null()

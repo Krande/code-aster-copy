@@ -63,14 +63,14 @@ subroutine op0032()
 #include "asterfort/vrrefe.h"
 #include "asterfort/wkvect.h"
     mpi_int :: mpicow, mpicou, mrang, mnbproc
-    integer :: rang, nbproc
-    integer :: islvi, jrefa, itest, nmultc, lamor, jlmod, jlmoe, pivot1
-    integer :: pivot2, mxddl, nbrss, ierd, ii, ifapm, k, nbmod, nblagr, nbcine
-    integer :: neqact, neq, niterc, npivot(2), l, lmasse, lraide, lddl
-    integer :: ldynam, nk, nbrow, lprod, iret, nbfreq, idet(2), jstu
-    integer :: vali(4), ifm, niv, nbtetc, nbtet0, nbtet1, typeco
-    integer :: nbtet2, nbev0, nbev1, nbev2, miterc, ibid, k1, k2
-    integer :: jkpar, l1, l2, l3, l11, l21, frecou, izero
+    integer(kind=8) :: rang, nbproc
+    integer(kind=8) :: islvi, jrefa, itest, nmultc, lamor, jlmod, jlmoe, pivot1
+    integer(kind=8) :: pivot2, mxddl, nbrss, ierd, ii, ifapm, k, nbmod, nblagr, nbcine
+    integer(kind=8) :: neqact, neq, niterc, npivot(2), l, lmasse, lraide, lddl
+    integer(kind=8) :: ldynam, nk, nbrow, lprod, iret, nbfreq, idet(2), jstu
+    integer(kind=8) :: vali(4), ifm, niv, nbtetc, nbtet0, nbtet1, typeco
+    integer(kind=8) :: nbtet2, nbev0, nbev1, nbev2, miterc, ibid, k1, k2
+    integer(kind=8) :: jkpar, l1, l2, l3, l11, l21, frecou, izero
     real(kind=8) :: omgmin, omgmax, omin, omax, fcorig, omecor, precsh, rayonc
     real(kind=8) :: dimc1, rzero, calpar(2), calpac(3), calpaf(2), rbid, det(2)
     complex(kind=8) :: centrc, zimc1, cbid
@@ -869,12 +869,12 @@ if ((typmet(1:5) .eq. 'STURM') .or. ((typmet(1:3) .eq. 'APM') .and. (typcha(1:4)
 !-------------------------- FORTRAN PRINT FORMAT -----------------------
 !-----------------------------------------------------------------------
 4000 format('(METHODE APM) POUR LES 3 NIVEAUX DE DISCRETISATION ',&
-    &       'SUIVANTS', /,&
-    &       ' --- ', i5, ' --- ', i5, ' --- ', i5, ' ---', /,&
-    &       ' NOMBRE DE VALEURS PROPRES DETECTEES ', /,&
-    &       ' --- ', i5, ' --- ', i5, ' --- ', i5, ' ---')
+   &       'SUIVANTS', /,&
+   &       ' --- ', i5, ' --- ', i5, ' --- ', i5, ' ---', /,&
+   &       ' NOMBRE DE VALEURS PROPRES DETECTEES ', /,&
+   &       ' --- ', i5, ' --- ', i5, ' --- ', i5, ' ---')
 4010 format('(METHODE APM) CONVERGENCE DE L''HEURISTIQUE ')
 4020 format('(METHODE APM) ATTENTION CALCUL DE TEST POUR IMPRIMER LA',&
-    &       ' COURBE DES NOMBRES DE TOURS ')
+   &       ' COURBE DES NOMBRES DE TOURS ')
 !
 end subroutine

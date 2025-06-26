@@ -63,14 +63,14 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ndimLdc = 2
+    integer(kind=8), parameter :: ndimLdc = 2
     character(len=4), parameter :: fami = "RIGI"
-    integer :: nbres, nbrddl, nc, kpgs, nbcoum, nbsecm
-    integer :: vali, jcret, nFourier
+    integer(kind=8) :: nbres, nbrddl, nc, kpgs, nbcoum, nbsecm
+    integer(kind=8) :: vali, jcret, nFourier
     parameter(nbres=9)
     character(len=16) :: nomres(nbres)
     character(len=32) :: elasKeyword
-    integer :: valret(nbres)
+    integer(kind=8) :: valret(nbres)
     real(kind=8) :: valres(nbres), xpg(4)
     parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
@@ -85,22 +85,22 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
     real(kind=8) :: pgl(3, 3), omega, vtemp(nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
     real(kind=8) :: angmas(3), r1
-    integer :: nno, npg, nbcou, nbsec, ndimv, ivarix
-    integer :: ipoids, ivf, nbvari, lgpg, jtab(7)
-    integer :: imate, imatuu, igeom
-    integer :: ivarip, ivarim, icontm, icontp, ivectu
-    integer :: igau, icou, isect, i, lorien
-    integer :: iinstm, iinstp, ideplm, ideplp, icarcr, nbv, icoude, k1, k2
-    integer :: icoud2, mmt, codret, cod
-    integer :: jnbspi, iret, ksp
-    integer :: jcoopg, idfdk, jdfd2
+    integer(kind=8) :: nno, npg, nbcou, nbsec, ndimv, ivarix
+    integer(kind=8) :: ipoids, ivf, nbvari, lgpg, jtab(7)
+    integer(kind=8) :: imate, imatuu, igeom
+    integer(kind=8) :: ivarip, ivarim, icontm, icontp, ivectu
+    integer(kind=8) :: igau, icou, isect, i, lorien
+    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icarcr, nbv, icoude, k1, k2
+    integer(kind=8) :: icoud2, mmt, codret, cod
+    integer(kind=8) :: jnbspi, iret, ksp
+    integer(kind=8) :: jcoopg, idfdk, jdfd2
 !aster_logical :: vecteu, matric
     character(len=16) :: defo_comp, rela_comp, type_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
     type(Behaviour_Integ) :: BEHinteg
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
-    integer :: lg_varip
+    integer(kind=8) :: lg_varip
     real(kind=8), allocatable :: varip(:)
     character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ', 'EP1'/)
     character(len=8), parameter :: typmod(2) = (/'C_PLAN  ', '        '/)

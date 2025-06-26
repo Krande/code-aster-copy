@@ -26,7 +26,7 @@ subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: neq
+    integer(kind=8) :: neq
     real(kind=8) :: eta, rho, offset
     character(len=19) :: incpr1, incpr2, ddincc
 !
@@ -51,7 +51,7 @@ subroutine nmpilk(incpr1, incpr2, ddincc, neq, eta, &
 !
 !
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8), pointer :: ddepl(:) => null()
     real(kind=8), pointer :: du0(:) => null()
     real(kind=8), pointer :: du1(:) => null()

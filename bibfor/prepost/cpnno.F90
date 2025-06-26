@@ -33,7 +33,7 @@ subroutine cpnno(main, numa, coor, inc, nbno, nomnoe)
 #include "asterfort/utmess.h"
 #include "asterfort/reerel.h"
 !
-    integer :: nbno, inc, numa
+    integer(kind=8) :: nbno, inc, numa
     real(kind=8) :: coor(3, *)
     character(len=8) :: main
     character(len=24) :: nomnoe
@@ -50,8 +50,8 @@ subroutine cpnno(main, numa, coor, inc, nbno, nomnoe)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: lino(6), jtab, lgnd, iret, nbso
-    integer :: inc1, inc2, aux
+    integer(kind=8) :: lino(6), jtab, lgnd, iret, nbso
+    integer(kind=8) :: inc1, inc2, aux
     real(kind=8) ::xe(3), xp(3), tabar(6*3), tole
 !
     character(len=8) :: nomnd, eletyp, mailut

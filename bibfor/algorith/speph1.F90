@@ -32,7 +32,7 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr, &
 #include "asterfort/wkvect.h"
 !
     aster_logical :: intphy, intmod
-    integer :: nbmode, nbn, nbpf
+    integer(kind=8) :: nbmode, nbn, nbpf
     real(kind=8) :: cham(nbn, *), specmr(nbpf, *), specmi(nbpf, *)
     character(len=8) :: nomu, nnoe(*), nomcmp(*)
 !  RESTITUTION SUR BASE PHYSIQUE D'UNE TABL_INTSP DE REPONSE MODALE
@@ -59,8 +59,8 @@ subroutine speph1(intphy, intmod, nomu, cham, specmr, &
 ! IN  : NBPF   : NBR. DE POINTS DE LA DISCRETISATION FREQUENTIELLE
 !-----------------------------------------------------------------------
 !
-    integer :: nbpar, inj, idebn, ini, il, im2, idebm, im1, ism
-    integer :: nbabs, ispec, mxval, lnoei, lnoej, lcmpi, lcmpj, ij
+    integer(kind=8) :: nbpar, inj, idebn, ini, il, im2, idebm, im1, ism
+    integer(kind=8) :: nbabs, ispec, mxval, lnoei, lnoej, lcmpi, lcmpj, ij
     parameter(nbpar=5)
     real(kind=8) :: specr, speci
     character(len=24) :: kval(nbpar)

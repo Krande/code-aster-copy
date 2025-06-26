@@ -23,10 +23,10 @@ interface
                       d2y, iret)
         real(kind=8) :: x(*)
         real(kind=8) :: y(*)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: dy1
         real(kind=8) :: dyn
         real(kind=8) :: d2y(*)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine spline
 end interface

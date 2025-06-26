@@ -21,6 +21,6 @@
 interface
     subroutine crmema(promes, iampee)
         character(len=8) :: promes
-        integer :: iampee
+        integer(kind=8) :: iampee
     end subroutine crmema
 end interface

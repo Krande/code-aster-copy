@@ -31,23 +31,23 @@ interface
         character(len=8) :: nomaas
         character(len=8) :: nommod
         character(len=8) :: nomgd
-        integer :: typent
-        integer :: nbcmpv
+        integer(kind=8) :: typent
+        integer(kind=8) :: nbcmpv
         character(len=*) :: ncmpva
         character(len=*) :: ncmpvm
         character(len=3) :: prolz
-        integer :: iinst
-        integer :: numpt
-        integer :: numord
+        integer(kind=8) :: iinst
+        integer(kind=8) :: numpt
+        integer(kind=8) :: numord
         real(kind=8) :: inst
         character(len=8) :: crit
         real(kind=8) :: prec
-        integer :: nrofic
+        integer(kind=8) :: nrofic
         character(len=24) :: option
         character(len=8) :: param
-        integer :: nbpgma(*)
-        integer :: nbpgmm(*)
-        integer :: nbspmm(*)
-        integer :: codret
+        integer(kind=8) :: nbpgma(*)
+        integer(kind=8) :: nbpgmm(*)
+        integer(kind=8) :: nbspmm(*)
+        integer(kind=8) :: codret
     end subroutine lrceme
 end interface

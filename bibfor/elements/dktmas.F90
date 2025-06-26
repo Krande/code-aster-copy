@@ -48,9 +48,9 @@ subroutine dktmas(xyzl, option, pgl, mas, ener)
 !     OUT MAS    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_CIN (ECIN_ELEM)
 !     ------------------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: i, j, k, i1, i2, i3, jcoqu, jdepg, m1, m2, m3
-    integer :: jvitg, iret
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: i, j, k, i1, i2, i3, jcoqu, jdepg, m1, m2, m3
+    integer(kind=8) :: jvitg, iret
     real(kind=8) :: detj, wgt, wkt(9), depl(18), nfx(9), nfy(9), nmi(3)
     real(kind=8) :: vite(18)
     real(kind=8) :: flex(9, 9), memb(6, 6), mefl(6, 9), masloc(171), masglo(171)

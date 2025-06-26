@@ -36,7 +36,7 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp, &
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbexip.h"
 !
-    integer :: iocc, i1, nbcmp, nbco, nbsp
+    integer(kind=8) :: iocc, i1, nbcmp, nbco, nbsp
     real(kind=8) :: releve(*)
     character(len=8) :: nomcmp(*)
     character(len=16) :: ncheff
@@ -50,8 +50,8 @@ subroutine rvtaso(releve, nomcmp, nbcmp, nbco, nbsp, &
 ! IN  : NBSP   : NOMBRE DE SOUS-PT PAR POINT
 ! IN  : NOMTAB : INTITULE DE LA TABLE
 !     ------------------------------------------------------------------
-    integer :: nbpar, ilign, ls, lc, isp, icp, ico, n1, adrval, adracc, jacc, ik, ir, ii
-    integer :: valei(12), nbacc, nbpr, jaces, iac, iadr, iord(1)
+    integer(kind=8) :: nbpar, ilign, ls, lc, isp, icp, ico, n1, adrval, adracc, jacc, ik, ir, ii
+    integer(kind=8) :: valei(12), nbacc, nbpr, jaces, iac, iadr, iord(1)
     real(kind=8) :: prec, valer(10)
     complex(kind=8) :: c16b
     aster_logical :: exist

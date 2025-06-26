@@ -52,15 +52,15 @@ subroutine veri_seg(mailla, dmax_cable, lnuma, liproj, lidoubno, &
 ! ---------
     character(len=8) :: mailla
     real(kind=8) :: x3dca(3), dmax_cable
-    integer :: iproj, n1, n2, lnuma(*), lidoubno(*), liproj(*), nbmaok
-    integer :: numail
+    integer(kind=8) :: iproj, n1, n2, lnuma(*), lidoubno(*), liproj(*), nbmaok
+    integer(kind=8) :: numail
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: imail, nb_seg, nn1, nn2, jconx1, jcoor, jconx2, nbcnx, inoma, noe
-    integer :: jtyma, ntyma, itria, inoeu, icote, iproj2, i, jnoeu, jmail
-    integer :: numail2, noe2, jseg
-    integer, pointer :: liseg(:) => null()
+    integer(kind=8) :: imail, nb_seg, nn1, nn2, jconx1, jcoor, jconx2, nbcnx, inoma, noe
+    integer(kind=8) :: jtyma, ntyma, itria, inoeu, icote, iproj2, i, jnoeu, jmail
+    integer(kind=8) :: numail2, noe2, jseg
+    integer(kind=8), pointer :: liseg(:) => null()
     character(len=24) :: conxma, coorno, tymama
     real(kind=8) :: xyzma(3, 9), normal(3), excent, xbar(3), x3dp(3), prec
     real(kind=8) :: quart, d

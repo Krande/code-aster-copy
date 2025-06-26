@@ -32,9 +32,9 @@ interface
         character(len=24) :: fplibn
         character(len=24) :: fpliao
         character(len=24) :: fplibo
-        integer :: iada(3)
-        integer :: iadb(3)
-        integer :: numlis
+        integer(kind=8) :: iada(3)
+        integer(kind=8) :: iadb(3)
+        integer(kind=8) :: numlis
         character(len=8) :: matprj
     end subroutine inclis
 end interface

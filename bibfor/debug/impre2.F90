@@ -22,11 +22,11 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur, &
 #include "jeveux.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jeveuo.h"
-    integer :: indsur, ipntrl, nbterm, irela
+    integer(kind=8) :: indsur, ipntrl, nbterm, irela
     character(len=24) :: licoef, liddl, linoeu, libeta
 !
-    integer :: idecal, idcoef, idnoeu, iddl, idbeta, ifm
-    integer :: idcoe, idnoe, idl, i
+    integer(kind=8) :: idecal, idcoef, idnoeu, iddl, idbeta, ifm
+    integer(kind=8) :: idcoe, idnoe, idl, i
     real(kind=8) :: dble, dimag
     character(len=4) :: typval, typcoe
 !

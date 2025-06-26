@@ -21,7 +21,7 @@
 
 interface 
     subroutine lcmfma(mat, fami, kpg, ksp, poum)
-        integer,intent(in) :: mat, kpg, ksp
+        integer(kind=8),intent(in) :: mat, kpg, ksp
         character(len=1),intent(in):: poum
         character(len=*),intent(in) :: fami
     end subroutine lcmfma

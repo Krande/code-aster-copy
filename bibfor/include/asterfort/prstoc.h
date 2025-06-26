@@ -23,10 +23,10 @@ interface
                       nbvale, nbrefe)
         character(len=19) :: vecsol
         character(len=19) :: vestoc
-        integer :: j
-        integer :: k
-        integer :: iad
-        integer :: nbvale
-        integer :: nbrefe
+        integer(kind=8) :: j
+        integer(kind=8) :: k
+        integer(kind=8) :: iad
+        integer(kind=8) :: nbvale
+        integer(kind=8) :: nbrefe
     end subroutine prstoc
 end interface

@@ -22,12 +22,12 @@ interface
     subroutine znapps(n, kev, np, shift, v,&
                       ldv, h, ldh, resid, q,&
                       ldq, workl, workd)
-        integer :: ldq
-        integer :: ldh
-        integer :: ldv
-        integer :: np
-        integer :: kev
-        integer :: n
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldh
+        integer(kind=8) :: ldv
+        integer(kind=8) :: np
+        integer(kind=8) :: kev
+        integer(kind=8) :: n
         complex(kind=8) :: shift(np)
         complex(kind=8) :: v(ldv, kev+np)
         complex(kind=8) :: h(ldh, kev+np)

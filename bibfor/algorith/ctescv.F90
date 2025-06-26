@@ -41,7 +41,7 @@ subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim, &
 !
 #include "asterc/r8miem.h"
 #include "asterfort/zconju.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     complex(kind=8) :: cvec1(ndim), cvec0(ndim)
     complex(kind=8) :: cvec01(ndim), cvec00(ndim)
     complex(kind=8) :: cconj, cnorm, cprod
@@ -51,7 +51,7 @@ subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: pima, prea, xer
 !-----------------------------------------------------------------------
     eps = r8miem()**(2.0d+0/3.0d+0)

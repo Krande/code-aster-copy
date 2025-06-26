@@ -40,9 +40,9 @@ subroutine te0007(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !-----------------------------------------------------------------------
-    integer :: i, icomp, jvSief, jvDisp, idfde, igeom, ipoids
-    integer :: iretc, ivectu, ivf, jgano, kp, ku
-    integer :: n, nbsig, ndim, ndimsi, nno, nnos, npg
+    integer(kind=8) :: i, icomp, jvSief, jvDisp, idfde, igeom, ipoids
+    integer(kind=8) :: iretc, ivectu, ivf, jgano, kp, ku
+    integer(kind=8) :: n, nbsig, ndim, ndimsi, nno, nnos, npg
 !
     real(kind=8) :: zero
 !-----------------------------------------------------------------------

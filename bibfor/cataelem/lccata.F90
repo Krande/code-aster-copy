@@ -22,7 +22,7 @@ subroutine lccata(iunit)
 #include "asterfort/lctel2.h"
 #include "asterfort/lctel3.h"
 #include "asterfort/lecojb.h"
-    integer :: iunit, mxobj, iret, i
+    integer(kind=8) :: iunit, mxobj, iret, i
     parameter(mxobj=50)
 !
     character(len=24) :: nomobj

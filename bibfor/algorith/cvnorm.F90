@@ -36,10 +36,10 @@ subroutine cvnorm(mat, vect, ndim, iretou)
 !-----------------------------------------------------------------------
 !
 #include "asterfort/sesqui.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     complex(kind=8) :: mat(*), vect(ndim)
     real(kind=8) :: zero
-    integer :: i, iretou
+    integer(kind=8) :: i, iretou
     complex(kind=8) :: normec
 !
 !-----------------------------------------------------------------------

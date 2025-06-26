@@ -23,7 +23,7 @@ interface
                       poin_coor, dist     , vect_pm)
         character(len=8), intent(in) :: elem_type
         real(kind=8), intent(in) :: elem_coor(27)
-        integer, intent(in) :: elem_nbnode
+        integer(kind=8), intent(in) :: elem_nbnode
         real(kind=8), intent(in) :: ksi1
         real(kind=8), intent(in) :: ksi2
         real(kind=8), intent(in) :: poin_coor(3)

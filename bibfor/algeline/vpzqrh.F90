@@ -22,7 +22,7 @@ subroutine vpzqrh(h, neq, ih, k, l, &
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-    integer :: neq, ih, k, l, iz, ier, nitqr
+    integer(kind=8) :: neq, ih, k, l, iz, ier, nitqr
     real(kind=8) :: h(ih, neq), wr(neq), wi(neq), z(iz, neq)
 !     RECHERCHE DES VALEURS PROPRES PAR LA METHODE QR SUR UNE MATRICE
 !     MISE SOUS LA FORME DE HESSENBERG
@@ -31,15 +31,15 @@ subroutine vpzqrh(h, neq, ih, k, l, &
 !        HANDBOOK FOR AUTOMATIC COMPUTATION - LINEAR ALGEBRA - VOL.2
 !        PAGE XXX
 !     ------------------------------------------------------------------
-    integer :: i, ien, ienm2, npl, ll, lb, naml, mm, m, mp2, ka, na
-    integer :: iter, j, jj
+    integer(kind=8) :: i, ien, ienm2, npl, ll, lb, naml, mm, m, mp2, ka, na
+    integer(kind=8) :: iter, j, jj
     real(kind=8) :: epsmac, t, x, y, w, s, zz
     real(kind=8) :: r, p, q, rnorm, ra, sa, scale, vr, vi
     complex(kind=8) :: z3
     aster_logical :: notlas
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ii, mxiter, nn
+    integer(kind=8) :: ii, mxiter, nn
 !-----------------------------------------------------------------------
     ier = 0
     epsmac = r8prem()

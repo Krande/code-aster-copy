@@ -20,8 +20,8 @@
 !
 interface
     function iposdg(dg, cmp)
-        integer :: dg(*)
-        integer :: cmp
-        integer :: iposdg
+        integer(kind=8) :: dg(*)
+        integer(kind=8) :: cmp
+        integer(kind=8) :: iposdg
     end function iposdg
 end interface

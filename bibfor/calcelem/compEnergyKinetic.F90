@@ -37,7 +37,7 @@ subroutine compEnergyKinetic(modelz, ligrel, l_modal, &
     character(len=*), intent(in) :: chcara(*), chfreqz
     character(len=*), intent(in) :: chvarc
     character(len=*), intent(in) :: chelemz, basez
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,15 +50,15 @@ subroutine compEnergyKinetic(modelz, ligrel, l_modal, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxin = 65, maxout = 1
+    integer(kind=8), parameter :: maxin = 65, maxout = 1
     character(len=8) :: lpain(maxin), lpaout(maxout)
     character(len=24) :: lchin(maxin), lchout(maxout)
     character(len=1) :: base
     character(len=8) :: model, cara_elem
     character(len=16) :: option
     character(len=24) :: chdisp, chvite, chfreq, chelem
-    integer :: iret
-    integer :: nbin, nbout
+    integer(kind=8) :: iret
+    integer(kind=8) :: nbin, nbout
 !
 ! --------------------------------------------------------------------------------------------------
 !

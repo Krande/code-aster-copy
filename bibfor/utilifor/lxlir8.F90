@@ -21,7 +21,7 @@ subroutine lxlir8(chaine, rval, ier)
 #include "asterfort/lxscan.h"
     character(len=*) :: chaine
     real(kind=8) :: rval
-    integer :: ier
+    integer(kind=8) :: ier
 !     DECODAGE D'UN REEL ECRIT EN CHAINE DE CARACTERES
 !     ------------------------------------------------------------------
 ! IN  CHAINE : CH*(*) : CHAINE DE CARACTERES CONTENANT L'ENTIER
@@ -38,10 +38,10 @@ subroutine lxlir8(chaine, rval, ier)
 ! FIN LXLIR8
 !     ------------------------------------------------------------------
     character(len=80) :: cval
-    integer :: ival
+    integer(kind=8) :: ival
 !
 !-----------------------------------------------------------------------
-    integer :: iclass, icol
+    integer(kind=8) :: iclass, icol
 !-----------------------------------------------------------------------
     ier = 0
     icol = 1

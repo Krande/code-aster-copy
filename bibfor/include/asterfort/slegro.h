@@ -20,8 +20,8 @@
 !
 interface
     subroutine slegro(iunv, imod, datset)
-        integer :: iunv
-        integer :: imod
-        integer :: datset
+        integer(kind=8) :: iunv
+        integer(kind=8) :: imod
+        integer(kind=8) :: datset
     end subroutine slegro
 end interface

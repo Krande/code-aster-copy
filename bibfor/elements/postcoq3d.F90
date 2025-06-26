@@ -38,13 +38,13 @@ subroutine postcoq3d(option, nomte, nbcou)
 !                DEGE_ELGA
 !                DEGE_ELNO
 !
-    integer :: npgt
+    integer(kind=8) :: npgt
 !-----------------------------------------------------------------------
-    integer ::  icontr, jgeom, lzi
-    integer :: nbcou, npgsn, npgsr
+    integer(kind=8) ::  icontr, jgeom, lzi
+    integer(kind=8) :: nbcou, npgsn, npgsr
 !-----------------------------------------------------------------------
     parameter(npgt=10)
-    integer :: nb1, itab(7), iret
+    integer(kind=8) :: nb1, itab(7), iret
     real(kind=8) :: effgt(8, 9), sigpg(162*nbcou)
     real(kind=8) :: edgpg(72), defgt(72)
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)

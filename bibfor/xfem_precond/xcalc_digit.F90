@@ -32,9 +32,9 @@ function xcalc_digit(id)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 !-----------------------------------------------------------------------
-    integer :: xcalc_digit, id
+    integer(kind=8) :: xcalc_digit, id
 !-----------------------------------------------------------------------
-    integer :: base_codage
+    integer(kind=8) :: base_codage
     parameter(base_codage=4)
 !-----------------------------------------------------------------------
 !

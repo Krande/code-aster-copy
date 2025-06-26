@@ -82,17 +82,17 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar, &
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: io8gco, nbgco, igco
-    integer :: imigma, igma
-    integer :: nbmag, imag
-    integer :: imac
-    integer :: imityc, ityc
-    integer :: imicoc, nbcoc, icoc
-    integer :: inoc
-    integer :: nbmar, imar
-    integer :: imityr, ityr
-    integer :: imicor, nbcor, icor
-    integer :: iatyma
+    integer(kind=8) :: io8gco, nbgco, igco
+    integer(kind=8) :: imigma, igma
+    integer(kind=8) :: nbmag, imag
+    integer(kind=8) :: imac
+    integer(kind=8) :: imityc, ityc
+    integer(kind=8) :: imicoc, nbcoc, icoc
+    integer(kind=8) :: inoc
+    integer(kind=8) :: nbmar, imar
+    integer(kind=8) :: imityr, ityr
+    integer(kind=8) :: imicor, nbcor, icor
+    integer(kind=8) :: iatyma
 !
     character(len=8) :: kmac, ktyc, kmar, ktyr
     character(len=24) :: valk(2)
@@ -101,11 +101,11 @@ subroutine conini(ma, noecon, maicon, marcon, nbmar, &
     aster_logical :: inval
     aster_logical :: cas2d, cas3d
 !
-    integer :: nbnoe, noecon(nbnoe), maicon(nbmar), marcon(nbmar)
-    integer :: mbcor(nbmar), jmicor(nbmar)
+    integer(kind=8) :: nbnoe, noecon(nbnoe), maicon(nbmar), marcon(nbmar)
+    integer(kind=8) :: mbcor(nbmar), jmicor(nbmar)
     character(len=8) :: nommar(nbmar), nomtyr(nbmar)
-    integer :: ierr, ifm, imai, inoe, inor, itest, nbcom
-    integer :: nbmarc, niv
+    integer(kind=8) :: ierr, ifm, imai, inoe, inor, itest, nbcom
+    integer(kind=8) :: nbmarc, niv
 !-----------------------------------------------------------------------
 !     TYPES VALIDES POUR LES MAILLES DE REFERENCE
 #define valid() (cas2d .and. (ktyr(:4).eq.'TRIA'.or.ktyc(: \

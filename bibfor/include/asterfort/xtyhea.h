@@ -21,14 +21,14 @@
 interface
     subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1,&
                       jconx2, jstnl, jstnv, nbheav)
-        integer :: nno
-        integer :: nfiss
-        integer :: ifiss
-        integer :: ima
-        integer :: jconx1
-        integer :: jconx2
-        integer :: jstnl(nfiss)
-        integer :: jstnv(nfiss)
-        integer :: nbheav
+        integer(kind=8) :: nno
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: ima
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: jstnl(nfiss)
+        integer(kind=8) :: jstnv(nfiss)
+        integer(kind=8) :: nbheav
     end subroutine xtyhea
 end interface

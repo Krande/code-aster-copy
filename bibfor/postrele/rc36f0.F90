@@ -20,7 +20,7 @@ subroutine rc36f0(nbsigr, nocc, saltij, saltm, trouve, &
                   isk, isl, i1a4, nk, nl)
     implicit none
 #include "asterf_types.h"
-    integer :: nbsigr, nocc(*), isk, isl, i1a4, nl, nk
+    integer(kind=8) :: nbsigr, nocc(*), isk, isl, i1a4, nl, nk
     real(kind=8) :: saltij(*), saltm
     aster_logical :: trouve
 !
@@ -34,7 +34,7 @@ subroutine rc36f0(nbsigr, nocc, saltij, saltm, trouve, &
 ! OUT : I1A4  : INDICE 1,2, 3 OU 4 CORESPONDANT AUX INDICES A ET B
 !
 !     ------------------------------------------------------------------
-    integer :: i, k, l, i1, i2
+    integer(kind=8) :: i, k, l, i1, i2
     real(kind=8) :: salt
 !     ------------------------------------------------------------------
 !

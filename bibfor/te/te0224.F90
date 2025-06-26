@@ -39,14 +39,14 @@ subroutine te0224(option, nomte)
 !
 !-----------------------------------------------------------------------
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
-    integer :: icode, jgano, nbres, ndim, nnos
+    integer(kind=8) :: icode, jgano, nbres, ndim, nnos
 !-----------------------------------------------------------------------
     parameter(nbres=3)
     character(len=8) :: nompar(nbres), elrefe
     real(kind=8) :: valpar(nbres), pres
     real(kind=8) :: poids, r, z, fx, fy, mz, f1, f3, m2, nx, ny, dfdx(3), cour
-    integer :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
-    integer :: itemps, ivectu, k, i, l, iforc
+    integer(kind=8) :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
+    integer(kind=8) :: itemps, ivectu, k, i, l, iforc
     aster_logical :: global, locapr
 !
 !

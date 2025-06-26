@@ -34,11 +34,11 @@ subroutine sele_node_elem(modelz, nb_elem_type, list_elem_type, list_node, nb_no
 !
 !
     character(len=*), intent(in) :: modelz
-    integer, intent(in) :: nb_elem_type
+    integer(kind=8), intent(in) :: nb_elem_type
     character(len=16), pointer :: list_elem_type(:)
-    integer, pointer :: list_node(:)
-    integer, intent(out) :: nb_node_found
-    integer, pointer, optional :: pre_select_elem(:)
+    integer(kind=8), pointer :: list_node(:)
+    integer(kind=8), intent(out) :: nb_node_found
+    integer(kind=8), pointer, optional :: pre_select_elem(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,13 +59,13 @@ subroutine sele_node_elem(modelz, nb_elem_type, list_elem_type, list_node, nb_no
     character(len=16) :: type_elem
     character(len=19) :: ligrmo
     character(len=24) :: name_liel
-    integer :: nb_elem_grel, nb_grel, nb_node_elem, nb_node_mesh
-    integer :: i_grel, i_node, i_elem_grel, i_node_elem, i_elem
-    integer :: idx_type_elem, nume_node, nume_elem
+    integer(kind=8) :: nb_elem_grel, nb_grel, nb_node_elem, nb_node_mesh
+    integer(kind=8) :: i_grel, i_node, i_elem_grel, i_node_elem, i_elem
+    integer(kind=8) :: idx_type_elem, nume_node, nume_elem
     logical :: l_find, l_sele
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: list_elem_grel(:) => null()
-    integer, pointer :: list_node_all(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: list_elem_grel(:) => null()
+    integer(kind=8), pointer :: list_node_all(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

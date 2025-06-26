@@ -23,9 +23,9 @@ interface
                       ndeg)
         character(len=8) :: typfis
         character(len=16) :: typdis
-        integer :: ndim
-        integer :: lnoff
+        integer(kind=8) :: ndim
+        integer(kind=8) :: lnoff
         character(len=24) :: liss
-        integer :: ndeg
+        integer(kind=8) :: ndeg
     end subroutine cgveli
 end interface

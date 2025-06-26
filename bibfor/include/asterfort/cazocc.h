@@ -19,8 +19,8 @@
 interface
     subroutine cazocc(sdcont, factorKeyword, i_zone, nb_cont_zone)
         character(len=8), intent(in) :: sdcont
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
         character(len=16), intent(in) :: factorKeyword
-        integer, optional, intent(in) :: nb_cont_zone
+        integer(kind=8), optional, intent(in) :: nb_cont_zone
     end subroutine cazocc
 end interface

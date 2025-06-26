@@ -20,8 +20,8 @@ interface
     subroutine calico(sdcont, mesh, model, model_ndim_, cont_form, &
                       slavElemLigr, lLineRela, listRela)
         character(len=8), intent(in) :: sdcont, mesh, model
-        integer, intent(in) :: model_ndim_
-        integer, intent(in) :: cont_form
+        integer(kind=8), intent(in) :: model_ndim_
+        integer(kind=8), intent(in) :: cont_form
         character(len=19), intent(in) :: slavElemLigr
         aster_logical, intent(out) :: lLineRela
         character(len=19), intent(out) :: listRela

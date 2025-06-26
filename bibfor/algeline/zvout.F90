@@ -44,12 +44,12 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
     implicit none
 #include "asterf_types.h"
 !     ... SPECIFICATIONS FOR ARGUMENTS
-    integer, intent(in) :: n, idigit, lout
+    integer(kind=8), intent(in) :: n, idigit, lout
     complex(kind=8), intent(in) :: cx(*)
     character(len=*), intent(in) :: ifmt
 !
 !     ... SPECIFICATIONS FOR LOCAL VARIABLES
-    integer :: i, ndigit, k1, k2, lll
+    integer(kind=8) :: i, ndigit, k1, k2, lll
     character(len=80) :: line
 !
 !     ... FIRST EXECUTABLE STATEMENT
@@ -171,28 +171,28 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !                 DISPLAY 4 SIGNIFICANT DIGITS
 !
 9998 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 2('(', d10.3, ',', d10.3, ')  '))
+   &        1p, 2('(', d10.3, ',', d10.3, ')  '))
 9997 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 1('(', d10.3, ',', d10.3, ')  '))
+   &        1p, 1('(', d10.3, ',', d10.3, ')  '))
 !
 !                 DISPLAY 6 SIGNIFICANT DIGITS
 !
 9988 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 2('(', d12.5, ',', d12.5, ')  '))
+   &        1p, 2('(', d12.5, ',', d12.5, ')  '))
 9987 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 1('(', d12.5, ',', d12.5, ')  '))
+   &        1p, 1('(', d12.5, ',', d12.5, ')  '))
 !
 !                 DISPLAY 8 SIGNIFICANT DIGITS
 !
 9978 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 2('(', d14.7, ',', d14.7, ')  '))
+   &        1p, 2('(', d14.7, ',', d14.7, ')  '))
 9977 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 1('(', d14.7, ',', d14.7, ')  '))
+   &        1p, 1('(', d14.7, ',', d14.7, ')  '))
 !
 !                 DISPLAY 13 SIGNIFICANT DIGITS
 !
 9968 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 1('(', d20.13, ',', d20.13, ')  '))
+   &        1p, 1('(', d20.13, ',', d20.13, ')  '))
 !
 !=====================================================================
 !                   FORMAT FOR 132 COLUMNS
@@ -201,38 +201,38 @@ subroutine zvout(lout, n, cx, idigit, ifmt)
 !                 DISPLAY 4 SIGNIFICANT DIGITS
 !
 9958 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 4('(', d10.3, ',', d10.3, ')  '))
+   &        1p, 4('(', d10.3, ',', d10.3, ')  '))
 9957 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 3('(', d10.3, ',', d10.3, ')  '))
+   &        1p, 3('(', d10.3, ',', d10.3, ')  '))
 9956 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 2('(', d10.3, ',', d10.3, ')  '))
+   &        1p, 2('(', d10.3, ',', d10.3, ')  '))
 9955 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 1('(', d10.3, ',', d10.3, ')  '))
+   &        1p, 1('(', d10.3, ',', d10.3, ')  '))
 !
 !                 DISPLAY 6 SIGNIFICANT DIGITS
 !
 9948 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 3('(', d12.5, ',', d12.5, ')  '))
+   &        1p, 3('(', d12.5, ',', d12.5, ')  '))
 9947 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 2('(', d12.5, ',', d12.5, ')  '))
+   &        1p, 2('(', d12.5, ',', d12.5, ')  '))
 9946 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 1('(', d12.5, ',', d12.5, ')  '))
+   &        1p, 1('(', d12.5, ',', d12.5, ')  '))
 !
 !                 DISPLAY 8 SIGNIFICANT DIGITS
 !
 9938 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 3('(', d14.7, ',', d14.7, ')  '))
+   &        1p, 3('(', d14.7, ',', d14.7, ')  '))
 9937 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 2('(', d14.7, ',', d14.7, ')  '))
+   &        1p, 2('(', d14.7, ',', d14.7, ')  '))
 9936 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 1('(', d14.7, ',', d14.7, ')  '))
+   &        1p, 1('(', d14.7, ',', d14.7, ')  '))
 !
 !                 DISPLAY 13 SIGNIFICANT DIGITS
 !
 9928 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 2('(', d20.13, ',', d20.13, ')  '))
+   &        1p, 2('(', d20.13, ',', d20.13, ')  '))
 9927 format(1x, i4, ' - ', i4, ':', 1x,&
-    &        1p, 1('(', d20.13, ',', d20.13, ')  '))
+   &        1p, 1('(', d20.13, ',', d20.13, ')  '))
 !
 !
 9994 format(1x, ' ')

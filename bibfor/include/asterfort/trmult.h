@@ -21,11 +21,11 @@
 interface
     subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                       pside, numddl)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=8) :: modsta
-        integer :: numexi
+        integer(kind=8) :: numexi
         character(len=8) :: mailla
-        integer :: iddeeq
+        integer(kind=8) :: iddeeq
         real(kind=8) :: pside(neq)
         character(len=8) :: numddl
     end subroutine trmult

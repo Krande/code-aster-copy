@@ -21,7 +21,7 @@
 interface
     subroutine intenc(nbna, jac, vectx, vecty, mat11,&
                       mat22, mat12, nx, ny, inte)
-        integer :: nbna
+        integer(kind=8) :: nbna
         real(kind=8) :: jac(3)
         real(kind=8) :: vectx(3)
         real(kind=8) :: vecty(3)

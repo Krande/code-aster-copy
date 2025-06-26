@@ -22,16 +22,16 @@ interface
     subroutine calsta(proj, gamma, dh, def, nno,&
                       kpg, sig, tmp, kk, kkd,&
                       matuu, dsidep, jac)
-        integer :: proj
+        integer(kind=8) :: proj
         real(kind=8) :: gamma(4)
         real(kind=8) :: dh(8)
         real(kind=8) :: def(4, 4, 2)
-        integer :: nno
-        integer :: kpg
+        integer(kind=8) :: nno
+        integer(kind=8) :: kpg
         real(kind=8) :: sig(6)
         real(kind=8) :: tmp
-        integer :: kk
-        integer :: kkd
+        integer(kind=8) :: kk
+        integer(kind=8) :: kkd
         real(kind=8) :: matuu(*)
         real(kind=8) :: dsidep(6, 6)
         real(kind=8) :: jac

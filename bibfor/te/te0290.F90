@@ -36,8 +36,8 @@ subroutine te0290(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, idfde, igeom, ipoids, ivectu, ivf, jgano
-    integer :: ndim, nno, npg, nsom
+    integer(kind=8) :: i, idfde, igeom, ipoids, ivectu, ivf, jgano
+    integer(kind=8) :: ndim, nno, npg, nsom
 !-----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nsom, npg=npg, &

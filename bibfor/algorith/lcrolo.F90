@@ -38,7 +38,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
 #include "asterfort/lcroy2.h"
 #include "asterfort/lcroyi.h"
 #include "blas/dcopy.h"
-    integer :: kpg, ksp, mate, iret
+    integer(kind=8) :: kpg, ksp, mate, iret
     character(len=*) :: fami
     character(len=16) :: option
     real(kind=8) :: carcri(3)
@@ -74,7 +74,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
 ! ----------------------------------------------------------------------
 !  COMMON LOI DE COMPORTEMENT ROUSSELIER
 !
-    integer :: itemax, jprolp, jvalep, nbvalp
+    integer(kind=8) :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
     common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
@@ -83,7 +83,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
 !
-    integer :: ind1(6), ind2(6)
+    integer(kind=8) :: ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6)
     real(kind=8) :: lambda, mu, deuxmu, unk, troisk, cother
     real(kind=8) :: jm, dj, jp, djdf(3, 3)
@@ -101,7 +101,7 @@ subroutine lcrolo(fami, kpg, ksp, mate, option, &
     character(len=9) :: typorot
     character(len=1) :: poum
     aster_logical :: resi, rigi, elas
-    integer :: ij, indice
+    integer(kind=8) :: ij, indice
     real(kind=8) :: infini, petit
     real(kind=8) :: porom, poro, em(6), ep(6)
     real(kind=8) :: y, ym, x, seuil, dseuil, s, dp

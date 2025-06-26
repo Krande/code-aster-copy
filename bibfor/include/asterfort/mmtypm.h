@@ -21,9 +21,9 @@
 interface
     subroutine mmtypm(noma, numma, nnosd, alias, ndim)
         character(len=8) :: noma
-        integer :: numma
-        integer :: nnosd
+        integer(kind=8) :: numma
+        integer(kind=8) :: nnosd
         character(len=8) :: alias
-        integer :: ndim
+        integer(kind=8) :: ndim
     end subroutine mmtypm
 end interface

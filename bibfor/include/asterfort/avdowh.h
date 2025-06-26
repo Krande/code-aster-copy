@@ -24,16 +24,16 @@ interface
     subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                       jgdeq, grdvie, forvie, post, jdomel,&
                       jnrupt)
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         character(len=8) :: nommat
         character(len=16) :: nomcri
-        integer :: ncycl(nbvec)
-        integer :: jgdeq
+        integer(kind=8) :: ncycl(nbvec)
+        integer(kind=8) :: jgdeq
         character(len=16) :: grdvie
         character(len=16) :: forvie
         aster_logical :: post
-        integer :: jdomel
-        integer :: jnrupt
+        integer(kind=8) :: jdomel
+        integer(kind=8) :: jnrupt
     end subroutine avdowh
 end interface

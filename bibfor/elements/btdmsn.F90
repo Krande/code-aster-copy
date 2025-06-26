@@ -21,12 +21,12 @@ subroutine btdmsn(ind, nb1, intsn, npgsr, xr, &
 !
     implicit none
 !
-    integer :: nb1, intsn, npgsr
+    integer(kind=8) :: nb1, intsn, npgsr
     real(kind=8) :: xr(*), btdm1, btds1
     real(kind=8) :: btdm(4, 3, 42), btds(4, 2, 42), btdf(3, 42), btild(5, 42)
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, ind, j, k, l
+    integer(kind=8) :: i, i1, ind, j, k, l
 !-----------------------------------------------------------------------
     l = 702
 !

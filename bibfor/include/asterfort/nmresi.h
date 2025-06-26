@@ -30,7 +30,7 @@ interface
         use Rom_Datastructure_type
         use NonLinearDyna_type
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: sdnume
@@ -43,7 +43,7 @@ interface
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19), intent(in) :: matass
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         real(kind=8), intent(in) :: eta
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
         character(len=19), intent(in) :: hval_measse(*), hval_veasse(*)

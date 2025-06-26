@@ -23,7 +23,7 @@ subroutine diarme(nbt, neq, icodma, ul, dul, &
     implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-    integer :: nbt, neq, icodma
+    integer(kind=8) :: nbt, neq, icodma
     real(kind=8) :: ul(neq), dul(neq), utl(neq), sim(neq), varim
     real(kind=8) :: klv(nbt), varip, kty2, duly
 !
@@ -48,14 +48,14 @@ subroutine diarme(nbt, neq, icodma, ul, dul, &
 !**************** DECLARATION DES VARIABLES LOCALES ********************
 !
 !-----------------------------------------------------------------------
-    integer :: nbpar, nbre2
+    integer(kind=8) :: nbpar, nbre2
     real(kind=8) :: dle, dlp, effoy, fle, flp, rap, uly
     real(kind=8) :: utot, valpar, varmax, zero
 !-----------------------------------------------------------------------
     parameter(nbre2=5)
     real(kind=8) :: kty, kye, kyp, kyg
     real(kind=8) :: valre2(nbre2)
-    integer :: codre2(nbre2), kpg, spt
+    integer(kind=8) :: codre2(nbre2), kpg, spt
     character(len=8) :: nompar, nomre2(nbre2), fami, poum
 !
     data nomre2/'KYE', 'DLE', 'KYP', 'DLP', 'KYG'/

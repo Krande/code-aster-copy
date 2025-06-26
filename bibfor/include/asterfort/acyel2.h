@@ -24,19 +24,19 @@ interface
     subroutine acyel2(nmcolz, nomobz, nobl, nobc, okpart,&
                       lilig, nblig, licol, nbcol, cmat,&
                       ndim, ideb, jdeb, x)
-        integer :: ndim
-        integer :: nbcol
-        integer :: nblig
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbcol
+        integer(kind=8) :: nblig
         character(len=*) :: nmcolz
         character(len=*) :: nomobz
-        integer :: nobl
-        integer :: nobc
+        integer(kind=8) :: nobl
+        integer(kind=8) :: nobc
         aster_logical :: okpart
-        integer :: lilig(nblig)
-        integer :: licol(nbcol)
+        integer(kind=8) :: lilig(nblig)
+        integer(kind=8) :: licol(nbcol)
         complex(kind=8) :: cmat(ndim, ndim)
-        integer :: ideb
-        integer :: jdeb
+        integer(kind=8) :: ideb
+        integer(kind=8) :: jdeb
         real(kind=8) :: x
     end subroutine acyel2
 end interface

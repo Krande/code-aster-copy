@@ -44,17 +44,17 @@ subroutine lecmai(ifl, icl, iv, rv, cv, &
 #include "asterfort/tesmcl.h"
 #include "asterfort/verdbl.h"
 #include "asterfort/vermot.h"
-    integer :: nbm
+    integer(kind=8) :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
-    integer :: dim(nbm), nbt(nbm), deblig
+    integer(kind=8) :: dim(nbm), nbt(nbm), deblig
     character(len=14) :: cnl
     character(len=24) :: nom
     character(len=*) :: cv
-    integer :: fmt(nbm)
+    integer(kind=8) :: fmt(nbm)
 !-----------------------------------------------------------------------
-    integer :: i, icl, ier, ifl, ifm, ilec, inom
-    integer :: irtet, irteti, iv, nbg, numtcl
+    integer(kind=8) :: i, icl, ier, ifl, ifm, ilec, inom
+    integer(kind=8) :: irtet, irteti, iv, nbg, numtcl
 !
 !-----------------------------------------------------------------------
     irteti = 0

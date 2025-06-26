@@ -21,11 +21,11 @@
 interface
     subroutine nmextv(nb_cmp_vale, func_name, v_cmp_name, v_cmp_vale, nb_vale,&
                       vale_resu)
-        integer, intent(in) :: nb_cmp_vale
+        integer(kind=8), intent(in) :: nb_cmp_vale
         character(len=8), intent(in) :: func_name
         character(len=8), intent(in) :: v_cmp_name(*)
         real(kind=8), intent(in) :: v_cmp_vale(*)
         real(kind=8), intent(out) :: vale_resu(*)
-        integer, intent(out) :: nb_vale
+        integer(kind=8), intent(out) :: nb_vale
     end subroutine nmextv
 end interface

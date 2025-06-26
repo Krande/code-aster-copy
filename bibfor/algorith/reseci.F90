@@ -49,10 +49,10 @@ subroutine reseci(carele, nummai, ai1, ai2)
 !***1.      RECUPERATION DU TYPE GRANDEUR NB ASSOCIATION***************C
 !**********************************************************************C
 !-----------------------------------------------------------------------
-    integer :: iad1, ialima, iass1, iavale, ibid1, icmp, icode1
-    integer :: iec1, igd, igdncm, imai1, inasmx, inbmai, inecgd
-    integer :: inulim, irgai1, irgai2, itest1, itest2, numai1, numgd
-    integer :: nummai
+    integer(kind=8) :: iad1, ialima, iass1, iavale, ibid1, icmp, icode1
+    integer(kind=8) :: iec1, igd, igdncm, imai1, inasmx, inbmai, inecgd
+    integer(kind=8) :: inulim, irgai1, irgai2, itest1, itest2, numai1, numgd
+    integer(kind=8) :: nummai
     real(kind=8) :: ai1, ai2
 !-----------------------------------------------------------------------
     call jemarq()

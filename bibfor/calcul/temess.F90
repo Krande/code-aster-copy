@@ -46,8 +46,8 @@ subroutine temess(typ)
 #include "asterfort/jedema.h"
 
     character(len=1), intent(in) :: typ
-    integer :: ima, iexi, k, n1, k1, jgrma, nbgrma, nbgrmt
-    integer :: nno, ino, nuno, jcoor
+    integer(kind=8) :: ima, iexi, k, n1, k1, jgrma, nbgrma, nbgrmt
+    integer(kind=8) :: nno, ino, nuno, jcoor
     character(len=24) :: valkc(9), ligrma(4), nomgrm, grpmav
     character(len=8) :: ma
     character(len=256) :: ufname

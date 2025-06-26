@@ -26,11 +26,11 @@ subroutine assvec_wrap(jvBase, vectAsseZ, &
 !
     character(len=1), intent(in) :: jvBase
     character(len=*), intent(in) :: vectAsseZ
-    integer, intent(in) :: nbVectElem
+    integer(kind=8), intent(in) :: nbVectElem
     character(len=*), intent(in) :: listVectElem(nbVectElem)
     real(kind=8), intent(in) :: coefVectElem(nbVectElem)
     character(len=*), intent(in) :: numeDofZ
-    integer, intent(in) :: vectScalType
+    integer(kind=8), intent(in) :: vectScalType
 !
     call assvec(jvBase, vectAsseZ, &
                 nbVectElem, listVectElem, coefVectElem, &

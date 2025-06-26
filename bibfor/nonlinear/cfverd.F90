@@ -50,8 +50,8 @@ subroutine cfverd(noma, numedd, defico)
 !
 !
     character(len=8) :: nomno
-    integer :: nnoco
-    integer :: ino, jbid, verdim, posno
+    integer(kind=8) :: nnoco
+    integer(kind=8) :: ino, jbid, verdim, posno
 !
 ! ----------------------------------------------------------------------
 !

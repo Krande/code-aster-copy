@@ -20,6 +20,6 @@
 !
 interface
     subroutine utflsh(i)
-        integer :: i
+        integer(kind=8) :: i
     end subroutine utflsh
 end interface

@@ -38,10 +38,10 @@ subroutine te0563(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ncmp_coor, ncmp_vale, ncmp_coef, npg, iret
-    integer :: j_coor_elga, j_vale, j_coef, j_resu, j_calc
-    integer :: jtab1(3), jtab2(2)
-    integer :: jtab3(2), ipg, icmp
+    integer(kind=8) :: ncmp_coor, ncmp_vale, ncmp_coef, npg, iret
+    integer(kind=8) :: j_coor_elga, j_vale, j_coef, j_resu, j_calc
+    integer(kind=8) :: jtab1(3), jtab2(2)
+    integer(kind=8) :: jtab3(2), ipg, icmp
     real(kind=8) :: resu, poids_pg, vale_pg, calc_elem
 !
 ! --------------------------------------------------------------------------------------------------

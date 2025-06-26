@@ -54,15 +54,15 @@ subroutine rc32t()
 !                 - DUS AUX EFFORTS ET MOMENTS SOUS "RESU_MECA"
 !     ------------------------------------------------------------------
 !
-    integer :: nbsitu, nbther, nbpres, nbmeca, iocc
+    integer(kind=8) :: nbsitu, nbther, nbpres, nbmeca, iocc
     character(len=24) :: jvorig, jvextr, valk(4)
     character(len=8) :: nocmp(6), crit(2), tabther, tabpres
     character(len=16) :: valek(2), methode
-    integer :: nume1, n1, nume2, n2, nume3, n3, nn, ither, numether
-    integer :: n5, ipres, numepres, imeca, numemeca, nbinst, jinst
+    integer(kind=8) :: nume1, n1, nume2, n2, nume3, n3, nn, ither, numether
+    integer(kind=8) :: n5, ipres, numepres, imeca, numemeca, nbinst, jinst
     character(len=8) :: tabmeca, tableok, k8b, tabtemp
     aster_logical :: exist
-    integer :: nbabsc, jabsc, ncmp, ndim, jorig, jextr, k, i, j
+    integer(kind=8) :: nbabsc, jabsc, ncmp, ndim, jorig, jextr, k, i, j
     real(kind=8) :: prec(2)
     real(kind=8) :: sigtot(1000*6), tminsn(2), tmaxsn(2), tminsp(2)
     real(kind=8) :: tmaxsp(2), tresc(2), trescb(2), r3(2), r3b(2)
@@ -70,7 +70,7 @@ subroutine rc32t()
     real(kind=8) :: vale(2), momen0, momen1, siglin(1000*6), momen0ther, momen1ther
     real(kind=8) :: momen0pres, momen1pres, momen0mec, momen1mec, temp(8)
     real(kind=8) :: verifori, verifextr
-    integer :: ibid, iret, kk, n4, jtemp, nb, l
+    integer(kind=8) :: ibid, iret, kk, n4, jtemp, nb, l
     complex(kind=8) :: cbid
     real(kind=8), pointer :: contraintesth(:) => null()
     real(kind=8), pointer :: contraintespr(:) => null()

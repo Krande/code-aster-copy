@@ -45,11 +45,11 @@ subroutine mm_cycl_algo(ds_contact, l_frot_zone, &
     aster_logical, intent(in) :: l_glis_init
     aster_logical, intent(in) :: l_pena_frot
     aster_logical, intent(in) :: l_pena_cont
-    integer, intent(inout) :: type_adap
-    integer, intent(in) :: i_cont_poin
-    integer, intent(in) :: zone_index
-    integer, intent(inout) :: indi_cont_eval
-    integer, intent(inout) :: indi_frot_eval
+    integer(kind=8), intent(inout) :: type_adap
+    integer(kind=8), intent(in) :: i_cont_poin
+    integer(kind=8), intent(in) :: zone_index
+    integer(kind=8), intent(inout) :: indi_cont_eval
+    integer(kind=8), intent(inout) :: indi_frot_eval
     real(kind=8), intent(in) :: vale_pene
     real(kind=8), intent(in) :: glis_maxi
     real(kind=8), intent(inout) :: dist_cont_curr
@@ -58,10 +58,10 @@ subroutine mm_cycl_algo(ds_contact, l_frot_zone, &
     real(kind=8), intent(in) :: pres_frot_curr(3)
     real(kind=8), pointer :: v_sdcont_cychis(:)
     real(kind=8), pointer :: v_sdcont_cyccoe(:)
-    integer, pointer :: v_sdcont_cyceta(:)
-    integer, intent(out) :: indi_cont_curr
-    integer, intent(out) :: indi_frot_curr
-    integer, intent(out) :: ctcsta
+    integer(kind=8), pointer :: v_sdcont_cyceta(:)
+    integer(kind=8), intent(out) :: indi_cont_curr
+    integer(kind=8), intent(out) :: indi_frot_curr
+    integer(kind=8), intent(out) :: ctcsta
     aster_logical, intent(out) :: mmcvca
 !
 ! ---------------------------------------------------------------
@@ -104,10 +104,10 @@ subroutine mm_cycl_algo(ds_contact, l_frot_zone, &
     real(kind=8) :: coef_cont_curr, coef_frot_curr
     aster_logical:: coef_found, treatment
     aster_logical:: l_coef_adap, mmcvca_frot
-    integer      ::  mode_cycl
+    integer(kind=8)      ::  mode_cycl
     real(kind=8) :: pres_frot_prev(3), pres_cont_prev
     real(kind=8) :: dist_frot_prev(3), dist_cont_prev
-    integer :: indi_cont_prev, indi_frot_prev, indi(2), i_reso_cont
+    integer(kind=8) :: indi_cont_prev, indi_frot_prev, indi(2), i_reso_cont
     real(kind=8) :: coef_frot_mini, coef_frot_maxi
     real(kind=8) :: alpha_cont_matr, alpha_cont_vect
     real(kind=8) :: alpha_frot_matr, alpha_frot_vect

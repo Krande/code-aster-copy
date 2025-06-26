@@ -47,13 +47,13 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nc = 2
+    integer(kind=8), parameter :: nc = 2
     character(len=19) :: chs(nc)
     aster_logical :: l_cumu(nc)
     real(kind=8) :: coef_real(nc)
     complex(kind=8) :: coef_cplx(nc)
 !
-    integer :: ibid
+    integer(kind=8) :: ibid
     character(len=19) :: comp_elas
     character(len=19) :: comp_elas_s, comp_noli_s, comp_fuse_s
     aster_logical :: l_cplx, l_etat_init

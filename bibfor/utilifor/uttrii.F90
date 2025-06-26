@@ -18,7 +18,7 @@
 !
 subroutine uttrii(ivale, nbvale)
     implicit none
-    integer :: ivale(*)
+    integer(kind=8) :: ivale(*)
 !     TRIE PAR ORDRE CROISSANT, (METHODE DE REMONTEE DES BULLES)
 !     ET SUPPRIME LES VALEURS MULTIPLES .
 !     ------------------------------------------------------------------
@@ -26,13 +26,13 @@ subroutine uttrii(ivale, nbvale)
 ! VAR NBVALE : IS : NOMBRE DE VALEUR A TRIER PAR ORDRE CROISSANT
 !                 : (SORTIE) NOMBRE DE VALEURS DISTINCTES
 !     ------------------------------------------------------------------
-    integer :: incrs, is9, diff
+    integer(kind=8) :: incrs, is9, diff
 !
 !     --- RIEN A FAIRE SI NBVALE=0 OU 1 (ET NE PAS MODIFIER NBVALE)
 !
 !     --- TRI BULLE ---
 !-----------------------------------------------------------------------
-    integer :: i, j, l, nbvale
+    integer(kind=8) :: i, j, l, nbvale
 !-----------------------------------------------------------------------
     if (nbvale .gt. 1) then
 !        --- CHOIX DE L'INCREMENT ---

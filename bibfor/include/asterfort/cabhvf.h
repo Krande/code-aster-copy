@@ -20,7 +20,7 @@ interface
     subroutine cabhvf(maxfa    , ndim , nno  , nnos , nface,&
                       elem_coor,&
                       vol      , mface, dface, xface, normfa)
-        integer, intent(in) :: maxfa, ndim, nno, nnos, nface
+        integer(kind=8), intent(in) :: maxfa, ndim, nno, nnos, nface
         real(kind=8), intent(in) :: elem_coor(ndim, nno)
         real(kind=8), intent(out) :: vol
         real(kind=8), intent(out) :: mface(1:maxfa)

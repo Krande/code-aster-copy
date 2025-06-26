@@ -20,6 +20,6 @@
 !
 interface
     function isnnem()
-        integer :: isnnem
+        integer(kind=8) :: isnnem
     end function isnnem
 end interface

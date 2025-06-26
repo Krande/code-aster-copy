@@ -23,8 +23,8 @@
 interface
     subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
                       x1, x2, lext, xmi, distv)
-        integer :: ndim
-        integer :: nnop
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnop
         character(len=8) :: elrefp
         real(kind=8) :: coor(ndim*nnop)
         real(kind=8) :: xg(ndim)

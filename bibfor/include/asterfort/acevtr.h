@@ -23,10 +23,10 @@ interface
                       nn, idim)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: ityp
+        integer(kind=8) :: ityp
         character(len=24) :: noms(*)
-        integer :: itab(*)
-        integer :: nn
-        integer :: idim
+        integer(kind=8) :: itab(*)
+        integer(kind=8) :: nn
+        integer(kind=8) :: idim
     end subroutine acevtr
 end interface

@@ -22,7 +22,7 @@ subroutine sigeob(eps, bt, endo, ndim, lambda, &
     implicit none
 #include "asterfort/diago3.h"
 #include "asterfort/r8inir.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: eps(6), bt(6), lambda, mu
     real(kind=8) :: sigm(6), endo
 !
@@ -46,7 +46,7 @@ subroutine sigeob(eps, bt, endo, ndim, lambda, &
     real(kind=8) :: to(6), tu(6), vp(3), vpe(3)
     real(kind=8) :: valbe(3), vecbe(3, 3)
     real(kind=8) :: valeps(3), veceps(3, 3), phid
-    integer :: i, j, k, t(3, 3)
+    integer(kind=8) :: i, j, k, t(3, 3)
 !
 !
     t(1, 1) = 1

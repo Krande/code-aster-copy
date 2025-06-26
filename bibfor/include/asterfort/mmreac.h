@@ -23,14 +23,14 @@ interface
                       elem_slav_coor, elem_mast_coor,&
                       nbdm_         , nb_lagr_      , indi_lagc_,&
                       ddepmam_)
-        integer, intent(in) :: elem_dime, nb_node_slav, nb_node_mast
-        integer, intent(in) :: jv_disp, jv_disp_incr
+        integer(kind=8), intent(in) :: elem_dime, nb_node_slav, nb_node_mast
+        integer(kind=8), intent(in) :: jv_disp, jv_disp_incr
         real(kind=8), intent(in) :: ppe
         real(kind=8), intent(in) :: elem_slav_init(nb_node_slav, elem_dime)
         real(kind=8), intent(in) :: elem_mast_init(nb_node_mast, elem_dime)
         real(kind=8), intent(out) :: elem_slav_coor(nb_node_slav, elem_dime)
         real(kind=8), intent(out) :: elem_mast_coor(nb_node_mast, elem_dime)
-        integer, optional, intent(in) :: nbdm_, nb_lagr_, indi_lagc_(10)
+        integer(kind=8), optional, intent(in) :: nbdm_, nb_lagr_, indi_lagc_(10)
         real(kind=8), optional, intent(out) :: ddepmam_(9, 3)
     end subroutine mmreac
 end interface

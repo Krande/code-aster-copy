@@ -38,8 +38,8 @@ subroutine ordonp(nomfon)
 !     PAR ORDRE CROISSANT DES PARAMETRES
     character(len=19) :: fonc0
     character(len=24) :: chval, chpar, sfval, sfpar
-    integer :: ipar, lpar, nbpara, ior, ival, lval
-    integer :: i, j, it, nbp, nbpt
+    integer(kind=8) :: ipar, lpar, nbpara, ior, ival, lval
+    integer(kind=8) :: i, j, it, nbp, nbpt
     real(kind=8) :: xt
 !     ------------------------------------------------------------------
 !

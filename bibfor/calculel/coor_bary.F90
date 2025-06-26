@@ -28,8 +28,8 @@ subroutine coor_bary(coor, xm, dim, lino, cobary)
 !
     real(kind=8), intent(in) :: coor(*)
     real(kind=8), intent(in) :: xm(3)
-    integer, intent(in) :: dim
-    integer, intent(in) :: lino(*)
+    integer(kind=8), intent(in) :: dim
+    integer(kind=8), intent(in) :: lino(*)
     real(kind=8), intent(out) :: cobary(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,8 +49,8 @@ subroutine coor_bary(coor, xm, dim, lino, cobary)
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    integer :: m, n, k
-    integer, parameter :: nrhs = 1, lda = 4, ldb = 4, lwork = 128
+    integer(kind=8) :: m, n, k
+    integer(kind=8), parameter :: nrhs = 1, lda = 4, ldb = 4, lwork = 128
     blas_int :: info
     real(kind=8) :: a(lda, lda), b(ldb, 1), work(lwork), ym(3)
     blas_int :: b_lda, b_ldb, b_lwork, b_m, b_n, b_nrhs

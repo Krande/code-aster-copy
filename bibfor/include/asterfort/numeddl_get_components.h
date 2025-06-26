@@ -20,7 +20,7 @@
 !
 interface
     subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, maxcmp)
-        integer :: ncmp, maxcmp, nodeid
+        integer(kind=8) :: ncmp, maxcmp, nodeid
         character(len=*) :: nume19, allorone
         character(len=8) :: stringarray(maxcmp)
     end subroutine numeddl_get_components

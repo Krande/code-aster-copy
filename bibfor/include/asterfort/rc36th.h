@@ -22,11 +22,11 @@ interface
     subroutine rc36th(noma, nbma, listma, chth, iocs,&
                       nbths, liths)
         character(len=8) :: noma
-        integer :: nbma
-        integer :: listma(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: listma(*)
         character(len=24) :: chth(*)
-        integer :: iocs
-        integer :: nbths
-        integer :: liths(*)
+        integer(kind=8) :: iocs
+        integer(kind=8) :: nbths
+        integer(kind=8) :: liths(*)
     end subroutine rc36th
 end interface

@@ -28,7 +28,7 @@ subroutine lceitr(fami, kpg, ksp, mat, option, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
     character(len=16) :: option
-    integer :: mat, kpg, ksp
+    integer(kind=8) :: mat, kpg, ksp
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), r
     character(len=*) :: fami
 !
@@ -46,13 +46,13 @@ subroutine lceitr(fami, kpg, ksp, mat, option, &
 !       VIP   : VARIABLES INTERNES MISES A JOUR
 !       R     : PENALISATION DU LAGRANGE
 !-----------------------------------------------------------------------
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     parameter(nbpar=6)
     aster_logical :: resi, rigi, elas
-    integer :: regime
+    integer(kind=8) :: regime
     real(kind=8) :: sc, gc, c, h, ka, sk, st, val(nbpar), tmp, kap, skp, gap
     real(kind=8) :: dn, tn, t(3), ddndtn, dele, delp, delc, coee, coep
-    integer :: cod(nbpar)
+    integer(kind=8) :: cod(nbpar)
     character(len=16) :: nom(nbpar)
     character(len=1) :: poum
 !

@@ -26,15 +26,15 @@ interface
                       ifm, niv)
         character(len=8) :: nomail
         character(len=8) :: tpmail
-        integer :: nbnmai
-        integer :: lnmail(*)
+        integer(kind=8) :: nbnmai
+        integer(kind=8) :: lnmail(*)
         character(len=8) :: typ3d
-        integer :: lnm3d(*)
-        integer :: ndim
+        integer(kind=8) :: lnm3d(*)
+        integer(kind=8) :: ndim
         real(kind=8) :: coor(*)
         aster_logical :: reorie
-        integer :: norien
-        integer :: ifm
-        integer :: niv
+        integer(kind=8) :: norien
+        integer(kind=8) :: ifm
+        integer(kind=8) :: niv
     end subroutine oriema
 end interface

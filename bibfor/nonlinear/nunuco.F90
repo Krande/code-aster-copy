@@ -46,9 +46,9 @@ subroutine nunuco(nume_ddl, sdnuco)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbEqua, nbCmp
+    integer(kind=8) :: nbEqua, nbCmp
     character(len=8), pointer :: listCmp(:) => null()
-    integer, pointer :: listEqua(:) => null()
+    integer(kind=8), pointer :: listEqua(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -24,13 +24,13 @@ interface
                        elem_slav_nbnode, elem_slav_coor, elem_slav_code,&
                        proj_coor       , nb_node_proj, iret)
         real(kind=8), intent(in) :: proj_tole, dist_ratio
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: elem_mast_nbnode
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_mast_nbnode
         real(kind=8), intent(in) :: elem_mast_coor(3,9)
-        integer, intent(in) :: elem_slav_nbnode
+        integer(kind=8), intent(in) :: elem_slav_nbnode
         real(kind=8), intent(in) :: elem_slav_coor(3,9)
         character(len=8), intent(in) :: elem_mast_code, elem_slav_code
         real(kind=8), intent(out) :: proj_coor(elem_dime-1,9)
-        integer, intent(out) :: iret, nb_node_proj
+        integer(kind=8), intent(out) :: iret, nb_node_proj
     end subroutine projMaAndCheck
 end interface

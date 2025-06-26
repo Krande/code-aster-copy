@@ -22,7 +22,7 @@ subroutine mudirx(nbsom, geom, idim, al1, al2, &
 !
 #include "asterc/r8dgrd.h"
 #include "asterfort/assert.h"
-    integer :: idim, nbsom
+    integer(kind=8) :: idim, nbsom
     real(kind=8) :: geom(idim, nbsom), axe(3, 3), ang(2), al1, al2
 !
 !.......................................................................

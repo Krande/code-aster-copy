@@ -22,6 +22,6 @@
             subroutine jedetc(clas,souch,ipos)
               character(len=*), intent(in) :: clas
               character(len=*), intent(in) :: souch
-              integer, intent(in) :: ipos
+              integer(kind=8), intent(in) :: ipos
             end subroutine jedetc
           end interface 

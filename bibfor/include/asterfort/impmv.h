@@ -20,10 +20,10 @@
 !
 interface
     subroutine impmv(ifm, txt, mv, nn, isym)
-        integer :: nn
-        integer :: ifm
+        integer(kind=8) :: nn
+        integer(kind=8) :: ifm
         character(len=8) :: txt
         real(kind=8) :: mv(nn)
-        integer :: isym
+        integer(kind=8) :: isym
     end subroutine impmv
 end interface

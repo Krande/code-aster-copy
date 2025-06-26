@@ -60,13 +60,13 @@ subroutine nmdocm(model, mult_comp, base)
 !
     character(len=24) :: list_elem_affe
     aster_logical :: l_affe_all
-    integer :: nb_elem_affe
-    integer, pointer :: v_elem_affe(:) => null()
+    integer(kind=8) :: nb_elem_affe
+    integer(kind=8), pointer :: v_elem_affe(:) => null()
     aster_logical :: l_cristal, l_parallel_mesh
-    integer :: nb_cmp, nb_cmp_max, icmp, i_comp, nbocc_compor
+    integer(kind=8) :: nb_cmp, nb_cmp_max, icmp, i_comp, nbocc_compor
     character(len=8) :: mesh
     character(len=16) :: rela_comp, comp_cris, keywordfact
-    integer :: nume_gd
+    integer(kind=8) :: nume_gd
     character(len=8) :: name_gd
     character(len=16), pointer :: p_mcomp_valv(:) => null()
     character(len=8), pointer :: p_cata_nomcmp(:) => null()

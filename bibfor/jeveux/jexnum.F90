@@ -22,12 +22,12 @@ function jexnum(nomc, num)
 !
     character(len=32) :: jexnum
     character(len=*), intent(in) :: nomc
-    integer, intent(in) :: num
+    integer(kind=8), intent(in) :: num
 !
     character(len=24) :: ch24
     character(len=8) :: ch8
 !
-    integer :: numec
+    integer(kind=8) :: numec
     common/inumje/numec
     real(kind=8) :: reelc
     common/reelje/reelc

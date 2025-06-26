@@ -63,10 +63,10 @@ subroutine te0141(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lmater, iret, nbpar, labsc
-    integer :: lorien, iacce, ivect, lmat
-    integer :: nno, nc, ntc, nbv, kanl, kpg, spt
-    integer :: inbf, nbgf
+    integer(kind=8) :: lmater, iret, nbpar, labsc
+    integer(kind=8) :: lorien, iacce, ivect, lmat
+    integer(kind=8) :: nno, nc, ntc, nbv, kanl, kpg, spt
+    integer(kind=8) :: inbf, nbgf
     real(kind=8) :: valpar, xl
     real(kind=8) :: absmoy
     real(kind=8) :: e, g, xnu, rho, rhos, rhofi, rhofe, cm, phie, phii
@@ -78,15 +78,15 @@ subroutine te0141(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbres = 6
-    integer :: codres(nbres)
+    integer(kind=8), parameter :: nbres = 6
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres)
     data nomres/'E', 'NU', 'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/

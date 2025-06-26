@@ -38,9 +38,9 @@ subroutine xvechb(nnops, ddls, ddlm, ndim, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, nnops, ddls, ddlm, in, ndim
-    integer :: ifiss, nfh, ifa, jheafa, ncomph, ifh, dec
-    integer :: ncompn, jheavn, nfiss, hea_fa(2), heavn(nnops, 5)
+    integer(kind=8) :: i, nnops, ddls, ddlm, in, ndim
+    integer(kind=8) :: ifiss, nfh, ifa, jheafa, ncomph, ifh, dec
+    integer(kind=8) :: ncompn, jheavn, nfiss, hea_fa(2), heavn(nnops, 5)
     real(kind=8) :: ffp2(27), q1, dt, ta, jac, q1m, ta1
     real(kind=8) :: q2, q2m, vect(560)
     aster_logical :: lmultc

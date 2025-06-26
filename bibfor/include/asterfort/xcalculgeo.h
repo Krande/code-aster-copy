@@ -21,14 +21,14 @@
 interface
    subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
                          jlistp, node, newlst, newlsn)
-       integer          :: ndim                  
+       integer(kind=8)          :: ndim                  
        real(kind=8)     :: vale(:)
-       integer          :: jvp
-       integer          :: jbl
+       integer(kind=8)          :: jvp
+       integer(kind=8)          :: jbl
        real(kind=8)     :: deltat
-       integer          :: jbeta
-       integer          :: jlistp
-       integer          :: node                                
+       integer(kind=8)          :: jbeta
+       integer(kind=8)          :: jlistp
+       integer(kind=8)          :: node                                
        real(kind=8)     :: newlst 
        real(kind=8)     :: newlsn
    end subroutine

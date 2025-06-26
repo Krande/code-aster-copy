@@ -20,7 +20,7 @@ interface
     subroutine romMultiParaDOMMatrCreate(ds_multipara, i_coef, ds_solve)
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(in) :: ds_multipara
-        integer, intent(in) :: i_coef
+        integer(kind=8), intent(in) :: i_coef
         type(ROM_DS_Solve), intent(in) :: ds_solve
     end subroutine romMultiParaDOMMatrCreate
 end interface

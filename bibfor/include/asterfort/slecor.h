@@ -20,7 +20,7 @@
 !
 interface
     subroutine slecor(iunv, datset)
-        integer :: iunv
-        integer :: datset
+        integer(kind=8) :: iunv
+        integer(kind=8) :: datset
     end subroutine slecor
 end interface

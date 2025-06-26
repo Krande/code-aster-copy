@@ -36,7 +36,7 @@ subroutine tpsivp(p, sigmav)
     !
 !     Routine in place
 !     ------------------------------------------------------------------
-    integer :: ld
+    integer(kind=8) :: ld
     real(kind=8) :: alpha, beta
     real(kind=8), dimension(3, 3) :: sigma, temp
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n

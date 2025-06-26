@@ -62,14 +62,14 @@ subroutine immehx(nbcnx, xyzma, x3dca, itetra, xbar, &
 #include "asterfort/cotfac.h"
 #include "asterfort/tstbar.h"
 #include "asterfort/utmess.h"
-    integer :: nbcnx, itetra, immer
+    integer(kind=8) :: nbcnx, itetra, immer
     real(kind=8) :: xyzma(3, *), x3dca(*), xbar(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: idc, id(12), ii, j, ktest
+    integer(kind=8) :: idc, id(12), ii, j, ktest
     real(kind=8) :: d, dx, dy, dz
-    integer :: f1(4), f2(4), f3(4), f4(4), f5(4), f6(4)
+    integer(kind=8) :: f1(4), f2(4), f3(4), f4(4), f5(4), f6(4)
     aster_logical :: facnp1, facnp2, facnp3, facnp4, facnp5, facnp6
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

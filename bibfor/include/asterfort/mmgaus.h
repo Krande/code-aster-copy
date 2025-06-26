@@ -22,8 +22,8 @@ interface
     subroutine mmgaus(elem_type    , type_inte, gauss_indx, xpg, ypg,&
                       gauss_weight_)
         character(len=8), intent(in) :: elem_type
-        integer, intent(in) :: type_inte
-        integer, intent(in) :: gauss_indx
+        integer(kind=8), intent(in) :: type_inte
+        integer(kind=8), intent(in) :: gauss_indx
         real(kind=8), intent(out) :: xpg
         real(kind=8), intent(out) :: ypg
         real(kind=8), optional, intent(out) :: gauss_weight_

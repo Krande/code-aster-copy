@@ -43,7 +43,7 @@ subroutine gimpgs(result, nnoff, absc, gs, numero, &
 !    IORDR        --> NUMERO D'ORDRE A IMPRIMER
 ! ......................................................................
 !
-    integer :: nnoff, unit, numero, ndeg, iordr, i, i1, ndimte
+    integer(kind=8) :: nnoff, unit, numero, ndeg, iordr, i, i1, ndimte
     real(kind=8) :: gs(1), gthi(1), gi(1), time, absc(*)
     aster_logical :: extim
     character(len=8) :: result

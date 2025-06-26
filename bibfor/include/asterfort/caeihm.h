@@ -28,28 +28,28 @@ interface
         type(THM_DS), intent(inout) :: ds_thm
         character(len=16) :: nomte
         aster_logical :: l_axi, l_steady
-        integer :: mecani(8)
-        integer :: press1(9)
-        integer :: press2(9)
-        integer :: tempe(5)
-        integer :: dimdef
-        integer :: dimcon
-        integer :: ndim
-        integer :: nno1
-        integer :: nno2
-        integer :: npi
-        integer :: npg
-        integer :: dimuel
-        integer :: iw
-        integer :: ivf1
-        integer :: idf1
-        integer :: ivf2
-        integer :: idf2
-        integer :: jgano1
-        integer :: iu(3, 18)
-        integer :: ip(2, 9)
-        integer :: ipf(2, 2, 9)
-        integer :: iq(2, 2, 9)
+        integer(kind=8) :: mecani(8)
+        integer(kind=8) :: press1(9)
+        integer(kind=8) :: press2(9)
+        integer(kind=8) :: tempe(5)
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno1
+        integer(kind=8) :: nno2
+        integer(kind=8) :: npi
+        integer(kind=8) :: npg
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: iw
+        integer(kind=8) :: ivf1
+        integer(kind=8) :: idf1
+        integer(kind=8) :: ivf2
+        integer(kind=8) :: idf2
+        integer(kind=8) :: jgano1
+        integer(kind=8) :: iu(3, 18)
+        integer(kind=8) :: ip(2, 9)
+        integer(kind=8) :: ipf(2, 2, 9)
+        integer(kind=8) :: iq(2, 2, 9)
         character(len=3), intent(out) :: inte_type
     end subroutine caeihm
 end interface

@@ -58,14 +58,14 @@ subroutine pmvtgt(option, carcri, deps2, sigp, vip, &
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     character(len=16) :: option
-    integer :: iret, nbvari
+    integer(kind=8) :: iret, nbvari
     real(kind=8) :: carcri(*), deps2(6), sigp(6), matper(36), dsidep(6, 6)
     real(kind=8) :: sdeps(6), ssigp(6), vip(nbvari), svip(nbvari), smatr(36)
     real(kind=8) :: varia(2*36)
 !
 !
     character(len=24) :: matra, matrc
-    integer :: ematra, ematrc, exi, i, j, indi, nvar, init, pos
+    integer(kind=8) :: ematra, ematrc, exi, i, j, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxeps
     blas_int :: b_incx, b_incy, b_n
     save init, pos

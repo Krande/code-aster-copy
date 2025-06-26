@@ -22,7 +22,7 @@ interface
         use BehaviourPrepare_type
         type(BehaviourPrep_Crit), pointer :: prepCrit(:)
         real(kind=8), intent(in) :: parm_theta_thm, parm_alpha_thm
-        integer, optional, intent(in) :: iFactorKeyword_
+        integer(kind=8), optional, intent(in) :: iFactorKeyword_
         real(kind=8), intent(out), optional :: carcriList_(:)
         real(kind=8), pointer, optional :: carcriMap_(:)
     end subroutine setBehaviourParaValue

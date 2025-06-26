@@ -46,7 +46,7 @@ subroutine hujact(mater, vind, vinf, vins, sigd, &
 #include "asterfort/hujmed.h"
 #include "asterfort/hujmei.h"
 #include "asterfort/hujrmo.h"
-    integer :: ndt, ndi, i, mono, indi(7), iret
+    integer(kind=8) :: ndt, ndi, i, mono, indi(7), iret
     real(kind=8) :: tole1, sigd(6), sigf(6)
     real(kind=8) :: vind(*), vinf(*), vins(50), vint(50)
     real(kind=8) :: mater(22, 2), un, zero

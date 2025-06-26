@@ -24,11 +24,11 @@ interface
                                 map_noco_nbnoco)
         character(len=19), intent(in) :: ligrel
         character(len=8), intent(in) :: noma, mod
-        integer, intent(in):: nb_pairs, nt_nodes, nbnocot
-        integer, intent(out) :: map_noco_pair(:,:,:)
-        integer, intent(out) :: map_noco_nbelem(:,:)
-        integer, intent(out) :: map_noco_nbnoco(:,:,:)
-        integer, pointer :: list_total_no_co(:)
-        integer, pointer :: list_pairs(:)
+        integer(kind=8), intent(in):: nb_pairs, nt_nodes, nbnocot
+        integer(kind=8), intent(out) :: map_noco_pair(:,:,:)
+        integer(kind=8), intent(out) :: map_noco_nbelem(:,:)
+        integer(kind=8), intent(out) :: map_noco_nbnoco(:,:,:)
+        integer(kind=8), pointer :: list_total_no_co(:)
+        integer(kind=8), pointer :: list_pairs(:)
     end subroutine rco3d_crealigrel
 end interface

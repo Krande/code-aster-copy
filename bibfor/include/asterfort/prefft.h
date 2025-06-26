@@ -24,12 +24,12 @@ interface
         character(len=19) :: resin
         character(len=16) :: method
         character(len=16) :: symetr
-        integer :: nsens
+        integer(kind=8) :: nsens
         character(len=4) :: grand
         character(len=19) :: vectot
-        integer :: nbva
+        integer(kind=8) :: nbva
         character(len=16) :: kmpi
-        integer :: ier
-        integer :: npuis
+        integer(kind=8) :: ier
+        integer(kind=8) :: npuis
     end subroutine prefft
 end interface

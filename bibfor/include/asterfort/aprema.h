@@ -24,6 +24,6 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
         character(len=19), intent(in) :: newgeo
-        integer, intent(inout) :: err_appa
+        integer(kind=8), intent(inout) :: err_appa
     end subroutine aprema
 end interface

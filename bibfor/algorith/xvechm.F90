@@ -45,8 +45,8 @@ subroutine xvechm(ds_thm, nnops, ddls, ddlm, ndim, pla, &
 !
 ! ----------------------------------------------------------------------
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: nnops, ddls, ddlm, ndim, pla(27), nnop
-    integer :: ncompn, jheavn, nfiss, ncomph, ifiss, ifa, jheafa, nfh
+    integer(kind=8) :: nnops, ddls, ddlm, ndim, pla(27), nnop
+    integer(kind=8) :: ncompn, jheavn, nfiss, ncomph, ifiss, ifa, jheafa, nfh
     real(kind=8) :: saut(3), sautm(3), nd(3), ffc(16)
     real(kind=8) :: w11, w11m, jac, q1, dt, ta, q1m, ta1
     real(kind=8) :: q2, q2m, dffc(16, 3), rho11

@@ -55,42 +55,42 @@ subroutine mmchml_l(mesh, ds_contact, ligrcf, chmlcf)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ncmp = 60
-    integer, parameter :: nceld1 = 4
-    integer, parameter :: nceld2 = 4
-    integer, parameter :: nceld3 = 4
-    integer :: i_reso_geom
-    integer :: nt_liel, nb_grel, nb_liel, i_grel, i_liel, i_cont_pair, nb_cont_pair, i_zone
-    integer :: vale_indx, decal, elem_slav_nume, patch_nume, jacobian_type, nb_cont_zone
+    integer(kind=8), parameter :: ncmp = 60
+    integer(kind=8), parameter :: nceld1 = 4
+    integer(kind=8), parameter :: nceld2 = 4
+    integer(kind=8), parameter :: nceld3 = 4
+    integer(kind=8) :: i_reso_geom
+    integer(kind=8) :: nt_liel, nb_grel, nb_liel, i_grel, i_liel, i_cont_pair, nb_cont_pair, i_zone
+    integer(kind=8) :: vale_indx, decal, elem_slav_nume, patch_nume, jacobian_type, nb_cont_zone
     real(kind=8) :: r_axi, r_smooth
     character(len=19) :: sdappa
     character(len=24) :: chmlcf_celv
-    integer :: jv_chmlcf_celv
+    integer(kind=8) :: jv_chmlcf_celv
     character(len=24) :: chmlcf_celd
-    integer, pointer :: v_chmlcf_celd(:) => null()
-    integer, pointer :: v_ligrcf_liel(:) => null()
-    integer, pointer :: v_mesh_comapa(:) => null()
+    integer(kind=8), pointer :: v_chmlcf_celd(:) => null()
+    integer(kind=8), pointer :: v_ligrcf_liel(:) => null()
+    integer(kind=8), pointer :: v_mesh_comapa(:) => null()
     character(len=24) :: sdappa_coef
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     character(len=24) :: sdcont_stat
-    integer, pointer :: v_sdcont_stat(:) => null()
+    integer(kind=8), pointer :: v_sdcont_stat(:) => null()
     character(len=24) :: sdcont_lagc
     real(kind=8), pointer :: v_sdcont_lagc(:) => null()
     character(len=24) :: sdappa_apli
-    integer, pointer :: v_sdappa_apli(:) => null()
-    integer, pointer :: typ_jaco(:) => null()
+    integer(kind=8), pointer :: v_sdappa_apli(:) => null()
+    integer(kind=8), pointer :: typ_jaco(:) => null()
     character(len=24) :: sdappa_poid
     real(kind=8), pointer :: v_sdappa_poid(:) => null()
     character(len=24) :: sdappa_gapi
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     character(len=24) :: sdappa_nmcp
-    integer, pointer :: v_sdappa_nmcp(:) => null()
+    integer(kind=8), pointer :: v_sdappa_nmcp(:) => null()
     character(len=24) :: sdappa_apts
     real(kind=8), pointer :: v_sdappa_apts(:) => null()
     character(len=24) :: sdappa_aptm
     real(kind=8), pointer :: v_sdappa_aptm(:) => null()
     character(len=24) :: sdappa_apnp
-    integer, pointer :: v_sdappa_apnp(:) => null()
+    integer(kind=8), pointer :: v_sdappa_apnp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

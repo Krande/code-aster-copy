@@ -24,11 +24,11 @@ subroutine jevema(imarq)
 !
 ! OUT IMARQ : VALEUR DE LA MARQUE COURANTE
 ! ----------------------------------------------------------------------
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer, intent(out) :: imarq
+    integer(kind=8), intent(out) :: imarq
 !-----------------------------------------------------------------------
     imarq = ipgc
 ! FIN ------------------------------------------------------------------

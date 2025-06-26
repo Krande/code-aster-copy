@@ -67,14 +67,14 @@ subroutine pjrisp(moa2, masp, corres, noca)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ntgeo, ipo, ipg, nuno2
-    integer :: ibid, nbnosp, nno2, ino2p
-    integer :: k, j1, ipoi1
-    integer :: nbma, nbpt, nbsp, nbcmp
-    integer :: ima, ipt, isp, icmp, iad, iadime
-    integer :: jtypma, jpo2
-    integer :: jcesd, jcesl, jcesv, iatypm
-    integer :: nchi, nbpgmx, nbspmx
+    integer(kind=8) :: ntgeo, ipo, ipg, nuno2
+    integer(kind=8) :: ibid, nbnosp, nno2, ino2p
+    integer(kind=8) :: k, j1, ipoi1
+    integer(kind=8) :: nbma, nbpt, nbsp, nbcmp
+    integer(kind=8) :: ima, ipt, isp, icmp, iad, iadime
+    integer(kind=8) :: jtypma, jpo2
+    integer(kind=8) :: jcesd, jcesl, jcesv, iatypm
+    integer(kind=8) :: nchi, nbpgmx, nbspmx
     character(len=8) :: nom, mail2, lpain(6)
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc

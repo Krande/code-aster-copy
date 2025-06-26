@@ -24,7 +24,7 @@ interface
                  bm6)
         real(kind=8) :: a(ngf,ngf+1)
         real(kind=8) :: b(ngf)
-        integer :: ngf
+        integer(kind=8) :: ngf
         real(kind=8) :: kveve66(6,6)
         real(kind=8) :: kmm66(6,6)
         real(kind=8) :: kmve66(6,6)

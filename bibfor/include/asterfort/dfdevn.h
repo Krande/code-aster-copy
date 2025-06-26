@@ -21,6 +21,6 @@ interface
         character(len=16), intent(out) :: action_typek
         character(len=16), intent(out) :: subd_method
         real(kind=8), intent(out) :: subd_pas_mini
-        integer, intent(out) :: subd_pas, subd_niveau
+        integer(kind=8), intent(out) :: subd_pas, subd_niveau
     end subroutine dfdevn
 end interface

@@ -28,16 +28,16 @@ subroutine plastMult(na, nf0, ngf, x, irr, nc, indic2, ipla2, imax, ig, &
 #include "asterfort/utmess.h"
 
 !   declaration des arguments
-    integer, intent(in) :: nf0, irr, nc, imax, ngf
-    integer, intent(inout) :: na, ipla2, ig(nc)
+    integer(kind=8), intent(in) :: nf0, irr, nc, imax, ngf
+    integer(kind=8), intent(inout) :: na, ipla2, ig(nc)
     real(kind=8), intent(inout) :: x(ngf), a(ngf, ngf+1), b(ngf), dgfa_ds(nc, 6)
     aster_logical, intent(inout) :: indic2
     aster_logical, intent(out) :: goto20
 ! ----------------------------------------------------------------------
 !   variables internes
-    integer :: nc0
+    integer(kind=8) :: nc0
     parameter(nc0=10)
-    integer :: nsupr, i, j, k, supr(nc0), nared
+    integer(kind=8) :: nsupr, i, j, k, supr(nc0), nared
 ! ----------------------------------------------------------------------
     ASSERT(nc0 .eq. nc)
     supr(:) = 0

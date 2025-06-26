@@ -49,13 +49,13 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls, &
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
     aster_logical :: axi
-    integer :: nse, ise, in, ino, nno, j, ndim, nfh, nfiss, jfisno
-    integer :: nnop, nnops, n, nddls, nddlm, ipi, npg, ifiss
-    integer :: igeom, jpintt, jpmilt, ivf, ipoids, idfde, jheavn
-    integer :: ivectu, yaenrm, ifh, fisno(nnop, nfiss), iret, jtab(7)
-    integer :: ipesa, dec1(nnop), dec2(nnop), icla, ienr, ncomp, dec
-    integer :: heavt(*), lonch(10), cnset(*)
-    integer :: heavn(nnop, 5), ig, ncompn, hea_se
+    integer(kind=8) :: nse, ise, in, ino, nno, j, ndim, nfh, nfiss, jfisno
+    integer(kind=8) :: nnop, nnops, n, nddls, nddlm, ipi, npg, ifiss
+    integer(kind=8) :: igeom, jpintt, jpmilt, ivf, ipoids, idfde, jheavn
+    integer(kind=8) :: ivectu, yaenrm, ifh, fisno(nnop, nfiss), iret, jtab(7)
+    integer(kind=8) :: ipesa, dec1(nnop), dec2(nnop), icla, ienr, ncomp, dec
+    integer(kind=8) :: heavt(*), lonch(10), cnset(*)
+    integer(kind=8) :: heavn(nnop, 5), ig, ncompn, hea_se
     real(kind=8) :: xg(ndim), xe(ndim), coorse(30), dbid(nnop, ndim), he(nfiss)
     real(kind=8) :: ff(nnop), poids, rho, rx
     character(len=8) :: elrefp

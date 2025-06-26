@@ -24,12 +24,12 @@ subroutine impfn0(isor, ibl, fnmoyt, fnmoyc, fnrmst, &
 !
 !
     implicit none
-    integer :: isor
+    integer(kind=8) :: isor
     real(kind=8) :: fnmoyt, fnmoyc, fnrmst, fnrmsc, fmax
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibl
+    integer(kind=8) :: ibl
 !-----------------------------------------------------------------------
     if (ibl .eq. 1) then
         write (isor, *)

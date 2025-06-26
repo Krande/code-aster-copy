@@ -21,7 +21,7 @@ function ndynin(sddyna, chaine)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    integer :: ndynin
+    integer(kind=8) :: ndynin
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -51,7 +51,7 @@ function ndynin(sddyna, chaine)
 !
 !
 !
-    integer :: jtfor, jncha
+    integer(kind=8) :: jtfor, jncha
     character(len=24) :: tfor, ncha
 !
 ! ----------------------------------------------------------------------

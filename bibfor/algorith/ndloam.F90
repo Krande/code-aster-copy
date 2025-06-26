@@ -38,7 +38,7 @@ subroutine ndloam(sddyna, result, evonol, nume)
 !
     character(len=19) :: sddyna
     character(len=8) :: result
-    integer :: nume
+    integer(kind=8) :: nume
     aster_logical :: evonol
 !
 ! ----------------------------------------------------------------------
@@ -57,20 +57,20 @@ subroutine ndloam(sddyna, result, evonol, nume)
 !
 !
     character(len=8) :: ctype
-    integer :: iret
-    integer :: nbmodp
+    integer(kind=8) :: iret
+    integer(kind=8) :: nbmodp
     character(len=24) :: trgene
-    integer :: jtrgen
+    integer(kind=8) :: jtrgen
     aster_logical :: linit
     character(len=19) :: depgem, vitgem, accgem
-    integer :: jdepgm, jvitgm, jaccgm
+    integer(kind=8) :: jdepgm, jvitgm, jaccgm
     character(len=19) :: depgep, vitgep, accgep
-    integer :: jdepgp, jvitgp, jaccgp
+    integer(kind=8) :: jdepgp, jvitgp, jaccgp
     character(len=19) :: dgen, vgen, agen
     character(len=19) :: depgen, vitgen, accgen
-    integer :: jrestd, jrestv, jresta
-    integer :: ifm, niv
-    integer :: nocc1, nocc2, nocc3, nocc
+    integer(kind=8) :: jrestd, jrestv, jresta
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nocc1, nocc2, nocc3, nocc
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

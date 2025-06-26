@@ -44,11 +44,11 @@ contains
     subroutine prodBTDB(matrD, nls, ncb, matrB, tBDB)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: nls, ncb
+        integer(kind=8), intent(in) :: nls, ncb
         real(kind=8), intent(in) :: matrD(nls, nls), matrB(nls, ncb)
         real(kind=8), intent(out) :: tBDB(ncb, ncb)
 ! - Local
-        integer :: i, j, k
+        integer(kind=8) :: i, j, k
         real(kind=8) :: aux, DB(nls, ncb)
 !   ------------------------------------------------------------------------------------------------
 !

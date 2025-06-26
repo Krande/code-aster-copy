@@ -23,6 +23,6 @@ interface
         character(len=19), intent(in) :: cnfnod, cnequi
         real(kind=8), intent(out) :: r_comp_vale
         character(len=8), intent(out) :: r_comp_name
-        integer, intent(out) :: r_comp_indx
+        integer(kind=8), intent(out) :: r_comp_indx
     end subroutine rescmp
 end interface

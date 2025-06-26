@@ -21,8 +21,8 @@
 #include "asterf_types.h"
 interface
     subroutine asmpi_allgatherv_i(sendbuf, sendcnt, recvbuf, recvcnt, displs, comm)
-        integer, intent(in) :: sendbuf(*)
-        integer, intent(out) :: recvbuf(*)
+        integer(kind=8), intent(in) :: sendbuf(*)
+        integer(kind=8), intent(out) :: recvbuf(*)
         mpi_int, intent(in) :: sendcnt
         mpi_int, intent(in) :: recvcnt(*)
         mpi_int, intent(in) :: displs(*)

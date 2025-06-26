@@ -43,7 +43,7 @@ module Rom_Datastructure_type
 ! ----- Name of datastructure
         character(len=8)        :: resultName = ' '
 ! ----- Number of time steps saved in results
-        integer                 :: nbStore = 0
+        integer(kind=8)                 :: nbStore = 0
 ! ----- Flag for reduced coordinates table
         aster_logical           :: lTablFromResu = ASTER_FALSE
 ! ----- Reference model
@@ -69,24 +69,24 @@ module Rom_Datastructure_type
 !
     type ROM_DS_Snap
 ! ----- Number of snapshots
-        integer           :: nbSnap = 0
+        integer(kind=8)           :: nbSnap = 0
 ! ----- List of snapshots
-        integer, pointer  :: listSnap(:) => null()
+        integer(kind=8), pointer  :: listSnap(:) => null()
     end type ROM_DS_Snap
 !
 ! - Parameters for lineic base numbering
 !
     type ROM_DS_LineicNumb
 ! ----- Number of slices
-        integer           :: nbSlice = 0
+        integer(kind=8)           :: nbSlice = 0
 ! ----- For each node => which slice ?
-        integer, pointer  :: numeSlice(:) => null()
+        integer(kind=8), pointer  :: numeSlice(:) => null()
 ! ----- For each node => which IN slice ?
-        integer, pointer  :: numeSection(:) => null()
+        integer(kind=8), pointer  :: numeSection(:) => null()
 ! ----- Tolerance for separating nodes
         real(kind=8)      :: toleNode = 1.d-7
 ! ----- Number of components by node
-        integer           :: nbCmp = 0
+        integer(kind=8)           :: nbCmp = 0
     end type ROM_DS_LineicNumb
 !
 ! - Parameters for field
@@ -109,14 +109,14 @@ module Rom_Datastructure_type
         character(len=8)          :: mesh = ' '
 
 ! ----- Number of equations
-        integer                   :: nbEqua = 0
+        integer(kind=8)                   :: nbEqua = 0
 
 ! ----- Components in the field: number and name
         character(len=8), pointer :: listCmpName(:) => null()
-        integer                   :: nbCmpName = 0
+        integer(kind=8)                   :: nbCmpName = 0
 
 ! ----- For each dof: index of name of components (from listCmpName)
-        integer, pointer          :: equaCmpName(:) => null()
+        integer(kind=8), pointer          :: equaCmpName(:) => null()
 
 ! ----- Flag if has Lagrange multipliers
         aster_logical             :: lLagr = ASTER_FALSE
@@ -125,7 +125,7 @@ module Rom_Datastructure_type
         aster_logical             :: lFilter = ASTER_FALSE
 
 ! ----- For each equation: 1 to keep this component
-        integer, pointer          :: equaFilter(:) => null()
+        integer(kind=8), pointer          :: equaFilter(:) => null()
 
     end type ROM_DS_Field
 !
@@ -143,11 +143,11 @@ module Rom_Datastructure_type
 ! ----- First section of the linear model
         character(len=24)       :: lineicSect = ' '
 ! ----- Number of modes in base
-        integer                 :: nbMode = 0
+        integer(kind=8)                 :: nbMode = 0
 ! ----- Number of modes max
-        integer                 :: nbModeMaxi = 0
+        integer(kind=8)                 :: nbModeMaxi = 0
 ! ----- Number of snapshots when created base
-        integer                 :: nbSnap = 0
+        integer(kind=8)                 :: nbSnap = 0
 ! ----- Datastructure for lineic base numbering
         type(ROM_DS_LineicNumb) :: lineicNume
     end type ROM_DS_Empi
@@ -180,15 +180,15 @@ module Rom_Datastructure_type
         character(len=24)          :: grNodeRIDInterface = ' '
 
 ! ----- Number of equations in RID (final: complete or truncated)
-        integer                    :: nbEquaRID = 0
+        integer(kind=8)                    :: nbEquaRID = 0
 
 ! ----- Access to equations in complete RID  (when lRIDTrunc = .true.)
-        integer                    :: nbEquaRIDTotal = 0
-        integer, pointer           :: equaRIDTotal(:) => null()
+        integer(kind=8)                    :: nbEquaRIDTotal = 0
+        integer(kind=8), pointer           :: equaRIDTotal(:) => null()
 
 ! ----- Access to equation in truncated RID
-        integer                    :: nbEquaRIDTrunc = 0
-        integer, pointer           :: equaRIDTrunc(:) => null()
+        integer(kind=8)                    :: nbEquaRIDTrunc = 0
+        integer(kind=8), pointer           :: equaRIDTrunc(:) => null()
 
 ! ----- [PHI] matrix on RID (size: nbEqua*nbMode)
         real(kind=8), pointer      :: matrPhi(:) => null()
@@ -226,7 +226,7 @@ module Rom_Datastructure_type
         type(ROM_DS_TablReduCoor)        :: tablReduCoor
 
 ! ----- List of fields to reconstruct
-        integer                          :: nbFieldBuild = 0
+        integer(kind=8)                          :: nbFieldBuild = 0
         character(len=24), pointer       :: fieldName(:) => null()
         type(ROM_DS_FieldBuild), pointer :: fieldBuild(:) => null()
 
@@ -235,7 +235,7 @@ module Rom_Datastructure_type
 ! - Parameters for definition of multiparametric reduced problem - Evaluation
 !
     type ROM_DS_EvalCoef
-        integer                     :: nb_para = 0
+        integer(kind=8)                     :: nb_para = 0
         real(kind=8)                :: para_vale(5) = 0.d0
         character(len=16)           :: para_name(5) = ' '
     end type ROM_DS_EvalCoef
@@ -243,7 +243,7 @@ module Rom_Datastructure_type
 ! - Parameters for definition of multiparametric reduced problem - Variations
 !
     type ROM_DS_VariPara
-        integer                     :: nb_vale_para = 0
+        integer(kind=8)                     :: nb_vale_para = 0
         real(kind=8), pointer       :: para_vale(:) => null()
         character(len=16)           :: para_name = ' '
         real(kind=8)                :: para_init = 0.d0
@@ -278,12 +278,12 @@ module Rom_Datastructure_type
 ! ----- Type of system to solve
         character(len=1)                 :: syst_type = ' '
 ! ----- List of matrices for system
-        integer                          :: nb_matr = 0
+        integer(kind=8)                          :: nb_matr = 0
         character(len=8), pointer        :: matr_name(:) => null()
         character(len=8), pointer        :: matr_type(:) => null()
         type(ROM_DS_MultiCoef), pointer  :: matr_coef(:) => null()
 ! ----- List of vectors for system
-        integer                          :: nb_vect = 0
+        integer(kind=8)                          :: nb_vect = 0
         character(len=8), pointer        :: vect_name(:) => null()
         character(len=8), pointer        :: vect_type(:) => null()
         type(ROM_DS_MultiCoef), pointer  :: vect_coef(:) => null()
@@ -296,11 +296,11 @@ module Rom_Datastructure_type
 ! ----- Reduced matrix
         character(len=24), pointer       :: matr_redu(:) => null()
 ! ----- Variation of coefficients: number (by mode)
-        integer                          :: nb_vari_coef = 0
+        integer(kind=8)                          :: nb_vari_coef = 0
 ! ----- Variation of coefficients: type (DIRECT, ALEATOIRE, etc. )
         character(len=24)                :: type_vari_coef = ' '
 ! ----- Variation of coefficients: by parameter
-        integer                          :: nb_vari_para = 0
+        integer(kind=8)                          :: nb_vari_para = 0
         type(ROM_DS_VariPara), pointer   :: vari_para(:) => null()
 ! ----- Evaluation of coefficients
         type(ROM_DS_EvalCoef)            :: evalcoef
@@ -318,7 +318,7 @@ module Rom_Datastructure_type
         character(len=19)        :: syst_2mbr = ' '
         character(len=19)        :: syst_solu = ' '
         character(len=19)        :: vect_zero = ' '
-        integer                  :: syst_size = 0
+        integer(kind=8)                  :: syst_size = 0
     end type ROM_DS_Solve
 !
 ! - Parameters for DEFI_BASE_REDUITE operator (POD)
@@ -335,9 +335,9 @@ module Rom_Datastructure_type
 
 ! ----- Field to read (high fidelity)
         type(ROM_DS_Field)         :: field
-        integer                    :: nbCmpToFilter = 0
+        integer(kind=8)                    :: nbCmpToFilter = 0
         character(len=8), pointer  :: cmpToFilter(:) => null()
-        integer                    :: nbVariToFilter = 0
+        integer(kind=8)                    :: nbVariToFilter = 0
         character(len=16), pointer :: variToFilter(:) => null()
 
 ! ----- Type of reduced base
@@ -359,7 +359,7 @@ module Rom_Datastructure_type
         type(ROM_DS_TablReduCoor)  :: tablReduCoor
 
 ! ----- Maximum number of modes
-        integer                    :: nbModeMaxi = 0
+        integer(kind=8)                    :: nbModeMaxi = 0
 
 ! ----- Datastructure for snapshot selection
         type(ROM_DS_Snap)          :: snap
@@ -381,8 +381,8 @@ module Rom_Datastructure_type
 ! ----- To solve reduced system
         type(ROM_DS_Solve)      :: solveDOM
 ! ----- Index of components FSI transient problem
-        integer                 :: nume_pres = 0
-        integer                 :: nume_phi = 0
+        integer(kind=8)                 :: nume_pres = 0
+        integer(kind=8)                 :: nume_phi = 0
     end type ROM_DS_AlgoGreedy
 !
 ! - Parameters for DEFI_BASE_REDUITE operator (GREEDY)
@@ -395,7 +395,7 @@ module Rom_Datastructure_type
         type(ROM_DS_MultiPara)  :: multiPara
 
 ! ----- Maximum number of modes
-        integer                 :: nbModeMaxi = 0
+        integer(kind=8)                 :: nbModeMaxi = 0
 
 ! ----- Flag to orthogonalize the basis
         aster_logical           :: lOrthoBase = ASTER_FALSE
@@ -424,16 +424,16 @@ module Rom_Datastructure_type
         character(len=8)        :: modelRom = ' '
 
 ! ----- List of equations into RID
-        integer, pointer        :: equaRom(:) => null()
+        integer(kind=8), pointer        :: equaRom(:) => null()
 
 ! ----- Profile of nodal field
         character(len=24)       :: profChnoRom = ' '
 
 ! ----- Number of equation for RID
-        integer                 :: nbEquaRom = 0
+        integer(kind=8)                 :: nbEquaRom = 0
 
 ! ----- Index of GRANDEUR
-        integer                 :: physNume = 0
+        integer(kind=8)                 :: physNume = 0
     end type ROM_DS_ParaDBR_Trunc
 !
 ! - Parameters for DEFI_BASE_REDUITE operator (ORTHO)
@@ -490,13 +490,13 @@ module Rom_Datastructure_type
 ! ----- Name of group of elements for RID
         character(len=24) :: grelem_rid = ' '
 ! ----- Number of layers in the construction of RID
-        integer           :: nb_layer_rid = 0
+        integer(kind=8)           :: nb_layer_rid = 0
 ! ----- The RID in a restricted domain?
         aster_logical     :: l_rid_maxi = ASTER_FALSE
 ! ----- List of elements restricted
-        integer, pointer  :: v_rid_maxi(:) => null()
+        integer(kind=8), pointer  :: v_rid_maxi(:) => null()
 ! ----- Number of elements restricted
-        integer           :: nb_rid_maxi = 0
+        integer(kind=8)           :: nb_rid_maxi = 0
 ! ----- Name of group of nodes for interface
         character(len=24) :: grnode_int = ' '
 ! ----- Flag for EF corrector?
@@ -504,10 +504,10 @@ module Rom_Datastructure_type
 ! ----- Name of group of nodes for outside area of EF corrector
         character(len=24) :: grnode_sub = ' '
 ! ----- Number of layer in the construction of outside area
-        integer           :: nb_layer_sub = 0
-        integer           :: nb_rid_mini = 0
+        integer(kind=8)           :: nb_layer_sub = 0
+        integer(kind=8)           :: nb_rid_mini = 0
 ! ----- List of nodes for minimal rid
-        integer, pointer  :: v_rid_mini(:) => null()
+        integer(kind=8), pointer  :: v_rid_mini(:) => null()
     end type ROM_DS_ParaDDR
 !
 ! - Parameters for non_linear operator
@@ -516,9 +516,9 @@ module Rom_Datastructure_type
 ! ----- Empiric modes
         type(ROM_DS_Empi) :: ds_empi
 ! ----- Pointer to list of equations for interface nodes
-        integer, pointer  :: v_equa_int(:) => null()
+        integer(kind=8), pointer  :: v_equa_int(:) => null()
 ! ----- Pointer to list of equation for internal interface nodes
-        integer, pointer  :: v_equa_sub(:) => null()
+        integer(kind=8), pointer  :: v_equa_sub(:) => null()
 ! ----- Flag for reduced model
         aster_logical     :: l_rom = ASTER_FALSE
 ! ----- Flag for hyper-reduced model

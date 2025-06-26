@@ -35,18 +35,18 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(inout) :: ds_contact
         aster_logical, intent(in) :: l_frot_zone
-        integer, intent(in) :: i_cont_poin
+        integer(kind=8), intent(in) :: i_cont_poin
         real(kind=8), intent(in) :: coef_cont
         real(kind=8), intent(in) :: coef_frot
         real(kind=8), intent(in) :: pres_cont_prev
         real(kind=8), intent(in) :: dist_cont_prev
         real(kind=8), intent(in) :: pres_frot_prev(3)
         real(kind=8), intent(in) :: pres_frot_curr(3)
-        integer, intent(in) :: indi_frot_prev
+        integer(kind=8), intent(in) :: indi_frot_prev
         real(kind=8), intent(in) :: dist_frot_prev(3)
-        integer, intent(in) :: indi_cont_eval
-        integer, intent(in) :: indi_cont_prev
-        integer, intent(in) :: indi_frot_eval
+        integer(kind=8), intent(in) :: indi_cont_eval
+        integer(kind=8), intent(in) :: indi_cont_prev
+        integer(kind=8), intent(in) :: indi_frot_eval
         real(kind=8), intent(in) :: dist_cont_curr
         real(kind=8), intent(in) :: pres_cont_curr
         real(kind=8), intent(in) :: dist_frot_curr(3)

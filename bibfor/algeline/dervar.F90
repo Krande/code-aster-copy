@@ -21,7 +21,7 @@ subroutine dervar(gamp, nbmat, mater, parame, derpar)
     implicit none
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), gamp, parame(5), derpar(4)
 ! --- BUT : CALCUL DES DERIVEES DES VARIABLES D'ECROUISSAGE ------------
 ! ======================================================================

@@ -27,8 +27,8 @@ subroutine cfzonn(defico, posno, izone)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
-    integer :: posno
-    integer :: izone
+    integer(kind=8) :: posno
+    integer(kind=8) :: izone
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,8 +47,8 @@ subroutine cfzonn(defico, posno, izone)
 !
 !
     character(len=24) :: typeno
-    integer :: jtypno
-    integer :: ztypn
+    integer(kind=8) :: jtypno
+    integer(kind=8) :: ztypn
 !
 ! ----------------------------------------------------------------------
 !

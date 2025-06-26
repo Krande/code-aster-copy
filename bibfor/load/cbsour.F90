@@ -35,10 +35,10 @@ subroutine cbsour(load, mesh, model, geomDime, valeType)
 
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
 !
-    integer :: nbcalc, icalc, nbfac, isour, iocc
+    integer(kind=8) :: nbcalc, icalc, nbfac, isour, iocc
     real(kind=8) :: r8bid
     character(len=4) :: tych
     character(len=8) :: scalc

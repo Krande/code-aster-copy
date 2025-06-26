@@ -68,13 +68,13 @@ subroutine romAlgoNLSystemSolve(matr_asse, vect_2mbr, vect_cine, ds_algorom, vec
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: gamma, fieldName
     real(kind=8), pointer :: v_gamma(:) => null()
     real(kind=8), pointer :: v_vect_2mbr(:) => null()
-    integer :: nbEqua_2mbr, nbEqua_matr, nbEqua, nbMode
-    integer :: iMode, jMode, iEqua
-    integer :: jv_matr, iret
+    integer(kind=8) :: nbEqua_2mbr, nbEqua_matr, nbEqua, nbMode
+    integer(kind=8) :: iMode, jMode, iEqua
+    integer(kind=8) :: jv_matr, iret
     aster_logical :: l_hrom, l_rom, l_update_redu
     character(len=8) :: resultName
     complex(kind=8) :: cbid

@@ -23,7 +23,7 @@ subroutine dlfdyn(rigid, amort, lamort, neq, d0, &
 #include "asterfort/mrmult.h"
 #include "blas/daxpy.h"
     real(kind=8) :: d0(*), v0(*), f(*), f0(*)
-    integer :: rigid, amort, neq
+    integer(kind=8) :: rigid, amort, neq
     aster_logical :: lamort
 !
 !   BUT :      CALCUL DU VECTEUR FORCE DYNAMIQUE

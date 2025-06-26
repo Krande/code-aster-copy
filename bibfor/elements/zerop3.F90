@@ -23,7 +23,7 @@ subroutine zerop3(a, b, c, x, n)
     implicit none
 #include "asterc/r8pi.h"
     real(kind=8) :: a, b, c, x(3)
-    integer :: n
+    integer(kind=8) :: n
 !
 ! ----------------------------------------------------------------------
 ! RESOLUTION D'UN POLYNOME DE DEGRE 3 : X**3 + A X**2 + B X + C = 0
@@ -33,7 +33,7 @@ subroutine zerop3(a, b, c, x, n)
 ! OUT N     NOMBRE DE RACINES
 ! ----------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: p, q, delta
     real(kind=8) :: tau, cs, alpha, u, t, y(3)
     real(kind=8) :: pi, v1, v2

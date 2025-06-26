@@ -22,11 +22,11 @@ interface
     subroutine cfaca1(nbliac, ajliai, &
                       sdcont_defi, sdcont_solv, solveu,&
                       lmat)
-        integer :: nbliac
-        integer :: ajliai
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ajliai
         character(len=24) :: sdcont_defi
         character(len=24) :: sdcont_solv
         character(len=19) :: solveu
-        integer :: lmat
+        integer(kind=8) :: lmat
     end subroutine cfaca1
 end interface

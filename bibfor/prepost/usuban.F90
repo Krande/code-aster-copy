@@ -34,7 +34,7 @@ subroutine usuban(mater, isupp, para, ier)
     character(len=24) :: valk(3)
 !
 !-----------------------------------------------------------------------
-    integer :: ier, isupp, lk, lt, n1, n2
+    integer(kind=8) :: ier, isupp, lk, lt, n1, n2
 !
 !-----------------------------------------------------------------------
     ier = 0

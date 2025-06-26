@@ -43,7 +43,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: codret
+    integer(kind=8) :: codret
     character(len=1) :: cmperr
     character(len=8) :: nommai, modele, carael
     character(len=19) :: chames
@@ -74,12 +74,12 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
 !     1 EN CAS DE PROBLEME
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: jmai, nbma, ier, nbno, jconi1, jconi2, ima, ncmax, i
-    integer :: posit, posma, numma, ima2, numma2, ino, jcesd, jcesl
-    integer :: jcesv, iexori, jrepe, iepais, nbmato, jvect, idir
-    integer :: jconx1, jconx2, jcoord, jcesdc, ialpha, ibeta
-    integer :: jalpha, jbeta, jgamma, jcesc, jcescc, jcesdd, jceslc, jcesvc
-    integer :: adcar1(3), adcar2(3)
+    integer(kind=8) :: jmai, nbma, ier, nbno, jconi1, jconi2, ima, ncmax, i
+    integer(kind=8) :: posit, posma, numma, ima2, numma2, ino, jcesd, jcesl
+    integer(kind=8) :: jcesv, iexori, jrepe, iepais, nbmato, jvect, idir
+    integer(kind=8) :: jconx1, jconx2, jcoord, jcesdc, ialpha, ibeta
+    integer(kind=8) :: jalpha, jbeta, jgamma, jcesc, jcescc, jcesdd, jceslc, jcesvc
+    integer(kind=8) :: adcar1(3), adcar2(3)
 !
     real(kind=8) :: maxtol, maxdif, tabres(1), angle1, angle2
     real(kind=8) :: pgl(3, 3), vl(3), vg1(3), vg2(3), vg3(3), vg4(3)
@@ -90,7 +90,7 @@ subroutine ccvrrl(nommai, modele, carael, mesmai, chames, &
     character(len=24) :: carori, carcoq
 !
     aster_logical :: llimai, lprobm
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     parameter(maxtol=8.7266463d-2)
 !
     call jemarq()

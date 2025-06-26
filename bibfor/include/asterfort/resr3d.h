@@ -25,8 +25,8 @@ interface
         real(kind=8) :: coor(*)
         real(kind=8) :: ff(*)
         real(kind=8) :: rho
-        integer :: nno
-        integer :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: npg
         real(kind=8) :: frx(27)
         real(kind=8) :: fry(27)
         real(kind=8) :: frz(27)

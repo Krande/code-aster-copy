@@ -21,9 +21,9 @@
 interface
     subroutine pcfact(matas, nequ, in, ip, ac,&
                       prc, vect, epsi)
-        integer :: nequ
+        integer(kind=8) :: nequ
         character(len=19) :: matas
-        integer :: in(nequ)
+        integer(kind=8) :: in(nequ)
         integer(kind=4) :: ip(*)
         real(kind=8) :: ac(*)
         real(kind=8) :: prc(*)

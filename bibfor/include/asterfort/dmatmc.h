@@ -24,13 +24,13 @@ interface
                       ispg, angl_naut, nbsig,dr_,&
                       l_modi_cp, di_)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: mater
+        integer(kind=8), intent(in) :: mater
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: ipg
-        integer, intent(in) :: ispg
+        integer(kind=8), intent(in) :: ipg
+        integer(kind=8), intent(in) :: ispg
         real(kind=8), intent(in) :: angl_naut(3)
-        integer, intent(in) :: nbsig
+        integer(kind=8), intent(in) :: nbsig
         real(kind=8), optional, intent(out) :: dr_(nbsig, nbsig)
         real(kind=8), optional, intent(out) :: di_(nbsig, nbsig)
         aster_logical, optional, intent(in) :: l_modi_cp

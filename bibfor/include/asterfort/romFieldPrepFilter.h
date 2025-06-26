@@ -19,7 +19,7 @@
 interface
     subroutine romFieldPrepFilter(nbCmpToFilter, cmpToFilter, field)
         use Rom_Datastructure_type
-        integer, intent(in) :: nbCmpToFilter
+        integer(kind=8), intent(in) :: nbCmpToFilter
         character(len=8), pointer :: cmpToFilter(:)
         type(ROM_DS_Field), intent(inout) :: field
     end subroutine romFieldPrepFilter

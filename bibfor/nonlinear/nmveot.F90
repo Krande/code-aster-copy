@@ -23,7 +23,7 @@ subroutine nmveot(drbdb, drbdp, drpdb, drpdp, drbde, &
 #include "asterfort/lcicma.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/r8inir.h"
-    integer :: np, nb, nr
+    integer(kind=8) :: np, nb, nr
     real(kind=8) :: drbdb(nb, nb), drbdp(nb, np)
     real(kind=8) :: drpdp(np, np), drpdb(np, nb)
     real(kind=8) :: drbde(nb, nb), drpde(np, nb)
@@ -36,9 +36,9 @@ subroutine nmveot(drbdb, drbdp, drpdb, drpdp, drbde, &
 !
 !     CALCUL DE L'OPERATEUR TANGENT DSIDEP(6,6)
 ! ----------------------------------------------------------------------
-    integer :: nmod
+    integer(kind=8) :: nmod
     parameter(nmod=25)
-    integer :: i, j, k, iret
+    integer(kind=8) :: i, j, k, iret
     real(kind=8) :: a(6, 6), b(6, 6), r(nmod, nmod), dpde(2, 6), dbde(6, 6)
     real(kind=8) :: drdy(nmod, nmod), mun, det
     parameter(mun=-1.d0)

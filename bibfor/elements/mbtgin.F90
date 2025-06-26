@@ -23,8 +23,8 @@ subroutine mbtgin(nno, kpg, dff, sigpk2, dsigpk2, ipoids, h, covadef, ktgt)
 #include "asterf_types.h"
 #include "jeveux.h"
 !
-    integer :: nno, kpg
-    integer :: ipoids
+    integer(kind=8) :: nno, kpg
+    integer(kind=8) :: ipoids
     real(kind=8) :: h
     real(kind=8) :: sigpk2(2, 2), dsigpk2(2, 2, 2, 2)
     real(kind=8) :: dff(2, nno), covadef(3, 3)
@@ -46,7 +46,7 @@ subroutine mbtgin(nno, kpg, dff, sigpk2, dsigpk2, ipoids, h, covadef, ktgt)
 ! OUT KTGT          MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 !
-    integer :: a, b, p, q, i, j, alpha, beta, gamma, delta, kron
+    integer(kind=8) :: a, b, p, q, i, j, alpha, beta, gamma, delta, kron
 
     call r8inir(3*nno*3*nno, 0.d0, ktgt, 1)
 

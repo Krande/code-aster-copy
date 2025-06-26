@@ -20,7 +20,7 @@ interface
     subroutine ccbcop(resultIn    , resultOut,&
                       listStoreJv , nbStore,&
                       listOptionJv, nbOption)
-        integer, intent(in) :: nbStore, nbOption
+        integer(kind=8), intent(in) :: nbStore, nbOption
         character(len=8), intent(in) :: resultOut, resultIn
         character(len=19), intent(in) :: listStoreJv, listOptionJv
     end subroutine ccbcop

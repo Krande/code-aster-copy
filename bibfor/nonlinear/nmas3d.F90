@@ -48,9 +48,9 @@ subroutine nmas3d(BEHInteg, &
 #include "asterfort/Behaviour_type.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
-    integer :: nno, imate, lgpg, codret, npg
-    integer :: ipoids, ivf, idfde
-    integer :: ipoid2, ivf2, idfde2
+    integer(kind=8) :: nno, imate, lgpg, codret, npg
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: ipoid2, ivf2, idfde2
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: option
@@ -103,11 +103,11 @@ subroutine nmas3d(BEHInteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     aster_logical :: grand, calbn, axi
-    integer :: kpg, i, ii, ino, ia, j, k, kl, proj, cod(9), nbpg2
-    integer :: nnos, jgano, kp, iaa, ndim2
-    integer, parameter :: ndimLdc = 3
+    integer(kind=8) :: kpg, i, ii, ino, ia, j, k, kl, proj, cod(9), nbpg2
+    integer(kind=8) :: nnos, jgano, kp, iaa, ndim2
+    integer(kind=8), parameter :: ndimLdc = 3
     real(kind=8) :: d(6, 6), f(3, 3), eps(6), deps(6), r, s, sigma(6), sign(6)
     real(kind=8) :: poids, poipg2(8)
     real(kind=8) :: jac, sigas(6, 8), invja(3, 3), bi(3, 8), hx(3, 4)
@@ -118,7 +118,7 @@ subroutine nmas3d(BEHInteg, &
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
     real(kind=8) :: valres(2), nu, nub, den
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=16) :: nomres(2)
     character(len=16) :: optios
     data h/1.d0, 1.d0, -1.d0, -1.d0, -1.d0, -1.d0, 1.d0, 1.d0,&

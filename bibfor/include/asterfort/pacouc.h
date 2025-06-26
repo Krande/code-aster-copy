@@ -31,13 +31,13 @@ interface
         real(kind=8) :: masg(*)
         real(kind=8) :: freq(*)
         real(kind=8) :: amor(*)
-        integer :: nbno
-        integer :: indic
-        integer :: nbpv
+        integer(kind=8) :: nbno
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbpv
         real(kind=8) :: w(*)
-        integer :: veci1(*)
+        integer(kind=8) :: veci1(*)
         real(kind=8) :: vecr4(*)
         real(kind=8) :: vecr5(*)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine pacouc
 end interface

@@ -62,7 +62,7 @@ subroutine nugeel(nugene, modgen)
 !
 !
 !
-    integer :: nindep, nbddl, nb_sstr
+    integer(kind=8) :: nindep, nbddl, nb_sstr
     character(len=6) :: pgc
     character(len=8) :: modgen, sst1, sst2
     character(len=14) :: nugene
@@ -75,11 +75,11 @@ subroutine nugeel(nugene, modgen)
 !---------- VARIABLES PERSOS -------------------------------------------
 !
 !
-    integer :: lsilia, lsst, i1, j1, imes, nblia, nbsst
-    integer :: icomp, ltssnb, ltlia, nulia, i_ligr_sstr
-    integer :: nusst1, nusst2, nusst, ltsst, lldefl
-    integer, pointer :: prgene_orig(:) => null()
-    integer, pointer :: prgene_prno(:) => null()
+    integer(kind=8) :: lsilia, lsst, i1, j1, imes, nblia, nbsst
+    integer(kind=8) :: icomp, ltssnb, ltlia, nulia, i_ligr_sstr
+    integer(kind=8) :: nusst1, nusst2, nusst, ltsst, lldefl
+    integer(kind=8), pointer :: prgene_orig(:) => null()
+    integer(kind=8), pointer :: prgene_prno(:) => null()
 !
 !
 !-----------------------------------------------------------------------

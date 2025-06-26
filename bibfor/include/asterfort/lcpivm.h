@@ -24,9 +24,9 @@ interface
                       vim, option, taup, vip, dtaudf,&
                       iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: mate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: mate
         character(len=16) :: compor
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
@@ -38,6 +38,6 @@ interface
         real(kind=8) :: taup(6)
         real(kind=8) :: vip(8)
         real(kind=8) :: dtaudf(6, 3, 3)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcpivm
 end interface

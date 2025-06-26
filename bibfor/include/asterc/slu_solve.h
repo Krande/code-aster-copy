@@ -20,7 +20,7 @@
 !
 interface
     subroutine slu_solve( f_factors, trans_option, nrhs, b, ldb, info ) 
-        integer                       :: f_factors
+        integer(kind=8)                       :: f_factors
         integer(kind=4)               :: trans_option
         integer(kind=4)               :: nrhs
         real(kind=8)                  :: b(*)

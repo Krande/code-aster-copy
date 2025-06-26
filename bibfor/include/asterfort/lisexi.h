@@ -23,7 +23,7 @@
 interface
     function lisexi(prefob, indxch)
         character(len=13) :: prefob
-        integer :: indxch
+        integer(kind=8) :: indxch
         aster_logical :: lisexi
     end function lisexi
 end interface

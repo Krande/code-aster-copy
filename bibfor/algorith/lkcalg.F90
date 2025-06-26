@@ -32,7 +32,7 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
 !      DEVGII : SECOND INVARIANT DE G -----------------------------
 ! =================================================================
     common/tdim/ndt, ndi
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
     real(kind=8) :: devg(6), fact1
 !
 ! =================================================================

@@ -23,9 +23,9 @@ interface
                       nolino)
         character(len=8) :: noma
         character(len=16) :: motfac
-        integer :: nzocu
+        integer(kind=8) :: nzocu
         character(len=24) :: nopono
-        integer :: nnocu
+        integer(kind=8) :: nnocu
         character(len=24) :: nolino
     end subroutine listun
 end interface

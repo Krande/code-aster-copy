@@ -44,7 +44,7 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: n1, n2, nb1, nb2, i, j, npar, nsym
+    integer(kind=8) :: n1, n2, nb1, nb2, i, j, npar, nsym
     real(kind=8) :: bmat(n1, n2)
     real(kind=8) :: fac
     complex(kind=8) :: cmat(*)
@@ -54,8 +54,8 @@ subroutine ampcpr(cmat, nb1, nb2, bmat, n1, &
 !   CAS SANS TRANSPOSITION
 !
 !-----------------------------------------------------------------------
-    integer :: icol, ideb, ifin, ii, iideb, iifin, jjfin
-    integer :: ilig, iterme, jdeb, jfin, jj, jjdeb
+    integer(kind=8) :: icol, ideb, ifin, ii, iideb, iifin, jjfin
+    integer(kind=8) :: ilig, iterme, jdeb, jfin, jj, jjdeb
 !
 !-----------------------------------------------------------------------
     if (nsym .eq. 1) then

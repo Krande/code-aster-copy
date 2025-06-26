@@ -28,6 +28,6 @@ interface
         character(len=24) :: basfon
         character(len=24) :: taillr
         character(len=8) :: conf
-        integer :: lnoff
+        integer(kind=8) :: lnoff
     end subroutine cgleff
 end interface

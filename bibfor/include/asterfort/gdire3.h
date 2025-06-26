@@ -24,6 +24,6 @@ interface
         real(kind=8) :: a
         real(kind=8) :: b
         real(kind=8) :: c
-        integer :: m
+        integer(kind=8) :: m
     end subroutine gdire3
 end interface

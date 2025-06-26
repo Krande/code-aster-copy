@@ -46,8 +46,8 @@ subroutine ComputeTableHead(table, col_sep, table_head)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, nb_cols, pos
-    integer :: col_width, title_height, table_width
+    integer(kind=8) :: i_col, nb_cols, pos
+    integer(kind=8) :: col_width, title_height, table_width
     character(len=16) :: col_title(3)
 !
 ! --------------------------------------------------------------------------------------------------

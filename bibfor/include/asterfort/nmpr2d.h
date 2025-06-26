@@ -23,7 +23,7 @@ interface
                       geom  , pres , cisa,&
                       vect_ , matr_)
         aster_logical, intent(in):: l_axis
-        integer, intent(in) :: nno, npg
+        integer(kind=8), intent(in) :: nno, npg
         real(kind=8), intent(in) :: poidsg(npg), vff(nno, npg), dff(nno, npg)
         real(kind=8), intent(in) :: geom(2, nno), pres(npg), cisa(npg)
         real(kind=8), intent(out), optional :: vect_(2, nno), matr_(2, nno, 2, nno)

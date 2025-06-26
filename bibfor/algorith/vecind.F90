@@ -59,8 +59,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
 #include "blas/ddot.h"
 #include "blas/dgemm.h"
 #include "blas/dgesvd.h"
-    integer :: lvec, nbl, nbc, nindep, lwork, lmat, ltrav1
-    integer :: i1, k1, l1, iret, lcopy, force, indnz
+    integer(kind=8) :: lvec, nbl, nbc, nindep, lwork, lmat, ltrav1
+    integer(kind=8) :: i1, k1, l1, iret, lcopy, force, indnz
     integer(kind=4) :: info
     real(kind=8) :: swork(1), norme, sqrt, rij
     character(len=8) :: ortho
@@ -69,8 +69,8 @@ subroutine vecind(mat, lvec, nbl, nbc, force, &
     real(kind=8), pointer :: new_stat(:) => null()
     real(kind=8), pointer :: trav2_u(:) => null()
     real(kind=8), pointer :: trav3_v(:) => null()
-    integer, pointer :: vec_ind_nz(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: vec_ind_nz(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m
     blas_int :: b_ldu, b_ldvt, b_lwork

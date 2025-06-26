@@ -37,21 +37,21 @@ subroutine tbexlr(nomta, listr, basout)
 ! IN  : BASOUT : BASE DE CREATION DE "LISTR"
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, nbpr, nblg, ipar, ndim
-    integer :: i, j, jvale, jlogq, nbvale, k1, kcol, klig, ideb1, ideb2
-    integer :: ifin1, ifin2, nbcl, ivide, ilig, ibloc, jpas, jnbp, jbor, k
-    integer :: kcol1, kcol2
+    integer(kind=8) :: iret, nbpara, nblign, nbpr, nblg, ipar, ndim
+    integer(kind=8) :: i, j, jvale, jlogq, nbvale, k1, kcol, klig, ideb1, ideb2
+    integer(kind=8) :: ifin1, ifin2, nbcl, ivide, ilig, ibloc, jpas, jnbp, jbor, k
+    integer(kind=8) :: kcol1, kcol2
     character(len=1) :: base
     character(len=3) :: type
     character(len=19) :: nomtab, listr8
     character(len=24) :: nomjv, nomjvl
-    integer, pointer :: colonn(:) => null()
-    integer, pointer :: lignes(:) => null()
-    integer, pointer :: nume_lign(:) => null()
-    integer, pointer :: nume_para(:) => null()
+    integer(kind=8), pointer :: colonn(:) => null()
+    integer(kind=8), pointer :: lignes(:) => null()
+    integer(kind=8), pointer :: nume_lign(:) => null()
+    integer(kind=8), pointer :: nume_para(:) => null()
     real(kind=8), pointer :: vale_r(:) => null()
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

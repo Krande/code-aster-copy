@@ -24,7 +24,7 @@ subroutine cfnorm(ndim, tau1, tau2, norm, noor)
 #include "asterfort/assert.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: tau1(3)
     real(kind=8) :: tau2(3)
     real(kind=8) :: norm(3)

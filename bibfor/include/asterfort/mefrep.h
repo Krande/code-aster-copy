@@ -22,11 +22,11 @@ interface
     subroutine mefrep(nbz, nbmod, nbcyl, nbgrp, numgrp,&
                       z, freq0, rho, visc, rint,&
                       phix, phiy, dcent, matma)
-        integer :: nbz
-        integer :: nbmod
-        integer :: nbcyl
-        integer :: nbgrp
-        integer :: numgrp(*)
+        integer(kind=8) :: nbz
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: nbcyl
+        integer(kind=8) :: nbgrp
+        integer(kind=8) :: numgrp(*)
         real(kind=8) :: z(*)
         real(kind=8) :: freq0(*)
         real(kind=8) :: rho(*)

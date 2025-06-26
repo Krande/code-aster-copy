@@ -43,11 +43,11 @@ subroutine ccvepo(modele, resuin, typesd, lisord, nbordr, &
 #include "asterfort/medome_once.h"
 #include "asterfort/utmess.h"
     aster_logical :: exipou
-    integer :: nbchre, ioccur
+    integer(kind=8) :: nbchre, ioccur
     character(len=8) :: modele, resuin
     character(len=16) :: typesd, option
     character(len=24) :: suropt, ligrel
-    integer :: nbordr
+    integer(kind=8) :: nbordr
     character(len=19) :: lisord
 !  CALC_CHAMP - VERIFICATION POUR LES POUTRES
 !  -    -       --                    --
@@ -69,18 +69,18 @@ subroutine ccvepo(modele, resuin, typesd, lisord, nbordr, &
 !   EXIPOU  L    LOGIQUE INDIQUANT LE PRESENCE DE POUTRES
 ! ----------------------------------------------------------------------
 !
-    integer :: ierd, ltymo, nbmaal
-    integer :: n1, n2
+    integer(kind=8) :: ierd, ltymo, nbmaal
+    integer(kind=8) :: n1, n2
 !
     character(len=8) :: k8b, model, cara_elem
     character(len=24) :: mater, mateco
     character(len=16) :: typemo
     character(len=19) :: refe, masse, chdynr, chdepl
     character(len=24) :: noojb
-    integer :: nbchar
+    integer(kind=8) :: nbchar
     character(len=19) :: lischa
-    integer, pointer :: liste_mailles(:) => null()
-    integer, pointer :: v_list_store(:) => null()
+    integer(kind=8), pointer :: liste_mailles(:) => null()
+    integer(kind=8), pointer :: v_list_store(:) => null()
     character(len=8), pointer :: lcha(:) => null()
 !
     call jemarq()

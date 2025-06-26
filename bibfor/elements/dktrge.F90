@@ -48,16 +48,16 @@ subroutine dktrge(nomte, xyzl, pgl, rig)
 !     out rig    : matrice de rigidite geometrique
 !     ------------------------------------------------------------------
 !
-    integer :: nbsig
+    integer(kind=8) :: nbsig
     parameter(nbsig=6)
-    integer :: nbcon
+    integer(kind=8) :: nbcon
     parameter(nbcon=8)
 !
-    integer :: ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: ipg, iret
-    integer :: jsigm, nbsp, npgh, icou, idec, jtab(7)
-    integer :: nbcou, jcoqu, j2, ier
-    integer :: jgeom, i, j
+    integer(kind=8) :: ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: ipg, iret
+    integer(kind=8) :: jsigm, nbsp, npgh, icou, idec, jtab(7)
+    integer(kind=8) :: nbcou, jcoqu, j2, ier
+    integer(kind=8) :: jgeom, i, j
 !
     real(kind=8) :: poids, cara(25)
     real(kind=8) :: bnl(2, 9), bnli(9, 2)

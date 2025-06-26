@@ -21,17 +21,17 @@
 interface
     subroutine mdgeph(neq, nbmode, bmodal, xgene, u, kacce, kprof, &
                       inst, instt, indice, taille, kcham)
-        integer, intent(in) :: nbmode
-        integer, intent(in) :: neq
+        integer(kind=8), intent(in) :: nbmode
+        integer(kind=8), intent(in) :: neq
         real(kind=8), intent(in) :: bmodal(neq, nbmode)
         real(kind=8), intent(in) :: xgene(nbmode)
         real(kind=8), intent(out) :: u(neq)
         character(len=4), intent(in), optional :: kacce
         character(len=4), intent(in), optional :: kprof
-        integer, intent(in), optional :: inst
-        integer, intent(in), optional :: instt
-        integer, intent(inout), optional :: indice
-        integer, intent(inout), optional :: taille
+        integer(kind=8), intent(in), optional :: inst
+        integer(kind=8), intent(in), optional :: instt
+        integer(kind=8), intent(inout), optional :: indice
+        integer(kind=8), intent(inout), optional :: taille
         character(len=24), intent(in), optional :: kcham
     end subroutine mdgeph
 end interface

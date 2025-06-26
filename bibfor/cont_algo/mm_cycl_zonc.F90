@@ -27,7 +27,7 @@ subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
 !
     real(kind=8), intent(in) :: laug_cont
     real(kind=8), intent(in) :: pres_near
-    integer, intent(out) :: zone_cont
+    integer(kind=8), intent(out) :: zone_cont
 !
 ! --------------------------------------------------------------------------------------------------
 !

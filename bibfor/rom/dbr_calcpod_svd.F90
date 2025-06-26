@@ -31,11 +31,11 @@ subroutine dbr_calcpod_svd(m, n, q, s, v, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !
-    integer, intent(in) :: m, n
+    integer(kind=8), intent(in) :: m, n
     real(kind=8), pointer :: q(:)
     real(kind=8), pointer :: v(:)
     real(kind=8), pointer :: s(:)
-    integer, intent(out) :: nb_sing
+    integer(kind=8), intent(out) :: nb_sing
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,8 +54,8 @@ subroutine dbr_calcpod_svd(m, n, q, s, v, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: lda, lwork
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: lda, lwork
     real(kind=8), pointer :: w(:) => null()
     real(kind=8), pointer :: work(:) => null()
     real(kind=8), pointer :: qSave(:) => null()

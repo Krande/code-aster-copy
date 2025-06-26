@@ -59,9 +59,9 @@ subroutine hujiid(mod, mater, indi, deps, i1e, &
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, i, j, k, kk, l, ll, nbmect
-    integer :: nbmeca, indi(7), iret, iadzi, iazk24
-    integer :: ifm, niv
+    integer(kind=8) :: ndt, ndi, i, j, k, kk, l, ll, nbmect
+    integer(kind=8) :: nbmeca, indi(7), iret, iadzi, iazk24
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: deps(6), depse(6), hooknl(6, 6), i1e
     real(kind=8) :: dsig(6), sigd(3), p(7), q(7), pe(7), qe(7)
     real(kind=8) :: yd(18), ye(18), dy(18), f2(7), dp(3)

@@ -41,7 +41,7 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbarch, nbchex, nbnosy
+    integer(kind=8) :: nbarch, nbchex, nbnosy
     character(len=*) :: resuz, lisarc, lichex
 !     COMMANDE EXTR_RESU :
 !        SAISIE DU MOT CLE FACTEUR "ARCHIVAGE"
@@ -53,16 +53,16 @@ subroutine dyarc0(resuz, nbnosy, nbarch, lisarc, nbchex, &
 ! OUT : NBCHEX : NOMBRE DE NOMS DES CHAMPS EXCLUS
 ! OUT : LICHEX : NOMS DES CHAMPS EXCLUS
 ! ----------------------------------------------------------------------
-    integer :: ibid, jarch, jchex, n1, nbocc, lnum, k, ier, ipach, karch
-    integer :: jordr, nbtrou, nbordr(1), iocc, n2, nbcham, i, j, iret, iflag
-    integer :: irang
+    integer(kind=8) :: ibid, jarch, jchex, n1, nbocc, lnum, k, ier, ipach, karch
+    integer(kind=8) :: jordr, nbtrou, nbordr(1), iocc, n2, nbcham, i, j, iret, iflag
+    integer(kind=8) :: irang
     real(kind=8) :: r8b, prec
     complex(kind=8) :: c16b
     character(len=8) :: k8b, crit
     character(len=16) :: motcle, nomsym
     character(len=19) :: numarc, knum, resu
     character(len=16), pointer :: trav1(:) => null()
-    integer, pointer :: vale(:) => null()
+    integer(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

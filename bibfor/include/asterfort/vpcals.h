@@ -31,9 +31,9 @@ interface
         character(len=24) , intent(in)    :: vecrek
         character(len=24) , intent(in)    :: vecvp
         character(len=19) , intent(in)    :: matopa
-        integer           , intent(in)    :: mxresf
-        integer           , intent(in)    :: neqact
-        integer           , intent(in)    :: nblagr
+        integer(kind=8)           , intent(in)    :: mxresf
+        integer(kind=8)           , intent(in)    :: neqact
+        integer(kind=8)           , intent(in)    :: nblagr
         real(kind=8)      , intent(inout) :: omemax
         real(kind=8)      , intent(inout) :: omemin
         real(kind=8)      , intent(in)    :: omeshi
@@ -42,17 +42,17 @@ interface
         character(len=24) , intent(in)    :: veclag
         complex(kind=8)   , intent(in)    :: sigma
 !!
-        integer           , intent(inout) :: npivot
+        integer(kind=8)           , intent(inout) :: npivot
         aster_logical     , intent(out)   :: flage
-        integer           , intent(out)   :: nconv
+        integer(kind=8)           , intent(out)   :: nconv
         real(kind=8)      , intent(out)   :: vpinf
         real(kind=8)      , intent(out)   :: vpmax
         character(len=4)  , intent(in)    :: mod45b
         character(len=24) , intent(in)    :: vecstb
         character(len=24) , intent(in)    :: vecedd
-        integer           , intent(in)    :: nbddl
+        integer(kind=8)           , intent(in)    :: nbddl
         character(len=24) , intent(in)    :: vecsdd
-        integer           , intent(in)    :: nbddl2
+        integer(kind=8)           , intent(in)    :: nbddl2
         real(kind=8)      , intent(out)   :: csta
     end subroutine vpcals
 end interface

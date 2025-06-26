@@ -29,7 +29,7 @@ subroutine nmlere(sddisc, action, infz, iterat, valr)
     character(len=19) :: sddisc
     character(len=1) :: action
     character(len=*) :: infz
-    integer :: iterat
+    integer(kind=8) :: iterat
     real(kind=8) :: valr(*)
 !
 ! ----------------------------------------------------------------------
@@ -49,9 +49,9 @@ subroutine nmlere(sddisc, action, infz, iterat, valr)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: infore
-    integer :: jifre
+    integer(kind=8) :: jifre
     character(len=24) :: info
-    integer :: iter
+    integer(kind=8) :: iter
 !
 ! ----------------------------------------------------------------------
 !

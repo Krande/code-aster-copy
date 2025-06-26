@@ -23,7 +23,7 @@ interface
               wbjhm,epm,sbjh,wbjh)
             use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: p1, p1m, dp2,dp1
         real(kind=8), intent(in) :: phi0
         real(kind=8), intent(in) :: ep, surf, shut,sbjh,wbjh

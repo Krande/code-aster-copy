@@ -36,7 +36,7 @@ subroutine exresl(modatt, iparg, chin)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 
-    integer :: modatt, iparg
+    integer(kind=8) :: modatt, iparg
     character(len=19) :: chin
 !----------------------------------------------------------------------
 !     Entrees:
@@ -44,8 +44,8 @@ subroutine exresl(modatt, iparg, chin)
 !        iparg  : numero du parametre dans l'option
 !        chin   : nom du champ global sur lequel on fait l'extraction
 !----------------------------------------------------------------------
-    integer :: desc, mode, ncmpel, iaux1, iaux2, iaux0, k
-    integer :: jresl, debugr, lggrel
+    integer(kind=8) :: desc, mode, ncmpel, iaux1, iaux2, iaux0, k
+    integer(kind=8) :: jresl, debugr, lggrel
 !----------------------------------------------------------------------
 
     call jemarq()

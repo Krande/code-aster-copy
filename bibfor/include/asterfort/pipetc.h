@@ -21,7 +21,7 @@
 interface
     subroutine pipetc(mat, sup, sud, mup, mud,&
                       vim, tau, copilo)
-        integer :: mat
+        integer(kind=8) :: mat
         real(kind=8) :: sup(3)
         real(kind=8) :: sud(3)
         real(kind=8) :: mup(3)

@@ -30,7 +30,7 @@ subroutine dclass(n, tab, iran)
 ! OUT IRAN : RANG DE LA RACINE
 !
 #include "asterfort/dclsma.h"
-    integer :: n, iran(*)
+    integer(kind=8) :: n, iran(*)
 !
     real(kind=8) :: tab(*)
 !

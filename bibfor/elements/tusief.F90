@@ -49,11 +49,11 @@ subroutine tusief(option, nomte, nbrddl, b, vin, &
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbres, nbrddl
+    integer(kind=8) :: nbres, nbrddl
     parameter(nbres=9)
     character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar, degg(24)
     real(kind=8) :: h, a, l, e, nu, beta, cisail, g, omega, dhk, r1
     real(kind=8) :: sinfi, fi, deuxpi, r, at1, at2, vpg(4), vno(4)
@@ -61,15 +61,15 @@ subroutine tusief(option, nomte, nbrddl, b, vin, &
     real(kind=8) :: pgl(3, 3), vin(nbrddl), vout(4), mat(4, nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta
     real(kind=8) :: vtemp(nbrddl), pass(nbrddl, nbrddl), pgl4(3, 3)
-    integer :: nno, npg, nbcou, nbsec, icoude, ndim, jcoopg, nspg
-    integer :: ipoids, ivf, kpgs, k, nnos
-    integer :: imate, nbpar
-    integer :: igau, icou, isect, i, j, jin, jout, iret, indice
-    integer :: lorien, icoud2, mmt, jnbspi
-    integer :: nddl, m, idfdk, jdfd2, jgano
+    integer(kind=8) :: nno, npg, nbcou, nbsec, icoude, ndim, jcoopg, nspg
+    integer(kind=8) :: ipoids, ivf, kpgs, k, nnos
+    integer(kind=8) :: imate, nbpar
+    integer(kind=8) :: igau, icou, isect, i, j, jin, jout, iret, indice
+    integer(kind=8) :: lorien, icoud2, mmt, jnbspi
+    integer(kind=8) :: nddl, m, idfdk, jdfd2, jgano
 !
 !
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ', 'EP1'/)
 !-----------------------------------------------------------------------

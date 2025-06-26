@@ -21,12 +21,12 @@
 interface
     subroutine hujncv(rouhuj, nitimp, iter, ndt, nvi,&
                       umess, erimp, deps, sigd, vind)
-        integer :: nvi
-        integer :: ndt
-        integer :: nitimp
+        integer(kind=8) :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: nitimp
         character(len=*) :: rouhuj
-        integer :: iter
-        integer :: umess
+        integer(kind=8) :: iter
+        integer(kind=8) :: umess
         real(kind=8) :: erimp(nitimp, 3)
         real(kind=8) :: deps(ndt)
         real(kind=8) :: sigd(ndt)

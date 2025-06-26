@@ -59,7 +59,7 @@ subroutine xfem_ksolv(solveu, kxfem)
     character(len=*) :: solveu
     character(len=3) :: kxfem
 !----------------------------------------------------------------------
-    integer :: islvk, iret
+    integer(kind=8) :: islvk, iret
     character(len=19) :: solv19
     character(len=24) :: kprecond, metres, slvk24
 !----------------------------------------------------------------------

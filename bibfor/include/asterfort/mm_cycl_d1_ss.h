@@ -25,7 +25,7 @@ interface
         real(kind=8), intent(in) :: laug_cont_prev, laug_cont_curr
         real(kind=8), intent(out) :: alpha_cont_vect
         real(kind=8), intent(out) :: alpha_cont_matr
-        integer, intent(out) :: cycl_sub_type
-        integer, intent(out) :: zone_cont_prev, zone_cont_curr
+        integer(kind=8), intent(out) :: cycl_sub_type
+        integer(kind=8), intent(out) :: zone_cont_prev, zone_cont_curr
     end subroutine mm_cycl_d1_ss
 end interface

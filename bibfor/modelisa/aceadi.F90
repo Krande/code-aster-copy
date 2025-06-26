@@ -40,7 +40,7 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
     use cara_elem_carte_type
     implicit none
     character(len=8) :: noma, nomo
-    integer :: lmax, nbocc, ivr(*), ifm
+    integer(kind=8) :: lmax, nbocc, ivr(*), ifm
     type(cara_elem_carte) :: infcarte(*)
     character(len=*) :: mcf
 !
@@ -61,13 +61,13 @@ subroutine aceadi(noma, nomo, mcf, lmax, nbocc, infcarte, ivr)
 #include "asterfort/wkvect.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbcar, nbval, nrd
+    integer(kind=8) :: nbcar, nbval, nrd
     parameter(nbcar=100, nbval=1000, nrd=2)
-    integer :: jdc(3), jdv(3), dimcar, nm, ii, l, iv, ndim
-    integer :: jdcinf, jdvinf, ncmp, nn
-    integer :: nsym, neta, nrep, i3d, i2d, ier
-    integer :: jdls, i, ioc, irep, isym, ng, nj, ncar
-    integer :: nval, jdls2
+    integer(kind=8) :: jdc(3), jdv(3), dimcar, nm, ii, l, iv, ndim
+    integer(kind=8) :: jdcinf, jdvinf, ncmp, nn
+    integer(kind=8) :: nsym, neta, nrep, i3d, i2d, ier
+    integer(kind=8) :: jdls, i, ioc, irep, isym, ng, nj, ncar
+    integer(kind=8) :: nval, jdls2
     real(kind=8) :: val(nbval), eta
     character(len=1) :: kma(3)
     character(len=8) :: nomu

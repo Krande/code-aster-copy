@@ -43,8 +43,8 @@ subroutine ndxpre(model, nume_dof, ds_material, cara_elem, &
 #include "asterfort/nmresd.h"
 #include "asterfort/vtzero.h"
 !
-    integer :: list_func_acti(*)
-    integer :: nume_inst
+    integer(kind=8) :: list_func_acti(*)
+    integer(kind=8) :: nume_inst
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     type(NL_DS_Material), intent(in) :: ds_material
@@ -100,10 +100,10 @@ subroutine ndxpre(model, nume_dof, ds_material, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: instap
     character(len=19) :: cncine, cndonn, cnzero
-    integer :: ldccvg, faccvg, rescvg
+    integer(kind=8) :: ldccvg, faccvg, rescvg
 !
 ! --------------------------------------------------------------------------------------------------
 !

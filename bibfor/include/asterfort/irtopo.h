@@ -25,15 +25,15 @@ interface
                       fileFormat, fileUnit    ,&
                       lfichUniq , codret)
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: keywfIocc
+        integer(kind=8), intent(in) :: keywfIocc
         aster_logical, intent(in) :: lField, lResu, lfichUniq
         character(len=8), intent(in) :: dsName
-        integer, intent(out) :: cellListNb
-        integer, pointer :: cellListNume(:)
-        integer, intent(out) :: nodeListNb
-        integer, pointer :: nodeListNume(:)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(out) :: cellListNb
+        integer(kind=8), pointer :: cellListNume(:)
+        integer(kind=8), intent(out) :: nodeListNb
+        integer(kind=8), pointer :: nodeListNume(:)
+        integer(kind=8), intent(in) :: fileUnit
         character(len=8), intent(in) :: fileFormat
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine irtopo
 end interface

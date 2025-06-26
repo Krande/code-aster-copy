@@ -20,7 +20,7 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
     implicit none
 #include "asterc/r8pi.h"
 #include "asterfort/trigom.h"
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: coor3d(*), coteta, siteta, coor2d(*)
 ! ......................................................................
 ! .  - FONCTION REALISEE:  CALCUL DES COORDONNEES 2-D D'UN TRIANGLE    .
@@ -46,7 +46,7 @@ subroutine cq3d2d(nno, coor3d, coteta, siteta, coor2d)
     real(kind=8) :: gamma, delta, alpha, alpha1, alpha2
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: teta
     pi = r8pi()
 !-----------------------------------------------------------------------

@@ -21,7 +21,7 @@ function mefin5(nbz, nbgrp, imod, icyl, jmod, &
                 g)
     implicit none
 !
-    integer :: nbz, nbgrp, imod, icyl, jmod, jcyl
+    integer(kind=8) :: nbz, nbgrp, imod, icyl, jmod, jcyl
     real(kind=8) :: z(*), f1(nbz*nbgrp, *), f2(nbz*nbgrp, *), f3(*), g(*)
 !     CALCUL DE L'INTEGRALE SUR (0,L) DE F3(Z)*F1(Z)*F2'(Z)
 !     PAR LA METHODE DES TRAPEZES OU F1 EST LA DEFORMEE
@@ -52,7 +52,7 @@ function mefin5(nbz, nbgrp, imod, icyl, jmod, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: n, nbz1, nbz2
+    integer(kind=8) :: n, nbz1, nbz2
 !-----------------------------------------------------------------------
     nbz1 = nbz*(icyl-1)
     nbz2 = nbz*(jcyl-1)

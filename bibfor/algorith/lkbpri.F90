@@ -24,7 +24,7 @@ function lkbpri(val, vin, nbmat, mater, para, &
 #include "asterc/r8pi.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
-    integer :: val, nbmat
+    integer(kind=8) :: val, nbmat
     real(kind=8) :: vin(7), mater(nbmat, 2), para(3), invar, s(6), lkbpri
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
 ! =====================================================================
@@ -43,7 +43,7 @@ function lkbpri(val, vin, nbmat, mater, para, &
 ! OUT : LKBPRI : PARAMETRE CONTROLANT LE COMPORTEMENT VOLUMIQUE -------
 ! ------------ : DU MATERIAU ------------------------------------------
 ! =====================================================================
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: zero, un, deux, trois, six, lgleps, pi
     real(kind=8) :: xip, pref, sigc, h0ext, s0, mult, xie, mvmax
     real(kind=8) :: mu0v, xi0v, mu1, xi1

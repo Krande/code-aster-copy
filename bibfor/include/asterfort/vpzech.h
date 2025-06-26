@@ -21,12 +21,12 @@
 interface
     subroutine vpzech(d, z, low, high, mm,&
                       neq, iz)
-        integer :: iz
+        integer(kind=8) :: iz
         real(kind=8) :: d(1)
         real(kind=8) :: z(iz, 1)
-        integer :: low
-        integer :: high
-        integer :: mm
-        integer :: neq
+        integer(kind=8) :: low
+        integer(kind=8) :: high
+        integer(kind=8) :: mm
+        integer(kind=8) :: neq
     end subroutine vpzech
 end interface

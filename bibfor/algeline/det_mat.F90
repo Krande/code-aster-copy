@@ -22,7 +22,7 @@ recursive function det_mat(ndim, m) result(det)
 #include "asterfort/assert.h"
 !
     real(kind=8) :: det
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: m(ndim, ndim)
 !
 !
@@ -33,7 +33,7 @@ recursive function det_mat(ndim, m) result(det)
 !
 !
     real(kind=8) :: sub_m(ndim-1, ndim-1), signe, temp_det
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     if (ndim .gt. 10) then
         write (6, *) 'det_mat.F90 pour matrices taille 10 maxi'

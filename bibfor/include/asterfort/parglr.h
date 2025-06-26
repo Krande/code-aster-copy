@@ -23,7 +23,7 @@ interface
                       omx, omy, rx, ry, hh,&
                       bn11, bn12, bn22, bn33, bm11,&
                       bm12, bm22, bc11, bc22)
-        integer :: nlit
+        integer(kind=8) :: nlit
         real(kind=8) :: elb(*)
         real(kind=8) :: ea(*)
         real(kind=8) :: nua(*)

@@ -38,14 +38,14 @@ interface
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
         aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm, lMatrPred
-        integer, parameter :: maxfa=6
+        integer(kind=8), parameter :: maxfa=6
         character(len=16), intent(in) :: option
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=8), intent(in) :: type_elem(2)
-        integer, intent(in) :: ndim, nbvari
-        integer, intent(in) :: nno, nnos, nface
-        integer, intent(in) :: dimdef, dimcon, dimuel
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+        integer(kind=8), intent(in) :: ndim, nbvari
+        integer(kind=8), intent(in) :: nno, nnos, nface
+        integer(kind=8), intent(in) :: dimdef, dimcon, dimuel
+        integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
         character(len=16), intent(in)  :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: elem_coor(ndim, nno)

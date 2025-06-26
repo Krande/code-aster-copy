@@ -43,7 +43,7 @@ subroutine recude(caelem, phie, ep)
     character(len=19) :: carte
     character(len=24) :: carad
 !-----------------------------------------------------------------------
-    integer :: ia, iassef, iassmx, icard, ivalre, lr1, nbgd
+    integer(kind=8) :: ia, iassef, iassmx, icard, ivalre, lr1, nbgd
 !
     real(kind=8) :: phie2
 !-----------------------------------------------------------------------

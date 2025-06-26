@@ -20,9 +20,9 @@
 !
 interface
     subroutine chveva(nbma, ligr1, ligr2, iret)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=19) :: ligr1
         character(len=19) :: ligr2
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine chveva
 end interface

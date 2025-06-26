@@ -21,8 +21,8 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc, &
     implicit none
 !
 #include "asterc/r8prem.h"
-    integer :: nb1, nb2
-    integer :: ndimx, nddlx, nddlet
+    integer(kind=8) :: nb1, nb2
+    integer(kind=8) :: ndimx, nddlx, nddlet
 !     REAL*8 KTDC(NDDLE,NDDLE),RIG1(NDDLET,NDDLET)
 !     REAL*8 ALPHA,COEF
 !
@@ -32,9 +32,9 @@ subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc, &
     real(kind=8) :: rigrl(2, 2)
     real(kind=8) :: xmin
 !
-    integer :: i1, i2, i, ib, ir, in, ii
-    integer :: j1, j2, j, jb, jj, jr
-    integer :: kompti, komptj
+    integer(kind=8) :: i1, i2, i, ib, ir, in, ii
+    integer(kind=8) :: j1, j2, j, jb, jj, jr
+    integer(kind=8) :: kompti, komptj
 !
 !
 !

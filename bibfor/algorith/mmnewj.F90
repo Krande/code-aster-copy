@@ -21,7 +21,7 @@ subroutine mmnewj(ndimg, coorde, coordp, norm, jeu)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    integer :: ndimg
+    integer(kind=8) :: ndimg
     real(kind=8) :: coorde(3), coordp(3)
     real(kind=8) :: norm(3)
     real(kind=8) :: jeu

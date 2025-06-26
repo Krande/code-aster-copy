@@ -59,9 +59,9 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
 !
     character(len=24) :: nomcmp
     character(len=16) :: nompar, comp
-    integer :: iret, ima, jdecal
-    integer :: jcesd, jcesl
-    integer :: nbma
+    integer(kind=8) :: iret, ima, jdecal
+    integer(kind=8) :: jcesd, jcesl
+    integer(kind=8) :: nbma
     character(len=19) :: coto, copm
     character(len=16), pointer :: cesv(:) => null()
 !

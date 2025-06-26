@@ -31,9 +31,9 @@ subroutine resuReadDebug(resultName, &
 #include "asterfort/rsadpa.h"
 !
     character(len=8), intent(in) :: resultName
-    integer, intent(in) :: fieldNb
+    integer(kind=8), intent(in) :: fieldNb
     character(len=16), intent(in) :: fieldList(100)
-    integer, intent(in) :: fieldStoreNb(100)
+    integer(kind=8), intent(in) :: fieldStoreNb(100)
     character(len=4), intent(in) :: storePara
     real(kind=8), intent(in) :: storeEpsi
     character(len=8), intent(in) :: storeCrit
@@ -56,12 +56,12 @@ subroutine resuReadDebug(resultName, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iField, ibid, nbtrou, iStore, jvPara, storeNb
+    integer(kind=8) :: iField, ibid, nbtrou, iStore, jvPara, storeNb
     real(kind=8) :: rbid
     character(len=8) :: k8bid
     character(len=16) :: fieldType
     complex(kind=8) :: cbid
-    integer, pointer :: storeNume(:) => null()
+    integer(kind=8), pointer :: storeNume(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -26,8 +26,8 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm, &
 #include "asterc/r8miem.h"
 #include "asterc/r8pi.h"
 #include "asterfort/assert.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), iret
-    integer :: ifl, is, ir, nbsys, nfs, nsg, nuecou, irr2
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), iret
+    integer(kind=8) :: ifl, is, ir, nbsys, nfs, nsg, nuecou, irr2
     real(kind=8) :: taus, coeft(nmat), dgamma, dp, vind(*), dalpha
     real(kind=8) :: rp, sgns, hsr(nsg, nsg), dy(12), dt, depsdt
     real(kind=8) :: n, gamma0, rmin, rhop(12)
@@ -39,7 +39,7 @@ subroutine lcddcc(taus, coeft, ifa, nmat, nbcomm, &
     real(kind=8) :: rs, d1, lambda, alphat, ls, tauslt, tauslr, gamnuc
     real(kind=8) :: airr, rhoirr, depdt, tauc, t10
     common/deps6/depsdt
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !  COMPORTEMENT MONOCRISTALLIN : ECOULEMENT (VISCO)PLASTIQUE
 !  INTEGRATION DE LA LOI MONOCRISTALLINE DD-CC. CALCUL DE DALPHA DGAMMA

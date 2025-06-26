@@ -33,7 +33,7 @@ subroutine te0403(option, nomte)
     character(len=16) :: option, nomte
 !
 !
-    integer :: nb1
+    integer(kind=8) :: nb1
     real(kind=8) :: vecl(51)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectt(9, 2, 3), vectpt(9, 3, 3)
     real(kind=8) :: valpar(4), pr
@@ -42,8 +42,8 @@ subroutine te0403(option, nomte)
 ! DEB ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iadzi, iazk24, ib, ier, itemps, j
-    integer :: jgeom, jpres, jvecg, lzi, lzr, nb2
+    integer(kind=8) :: i, iadzi, iazk24, ib, ier, itemps, j
+    integer(kind=8) :: jgeom, jpres, jvecg, lzi, lzr, nb2
 !-----------------------------------------------------------------------
     call jevech('PGEOMER', 'L', jgeom)
 !

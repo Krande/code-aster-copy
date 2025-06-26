@@ -19,7 +19,7 @@
 !
 interface
     subroutine asmpi_status(istat, resp0)
-        integer, intent(in) :: istat
-        integer, intent(out) :: resp0
+        integer(kind=8), intent(in) :: istat
+        integer(kind=8), intent(out) :: resp0
     end subroutine asmpi_status
 end interface

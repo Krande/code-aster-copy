@@ -22,7 +22,7 @@ interface
     subroutine glrcmm(zimat, matr, ep, surfgp, p,&
                       epst, deps, dsig, ecr, delas,&
                       dsidep, crit, codret)
-        integer :: zimat
+        integer(kind=8) :: zimat
         real(kind=8) :: matr(*)
         real(kind=8) :: ep
         real(kind=8) :: surfgp
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: delas(6, *)
         real(kind=8) :: dsidep(6, *)
         real(kind=8) :: crit(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine glrcmm
 end interface

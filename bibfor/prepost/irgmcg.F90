@@ -45,20 +45,20 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr, &
     character(len=8) :: nomaou
     real(kind=8) :: coord(*), para(*)
     aster_logical :: lresu
-    integer :: ifi, nbordr, nbcmpi
-    integer :: versio
-    integer :: ordr(*), connx(*), point(*)
+    integer(kind=8) :: ifi, nbordr, nbcmpi
+    integer(kind=8) :: versio
+    integer(kind=8) :: ordr(*), connx(*), point(*)
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
-    integer :: neletr
+    integer(kind=8) :: neletr
     parameter(neletr=8)
-    integer :: ntyele, maxel, maxno
+    integer(kind=8) :: ntyele, maxel, maxno
     parameter(ntyele=28)
     parameter(maxel=48)
     parameter(maxno=8)
-    integer :: tdec(ntyele, maxel, maxno)
-    integer :: typd(ntyele, 3)
-    integer :: tord(neletr)
-    integer :: nbel(ntyele), nbel2(ntyele), jel(ntyele)
+    integer(kind=8) :: tdec(ntyele, maxel, maxno)
+    integer(kind=8) :: typd(ntyele, 3)
+    integer(kind=8) :: tord(neletr)
+    integer(kind=8) :: nbel(ntyele), nbel2(ntyele), jel(ntyele)
     character(len=24) :: nobj(ntyele)
 !
 !        IMPRESSION D'UN CHAM_ELEM DE TYPE "ELGA","ELEM" AU FORMAT GMSH
@@ -83,21 +83,21 @@ subroutine irgmcg(chamsy, partie, ifi, nomcon, ordr, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ior, i, j, k, ine, inoe, ima, listno(8), ix, nbno
-    integer :: iq
-    integer :: nbcmp, ipoin, iret, jcesc, jcesl
-    integer :: jcesd, jtype
-    integer :: icmp, ipt, isp, nbpt, nbsp, jnumol
-    integer :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
+    integer(kind=8) :: ior, i, j, k, ine, inoe, ima, listno(8), ix, nbno
+    integer(kind=8) :: iq
+    integer(kind=8) :: nbcmp, ipoin, iret, jcesc, jcesl
+    integer(kind=8) :: jcesd, jtype
+    integer(kind=8) :: icmp, ipt, isp, nbpt, nbsp, jnumol
+    integer(kind=8) :: nbma, ncmpu, iad, nbcmpd, nbord2, iadmax, iadmm
     aster_logical :: iwri
     character(len=1) :: tsca
     character(len=8) :: k8b, nomgd, type, nocmp
     character(len=19) :: noch19, champs
     character(len=24) :: numold
-    integer, pointer :: cesc(:) => null()
-    integer, pointer :: cesd(:) => null()
-    integer, pointer :: cesl(:) => null()
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: cesc(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesl(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: vnocmp(:) => null()
     character(len=8), pointer :: cesk(:) => null()
 !     ------------------------------------------------------------------

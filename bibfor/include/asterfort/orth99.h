@@ -21,6 +21,6 @@
 interface
     subroutine orth99(nomres, ritz)
         character(len=8) :: nomres
-        integer :: ritz
+        integer(kind=8) :: ritz
     end subroutine orth99
 end interface

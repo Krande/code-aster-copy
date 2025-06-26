@@ -35,7 +35,7 @@ subroutine te0107(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=4)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: pc(3), fpl, fmo, valpar(nbres), theta
@@ -43,9 +43,9 @@ subroutine te0107(option, nomte)
     real(kind=8) :: coefm2, textm2, coefm1, textm1, coefp1, textp1
     real(kind=8) :: dfdx(9), dfdy(9), poids, cour, cosa, sina, zero, un
     real(kind=8) :: coenp1, coen, texnp1, matnp(9), coefp2, textp2
-    integer :: i, k, ier, nno, kp, npg1, gi, pi, ivectt, icoef
-    integer :: itemps, itex, nnos, jgano, ndim
-    integer :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: i, k, ier, nno, kp, npg1, gi, pi, ivectt, icoef
+    integer(kind=8) :: itemps, itex, nnos, jgano, ndim
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
 !
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &

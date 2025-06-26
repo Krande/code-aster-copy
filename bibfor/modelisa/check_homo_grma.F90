@@ -19,16 +19,16 @@
 subroutine check_homo_grma(cara, nval)
     implicit none
     character(len=*), intent(in) :: cara(*)
-    integer, intent(in) :: nval
+    integer(kind=8), intent(in) :: nval
 !
 !   AFFE_CARA_ELEM
 !   Vérifie la présence de R_DEBUT et R_FIN
 !
 #include "asterfort/utmess.h"
 ! ----------------------------------------------------------------------
-    integer, parameter :: nk = 4
+    integer(kind=8), parameter :: nk = 4
     character(len=3) :: tcar(nk)
-    integer :: nv, i, j
+    integer(kind=8) :: nv, i, j
     character(len=8) :: carpou(nk)
 !
     data carpou/'R_DEBUT', 'R_FIN', 'EP_DEBUT', 'EP_FIN'/

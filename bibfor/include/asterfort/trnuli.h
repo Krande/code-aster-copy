@@ -20,10 +20,10 @@
 !
 interface
     subroutine trnuli(itab, nblig, nbcol, icol, nures)
-        integer :: nbcol
-        integer :: nblig
-        integer :: itab(nblig, nbcol)
-        integer :: icol(nbcol)
-        integer :: nures
+        integer(kind=8) :: nbcol
+        integer(kind=8) :: nblig
+        integer(kind=8) :: itab(nblig, nbcol)
+        integer(kind=8) :: icol(nbcol)
+        integer(kind=8) :: nures
     end subroutine trnuli
 end interface

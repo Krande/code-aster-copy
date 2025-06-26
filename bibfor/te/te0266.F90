@@ -34,10 +34,10 @@ subroutine te0266(option, nomte)
 !
 !
 !
-    integer :: icodre(1)
-    integer :: nno, kp, i, k, itempe, itemp, iflux, iharm, nh
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: npg, nnos, jgano, ndim, kpg, spt, j, nbcmp
+    integer(kind=8) :: icodre(1)
+    integer(kind=8) :: nno, kp, i, k, itempe, itemp, iflux, iharm, nh
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: npg, nnos, jgano, ndim, kpg, spt, j, nbcmp
 !
     real(kind=8) :: valres(1), fluxr, fluxz, fluxt
     real(kind=8) :: dfdr(9), dfdz(9), poids, xh, r

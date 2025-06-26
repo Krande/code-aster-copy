@@ -30,7 +30,7 @@ interface
         character(len=24) :: tmnobl
         character(len=24) :: tmadbl
         character(len=24) :: knombl(*)
-        integer :: inumbl(*)
+        integer(kind=8) :: inumbl(*)
         real(kind=8) :: conleq(*)
         real(kind=8) :: conlbl(*)
     end subroutine prasml

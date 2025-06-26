@@ -46,7 +46,7 @@ subroutine op0165()
     real(kind=8) :: symax
     character(len=16) :: typtab, typmec, kopt(4)
     character(len=24) :: option
-    integer :: n1, nbopt, icodre
+    integer(kind=8) :: n1, nbopt, icodre
     character(len=8) :: nommat, symm
     aster_logical :: lsymm
 !

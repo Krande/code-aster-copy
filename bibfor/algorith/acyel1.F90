@@ -63,14 +63,14 @@ subroutine acyel1(nmcolz, nomobz, nobl, nobc, okpart, &
 #include "asterfort/jexnum.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, ideb, iret, j, jdeb
-    integer :: llob, nbcol, nblig, ndim, nobc, nobl
+    integer(kind=8) :: i, iad, ibid, ideb, iret, j, jdeb
+    integer(kind=8) :: llob, nbcol, nblig, ndim, nobc, nobl
     real(kind=8) :: x
     character(len=8) :: nomob
     character(len=24) :: nomcol
     complex(kind=8) :: cmat(ndim, ndim)
     character(len=*) :: nmcolz, nomobz
-    integer :: lilig(nblig), licol(nbcol)
+    integer(kind=8) :: lilig(nblig), licol(nbcol)
     aster_logical :: okpart
 !-----------------------------------------------------------------------
     call jemarq()

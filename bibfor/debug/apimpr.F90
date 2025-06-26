@@ -29,7 +29,7 @@ subroutine apimpr(pair_category, ifm, mesh, ds_contact)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=6), intent(in) :: pair_category
-    integer, intent(in) :: ifm
+    integer(kind=8), intent(in) :: ifm
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
 !

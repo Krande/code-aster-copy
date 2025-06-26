@@ -41,9 +41,9 @@ subroutine CreateInOutDS_M(ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nb_field_defi = 17
-    integer :: i_field
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: nb_field_defi = 17
+    integer(kind=8) :: i_field
 ! - Name of field (type) in results datastructure (add one -> don't forget to modify rscrsd.F90)
     character(len=16), parameter :: field_type(nb_field_defi) = &
                                     (/'DEPL            ', 'SIEF_ELGA       ', 'VARI_ELGA       ', &

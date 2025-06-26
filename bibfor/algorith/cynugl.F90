@@ -65,22 +65,22 @@ subroutine cynugl(nume_equa, indirf, modcyc, mailsk)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, icomp, iec, ieq, ipoint, i_ligr_mesh, i_ligr_link
-    integer :: j, lddeeq, ldnueq, ldprno, linueq
-    integer ::   llprno, ltinse, lttds
-    integer :: nbcmp, nbcpmx, nbddl, nbec, nbnot, nbsec, nddlt
-    integer :: neqsec, nsecpr, ntail, numnos, numsec
+    integer(kind=8) :: i, iad, icomp, iec, ieq, ipoint, i_ligr_mesh, i_ligr_link
+    integer(kind=8) :: j, lddeeq, ldnueq, ldprno, linueq
+    integer(kind=8) ::   llprno, ltinse, lttds
+    integer(kind=8) :: nbcmp, nbcpmx, nbddl, nbec, nbnot, nbsec, nddlt
+    integer(kind=8) :: neqsec, nsecpr, ntail, numnos, numsec
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, basmod, intf
     character(len=19) :: numddl, nume_equa, prnosect
     character(len=24) :: indirf, lili, prno, deeq, nueq
-    integer :: idec(nbcpmx)
+    integer(kind=8) :: idec(nbcpmx)
     character(len=24), pointer :: cycl_refe(:) => null()
-    integer, pointer :: skeleton(:) => null()
-    integer, pointer :: cycl_nbsc(:) => null()
-    integer, pointer :: vnueq(:) => null()
+    integer(kind=8), pointer :: skeleton(:) => null()
+    integer(kind=8), pointer :: cycl_nbsc(:) => null()
+    integer(kind=8), pointer :: vnueq(:) => null()
 !
 !-----------------------------------------------------------------------
 !

@@ -39,8 +39,8 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai, &
     character(len=8) :: noma, alias
     character(len=24) :: defico
     character(len=19) :: newgeo
-    integer :: posmai, nummai
-    integer :: nnomam, ndim
+    integer(kind=8) :: posmai, nummai
+    integer(kind=8) :: nnomam, ndim
     real(kind=8) :: coorma(27)
     character(len=8) :: nommai
     character(len=4) :: typmai
@@ -69,11 +69,11 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai, &
 !
 !
 !
-    integer :: nbnmax
+    integer(kind=8) :: nbnmax
     parameter(nbnmax=9)
 !
-    integer :: no(nbnmax)
-    integer :: ino, jdec
+    integer(kind=8) :: no(nbnmax)
+    integer(kind=8) :: ino, jdec
     real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------

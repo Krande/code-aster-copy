@@ -21,7 +21,7 @@
           interface 
             subroutine matr_asse_set_values(matasz, dim, idx, jdx, values)
               character(len=*) :: matasz
-              integer :: dim, idx(*), jdx(*)
+              integer(kind=8) :: dim, idx(*), jdx(*)
               real(kind=8) :: values(*)
             end subroutine matr_asse_set_values
           end interface 

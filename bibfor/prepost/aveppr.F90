@@ -25,9 +25,9 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-    integer :: nbordr, tdisp, kwork, sommw, tspaq, i
+    integer(kind=8) :: nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vwork(tdisp)
-    integer :: jveppr, jvsipn
+    integer(kind=8) :: jveppr, jvsipn
 !, veppr(nbordr), vsipn(nbordr)
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA DEF PLAS PRINCIPALE ET CONT NOMRMALE ASSOCIE
@@ -53,8 +53,8 @@ subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw, &
 ! JEPPR : OUT  R  : VECTEUR CONTENANT LA  A
 !                     TOUS LES INSTANTS.
 ! ----------------------------------------------------------------------
-    integer :: iordr, adrs, nvp, nperm, nitjac, j, iordre, itype
-    integer :: decal
+    integer(kind=8) :: iordr, adrs, nvp, nperm, nitjac, j, iordre, itype
+    integer(kind=8) :: decal
     real(kind=8) :: sig(6), tol, toldyn, ar(6), br(6)
     real(kind=8) :: vecpro(3, 3), valpro(3), nm1x, nm1y, nm1z, sxm, sym, szm
     real(kind=8) :: jacaux(3), epsp(6)

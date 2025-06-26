@@ -20,11 +20,11 @@
 !
 interface
     subroutine pjeftg(igeom, geomi, nomai, motfac, iocc, ncas)
-        integer :: igeom
+        integer(kind=8) :: igeom
         character(len=24) :: geomi
         character(len=8)  :: nomai
         character(len=*)  :: motfac
-        integer           :: iocc
+        integer(kind=8)           :: iocc
         character(len=8)  :: ncas
     end subroutine pjeftg
 end interface

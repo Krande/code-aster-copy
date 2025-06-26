@@ -101,19 +101,19 @@ subroutine tldlg3(metrez, renum, istop, lmat, ildeb, &
     character(len=24) :: kpiv
     character(len=40) ::  valk(2)
     character(len=3) :: mathpc
-    integer :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
-    integer :: ifm, niv, nom, neq, iretp, npvnez, neqg, jnequ
-    integer :: typvar, typsym, nbbloc, ilfin1, iexi
-    integer :: ieq3, isingu, ieq, ndeci, jdigs, npivot
-    integer :: ndeci1, ndeci2, ieq4, nzero, vali(6), ipiv
+    integer(kind=8) :: istop, lmat, ildeb, ilfin, ndigit, ndigi2, iret, npvneg, iretz
+    integer(kind=8) :: ifm, niv, nom, neq, iretp, npvnez, neqg, jnequ
+    integer(kind=8) :: typvar, typsym, nbbloc, ilfin1, iexi
+    integer(kind=8) :: ieq3, isingu, ieq, ndeci, jdigs, npivot
+    integer(kind=8) :: ndeci1, ndeci2, ieq4, nzero, vali(6), ipiv
     real(kind=8) :: eps, dmax, dmin, d1
     aster_logical :: l_parallel_matrix
     complex(kind=8) :: cbid
-    integer, pointer :: schc(:) => null()
+    integer(kind=8), pointer :: schc(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: scbl(:) => null()
-    integer, pointer :: scdi(:) => null()
-    integer, pointer :: lc2m(:) => null()
+    integer(kind=8), pointer :: scbl(:) => null()
+    integer(kind=8), pointer :: scdi(:) => null()
+    integer(kind=8), pointer :: lc2m(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     nom = zi(lmat+1)

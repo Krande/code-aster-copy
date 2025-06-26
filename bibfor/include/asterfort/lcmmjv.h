@@ -21,13 +21,13 @@
 interface
     subroutine lcmmjv(mult_comp, nmat, cpmono, nbfsys, irota,&
                       itbint, nsg, hsr)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         character(len=16) :: mult_comp
         character(len=24) :: cpmono(5*nmat+1)
-        integer :: nbfsys
-        integer :: irota
-        integer :: itbint
+        integer(kind=8) :: nbfsys
+        integer(kind=8) :: irota
+        integer(kind=8) :: itbint
         real(kind=8) :: hsr(nsg, nsg)
     end subroutine lcmmjv
 end interface

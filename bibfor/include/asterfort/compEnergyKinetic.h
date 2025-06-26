@@ -28,6 +28,6 @@ interface
         character(len=*), intent(in) :: chcara(*), chfreqz
         character(len=*), intent(in) :: chvarc
         character(len=*), intent(in) :: chelemz, basez
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine compEnergyKinetic
 end interface

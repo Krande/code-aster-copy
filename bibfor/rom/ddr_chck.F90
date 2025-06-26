@@ -45,8 +45,8 @@ subroutine ddr_chck(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iret
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iret
     character(len=24) :: grelem_rid, grnode_int
     type(ROM_DS_Empi) :: basePrim, baseDual
     character(len=8) :: meshPrim, meshDual, mesh

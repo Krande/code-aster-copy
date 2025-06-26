@@ -30,7 +30,7 @@ subroutine rslpli(typ, mod, mater, hook, nmat, &
 !       ----------------------------------------------------------------
 !
 #include "asterfort/lcopli.h"
-    integer :: nmat, ndt, ndi
+    integer(kind=8) :: nmat, ndt, ndi
 !
     real(kind=8) :: un, rho, f, f0
     real(kind=8) :: hook(6, 6)

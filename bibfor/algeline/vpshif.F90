@@ -21,7 +21,7 @@ subroutine vpshif(lmatk, valshi, lmatm, lmatsh)
 #include "jeveux.h"
 #include "asterfort/mtcmbl.h"
     real(kind=8) :: valshi
-    integer :: lmatk, lmatm, lmatsh
+    integer(kind=8) :: lmatk, lmatm, lmatsh
 !     EFFECTUE LE DECCALAGE SPECTRALE :
 !                  MSH =  K - W * M  (W ETANT LE SHIFT)
 !     ------------------------------------------------------------------
@@ -38,7 +38,7 @@ subroutine vpshif(lmatk, valshi, lmatm, lmatsh)
     character(len=24) :: nmat(2), nmatsh
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: nbcmb
+    integer(kind=8) :: nbcmb
 !-----------------------------------------------------------------------
     data typcst/'R', 'R'/
     data nomddl/'        '/

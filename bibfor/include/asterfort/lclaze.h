@@ -21,10 +21,10 @@
 interface
     subroutine lclaze(elem_dime, nb_lagr, nb_node_slav, indi_lagc,&
                       mmat)
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: nb_node_slav
-        integer, intent(in) :: nb_lagr
-        integer, intent(in) :: indi_lagc(10)
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: nb_node_slav
+        integer(kind=8), intent(in) :: nb_lagr
+        integer(kind=8), intent(in) :: indi_lagc(10)
         real(kind=8), intent(inout) :: mmat(55,55)
     end subroutine lclaze
 end interface

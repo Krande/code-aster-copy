@@ -33,7 +33,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu, &
 #include "asterfort/resoud.h"
 #include "asterfort/vtzero.h"
 !
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=19) :: maprec, matass
     character(len=19) :: solveu, cndonn, cnpilo
     character(len=19) :: cncine, depso1, depso2
@@ -63,7 +63,7 @@ subroutine nmreso(fonact, cndonn, cnpilo, cncine, solveu, &
 !
 !
     aster_logical :: lpilo
-    integer :: rescvg, ifm, niv
+    integer(kind=8) :: rescvg, ifm, niv
     complex(kind=8) :: c16bid
     character(len=19) :: crgc
     c16bid = dcmplx(0.d0, 0.d0)

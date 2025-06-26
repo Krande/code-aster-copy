@@ -44,8 +44,8 @@ subroutine dbrParaInfoGreedy(paraGreedy)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbModeMaxi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbModeMaxi
     real(kind=8) :: toleGreedy
 !
 ! --------------------------------------------------------------------------------------------------

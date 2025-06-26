@@ -20,10 +20,10 @@
 interface
     subroutine xthddl(nfh, nddlno, nno, stano, option,&
                       nomte, mat, vect)
-        integer, intent(in) :: nfh
-        integer, intent(in) :: nddlno
-        integer, intent(in) :: nno
-        integer, intent(in) :: stano(*)
+        integer(kind=8), intent(in) :: nfh
+        integer(kind=8), intent(in) :: nddlno
+        integer(kind=8), intent(in) :: nno
+        integer(kind=8), intent(in) :: stano(*)
         character(len=16), intent(in) :: option
         character(len=16), intent(in) :: nomte
         real(kind=8), optional, intent(inout) :: mat(*)

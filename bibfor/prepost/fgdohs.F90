@@ -25,7 +25,7 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke, &
     character(len=8) :: nommat
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rke(*), rcorr(*), dom(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
     aster_logical :: lke, lhaigh
 !     CALCUL DU DOMMAGE ELEMENTAIRE PAR INTERPOLATION SUR
 !     UNE COURBE DE WOHLER DONNEE HORS ZONE SINGULIERE
@@ -41,14 +41,14 @@ subroutine fgdohs(nommat, nbcycl, sigmin, sigmax, lke, &
 ! OUT DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: icodre(6)
+    integer(kind=8) :: icodre(6)
     character(len=8) :: nompar
     character(len=16) :: nomres(6)
 !
     real(kind=8) :: delta, salt, x, y, nrupt, slmodi, val(6), rbid, re(1)
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbpar
+    integer(kind=8) :: i, nbpar
 !-----------------------------------------------------------------------
     rbid = 0.d0
     nomres(1) = 'E_REFE'

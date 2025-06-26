@@ -24,7 +24,7 @@ subroutine pjeflo(elrefa, ndim, ipb, xr2, disprj)
 !
 #include "asterfort/assert.h"
 !
-    integer :: ipb, ndim
+    integer(kind=8) :: ipb, ndim
     real(kind=8) :: xr2(ndim), disprj
     character(len=*) :: elrefa
 ! ----------------------------------------------------------------------

@@ -24,9 +24,9 @@ interface
         character(len=*) :: basmdz
         character(len=*) :: lintfz
         character(len=*) :: nmintz
-        integer :: numint
+        integer(kind=8) :: numint
         character(len=*) :: famprz
-        integer :: ii
-        integer :: ordo
+        integer(kind=8) :: ii
+        integer(kind=8) :: ordo
     end subroutine exprli
 end interface

@@ -38,8 +38,8 @@ subroutine te0293(option, nomte)
 !
 !
 !
-    integer :: i, ij, j, k, kp, nno, nnos, npg, ndim
-    integer :: ipoids, ivf, idfde, jgano, igeom, imattt
+    integer(kind=8) :: i, ij, j, k, kp, nno, nnos, npg, ndim
+    integer(kind=8) :: ipoids, ivf, idfde, jgano, igeom, imattt
 !
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, r
 !

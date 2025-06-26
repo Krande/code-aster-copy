@@ -37,7 +37,7 @@ subroutine i3crdm(descm)
 !
 !
 !
-    integer :: adescm, atetra, ahexa, apenta
+    integer(kind=8) :: adescm, atetra, ahexa, apenta
 !
 !======================================================================
 !

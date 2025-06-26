@@ -29,12 +29,12 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in, &
 !
     character(len=16), intent(in) :: crit
     character(len=8), intent(in) :: name_gd
-    integer, intent(in) :: nb_val_in
+    integer(kind=8), intent(in) :: nb_val_in
     real(kind=8), intent(in) :: val_in(nb_val_in)
     character(len=8), intent(in) :: cmp_in(nb_val_in)
-    integer, intent(in) :: nb_cmp_out
+    integer(kind=8), intent(in) :: nb_cmp_out
     real(kind=8), intent(out) :: val_out(nb_cmp_out)
-    integer, intent(out) :: ichk
+    integer(kind=8), intent(out) :: ichk
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,15 +55,15 @@ subroutine ccchcr(crit, name_gd, nb_val_in, val_in, cmp_in, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ncsig
+    integer(kind=8) :: ncsig
     parameter(ncsig=6)
     character(len=4) :: cmpsig(ncsig), cmpeps(ncsig), nomcmp(ncsig)
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: rac2, vale(6)
     character(len=16) :: valk(2)
 !   COMMON LCIV2S/LCIV2E
-    integer :: nt, nd
+    integer(kind=8) :: nt, nd
     common/tdim/nt, nd
 !
     data cmpsig/'SIXX', 'SIYY', 'SIZZ', 'SIXY', 'SIXZ', 'SIYZ'/

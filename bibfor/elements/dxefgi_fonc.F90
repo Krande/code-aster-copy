@@ -47,7 +47,7 @@ subroutine dxefgi_fonc(nomte, pgl, epsinif, xyz, ni, sigt)
 !     NI               : FONCTIONS DE FORME
 !     OUT SIGT(1)      : EFFORTS  GENERALISES D'ORIGINE THERMIQUE
 !                        AUX POINTS D'INTEGRATION
-    integer :: multic, itemps, ier
+    integer(kind=8) :: multic, itemps, ier
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9)
@@ -60,7 +60,7 @@ subroutine dxefgi_fonc(nomte, pgl, epsinif, xyz, ni, sigt)
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, igau, nno, npg
+    integer(kind=8) :: i, igau, nno, npg
     real(kind=8) :: epxx, epxy, epyy, kxx, kyy, kxy, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

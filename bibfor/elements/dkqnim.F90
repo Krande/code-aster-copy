@@ -25,7 +25,7 @@ subroutine dkqnim(shp, shpr1, shpr2, shpmem1, shpmem2, gm1, gm2)
 !     ------------------------------------------------------------------
 !     person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 
-    integer :: j, j1
+    integer(kind=8) :: j, j1
 
     j1 = 0
 

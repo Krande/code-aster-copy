@@ -23,12 +23,12 @@ interface
                       idfde, geom, typmod, compor, deplm,&
                       ddepl, depl0, depl1, dfdi, fm,&
                       epsm, epsp, epsd)
-        integer :: ndim
-        integer :: nno
-        integer :: kpg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: geom(ndim, *)
         character(len=8) :: typmod(*)
         character(len=16) :: compor(*)

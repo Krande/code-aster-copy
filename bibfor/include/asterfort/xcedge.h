@@ -20,10 +20,10 @@
 !
 interface 
     subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, m12, crit)
-        integer :: ndime
-        integer :: pi1
-        integer :: pi2
-        integer :: m12
+        integer(kind=8) :: ndime
+        integer(kind=8) :: pi1
+        integer(kind=8) :: pi2
+        integer(kind=8) :: m12
         real(kind=8) :: pinref(*)
         real(kind=8) :: pmiref(*)
         real(kind=8) :: crit

@@ -54,13 +54,13 @@ subroutine te0488(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_poids, jv_vf, jv_geom, jv_coopg, jv_dfde
-    integer :: jv_nbsp_i, jv_cacoqu
-    integer :: nno, kp, npg, ino, ndim
+    integer(kind=8) :: jv_poids, jv_vf, jv_geom, jv_coopg, jv_dfde
+    integer(kind=8) :: jv_nbsp_i, jv_cacoqu
+    integer(kind=8) :: nno, kp, npg, ino, ndim
     real(kind=8) :: xx, yy, zz, poids, cova(3, 3), metr(2, 2), jac
-    integer ::  nbc, decpo, ic, ispc, jtab(7), nbsp, iret
+    integer(kind=8) ::  nbc, decpo, ic, ispc, jtab(7), nbsp, iret
     real(kind=8) :: epais, excen, bas, epc, pgl(3, 3), gm2(3)
-    integer :: lzi, lzr, nb1, nb2
+    integer(kind=8) :: lzi, lzr, nb1, nb2
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), hh
     real(kind=8), parameter :: zero = 0.d0

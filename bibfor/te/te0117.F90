@@ -31,12 +31,12 @@ subroutine te0117(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
     real(kind=8) :: nharm, bsigm(18)
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde
-    integer :: jgano
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde
+    integer(kind=8) :: jgano
 ! DEB ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, jvSief, igeom, iharmo, ivectu, nbsig, nh
+    integer(kind=8) :: i, jvSief, igeom, iharmo, ivectu, nbsig, nh
 !
     real(kind=8) :: zero
 !-----------------------------------------------------------------------

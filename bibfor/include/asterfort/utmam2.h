@@ -20,9 +20,9 @@
 !
 interface
     subroutine utmam2(modele, nbma, nbtrou, tatrou)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=8) :: modele
-        integer :: nbtrou
-        integer :: tatrou(nbma)
+        integer(kind=8) :: nbtrou
+        integer(kind=8) :: tatrou(nbma)
     end subroutine utmam2
 end interface

@@ -41,20 +41,20 @@ subroutine ircnc8(fileUnit, realFormat, cplxFormat, &
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=8), intent(in) :: realFormat, cplxFormat
-    integer, intent(in) :: nodeListNb
-    integer, pointer :: nodeListNume(:)
+    integer(kind=8), intent(in) :: nodeListNb
+    integer(kind=8), pointer :: nodeListNume(:)
     character(len=8), pointer :: nodeListName(:)
     aster_logical, intent(in) :: lMeshCoor
-    integer, intent(in) :: meshDime
+    integer(kind=8), intent(in) :: meshDime
     real(kind=8), pointer :: meshCoor(:)
-    integer, intent(in) :: cmpCataNb
+    integer(kind=8), intent(in) :: cmpCataNb
     character(len=8), pointer :: cmpCataName(:)
-    integer, intent(in) :: cmpListNb
-    integer, pointer :: cmpListIndx(:)
-    integer, intent(in) :: nec
-    integer, pointer :: nueq(:), prno(:), codeInte(:)
+    integer(kind=8), intent(in) :: cmpListNb
+    integer(kind=8), pointer :: cmpListIndx(:)
+    integer(kind=8), intent(in) :: nec
+    integer(kind=8), pointer :: nueq(:), prno(:), codeInte(:)
     aster_logical, intent(in) :: lsup, linf, lmax, lmin
     real(kind=8), intent(in) :: borsup, borinf
     complex(kind=8), pointer  :: vale(:)
@@ -95,25 +95,25 @@ subroutine ircnc8(fileUnit, realFormat, cplxFormat, &
     character(len=8) :: fmtText
     character(len=50) :: fmtLine
     real(kind=8) :: value, valeMin, valeMax
-    integer :: iCmp, iForm, iCmpCata, iNode
-    integer :: cmpNume, nodeNume
-    integer :: icompt, icomp2, iBegin, iec, ieq, iEnd, ilign
-    integer :: impre, ipres, irest, ival
-    integer :: fmtLen, nbCmp, nbCmpActi
+    integer(kind=8) :: iCmp, iForm, iCmpCata, iNode
+    integer(kind=8) :: cmpNume, nodeNume
+    integer(kind=8) :: icompt, icomp2, iBegin, iec, ieq, iEnd, ilign
+    integer(kind=8) :: impre, ipres, irest, ival
+    integer(kind=8) :: fmtLen, nbCmp, nbCmpActi
     real(kind=8) :: rundf, c1
-    integer, pointer :: inec(:) => null()
+    integer(kind=8), pointer :: inec(:) => null()
     real(kind=8), pointer :: valeReal(:) => null()
     real(kind=8), pointer :: valeImag(:) => null()
     real(kind=8), pointer :: valeComp(:) => null()
-    integer, pointer :: valeIndx(:) => null()
+    integer(kind=8), pointer :: valeIndx(:) => null()
     real(kind=8), pointer :: valeMaxReal(:) => null()
     real(kind=8), pointer :: valeMaxImag(:) => null()
     character(len=8), pointer :: valeMaxNode(:) => null()
-    integer, pointer :: valeMaxNb(:) => null()
+    integer(kind=8), pointer :: valeMaxNb(:) => null()
     real(kind=8), pointer :: valeMinReal(:) => null()
     real(kind=8), pointer :: valeMinImag(:) => null()
     character(len=8), pointer :: valeMinNode(:) => null()
-    integer, pointer :: valeMinNb(:) => null()
+    integer(kind=8), pointer :: valeMinNb(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

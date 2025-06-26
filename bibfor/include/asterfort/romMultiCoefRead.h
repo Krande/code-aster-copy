@@ -23,6 +23,6 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
         character(len=16), intent(in) :: keywfact
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
     end subroutine romMultiCoefRead
 end interface

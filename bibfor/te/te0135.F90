@@ -34,9 +34,9 @@ subroutine te0135(option, nomte)
 !
 !----------------------------------------------------------------------
 !
-    integer :: jorie, jrepl1, jrepl2, jrepl3
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: i
+    integer(kind=8) :: jorie, jrepl1, jrepl2, jrepl3
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: i
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: ux(3), uy(3), uz(3)
     real(kind=8) :: ang(3)

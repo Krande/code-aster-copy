@@ -20,10 +20,10 @@
 !
 interface
     subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
-        integer :: nbvec
+        integer(kind=8) :: nbvec
         real(kind=8) :: domtot(nbvec)
         real(kind=8) :: cudomx
-        integer :: vnormx(2)
-        integer :: nbplan
+        integer(kind=8) :: vnormx(2)
+        integer(kind=8) :: nbplan
     end subroutine avcdmx
 end interface

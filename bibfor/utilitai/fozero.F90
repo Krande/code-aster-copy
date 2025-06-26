@@ -38,7 +38,7 @@ subroutine fozero(nomfon)
     character(len=19) :: nomf
     character(len=24) :: chpro, chval
 !-----------------------------------------------------------------------
-    integer :: iret, jpro, lval
+    integer(kind=8) :: iret, jpro, lval
 !-----------------------------------------------------------------------
     call jemarq()
 !

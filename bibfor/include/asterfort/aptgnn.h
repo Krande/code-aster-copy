@@ -24,10 +24,10 @@ interface
         character(len=19), intent(in) :: sdappa
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: model_ndim
-        integer, intent(in) :: jdecno
-        integer, intent(in) :: nb_node
-        integer, intent(in) :: norm_type
+        integer(kind=8), intent(in) :: model_ndim
+        integer(kind=8), intent(in) :: jdecno
+        integer(kind=8), intent(in) :: nb_node
+        integer(kind=8), intent(in) :: norm_type
         real(kind=8), intent(in) :: norm_vect(3)
     end subroutine aptgnn
 end interface

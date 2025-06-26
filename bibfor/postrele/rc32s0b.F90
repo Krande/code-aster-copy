@@ -33,8 +33,8 @@ subroutine rc32s0b(seis, sig, trescamax)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: i0, i1, e0(2), i2, i3, i4, i5, i6, i7
-    integer :: i8, i9, i10, i11, i12, j, jinfois, typseis
+    integer(kind=8) :: i0, i1, e0(2), i2, i3, i4, i5, i6, i7
+    integer(kind=8) :: i8, i9, i10, i11, i12, j, jinfois, typseis
     real(kind=8) :: st(6), tresca
 !
 ! DEB ------------------------------------------------------------------

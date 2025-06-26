@@ -34,7 +34,7 @@ subroutine draac2(a, b, c, x1, x2, &
 !          = 1 : UNE RACINE REELLE
 !          = 2 : DEUX RACINES REELLES
 !
-    integer :: kode
+    integer(kind=8) :: kode
 !
     real(kind=8) :: a, b, c, x1, x2
     real(kind=8) :: delta, epsi, x0, deuza, asup

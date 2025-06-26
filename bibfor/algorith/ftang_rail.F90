@@ -51,7 +51,7 @@ subroutine ftang_rail(fn, xlocal, vitloc, cfrotd, cfrots, &
 !-----------------------------------------------------------------------
     implicit none
 #include "asterc/r8prem.h"
-    integer :: iadher
+    integer(kind=8) :: iadher
     real(kind=8) :: vitloc(3), flocal(3), xlocal(3), oldxlo(3), vt(2)
     real(kind=8) :: fn, ftange(2), ktang, ctang, dxt(2)
     real(kind=8) :: cost, sint, oldft(2), oldvt(2), cfrots, cfrotd

@@ -23,6 +23,6 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
         type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
-        integer, intent(in) :: i_mode_until, i_mode_coef
+        integer(kind=8), intent(in) :: i_mode_until, i_mode_coef
     end subroutine romGreedyResiCalc
 end interface

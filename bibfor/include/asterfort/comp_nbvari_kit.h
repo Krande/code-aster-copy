@@ -23,6 +23,6 @@ interface
                                nbVariFromKit, nbVariKit, numeLawKit)
         character(len=16), intent(in) :: kit_comp(4)
         aster_logical, intent(in) :: l_kit_meta, l_kit_thm, l_kit_ddi, l_kit_cg
-        integer, intent(out) :: nbVariFromKit, numeLawKit(4), nbVariKit(4)
+        integer(kind=8), intent(out) :: nbVariFromKit, numeLawKit(4), nbVariKit(4)
     end subroutine comp_nbvari_kit
 end interface

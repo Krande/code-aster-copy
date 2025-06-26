@@ -20,7 +20,7 @@ interface
     subroutine nmarpc(ds_energy, nume_reuse, time_curr)
         use NonLin_Datastructure_type
         type(NL_DS_Energy), intent(in) :: ds_energy
-        integer, intent(in) :: nume_reuse
+        integer(kind=8), intent(in) :: nume_reuse
         real(kind=8), intent(in) :: time_curr
     end subroutine nmarpc
 end interface

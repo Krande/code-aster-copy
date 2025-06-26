@@ -22,7 +22,7 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd, &
     implicit none
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, nr, imat, nbmat
+    integer(kind=8) :: ndt, ndi, nvi, nr, imat, nbmat
     real(kind=8) :: materf(nbmat, 2), materd(nbmat, 2), tempd
     character(len=3) :: matcst
     character(len=8) :: mod
@@ -55,9 +55,9 @@ subroutine hbrmat(mod, imat, nbmat, tempd, materd, &
     real(kind=8) :: ap, dp, cp, sigbd, bres, gres, grup
     real(kind=8) :: un, deux, eps
     real(kind=8) :: cohere
-    integer :: cerr(14)
+    integer(kind=8) :: cerr(14)
     character(len=16) :: nomc(14)
-    integer :: ii
+    integer(kind=8) :: ii
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------
 ! =================================================================

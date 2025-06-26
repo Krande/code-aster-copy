@@ -25,13 +25,13 @@ interface
         character(len=19) :: lirela
         character(len=8) :: mailla
         character(len=8) :: nnoeca
-        integer :: noebe
-        integer :: nbcnx
-        integer :: cxma(*)
+        integer(kind=8) :: noebe
+        integer(kind=8) :: nbcnx
+        integer(kind=8) :: cxma(*)
         real(kind=8) :: normal(*)
-        integer :: itria
+        integer(kind=8) :: itria
         real(kind=8) :: xbar(*)
-        integer :: iproj
+        integer(kind=8) :: iproj
         real(kind=8) :: excent
     end subroutine reci2d
 end interface

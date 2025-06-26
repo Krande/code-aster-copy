@@ -41,8 +41,8 @@ subroutine irgene(iocc, resultName, fileFormat, fileUnit, nbnosy, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iocc, nbcmpg, nbnosy, cmpg(*), nbordr, nbdisc, ordr(*), nume(*)
-    integer, intent(in) :: paraInNb, fileUnit
+    integer(kind=8) :: iocc, nbcmpg, nbnosy, cmpg(*), nbordr, nbdisc, ordr(*), nume(*)
+    integer(kind=8), intent(in) :: paraInNb, fileUnit
     character(len=*), intent(out) :: resultName
     character(len=*), intent(in) :: paraInName(*), fileFormat
     real(kind=8) :: disc(*)
@@ -59,10 +59,10 @@ subroutine irgene(iocc, resultName, fileFormat, fileUnit, nbnosy, &
     character(len=19) :: noch19
     character(len=24) :: nomst, nuddl, basemo
     aster_logical :: lordr
-    integer :: i, im, iord, ibid
-    integer :: iret, isy, itresu, jordr, jtitr, kdesc
-    integer :: krefe, kvale, nbmode, nbtitr, paraNb, itcal
-    integer, pointer :: desc(:) => null()
+    integer(kind=8) :: i, im, iord, ibid
+    integer(kind=8) :: iret, isy, itresu, jordr, jtitr, kdesc
+    integer(kind=8) :: krefe, kvale, nbmode, nbtitr, paraNb, itcal
+    integer(kind=8), pointer :: desc(:) => null()
     character(len=16), pointer :: paraName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

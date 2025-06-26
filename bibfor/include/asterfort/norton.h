@@ -21,12 +21,12 @@
 interface
     subroutine norton(nvi, vini, coeft, nmat, sigi,&
                       dvin, iret)
-        integer :: nmat
-        integer :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvi
         real(kind=8) :: vini(nvi)
         real(kind=8) :: coeft(nmat)
         real(kind=8) :: sigi(6)
         real(kind=8) :: dvin(nvi)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine norton
 end interface

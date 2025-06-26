@@ -22,8 +22,8 @@ interface
     subroutine lcelpl(loi, nmat,  materf,&
                        deps, nvi, vind,&
                       vinf)
-        integer :: nvi
-        integer :: nmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
         character(len=16) :: loi
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: deps(6)

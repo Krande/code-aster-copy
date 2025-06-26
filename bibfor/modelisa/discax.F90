@@ -49,7 +49,7 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma
-    integer :: nbn, iaxe, nuno(nbn)
+    integer(kind=8) :: nbn, iaxe, nuno(nbn)
     real(kind=8) :: diax(nbn)
 !
     character(len=8) :: nomnoe
@@ -57,7 +57,7 @@ subroutine discax(noma, nbn, iaxe, nuno, diax)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: icoma, imin, innoe, ino, jno
+    integer(kind=8) :: icoma, imin, innoe, ino, jno
     real(kind=8) :: xmin
 !-----------------------------------------------------------------------
     call jemarq()

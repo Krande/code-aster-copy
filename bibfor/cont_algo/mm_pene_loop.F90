@@ -62,13 +62,13 @@ subroutine mm_pene_loop(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ztabf
-    integer :: ifm, niv
-    integer :: jdecme, elem_slav_indx
-    integer :: indi_cont_curr
-    integer :: i_zone, i_elem_slav, i_cont_poin, i_poin_elem
-    integer :: model_ndim, nb_cont_zone, loop_cont_vali
-    integer ::  nb_poin_elem, nb_elem_slav
+    integer(kind=8) :: ztabf
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: jdecme, elem_slav_indx
+    integer(kind=8) :: indi_cont_curr
+    integer(kind=8) :: i_zone, i_elem_slav, i_cont_poin, i_poin_elem
+    integer(kind=8) :: model_ndim, nb_cont_zone, loop_cont_vali
+    integer(kind=8) ::  nb_poin_elem, nb_elem_slav
     real(kind=8) :: gap
     real(kind=8) :: time_curr
     aster_logical :: l_glis
@@ -76,10 +76,10 @@ subroutine mm_pene_loop(ds_contact)
     aster_logical :: loop_cont_conv, l_loop_cont
     aster_logical :: l_frot_zone, l_pena_frot
     aster_logical :: l_frot, l_pena_cont
-    integer :: type_adap, continue_calcul
+    integer(kind=8) :: type_adap, continue_calcul
     character(len=24) :: sdcont_cyccoe, sdcont_cyceta
     real(kind=8), pointer :: v_sdcont_cyccoe(:) => null()
-    integer, pointer :: v_sdcont_cyceta(:) => null()
+    integer(kind=8), pointer :: v_sdcont_cyceta(:) => null()
     character(len=24) :: sdcont_tabfin, sdcont_jsupco, sdcont_apjeu
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_sdcont_jsupco(:) => null()

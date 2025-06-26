@@ -32,7 +32,7 @@ subroutine lglcvx(sig, vin, nbmat, mater, seuil)
 #include "asterfort/ucritp.h"
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: sig(6), mater(nbmat, 2), vin(*), seuil
 ! --- BUT : VALEUR SEUIL POUR LE CONVEXE ELASTO-PLASTIQUE ---------
 ! =================================================================
@@ -45,7 +45,7 @@ subroutine lglcvx(sig, vin, nbmat, mater, seuil)
 ! OUT : SEUIL :  VALEUR DE F(S) -----------------------------------
 ! =================================================================
 ! =================================================================
-    integer :: ndt, ndi, jpara
+    integer(kind=8) :: ndt, ndi, jpara
     real(kind=8) :: dev(6), invar1, sii, pref, lgleps, gamcjs, sigc
     real(kind=8) :: gamp, rcos3t, rhlode, rgdev, rucpla
     character(len=16) :: parecr

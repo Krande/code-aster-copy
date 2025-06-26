@@ -32,14 +32,14 @@ subroutine te0438(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! =====================================================================
     character(len=8) :: typmod(2), lielrf(10)
-    integer :: nno1, nno2, npg
-    integer :: iepsi
-    integer :: iw, ivf1, idf1, igeom
-    integer :: npgn, iwn, ivf1n, idf1n, jgnn
-    integer :: ivf2, idf2, nnos, jgn
-    integer :: iddld
-    integer :: ndim, ntrou
-    integer :: iu(3, 3), iuc(3), im(3)
+    integer(kind=8) :: nno1, nno2, npg
+    integer(kind=8) :: iepsi
+    integer(kind=8) :: iw, ivf1, idf1, igeom
+    integer(kind=8) :: npgn, iwn, ivf1n, idf1n, jgnn
+    integer(kind=8) :: ivf2, idf2, nnos, jgn
+    integer(kind=8) :: iddld
+    integer(kind=8) :: ndim, ntrou
+    integer(kind=8) :: iu(3, 3), iuc(3), im(3)
     real(kind=8) :: tang(3, 3)
 ! =====================================================================
     call elref2(nomte, 2, lielrf, ntrou)

@@ -20,8 +20,8 @@
 !
 interface
     subroutine srdpdt(vin,nvi,nbmat,mater,paraep,dpdt)
-        integer :: nbmat
-        integer :: nvi
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nvi
         real(kind=8) :: vin(nvi)
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: paraep(3)

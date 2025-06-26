@@ -20,7 +20,7 @@ subroutine lklnvi(mod, ndt, ndi, nvi)
 !
     implicit none
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi
+    integer(kind=8) :: ndt, ndi, nvi
     character(len=8) :: mod
 ! |---------------------------------------------------------------|
 ! |-- BUT : RECUPERATION DU NOMBRE DE COMPOSANTES DES CONTRAINTES-|

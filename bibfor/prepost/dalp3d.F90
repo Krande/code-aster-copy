@@ -85,17 +85,17 @@ subroutine dalp3d(nelem, nnoem, degre, nsommx, icnc, &
 !
 #include "asterfort/dfort3.h"
 #include "asterfort/dzonfg.h"
-    integer :: nelem, nnoem, degre, nsommx, nelcom
-    integer :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
-    integer :: nalpha
+    integer(kind=8) :: nelem, nnoem, degre, nsommx, nelcom
+    integer(kind=8) :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
+    integer(kind=8) :: nalpha
     real(kind=8) :: xy(3, nnoem), erreur(nelem), energi(nelem), volume(nelem)
     real(kind=8) :: alpha(nelem)
 !
 ! DECLARATION LOCALE
 !
-    integer :: i, inno, inel, nuef, noeu1, noeu2
-    integer :: tbnozo(1000), nbnozo(3), tbelzo(1000), nbelzo(3)
-    integer :: nbnoe
+    integer(kind=8) :: i, inno, inel, nuef, noeu1, noeu2
+    integer(kind=8) :: tbnozo(1000), nbnozo(3), tbelzo(1000), nbelzo(3)
+    integer(kind=8) :: nbnoe
     real(kind=8) :: precmo, precre, prec, vol
     real(kind=8) :: dtyp, alphan(nnoem), pe
 !

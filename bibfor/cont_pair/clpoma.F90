@@ -26,10 +26,10 @@ subroutine clpoma(elem_dime, elem_code, elem_coor, elem_nbnode, elem_weight)
 #include "asterfort/sumetr.h"
 #include "asterfort/assert.h"
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
     real(kind=8), intent(in) :: elem_coor(3, 9)
-    integer, intent(in) :: elem_nbnode
+    integer(kind=8), intent(in) :: elem_nbnode
     real(kind=8), intent(out) :: elem_weight
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine clpoma(elem_dime, elem_code, elem_coor, elem_nbnode, elem_weight)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_gauss, nb_gauss, ino, ndim
+    integer(kind=8) :: i_gauss, nb_gauss, ino, ndim
     character(len=8) :: gauss_family
     real(kind=8) :: gauss_weight(12), gauss_coor(12*2)
     real(kind=8) :: dff(2, 9), dxdk, dydk, dzdk

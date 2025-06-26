@@ -20,6 +20,6 @@
 !
 interface
     function ncr8em()
-        integer :: ncr8em
+        integer(kind=8) :: ncr8em
     end function ncr8em
 end interface

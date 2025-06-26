@@ -26,7 +26,7 @@ subroutine lisnnb(lischa, nbchar)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
     character(len=19) :: lischa
-    integer :: nbchar
+    integer(kind=8) :: nbchar
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine lisnnb(lischa, nbchar)
 !
 !
     character(len=24) :: nomcha
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! ----------------------------------------------------------------------
 !

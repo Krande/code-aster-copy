@@ -23,7 +23,7 @@
 interface
     subroutine get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
         character(len=8), intent(in) :: chmate
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         real(kind=8), intent(out) :: tref
         aster_logical, intent(out) :: l_tref_is_nan
         aster_logical, intent(out) :: l_empty

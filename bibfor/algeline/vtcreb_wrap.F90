@@ -47,7 +47,7 @@ subroutine vtcreb_wrap(field_nodez, base, type_scalz, nume_equaz)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: mesh
-    integer :: idx_gd, nb_equa
+    integer(kind=8) :: idx_gd, nb_equa
 !
     call dismoi('NUM_GD_SI', nume_equaz, 'NUME_EQUA', repi=idx_gd)
     call dismoi('NB_EQUA', nume_equaz, 'NUME_EQUA', repi=nb_equa)

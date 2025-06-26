@@ -51,8 +51,8 @@ subroutine nmceni(numedd, depdel, deppr1, deppr2, rho, &
 !
 !
     character(len=19) :: profch
-    integer :: neq, i
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8) :: neq, i
+    integer(kind=8), pointer :: deeq(:) => null()
     real(kind=8), pointer :: depde(:) => null()
     real(kind=8), pointer :: du0(:) => null()
     real(kind=8), pointer :: du1(:) => null()

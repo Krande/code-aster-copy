@@ -30,7 +30,7 @@ subroutine liimpr(noml, impr, fichie)
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
     character(len=*) :: noml, fichie
-    integer :: impr
+    integer(kind=8) :: impr
 !     ROUTINE D'IMPRESSION D'UNE LISTE DE ENTIERS OU DE REELS
 !     ----------------------------------------------------------------
 !
@@ -41,9 +41,9 @@ subroutine liimpr(noml, impr, fichie)
     aster_logical :: lisree
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iret, iul, jbor, jnbp
-    integer :: jpas, jval, k, l, lg, ltitr
-    integer :: nbint, nbtitr, nbval, nd, nl
+    integer(kind=8) :: i, iret, iul, jbor, jnbp
+    integer(kind=8) :: jpas, jval, k, l, lg, ltitr
+    integer(kind=8) :: nbint, nbtitr, nbval, nd, nl
 !-----------------------------------------------------------------------
     call jemarq()
     if (impr .le. 0) goto 999

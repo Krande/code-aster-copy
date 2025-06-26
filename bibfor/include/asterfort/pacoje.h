@@ -22,10 +22,10 @@ interface
     subroutine pacoje(coniz, iocc, motfaz, nomaz, conrz,&
                       ndim)
         character(len=*) :: coniz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: motfaz
         character(len=*) :: nomaz
         character(len=*) :: conrz
-        integer :: ndim
+        integer(kind=8) :: ndim
     end subroutine pacoje
 end interface

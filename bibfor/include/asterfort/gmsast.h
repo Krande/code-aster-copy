@@ -20,7 +20,7 @@
 !
 interface
     subroutine gmsast(nfie, nfis)
-        integer :: nfie
-        integer :: nfis
+        integer(kind=8) :: nfie
+        integer(kind=8) :: nfis
     end subroutine gmsast
 end interface

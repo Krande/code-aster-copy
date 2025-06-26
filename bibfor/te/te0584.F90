@@ -33,14 +33,14 @@ subroutine te0584(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: nbrddm
+    integer(kind=8) :: nbrddm
     parameter(nbrddm=156)
     real(kind=8) :: b(4, nbrddm)
     real(kind=8) :: vin(nbrddm), mat(4, nbrddm)
     real(kind=8) :: vtemp(nbrddm), pass(nbrddm, nbrddm)
-    integer :: m, nbrddl
-    integer :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
-    integer :: npg, ipoids, ivf
+    integer(kind=8) :: m, nbrddl
+    integer(kind=8) :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
+    integer(kind=8) :: npg, ipoids, ivf
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
                      npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &

@@ -62,22 +62,22 @@ subroutine mnlqnl(imat, xcdl, parcho, adime, xvec1, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: imat(2), ninc, nd, nchoc, h, hf
+    integer(kind=8) :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: xcdl, parcho, adime, xvec1, xvec2, xqnl
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: kk, alpha, jeu
-    integer :: puismax, nt, neq, ivec1, ivec2, icdl, iqnl, k, ivtp1, ivtp2
-    integer :: ivtp3, ivtp4, ivtp5, nddl, j, i
-    integer :: iadim, neqs, nddlx, nddly
+    integer(kind=8) :: puismax, nt, neq, ivec1, ivec2, icdl, iqnl, k, ivtp1, ivtp2
+    integer(kind=8) :: ivtp3, ivtp4, ivtp5, nddl, j, i
+    integer(kind=8) :: iadim, neqs, nddlx, nddly
     real(kind=8), pointer :: vtep6(:) => null()
     character(len=8), pointer :: type(:) => null()
-    integer, pointer :: vneqs(:) => null()
+    integer(kind=8), pointer :: vneqs(:) => null()
     real(kind=8), pointer :: raid(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
-    integer, pointer :: vnddl(:) => null()
+    integer(kind=8), pointer :: vnddl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()

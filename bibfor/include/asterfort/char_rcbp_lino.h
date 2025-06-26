@@ -23,6 +23,6 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: name_ancr
         character(len=24), intent(in) :: list_node
-        integer, intent(out) :: nb_node
+        integer(kind=8), intent(out) :: nb_node
     end subroutine char_rcbp_lino
 end interface

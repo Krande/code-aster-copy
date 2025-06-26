@@ -76,22 +76,22 @@ subroutine xstan2(noma, modele, crit2, lfiss)
     character(len=8) :: typma, lirefe(10), elrefp
     character(len=2) :: ch2
     real(kind=8) :: crit, vhea, vtot, crimaxi
-    integer :: jcesd(8), jcesl(8), jcesv(8), iad
-    integer :: jnoxfl, itypma, nncp, ibid, ier
-    integer :: ifm, niv, jpint, jcnse
-    integer :: jconx2, adrma, ndime, ndim, nbno
-    integer :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
-    integer :: itypel, nbelr, igeom, nuno2, inoloc, cpt
-    integer :: i, j, nheav, iheav, nfiss, nfiss2, ifiss, nse, nnose
+    integer(kind=8) :: jcesd(8), jcesl(8), jcesv(8), iad
+    integer(kind=8) :: jnoxfl, itypma, nncp, ibid, ier
+    integer(kind=8) :: ifm, niv, jpint, jcnse
+    integer(kind=8) :: jconx2, adrma, ndime, ndim, nbno
+    integer(kind=8) :: nbmano, nbnoma, nuno, ino, ino2, numa, numa2, ima
+    integer(kind=8) :: itypel, nbelr, igeom, nuno2, inoloc, cpt
+    integer(kind=8) :: i, j, nheav, iheav, nfiss, nfiss2, ifiss, nse, nnose
     aster_logical :: lelim, lfiss
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: cnsv(:) => null()
-    integer, pointer :: nbsp(:) => null()
-    integer, pointer :: maille(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: cnsv(:) => null()
+    integer(kind=8), pointer :: nbsp(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: nbsp2(:) => null()
-    integer, pointer :: tmdim(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: nbsp2(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 !
 ! ----------------------------------------------------------------------

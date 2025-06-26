@@ -23,6 +23,6 @@ interface
         character(len=8) :: chmat
         character(len=16) :: nomrc
         character(len=8) :: nommat(*)
-        integer :: nbmtrc
+        integer(kind=8) :: nbmtrc
     end subroutine chmrck
 end interface

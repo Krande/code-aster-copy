@@ -26,10 +26,10 @@ interface
         aster_logical :: lmasym
         aster_logical :: lmesym
         character(len=2) :: tt
-        integer :: jtmp2
-        integer :: nrmax
-        integer :: jresl
+        integer(kind=8) :: jtmp2
+        integer(kind=8) :: nrmax
+        integer(kind=8) :: jresl
         real(kind=8) :: rcoef
-        integer :: jvalm(2)
+        integer(kind=8) :: jvalm(2)
     end subroutine ascopr
 end interface

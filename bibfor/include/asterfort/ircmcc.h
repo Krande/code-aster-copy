@@ -24,10 +24,10 @@ interface
         med_idt :: idfimd
         character(len=*) :: nomamd
         character(len=*) :: nochmd
-        integer :: existc
-        integer :: ncmpve
+        integer(kind=8) :: existc
+        integer(kind=8) :: ncmpve
         character(len=*) :: ntncmp
         character(len=*) :: ntucmp
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine ircmcc
 end interface

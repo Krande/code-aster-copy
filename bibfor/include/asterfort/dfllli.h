@@ -22,6 +22,6 @@ interface
     subroutine dfllli(listr8_sdaster, dtmin, nb_inst)
         character(len=19), intent(in) :: listr8_sdaster
         real(kind=8), intent(out) :: dtmin
-        integer, intent(out) :: nb_inst
+        integer(kind=8), intent(out) :: nb_inst
     end subroutine dfllli
 end interface

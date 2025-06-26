@@ -42,10 +42,10 @@ subroutine te0341(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: lielrf(10)
-    integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn
-    integer :: iw, ivf1, idf1, igeom, jvSief, ivectu, ndim, ntrou
-    integer :: npgn, iwn, ivf1n, idf1n, jgnn, ino, i, nddl1
-    integer :: iu(3, 3), iuc(3), im(3), isect, jvDisp
+    integer(kind=8) :: nno1, nno2, npg, ivf2, idf2, nnos, jgn
+    integer(kind=8) :: iw, ivf1, idf1, igeom, jvSief, ivectu, ndim, ntrou
+    integer(kind=8) :: npgn, iwn, ivf1n, idf1n, jgnn, ino, i, nddl1
+    integer(kind=8) :: iu(3, 3), iuc(3), im(3), isect, jvDisp
     character(len=16), pointer :: compor(:) => null()
     real(kind=8) :: tang(3, 3), forref, sigref, depref, a
     real(kind=8) :: geom(3, 3)

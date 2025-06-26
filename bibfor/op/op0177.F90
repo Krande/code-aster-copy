@@ -60,10 +60,10 @@ subroutine op0177()
     character(len=6) :: nompro
     parameter(nompro='OP0177')
 !
-    integer :: ibid, n1, n2, n3, nk, iret, ific, nparfi
-    integer :: vali, irefr, irefi, irefc, irefk, nref
-    integer :: n1r, n2r, n3r, nkr, irefrr, irefir, irefcr, irefkr
-    integer :: nl1, nl2, nl11, nl22
+    integer(kind=8) :: ibid, n1, n2, n3, nk, iret, ific, nparfi
+    integer(kind=8) :: vali, irefr, irefi, irefc, irefk, nref
+    integer(kind=8) :: n1r, n2r, n3r, nkr, irefrr, irefir, irefcr, irefkr
+    integer(kind=8) :: nl1, nl2, nl11, nl22
 !
     real(kind=8) :: r8b, valr, epsi, epsir
 !

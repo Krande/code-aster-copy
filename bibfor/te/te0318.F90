@@ -48,12 +48,12 @@ subroutine te0318(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=16) :: nomres(1)
     character(len=32) :: phenom
     real(kind=8) :: lambda
     real(kind=8) :: valres(1), dtpg(3), dtpg_moy(3), dtpg_norm
-    integer :: kp, itemps, iflux, imate
+    integer(kind=8) :: kp, itemps, iflux, imate
     real(kind=8), pointer :: tempe(:) => null()
 ! ------------------------------------------------------------------
 !

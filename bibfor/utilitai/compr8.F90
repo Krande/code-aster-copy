@@ -23,7 +23,7 @@ function compr8(a, comp, b, eps, crit)
 #include "asterfort/assert.h"
     aster_logical :: compr8
     real(kind=8) :: a, b, eps
-    integer :: crit
+    integer(kind=8) :: crit
     character(len=2) :: comp
 !
 ! person_in_charge: samuel.geniaut at edf.fr

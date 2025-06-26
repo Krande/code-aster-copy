@@ -22,16 +22,16 @@ interface
     subroutine insema(elem_nbnode , elem_dime, elem_coor , pair_tole,&
                       xp1         , yp1      , xp2       , yp2      ,&
                       nb_poin_inte, poin_inte, inte_neigh_)
-        integer, intent(in) :: elem_nbnode
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_nbnode
+        integer(kind=8), intent(in) :: elem_dime
         real(kind=8), intent(in) :: elem_coor(2,elem_nbnode)
         real(kind=8) :: pair_tole
         real(kind=8), intent(in) :: xp1
         real(kind=8), intent(in) :: yp1
         real(kind=8), intent(in) :: xp2
         real(kind=8), intent(in) :: yp2
-        integer, intent(inout) :: nb_poin_inte
+        integer(kind=8), intent(inout) :: nb_poin_inte
         real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
-        integer, optional, intent(inout) :: inte_neigh_(4)
+        integer(kind=8), optional, intent(inout) :: inte_neigh_(4)
     end subroutine insema
 end interface

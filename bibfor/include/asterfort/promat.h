@@ -21,14 +21,14 @@
 interface
     subroutine promat(a, nlamax, dimal, dimac, b,&
                       nlbmax, dimbl, dimbc, res)
-        integer :: nlbmax
-        integer :: nlamax
+        integer(kind=8) :: nlbmax
+        integer(kind=8) :: nlamax
         real(kind=8) :: a(nlamax, *)
-        integer :: dimal
-        integer :: dimac
+        integer(kind=8) :: dimal
+        integer(kind=8) :: dimac
         real(kind=8) :: b(nlbmax, *)
-        integer :: dimbl
-        integer :: dimbc
+        integer(kind=8) :: dimbl
+        integer(kind=8) :: dimbc
         real(kind=8) :: res(nlamax, *)
     end subroutine promat
 end interface

@@ -80,11 +80,11 @@ subroutine pjxxpr(resu1, resu2, moa1, moa2, corres, &
     aster_logical, optional :: xfem
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, ie, iret, jordr, nbordr, i, iordr, tmod(1)
-    integer :: iains1, iains2, nbsym, isym, ico, ind, nbmax
-    integer :: iexi, jpara, ier, inume
+    integer(kind=8) :: ibid, ie, iret, jordr, nbordr, i, iordr, tmod(1)
+    integer(kind=8) :: iains1, iains2, nbsym, isym, ico, ind, nbmax
+    integer(kind=8) :: iexi, jpara, ier, inume
     parameter(nbmax=50)
-    integer :: ipar, ipar1, ipar2
+    integer(kind=8) :: ipar, ipar1, ipar2
     aster_logical :: acceno, lxfem, lpjxfem
     real(kind=8) :: r8b, prec, inst
     complex(kind=8) :: c16b

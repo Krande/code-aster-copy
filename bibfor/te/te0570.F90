@@ -79,9 +79,9 @@ subroutine te0570(option, nomte)
     real(kind=8) :: azgau, xgau, ygau, zgau, axxgau, ayygau, azzgau, sinphi
     real(kind=8) :: axygau, axzgau, ayzgau, e3xx, e3xy, e3xz, e3yy, e3yz
     real(kind=8) :: e3zz, cosphi, phi, cosmfi, sinmfi, phi0
-    integer :: nno, nnos, jgano, ndim, ipg, npg, idfdk, icoqu, iopt
-    integer :: ldec, iorifi, m, isect, i, iorig, ivect1, inumod, iret
-    integer :: ivect2, ivect3, iaxe, ino, ii, ipoids, ivf, igeom, itabm(8)
+    integer(kind=8) :: nno, nnos, jgano, ndim, ipg, npg, idfdk, icoqu, iopt
+    integer(kind=8) :: ldec, iorifi, m, isect, i, iorig, ivect1, inumod, iret
+    integer(kind=8) :: ivect2, ivect3, iaxe, ino, ii, ipoids, ivf, igeom, itabm(8)
     blas_int :: b_incx, b_incy, b_n
 !
 !

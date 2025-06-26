@@ -36,15 +36,15 @@ subroutine te0200(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: icode, k, nbres
+    integer(kind=8) :: icode, k, nbres
 !-----------------------------------------------------------------------
     parameter(nbres=3)
 !
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres)
     real(kind=8) :: poids, r, z, tx, ty, tz
-    integer :: nno, kp, npg1, i, itemps, ifr2d, ivectu, nnos, jgano
-    integer :: ipoids, ivf, idfde, igeom, ndim
+    integer(kind=8) :: nno, kp, npg1, i, itemps, ifr2d, ivectu, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, ndim
 !
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &

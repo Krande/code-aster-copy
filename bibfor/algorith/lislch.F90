@@ -26,7 +26,7 @@ subroutine lislch(lischa, ichar, charge)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
-    integer :: ichar
+    integer(kind=8) :: ichar
     character(len=8) :: charge
 !
 ! ----------------------------------------------------------------------
@@ -46,8 +46,8 @@ subroutine lislch(lischa, ichar, charge)
 !
 !
     character(len=24) :: nomcha
-    integer :: jncha
-    integer :: nbchar
+    integer(kind=8) :: jncha
+    integer(kind=8) :: nbchar
 !
 ! ----------------------------------------------------------------------
 !

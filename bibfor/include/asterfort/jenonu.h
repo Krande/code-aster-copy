@@ -21,6 +21,6 @@
           interface 
             subroutine jenonu(nomlu,numo)
               character(len=*), intent(in) :: nomlu
-              integer, intent(out) :: numo
+              integer(kind=8), intent(out) :: numo
             end subroutine jenonu
           end interface 

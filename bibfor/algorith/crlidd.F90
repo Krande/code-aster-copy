@@ -72,10 +72,10 @@ subroutine crlidd(nomres, mailla)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ino, iran, j, lldes
-    integer :: llnin, lltyp, ltau, ltcb, ltha, ltmas, ltmn
-    integer :: nbau, nbcb, nbcmp, nbec, nbha, nbint, nbmn
-    integer :: nbno, nbtem, nbto
+    integer(kind=8) :: i, iad, ino, iran, j, lldes
+    integer(kind=8) :: llnin, lltyp, ltau, ltcb, ltha, ltmas, ltmn
+    integer(kind=8) :: nbau, nbcb, nbcmp, nbec, nbha, nbint, nbmn
+    integer(kind=8) :: nbno, nbtem, nbto
 !-----------------------------------------------------------------------
     data cb, mn, ha, au/'CRAIGB', 'MNEAL', 'CB_HARMO', 'AUCUN'/
     data doubok/.false./

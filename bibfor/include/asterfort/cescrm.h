@@ -25,7 +25,7 @@ interface
         character(len=*) :: cesz
         character(len=*) :: typcez
         character(len=*) :: nomgdz
-        integer :: ncmpg
+        integer(kind=8) :: ncmpg
         character(len=*) :: licmp(*)
         character(len=*) :: cesmz
     end subroutine cescrm

@@ -19,9 +19,9 @@
 !
 interface
     subroutine srelas(ndi, ndt, nmat, mater, sigd, de, k, mu)
-        integer :: nmat
-        integer :: ndi
-        integer :: ndt
+        integer(kind=8) :: nmat
+        integer(kind=8) :: ndi
+        integer(kind=8) :: ndt
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sigd(6)
         real(kind=8) :: de(6, 6)

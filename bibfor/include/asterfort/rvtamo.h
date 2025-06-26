@@ -23,13 +23,13 @@
      &,ncheff,i1)
               real(kind=8) :: t(*)
               character(len=*) :: nomcmp(*)
-              integer :: nbcp
-              integer :: nbco
-              integer :: nbsp
+              integer(kind=8) :: nbcp
+              integer(kind=8) :: nbco
+              integer(kind=8) :: nbsp
               character(len=*) :: nomtab
-              integer :: iocc
+              integer(kind=8) :: iocc
               character(len=24) :: xnovar
               character(len=16) :: ncheff
-              integer :: i1
+              integer(kind=8) :: i1
             end subroutine rvtamo
           end interface 

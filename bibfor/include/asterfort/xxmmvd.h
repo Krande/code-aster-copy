@@ -21,6 +21,6 @@
 interface
     function xxmmvd(vect)
         character(len=5) :: vect
-        integer :: xxmmvd
+        integer(kind=8) :: xxmmvd
     end function xxmmvd
 end interface

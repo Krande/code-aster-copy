@@ -24,25 +24,25 @@ interface
                       hsr, nfs, nsg, toutms, timed,&
                       timef,&
                       seuil)
-        integer :: nr
-        integer :: nsg
-        integer :: nfs
-        integer :: nmat
+        integer(kind=8) :: nr
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16), intent(in) :: rela_comp
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vp(3)
         real(kind=8) :: vecp(3, 3)
         real(kind=8) :: hsr(nsg, nsg)

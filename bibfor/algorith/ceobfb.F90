@@ -26,7 +26,7 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob, &
 #include "asterfort/r8inir.h"
     real(kind=8) :: epsm(6), bm(6), fb(6), fbm(6), nofbm
     real(kind=8) :: lambda, mu, ecrob
-    integer :: bdim
+    integer(kind=8) :: bdim
 ! ----------------------------------------------------------------------
 !     LOI DE COMPORTEMENT DU MODELE D'ENDOMMAGEMENT ANISOTROPE
 !     ROUTINE DE CALCUL DE LA FORCE THERMODYNAMIQUE FB
@@ -43,8 +43,8 @@ subroutine ceobfb(bm, epsm, lambda, mu, ecrob, &
 ! OUT NOFBM  : NORME DE FBM
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k
-    integer :: t(3, 3), r(2, 2)
+    integer(kind=8) :: i, j, k
+    integer(kind=8) :: t(3, 3), r(2, 2)
 !
     real(kind=8) :: cc(6), cpe(6), ccp(6), eps(6), b(6), fbs(3)
     real(kind=8) :: deux, treb, kron(6)

@@ -20,7 +20,7 @@
 !
 interface
     subroutine matrc(nno, kcis, matc, vectt)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: kcis
         real(kind=8) :: matc(5, 5)
         real(kind=8) :: vectt(3, 3)

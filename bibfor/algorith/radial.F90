@@ -48,7 +48,7 @@ subroutine radial(nbsig, sigm, sigp, indm, indp, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    integer :: nbsig, icine, i
+    integer(kind=8) :: nbsig, icine, i
     real(kind=8) :: n1(6), n2(6), xm(6), xp(6), indm, indp
     real(kind=8) :: tensm(6), tensp(6), normdn, sigm(nbsig), sigp(nbsig)
     real(kind=8) :: zernor, devm(6), devp(6), smeq, speq

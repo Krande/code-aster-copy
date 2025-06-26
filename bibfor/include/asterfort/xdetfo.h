@@ -24,8 +24,8 @@ interface
         character(len=19) :: cnsdet
         character(len=19) :: cnsln
         character(len=19) :: cnslt
-        integer :: ndim
-        integer :: nmafon
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nmafon
         character(len=8) :: noma
         character(len=8) :: nomfis
         character(len=8) :: resuco

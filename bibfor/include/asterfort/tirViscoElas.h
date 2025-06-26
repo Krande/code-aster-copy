@@ -27,8 +27,8 @@ interface
         real(kind=8), intent(in) :: inputR(*)
         real(kind=8), intent(in) :: inputVR6(6,*)
         real(kind=8), intent(in) :: raideur66(6,6)
-        integer, intent(in) :: ngf
-        integer, intent(inout) :: ipzero(ngf)
+        integer(kind=8), intent(in) :: ngf
+        integer(kind=8), intent(inout) :: ipzero(ngf)
         real(kind=8), intent(in) :: var0(*)
         real(kind=8), intent(in) :: xmat(*)
         real(kind=8), intent(out) :: deltam

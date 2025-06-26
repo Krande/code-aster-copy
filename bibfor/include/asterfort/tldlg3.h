@@ -24,15 +24,15 @@ interface
                       iret, solvop)
         character(len=*) :: metrez
         character(len=*) :: renum
-        integer :: istop
-        integer :: lmat
-        integer :: ildeb
-        integer :: ilfin
-        integer :: ndigit
-        integer :: ndeci
-        integer :: isingu
-        integer :: npvneg
-        integer :: iret
+        integer(kind=8) :: istop
+        integer(kind=8) :: lmat
+        integer(kind=8) :: ildeb
+        integer(kind=8) :: ilfin
+        integer(kind=8) :: ndigit
+        integer(kind=8) :: ndeci
+        integer(kind=8) :: isingu
+        integer(kind=8) :: npvneg
+        integer(kind=8) :: iret
         character(len=*) :: solvop
     end subroutine tldlg3
 end interface

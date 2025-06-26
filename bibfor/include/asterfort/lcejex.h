@@ -22,11 +22,11 @@ interface
     subroutine lcejex(fami, kpg, ksp, ndim, mate,&
                       option, am, da, sigma, dsidep,&
                       vim, vip)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: mate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: mate
         character(len=16) :: option
         real(kind=8) :: am(ndim)
         real(kind=8) :: da(ndim)

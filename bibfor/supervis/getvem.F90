@@ -22,7 +22,7 @@ subroutine getvem(noma, typent, motfac, motcle, iocc, &
 #include "asterfort/getvtx.h"
 #include "asterfort/verima.h"
     character(len=*) :: noma, typent, motfac, motcle, vk(*)
-    integer :: iocc, mxval, nbval
+    integer(kind=8) :: iocc, mxval, nbval
 !       RECUPERATION DES VALEURS D'UNE LISTE (VOIR POINT D'ENTREE)
 !     ------------------------------------------------------------------
 ! IN  MOTFAC : CH*(*) : MOT CLE FACTEUR
@@ -41,7 +41,7 @@ subroutine getvem(noma, typent, motfac, motcle, iocc, &
 !                                        LES MXVAL PREMIERES
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: mm
+    integer(kind=8) :: mm
 !-----------------------------------------------------------------------
     call getvtx(motfac, motcle, iocc=iocc, nbval=mxval, vect=vk, &
                 nbret=nbval)

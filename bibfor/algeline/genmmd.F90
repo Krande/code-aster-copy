@@ -76,17 +76,17 @@ subroutine genmmd(neqns, neqp1, nadj, xadj, adjncy, &
 #include "asterfort/mmdnum.h"
 #include "asterfort/mmdpar.h"
 #include "asterfort/mmdupd.h"
-    integer :: neqns, neqp1, nadj
-    integer :: adjncy(nadj), dhead(neqns), invp(neqns), llist(neqns)
-    integer :: marker(neqns), perm(neqns), qsize(neqns)
-    integer :: xadj(neqp1), supnd(neqp1), adress(neqp1)
-    integer :: delta, ehead, i, maxint, mdeg, mdlmt, mdnode, nextmd
-    integer :: nofsub, num, tag
-    integer :: nbsn, parent(neqns)
-    integer :: gssubs, fctnzs
+    integer(kind=8) :: neqns, neqp1, nadj
+    integer(kind=8) :: adjncy(nadj), dhead(neqns), invp(neqns), llist(neqns)
+    integer(kind=8) :: marker(neqns), perm(neqns), qsize(neqns)
+    integer(kind=8) :: xadj(neqp1), supnd(neqp1), adress(neqp1)
+    integer(kind=8) :: delta, ehead, i, maxint, mdeg, mdlmt, mdnode, nextmd
+    integer(kind=8) :: nofsub, num, tag
+    integer(kind=8) :: nbsn, parent(neqns)
+    integer(kind=8) :: gssubs, fctnzs
     real(kind=8) :: fctops
-    integer :: il, is, j, jdeb, jfin, nabor, nbsn1
-    integer :: ncol, nlig
+    integer(kind=8) :: il, is, j, jdeb, jfin, nabor, nbsn1
+    integer(kind=8) :: ncol, nlig
 !-----------------------------------------------------------------------
 !
     if (neqns .le. 0) goto 999

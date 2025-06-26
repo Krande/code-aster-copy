@@ -22,10 +22,10 @@ interface
     subroutine char_read_val(keywordfact, iocc, keyword_z, val_type, val_nb, &
                              val_r, val_f, val_c, val_t)
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in)  :: iocc
+        integer(kind=8), intent(in)  :: iocc
         character(len=*), intent(in) :: keyword_z
         character(len=4), intent(in) :: val_type
-        integer, intent(out) :: val_nb
+        integer(kind=8), intent(out) :: val_nb
         real(kind=8), intent(out) :: val_r
         character(len=8), intent(out) :: val_f
         complex(kind=8), intent(out) :: val_c

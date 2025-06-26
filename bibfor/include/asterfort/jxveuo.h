@@ -21,8 +21,8 @@
 interface
     subroutine jxveuo(cel, itab, inat, jitab)
         character(len=*) :: cel
-        integer :: itab(*)
-        integer :: inat
-        integer :: jitab
+        integer(kind=8) :: itab(*)
+        integer(kind=8) :: inat
+        integer(kind=8) :: jitab
     end subroutine jxveuo
 end interface

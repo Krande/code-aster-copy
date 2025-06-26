@@ -27,7 +27,7 @@ interface
         character(len=24), intent(in) :: nomobj
         character(len=*), intent(in) :: type
         character(len=16), intent(in) :: tbtxt(2)
-        integer, intent(in) :: refi
+        integer(kind=8), intent(in) :: refi
         real(kind=8), intent(in) :: refr
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit

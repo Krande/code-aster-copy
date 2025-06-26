@@ -25,14 +25,14 @@ interface
                       locaco, locagb, locamb, zjdlm, lmax, ier)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: ntyele(*)
-        integer :: nbocc(*)
-        integer :: ivr(*)
+        integer(kind=8) :: ntyele(*)
+        integer(kind=8) :: nbocc(*)
+        integer(kind=8) :: ivr(*)
         aster_logical :: locaco
         aster_logical :: locagb
         aster_logical :: locamb
-        integer :: zjdlm(*)
-        integer :: lmax
-        integer :: ier
+        integer(kind=8) :: zjdlm(*)
+        integer(kind=8) :: lmax
+        integer(kind=8) :: ier
     end subroutine aceinc
 end interface

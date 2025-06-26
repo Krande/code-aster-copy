@@ -60,7 +60,7 @@ subroutine vpcntl(cty, mode, option, omemin, omemax, &
 #include "asterfort/utmess.h"
 #include "asterfort/vpfopr.h"
 !
-    integer :: nfreq, ipos(*), lmat(3), ier, nblagr, nbrssa, ibid2(2)
+    integer(kind=8) :: nfreq, ipos(*), lmat(3), ier, nblagr, nbrssa, ibid2(2)
     real(kind=8) :: vpinf, vpmax, omemin, omemax, seuil, precdc, omecor, charge(nfreq)
     real(kind=8) :: freq(nfreq), err(nfreq), precsh
     character(len=1) :: cty
@@ -71,7 +71,7 @@ subroutine vpcntl(cty, mode, option, omemin, omemax, &
 !
 !     ------------------------------------------------------------------
     real(kind=8) :: zmin, zmax, omega, valr(2), rbid, det(2)
-    integer :: ifm, niv, ifreq, nfreqt, vali(2), idet(2)
+    integer(kind=8) :: ifm, niv, ifreq, nfreqt, vali(2), idet(2)
 !     ------------------------------------------------------------------
     ier = 0
 !

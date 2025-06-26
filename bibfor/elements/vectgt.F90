@@ -20,14 +20,14 @@ subroutine vectgt(ind, nb1, xi, ksi3s2, intsx, &
                   zr, epais, vectn, vectg, vectt)
 !
     implicit none
-    integer :: ind, nb1, intsx
+    integer(kind=8) :: ind, nb1, intsx
     real(kind=8) :: xi(3, *), zr(*), epais, vectn(9, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: ksi3s2
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i2, intsx1, j, k, l1, l2
-    integer :: l3
+    integer(kind=8) :: i1, i2, intsx1, j, k, l1, l2
+    integer(kind=8) :: l3
     real(kind=8) :: rnorm
 !-----------------------------------------------------------------------
     if (ind .eq. 0) then

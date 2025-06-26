@@ -24,7 +24,7 @@ subroutine mmlagc(lambds, dlagrc, i_reso_fric, lambda)
 #include "Contact_type.h"
 !
     real(kind=8), intent(in) :: lambds, dlagrc
-    integer, intent(in) :: i_reso_fric
+    integer(kind=8), intent(in) :: i_reso_fric
     real(kind=8), intent(out) :: lambda
 !
 ! --------------------------------------------------------------------------------------------------

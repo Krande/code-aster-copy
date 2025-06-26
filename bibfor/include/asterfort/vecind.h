@@ -22,10 +22,10 @@ interface
     subroutine vecind(mat, lvec, nbl, nbc, force,&
                       nindep)
         character(len=19) :: mat
-        integer :: lvec
-        integer :: nbl
-        integer :: nbc
-        integer :: force
-        integer :: nindep
+        integer(kind=8) :: lvec
+        integer(kind=8) :: nbl
+        integer(kind=8) :: nbc
+        integer(kind=8) :: force
+        integer(kind=8) :: nindep
     end subroutine vecind
 end interface

@@ -23,23 +23,23 @@ interface
                       prno, deeq, nec, p, q,&
                       lbd1, lbd2, rl, rl1, rl2,&
                       nrl, lt, lmat)
-        integer :: n1
-        integer :: n2
-        integer :: diag(0:*)
-        integer :: col(*)
-        integer :: delg(*)
-        integer :: prno(*)
-        integer :: deeq(*)
-        integer :: nec
-        integer :: p(*)
-        integer :: q(*)
-        integer :: lbd1(n1)
-        integer :: lbd2(n1)
-        integer :: rl(4, *)
-        integer :: rl1(*)
-        integer :: rl2(*)
-        integer :: nrl
-        integer :: lt
-        integer :: lmat
+        integer(kind=8) :: n1
+        integer(kind=8) :: n2
+        integer(kind=8) :: diag(0:*)
+        integer(kind=8) :: col(*)
+        integer(kind=8) :: delg(*)
+        integer(kind=8) :: prno(*)
+        integer(kind=8) :: deeq(*)
+        integer(kind=8) :: nec
+        integer(kind=8) :: p(*)
+        integer(kind=8) :: q(*)
+        integer(kind=8) :: lbd1(n1)
+        integer(kind=8) :: lbd2(n1)
+        integer(kind=8) :: rl(4, *)
+        integer(kind=8) :: rl1(*)
+        integer(kind=8) :: rl2(*)
+        integer(kind=8) :: nrl
+        integer(kind=8) :: lt
+        integer(kind=8) :: lmat
     end subroutine preml0
 end interface

@@ -27,7 +27,7 @@ subroutine romMultiCoefInit(nb_vari_coef, ds_multicoef)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nb_vari_coef
+    integer(kind=8), intent(in) :: nb_vari_coef
     type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine romMultiCoefInit(nb_vari_coef, ds_multicoef)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cplx, l_real, l_cste
-    integer :: i_para_vale
+    integer(kind=8) :: i_para_vale
 !
 ! --------------------------------------------------------------------------------------------------
 !

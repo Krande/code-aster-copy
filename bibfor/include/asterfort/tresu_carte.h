@@ -28,7 +28,7 @@ interface
         character(len=*), intent(in) :: nomail
         character(len=*), intent(in) :: nocmp
         character(len=16), intent(in) :: tbtxt(2)
-        integer, intent(in) :: refi
+        integer(kind=8), intent(in) :: refi
         real(kind=8), intent(in) :: refr
         complex(kind=8), intent(in) :: refc
         character(len=*), intent(in) :: typres

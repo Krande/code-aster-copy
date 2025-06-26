@@ -21,7 +21,7 @@
 interface
     subroutine lxliis(chaine, ival, ier)
         character(len=*) :: chaine
-        integer :: ival
-        integer :: ier
+        integer(kind=8) :: ival
+        integer(kind=8) :: ier
     end subroutine lxliis
 end interface

@@ -64,21 +64,21 @@ subroutine veondp(modele, mate, mateco, sddyna, temps, vecelz)
 !
 !
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=6)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: ibid, i, iret, iondp
+    integer(kind=8) :: ibid, i, iret, iondp
     character(len=19) :: vecele
     character(len=24) :: chinst
     character(len=24) :: chgeom, ligrmo
-    integer :: nchond
+    integer(kind=8) :: nchond
     character(len=19) :: chondp
     aster_logical :: debug
     character(len=8) :: newnom
     character(len=16) :: option
-    integer :: ifmdbg, nivdbg
+    integer(kind=8) :: ifmdbg, nivdbg
     character(len=8), pointer :: lgrf(:) => null()
     character(len=19) :: chvarc
     character(len=2) :: codret

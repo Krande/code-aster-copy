@@ -23,7 +23,7 @@ interface
                       nmat, materd, materf, matcst,&
                       deps, sigd, vind,&
                       sigf, theta)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=16) :: loi
         character(len=8) :: mod
         real(kind=8) :: materd(nmat, 2)

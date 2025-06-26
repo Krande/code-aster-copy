@@ -52,8 +52,8 @@ subroutine nmrest_ecro(model_, mate_, ds_constitutive, hval_incr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 8
-    integer, parameter :: nbout = 1
+    integer(kind=8), parameter :: nbin = 8
+    integer(kind=8), parameter :: nbout = 1
     character(len=8)   :: lpaout(nbout), lpain(nbin)
     character(len=19)  :: lchout(nbout), lchin(nbin)
 !

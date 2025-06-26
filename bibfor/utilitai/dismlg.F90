@@ -40,7 +40,7 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/lteatt.h"
 #include "asterfort/teattr.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, repkz, nomobz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,21 +59,21 @@ subroutine dismlg(questi, nomobz, repi, repkz, ierd)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: dimge(3)
+    integer(kind=8) :: dimge(3)
     aster_logical :: melang
     character(len=8) :: calcri, mailla, nomacr, modele, cellTypeName, k8bid, typmod2, typmod3
     character(len=16) :: elemTypeName, phenom, modelization, tyvois, formul
     character(len=19) :: nomob
     character(len=32) :: repk
-    integer :: jlgrf, iret, nbgrel, igrel, lielSize, elemTypeNume, jsssa, n1
-    integer :: ige2, ige1, ige3
-    integer :: iexi, iexi2, ico
-    integer :: jnomac, nbsm, ism, ibid
+    integer(kind=8) :: jlgrf, iret, nbgrel, igrel, lielSize, elemTypeNume, jsssa, n1
+    integer(kind=8) :: ige2, ige1, ige3
+    integer(kind=8) :: iexi, iexi2, ico
+    integer(kind=8) :: jnomac, nbsm, ism, ibid
     aster_logical :: mail_quad, mail_line, lret
-    integer :: ndime
+    integer(kind=8) :: ndime
     character(len=8), pointer :: typema(:) => null()
-    integer, pointer :: nbno(:) => null()
-    integer, pointer :: liel(:) => null()
+    integer(kind=8), pointer :: nbno(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -69,6 +69,6 @@ interface
         real(kind=8) :: souplesse66(6,6)
         real(kind=8), intent(out) :: xmt
         aster_logical, intent(out) :: dtiso
-        integer :: err1
+        integer(kind=8) :: err1
     end subroutine hydramat3d
 end interface

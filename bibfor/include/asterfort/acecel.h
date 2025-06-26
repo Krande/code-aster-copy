@@ -22,11 +22,11 @@ interface
     subroutine acecel(noma, nomo, nbocc, ele_sup_num, ele_sup_typ, nb_ty_el, zjdlm, ier)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: nbocc(*)
-        integer :: ele_sup_num(*)
-        integer :: ele_sup_typ(*)
-        integer :: nb_ty_el(*)
-        integer :: zjdlm(*)
-        integer :: ier
+        integer(kind=8) :: nbocc(*)
+        integer(kind=8) :: ele_sup_num(*)
+        integer(kind=8) :: ele_sup_typ(*)
+        integer(kind=8) :: nb_ty_el(*)
+        integer(kind=8) :: zjdlm(*)
+        integer(kind=8) :: ier
     end subroutine acecel
 end interface

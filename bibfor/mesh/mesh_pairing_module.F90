@@ -63,18 +63,18 @@ module MeshPairing_module
 ! Global variables
 ! ==================================================================================================
 ! - Index of next nodes for segment, triangle and quadrangle
-    integer, parameter :: nodeNextSEG(2) = (/2, 1/)
-    integer, parameter :: nodeNextTRIA(3) = (/2, 3, 1/)
-    integer, parameter :: nodeNextQUAD(4) = (/2, 3, 4, 1/)
+    integer(kind=8), parameter :: nodeNextSEG(2) = (/2, 1/)
+    integer(kind=8), parameter :: nodeNextTRIA(3) = (/2, 3, 1/)
+    integer(kind=8), parameter :: nodeNextQUAD(4) = (/2, 3, 4, 1/)
 ! - Index of previous nodes for triangle and quadrangle
-    integer, parameter :: nodePrevTRIA(3) = (/3, 1, 2/)
-    integer, parameter :: nodePrevQUAD(4) = (/4, 1, 2, 3/)
+    integer(kind=8), parameter :: nodePrevTRIA(3) = (/3, 1, 2/)
+    integer(kind=8), parameter :: nodePrevQUAD(4) = (/4, 1, 2, 3/)
 ! ==================================================================================================
 ! Type for pairing
 ! ==================================================================================================
     type MESH_PAIRING
 ! ----- Dimension of space (2 or 3)
-        integer :: spaceDime = 0
+        integer(kind=8) :: spaceDime = 0
 ! ----- Flag for debug (text)
         aster_logical :: debug = ASTER_FALSE
 ! ----- Main tolerance for pairing
@@ -82,11 +82,11 @@ module MeshPairing_module
 ! ----- Tolerance for extension of cell
         real(kind=8) :: distRatio = 0.d0
 ! ----- Number of pairs
-        integer :: nbPair = 0
+        integer(kind=8) :: nbPair = 0
 ! ----- Pointer to pairs
-        integer, pointer :: pair(:) => null()
+        integer(kind=8), pointer :: pair(:) => null()
 ! ----- Pointer to list of intersection points
-        integer, pointer :: nbPoinInte(:) => null()
+        integer(kind=8), pointer :: nbPoinInte(:) => null()
         real(kind=8), pointer :: poinInte(:) => null()
     end type MESH_PAIRING
 ! ==================================================================================================
@@ -95,12 +95,12 @@ module MeshPairing_module
     type MESH_PROJ_PARA
 ! ----- Parameters for algorithm
         aster_logical :: debug = ASTER_FALSE
-        integer :: newtIterMaxi = 0
+        integer(kind=8) :: newtIterMaxi = 0
         real(kind=8) :: newtTole = 0.d0
 ! ----- Coordinate of point to project (in global frame)
         real(kind=8) :: coorPoinGlob(3) = 0.d0
 ! ----- Dimension of space (2 or 3)
-        integer :: spaceDime = 0
+        integer(kind=8) :: spaceDime = 0
 ! ----- Vector to project
         real(kind=8):: projVect(3) = 0.d0
 ! ----- Coordinate of point after projection (in cell parametric space)
@@ -108,7 +108,7 @@ module MeshPairing_module
 ! ----- Tangents at projection of point
         real(kind=8) :: tau1(3) = 0.d0, tau2(3) = 0.d0
 ! ----- Return code
-        integer:: errorCode = 0
+        integer(kind=8):: errorCode = 0
     end type MESH_PROJ_PARA
 ! ==================================================================================================
     public :: MESH_PAIRING, nodeNextTRIA, nodeNextQUAD, nodePrevTRIA, nodePrevQUAD
@@ -144,35 +144,35 @@ contains
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: newgeo, mastConxInvName
         character(len=24), intent(in) :: mastNeighName, slavNeighName
-        integer, intent(in) :: nbCellSlav, nbCellMast
-        integer, intent(in) :: listCellMast(nbCellMast), listCellSlav(nbCellSlav)
-        integer, intent(in) :: nbNodeMast
-        integer, intent(in) :: listNodeMast(nbNodeMast)
+        integer(kind=8), intent(in) :: nbCellSlav, nbCellMast
+        integer(kind=8), intent(in) :: listCellMast(nbCellMast), listCellSlav(nbCellSlav)
+        integer(kind=8), intent(in) :: nbNodeMast
+        integer(kind=8), intent(in) :: listNodeMast(nbNodeMast)
         type(MESH_PAIRING), intent(inout) :: meshPairing
 ! ----- Local
         aster_logical :: pair_exist, isFatal, l_recup
-        integer :: nbSlavStart, nbMastStart
-        integer, pointer :: cellSlavStart(:) => null()
-        integer, pointer :: cellMastStart(:) => null()
-        integer, pointer :: cellMastFlag(:) => null()
-        integer, pointer :: cellSlavFlag(:) => null(), cellMastPaired(:) => null()
-        integer :: slavIndxMini, slavIndxMaxi
-        integer :: mastIndxMini, mastIndxMaxi
-        integer :: iCell, iMastNeigh, iSlavNeigh
+        integer(kind=8) :: nbSlavStart, nbMastStart
+        integer(kind=8), pointer :: cellSlavStart(:) => null()
+        integer(kind=8), pointer :: cellMastStart(:) => null()
+        integer(kind=8), pointer :: cellMastFlag(:) => null()
+        integer(kind=8), pointer :: cellSlavFlag(:) => null(), cellMastPaired(:) => null()
+        integer(kind=8) :: slavIndxMini, slavIndxMaxi
+        integer(kind=8) :: mastIndxMini, mastIndxMaxi
+        integer(kind=8) :: iCell, iMastNeigh, iSlavNeigh
         real(kind=8), pointer :: nodeCoor(:) => null()
-        integer, pointer :: meshTypeGeom(:) => null()
-        integer, pointer :: meshConx(:) => null(), meshConxCumu(:) => null()
-        integer, pointer :: mastConxInv(:) => null(), mastConxInvCumu(:) => null()
+        integer(kind=8), pointer :: meshTypeGeom(:) => null()
+        integer(kind=8), pointer :: meshConx(:) => null(), meshConxCumu(:) => null()
+        integer(kind=8), pointer :: mastConxInv(:) => null(), mastConxInvCumu(:) => null()
         type(CELL_GEOM) :: cellSlav, cellMast
         type(CELL_GEOM) :: cellSlavLine, cellMastLine
-        integer :: nbSlavNeigh, nbMastPaired, inteNeigh(MAX_NB_NEIGH), nbMastNeigh
-        integer :: cellNeigh(MAX_NB_NEIGH), iret
+        integer(kind=8) :: nbSlavNeigh, nbMastPaired, inteNeigh(MAX_NB_NEIGH), nbMastNeigh
+        integer(kind=8) :: cellNeigh(MAX_NB_NEIGH), iret
         real(kind=8) :: inteArea
-        integer :: mastFindIndx, cellMastNume, cellMastIndx, cellSlavIndx, cellSlavNume
-        integer :: nbPoinInte
+        integer(kind=8) :: mastFindIndx, cellMastNume, cellMastIndx, cellSlavIndx, cellSlavNume
+        integer(kind=8) :: nbPoinInte
         real(kind=8) :: poinInte(2, MAX_NB_INTE), poinInteReal(3, MAX_NB_INTE)
-        integer :: cellNeighNume, cellNeighIndx
-        integer, pointer :: meshMastNeigh(:) => null(), meshSlavNeigh(:) => null()
+        integer(kind=8) :: cellNeighNume, cellNeighIndx
+        integer(kind=8), pointer :: meshMastNeigh(:) => null(), meshSlavNeigh(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         pair_exist = ASTER_TRUE
@@ -511,9 +511,9 @@ contains
         type(MESH_PAIRING), intent(in) :: meshPairing
         type(CELL_GEOM), intent(in) :: cellOrig, cellOrigLine, cellTargLine
         type(CELL_GEOM), intent(inout) :: cellProj
-        integer, intent(out) :: nbNodeProj, iret
+        integer(kind=8), intent(out) :: nbNodeProj, iret
 ! ----- Local
-        integer :: iNode, nbNode
+        integer(kind=8) :: iNode, nbNode
         real(kind=8) :: coorNodeGlob(3), coorNodePara(3), projNodePara(3), projNodeGlob(3)
         type(CELL_SKIN_BASE) :: base
         aster_logical :: errorProj
@@ -623,7 +623,7 @@ contains
                               coorProjPara, errorProj)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: spaceDime
+        integer(kind=8), intent(in) :: spaceDime
         real(kind=8), intent(in) :: projTole
         real(kind=8), intent(in) :: coorPoinGlob(3), normPoint(3)
         type(CELL_GEOM), intent(in) :: cellGeomTarget
@@ -675,12 +675,12 @@ contains
         type(CELL_GEOM), intent(in) :: cellTarget
 ! ----- Local
         real(kind=8), parameter :: zero = 0.d0, one = 1.d0
-        integer :: iNode, iDime, spaceDime
+        integer(kind=8) :: iNode, iDime, spaceDime
         real(kind=8) :: shapeFunc(MT_NNOMAX3D), dShapeFunc(3, MT_NNOMAX3D)
         real(kind=8) :: vect_posi(3), dist
         real(kind=8) :: residu(3), matrix(3, 3), det
         real(kind=8) :: dksi(2), dbeta, beta
-        integer :: iterNewt
+        integer(kind=8) :: iterNewt
         real(kind=8) :: toleAbso, toleRela, toleNewt
         real(kind=8) :: distMini, ksiMini(2), betaMini
         real(kind=8) :: refe, test
@@ -871,13 +871,13 @@ contains
 ! ----- Parameters
         type(MESH_PAIRING), intent(in) :: meshPairing
         type(CELL_GEOM), intent(in) :: cellProj
-        integer, intent(in) :: nbNodeProj
+        integer(kind=8), intent(in) :: nbNodeProj
         type(CELL_GEOM), intent(in) :: cellOrigLine, cellTargLine
         real(kind=8), intent(in) :: normOrig(3), normTarg(3)
         aster_logical, intent(out) :: inteIsEmpty
 ! ----- Local
-        integer :: iNodeProj
-        integer :: listNodeNext(4)
+        integer(kind=8) :: iNodeProj
+        integer(kind=8) :: listNodeNext(4)
         real(kind=8) :: edgeOrig(3), edgeProj(3), vectProjOrig(3)
         real(kind=8) :: sig, sp_ns_vsp, sp_np_vsp
 !   ------------------------------------------------------------------------------------------------
@@ -1030,8 +1030,8 @@ contains
         type(MESH_PAIRING), intent(in) :: meshPairing
         type(CELL_GEOM), intent(in) :: cellOrig, cellOrigLine, cellTargLine
         type(CELL_GEOM), intent(out) :: cellProj
-        integer, intent(out) :: nbNodeProj
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: nbNodeProj
+        integer(kind=8), intent(out) :: iret
 ! ----- Local
         real(kind=8) :: normOrig(3), normTarg(3)
         real(kind=8) :: ps, distCell
@@ -1134,24 +1134,24 @@ contains
 ! ----- Parameters
         type(MESH_PAIRING), intent(in) :: meshPairing
         type(CELL_GEOM), intent(in) :: cellOrig, cellOrigLine, cellTargLine
-        integer, optional, intent(out) :: iret_
-        integer, optional, intent(out) :: nbPoinInte_
+        integer(kind=8), optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: nbPoinInte_
         real(kind=8), optional, intent(out) :: poinInteOrig_(2, MAX_NB_INTE)
         real(kind=8), optional, intent(out) :: inteArea_
-        integer, optional, intent(out) :: inteNeigh_(MAX_NB_NEIGH)
+        integer(kind=8), optional, intent(out) :: inteNeigh_(MAX_NB_NEIGH)
 ! ----- Local
         aster_logical, parameter :: debug = ASTER_FALSE
-        integer :: iret, inteNeigh(MAX_NB_NEIGH)
-        integer :: nbPoinInteI
+        integer(kind=8) :: iret, inteNeigh(MAX_NB_NEIGH)
+        integer(kind=8) :: nbPoinInteI
         real(kind=8) :: poinInteTargI(2, 2*MAX_NB_INTE), poinInteOrigI(2, 2*MAX_NB_INTE)
-        integer :: nbPoinInteS
+        integer(kind=8) :: nbPoinInteS
         real(kind=8) :: poinInteTargS(2, MAX_NB_INTE), poinInteOrigS(2, MAX_NB_INTE)
-        integer :: nbPoinInte
+        integer(kind=8) :: nbPoinInte
         real(kind=8) :: poinInteOrig(2, MAX_NB_INTE)
         real(kind=8) :: inteArea
         aster_logical :: errorProj, errorInte
         type(CELL_GEOM) :: cellProj
-        integer :: nbCmpPara, nbNodeProj
+        integer(kind=8) :: nbCmpPara, nbNodeProj
 !   ------------------------------------------------------------------------------------------------
 !
         inteNeigh = 0
@@ -1322,11 +1322,11 @@ contains
 ! ----- Parameters
         type(MESH_PAIRING), intent(in) :: meshPairing
         type(CELL_GEOM), intent(in) :: cellProj
-        integer, intent(out) :: nbPoinInte
+        integer(kind=8), intent(out) :: nbPoinInte
         real(kind=8), intent(out) :: poinInteTarg(2, 2*MAX_NB_INTE), poinInteOrig(2, 2*MAX_NB_INTE)
-        integer, intent(out) :: inteNeigh(MAX_NB_NEIGH)
+        integer(kind=8), intent(out) :: inteNeigh(MAX_NB_NEIGH)
 ! ----- Local
-        integer :: iNode, nbNode
+        integer(kind=8) :: iNode, nbNode
         real(kind=8) :: ksi
         real(kind=8), parameter :: coorSegPara(2) = (/-1.d0, +1.d0/)
         real(kind=8) :: ksiMini, ksiMaxi, t1
@@ -1409,17 +1409,17 @@ contains
 ! ----- Parameters
         type(MESH_PAIRING), intent(in) :: meshPairing
         type(CELL_GEOM), intent(in) :: cellProj
-        integer, intent(in) :: nbNodeProj
+        integer(kind=8), intent(in) :: nbNodeProj
         type(CELL_GEOM), intent(in) :: cellOrigLine, cellTargLine
-        integer, intent(out) :: nbPoinInte
+        integer(kind=8), intent(out) :: nbPoinInte
         real(kind=8), intent(out) :: poinInteTarg(2, 2*MAX_NB_INTE), poinInteOrig(2, 2*MAX_NB_INTE)
-        integer, intent(out) :: inteNeigh(MAX_NB_NEIGH)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: inteNeigh(MAX_NB_NEIGH)
+        integer(kind=8), intent(out) :: iret
 ! ----- Local
         aster_logical :: pointIsInside
         real(kind=8) :: nodeProjPara(2), origCoorPara(2)
-        integer :: listNodePrev(4)
-        integer :: iNodeTarg, iNodeProj, errorInside
+        integer(kind=8) :: listNodePrev(4)
+        integer(kind=8) :: iNodeTarg, iNodeProj, errorInside
 !   ------------------------------------------------------------------------------------------------
 !
         inteNeigh = 0
@@ -1545,7 +1545,7 @@ contains
         real(kind=8), intent(in) :: poinCoorPara(2)
         real(kind=8), intent(out) :: origCoorPara(2)
         aster_logical, intent(out) :: poinIsInside
-        integer, intent(out) :: error
+        integer(kind=8), intent(out) :: error
 ! ----- Local
         character(len=8) :: cellCode
         real(kind=8) :: cellCoorPara(2, MT_NNOMAX3D)
@@ -1723,14 +1723,14 @@ contains
         type(MESH_PAIRING), intent(in) :: meshPairing
         real(kind=8), intent(in) :: coorSegm(2, 2)
         type(CELL_GEOM), intent(in) :: cellLine
-        integer, intent(inout) :: nbPoinInte
+        integer(kind=8), intent(inout) :: nbPoinInte
         real(kind=8), intent(inout) :: poinInte(2, 2*MAX_NB_INTE)
 ! ----- Local
-        integer :: nbNode, iNode
+        integer(kind=8) :: nbNode, iNode
         real(kind=8) :: a, b, c, d
         real(kind=8) :: t1, t2, det, aux(2), norm
         real(kind=8) :: x1, y1, x2, y2
-        integer :: listNodeNext(4)
+        integer(kind=8) :: listNodeNext(4)
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(cellLine%isLinear)
@@ -1833,17 +1833,17 @@ contains
 ! ----- Parameters
         type(MESH_PAIRING), intent(in) :: meshPairing
         type(CELL_GEOM), intent(in) :: cellProj
-        integer, intent(in) :: nbNodeProj
+        integer(kind=8), intent(in) :: nbNodeProj
         type(CELL_GEOM), intent(in) :: cellOrigLine, cellTargLine
-        integer, intent(inout) :: nbPoinInte
+        integer(kind=8), intent(inout) :: nbPoinInte
         real(kind=8), intent(inout) :: poinInteTarg(2, 2*MAX_NB_INTE)
         real(kind=8), intent(inout) :: poinInteOrig(2, 2*MAX_NB_INTE)
-        integer, intent(inout) :: inteNeigh(MAX_NB_NEIGH)
+        integer(kind=8), intent(inout) :: inteNeigh(MAX_NB_NEIGH)
 ! ----- Local
         real(kind=8) :: coorSegmProj(2, 2), t1, t2
         real(kind=8) :: coorSegmOrig(2, 2)
-        integer :: nbPoinAdd, nbPoinInteAv
-        integer :: iPoinAdd, listNodeNext(4), iNodeProj
+        integer(kind=8) :: nbPoinAdd, nbPoinInteAv
+        integer(kind=8) :: iPoinAdd, listNodeNext(4), iNodeProj
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(nbNodeProj .le. 4)
@@ -1978,24 +1978,24 @@ contains
 ! ----- Parameters
         type(MESH_PAIRING), intent(in) :: meshPairing
         real(kind=8), pointer :: nodeCoor(:)
-        integer, pointer :: meshTypeGeom(:)
-        integer, pointer :: meshConx(:), meshConxCumu(:)
-        integer, pointer :: mastConxInv(:), mastConxInvCumu(:)
-        integer, intent(in) :: nbCellSlav, listCellSlav(nbCellSlav)
-        integer, pointer :: cellSlavFlag(:)
-        integer, intent(in) :: nbCellMast, listCellMast(nbCellMast)
-        integer, intent(in) :: nbNodeMast, listNodeMast(nbNodeMast)
-        integer, intent(out) :: nbMastStart, cellMastStart(nbCellSlav)
-        integer, intent(out) :: nbSlavStart, cellSlavStart(nbCellSlav)
+        integer(kind=8), pointer :: meshTypeGeom(:)
+        integer(kind=8), pointer :: meshConx(:), meshConxCumu(:)
+        integer(kind=8), pointer :: mastConxInv(:), mastConxInvCumu(:)
+        integer(kind=8), intent(in) :: nbCellSlav, listCellSlav(nbCellSlav)
+        integer(kind=8), pointer :: cellSlavFlag(:)
+        integer(kind=8), intent(in) :: nbCellMast, listCellMast(nbCellMast)
+        integer(kind=8), intent(in) :: nbNodeMast, listNodeMast(nbNodeMast)
+        integer(kind=8), intent(out) :: nbMastStart, cellMastStart(nbCellSlav)
+        integer(kind=8), intent(out) :: nbSlavStart, cellSlavStart(nbCellSlav)
 ! ----- Local
-        integer :: iCellSlav, iCellMast
-        integer :: cellSlavNume, cellSlavIndx
-        integer :: cellMastNume
+        integer(kind=8) :: iCellSlav, iCellMast
+        integer(kind=8) :: cellSlavNume, cellSlavIndx
+        integer(kind=8) :: cellMastNume
         type(CELL_GEOM) :: cellSlav, cellSlavLine
         type(CELL_GEOM) :: cellMast, cellMastLine
-        integer :: nodeNumeClosest
-        integer :: slavIndxMini
-        integer :: nbCellToNode, cellToNode(nbCellMast)
+        integer(kind=8) :: nodeNumeClosest
+        integer(kind=8) :: slavIndxMini
+        integer(kind=8) :: nbCellToNode, cellToNode(nbCellMast)
         real(kind=8) :: inteArea
 !   ------------------------------------------------------------------------------------------------
 !
@@ -2128,17 +2128,17 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(MESH_PAIRING), intent(in) :: meshPairing
-        integer, intent(in) :: nbPoinInteIn
+        integer(kind=8), intent(in) :: nbPoinInteIn
         real(kind=8), intent(in) :: poinInteTargIn(2, 2*MAX_NB_INTE)
         real(kind=8), intent(in) :: poinInteOrigIn(2, 2*MAX_NB_INTE)
-        integer, intent(out) :: nbPoinInteOut
+        integer(kind=8), intent(out) :: nbPoinInteOut
         real(kind=8), intent(out) :: poinInteTargOut(2, MAX_NB_INTE)
         real(kind=8), intent(out) :: poinInteOrigOut(2, MAX_NB_INTE)
 ! ----- Local
         real(kind=8) :: poinInteSort1(2, 2*MAX_NB_INTE), poinInteSort2(2, 2*MAX_NB_INTE)
         real(kind=8) :: angle(2*MAX_NB_INTE)
         real(kind=8) :: v(2), norm, bary(2)
-        integer :: iPoinInte, angle_sorted(2*MAX_NB_INTE), listPoinNext(2*MAX_NB_INTE)
+        integer(kind=8) :: iPoinInte, angle_sorted(2*MAX_NB_INTE), listPoinNext(2*MAX_NB_INTE)
 !   ------------------------------------------------------------------------------------------------
 !
         bary = 0.d0
@@ -2240,11 +2240,11 @@ contains
 ! ----- Parameters
         type(MESH_PAIRING), intent(in) :: meshPairing
         type(CELL_GEOM), intent(in) :: cellGeom
-        integer, intent(in) :: nbPoinInte
+        integer(kind=8), intent(in) :: nbPoinInte
         real(kind=8), intent(in) :: poinInteIn(2, MAX_NB_INTE)
         real(kind=8), intent(out) :: poinInteOut(2, MAX_NB_INTE)
 ! ----- Local
-        integer :: iPoinInte
+        integer(kind=8) :: iPoinInte
         aster_logical :: pointIsInside
 !   ------------------------------------------------------------------------------------------------
 !
@@ -2280,11 +2280,11 @@ contains
                             inteArea)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: spaceDime, nbPoinInte
+        integer(kind=8), intent(in) :: spaceDime, nbPoinInte
         real(kind=8), intent(in) :: poinInte(2, MAX_NB_INTE)
         real(kind=8), intent(out) :: inteArea
 ! ----- Local
-        integer :: listPoinNext(MAX_NB_INTE), iPoinInte
+        integer(kind=8) :: listPoinNext(MAX_NB_INTE), iPoinInte
 !   ------------------------------------------------------------------------------------------------
 !
         inteArea = 0.d0
@@ -2331,7 +2331,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         aster_logical :: isFatalError
-        integer, intent(in) :: errorPair
+        integer(kind=8), intent(in) :: errorPair
 !   ------------------------------------------------------------------------------------------------
 !
         isFatalError = ASTER_TRUE
@@ -2361,7 +2361,7 @@ contains
     subroutine pairAllocate(pairDime, meshPairing)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: pairDime
+        integer(kind=8), intent(in) :: pairDime
         type(MESH_PAIRING), intent(inout) :: meshPairing
 !   ------------------------------------------------------------------------------------------------
 !
@@ -2402,12 +2402,12 @@ contains
                        meshPairing)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: cellSlavNume, cellMastNume
-        integer, intent(in) :: nbPoinInte
+        integer(kind=8), intent(in) :: cellSlavNume, cellMastNume
+        integer(kind=8), intent(in) :: nbPoinInte
         real(kind=8), intent(in) :: poinInte(2, MAX_NB_INTE)
         type(MESH_PAIRING), intent(inout) :: meshPairing
 ! ----- Locals
-        integer :: iPoinInte, iPair
+        integer(kind=8) :: iPoinInte, iPair
 !   ------------------------------------------------------------------------------------------------
 !
         iPair = meshPairing%nbPair+1
@@ -2441,11 +2441,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(CELL_GEOM), intent(in) :: cellGeom
-        integer, intent(in) :: nbPoinInte
+        integer(kind=8), intent(in) :: nbPoinInte
         real(kind=8), intent(in) :: poinInte(2, MAX_NB_INTE)
         real(kind=8), intent(out) :: poinInteReal(3, MAX_NB_INTE)
 ! ----- Local
-        integer :: iPoinInte
+        integer(kind=8) :: iPoinInte
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(nbPoinInte .le. MAX_NB_INTE)
@@ -2473,11 +2473,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(CELL_GEOM), intent(in) :: cellSlav
-        integer, intent(in) :: nbPoinQuad
+        integer(kind=8), intent(in) :: nbPoinQuad
         real(kind=8), intent(in) :: quadPoinSlav(2, MAX_NB_QUAD)
         real(kind=8), intent(out) :: quadPoinReal(3, MAX_NB_QUAD)
 ! ----- Local
-        integer :: iPoinQuad
+        integer(kind=8) :: iPoinQuad
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(nbPoinQuad .le. MAX_NB_QUAD)
@@ -2509,11 +2509,11 @@ contains
 ! ----- Parameters
         type(CELL_GEOM), intent(in) :: cellGeom
         real(kind=8), pointer :: nodeCoor(:)
-        integer, intent(in) :: nbNode, listNode(nbNode)
-        integer, intent(out) :: nodeNumeClosest
+        integer(kind=8), intent(in) :: nbNode, listNode(nbNode)
+        integer(kind=8), intent(out) :: nodeNumeClosest
 ! ----- Local
         real(kind=8) :: cellCentGlob(3)
-        integer :: iDime, iNode, nodeNume
+        integer(kind=8) :: iDime, iNode, nodeNume
         real(kind=8) :: vect_pm(3), distMini, dist
 !   ------------------------------------------------------------------------------------------------
 !
@@ -2560,14 +2560,14 @@ contains
                                 nbCellToNode, cellToNode)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nodeNume
-        integer, pointer :: meshConxInve(:), meshConxInveCumu(:)
-        integer, intent(in) :: nbCell
-        integer, intent(in) :: listCell(nbCell)
-        integer, intent(out) :: nbCellToNode
-        integer, intent(out) :: cellToNode(nbCell)
+        integer(kind=8), intent(in) :: nodeNume
+        integer(kind=8), pointer :: meshConxInve(:), meshConxInveCumu(:)
+        integer(kind=8), intent(in) :: nbCell
+        integer(kind=8), intent(in) :: listCell(nbCell)
+        integer(kind=8), intent(out) :: nbCellToNode
+        integer(kind=8), intent(out) :: cellToNode(nbCell)
 ! ----- Local
-        integer :: iCell
+        integer(kind=8) :: iCell
 !   ------------------------------------------------------------------------------------------------
 !
         cellToNode = 0
@@ -2597,16 +2597,16 @@ contains
 ! ----- Parameters
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: baseName
-        integer, intent(in) :: iPair
+        integer(kind=8), intent(in) :: iPair
         real(kind=8), pointer :: nodeCoor(:)
         type(CELL_GEOM), optional, intent(out) :: cellSlav_, cellMast_
 ! ----- Local
-        integer :: jvData
+        integer(kind=8) :: jvData
         type(CELL_GEOM) :: cellSlav, cellMast
         character(len=24) :: zonePair
-        integer, pointer :: meshTypeGeom(:) => null()
-        integer, pointer :: meshConx(:) => null(), meshConxCumu(:) => null()
-        integer :: nbPair, cellSlavNume, cellMastNume
+        integer(kind=8), pointer :: meshTypeGeom(:) => null()
+        integer(kind=8), pointer :: meshConx(:) => null(), meshConxCumu(:) => null()
+        integer(kind=8) :: nbPair, cellSlavNume, cellMastNume
 !   ------------------------------------------------------------------------------------------------
 !
 ! ----- Access to mesh
@@ -2665,13 +2665,13 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=24), intent(in) :: baseName
-        integer, intent(in) :: iPair
-        integer, intent(out) :: nbPoinInte
+        integer(kind=8), intent(in) :: iPair
+        integer(kind=8), intent(out) :: nbPoinInte
         real(kind=8), intent(out)  :: poinInte(2, MAX_NB_INTE)
 ! ----- Local
-        integer :: jvData, iPoinInte
+        integer(kind=8) :: jvData, iPoinInte
         character(len=24) :: zonePair, zoneNbPoinInte, zonePoinInte
-        integer :: nbPair
+        integer(kind=8) :: nbPair
 !   ------------------------------------------------------------------------------------------------
 !
         nbPoinInte = 0
@@ -2725,20 +2725,20 @@ contains
 ! ----- Parameters
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: newgeo
-        integer, intent(in) :: nbCellSlav, nbCellMast
-        integer, intent(in) :: listCellMast(nbCellMast), listCellSlav(nbCellSlav)
+        integer(kind=8), intent(in) :: nbCellSlav, nbCellMast
+        integer(kind=8), intent(in) :: listCellMast(nbCellMast), listCellSlav(nbCellSlav)
         type(MESH_PAIRING), intent(inout) :: meshPairing
 ! ----- Local
         aster_logical :: isFatal
-        integer :: iCellSlav, cellSlavNume, iCellMast, cellMastNume
+        integer(kind=8) :: iCellSlav, cellSlavNume, iCellMast, cellMastNume
         real(kind=8), pointer :: nodeCoor(:) => null()
-        integer, pointer :: meshTypeGeom(:) => null()
-        integer, pointer :: meshConx(:) => null(), meshConxCumu(:) => null()
+        integer(kind=8), pointer :: meshTypeGeom(:) => null()
+        integer(kind=8), pointer :: meshConx(:) => null(), meshConxCumu(:) => null()
         type(CELL_GEOM) :: cellSlav, cellMast
         type(CELL_GEOM) :: cellSlavLine, cellMastLine
-        integer :: iret
+        integer(kind=8) :: iret
         real(kind=8) :: inteArea
-        integer :: nbPoinInte
+        integer(kind=8) :: nbPoinInte
         real(kind=8) :: poinInte(2, MAX_NB_INTE), poinInteReal(3, MAX_NB_INTE)
 !   ------------------------------------------------------------------------------------------------
 !

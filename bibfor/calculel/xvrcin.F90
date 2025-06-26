@@ -65,16 +65,16 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
 !     out   l_xfem : booleen, vrai si chainage thermo-mecanique xfem
 !
 ! ----------------------------------------------------------------------
-    integer :: iret, nbma, ima, i
-    integer :: ibid, nbord, iord, icode_ini
-    integer :: jcelkm, jcelvm, jcelkt, jcelvt
-    integer :: igrm, nbgrm, debgrm, nbelm, imolom, lgcatm, alielm, ielm
-    integer :: nutem, amolom, lgelm, advelm
-    integer :: igrt, nbgrt, debgrt, nbelt, imolot, lgcatt, alielt, ielt
-    integer :: nutet, amolot, lgelt, advelt
-    integer :: ival, igdm, nec, jpnlfp, jnolfp, kfpgm, nbfamm, adfpgm
-    integer :: nuflpg, nufgpg, nblfpg, nbpg_x, nbpg_n
-    integer :: nbscal_t, nb_pt_t, nbmcp
+    integer(kind=8) :: iret, nbma, ima, i
+    integer(kind=8) :: ibid, nbord, iord, icode_ini
+    integer(kind=8) :: jcelkm, jcelvm, jcelkt, jcelvt
+    integer(kind=8) :: igrm, nbgrm, debgrm, nbelm, imolom, lgcatm, alielm, ielm
+    integer(kind=8) :: nutem, amolom, lgelm, advelm
+    integer(kind=8) :: igrt, nbgrt, debgrt, nbelt, imolot, lgcatt, alielt, ielt
+    integer(kind=8) :: nutet, amolot, lgelt, advelt
+    integer(kind=8) :: ival, igdm, nec, jpnlfp, jnolfp, kfpgm, nbfamm, adfpgm
+    integer(kind=8) :: nuflpg, nufgpg, nblfpg, nbpg_x, nbpg_n
+    integer(kind=8) :: nbscal_t, nb_pt_t, nbmcp
     real(kind=8) :: r8nan
     character(len=8) :: nomgdm, elrefm
     character(len=8) :: modevo, modmex, noma
@@ -82,14 +82,14 @@ subroutine xvrcin(ligmex, celthx, evol, nomsym, celmex, l_xfem)
     character(len=19) :: ligthx, resu19, chamel
     character(len=24) :: nomolt, nomolm, nofpglism, ligrch
     character(len=32) :: noflpg
-    integer, pointer :: vordr(:) => null()
-    integer, pointer :: vcode(:) => null()
-    integer, pointer :: celdm(:) => null()
-    integer, pointer :: celdt(:) => null()
-    integer, pointer :: repet(:) => null()
-    integer, pointer :: vecma_th(:) => null()
-    integer, pointer :: vecma_me(:) => null()
-    integer, pointer :: tmfpg(:) => null()
+    integer(kind=8), pointer :: vordr(:) => null()
+    integer(kind=8), pointer :: vcode(:) => null()
+    integer(kind=8), pointer :: celdm(:) => null()
+    integer(kind=8), pointer :: celdt(:) => null()
+    integer(kind=8), pointer :: repet(:) => null()
+    integer(kind=8), pointer :: vecma_th(:) => null()
+    integer(kind=8), pointer :: vecma_me(:) => null()
+    integer(kind=8), pointer :: tmfpg(:) => null()
     character(len=8), pointer :: p_mod_ther(:) => null()
     character(len=24), pointer :: vcelk(:) => null()
     character(len=24), pointer :: vligr(:) => null()

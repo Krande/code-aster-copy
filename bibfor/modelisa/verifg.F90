@@ -32,12 +32,12 @@ subroutine verifg(fami, kpg, nspg, poum, j_mater, &
 !
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: nspg
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: nspg
     character(len=*), intent(in) :: poum
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(out) :: epsth
-    integer, optional, intent(out) :: iret_
+    integer(kind=8), optional, intent(out) :: iret_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -61,10 +61,10 @@ subroutine verifg(fami, kpg, nspg, poum, j_mater, &
 !
     character(len=8) :: elem_name
     real(kind=8) :: alpha_prev(2), alpha_curr(2)
-    integer :: iret_temp_curr, iret_temp_prev, iret_temp_refe, iret_temp
+    integer(kind=8) :: iret_temp_curr, iret_temp_prev, iret_temp_refe, iret_temp
     real(kind=8) :: temp_prev, temp_refe, temp_curr
-    integer :: iadzi, iazk24
-    integer :: elas_id
+    integer(kind=8) :: iadzi, iazk24
+    integer(kind=8) :: elas_id
     character(len=16) :: elas_keyword
 !
 ! --------------------------------------------------------------------------------------------------

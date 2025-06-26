@@ -41,7 +41,7 @@ subroutine nmlssv(list_load)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: lload_fcss
-    integer :: i, iret, nbsst
+    integer(kind=8) :: i, iret, nbsst
     character(len=24), pointer :: v_lload_fcss(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

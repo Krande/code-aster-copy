@@ -41,7 +41,7 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/trigom.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     character(len=8) :: noma, fiss
     character(len=19) :: grlt, grln
 !
@@ -67,15 +67,15 @@ subroutine xbaslo(noma, fiss, grlt, grln, ndim)
 !      VR(NDIM+1:3*NDIM) : LA BASE LOCALE ASSOCIEE A PROJETE EN FOND DE FISSURE
 !
 !
-    integer :: nbcmp
+    integer(kind=8) :: nbcmp
     character(len=8) :: licmp(9)
     character(len=24) :: coorn
     character(len=24) :: xfonfi, xbasfo
-    integer :: ifon, npoint, ifm, niv, ier, ibid, ibas
+    integer(kind=8) :: ifon, npoint, ifm, niv, ier, ibid, ibas
     character(len=19) :: cnsbas, basloc
-    integer :: iadrco, jgsl, jgtl
-    integer :: long, nfon, nbno, ino, j
-    integer :: nbfron, jnfon, ni, nf
+    integer(kind=8) :: iadrco, jgsl, jgtl
+    integer(kind=8) :: long, nfon, nbno, ino, j
+    integer(kind=8) :: nbfron, jnfon, ni, nf
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1, xij, yij, zij, eps, d, norm2
     real(kind=8) :: xm, ym, zm, xim, yim, zim, s, dmin, xn, yn, zn, a(3)
     real(kind=8) :: u(3), v(3), un(3), vn(3)

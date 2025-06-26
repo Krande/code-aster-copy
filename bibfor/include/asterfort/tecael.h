@@ -20,8 +20,8 @@
 !
           interface 
             subroutine tecael(iadzi,iazk24,noms)
-              integer, intent(out) :: iadzi
-              integer, intent(out) :: iazk24
-              integer ,optional, intent(in) :: noms
+              integer(kind=8), intent(out) :: iadzi
+              integer(kind=8), intent(out) :: iazk24
+              integer(kind=8) ,optional, intent(in) :: noms
             end subroutine tecael
           end interface 

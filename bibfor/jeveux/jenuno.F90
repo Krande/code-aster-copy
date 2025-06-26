@@ -36,18 +36,18 @@ subroutine jenuno(nomlu, nomo)
 ! IN  NOMO   : NOM DANS LE REPERTOIRE
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadmex, iadmi, ibacol, ideco, idenom, ipgcex, ixnom
-    integer :: jcara, jctab, jdate, jdocu, jgenr, jhcod, jiadd
-    integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
-    integer :: jrnom, jtype, k, kadm, lnom, lutii, n
-    integer :: nk
+    integer(kind=8) :: iadmex, iadmi, ibacol, ideco, idenom, ipgcex, ixnom
+    integer(kind=8) :: jcara, jctab, jdate, jdocu, jgenr, jhcod, jiadd
+    integer(kind=8) :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
+    integer(kind=8) :: jrnom, jtype, k, kadm, lnom, lutii, n
+    integer(kind=8) :: nk
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -55,22 +55,22 @@ subroutine jenuno(nomlu, nomo)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 ! ----------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: numec
+    integer(kind=8) :: numec
     common/inumje/numec
 ! ----------------------------------------------------------------------
-    integer :: ideno, ilnom
+    integer(kind=8) :: ideno, ilnom
     parameter(ideno=2, ilnom=3)
 ! ----------------------------------------------------------------------
-    integer :: idnom
+    integer(kind=8) :: idnom
     parameter(idnom=5)
 ! ----------------------------------------------------------------------
     character(len=32) :: noml32
     character(len=1) :: genri
-    integer :: icre, iret, itab(1), vali(2)
+    integer(kind=8) :: icre, iret, itab(1), vali(2)
 ! DEB ------------------------------------------------------------------
     ipgcex = ipgc
     ipgc = -2

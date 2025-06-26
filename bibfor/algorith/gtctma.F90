@@ -28,9 +28,9 @@ subroutine gtctma(elem_coor, elem_nbnode, elem_code, elem_dime, &
 !
 
     real(kind=8), intent(in) :: elem_coor(3, 9)
-    integer, intent(in) :: elem_nbnode
+    integer(kind=8), intent(in) :: elem_nbnode
     character(len=8), intent(in) :: elem_code
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     real(kind=8), intent(out) :: ctcoor(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine gtctma(elem_coor, elem_nbnode, elem_code, elem_dime, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: rfcoor(3), elem_cort(27)
-    integer      :: i_dime, i_node
+    integer(kind=8)      :: i_dime, i_node
 
 !
 ! --------------------------------------------------------------------------------------------------

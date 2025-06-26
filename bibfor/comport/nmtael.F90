@@ -23,7 +23,7 @@ subroutine nmtael(fami, kpg, ksp, imate, ndimsi, &
     implicit none
 !
 #include "asterfort/verift.h"
-    integer :: kpg, ksp, ndimsi, imate
+    integer(kind=8) :: kpg, ksp, ndimsi, imate
     character(len=*) :: fami
     real(kind=8) :: matm(3), mat(3)
     real(kind=8) :: sigm(ndimsi), epsm(ndimsi), deps(ndimsi)
@@ -42,7 +42,7 @@ subroutine nmtael(fami, kpg, ksp, imate, ndimsi, &
 ! OUT SIGP   TENSEUR DES CONTRAINTES ELASTIQUES
 ! ----------------------------------------------------------------------
 !
-    integer :: k
+    integer(kind=8) :: k
     real(kind=8) :: troikm, deumum
     real(kind=8) :: troisk, deuxmu
     real(kind=8) :: epmmo

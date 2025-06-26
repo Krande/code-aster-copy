@@ -46,7 +46,7 @@ subroutine resuReadCreateREFD(resultName, resultType, matrRigi, matrMass)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=14) :: numeRigi, numeMass
     character(len=19) :: profRigi, profMass
     character(len=24) :: matric(3)

@@ -20,7 +20,7 @@
 !
 interface
     subroutine slegeo(iunv, imod)
-        integer :: iunv
-        integer :: imod
+        integer(kind=8) :: iunv
+        integer(kind=8) :: imod
     end subroutine slegeo
 end interface

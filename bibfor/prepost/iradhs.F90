@@ -38,7 +38,7 @@ subroutine iradhs(versio)
 #include "asterfort/utidea.h"
 #include "asterfort/wkvect.h"
 !
-    integer, intent(in) :: versio
+    integer(kind=8), intent(in) :: versio
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -68,22 +68,22 @@ subroutine iradhs(versio)
     character(len=5) :: phe(2), mot
     character(len=8) :: nommai
     character(len=16) :: nomele
-    integer ::  iax, iel, ima, imper, ino, inos
-    integer :: iphe, iret1, iret2, iret3, iret4, iret5, iret6
-    integer :: isu, itel, jcodd, jpefsu
-    integer :: jpermu, jpersu, nbn, nbtyel, nbtyma
-    integer :: nbtyms
-    integer, parameter :: maxnod = 32
-    integer, parameter :: maxfa = 6
+    integer(kind=8) ::  iax, iel, ima, imper, ino, inos
+    integer(kind=8) :: iphe, iret1, iret2, iret3, iret4, iret5, iret6
+    integer(kind=8) :: isu, itel, jcodd, jpefsu
+    integer(kind=8) :: jpermu, jpersu, nbn, nbtyel, nbtyma
+    integer(kind=8) :: nbtyms
+    integer(kind=8), parameter :: maxnod = 32
+    integer(kind=8), parameter :: maxfa = 6
     character(len=8) :: nomtm
-    integer :: icas
-    integer, pointer :: codephy(:) => null()
+    integer(kind=8) :: icas
+    integer(kind=8), pointer :: codephy(:) => null()
     character(len=8), pointer :: typema(:) => null()
-    integer, pointer :: codegra(:) => null()
-    integer, pointer :: nbno(:) => null()
+    integer(kind=8), pointer :: codegra(:) => null()
+    integer(kind=8), pointer :: nbno(:) => null()
 !
     character(len=8) :: nomail(MT_NTYMAX)
-    integer :: limail(MT_NTYMAX), indic(MT_NTYMAX), indicf(MT_NTYMAX)
+    integer(kind=8) :: limail(MT_NTYMAX), indic(MT_NTYMAX), indicf(MT_NTYMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

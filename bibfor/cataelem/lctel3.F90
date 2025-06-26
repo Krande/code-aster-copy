@@ -43,16 +43,16 @@ subroutine lctel3()
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: dg
+    integer(kind=8) :: dg
     character(len=16) :: nomte
     character(len=24) :: nomolo
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadige, iamolo, icode, igd, igdgeo, iml
-    integer :: inocmp, ite, ix, iy, iz, k, nbcmp
-    integer :: nbdg, nbec, nbml, nbpt, nbte
+    integer(kind=8) :: iadige, iamolo, icode, igd, igdgeo, iml
+    integer(kind=8) :: inocmp, ite, ix, iy, iz, k, nbcmp
+    integer(kind=8) :: nbdg, nbec, nbml, nbpt, nbte
 !-----------------------------------------------------------------------
     call jemarq()
     call jelira('&CATA.TE.NOMTE', 'NOMMAX', nbte)

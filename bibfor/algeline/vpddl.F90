@@ -34,7 +34,7 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine, &
 #include "asterfort/utmess.h"
 !
     character(len=19) :: masse, raide
-    integer :: neq, nblagr, nbcine, neqact, dlagr(neq), dbloq(neq), ier
+    integer(kind=8) :: neq, nblagr, nbcine, neqact, dlagr(neq), dbloq(neq), ier
 !
 !     ------------------------------------------------------------------
 !     RENSEIGNEMENTS SUR LES DDL : LAGRANGE, BLOQUE, EXCLUS.
@@ -51,10 +51,10 @@ subroutine vpddl(raide, masse, neq, nblagr, nbcine, &
 !
 !
 !
-    integer :: iercon, nbprno, ieq, nba, nbb, nbl, nbliai, ifm, niv
-    integer :: vali(4)
+    integer(kind=8) :: iercon, nbprno, ieq, nba, nbb, nbl, nbliai, ifm, niv
+    integer(kind=8) :: vali(4)
     character(len=14) :: nume
-    integer, pointer :: ccid(:) => null()
+    integer(kind=8), pointer :: ccid(:) => null()
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------

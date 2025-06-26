@@ -36,7 +36,7 @@ interface
         real(kind=8), intent(in) :: as2(6, 6)
         real(kind=8), intent(in) :: bs2(6, 2)
         real(kind=8), intent(in) :: cs2(2, 2)
-        integer, intent(in) :: indi(6)
+        integer(kind=8), intent(in) :: indi(6)
         real(kind=8), intent(in) :: neta1(2)
         real(kind=8), intent(in) :: neta2(2)
         real(kind=8), intent(in) :: cstseu(6)

@@ -22,10 +22,10 @@ interface
     subroutine pipedo(ndim, typmod, tau, mate, vim,&
                       epsm, epspc, epsdc, etamin, etamax,&
                       a0, a1, a2, a3, etas)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
         real(kind=8) :: tau
-        integer :: mate
+        integer(kind=8) :: mate
         real(kind=8) :: vim(7)
         real(kind=8) :: epsm(6)
         real(kind=8) :: epspc(6)

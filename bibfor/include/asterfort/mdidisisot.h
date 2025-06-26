@@ -21,7 +21,7 @@
 interface
     subroutine mdidisisot(sd_nl_, nbnoli, nomres)
         character(len=*) :: sd_nl_
-        integer          :: nbnoli
+        integer(kind=8)          :: nbnoli
         character(len=8) :: nomres
     end subroutine mdidisisot
 end interface

@@ -21,6 +21,6 @@
 interface
     function iunifi(name)
         character(len=*) :: name
-        integer :: iunifi
+        integer(kind=8) :: iunifi
     end function iunifi
 end interface

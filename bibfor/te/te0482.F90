@@ -39,8 +39,8 @@ subroutine te0482(option, nomte)
 !
 !
     aster_logical :: axi
-    integer :: ndim, nno, npg, ipoids, ivf, idfde
-    integer :: igeom, imate, idepl, itemps, iechli, nnos, jgano
+    integer(kind=8) :: ndim, nno, npg, ipoids, ivf, idfde
+    integer(kind=8) :: igeom, imate, idepl, itemps, iechli, nnos, jgano
 ! ......................................................................
 !
 !

@@ -33,17 +33,17 @@ subroutine efcoq3d(nomte, nb1, nb2, cara, geom, &
     character(len=16) :: nomte
 !
 !-----------------------------------------------------------------------
-    integer :: i, ic, icomp, ii
-    integer :: inte, intsn, intsr, isom
-    integer :: j, jj
-    integer :: k, k1, kpgs, l
-    integer :: nbcou, ncmp
-    integer :: npge, npgt
-    integer :: nso
+    integer(kind=8) :: i, ic, icomp, ii
+    integer(kind=8) :: inte, intsn, intsr, isom
+    integer(kind=8) :: j, jj
+    integer(kind=8) :: k, k1, kpgs, l
+    integer(kind=8) :: nbcou, ncmp
+    integer(kind=8) :: npge, npgt
+    integer(kind=8) :: nso
     real(kind=8) :: hic, s, zero, zic, zmin
 !-----------------------------------------------------------------------
-    integer :: icou
-    integer :: nb1, nb2, npgsr, npgsn
+    integer(kind=8) :: icou
+    integer(kind=8) :: nb1, nb2, npgsr, npgsn
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: epais

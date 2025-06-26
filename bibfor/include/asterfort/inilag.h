@@ -21,6 +21,6 @@
 interface
     subroutine inilag(fmli, icar)
         character(len=24) :: fmli
-        integer :: icar(4)
+        integer(kind=8) :: icar(4)
     end subroutine inilag
 end interface

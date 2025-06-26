@@ -19,7 +19,7 @@
 !
 interface
     subroutine matrRotLGTher(aniso, ndim, coorpg, matr)
-        integer, intent(in) ::  ndim
+        integer(kind=8), intent(in) ::  ndim
         real(kind=8), intent(in) ::  coorpg(3)
         aster_logical, intent(in) :: aniso
         real(kind=8), intent(out) :: matr(3,3)

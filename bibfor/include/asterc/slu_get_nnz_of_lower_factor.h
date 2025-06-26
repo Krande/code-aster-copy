@@ -20,8 +20,8 @@
 !
 interface
     subroutine slu_get_nnz_of_lower_factor( f_factors, nnz_l, info )
-        integer                       :: f_factors
-        integer                       :: nnz_l
+        integer(kind=8)                       :: f_factors
+        integer(kind=8)                       :: nnz_l
         integer(kind=4)               :: info
     end subroutine slu_get_nnz_of_lower_factor
 end interface

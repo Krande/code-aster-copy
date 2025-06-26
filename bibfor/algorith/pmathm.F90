@@ -21,7 +21,7 @@ subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde, &
                   work2, matri)
     implicit none
 #include "blas/dgemm.h"
-    integer :: dimdef, dimcon, dimuel, dimmat
+    integer(kind=8) :: dimdef, dimcon, dimuel, dimmat
     real(kind=8) :: dsde(dimcon, dimdef), drds(dimdef, dimcon), poids
     real(kind=8) :: ck(dimdef), b(dimdef, dimuel)
     real(kind=8) :: work1(dimcon, dimuel), work2(dimdef, dimuel)
@@ -31,7 +31,7 @@ subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde, &
 ! ---       CONTRIBUTION DU POINT D'INTEGRATION A DF -------------------
 ! ---       C,F,D SONT DIAGONALES --------------------------------------
 ! ======================================================================
-    integer :: i, j
+    integer(kind=8) :: i, j
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 ! ======================================================================
 ! --- ON FAIT LE CALCUL EN QUATRE FOIS ---------------------------------

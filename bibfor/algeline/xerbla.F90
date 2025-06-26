@@ -58,8 +58,8 @@ subroutine xerbla(srname, info)
 !     .. SCALAR ARGUMENTS ..
     character(len=6) :: srname
     character(len=24) :: valk
-    integer :: info
-    integer :: vali(2)
+    integer(kind=8) :: info
+    integer(kind=8) :: vali(2)
 !     ..
 !     .. EXECUTABLE STATEMENTS ..
 !

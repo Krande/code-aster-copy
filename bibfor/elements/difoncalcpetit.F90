@@ -64,13 +64,13 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
 #include "asterc/r8prem.h"
 #include "asterfort/mgauss.h"
 !
-    integer :: nbVloc, nbPara, iret, nbdecp
+    integer(kind=8) :: nbVloc, nbPara, iret, nbdecp
     real(kind=8) :: vpara(nbPara), tirela(6), raidTang(6), vloc(nbVloc), errmax
     logical :: calculNormal, calculPetitH
 !   compteur du nombre d'itération
-    integer :: Ite, IteCrit, ii, jj, compt(3)
+    integer(kind=8) :: Ite, IteCrit, ii, jj, compt(3)
 !   nombre de critères à vérifier et compteurs
-    integer :: nbDDL, nbDDLii, nbDDLjj
+    integer(kind=8) :: nbDDL, nbDDLii, nbDDLjj
 !
 !   fcpH : valeur réelle du coefficient de sécurité à la capacité portante sur H seulement
 !   fCPMx : idem pour Mx
@@ -1238,7 +1238,7 @@ contains
 !   attention ici est égal à 0 pour a=0 contrairement à sign de fortran avec erreur
     function signe(a, error)
         real(kind=8) :: a, error
-        integer :: signe
+        integer(kind=8) :: signe
         if (a .LT. -error) then
             signe = -1
         else if (a .GT. error) then
@@ -1252,7 +1252,7 @@ contains
 !   attention ici est égal à 1 pour a=0 contrairement à sign de fortran avec erreur
     function signeExcl(a, error)
         real(kind=8) :: a, error
-        integer :: signeExcl
+        integer(kind=8) :: signeExcl
         if (a .LT. -error) then
             signeExcl = -1
         else if (a .GT. error) then

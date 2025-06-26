@@ -30,20 +30,20 @@ subroutine lcjohm(imate, lSigm, lMatr, lVari, kpi, npg, &
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"
 !
-    integer :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
+    integer(kind=8) :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
     real(kind=8) :: defgem(dimdef), varim(nbvari), sigm(dimcon)
     character(len=8) :: nomail
     aster_logical, intent(in) :: lSigm, lMatr, lVari
-    integer :: retcom
+    integer(kind=8) :: retcom
     real(kind=8) :: defgep(dimdef), varip(nbvari), sigp(dimcon)
     real(kind=8) :: drde(dimdef, dimdef), ouvh
 !
 ! - VARIABLES LOCALES
 !
-    integer :: i, kpg, spt
+    integer(kind=8) :: i, kpg, spt
     real(kind=8) :: kni, umc, gamma, kt, clo, para(4), valr(2), tmecn, tmecs
     character(len=8) :: fami, poum
-    integer :: icodre(18)
+    integer(kind=8) :: icodre(18)
     character(len=8), parameter :: ncra1(4) = (/'K    ', 'DMAX ', 'GAMMA', 'KT   '/)
 !
 ! - RECUPERATION DES PARAMETRES MATERIAU

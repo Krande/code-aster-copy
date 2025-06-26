@@ -51,12 +51,12 @@ subroutine nmsigi(ligrmo, compor, sigini)
 !
 !
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=2)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
-    integer :: ibid, iocc, iret, nbocc
+    integer(kind=8) :: ibid, iocc, iret, nbocc
     character(len=8) :: charge
     character(len=16) :: option
     character(len=19) :: sigcha

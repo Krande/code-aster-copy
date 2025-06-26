@@ -21,8 +21,8 @@
 interface
     subroutine arllec(motcle,iocc,modele,noma,nomb, &
                       model,cine,dime)
-        integer :: iocc
-        integer :: dime
+        integer(kind=8) :: iocc
+        integer(kind=8) :: dime
         character(len=16) :: motcle
         character(len=8) :: modele
         character(len=8) :: cine(3)

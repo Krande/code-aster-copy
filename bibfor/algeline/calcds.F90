@@ -36,7 +36,7 @@ subroutine calcds(hook, devg, devgii, dfds, dfdg, &
 ! --- : DFDG   : DF/DGAMP ----------------------------------------------
 ! OUT : DSDE   : DSIG/DEPS ---------------------------------------------
 ! ======================================================================
-    integer :: i, j, ndt, ndi
+    integer(kind=8) :: i, j, ndt, ndi
     real(kind=8) :: mat(6, 6), tmp(6, 6), num(6, 6), vec(6)
     real(kind=8) :: deux, trois, val, denom
     blas_int :: b_incx, b_incy, b_n

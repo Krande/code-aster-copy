@@ -21,9 +21,9 @@ interface
                       ep, sigm, deps, vim, option,&
                       rela_comp, materi, sigp, vip, dsde)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
         real(kind=8) :: em
         real(kind=8) :: ep
         real(kind=8) :: sigm

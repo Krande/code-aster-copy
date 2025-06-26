@@ -30,11 +30,11 @@ subroutine mefpre(ndim, alpha, z, cf, dh, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: ndim(14)
+    integer(kind=8) :: ndim(14)
     real(kind=8) :: alpha, z(*), cf(*), dh, vit(*), rho(*), pstat(*)
     real(kind=8) :: dpstat(*), dvit(*)
 !
-    integer :: itypg(*)
+    integer(kind=8) :: itypg(*)
     real(kind=8) :: zg(*), hg(*), axg(*), xig(*), afluid, pm
     real(kind=8) :: cdg(*), cfg(*), vitg(*), rhog(*)
 !     CALCUL DE LA PRESSION ET DU GRADIENT DE PRESSION STATIONNAIRE
@@ -76,7 +76,7 @@ subroutine mefpre(ndim, alpha, z, cf, dh, &
 !                POSITIONNEMENT DES GRILLES
 ! IN  : RHOG   : MASSE VOLUMIQUE DU FLUIDE AUX MEMES POINTS
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, n, nbz, nbgtot, ntypg
+    integer(kind=8) :: i, j, k, n, nbz, nbgtot, ntypg
     real(kind=8) :: ecart, g, pi
     real(kind=8), pointer :: cfnew(:) => null()
     real(kind=8), pointer :: deltap(:) => null()

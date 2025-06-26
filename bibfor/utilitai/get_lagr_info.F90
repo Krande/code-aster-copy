@@ -33,11 +33,11 @@ subroutine get_lagr_info(nume_equaz, i_equa, idx_gd, nb_node_lagr, list_node_lag
 !
 !
     character(len=*), intent(in) :: nume_equaz
-    integer, intent(in) :: i_equa
-    integer, intent(in) :: idx_gd
-    integer, intent(out) :: nb_node_lagr
-    integer, pointer :: list_node_lagr(:)
-    integer, optional, intent(out) :: nume_cmpz
+    integer(kind=8), intent(in) :: i_equa
+    integer(kind=8), intent(in) :: idx_gd
+    integer(kind=8), intent(out) :: nb_node_lagr
+    integer(kind=8), pointer :: list_node_lagr(:)
+    integer(kind=8), optional, intent(out) :: nume_cmpz
     character(len=*), optional, intent(out) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,16 +57,16 @@ subroutine get_lagr_info(nume_equaz, i_equa, idx_gd, nb_node_lagr, list_node_lag
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: lili, prno, nueq
-    integer :: nume_ligr, nume_node_lagr
+    integer(kind=8) :: nume_ligr, nume_node_lagr
     character(len=19) :: nume_equa, ligrel
-    integer :: i_cmp, i_nueq, length, idx_node
-    integer :: i_elem, i_node, i_ligr, ico, jprno, i_cmp_max
-    integer :: ideb, ncmp
-    integer :: nb_node, nb_elem, nb_ligr, nb_node_elem, nb_ec, nb_cmp_max, nume_cmp, nume_cmp_loca
+    integer(kind=8) :: i_cmp, i_nueq, length, idx_node
+    integer(kind=8) :: i_elem, i_node, i_ligr, ico, jprno, i_cmp_max
+    integer(kind=8) :: ideb, ncmp
+    integer(kind=8) :: nb_node, nb_elem, nb_ligr, nb_node_elem, nb_ec, nb_cmp_max, nume_cmp, nume_cmp_loca
     logical :: l_find
-    integer, pointer :: p_prno(:) => null()
-    integer, pointer :: p_nema(:) => null()
-    integer, pointer :: p_nueq(:) => null()
+    integer(kind=8), pointer :: p_prno(:) => null()
+    integer(kind=8), pointer :: p_nema(:) => null()
+    integer(kind=8), pointer :: p_nueq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

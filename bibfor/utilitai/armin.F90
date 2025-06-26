@@ -46,8 +46,8 @@ function armin(nomaz)
     character(len=8) :: noma, k8b
     character(len=19) :: nomt19
     character(len=24) :: para
-    integer :: ibid, ier
-    integer :: nbpar
+    integer(kind=8) :: ibid, ier
+    integer(kind=8) :: nbpar
     real(kind=8) :: r8b, arete
     complex(kind=8) :: cbid
 !

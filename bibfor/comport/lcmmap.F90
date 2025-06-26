@@ -130,25 +130,25 @@ subroutine lcmmap(fami, kpg, ksp, mult_comp, mod, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
-    integer :: nfs, nsg, kpg, ksp, nmat, ndt, ndi, nr, nvi, nbcomm(nmat, 3)
-    integer :: nhsr
+    integer(kind=8) :: nfs, nsg, kpg, ksp, nmat, ndt, ndi, nr, nvi, nbcomm(nmat, 3)
+    integer(kind=8) :: nhsr
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), hook(6, 6)
     real(kind=8) :: hsr(nsg, nsg, nhsr)
     real(kind=8) :: kooh(6, 6), tbsysg
     real(kind=8) :: epsi, angmas(3), pgl(3, 3), hookf(6, 6)
     real(kind=8) :: valres(nmat), ms(6), ng(3), q(3, 3), lg(3)
     character(len=8) :: mod, nomc(14)
-    integer :: cerr(14), itbint, nbtbsy, nbsysi, imonoi, imonor, numhsr(nhsr)
+    integer(kind=8) :: cerr(14), itbint, nbtbsy, nbsysi, imonoi, imonor, numhsr(nhsr)
     character(len=3) :: matcst
     character(len=*) :: fami
     character(len=16) :: mult_comp
     character(len=16) :: nmater, necoul, necris, necrci, nomfam
     character(len=16) :: phenom, compk, compi, compr, monoi, monor
     character(len=24) :: cpmono(5*nmat+1)
-    integer :: i, imat, nbfsys, ifa, j, nbmono, nbsys, nbsyst, idecal
-    integer :: nbphas, icompk, icompi, icompr, dimk, tabicp(nmat), nvloc
-    integer :: indmat, indcp, imono, nbval, indloc, indcom, iphas, nbfam
-    integer :: numono, nvintg, idmono, nbval1, nbval2, nbval3, nbcoef
+    integer(kind=8) :: i, imat, nbfsys, ifa, j, nbmono, nbsys, nbsyst, idecal
+    integer(kind=8) :: nbphas, icompk, icompi, icompr, dimk, tabicp(nmat), nvloc
+    integer(kind=8) :: indmat, indcp, imono, nbval, indloc, indcom, iphas, nbfam
+    integer(kind=8) :: numono, nvintg, idmono, nbval1, nbval2, nbval3, nbcoef
     blas_int :: b_incx, b_incy, b_n
     common/tbsysg/tbsysg(900)
 !     ----------------------------------------------------------------

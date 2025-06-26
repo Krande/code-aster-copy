@@ -28,7 +28,7 @@ subroutine search_opt_coef(coef, indi, pres_cont, dist_cont, &
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     real(kind=8), intent(in) :: coef(2)
-    integer       :: indi(2)
+    integer(kind=8)       :: indi(2)
     real(kind=8), intent(inout) :: pres_cont(2)
     real(kind=8), intent(inout) :: dist_cont(2)
     real(kind=8), intent(out) :: coef_opt
@@ -47,7 +47,7 @@ subroutine search_opt_coef(coef, indi, pres_cont, dist_cont, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: indi_curr, indi_prev, it, mode_cycl
+    integer(kind=8)      :: indi_curr, indi_prev, it, mode_cycl
     real(kind=8) :: save_coefficient, coefficient
     real(kind=8) :: valmin, valmax
 

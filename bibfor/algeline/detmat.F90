@@ -32,7 +32,7 @@ subroutine detmat()
 #include "asterfort/detrsd.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelstc.h"
-    integer :: nbmat, i, ier
+    integer(kind=8) :: nbmat, i, ier
     character(len=19) :: matass
     character(len=24) :: lirefa(100)
 !-----------------------------------------------------------------------

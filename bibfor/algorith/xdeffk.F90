@@ -24,7 +24,7 @@ subroutine xdeffk(kappa, mu, r, theta, ndim, fkpo)
 #include "jeveux.h"
 #include "asterc/r8depi.h"
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: r, theta, fkpo(ndim, ndim), kappa, mu
 !
 !

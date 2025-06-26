@@ -27,6 +27,6 @@ interface
         character(len=24) :: resoco
         character(len=19) :: solveu
         character(len=19) :: matass
-        integer :: ctccvg
+        integer(kind=8) :: ctccvg
     end subroutine algocg
 end interface

@@ -19,7 +19,7 @@
 !
 interface
     subroutine nxconv(ther_crit_i, ther_crit_r, resi_rela, resi_maxi, conver)
-        integer, intent(in) :: ther_crit_i(*)
+        integer(kind=8), intent(in) :: ther_crit_i(*)
         real(kind=8), intent(in) :: ther_crit_r(*)
         real(kind=8), intent(in) :: resi_rela, resi_maxi
         aster_logical, intent(out) :: conver

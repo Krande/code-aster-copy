@@ -20,7 +20,7 @@
 !
 interface
     subroutine ccl11j(fronti, frn, n, t)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: fronti(*)
         complex(kind=8) :: frn(*)
         complex(kind=8) :: t(n)

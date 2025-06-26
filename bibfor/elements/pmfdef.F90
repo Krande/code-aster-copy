@@ -50,12 +50,12 @@ subroutine pmfdef(typfib, nf, ncarf, vf, dege, deff)
     implicit none
 #include "asterfort/utmess.h"
 !
-    integer :: typfib, nf, ncarf
+    integer(kind=8) :: typfib, nf, ncarf
     real(kind=8) :: vf(ncarf, nf), dege(6), deff(nf)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: yy, zz, yp, zp
 !
 ! --------------------------------------------------------------------------------------------------

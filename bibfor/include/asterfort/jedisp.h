@@ -20,7 +20,7 @@
 !
 interface
     subroutine jedisp(n, tab)
-        integer :: n
-        integer :: tab(*)
+        integer(kind=8) :: n
+        integer(kind=8) :: tab(*)
     end subroutine jedisp
 end interface

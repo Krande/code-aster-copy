@@ -20,7 +20,7 @@
 !
 interface
     subroutine pacou7(a, n, d, b)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: a(n, *)
         real(kind=8) :: d(*)
         real(kind=8) :: b(*)

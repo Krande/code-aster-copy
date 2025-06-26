@@ -22,7 +22,7 @@ interface
     subroutine lglind(nbmat, mater, parame, ge, q,&
                       vecn, deps, devg, devgii, traceg,&
                       dy)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: parame(5)
         real(kind=8) :: ge

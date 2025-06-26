@@ -47,7 +47,7 @@ subroutine dhrc_sig(eps, vint, a, b, sig)
 !                 (NXX NYY NXY MXX MYY MXY)
 ! ----------------------------------------------------------------------
 !
-    integer :: i, k
+    integer(kind=8) :: i, k
 !
 !     INITIALISATION
     call r8inir(8, 0.0d0, sig, 1)

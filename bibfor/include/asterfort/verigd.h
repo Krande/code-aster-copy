@@ -20,9 +20,9 @@
 !
 interface
     subroutine verigd(nomgdz, lcmp, ncmp, iret)
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: nomgdz
         character(len=*) :: lcmp(ncmp)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine verigd
 end interface

@@ -40,8 +40,8 @@ subroutine pofaqu()
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, j, ibid
-    integer :: ifonc1, ifonc, nbpapf, ivdome
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, j, ibid
+    integer(kind=8) :: ifonc1, ifonc, nbpapf, ivdome
     real(kind=8) :: rdomm, val(2)
     complex(kind=8) :: cbid
     character(len=8) :: k8b, nomten(6), nommat, kdomm, result, nomp, nomt, txcum

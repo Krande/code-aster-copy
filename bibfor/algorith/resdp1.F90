@@ -25,7 +25,7 @@ subroutine resdp1(materf, seq, i1e, pmoins, dp, &
 ! =====================================================================
 ! --- RESOLUTION NUMERIQUE --------------------------------------------
 ! =====================================================================
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: young, nu, troisk, deuxmu, sy, h, pult
     real(kind=8) :: trois, deux, un, fcrit, valpro
     real(kind=8) :: a1, valcoe, b2, a

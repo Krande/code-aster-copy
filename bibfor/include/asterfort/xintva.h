@@ -23,7 +23,7 @@ interface
         character(len=6) :: name
         real(kind=8) :: dekker(4*ndime)
         real(kind=8) :: ptxx(*)
-        integer :: ndime
+        integer(kind=8) :: ndime
         real(kind=8) :: intinf
         real(kind=8) :: intsup
     end subroutine xintva

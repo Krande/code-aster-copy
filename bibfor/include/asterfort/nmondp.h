@@ -23,6 +23,6 @@ interface
         character(len=19) :: list_load
         aster_logical :: londe
         character(len=24) :: chondp
-        integer :: nondp
+        integer(kind=8) :: nondp
     end subroutine nmondp
 end interface

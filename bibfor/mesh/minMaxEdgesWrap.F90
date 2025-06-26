@@ -43,8 +43,8 @@ subroutine minMaxEdgesWrap(meshZ, groupNameZ, edgeMin, edgeMax)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbCell
-    integer, pointer :: listCellNume(:) => null()
+    integer(kind=8) :: nbCell
+    integer(kind=8), pointer :: listCellNume(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

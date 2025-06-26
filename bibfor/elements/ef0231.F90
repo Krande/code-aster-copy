@@ -37,18 +37,18 @@ subroutine ef0231(nomte)
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     character(len=8) :: elrefe
     character(len=16) :: nomres(3)
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     real(kind=8) :: e, nu, tpg, tgmoy, tgsup, tginf, tref
     real(kind=8) :: x3, eps(5), c, h, epsthe, valres(3)
     real(kind=8) :: e11, e22, k11, k22, ep11, ep22
     real(kind=8) :: dfdx(3), effopg(24)
     real(kind=8) :: jac, r, cosa, sina, cour
-    integer :: i, k, kp, igeom, imate, icaco, idepl
-    integer :: nno, npg, idfdk, ivf, iret, iret2, iret1, iret3, iret4
-    integer :: jcoopg, ip, correc, jdfd2
+    integer(kind=8) :: i, k, kp, igeom, imate, icaco, idepl
+    integer(kind=8) :: nno, npg, idfdk, ivf, iret, iret2, iret1, iret3, iret4
+    integer(kind=8) :: jcoopg, ip, correc, jdfd2
 !
 !-----------------------------------------------------------------------
-    integer :: ieffor, ipoids, jgano, ndim, nnos
+    integer(kind=8) :: ieffor, ipoids, jgano, ndim, nnos
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !

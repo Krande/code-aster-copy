@@ -20,7 +20,7 @@
 !
 interface
     subroutine pk2cau(nomte, ncmp, pk2, sigma)
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=16) :: nomte
         real(kind=8) :: pk2(ncmp, *)
         real(kind=8) :: sigma(ncmp, *)

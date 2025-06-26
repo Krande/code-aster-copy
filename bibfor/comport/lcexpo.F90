@@ -18,7 +18,7 @@
 
 subroutine lcexpo(a, e, mseq, nsqu)
     implicit none
-    integer, intent(in) :: mseq, nsqu
+    integer(kind=8), intent(in) :: mseq, nsqu
     real(kind=8), intent(in) :: a(6)
     real(kind=8), intent(out):: e(6)
 ! --------------------------------------------------------------------------------------------------
@@ -29,7 +29,7 @@ subroutine lcexpo(a, e, mseq, nsqu)
 ! MSEQ   IN  NOMBRE DE TERMES DANS LE DEVELOPPEMENT EN SERIE ENTIERE
 ! NSQU   IN  NOMBRE DE NIVEAUX DE SUBDIVISION
 ! --------------------------------------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
     real(kind=8) :: b(6), t(6)
     real(kind=8), parameter :: srac2 = 1/sqrt(2.d0)
     real(kind=8), parameter, dimension(6):: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)

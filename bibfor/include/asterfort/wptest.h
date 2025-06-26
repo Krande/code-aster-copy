@@ -21,11 +21,11 @@
 interface
     subroutine wptest(exclu, xh, xb, vp, neq,&
                       nmax)
-        integer :: exclu(*)
+        integer(kind=8) :: exclu(*)
         complex(kind=8) :: xh(*)
         complex(kind=8) :: xb(*)
         complex(kind=8) :: vp
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: nmax
     end subroutine wptest
 end interface

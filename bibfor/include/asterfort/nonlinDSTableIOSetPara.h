@@ -23,7 +23,7 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Table), optional, intent(inout) :: table_
         type(NL_DS_TableIO), optional, intent(inout) :: tableio_
-        integer, optional :: nbPara_
+        integer(kind=8), optional :: nbPara_
         character(len=24), optional :: paraName_(:)
         character(len=8), optional :: paraType_(:)
     end subroutine nonlinDSTableIOSetPara

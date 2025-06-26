@@ -25,7 +25,7 @@ interface
         character(len=1), intent(in) :: syst_matr_type
         character(len=1), intent(in) :: syst_2mbr_type
         character(len=1), intent(in) :: syst_type
-        integer, intent(in) :: nb_mode
+        integer(kind=8), intent(in) :: nb_mode
         type(ROM_DS_Solve), intent(inout) :: ds_solve
     end subroutine romSolveROMSystCreate
 end interface

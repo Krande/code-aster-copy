@@ -19,7 +19,7 @@
 !
 interface 
     subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
-        integer, intent(in) :: imater
+        integer(kind=8), intent(in) :: imater
         character(len=*), intent(in) :: nomres
         character(len=*), intent(in) :: nomfis
         character(len=*), intent(out) :: repmat

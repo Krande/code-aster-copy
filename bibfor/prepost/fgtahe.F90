@@ -30,7 +30,7 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
     character(len=*) :: kdomm
     real(kind=8) :: epsmin(*), epsmax(*)
     real(kind=8) :: dom(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
 !     ROUTINE CHAPEAU POUR LE CALCUL DU DOMMAGE PAR LOIS DE TAHERI
 !     ------------------------------------------------------------------
 ! IN  KDOMM  : K   : LOI DE DOMMAGE TAHERI_MANSON/TAHERI_MIXTE
@@ -41,13 +41,13 @@ subroutine fgtahe(kdomm, nbcycl, epsmin, epsmax, dom)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: icodwo, icodma, icodba, icodhs, icodre(3)
+    integer(kind=8) :: icodwo, icodma, icodba, icodhs, icodre(3)
     character(len=8) :: nommat, nomfo1, nomnap
     character(len=16) :: cara
     character(len=32) :: pheno
 !
 !-----------------------------------------------------------------------
-    integer :: nbval
+    integer(kind=8) :: nbval
 !-----------------------------------------------------------------------
     call jemarq()
 !

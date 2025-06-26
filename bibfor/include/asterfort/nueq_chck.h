@@ -21,7 +21,7 @@
 interface
     subroutine nueq_chck(nume_equaz, nb_equaz, l_error, l_subs)
         character(len=*), intent(in) :: nume_equaz
-        integer, optional, intent(out) :: nb_equaz
+        integer(kind=8), optional, intent(out) :: nb_equaz
         logical, optional, intent(in) :: l_error
         logical, optional, intent(in) :: l_subs
     end subroutine nueq_chck

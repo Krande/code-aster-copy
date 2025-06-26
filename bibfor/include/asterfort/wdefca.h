@@ -21,7 +21,7 @@
 interface
     function wdefca(ino, s, alpha, f0, frco,&
                     frli)
-        integer :: ino
+        integer(kind=8) :: ino
         real(kind=8) :: s(*)
         real(kind=8) :: alpha(*)
         real(kind=8) :: f0

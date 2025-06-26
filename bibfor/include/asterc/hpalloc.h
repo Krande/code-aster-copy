@@ -20,9 +20,9 @@
 !
 interface
     subroutine hpalloc(adr, l, ec, abrt)
-        integer :: adr
-        integer :: l
-        integer :: ec
-        integer :: abrt
+        integer(kind=8) :: adr
+        integer(kind=8) :: l
+        integer(kind=8) :: ec
+        integer(kind=8) :: abrt
     end subroutine hpalloc
 end interface

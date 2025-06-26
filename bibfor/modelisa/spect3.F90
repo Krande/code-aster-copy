@@ -44,7 +44,7 @@ function spect3(x, a, b, func, tol, &
 ! ARGUMENTS
 ! ---------
 #include "jeveux.h"
-    integer :: nbp
+    integer(kind=8) :: nbp
     real(kind=8) :: x
     real(kind=8) :: a
     real(kind=8) :: b
@@ -54,28 +54,28 @@ function spect3(x, a, b, func, tol, &
     real(kind=8) :: vitn(nbp, *)
     real(kind=8) :: defm(nbp, *)
     real(kind=8) :: rhoe(nbp, *)
-    integer :: im
-    integer :: jm
+    integer(kind=8) :: im
+    integer(kind=8) :: jm
     real(kind=8) :: spect3
     interface
         function func(xx, y, xlc, vitn, rhoe, &
                       defm, nbp, im, jm)
-            integer :: nbp
+            integer(kind=8) :: nbp
             real(kind=8) :: xx
             real(kind=8) :: y
             real(kind=8) :: xlc
             real(kind=8) :: vitn(nbp, *)
             real(kind=8) :: rhoe(nbp, *)
             real(kind=8) :: defm(nbp, *)
-            integer :: im
-            integer :: jm
+            integer(kind=8) :: im
+            integer(kind=8) :: jm
             real(kind=8) :: func
         end function func
     end interface
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: index, n1, n2, i, arret
+    integer(kind=8) :: index, n1, n2, i, arret
     real(kind=8) :: res, ym, dy, y0, r1, som, y
     real(kind=8) :: w(127)
 !

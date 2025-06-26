@@ -21,7 +21,7 @@ interface
     subroutine intePoinCoorWrap(mesh, baseName, iPair, poinInteReal)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: baseName
-        integer, intent(in) :: iPair
+        integer(kind=8), intent(in) :: iPair
         real(kind=8), intent(out)  :: poinInteReal(3, MAX_NB_INTE)
     end subroutine intePoinCoorWrap
 end interface

@@ -85,12 +85,12 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbvato, ncmprf, ncmpve
-    integer :: nbenec, adtyp2
-    integer :: lienec(*)
-    integer :: adsd, adsl
-    integer :: nbimpr
-    integer :: typgeo(*)
+    integer(kind=8) :: nbvato, ncmprf, ncmpve
+    integer(kind=8) :: nbenec, adtyp2
+    integer(kind=8) :: lienec(*)
+    integer(kind=8) :: adsd, adsl
+    integer(kind=8) :: nbimpr
+    integer(kind=8) :: typgeo(*)
 !
     character(len=*) :: nofimd
     character(len=*) :: ntlcmp, ntproa
@@ -107,23 +107,23 @@ subroutine ircmpr(nofimd, typech, nbimpr, ncaimi, ncaimk, &
     character(len=6) :: nompro
     parameter(nompro='IRCMPR')
 !
-    integer :: ifm, nivinf, i, j, jco
-    integer :: iaux, ima, nbno, nbma
-    integer :: nbmail, iadcnx, ilcnx
-    integer :: codret
-    integer ::  adefma
-    integer :: adcaii, adcaik
-    integer :: adproa, adprom, adexic, adpror
-    integer :: adnucm
-    integer :: adauxi
+    integer(kind=8) :: ifm, nivinf, i, j, jco
+    integer(kind=8) :: iaux, ima, nbno, nbma
+    integer(kind=8) :: nbmail, iadcnx, ilcnx
+    integer(kind=8) :: codret
+    integer(kind=8) ::  adefma
+    integer(kind=8) :: adcaii, adcaik
+    integer(kind=8) :: adproa, adprom, adexic, adpror
+    integer(kind=8) :: adnucm
+    integer(kind=8) :: adauxi
     real(kind=8) :: start_time, end_time
 !
     character(len=24) :: ntprom, exicmp, ntpror
     character(len=24) :: ntauxi
     character(len=80) :: caimpk(3)
-    integer, pointer :: noeu_centr(:) => null()
-    integer, pointer :: nadtypm(:) => null()
-    integer, pointer :: dtyp(:) => null()
+    integer(kind=8), pointer :: noeu_centr(:) => null()
+    integer(kind=8), pointer :: nadtypm(:) => null()
+    integer(kind=8), pointer :: dtyp(:) => null()
 !
 !====
 ! 1. PREALABLES

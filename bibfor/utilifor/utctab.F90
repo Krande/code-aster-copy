@@ -20,7 +20,7 @@ subroutine utctab(raz, na, mb, mc, a, &
                   b, c, xab, ctab)
     implicit none
 #include "asterfort/r8inir.h"
-    integer :: na, mb, mc
+    integer(kind=8) :: na, mb, mc
     character(len=*) :: raz
     real(kind=8) :: a(na, na), b(na, mb), c(na, mc), xab(na, mb)
     real(kind=8) :: ctab(mc, mb)
@@ -41,7 +41,7 @@ subroutine utctab(raz, na, mb, mc, a, &
     character(len=4) :: raz2
 ! --DEB
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     raz2 = raz
 !

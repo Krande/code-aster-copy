@@ -50,7 +50,7 @@ subroutine vectfl(opt, modele, carele, mate, mateco, templu, &
     character(len=19) :: vecel
     character(len=24) :: chgeom, chtime
     character(len=24) :: ligrmo, lchin(4), lchout(1), ve2
-    integer :: jlve
+    integer(kind=8) :: jlve
 !-----------------------------------------------------------------------
     call jemarq()
 !

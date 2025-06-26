@@ -32,7 +32,7 @@ interface
         real(kind=8) :: s_a
         real(kind=8) :: y_a
         real(kind=8) :: f_ta
-        integer :: cas
+        integer(kind=8) :: cas
         real(kind=8) :: eff
         real(kind=8) :: mom
     end subroutine calc_moment

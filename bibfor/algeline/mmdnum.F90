@@ -48,8 +48,8 @@ subroutine mmdnum(neqns, perm, invp, qsize)
 !
 !***************************************************************
 !
-    integer :: invp(*), perm(*), qsize(*)
-    integer :: father, neqns, nextf, node, nqsize, num, root
+    integer(kind=8) :: invp(*), perm(*), qsize(*)
+    integer(kind=8) :: father, neqns, nextf, node, nqsize, num, root
 !
 !***************************************************************
 !

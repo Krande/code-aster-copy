@@ -45,12 +45,12 @@ subroutine rrcResultCopyParameters(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbStore, iStore, numeStore
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbStore, iStore, numeStore
     character(len=8) :: resultRomName, resultDomName, modelDom
     character(len=19) :: listLoad
     character(len=24) :: materi, caraElem
-    integer :: jvPara
+    integer(kind=8) :: jvPara
     real(kind=8) :: time
 !
 ! --------------------------------------------------------------------------------------------------

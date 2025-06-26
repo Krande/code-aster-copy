@@ -27,7 +27,7 @@ subroutine dxprd2(dfpla1, dca, dfpla2, dfpla3, dcb, &
     real(kind=8) :: dfpla1(6), dfpla2(6), dfpla3(6), dfpla4(4)
     real(kind=8) :: vecta(6), vectb(6), dca(6, 6), dcb(6, 6)
     real(kind=8) :: scal1, scal2, scal
-    integer :: n, nd
+    integer(kind=8) :: n, nd
 !
     n = 6
     call pmavec('ZERO', 6, dca, dfpla2, vecta)

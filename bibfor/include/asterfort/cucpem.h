@@ -22,6 +22,6 @@ interface
     subroutine cucpem(deficu, resocu, nbliai)
         character(len=24) :: deficu
         character(len=24) :: resocu
-        integer :: nbliai
+        integer(kind=8) :: nbliai
     end subroutine cucpem
 end interface

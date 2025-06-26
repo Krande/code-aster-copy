@@ -50,7 +50,7 @@ subroutine modirepcham(resuou, resuin)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, nret, iret
+    integer(kind=8) :: ifm, niv, nret, iret
     character(len=8) :: maillage, modele, carelem, caramail, caramodel
     character(len=16) :: repere
     character(len=19) :: chpass

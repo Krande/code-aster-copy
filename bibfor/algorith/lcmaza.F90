@@ -34,7 +34,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod, &
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
     character(len=*) :: fami
-    integer :: ndim, imate, kpg, ksp
+    integer(kind=8) :: ndim, imate, kpg, ksp
     real(kind=8) :: epsm(6), deps(6), vim(4)
     real(kind=8) :: sig(6), vip(*), dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -78,11 +78,11 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod, &
 ! ----------------------------------------------------------------------
     aster_logical :: rigi, resi, prog, elas, cplan, coup
     character(len=1) :: poum
-    integer :: icodre(7)
+    integer(kind=8) :: icodre(7)
     character(len=16) :: nomres(7)
     character(len=8) :: nompar
-    integer :: ndimsi, nperm, nitjac, trij, ordrej
-    integer :: i, j, l, iret
+    integer(kind=8) :: ndimsi, nperm, nitjac, trij, ordrej
+    integer(kind=8) :: i, j, l, iret
     real(kind=8) :: e, nu, epsthe, kdess, bendo, rtemp
     real(kind=8) :: ac, at, bc, bt, epsd0, tm, tp, tref
     real(kind=8) :: eps(6), epse(6), epsplu(6), epsep(3), epseq
@@ -94,7 +94,7 @@ subroutine lcmaza(fami, kpg, ksp, ndim, typmod, &
     real(kind=8) :: kron(6), k, y
     real(kind=8) :: epsfp(6), epscou(6), epsi(6), chi, gama, rap
     real(kind=8) :: epseqc, epsend, epsepc(3), vecpec(3, 3)
-    integer :: idc
+    integer(kind=8) :: idc
     data kron/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 ! ======================================================================
 !                            INITIALISATION

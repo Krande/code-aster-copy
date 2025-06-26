@@ -22,11 +22,11 @@ subroutine mltacf(n, ncol, adper, matper, matfi, &
 ! VERSION COMPLEXE DE MLTAFF
     implicit none
     integer(kind=4) :: local(*)
-    integer :: n, ncol, adper(*), p
+    integer(kind=8) :: n, ncol, adper(*), p
     complex(kind=8) :: matper(*), matfi(*)
 !     VARIABLES LOCALES
-    integer :: decp1, decp2, decf1, decf2, j, i, ni, id1, id2, jd1, jd2, decp
-    integer :: ip, decp0
+    integer(kind=8) :: decp1, decp2, decf1, decf2, j, i, ni, id1, id2, jd1, jd2, decp
+    integer(kind=8) :: ip, decp0
     decf1 = 1+(n+(n-ncol+1))*ncol/2
     decf2 = n-ncol+(n+(n-ncol+1))*ncol/2
     decp0 = adper(p+1)-1

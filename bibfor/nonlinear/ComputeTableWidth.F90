@@ -28,8 +28,8 @@ subroutine ComputeTableWidth(table, line_width, nb_cols_active)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Table), intent(in) :: table
-    integer, intent(out) :: line_width
-    integer, intent(out) :: nb_cols_active
+    integer(kind=8), intent(out) :: line_width
+    integer(kind=8), intent(out) :: nb_cols_active
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ subroutine ComputeTableWidth(table, line_width, nb_cols_active)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, nb_cols
+    integer(kind=8) :: i_col, nb_cols
 !
 ! --------------------------------------------------------------------------------------------------
 !

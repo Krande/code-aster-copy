@@ -53,13 +53,13 @@ subroutine mppsta(h, ldh, v, ldv, ddlsta, &
 #include "blas/dlarnv.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
-    integer :: n, ldh, ldv, indico, proj
-    integer :: ddlsta(n), ddlexc(n)
+    integer(kind=8) :: n, ldh, ldv, indico, proj
+    integer(kind=8) :: ddlsta(n), ddlexc(n)
     real(kind=8) :: h(ldh, ldh), v(ldv, ldh)
     real(kind=8) :: vectt(ldv)
-    integer :: i, j, nitmax, num, npro
+    integer(kind=8) :: i, j, nitmax, num, npro
     integer(kind=4) :: iseed(4)
-    integer :: x0, bounds, x
+    integer(kind=8) :: x0, bounds, x
     real(kind=8) :: norm
     real(kind=8) :: temp, epsil, one, zero
     real(kind=8) :: crit2, epsf

@@ -58,11 +58,11 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 !
     character(len=1) :: base
     character(len=*) :: vec
-    integer :: nbvec
+    integer(kind=8) :: nbvec
     character(len=*) :: tlivec(nbvec)
     real(kind=8) :: licoef(nbvec)
     character(len=*) :: nu
-    integer :: type
+    integer(kind=8) :: type
 ! ----------------------------------------------------------------------
 !    assemblage "particulier" pour convergence en contraintes generalisees
 !    realise le min des vect_elem
@@ -81,35 +81,35 @@ subroutine assmiv(base, vec, nbvec, tlivec, licoef, &
 ! ----------------------------------------------------------------------
     real(kind=8) :: rcoef, r
     character(len=24) :: valk(5)
-    integer :: gd, nec, nlili
-    integer :: rang, nbproc, iret, ifm, niv
+    integer(kind=8) :: gd, nec, nlili
+    integer(kind=8) :: rang, nbproc, iret, ifm, niv
     character(len=8) :: ma, mo, mo2, nogdsi, nogdco
     character(len=14) :: nume_ddl
     character(len=19) :: partit, vecas, vprof, vecel, resu
     character(len=24) :: kmaila, k24prn, knulil, kvelil, kveref, nomli
     character(len=24) :: knequa, kvale
-    integer :: admodl, lcmodl, iexi
+    integer(kind=8) :: admodl, lcmodl, iexi
     aster_logical :: ldist, ldgrel
-    integer :: vali(4)
+    integer(kind=8) :: vali(4)
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad, iad1, iadnem
-    integer :: ianulo, iconx2
-    integer :: idprn1, idprn2, idverf, iel
-    integer :: igr, il, ilim, ilimnu, ilinu, ilive
-    integer :: ilivec, imat, iresu, jresl, jvale
-    integer :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp, nb_equa, nb_dof
-    integer :: ncmpel, nddl1, nel, nm, nmxcmp, nnoe
-    integer :: nugd, numa
-    integer, pointer :: posddl(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8) :: i, i1, iad, iad1, iadnem
+    integer(kind=8) :: ianulo, iconx2
+    integer(kind=8) :: idprn1, idprn2, idverf, iel
+    integer(kind=8) :: igr, il, ilim, ilimnu, ilinu, ilive
+    integer(kind=8) :: ilivec, imat, iresu, jresl, jvale
+    integer(kind=8) :: k1, mode, n1, nbelm, nbnoss, nbresu, ncmp, nb_equa, nb_dof
+    integer(kind=8) :: ncmpel, nddl1, nel, nm, nmxcmp, nnoe
+    integer(kind=8) :: nugd, numa
+    integer(kind=8), pointer :: posddl(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     character(len=24), pointer :: relr(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=24), pointer :: prtk(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: v_nequ(:) => null()
-    integer, pointer :: maille(:) => null()
-    integer, pointer :: adli(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: v_nequ(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
+    integer(kind=8), pointer :: adli(:) => null()
     character(len=24), pointer :: refe(:) => null()
     mpi_int :: mrank, msize
 !-----------------------------------------------------------------------

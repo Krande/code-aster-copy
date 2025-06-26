@@ -20,7 +20,7 @@ subroutine cgepsi(ndim, nno1, nno2, npg, wref, &
                   vff1, dffr1, geom, tang, ddl, iu, iuc, eps)
     implicit none
 #include "asterfort/cgcine.h"
-    integer :: ndim, nno1, nno2, npg, iu(3, 3), iuc(3)
+    integer(kind=8) :: ndim, nno1, nno2, npg, iu(3, 3), iuc(3)
     real(kind=8) :: vff1(nno1, npg), dffr1(nno1, npg)
     real(kind=8) :: geom(ndim, nno1), wref(npg)
     real(kind=8) :: tang(*), eps(npg)
@@ -31,7 +31,7 @@ subroutine cgepsi(ndim, nno1, nno2, npg, wref, &
 !
 ! ----------------------------------------------------------------------
 
-    integer :: nddl, g, n, j
+    integer(kind=8) :: nddl, g, n, j
     real(kind=8) :: wg, l(3), b(4, 3), courb
 
     nddl = nno1*(ndim+1)+nno2

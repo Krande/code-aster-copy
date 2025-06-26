@@ -28,6 +28,6 @@ interface
         real(kind=8), intent(in) :: sfld
         real(kind=8), intent(in) :: sig0(:)
         real(kind=8), intent(inout) :: dsw6(6)
-        integer, intent(in) :: nstrs
+        integer(kind=8), intent(in) :: nstrs
     end subroutine fludes3d
 end interface

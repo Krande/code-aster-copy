@@ -24,7 +24,7 @@ subroutine bcoudc(igau, icou, isect, h, a, &
 #include "jeveux.h"
 #include "asterc/r8pi.h"
     real(kind=8) :: h, a, b(4, *), ff(*), df1(*), df2(*), rayon, theta, omega
-    integer :: nno, ncou, nsect, m, igau, icou, isect, mmt
+    integer(kind=8) :: nno, ncou, nsect, m, igau, icou, isect, mmt
 !
 ! ......................................................................
 !
@@ -51,7 +51,7 @@ subroutine bcoudc(igau, icou, isect, h, a, &
     real(kind=8) :: pi, deuxpi, cosfi, sinfi
     real(kind=8) :: zeta, r, hk, dhk, d2hk, fi, tk(4)
     real(kind=8) :: te, coste, sinte, cosmte, sinmte
-    integer :: k, icolon, n, ibloc
+    integer(kind=8) :: k, icolon, n, ibloc
     real(kind=8) :: xpg(4), ck, sk, dena, denr, dent
 !
 !

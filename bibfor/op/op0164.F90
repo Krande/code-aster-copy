@@ -49,7 +49,7 @@ subroutine op0164()
 #include "asterfort/ulopen.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: n1, n2, n4, jsmde
+    integer(kind=8) :: n1, n2, n4, jsmde
     real(kind=8) :: partr, parti, inst
     character(len=8) :: nomres, basemo, numgen
     character(len=16) :: typres, nomcom, typbas, k16nom, typbin, tissf, tsym
@@ -63,11 +63,11 @@ subroutine op0164()
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iaconl, iadesc, ic
-    integer :: ifmis, ifr, ifreq, ii, j, jfrq, ibin
-    integer :: jj, jrefa, jri2, jrig, jrit, ldblo, ldblo2
-    integer :: nbmodd, nbmode, nbmods, nfr, nfreq, nit, nsaut
-    integer :: nterm, nueq
+    integer(kind=8) :: i, i1, i2, iaconl, iadesc, ic
+    integer(kind=8) :: ifmis, ifr, ifreq, ii, j, jfrq, ibin
+    integer(kind=8) :: jj, jrefa, jri2, jrig, jrit, ldblo, ldblo2
+    integer(kind=8) :: nbmodd, nbmode, nbmods, nfr, nfreq, nit, nsaut
+    integer(kind=8) :: nterm, nueq
     real(kind=8) :: freq
 !-----------------------------------------------------------------------
     call jemarq()

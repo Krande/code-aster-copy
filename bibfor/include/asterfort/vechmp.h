@@ -23,7 +23,7 @@
 interface
     subroutine vechmp(nomo, mate, mateco, carele, varplu, lxfem,&
                       partps, nbin_maxi, lpain, lchin, lastin)
-        integer :: nbin_maxi
+        integer(kind=8) :: nbin_maxi
         character(len=8) :: nomo
         character(len=24) :: mate, mateco
         character(len=24) :: carele
@@ -32,6 +32,6 @@ interface
         real(kind=8) :: partps(3)
         character(len=8) :: lpain(nbin_maxi)
         character(len=19) :: lchin(nbin_maxi)
-        integer :: lastin
+        integer(kind=8) :: lastin
     end subroutine vechmp
 end interface

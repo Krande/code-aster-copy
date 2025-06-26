@@ -20,8 +20,8 @@
 !
 interface
     subroutine ssdeu2(nval, iliste, nvalap)
-        integer :: nval
-        integer :: iliste(nval)
-        integer :: nvalap
+        integer(kind=8) :: nval
+        integer(kind=8) :: iliste(nval)
+        integer(kind=8) :: nvalap
     end subroutine ssdeu2
 end interface

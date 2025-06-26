@@ -22,15 +22,15 @@ interface
     subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf,&
                       mxresf, nbfreq, neq, resufi, resufr,&
                       resufk, vecpro, solveu)
-        integer :: neq
-        integer :: mxresf
-        integer :: lmasse
-        integer :: lamor
-        integer :: lraide
+        integer(kind=8) :: neq
+        integer(kind=8) :: mxresf
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
+        integer(kind=8) :: lraide
         real(kind=8) :: tolf
-        integer :: nitf
-        integer :: nbfreq
-        integer :: resufi(mxresf, *)
+        integer(kind=8) :: nitf
+        integer(kind=8) :: nbfreq
+        integer(kind=8) :: resufi(mxresf, *)
         real(kind=8) :: resufr(mxresf, *)
         character(len=*) :: resufk(mxresf, *)
         complex(kind=8) :: vecpro(neq, *)

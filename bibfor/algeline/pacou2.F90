@@ -26,15 +26,15 @@ function pacou2(x, fvec, vecr1, vecr2, typflu, &
 ! ---------
 #include "jeveux.h"
 #include "asterfort/pacouf.h"
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: x(*), fvec(*), amor(*), vg, masg(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
-    integer :: veci1(*)
+    integer(kind=8) :: veci1(*)
     character(len=8) :: typflu
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, indic, nbm, nmode
+    integer(kind=8) :: i, indic, nbm, nmode
     real(kind=8) :: pacou2, sum
 !-----------------------------------------------------------------------
     call pacouf(x, fvec, vecr1, vecr2, typflu, &

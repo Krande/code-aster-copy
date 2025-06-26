@@ -45,22 +45,22 @@ subroutine pronua(method, nuag1, nuag2)
 ! IN  NUAG2 (JXVAR)   : SD NUAGE A EVALUER
 !
 ! VARIABLES LOCALES :
-    integer :: inuai1, inuax2
-    integer :: iret, inual1, inual2, ip2, ic2, ip1, ic1
-    integer :: nx1, nx2, np1, np2, gd1, gd2, nc1, nc2
-    integer :: i1, i2, ii2, i
+    integer(kind=8) :: inuai1, inuax2
+    integer(kind=8) :: iret, inual1, inual2, ip2, ic2, ip1, ic1
+    integer(kind=8) :: nx1, nx2, np1, np2, gd1, gd2, nc1, nc2
+    integer(kind=8) :: i1, i2, ii2, i
     real(kind=8) :: val2r
     character(len=19) :: nua1, nua2
     character(len=24) :: valk(2)
     character(len=8) :: nogd
     character(len=3) :: tysca
     aster_logical :: ldref
-    integer, pointer :: corresp(:) => null()
+    integer(kind=8), pointer :: corresp(:) => null()
     real(kind=8), pointer :: dref(:) => null()
     real(kind=8), pointer :: nuax1(:) => null()
     real(kind=8), pointer :: nuav1(:) => null()
     real(kind=8), pointer :: nuav2(:) => null()
-    integer, pointer :: nuai2(:) => null()
+    integer(kind=8), pointer :: nuai2(:) => null()
 !
 ! DEB-------------------------------------------------------------------
     call jemarq()

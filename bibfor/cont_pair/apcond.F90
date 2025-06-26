@@ -25,7 +25,7 @@ subroutine apcond(newgeo, node_nume, node_coor)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=19), intent(in) :: newgeo
-    integer, intent(in) :: node_nume
+    integer(kind=8), intent(in) :: node_nume
     real(kind=8), intent(out) :: node_coor(3)
 !
 ! --------------------------------------------------------------------------------------------------

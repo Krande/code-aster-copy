@@ -79,21 +79,21 @@ subroutine atasmo(neq, az, apddl, apptr, numedz, &
     character(len=8) :: ma
 ! -----  ARGUMENTS
     character(len=*) :: az, numedz, ataz, basez, numatz
-    integer :: neq, nblia, nmul
-    integer :: apddl(*), apptr(*)
+    integer(kind=8) :: neq, nblia, nmul
+    integer(kind=8) :: apddl(*), apptr(*)
 ! -----  VARIABLES LOCALES
-    integer :: j, k, iimax, jhbid, idsuiv, dimacv, jconl, nblig, nblig2
-    integer ::  ilig, idligm, nddlt, jacv, jaci, iilib, idlm, iddl
-    integer :: ieq, jsmhc, jsmdi, ncoef, jvalm, decal, jrefa
-    integer :: i, jsmde, ii1, ii2, iii, ii, jj, jdecal, nddltm, kdeb
+    integer(kind=8) :: j, k, iimax, jhbid, idsuiv, dimacv, jconl, nblig, nblig2
+    integer(kind=8) ::  ilig, idligm, nddlt, jacv, jaci, iilib, idlm, iddl
+    integer(kind=8) :: ieq, jsmhc, jsmdi, ncoef, jvalm, decal, jrefa
+    integer(kind=8) :: i, jsmde, ii1, ii2, iii, ii, jj, jdecal, nddltm, kdeb
     character(len=1) :: base
     character(len=14) :: numddl, numedd
     character(len=19) :: ata
     character(len=24) :: ksmhc, ksmdi, krefa, kconl, kvalm
     character(len=24) :: a, ksuiv, khbid
     real(kind=8) :: un, vi, vj, vij
-    integer, pointer :: acompac_1er(:) => null()
-    integer, pointer :: acompac_nbt(:) => null()
+    integer(kind=8), pointer :: acompac_1er(:) => null()
+    integer(kind=8), pointer :: acompac_nbt(:) => null()
 !
 ! ========================= DEBUT DU CODE EXECUTABLE ==================
     call jemarq()

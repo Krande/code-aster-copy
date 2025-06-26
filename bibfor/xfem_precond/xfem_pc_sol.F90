@@ -32,7 +32,7 @@ subroutine xfem_pc_sol(matas1, nsolu, solu)
 #include "asterfort/wkvect.h"
 !
     character(len=19) :: matas1
-    integer :: nsolu
+    integer(kind=8) :: nsolu
     real(kind=8) :: solu(*)
 !--------------------------------------------------------------
 ! BUT :
@@ -50,7 +50,7 @@ subroutine xfem_pc_sol(matas1, nsolu, solu)
     character(len=24) :: chtrav2
     character(len=19) :: pc
     character(len=14) :: nu_pc
-    integer ::  lmat_pc, neq, jtrav2, kvect, ieq
+    integer(kind=8) ::  lmat_pc, neq, jtrav2, kvect, ieq
 !----------------------------------------------------------------
     call jemarq()
 !

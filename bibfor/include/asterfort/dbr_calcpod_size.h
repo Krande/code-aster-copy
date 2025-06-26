@@ -21,6 +21,6 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_Empi), intent(in) :: base
         type(ROM_DS_Snap), intent(in) :: snap
-        integer, intent(out) :: m, n
+        integer(kind=8), intent(out) :: m, n
     end subroutine dbr_calcpod_size
 end interface

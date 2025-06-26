@@ -42,13 +42,13 @@ subroutine te0115(option, nomte)
     character(len=4) :: fami
     real(kind=8) :: sigma(54), angl_naut(3), instan, nharm
     real(kind=8) :: r8bid1(9)
-    integer :: ndim, nno, nnos, npg1, ipoids, ivf, dimmod
-    integer :: idfde, jgano
+    integer(kind=8) :: ndim, nno, nnos, npg1, ipoids, ivf, dimmod
+    integer(kind=8) :: idfde, jgano
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, icont, idepl, igeom, iharmo, imate, nbsig
-    integer :: nh
+    integer(kind=8) :: i, icont, idepl, igeom, iharmo, imate, nbsig
+    integer(kind=8) :: nh
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     fami = 'RIGI'

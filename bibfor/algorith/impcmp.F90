@@ -22,7 +22,7 @@ subroutine impcmp(icmp, numedd, chaine)
     implicit none
 #include "jeveux.h"
 #include "asterfort/rgndas.h"
-    integer :: icmp
+    integer(kind=8) :: icmp
     character(len=24) :: numedd
     character(len=16) :: chaine
 !

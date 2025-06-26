@@ -18,9 +18,9 @@
 !
 interface
     subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=16), intent(in) :: phenom, modeli_in
-        integer, intent(out) :: idx_modelisa
+        integer(kind=8), intent(out) :: idx_modelisa
         character(len=16), intent(out) :: modeli
     end subroutine modelGetFEType
 end interface

@@ -22,9 +22,9 @@ interface
     subroutine xmmab5(ndim, nnol, pla, ffc, jac,&
                       coeffr, seuil, tau1, tau2, mu,&
                       ik, lact, mmat)
-        integer :: ndim
-        integer :: nnol
-        integer :: pla(27)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnol
+        integer(kind=8) :: pla(27)
         real(kind=8) :: ffc(8)
         real(kind=8) :: jac
         real(kind=8) :: coeffr
@@ -33,7 +33,7 @@ interface
         real(kind=8) :: tau2(3)
         real(kind=8) :: mu
         real(kind=8) :: ik(3, 3)
-        integer :: lact(8)
+        integer(kind=8) :: lact(8)
         real(kind=8) :: mmat(216, 216)
     end subroutine xmmab5
 end interface

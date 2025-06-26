@@ -38,18 +38,18 @@ subroutine calcme(BEHinteg, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=8), intent(in) :: typmod(2)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam, instap
-    integer, intent(in) :: ndim, dimdef, dimcon, addeme, adcome
+    integer(kind=8), intent(in) :: ndim, dimdef, dimcon, addeme, adcome
     real(kind=8), intent(in) :: vintm(*)
     real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
     real(kind=8), intent(inout) :: congep(dimcon)
     real(kind=8), intent(inout) :: vintp(*)
     real(kind=8), intent(out) :: dsdeme(6, 6)
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -86,8 +86,8 @@ subroutine calcme(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nsig = 6, neps = 6, ndsdeme = 36
-    integer, parameter ::  kpg = 1, ksp = 1
+    integer(kind=8), parameter :: nsig = 6, neps = 6, ndsdeme = 36
+    integer(kind=8), parameter ::  kpg = 1, ksp = 1
     character(len=4), parameter :: fami = 'FPG1'
 !
 ! --------------------------------------------------------------------------------------------------

@@ -54,8 +54,8 @@ subroutine dbrInitBasePod(baseName, paraPod, lReuse, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbNodeWithDof
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbNodeWithDof
     character(len=8) :: model
     type(ROM_DS_Field) :: mode
 !

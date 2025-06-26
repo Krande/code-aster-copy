@@ -51,9 +51,9 @@ subroutine nmasfr(ds_contact, matass)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=14) :: numedf
-    integer :: nbliac
+    integer(kind=8) :: nbliac
     character(len=19) :: matrcf
     aster_logical :: lmodim
 !

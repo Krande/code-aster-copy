@@ -22,10 +22,10 @@ interface
     subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou,&
                       linoeu)
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=8) :: nmaila
         character(len=24) :: nlstnd
-        integer :: nbtrou
-        integer :: linoeu(*)
+        integer(kind=8) :: nbtrou
+        integer(kind=8) :: linoeu(*)
     end subroutine rvgnoe
 end interface

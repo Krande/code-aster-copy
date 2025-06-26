@@ -24,8 +24,8 @@ function factorial(n)
 #include "asterfort/assert.h"
 !
 !
-    integer, intent(in) :: n
-    integer             :: factorial
+    integer(kind=8), intent(in) :: n
+    integer(kind=8)             :: factorial
 !
 ! --------------------------------------------------------------------------------------------------
 !

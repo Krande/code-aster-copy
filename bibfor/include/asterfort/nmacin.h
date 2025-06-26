@@ -20,7 +20,7 @@
 !
 interface
     subroutine nmacin(fonact, matass, deppla, cncind)
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: matass
         character(len=19) :: deppla
         character(len=19) :: cncind

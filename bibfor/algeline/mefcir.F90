@@ -30,7 +30,7 @@ subroutine mefcir(ndim, nbcyl, nbgrp, numgrp, som, &
 #include "asterfort/mtcrog.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbcyl, nbgrp, ndim(14), numgrp(*)
+    integer(kind=8) :: nbcyl, nbgrp, ndim(14), numgrp(*)
     real(kind=8) :: som(9), rint(*), dcent(*), ficent(*), d(*), fi(*)
     real(kind=8) :: ppxx(nbcyl, nbgrp), ppxy(nbcyl, nbgrp)
     real(kind=8) :: ppyx(nbcyl, nbgrp), ppyy(nbcyl, nbgrp)
@@ -75,15 +75,15 @@ subroutine mefcir(ndim, nbcyl, nbgrp, numgrp, som, &
 !                VISQUEUX NORMAUX SUIVANT YY
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, j, k
-    integer :: ncyl
+    integer(kind=8) :: i, j, k
+    integer(kind=8) :: ncyl
     real(kind=8) :: tmp(4, *), rayoi, rayoj
 ! ----------------------------------------------------------------------
 !
 ! --- LECTURE DES DIMENSIONS
 !-----------------------------------------------------------------------
-    integer :: ia, ib, idir, ier, igrp, itrav, ix
-    integer :: ixx, nbtron, nmax, nv
+    integer(kind=8) :: ia, ib, idir, ier, igrp, itrav, ix
+    integer(kind=8) :: ixx, nbtron, nmax, nv
 !-----------------------------------------------------------------------
     nbcyl = ndim(3)
     nbgrp = ndim(4)

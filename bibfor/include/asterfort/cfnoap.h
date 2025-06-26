@@ -23,8 +23,8 @@ interface
                       type2)
         character(len=8) :: noma
         character(len=24) :: defico
-        integer :: typapp
-        integer :: entapp
+        integer(kind=8) :: typapp
+        integer(kind=8) :: entapp
         character(len=8) :: nomapp
         character(len=4) :: type2
     end subroutine cfnoap

@@ -22,8 +22,8 @@
             subroutine coor_bary(coor,xm,dim,lino,cobary)
               real(kind=8), intent(in) :: coor(*)
               real(kind=8), intent(in) :: xm(3)
-              integer, intent(in) :: dim
-              integer, intent(in) :: lino(*)
+              integer(kind=8), intent(in) :: dim
+              integer(kind=8), intent(in) :: lino(*)
               real(kind=8), intent(out) :: cobary(*)
             end subroutine coor_bary
           end interface 

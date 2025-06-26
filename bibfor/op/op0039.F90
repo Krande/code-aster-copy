@@ -48,14 +48,14 @@ subroutine op0039()
 !
     mpi_int :: mrank, msize
     character(len=16), parameter :: keywf = 'RESU'
-    integer :: keywfNb, keywfIocc
-    integer :: fileUnit, fileVersion
+    integer(kind=8) :: keywfNb, keywfIocc
+    integer(kind=8) :: fileUnit, fileVersion
     character(len=1) :: fileType
     character(len=3) :: fichierUnique
     character(len=8) :: fileFormat
     character(len=16) :: fileName
-    integer :: nbMesh, nbResu, nbField, nbRet, nbNodeCmp
-    integer :: nn, rank, nbprocs
+    integer(kind=8) :: nbMesh, nbResu, nbField, nbRet, nbNodeCmp
+    integer(kind=8) :: nn, rank, nbprocs
     real(kind=8) :: fileVersionR
     real(kind=8), parameter :: eps = 1.0d-6
     character(len=8) :: model, mesh, resultMesh, proc0, ispar

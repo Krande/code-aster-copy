@@ -21,7 +21,7 @@
 interface
     subroutine calcdq(proj, nub, nu, d, pqx,&
                       pqy, pqz, dq)
-        integer :: proj
+        integer(kind=8) :: proj
         real(kind=8) :: nub
         real(kind=8) :: nu
         real(kind=8) :: d(6, 6)

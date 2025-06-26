@@ -41,8 +41,8 @@ subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: i_zone
-    integer, intent(in) :: elem_mast_indx
+    integer(kind=8), intent(in) :: i_zone
+    integer(kind=8), intent(in) :: elem_mast_indx
     real(kind=8), intent(out) :: tau1(3)
     real(kind=8), intent(out) :: tau2(3)
 !
@@ -61,7 +61,7 @@ subroutine mmexfr(mesh, ds_contact, i_zone, elem_mast_indx, tau1, &
 ! OUT TAU1   : PREMIER VECTEUR TANGENT
 ! OUT TAU2   : SECOND VECTEUR TANGENT
 !
-    integer :: model_ndim, ndirex
+    integer(kind=8) :: model_ndim, ndirex
     real(kind=8) :: vdirex(3), norm(3), norme
     real(kind=8) :: tau1fr(3), tau2fr(3)
     real(kind=8) :: extau1, extau2

@@ -25,7 +25,7 @@ subroutine nmobno(sd_obsv, keyw_fact, nb_keyw_fact)
 #include "asterfort/getvtx.h"
 #include "asterfort/wkvect.h"
 !
-    integer, intent(in) :: nb_keyw_fact
+    integer(kind=8), intent(in) :: nb_keyw_fact
     character(len=19), intent(in) :: sd_obsv
     character(len=16), intent(in) :: keyw_fact
 !
@@ -43,7 +43,7 @@ subroutine nmobno(sd_obsv, keyw_fact, nb_keyw_fact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_keyw_fact, nb_title
+    integer(kind=8) :: i_keyw_fact, nb_title
     character(len=24) :: obsv_titl
     character(len=16), pointer :: v_obsv_titl(:) => null()
     character(len=16) :: title

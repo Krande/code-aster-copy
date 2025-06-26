@@ -20,7 +20,7 @@
 !
 interface
     subroutine w039ca(ifi, form)
-        integer :: ifi
+        integer(kind=8) :: ifi
         character(len=*) :: form
     end subroutine w039ca
 end interface

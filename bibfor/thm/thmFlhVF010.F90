@@ -34,8 +34,8 @@ subroutine thmFlhVF010(ds_thm, option, j_mater, ifa, &
 !
     type(THM_DS), intent(in) :: ds_thm
     character(len=16), intent(in) :: option
-    integer, intent(in) :: j_mater
-    integer, intent(in) :: ifa
+    integer(kind=8), intent(in) :: j_mater
+    integer(kind=8), intent(in) :: ifa
     real(kind=8), intent(in) :: t, p1, p2, pvp, pad
     real(kind=8), intent(in) :: rho11, h11, h12
     real(kind=8), intent(in) :: satur, dsatur
@@ -69,26 +69,26 @@ subroutine thmFlhVF010(ds_thm, option, j_mater, ifa, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: con = 1
-    integer, parameter :: dconp1 = 2
-    integer, parameter :: dconp2 = 3
-    integer, parameter :: diffu = 4
-    integer, parameter :: ddifp1 = 5
-    integer, parameter :: ddifp2 = 6
-    integer, parameter :: mob = 7
-    integer, parameter :: dmobp1 = 8
-    integer, parameter :: dmobp2 = 9
-    integer, parameter :: densit = 14
-    integer, parameter :: wliq = 1
-    integer, parameter :: wvap = 2
-    integer, parameter :: airdis = 3
-    integer, parameter :: airsec = 4
-    integer, parameter :: rhoga = 1
-    integer, parameter :: rholq = 2
-    integer, parameter :: rhoga1 = 3
-    integer, parameter :: rhoga2 = 4
-    integer, parameter :: rholq1 = 5
-    integer, parameter :: rholq2 = 6
+    integer(kind=8), parameter :: con = 1
+    integer(kind=8), parameter :: dconp1 = 2
+    integer(kind=8), parameter :: dconp2 = 3
+    integer(kind=8), parameter :: diffu = 4
+    integer(kind=8), parameter :: ddifp1 = 5
+    integer(kind=8), parameter :: ddifp2 = 6
+    integer(kind=8), parameter :: mob = 7
+    integer(kind=8), parameter :: dmobp1 = 8
+    integer(kind=8), parameter :: dmobp2 = 9
+    integer(kind=8), parameter :: densit = 14
+    integer(kind=8), parameter :: wliq = 1
+    integer(kind=8), parameter :: wvap = 2
+    integer(kind=8), parameter :: airdis = 3
+    integer(kind=8), parameter :: airsec = 4
+    integer(kind=8), parameter :: rhoga = 1
+    integer(kind=8), parameter :: rholq = 2
+    integer(kind=8), parameter :: rhoga1 = 3
+    integer(kind=8), parameter :: rhoga2 = 4
+    integer(kind=8), parameter :: rholq1 = 5
+    integer(kind=8), parameter :: rholq2 = 6
     real(kind=8) :: rgaz
     real(kind=8) :: permli, dperml
     real(kind=8) :: permgz, dperms, dpermp

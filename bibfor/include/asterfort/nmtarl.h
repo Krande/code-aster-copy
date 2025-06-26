@@ -22,8 +22,8 @@ interface
     subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
                       epm, dp, sp, xi, dirdp,&
                       dirsp, dirxi, min, rho, ener)
-        integer :: mode
-        integer :: ndimsi
+        integer(kind=8) :: mode
+        integer(kind=8) :: ndimsi
         real(kind=8) :: mat(*)
         real(kind=8) :: sigel(*)
         real(kind=8) :: vim(*)

@@ -29,8 +29,8 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
 #include "asterfort/nmepsi.h"
 #include "asterfort/r8inir.h"
 #include "blas/ddot.h"
-    integer :: ndim, nno1, nno2, nno3, npg, iw, idff1
-    integer :: vu(3, 27), vg(27), vp(27)
+    integer(kind=8) :: ndim, nno1, nno2, nno3, npg, iw, idff1
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27)
     real(kind=8) :: geomi(ndim, nno1)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), vff3(nno3, npg)
     real(kind=8) :: sig(2*ndim+1, npg), ddl(*), vect(*)
@@ -63,8 +63,8 @@ subroutine nifnpd(ndim, nno1, nno2, nno3, npg, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: axi, grand
-    integer :: nddl, g
-    integer :: sa, ra, na, ia, kk
+    integer(kind=8) :: nddl, g
+    integer(kind=8) :: sa, ra, na, ia, kk
     real(kind=8) :: deplm(3*27), gonfm(27), gm, r
 !    real(kind=8) :: presm(27), pm
     real(kind=8) :: dff1(nno1, ndim)

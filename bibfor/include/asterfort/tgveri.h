@@ -28,18 +28,18 @@ interface
         character(len=16) :: option
         real(kind=8) :: carcri(CARCRI_SIZE)
         character(len=16) :: compor(COMPOR_SIZE)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: geom(*)
-        integer :: ndim
-        integer :: nddl
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nddl
         real(kind=8) :: deplp(*)
         real(kind=8) :: sdepl(*)
         real(kind=8) :: vectu(*)
         real(kind=8) :: svect(*)
-        integer :: ncont
+        integer(kind=8) :: ncont
         real(kind=8) :: contp(*)
         real(kind=8) :: scont(*)
-        integer :: nvari
+        integer(kind=8) :: nvari
         real(kind=8) :: varip(*)
         real(kind=8) :: svari(*)
         real(kind=8) :: matuu(*)
@@ -47,6 +47,6 @@ interface
         aster_logical :: matsym
         real(kind=8) :: varia(*)
         real(kind=8) :: epsilo
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine tgveri
 end interface

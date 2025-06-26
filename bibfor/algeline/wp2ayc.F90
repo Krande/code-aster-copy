@@ -25,7 +25,7 @@ subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq, &
 #include "asterfort/resoud.h"
 !
     complex(kind=8) :: sigma, u1(*), u2(*), u3(*), yh(*), yb(*), zh(*), zb(*)
-    integer :: lmatra, lmasse, lamor, n, lbloq(*)
+    integer(kind=8) :: lmatra, lmasse, lamor, n, lbloq(*)
     character(len=19) :: solveu
 !                   T               T
 !     CALCUL (ZH,ZB)   = A * (YH,YB)
@@ -51,10 +51,10 @@ subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i
+    integer(kind=8) :: i
     character(len=1) :: kbid
     character(len=19) :: k19bid, matass, chcine, criter
-    integer :: iret
+    integer(kind=8) :: iret
 !     ------------------------------------------------------------------
 !
 ! INIT. OBJETS ASTER

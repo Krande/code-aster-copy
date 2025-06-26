@@ -23,13 +23,13 @@
 interface
     subroutine gmeth3(nnoff, gthi, milieu, gs,&
                       objcur, gi, num, connex)
-        integer           :: nnoff
+        integer(kind=8)           :: nnoff
         real(kind=8)      :: gthi(1)
         aster_logical     :: milieu
         real(kind=8)      :: gs(1)
         character(len=24) :: objcur
         real(kind=8)      :: gi(1)
-        integer           :: num
+        integer(kind=8)           :: num
         aster_logical     :: connex
     end subroutine gmeth3
 end interface

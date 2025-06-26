@@ -21,8 +21,8 @@
 interface
     subroutine rs_get_listload(result_, nume, list_load, iexcit)
         character(len=*), intent(in) :: result_
-        integer, intent(in) :: nume
+        integer(kind=8), intent(in) :: nume
         character(len=*), intent(out) :: list_load
-        integer, intent(out) :: iexcit
+        integer(kind=8), intent(out) :: iexcit
     end subroutine rs_get_listload
 end interface

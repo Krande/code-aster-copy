@@ -64,18 +64,18 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
     character(len=24) :: lgrma(4)
     character(len=16) :: nomte
     character(len=80) :: valk(5)
-    integer :: nbgrel, igrel, kcmp, nbcmp, nbop, nbte, k1, iexi, ient, iad1
-    integer :: jnocmp, numgd, joptte, jligrmo, n1, kop, ioptte, joptmod, jvale
-    integer :: jmodeloc, nbin, kin, moloc, nbma, ima, iret, te, nbmapb, nbgrma
-    integer :: nucalc, k, kma, nec, nbma_verif, nbgdmx, code, decal, ico, kcmp2
-    integer, pointer :: a_un_sens(:) => null()
-    integer, pointer :: num_grel(:) => null()
-    integer, pointer :: numa_verif(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: ptma(:) => null()
-    integer, pointer :: dg(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer          :: list_ma_pb(5), typq4, typt3
+    integer(kind=8) :: nbgrel, igrel, kcmp, nbcmp, nbop, nbte, k1, iexi, ient, iad1
+    integer(kind=8) :: jnocmp, numgd, joptte, jligrmo, n1, kop, ioptte, joptmod, jvale
+    integer(kind=8) :: jmodeloc, nbin, kin, moloc, nbma, ima, iret, te, nbmapb, nbgrma
+    integer(kind=8) :: nucalc, k, kma, nec, nbma_verif, nbgdmx, code, decal, ico, kcmp2
+    integer(kind=8), pointer :: a_un_sens(:) => null()
+    integer(kind=8), pointer :: num_grel(:) => null()
+    integer(kind=8), pointer :: numa_verif(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: ptma(:) => null()
+    integer(kind=8), pointer :: dg(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8)          :: list_ma_pb(5), typq4, typt3
     aster_logical    :: verif_coef_drz
     aster_logical    :: exiq4_drz_nook, exiq4_coef_drz
     aster_logical    :: exiq3_coef_drz

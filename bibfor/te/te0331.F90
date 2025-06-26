@@ -48,8 +48,8 @@ subroutine te0331(option, nomte)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: icodre(4)
-    integer :: codres
+    integer(kind=8) :: icodre(4)
+    integer(kind=8) :: codres
     character(len=4) :: fami
     character(len=16) :: nomres(4), optcal(12)
     character(len=32) :: phenom
@@ -58,18 +58,18 @@ subroutine te0331(option, nomte)
     real(kind=8) :: cong(4), epsq(4), dfdx(9), dfdy(9), pp, ppt
     real(kind=8) :: tc(6), tdp(6), sigold, signew, sref, tg, tmoy
 !
-    integer :: nno, kp, npg, k, ii, iweib, jtab(7), nnos, jgano, ndim
-    integer :: idefg, issopt, ipopp, ipoppt
-    integer :: ipoids, ivf, idfde, imate
-    integer :: igeom, icong, ivarig
-    integer :: isigie, isigis, nbvari
+    integer(kind=8) :: nno, kp, npg, k, ii, iweib, jtab(7), nnos, jgano, ndim
+    integer(kind=8) :: idefg, issopt, ipopp, ipoppt
+    integer(kind=8) :: ipoids, ivf, idfde, imate
+    integer(kind=8) :: igeom, icong, ivarig
+    integer(kind=8) :: isigie, isigis, nbvari
     aster_logical :: laxi
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iret
+    integer(kind=8) :: iret
 !-----------------------------------------------------------------------
     fami = 'RIGI'
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, npg=npg, &

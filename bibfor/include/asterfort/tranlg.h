@@ -21,9 +21,9 @@
 interface
     subroutine tranlg(nb1, nddlx, nddlet, plg, matloc,&
                       xr)
-        integer :: nddlx
-        integer :: nb1
-        integer :: nddlet
+        integer(kind=8) :: nddlx
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nddlet
         real(kind=8) :: plg(9, 3, 3)
         real(kind=8) :: matloc(nddlx, nddlx)
         real(kind=8) :: xr(*)

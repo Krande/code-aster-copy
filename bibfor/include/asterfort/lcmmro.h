@@ -20,7 +20,7 @@ interface
     subroutine lcmmro(BEHinteg, omp, nvi, vind, vinf)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: omp(3)
         real(kind=8) :: vind(nvi)
         real(kind=8) :: vinf(nvi)

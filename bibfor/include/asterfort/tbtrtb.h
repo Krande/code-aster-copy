@@ -24,7 +24,7 @@ interface
         character(len=*) :: tabin
         character(len=*) :: basout
         character(len=*) :: tabout
-        integer :: npara
+        integer(kind=8) :: npara
         character(len=*) :: lipara(*)
         character(len=*) :: lcrit(*)
         real(kind=8) :: prec

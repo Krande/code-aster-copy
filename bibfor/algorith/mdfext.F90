@@ -24,8 +24,8 @@ subroutine mdfext(tinit, dt, neqgen, nbexci, idescf, &
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: neqgen, nbexci, nbpas
-    integer :: idescf(*), liad(*), inumor(*)
+    integer(kind=8) :: neqgen, nbexci, nbpas
+    integer(kind=8) :: idescf(*), liad(*), inumor(*)
     real(kind=8) :: tinit, dt, t, coefm(*), f(neqgen, *)
     character(len=8) :: nomfon(*)
 !
@@ -48,13 +48,13 @@ subroutine mdfext(tinit, dt, neqgen, nbexci, idescf, &
 !
 !
 !
-    integer :: ier
+    integer(kind=8) :: ier
     character(len=4) :: nompar
 !
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: alpha
 !-----------------------------------------------------------------------
     call jemarq()

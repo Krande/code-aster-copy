@@ -26,7 +26,7 @@ subroutine preres(solveu, base, iret, matpre, matass, &
 #include "asterfort/matrix_factor.h"
 #include "asterfort/uttcpu.h"
 !-----------------------------------------------------------------------
-    integer :: npvneg, istop, iret
+    integer(kind=8) :: npvneg, istop, iret
     character(len=1) :: base
     character(len=*) :: matass, matpre, solveu
 !-----------------------------------------------------------------------

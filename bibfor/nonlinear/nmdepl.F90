@@ -53,8 +53,8 @@ subroutine nmdepl(modele, numedd, ds_material, carele, &
 #include "asterfort/utmess.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-    integer :: fonact(*)
-    integer :: iterat, numins
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: iterat, numins
     real(kind=8) :: eta
     character(len=8) :: noma
     type(NL_DS_Conv), intent(inout) :: ds_conv
@@ -118,8 +118,8 @@ subroutine nmdepl(modele, numedd, ds_material, carele, &
     real(kind=8) :: instam, instap, deltat, resi_glob_rela
     aster_logical :: lpilo, lreli, lctcd, lunil, l_diri_undead
     character(len=19) :: cnfext, depplu
-    integer :: ctccvg, ldccvg, pilcvg
-    integer :: ifm, niv
+    integer(kind=8) :: ctccvg, ldccvg, pilcvg
+    integer(kind=8) :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

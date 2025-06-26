@@ -23,9 +23,9 @@ interface
                       epsman, amax, xus)
         character(len=14) :: xups
         character(len=14) :: xfpnla
-        integer :: ninc
-        integer :: ordman
-        integer :: nbpt
+        integer(kind=8) :: ninc
+        integer(kind=8) :: ordman
+        integer(kind=8) :: nbpt
         real(kind=8) :: epsman
         real(kind=8) :: amax
         character(len=14) :: xus

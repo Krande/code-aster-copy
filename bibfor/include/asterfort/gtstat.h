@@ -22,7 +22,7 @@
 !
 interface
     function gtstat(istat)
-        integer :: istat
+        integer(kind=8) :: istat
         aster_logical :: gtstat
     end function gtstat
 end interface

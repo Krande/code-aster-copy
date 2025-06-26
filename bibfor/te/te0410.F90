@@ -34,8 +34,8 @@ subroutine te0410(optioz, nomtz)
 !
 
 !-----------------------------------------------------------------------
-    integer :: jcou
-    integer :: nbcou
+    integer(kind=8) :: jcou
+    integer(kind=8) :: nbcou
 ! DEB
 !
     option = optioz

@@ -20,7 +20,7 @@
 !
 interface
     subroutine deffk(kappa, mu, r, theta, ndim, fkpo)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: r
         real(kind=8) :: theta
         real(kind=8) :: kappa

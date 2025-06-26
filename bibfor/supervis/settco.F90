@@ -47,7 +47,7 @@ subroutine settco(name, typeco)
     character(len=19) :: name19
     character(len=24) :: attr
     character(len=24) :: type24
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24), pointer :: vk(:) => null()
 
     call jemarq()

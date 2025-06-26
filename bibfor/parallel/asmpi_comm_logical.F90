@@ -26,7 +26,7 @@ subroutine asmpi_comm_logical(op, nbval, scl, vl)
 #include "asterfort/assert.h"
 !
     aster_logical, intent(inout), optional :: scl, vl(*)
-    integer, intent(in), optional :: nbval
+    integer(kind=8), intent(in), optional :: nbval
     character(len=*), intent(in) :: op
 !
 !

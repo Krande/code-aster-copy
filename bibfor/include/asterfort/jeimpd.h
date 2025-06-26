@@ -20,7 +20,7 @@
 !
 interface
     subroutine jeimpd(unit, clas, cmess)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: clas
         character(len=*) :: cmess
     end subroutine jeimpd

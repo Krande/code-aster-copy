@@ -27,29 +27,29 @@ interface
                       typmod, icomp, ndsde,&
                       dsidep, codret)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer, intent(in) :: ndim
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
-        integer, intent(in) :: neps
+        integer(kind=8), intent(in) :: neps
         real(kind=8), intent(in) :: epsm(neps)
         real(kind=8), intent(in) :: deps(neps)
-        integer, intent(in) :: nsig
+        integer(kind=8), intent(in) :: nsig
         real(kind=8), intent(in) :: sigm(nsig)
-        integer, intent(in) :: nvi
+        integer(kind=8), intent(in) :: nvi
         real(kind=8), intent(in) :: vim(nvi)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: angmas(*)
         real(kind=8), intent(out) :: sigp(nsig)
         real(kind=8), intent(out) :: vip(nvi)
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: icomp
-        integer, intent(in) :: ndsde
+        integer(kind=8), intent(in) :: icomp
+        integer(kind=8), intent(in) :: ndsde
         real(kind=8), intent(out) :: dsidep(ndsde)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine lc6046
 end interface

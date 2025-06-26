@@ -32,7 +32,7 @@ subroutine irrnvi(model, ndt, ndi, nr, nvi)
 !              IL FAUT AJOUTER UN TERME POUR LES C_PLAN
 !     NVI   :  NB DE VARIABLES INTERNES
 ! ----------------------------------------------------------------
-    integer :: ndt, ndi, nr, nvi, nvint
+    integer(kind=8) :: ndt, ndi, nr, nvi, nvint
     character(len=8) :: model
 !
 ! --- NB DE COMPOSANTES / VARIABLES INTERNES / CATALOGUE MATERIAU

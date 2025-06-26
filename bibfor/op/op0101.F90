@@ -34,7 +34,7 @@ subroutine op0101()
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
-    integer :: n1, jafck
+    integer(kind=8) :: n1, jafck
     character(len=8) :: chcine, mo, pheno, evoim
     character(len=16) :: type, oper
     character(len=19) :: chci19

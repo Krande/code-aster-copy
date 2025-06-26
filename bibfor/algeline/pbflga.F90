@@ -60,7 +60,7 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: umoy, hmoy, rmoy, long, cf0, fsvr(7)
-    integer :: icoq, imod, nbm
+    integer(kind=8) :: icoq, imod, nbm
     real(kind=8) :: tcoef(10, nbm), s1, s2
     complex(kind=8) :: lambda(3), kcalcu(3, 4)
     real(kind=8) :: condit(3)
@@ -73,7 +73,7 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, imata, iret, itab, j
+    integer(kind=8) :: i, imata, iret, itab, j
     real(kind=8) :: cde, cdep, cds, cdsp, reeli, rhof, u
     real(kind=8) :: v, w, x
 !-----------------------------------------------------------------------
@@ -96,9 +96,9 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0, &
     ln = tcoef(1+itab, imod)
     gamma(1) = pbflkz(2, 0.d0, long, ln, kcalcu)/rmoy
 gamma(2) = -1.d0*u*pbflkz(1, 0.d0, long, ln, kcalcu)-pbflkz(3, 0.d0, long, ln, kcalcu)/(rhof*umoy) &
-                   &+dcmplx(w)
+                       &+dcmplx(w)
 gamma(3) = -1.d0*v*pbflkz(1, long, long, ln, kcalcu)-pbflkz(3, long, long, ln, kcalcu)/(rhof*umoy) &
-                   &+dcmplx(x)
+                       &+dcmplx(x)
     do i = 1, 3
         reeli = dble(lambda(i))
         if (reeli .gt. 0.d0) then

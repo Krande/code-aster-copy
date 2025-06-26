@@ -26,9 +26,9 @@ subroutine jni091(elrefe, nmaxob, liobj, nbobj)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, npg1
-    integer :: l, ll, i1, i
-    integer :: mzr, nbobj, nmaxob
+    integer(kind=8) :: iret, npg1
+    integer(kind=8) :: l, ll, i1, i
+    integer(kind=8) :: mzr, nbobj, nmaxob
     real(kind=8) :: x3(3), xi3, ff(3)
     character(len=24) :: demr, liobj(nmaxob)
 ! DEB -----------------------------------------------------------------

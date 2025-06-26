@@ -34,7 +34,7 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
 #include "asterfort/nmdebg.h"
 #include "asterfort/r8inir.h"
 !
-    integer :: numins
+    integer(kind=8) :: numins
     character(len=24) :: numedd
     character(len=19) :: sddyna, sddisc
 !
@@ -57,14 +57,14 @@ subroutine ndmuap(numins, numedd, sddyna, sddisc)
 !
     real(kind=8), parameter :: zero = 0.d0
 !
-    integer :: neq, ie, iex
+    integer(kind=8) :: neq, ie, iex
     real(kind=8) :: instap
     real(kind=8) :: coef1, coef2, coef3
     character(len=19) :: depent, vitent, accent
     character(len=19) :: mafdep, mafvit, mafacc, mamula, mapsid
-    integer :: jnodep, jnovit, jnoacc, jmltap, jpsdel
-    integer :: nbexci
-    integer :: ifm, niv
+    integer(kind=8) :: jnodep, jnovit, jnoacc, jmltap, jpsdel
+    integer(kind=8) :: nbexci
+    integer(kind=8) :: ifm, niv
     real(kind=8), pointer :: accen(:) => null()
     real(kind=8), pointer :: depen(:) => null()
     real(kind=8), pointer :: viten(:) => null()

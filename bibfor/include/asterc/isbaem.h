@@ -20,6 +20,6 @@
 !
 interface
     function isbaem()
-        integer :: isbaem
+        integer(kind=8) :: isbaem
     end function isbaem
 end interface

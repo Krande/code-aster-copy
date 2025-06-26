@@ -27,7 +27,7 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: sddisc
         type(NL_DS_Conv), intent(in) :: ds_conv
-        integer, intent(in) :: nbiter
-        integer, intent(in) :: numins
+        integer(kind=8), intent(in) :: nbiter
+        integer(kind=8), intent(in) :: numins
     end subroutine nmactp
 end interface

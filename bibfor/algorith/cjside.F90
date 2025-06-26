@@ -44,7 +44,7 @@ subroutine cjside(mod, mater, epsd, deps, yd, &
 #include "asterfort/jemarq.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, i, j, codret
+    integer(kind=8) :: ndt, ndi, i, j, codret
     real(kind=8) :: epsd(6), deps(6), depse(6), trdeps, kron(6)
     real(kind=8) :: dsig(6), sigd(6), sige(6), yd(*), dy(*), dqe(6)
     real(kind=8) :: mater(14, 2), n, rm, rc, a, b, c, pco, pc, pa

@@ -20,9 +20,9 @@
 !
 interface
     subroutine xmofhm(lact, nlact, nno, ffe, ffc)
-        integer :: lact(16)
-        integer :: nlact(2)
-        integer :: nno
+        integer(kind=8) :: lact(16)
+        integer(kind=8) :: nlact(2)
+        integer(kind=8) :: nno
         real(kind=8) :: ffe(*)
         real(kind=8) :: ffc(16)
     end subroutine xmofhm

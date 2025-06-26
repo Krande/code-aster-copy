@@ -20,7 +20,7 @@ interface
     subroutine impres_component_hpc(nomgd, ntncmp, ncmpvl, ncmpve, indcmp)
         character(len=32), intent(in)  :: nomgd
         character(len=*), intent(in)  :: ntncmp
-        integer, intent(inout) :: ncmpvl, ncmpve
+        integer(kind=8), intent(inout) :: ncmpvl, ncmpve
         character(len=24), intent(in)  :: indcmp
     end subroutine impres_component_hpc
 end interface

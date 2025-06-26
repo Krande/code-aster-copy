@@ -27,14 +27,14 @@ interface
                       xmf, xkf, xcf)
         character(len=8) :: typflu
         aster_logical :: zrigi
-        integer :: nbm
-        integer :: nmode
-        integer :: indic
+        integer(kind=8) :: nbm
+        integer(kind=8) :: nmode
+        integer(kind=8) :: indic
         real(kind=8) :: x(2)
         real(kind=8) :: pulsc
         real(kind=8) :: vgap
         real(kind=8) :: xsi0
-        integer :: veci1(*)
+        integer(kind=8) :: veci1(*)
         real(kind=8) :: vecr1(*)
         real(kind=8) :: vecr2(*)
         real(kind=8) :: vecr3(*)

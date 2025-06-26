@@ -22,6 +22,6 @@ interface
     subroutine ccvrpu(resuin, lisord, nbordr)
         character(len=8) :: resuin
         character(len=19) :: lisord
-        integer :: nbordr
+        integer(kind=8) :: nbordr
     end subroutine ccvrpu
 end interface

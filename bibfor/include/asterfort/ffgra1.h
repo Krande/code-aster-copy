@@ -21,10 +21,10 @@
 interface
     subroutine ffgra1(nbfonc, idebit, nbp1, nbp2, long,&
                       disc, vale)
-        integer :: nbp2
-        integer :: nbp1
-        integer :: nbfonc
-        integer :: idebit
+        integer(kind=8) :: nbp2
+        integer(kind=8) :: nbp1
+        integer(kind=8) :: nbfonc
+        integer(kind=8) :: idebit
         real(kind=8) :: long
         real(kind=8) :: disc(nbp1+nbp2)
         real(kind=8) :: vale(nbp1+nbp2, nbfonc)

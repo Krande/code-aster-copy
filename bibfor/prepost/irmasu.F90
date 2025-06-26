@@ -74,21 +74,21 @@ subroutine irmasu(ifc, ndim, nno, coordo, nbma, &
     character(len=8) :: nomai(*), nonoe(*), nomtm
     character(len=24) :: nogn(*), nogm(*)
     real(kind=8) :: coordo(*), r(3), bidon, rcsf
-    integer :: maxnod, connex(*), typma(*), point(*), typel(*)
-    integer :: nodsup(32), nodast(32), permut(maxnod, *), codgra(*), codphy(*)
-    integer :: icodno, icodma, versio, codphd(*)
-    integer :: itri7, iqua9, iseg4, ihex27, ipen18, it15, ipen21
+    integer(kind=8) :: maxnod, connex(*), typma(*), point(*), typel(*)
+    integer(kind=8) :: nodsup(32), nodast(32), permut(maxnod, *), codgra(*), codphy(*)
+    integer(kind=8) :: icodno, icodma, versio, codphd(*)
+    integer(kind=8) :: itri7, iqua9, iseg4, ihex27, ipen18, it15, ipen21
     aster_logical :: lmasu, lpout, lmod
 ! ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iagrma, iagrno, ica, icc, icf, icod
-    integer :: icod1, icod2, icol, icold, icole, icoll, icolp
-    integer :: icolt, icou, ics, icss, icst, icsv, ier
-    integer :: ifc, igm, igm2, ign, ima, imail, imas
-    integer :: imat, inbo, ino, ioff, iphy, ipoin, iret
-    integer :: isup, itseg2, itype, j, jm, jmagr, jn
-    integer :: jnogr, k, l, m, nbgrm, nbgrn
-    integer :: nbm, nbm2, nbma, nbn, ndim, nno, nnoe
+    integer(kind=8) :: i, iagrma, iagrno, ica, icc, icf, icod
+    integer(kind=8) :: icod1, icod2, icol, icold, icole, icoll, icolp
+    integer(kind=8) :: icolt, icou, ics, icss, icst, icsv, ier
+    integer(kind=8) :: ifc, igm, igm2, ign, ima, imail, imas
+    integer(kind=8) :: imat, inbo, ino, ioff, iphy, ipoin, iret
+    integer(kind=8) :: isup, itseg2, itype, j, jm, jmagr, jn
+    integer(kind=8) :: jnogr, k, l, m, nbgrm, nbgrn
+    integer(kind=8) :: nbm, nbm2, nbma, nbn, ndim, nno, nnoe
 !
 !-----------------------------------------------------------------------
     call jemarq()

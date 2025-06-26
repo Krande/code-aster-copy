@@ -24,15 +24,15 @@ interface
                       jdfde, jdfd2, jgano)
         character(len=*), intent(in), optional :: elrefe
         character(len=*), intent(in) :: fami
-        integer, intent(out), optional :: ndim
-        integer, intent(out), optional  :: nno
-        integer, intent(out), optional  :: nnos
-        integer, intent(out), optional  :: npg
-        integer, intent(out), optional  :: jpoids
-        integer, intent(out), optional  :: jcoopg
-        integer, intent(out), optional  :: jvf
-        integer, intent(out), optional  :: jdfde
-        integer, intent(out), optional  :: jdfd2
-        integer, intent(out), optional  :: jgano
+        integer(kind=8), intent(out), optional :: ndim
+        integer(kind=8), intent(out), optional  :: nno
+        integer(kind=8), intent(out), optional  :: nnos
+        integer(kind=8), intent(out), optional  :: npg
+        integer(kind=8), intent(out), optional  :: jpoids
+        integer(kind=8), intent(out), optional  :: jcoopg
+        integer(kind=8), intent(out), optional  :: jvf
+        integer(kind=8), intent(out), optional  :: jdfde
+        integer(kind=8), intent(out), optional  :: jdfd2
+        integer(kind=8), intent(out), optional  :: jgano
     end subroutine elrefe_info
 end interface

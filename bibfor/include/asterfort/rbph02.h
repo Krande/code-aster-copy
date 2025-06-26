@@ -26,10 +26,10 @@ interface
         character(len=14) :: numddl
         character(len=*) :: chamno
         character(len=8) :: nomgd
-        integer :: neq
-        integer :: nbnoeu
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbnoeu
         character(len=24) :: objve1
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=24) :: objve2
         character(len=24) :: objve3
         character(len=24) :: objve4

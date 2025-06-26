@@ -33,7 +33,7 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri, &
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
 !
-    integer :: icesd, icesl, icesv, imap, adrma, jtypma, k
+    integer(kind=8) :: icesd, icesl, icesv, imap, adrma, jtypma, k
     real(kind=8) :: vala, valb, coefpa
     character(len=8) :: nommat
     character(len=10) :: optio
@@ -61,9 +61,9 @@ subroutine rnomat(icesd, icesl, icesv, imap, nomcri, &
 !                  DE LA FATIGUE AUX NOEUDS.
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: iad, numa, jtyp
+    integer(kind=8) :: iad, numa, jtyp
     real(kind=8) :: r8b, v(1)
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: ktyp, dimk, k8b
 !     ------------------------------------------------------------------
 !

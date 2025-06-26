@@ -20,7 +20,7 @@
 !
 interface
     subroutine ceseva(cesf, npara, lpara, cesr)
-        integer :: npara
+        integer(kind=8) :: npara
         character(len=*) :: cesf
         character(len=*) :: lpara(npara)
         character(len=*) :: cesr

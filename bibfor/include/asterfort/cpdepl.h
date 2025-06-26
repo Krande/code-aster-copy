@@ -20,9 +20,9 @@
 !
 interface
     subroutine cpdepl(melflu, base, nuor, nbm)
-        integer :: nbm
+        integer(kind=8) :: nbm
         character(len=19) :: melflu
         character(len=8) :: base
-        integer :: nuor(nbm)
+        integer(kind=8) :: nuor(nbm)
     end subroutine cpdepl
 end interface

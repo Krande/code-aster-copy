@@ -21,13 +21,13 @@
 interface
     subroutine detefa(nnose, pi1, pi2, it, typma,&
                   ainter, cnset, n)
-        integer :: nnose
-        integer :: pi1
-        integer :: pi2
-        integer :: it
+        integer(kind=8) :: nnose
+        integer(kind=8) :: pi1
+        integer(kind=8) :: pi2
+        integer(kind=8) :: it
         character(len=8) :: typma
         real(kind=8) :: ainter(*)
-        integer :: cnset(*)
-        integer :: n(3)
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: n(3)
     end subroutine detefa
 end interface

@@ -28,13 +28,13 @@ interface
         character(len=*), intent(in) :: cham19
         character(len=*), intent(in) :: nomail
         character(len=*), intent(in) :: nonoeu
-        integer, intent(in) :: nupo
-        integer, intent(in) :: nusp
-        integer, intent(in) :: ivari
+        integer(kind=8), intent(in) :: nupo
+        integer(kind=8), intent(in) :: nusp
+        integer(kind=8), intent(in) :: ivari
         character(len=*), intent(in) :: nocmp
-        integer, intent(in) :: nbref
+        integer(kind=8), intent(in) :: nbref
         character(len=16), intent(in) :: tbtxt(2)
-        integer, intent(in) :: refi(nbref)
+        integer(kind=8), intent(in) :: refi(nbref)
         real(kind=8), intent(in) :: refr(nbref)
         complex(kind=8), intent(in) :: refc(nbref)
         character(len=*), intent(in) :: typres

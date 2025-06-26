@@ -19,8 +19,8 @@
 interface
     subroutine nmmaba(icodma, rela_comp, e, dsde, sigy,&
                       ncstpm, cstpm)
-        integer :: ncstpm
-        integer :: icodma
+        integer(kind=8) :: ncstpm
+        integer(kind=8) :: icodma
         character(len=16) :: rela_comp
         real(kind=8) :: e
         real(kind=8) :: dsde

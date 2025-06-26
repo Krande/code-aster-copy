@@ -44,7 +44,7 @@ subroutine nxdocc(model, compor, base_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbCmp
+    integer(kind=8) :: nbCmp
     character(len=8) :: mesh
     character(len=1) :: base
     character(len=19), parameter :: list_vale = '&&LIST_VALE'

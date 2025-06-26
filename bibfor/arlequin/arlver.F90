@@ -41,7 +41,7 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model, &
 !
     character(len=8) :: modele
     character(len=8) :: lgma(*)
-    integer :: nbgma
+    integer(kind=8) :: nbgma
     character(len=10) :: nomsd
     character(len=8) :: model
     character(len=8) :: cine
@@ -72,11 +72,11 @@ subroutine arlver(modele, lgma, nbgma, nomsd, model, &
 !
     character(len=8) :: noma, k8bid
     character(len=16) :: nomte, modte, cinte
-    integer :: nbma, ntot, nbligr, numa, ninit
-    integer :: icompt, igma, ima, iligr, iret
-    integer :: jmail, jrepe, jcompt, jte, jgma, jgroup, jtyel
+    integer(kind=8) :: nbma, ntot, nbligr, numa, ninit
+    integer(kind=8) :: icompt, igma, ima, iligr, iret
+    integer(kind=8) :: jmail, jrepe, jcompt, jte, jgma, jgroup, jtyel
     aster_logical :: eltok
-    integer :: liste(nbgma)
+    integer(kind=8) :: liste(nbgma)
 !
     character(len=6) :: nompro
     parameter(nompro='ARLVER')

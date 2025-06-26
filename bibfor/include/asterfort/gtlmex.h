@@ -21,12 +21,12 @@
 interface
     subroutine gtlmex(v_cninv, v_cninv_lcum, nume_node_cl, nb_elem_mast, list_elem_mast ,&
                       list_el_ma_ax, nb_el_ma_ax)
-        integer, pointer :: v_cninv(:) 
-        integer, pointer :: v_cninv_lcum(:)
-        integer, intent(in) :: nume_node_cl
-        integer, intent(in) :: nb_elem_mast
-        integer, intent(in) :: list_elem_mast(nb_elem_mast)
-        integer, intent(out) :: list_el_ma_ax(nb_elem_mast)
-        integer, intent(out) :: nb_el_ma_ax
+        integer(kind=8), pointer :: v_cninv(:) 
+        integer(kind=8), pointer :: v_cninv_lcum(:)
+        integer(kind=8), intent(in) :: nume_node_cl
+        integer(kind=8), intent(in) :: nb_elem_mast
+        integer(kind=8), intent(in) :: list_elem_mast(nb_elem_mast)
+        integer(kind=8), intent(out) :: list_el_ma_ax(nb_elem_mast)
+        integer(kind=8), intent(out) :: nb_el_ma_ax
     end subroutine gtlmex
 end interface

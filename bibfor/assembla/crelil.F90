@@ -44,8 +44,8 @@ subroutine crelil(kstop, nbmat, vlimat, lili, base, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmat, gd, nec, ilimo, nlili, iconx1, iconx2, nbelm
-    integer :: iadnem, iadlie
+    integer(kind=8) :: nbmat, gd, nec, ilimo, nlili, iconx1, iconx2, nbelm
+    integer(kind=8) :: iadnem, iadlie
     character(len=*) :: lili, nomma, pref, mailla
     character(len=1) :: base, kstop
     character(len=*) :: vlimat(nbmat)
@@ -114,9 +114,9 @@ subroutine crelil(kstop, nbmat, vlimat, lili, base, &
 !                DEBUT DES INSTRUCTIONS
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iad, icomp, idimli, idlres
-    integer :: ili, imat, iresu, iret, iret1, n1
-    integer :: nbgr, nbmo, nbresu, nbsup, ncmp
+    integer(kind=8) :: iad, icomp, idimli, idlres
+    integer(kind=8) :: ili, imat, iresu, iret, iret1, n1
+    integer(kind=8) :: nbgr, nbmo, nbresu, nbsup, ncmp
     character(len=24), pointer :: rerr(:) => null()
     aster_logical :: l_parallel_mesh
 !

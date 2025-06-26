@@ -51,9 +51,9 @@ subroutine nmextr(meshz, modelz, sdextrz, ds_inout, keyw_fact, &
     character(len=*), intent(in) :: modelz
     character(len=*), intent(in) :: sdextrz
     type(NL_DS_InOut), intent(in) :: ds_inout
-    integer, intent(in) :: nb_keyw_fact
+    integer(kind=8), intent(in) :: nb_keyw_fact
     character(len=16), intent(in) :: keyw_fact
-    integer, intent(out) :: nb_extr
+    integer(kind=8), intent(out) :: nb_extr
     character(len=*), optional, intent(in) :: cara_elemz
     type(NL_DS_Material), optional, intent(in) :: ds_material
     type(NL_DS_Constitutive), optional, intent(in) :: ds_constitutive
@@ -87,9 +87,9 @@ subroutine nmextr(meshz, modelz, sdextrz, ds_inout, keyw_fact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_keyw_fact, i_field, i_field_comp
-    integer :: nb_extr_keyw, nb_field, nb_field_comp
-    integer :: nb_node, nb_elem, nb_poin, nb_spoi, nb_cmp
+    integer(kind=8) :: i_keyw_fact, i_field, i_field_comp
+    integer(kind=8) :: nb_extr_keyw, nb_field, nb_field_comp
+    integer(kind=8) :: nb_node, nb_elem, nb_poin, nb_spoi, nb_cmp
     character(len=2) :: chaine
     character(len=24) :: field_type, field_s, field_comp
     character(len=4) :: field_disc
@@ -98,13 +98,13 @@ subroutine nmextr(meshz, modelz, sdextrz, ds_inout, keyw_fact, &
     character(len=8) :: type_extr_cmp, type_extr, type_extr_elem, type_sele_cmp
     character(len=14) :: sdextr
     character(len=24) :: extr_info, extr_type, extr_flag, extr_field, extr_comp
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
     character(len=8), pointer :: v_extr_type(:) => null()
     aster_logical, pointer :: v_extr_flag(:) => null()
     character(len=24), pointer :: v_extr_field(:) => null()
     character(len=24), pointer :: v_extr_comp(:) => null()
     character(len=24), pointer :: list_field(:) => null()
-    integer, pointer :: rela_field_keyw(:) => null()
+    integer(kind=8), pointer :: rela_field_keyw(:) => null()
     aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------

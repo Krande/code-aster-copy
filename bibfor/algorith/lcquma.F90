@@ -19,7 +19,7 @@
 subroutine lcquma(mat, fami, kpg, ksp, poum)
     implicit none
 #include "asterfort/rcvalb.h"
-    integer, intent(in) :: mat, kpg, ksp
+    integer(kind=8), intent(in) :: mat, kpg, ksp
     character(len=1), intent(in) :: poum
     character(len=*), intent(in) :: fami
 ! --------------------------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ subroutine lcquma(mat, fami, kpg, ksp, poum)
 ! IN  KSP    NUMERO DU SOUS-POINT
 ! IN  POUM   LECTURE DES PARAMETRES EN DEBUT '-' OU FIN '+' DU PAS
 ! --------------------------------------------------------------------------------------------------
-    integer         :: iok(7)
+    integer(kind=8)         :: iok(7)
     real(kind=8)    :: valer(7), coef, cc, cv, e, nu, rdum(1)
     character(len=8):: nomdum(1)
     character(len=16):: nomer(7)

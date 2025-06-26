@@ -28,15 +28,15 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=16), intent(in) :: keyw_fact
-        integer, intent(in) :: i_keyw_fact
+        integer(kind=8), intent(in) :: i_keyw_fact
         character(len=19), intent(in) :: field
         character(len=24), intent(in) :: field_type
         character(len=24), intent(in) :: field_s
         character(len=4), intent(in) :: field_disc
-        integer, intent(in) :: nb_node
-        integer, intent(in) :: nb_elem
-        integer, intent(in) :: nb_poin
-        integer, intent(in) :: nb_spoi
+        integer(kind=8), intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_elem
+        integer(kind=8), intent(in) :: nb_poin
+        integer(kind=8), intent(in) :: nb_spoi
         character(len=24), intent(in) :: list_node
         character(len=24), intent(in) :: list_elem
         character(len=24), intent(in) :: list_poin
@@ -44,7 +44,7 @@ interface
         character(len=19), optional, intent(in) :: compor
         character(len=24), intent(in) :: list_cmp
         character(len=24), intent(in) :: list_vari
-        integer, intent(out) :: nb_cmp
+        integer(kind=8), intent(out) :: nb_cmp
         character(len=8), intent(out) :: type_sele_cmp
     end subroutine nmextk
 end interface 

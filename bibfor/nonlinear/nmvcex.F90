@@ -44,7 +44,7 @@ subroutine nmvcex(index, varcz, chamz)
 !
     character(len=14) :: varc
     character(len=19) :: champ
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -52,7 +52,7 @@ subroutine liscva(prefob, chamno)
 !
     character(len=8) :: charge
     character(len=24) :: nomobj
-    integer :: jobje, iret
+    integer(kind=8) :: jobje, iret
 !
 ! ----------------------------------------------------------------------
 !

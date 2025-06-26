@@ -31,7 +31,7 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp, &
 #include "asterfort/wkvect.h"
 #include "asterfort/wpordc.h"
 #include "asterfort/wptest.h"
-    integer :: mxresf, neq, nbfreq, nbvect, lagr(*), resufi(mxresf, *)
+    integer(kind=8) :: mxresf, neq, nbfreq, nbvect, lagr(*), resufi(mxresf, *)
     complex(kind=8) :: vecp(neq, *), shift, vauc(2*neq, *), vp(*)
     real(kind=8) :: resufr(mxresf, *), omecor
 !     RESTITUTION DES VALEURS PROPRES ET DES MODES DU PB QUADRATIQUE
@@ -56,8 +56,8 @@ subroutine wp4vec(nbfreq, nbvect, neq, shift, vp, &
 !     ------------------------------------------------------------------
     real(kind=8) :: am, om, nmabp, seuilp, seuilr, c1, auxrj, auxij, auxrk
     real(kind=8) :: auxik, seuilc
-    integer :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
-    integer :: vali(5), ifm, niv, nbfr, ibid
+    integer(kind=8) :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
+    integer(kind=8) :: vali(5), ifm, niv, nbfr, ibid
     aster_logical :: trouve, lconj
     character(len=1) :: kmsg
     character(len=16) :: valk, typres

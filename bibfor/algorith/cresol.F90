@@ -50,14 +50,14 @@ subroutine cresol(solveu, basz, xfem)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: zslvk, zslvr, zslvi, zslvo
-    integer :: istop, nsolve, ibid, nprec, islvk, islvr, islvi, n1, islvo
+    integer(kind=8) :: zslvk, zslvr, zslvi, zslvo
+    integer(kind=8) :: istop, nsolve, ibid, nprec, islvk, islvr, islvi, n1, islvo
     real(kind=8) :: epsmat
     character(len=1) :: base
     character(len=3) :: mixpre, kellag
     character(len=8) :: kstop, modele, kxfem
     character(len=16) :: method, nomsol
-    integer :: eximc
+    integer(kind=8) :: eximc
 !
 ! ----------------------------------------------------------------------
 !

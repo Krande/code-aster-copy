@@ -51,7 +51,7 @@ subroutine jeundf(obj, undf0_)
     character(len=80) :: k80df
     character(len=1) :: xous, type
     complex(kind=8) :: c1undf
-    integer :: long, i1undf, ltyp, iad, k
+    integer(kind=8) :: long, i1undf, ltyp, iad, k
     aster_logical :: undf0
 ! DEB-------------------------------------------------------------------
 !

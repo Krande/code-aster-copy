@@ -24,8 +24,8 @@ interface
         character(len=*) :: nommaz
         character(len=*) :: phenom
         character(len=*) :: nomres
-        integer :: valres(*)
-        integer :: icodre
-        integer :: iarret
+        integer(kind=8) :: valres(*)
+        integer(kind=8) :: icodre
+        integer(kind=8) :: iarret
     end subroutine rcadme
 end interface

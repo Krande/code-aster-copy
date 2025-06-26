@@ -27,10 +27,10 @@ interface
         character(len=19) :: kcha
         character(len=8) :: resuco
         character(len=8) :: resuc1
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=8) :: modele
         character(len=24) :: mate
         character(len=8) :: cara
-        integer :: nchar
+        integer(kind=8) :: nchar
     end subroutine mecalr
 end interface

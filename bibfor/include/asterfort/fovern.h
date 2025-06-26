@@ -20,9 +20,9 @@
 !
 interface
     subroutine fovern(vecnom, nbfonc, vecpro, ier)
-        integer :: nbfonc
+        integer(kind=8) :: nbfonc
         character(len=*) :: vecnom(nbfonc)
         character(len=*) :: vecpro(*)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine fovern
 end interface

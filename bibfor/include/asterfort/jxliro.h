@@ -20,9 +20,9 @@
 !
 interface
     subroutine jxliro(ic, iadmi, iaddi, lso)
-        integer :: ic
-        integer :: iadmi
-        integer :: iaddi(2)
-        integer :: lso
+        integer(kind=8) :: ic
+        integer(kind=8) :: iadmi
+        integer(kind=8) :: iaddi(2)
+        integer(kind=8) :: lso
     end subroutine jxliro
 end interface

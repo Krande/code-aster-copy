@@ -29,7 +29,7 @@ subroutine lcjela(rela_comp, mod, nmat, mater, vin, &
 !       ----------------------------------------------------------------
 #include "asterfort/lcopli.h"
 #include "asterfort/rslpli.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: dsde(6, 6)
     real(kind=8) :: vin(*)
     real(kind=8) :: mater(nmat, 2)

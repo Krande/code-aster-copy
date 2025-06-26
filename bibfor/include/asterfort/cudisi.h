@@ -22,6 +22,6 @@ interface
     function cudisi(deficz, questz)
         character(len=*) :: deficz
         character(len=*) :: questz
-        integer :: cudisi
+        integer(kind=8) :: cudisi
     end function cudisi
 end interface

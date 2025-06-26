@@ -21,7 +21,7 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
     real(kind=8), intent(out) :: tole
     real(kind=8), intent(out), optional :: prec
     character(len=*), intent(in), optional :: mcf
-    integer, intent(in), optional :: iocc
+    integer(kind=8), intent(in), optional :: iocc
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
@@ -37,7 +37,7 @@ subroutine tresu_tole(tole, prec, mcf, iocc)
 !   - Only tole is mandatory.
 !   - By default, mcf=' '. If it is present, iocc is mandatory.
 !
-    integer :: np, uioc
+    integer(kind=8) :: np, uioc
     real(kind=8) :: epsir(2)
     character(len=24) :: umcf
 !   to print the message only once

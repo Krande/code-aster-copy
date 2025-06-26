@@ -21,7 +21,7 @@
 interface
     subroutine apnomp(sdappa, i_poin, poin_name)
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: i_poin
+        integer(kind=8), intent(in) :: i_poin
         character(len=16), intent(out) :: poin_name
     end subroutine apnomp
 end interface

@@ -22,6 +22,6 @@ interface
     subroutine pmmaco(nommat, nbmat, codi)
         character(len=8) :: nommat(*)
         character(len=19) :: codi
-        integer :: nbmat
+        integer(kind=8) :: nbmat
     end subroutine pmmaco
 end interface

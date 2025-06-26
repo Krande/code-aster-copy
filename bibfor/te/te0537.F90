@@ -69,11 +69,11 @@ subroutine te0537(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcont, lorien, jdepl, imate, nno, nc, i, iret
-    integer :: ip, ipos, istrxr, ipos1, ipos2, nbfig, ig, icp, isdcom
-    integer :: codres(2), ncomp
-    integer :: npg, ndim, nnoel, nnos, ipoids, ivf
-    integer :: jacf, jtab(7)
+    integer(kind=8) :: jcont, lorien, jdepl, imate, nno, nc, i, iret
+    integer(kind=8) :: ip, ipos, istrxr, ipos1, ipos2, nbfig, ig, icp, isdcom
+    integer(kind=8) :: codres(2), ncomp
+    integer(kind=8) :: npg, ndim, nnoel, nnos, ipoids, ivf
+    integer(kind=8) :: jacf, jtab(7)
     parameter(nno=2)
     real(kind=8) :: ul(14), pgl(3, 3), dege(6), xl, e, nu
     real(kind=8) :: g
@@ -85,14 +85,14 @@ subroutine te0537(option, nomte)
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: ch16, nomres(2)
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, phiy, phiz, ey, ez
     real(kind=8) :: epsthe, temp, d1b(7, 14), eps(7)
-    integer :: lmater, itemp, j
+    integer(kind=8) :: lmater, itemp, j
     character(len=4) :: fami
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 9
+    integer(kind=8), parameter :: nb_cara = 9
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara), nomat
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1', 'EY2', 'EZ2'/

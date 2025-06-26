@@ -24,12 +24,12 @@ interface
     subroutine irmail(form, ifi, versio, noma, lmod,&
                       nomo, infmai, formar, lfichUniq, nosdfu)
         character(len=*) :: form
-        integer :: ifi
-        integer :: versio
+        integer(kind=8) :: ifi
+        integer(kind=8) :: versio
         character(len=8) :: noma
         aster_logical :: lmod
         character(len=8) :: nomo
-        integer :: infmai
+        integer(kind=8) :: infmai
         character(len=16) :: formar
         aster_logical, optional :: lfichUniq
         character(len=8), optional :: nosdfu

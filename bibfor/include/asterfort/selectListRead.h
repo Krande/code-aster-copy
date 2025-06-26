@@ -20,7 +20,7 @@ interface
     subroutine selectlistRead(keywfactz, iocc, selectList)
         use NonLin_Datastructure_type
         character(len=*), intent(in) :: keywfactz
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         type(NL_DS_SelectList), intent(out) :: selectList
     end subroutine selectlistRead
 end interface

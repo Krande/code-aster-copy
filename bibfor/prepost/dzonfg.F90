@@ -54,14 +54,14 @@ subroutine dzonfg(nsommx, icnc, nelcom, numeli, inno, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-    integer :: nsommx, icnc(nsommx+2, *), nelcom, numeli(nelcom+2, *)
-    integer :: inno
-    integer :: tbelzo(1000), nbelzo(3), tbnozo(1000), nbnozo(3)
+    integer(kind=8) :: nsommx, icnc(nsommx+2, *), nelcom, numeli(nelcom+2, *)
+    integer(kind=8) :: inno
+    integer(kind=8) :: tbelzo(1000), nbelzo(3), tbnozo(1000), nbnozo(3)
 !
 ! DECLARATION LOCALE
 !
-    integer :: j, inel, nuef, ind, noeud, iel, elem, n
-    integer :: nedep, nefin, nbelco, nbnoco
+    integer(kind=8) :: j, inel, nuef, ind, noeud, iel, elem, n
+    integer(kind=8) :: nedep, nefin, nbelco, nbnoco
     aster_logical :: test
 !
 ! 1 - EFS DES COUCHES 1, 2 ET 3

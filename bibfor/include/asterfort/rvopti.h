@@ -22,7 +22,7 @@ interface
     subroutine rvopti(mcf, iocc, nch19, nomgd, typegd,&
                       option)
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=19) :: nch19
         character(len=8) :: nomgd
         character(len=4) :: typegd

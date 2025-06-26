@@ -21,8 +21,8 @@
 interface
     subroutine mmdonf(ndim, nno, alias, ksi1, ksi2,&
                       dff)
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         character(len=8) :: alias
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

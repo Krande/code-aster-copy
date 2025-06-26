@@ -23,12 +23,12 @@
 interface
     subroutine trigd(dg1, deb1, dg2, deb2, cumul,&
                      ino, nno)
-        integer :: dg1(*)
-        integer :: deb1
-        integer :: dg2(*)
-        integer :: deb2
+        integer(kind=8) :: dg1(*)
+        integer(kind=8) :: deb1
+        integer(kind=8) :: dg2(*)
+        integer(kind=8) :: deb2
         aster_logical :: cumul
-        integer :: ino
-        integer :: nno
+        integer(kind=8) :: ino
+        integer(kind=8) :: nno
     end subroutine trigd
 end interface

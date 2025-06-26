@@ -24,7 +24,7 @@ interface
         use NonLin_Datastructure_type
         character(len=8) :: noma
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: posmai
+        integer(kind=8) :: posmai
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2
         real(kind=8) :: tau1(3)

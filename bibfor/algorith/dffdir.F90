@@ -20,7 +20,7 @@ subroutine dffdir(ndim, baslo, inoff, vdir)
 !
     implicit none
 !
-    integer :: ndim, inoff
+    integer(kind=8) :: ndim, inoff
     real(kind=8) :: baslo(*), vdir(ndim)
 !
 !

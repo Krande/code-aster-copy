@@ -33,7 +33,7 @@ subroutine comp_init(mesh, compor, base, nbCmp_)
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: compor
     character(len=1), intent(in) :: base
-    integer, optional, intent(out) :: nbCmp_
+    integer(kind=8), optional, intent(out) :: nbCmp_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,8 +50,8 @@ subroutine comp_init(mesh, compor, base, nbCmp_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8), parameter :: physQuantityName = 'COMPOR'
-    integer :: physQuantityNume
-    integer :: nbCmp, iCmp
+    integer(kind=8) :: physQuantityNume
+    integer(kind=8) :: nbCmp, iCmp
     character(len=16), pointer :: comporValv(:) => null()
     character(len=8), pointer :: cataNomcmp(:) => null()
     character(len=8), pointer :: comporNcmp(:) => null()

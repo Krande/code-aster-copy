@@ -21,7 +21,7 @@
 interface
     subroutine ntetl3(i_field, ds_inout, tempct)
         use NonLin_Datastructure_type
-        integer, intent(in) :: i_field
+        integer(kind=8), intent(in) :: i_field
         type(NL_DS_InOut), intent(inout) :: ds_inout
         real(kind=8), intent(in) :: tempct
     end subroutine ntetl3

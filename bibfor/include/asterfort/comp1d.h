@@ -24,8 +24,8 @@ interface
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: option
         real(kind=8) :: sigx
         real(kind=8) :: epsx
@@ -35,6 +35,6 @@ interface
         real(kind=8) :: vip(*)
         real(kind=8) :: sigxp
         real(kind=8) :: etan
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine comp1d
 end interface

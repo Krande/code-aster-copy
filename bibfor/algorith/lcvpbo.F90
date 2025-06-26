@@ -22,7 +22,7 @@ subroutine lcvpbo(a, b, l0, l1, etamin, &
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
     aster_logical, intent(out) :: vide
-    integer, intent(out) :: nsol, sgn(2)
+    integer(kind=8), intent(out) :: nsol, sgn(2)
     real(kind=8), intent(in) :: a, b, l0, l1, etamin, etamax
     real(kind=8), intent(out) :: sol(2)
 !

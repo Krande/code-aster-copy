@@ -23,11 +23,11 @@ interface
                       typpar, vi, vr, vc, vk)
         character(len=*) :: tabout
         character(len=*) :: basout
-        integer :: ntab
+        integer(kind=8) :: ntab
         character(len=*) :: ltabin(*)
         character(len=*) :: para
         character(len=*) :: typpar
-        integer :: vi(*)
+        integer(kind=8) :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
         character(len=*) :: vk(*)

@@ -36,19 +36,19 @@ subroutine exchml(imodat, iparg)
 #include "asterfort/jacopo.h"
 #include "asterfort/utmess.h"
 
-    integer :: iparg, imodat
+    integer(kind=8) :: iparg, imodat
 !----------------------------------------------------------------------
 !     entrees:
 !        imodat : mode local attendu
 !        iparg  : numero du parametre dans l'option
 !----------------------------------------------------------------------
-    integer :: jceld, mode, debgr2, lggre2, iaux1
-    integer :: itypl1, modlo1, nbpoi1, lgcata
-    integer :: itypl2, modlo2, nbpoi2
-    integer :: ncmp1, ncmp2
-    integer ::  debugr, lggrel
-    integer :: jec, ncmp, jad1, jad2, ipt2, k, ipt1
-    integer :: nbpoi, icmp1, icmp2, kcmp, ipt
+    integer(kind=8) :: jceld, mode, debgr2, lggre2, iaux1
+    integer(kind=8) :: itypl1, modlo1, nbpoi1, lgcata
+    integer(kind=8) :: itypl2, modlo2, nbpoi2
+    integer(kind=8) :: ncmp1, ncmp2
+    integer(kind=8) ::  debugr, lggrel
+    integer(kind=8) :: jec, ncmp, jad1, jad2, ipt2, k, ipt1
+    integer(kind=8) :: nbpoi, icmp1, icmp2, kcmp, ipt
     aster_logical :: etendu, lverec
     character(len=8) :: tych, cas
 ! --------------------------------------------------------------------------------------------------

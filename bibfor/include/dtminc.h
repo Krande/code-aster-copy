@@ -19,7 +19,7 @@
 ! Parameters definitions
 ! -------------------------------------------------------------------------
 !
-    integer :: parind(_DTM_NBPAR)
+    integer(kind=8) :: parind(_DTM_NBPAR)
     character(len=3)  :: partyp(_DTM_NBPAR)
     character(len=8)  :: params(_DTM_NBPAR)
 

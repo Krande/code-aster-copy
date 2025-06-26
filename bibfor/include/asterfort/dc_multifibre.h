@@ -20,7 +20,7 @@
 !
 interface
     subroutine dc_multifibre(nbocci, sdcomp)
-        integer, intent(in) :: nbocci
+        integer(kind=8), intent(in) :: nbocci
         character(len=8), intent(in) :: sdcomp
     end subroutine dc_multifibre
 end interface

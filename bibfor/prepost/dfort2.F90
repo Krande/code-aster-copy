@@ -57,16 +57,16 @@ subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt, &
 #include "asterfort/dcqpri.h"
 #include "asterfort/dcspri.h"
 #include "asterfort/dinter.h"
-    integer :: nsommx, icnc(nsommx+2, *), noeu1
-    integer :: nbnozo(3), nbelt, nbnoe
-    integer :: tbelzo(nbelt), tbnozo(nbnoe)
+    integer(kind=8) :: nsommx, icnc(nsommx+2, *), noeu1
+    integer(kind=8) :: nbnozo(3), nbelt, nbnoe
+    integer(kind=8) :: tbelzo(nbelt), tbnozo(nbnoe)
     real(kind=8) :: xy(3, *), aire(*), energi(*), pe
 !
 ! DECLARATION LOCALE
 !
-    integer :: i, j, inno, iint, inel, nuef, noeu2, nedep, nefin
-    integer :: nsomm, nbint
-    integer :: ipoi1, ipoi2, ipoi4, nint, ip1
+    integer(kind=8) :: i, j, inno, iint, inel, nuef, noeu2, nedep, nefin
+    integer(kind=8) :: nsomm, nbint
+    integer(kind=8) :: ipoi1, ipoi2, ipoi4, nint, ip1
     parameter(nbint=10)
     real(kind=8) :: coord(2), coor(2, 4), coorin(2, 2)
     real(kind=8) :: delta(3), dist, rayz(nbint), ray

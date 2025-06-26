@@ -41,7 +41,7 @@ subroutine resuReadGetParameters(mesh, model, caraElem, fieldMate)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbOcc
+    integer(kind=8) :: iret, nbOcc
     character(len=19) :: ligrel
     character(len=8), pointer :: lgrf(:) => null()
 !

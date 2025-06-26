@@ -23,8 +23,8 @@ subroutine moinsr(j, n, idil, idiich, idsuiv, &
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
-    integer :: j, n, idil, idiich, idsuiv, idip, iilib, iimax
-    integer :: k, idebch, ii1, kil, kip
+    integer(kind=8) :: j, n, idil, idiich, idsuiv, idip, iilib, iimax
+    integer(kind=8) :: k, idebch, ii1, kil, kip
     character(len=*) :: nosuiv, noip
 !
 !     INSERTION DU TABLEAU D'ENTIERS ORDONNES IL DANS LA CHAINE ORDONNEE

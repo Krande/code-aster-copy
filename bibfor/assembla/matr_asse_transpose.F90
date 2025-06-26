@@ -40,7 +40,7 @@ subroutine matr_asse_transpose(matas)
 !-----------------------------------------------------------------------
     character(len=19) :: matas1
     character(len=3) :: tysca
-    integer :: n1, neq, jvalm1, jvalm2, jvaltmp
+    integer(kind=8) :: n1, neq, jvalm1, jvalm2, jvaltmp
     character(len=24), pointer :: refa(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-------------------------------------------------------------------

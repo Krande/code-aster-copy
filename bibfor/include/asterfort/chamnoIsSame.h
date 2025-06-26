@@ -19,6 +19,6 @@
 interface
     subroutine chamnoIsSame(chamno1_, chamno2_, ier)
         character(len=*), intent(in) :: chamno1_, chamno2_
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine chamnoIsSame
 end interface

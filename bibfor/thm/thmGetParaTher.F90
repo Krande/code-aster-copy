@@ -28,8 +28,8 @@ subroutine thmGetParaTher(j_mater, kpi, temp, ds_thm)
 #include "asterfort/get_elasth_para.h"
 #include "asterfort/THM_type.h"
 !
-    integer, intent(in) :: j_mater
-    integer, intent(in) :: kpi
+    integer(kind=8), intent(in) :: j_mater
+    integer(kind=8), intent(in) :: kpi
     real(kind=8), intent(in) :: temp
     type(THM_DS), intent(inout) :: ds_thm
 !
@@ -50,22 +50,22 @@ subroutine thmGetParaTher(j_mater, kpi, temp, ds_thm)
 !
     real(kind=8) :: alpha(2)
     character(len=8) :: fami
-    integer :: biot_type
-    integer, parameter :: nb_resu1 = 4
+    integer(kind=8) :: biot_type
+    integer(kind=8), parameter :: nb_resu1 = 4
     character(len=16), parameter :: resu_name1(nb_resu1) = (/'LAMB_T ', 'LAMB_TL', &
                                                              'LAMB_TN', 'LAMB_TT'/)
     real(kind=8) :: resu_vale1(nb_resu1)
-    integer :: icodre1(nb_resu1)
-    integer, parameter :: nb_resu2 = 4
+    integer(kind=8) :: icodre1(nb_resu1)
+    integer(kind=8), parameter :: nb_resu2 = 4
     character(len=16), parameter :: resu_name2(nb_resu2) = (/'D_LB_T ', 'D_LB_TL', &
                                                              'D_LB_TN', 'D_LB_TT'/)
     real(kind=8) :: resu_vale2(nb_resu2)
-    integer :: icodre2(nb_resu2)
-    integer, parameter :: nb_resu3 = 4
+    integer(kind=8) :: icodre2(nb_resu2)
+    integer(kind=8), parameter :: nb_resu3 = 4
     character(len=16), parameter :: resu_name3(nb_resu3) = (/'LAMB_CT ', 'LAMB_C_L', &
                                                              'LAMB_C_N', 'LAMB_C_T'/)
     real(kind=8) :: resu_vale3(nb_resu3)
-    integer :: icodre3(nb_resu3)
+    integer(kind=8) :: icodre3(nb_resu3)
 !
 ! --------------------------------------------------------------------------------------------------
 !

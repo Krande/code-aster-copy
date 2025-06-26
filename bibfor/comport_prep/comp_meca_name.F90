@@ -33,13 +33,13 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
 #include "asterfort/comp_mfront_vname.h"
 #include "asterfort/comp_meca_code.h"
 !
-    integer, intent(in) :: nbVari, nbVariMeca
+    integer(kind=8), intent(in) :: nbVari, nbVariMeca
     aster_logical, intent(in) :: l_excl
     character(len=16), intent(in) :: vari_excl
     aster_logical, intent(in) :: l_kit_meta
     character(len=16), intent(in) :: extern_addr, rela_comp, defo_comp, kit_comp(4)
     character(len=16), intent(in) :: type_cpla, post_iter, regu_visc, post_incr
-    integer, intent(in) :: extern_type
+    integer(kind=8), intent(in) :: extern_type
     character(len=16), pointer :: infoVari(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -69,12 +69,12 @@ subroutine comp_meca_name(nbVari, nbVariMeca, l_excl, vari_excl, l_kit_meta, &
     character(len=6) :: metaPhasName(10)
     character(len=8) :: metaRelaName(30)
     character(len=16) :: metaGlobName(30)
-    integer :: idummy, idummy2, nbVariOther, iVariMeca, iVari
+    integer(kind=8) :: idummy, idummy2, nbVariOther, iVariMeca, iVari
     character(len=16) :: compCodePy
     character(len=16) :: metaPhas, metaRela, metaGlob
     character(len=16) :: metaPhasPy, metaRelaPy, metaGlobPy
-    integer :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
-    integer :: iMetaPhas, iVariMetaRela, iVariMetaGlob
+    integer(kind=8) :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
+    integer(kind=8) :: iMetaPhas, iVariMetaRela, iVariMetaGlob
 !
 ! --------------------------------------------------------------------------------------------------
 !

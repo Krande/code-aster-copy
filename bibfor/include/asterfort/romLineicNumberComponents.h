@@ -18,7 +18,7 @@
 !
 interface
     subroutine romLineicNumberComponents(nb_node, nb_equa, nb_cmp)
-        integer, intent(in) :: nb_node, nb_equa
-        integer, intent(out) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_node, nb_equa
+        integer(kind=8), intent(out) :: nb_cmp
     end subroutine romLineicNumberComponents
 end interface

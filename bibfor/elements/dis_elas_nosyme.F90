@@ -43,11 +43,11 @@ subroutine dis_elas_nosyme(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, jdc, irep, neq, ii, ifono, icontp, icontm
+    integer(kind=8) :: imat, jdc, irep, neq, ii, ifono, icontp, icontm
     real(kind=8) :: r8bid, dfg(12), dfl(12), fgm(12)
     character(len=8) :: k8bid
     blas_int :: b_incx, b_incy, b_n

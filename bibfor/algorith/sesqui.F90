@@ -18,7 +18,7 @@
 !
 subroutine sesqui(mat, vect, ndim, normec)
     implicit none
-    integer :: ndim
+    integer(kind=8) :: ndim
     complex(kind=8) :: mat(*), vect(ndim), normec
 !
 !  BUT:  < NORME CARREE >
@@ -34,7 +34,7 @@ subroutine sesqui(mat, vect, ndim, normec)
 ! NOR      /O/: NORME CARREE DU VECTEUR
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, idiag, jdiag
+    integer(kind=8) :: i, j, idiag, jdiag
 !-----------------------------------------------------------------------
 !
     normec = dcmplx(0.d0, 0.d0)

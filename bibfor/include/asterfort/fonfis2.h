@@ -21,7 +21,7 @@
 interface
     subroutine fonfis2(noma, nbnoff, fonoeu, absfon, coorfond)
         character(len=8)  :: noma
-        integer           :: nbnoff
+        integer(kind=8)           :: nbnoff
         character(len=24) :: fonoeu
         character(len=24) :: absfon
         character(len=24) :: coorfond

@@ -20,6 +20,6 @@
 !
 interface
     subroutine infmaj_ext(info)
-        integer, intent(in) :: info
+        integer(kind=8), intent(in) :: info
     end subroutine infmaj_ext
 end interface

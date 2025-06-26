@@ -28,7 +28,7 @@ subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp, &
 #include "asterfort/mcmult.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: lmasse, lraide, lamor, nbprop, excl(*)
+    integer(kind=8) :: lmasse, lraide, lamor, nbprop, excl(*)
     complex(kind=8) :: vecp(*)
     real(kind=8) :: fr(*), am(*), omecor, ernorm(*)
 !     CALCUL DE LA NORME D'ERREUR MODALE
@@ -62,8 +62,8 @@ subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iaux1, iaux2, iaux3, iaux4, ivec, j
-    integer :: neq
+    integer(kind=8) :: i, iaux1, iaux2, iaux3, iaux4, ivec, j
+    integer(kind=8) :: neq
     real(kind=8) :: ami, fri
 !-----------------------------------------------------------------------
     call jemarq()

@@ -19,10 +19,10 @@
 !
 interface
     subroutine ivout(lout, n, ix, idigit, ifmt)
-        integer :: lout
-        integer :: n
-        integer :: ix(*)
-        integer :: idigit
+        integer(kind=8) :: lout
+        integer(kind=8) :: n
+        integer(kind=8) :: ix(*)
+        integer(kind=8) :: idigit
         character(len=*) :: ifmt
     end subroutine ivout
 end interface

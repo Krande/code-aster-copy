@@ -67,7 +67,7 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr, &
 !
     character(len=8) :: nomres, nombas, nommes
     character(len=24) :: vrange, vnoeud, basepr, vcham
-    integer :: nbmesu, nbmode, jpara, iexi
+    integer(kind=8) :: nbmesu, nbmode, jpara, iexi
 !
     character(len=1) :: typval
     character(len=8) :: k8bid, k8b, scal, kcmp, kreg
@@ -79,13 +79,13 @@ subroutine mptran(nombas, nommes, nbmesu, nbmode, basepr, &
 !
     aster_logical :: lfonct, zcmplx
 !
-    integer :: i, j, jabs, tmod(1)
-    integer :: jdep, jvit, jacc, jpass, jordr, lord, imes, iret, gd
-    integer :: labs, lmesu, lcoef, lred, jcnsd, jcnsc, jcnsv, n1
-    integer :: ncoef, nfonc, lfonc, null, ibid, jcnsl, nbcmp
-    integer :: lvale, lonmax, iocc, numord, ino, icmp, indice
-    integer :: jcnsk, lrange, lnoeud, nbabs, jord, nbord
-    integer :: jbasm, lcham, nbcham, ich, lch, jpames
+    integer(kind=8) :: i, j, jabs, tmod(1)
+    integer(kind=8) :: jdep, jvit, jacc, jpass, jordr, lord, imes, iret, gd
+    integer(kind=8) :: labs, lmesu, lcoef, lred, jcnsd, jcnsc, jcnsv, n1
+    integer(kind=8) :: ncoef, nfonc, lfonc, null, ibid, jcnsl, nbcmp
+    integer(kind=8) :: lvale, lonmax, iocc, numord, ino, icmp, indice
+    integer(kind=8) :: jcnsk, lrange, lnoeud, nbabs, jord, nbord
+    integer(kind=8) :: jbasm, lcham, nbcham, ich, lch, jpames
 !
     real(kind=8) :: r8bid, dt, pas, diff
 !

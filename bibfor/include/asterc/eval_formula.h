@@ -19,12 +19,12 @@
 interface
     subroutine eval_formula(ptr_code, ptr_globals, params, values, nbparam,&
                             iret, nbres, result)
-        integer, intent(in)  :: ptr_code, ptr_globals
+        integer(kind=8), intent(in)  :: ptr_code, ptr_globals
         character(len=*), intent(in) :: params(*)
         real(kind=8) :: values(*)
-        integer, intent(in)  :: nbparam
-        integer, intent(out)  :: iret
-        integer, intent(in)  :: nbres
+        integer(kind=8), intent(in)  :: nbparam
+        integer(kind=8), intent(out)  :: iret
+        integer(kind=8), intent(in)  :: nbres
         real(kind=8), intent(out) :: result(nbres)
         end subroutine eval_formula
 end interface

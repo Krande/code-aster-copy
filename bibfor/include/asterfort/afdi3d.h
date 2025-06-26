@@ -22,19 +22,19 @@ interface
     subroutine afdi3d(irep, eta, car, val, jdc,&
                       jdv, ivr, iv, kma, ncmp,&
                       ntp, jdcinf, jdvinf, isym )
-        integer :: irep
+        integer(kind=8) :: irep
         real(kind=8) :: eta
         character(len=*) :: car
         real(kind=8) :: val(*)
-        integer :: jdc(3)
-        integer :: jdv(3)
-        integer :: ivr(*)
-        integer :: iv
+        integer(kind=8) :: jdc(3)
+        integer(kind=8) :: jdv(3)
+        integer(kind=8) :: ivr(*)
+        integer(kind=8) :: iv
         character(len=1) :: kma(3)
-        integer :: ncmp
-        integer :: ntp
-        integer :: jdcinf
-        integer :: jdvinf
-        integer :: isym
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: ntp
+        integer(kind=8) :: jdcinf
+        integer(kind=8) :: jdvinf
+        integer(kind=8) :: isym
     end subroutine afdi3d
 end interface

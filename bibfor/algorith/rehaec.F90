@@ -73,16 +73,16 @@ subroutine rehaec(nomres, resgen, nomsst)
     character(len=19) :: numddl, nume_equa_gene, knume, kfreq, harmge
     character(len=24) :: crefe(2), chamba, chamno, seliai, sizlia, sst
     character(len=24) :: valk(2)
-    integer :: itresu(3), elim, iret
-    integer :: i, i1, iad, iarchi, ibid, ich, i_ligr_ss
-    integer :: idresu, ieq, ire1, ire2, ire3
-    integer :: iretou, j, jfreq, jnume, k, k1, ldnew
-    integer :: lfreq, llchab, llors, llprs
-    integer :: lmapro, lmoet, lsilia, lsst
-    integer :: n1, nbcham, nbddg, nbfreq, nbsst, neq
-    integer :: neqet, neqgen, neqred, nusst, nutars
+    integer(kind=8) :: itresu(3), elim, iret
+    integer(kind=8) :: i, i1, iad, iarchi, ibid, ich, i_ligr_ss
+    integer(kind=8) :: idresu, ieq, ire1, ire2, ire3
+    integer(kind=8) :: iretou, j, jfreq, jnume, k, k1, ldnew
+    integer(kind=8) :: lfreq, llchab, llors, llprs
+    integer(kind=8) :: lmapro, lmoet, lsilia, lsst
+    integer(kind=8) :: n1, nbcham, nbddg, nbfreq, nbsst, neq
+    integer(kind=8) :: neqet, neqgen, neqred, nusst, nutars
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
 !-----------------------------------------------------------------------
 !
 ! --- ECRITURE DU TITRE

@@ -24,7 +24,7 @@ interface
         aster_logical, intent(in) :: lResu, lField
         character(len=*), intent(in) :: dsNameZ, meshNameZ
         character(len=8), intent(in) :: fileFormat
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=80), intent(out) :: title
     end subroutine irtitr
 end interface

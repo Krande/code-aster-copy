@@ -35,7 +35,7 @@ subroutine etenc2(cartz, iret)
 !
     character(len=19) :: cart
     character(len=*) :: cartz
-    integer :: iret
+    integer(kind=8) :: iret
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !     CARTZ  : NOM DE LA CARTE A ETENDRE
@@ -47,11 +47,11 @@ subroutine etenc2(cartz, iret)
 !              1 --> LA CARTE CONCERNE AUSSI DES MAILLES TARDIVES
 ! ----------------------------------------------------------------------
     character(len=24) :: valk
-    integer :: nbma, nbedit, igd, code, ient, i, ii, nb
-    integer :: desc, grpma, lima
-    integer :: jptma, iret0, ibid
-    integer :: noli
-    integer :: vali(3)
+    integer(kind=8) :: nbma, nbedit, igd, code, ient, i, ii, nb
+    integer(kind=8) :: desc, grpma, lima
+    integer(kind=8) :: jptma, iret0, ibid
+    integer(kind=8) :: noli
+    integer(kind=8) :: vali(3)
     character(len=8) :: ma
 !
     call jemarq()

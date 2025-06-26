@@ -68,10 +68,10 @@ subroutine dfllty(sdlist, list_method, dtmin)
     character(len=24) :: sdlist_ditr
     real(kind=8), pointer :: v_sdlist_ditr(:) => null()
     character(len=19) :: tablpc
-    integer :: n1, n2, nb_inst, iret, n3, i_inst, i_subd
+    integer(kind=8) :: n1, n2, nb_inst, iret, n3, i_inst, i_subd
     real(kind=8) :: step_mini, step_maxi, step_init, dt
-    integer :: nb_pas_maxi, subd_pas
-    integer :: numrep, nb_adap
+    integer(kind=8) :: nb_pas_maxi, subd_pas
+    integer(kind=8) :: numrep, nb_adap
     character(len=8) :: resu
     character(len=2) :: type
     aster_logical :: exist

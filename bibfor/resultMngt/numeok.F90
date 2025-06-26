@@ -29,11 +29,11 @@ subroutine numeok(storeAccess, &
 #include "asterfort/jeveuo.h"
 !
     character(len=10), intent(in) :: storeAccess
-    integer, intent(in) :: storeIndxNb, storeTimeNb
+    integer(kind=8), intent(in) :: storeIndxNb, storeTimeNb
     character(len=19), intent(in) :: storeIndx, storeTime
     real(kind=8), intent(in) :: storeEpsi
     character(len=8), intent(in) :: storeCrit
-    integer, intent(in) :: fileIndx
+    integer(kind=8), intent(in) :: fileIndx
     real(kind=8), intent(in) :: fileTime
     aster_logical, intent(out) :: astock
 !
@@ -59,8 +59,8 @@ subroutine numeok(storeAccess, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: tref
-    integer :: iStore
-    integer, pointer :: vStoreIndx(:) => null()
+    integer(kind=8) :: iStore
+    integer(kind=8), pointer :: vStoreIndx(:) => null()
     real(kind=8), pointer :: vStoreTime(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

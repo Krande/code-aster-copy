@@ -26,7 +26,7 @@ interface
         character(len=19) :: solveu
         character(len=*) :: nommat
         character(len=*) :: vcine
-        integer :: nsecm
+        integer(kind=8) :: nsecm
         real(kind=8) :: rsolu(*)
         complex(kind=8) :: csolu(*)
         aster_logical :: prepos

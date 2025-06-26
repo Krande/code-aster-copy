@@ -63,14 +63,14 @@ subroutine mgutdm(mdgenz, nmsstz, nusst, questi, repi, &
 !
 !
 !
-    integer :: repi, iret, llmcl, llref, nuss, nusst
-    integer :: vali
+    integer(kind=8) :: repi, iret, llmcl, llref, nuss, nusst
+    integer(kind=8) :: vali
     character(len=*) :: questi
     character(len=24) :: repk
     character(len=24) :: valk(2), nume
     character(len=8) :: modgen, nommcl, basmod, nomsst
     character(len=*) :: mdgenz, nmsstz, repkz
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 !
 !-----------------------------------------------------------------------
 !

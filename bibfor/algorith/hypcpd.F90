@@ -27,7 +27,7 @@ subroutine hypcpd(c11, c22, c33, c12, k, &
     real(kind=8) :: k
     real(kind=8) :: c10, c01, c20
     real(kind=8) :: dsidep(6, 6)
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! ----------------------------------------------------------------------
 !

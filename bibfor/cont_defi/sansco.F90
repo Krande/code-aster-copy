@@ -42,7 +42,7 @@ subroutine sansco(sdcont, keywf, mesh)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_keyw
+    integer(kind=8) :: nb_keyw
     parameter(nb_keyw=4)
     character(len=16) :: keyw_name(nb_keyw), keyw_type(nb_keyw)
 !

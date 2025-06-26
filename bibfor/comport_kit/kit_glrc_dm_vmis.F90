@@ -36,7 +36,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
 !
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
-    integer :: imate, iret
+    integer(kind=8) :: imate, iret
     real(kind=8) :: epsm(6), deps(6), vim(*), ep
     real(kind=8) :: crit(*)
     real(kind=8) :: sigm(*), sig(*), vip(*), dsidep(6, *), t2iu(4)
@@ -58,7 +58,7 @@ subroutine kit_glrc_dm_vmis(imate, compor, epsm, deps, vim, &
 !
 !
     aster_logical :: rigi, resi, is_param_opt(2)
-    integer :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg, icara
+    integer(kind=8) :: i, j, k, ierr, nvv, icp, ncpmax, nsgmax, isg, icara
     real(kind=8) :: emmp(6), demp(6), cel(6, 6), celinv(6, 6), celdam(6, 6)
     real(kind=8) :: emel(6)
     real(kind=8) :: tandam(6, 6), tanepl(6, 6), sigpd(6), deda(6), residu

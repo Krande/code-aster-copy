@@ -29,8 +29,8 @@ subroutine irmano(meshNameZ, &
 #include "asterfort/jexatr.h"
 !
     character(len=*), intent(in) :: meshNameZ
-    integer, intent(in) :: nbCellSelect
-    integer, pointer :: cellSelect(:)
+    integer(kind=8), intent(in) :: nbCellSelect
+    integer(kind=8), pointer :: cellSelect(:)
     aster_logical, pointer :: nodeFlag(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -41,11 +41,11 @@ subroutine irmano(meshNameZ, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cellNbNode
+    integer(kind=8) :: cellNbNode
     character(len=8) :: meshName
-    integer :: iCell, cellNume, iNode, nodeFirst, nodeNume
-    integer, pointer :: conxLong(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8) :: iCell, cellNume, iNode, nodeFirst, nodeNume
+    integer(kind=8), pointer :: conxLong(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

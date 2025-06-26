@@ -38,22 +38,22 @@ subroutine ibdbgs()
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
     real(kind=8) :: tbloc, tgrel
     common/rtblje/tbloc, tgrel
 !
 !     -- COMMON MESTP1 POUR MESURE_TEMPS
-    integer :: mtpniv, mtpsta
+    integer(kind=8) :: mtpniv, mtpsta
     common/mestp1/mtpniv, mtpsta
 !
 ! ----------------------------------------------------------------------
     character(len=3) :: repons
-    integer :: l, i1, iret
+    integer(kind=8) :: l, i1, iret
 !
 !     --- OPTIONS PAR DEFAUT ---
 !-----------------------------------------------------------------------
-    integer :: ifi
+    integer(kind=8) :: ifi
 !-----------------------------------------------------------------------
     call jemarq()
     tbloc = 800.d0

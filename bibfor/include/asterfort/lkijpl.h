@@ -21,8 +21,8 @@
 interface
     subroutine lkijpl(nmat, mater, sigf, nr, drdy,&
                       dsde)
-        integer :: nr
-        integer :: nmat
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sigf(6)
         real(kind=8) :: drdy(nr, nr)

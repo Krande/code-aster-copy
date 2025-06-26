@@ -44,11 +44,11 @@ subroutine te0542(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jvSief, jlsn, jlst
-    integer :: jpmilt, ddlm, nfiss, jfisno, jheavn
-    integer :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, imate
-    integer :: contac, nnom, singu
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, igeom, ivectu
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jbaslo, jvSief, jlsn, jlst
+    integer(kind=8) :: jpmilt, ddlm, nfiss, jfisno, jheavn
+    integer(kind=8) :: nfh, ddlc, nfe, ibid, ddls, nbsig, nddl, jstno, imate
+    integer(kind=8) :: contac, nnom, singu
     aster_logical :: lbid
     real(kind=8) :: sigref(1), depref
     character(len=8) :: enr, elref

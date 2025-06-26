@@ -18,7 +18,7 @@
 !
 interface
     subroutine inices(maxfa, valcen, valfac)
-        integer, intent(in) :: maxfa
+        integer(kind=8), intent(in) :: maxfa
         real(kind=8), intent(out) :: valcen(14, 6)
         real(kind=8), intent(out) :: valfac(maxfa, 14, 6)
     end subroutine inices

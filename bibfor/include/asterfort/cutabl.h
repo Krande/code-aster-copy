@@ -21,13 +21,13 @@
 interface
     subroutine cutabl(indic, nbliac, ajliai, spliai, resocu,&
                       typope, posit, liaiso)
-        integer :: indic
-        integer :: nbliac
-        integer :: ajliai
-        integer :: spliai
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ajliai
+        integer(kind=8) :: spliai
         character(len=24) :: resocu
         character(len=1) :: typope
-        integer :: posit
-        integer :: liaiso
+        integer(kind=8) :: posit
+        integer(kind=8) :: liaiso
     end subroutine cutabl
 end interface

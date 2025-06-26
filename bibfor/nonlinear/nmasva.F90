@@ -32,7 +32,7 @@ subroutine nmasva(list_func_acti, hval_veasse, cnvado, sddyna_)
 #include "asterfort/ndynre.h"
 #include "asterfort/isfonc.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: hval_veasse(*), cnvado
     character(len=19), optional, intent(in) :: sddyna_
 !

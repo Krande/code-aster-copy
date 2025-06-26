@@ -29,7 +29,7 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 #include "asterfort/lxlgut.h"
 #include "asterfort/tbexip.h"
 !
-    integer :: ific
+    integer(kind=8) :: ific
     character(len=8) :: typtes
     character(len=10) :: preci, formr
     character(len=19) :: nomsd
@@ -43,13 +43,13 @@ subroutine engttb(ific, nomsd, typtes, preci, formr)
 ! IN  : FORMR  : FORMAT D'IMPRESSION DU CHAMP VALE REEL
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpara, nblign, vali, ipar, lg, lg1, lg2, i, jvale, jvall
+    integer(kind=8) :: nbpara, nblign, vali, ipar, lg, lg1, lg2, i, jvale, jvall
     real(kind=8) :: valr
     aster_logical :: exist
     character(len=3) :: type
     character(len=16) :: nomsym
     character(len=90) :: form1, form2, form3
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 !     ------------------------------------------------------------------
 !

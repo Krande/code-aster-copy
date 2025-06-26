@@ -36,7 +36,7 @@ subroutine zzpoly(nno, ino, xino, yino, sig, &
 !
     real(kind=8) :: xino, yino, sig(1), b(9, 4)
 !-----------------------------------------------------------------------
-    integer :: ic, ino, nno
+    integer(kind=8) :: ic, ino, nno
 !-----------------------------------------------------------------------
     if (nno .eq. 3) then
         do ic = 1, 4

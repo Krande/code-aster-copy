@@ -50,7 +50,7 @@ subroutine op0027()
     type(CalcG_table) :: cgTable
     type(CalcG_stat)  :: cgStat
 !
-    integer           :: i_opt, i_nume
+    integer(kind=8)           :: i_opt, i_nume
 !---------------------------------------------------------------------------------------------------
     call jemarq()
     call infmaj()

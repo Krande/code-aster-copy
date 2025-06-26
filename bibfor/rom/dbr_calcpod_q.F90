@@ -31,7 +31,7 @@ subroutine dbr_calcpod_q(paraPod, base, m, n, q)
 !
     type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
     type(ROM_DS_Empi), intent(in) :: base
-    integer, intent(in) :: m, n
+    integer(kind=8), intent(in) :: m, n
     real(kind=8), pointer :: q(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,11 +50,11 @@ subroutine dbr_calcpod_q(paraPod, base, m, n, q)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iSnap, iEqua
-    integer :: nbSnap, nbEqua, nbSlice, nbCmp
-    integer :: numeSnap
-    integer :: nodeNume, cmpNume, iSlice, i_2d, n_2d
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iSnap, iEqua
+    integer(kind=8) :: nbSnap, nbEqua, nbSlice, nbCmp
+    integer(kind=8) :: numeSnap
+    integer(kind=8) :: nodeNume, cmpNume, iSlice, i_2d, n_2d
     character(len=8)  :: baseType, resultName
     real(kind=8), pointer :: fieldVale(:) => null()
     character(len=24) :: fieldObject

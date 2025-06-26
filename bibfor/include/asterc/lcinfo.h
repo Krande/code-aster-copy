@@ -19,8 +19,8 @@
 interface
     subroutine lcinfo(compor, numlc, nbvari, nbvari_exte)
         character(len=*), intent(in) :: compor
-        integer, intent(out) :: numlc
-        integer, intent(out) :: nbvari
-        integer, intent(out) :: nbvari_exte
+        integer(kind=8), intent(out) :: numlc
+        integer(kind=8), intent(out) :: nbvari
+        integer(kind=8), intent(out) :: nbvari_exte
     end subroutine lcinfo
 end interface

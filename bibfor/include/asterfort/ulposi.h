@@ -20,8 +20,8 @@
 !
 interface
     subroutine ulposi(unit, posi, ierr)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: posi
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine ulposi
 end interface

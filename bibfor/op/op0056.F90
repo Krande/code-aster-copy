@@ -75,9 +75,9 @@ subroutine op0056()
 #include "asterfort/utctab.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ifr, nbcou, icou, n, jepor, jrela, k, lonobj, jmate, jobme
-    integer :: jobmc, i, nimpr, impr, nbres, j, nobj, jobth, jobtc, nbad, iret
-    integer :: nv, n1
+    integer(kind=8) :: ifr, nbcou, icou, n, jepor, jrela, k, lonobj, jmate, jobme
+    integer(kind=8) :: jobmc, i, nimpr, impr, nbres, j, nobj, jobth, jobtc, nbad, iret
+    integer(kind=8) :: nv, n1
     real(kind=8) :: laml, lamt, lamn, cp, qt(31), valres(12)
     real(kind=8) :: epais, orien, eptot, epi, ordi, rhohom
     real(kind=8) :: el, et, nult, glt, qll, qtt, qlt, gln, gtn
@@ -97,7 +97,7 @@ subroutine op0056()
     real(kind=8) :: l11, l22, l12
     real(kind=8) :: rzkp, rzkm, dif3, dif4, dif5
     real(kind=8) :: r8bid, h, h2, h3, h4, epsi
-    integer :: icodre(12)
+    integer(kind=8) :: icodre(12)
     character(len=2) :: val
     character(len=6) :: k6
     character(len=24) :: valk(2)

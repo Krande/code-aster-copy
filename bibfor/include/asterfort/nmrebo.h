@@ -30,12 +30,12 @@ interface
         real(kind=8) :: sens
         real(kind=8) :: rho
         real(kind=8) :: rhoopt
-        integer :: ldcopt
-        integer :: ldccvg
+        integer(kind=8) :: ldcopt
+        integer(kind=8) :: ldccvg
         real(kind=8) :: fopt
         real(kind=8) :: fcvg
-        integer :: opt
-        integer :: act
+        integer(kind=8) :: opt
+        integer(kind=8) :: act
         real(kind=8) :: rhomin
         real(kind=8) :: rhomax
         real(kind=8) :: rhoexm

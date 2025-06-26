@@ -45,7 +45,7 @@ subroutine nmimre(ds_conv, ds_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_resi, nb_resi
+    integer(kind=8) :: i_resi, nb_resi
     real(kind=8) :: vale_calc
     character(len=16) :: locus_calc
     character(len=24) :: col_name, col_name_locus

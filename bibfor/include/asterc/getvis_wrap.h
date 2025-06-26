@@ -22,9 +22,9 @@ interface
     subroutine getvis_wrap(motfac, motcle, iocc, mxval, isval, nbval)
         character(len=*) :: motfac
         character(len=*) :: motcle
-        integer :: iocc
-        integer :: mxval
-        integer :: isval(*)
-        integer :: nbval
+        integer(kind=8) :: iocc
+        integer(kind=8) :: mxval
+        integer(kind=8) :: isval(*)
+        integer(kind=8) :: nbval
     end subroutine getvis_wrap
 end interface

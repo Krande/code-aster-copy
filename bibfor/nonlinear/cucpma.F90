@@ -24,7 +24,7 @@ subroutine cucpma(deficu, resocu, neq, nbliai, numedd, matrcu)
 #include "asterfort/cumata.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: neq, nbliai
+    integer(kind=8) :: neq, nbliai
     character(len=24) :: deficu, resocu
     character(len=14) :: numedd
     character(len=19) :: matrcu
@@ -47,7 +47,7 @@ subroutine cucpma(deficu, resocu, neq, nbliai, numedd, matrcu)
 !
 !
 !
-    integer :: nmult
+    integer(kind=8) :: nmult
     character(len=24) :: enat
     character(len=14) :: numecu
 !

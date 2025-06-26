@@ -54,8 +54,8 @@ subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacoor, iadnum, ianorm, in2, lobj2, num1
-    integer :: num2
+    integer(kind=8) :: i, iacoor, iadnum, ianorm, in2, lobj2, num1
+    integer(kind=8) :: num2
     real(kind=8) :: x1, x2, x21, y1, y2, y21, z1
     real(kind=8) :: z2, z21
 !-----------------------------------------------------------------------

@@ -20,11 +20,11 @@
 !
           interface 
             subroutine rcadma(jmat,phenom,nomres,valres,icodre,iarret)
-              integer :: jmat
+              integer(kind=8) :: jmat
               character(len=*) :: phenom
               character(len=*) :: nomres
-              integer :: valres
-              integer :: icodre
-              integer :: iarret
+              integer(kind=8) :: valres
+              integer(kind=8) :: icodre
+              integer(kind=8) :: iarret
             end subroutine rcadma
           end interface 

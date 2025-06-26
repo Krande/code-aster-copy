@@ -22,8 +22,8 @@ interface
                                 nbPoinQuad, poinQuad)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: baseName
-        integer, intent(in) :: iPair
-        integer, intent(out) :: nbPoinQuad
+        integer(kind=8), intent(in) :: iPair
+        integer(kind=8), intent(out) :: nbPoinQuad
         real(kind=8), intent(out) :: poinQuad(3, MAX_NB_QUAD)
     end subroutine quadPoinCoorWrap
 end interface

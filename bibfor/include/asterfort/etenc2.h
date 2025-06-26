@@ -21,6 +21,6 @@
 interface
     subroutine etenc2(cartz, iret)
         character(len=*) :: cartz
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine etenc2
 end interface

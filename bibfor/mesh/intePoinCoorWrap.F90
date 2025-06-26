@@ -34,7 +34,7 @@ subroutine intePoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: nodeCoorName
     character(len=24), intent(in) :: baseName
-    integer, intent(in) :: iPair
+    integer(kind=8), intent(in) :: iPair
     real(kind=8), intent(out)  :: poinInteReal(3, MAX_NB_INTE)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine intePoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
 ! --------------------------------------------------------------------------------------------------
 !
     type(CELL_GEOM) :: cellSlav
-    integer :: nbPoinInte
+    integer(kind=8) :: nbPoinInte
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     real(kind=8), pointer :: nodeCoor(:) => null()
 !

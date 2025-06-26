@@ -20,7 +20,7 @@
 !
 interface
     subroutine uttrir(nbvale, vale, eps)
-        integer :: nbvale
+        integer(kind=8) :: nbvale
         real(kind=8) :: vale(*)
         real(kind=8) :: eps
     end subroutine uttrir

@@ -33,7 +33,7 @@ subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum, &
 #include "asterfort/nlget.h"
 #include "asterfort/nlsav.h"
 !
-    integer :: ioc, iliai
+    integer(kind=8) :: ioc, iliai
     aster_logical :: lnoue2
     character(len=8) :: repere, sd_nl
     character(len=*) :: nlcase
@@ -59,7 +59,7 @@ subroutine mdchre(nlcase, ioc, iliai, mdgene, typnum, &
 !                PARCHO(ILIAI,47)= NORMALE Z
 ! IN  : LNOUE2 : CHOC DEFINIT ENTRE 2 NOEUDS
 !     ------------------------------------------------------------------
-    integer :: n1, iret, jcoord
+    integer(kind=8) :: n1, iret, jcoord
     real(kind=8) :: tempo(3), dircho(3), coord(3), txno
     character(len=16) :: motfac, obstyp
     character(len=24) :: mdssno

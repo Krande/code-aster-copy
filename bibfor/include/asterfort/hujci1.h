@@ -28,6 +28,6 @@ interface
         real(kind=8) :: sigd(6)
         real(kind=8) :: i1f
         aster_logical :: tract
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine hujci1
 end interface

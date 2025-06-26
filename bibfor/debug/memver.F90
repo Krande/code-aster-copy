@@ -47,7 +47,7 @@ subroutine memver(action, prec, arret, titre)
 !
     real(kind=8) :: tmax, mtots, mtot, rval(1)
     character(len=8) :: k8tab(1)
-    integer :: iret
+    integer(kind=8) :: iret
     save mtots, precs
 !
     ASSERT(action .eq. 'MESURE' .or. action .eq. 'VERIF')

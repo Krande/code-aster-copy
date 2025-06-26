@@ -23,6 +23,6 @@ interface
         character(len=*) :: cns1z
         character(len=*) :: cns2z
         real(kind=8) :: pscal
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine cnsdot
 end interface

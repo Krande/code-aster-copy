@@ -24,9 +24,9 @@ interface
                       gradpfm, vect)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: ndim
-        integer :: pla(27)
-        integer :: nnops
+        integer(kind=8) :: ndim
+        integer(kind=8) :: pla(27)
+        integer(kind=8) :: nnops
         real(kind=8) :: saut(3)
         real(kind=8) :: sautm(3)
         real(kind=8) :: nd(3)

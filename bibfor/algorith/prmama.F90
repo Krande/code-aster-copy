@@ -65,12 +65,12 @@ subroutine prmama(iprod, amat, na, na1, na2, &
 ! ARGUMENTS
 ! ---------
 #include "blas/ddot.h"
-    integer :: iprod, na, na1, na2, nb, nb1, nb2, nc, nc1, nc2, ier
+    integer(kind=8) :: iprod, na, na1, na2, nb, nb1, nb2, nc, nc1, nc2, ier
     real(kind=8) :: amat(na, *), bmat(nb, *), cmat(nc, *)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: ctemp, zero
     blas_int :: b_incx, b_incy, b_n
 !

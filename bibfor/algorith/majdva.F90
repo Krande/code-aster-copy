@@ -55,8 +55,8 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
     character(len=19) :: vitplu, accplu
     character(len=19) :: ddepla, dvitla, daccla
     character(len=19) :: romk
-    integer :: i, icomp, iran(3)
-    integer :: neq
+    integer(kind=8) :: i, icomp, iran(3)
+    integer(kind=8) :: neq
     real(kind=8) :: theta1(3), theta2(3), deldet(3)
     character(len=19) :: depplu, depdel
     character(len=19) :: depkm1, vitkm1, acckm1, romkm1
@@ -72,7 +72,7 @@ subroutine majdva(numedd, sdnume, sddyna, valinc, solalg)
     real(kind=8), pointer :: vromk(:) => null()
     real(kind=8), pointer :: vitkm(:) => null()
     real(kind=8), pointer :: vitp(:) => null()
-    integer, pointer :: ndro(:) => null()
+    integer(kind=8), pointer :: ndro(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

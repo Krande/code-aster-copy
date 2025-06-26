@@ -21,10 +21,10 @@
 interface
     subroutine refode(nbcmb, angle, nomch, nuharm, tyharm,&
                       coef, basz, chpres)
-        integer :: nbcmb
+        integer(kind=8) :: nbcmb
         real(kind=8) :: angle
         character(len=*) :: nomch(*)
-        integer :: nuharm(*)
+        integer(kind=8) :: nuharm(*)
         character(len=*) :: tyharm(*)
         real(kind=8) :: coef(*)
         character(len=*) :: basz

@@ -27,7 +27,7 @@ subroutine lisopt(prefob, nomo, typech, indxch, option, &
 #include "asterfort/jemarq.h"
 #include "asterfort/lisdef.h"
 #include "asterfort/lislic.h"
-    integer :: indxch
+    integer(kind=8) :: indxch
     character(len=8) :: nomo
     character(len=16) :: option
     character(len=19) :: carte, ligcal
@@ -55,7 +55,7 @@ subroutine lisopt(prefob, nomo, typech, indxch, option, &
 ! OUT LIGCAL : NOM DU LIGREL SUR LEQUEL ON FAIT LE CALCUL
 !
     character(len=24) :: nomobj
-    integer :: itypob(2), ibid(2)
+    integer(kind=8) :: itypob(2), ibid(2)
 !
 ! ----------------------------------------------------------------------
 !

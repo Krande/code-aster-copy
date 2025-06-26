@@ -21,8 +21,8 @@
 interface
     subroutine mefgec(ndim, nbcyl, som, xint, yint,&
                       rint, dcent, ficent, d, fi)
-        integer :: nbcyl
-        integer :: ndim(14)
+        integer(kind=8) :: nbcyl
+        integer(kind=8) :: ndim(14)
         real(kind=8) :: som(9)
         real(kind=8) :: xint(*)
         real(kind=8) :: yint(*)

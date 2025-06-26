@@ -27,7 +27,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi, &
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
     aster_logical :: grand, axi
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
     real(kind=8) :: dfdi(nno, ndim), b(6, 3, nno)
 !
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi, &
 ! OUT B       : MATRICE B : B(6,3,NNP)
 ! ----------------------------------------------------------------------
 !
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: r2
 ! ----------------------------------------------------------------------
 !

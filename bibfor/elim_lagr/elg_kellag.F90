@@ -36,7 +36,7 @@ subroutine elg_kellag(matass, solveu, kellag)
 ! ----------------------------------------------------------------------
 !
 !
-    integer ::   n1
+    integer(kind=8) ::   n1
     character(len=19) :: matas1, solve1
     character(len=3) :: kbid
     character(len=24), pointer :: slvk(:) => null()

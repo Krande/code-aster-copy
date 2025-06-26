@@ -55,8 +55,8 @@ subroutine rscopi(base, sd1, sd2)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
-    integer :: iatava, nbmax
+    integer(kind=8) :: i, j, nbcham, nbordr, iret, nbac, nbpara, nbpa, jpa, ipara
+    integer(kind=8) :: iatava, nbmax
     aster_logical :: dejfai
     character(len=1) :: bas2
     character(len=4) :: type, typacc
@@ -64,7 +64,7 @@ subroutine rscopi(base, sd1, sd2)
     character(len=16) :: nopara, nomsy
     character(len=19) :: sdr1, sdr2, ch1, ch2
     character(len=24) :: nompar
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !
 ! DEB-------------------------------------------------------------------
 !

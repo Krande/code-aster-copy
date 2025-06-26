@@ -21,9 +21,9 @@
 interface
     function hdfrsv(i, j, itab, iconv)
         hid_t :: i
-        integer :: j
+        integer(kind=8) :: j
         character(len=*) :: itab(*)
-        integer :: iconv
-        integer :: hdfrsv
+        integer(kind=8) :: iconv
+        integer(kind=8) :: hdfrsv
     end function hdfrsv
 end interface

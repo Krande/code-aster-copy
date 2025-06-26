@@ -30,9 +30,9 @@ subroutine cpmptr3(conloc, jmacou, indno, indma)
 #include "asterfort/assert.h"
 
 !
-    integer, intent(in) :: indma
-    integer, intent(in) :: indno
-    integer, intent(in) :: jmacou
+    integer(kind=8), intent(in) :: indma
+    integer(kind=8), intent(in) :: indno
+    integer(kind=8), intent(in) :: jmacou
     character(len=24), intent(in) :: conloc
 !
 ! -------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine cpmptr3(conloc, jmacou, indno, indma)
 ! IN        INDNO   INDICE DU PREMIER NOEUD AJOUTE
 ! IN        INDMA   INDICE DE LA PREMIERE MAILLE AJOUTEE
 ! -------------------------------------------------------------------------------------------------
-    integer :: jconloc
+    integer(kind=8) :: jconloc
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 

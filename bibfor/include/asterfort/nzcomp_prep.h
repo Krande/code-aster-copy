@@ -19,7 +19,7 @@
 interface
     subroutine nzcomp_prep(jv_mater, phase_type, metaPara)
         use Metallurgy_type
-        integer, intent(in) :: jv_mater
+        integer(kind=8), intent(in) :: jv_mater
         character(len=16), intent(in) :: phase_type
         type(META_MaterialParameters), intent(out) :: metaPara
     end subroutine nzcomp_prep

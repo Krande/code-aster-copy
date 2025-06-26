@@ -19,7 +19,7 @@
 interface
     subroutine rsexc1(nomsd, nomsy, nume_store, chextr)
         character(len=*), intent(in) :: nomsd, nomsy
-        integer, intent(in) :: nume_store
+        integer(kind=8), intent(in) :: nume_store
         character(len=*), intent(out) :: chextr
     end subroutine rsexc1
 end interface

@@ -21,9 +21,9 @@
 interface
     subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff,&
                 igeom,ideplm,ideplp, i_pres, imatun)
-    integer, intent(in) :: nno
-    integer, intent(in) :: npg, kpg
-    integer, intent(in) :: igeom, ideplm,ideplp , imatun, i_pres
+    integer(kind=8), intent(in) :: nno
+    integer(kind=8), intent(in) :: npg, kpg
+    integer(kind=8), intent(in) :: igeom, ideplm,ideplp , imatun, i_pres
     real(kind=8), intent(in) :: poidsg
     real(kind=8), intent(in) :: vff(nno, npg)
     real(kind=8), intent(in) :: dff(2, nno)

@@ -25,8 +25,8 @@ interface
                       tau1, tau2, lnfixe)
         character(len=8) :: noma
         character(len=4) :: typent
-        integer :: nument
-        integer :: itype
+        integer(kind=8) :: nument
+        integer(kind=8) :: itype
         real(kind=8) :: vector(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)

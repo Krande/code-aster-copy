@@ -23,15 +23,15 @@ interface
                       yint, rint, sgn, orig, beta,&
                       ppxx, ppxy, ppyx, ppyy, vnxx,&
                       vnxy, vnyx, vnyy, tmp)
-        integer :: nbgrp
-        integer :: nbcyl
-        integer :: ndim(14)
-        integer :: numgrp(*)
+        integer(kind=8) :: nbgrp
+        integer(kind=8) :: nbcyl
+        integer(kind=8) :: ndim(14)
+        integer(kind=8) :: numgrp(*)
         real(kind=8) :: xint(*)
         real(kind=8) :: yint(*)
         real(kind=8) :: rint(*)
-        integer :: sgn(*)
-        integer :: orig(*)
+        integer(kind=8) :: sgn(*)
+        integer(kind=8) :: orig(*)
         real(kind=8) :: beta(*)
         real(kind=8) :: ppxx(nbcyl, nbgrp)
         real(kind=8) :: ppxy(nbcyl, nbgrp)

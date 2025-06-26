@@ -55,8 +55,8 @@ subroutine te0235(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, lmater, j, lorien, lmat, nno, nc, kpg, spt
-    integer :: itype, irota, jacf
+    integer(kind=8) :: i, lmater, j, lorien, lmat, nno, nc, kpg, spt
+    integer(kind=8) :: itype, irota, jacf
     real(kind=8) :: omega(3), omegl(3), s, xl
     real(kind=8) :: e, g, xnu, rho, a1, a2, xiy1, xiy2, xiz1, xiz2, alfay1, alfay2, alfaz1, alfaz2
     real(kind=8) :: a, xiy, xiz
@@ -64,18 +64,18 @@ subroutine te0235(option, nomte)
     real(kind=8) :: carsec(6), rbid, casrho(6), casece(6)
     character(len=8) :: fami, poum
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=6)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     character(len=16) :: nomres(nbres), elas_keyword
-    integer :: elas_id
+    integer(kind=8) :: elas_id
     data nomres/'E', 'NU', 'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 25
+    integer(kind=8), parameter :: nb_cara = 25
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1      ', 'IY1     ', 'IZ1     ', 'AY1     ', 'AZ1     ', &

@@ -28,7 +28,7 @@ function lisico(genchz, genrec)
 #include "asterfort/lisdef.h"
     aster_logical :: lisico
     character(len=*) :: genchz
-    integer :: genrec
+    integer(kind=8) :: genrec
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,7 +43,7 @@ function lisico(genchz, genrec)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: tabcod(30), iposit(2), ibid
+    integer(kind=8) :: tabcod(30), iposit(2), ibid
     character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------

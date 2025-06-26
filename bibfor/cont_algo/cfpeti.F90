@@ -34,10 +34,10 @@ subroutine cfpeti(sdcont_solv, neq, nbliai, nbliac, &
 !
 
     character(len=24) :: sdcont_solv
-    integer :: neq, nbliai
-    integer :: nbliac
+    integer(kind=8) :: neq, nbliai
+    integer(kind=8) :: nbliac
     real(kind=8) :: rho
-    integer :: llliai, llliac
+    integer(kind=8) :: llliai, llliac
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,15 +64,15 @@ subroutine cfpeti(sdcont_solv, neq, nbliai, nbliac, &
     real(kind=8) :: rhorho
     real(kind=8) :: aadelt, jeuold, jeunew, jeuinc
     aster_logical :: liaiac, delpos, lelpiv
-    integer :: btotal, iliai, iliac
+    integer(kind=8) :: btotal, iliai, iliac
     character(len=19) :: liac
-    integer :: jliac
+    integer(kind=8) :: jliac
     character(len=24) :: apcoef, apddl, appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=24) :: jeuite
-    integer :: jjeuit
+    integer(kind=8) :: jjeuit
     character(len=19) :: ddeplc, ddelt
-    integer :: nbddl, jdecal
+    integer(kind=8) :: nbddl, jdecal
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()
 !

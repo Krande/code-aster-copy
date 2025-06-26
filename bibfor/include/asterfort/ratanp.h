@@ -23,8 +23,8 @@ interface
         real(kind=8) :: rprops(*)
         real(kind=8) :: edge
         real(kind=8) :: apex
-        integer      :: ii
-        integer      :: jj
-        integer      :: mm
+        integer(kind=8)      :: ii
+        integer(kind=8)      :: jj
+        integer(kind=8)      :: mm
     end subroutine ratanp
 end interface

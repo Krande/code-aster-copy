@@ -45,18 +45,18 @@ subroutine pmfmas(nomte, option, rhoflu, icdmat, kanl, mlv)
 !
     character(len=*) :: nomte, option
     real(kind=8) :: mlv(*), rhoflu
-    integer :: kanl, icdmat
+    integer(kind=8) :: kanl, icdmat
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jacf
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: jacf
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
     real(kind=8) :: casrho(6), xl, rbid, cars1(6), co12, co13
     real(kind=8) :: matp1(78), a, xiy, xiz, casece(6), g
     real(kind=8) :: alfay, alfaz, ey, ez, casect(6)
     character(len=16) :: ch16
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 4
+    integer(kind=8), parameter :: nb_cara = 4
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'AY1', 'AZ1', 'EY1', 'EZ1'/

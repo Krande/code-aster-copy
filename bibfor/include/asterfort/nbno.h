@@ -20,7 +20,7 @@
 !
 interface
     function nbno(mode)
-        integer :: mode
-        integer :: nbno
+        integer(kind=8) :: mode
+        integer(kind=8) :: nbno
     end function nbno
 end interface

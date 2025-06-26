@@ -23,11 +23,11 @@
 interface
     subroutine mcmmvr(cumul, lmat, smdi, smhc, neq,&
                       vect, xsol, nbvect, vectmp, prepos)
-        integer :: nbvect
-        integer :: neq
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: neq
         character(len=*) :: cumul
-        integer :: lmat
-        integer :: smdi(*)
+        integer(kind=8) :: lmat
+        integer(kind=8) :: smdi(*)
         integer(kind=4) :: smhc(*)
         complex(kind=8) :: vect(neq, nbvect)
         complex(kind=8) :: xsol(neq, nbvect)

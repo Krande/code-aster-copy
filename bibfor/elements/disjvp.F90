@@ -74,14 +74,14 @@ subroutine disjvp(for_discret, iret)
 !
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, ivarim, jdc, irep, jtp, jtm, idepen, imatsym, ifono, iretlc, icontp, ivarip
-    integer :: iadzi, iazk24, igeom
-    integer :: icarcr
-    integer :: icontm, ii
+    integer(kind=8) :: imat, ivarim, jdc, irep, jtp, jtm, idepen, imatsym, ifono, iretlc, icontp, ivarip
+    integer(kind=8) :: iadzi, iazk24, igeom
+    integer(kind=8) :: icarcr
+    integer(kind=8) :: icontm, ii
     character(len=24) :: messak(5)
 !
 !
@@ -93,11 +93,11 @@ subroutine disjvp(for_discret, iret)
     character(len=8) :: k8bid
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nbre1 = 8
+    integer(kind=8), parameter :: nbre1 = 8
     real(kind=8) :: valre1(nbre1)
-    integer :: codre1(nbre1)
+    integer(kind=8) :: codre1(nbre1)
     character(len=8) :: nomre1(nbre1)
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     real(kind=8) :: valpar
     character(len=8) :: nompar
     data nomre1/'KE', 'KP', 'KDP', 'KDM', 'RDP', 'RDM', 'MYP', 'MYM'/
@@ -106,24 +106,24 @@ subroutine disjvp(for_discret, iret)
 !   Pour l'intégration de la loi de comportement
     real(kind=8) :: temps0, temps1, dtemps
 !   Paramètres de la loi :     KE      KP    KDP    KDM     RDP    RDM    MYP    MYM
-    integer, parameter :: ike = 1, ikdp = 3, ikdm = 4, irdp = 5, irdm = 6
+    integer(kind=8), parameter :: ike = 1, ikdp = 3, ikdm = 4, irdp = 5, irdm = 6
 !   integer, parameter      :: ike=1, ikp=2, ikdp=3, ikdm=4, irdp=5, irdm=6, imyp=7, imym=8
-    integer, parameter :: nbpara = 8
+    integer(kind=8), parameter :: nbpara = 8
     real(kind=8) :: ldcpar(nbpara)
-    integer :: ldcpai(1)
+    integer(kind=8) :: ldcpai(1)
     character(len=8) :: ldcpac(1)
 !   Équations du système
-    integer, parameter :: nbequa = 7
+    integer(kind=8), parameter :: nbequa = 7
     real(kind=8) :: y0(nbequa), dy0(nbequa), resu(nbequa*2), errmax, ynorme(nbequa)
-    integer :: nbdecp
+    integer(kind=8) :: nbdecp
 !   Variables internes
-    integer, parameter :: nbvari = 9, nbcorr = 6, idebut = nbvari, iddp = 7, iddm = 8
-    integer :: Correspond(nbcorr)
+    integer(kind=8), parameter :: nbvari = 9, nbcorr = 6, idebut = nbvari, iddp = 7, iddm = 8
+    integer(kind=8) :: Correspond(nbcorr)
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
 !   système d'équations :
-    integer, parameter :: imoment = 1, itheta = 2, ithetap = 3, idp = 4, idm = 5, ixm = 6
-    integer, parameter :: idiss = 7
+    integer(kind=8), parameter :: imoment = 1, itheta = 2, ithetap = 3, idp = 4, idm = 5, ixm = 6
+    integer(kind=8), parameter :: idiss = 7
 ! --------------------------------------------------------------------------------------------------
     real(kind=8) :: xl(7), deplac, Dp, Dm
     blas_int :: b_incx, b_incy, b_n

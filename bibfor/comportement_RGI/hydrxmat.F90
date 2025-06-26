@@ -27,7 +27,7 @@ subroutine hydrxmat(xmat0, xmat1, hydra1, hydras, n, &
 #include "asterfort/utmess.h"
     real(kind=8), intent(in) :: xmat0, hydra1, hydras, n
     real(kind=8), intent(out) :: xmat1
-    integer, intent(out) :: erreur
+    integer(kind=8), intent(out) :: erreur
 !   declaration locale
     real(kind=8) :: yy, zzmin, hydra
 !   avant le seuil d hydratation on a 1e-3 des cracateristiques

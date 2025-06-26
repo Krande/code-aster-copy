@@ -42,15 +42,15 @@ subroutine dtmintg(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer :: nbnoli, method
+    integer(kind=8) :: nbnoli, method
     character(len=8) :: sd_dtm, sd_int, sd_nl
     real(kind=8), pointer :: nlsav1(:) => null()
     real(kind=8), pointer :: nlsav2(:) => null()
-    integer, pointer :: buffnl(:) => null()
+    integer(kind=8), pointer :: buffnl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 !   0 - Initializations

@@ -23,7 +23,7 @@ interface
                                   dvl, dpe, dve, Predic, force, varmo, varpl)
         use te0047_type
         type(te0047_dscr), intent(in) :: for_discret
-        integer         :: icodma
+        integer(kind=8)         :: icodma
         real(kind=8)    :: ulp(*), xg(*)
         real(kind=8)    :: klv(*), kgv(*)
         real(kind=8)    :: dvl(*), dpe(*) ,dve(*), force(*), varmo(*), varpl(*)

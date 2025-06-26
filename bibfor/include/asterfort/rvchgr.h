@@ -25,6 +25,6 @@ interface
         character(len=24) :: nlsnac
         character(len=8) :: repere
         character(len=19) :: sdnewr
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rvchgr
 end interface

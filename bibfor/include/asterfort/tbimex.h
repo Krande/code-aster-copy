@@ -22,8 +22,8 @@ interface
     subroutine tbimex(table, ifr, nparim, lipaim, formaz,&
                       formar)
         character(len=*) :: table
-        integer :: ifr
-        integer :: nparim
+        integer(kind=8) :: ifr
+        integer(kind=8) :: nparim
         character(len=*) :: lipaim(*)
         character(len=*) :: formaz
         character(len=*) :: formar

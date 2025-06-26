@@ -22,6 +22,6 @@ interface
     subroutine gtoptk(opt, valk, iret)
         character(len=*) :: opt
         character(len=*) :: valk
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine gtoptk
 end interface

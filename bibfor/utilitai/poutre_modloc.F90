@@ -29,12 +29,12 @@ subroutine poutre_modloc(modloc, lnomv, nbnomv, lvaleur, valeur, &
 #include "asterfort/tecach.h"
 !
     character(len=*), intent(in) :: modloc
-    integer, intent(in) :: nbnomv
+    integer(kind=8), intent(in) :: nbnomv
     character(len=*), intent(in) :: lnomv(nbnomv)
     real(kind=8), intent(out), optional :: lvaleur(nbnomv)
     real(kind=8), intent(out), optional :: valeur
     character(len=*), intent(in), optional :: arret
-    integer, intent(out), optional :: retour
+    integer(kind=8), intent(out), optional :: retour
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,13 +55,13 @@ subroutine poutre_modloc(modloc, lnomv, nbnomv, lvaleur, valeur, &
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    integer :: dimdata
+    integer(kind=8) :: dimdata
     parameter(dimdata=25)
     real(kind=8) ::     r8data(dimdata)
     character(len=8) :: k8data(dimdata)
 !
-    integer :: isect, ii, jj, jj0, iret
-    integer :: nbvaleur, nbdata
+    integer(kind=8) :: isect, ii, jj, jj0, iret
+    integer(kind=8) :: nbvaleur, nbdata
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -48,13 +48,13 @@ subroutine pasfre(disc, freq, pasf, dim, nbm, &
 !
 #include "jeveux.h"
 #include "asterc/r8pi.h"
-    integer :: dim, nb, nbm
+    integer(kind=8) :: dim, nb, nbm
     real(kind=8) :: freq(2, nbm, *), pasf(dim*nb), disc(2, *)
 !-----------------------------------------------------------------------
 !C
 !-----------------------------------------------------------------------
-    integer :: if, im, imodi, ip, iv, iz
-    integer :: nb4, nbpf, nbz, numo
+    integer(kind=8) :: if, im, imodi, ip, iv, iz
+    integer(kind=8) :: nb4, nbpf, nbz, numo
     real(kind=8) :: df, dff, fmax, fmin, freqf, freqi, pas
     real(kind=8) :: pi
 !-----------------------------------------------------------------------

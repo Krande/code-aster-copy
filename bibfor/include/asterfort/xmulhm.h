@@ -25,28 +25,28 @@ interface
                       nfh, nfiss, ninter,&
                       nlact, nno, nnol, nnom, nnos,&
                       pla, pos, typma, jstano)
-        integer :: contac
-        integer :: ddls
-        integer :: ddlc
-        integer :: ddlm
-        integer :: jaint
-        integer :: ifiss
-        integer :: jheano
-        integer :: vstnc(*)
-        integer :: lact(16)
+        integer(kind=8) :: contac
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: jaint
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: jheano
+        integer(kind=8) :: vstnc(*)
+        integer(kind=8) :: lact(16)
         aster_logical :: lcalel
         aster_logical :: lelim
-        integer :: nfh
-        integer :: nfiss
-        integer :: ninter
-        integer :: nlact(2)
-        integer :: nno
-        integer :: nnol
-        integer :: nnom
-        integer :: nnos
-        integer :: pla(27)
-        integer :: pos(16)
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ninter
+        integer(kind=8) :: nlact(2)
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnol
+        integer(kind=8) :: nnom
+        integer(kind=8) :: nnos
+        integer(kind=8) :: pla(27)
+        integer(kind=8) :: pos(16)
         character(len=8) :: typma
-        integer, optional, intent(in) :: jstano
+        integer(kind=8), optional, intent(in) :: jstano
     end subroutine xmulhm
 end interface

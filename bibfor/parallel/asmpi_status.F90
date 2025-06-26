@@ -31,8 +31,8 @@ subroutine asmpi_status(istat, resp0)
 #include "asterfort/assert.h"
 #include "asterfort/asmpi_stop.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: istat
-    integer, intent(out) :: resp0
+    integer(kind=8), intent(in) :: istat
+    integer(kind=8), intent(out) :: resp0
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI SEND STAT
 !       ENVOIE L'ETAT OK OU ERREUR AU PROC #0 ET RETOURNE LA REPONSE

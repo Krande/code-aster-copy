@@ -22,10 +22,10 @@ interface
     subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: nbepo
-        integer :: ntyele(*)
-        integer :: ivr(*)
-        integer :: ifm
-        integer :: nbocc(*)
+        integer(kind=8) :: nbepo
+        integer(kind=8) :: ntyele(*)
+        integer(kind=8) :: ivr(*)
+        integer(kind=8) :: ifm
+        integer(kind=8) :: nbocc(*)
     end subroutine aceatu
 end interface

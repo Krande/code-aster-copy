@@ -27,7 +27,7 @@ subroutine utmamo(modele, nbtrou, litrou)
 #include "asterfort/juveca.h"
 #include "asterfort/utmam2.h"
 #include "asterfort/wkvect.h"
-    integer :: nbtrou
+    integer(kind=8) :: nbtrou
     character(len=8) :: modele
     character(len=*) :: litrou
 !
@@ -53,8 +53,8 @@ subroutine utmamo(modele, nbtrou, litrou)
 !
 !.......................................................................
 !
-    integer :: nbmail
-    integer :: itrma
+    integer(kind=8) :: nbmail
+    integer(kind=8) :: itrma
 !
 !
 ! ----------------------------------------------------------------------

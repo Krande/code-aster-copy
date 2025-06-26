@@ -54,7 +54,7 @@ subroutine charac(load)
     character(len=16), parameter :: command = 'AFFE_CHAR_ACOU'
     character(len=4), parameter :: valeType = 'COMP', coefType = 'REEL'
     character(len=16), parameter :: keywFactEnforceDOF = 'PRES_IMPO'
-    integer :: geomDime, iret
+    integer(kind=8) :: geomDime, iret
     character(len=8) :: mesh, model
     character(len=13) :: loadDescBase
     character(len=19) :: loadLigrel

@@ -64,11 +64,11 @@ subroutine liacar(nomres, sst, intf, fplin, fplio, &
 !   PARAMETER REPRESENTANT LE NOMBRE MAX DE COMPOSANTES DE LA GRANDEUR
 !   SOUS-JACENTE TRAITEE
 !
-    integer :: nbcmpm, ldlid, ordo, ntail, nbec, ibid, llrot, ldprof, k1
-    integer :: k2, i, j, kk, l, k, nbnoe, ii, ldprli, icomp, nblig, nbcol
+    integer(kind=8) :: nbcmpm, ldlid, ordo, ntail, nbec, ibid, llrot, ldprof, k1
+    integer(kind=8) :: k2, i, j, kk, l, k, nbnoe, ii, ldprli, icomp, nblig, nbcol
     parameter(nbcmpm=10)
-    integer :: ideco(nbcmpm), idecn(nbcmpm), icar(3), idecw(nbcmpm)
-    integer :: idecw2(nbcmpm)
+    integer(kind=8) :: ideco(nbcmpm), idecn(nbcmpm), icar(3), idecw(nbcmpm)
+    integer(kind=8) :: idecw2(nbcmpm)
     character(len=8) :: nomres, sst, intf, kbid, nommcl, basmod, nomg
     character(len=24) :: fplio, fplin, famli
     real(kind=8) :: rot(3), matrot(nbcmpm, nbcmpm), zero, epsi

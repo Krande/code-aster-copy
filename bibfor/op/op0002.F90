@@ -35,7 +35,7 @@ subroutine op0002()
 #include "asterfort/ulnume.h"
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
-    integer :: unite, ifm, niv, n1, nf, nu, iret
+    integer(kind=8) :: unite, ifm, niv, n1, nf, nu, iret
     aster_logical :: sortie
     character(len=1) :: kacc, ktyp
     character(len=8) :: action, acces, type

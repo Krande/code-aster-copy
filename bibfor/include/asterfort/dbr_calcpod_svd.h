@@ -19,8 +19,8 @@
 interface
     subroutine dbr_calcpod_svd(m, n, q, s, v, nb_sing)
         use Rom_Datastructure_type
-        integer, intent(in) :: m, n
+        integer(kind=8), intent(in) :: m, n
         real(kind=8), pointer :: q(:), v(:), s(:)
-        integer, intent(out) :: nb_sing
+        integer(kind=8), intent(out) :: nb_sing
     end subroutine dbr_calcpod_svd
 end interface

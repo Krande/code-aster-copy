@@ -23,10 +23,10 @@ interface
                       materi, inst, e, nu, deuxmu,&
                       troisk)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=*) :: poum
-        integer :: icodma
+        integer(kind=8) :: icodma
         character(len=*) :: materi
         real(kind=8) :: inst
         real(kind=8) :: e

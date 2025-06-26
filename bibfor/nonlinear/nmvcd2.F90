@@ -46,7 +46,7 @@ subroutine nmvcd2(name_varcz, matez, exis_varc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nmax, i, iret
+    integer(kind=8) :: nmax, i, iret
     character(len=8) :: mate
     character(len=8) :: name_varc
     character(len=8), pointer :: cvrcvarc(:) => null()

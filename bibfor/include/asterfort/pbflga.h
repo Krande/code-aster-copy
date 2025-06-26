@@ -23,15 +23,15 @@ interface
                       fsvr, icoq, imod, nbm, tcoef,&
                       s1, s2, lambda, kcalcu, condit,&
                       gamma)
-        integer :: nbm
+        integer(kind=8) :: nbm
         real(kind=8) :: umoy
         real(kind=8) :: hmoy
         real(kind=8) :: rmoy
         real(kind=8) :: long
         real(kind=8) :: cf0
         real(kind=8) :: fsvr(7)
-        integer :: icoq
-        integer :: imod
+        integer(kind=8) :: icoq
+        integer(kind=8) :: imod
         real(kind=8) :: tcoef(10, nbm)
         real(kind=8) :: s1
         real(kind=8) :: s2

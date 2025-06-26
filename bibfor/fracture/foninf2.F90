@@ -40,7 +40,7 @@ subroutine foninf2(resu, typm, typfon, noma)
 !       NOMA   : NOM DU MAILLAGE
 !
 !
-    integer ::  ibid, jinfo, n1, n2, n3
+    integer(kind=8) ::  ibid, jinfo, n1, n2, n3
     character(len=8) :: syme, confin
     character(len=24) :: levsup, levinf
 !

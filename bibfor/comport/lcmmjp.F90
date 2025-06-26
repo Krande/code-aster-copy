@@ -58,8 +58,8 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
 #include "asterfort/r8inir.h"
 #include "asterfort/lcafyd.h"
 #include "blas/dcopy.h"
-    integer :: ndt, ndi, nmat, nvi, itmax, nfs, nsg
-    integer :: k, j, nr, iret, ns, nbcomm(nmat, 3)
+    integer(kind=8) :: ndt, ndi, nmat, nvi, itmax, nfs, nsg
+    integer(kind=8) :: k, j, nr, iret, ns, nbcomm(nmat, 3)
 ! DIMENSIONNEMENT DYNAMIQUE
     real(kind=8) :: drdy(nr, nr), dsde(6, *), kyl(6, 6), det, i6(6, 6)
     real(kind=8) :: zinv(6, 6)
@@ -75,7 +75,7 @@ subroutine lcmmjp(mod, nmat, mater, timed, timef, &
     parameter(un=1.d0)
     parameter(zero=0.d0)
     common/tdim/ndt, ndi
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     data i6/un, zero, zero, zero, zero, zero,&

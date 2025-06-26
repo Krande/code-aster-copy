@@ -20,8 +20,8 @@
 !
 interface
     function lonele(dime, igeom)
-        integer,optional,intent(in)  :: dime
-        integer,optional,intent(out) :: igeom
+        integer(kind=8),optional,intent(in)  :: dime
+        integer(kind=8),optional,intent(out) :: igeom
         real(kind=8) :: lonele
     end function lonele
 end interface

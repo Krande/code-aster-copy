@@ -23,7 +23,7 @@ subroutine infdbg(optioz, ifm, niv)
 #include "asterfort/infniv.h"
 !
     character(len=*) :: optioz
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !

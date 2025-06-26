@@ -38,7 +38,7 @@ subroutine lagmodtonommod(Cmod, PK2, F, Amod)
 !
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8), dimension(3, 3) :: PK2mat
-    integer :: i, J, k, L, M, N
+    integer(kind=8) :: i, J, k, L, M, N
     real(kind=8) :: sum, sum1
 !
 ! - Il faut convertir C au bon format

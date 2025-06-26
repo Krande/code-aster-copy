@@ -22,12 +22,12 @@ interface
     subroutine nmdecm(sddisc, i_event_acti, nomlis, instam, deltat,&
                       nbrpas, dtmin       , retdec)
         character(len=19) :: sddisc
-        integer :: i_event_acti
+        integer(kind=8) :: i_event_acti
         character(len=24) :: nomlis
         real(kind=8) :: instam
         real(kind=8) :: deltat
-        integer :: nbrpas
+        integer(kind=8) :: nbrpas
         real(kind=8) :: dtmin
-        integer :: retdec
+        integer(kind=8) :: retdec
     end subroutine nmdecm
 end interface

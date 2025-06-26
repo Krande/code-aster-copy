@@ -100,9 +100,9 @@ subroutine lcplnl(BEHinteg, &
 #include "asterfort/r8inir.h"
 #include "asterfort/utlcal.h"
 #include "asterfort/Behaviour_type.h"
-    integer :: imat, nmat, icomp
-    integer :: typess, itmax, iret, kpg, ksp
-    integer :: nr, ndt, ndi, nvi, iter
+    integer(kind=8) :: imat, nmat, icomp
+    integer(kind=8) :: typess, itmax, iret, kpg, ksp
+    integer(kind=8) :: nr, ndt, ndi, nvi, iter
 !
     real(kind=8) :: toler, essai, rbid
     real(kind=8) :: epsd(*), deps(*)
@@ -124,16 +124,16 @@ subroutine lcplnl(BEHinteg, &
 !
     common/tdim/ndt, ndi
 !
-    integer :: intg, codret
+    integer(kind=8) :: intg, codret
 !
-    integer :: nbcomm(nmat, 3), verjac, nfs, nsg
+    integer(kind=8) :: nbcomm(nmat, 3), verjac, nfs, nsg
     real(kind=8) :: pgl(3, 3), epstr(6)
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
     character(len=4) :: cargau
     character(len=16) :: algo
     character(len=24) :: cpmono(5*nmat+1)
 !
-    integer :: nr1
+    integer(kind=8) :: nr1
 !
 !     ACTIVATION OU PAS DE LA RECHERCHE LINEAIRE
     lreli = .false.

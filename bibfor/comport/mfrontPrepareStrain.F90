@@ -24,7 +24,7 @@ subroutine mfrontPrepareStrain(l_greenlag, neps, epsm, deps, stran, dstran)
 #include "asterfort/assert.h"
 !
     aster_logical, intent(in) :: l_greenlag
-    integer, intent(in) :: neps
+    integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps), deps(neps)
     real(kind=8), intent(out) :: stran(neps), dstran(neps)
 !

@@ -23,11 +23,11 @@
 interface
     subroutine conors(i1, i2, i3, macoc, nbcoc,&
                       macor, nbcor, loreor, mailla)
-        integer :: nbcor
-        integer :: nbcoc
-        integer :: i1
-        integer :: i2
-        integer :: i3
+        integer(kind=8) :: nbcor
+        integer(kind=8) :: nbcoc
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
+        integer(kind=8) :: i3
         character(len=8) :: macoc(2+nbcoc)
         character(len=8) :: macor(2+nbcor)
         aster_logical :: loreor

@@ -30,7 +30,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
@@ -48,7 +48,7 @@ subroutine dismme(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=7) :: typmat, kmpic, zero
-    integer :: iret, i, i1, ialire, nbresu, iexi
+    integer(kind=8) :: iret, i, i1, ialire, nbresu, iexi
     character(len=8) :: mo
     character(len=19) :: partit
     character(len=24), pointer :: rerr(:) => null()

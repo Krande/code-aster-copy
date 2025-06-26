@@ -36,19 +36,19 @@ subroutine dortvp(ndim, nomrc, d, modeli)
 #include "asterfort/infniv.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/utmess.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: d(6, 6)
     character(len=2) :: modeli
     character(len=16) :: nomrc
 ! -----  VARIABLES LOCALES
-    integer :: type, iordre
+    integer(kind=8) :: type, iordre
 !
     real(kind=8) :: tr(21), tu(21), jacaux(6)
     real(kind=8) :: vecp2(4, 4), vecp3(6, 6), valp(6)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifm, ineg, k, nbvec, nitjac, niv
-    integer :: nperm
+    integer(kind=8) :: i, ifm, ineg, k, nbvec, nitjac, niv
+    integer(kind=8) :: nperm
     real(kind=8) :: tol, toldyn, un, zero
 !-----------------------------------------------------------------------
     data nperm, tol, toldyn/12, 1.d-10, 1.d-2/

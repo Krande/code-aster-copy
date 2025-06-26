@@ -47,13 +47,13 @@ subroutine lgphmo(ma, ligrel, pheno, modeli)
 !
 !
 !
-    integer :: nbgrel, nbma, nbtm, ima, tm
-    integer :: te, igr, ico, jphmod, kmod, jlgrf
-    integer :: nbel, jnbno
+    integer(kind=8) :: nbgrel, nbma, nbtm, ima, tm
+    integer(kind=8) :: te, igr, ico, jphmod, kmod, jlgrf
+    integer(kind=8) :: nbel, jnbno
     character(len=19) :: ligr19, phen1
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: litm(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: litm(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

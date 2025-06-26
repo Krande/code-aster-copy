@@ -38,10 +38,10 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 !
 !
     character(len=8), intent(in) :: noma
-    integer, intent(in) :: nbma
-    integer, intent(in) :: listma(*)
-    integer, intent(in) :: nbno
-    integer, intent(in) :: listno(*)
+    integer(kind=8), intent(in) :: nbma
+    integer(kind=8), intent(in) :: listma(*)
+    integer(kind=8), intent(in) :: nbno
+    integer(kind=8), intent(in) :: listno(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,15 +63,15 @@ subroutine catang(noma, nbma, listma, nbno, listno)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, iacnx1, ilcnx1, jco, j, ino, nbnoma, jcoor
-    integer :: k, ino1, ino2, ino3, i1, jtang
+    integer(kind=8) :: i, iacnx1, ilcnx1, jco, j, ino, nbnoma, jcoor
+    integer(kind=8) :: k, ino1, ino2, ino3, i1, jtang
     real(kind=8) :: vale1(3), vale2(3), vale3(3), vale(3), valu(3), valv(3)
     real(kind=8) :: norm
     character(len=8) :: ntyp
-    integer, pointer :: noeu_mail(:) => null()
+    integer(kind=8), pointer :: noeu_mail(:) => null()
     real(kind=8), pointer :: tang_mail(:) => null()
     real(kind=8), pointer :: tang_noeu(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -21,7 +21,7 @@ interface
                                  nbStore       , fieldBuild)
         use Rom_Datastructure_type
         character(len=*), intent(in) :: resultDomNameZ, resultRomNameZ
-        integer, intent(in) :: nbStore
+        integer(kind=8), intent(in) :: nbStore
         type(ROM_DS_FieldBuild), intent(in) :: fieldBuild
     end subroutine romFieldBuildComp
 end interface

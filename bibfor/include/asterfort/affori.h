@@ -26,14 +26,14 @@ interface
         character(len=*) :: nomt
         character(len=*) :: cara
         real(kind=8) :: val(6)
-        integer :: jad
-        integer :: jin
-        integer :: jdno
-        integer :: jdco
-        integer :: nutyma
-        integer :: ntseg
+        integer(kind=8) :: jad
+        integer(kind=8) :: jin
+        integer(kind=8) :: jdno
+        integer(kind=8) :: jdco
+        integer(kind=8) :: nutyma
+        integer(kind=8) :: ntseg
         real(kind=8), intent(in), optional :: lseuil
-        integer, intent(inout), optional :: nbseuil
+        integer(kind=8), intent(inout), optional :: nbseuil
         real(kind=8), intent(in), optional :: alphayz(2)
     end subroutine affori
 end interface

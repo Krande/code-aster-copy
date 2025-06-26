@@ -20,10 +20,10 @@
 !
 interface
     subroutine copcvn(nb, vec1, vec2, indir, fact)
-        integer :: nb
+        integer(kind=8) :: nb
         real(kind=8) :: vec1(*)
         real(kind=8) :: vec2(nb)
-        integer :: indir(nb)
+        integer(kind=8) :: indir(nb)
         real(kind=8) :: fact
     end subroutine copcvn
 end interface

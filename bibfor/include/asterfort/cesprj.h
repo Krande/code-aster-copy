@@ -24,6 +24,6 @@ interface
         character(len=*) :: correz
         character(len=*) :: basez
         character(len=*) :: ces2z
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine cesprj
 end interface

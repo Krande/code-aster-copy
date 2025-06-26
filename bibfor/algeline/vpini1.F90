@@ -72,9 +72,9 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, &
 !
 ! --- OUTPUT
 !
-    integer, intent(out) :: iretr, nblagr, neqact, npivot
-    integer, intent(out) :: nstoc
-    integer, optional, intent(out) :: nfreq_calibr_
+    integer(kind=8), intent(out) :: iretr, nblagr, neqact, npivot
+    integer(kind=8), intent(out) :: nstoc
+    integer(kind=8), optional, intent(out) :: nfreq_calibr_
     real(kind=8), intent(out) :: omemax, omemin, omeshi
     complex(kind=8), intent(out) :: sigma
 !
@@ -84,9 +84,9 @@ subroutine vpini1(eigsol, modes, solveu, typcon, vecblo, &
 !
 ! --- VARIABLES LOCALES
 !
-    integer :: ibid, ibid2(2), icoef, ifm, iret, islvi, islvk, krefa, lamor, npiv2(2)
-    integer :: lmasse, lmatra, lmtpsc, lraide, nbborn, nbrss, nbvec2, nbvect, nfreq, niv
-    integer :: lddl, lprod, nprec, neq, indf
+    integer(kind=8) :: ibid, ibid2(2), icoef, ifm, iret, islvi, islvk, krefa, lamor, npiv2(2)
+    integer(kind=8) :: lmasse, lmatra, lmtpsc, lraide, nbborn, nbrss, nbvec2, nbvect, nfreq, niv
+    integer(kind=8) :: lddl, lprod, nprec, neq, indf
     real(kind=8) :: eps, fmax, fmin, effmax, effmin, freq1, freq2, omecor, precdc, precsh
     real(kind=8) :: rbid, rbid2(2), rtest, rzero
     character(len=1) :: appr

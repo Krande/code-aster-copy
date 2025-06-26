@@ -19,14 +19,14 @@
 subroutine irmifr(ifmis, freq, ifreq, nfreq, ic)
     implicit none
 #include "asterc/r8prem.h"
-    integer :: ifmis, ifreq, nfreq, ic
+    integer(kind=8) :: ifmis, ifreq, nfreq, ic
     real(kind=8) :: freq
 !
     character(len=72) :: texte
     real(kind=8) :: a(3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
     rewind ifmis
     read (ifmis, '(A72)') texte

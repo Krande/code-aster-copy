@@ -27,7 +27,7 @@ interface
         character(len=8) :: ma2
         character(len=*) :: moint
         character(len=14) :: num
-        integer :: ndble
-        integer :: icor(2)
+        integer(kind=8) :: ndble
+        integer(kind=8) :: icor(2)
     end subroutine tabcor
 end interface

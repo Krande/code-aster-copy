@@ -31,9 +31,9 @@ subroutine lcgeom_prep(elem_dime, l_axis, l_upda_jaco, &
 #include "asterfort/assert.h"
 #include "asterfort/lctppe.h"
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     aster_logical, intent(in) :: l_axis, l_upda_jaco
-    integer, intent(in) :: nb_node_slav, nb_node_mast
+    integer(kind=8), intent(in) :: nb_node_slav, nb_node_mast
     character(len=8), intent(in) :: elem_slav_code, elem_mast_code
     real(kind=8), intent(in) :: elem_mast_init(nb_node_mast, elem_dime)
     real(kind=8), intent(in) :: elem_slav_init(nb_node_slav, elem_dime)

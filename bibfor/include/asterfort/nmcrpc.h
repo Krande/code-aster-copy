@@ -20,7 +20,7 @@ interface
     subroutine nmcrpc(ds_inout, nume_reuse, time_curr)
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(in) :: ds_inout
-        integer, intent(in) :: nume_reuse
+        integer(kind=8), intent(in) :: nume_reuse
         real(kind=8), intent(in) :: time_curr
     end subroutine nmcrpc
 end interface

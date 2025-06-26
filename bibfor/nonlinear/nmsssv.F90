@@ -43,7 +43,7 @@ subroutine nmsssv(modelz, matez, caraElemz, listLoad, vesstf)
     character(len=1), parameter :: base = 'V'
     character(len=8) :: model, mate
     character(len=24) :: funcMultSuper, caraElem
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

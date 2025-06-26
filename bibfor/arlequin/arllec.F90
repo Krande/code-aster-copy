@@ -31,11 +31,11 @@ subroutine arllec(motcle, iocc, modele, noma, nomb, &
 #include "asterfort/jedema.h"
 
     character(len=16) :: motcle
-    integer ::      iocc
+    integer(kind=8) ::      iocc
     character(len=8) ::  modele
     character(len=10) :: noma, nomb
     character(len=8) ::  model(3), cine(3)
-    integer ::      dime
+    integer(kind=8) ::      dime
 
 ! ----------------------------------------------------------------------
 
@@ -57,11 +57,11 @@ subroutine arllec(motcle, iocc, modele, noma, nomb, &
 !              UN POUR CHAQUE GROUPE + ZONE DE COLLAGE
 ! OUT DIME   : DIMENSION DE L'ESPACE GLOBAL 2 OU 3
 
-    integer ::      nbev1, nbev2
+    integer(kind=8) ::      nbev1, nbev2
     character(len=8) ::  k8bid
     character(len=16) ::  option
-    integer ::      jgrm1, jgrm2
-    integer ::      ifm, niv, iop
+    integer(kind=8) ::      jgrm1, jgrm2
+    integer(kind=8) ::      ifm, niv, iop
     character(len=6) :: nompro
     parameter(nompro='ARLLEC')
 

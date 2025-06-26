@@ -28,7 +28,7 @@ interface
         character(len=*) :: modmec
         character(len=*) :: chamno
         character(len=14) :: num
-        integer :: i
+        integer(kind=8) :: i
         aster_logical :: vrai
         character(len=*) :: model
         character(len=19) :: veprj

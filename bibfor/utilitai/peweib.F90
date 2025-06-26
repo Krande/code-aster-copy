@@ -59,7 +59,7 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: iresu, nh, nbocc
+    integer(kind=8) :: iresu, nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara, nomcmd
 !     OPERATEUR   POST_ELEM
 !     ( TRAITEMENT DU MOT CLE-FACTEUR "WEIBULL" )
@@ -68,14 +68,14 @@ subroutine peweib(resu, modele, mate, mateco, cara, chmat, &
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: valr(3)
-    integer :: nbparr, nbpard, nbmtcm, inum, nbout
-    integer :: vali
-    integer :: ibid, ibik, mxvale, ifm, niv
-    integer :: nd, ng, ni, nm, np, nq, nr, nt, i, n1, n2, n3
-    integer :: no, nlo, nli
-    integer :: iret, nbordr, jord, jins, nc, nbgrma, jgr, ig, nbma, jad
-    integer :: nbmail, jma, im, nume, imc, ier
-    integer :: numord, iainst, iord, nbmtrc, nbin, iocc, nbMaiT
+    integer(kind=8) :: nbparr, nbpard, nbmtcm, inum, nbout
+    integer(kind=8) :: vali
+    integer(kind=8) :: ibid, ibik, mxvale, ifm, niv
+    integer(kind=8) :: nd, ng, ni, nm, np, nq, nr, nt, i, n1, n2, n3
+    integer(kind=8) :: no, nlo, nli
+    integer(kind=8) :: iret, nbordr, jord, jins, nc, nbgrma, jgr, ig, nbma, jad
+    integer(kind=8) :: nbmail, jma, im, nume, imc, ier
+    integer(kind=8) :: numord, iainst, iord, nbmtrc, nbin, iocc, nbMaiT
     parameter(mxvale=3, nbparr=7, nbpard=5)
     real(kind=8) :: rtval(mxvale), prec, inst, valer(4), vref, coesym, mref, sref, probaw
     real(kind=8) :: sigmaw

@@ -52,7 +52,7 @@ subroutine calc_norm_elem(normz, ligrel, chcoef, chgaus, chcalc, &
     character(len=8) :: lpain(4), lpaout(1)
     character(len=16) :: option, norm
     character(len=19) :: lchin(4), lchout(3)
-    integer :: nbchin
+    integer(kind=8) :: nbchin
 !
 ! --------------------------------------------------------------------------------------------------
 !

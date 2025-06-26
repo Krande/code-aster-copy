@@ -23,7 +23,7 @@ interface
         character(len=8) :: noma
         character(len=8) :: nomo
         character(len=*) :: mcf
-        integer :: lmax
-        integer :: nbocc
+        integer(kind=8) :: lmax
+        integer(kind=8) :: nbocc
     end subroutine acevd2
 end interface

@@ -36,14 +36,14 @@ subroutine te0085(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     real(kind=8) :: poids, rx
-    integer :: nno, kp, k, npg, i, ivectu, ipesa
-    integer :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: nno, kp, k, npg, i, ivectu, ipesa
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
 !
 !
 !-----------------------------------------------------------------------
-    integer :: jgano, ndim, nnos
+    integer(kind=8) :: jgano, ndim, nnos
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &

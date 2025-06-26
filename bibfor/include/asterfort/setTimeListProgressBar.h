@@ -20,7 +20,7 @@
 interface
     subroutine setTimeListProgressBar(sddisc, nume_inst, final_)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         aster_logical, optional, intent(in) :: final_
     end subroutine setTimeListProgressBar
 end interface

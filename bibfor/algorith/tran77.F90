@@ -63,8 +63,8 @@ subroutine tran77(nomres, typres, nomin, basemo)
 #include "asterfort/as_allocate.h"
     character(len=24) :: valk(2)
 ! ----------------------------------------------------------------------
-    integer :: i, j, itresu(8), i_cham(8)
-    integer :: foci, focf, fomi, fomf, fomo
+    integer(kind=8) :: i, j, itresu(8), i_cham(8)
+    integer(kind=8) :: foci, focf, fomi, fomf, fomo
     real(kind=8) :: r8b, epsi
     complex(kind=8) :: cbid
     character(len=8) :: k8b, blanc, basemo, crit, interp, basem2, mailla, nomres
@@ -77,16 +77,16 @@ subroutine tran77(nomres, typres, nomin, basemo)
     aster_logical :: tousno, multap, leffor, prems
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iarchi, ibid, ich, iadrif
-    integer :: idec, idefm, inocmp
-    integer :: inoecp, inuddl, inumno, iret, iretou, isk
-    integer :: jc, jinst, jnume, linst
-    integer :: lvale, n1, n2, n3, n4, nbcham, nbinsg
-    integer :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct, shift, i_bloc
+    integer(kind=8) :: iarchi, ibid, ich, iadrif
+    integer(kind=8) :: idec, idefm, inocmp
+    integer(kind=8) :: inoecp, inuddl, inumno, iret, iretou, isk
+    integer(kind=8) :: jc, jinst, jnume, linst
+    integer(kind=8) :: lvale, n1, n2, n3, n4, nbcham, nbinsg
+    integer(kind=8) :: nbinst, nbmode, nbnoeu, ncmp, neq, nfonct, shift, i_bloc
     real(kind=8), pointer :: base(:) => null()
     real(kind=8), pointer :: vectgene(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: resu(:) => null()
     type(DynaGene) :: dyna_gene

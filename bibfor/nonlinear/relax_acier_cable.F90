@@ -32,7 +32,7 @@ subroutine relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, deps, vim, optio
 #include "asterfort/utmess.h"
 !
     character(len=*)  :: fami, materi
-    integer           :: kpg, ksp, imate
+    integer(kind=8)           :: kpg, ksp, imate
     real(kind=8)      :: sigm, epsm, deps, vim(*)
     real(kind=8)      :: sigp, vip(*), dsde
     character(len=16) :: option
@@ -64,27 +64,27 @@ subroutine relax_acier_cable(fami, kpg, ksp, imate, sigm, epsm, deps, vim, optio
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: jtp, jtm, icarcr, iret0, iret1
+    integer(kind=8)      :: jtp, jtm, icarcr, iret0, iret1
     real(kind=8) :: temper0, temper1
 
 !   Pour la loi de comportement
     real(kind=8)       :: ldcpar(1)
-    integer            :: ldcpai(1)
+    integer(kind=8)            :: ldcpai(1)
     character(len=8)   :: ldcpac(1)
     real(kind=8)       :: temps0, temps1, dtemps
 !   Équations du système
-    integer, parameter :: nbequa = 4
+    integer(kind=8), parameter :: nbequa = 4
     real(kind=8)       :: y0(nbequa), dy0(nbequa), resu(nbequa*2)
 !
-    integer      :: nbdecp
+    integer(kind=8)      :: nbdecp
     real(kind=8) :: errmax
 !
     real(kind=8) :: precis
     parameter(precis=1.0e-08)
 !
-    integer, parameter :: nbcar = 2
+    integer(kind=8), parameter :: nbcar = 2
     real(kind=8)       :: valcar(nbcar)
-    integer            :: codcar(nbcar)
+    integer(kind=8)            :: codcar(nbcar)
 !
 ! --------------------------------------------------------------------------------------------------
 !

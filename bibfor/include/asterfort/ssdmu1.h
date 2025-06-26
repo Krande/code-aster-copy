@@ -26,6 +26,6 @@ interface
         real(kind=8) :: prec
         real(kind=8) :: geo1(3)
         real(kind=8) :: geo2(3)
-        integer :: iconf
+        integer(kind=8) :: iconf
     end subroutine ssdmu1
 end interface

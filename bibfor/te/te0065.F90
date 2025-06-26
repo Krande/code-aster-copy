@@ -36,21 +36,21 @@ subroutine te0065(option, nomte)
 !     CALCULE DES TERMES PROPRES A UN STRUCTURE
 !     OPTION : 'MASS_INER'              (ELEMENTS ISOPARAMETRIQUES 3D)
 !     ------------------------------------------------------------------
-    integer, parameter :: nbres = 3
+    integer(kind=8), parameter :: nbres = 3
 !-----------------------------------------------------------------------
-    integer :: l, lcastr, ndim, nnos
+    integer(kind=8) :: l, lcastr, ndim, nnos
     real(kind=8) :: rho(1), xxi, yyi, zero, zzi
 !-----------------------------------------------------------------------
 !
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=8) :: lielrf(MT_NBFAMX)
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
     real(kind=8) :: poids, volume
     real(kind=8) :: x(MT_NNOMAX), y(MT_NNOMAX), z(MT_NNOMAX), xg, yg, zg, matine(6)
     real(kind=8) :: rhopou, rhoflu, tpg, valres(nbres), ayz, ycell, rapp, yf
-    integer :: ipoids, ivf, idfde, igeom, nbv, lcorr
-    integer :: jgano, nno, kp, npg, i, j, imate, ntrou
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, nbv, lcorr
+    integer(kind=8) :: jgano, nno, kp, npg, i, j, imate, ntrou
 !     ------------------------------------------------------------------
     zero = 0.d0
 !

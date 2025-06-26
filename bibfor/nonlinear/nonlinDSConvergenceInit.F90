@@ -56,13 +56,13 @@ subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8)  :: exicoq, exipou
     real(kind=8) :: resi_glob_rela
-    integer :: iret
+    integer(kind=8) :: iret
     aster_logical :: l_resi_user, l_rela, l_maxi, l_refe, l_comp
     character(len=24) :: eventCONVJv
-    integer, pointer :: eventCONV(:) => null()
+    integer(kind=8), pointer :: eventCONV(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

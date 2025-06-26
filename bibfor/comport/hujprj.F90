@@ -32,7 +32,7 @@ subroutine hujprj(k, tin, toud, p, q)
 !      P     :  COMPOSANTE ISOTROPE K
 !      Q     :  NORME DEVIATEUR K
 !  ------------------------------------------------------
-    integer :: ndt, ndi, i, j, k
+    integer(kind=8) :: ndt, ndi, i, j, k
     real(kind=8) :: dd
     real(kind=8) :: tin(6), tou(3), toud(3), p, q
 !

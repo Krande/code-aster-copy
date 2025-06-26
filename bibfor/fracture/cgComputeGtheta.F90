@@ -68,9 +68,9 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
 !    Compute G(Theta) in 2D and 3D
 !
 !----------------------------------------------
-    integer :: iret, nsig, ino1, ino2, inga, ibid, i_theta, i, j
-    integer :: nchin, iadrt3
-    integer :: jcesd, jcesl, jcesd2, jcesl2
+    integer(kind=8) :: iret, nsig, ino1, ino2, inga, ibid, i_theta, i, j
+    integer(kind=8) :: nchin, iadrt3
+    integer(kind=8) :: jcesd, jcesl, jcesd2, jcesl2
     real(kind=8) :: gth(7), som(7)
     real(kind=8) :: s1, s2, s3, sn2, sn1, sn
     character(len=2)  :: codret
@@ -83,7 +83,7 @@ subroutine cgComputeGtheta(cgField, cgTheta, cgStudy, cgTable, cgStat)
     character(len=24) :: pavolu, papres, pa2d3d, pepsin, pa1d2d
     character(len=24) :: lchin(50), lchout(1)
     aster_logical     :: lfonc, inco
-    integer, pointer  :: v_cesv(:) => null()
+    integer(kind=8), pointer  :: v_cesv(:) => null()
     real(kind=8), pointer :: v_absc(:) => null()
     real(kind=8), pointer :: v_base(:) => null()
     real(kind=8), pointer :: v_basf(:) => null()

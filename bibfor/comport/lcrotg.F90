@@ -21,7 +21,7 @@ subroutine lcrotg(indice, dp, e, dtaudf)
     implicit none
 #include "asterfort/r8inir.h"
 #include "asterfort/rcfonc.h"
-    integer :: indice
+    integer(kind=8) :: indice
     real(kind=8) :: dp, e(6), dtaudf(6, 3, 3)
 !
 ! ***************************************************************
@@ -41,7 +41,7 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 ! ----------------------------------------------------------------------
 !  COMMON LOI DE COMPORTEMENT ROUSSELIER
 !
-    integer :: itemax, jprolp, jvalep, nbvalp
+    integer(kind=8) :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
     common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
@@ -50,7 +50,7 @@ subroutine lcrotg(indice, dp, e, dtaudf)
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
 !
-    integer :: ind1(6), ind2(6)
+    integer(kind=8) :: ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6)
     real(kind=8) :: lambda, mu, deuxmu, unk, troisk, cother
     real(kind=8) :: jm, dj, jp, djdf(3, 3)
@@ -65,7 +65,7 @@ subroutine lcrotg(indice, dp, e, dtaudf)
      &          dtaude
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ij, kl, k, l, pq, rs
+    integer(kind=8) :: ij, kl, k, l, pq, rs
     real(kind=8) :: tre, rp, drdp, aire
     real(kind=8) :: al, al0, al1, al2, al3, al4, be1, be2, a1(6, 6), a2(6)
     real(kind=8) :: a3(6), sum

@@ -72,11 +72,11 @@ subroutine op0171()
 !
     character(len=4), parameter :: phenom = "THER"
     aster_logical :: matcst, coecst, prem, reasmt, reasvt
-    integer :: parcri(9), iifm, jlagp, jvPara
-    integer :: k, iret
-    integer :: itmaxl, iterl, ifm, niv, num
-    integer :: iocc, n1, n2
-    integer :: jtemp, jtempm, jtempp, j2nd, lonch, lglap
+    integer(kind=8) :: parcri(9), iifm, jlagp, jvPara
+    integer(kind=8) :: k, iret
+    integer(kind=8) :: itmaxl, iterl, ifm, niv, num
+    integer(kind=8) :: iocc, n1, n2
+    integer(kind=8) :: jtemp, jtempm, jtempp, j2nd, lonch, lglap
     real(kind=8) :: tpsthe(6), tpsnp1, testn, testr
     real(kind=8) :: tps1(7), tps2(4), tpex
     real(kind=8) :: parcrr(9), testi, epsr, epsl
@@ -94,11 +94,11 @@ subroutine op0171()
     character(len=24) :: cndirp, cnchci, cnchtp
     character(len=24) :: chlapm, chlapp, cnresi
     character(len=76) :: fmt
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
     real(kind=8) :: valr(2)
     real(kind=8), pointer :: lagpm(:) => null()
     real(kind=8), pointer :: lagpp(:) => null()
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
 !
     data maprec/'&&OP0171.MAPREC'/

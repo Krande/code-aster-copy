@@ -34,12 +34,12 @@ subroutine meobl1(eps, b, d, deltab, deltad, &
     real(kind=8) :: eps(6), b(6), d, dsidep(6, 6)
     real(kind=8) :: deltab(6), deltad, mult
     real(kind=8) :: lambda, mu, alpha, k1, k2, ecrob, ecrod
-    integer :: bdim
+    integer(kind=8) :: bdim
 !
 !--CALCUL DE LA MATRICE TANGENTE POUR LA LOI ENDO_ORTHO_BETON
 !-------------------------------------------------------------
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: un, deux
     real(kind=8) :: fb(6), treps, fd, fbm(6)
     real(kind=8) :: dfmf, tdfbdb(6, 6), tdfbde(6, 6)

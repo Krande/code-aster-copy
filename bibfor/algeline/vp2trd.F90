@@ -29,7 +29,7 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes, &
 #include "asterfort/vpqlts.h"
 #include "asterfort/wkvect.h"
     character(len=1) :: type
-    integer :: nbvect, mxiter, nitqr
+    integer(kind=8) :: nbvect, mxiter, nitqr
     real(kind=8) :: alpha(*), beta(*), signes(*), vecpro(*)
 !     ------------------------------------------------------------------
 !     RESOLUTION DU SYSTEME TRIDIAGONAL SYMETRIQUE OU NON SYMETRIQUE.
@@ -65,8 +65,8 @@ subroutine vp2trd(type, nbvect, alpha, beta, signes, &
 !
 !     ---  ON DETECTE LES FREQUENCES INFERIEURES AU SHIFT ---
 !-----------------------------------------------------------------------
-    integer :: ier, ivec, ivect, ladw1, ladw2, ladwk1, ladwk2
-    integer :: ladz1, ladz2, n2
+    integer(kind=8) :: ier, ivec, ivect, ladw1, ladw2, ladwk1, ladwk2
+    integer(kind=8) :: ladz1, ladz2, n2
 !-----------------------------------------------------------------------
     call jemarq()
     if (type .eq. 'G') then

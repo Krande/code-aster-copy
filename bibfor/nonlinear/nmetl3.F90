@@ -38,7 +38,7 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
     character(len=24), intent(in) :: model
     character(len=24), intent(in) :: compor
     type(NL_DS_InOut), intent(in) :: ds_inout
-    integer, intent(in) :: i_field
+    integer(kind=8), intent(in) :: i_field
     aster_logical, intent(in) :: verbose
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: fieldType, algo_name, fieldRefe
     character(len=4) :: fieldDisc
     character(len=8) :: gran_name
@@ -64,7 +64,7 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
     character(len=24) :: modelLigrel, comporPrev
     character(len=4) :: init_type
     aster_logical :: l_state_init, l_stin_evol, l_acti, lModiVari
-    integer :: init_nume
+    integer(kind=8) :: init_nume
 !
 ! --------------------------------------------------------------------------------------------------
 !

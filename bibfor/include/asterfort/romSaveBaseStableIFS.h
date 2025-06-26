@@ -24,6 +24,6 @@ interface
         type(ROM_DS_MultiPara), intent(in) :: ds_multipara
         type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy
         type(ROM_DS_Empi), intent(inout) :: ds_empi
-        integer, intent(in) :: i_mode
+        integer(kind=8), intent(in) :: i_mode
     end subroutine romSaveBaseStableIFS
 end interface

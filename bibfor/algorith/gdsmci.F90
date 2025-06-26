@@ -35,7 +35,7 @@ subroutine gdsmci(fm, df, em)
 ! ----------------------------------------------------------------------
 ! COMMON GRANDES DEFORMATIONS SIMO - MIEHE
 !
-    integer :: ind(3, 3), ind1(6), ind2(6)
+    integer(kind=8) :: ind(3, 3), ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6), id(6, 6)
     real(kind=8) :: bem(6), betr(6), dvbetr(6), eqbetr, trbetr
     real(kind=8) :: jp, dj, jm, dfb(3, 3)
@@ -48,7 +48,7 @@ subroutine gdsmci(fm, df, em)
      &            kr, id, rac2, rc, ind, ind1, ind2
 ! ----------------------------------------------------------------------
 !
-    integer :: ij, kl, i, j, k, l
+    integer(kind=8) :: ij, kl, i, j, k, l
     real(kind=8) :: pdf(6, 6)
 !
     real(kind=8) :: e(3, 3), dete, fp(3, 3)

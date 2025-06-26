@@ -20,7 +20,7 @@
 !
 interface
     subroutine pha180(ifoi, ptf, phase)
-        integer :: ifoi
+        integer(kind=8) :: ifoi
         real(kind=8) :: ptf
         real(kind=8) :: phase
     end subroutine pha180

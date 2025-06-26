@@ -28,7 +28,7 @@ subroutine rs_getfirst(result_, nume_first, inst_first)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=*), intent(in) :: result_
-    integer, intent(out) :: nume_first
+    integer(kind=8), intent(out) :: nume_first
     real(kind=8), optional, intent(out) :: inst_first
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine rs_getfirst(result_, nume_first, inst_first)
     character(len=8) :: result
     character(len=8) :: k8bid
     complex(kind=8) :: c16bid
-    integer :: list(1), iret, jinst
+    integer(kind=8) :: list(1), iret, jinst
     real(kind=8) :: r8bid
 !
 ! --------------------------------------------------------------------------------------------------

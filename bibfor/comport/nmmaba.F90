@@ -23,8 +23,8 @@ subroutine nmmaba(icodma, rela_comp, e, dsde, sigy, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
     character(len=16) :: rela_comp
-    integer :: icodma
-    integer :: ncstpm
+    integer(kind=8) :: icodma
+    integer(kind=8) :: ncstpm
     real(kind=8) :: cstpm(ncstpm)
     real(kind=8) :: e, dsde, sigy
 !     RECUPERATION DES CARACTERISTIQUES DU MATERIAU POUR LES ELEMENTS
@@ -57,11 +57,11 @@ subroutine nmmaba(icodma, rela_comp, e, dsde, sigy, &
 ! *************** DECLARATION DES VARIABLES LOCALES ********************
 !
 !-----------------------------------------------------------------------omecl
-    integer :: nbpar, nbres, nbval
+    integer(kind=8) :: nbpar, nbres, nbval
 !-----------------------------------------------------------------------
     parameter(nbval=12)
     real(kind=8) :: valpar, valres(nbval)
-    integer :: codres(nbval)
+    integer(kind=8) :: codres(nbval)
     character(len=8) :: nompar, nomela(1)
     character(len=16) :: nomecl(2), nompim(12)
     character(len=4) :: fami

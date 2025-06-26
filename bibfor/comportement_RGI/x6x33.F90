@@ -22,7 +22,7 @@ subroutine x6x33(x6, x33)
     implicit none
 #include "asterfort/indice0.h"
     real(kind=8) :: x6(6), x33(3, 3)
-    integer :: i, k, l
+    integer(kind=8) :: i, k, l
     do i = 1, 6
         call indice0(i, k, l)
         x33(k, l) = x6(i)

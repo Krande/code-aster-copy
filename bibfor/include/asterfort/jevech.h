@@ -25,10 +25,10 @@ interface
 #include "asterf_types.h"
         character(len=*), intent(in) :: nmparz
         character(len=*), intent(in) :: louez
-        integer, optional :: itab
+        integer(kind=8), optional :: itab
 
         aster_logical,     pointer, optional :: vl(:)
-        integer,           pointer, optional :: vi(:)
+        integer(kind=8),           pointer, optional :: vi(:)
         integer(kind=4),   pointer, optional :: vi4(:)
         real(kind=8),      pointer, optional :: vr(:)
         complex(kind=8),   pointer, optional :: vc(:)

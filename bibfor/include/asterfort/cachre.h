@@ -19,7 +19,7 @@
 interface
     subroutine cachre(load, model, mesh, geomDime, valeType,&
                       param, keywordFactZ)
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=4), intent(in)  :: valeType
         character(len=5), intent(in)  :: param
         character(len=8), intent(in)  :: load, mesh, model

@@ -46,12 +46,12 @@ subroutine te0016(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ndim = 3
-    integer :: jvWeight, jvShape, jvDShape
-    integer :: jvGeom, jvForc, jvVect
-    integer :: nno, npg
-    integer :: kpg, iNode, iDof
-    integer :: kdec, ldec
+    integer(kind=8), parameter :: ndim = 3
+    integer(kind=8) :: jvWeight, jvShape, jvDShape
+    integer(kind=8) :: jvGeom, jvForc, jvVect
+    integer(kind=8) :: nno, npg
+    integer(kind=8) :: kpg, iNode, iDof
+    integer(kind=8) :: kdec, ldec
     real(kind=8) :: jacWeight, fx, fy, fz
 !
 ! --------------------------------------------------------------------------------------------------

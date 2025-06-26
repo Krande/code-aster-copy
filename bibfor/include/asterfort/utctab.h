@@ -21,9 +21,9 @@
 interface
     subroutine utctab(raz, na, mb, mc, a,&
                       b, c, xab, ctab)
-        integer :: mc
-        integer :: mb
-        integer :: na
+        integer(kind=8) :: mc
+        integer(kind=8) :: mb
+        integer(kind=8) :: na
         character(len=*) :: raz
         real(kind=8) :: a(na, na)
         real(kind=8) :: b(na, mb)

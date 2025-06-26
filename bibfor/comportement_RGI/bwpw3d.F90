@@ -25,7 +25,7 @@ subroutine bwpw3d(mfr, biotw, poro, vw, xnsat, &
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 !   variables externes
-    integer, intent(in) :: mfr
+    integer(kind=8), intent(in) :: mfr
     real(kind=8), intent(in) :: biotw, poro, vw, xnsat, mw
     real(kind=8), intent(out) :: pw, bw
     real(kind=8), intent(inout) :: srw

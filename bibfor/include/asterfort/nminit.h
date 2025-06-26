@@ -43,12 +43,12 @@ interface
         type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
         character(len=19) :: maprec
         character(len=19), intent(in) :: solver
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=19) :: sddisc
         character(len=19) :: sdnume
         character(len=19) :: sdcrit
         type(NL_DS_Material), intent(inout) :: ds_material
-        integer, intent(inout) :: listFuncActi(*)
+        integer(kind=8), intent(inout) :: listFuncActi(*)
         character(len=19) :: sdpilo
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping

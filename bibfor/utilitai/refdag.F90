@@ -38,7 +38,7 @@ subroutine refdag(resin)
 !
 !   DOUBLER LA TAILLE DES OBJETS CONTENEURS DES REFERENCES DYNAMIQUES (.REFD ET INDI)
 !
-    integer :: nbrefs, ibid, jbid, jindi, jindi2, jrefe, jrefe2
+    integer(kind=8) :: nbrefs, ibid, jbid, jindi, jindi2, jrefe, jrefe2
     character(len=1) :: jvb
     character(len=8) :: restmp, k8bid
     character(len=16) :: refd, indi

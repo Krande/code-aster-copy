@@ -22,11 +22,11 @@ interface
     subroutine crirup(fami, imat, ndim, npg, lgpg,&
                       option, compor, sigp, vip, vim,&
                       instam, instap)
-        integer :: lgpg
-        integer :: npg
-        integer :: ndim
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: ndim
         character(len=*) :: fami
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=16) :: option
         character(len=16) :: compor(*)
         real(kind=8) :: sigp(2*ndim, npg)

@@ -40,15 +40,15 @@ subroutine jm1dn3(nb2, xr, epais, ksi3s2, intsn, &
 !
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
-    integer :: jn
+    integer(kind=8) :: jn
 !
-    integer :: nb2
+    integer(kind=8) :: nb2
 !
-    integer :: intsn
-    integer :: intsn2
+    integer(kind=8) :: intsn
+    integer(kind=8) :: intsn2
 !
-    integer :: i3, i4, i5
-    integer :: l1, l2, l3
+    integer(kind=8) :: i3, i4, i5
+    integer(kind=8) :: l1, l2, l3
 !
     real(kind=8) :: vi(3)
 !

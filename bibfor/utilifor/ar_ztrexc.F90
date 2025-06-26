@@ -98,7 +98,7 @@ subroutine ar_ztrexc(compq, n, t, ldt, q, &
 #include "blas/lsame.h"
 #include "blas/zrot.h"
     character(len=1) :: compq
-    integer :: ifst, ilst, info, ldq, ldt, n
+    integer(kind=8) :: ifst, ilst, info, ldq, ldt, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     complex(kind=8) :: q(ldq, *), t(ldt, *)
@@ -106,7 +106,7 @@ subroutine ar_ztrexc(compq, n, t, ldt, q, &
 !
 !     .. LOCAL SCALARS ..
     aster_logical :: wantq
-    integer :: k, m1, m2, m3
+    integer(kind=8) :: k, m1, m2, m3
     real(kind=8) :: cs
     complex(kind=8) :: sn, t11, t22, temp
     blas_int :: b_incx, b_incy, b_n

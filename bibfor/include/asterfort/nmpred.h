@@ -39,14 +39,14 @@ interface
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         character(len=19) :: solveu
         type(NL_DS_System), intent(in) :: ds_system
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         character(len=19) :: sddisc
         character(len=19) :: sdnume
         character(len=24) :: sderro
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=19) :: valinc(*), solalg(*)
         character(len=19) :: matass, maprec
         type(NL_DS_Contact), intent(inout) :: ds_contact

@@ -25,7 +25,7 @@ interface
         real(kind=8) :: mp1(3)
         real(kind=8) :: mp2(3)
         real(kind=8) :: nbackn(6)
-        integer :: ncrit
+        integer(kind=8) :: ncrit
         real(kind=8) :: dcc1(3, 3)
         real(kind=8) :: dcc2(3, 3)
         real(kind=8) :: dsidep(6, 6)

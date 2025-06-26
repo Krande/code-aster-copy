@@ -82,12 +82,12 @@ subroutine projtq(nbcnx, xyzma, icnx, x3dp, excent, &
 #include "asterfort/assert.h"
 #include "asterfort/tstbar.h"
 #include "blas/dnrm2.h"
-    integer :: nbcnx, icnx, itria, inoeu, icote, iproj
+    integer(kind=8) :: nbcnx, icnx, itria, inoeu, icote, iproj
     real(kind=8) :: xyzma(3, *), x3dp(*), excent, xbar(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ino, nbsom
+    integer(kind=8) :: ino, nbsom
     real(kind=8) :: d, dx, dy, dz, epsg, nrm2, r8bid3(3)
     aster_logical :: notlin
     blas_int :: b_incx, b_n

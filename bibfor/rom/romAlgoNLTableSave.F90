@@ -27,7 +27,7 @@ subroutine romAlgoNLTableSave(nume_store, time_curr, paraAlgo)
 #include "asterfort/jeveuo.h"
 #include "asterfort/romTableSave.h"
 !
-    integer, intent(in) :: nume_store
+    integer(kind=8), intent(in) :: nume_store
     real(kind=8), intent(in) :: time_curr
     type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
 !
@@ -46,7 +46,7 @@ subroutine romAlgoNLTableSave(nume_store, time_curr, paraAlgo)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: gamma
-    integer :: nbMode
+    integer(kind=8) :: nbMode
     real(kind=8), pointer :: v_gamma(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

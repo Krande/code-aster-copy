@@ -22,7 +22,7 @@ subroutine indice1(i, k, l)
 !     indices complementaires dans une matrice carre
 !=====================================================================
     implicit none
-    integer :: i, k, l
+    integer(kind=8) :: i, k, l
     if (i .eq. 1) then
         k = 2
         l = 3

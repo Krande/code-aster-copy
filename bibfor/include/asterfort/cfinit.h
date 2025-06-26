@@ -22,6 +22,6 @@ interface
     subroutine cfinit(ds_contact, nume_inst)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
     end subroutine cfinit
 end interface

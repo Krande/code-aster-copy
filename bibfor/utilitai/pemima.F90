@@ -49,7 +49,7 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbocc, indch
+    integer(kind=8) :: nbocc, indch
     character(len=8) :: modele
     character(len=19) :: resu
     character(len=24) :: chamgd
@@ -57,9 +57,9 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
 !     TRAITEMENT DU MOT CLE-FACTEUR "MINMAX"
 !     ------------------------------------------------------------------
 !
-    integer :: iret, nbcmp, nzero, nbordr, iocc, nbma, nbtot
-    integer :: n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
-    integer :: nbgma, igm, nbpar, nn, inum, nli, nlo
+    integer(kind=8) :: iret, nbcmp, nzero, nbordr, iocc, nbma, nbtot
+    integer(kind=8) :: n1, nr, np, nc, ni, no, jno, jin, numo, tord(1)
+    integer(kind=8) :: nbgma, igm, nbpar, nn, inum, nli, nlo
     parameter(nzero=0, nbpar=3)
     real(kind=8) :: prec, inst
     complex(kind=8) :: cbid
@@ -74,8 +74,8 @@ subroutine pemima(indch, chamgd, resu, modele, nbocc)
     aster_logical :: exiord, l_pmesh
     character(len=8), pointer :: cmp(:) => null()
     character(len=24), pointer :: v_gma(:) => null()
-    integer, pointer :: v_lma(:) => null()
-    integer, pointer :: v_allma(:) => null()
+    integer(kind=8), pointer :: v_lma(:) => null()
+    integer(kind=8), pointer :: v_allma(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

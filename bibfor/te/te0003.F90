@@ -98,28 +98,28 @@ subroutine te0003(option, nomte)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ifm, niv
-    integer :: tabniv(20)
-    integer :: iadzi, iazk24
-    integer :: ibid, iret, iret2
-    integer :: noe(9, 6, 4)
-    integer :: igeom
-    integer :: ierr, ivois
-    integer :: imate
-    integer :: isour, icharg
-    integer :: iflum, iflup, itemm, itemp
-    integer :: ndim
-    integer :: nno, nnos, npg, ipoids, ivf, idfde, jgano
-    integer :: ndimf
-    integer :: nnof, nnosf, npgf, ipoidf, ivff, idfdxf, idfdyf, jganof
-    integer :: nno2, nnos2, npg2, ipoid2, ivf2, idfdx2, idfdy2, jgano2
-    integer :: i, j, k, icode, i1, ij, i2, mceld, mcelv, pceld, pcelv, iaux1
-    integer :: iavaf, ncmpf, iavah, ncmph, jno, mno, imav, iaptma, ientf, ienth
-    integer :: ientt, iavat, ncmpt, nbsv, nbnv, jad, jadv, igrel, iel, iavalp
-    integer :: iavalm, iarepe, niveau, ifon(6), nbpar, ijeveo
-    integer :: ipg
-    integer :: nbf
-    integer :: tymvol, ndegre, ifa, tyv
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: tabniv(20)
+    integer(kind=8) :: iadzi, iazk24
+    integer(kind=8) :: ibid, iret, iret2
+    integer(kind=8) :: noe(9, 6, 4)
+    integer(kind=8) :: igeom
+    integer(kind=8) :: ierr, ivois
+    integer(kind=8) :: imate
+    integer(kind=8) :: isour, icharg
+    integer(kind=8) :: iflum, iflup, itemm, itemp
+    integer(kind=8) :: ndim
+    integer(kind=8) :: nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: ndimf
+    integer(kind=8) :: nnof, nnosf, npgf, ipoidf, ivff, idfdxf, idfdyf, jganof
+    integer(kind=8) :: nno2, nnos2, npg2, ipoid2, ivf2, idfdx2, idfdy2, jgano2
+    integer(kind=8) :: i, j, k, icode, i1, ij, i2, mceld, mcelv, pceld, pcelv, iaux1
+    integer(kind=8) :: iavaf, ncmpf, iavah, ncmph, jno, mno, imav, iaptma, ientf, ienth
+    integer(kind=8) :: ientt, iavat, ncmpt, nbsv, nbnv, jad, jadv, igrel, iel, iavalp
+    integer(kind=8) :: iavalm, iarepe, niveau, ifon(6), nbpar, ijeveo
+    integer(kind=8) :: ipg
+    integer(kind=8) :: nbf
+    integer(kind=8) :: tymvol, ndegre, ifa, tyv
 !
     real(kind=8) :: r8bid, r8bid3(4)
     real(kind=8) :: insold, inst, valthe, aux, rhocp(1), dfdx(27), dfdy(27), poids
@@ -133,7 +133,7 @@ subroutine te0003(option, nomte)
     real(kind=8) :: terme1, terme2, jacob, unsurd, rhocpm, rhocpp, dfdz(27), x
     real(kind=8) :: y, z
 !
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=2) :: formv
     character(len=4) :: evol
     character(len=8) :: typmav, elrefe

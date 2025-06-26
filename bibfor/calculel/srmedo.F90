@@ -34,7 +34,7 @@ subroutine srmedo(modele, mate, mateco, cara, kcha, ncha, &
 #include "asterfort/medom1.h"
 #include "asterfort/srlima.h"
 #include "asterfort/wkvect.h"
-    integer :: ncha, nuord, nbordr, npass
+    integer(kind=8) :: ncha, nuord, nbordr, npass
     character(len=1) :: base
     character(len=8) :: modele, cara, result
     character(len=19) :: kcha
@@ -60,11 +60,11 @@ subroutine srmedo(modele, mate, mateco, cara, kcha, ncha, &
 !
 #include "jeveux.h"
 !
-    integer :: nbmxba
+    integer(kind=8) :: nbmxba
     parameter(nbmxba=2)
 !
-    integer :: nbligr, i, kmod, nbmato, nbma2d
-    integer :: iligrs, imodls, ibases, jlisma
+    integer(kind=8) :: nbligr, i, kmod, nbmato, nbma2d
+    integer(kind=8) :: iligrs, imodls, ibases, jlisma
 !
     character(len=1) :: baslig
     character(len=24) :: ligr1

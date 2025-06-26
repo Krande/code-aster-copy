@@ -23,8 +23,8 @@ interface
                       vnoeud, vrange, vcham)
         character(len=8) :: nombas
         character(len=8) :: nommes
-        integer :: nbmesu
-        integer :: nbmode
+        integer(kind=8) :: nbmesu
+        integer(kind=8) :: nbmode
         character(len=24) :: basepr
         character(len=24) :: vnoeud
         character(len=24) :: vrange

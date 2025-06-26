@@ -52,18 +52,18 @@ subroutine extdia(matr, numddl, icode, diag)
     character(len=24) :: numddl
     character(len=8) :: matr
     real(kind=8) :: diag(*)
-    integer :: icode
+    integer(kind=8) :: icode
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     aster_logical :: iscmplx
-    integer :: idia, j, jbloc, k
-    integer :: l, lmat, nbacti, nbbloq, nblagr, nbliai, neq
+    integer(kind=8) :: idia, j, jbloc, k
+    integer(kind=8) :: l, lmat, nbacti, nbbloq, nblagr, nbliai, neq
     character(len=24) :: typmatr
-    integer, pointer :: vtypddl(:) => null()
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: vtypddl(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
 
 !
 !-----------------------------------------------------------------------

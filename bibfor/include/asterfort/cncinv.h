@@ -21,8 +21,8 @@
 interface
     subroutine cncinv(mail, lima, nlima, base, nomz)
         character(len=8) :: mail
-        integer :: lima(*)
-        integer :: nlima
+        integer(kind=8) :: lima(*)
+        integer(kind=8) :: nlima
         character(len=1) :: base
         character(len=*) :: nomz
     end subroutine cncinv

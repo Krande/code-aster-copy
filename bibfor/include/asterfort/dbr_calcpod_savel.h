@@ -20,7 +20,7 @@ interface
     subroutine dbr_calcpod_savel(base, nbMode, nbSnapRedu, baseSing, baseValeR)
         use Rom_Datastructure_type
         type(ROM_DS_Empi), intent(in) :: base
-        integer, intent(in) :: nbMode, nbSnapRedu
+        integer(kind=8), intent(in) :: nbMode, nbSnapRedu
         real(kind=8), pointer :: baseValeR(:), baseSing(:)
     end subroutine dbr_calcpod_savel
 end interface

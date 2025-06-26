@@ -21,15 +21,15 @@
 interface
     subroutine zerofr(intini, algo, func, x1, x2,&
                       tol, itmax, solu, iret, iter)
-        integer :: intini
+        integer(kind=8) :: intini
         character(len=*) :: algo
         real(kind=8) :: x1
         real(kind=8) :: x2
         real(kind=8) :: tol
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: solu
-        integer :: iret
-        integer :: iter
+        integer(kind=8) :: iret
+        integer(kind=8) :: iter
         interface
             function func(x)
                 real(kind=8) :: x

@@ -27,7 +27,7 @@ interface
         character(len=8) :: typmod(2)
         character(len=*) :: fami
         character(len=16) :: option, compor(COMPOR_SIZE)
-        integer :: ndim, nddl, neps, npg, mat, lgpg
+        integer(kind=8) :: ndim, nddl, neps, npg, mat, lgpg
         real(kind=8) :: w(neps, npg), ni2ldc(neps, npg), b(neps, npg, nddl)
         real(kind=8) :: angmas(3), carcri(*), instam, instap
         real(kind=8) :: ddlm(nddl), ddld(nddl)
@@ -36,6 +36,6 @@ interface
         real(kind=8),intent(out):: matuu((nddl*(nddl+1))/2)
         real(kind=8),intent(out),target :: matns(nddl, nddl)
         aster_logical, intent(in) :: matsym, lMatr, lVect, lSigm
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine ngfint
 end interface

@@ -22,9 +22,9 @@ interface
     subroutine diarme(nbt, neq, icodma, ul, dul,&
                       utl, sim, varim, klv, varip,&
                       kty2, duly)
-        integer :: neq
-        integer :: nbt
-        integer :: icodma
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbt
+        integer(kind=8) :: icodma
         real(kind=8) :: ul(neq)
         real(kind=8) :: dul(neq)
         real(kind=8) :: utl(neq)

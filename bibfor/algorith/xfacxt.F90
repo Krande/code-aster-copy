@@ -47,8 +47,8 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, &
 #include "asterfort/xxmmvd.h"
 #include "blas/ddot.h"
 !
-    integer :: ninter, nface, cface(30, 6), jcnset, jnit, jmilt, jpint
-    integer :: nptf, ndim, jphe, igeom, jlsn, jaint, jlst, jgrlsn
+    integer(kind=8) :: ninter, nface, cface(30, 6), jcnset, jnit, jmilt, jpint
+    integer(kind=8) :: nptf, ndim, jphe, igeom, jlsn, jaint, jlst, jgrlsn
     real(kind=8) :: pinter(*), ainter(*)
     character(len=8) :: elp
 !
@@ -77,10 +77,10 @@ subroutine xfacxt(elp, jpint, jmilt, jnit, jcnset, &
     real(kind=8) :: newptref(ndim), geom(20*ndim), ptxx(3*ndim), ksi(ndim), norme
     real(kind=8) :: ptreem(ndim), ptrefm(ndim), epsmax, ls(20), det, cridist, a, b, c
     real(kind=8) :: ab(ndim), bc(ndim), normfa(ndim), gradlsn(ndim), lsn(ndim)
-    integer :: iadzi, iazk24, npi, ni, npis, ip1, ip2, n(3), nnose
-    integer :: i, j, k, nelttot, ino, noeud(9), nintar, npts, h
-    integer :: zxain, ar(12, 3), ii, jj, nnos, nno, signe
-    integer :: nbf, f(6, 8), ibid2(12, 3), ibid, itemax, tempo
+    integer(kind=8) :: iadzi, iazk24, npi, ni, npis, ip1, ip2, n(3), nnose
+    integer(kind=8) :: i, j, k, nelttot, ino, noeud(9), nintar, npts, h
+    integer(kind=8) :: zxain, ar(12, 3), ii, jj, nnos, nno, signe
+    integer(kind=8) :: nbf, f(6, 8), ibid2(12, 3), ibid, itemax, tempo
     aster_logical :: deja, mipos
     character(len=8) :: typma, typsma
     blas_int :: b_incx, b_incy, b_n

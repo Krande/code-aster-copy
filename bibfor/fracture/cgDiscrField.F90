@@ -45,13 +45,13 @@ subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_abs
     type(CalcG_Study), intent(in) :: cgStudy
     type(CalcG_stat), intent(inout) :: cgStat
     character(len=19), intent(in) :: chsdeg, chslag
-    integer, intent(in) :: jcesd, jcesl, i_theta
+    integer(kind=8), intent(in) :: jcesd, jcesl, i_theta
     real(kind=8), pointer :: v_basf(:)
     real(kind=8), pointer :: v_absc(:)
-    integer, pointer  :: v_cesv(:)
+    integer(kind=8), pointer  :: v_cesv(:)
     character(len=24), intent(inout) :: lchin(*)
     character(len=8), intent(inout) :: lpain(*)
-    integer, intent(inout) :: nchin
+    integer(kind=8), intent(inout) :: nchin
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,8 +65,8 @@ subroutine cgDiscrField(cgField, cgTheta, cgStudy, cgStat, chsdeg, chslag, v_abs
     character(len=19), parameter :: chlag = '&&cgtheta.CHLAG'
     character(len=16) :: nomte
     character(len=19) :: ligrmo
-    integer :: igr, nbgrel, nel, nute, iel, iad, ima, nncp, iret
-    integer, pointer :: v_liel(:) => null()
+    integer(kind=8) :: igr, nbgrel, nel, nute, iel, iad, ima, nncp, iret
+    integer(kind=8), pointer :: v_liel(:) => null()
     real(kind=8) :: start, finish
 !
     call cpu_time(start)

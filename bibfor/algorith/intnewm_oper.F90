@@ -35,13 +35,13 @@ subroutine intnewm_oper(nbequ, par, mgen, kgen, agen, &
 #include "asterfort/trlds.h"
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)           :: nbequ
+    integer(kind=8), intent(in)           :: nbequ
     real(kind=8)                       :: par(:)
     real(kind=8), pointer  :: mgen(:), kgen(:), agen(:)
     real(kind=8), pointer :: ktilda(:), ftild1(:), ftild2(:), ftild3(:)
 !
 !   -0.2- Local variables
-    integer           :: i, j, iret
+    integer(kind=8)           :: i, j, iret
 
 !   --------------------------------------------------------------------------
 #define a(k) par(k)

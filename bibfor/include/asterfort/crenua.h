@@ -25,9 +25,9 @@ interface
                       l_crea_nual)
         character(len=*), intent(in) :: nuagez
         character(len=*), intent(in) :: gran_name
-        integer, intent(in) :: nb_point
-        integer, intent(in) :: nb_dim
-        integer, intent(in) :: nb_cmp_max
+        integer(kind=8), intent(in) :: nb_point
+        integer(kind=8), intent(in) :: nb_dim
+        integer(kind=8), intent(in) :: nb_cmp_max
         aster_logical, intent(in) :: l_crea_nual
     end subroutine crenua
 end interface

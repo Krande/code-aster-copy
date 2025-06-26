@@ -36,10 +36,10 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: conx_inve
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: list_elem(nb_elem)
-    integer, intent(in) :: elem_indx_mini
-    integer, intent(in) :: elem_indx_maxi
+    integer(kind=8), intent(in) :: nb_elem
+    integer(kind=8), intent(in) :: list_elem(nb_elem)
+    integer(kind=8), intent(in) :: elem_indx_mini
+    integer(kind=8), intent(in) :: elem_indx_maxi
     character(len=24), intent(in) :: elem_neigh
 !
 ! --------------------------------------------------------------------------------------------------
@@ -60,15 +60,15 @@ subroutine cnvois(mesh, list_elem, conx_inve, nb_elem, elem_indx_mini, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_elem, i_neigh, aux(1), nb_find, lmail(1), jtypma
-    integer :: elem_indx, elem_nume
-    integer :: list_neigh(4), nb_neigh
+    integer(kind=8) :: i_elem, i_neigh, aux(1), nb_find, lmail(1), jtypma
+    integer(kind=8) :: elem_indx, elem_nume
+    integer(kind=8) :: list_neigh(4), nb_neigh
     character(len=8) :: elem_code, elem_type
-    integer, pointer :: v_elem_neigh(:) => null()
-    integer, pointer :: v_connex(:) => null()
-    integer, pointer :: v_connex_lcum(:) => null()
-    integer, pointer :: v_conx_inv(:) => null()
-    integer, pointer :: v_inv_lcum(:) => null()
+    integer(kind=8), pointer :: v_elem_neigh(:) => null()
+    integer(kind=8), pointer :: v_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_lcum(:) => null()
+    integer(kind=8), pointer :: v_conx_inv(:) => null()
+    integer(kind=8), pointer :: v_inv_lcum(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

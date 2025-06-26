@@ -27,9 +27,9 @@ interface
         character(len=19), intent(in) :: cham19
         character(len=33), intent(in) :: nonoeu
         character(len=8), intent(in) :: nocmp
-        integer, intent(in) :: nbref
+        integer(kind=8), intent(in) :: nbref
         character(len=16), intent(in) :: tbtxt(2)
-        integer, intent(in) :: refi(nbref)
+        integer(kind=8), intent(in) :: refi(nbref)
         real(kind=8), intent(in) :: refr(nbref)
         complex(kind=8), intent(in) :: refc(nbref)
         character(len=1), intent(in) :: typres

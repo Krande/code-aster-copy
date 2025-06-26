@@ -58,7 +58,7 @@ subroutine romAlgoNLTherResidual(ds_algorom, vec2nd, cnvabt, cnresi, cn2mbr, &
     character(len=8) :: resultName
     character(len=19) :: mode
     character(len=24) :: fieldName
-    integer :: iEqua, nbEqua, nbMode, iMode, iret
+    integer(kind=8) :: iEqua, nbEqua, nbMode, iMode, iret
     real(kind=8) :: vnorm, resi
     real(kind=8), pointer :: v_mode(:) => null()
     real(kind=8), pointer :: v_cn2mbr(:) => null()

@@ -20,9 +20,9 @@
 !
 interface
     subroutine acevpo(nbocc, nlm, nlg, ier)
-        integer :: nbocc
-        integer :: nlm
-        integer :: nlg
-        integer :: ier
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: nlm
+        integer(kind=8) :: nlg
+        integer(kind=8) :: ier
     end subroutine acevpo
 end interface

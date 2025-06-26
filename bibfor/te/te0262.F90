@@ -41,17 +41,17 @@ subroutine te0262(option, nomte)
 !                         MULTI-FIBRES (SECTION CONSTANTE)
 !
 !
-    integer :: nbres, nl
+    integer(kind=8) :: nbres, nl
     parameter(nbres=3, nl=144)
     real(kind=8) :: valres(nbres)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     character(len=8) :: nompar, fami, poum
     character(len=16) :: nomres(nbres)
     real(kind=8) :: pgl(3, 3), klv(nl)
     real(kind=8) :: e, rho
     real(kind=8) :: valpar, xnu, zero
-    integer :: imate, lmat, lorien
-    integer :: nbpar, nno, kpg, spt
+    integer(kind=8) :: imate, lmat, lorien
+    integer(kind=8) :: nbpar, nno, kpg, spt
 !     ------------------------------------------------------------------
     data nomres/'E', 'RHO', 'NU'/
 !     ------------------------------------------------------------------

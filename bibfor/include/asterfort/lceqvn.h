@@ -20,7 +20,7 @@
 !
 interface
     subroutine lceqvn(n, x, y)
-        integer, intent(in) :: n
+        integer(kind=8), intent(in) :: n
         real(kind=8), intent(in) :: x(n)
         real(kind=8), intent(out) :: y(n)
     end subroutine lceqvn

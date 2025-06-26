@@ -42,7 +42,7 @@ subroutine nmimpr(ds_print)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_csv
-    integer :: unit_mess, unit_csv
+    integer(kind=8) :: unit_mess, unit_csv
     character(len=1) :: row_sep
     type(NL_DS_Table) :: table_cvg
 !

@@ -20,7 +20,7 @@
 !
 interface
     subroutine vecini(n, s, x)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: s
         real(kind=8) :: x(n)
     end subroutine vecini

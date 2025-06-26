@@ -81,7 +81,7 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbordr, nchar
+    integer(kind=8) :: nbordr, nchar
     character(len=8) :: resuco, resuc1, modele, cara
     character(len=16) :: tysd
     character(len=19) :: knum, kcha
@@ -94,19 +94,19 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
     character(len=6) :: nompro
     parameter(nompro='MECALR')
 !
-    integer :: ifm, niv
-    integer :: nuord
-    integer :: iordr, jordr
-    integer :: iret, iret1, iret2, iret3, iret4, iret5, ireter
-    integer :: nh, nbopt
-    integer :: iadou, iadin
-    integer :: iaux, j, ibid
-    integer :: iopt
-    integer :: n1, n2
-    integer :: jpa, jopt, jcha
-    integer :: nbac, nbpa, nbpara
-    integer :: jcoor, ltymo
-    integer :: nnoem, nelem, ndim, nncp
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nuord
+    integer(kind=8) :: iordr, jordr
+    integer(kind=8) :: iret, iret1, iret2, iret3, iret4, iret5, ireter
+    integer(kind=8) :: nh, nbopt
+    integer(kind=8) :: iadou, iadin
+    integer(kind=8) :: iaux, j, ibid
+    integer(kind=8) :: iopt
+    integer(kind=8) :: n1, n2
+    integer(kind=8) :: jpa, jopt, jcha
+    integer(kind=8) :: nbac, nbpa, nbpara
+    integer(kind=8) :: jcoor, ltymo
+    integer(kind=8) :: nnoem, nelem, ndim, nncp
 !
     character(len=4) :: type
     character(len=8) :: k8b, noma
@@ -130,8 +130,8 @@ subroutine mecalr(newcal, tysd, knum, kcha, resuco, &
     real(kind=8) :: tbgrca(3)
 !
     character(len=24) :: valkm(2)
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
 !
 !
     call jemarq()

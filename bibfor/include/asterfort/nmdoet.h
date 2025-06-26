@@ -30,7 +30,7 @@ interface
         character(len=19), intent(in) :: sddyna
         character(len=19), intent(in) :: sdpilo
         character(len=19), intent(in) :: hval_algo(*)
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         aster_logical, intent(out) :: l_acce_zero
         type(NL_DS_InOut), intent(inout) :: ds_inout
         type(NL_DS_Energy), intent(inout) :: ds_energy

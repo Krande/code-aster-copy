@@ -65,10 +65,10 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbcmp = 4
-    integer :: nbma, nbpara, jlma, iret, jcesl, jcesl2, jcesd, jcesd2, nbpara_tmp
-    integer :: jconx2, nbcmpx, nr, nk, kk, ima, nbmax, indma, nbpt, nbcmpt
-    integer :: nbabsc, icmp, iad, ipt, inot, ispt, kcp, iexi
+    integer(kind=8), parameter :: nbcmp = 4
+    integer(kind=8) :: nbma, nbpara, jlma, iret, jcesl, jcesl2, jcesd, jcesd2, nbpara_tmp
+    integer(kind=8) :: jconx2, nbcmpx, nr, nk, kk, ima, nbmax, indma, nbpt, nbcmpt
+    integer(kind=8) :: nbabsc, icmp, iad, ipt, inot, ispt, kcp, iexi
     real(kind=8) :: table_valr(5), val_cmp(nbcmp), val_absc(4)
     complex(kind=8) :: cbid
     character(len=8) :: motcle(3), typmcl(3), noma, kma, kno
@@ -80,7 +80,7 @@ subroutine rc3600_chtotab(nomtb, conceptin, nsymb, modele, champ)
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesc(:) => null()
     real(kind=8), pointer :: cesv2(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 
     character(len=9) :: parata1(9), parata2(8), parata(9), parata_tmp(9)
     character(len=3) :: typarata1(9), typarata2(8), typarata(9), nomcmp(nbcmp)

@@ -58,19 +58,19 @@ subroutine medith(base, cumul, model_, list_load, matr_elem)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 1
-    integer, parameter :: nbout = 1
+    integer(kind=8), parameter :: nbin = 1
+    integer(kind=8), parameter :: nbout = 1
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
     character(len=8) :: load_name, model
     character(len=16) :: option
     character(len=24) :: ligrch
-    integer :: iret, i_resu_elem, load_nume
+    integer(kind=8) :: iret, i_resu_elem, load_nume
     character(len=19) :: resu_elem
-    integer :: nb_load, i_load
+    integer(kind=8) :: nb_load, i_load
     character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
+    integer(kind=8), pointer :: v_load_info(:) => null()
     aster_logical :: load_empty
 !
 ! --------------------------------------------------------------------------------------------------

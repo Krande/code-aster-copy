@@ -23,7 +23,7 @@ interface
         use NonLin_Datastructure_type
         character(len=4), intent(in) :: mod45
         character(len=8), intent(in) :: sdmode, sdstab
-        integer, intent(in) :: nume_inst, nb_freq, nfreq_calibr
+        integer(kind=8), intent(in) :: nume_inst, nb_freq, nfreq_calibr
         real(kind=8), intent(in) :: inst
         type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
     end subroutine nonlinDSPostTimeStepSave

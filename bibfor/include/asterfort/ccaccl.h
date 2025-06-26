@@ -28,10 +28,10 @@ interface
         character(len=8) :: carael
         character(len=24) :: ligrel
         character(len=16) :: typesd
-        integer :: nbpain
+        integer(kind=8) :: nbpain
         character(len=8) :: lipain(*)
         character(len=24) :: lichin(*)
         character(len=24) :: lichou(2)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine ccaccl
 end interface

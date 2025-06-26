@@ -79,19 +79,19 @@ subroutine spephy(ioptch, intphy, intmod, nomu, table, &
 #include "asterfort/wkvect.h"
 !
     aster_logical :: intphy, intmod, exiind
-    integer :: ioptch, nbmr, nbn, imod1, nbpf, nbm, ivitef
-    integer :: nuor(nbmr), lnumi, lnumj, ij
+    integer(kind=8) :: ioptch, nbmr, nbn, imod1, nbpf, nbm, ivitef
+    integer(kind=8) :: nuor(nbmr), lnumi, lnumj, ij
     real(kind=8) :: cham(nbn, nbmr), specmr(nbpf, *), specmi(nbpf, *)
     real(kind=8) :: disc(*), freq(2, nbm, *)
     character(len=8) :: nomu, table, nnoe(nbn), nomcmp
 !
-    integer :: ival(3)
-    integer :: nbabs, ispec, mxval, mxvals, lnoei, lnoej, lcmpi, lcmpj
+    integer(kind=8) :: ival(3)
+    integer(kind=8) :: nbabs, ispec, mxval, mxvals, lnoei, lnoej, lcmpi, lcmpj
     real(kind=8) :: pi
 !-----------------------------------------------------------------------
-    integer :: i1, i2, ideb, idebm, idebn, if1, ifon
-    integer :: il, im1, im2, imi, imj, ini, inj, lfreq, lfreqs
-    integer :: isj, ism, iv
+    integer(kind=8) :: i1, i2, ideb, idebm, idebn, if1, ifon
+    integer(kind=8) :: il, im1, im2, imi, imj, ini, inj, lfreq, lfreqs
+    integer(kind=8) :: isj, ism, iv
 !
     real(kind=8) :: speci, specr
 !

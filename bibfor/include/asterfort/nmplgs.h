@@ -25,20 +25,20 @@ interface
                       matr, vect, codret, livois,&
                       nbvois, numa, lisoco, nbsoco,&
                       lVari, lSigm, lMatr, lVect)
-        integer :: lgpg
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
         real(kind=8) :: vff1(nno1, npg)
-        integer :: idfde1
+        integer(kind=8) :: idfde1
         real(kind=8) :: vff2(nno2, npg)
-        integer :: idfde2
-        integer :: iw
+        integer(kind=8) :: idfde2
+        integer(kind=8) :: iw
         real(kind=8) :: geom(ndim, nno1)
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: mate
+        integer(kind=8) :: mate
         character(len=16) :: compor(*)
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
@@ -52,13 +52,13 @@ interface
         real(kind=8) :: vip(lgpg, npg)
         real(kind=8) :: matr(*)
         real(kind=8) :: vect(*)
-        integer :: codret
-        integer, parameter :: nvoima=12, nscoma=4
-        integer :: livois(1:nvoima)
-        integer :: nbvois
-        integer :: numa
-        integer :: lisoco(1:nvoima, 1:nscoma, 1:2)
-        integer :: nbsoco(1:nvoima)
+        integer(kind=8) :: codret
+        integer(kind=8), parameter :: nvoima=12, nscoma=4
+        integer(kind=8) :: livois(1:nvoima)
+        integer(kind=8) :: nbvois
+        integer(kind=8) :: numa
+        integer(kind=8) :: lisoco(1:nvoima, 1:nscoma, 1:2)
+        integer(kind=8) :: nbsoco(1:nvoima)
         aster_logical, intent(in) :: lVari, lSigm, lMatr, lVect
     end subroutine nmplgs
 end interface

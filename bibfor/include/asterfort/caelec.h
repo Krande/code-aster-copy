@@ -19,6 +19,6 @@
 interface
     subroutine caelec(load, mesh, nbOcc)
         character(len=8), intent(in) :: load, mesh
-        integer, intent(in) :: nbOcc
+        integer(kind=8), intent(in) :: nbOcc
     end subroutine caelec
 end interface

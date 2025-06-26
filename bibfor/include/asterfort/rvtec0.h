@@ -22,21 +22,21 @@
             subroutine rvtec0(t,co,sp,absc,x,cmp,nd,sdm,nbpoin,docu,    &
      &nbcmp,padr,nomtab,iocc,xnovar,ncheff,i1)
               real(kind=8) :: t(*)
-              integer :: co(*)
-              integer :: sp(*)
+              integer(kind=8) :: co(*)
+              integer(kind=8) :: sp(*)
               real(kind=8) :: absc(*)
               real(kind=8) :: x(*)
               character(len=8) :: cmp(*)
               character(len=8) :: nd(*)
               character(len=24) :: sdm
-              integer :: nbpoin
+              integer(kind=8) :: nbpoin
               character(len=4) :: docu
-              integer :: nbcmp
-              integer :: padr(*)
+              integer(kind=8) :: nbcmp
+              integer(kind=8) :: padr(*)
               character(len=19) :: nomtab
-              integer :: iocc
+              integer(kind=8) :: iocc
               character(len=24) :: xnovar
               character(len=16) :: ncheff
-              integer :: i1
+              integer(kind=8) :: i1
             end subroutine rvtec0
           end interface 

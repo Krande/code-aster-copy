@@ -30,9 +30,9 @@ interface
         real(kind=8) :: c10
         real(kind=8) :: c01
         real(kind=8) :: c20
-        integer :: nitmax
+        integer(kind=8) :: nitmax
         real(kind=8) :: epsi
         real(kind=8) :: sig(6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine hypcpc
 end interface

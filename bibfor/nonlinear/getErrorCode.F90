@@ -26,7 +26,7 @@ subroutine getErrorCode(codret, ldccvg)
 #include "asterfort/nmiret.h"
 !
     character(len=19), intent(in) :: codret
-    integer, intent(out) :: ldccvg
+    integer(kind=8), intent(out) :: ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !

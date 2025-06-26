@@ -22,10 +22,10 @@ interface
                       leres1, noma, modele, ligrmo, mate,&
                       cara, chvarc, codret)
         character(len=*) :: optio0
-        integer :: nbordr
-        integer :: jordr
-        integer :: nchar
-        integer :: jcha
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: jordr
+        integer(kind=8) :: nchar
+        integer(kind=8) :: jcha
         character(len=19) :: kcha
         real(kind=8) :: tbgrca(3)
         character(len=8) :: resuco
@@ -37,6 +37,6 @@ interface
         character(len=24) :: mate
         character(len=8) :: cara
         character(len=19) :: chvarc
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine meca01
 end interface

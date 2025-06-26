@@ -22,8 +22,8 @@ interface
     subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
                       sdedx, sdedy, sdkdx, sdkdy, sdfdx,&
                       sdfdy, geom, jac)
-        integer :: kpg
-        integer :: nno
+        integer(kind=8) :: kpg
+        integer(kind=8) :: nno
         real(kind=8) :: poids
         real(kind=8) :: sdfrde(4, 4)
         real(kind=8) :: sdfrdk(4, 4)

@@ -24,10 +24,10 @@ interface
     subroutine nmfdff(ndim, nno, axi, g, r,&
                       rigi, matsym, fr, vff, dff,&
                       def, pff)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         aster_logical :: axi
-        integer :: g
+        integer(kind=8) :: g
         real(kind=8) :: r
         aster_logical :: rigi
         aster_logical :: matsym

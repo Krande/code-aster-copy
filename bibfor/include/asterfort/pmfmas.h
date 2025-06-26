@@ -24,8 +24,8 @@ interface
         character(len=*) :: nomte
         character(len=*) :: option
         real(kind=8) :: rhoflu
-        integer :: icdmat
-        integer :: kanl
+        integer(kind=8) :: icdmat
+        integer(kind=8) :: kanl
         real(kind=8) :: mlv(*)
     end subroutine pmfmas
 end interface

@@ -38,7 +38,7 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !
     character(len=19) :: sdeval
     character(len=24) :: sdmoye, sdlieu
-    integer :: iocc
+    integer(kind=8) :: iocc
 !
 !**********************************************************************
 !
@@ -80,9 +80,9 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
     character(len=24) :: nsocp, nsova
     character(len=4) :: docul, docu
 !
-    integer :: avale, amoye, aabsc, atab, adr1, adr2
-    integer :: deb, fin, lmoye, nbcp, nbco, nbsp, nboc, nbsgt, nres, nmom
-    integer :: l1, l2, l3, l5, ioc, i, j, k, l, n, nbpt
+    integer(kind=8) :: avale, amoye, aabsc, atab, adr1, adr2
+    integer(kind=8) :: deb, fin, lmoye, nbcp, nbco, nbsp, nboc, nbsgt, nres, nmom
+    integer(kind=8) :: l1, l2, l3, l5, ioc, i, j, k, l, n, nbpt
 !
     real(kind=8) :: t1, t(3), x, y, z, xpi, ypi, zpi, rx, ry, rz, mx, my, mz
     real(kind=8) :: zero
@@ -90,9 +90,9 @@ subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
 !==================== CORPS DE LA ROUTINE =============================
 !
 !-----------------------------------------------------------------------
-    integer :: lll
-    integer, pointer :: pnbn(:) => null()
-    integer, pointer :: padr(:) => null()
+    integer(kind=8) :: lll
+    integer(kind=8), pointer :: pnbn(:) => null()
+    integer(kind=8), pointer :: padr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     zero = 0.0d0

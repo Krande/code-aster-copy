@@ -22,6 +22,6 @@ interface
     subroutine surfcl(sdcont, mesh, unit_msg)
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: unit_msg
+        integer(kind=8), intent(in) :: unit_msg
     end subroutine surfcl
 end interface

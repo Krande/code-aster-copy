@@ -24,7 +24,7 @@ interface
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: nume_dof
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: cndiri, cnfint, cnfext, cnsstr, disp_iter
         real(kind=8), intent(out) :: func
     end subroutine nmrecz

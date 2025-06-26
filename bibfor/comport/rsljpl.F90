@@ -37,7 +37,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat, &
 #include "asterfort/lcprte.h"
 #include "asterfort/lcsomh.h"
 #include "asterfort/rsliso.h"
-    integer :: kpg, ksp, imat, nmat
+    integer(kind=8) :: kpg, ksp, imat, nmat
 !
     real(kind=8) :: v1(6), v2(6), i2(6)
     real(kind=8) :: m1(6, 6), m2(6, 6), m3(6, 6), dsde(6, 6), i4(6, 6)
@@ -56,7 +56,7 @@ subroutine rsljpl(fami, kpg, ksp, loi, imat, &
     character(len=16) :: loi
     character(len=*) :: fami
 !
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !
     parameter(zero=0.d0)

@@ -20,8 +20,8 @@
 !
 interface
     subroutine exresl(modatt, iparg, chin)
-        integer :: modatt
-        integer :: iparg
+        integer(kind=8) :: modatt
+        integer(kind=8) :: iparg
         character(len=19) :: chin
     end subroutine exresl
 end interface

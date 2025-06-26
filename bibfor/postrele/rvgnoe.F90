@@ -38,7 +38,7 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: iocc, nbtrou, linoeu(*)
+    integer(kind=8) :: iocc, nbtrou, linoeu(*)
     character(len=*) :: mcf
     character(len=8) :: nmaila
     character(len=24) :: nlstnd
@@ -57,16 +57,16 @@ subroutine rvgnoe(mcf, iocc, nmaila, nlstnd, nbtrou, &
 !         ON N' EN GARDE QU' UN
 !     ------------------------------------------------------------------
 !
-    integer :: nbrgpn, nbneud, aneud, agrpn, alndtp, alstnd, agneud
-    integer :: i, j, k, libre, numnd, nbtnd, n1, nbn, iret, iera
-    integer :: asgtu, i1, i2, ny, ier
+    integer(kind=8) :: nbrgpn, nbneud, aneud, agrpn, alndtp, alstnd, agneud
+    integer(kind=8) :: i, j, k, libre, numnd, nbtnd, n1, nbn, iret, iera
+    integer(kind=8) :: asgtu, i1, i2, ny, ier
     real(kind=8) :: vecty(3), tole
     character(len=8) :: courbe, crit
     character(len=24) :: nomgrn
     character(len=15) :: nrepnd
     character(len=17) :: nrepgn
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: list_n(:) => null()
+    integer(kind=8), pointer :: list_n(:) => null()
     aster_logical lnomnoe
 !
 !==================== CORPS DE LA ROUTINE =============================

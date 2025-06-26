@@ -21,8 +21,8 @@
 interface
     subroutine remp81(nomres, lpar, basmod, nbmod)
         character(len=18) :: nomres
-        integer :: lpar
+        integer(kind=8) :: lpar
         character(len=8) :: basmod
-        integer :: nbmod
+        integer(kind=8) :: nbmod
     end subroutine remp81
 end interface

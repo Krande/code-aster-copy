@@ -55,11 +55,11 @@ subroutine caethr(load, mesh, model, valeType)
 !
     character(len=16), parameter :: keywordfact = 'ECHANGE_THM_HR'
     character(len=24), parameter :: listCell = '&&CAETHR.LIST_ELEM'
-    integer :: jnfis, jvalv, jvCell
-    integer :: nbCell, nbOcc(3), nfiss, nech
-    integer :: iret, iocc
+    integer(kind=8) :: jnfis, jvalv, jvCell
+    integer(kind=8) :: nbCell, nbOcc(3), nfiss, nech
+    integer(kind=8) :: iret, iocc
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

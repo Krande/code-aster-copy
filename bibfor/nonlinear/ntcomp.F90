@@ -27,13 +27,13 @@ subroutine ntcomp(rela_name, ndim, temp, dtemp, coorpg, aniso, ifon, fluxglo, Kg
 #include "asterfort/matrRotLGTher.h"
 !
     character(len=16), intent(in) :: rela_name
-    integer, intent(in) :: ndim, ifon(6)
+    integer(kind=8), intent(in) :: ndim, ifon(6)
     real(kind=8), intent(in) :: temp, dtemp(3), coorpg(3)
     aster_logical, intent(in) :: aniso
     real(kind=8), intent(out) :: fluxglo(3)
     real(kind=8), intent(out) :: Kglo(3, 3)
 !
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: lambor(3), lambda, r8bid
     real(kind=8) ::  p(3, 3), Kloc(3, 3)
 !

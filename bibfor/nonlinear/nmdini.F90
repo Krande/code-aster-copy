@@ -32,8 +32,8 @@ subroutine nmdini(factorKeyword, listInstJv, tole, &
     character(len=16), intent(in) :: factorKeyword
     character(len=19), intent(in) :: listInstJv
     real(kind=8), intent(in) :: tole
-    integer, intent(in) :: nbInst
-    integer, intent(out) :: numeInstInit
+    integer(kind=8), intent(in) :: nbInst
+    integer(kind=8), intent(out) :: numeInstInit
     real(kind=8), intent(out) :: instInit
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine nmdini(factorKeyword, listInstJv, tole, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, n2, iInst
+    integer(kind=8) :: n1, n2, iInst
     real(kind=8), pointer :: listInst(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

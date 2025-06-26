@@ -20,6 +20,6 @@
 !
 interface
     subroutine lccata(iunit)
-        integer :: iunit
+        integer(kind=8) :: iunit
     end subroutine lccata
 end interface

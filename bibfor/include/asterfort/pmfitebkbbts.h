@@ -24,9 +24,9 @@ interface
                             sk, vv, vvp)
 
 
-        integer :: typfib
-        integer :: nf
-        integer :: ncarf
+        integer(kind=8) :: typfib
+        integer(kind=8) :: nf
+        integer(kind=8) :: ncarf
         real(kind=8) :: vf(ncarf, nf)
         real(kind=8) :: ve(nf)
         real(kind=8) :: b(4)
@@ -35,9 +35,9 @@ interface
         real(kind=8) :: gxjxpou(*)
         real(kind=8) :: g
         real(kind=8) :: gg
-        integer :: nbassepou
-        integer :: maxfipoutre
-        integer :: nbfipoutre(*)
+        integer(kind=8) :: nbassepou
+        integer(kind=8) :: maxfipoutre
+        integer(kind=8) :: nbfipoutre(*)
         real(kind=8) :: vev(*)
         real(kind=8) :: yj(*)
         real(kind=8) :: zj(*)

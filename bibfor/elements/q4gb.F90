@@ -25,7 +25,7 @@ subroutine q4gb(caraq4, xyzl, igau, jacgau, bmat)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jquad4.h"
 #include "asterfort/q4gbc.h"
-    integer :: igau
+    integer(kind=8) :: igau
     real(kind=8) :: xyzl(3, 1), caraq4(*), bmat(8, 1), jacgau
 ! --- CALCUL DE LA MATRICE (B) RELIANT LES DEFORMATIONS DU PREMIER
 ! --- ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION D'INDICE IGAU
@@ -39,7 +39,7 @@ subroutine q4gb(caraq4, xyzl, igau, jacgau, bmat)
 !     OUT JACGAU        : PRODUIT JACOBIEN*POIDS AU POINT D'INTEGRATION
 !                         COURANT
 !     OUT BMAT(8,1)     : MATRICE (B) AU POINT D'INTEGRATION COURANT
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
     real(kind=8) :: bm(3, 8), bf(3, 12), bc(2, 12), qsi, eta, jacob(5)
 ! ------------------------------------------------------------------
 !

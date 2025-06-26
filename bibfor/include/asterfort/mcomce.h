@@ -23,9 +23,9 @@ interface
                       nno)
         character(len=8) :: noma
         character(len=19) :: newgeo
-        integer :: nummai
+        integer(kind=8) :: nummai
         real(kind=8) :: coor(27)
         character(len=8) :: alias
-        integer :: nno
+        integer(kind=8) :: nno
     end subroutine mcomce
 end interface

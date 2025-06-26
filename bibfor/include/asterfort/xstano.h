@@ -24,8 +24,8 @@ interface
                       typdis)
         character(len=8) :: noma
         character(len=24) :: lisno
-        integer :: nmafis
-        integer :: jmafis
+        integer(kind=8) :: nmafis
+        integer(kind=8) :: jmafis
         character(len=19) :: cnslt
         character(len=19) :: cnsln
         character(len=19) :: cnslj

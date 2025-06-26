@@ -35,8 +35,8 @@ subroutine cpnptr3(main, numa, coor, ind, nomnoe)
 #include "asterfort/jedema.h"
 #include "asterfort/reerel.h"
 !
-    integer, intent(in) :: ind
-    integer, intent(in) :: numa
+    integer(kind=8), intent(in) :: ind
+    integer(kind=8), intent(in) :: numa
     real(kind=8), intent(out) :: coor(3, *)
     character(len=8), intent(in) :: main
     character(len=24), intent(in) :: nomnoe
@@ -55,8 +55,8 @@ subroutine cpnptr3(main, numa, coor, ind, nomnoe)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: lino(2), jtab, lgnd, iret
-    integer :: inc1, inc2
+    integer(kind=8) :: lino(2), jtab, lgnd, iret
+    integer(kind=8) :: inc1, inc2
     real(kind=8) ::xe(2), xp(2), tabar(3*2)
 !
     character(len=8) :: nomnd, eletyp

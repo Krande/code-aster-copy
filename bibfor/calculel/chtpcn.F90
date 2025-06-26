@@ -72,20 +72,20 @@ subroutine chtpcn(chno1, tgeom, tailmi, tmin, epsi, &
 !
 !
 !
-    integer :: nbante, ino1
+    integer(kind=8) :: nbante, ino1
     character(len=8) :: gd1, ma
     character(len=24) :: valk(2)
     character(len=8) :: diff, chnaff
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !
 !-----------------------------------------------------------------------
-    integer :: ieq1, ieq2, ino2, i_ligr_mesh
-    integer :: iprn1, iprn2, ival1, ival2, nbcn1
-    integer :: nbnaff, nbno, nbnrcp, ncmp1, ncmp2, nec
+    integer(kind=8) :: ieq1, ieq2, ino2, i_ligr_mesh
+    integer(kind=8) :: iprn1, iprn2, ival1, ival2, nbcn1
+    integer(kind=8) :: nbnaff, nbno, nbnrcp, ncmp1, ncmp2, nec
     real(kind=8), pointer :: val1(:) => null()
     real(kind=8), pointer :: val2(:) => null()
-    integer, pointer :: nueq1(:) => null()
-    integer, pointer :: nueq2(:) => null()
+    integer(kind=8), pointer :: nueq1(:) => null()
+    integer(kind=8), pointer :: nueq2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     cn1 = chno1

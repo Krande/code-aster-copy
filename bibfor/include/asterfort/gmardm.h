@@ -20,7 +20,7 @@
 !
 interface
     subroutine gmardm(nomgrm, modele, ier)
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
         character(len=8), intent(in) :: modele 
         character(len=24), intent(in) :: nomgrm
     end subroutine gmardm

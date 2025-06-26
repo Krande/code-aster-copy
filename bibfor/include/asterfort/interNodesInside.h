@@ -25,13 +25,13 @@ interface
                        nb_poin_inte,  poin_inte, inte_neigh,&
                        poin_inte_ori, iret)
         real(kind=8), intent(in) :: proj_tole
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_mast_code, elem_slave_code
         real(kind=8), intent(in) :: proj_coor(elem_dime-1,9)
-        integer, intent(in) :: nb_node_proj
-        integer, intent(out) :: inte_neigh(4), nb_poin_inte
+        integer(kind=8), intent(in) :: nb_node_proj
+        integer(kind=8), intent(out) :: inte_neigh(4), nb_poin_inte
         real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
         real(kind=8), intent(inout) :: poin_inte_ori(elem_dime-1,16)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine interNodesInside
 end interface

@@ -24,7 +24,7 @@ subroutine jedupc(clain, schin, ipos, claout, schout, &
 #include "asterfort/jedupo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: clain, schin, claout, schout
-    integer :: ipos
+    integer(kind=8) :: ipos
     aster_logical :: dupcol
 ! ----------------------------------------------------------------------
 !     RECOPIE LES OBJETS DE LA CLASSE CLAIN POSSEDANT LA SOUS-CHAINE
@@ -43,8 +43,8 @@ subroutine jedupc(clain, schin, ipos, claout, schout, &
     character(len=6) :: pgma
     common/kappje/pgma
 !-----------------------------------------------------------------------
-    integer :: jdocu, jgenr, jorig, jrnom, jtype, n, ncla1
-    integer :: ncla2
+    integer(kind=8) :: jdocu, jgenr, jorig, jrnom, jtype, n, ncla1
+    integer(kind=8) :: ncla2
 !-----------------------------------------------------------------------
     parameter(n=5)
     character(len=2) :: dn2
@@ -52,10 +52,10 @@ subroutine jedupc(clain, schin, ipos, claout, schout, &
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: l1, l2, j, icin
+    integer(kind=8) :: l1, l2, j, icin
     character(len=32) :: nomin, nomout, schin2, schou2
     character(len=1) :: kclas
 !

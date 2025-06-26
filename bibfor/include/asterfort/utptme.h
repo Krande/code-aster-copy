@@ -21,6 +21,6 @@ interface
     subroutine utptme(nomarg, valarg, iret)
         character(len=8), intent(in) :: nomarg
         real(kind=8), intent(in) :: valarg
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine utptme
 end interface

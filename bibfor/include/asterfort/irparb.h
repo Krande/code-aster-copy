@@ -21,9 +21,9 @@
 interface
     subroutine irparb(resu, nbin, parin, nomjv, nbout)
         character(len=*) :: resu
-        integer :: nbin
+        integer(kind=8) :: nbin
         character(len=*) :: parin(*)
         character(len=*) :: nomjv
-        integer :: nbout
+        integer(kind=8) :: nbout
     end subroutine irparb
 end interface

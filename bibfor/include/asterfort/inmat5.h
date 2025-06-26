@@ -20,7 +20,7 @@
 interface
     subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
         character(len=8), intent(in) :: elrefa
-        integer, intent(in) :: nnos, npg, nno
+        integer(kind=8), intent(in) :: nnos, npg, nno
         real(kind=8), intent(in) :: mganos(MT_NBPGMX, MT_NNOMAX)
         real(kind=8), intent(out) :: mgano2(MT_NBPGMX, MT_NNOMAX)
     end subroutine inmat5

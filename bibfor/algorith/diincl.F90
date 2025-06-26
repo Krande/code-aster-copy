@@ -50,11 +50,11 @@ function diincl(sddisc, nomchz, force)
 !
 !
 !
-    integer :: iret, nb, i
+    integer(kind=8) :: iret, nb, i
     character(len=16) :: nomcha
     character(len=19) :: sdarch
     character(len=24) :: arcexc
-    integer :: jarexc
+    integer(kind=8) :: jarexc
 !
 ! ----------------------------------------------------------------------
 !

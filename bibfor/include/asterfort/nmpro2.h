@@ -20,7 +20,7 @@
 !
 interface
     subroutine nmpro2(fonact, numedd, numfix)
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=24) :: numedd
         character(len=24) :: numfix
     end subroutine nmpro2

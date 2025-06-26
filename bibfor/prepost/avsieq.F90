@@ -25,7 +25,7 @@ subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 !
-    integer :: nbordr, tdisp, kwork, sommw, tspaq, i, jvsieq
+    integer(kind=8) :: nbordr, tdisp, kwork, sommw, tspaq, i, jvsieq
     real(kind=8) :: vwork(tdisp)
 !, vsieq(nbordr)
 ! ----------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw, &
 !  VSIEQ : OUT  I  : ADDRESS VECTEUR CONTENANT  A
 !                     TOUS LES INSTANTS.
 ! ----------------------------------------------------------------------
-    integer :: iordr, adrs, j, decal
+    integer(kind=8) :: iordr, adrs, j, decal
     real(kind=8) :: sig(6), equi(17)
 !     ------------------------------------------------------------------
 !

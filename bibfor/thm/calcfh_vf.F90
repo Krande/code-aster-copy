@@ -36,8 +36,8 @@ subroutine calcfh_vf(ds_thm, &
 !
     type(THM_DS), intent(in) :: ds_thm
     character(len=16), intent(in) :: option
-    integer, intent(in) :: j_mater
-    integer, intent(in) :: ifa
+    integer(kind=8), intent(in) :: j_mater
+    integer(kind=8), intent(in) :: ifa
     real(kind=8), intent(in) :: t, p1, p2, pvp, pad
     real(kind=8), intent(in) :: rho11, h11, h12
     real(kind=8), intent(in) :: satur, dsatur

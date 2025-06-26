@@ -23,8 +23,8 @@ interface
                       nomnoe, nosdfu)
         med_idt :: idfimd
         character(len=*) :: nomamd
-        integer :: ndim
-        integer :: nbnoeu
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbnoeu
         real(kind=8) :: coordo(*)
         character(len=*) :: nomnoe(*)
         character(len=8) :: nosdfu

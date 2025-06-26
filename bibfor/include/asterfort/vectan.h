@@ -21,8 +21,8 @@
 interface
     subroutine vectan(nb1, nb2, xi, xr, vecta,&
                       vectn, vectpt)
-        integer :: nb1
-        integer :: nb2
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nb2
         real(kind=8) :: xi(3, *)
         real(kind=8) :: xr(*)
         real(kind=8) :: vecta(9, 2, 3)

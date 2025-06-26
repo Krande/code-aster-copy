@@ -21,7 +21,7 @@
 interface
     subroutine ctescv(cvec1, cvec0, cvec01, cvec00, ndim,&
                       xer)
-        integer :: ndim
+        integer(kind=8) :: ndim
         complex(kind=8) :: cvec1(ndim)
         complex(kind=8) :: cvec0(ndim)
         complex(kind=8) :: cvec01(ndim)

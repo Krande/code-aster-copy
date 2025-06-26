@@ -39,8 +39,8 @@ subroutine nmarc0(result, modele, ds_material, carele, fonact, &
 #include "asterfort/Behaviour_type.h"
 !
     character(len=8) :: result
-    integer :: numarc
-    integer :: fonact(*)
+    integer(kind=8) :: numarc
+    integer(kind=8) :: fonact(*)
     real(kind=8) :: time_curr
     character(len=19) :: sddyna, sdpilo
     character(len=19) :: sdcrit
@@ -77,7 +77,7 @@ subroutine nmarc0(result, modele, ds_material, carele, fonact, &
     aster_logical :: lexge
     character(len=24) :: typsel, typpil
     real(kind=8) :: valr, coef, time_prev
-    integer :: jv_para
+    integer(kind=8) :: jv_para
     real(kind=8), pointer :: plir(:) => null()
     real(kind=8), pointer :: crtr(:) => null()
     character(len=24), pointer :: pltk(:) => null()

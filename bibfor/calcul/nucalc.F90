@@ -19,7 +19,7 @@
 function nucalc(opt, te, memoir)
     use calcul_module, only: ca_iaopmo_, ca_iaoptt_, ca_ilopmo_, ca_lgco_
     implicit none
-    integer :: nucalc
+    integer(kind=8) :: nucalc
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -28,7 +28,7 @@ function nucalc(opt, te, memoir)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 
-    integer :: opt, te, memoir
+    integer(kind=8) :: opt, te, memoir
 !-----------------------------------------------------------------------
 !     entrees:
 !        opt    : option
@@ -41,8 +41,8 @@ function nucalc(opt, te, memoir)
 !        nucalc : numero du calcul elementaire (te00ij)
 !
 !-----------------------------------------------------------------------
-    integer :: optmod, jj
-    integer, pointer :: nbligcol(:) => null()
+    integer(kind=8) :: optmod, jj
+    integer(kind=8), pointer :: nbligcol(:) => null()
 !-------------------------------------------------------------------
     ASSERT(memoir .eq. 0 .or. memoir .eq. 1)
     if (memoir .eq. 1) then

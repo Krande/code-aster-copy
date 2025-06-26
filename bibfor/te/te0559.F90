@@ -56,12 +56,12 @@ subroutine te0559(option, nomte)
 !
     character(len=8) :: elrefp, elrefc, enr, enr2
     character(len=16) :: nomte, option
-    integer :: ndim, nnop, nnops, iret, nfiss, nfh, ddld, ddlp, ddlm, ddlc
-    integer :: jlsn, itemps, ifluxf, igeom, jheano, ires
-    integer :: iadzi, iazk24, i, ndime, j, k, ia, ib, im, n(3), ifiss
-    integer :: nbf, f(6, 8), ibid2(12, 3), ibid, contac, nddls
-    integer :: nbar, ar(12, 3), ninter, exit(2), nlag
-    integer :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, lact(4), nlact
+    integer(kind=8) :: ndim, nnop, nnops, iret, nfiss, nfh, ddld, ddlp, ddlm, ddlc
+    integer(kind=8) :: jlsn, itemps, ifluxf, igeom, jheano, ires
+    integer(kind=8) :: iadzi, iazk24, i, ndime, j, k, ia, ib, im, n(3), ifiss
+    integer(kind=8) :: nbf, f(6, 8), ibid2(12, 3), ibid, contac, nddls
+    integer(kind=8) :: nbar, ar(12, 3), ninter, exit(2), nlag
+    integer(kind=8) :: nnof, npgf, ipoidf, ivff, idfdef, ipgf, lact(4), nlact
     real(kind=8) :: lsna, lsnb, lsnm, minlsn, inref(3), inter(3)
     real(kind=8) :: tplus, deltat, valpar(4), flux, pinref(9), lsn(27)
     real(kind=8) :: ff(27), pinter(9), miref(3), mifis(3), rbid(1)

@@ -35,8 +35,8 @@ subroutine quadPoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: nodeCoorName, baseName
-    integer, intent(in) :: iPair
-    integer, intent(out) :: nbPoinQuad
+    integer(kind=8), intent(in) :: iPair
+    integer(kind=8), intent(out) :: nbPoinQuad
     real(kind=8), intent(out) :: poinQuad(3, MAX_NB_QUAD)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,10 +56,10 @@ subroutine quadPoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer:: nbPoinInte
+    integer(kind=8):: nbPoinInte
     real(kind=8) :: poinInteSlav(2, MAX_NB_INTE)
     real(kind=8) :: poinQuadSlav(2, MAX_NB_QUAD)
-    integer :: modelDime
+    integer(kind=8) :: modelDime
     type(CELL_GEOM) :: cellSlav, cellMast
     real(kind=8), pointer :: nodeCoor(:) => null()
 !

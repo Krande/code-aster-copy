@@ -59,7 +59,7 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
 !
     character(len=8) :: typmod(*)
     character(len=16) :: option
-    integer :: ndim, imate, codret
+    integer(kind=8) :: ndim, imate, codret
     real(kind=8) :: epsm(12), deps(12), vim(*)
     real(kind=8) :: sig(6), vip(*), dsidpt(6, 6, 2)
 ! ----------------------------------------------------------------------
@@ -68,13 +68,13 @@ subroutine lcbrgm(ndim, typmod, imate, epsm, deps, &
 !
 !
     aster_logical :: cplan, resi, rigi
-    integer :: ndimsi, k, l, etat
+    integer(kind=8) :: ndimsi, k, l, etat
 !
     real(kind=8) :: eps(6), epsr(6), treps, sigel(6)
     real(kind=8) :: kron(6)
     real(kind=8) :: fd, d, dm, e, nu, lambda, deuxmu
 !
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=16) :: nomres(2)
     real(kind=8) :: valres(2)
 !

@@ -20,18 +20,18 @@ interface
     subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail,&
                       pgmmil, spmmil, ntypel, npgmax, indpg,&
                       numpt, numord, option, param, nomaas)
-        integer :: npgmax
-        integer :: ntypel
-        integer :: nbCell
-        integer :: fileUnit
+        integer(kind=8) :: npgmax
+        integer(kind=8) :: ntypel
+        integer(kind=8) :: nbCell
+        integer(kind=8) :: fileUnit
         character(len=19) :: ligrel
         character(len=*) :: MEDFieldName
-        integer :: pgmail(nbCell)
-        integer :: pgmmil(nbCell)
-        integer :: spmmil(nbCell)
-        integer :: indpg(ntypel, npgmax)
-        integer :: numpt
-        integer :: numord
+        integer(kind=8) :: pgmail(nbCell)
+        integer(kind=8) :: pgmmil(nbCell)
+        integer(kind=8) :: spmmil(nbCell)
+        integer(kind=8) :: indpg(ntypel, npgmax)
+        integer(kind=8) :: numpt
+        integer(kind=8) :: numord
         character(len=24) :: option
         character(len=8) :: param
         character(len=8) :: nomaas

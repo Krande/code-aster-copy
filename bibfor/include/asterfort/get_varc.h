@@ -24,8 +24,8 @@ interface
     subroutine get_varc(fami     , kpg      , ksp      , poum   ,&
                         temp_prev, temp_curr, temp_refe, l_temp_)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         character(len=*), intent(in) :: poum
         real(kind=8), intent(out) :: temp_prev
         real(kind=8), intent(out) :: temp_curr

@@ -23,7 +23,7 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1, &
 #include "asterfort/assert.h"
 #include "asterfort/freqom.h"
 #include "asterfort/utmess.h"
-    integer :: ifm, nbfre1, nbfre2, nbfreq, nblagr
+    integer(kind=8) :: ifm, nbfre1, nbfre2, nbfreq, nblagr
     real(kind=8) :: omgmin, omgmax, dimc1
     complex(kind=8) :: zimc1
     character(len=1) :: typep
@@ -58,7 +58,7 @@ subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1, &
 !     REMARQUE:  NBFRE1 ET NBFRE2  SONT CALCULES PAR VPSTUR
 !     ------------------------------------------------------------------
     real(kind=8) :: fmin, fmax, valr(3)
-    integer :: ibande, vali(2)
+    integer(kind=8) :: ibande, vali(2)
 !     ------------------------------------------------------------------
 !
 !   --- ON RECUPERE LE NUMERO DE LA BANDE SI NECESSAIRE

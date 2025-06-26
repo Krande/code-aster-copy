@@ -25,8 +25,8 @@ interface
                       lpaout   , lchout   , exis_temp, exis_hydr, exis_ptot,&
                       exis_sech, exis_epsa, calc_meta, base     , vect_elem)
         character(len=8), intent(in) :: model
-        integer, intent(in) :: nbout
-        integer, intent(in) :: nbin
+        integer(kind=8), intent(in) :: nbout
+        integer(kind=8), intent(in) :: nbin
         character(len=8), intent(in) :: lpain(nbin)
         character(len=19), intent(in) :: lchin(nbin)
         character(len=8), intent(in) :: lpaout(nbout)

@@ -54,8 +54,8 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod, &
 #include "asterfort/lcresa.h"
 #include "asterfort/lkresi.h"
 #include "asterfort/srresi.h"
-    integer :: imat, nmat, nr, nvi, kpg, ksp, itmax, iret
-    integer :: nfs, nsg
+    integer(kind=8) :: imat, nmat, nr, nvi, kpg, ksp, itmax, iret
+    integer(kind=8) :: nfs, nsg
     real(kind=8) :: deps(6), epsd(6), vind(*), toler
     real(kind=8) :: r(*), yd(*), yf(*), dy(*), vinf(*)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
@@ -65,7 +65,7 @@ subroutine lcresi(fami, kpg, ksp, rela_comp, typmod, &
     real(kind=8) :: toutms(nfs, nsg, 6), hsr(nsg, nsg)
     character(len=*) :: fami
 !
-    integer :: nbcomm(nmat, 3)
+    integer(kind=8) :: nbcomm(nmat, 3)
     real(kind=8) :: pgl(3, 3)
     character(len=24) :: cpmono(5*nmat+1)
 !

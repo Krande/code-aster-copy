@@ -23,7 +23,7 @@ interface
                       ndim_    , nno_     , nnos_,&
                       nodeCoor_, cellVolu_)
         character(len=*), intent(in)            :: elrefz
-        integer, optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
+        integer(kind=8), optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
         real(kind=8), optional, intent(out)     :: nodeCoor_(3*MT_NNOMAX), cellVolu_
         character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
     end subroutine elraca

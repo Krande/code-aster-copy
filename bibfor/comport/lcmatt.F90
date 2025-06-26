@@ -39,7 +39,7 @@ subroutine lcmatt(fami, kpg, ksp, mod, imat, &
 !     ----------------------------------------------------------------
 #include "asterfort/assert.h"
 #include "asterfort/matnor.h"
-    integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi, imat
+    integer(kind=8) :: kpg, ksp, nmat, ndt, ndi, nr, nvi, imat
     real(kind=8) :: coefel(nmat), coefpl(nmat)
     character(len=*) :: fami, poum
     character(len=16) :: rela_comp

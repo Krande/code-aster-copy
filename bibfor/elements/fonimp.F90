@@ -41,8 +41,8 @@ subroutine fonimp(resu)
 !
 !
     character(len=24) :: fonoeu, fondfi
-    integer :: jnoe, jfon
-    integer :: lnoff, i
+    integer(kind=8) :: jnoe, jfon
+    integer(kind=8) :: lnoff, i
 !
 !
     call jemarq()

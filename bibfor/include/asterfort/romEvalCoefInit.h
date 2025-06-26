@@ -21,7 +21,7 @@
 interface
     subroutine romEvalCoefInit(nb_vari_para, vari_para, ds_evalcoef)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_vari_para
+        integer(kind=8), intent(in) :: nb_vari_para
         type(ROM_DS_VariPara), intent(in) :: vari_para(5)
         type(ROM_DS_EvalCoef), intent(inout) :: ds_evalcoef
     end subroutine romEvalCoefInit

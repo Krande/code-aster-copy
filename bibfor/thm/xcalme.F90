@@ -36,20 +36,20 @@ subroutine xcalme(ds_thm, &
     type(THM_DS), intent(in) :: ds_thm
     real(kind=8), intent(in) :: angl_naut(3)
 
-    integer :: ndim, dimenr, dimcon, addeme
-    integer :: adcome
+    integer(kind=8) :: ndim, dimenr, dimcon, addeme
+    integer(kind=8) :: adcome
     real(kind=8) :: congep(dimcon)
     real(kind=8) :: dsde(dimcon, dimenr), rac2
     character(len=16) :: option
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: deps(6)
     real(kind=8) :: depstr(6)
     real(kind=8) :: mdal(6), dalal
     character(len=8) :: fami, poum
-    integer :: spt, kpg
+    integer(kind=8) :: spt, kpg
     character(len=16) :: meca
 !
 ! - Initializations

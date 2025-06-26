@@ -37,7 +37,7 @@ subroutine mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,11 +55,11 @@ subroutine mmchml(mesh, ds_contact, sddisc, sddyna, nume_inst)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: ligrcf, chmlcf
     real(kind=8) :: time_prev, time_curr, time_incr
     aster_logical :: l_new_pair, l_cont_cont, l_cont_lac
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

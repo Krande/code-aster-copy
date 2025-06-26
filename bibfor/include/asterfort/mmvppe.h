@@ -31,8 +31,8 @@ interface
                       kappa    ,&
                       taujeu1  , taujeu2  ,&
                       dnepmait1, dnepmait2)
-        integer, intent(in) :: ndim, nne, nnm, nnl, nbdm
-        integer, intent(in) :: i_reso_geom
+        integer(kind=8), intent(in) :: ndim, nne, nnm, nnl, nbdm
+        integer(kind=8), intent(in) :: i_reso_geom
         aster_logical, intent(in) :: l_large_slip
         real(kind=8), intent(in) :: jeusup
         real(kind=8), intent(in) :: tau1(3), tau2(3)

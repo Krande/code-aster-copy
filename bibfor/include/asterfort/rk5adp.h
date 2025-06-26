@@ -23,24 +23,24 @@
 interface
     subroutine rk5adp(nbeq, param_real, param_int, param_car, t0, dt0, &
                       nbmax, errmax, y0, dy0, rk5fct, resu, iret, ynorme)
-        integer          :: nbeq
+        integer(kind=8)          :: nbeq
         real(kind=8)     :: param_real(*)
-        integer          :: param_int(*)
+        integer(kind=8)          :: param_int(*)
         character(len=*) :: param_car(*)
         real(kind=8)     :: t0
         real(kind=8)     :: dt0
-        integer          :: nbmax
+        integer(kind=8)          :: nbmax
         real(kind=8)     :: errmax
         real(kind=8)     :: y0(nbeq)
         real(kind=8)     :: dy0(nbeq)
         real(kind=8)     :: resu(2*nbeq)
-        integer          :: iret
+        integer(kind=8)          :: iret
         real(kind=8),intent(in),optional :: ynorme(nbeq)
 !
         interface
             subroutine rk5fct(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
                 real(kind=8)     :: ppr(*)
-                integer          :: ppi(*)
+                integer(kind=8)          :: ppi(*)
                 character(len=*) :: ppc(*)
                 real(kind=8)     :: yy0(*)
                 real(kind=8)     :: dy0(*)

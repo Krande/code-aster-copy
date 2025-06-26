@@ -26,7 +26,7 @@ interface
         character(len=8) :: sst2
         character(len=8) :: intf1
         character(len=8) :: intf2
-        integer :: nliais
+        integer(kind=8) :: nliais
         character(len=8) :: option
     end subroutine vecomo
 end interface

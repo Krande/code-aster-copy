@@ -21,11 +21,11 @@
 interface
     subroutine lcmhsr(necoul, necris, nbsys, nbcoef, coefh,&
                       nsg, hsr)
-        integer :: nsg
+        integer(kind=8) :: nsg
         character(len=16) :: necoul
         character(len=16) :: necris
-        integer :: nbsys
-        integer :: nbcoef
+        integer(kind=8) :: nbsys
+        integer(kind=8) :: nbcoef
         real(kind=8) :: coefh(6)
         real(kind=8) :: hsr(nsg, nsg)
     end subroutine lcmhsr

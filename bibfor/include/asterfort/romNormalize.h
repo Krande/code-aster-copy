@@ -25,6 +25,6 @@ interface
         use Rom_Datastructure_type
         character(len=1), intent(in) :: vect_type
         character(len=19), intent(in) :: vect_vale
-        integer, intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: nb_equa
     end subroutine romNormalize
 end interface

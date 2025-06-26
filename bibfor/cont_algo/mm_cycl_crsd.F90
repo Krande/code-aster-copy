@@ -42,13 +42,13 @@ subroutine mm_cycl_crsd(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_poin, nb_cont_zone
+    integer(kind=8) :: nb_cont_poin, nb_cont_zone
     character(len=24) :: sdcont_cyclis
-    integer, pointer :: p_sdcont_cyclis(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cyclis(:) => null()
     character(len=24) :: sdcont_cycnbr
-    integer, pointer :: p_sdcont_cycnbr(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cycnbr(:) => null()
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
     character(len=24) :: sdcont_cychis
     real(kind=8), pointer :: p_sdcont_cychis(:) => null()
     character(len=24) :: sdcont_cyccoe

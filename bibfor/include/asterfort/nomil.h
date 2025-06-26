@@ -21,7 +21,7 @@
 interface
     subroutine nomil(typma, nm, nbar)
         character(len=8), intent(in) :: typma
-        integer, intent(out) :: nm(12)
-        integer, intent(out) :: nbar
+        integer(kind=8), intent(out) :: nm(12)
+        integer(kind=8), intent(out) :: nbar
     end subroutine nomil
 end interface

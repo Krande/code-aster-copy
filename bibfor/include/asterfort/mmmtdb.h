@@ -22,7 +22,7 @@ interface
     subroutine mmmtdb(valr, typmat, ii, jj)
         real(kind=8) :: valr
         character(len=2) :: typmat
-        integer :: ii
-        integer :: jj
+        integer(kind=8) :: ii
+        integer(kind=8) :: jj
     end subroutine mmmtdb
 end interface

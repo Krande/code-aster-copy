@@ -41,7 +41,7 @@ subroutine mminit_lac(mesh, ds_contact, hat_valinc, ds_measure, sdnume, &
     character(len=19), intent(in) :: hat_valinc(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sdnume
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,22 +60,22 @@ subroutine mminit_lac(mesh, ds_contact, hat_valinc, ds_measure, sdnume, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_cont_allv, l_step_first
     character(len=19) :: sdcont_depgeo, disp_prev, sdcont_depini, sdappa
     character(len=19) :: sdcont_stat, sdcont_zeta, sdcont_zgpi
     character(len=19) :: sdcont_zpoi, sdcont_znmc, sdcont_zcoe
     character(len=24) :: sdappa_gapi, sdappa_poid, sdappa_nmcp, sdappa_coef
-    integer, pointer :: v_sdcont_stat(:) => null()
-    integer, pointer :: v_sdcont_zeta(:) => null()
+    integer(kind=8), pointer :: v_sdcont_stat(:) => null()
+    integer(kind=8), pointer :: v_sdcont_zeta(:) => null()
     real(kind=8), pointer :: v_sdappa_gapi(:) => null()
     real(kind=8), pointer :: v_sdcont_zgpi(:) => null()
     real(kind=8), pointer :: v_sdappa_poid(:) => null()
     real(kind=8), pointer :: v_sdcont_zpoi(:) => null()
     real(kind=8), pointer :: v_sdappa_coef(:) => null()
     real(kind=8), pointer :: v_sdcont_zcoe(:) => null()
-    integer, pointer :: v_sdappa_nmcp(:) => null()
-    integer, pointer :: v_sdcont_znmc(:) => null()
+    integer(kind=8), pointer :: v_sdappa_nmcp(:) => null()
+    integer(kind=8), pointer :: v_sdcont_znmc(:) => null()
 !
 !
 ! --------------------------------------------------------------------------------------------------

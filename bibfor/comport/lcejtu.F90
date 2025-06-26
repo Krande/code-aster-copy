@@ -37,7 +37,7 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer, intent(in) :: imate, ndim, kpg, ksp
+    integer(kind=8), intent(in) :: imate, ndim, kpg, ksp
     real(kind=8), intent(in) :: epsm(6), deps(6), sigm(6), vim(*)
     real(kind=8), intent(in) :: instam, instap
     character(len=8), intent(in) :: typmod(*)
@@ -58,12 +58,12 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
 ! IN : SIGM - CONTRAINTES A L'INSTANT MOINS
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
-    integer :: nbpa
+    integer(kind=8) :: nbpa
     parameter(nbpa=8)
-    integer :: cod(nbpa)
+    integer(kind=8) :: cod(nbpa)
     character(len=16) :: nom(nbpa)
     real(kind=8) :: val(nbpa)
-    integer :: i, j, diss, cass
+    integer(kind=8) :: i, j, diss, cass
     real(kind=8) :: inst, delta(3), ddelta(3)
     real(kind=8) :: k, c, eta, crit
     real(kind=8) :: delta_N_0, delta_T_0

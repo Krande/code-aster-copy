@@ -36,7 +36,7 @@ subroutine irdebg(dsName, &
 !
     character(len=8), intent(in) :: dsName
     character(len=8), intent(in) :: fileFormat
-    integer, intent(in) ::  fileUnit, fileVersion
+    integer(kind=8), intent(in) ::  fileUnit, fileVersion
     aster_logical, intent(in) :: lResu, lMesh, lField
     aster_logical, intent(in) :: lMeshCoor
     character(len=1), intent(in) :: paraFormat
@@ -44,19 +44,19 @@ subroutine irdebg(dsName, &
     character(len=4), intent(in) :: cplxFormat
     aster_logical, intent(in) :: lsup, linf, lmax, lmin
     real(kind=8), intent(in) :: borsup, borinf
-    integer, intent(in) :: storeListNb
-    integer, pointer :: storeListIndx(:)
-    integer, intent(in) :: fieldListNb
+    integer(kind=8), intent(in) :: storeListNb
+    integer(kind=8), pointer :: storeListIndx(:)
+    integer(kind=8), intent(in) :: fieldListNb
     character(len=16), pointer :: fieldListType(:)
     character(len=80), pointer :: fieldMedListType(:)
-    integer, intent(in) :: paraListNb
+    integer(kind=8), intent(in) :: paraListNb
     character(len=16), pointer :: paraListName(:)
-    integer, intent(in) :: cmpListNb
+    integer(kind=8), intent(in) :: cmpListNb
     character(len=8), pointer :: cmpListName(:)
-    integer, intent(in) :: nodeListNb
-    integer, pointer :: nodeListNume(:)
-    integer, intent(in) :: cellListNb
-    integer, pointer :: cellListNume(:)
+    integer(kind=8), intent(in) :: nodeListNb
+    integer(kind=8), pointer :: nodeListNume(:)
+    integer(kind=8), intent(in) :: cellListNb
+    integer(kind=8), pointer :: cellListNume(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,7 +66,7 @@ subroutine irdebg(dsName, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iField, iCmp, iNode, iCell, iPara, iStore
+    integer(kind=8) :: iField, iCmp, iNode, iCell, iPara, iStore
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -37,7 +37,7 @@ subroutine gdmb(ne, kp, ajacob, en, enprim, &
     real(kind=8) :: en(3, 2), enprim(3, 2), x0pg(3), b(6, 6), amat(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: kp, l, m, ne
+    integer(kind=8) :: kp, l, m, ne
     real(kind=8) :: ajacob, form, formpr, un, unsurj, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

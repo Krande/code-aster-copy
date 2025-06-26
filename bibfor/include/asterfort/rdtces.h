@@ -26,6 +26,6 @@ interface
         character(len=19) :: ces1
         character(len=1) :: base
         character(len=19) :: ces2
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine rdtces
 end interface

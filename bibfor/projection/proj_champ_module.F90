@@ -62,7 +62,7 @@ contains
         !
         type(prolongation), intent(inout) :: prol
         !
-        integer          :: ispresent
+        integer(kind=8)          :: ispresent
         character(len=8) :: prol0
         real(kind=8)     :: vscal
         !

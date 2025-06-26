@@ -20,7 +20,7 @@
 !
 interface
     subroutine gpmetis_aster ( nbnd, nadj, xadjd, adjncy, nbpart, partout )
-        integer nbnd, nadj, nbpart, partout
+        integer(kind=8) nbnd, nadj, nbpart, partout
         integer(kind=4) xadjd, adjncy
     end subroutine gpmetis_aster
 end interface

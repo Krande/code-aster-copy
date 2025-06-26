@@ -33,7 +33,7 @@ subroutine capesa(load, mesh, valeType, nbOcc)
 !
     character(len=8), intent(in) :: load, mesh
     character(len=4), intent(in) :: valeType
-    integer, intent(in) :: nbOcc
+    integer(kind=8), intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,11 +53,11 @@ subroutine capesa(load, mesh, valeType, nbOcc)
     character(len=16), parameter :: keywordfact = 'PESANTEUR'
     character(len=24), parameter :: listCell = '&&CAPESA.LIST_ELEM'
     real(kind=8) :: pesa(4), norme, pes(3)
-    integer :: iocc, npesa
-    integer :: jvCell, nbCell
+    integer(kind=8) :: iocc, npesa
+    integer(kind=8) :: jvCell, nbCell
     real(kind=8), pointer :: valv(:) => null()
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

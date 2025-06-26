@@ -44,7 +44,7 @@ subroutine dbrChckGreedy(paraGreedy, lReuse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=16), parameter :: operation = 'GLOUTON'
 !
 ! --------------------------------------------------------------------------------------------------

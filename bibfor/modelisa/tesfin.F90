@@ -29,11 +29,11 @@ subroutine tesfin(icl, iv, cv, irteti)
 !               ( RETURN 1 )    MOT CLE FIN RECONNU
 !               ( RETURN 2 )    MOT CLE FINSF RECONNU
 !       ----------------------------------------------------------------
-    integer :: icl, iv
+    integer(kind=8) :: icl, iv
     character(len=*) :: cv
     character(len=8) :: mcl
 !-----------------------------------------------------------------------
-    integer :: irteti
+    integer(kind=8) :: irteti
 !-----------------------------------------------------------------------
     irteti = 0
 !

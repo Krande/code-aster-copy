@@ -25,10 +25,10 @@ function mminfi(sdcont_defi_, question_, i_zone_)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: mminfi
+    integer(kind=8) :: mminfi
     character(len=*), intent(in) :: sdcont_defi_
     character(len=*), intent(in) :: question_
-    integer, optional, intent(in) :: i_zone_
+    integer(kind=8), optional, intent(in) :: i_zone_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,7 +45,7 @@ function mminfi(sdcont_defi_, question_, i_zone_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: vale_i, i_zone
+    integer(kind=8) :: vale_i, i_zone
     character(len=24) :: sdcont_defi
 !
 ! --------------------------------------------------------------------------------------------------

@@ -44,7 +44,7 @@ subroutine op0082()
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/xprcnu.h"
-    integer :: ifm, niv, ibid
+    integer(kind=8) :: ifm, niv, ibid
     character(len=8) :: grille, mail
     character(len=16) :: k16bid
     character(len=19) :: cnxinv

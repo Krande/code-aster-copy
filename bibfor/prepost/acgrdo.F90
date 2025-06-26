@@ -45,8 +45,8 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork, &
 #include "asterfort/teneps.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbordr, kwork
-    integer :: sompgw, jrwork, tspaq, ipg
+    integer(kind=8) :: nbordr, kwork
+    integer(kind=8) :: sompgw, jrwork, tspaq, ipg
     character(len=16) :: nommet, nomcri, nomfor, forvie, forcri, grdvie
     character(len=8) :: nommat
     real(kind=8) :: vresu(24), valpar(35), vala, coefpa
@@ -98,9 +98,9 @@ subroutine acgrdo(nbordr, ordini, kwork, sompgw, jrwork, &
     real(kind=8) :: depsl(6), somden, dendie, etrema, etremi
     real(kind=8) :: sigmax, exm, eym, ezm, epsnm1, epnm1m, sigmin
     real(kind=8) :: strema, stremi, veps(6), eqeps, vepst, epspac, vnmax(6)
-    integer :: nperm, itype, iordre, nvp, nitjac, ordini, ordfin
-    integer :: i, j, k, l, ibid, jprof, nparma, np, icodre(1), adr, iret, ipar
-    integer :: decal, paract(35), adrl, nbf, nbtot
+    integer(kind=8) :: nperm, itype, iordre, nvp, nitjac, ordini, ordfin
+    integer(kind=8) :: i, j, k, l, ibid, jprof, nparma, np, icodre(1), adr, iret, ipar
+    integer(kind=8) :: decal, paract(35), adrl, nbf, nbtot
     character(len=24) :: chnom, cbid
     character(len=16) :: typcha
     character(len=8) :: nompf(35), nompar(35), nomgrd

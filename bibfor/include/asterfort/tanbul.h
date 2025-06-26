@@ -22,10 +22,10 @@
 interface
     subroutine tanbul(option, ndim, g, mate, compor,&
                       resi, mini, alpha, dsbdep, trepst)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=16) :: option
-        integer :: g
-        integer :: mate
+        integer(kind=8) :: g
+        integer(kind=8) :: mate
         character(len=16) :: compor
         aster_logical :: resi
         aster_logical :: mini

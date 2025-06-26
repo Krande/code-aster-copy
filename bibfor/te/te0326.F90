@@ -41,7 +41,7 @@ subroutine te0326(option, nomte)
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: jac(9), nx(9), ny(9), nz(9)
@@ -55,10 +55,10 @@ subroutine te0326(option, nomte)
     real(kind=8) :: dxinde(9), dxindk(9)
     real(kind=8) :: dfde(9, 9), dfdk(9, 9), nxn(9), nyn(9), nzn(9)
     real(kind=8) :: normn(3, 9), j1n(9), j2n(9), vibarn(2, 9), gphgxn(9)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ipg, npg1, ivectt, imate
-    integer :: idec, jdec, kdec, ldec, spt
-    integer :: i, j, k, iacce, idim, ii, ino, itemp, jno, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom
+    integer(kind=8) :: ndim, nno, ipg, npg1, ivectt, imate
+    integer(kind=8) :: idec, jdec, kdec, ldec, spt
+    integer(kind=8) :: i, j, k, iacce, idim, ii, ino, itemp, jno, nnos, jgano
 !-----------------------------------------------------------------------
 !
 !     CALCUL DES DERIVEES PREMIERES DES FONCTIONS DE FORME

@@ -34,9 +34,9 @@ function isnomi(elrefa, ino)
 !-----------------------------------------------------------------------
     character(len=8) :: elrefa
     aster_logical :: isnomi
-    integer :: ino
+    integer(kind=8) :: ino
 !-----------------------------------------------------------------------
-    integer :: nnos
+    integer(kind=8) :: nnos
 !-----------------------------------------------------------------------
 !
     isnomi = .false.

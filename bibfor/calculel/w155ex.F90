@@ -38,10 +38,10 @@ subroutine w155ex(nomres, resu, nbordr, liordr)
 #include "asterfort/utmess.h"
 #include "asterfort/w155ch.h"
     character(len=8) :: nomres, resu
-    integer :: nbordr, liordr(nbordr)
+    integer(kind=8) :: nbordr, liordr(nbordr)
 !
-    integer :: ifm, niv, nucou, nufib, nangl
-    integer :: iret, i, nuordr, ibid, n1, nbsym, isym
+    integer(kind=8) :: ifm, niv, nucou, nufib, nangl
+    integer(kind=8) :: iret, i, nuordr, ibid, n1, nbsym, isym
     character(len=8) :: modele, carele
     character(len=8) :: modeav
     character(len=3) :: nicou

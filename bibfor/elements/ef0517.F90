@@ -43,18 +43,18 @@ subroutine ef0517(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kp, ncomp, ii, jacf
-    integer :: icgp, icontn, npg, istrxr, nc
+    integer(kind=8) :: kp, ncomp, ii, jacf
+    integer(kind=8) :: icgp, icontn, npg, istrxr, nc
     real(kind=8) :: flel(14), co(3), xl, d1b(7, 14), carsec(6)
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
-    integer :: npge, kk, iret, ipoids, imate, ifgp
+    integer(kind=8) :: npge, kk, iret, ipoids, imate, ifgp
     real(kind=8) :: aa, alfay, alfaz, young, nu, gcis, ey, ez, xiy, xiz, temp, phiy, phiz
     character(len=8) :: mator
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 4
+    integer(kind=8), parameter :: nb_cara = 4
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'AY1  ', 'AZ1  ', 'EY1  ', 'EZ1  '/)
 !

@@ -23,17 +23,17 @@
      &nbcmp,nbpoin,docu,nomtab,iocc,xnovar,ncheff,i1)
               real(kind=8) :: releve(*)
               real(kind=8) :: absc(*)
-              integer :: itcopt(*)
-              integer :: itsppt(*)
+              integer(kind=8) :: itcopt(*)
+              integer(kind=8) :: itsppt(*)
               real(kind=8) :: coor(*)
               character(len=8) :: nomnoe(*)
-              integer :: nbcmp
-              integer :: nbpoin
+              integer(kind=8) :: nbcmp
+              integer(kind=8) :: nbpoin
               character(len=4) :: docu
               character(len=19) :: nomtab
-              integer :: iocc
+              integer(kind=8) :: iocc
               character(len=24) :: xnovar
               character(len=16) :: ncheff
-              integer :: i1
+              integer(kind=8) :: i1
             end subroutine rvtec2
           end interface 

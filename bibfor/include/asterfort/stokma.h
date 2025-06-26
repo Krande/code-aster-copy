@@ -20,10 +20,10 @@
 !
 interface
     subroutine stokma(amat, nlig, ncol, nmat, amatst)
-        integer :: ncol
-        integer :: nlig
+        integer(kind=8) :: ncol
+        integer(kind=8) :: nlig
         real(kind=8) :: amat(nlig, ncol)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: amatst(9, 6, 6)
     end subroutine stokma
 end interface

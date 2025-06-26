@@ -23,11 +23,11 @@ interface
                       a0, a1)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: mate
+        integer(kind=8) :: mate
         real(kind=8) :: epsm(6)
         real(kind=8) :: sigm(6)
         real(kind=8) :: vim(2)

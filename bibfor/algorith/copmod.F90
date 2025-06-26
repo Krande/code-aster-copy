@@ -88,16 +88,16 @@ subroutine copmod(base, bmodr, bmodz, champ, numer, &
     complex(kind=8), optional, intent(out) :: bmodz(*)
     character(len=*), optional, intent(in) :: champ
     character(len=*), optional, intent(in) :: numer
-    integer, optional, intent(in) :: nbmodes
-    integer, optional, intent(in) :: nequa
+    integer(kind=8), optional, intent(in) :: nbmodes
+    integer(kind=8), optional, intent(in) :: nequa
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     character(len=1) :: typc, typbase
     character(len=4) :: docu
     aster_logical :: modnum, chnoeud, is_nume_equa_user, r2zbase
-    integer :: i, iret, neq, nbmode
-    integer :: jdeeq, jval
+    integer(kind=8) :: i, iret, neq, nbmode
+    integer(kind=8) :: jdeeq, jval
     character(len=14) :: nume_ddl_user, nume_ddl_field
     character(len=16) :: champ2
     character(len=19) :: nume_equa_user, nume_equa_field

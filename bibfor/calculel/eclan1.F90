@@ -20,11 +20,11 @@ subroutine eclan1(ipoini, mxnbpi, nsomm1, nterm1, i1, &
                   i2, i3, i4, i5, i6, &
                   i7, i8)
     implicit none
-    integer :: mxnbpi
+    integer(kind=8) :: mxnbpi
 !
-    integer :: nsomm1(mxnbpi, *)
-    integer :: nterm1(mxnbpi), work(8), k
-    integer :: ipoini, i1, i2, i3, i4, i5, i6, i7, i8
+    integer(kind=8) :: nsomm1(mxnbpi, *)
+    integer(kind=8) :: nterm1(mxnbpi), work(8), k
+    integer(kind=8) :: ipoini, i1, i2, i3, i4, i5, i6, i7, i8
 !
     work(1) = i1
     work(2) = i2

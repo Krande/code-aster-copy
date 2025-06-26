@@ -21,12 +21,12 @@
 interface
     subroutine vpermo(lmasse, lraide, nbprop, vecp, valp,&
                       excl, omecor, ernorm)
-        integer :: lmasse
-        integer :: lraide
-        integer :: nbprop
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lraide
+        integer(kind=8) :: nbprop
         real(kind=8) :: vecp(*)
         real(kind=8) :: valp(*)
-        integer :: excl(*)
+        integer(kind=8) :: excl(*)
         real(kind=8) :: omecor
         real(kind=8) :: ernorm(*)
     end subroutine vpermo

@@ -21,8 +21,8 @@ interface
                             nbVectElem, listVectElem)
         character(len=19), intent(in) :: vectAsse
         character(len=14), intent(in) :: numeDof
-        integer, intent(in) :: vectScalType
-        integer, intent(in) :: nbVectElem
+        integer(kind=8), intent(in) :: vectScalType
+        integer(kind=8), intent(in) :: nbVectElem
         character(len=*), intent(in) :: listVectElem(nbVectElem)
     end subroutine asseVectField
 end interface

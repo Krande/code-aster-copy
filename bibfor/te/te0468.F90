@@ -36,13 +36,13 @@ subroutine te0468(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: poids, nx, ny, flx(4), fly(4), flun
-    integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: iflux, ivectu, k, i, iad
+    integer(kind=8) :: nno, kp, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: iflux, ivectu, k, i, iad
     character(len=24) :: valkm(3)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ifl, jgano, nbflux, ndim, nnos
+    integer(kind=8) :: ifl, jgano, nbflux, ndim, nnos
     real(kind=8) :: s, t
 !-----------------------------------------------------------------------
     call elrefe_info(elrefe='SE2', fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &

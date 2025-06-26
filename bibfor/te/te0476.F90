@@ -54,15 +54,15 @@ subroutine te0476(option, nomte)
 !
 !---------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxpara = 4
+    integer(kind=8), parameter :: maxpara = 4
     real(kind=8) :: valpar(maxpara)
     character(len=8) :: nompar(maxpara)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_Quadrature) :: hhoQuadCell
     real(kind=8) :: rhs_forces(MSIZE_CELL_VEC), rhs(MSIZE_TDOFS_VEC), VoluValQP(3, MAX_QP_CELL)
-    integer :: fbs, total_dofs, cbs, nbpara, idim
-    integer :: j_time, j_forc
+    integer(kind=8) :: fbs, total_dofs, cbs, nbpara, idim
+    integer(kind=8) :: j_time, j_forc
 !
 ! -- Retrieve HHO informations
 !

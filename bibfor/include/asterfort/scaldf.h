@@ -21,9 +21,9 @@
 interface
     subroutine scaldf(nbfonc, nbp, nbmr, disc, vale,&
                       defm, b)
-        integer :: nbmr
-        integer :: nbp
-        integer :: nbfonc
+        integer(kind=8) :: nbmr
+        integer(kind=8) :: nbp
+        integer(kind=8) :: nbfonc
         real(kind=8) :: disc(nbp)
         real(kind=8) :: vale(nbp, nbfonc)
         real(kind=8) :: defm(nbp, nbmr)

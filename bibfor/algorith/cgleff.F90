@@ -57,7 +57,7 @@ subroutine cgleff(typfis, nomfis, fonoeu, chfond, basfon, &
     character(len=8) :: conf
     character(len=24) :: fonoeu, chfond, basfon, taillr
     character(len=24) :: noeuin, fondin, basein
-    integer :: ier, lnoff
+    integer(kind=8) :: ier, lnoff
 !
     call jemarq()
 !

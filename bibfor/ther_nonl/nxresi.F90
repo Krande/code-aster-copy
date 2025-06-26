@@ -32,7 +32,7 @@ subroutine nxresi(matass, vec2nd, cnvabt, cnresi, cn2mbr, &
 !
     character(len=24), intent(in) :: vec2nd, cnvabt, cnresi, cn2mbr, matass
     real(kind=8), intent(out):: resi_rela, resi_maxi
-    integer, intent(out):: ieq_rela, ieq_maxi
+    integer(kind=8), intent(out):: ieq_rela, ieq_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,8 +59,8 @@ subroutine nxresi(matass, vec2nd, cnvabt, cnresi, cn2mbr, &
     real(kind=8), pointer :: v_cnvabt(:) => null()
     real(kind=8), pointer :: v_cnresi(:) => null()
     aster_logical :: l_load_cine
-    integer :: nb_equa, i_equa, jccid
-    integer, pointer :: v_ccid(:) => null()
+    integer(kind=8) :: nb_equa, i_equa, jccid
+    integer(kind=8), pointer :: v_ccid(:) => null()
     character(len=24) :: vec2nd_p, cnvabt_p, cnresi_p
 !
 ! --------------------------------------------------------------------------------------------------

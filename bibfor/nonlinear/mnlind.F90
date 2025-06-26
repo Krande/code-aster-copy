@@ -37,12 +37,12 @@ subroutine mnlind(n, deb, cle, vect, ind)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: n, deb, ind
+    integer(kind=8) :: n, deb, ind
     real(kind=8) :: cle, vect(n)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: indt
+    integer(kind=8) :: indt
     aster_logical :: lstp
 !
     if (n .lt. 0) then

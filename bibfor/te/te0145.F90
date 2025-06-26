@@ -40,8 +40,8 @@ subroutine te0145(option, nomte)
     character(len=*) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ipt
-    integer :: i, iforc, ivect, j, igeom
+    integer(kind=8) :: ipt
+    integer(kind=8) :: i, iforc, ivect, j, igeom
     real(kind=8) :: zcod, dd
     real(kind=8) :: xl, e1, e2, e3, f1, f2, f3, r1, r2, r3, q1, q2, q3
     real(kind=8) :: b1, b2, b3, u(3), s, alp, d, um, an1, an2, an3, an4

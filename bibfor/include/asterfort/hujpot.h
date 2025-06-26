@@ -31,7 +31,7 @@ interface
         real(kind=8) :: sige(6)
         character(len=7) :: etatf
         aster_logical :: rdctps
-        integer :: iret
+        integer(kind=8) :: iret
         aster_logical :: aredec
     end subroutine hujpot
 end interface

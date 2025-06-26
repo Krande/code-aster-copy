@@ -21,8 +21,8 @@ interface
     subroutine cleanListOfGrpNo(mesh, listGrpNo, nbGrpNo, l_stop, iret)
         character(len=*), intent(in)    :: mesh
         character(len=*), intent(inout) :: listGrpNo(*)
-        integer, intent(inout)          :: nbGrpNo
+        integer(kind=8), intent(inout)          :: nbGrpNo
         aster_logical, intent(in)       :: l_stop
-        integer, intent(out)            :: iret
+        integer(kind=8), intent(out)            :: iret
     end subroutine cleanListOfGrpNo
 end interface

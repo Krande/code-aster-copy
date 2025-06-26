@@ -32,15 +32,15 @@ subroutine fointe_varc(codmes, fami, kpg, ksp, poum, &
 !
     character(len=*), intent(in) :: codmes
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
     character(len=*), intent(in) :: poum
     character(len=*), intent(in) :: func_name
-    integer, intent(in) :: nb_para_user
+    integer(kind=8), intent(in) :: nb_para_user
     character(len=*), intent(in) :: para_name_user(*)
     real(kind=8), intent(in) :: para_vale_user(*)
     real(kind=8), intent(out) :: resu
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -88,8 +88,8 @@ subroutine fointe_varc(codmes, fami, kpg, ksp, poum, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbpamx = 10
-    integer :: nb_para, i_para, nb_para_tota, ierc
+    integer(kind=8), parameter :: nbpamx = 10
+    integer(kind=8) :: nb_para, i_para, nb_para_tota, ierc
     real(kind=8) :: para_vale(nbpamx), varc_vale
     character(len=8) :: para_name(nbpamx), varc_name
 !

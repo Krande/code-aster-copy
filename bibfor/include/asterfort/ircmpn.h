@@ -24,19 +24,19 @@ interface
     subroutine ircmpn(nofimd, ncmprf, ncmpve, numcmp, exicmp,&
                       nbvato, nbnoec, linoec, adsl, caimpi,&
                       caimpk, profas, innoce, nosdfu)
-        integer :: nbvato
-        integer :: ncmprf
+        integer(kind=8) :: nbvato
+        integer(kind=8) :: ncmprf
         character(len=*) :: nofimd
-        integer :: ncmpve
-        integer :: numcmp(ncmprf)
+        integer(kind=8) :: ncmpve
+        integer(kind=8) :: numcmp(ncmprf)
         aster_logical :: exicmp(nbvato)
-        integer :: nbnoec
-        integer :: linoec(*)
-        integer :: adsl
-        integer :: caimpi(10)
+        integer(kind=8) :: nbnoec
+        integer(kind=8) :: linoec(*)
+        integer(kind=8) :: adsl
+        integer(kind=8) :: caimpi(10)
         character(len=80) :: caimpk(3)
-        integer :: profas(nbvato)
-        integer :: innoce(nbvato)
+        integer(kind=8) :: profas(nbvato)
+        integer(kind=8) :: innoce(nbvato)
         character(len=8) :: nosdfu
     end subroutine ircmpn
 end interface

@@ -21,8 +21,8 @@ subroutine xcninv(nnotot, nse, nnop, nno, jcnset, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: nnotot, nse, nnop, nno, jcnset
-    integer :: cninv(nnotot, nse+1)
+    integer(kind=8) :: nnotot, nse, nnop, nno, jcnset
+    integer(kind=8) :: cninv(nnotot, nse+1)
 !
 !     BUT:
 !         CALCUL DE LA CONNECTIVITE INVERSE DES SOUS ELEMENTS
@@ -50,7 +50,7 @@ subroutine xcninv(nnotot, nse, nnop, nno, jcnset, &
 !
 !
 !
-    integer :: ise, in, ino, jno
+    integer(kind=8) :: ise, in, ino, jno
 !
 ! --- RÉCUPÉRATION DE LA SUBDIVISION DE L'ÉLÉMENT PARENT
 ! --- EN NSE SIMPLEXES

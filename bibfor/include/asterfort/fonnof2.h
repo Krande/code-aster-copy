@@ -23,7 +23,7 @@ interface
         character(len=8)  :: resu
         character(len=8)  :: noma
         character(len=8)  :: typfon
-        integer           :: nbnoff
+        integer(kind=8)           :: nbnoff
         character(len=19) :: basnof
     end subroutine fonnof2
 end interface

@@ -21,8 +21,8 @@ interface
         character(len=19), intent(in) :: chams0
         character(len=*), intent(in) :: nom_cham
         character(len=*), intent(in) :: type_cham
-        integer, intent(out) :: nbcmp
-        integer, intent(out) :: ndim_type
+        integer(kind=8), intent(out) :: nbcmp
+        integer(kind=8), intent(out) :: ndim_type
         character(len=8), intent(out) :: nom_cmp(*)
     end subroutine selectComp
 end interface

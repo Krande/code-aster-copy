@@ -61,10 +61,10 @@ subroutine nmctcf(mesh, sderro, hval_incr, ds_print, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: loop_fric_error
-    integer :: iter_fric_maxi
-    integer :: loop_fric_count
+    integer(kind=8) :: iter_fric_maxi
+    integer(kind=8) :: loop_fric_count
     character(len=19) :: disp_curr, loop_fric_disp
     character(len=16) :: loop_fric_node
     real(kind=8) :: loop_fric_vale

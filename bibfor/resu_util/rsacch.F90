@@ -35,7 +35,7 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord, &
 #include "asterfort/rschor.h"
 #include "asterfort/rsexch.h"
 !
-    integer :: numch, nbord, liord(*), nbcmp
+    integer(kind=8) :: numch, nbord, liord(*), nbcmp
     character(len=8) :: liscmp(*)
     character(len=16) :: nomch
     character(len=*) :: nomsdz
@@ -53,7 +53,7 @@ subroutine rsacch(nomsdz, numch, nomch, nbord, liord, &
 ! ---------------------------------------------------------------------
 !
 !
-    integer :: iret, itab, i, numord, loncmp, icmp, c, j
+    integer(kind=8) :: iret, itab, i, numord, loncmp, icmp, c, j
     character(len=4) :: typech
     character(len=8) :: comp
     character(len=19) :: nomsd, champ, chs

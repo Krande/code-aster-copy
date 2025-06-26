@@ -21,8 +21,8 @@
 interface
     subroutine rsexpa(resu, icode, nompar, iret)
         character(len=*) :: resu
-        integer :: icode
+        integer(kind=8) :: icode
         character(len=*) :: nompar
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rsexpa
 end interface

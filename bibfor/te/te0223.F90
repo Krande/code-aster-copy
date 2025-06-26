@@ -39,13 +39,13 @@ subroutine te0223(option, nomte)
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
     character(len=8) :: elrefe
     real(kind=8) :: poids, r, fx, fy, mz, f1, f3, m2, nx, ny, cour, dfdx(3)
-    integer :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
-    integer :: ivectu, k, i, l, iforc
+    integer(kind=8) :: nno, nddl, kp, npg, ipoids, ivf, idfdk, igeom
+    integer(kind=8) :: ivectu, k, i, l, iforc
     aster_logical :: global, locapr
 !
 !
 !-----------------------------------------------------------------------
-    integer :: jgano, ndim, nnos
+    integer(kind=8) :: jgano, ndim, nnos
 !-----------------------------------------------------------------------
     call elref1(elrefe)
 !

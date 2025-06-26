@@ -48,11 +48,11 @@ subroutine te0551(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iPhase, jvDurt, jvPhaseIn, iret
-    integer :: nbNode, jvMater, iNode, nbVari, nbPhase
+    integer(kind=8) :: iPhase, jvDurt, jvPhaseIn, iret
+    integer(kind=8) :: nbNode, jvMater, iNode, nbVari, nbPhase
     real(kind=8) :: phase(PRSTEEL_NB), durtno
     character(len=16) :: metaType
-    integer :: jtab(6)
+    integer(kind=8) :: jtab(6)
     type(META_HardnessParameters) :: metaHardnessPara
 !
 ! --------------------------------------------------------------------------------------------------

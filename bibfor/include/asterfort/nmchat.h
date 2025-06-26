@@ -26,20 +26,20 @@ interface
                       dsidep)
         real(kind=8) :: matel(*)
         real(kind=8) :: mat(*)
-        integer :: nbvar
-        integer :: memo
-        integer :: visc
+        integer(kind=8) :: nbvar
+        integer(kind=8) :: memo
+        integer(kind=8) :: visc
         real(kind=8) :: plast
         real(kind=8) :: sigmdv(6)
         real(kind=8) :: depsdv(6)
         real(kind=8) :: pm
         real(kind=8) :: dp
-        integer :: ndimsi
+        integer(kind=8) :: ndimsi
         real(kind=8) :: dt
         real(kind=8) :: rpvp
         real(kind=8) :: qp
         real(kind=8) :: vim(*)
-        integer :: idelta
+        integer(kind=8) :: idelta
         real(kind=8) :: n1
         real(kind=8) :: n2
         real(kind=8) :: beta1

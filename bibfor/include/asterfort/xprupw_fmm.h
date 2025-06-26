@@ -42,6 +42,6 @@ interface
        real(kind=8)      :: deltat
        character(len=19) :: cnsbet
        character(len=19) :: listp
-       integer           :: nbrinit
+       integer(kind=8)           :: nbrinit
    end subroutine
 end interface

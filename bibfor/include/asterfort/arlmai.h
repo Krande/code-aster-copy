@@ -21,9 +21,9 @@
 interface
     subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
                       tabcor,nbma1,nbma2)
-        integer :: ndim
-        integer :: nbma1
-        integer :: nbma2
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbma1
+        integer(kind=8) :: nbma2
         character(len=8) :: mail
         character(len=8) :: mailar
         character(len=10) :: nom1

@@ -22,12 +22,12 @@ interface
     subroutine cjsmat(mod, imat, tempf, materf, ndt,&
                       ndi, nvi, nivcjs)
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: tempf
         real(kind=8) :: materf(14, 2)
-        integer :: ndt
-        integer :: ndi
-        integer :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nvi
         character(len=4) :: nivcjs
     end subroutine cjsmat
 end interface

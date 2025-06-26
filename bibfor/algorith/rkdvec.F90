@@ -34,14 +34,14 @@ subroutine rkdvec(fami, kpg, ksp, imat, matcst, &
     character(len=8) :: nomcoe, nompar(2)
     character(len=3) :: matcst
     character(len=*) :: fami
-    integer :: nvi, nmat, imat, icodre(1), kpg, ksp, ndt
+    integer(kind=8) :: nvi, nmat, imat, icodre(1), kpg, ksp, ndt
     real(kind=8) :: x, dtime, hsdt, tperd, dtperd, temp, tf, coeft(nmat)
     real(kind=8) :: vini(nvi), dvin(nvi), sedvp, critv, epsiec, smx(6), sigi(6)
     real(kind=8) :: ecrou, dmg, devi(6), devcum, decrou, ddmg, ze, td, valp(3)
     real(kind=8) :: s, alphad, betad, n, unsmvp, kvp, rd, ad, kd(1), vpar(2)
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iret1, iret2, itens, ndi
+    integer(kind=8) :: iret1, iret2, itens, ndi
     real(kind=8) :: detat, domcpl, epsi, grj0, grj1, grj2v, trsig
 !
 !-----------------------------------------------------------------------

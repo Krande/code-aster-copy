@@ -24,7 +24,7 @@ subroutine haslib(libraz, iret)
 #include "asterf.h"
 #include "asterfort/assert.h"
     character(len=*) :: libraz
-    integer :: iret
+    integer(kind=8) :: iret
 !--------------------------------------------------------------
 ! BUT : CONNAITRE LA DISPONIBILITE D'UNE LIBRAIRIE EXTERNE
 !

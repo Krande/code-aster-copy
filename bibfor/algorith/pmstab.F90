@@ -32,7 +32,7 @@ subroutine pmstab(sigm, sigp, epsm, deps, nbvari, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: nbvari, nbpar, i, iter, iforta, igrad, ncmp, imptgt, nbvita
+    integer(kind=8) :: nbvari, nbpar, i, iter, iforta, igrad, ncmp, imptgt, nbvita
     character(len=4) :: nomeps(6), nomsig(6), nomgrd(9)
     character(len=8) :: k8b, table, vk8(2), nomvi(*)
     character(len=16) :: nompar(*)

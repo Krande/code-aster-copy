@@ -51,13 +51,13 @@ subroutine xjonct(noma, modelx)
     character(len=24) :: grp
     character(len=8) :: nomfis
     character(len=2) :: ch2
-    integer ::  ibid, ier, nncp, jcesv, jcesl, jcesd, nmaenr, jgrp, ifis, nfis, i, k
-    integer :: ima, nbnoma, jconx2, nmasup, nuno, j, ind, iad, l, nuno2, iad2, ind2
-    integer :: ima2, nbnoma2, jmasup
-    integer, pointer :: xfem_cont(:) => null()
-    integer, pointer :: vnfis(:) => null()
+    integer(kind=8) ::  ibid, ier, nncp, jcesv, jcesl, jcesd, nmaenr, jgrp, ifis, nfis, i, k
+    integer(kind=8) :: ima, nbnoma, jconx2, nmasup, nuno, j, ind, iad, l, nuno2, iad2, ind2
+    integer(kind=8) :: ima2, nbnoma2, jmasup
+    integer(kind=8), pointer :: xfem_cont(:) => null()
+    integer(kind=8), pointer :: vnfis(:) => null()
     character(len=8), pointer :: fiss(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 !     ------------------------------------------------------------------
 !

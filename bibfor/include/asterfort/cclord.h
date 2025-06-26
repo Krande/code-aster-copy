@@ -23,13 +23,13 @@
 interface
     subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem,&
                       minord, maxord, resuin, resuou, lisout)
-        integer :: nuoplo
-        integer :: nbordr
+        integer(kind=8) :: nuoplo
+        integer(kind=8) :: nbordr
         character(len=19) :: lisord
         character(len=8) :: nobase
         aster_logical :: optdem
-        integer :: minord
-        integer :: maxord
+        integer(kind=8) :: minord
+        integer(kind=8) :: maxord
         character(len=8) :: resuin
         character(len=8) :: resuou
         character(len=24) :: lisout

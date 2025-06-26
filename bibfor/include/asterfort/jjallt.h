@@ -21,13 +21,13 @@
 interface
     subroutine jjallt(lonoi, ic, gi, typei, ltypi,&
                       ci, jctab, jcdyn)
-        integer :: lonoi
-        integer :: ic
+        integer(kind=8) :: lonoi
+        integer(kind=8) :: ic
         character(len=*) :: gi
         character(len=*) :: typei
-        integer :: ltypi
+        integer(kind=8) :: ltypi
         character(len=*) :: ci
-        integer :: jctab
-        integer :: jcdyn
+        integer(kind=8) :: jctab
+        integer(kind=8) :: jcdyn
     end subroutine jjallt
 end interface

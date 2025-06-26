@@ -20,8 +20,8 @@
 !
 interface
     subroutine eclapp(ndim, nno2, lonmin, coor)
-        integer :: nno2
-        integer :: ndim
+        integer(kind=8) :: nno2
+        integer(kind=8) :: ndim
         real(kind=8) :: lonmin
         real(kind=8) :: coor(ndim, nno2)
     end subroutine eclapp

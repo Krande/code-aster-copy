@@ -24,6 +24,6 @@ interface
         type(NL_DS_Print), intent(in) :: ds_print
         character(len=19), intent(in) :: sddisc
         character(len=24), intent(in) :: sderro
-        integer, intent(in) :: numins
+        integer(kind=8), intent(in) :: numins
     end subroutine ndxdec
 end interface

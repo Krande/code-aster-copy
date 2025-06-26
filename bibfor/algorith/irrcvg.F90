@@ -43,7 +43,7 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater, &
 !                       =1 ITERATIONS SUPPLEMENTAIRE (ITER<ITMAX)
 !                       =3 ITMAX ATTEINT REDECOUPAGE
 !       ----------------------------------------------------------------
-    integer :: itmax, iter, nr, irteti, ii, nmat
+    integer(kind=8) :: itmax, iter, nr, irteti, ii, nmat
     real(kind=8) :: toler, ddy(nr), dy(nr), r(nr), rini(nr), mater(nmat, 2)
 !
     real(kind=8) :: er, valrm(2)

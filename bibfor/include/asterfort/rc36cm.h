@@ -21,12 +21,12 @@
 interface
     subroutine rc36cm(iocc, etat, nbma, listma, nbchar,&
                       lichar, chmome)
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=1) :: etat
-        integer :: nbma
-        integer :: listma(*)
-        integer :: nbchar
-        integer :: lichar(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: listma(*)
+        integer(kind=8) :: nbchar
+        integer(kind=8) :: lichar(*)
         character(len=24) :: chmome
     end subroutine rc36cm
 end interface

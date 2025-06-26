@@ -22,7 +22,7 @@ interface
     subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
         character(len=8) :: noma
         character(len=8) :: fiss
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=19) :: nbeta
         character(len=19) :: ngamma
     end subroutine pre_traitement

@@ -47,9 +47,9 @@ subroutine te0049(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idfde, igeom, imate, ipoids, iret, itemps
-    integer :: ivectu, ivf, jgano, nbsig, ndim, nno, nnos
-    integer :: npg1
+    integer(kind=8) :: i, idfde, igeom, imate, ipoids, iret, itemps
+    integer(kind=8) :: ivectu, ivf, jgano, nbsig, ndim, nno, nnos
+    integer(kind=8) :: npg1
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &

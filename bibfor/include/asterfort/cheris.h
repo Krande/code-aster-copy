@@ -20,9 +20,9 @@
 !
 interface
     subroutine cheris(nb, ivec, i, iran)
-        integer :: nb
-        integer :: ivec(nb)
-        integer :: i
-        integer :: iran
+        integer(kind=8) :: nb
+        integer(kind=8) :: ivec(nb)
+        integer(kind=8) :: i
+        integer(kind=8) :: iran
     end subroutine cheris
 end interface

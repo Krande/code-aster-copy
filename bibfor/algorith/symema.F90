@@ -43,7 +43,7 @@ subroutine symema(geomi, perp, pt)
     character(len=24) :: coorjv
     character(len=19) :: geomi
     real(kind=8) :: norm, prec, xd, pti(3), pt(3), perp(3), dist
-    integer :: i, iadcoo, n1
+    integer(kind=8) :: i, iadcoo, n1
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

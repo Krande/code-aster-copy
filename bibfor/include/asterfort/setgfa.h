@@ -20,7 +20,7 @@
 !
 interface
     subroutine setgfa(dgf, ngf)
-        integer :: dgf(*)
-        integer :: ngf
+        integer(kind=8) :: dgf(*)
+        integer(kind=8) :: ngf
     end subroutine setgfa
 end interface

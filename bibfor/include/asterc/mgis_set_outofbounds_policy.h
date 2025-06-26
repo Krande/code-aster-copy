@@ -21,6 +21,6 @@
 interface
     subroutine mgis_set_outofbounds_policy(extern_addr, valeur)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(in) :: valeur
+        integer(kind=8), intent(in) :: valeur
     end subroutine mgis_set_outofbounds_policy
 end interface

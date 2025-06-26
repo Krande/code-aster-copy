@@ -55,7 +55,7 @@ subroutine dhrc_calc_b(ab, gb, vint, b, bp1, bp2, bs1, bs2)
 !
 ! -------------------------------------------------------------------
 !
-    integer :: i, k
+    integer(kind=8) :: i, k
 !
 !
     bp1(:, :) = 0.0d0

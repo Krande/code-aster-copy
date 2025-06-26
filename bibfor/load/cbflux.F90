@@ -23,13 +23,13 @@ subroutine cbflux(load, mesh, model, geomDime, valeType)
 #include "asterc/getfac.h"
 #include "asterfort/caflux.h"
 !
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
     character(len=8), intent(in) :: load, mesh, model
 
 !     ------------------------------------------------------------------
 !
-    integer :: nbfac
+    integer(kind=8) :: nbfac
     character(len=16), parameter :: motfac = 'FLUX_REP'
     call getfac(motfac, nbfac)
 !

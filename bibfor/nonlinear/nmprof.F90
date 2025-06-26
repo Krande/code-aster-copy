@@ -54,7 +54,7 @@ subroutine nmprof(model, result, listload, numeDof, ds_contact)
 !
     character(len=14) :: numeDofOld
     character(len=24) :: noojb, idenRela
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

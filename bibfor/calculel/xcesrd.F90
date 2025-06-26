@@ -41,13 +41,13 @@ subroutine xcesrd(ces, chsnpg)
 !                     DE GAUSS UTILISES DANS CHAQUE ELEMENT CONNAISSANT
 !                     LA FAMILLE "XFEM"
 
-    integer :: nbma, nbpt, nbsp, nbcmp, npg
-    integer :: ima, ipt, isp, icmp, iadnpg, iad
-    integer :: jcesdnpg, jceslnpg, jcesd, jcesl, jcesv
+    integer(kind=8) :: nbma, nbpt, nbsp, nbcmp, npg
+    integer(kind=8) :: ima, ipt, isp, icmp, iadnpg, iad
+    integer(kind=8) :: jcesdnpg, jceslnpg, jcesd, jcesl, jcesv
     character(len=3) :: tsca
     character(len=8) :: nomgd
     aster_logical :: lreal, lfonc
-    integer, pointer :: cesvnpg(:) => null()
+    integer(kind=8), pointer :: cesvnpg(:) => null()
 !
     lreal = .false.
     lfonc = .false.

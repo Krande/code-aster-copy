@@ -23,9 +23,9 @@ interface
                       mu, su, de, ddedt, vim,&
                       vip, r, codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: mat
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: mat
         character(len=16) :: option
         real(kind=8) :: mu(3)
         real(kind=8) :: su(3)
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: r
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lceiab
 end interface

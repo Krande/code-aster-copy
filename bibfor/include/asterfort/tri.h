@@ -20,9 +20,9 @@
 !
 interface
     subroutine tri(clef, tab, ntab, n)
-        integer :: n
-        integer :: clef(*)
-        integer :: tab(n, *)
-        integer :: ntab
+        integer(kind=8) :: n
+        integer(kind=8) :: clef(*)
+        integer(kind=8) :: tab(n, *)
+        integer(kind=8) :: ntab
     end subroutine tri
 end interface

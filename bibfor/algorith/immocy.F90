@@ -44,16 +44,16 @@ subroutine immocy(nomres, ifm)
     character(len=8) :: droite, gauche, axe, valk(4)
     character(len=24) :: refe, typint, nosec, numint, diamod, freq
     character(len=24) :: cmode, desc
-    integer :: ifm
+    integer(kind=8) :: ifm
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iam, idiam, j, k, lldesc
-    integer :: lldiam, llfre, llmoc, llnin, llnosc, llref, lltyp
-    integer :: nbdax, nbddge, nbddr, nbdiam, nbmobt, nbmod, numa
-    integer :: numd, numg
+    integer(kind=8) :: i, iad, iam, idiam, j, k, lldesc
+    integer(kind=8) :: lldiam, llfre, llmoc, llnin, llnosc, llref, lltyp
+    integer(kind=8) :: nbdax, nbddge, nbddr, nbdiam, nbmobt, nbmod, numa
+    integer(kind=8) :: numd, numg
     real(kind=8) :: x1, xmodu, xpar
 !-----------------------------------------------------------------------
     call jemarq()

@@ -21,8 +21,8 @@
 interface
     subroutine rangen(prgene, isst, inumod, irang)
         character(len=19) :: prgene
-        integer :: isst
-        integer :: inumod
-        integer :: irang
+        integer(kind=8) :: isst
+        integer(kind=8) :: inumod
+        integer(kind=8) :: irang
     end subroutine rangen
 end interface

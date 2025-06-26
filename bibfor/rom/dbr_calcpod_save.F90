@@ -28,7 +28,7 @@ subroutine dbr_calcpod_save(base, nbMode, nbSnapRedu, baseSing, baseValeR)
 #include "asterfort/dbr_calcpod_savel.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
-    integer, intent(in) :: nbMode, nbSnapRedu
+    integer(kind=8), intent(in) :: nbMode, nbSnapRedu
     real(kind=8), pointer :: baseValeR(:), baseSing(:)
 !
 ! --------------------------------------------------------------------------------------------------

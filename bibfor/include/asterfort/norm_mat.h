@@ -21,7 +21,7 @@
 interface
     function norm_mat(ndim,m)
       real(kind=8), intent(in) :: m(ndim,ndim)
-      integer, intent(in) :: ndim
+      integer(kind=8), intent(in) :: ndim
       real(kind=8) :: norm_mat
     end function norm_mat
 end interface

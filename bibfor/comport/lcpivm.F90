@@ -38,7 +38,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
 #include "asterfort/zerofr.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: mate, iret, kpg, ksp
+    integer(kind=8) :: mate, iret, kpg, ksp
     character(len=16) :: compor, option
     character(len=*) :: fami
     real(kind=8) :: instam, instap
@@ -79,7 +79,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
 ! ----------------------------------------------------------------------
 !  COMMON MATERIAU POUR VON MISES
 !
-    integer :: jprol, jvale, nbval, itmx
+    integer(kind=8) :: jprol, jvale, nbval, itmx
     real(kind=8) :: pm, young, nu, mu, unk, troisk, cother, sigy
     real(kind=8) :: sigm0, epsi0, dt, coefm, rpm, pente, apui, npui
     character(len=1) :: poum
@@ -92,7 +92,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
 ! ----------------------------------------------------------------------
 ! COMMON GRANDES DEFORMATIONS SIMO - MIEHE
 !
-    integer :: ind(3, 3), ind1(6), ind2(6)
+    integer(kind=8) :: ind(3, 3), ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6), id(6, 6)
     real(kind=8) :: bem(6), betr(6), dvbetr(6), eqbetr, trbetr
     real(kind=8) :: jp, dj, jm, dfb(3, 3), mutrbe, tauteq
@@ -108,7 +108,7 @@ subroutine lcpivm(fami, kpg, ksp, mate, compor, &
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
     aster_logical :: resi, rigi, elas
-    integer :: i, ij, line, n
+    integer(kind=8) :: i, ij, line, n
     real(kind=8) :: dp, seuil
     real(kind=8) :: rp, pentep, airerp
     real(kind=8) :: em(6), ep(6), trtau, dvbe(6)

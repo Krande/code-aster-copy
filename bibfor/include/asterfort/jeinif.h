@@ -25,8 +25,8 @@ interface
         character(len=*) :: sto
         character(len=*) :: nomf
         character(len=*) :: clas
-        integer :: nrep
-        integer :: nbloc
-        integer :: lbloc
+        integer(kind=8) :: nrep
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: lbloc
     end subroutine jeinif
 end interface

@@ -20,7 +20,7 @@
 !
 interface
     subroutine arlclc(modarl,nbchel,chamel,marlel)
-        integer :: nbchel
+        integer(kind=8) :: nbchel
         character(len=8) :: modarl
         character(len=8) :: marlel
         character(len=19) :: chamel(nbchel)

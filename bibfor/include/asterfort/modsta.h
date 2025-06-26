@@ -22,16 +22,16 @@ interface
     subroutine modsta(motcle, matfac, matpre, solveu, lmatm,&
                       nume, iddl, coef, neq, nbmode,&
                       zrmod)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=*) :: motcle
         character(len=*) :: matfac
         character(len=*) :: matpre
         character(len=*) :: solveu
-        integer :: lmatm
+        integer(kind=8) :: lmatm
         character(len=*) :: nume
-        integer :: iddl(*)
+        integer(kind=8) :: iddl(*)
         real(kind=8) :: coef(*)
-        integer :: nbmode
+        integer(kind=8) :: nbmode
         real(kind=8) :: zrmod(neq, *)
     end subroutine modsta
 end interface

@@ -20,7 +20,7 @@
 !
 interface
     function biline(nordre, vect1, amat, vect2)
-        integer :: nordre
+        integer(kind=8) :: nordre
         real(kind=8) :: vect1(*)
         real(kind=8) :: amat(*)
         real(kind=8) :: vect2(*)

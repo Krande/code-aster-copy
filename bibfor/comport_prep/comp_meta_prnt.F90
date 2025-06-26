@@ -46,11 +46,11 @@ subroutine comp_meta_prnt(hasTemper, comporMetaInfo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: mapZoneNume, mapNbZone, nbElemZone
-    integer :: iVari, nbVari, ntVari, nbPhase
+    integer(kind=8) :: mapZoneNume, mapNbZone, nbElemZone
+    integer(kind=8) :: iVari, nbVari, ntVari, nbPhase
     character(len=16) :: metaLaw, metaType
-    integer, pointer :: comporInfoInfo(:) => null()
-    integer, pointer :: comporInfoZone(:) => null()
+    integer(kind=8), pointer :: comporInfoInfo(:) => null()
+    integer(kind=8), pointer :: comporInfoZone(:) => null()
     character(len=16), pointer :: comporInfoVari(:) => null()
     character(len=16), pointer :: comporInfoRela(:) => null()
 !

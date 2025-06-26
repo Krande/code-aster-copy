@@ -21,12 +21,12 @@
 interface
     function entcod(admodl, lcmodl, nec, mode, k,&
                     l)
-        integer :: admodl
-        integer :: lcmodl
-        integer :: nec
-        integer :: mode
-        integer :: k
-        integer :: l
-        integer :: entcod
+        integer(kind=8) :: admodl
+        integer(kind=8) :: lcmodl
+        integer(kind=8) :: nec
+        integer(kind=8) :: mode
+        integer(kind=8) :: k
+        integer(kind=8) :: l
+        integer(kind=8) :: entcod
     end function entcod
 end interface

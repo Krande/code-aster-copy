@@ -96,16 +96,16 @@ subroutine manopg(model, ligrez, optioz, paramz, mnogaz)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nbpgmx, nbflmx
+    integer(kind=8) :: nbpgmx, nbflmx
     parameter(nbpgmx=27, nbflmx=20)
-    integer :: nbma, ima, jcesd, jcesl, iad, jnbpg
-    integer :: ilcnx1, k, jfpgl
-    integer :: nec, kfpg, ndim, nno, npg, kp, ino
-    integer ::  nbgrel, nel, nute, imolo, jmolo, jecono
-    integer :: igr, iel, lont1
-    integer :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
-    integer :: nblfpg, nuflpg, nufgpg, jliel, jliel1
-    integer :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
+    integer(kind=8) :: nbma, ima, jcesd, jcesl, iad, jnbpg
+    integer(kind=8) :: ilcnx1, k, jfpgl
+    integer(kind=8) :: nec, kfpg, ndim, nno, npg, kp, ino
+    integer(kind=8) ::  nbgrel, nel, nute, imolo, jmolo, jecono
+    integer(kind=8) :: igr, iel, lont1
+    integer(kind=8) :: jnbno, jdime, iret, ncpmax, nbfam, kfam, nbpgt, iad0, iad1
+    integer(kind=8) :: nblfpg, nuflpg, nufgpg, jliel, jliel1
+    integer(kind=8) :: jcesgl, jcesgv, jcesgd, nbpt, nbsp
     character(len=3) :: exixfm
     character(len=8) :: ma, nomgd, famil, elrefe, param
     character(len=8) :: lielrf(nbflmx), lifapg(nbflmx)
@@ -115,11 +115,11 @@ subroutine manopg(model, ligrez, optioz, paramz, mnogaz)
     character(len=32) :: noflpg
     real(kind=8) :: xpg(3*nbpgmx), ff(MT_NNOMAX), poipg(MT_NNOMAX)
     aster_logical :: econom
-    integer, pointer :: nolocfpg(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: nolocfpg(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=32), pointer :: pnlocfpg(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: mailref(:) => null()
+    integer(kind=8), pointer :: mailref(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

@@ -21,7 +21,7 @@ function trace_mat(ndim, m)
     implicit none
 !
     real(kind=8) :: trace_mat
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: m(ndim, ndim)
 !
 !
@@ -31,7 +31,7 @@ function trace_mat(ndim, m)
 ! IN  M  : MATRICE
 !
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     trace_mat = 0.d0
     do i = 1, ndim

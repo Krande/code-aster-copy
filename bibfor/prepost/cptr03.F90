@@ -38,26 +38,26 @@ subroutine cptr03(main, maout, inc, jcoor, jcnnpa, conloc, &
 !
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: inc
-    integer, intent(in) :: jcoor
-    integer, intent(in) :: jcnnpa
+    integer(kind=8), intent(in) :: inc
+    integer(kind=8), intent(in) :: jcoor
+    integer(kind=8), intent(in) :: jcnnpa
     character(len=24), intent(in) :: conloc
     character(len=24), intent(in) :: limane
     character(len=24), intent(in) :: nomnoe
-    integer, intent(in) :: nbno
-    integer, intent(in) :: jmacou
-    integer, intent(in) :: jmacsu
-    integer, intent(in) :: macou
-    integer, intent(in) :: macsu
-    integer, intent(out) :: ind
-    integer, intent(out) :: ind1
+    integer(kind=8), intent(in) :: nbno
+    integer(kind=8), intent(in) :: jmacou
+    integer(kind=8), intent(in) :: jmacsu
+    integer(kind=8), intent(in) :: macou
+    integer(kind=8), intent(in) :: macsu
+    integer(kind=8), intent(out) :: ind
+    integer(kind=8), intent(out) :: ind1
 ! -------------------------------------------------------------------------------------------------
 !        CREATION DES NOUVEAUS NOUEDS ET NOUVELLE MAILLE CAS TETRA 10
 ! -------------------------------------------------------------------------------------------------
 ! -------------------------------------------------------------------------------------------------
-    integer :: patch
-    integer :: jlimane
-    integer :: jconneo
+    integer(kind=8) :: patch
+    integer(kind=8) :: jlimane
+    integer(kind=8) :: jconneo
     character(len=24) :: conneo
 ! -------------------------------------------------------------------------------------------------
     call jemarq()

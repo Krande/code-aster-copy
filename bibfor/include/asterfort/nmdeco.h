@@ -18,9 +18,9 @@
 !
 interface
     subroutine nmdeco(sddisc, numeInst, iterat, i_event_acti, retdec)
-        integer :: numeInst, iterat
-        integer :: i_event_acti
+        integer(kind=8) :: numeInst, iterat
+        integer(kind=8) :: i_event_acti
         character(len=19), intent(in) :: sddisc
-        integer :: retdec
+        integer(kind=8) :: retdec
     end subroutine nmdeco
 end interface

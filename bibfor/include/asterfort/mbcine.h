@@ -21,7 +21,7 @@
 interface
     subroutine mbcine(nno, geom, dff, alpha, beta,&
                       b, jac)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: geom(3, nno)
         real(kind=8) :: dff(2, nno)
         real(kind=8) :: alpha

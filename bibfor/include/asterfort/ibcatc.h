@@ -21,7 +21,7 @@
 interface
     subroutine ibcatc(type, iunit, ier)
         character(len=*) :: type
-        integer :: iunit
-        integer :: ier
+        integer(kind=8) :: iunit
+        integer(kind=8) :: ier
     end subroutine ibcatc
 end interface

@@ -23,12 +23,12 @@ interface
                       typmod, imate, compor, ppg, eps,&
                       epsp, rp, ener)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=*) :: poum
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: ppg
         real(kind=8) :: eps(6)

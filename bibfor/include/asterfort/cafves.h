@@ -25,7 +25,7 @@ interface
                       dmob1f, dmob2f,&
                       flux  , dflx1 , dflx2)
         aster_logical, intent(in) :: l_matr
-        integer, intent(in) :: maxfa, nface
+        integer(kind=8), intent(in) :: maxfa, nface
         real(kind=8), intent(in) :: fks(maxfa), dfks1(maxfa+1, maxfa), dfks2(maxfa+1, maxfa)
         real(kind=8), intent(in) :: mobfa(maxfa), dmob1(maxfa), dmob2(maxfa)
         real(kind=8), intent(in) :: dmob1f(maxfa), dmob2f(maxfa)

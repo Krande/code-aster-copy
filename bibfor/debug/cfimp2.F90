@@ -35,7 +35,7 @@ subroutine cfimp2(sdcont_defi, sdcont_solv, mesh, iliai, typeou)
 !
     character(len=8) :: mesh
     character(len=24) :: sdcont_defi, sdcont_solv
-    integer :: iliai
+    integer(kind=8) :: iliai
     character(len=3) :: typeou
 !
 ! ----------------------------------------------------------------------
@@ -69,14 +69,14 @@ subroutine cfimp2(sdcont_defi, sdcont_solv, mesh, iliai, typeou)
 !
 !
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: numlia
-    integer :: jnumli
-    integer :: ip, izone
-    integer :: entapp
+    integer(kind=8) :: jnumli
+    integer(kind=8) :: ip, izone
+    integer(kind=8) :: entapp
     character(len=8) :: nomapp
     character(len=16) :: nomnoe
-    integer :: typapp
+    integer(kind=8) :: typapp
     character(len=16) :: etalia
     character(len=4) :: type2
     character(len=19) :: sdappa

@@ -18,7 +18,7 @@
 
 function dpvpcr(fonecp, seq, i1)
     implicit none
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: fonecp(3), seq, i1
     real(kind=8) :: dpvpcr
 ! =====================================================================

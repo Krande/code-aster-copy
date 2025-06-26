@@ -41,7 +41,7 @@ subroutine te0052(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer ::kp
+    integer(kind=8) ::kp
     real(kind=8) :: dtpg(3)
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: gradt(:) => null()

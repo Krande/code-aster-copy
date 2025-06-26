@@ -42,7 +42,7 @@ subroutine romModeChck(mode)
 !
     character(len=8) :: modeMesh, modeModel
     character(len=16) :: modeli
-    integer :: nbDimGeom
+    integer(kind=8) :: nbDimGeom
 !
 ! --------------------------------------------------------------------------------------------------
 !

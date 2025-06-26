@@ -23,7 +23,7 @@ subroutine jjmmaa(ct, aut)
 #include "asterfort/codent.h"
     character(len=12) :: aut
     character(len=4) :: ct(3)
-    integer :: t(9)
+    integer(kind=8) :: t(9)
 !
 !  ----------- FIN DECLARATIONS _____________
 !

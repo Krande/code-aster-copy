@@ -18,7 +18,7 @@
 !
 interface
     subroutine thmEvalGravity(j_mater, time, grav)
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: time
         real(kind=8), intent(out) :: grav(3)
     end subroutine thmEvalGravity

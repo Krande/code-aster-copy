@@ -24,7 +24,7 @@ subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 #include "asterfort/getvr8.h"
 !
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=*), intent(in) :: keyword_z
     real(kind=8), intent(out) :: vect_r(3)
 !
@@ -43,7 +43,7 @@ subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: val_nb
+    integer(kind=8) :: val_nb
     character(len=16) :: keyword
 !
 ! --------------------------------------------------------------------------------------------------

@@ -50,14 +50,14 @@ subroutine te0206(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ndim = 3
+    integer(kind=8), parameter :: ndim = 3
     character(len=4), parameter :: fami = "RIGI"
-    integer :: nno, npg, nddl
-    integer :: ipoids, ivf, idfde
-    integer :: igeom, imater, icarcr, idepm, iddep, icoret
-    integer :: icontm, icontp, ivect, imatr
-    integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
-    integer :: lgpg, codret
+    integer(kind=8) :: nno, npg, nddl
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: igeom, imater, icarcr, idepm, iddep, icoret
+    integer(kind=8) :: icontm, icontp, ivect, imatr
+    integer(kind=8) :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
+    integer(kind=8) :: lgpg, codret
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,Z,W => 1ER INDICE
     real(kind=8) :: coopg(4, 4)
     character(len=8), parameter :: typmod(2) = (/'3D      ', 'ELEMJOIN'/)

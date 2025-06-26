@@ -29,9 +29,9 @@ subroutine stokma(amat, nlig, ncol, nmat, amatst)
 !     OUT : AMATST    : TABLEAU DIMENSIONNE 9,6,6
 ! ------------------------------------------------------------------
     implicit none
-    integer :: ncol, nlig, nmat
+    integer(kind=8) :: ncol, nlig, nmat
     real(kind=8) :: amat(nlig, ncol), amatst(9, 6, 6)
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
 !
     do j = 1, ncol

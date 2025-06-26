@@ -33,19 +33,19 @@ interface
     real(kind=8) :: gammas
     real(kind=8) :: gammac
     real(kind=8) :: thiter
-    integer :: cond109
-    integer :: ferrcomp
-    integer :: ferrsyme
+    integer(kind=8) :: cond109
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
+    integer(kind=8) :: uc
     real(kind=8) :: dnsxi
     real(kind=8) :: dnsxs
     real(kind=8) :: dnsyi
     real(kind=8) :: dnsys
-    integer :: etsxi
-    integer :: etsxs
-    integer :: etsyi
-    integer :: etsys
+    integer(kind=8) :: etsxi
+    integer(kind=8) :: etsxs
+    integer(kind=8) :: etsyi
+    integer(kind=8) :: etsys
     real(kind=8) :: snsxi
     real(kind=8) :: snsxs
     real(kind=8) :: snsyi
@@ -58,6 +58,6 @@ interface
     real(kind=8) :: t_sup
     real(kind=8) :: theta_inf
     real(kind=8) :: theta_sup
-    integer :: ierr
+    integer(kind=8) :: ierr
     end subroutine sandcas2
 end interface

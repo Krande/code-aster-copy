@@ -22,12 +22,12 @@ subroutine dpvpsi(nbmat, mater, se, seqe, i1e, &
 ! --- VISC_DRUC_PRAG --------------------------------------------------
 ! ====================================================================
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), dp, se(6), seqe, i1e, fonecr(3), sig(6)
 ! ====================================================================
 ! --- MISE A JOUR DES CONTRAINTES ------------------------------------
 ! ====================================================================
-    integer :: ii, ndt, ndi
+    integer(kind=8) :: ii, ndt, ndi
     real(kind=8) :: k, mu, troisk, trois, un
     real(kind=8) :: i1, dev(6)
     real(kind=8) :: beta

@@ -42,13 +42,13 @@ function lonele(dime, igeom)
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 !
-    integer, optional, intent(in)  :: dime
-    integer, optional, intent(out) :: igeom
+    integer(kind=8), optional, intent(in)  :: dime
+    integer(kind=8), optional, intent(out) :: igeom
     real(kind=8) :: lonele
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: iadzi, iazk24, igeomloc, idimloc
+    integer(kind=8)             :: iadzi, iazk24, igeomloc, idimloc
     real(kind=8)        :: r8bid, xl
     character(len=8)    :: nomail
 !

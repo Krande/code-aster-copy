@@ -27,7 +27,7 @@ interface
                       props, nprops, coords, drot, pnewdt,&
                       celent, dfgrd0, dfgrd1, noel, npt,&
                       layer, kspt, kstep, kinc)
-        integer :: pfumat
+        integer(kind=8) :: pfumat
         real(kind=8) :: stress(*)
         real(kind=8) :: statev(*)
         real(kind=8) :: ddsdde(*)
@@ -47,23 +47,23 @@ interface
         real(kind=8) :: predef(*)
         real(kind=8) :: dpred(*)
         character(len=*) :: cmname
-        integer :: ndi
-        integer :: nshr
-        integer :: ntens
-        integer :: nstatv
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nshr
+        integer(kind=8) :: ntens
+        integer(kind=8) :: nstatv
         real(kind=8) :: props(*)
-        integer :: nprops
+        integer(kind=8) :: nprops
         real(kind=8) :: coords(*)
         real(kind=8) :: drot(*)
         real(kind=8) :: pnewdt
         real(kind=8) :: celent
         real(kind=8) :: dfgrd0(3,3)
         real(kind=8) :: dfgrd1(3,3)
-        integer :: noel
-        integer :: npt
-        integer :: layer
-        integer :: kspt
-        integer :: kstep
-        integer :: kinc
+        integer(kind=8) :: noel
+        integer(kind=8) :: npt
+        integer(kind=8) :: layer
+        integer(kind=8) :: kspt
+        integer(kind=8) :: kstep
+        integer(kind=8) :: kinc
     end subroutine umatwp
 end interface

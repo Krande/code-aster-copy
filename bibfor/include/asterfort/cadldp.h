@@ -22,7 +22,7 @@ interface
     subroutine cadldp(vp, sigeqe, nbmat, materf, parame,&
                       derive, sig3, eta, dg, detadg,&
                       dgdl, ddldsp)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: vp(3)
         real(kind=8) :: sigeqe
         real(kind=8) :: materf(nbmat, 2)

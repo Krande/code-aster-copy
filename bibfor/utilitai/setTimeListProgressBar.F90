@@ -30,7 +30,7 @@ subroutine setTimeListProgressBar(sddisc, nume_inst, final_)
 #include "asterfort/utmess.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     aster_logical, optional, intent(in) :: final_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,14 +45,14 @@ subroutine setTimeListProgressBar(sddisc, nume_inst, final_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: perc, numeStore
+    integer(kind=8) :: perc, numeStore
     real(kind=8) :: time_curr, t_ini, t_end, timeStore
     character(len=24) :: sdarchAinfJv
-    integer, pointer :: sdarchAinf(:) => null()
+    integer(kind=8), pointer :: sdarchAinf(:) => null()
     character(len=19) :: sdarch
     character(len=24) :: sdarchListJv
     real(kind=8), pointer :: sdarchList(:) => null()
-    integer :: iret, stateStoring
+    integer(kind=8) :: iret, stateStoring
     aster_logical :: hasStoringList, lStoringInitState, lStoringSomething
 !
 ! --------------------------------------------------------------------------------------------------

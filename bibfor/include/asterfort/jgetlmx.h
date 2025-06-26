@@ -21,6 +21,6 @@
           interface
             subroutine jgetlmx(nomlu,ival)
               character(len=*), intent(in) :: nomlu
-              integer, intent(out) :: ival
+              integer(kind=8), intent(out) :: ival
             end subroutine jgetlmx
           end interface

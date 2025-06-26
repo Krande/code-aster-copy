@@ -20,7 +20,7 @@
 !
 interface
     subroutine rcdiff(imate, comp, temp, c, diff)
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: comp
         real(kind=8) :: temp
         real(kind=8) :: c

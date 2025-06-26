@@ -47,8 +47,8 @@ subroutine op0187()
 #include "asterfort/xpomac.h"
 #include "asterfort/xpomax.h"
 #include "asterfort/xposep.h"
-    integer :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv
-    integer :: nbgma2, jnivgr, nftot, mftot, nfcomf, ngfon
+    integer(kind=8) :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv
+    integer(kind=8) :: nbgma2, jnivgr, nftot, mftot, nfcomf, ngfon
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem, mo, malini, k8b, nomres
     character(len=16) :: k16b

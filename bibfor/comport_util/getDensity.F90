@@ -28,7 +28,7 @@ subroutine getDensity(jvMater, rho, elasKeywordZ_)
 #include "asterfort/utmess.h"
 #include "asterfort/get_elas_id.h"
 !
-    integer, intent(in) :: jvMater
+    integer(kind=8), intent(in) :: jvMater
     real(kind=8), intent(out) :: rho
     character(len=*), optional, intent(in) :: elasKeywordZ_
 !
@@ -46,11 +46,11 @@ subroutine getDensity(jvMater, rho, elasKeywordZ_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=1), parameter :: poum = '+'
-    integer, parameter :: kpg = 1, kspg = 1
+    integer(kind=8), parameter :: kpg = 1, kspg = 1
     real(kind=8) :: valeResu(1)
-    integer :: valeIret(1)
+    integer(kind=8) :: valeIret(1)
     character(len=4), parameter :: inteFami = 'FPG1'
-    integer :: elasType
+    integer(kind=8) :: elasType
     character(len=16) :: elasKeyword
     real(kind=8), parameter :: r8Dummy = 0.d0
 !

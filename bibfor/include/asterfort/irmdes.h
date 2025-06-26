@@ -22,7 +22,7 @@ interface
     subroutine irmdes(idfimd, titre, nbtitr, infmed)
         med_idt :: idfimd
         character(len=*) :: titre(*)
-        integer :: nbtitr
-        integer :: infmed
+        integer(kind=8) :: nbtitr
+        integer(kind=8) :: infmed
     end subroutine irmdes
 end interface

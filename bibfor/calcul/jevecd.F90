@@ -34,7 +34,7 @@ subroutine jevecd(nompar, jad, valdef)
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 
-    integer :: itab(8), jad, lonel, k, iret
+    integer(kind=8) :: itab(8), jad, lonel, k, iret
     character(len=*) :: nompar
     real(kind=8) :: valdef
 !----------------------------------------------------------------

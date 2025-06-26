@@ -61,11 +61,11 @@ subroutine camoch(nomres, numref, intf, raid, mass, &
 #include "asterfort/int_to_char8.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ier, ik, ino, inord
-    integer :: j, jj, lldeeq, lldes, llncmp
-    integer :: llnoin, lmat, ltddl, ltpar, nbcb, nbcmp
-    integer :: nbcont, nbcpmx, nbdeb, nbec, nbfin, nbint, nbnoe
-    integer :: nbnot, neq, ntail1, ntail2, numgd
+    integer(kind=8) :: i, iad, ier, ik, ino, inord
+    integer(kind=8) :: j, jj, lldeeq, lldes, llncmp
+    integer(kind=8) :: llnoin, lmat, ltddl, ltpar, nbcb, nbcmp
+    integer(kind=8) :: nbcont, nbcpmx, nbdeb, nbec, nbfin, nbint, nbnoe
+    integer(kind=8) :: nbnot, neq, ntail1, ntail2, numgd
     real(kind=8) :: freq, omega, pi
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
@@ -78,7 +78,7 @@ subroutine camoch(nomres, numref, intf, raid, mass, &
     character(len=16) :: typdef
     character(len=24) :: desdef, deeq, temddl, tempar
     real(kind=8) :: const(2)
-    integer :: idec(nbcpmx)
+    integer(kind=8) :: idec(nbcpmx)
     character(len=24) :: nmat(2), nlmat
     character(len=8), pointer :: idc_type(:) => null()
     real(kind=8), pointer :: idc_dy_freq(:) => null()

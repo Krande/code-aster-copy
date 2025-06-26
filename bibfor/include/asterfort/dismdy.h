@@ -23,7 +23,7 @@ interface
         character(len=*) :: questi
         character(len=*) :: nomobz
         character(len=*) :: repkz
-        integer      :: repi
-        integer      :: ierd
+        integer(kind=8)      :: repi
+        integer(kind=8)      :: ierd
     end subroutine dismdy
 end interface

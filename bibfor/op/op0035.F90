@@ -45,8 +45,8 @@ subroutine op0035()
     character(len=16) :: type, nomcmd
     character(len=255) :: kfic
     complex(kind=8) :: cbid
-    integer :: nbval, jkval, jtval, ibid, k, ul
-    integer :: nbunit, nbfic
+    integer(kind=8) :: nbval, jkval, jtval, ibid, k, ul
+    integer(kind=8) :: nbunit, nbfic
     real(kind=8) :: rval, rbid
 !
     call jemarq()

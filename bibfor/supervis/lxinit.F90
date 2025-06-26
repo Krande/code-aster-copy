@@ -32,11 +32,11 @@ subroutine lxinit()
 !
 !-----------------------------------------------------------------------
 #include "asterfort/lxdeli.h"
-    integer :: i, mxchar, mxclas, mxcols, mxdeli, nbdeli
+    integer(kind=8) :: i, mxchar, mxclas, mxcols, mxdeli, nbdeli
 !-----------------------------------------------------------------------
     parameter(mxclas=10, mxchar=255, mxdeli=15)
-    integer :: clnum, cllet, clsig, clpnt, clexp, clquo, clbls, clbl, clill
-    integer :: cleor
+    integer(kind=8) :: clnum, cllet, clsig, clpnt, clexp, clquo, clbls, clbl, clill
+    integer(kind=8) :: cleor
 !
     common/lxcn01/clnum, cllet, clsig, clpnt, clexp, clquo,&
      &                  clbls, clbl, clill, cleor, nbdeli

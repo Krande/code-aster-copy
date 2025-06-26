@@ -22,7 +22,7 @@ subroutine pj4d2d(tria3, itr, geom1, coorno, nbno, &
 #include "blas/ddot.h"
     real(kind=8), intent(in) :: geom1(*), coorno(3)
     real(kind=8), intent(out) :: cooele(*), xg(2)
-    integer, intent(in) :: tria3(*), itr, nbno, nunos(*)
+    integer(kind=8), intent(in) :: tria3(*), itr, nbno, nunos(*)
 !  but :
 !    convertir les coordonnées du noeud à projeter ainsi que les noeuds
 !    de la maille selectionnée dans un repère du plan de la maille 2d
@@ -38,7 +38,7 @@ subroutine pj4d2d(tria3, itr, geom1, coorno, nbno, &
 !  out  xg         r  : coordonnées du noeud de m2 dans le plan
 !
 ! ----------------------------------------------------------------------
-    integer :: k, ino, nuno
+    integer(kind=8) :: k, ino, nuno
     real(kind=8) :: a(3), b(3), c(3), ab(3), ac(3), v(3), norm
     blas_int :: b_incx, b_incy, b_n
 ! DEB ------------------------------------------------------------------

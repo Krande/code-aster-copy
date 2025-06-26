@@ -23,12 +23,12 @@ interface
                       nbres, varres, fonres, ier)
         character(len=*) :: nomfon
         character(len=*) :: chprol(*)
-        integer :: nbvar
+        integer(kind=8) :: nbvar
         real(kind=8) :: var(*)
         real(kind=8) :: fon(*)
-        integer :: nbres
+        integer(kind=8) :: nbres
         real(kind=8) :: varres(*)
         real(kind=8) :: fonres(*)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine fointr
 end interface

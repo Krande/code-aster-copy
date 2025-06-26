@@ -33,16 +33,16 @@ subroutine dxqloc2(flex, memb, mefl, ctor, matloc)
 !                     192 TERMES DE MEMBRANE/FLEXION
 !                       4 TERMES DE ROTATION DRZ
 !----------------------------------------------------------
-    integer :: jf(144)
-    integer :: jm(64)
-    integer :: jfm(96)
-    integer :: jmf(96)
-    integer :: jz(4)
+    integer(kind=8) :: jf(144)
+    integer(kind=8) :: jm(64)
+    integer(kind=8) :: jfm(96)
+    integer(kind=8) :: jmf(96)
+    integer(kind=8) :: jz(4)
     real(kind=8) :: coef
     real(kind=8) :: cf(144), cfm(96)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, k
+    integer(kind=8) :: i, k
 !-----------------------------------------------------------------------
     data cf/&
      &   2*1.d0, -1.d0, 2*1.d0, -1.d0, 2*1.d0, -1.d0, 2*1.d0, -1.d0,&

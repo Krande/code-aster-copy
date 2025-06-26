@@ -53,7 +53,7 @@ contains
 
     subroutine r_as_matmul(A, B, n1, n2, n3, C)
         implicit none
-        integer :: n1, n2, n3, i, j, k
+        integer(kind=8) :: n1, n2, n3, i, j, k
         real(kind=8) :: A(n1, n2), B(n2, n3), C(n1, n3)
 
         C(:, :) = 0.d0

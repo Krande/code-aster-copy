@@ -19,10 +19,10 @@
 !
 interface
     function iimatu(i, ndim, nfh, nfe)
-       integer ::i
-       integer :: ndim
-       integer :: nfe
-       integer :: nfh
-       integer :: iimatu
+       integer(kind=8) ::i
+       integer(kind=8) :: ndim
+       integer(kind=8) :: nfe
+       integer(kind=8) :: nfh
+       integer(kind=8) :: iimatu
     end function iimatu
 end interface

@@ -23,10 +23,10 @@ interface
                       vff1, vff2, dffr1, a, geom,&
                       tang, iu, iuc, im, forref,&
                       sigref, depref, vect)
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)
@@ -34,9 +34,9 @@ interface
         real(kind=8) :: a
         real(kind=8) :: geom(ndim, nno1)
         real(kind=8) :: tang(*)
-        integer :: iu(3, 3)
-        integer :: iuc(3)
-        integer :: im(3)
+        integer(kind=8) :: iu(3, 3)
+        integer(kind=8) :: iuc(3)
+        integer(kind=8) :: im(3)
         real(kind=8) :: forref
         real(kind=8) :: sigref
         real(kind=8) :: depref

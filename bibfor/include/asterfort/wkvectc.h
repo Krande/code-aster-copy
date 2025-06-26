@@ -23,7 +23,7 @@
 #include "asterf_types.h"
     character(len=*), intent(in) :: nom
     character(len=*), intent(in) :: carac
-    integer, intent(in) :: dim
+    integer(kind=8), intent(in) :: dim
     type(c_ptr) :: pc
 
             end subroutine wkvect

@@ -20,8 +20,8 @@
 !
 interface
     subroutine lctria(nb_inte_poin, nb_tria, tria_node)
-        integer, intent(in) :: nb_inte_poin
-        integer, intent(out) :: nb_tria
-        integer, intent(out) :: tria_node(6,3)
+        integer(kind=8), intent(in) :: nb_inte_poin
+        integer(kind=8), intent(out) :: nb_tria
+        integer(kind=8), intent(out) :: tria_node(6,3)
     end subroutine lctria
 end interface

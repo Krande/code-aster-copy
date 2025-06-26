@@ -33,7 +33,7 @@ subroutine gkmet1(ndeg, nnoff, chfond, iadrgk, iadgks, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 
-    integer           :: ndeg, nnoff, iadrgk, iadgks, iadgki
+    integer(kind=8)           :: ndeg, nnoff, iadrgk, iadgks, iadgki
     character(len=24) :: chfond, abscur
 
 !
@@ -58,7 +58,7 @@ subroutine gkmet1(ndeg, nnoff, chfond, iadrgk, iadgks, &
 !                   (G, K1, K2, K3 POUR LES CHAMPS THETAI)
 ! ......................................................................
 !
-    integer                            :: iadrt3, i, i1, j, k, ifon, iadabs
+    integer(kind=8)                            :: iadrt3, i, i1, j, k, ifon, iadabs
     real(kind=8)                       :: xl, som(5), gir(3)
     character(len=24)                  :: matr
     real(kind=8), dimension(nnoff)      :: gthi, k1th, k2th, k3th, g1th, g2th, g3th

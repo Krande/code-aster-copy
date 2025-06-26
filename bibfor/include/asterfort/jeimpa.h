@@ -20,7 +20,7 @@
 !
 interface
     subroutine jeimpa(unit, nomlu, com)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: nomlu
         character(len=*) :: com
     end subroutine jeimpa

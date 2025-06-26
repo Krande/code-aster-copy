@@ -38,21 +38,21 @@ subroutine xmoini(nh8, nh20, np6, np15, np5, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nh8(15), nh20(7), np6(15), np15(7), np5(15), np13(7)
-    integer :: nt4(15), nt10(7)
-    integer :: ncpq4(15), ncpq8(7), ncpt3(15), ncpt6(7), ndpq4(15)
-    integer :: ndpq8(7), ndpt3(15), ndpt6(7), nf4(11), nf8(7), nf3(11)
-    integer :: nf6(7), npf2(11), npf3(7)
-    integer :: naxt3(7), naxq4(7), naxq8(7), naxt6(7), nax2(7), nax3(7)
-    integer :: nth8(7), ntp6(7), ntp5(7), ntt4(7), ntpq4(7), ntpt3(7)
-    integer :: ntaq4(7), ntat3(7), ntf4(7), ntf3(7), ntpf2(7), ntax2(7)
+    integer(kind=8) :: nh8(15), nh20(7), np6(15), np15(7), np5(15), np13(7)
+    integer(kind=8) :: nt4(15), nt10(7)
+    integer(kind=8) :: ncpq4(15), ncpq8(7), ncpt3(15), ncpt6(7), ndpq4(15)
+    integer(kind=8) :: ndpq8(7), ndpt3(15), ndpt6(7), nf4(11), nf8(7), nf3(11)
+    integer(kind=8) :: nf6(7), npf2(11), npf3(7)
+    integer(kind=8) :: naxt3(7), naxq4(7), naxq8(7), naxt6(7), nax2(7), nax3(7)
+    integer(kind=8) :: nth8(7), ntp6(7), ntp5(7), ntt4(7), ntpq4(7), ntpt3(7)
+    integer(kind=8) :: ntaq4(7), ntat3(7), ntf4(7), ntf3(7), ntpf2(7), ntax2(7)
 !
-    integer :: nhyq8(17), nhyt6(17), nhymq8(7), nhymt6(7), nhysq8(7)
-    integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(17)
-    integer :: nhe20(17), nhem20(7), nhed20(7), nhes20(7), npe15(17)
-    integer :: npem15(7), npes15(7), nped15(7), npy13(17), npym13(7)
-    integer :: npys13(7), npyd13(7), nte10(17), ntes10(7)
-    integer :: nted10(7), ntem10(7), nbhm(17), nchm(17)
+    integer(kind=8) :: nhyq8(17), nhyt6(17), nhymq8(7), nhymt6(7), nhysq8(7)
+    integer(kind=8) :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(17)
+    integer(kind=8) :: nhe20(17), nhem20(7), nhed20(7), nhes20(7), npe15(17)
+    integer(kind=8) :: npem15(7), npes15(7), nped15(7), npy13(17), npym13(7)
+    integer(kind=8) :: npys13(7), npyd13(7), nte10(17), ntes10(7)
+    integer(kind=8) :: nted10(7), ntem10(7), nbhm(17), nchm(17)
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -68,7 +68,7 @@ subroutine xmoini(nh8, nh20, np6, np15, np5, &
 !
 !
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     call jemarq()
 !

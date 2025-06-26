@@ -31,10 +31,10 @@ interface
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19) :: lischa
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_System), intent(in) :: ds_system
-        integer :: iterat
+        integer(kind=8) :: iterat
         character(len=19) :: sdnume
         character(len=19) :: sdpilo
         character(len=19) :: valinc(*)
@@ -44,13 +44,13 @@ interface
         real(kind=8) :: offset
         character(len=24) :: typsel
         character(len=19) :: sddisc
-        integer :: licite(2)
+        integer(kind=8) :: licite(2)
         real(kind=8) :: rho
         real(kind=8) :: eta(2)
         real(kind=8) :: etaf
         real(kind=8) :: criter
-        integer :: ldccvg
-        integer :: pilcvg
+        integer(kind=8) :: ldccvg
+        integer(kind=8) :: pilcvg
         character(len=19) :: matass
     end subroutine nmcese
 end interface

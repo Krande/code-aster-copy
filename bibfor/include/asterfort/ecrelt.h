@@ -21,14 +21,14 @@
 interface
     subroutine ecrelt(imod, maxnod, nbtyma, nomail, nbmail,&
                       mint, mant, limail, nbmtot)
-        integer :: nbtyma
-        integer :: imod
-        integer :: maxnod
+        integer(kind=8) :: nbtyma
+        integer(kind=8) :: imod
+        integer(kind=8) :: maxnod
         character(len=8) :: nomail(nbtyma)
-        integer :: nbmail(nbtyma)
-        integer :: mint(nbtyma)
-        integer :: mant(nbtyma)
-        integer :: limail(nbtyma)
-        integer :: nbmtot
+        integer(kind=8) :: nbmail(nbtyma)
+        integer(kind=8) :: mint(nbtyma)
+        integer(kind=8) :: mant(nbtyma)
+        integer(kind=8) :: limail(nbtyma)
+        integer(kind=8) :: nbmtot
     end subroutine ecrelt
 end interface

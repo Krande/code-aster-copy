@@ -21,9 +21,9 @@
 interface
     subroutine foimpr(nomf, impr, iul, ind, fonins)
         character(len=*) :: nomf
-        integer :: impr
-        integer :: iul
-        integer :: ind
+        integer(kind=8) :: impr
+        integer(kind=8) :: iul
+        integer(kind=8) :: ind
         character(len=*) :: fonins
     end subroutine foimpr
 end interface

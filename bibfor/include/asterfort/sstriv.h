@@ -20,10 +20,10 @@
 !
 interface
     subroutine sstriv(rdiak, rdiam, lprod, ipos, neq)
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: rdiak(neq)
         real(kind=8) :: rdiam(neq)
-        integer :: lprod(neq)
-        integer :: ipos(neq)
+        integer(kind=8) :: lprod(neq)
+        integer(kind=8) :: ipos(neq)
     end subroutine sstriv
 end interface

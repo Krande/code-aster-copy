@@ -20,9 +20,9 @@
 !
 interface
     subroutine trlds(a, nmax, nordre, ierr)
-        integer :: nordre
-        integer :: nmax
+        integer(kind=8) :: nordre
+        integer(kind=8) :: nmax
         real(kind=8) :: a(nmax, nordre)
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine trlds
 end interface

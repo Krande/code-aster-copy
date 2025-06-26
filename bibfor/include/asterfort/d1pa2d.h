@@ -21,7 +21,7 @@
 interface
     subroutine d1pa2d(angl, irep, passag)
         real(kind=8) :: angl
-        integer :: irep
+        integer(kind=8) :: irep
         real(kind=8) :: passag(4, 4)
     end subroutine d1pa2d
 end interface

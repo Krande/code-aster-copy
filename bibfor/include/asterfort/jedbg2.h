@@ -20,7 +20,7 @@
 !
 interface
     subroutine jedbg2(dbgav, dbgap)
-        integer :: dbgav
-        integer :: dbgap
+        integer(kind=8) :: dbgav
+        integer(kind=8) :: dbgap
     end subroutine jedbg2
 end interface

@@ -21,7 +21,7 @@
 interface
     subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
         character(len=19) :: sddisc
-        integer :: nume_inst, i_event_acti, retdec
+        integer(kind=8) :: nume_inst, i_event_acti, retdec
         real(kind=8) :: dtmin
     end subroutine nmdecv
 end interface

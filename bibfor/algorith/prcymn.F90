@@ -72,21 +72,21 @@ subroutine prcymn(nomres, soumat, repmat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iran, j, k
-    integer :: ldk0aa, ldk0ai, ldk0aj, ldk0ii, ldk0ji, ldk0jj, ldkpaa
-    integer :: ldkpai, ldkpaj, ldkpja, ldkpji, ldkpjj, ldm0ii, llcham
-    integer :: llkge, llmge, llnoa, llnod, llnog
-    integer :: ltcap, ltcdp, ltcgp, ltetax
-    integer :: ltetgd, ltexa, ltexd, ltexg, ltflex, ltmat, ltvec
-    integer :: nbdax, nbddr, nbmod, nbnoa, nbnod, nbnog, nbsec
-    integer :: nbsma, nbv, neq, ntail, ntrian, numa, numd
-    integer :: numg
+    integer(kind=8) :: i, ibid, iran, j, k
+    integer(kind=8) :: ldk0aa, ldk0ai, ldk0aj, ldk0ii, ldk0ji, ldk0jj, ldkpaa
+    integer(kind=8) :: ldkpai, ldkpaj, ldkpja, ldkpji, ldkpjj, ldm0ii, llcham
+    integer(kind=8) :: llkge, llmge, llnoa, llnod, llnog
+    integer(kind=8) :: ltcap, ltcdp, ltcgp, ltetax
+    integer(kind=8) :: ltetgd, ltexa, ltexd, ltexg, ltflex, ltmat, ltvec
+    integer(kind=8) :: nbdax, nbddr, nbmod, nbnoa, nbnod, nbnog, nbsec
+    integer(kind=8) :: nbsma, nbv, neq, ntail, ntrian, numa, numd
+    integer(kind=8) :: numg
     real(kind=8) :: xx
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: cycl_nuin(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: cycl_nuin(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
-    integer, pointer :: cycl_desc(:) => null()
-    integer, pointer :: cycl_nbsc(:) => null()
+    integer(kind=8), pointer :: cycl_desc(:) => null()
+    integer(kind=8), pointer :: cycl_nbsc(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data pgc/'PRCYMN'/

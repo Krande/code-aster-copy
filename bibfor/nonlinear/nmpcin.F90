@@ -45,7 +45,7 @@ subroutine nmpcin(matass)
 !
 !
 !
-    integer :: jrefa, jccid
+    integer(kind=8) :: jrefa, jccid
     aster_logical :: lvcine
 !
 ! ----------------------------------------------------------------------

@@ -22,7 +22,7 @@ interface
     subroutine nmchai(tychap, tyvarz, vali, tychap_out)
         character(len=6), intent(in) :: tychap
         character(len=*), intent(in) :: tyvarz
-        integer :: vali
+        integer(kind=8) :: vali
         character(len=6), optional, intent(out) :: tychap_out
     end subroutine nmchai
 end interface

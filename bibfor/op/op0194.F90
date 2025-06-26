@@ -34,7 +34,7 @@ subroutine op0194()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iOption
+    integer(kind=8) :: iOption
     character(len=16) :: option
     type(META_ParaOperator) :: metaParaOperator
 !

@@ -21,8 +21,8 @@
 interface
     subroutine nmextr_crsd(sdextrz, nb_keyw_fact, nb_field, nb_field_comp)
         character(len=*), intent(in) :: sdextrz
-        integer, intent(in) :: nb_keyw_fact
-        integer, intent(in) :: nb_field
-        integer, intent(in) :: nb_field_comp
+        integer(kind=8), intent(in) :: nb_keyw_fact
+        integer(kind=8), intent(in) :: nb_field
+        integer(kind=8), intent(in) :: nb_field_comp
     end subroutine nmextr_crsd
 end interface

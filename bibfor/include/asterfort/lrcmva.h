@@ -23,19 +23,19 @@ interface
                       nomcmr, nbcmfi, nmcmfi, nbcmpv, ncmpvm,&
                       numcmp, nochmd, adsl, adsv, codret)
         character(len=*) :: ntvale
-        integer :: nbvato
+        integer(kind=8) :: nbvato
         character(len=*) :: ntproa
-        integer :: lgproa
-        integer :: ncmprf
+        integer(kind=8) :: lgproa
+        integer(kind=8) :: ncmprf
         character(len=*) :: nomcmr(*)
-        integer :: nbcmfi
+        integer(kind=8) :: nbcmfi
         character(len=*) :: nmcmfi
-        integer :: nbcmpv
+        integer(kind=8) :: nbcmpv
         character(len=*) :: ncmpvm
         character(len=*) :: numcmp
         character(len=*) :: nochmd
-        integer :: adsl
-        integer :: adsv
-        integer :: codret
+        integer(kind=8) :: adsl
+        integer(kind=8) :: adsv
+        integer(kind=8) :: codret
     end subroutine lrcmva
 end interface

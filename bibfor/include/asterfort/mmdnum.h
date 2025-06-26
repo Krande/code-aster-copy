@@ -20,9 +20,9 @@
 !
 interface
     subroutine mmdnum(neqns, perm, invp, qsize)
-        integer :: neqns
-        integer :: perm(*)
-        integer :: invp(*)
-        integer :: qsize(*)
+        integer(kind=8) :: neqns
+        integer(kind=8) :: perm(*)
+        integer(kind=8) :: invp(*)
+        integer(kind=8) :: qsize(*)
     end subroutine mmdnum
 end interface

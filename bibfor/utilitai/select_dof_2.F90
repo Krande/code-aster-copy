@@ -35,9 +35,9 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
 #include "asterfort/nbec.h"
 #include "asterfort/select_dof_gene.h"
 !
-    integer, pointer, optional :: listEqua_(:), tablEqua_(:, :)
+    integer(kind=8), pointer, optional :: listEqua_(:), tablEqua_(:, :)
     character(len=*), optional, intent(in) :: numeDofZ_, fieldNodeZ_
-    integer, optional, intent(in) :: nbCmpToSelect_
+    integer(kind=8), optional, intent(in) :: nbCmpToSelect_
     character(len=8), pointer, optional :: listCmpToSelect_(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -71,22 +71,22 @@ subroutine select_dof_2(listEqua_, tablEqua_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbEcMax = 10
-    integer :: physDesc(nbEcMax)
+    integer(kind=8), parameter :: nbEcMax = 10
+    integer(kind=8) :: physDesc(nbEcMax)
     character(len=8) :: cmpName, mesh
     character(len=19) :: nume_equa, nume_equa_gene, fieldNode, numeEqul
     character(len=14) :: numeDof
-    integer :: iexi
+    integer(kind=8) :: iexi
     aster_logical :: lnume_equa_gene
     aster_logical :: lMatrDist
-    integer :: nodeNume, physNume, prnoLength
-    integer :: iLigr, nbLigr, nbNode
-    integer :: numeEqua, iNode, iCmp, dofNume, numeEquaL, numeCmp, iEc
-    integer :: nb_ec, nbCmpToSelect, physNbCmp, nbCmpNode
-    integer, pointer :: cmpSelect(:) => null()
-    integer, pointer :: prno(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: nugl(:) => null()
+    integer(kind=8) :: nodeNume, physNume, prnoLength
+    integer(kind=8) :: iLigr, nbLigr, nbNode
+    integer(kind=8) :: numeEqua, iNode, iCmp, dofNume, numeEquaL, numeCmp, iEc
+    integer(kind=8) :: nb_ec, nbCmpToSelect, physNbCmp, nbCmpNode
+    integer(kind=8), pointer :: cmpSelect(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nugl(:) => null()
     character(len=8), pointer :: physCataName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

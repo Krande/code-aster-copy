@@ -120,26 +120,26 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: thiter
     real(kind=8) :: epiter
     real(kind=8) :: aphiter
-    integer :: cond109
-    integer :: ferrcomp
-    integer :: ferrsyme
+    integer(kind=8) :: cond109
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: epucisa
-    integer :: ferrmin
+    integer(kind=8) :: epucisa
+    integer(kind=8) :: ferrmin
     real(kind=8) :: rholmin
     real(kind=8) :: rhotmin
-    integer :: compress
+    integer(kind=8) :: compress
     real(kind=8) :: alphacc
     real(kind=8) :: eys
-    integer :: typdiag
-    integer :: clacier
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: typdiag
+    integer(kind=8) :: clacier
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: ht
     real(kind=8) :: effrts(8)
     real(kind=8) :: dnsits(6)
-    integer :: ierrl
-    integer :: ierrt
+    integer(kind=8) :: ierrl
+    integer(kind=8) :: ierrt
 
 !Variables de calcul
     real(kind=8) :: fcd, fyd, ySUP, yINF, Z, pi, zI, zS, denom, d, fctm
@@ -148,9 +148,9 @@ subroutine sandwich(enrobi, enrobs, facier, fbeton, gammas, gammac, &
     real(kind=8) :: Nxx, Nyy, Nxy, Mxx, Myy, Mxy, Qx, Qy
     real(kind=8) :: Nx_SUP, Nx_INF, Ny_SUP, Ny_INF, Nxy_SUP, Nxy_INF
     real(kind=8) :: cond_trac_inf, cond_trac_sup
-    integer :: CAS_SUP, CAS_INF, COUNT_ITER, j, ierr, nb, precs
+    integer(kind=8) :: CAS_SUP, CAS_INF, COUNT_ITER, j, ierr, nb, precs
     real(kind=8) :: dnsxi, dnsxs, dnsyi, dnsys, dnsxt, dnsyt
-    integer :: etsxi, etsxs, etsyi, etsys
+    integer(kind=8) :: etsxi, etsxs, etsyi, etsys
     real(kind=8) :: snsxi, snsxs, snsyi, snsys
     real(kind=8) :: ncmaxi, ncmini, ncmaxs, ncmins
     real(kind=8) :: t_inf, t_sup, theta_inf, theta_sup, unite_pa, unite_m

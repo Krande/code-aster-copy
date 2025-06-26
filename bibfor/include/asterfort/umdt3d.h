@@ -27,9 +27,9 @@ interface
         real(kind=8) :: a(ngf,(ngf+1))
         real(kind=8) :: b(ngf)
         real(kind=8) :: x(ngf)
-        integer :: ipzero(ngf)
-        integer :: ngf
-        integer :: errg
+        integer(kind=8) :: ipzero(ngf)
+        integer(kind=8) :: ngf
+        integer(kind=8) :: errg
         aster_logical :: iso
     end subroutine umdt3d
 end interface 

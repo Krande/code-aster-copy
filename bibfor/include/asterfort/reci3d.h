@@ -24,11 +24,11 @@ interface
         character(len=19) :: lirela
         character(len=8) :: mailla
         character(len=8) :: nnoeca
-        integer :: noebe
-        integer :: nbcnx
-        integer :: cxma(*)
-        integer :: itetra
+        integer(kind=8) :: noebe
+        integer(kind=8) :: nbcnx
+        integer(kind=8) :: cxma(*)
+        integer(kind=8) :: itetra
         real(kind=8) :: xbar(*)
-        integer :: immer
+        integer(kind=8) :: immer
     end subroutine reci3d
 end interface

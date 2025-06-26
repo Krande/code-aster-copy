@@ -21,7 +21,7 @@ subroutine tailsd(nom, nomsd, val, nbval)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/rsorac.h"
-    integer :: nbval, val(nbval)
+    integer(kind=8) :: nbval, val(nbval)
     character(len=*) :: nom, nomsd
 ! ---------------------------------------------------------------
 !  DETERMINE LE NOMBRE DE VALEURS DANS UNE STRUCTURE DE DONNES
@@ -34,7 +34,7 @@ subroutine tailsd(nom, nomsd, val, nbval)
 ! ---------------------------------------------------------------
     character(len=19) :: sd19
     character(len=24) :: sd
-    integer :: iret1, iret2, ibid
+    integer(kind=8) :: iret1, iret2, ibid
     complex(kind=8) :: cbid
 !
 !  DETERMINE LE NOMBRE MAXIMUM DE CHAMPS ET DE PARAMETRES

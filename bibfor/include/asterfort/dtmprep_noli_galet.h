@@ -22,6 +22,6 @@ interface
     subroutine dtmprep_noli_galet(sd_dtm_, sd_nl_, icomp)
         character(len=*), intent(in):: sd_dtm_
         character(len=*), intent(in):: sd_nl_
-        integer,          intent(in):: icomp
+        integer(kind=8),          intent(in):: icomp
     end subroutine dtmprep_noli_galet
 end interface

@@ -24,22 +24,22 @@ interface
                       jmafon, jmaen1, jmaen2, jmaen3, nmafon,&
                       nmaen1, nmaen2, nmaen3, typdis)
         character(len=8) :: noma
-        integer :: nbma
-        integer :: nmafis
-        integer :: jmafis
-        integer :: ncouch
+        integer(kind=8) :: nbma
+        integer(kind=8) :: nmafis
+        integer(kind=8) :: jmafis
+        integer(kind=8) :: ncouch
         character(len=24) :: lisnoe
-        integer :: stano(*)
+        integer(kind=8) :: stano(*)
         character(len=19) :: cnslt
         character(len=19) :: cnsln
-        integer :: jmafon
-        integer :: jmaen1
-        integer :: jmaen2
-        integer :: jmaen3
-        integer :: nmafon
-        integer :: nmaen1
-        integer :: nmaen2
-        integer :: nmaen3
+        integer(kind=8) :: jmafon
+        integer(kind=8) :: jmaen1
+        integer(kind=8) :: jmaen2
+        integer(kind=8) :: jmaen3
+        integer(kind=8) :: nmafon
+        integer(kind=8) :: nmaen1
+        integer(kind=8) :: nmaen2
+        integer(kind=8) :: nmaen3
         character(len=16) :: typdis
     end subroutine xstama
 end interface

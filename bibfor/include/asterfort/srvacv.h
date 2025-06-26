@@ -20,7 +20,7 @@
 !
 interface
     subroutine srvacv(nbmat, mater, paravi, varvi)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: paravi(3)
         real(kind=8) :: varvi(4)

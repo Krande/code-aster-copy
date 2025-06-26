@@ -54,14 +54,14 @@ subroutine conjac(i0, i1, i2, i3, macoc, &
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: i0, i1, i2, i3
+    integer(kind=8) :: i0, i1, i2, i3
     character(len=8) :: mailla
-    integer :: nbcoc
+    integer(kind=8) :: nbcoc
     character(len=8) :: macoc(2+nbcoc)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: jcoor, no0, no1, no2, no3, niv, ifm
+    integer(kind=8) :: jcoor, no0, no1, no2, no3, niv, ifm
     character(len=24) :: coorno
     real(kind=8) :: x0, y0, z0, x1, y1, z1, x2, y2, z2, x3, y3, z3, scal
     real(kind=8) :: vnx, vny, vnz

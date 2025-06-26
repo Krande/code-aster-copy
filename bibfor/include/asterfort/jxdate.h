@@ -20,6 +20,6 @@
 !
 interface
     subroutine jxdate(idate)
-        integer :: idate
+        integer(kind=8) :: idate
     end subroutine jxdate
 end interface

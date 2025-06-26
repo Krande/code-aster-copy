@@ -30,8 +30,8 @@ subroutine nmreli(modele, numedd, ds_material, carele, ds_system, &
 #include "asterfort/nmchex.h"
 #include "asterfort/nmrelp.h"
 !
-    integer :: fonact(*)
-    integer :: iterat, ldccvg
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: iterat, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure

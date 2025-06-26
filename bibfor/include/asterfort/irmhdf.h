@@ -21,24 +21,24 @@ interface
                       connex, point, nomast, typma, titre,&
                       nbtitr, nbgrno, nomgno, nbgrma, nomgma,&
                       nommai, nomnoe, infmed, lfichUniq, nosdfu)
-        integer :: ifi
-        integer :: ndim
-        integer :: nbnoeu
+        integer(kind=8) :: ifi
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbnoeu
         real(kind=8) :: coordo(*)
-        integer :: nbmail
-        integer :: connex(*)
-        integer :: point(*)
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: point(*)
         character(len=8) :: nomast
-        integer :: typma(*)
+        integer(kind=8) :: typma(*)
         character(len=80) :: titre(*)
-        integer :: nbtitr
-        integer :: nbgrno
+        integer(kind=8) :: nbtitr
+        integer(kind=8) :: nbgrno
         character(len=24) :: nomgno(*)
-        integer :: nbgrma
+        integer(kind=8) :: nbgrma
         character(len=24) :: nomgma(*)
         character(len=8) :: nommai(*)
         character(len=8) :: nomnoe(*)
-        integer :: infmed
+        integer(kind=8) :: infmed
         aster_logical, optional :: lfichUniq
         character(len=8), optional :: nosdfu
     end subroutine irmhdf

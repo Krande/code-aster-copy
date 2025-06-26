@@ -27,7 +27,7 @@ subroutine utimos(unit, obin, lattr, lcont)
 #include "asterfort/jeimpo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: obin
-    integer :: unit
+    integer(kind=8) :: unit
     aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
@@ -45,7 +45,7 @@ subroutine utimos(unit, obin, lattr, lcont)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iret
+    integer(kind=8) :: iret
 !-----------------------------------------------------------------------
     ob1 = obin
 !

@@ -20,7 +20,7 @@
 !
 interface
     subroutine slu_get_diag_of_upper_factor( f_factors, diag_u, info )
-        integer         :: f_factors
+        integer(kind=8)         :: f_factors
         real(kind=8)    :: diag_u(*)
         integer(kind=4) :: info
     end subroutine slu_get_diag_of_upper_factor

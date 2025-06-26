@@ -37,7 +37,7 @@ subroutine medom2(modele, mate, mateco, cara, kcha, &
 #include "asterfort/medom1.h"
 #include "asterfort/utmamo.h"
 #include "asterfort/wkvect.h"
-    integer :: ncha, nuord
+    integer(kind=8) :: ncha, nuord
     character(len=1) :: base
     character(len=8) :: modele, cara, result
     character(len=24) :: mate, mateco
@@ -64,15 +64,15 @@ subroutine medom2(modele, mate, mateco, cara, kcha, &
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: nbmxba
+    integer(kind=8) :: nbmxba
     parameter(nbmxba=2)
 !
-    integer :: nbordr, npass, nbligr, i, kmod, nbmaal
-    integer :: iligrs, imodls, ibases, n1, n2, n3
+    integer(kind=8) :: nbordr, npass, nbligr, i, kmod, nbmaal
+    integer(kind=8) :: iligrs, imodls, ibases, n1, n2, n3
 !
     character(len=1) :: baslig
     character(len=24) :: ligrel, ligr1, noojb
-    integer, pointer :: liste_mailles(:) => null()
+    integer(kind=8), pointer :: liste_mailles(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

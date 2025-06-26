@@ -18,10 +18,10 @@
 !
 subroutine pctrii(tab, ltab)
     implicit none
-    integer :: ltab, tab(ltab)
+    integer(kind=8) :: ltab, tab(ltab)
 !
 !-----------------------------------------------------------------------
-    integer :: i, indic, ip1, itab, k
+    integer(kind=8) :: i, indic, ip1, itab, k
 !-----------------------------------------------------------------------
     do k = ltab, 2, -1
         indic = 0

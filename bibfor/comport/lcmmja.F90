@@ -59,9 +59,9 @@ subroutine lcmmja(typmod, nmat, materf, timed, &
 #include "asterfort/lcmmsg.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/r8inir.h"
-    integer :: nmat, nr, nbfsys, ndt, ndi, nsfa, nsfv, nbsys, is, ir
-    integer :: nbcomm(nmat, 3), ifa, i, j, k, l, iret, ifl, itmax, nuvr, nuvs
-    integer :: nuecou, ind(3, 3), nvi, nfs, nsg, iexp
+    integer(kind=8) :: nmat, nr, nbfsys, ndt, ndi, nsfa, nsfv, nbsys, is, ir
+    integer(kind=8) :: nbcomm(nmat, 3), ifa, i, j, k, l, iret, ifl, itmax, nuvr, nuvs
+    integer(kind=8) :: nuecou, ind(3, 3), nvi, nfs, nsg, iexp
     real(kind=8) :: vind(*), yf(*), dy(*), drdy(nr, nr), materf(nmat*2)
     real(kind=8) :: pgl(3, 3), toutms(nfs, nsg, 6), hsr(nsg, nsg), gamsns(3, 3)
     real(kind=8) :: timed, timef, msdgdt(6, 6), dt, fkooh(6, 6), sigf(6)
@@ -76,7 +76,7 @@ subroutine lcmmja(typmod, nmat, materf, timed, &
     character(len=8) :: typmod
 !     ----------------------------------------------------------------
     common/tdim/ndt, ndi
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
     data ind/1, 4, 5, 4, 2, 6, 5, 6, 3/

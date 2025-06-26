@@ -34,7 +34,7 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti, &
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 !
-    integer :: neq, tabddl(*), nbacti, nbbloq, nblagr, nbliai
+    integer(kind=8) :: neq, tabddl(*), nbacti, nbbloq, nblagr, nbliai
     character(len=4) :: choix
     character(len=14) :: nume
     character(len=*) :: choixz, numez
@@ -65,16 +65,16 @@ subroutine typddl(choixz, numez, neq, tabddl, nbacti, &
 !----------------------------------------------------------------------
 !
 !
-    integer :: aprno, adeeq, iddl, ideb, nd, n, nec, gd
+    integer(kind=8) :: aprno, adeeq, iddl, ideb, nd, n, nec, gd
     character(len=8) :: modgen, basemo
     character(len=16) :: typrep
     character(len=24) :: nprno, ndeeq, kbid, norig
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icmp, ico, j, jorig, jprno
-    integer :: jrefe, n1ddl, n2ddl, nbdefo, nbprno, nbsst
-    integer :: nusst
+    integer(kind=8) :: i, ibid, icmp, ico, j, jorig, jprno
+    integer(kind=8) :: jrefe, n1ddl, n2ddl, nbdefo, nbprno, nbsst
+    integer(kind=8) :: nusst
 !-----------------------------------------------------------------------
     call jemarq()
 !

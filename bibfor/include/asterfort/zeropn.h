@@ -20,10 +20,10 @@
 !
 interface
     subroutine zeropn(kstop, degre, ai, racine, ier)
-        integer :: degre
+        integer(kind=8) :: degre
         character(len=1) :: kstop
         real(kind=8) :: ai(degre)
         real(kind=8) :: racine(2*degre)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine zeropn
 end interface

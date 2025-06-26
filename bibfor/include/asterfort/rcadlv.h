@@ -21,20 +21,20 @@
           interface 
             subroutine rcadlv(fami,kpg,ksp,poum,jmat,nomat,mfact,msimp, &
      &nbpar,nompar,valpar,jadr,nbres,icodre,iarret)
-              integer, intent(in) :: nbpar
+              integer(kind=8), intent(in) :: nbpar
               character(len=*), intent(in) :: fami
-              integer, intent(in) :: kpg
-              integer, intent(in) :: ksp
+              integer(kind=8), intent(in) :: kpg
+              integer(kind=8), intent(in) :: ksp
               character(len=1), intent(in) :: poum
-              integer, intent(in) :: jmat
+              integer(kind=8), intent(in) :: jmat
               character(len=*), intent(in) :: nomat
               character(len=*), intent(in) :: mfact
               character(len=*), intent(in) :: msimp
               character(len=*), intent(in) :: nompar(nbpar)
               real(kind=8), intent(in) :: valpar(nbpar)
-              integer, intent(out) :: jadr
-              integer, intent(out) :: nbres
-              integer, intent(out) :: icodre
-              integer, intent(in) :: iarret
+              integer(kind=8), intent(out) :: jadr
+              integer(kind=8), intent(out) :: nbres
+              integer(kind=8), intent(out) :: icodre
+              integer(kind=8), intent(in) :: iarret
             end subroutine rcadlv
           end interface 

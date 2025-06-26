@@ -49,11 +49,11 @@ subroutine coqucf(nomu)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, iret, ibid, ii, jj, kk
-    integer :: jcesdf, jcesdo, nbmail, adrm, iad
-    integer :: nbcmpf, nbcmpo, icompo, inoeu, nbno, nunoe, igeom
-    integer :: jceslf, jceslo
-    integer :: jconne, iadr1, iadr2, jtabco
+    integer(kind=8) :: ifm, niv, iret, ibid, ii, jj, kk
+    integer(kind=8) :: jcesdf, jcesdo, nbmail, adrm, iad
+    integer(kind=8) :: nbcmpf, nbcmpo, icompo, inoeu, nbno, nunoe, igeom
+    integer(kind=8) :: jceslf, jceslo
+    integer(kind=8) :: jconne, iadr1, iadr2, jtabco
     real(kind=8) :: valr(3), fresu
     character(len=8) :: nomma, nmcmpf, nomval(3), nomfct
     character(len=19) :: cartco, cartcf, celsco, celscf, connex
@@ -208,9 +208,9 @@ subroutine coqucf(nomu)
     call detrsd('CHAM_ELEM_S', celscf)
 !
 90  format(' MAILLE_NB  : [ [  CENTRE DE GRAVITE ],',&
-     &       '  FONCTION  ,  VALEUR       ]')
+      &       '  FONCTION  ,  VALEUR       ]')
 91  format("'", i7, "_", i1, "' : [ [", 3(e18.10, ","), "], '",&
-     &       a, "' ,", e18.10, "],")
+      &       a, "' ,", e18.10, "],")
 !
 999 continue
     call jedema()

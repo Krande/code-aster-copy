@@ -24,9 +24,9 @@ subroutine mmelin(noma, numa, typint, nnint)
 #include "asterfort/assert.h"
 #include "asterfort/mmelty.h"
     character(len=8) :: noma
-    integer :: numa
-    integer :: typint
-    integer :: nnint
+    integer(kind=8) :: numa
+    integer(kind=8) :: typint
+    integer(kind=8) :: nnint
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine mmelin(noma, numa, typint, nnint)
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: alias
-    integer :: param
+    integer(kind=8) :: param
 !
 ! ----------------------------------------------------------------------
 !

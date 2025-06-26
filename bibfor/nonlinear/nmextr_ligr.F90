@@ -31,8 +31,8 @@ subroutine nmextr_ligr(meshz, modelz, sdextrz, nb_keyw_fact, nb_field_comp)
     character(len=*), intent(in) :: modelz
     character(len=*), intent(in) :: meshz
     character(len=*), intent(in) :: sdextrz
-    integer, intent(in) :: nb_keyw_fact
-    integer, intent(in) :: nb_field_comp
+    integer(kind=8), intent(in) :: nb_keyw_fact
+    integer(kind=8), intent(in) :: nb_field_comp
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,8 +50,8 @@ subroutine nmextr_ligr(meshz, modelz, sdextrz, nb_keyw_fact, nb_field_comp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_keyw_fact, i_field_comp, i_elem, i_elem_mesh, i_elem_ligr
-    integer :: nb_elem_mesh, nb_elem_ligr, nb_elem, nume_elem
+    integer(kind=8) :: i_keyw_fact, i_field_comp, i_elem, i_elem_mesh, i_elem_ligr
+    integer(kind=8) :: nb_elem_mesh, nb_elem_ligr, nb_elem, nume_elem
     character(len=2) :: chaine
     character(len=24) :: ligrel, list_elem
     character(len=24) :: field_disc, field_type, field_comp, field
@@ -59,10 +59,10 @@ subroutine nmextr_ligr(meshz, modelz, sdextrz, nb_keyw_fact, nb_field_comp)
     character(len=24) :: extr_comp, extr_info, extr_field
     character(len=24), pointer :: v_extr_comp(:) => null()
     character(len=24), pointer :: v_extr_field(:) => null()
-    integer, pointer :: v_extr_info(:) => null()
-    integer, pointer :: list_elem_mesh(:) => null()
-    integer, pointer :: list_elem_ligr(:) => null()
-    integer, pointer :: v_list_elem(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: list_elem_mesh(:) => null()
+    integer(kind=8), pointer :: list_elem_ligr(:) => null()
+    integer(kind=8), pointer :: v_list_elem(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

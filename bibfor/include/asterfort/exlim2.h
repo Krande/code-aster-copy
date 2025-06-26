@@ -20,8 +20,8 @@
 !
 interface
     subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
-        integer :: lismai(*)
-        integer :: nbmail
+        integer(kind=8) :: lismai(*)
+        integer(kind=8) :: nbmail
         character(len=*) :: ligrmoz
         character(len=*) :: basez
         character(len=*) :: ligrez

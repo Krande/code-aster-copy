@@ -26,10 +26,10 @@ module cara_elem_parameter_module
 !
     implicit none
 !
-    integer, parameter :: ACE_NOTHING = 0
+    integer(kind=8), parameter :: ACE_NOTHING = 0
 !
 ! Nombre total de mots clefs facteur
-    integer, parameter :: ACE_NB_MCLEF = 16
+    integer(kind=8), parameter :: ACE_NB_MCLEF = 16
     character(len=16), parameter :: ACE_MCLEF(ACE_NB_MCLEF) = [ &
                                     'POUTRE          ', 'COQUE           ', &
                                     'DISCRET         ', 'ORIENTATION     ', &
@@ -41,22 +41,22 @@ module cara_elem_parameter_module
                                     'MASS_AJOU       ', 'MULTIFIBRE      ', &
                                     'MASS_REP        ']
 !
-    integer, parameter :: ACE_POUTRE = 1
-    integer, parameter :: ACE_COQUE = 2
-    integer, parameter :: ACE_DISCRET = 3
-    integer, parameter :: ACE_ORIENTATION = 4
-    integer, parameter :: ACE_CABLE = 5
-    integer, parameter :: ACE_BARRE = 6
-    integer, parameter :: ACE_MASSIF = 7
-    integer, parameter :: ACE_POUTRE_FLUI = 8
-    integer, parameter :: ACE_RIGI_PARASOL = 9
-    integer, parameter :: ACE_GRILLE = 10
-    integer, parameter :: ACE_RIGI_MISS_3D = 11
-    integer, parameter :: ACE_DISCRET_2D = 12
-    integer, parameter :: ACE_MEMBRANE = 13
-    integer, parameter :: ACE_MASS_AJOU = 14
-    integer, parameter :: ACE_MULTIFIBRE = 15
-    integer, parameter :: ACE_MASS_REP = 16
+    integer(kind=8), parameter :: ACE_POUTRE = 1
+    integer(kind=8), parameter :: ACE_COQUE = 2
+    integer(kind=8), parameter :: ACE_DISCRET = 3
+    integer(kind=8), parameter :: ACE_ORIENTATION = 4
+    integer(kind=8), parameter :: ACE_CABLE = 5
+    integer(kind=8), parameter :: ACE_BARRE = 6
+    integer(kind=8), parameter :: ACE_MASSIF = 7
+    integer(kind=8), parameter :: ACE_POUTRE_FLUI = 8
+    integer(kind=8), parameter :: ACE_RIGI_PARASOL = 9
+    integer(kind=8), parameter :: ACE_GRILLE = 10
+    integer(kind=8), parameter :: ACE_RIGI_MISS_3D = 11
+    integer(kind=8), parameter :: ACE_DISCRET_2D = 12
+    integer(kind=8), parameter :: ACE_MEMBRANE = 13
+    integer(kind=8), parameter :: ACE_MASS_AJOU = 14
+    integer(kind=8), parameter :: ACE_MULTIFIBRE = 15
+    integer(kind=8), parameter :: ACE_MASS_REP = 16
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,13 +66,13 @@ module cara_elem_parameter_module
     character(len=8), parameter :: ACE_GRMA_TY(4) = [ &
                                    'GROUP_MA', 'MAILLE  ', &
                                    'GROUP_MA', 'GROUP_MA']
-    integer, parameter :: ACE_GR_MAI = 1
-    integer, parameter :: ACE_MAILLE = 2
-    integer, parameter :: ACE_GR_PO1 = 3
-    integer, parameter :: ACE_GR_SE2 = 4
+    integer(kind=8), parameter :: ACE_GR_MAI = 1
+    integer(kind=8), parameter :: ACE_MAILLE = 2
+    integer(kind=8), parameter :: ACE_GR_PO1 = 3
+    integer(kind=8), parameter :: ACE_GR_SE2 = 4
 !
-    integer, parameter :: ACE_NB_GRMA_MA = 4
-    integer, parameter :: MCLEF_GRP_MA(ACE_NB_GRMA_MA*ACE_NB_MCLEF) = [ &
+    integer(kind=8), parameter :: ACE_NB_GRMA_MA = 4
+    integer(kind=8), parameter :: MCLEF_GRP_MA(ACE_NB_GRMA_MA*ACE_NB_MCLEF) = [ &
                           ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
                           ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
                           ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
@@ -92,18 +92,18 @@ module cara_elem_parameter_module
 !
 ! --------------------------------------------------------------------------------------------------
 ! Toutes les cartes créées par AFFE_CARA_ELEM
-    integer, parameter :: ACE_NB_CARTE = 4
-    integer, parameter :: ACE_NB_CARTE_CMP = 3
+    integer(kind=8), parameter :: ACE_NB_CARTE = 4
+    integer(kind=8), parameter :: ACE_NB_CARTE_CMP = 3
     character(len=10), parameter :: ACE_CARTE(ACE_NB_CARTE*ACE_NB_CARTE_CMP) = [ &
                                     '.CARDINFO ', 'CINFDI_R  ', 'DISCRET   ', &
                                     '.CARDISCK ', 'CADISK_R  ', 'DISCRET   ', &
                                     '.CARDISCM ', 'CADISM_R  ', 'DISCRET   ', &
                                     '.CARDISCA ', 'CADISA_R  ', 'DISCRET   ']
 !
-    integer, parameter :: ACE_CAR_DINFO = 1
-    integer, parameter :: ACE_CAR_DISCK = 2
-    integer, parameter :: ACE_CAR_DISCM = 3
-    integer, parameter :: ACE_CAR_DISCA = 4
+    integer(kind=8), parameter :: ACE_CAR_DINFO = 1
+    integer(kind=8), parameter :: ACE_CAR_DISCK = 2
+    integer(kind=8), parameter :: ACE_CAR_DISCM = 3
+    integer(kind=8), parameter :: ACE_CAR_DISCA = 4
 
 ! #define ACE_NB_CARTE  14
 !         '.CARCABLE', 'CACABL_R ', 'CABLE     ',
@@ -127,7 +127,7 @@ module cara_elem_parameter_module
 !       ACE_EL_(el)[ACE_NB_(el)]    : Liste des supports dans le type
 !
 ! Nombre de type d'éléments
-    integer, parameter :: ACE_NB_ELEMENT = 9
+    integer(kind=8), parameter :: ACE_NB_ELEMENT = 9
     character(len=16), parameter :: ACE_NM_ELEMENT(ACE_NB_ELEMENT) = [ &
                                     'POUTRE          ', 'DISCRET         ', &
                                     'COQUE           ', 'CABLE           ', &
@@ -135,17 +135,17 @@ module cara_elem_parameter_module
                                     'MEMBRANE        ', 'MASSIF          ', &
                                     'MASSIF THM      ']
 !
-    integer, parameter :: ACE_NU_POUTRE = 1
-    integer, parameter :: ACE_NU_DISCRET = 2
-    integer, parameter :: ACE_NU_COQUE = 3
-    integer, parameter :: ACE_NU_CABLE = 4
-    integer, parameter :: ACE_NU_BARRE = 5
-    integer, parameter :: ACE_NU_GRILLE = 6
-    integer, parameter :: ACE_NU_MEMBRANE = 7
-    integer, parameter :: ACE_NU_MASSIF = 8
-    integer, parameter :: ACE_NU_THHMM = 9
+    integer(kind=8), parameter :: ACE_NU_POUTRE = 1
+    integer(kind=8), parameter :: ACE_NU_DISCRET = 2
+    integer(kind=8), parameter :: ACE_NU_COQUE = 3
+    integer(kind=8), parameter :: ACE_NU_CABLE = 4
+    integer(kind=8), parameter :: ACE_NU_BARRE = 5
+    integer(kind=8), parameter :: ACE_NU_GRILLE = 6
+    integer(kind=8), parameter :: ACE_NU_MEMBRANE = 7
+    integer(kind=8), parameter :: ACE_NU_MASSIF = 8
+    integer(kind=8), parameter :: ACE_NU_THHMM = 9
 !
-    integer, parameter :: ACE_NB_POUTRE = 13
+    integer(kind=8), parameter :: ACE_NB_POUTRE = 13
     character(len=16), parameter :: ACE_EL_POUTRE(ACE_NB_POUTRE) = [ &
                                     'MECA_POU_D_T    ', 'MECA_POU_D_E    ', &
                                     'MECA_POU_D_T_GD ', 'MEFS_POU_D_T    ', &
@@ -170,7 +170,7 @@ module cara_elem_parameter_module
 !     integer, parameter :: ACE_MECA_POU_D_SQUE     13
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_DISCRET = 8
+    integer(kind=8), parameter :: ACE_NB_DISCRET = 8
     character(len=16), parameter :: ACE_EL_DISCRET(ACE_NB_DISCRET) = [ &
                                     'MECA_DIS_T_N    ', 'MECA_DIS_T_L    ', &
                                     'MECA_DIS_TR_N   ', 'MECA_DIS_TR_L   ', &
@@ -187,7 +187,7 @@ module cara_elem_parameter_module
 !     integer, parameter :: ACE_MECA_2D_DIS_TR_L    8
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_COQUE = 27
+    integer(kind=8), parameter :: ACE_NB_COQUE = 27
     character(len=16), parameter :: ACE_EL_COQUE(ACE_NB_COQUE) = [ &
                                     'THCOTR3         ', 'THCOTR6         ', &
                                     'THCOQU4         ', 'THCOQU8         ', &
@@ -205,32 +205,32 @@ module cara_elem_parameter_module
                                     'THCOSE2         ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_CABLE = 2
+    integer(kind=8), parameter :: ACE_NB_CABLE = 2
     character(len=16), parameter :: ACE_EL_CABLE(ACE_NB_CABLE) = [ &
                                     'MECABL2         ', 'MEPOULI         ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_BARRE = 3
+    integer(kind=8), parameter :: ACE_NB_BARRE = 3
     character(len=16), parameter :: ACE_EL_BARRE(ACE_NB_BARRE) = [ &
                                     'MECA_BARRE      ', 'MECA_2D_BARRE   ', &
                                     'MECGSEG3        ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_GRILLE = 6
+    integer(kind=8), parameter :: ACE_NB_GRILLE = 6
     character(len=16), parameter :: ACE_EL_GRILLE(ACE_NB_GRILLE) = [ &
                                     'MEGCQU4         ', 'MEGMTR3         ', &
                                     'MEGMQU4         ', 'MEGMTR6         ', &
                                     'MEGMQU8         ', 'MEGCTR3         ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_MEMBRANE = 6
+    integer(kind=8), parameter :: ACE_NB_MEMBRANE = 6
     character(len=16), parameter :: ACE_EL_MEMBRANE(ACE_NB_MEMBRANE) = [ &
                                     'MEMBTR3         ', 'MEMBTR6         ', &
                                     'MEMBQU4         ', 'MEMBQU8         ', &
                                     'MEMBTR7         ', 'MEMBQU9         ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_MASSIF = 97
+    integer(kind=8), parameter :: ACE_NB_MASSIF = 97
     character(len=16), parameter :: ACE_EL_MASSIF(ACE_NB_MASSIF) = [ &
                                     'MECA_HEXA8      ', 'MECA_PENTA6     ', &
                                     'MECA_PENTA18    ', 'MECA_TETRA4     ', &
@@ -283,7 +283,7 @@ module cara_elem_parameter_module
                                     'EIPLQU8         ', 'EIPLQS8         ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_THHMM = 75
+    integer(kind=8), parameter :: ACE_NB_THHMM = 75
     character(len=16), parameter :: ACE_EL_THHMM(ACE_NB_THHMM) = [ &
                                     'HM_DPQ8S        ', 'HM_AXIS_QU8S    ', &
                                     'HM_DPTR6S       ', 'HM_AXIS_TR6S    ', &
@@ -324,7 +324,7 @@ module cara_elem_parameter_module
                                     'HH2_HEXA20S     ', 'HH2_PENTA15S    ', 'HH2_TETRA10S    ']
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: ACE_NB_TYPE_ELEM = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ &
+    integer(kind=8), parameter :: ACE_NB_TYPE_ELEM = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ &
                           ACE_NB_CABLE+ACE_NB_BARRE+ACE_NB_MASSIF+ &
                           ACE_NB_GRILLE+ACE_NB_MEMBRANE+ACE_NB_THHMM
 

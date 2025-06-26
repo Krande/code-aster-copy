@@ -31,10 +31,10 @@ subroutine cfmmvc(ds_contact, v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8), pointer :: v_ncomp_jeux(:)
-    integer, pointer :: v_ncomp_loca(:)
+    integer(kind=8), pointer :: v_ncomp_loca(:)
     character(len=16), pointer :: v_ncomp_enti(:)
-    integer, pointer :: v_ncomp_zone(:)
-    integer, intent(out) :: nt_ncomp_poin
+    integer(kind=8), pointer :: v_ncomp_zone(:)
+    integer(kind=8), intent(out) :: nt_ncomp_poin
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine cfmmvc(ds_contact, v_ncomp_jeux, v_ncomp_loca, v_ncomp_enti, v_ncomp_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nt_poin, nt_cont_poin
+    integer(kind=8) :: nt_poin, nt_cont_poin
 !
 ! --------------------------------------------------------------------------------------------------
 !

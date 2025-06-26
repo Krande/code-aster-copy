@@ -21,13 +21,13 @@
 interface
     subroutine lecelt(iunv, maxnod, nbtyma, indic, permut,&
                       codgra, node, nbnode)
-        integer :: nbtyma
-        integer :: maxnod
-        integer :: iunv
-        integer :: indic(nbtyma)
-        integer :: permut(maxnod, nbtyma)
-        integer :: codgra
-        integer :: node(maxnod)
-        integer :: nbnode
+        integer(kind=8) :: nbtyma
+        integer(kind=8) :: maxnod
+        integer(kind=8) :: iunv
+        integer(kind=8) :: indic(nbtyma)
+        integer(kind=8) :: permut(maxnod, nbtyma)
+        integer(kind=8) :: codgra
+        integer(kind=8) :: node(maxnod)
+        integer(kind=8) :: nbnode
     end subroutine lecelt
 end interface

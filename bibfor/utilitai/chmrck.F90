@@ -26,7 +26,7 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
 #include "asterfort/jeveuo.h"
     character(len=8) :: chmat, nommat(*)
     character(len=16) :: nomrc
-    integer :: nbmtrc
+    integer(kind=8) :: nbmtrc
 !
 !     ==================================================================
 !     ! UTILITAIRE - RECHERCHE DES MATERIAUX D'UN CHAM_MATER QUI       !
@@ -50,9 +50,9 @@ subroutine chmrck(chmat, nomrc, nommat, nbmtrc)
 ! --- VARIABLES LOCALES ---
     character(len=8) :: kmat, kbid
     character(len=24) :: krc
-    integer :: arc, imat, nbrc, ipos, ncmpmx, izone, i, nbzone
-    integer :: l1, nbzmax, k
-    integer, pointer :: desc(:) => null()
+    integer(kind=8) :: arc, imat, nbrc, ipos, ncmpmx, izone, i, nbzone
+    integer(kind=8) :: l1, nbzmax, k
+    integer(kind=8), pointer :: desc(:) => null()
     character(len=8), pointer :: vale(:) => null()
     parameter(ncmpmx=30)
 !

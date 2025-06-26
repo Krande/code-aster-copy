@@ -19,7 +19,7 @@
 subroutine tbajvi(table, nbpara, nompar, vi, livi)
     implicit none
 #include "asterfort/tbajva.h"
-    integer :: nbpara, vi, livi(*)
+    integer(kind=8) :: nbpara, vi, livi(*)
     character(len=*) :: table, nompar
 !
 !     BUT:

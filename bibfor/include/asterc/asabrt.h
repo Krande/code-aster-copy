@@ -20,6 +20,6 @@
 !
 interface
     subroutine asabrt(iret)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine asabrt
 end interface

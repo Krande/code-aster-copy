@@ -19,6 +19,6 @@
 interface
     subroutine mgis_get_isvs_sizes(extern_addr, sizes)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(out) :: sizes(*)
+        integer(kind=8), intent(out) :: sizes(*)
     end subroutine mgis_get_isvs_sizes
 end interface

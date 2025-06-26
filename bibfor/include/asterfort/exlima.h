@@ -21,7 +21,7 @@
 interface
     subroutine exlima(motfaz, iocc, base, modelz, ligrel)
         character(len=*) :: motfaz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: base
         character(len=*) :: modelz
         character(len=*) :: ligrel

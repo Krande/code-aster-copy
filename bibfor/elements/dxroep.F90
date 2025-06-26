@@ -29,9 +29,9 @@ subroutine dxroep(rho, epais)
 !
 !     APPEL DES MASSE VOLUMIQUE DU MATERIAU ET EPAISSEUR DE LA PLAQUE
 !     ------------------------------------------------------------------
-    integer :: jmate, nbv, jcoqu, iadzi, iazk24
+    integer(kind=8) :: jmate, nbv, jcoqu, iadzi, iazk24
     real(kind=8) :: r8bid, valres(2)
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=24) :: valk(2)
     character(len=8) :: nomail
     character(len=16) :: nomres(2)

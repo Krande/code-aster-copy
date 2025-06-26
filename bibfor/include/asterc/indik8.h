@@ -22,8 +22,8 @@ interface
     function indik8(lmot, k8, i, j)
         character(len=*) :: lmot(*)
         character(len=*) :: k8
-        integer :: i
-        integer :: j
-        integer :: indik8
+        integer(kind=8) :: i
+        integer(kind=8) :: j
+        integer(kind=8) :: indik8
     end function indik8
 end interface

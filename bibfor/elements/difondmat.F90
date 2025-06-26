@@ -57,15 +57,15 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
 #include "asterc/r8prem.h"
 #include "asterfort/mgauss.h"
 !
-    integer      :: nbVloc, nbPara, iret
+    integer(kind=8)      :: nbVloc, nbPara, iret
     real(kind=8) :: vpara(nbPara), tirela(6), raidTang(6), vloc(nbVloc), klr(78), errmax, dulMat(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   compteur du nombre d'itération
-    integer :: ii, jj, compt
+    integer(kind=8) :: ii, jj, compt
 !   nombre de critères à vérifier
-    integer :: nbDDL, nbDDLii, nbDDLjj
+    integer(kind=8) :: nbDDL, nbDDLii, nbDDLjj
 !
 !   valeur avec le signe des moments et de l'effort horizontal pour les différents critères
     real(kind=8) :: valH, valMx, valMy, valMxPabs, valMyPabs
@@ -90,7 +90,7 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
 !   fsInverse       : les deltas(finaux)
 !   dfOrdo          : récupération des dérivés des critères uniquement utiles au calcul
     real(kind=8), allocatable :: MatAinverser(:, :), fsInverse(:, :), dfOrdo(:, :)
-    integer, allocatable :: assoddl(:)
+    integer(kind=8), allocatable :: assoddl(:)
     real(kind=8) :: etatCP, etatG
 !   numérotation pour savoir quels critères sont concernés H et H- pour le
 !   transfert à la matrice de raideur

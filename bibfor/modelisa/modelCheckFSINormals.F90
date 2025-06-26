@@ -46,16 +46,16 @@ subroutine modelCheckFSINormals(model)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: mesh
-    integer :: nbCell, modelDime
-    integer :: nbCellFSI, nbCellFluid
-    integer, pointer :: cellFSI(:) => null()
-    integer, pointer :: cellFluid(:) => null()
+    integer(kind=8) :: nbCell, modelDime
+    integer(kind=8) :: nbCellFSI, nbCellFluid
+    integer(kind=8), pointer :: cellFSI(:) => null()
+    integer(kind=8), pointer :: cellFluid(:) => null()
     aster_logical :: lCellSurf, lCellLine
-    integer, pointer :: cellFSINbNode(:) => null()
-    integer, pointer :: cellFSINodeIndx(:) => null()
-    integer, pointer :: cellFSISupport(:) => null()
+    integer(kind=8), pointer :: cellFSINbNode(:) => null()
+    integer(kind=8), pointer :: cellFSINodeIndx(:) => null()
+    integer(kind=8), pointer :: cellFSISupport(:) => null()
     aster_logical :: lMisoriented
 !
 ! --------------------------------------------------------------------------------------------------

@@ -30,7 +30,7 @@ subroutine hujpic(kk, k, tin, vin, mater, &
 !  OUT
 !      PC     :  PRESSION ISOTROPE CYCLIQUE
 !  -----------------------------------------------------------
-    integer :: ndt, ndi, i, k, kk, nmod
+    integer(kind=8) :: ndt, ndi, i, k, kk, nmod
     parameter(nmod=15)
 !
     real(kind=8) :: vin(*), d, x4

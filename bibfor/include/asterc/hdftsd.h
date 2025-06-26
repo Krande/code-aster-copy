@@ -22,8 +22,8 @@ interface
     function hdftsd(i, knom1, j, k)
         hid_t :: i
         character(len=*) :: knom1
-        integer :: j
-        integer :: k
-        integer :: hdftsd
+        integer(kind=8) :: j
+        integer(kind=8) :: k
+        integer(kind=8) :: hdftsd
     end function hdftsd
 end interface

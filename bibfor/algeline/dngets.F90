@@ -118,8 +118,8 @@ subroutine dngets(ishift, which, kev, np, ritzr, &
 #include "asterfort/dsortc.h"
 #include "asterfort/dvout.h"
 #include "asterfort/ivout.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -129,7 +129,7 @@ subroutine dngets(ishift, which, kev, np, ritzr, &
 !     %------------------%
 !
     character(len=2) :: which
-    integer :: ishift, kev, np
+    integer(kind=8) :: ishift, kev, np
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
@@ -149,7 +149,7 @@ subroutine dngets(ishift, which, kev, np, ritzr, &
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    integer :: msglvl
+    integer(kind=8) :: msglvl
 !
 !     %-----------------------%
 !     | EXECUTABLE STATEMENTS |

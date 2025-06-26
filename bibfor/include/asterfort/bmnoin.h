@@ -20,12 +20,12 @@
 interface
     subroutine bmnoin(basmdz, intfz, nmintz, numint, nbnoi,&
                       numnoe, nbdif)
-        integer :: nbnoi
+        integer(kind=8) :: nbnoi
         character(len=*) :: basmdz
         character(len=*) :: intfz
         character(len=*) :: nmintz
-        integer :: numint
-        integer :: numnoe(nbnoi)
-        integer :: nbdif
+        integer(kind=8) :: numint
+        integer(kind=8) :: numnoe(nbnoi)
+        integer(kind=8) :: nbdif
     end subroutine bmnoin
 end interface

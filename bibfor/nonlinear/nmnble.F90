@@ -39,14 +39,14 @@ subroutine nmnble(mesh, model, list_func_acti, sddisc, nume_inst, &
 #include "asterfort/infdbg.h"
 #include "asterfort/nonlinInitDisp.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model, nume_dof
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddyna, sddisc, sdnume
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -70,7 +70,7 @@ subroutine nmnble(mesh, model, list_func_acti, sddisc, nume_inst, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_all_verif, l_cont_elem, l_dyna
     character(len=19) :: vite_curr, acce_curr
     character(len=19) :: vite_init, acce_init

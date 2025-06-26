@@ -60,7 +60,7 @@ subroutine memam2(option, modele, mate, mateco, &
     character(len=19) :: chvarc
     character(len=24) :: ligrmo, lchin(18), lchout(1), compor
     character(len=24) :: chgeom, chcara(18), chharm, vecelz
-    integer :: icode, iret, nh
+    integer(kind=8) :: icode, iret, nh
     character(len=24), pointer :: rerr(:) => null()
 !-----------------------------------------------------------------------
     data chvarc/'&&MEMAM2.VARC'/

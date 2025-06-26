@@ -90,29 +90,29 @@ subroutine irchme(ifichi, chanom, partie, nochmd, noresu, &
     character(len=19) :: chanom, ligrel
     character(len=24) :: nocelk
     character(len=*) :: nomcmp(*), partie
-    integer, intent(in) :: paraListNb
+    integer(kind=8), intent(in) :: paraListNb
     character(len=8), pointer :: lgrf(:) => null()
     character(len=16), pointer :: paraListName(:)
-    integer :: numord, nbrcmp, ifichi, iret
-    integer :: nbnoec, nbmaec, icelk
-    integer :: linoec(*), limaec(*)
+    integer(kind=8) :: numord, nbrcmp, ifichi, iret
+    integer(kind=8) :: nbnoec, nbmaec, icelk
+    integer(kind=8) :: linoec(*), limaec(*)
 !
     aster_logical :: lvarie, lfichUniq
 !
-    integer, intent(inout) :: nbCmpDyna
-    integer :: codret
+    integer(kind=8), intent(inout) :: nbCmpDyna
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: ednono
+    integer(kind=8) :: ednono
     parameter(ednono=-1)
-    integer :: ednopt
+    integer(kind=8) :: ednopt
     parameter(ednopt=-1)
 !
-    integer :: ifm, nivinf, numpt, iaux, nbgrel, jmaille, j1, n1
-    integer :: nbma, igr, iel, ite, ima, codret_vari
+    integer(kind=8) :: ifm, nivinf, numpt, iaux, nbgrel, jmaille, j1, n1
+    integer(kind=8) :: nbma, igr, iel, ite, ima, codret_vari
 !
     character(len=8) :: saux08, modele, fauxmodele, ma
     character(len=64) :: nochmd

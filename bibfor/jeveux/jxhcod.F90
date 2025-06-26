@@ -20,9 +20,9 @@ function jxhcod(chain, lrep)
 ! aslint: disable=C1002,W0405
     implicit none
 #include "asterc/strmov.h"
-    integer :: jxhcod, lrep
+    integer(kind=8) :: jxhcod, lrep
     character(len=*) :: chain
-    integer :: i1, j(4)
+    integer(kind=8) :: i1, j(4)
     integer(kind=4) :: i(8)
     equivalence(i(1), j(1))
 !
@@ -31,7 +31,7 @@ function jxhcod(chain, lrep)
 !   CHAINE PASSEE EN ARGUMENT (32 CARACTERES MAXIMUM)
 !
 !-----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
 !-----------------------------------------------------------------------
     call strmov(chain, 1, 32, j, 1)
     do k = 2, 8

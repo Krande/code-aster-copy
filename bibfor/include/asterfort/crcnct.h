@@ -21,7 +21,7 @@
 interface
     subroutine crcnct(base, nomch, mailla, gd, nbcmp,&
                       licmp, rcmp)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=*) :: base
         character(len=*) :: nomch
         character(len=*) :: mailla

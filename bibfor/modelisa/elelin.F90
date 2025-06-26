@@ -21,7 +21,7 @@ subroutine elelin(nconta, elref1, elref2, nnop, nnops)
 !
 #include "asterfort/elrfno.h"
     character(len=8) :: elref1, elref2
-    integer :: nnop, nnops, nconta
+    integer(kind=8) :: nnop, nnops, nconta
 !
 !                      RETOURNE LE TYPE DE L'ELEMENT "LINEARISE"
 !                      ET LE NOMBRE DE NOEUDS DE CHAQUE ELEMENT

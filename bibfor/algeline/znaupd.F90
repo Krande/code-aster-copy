@@ -422,11 +422,11 @@ subroutine znaupd(ido, bmat, n, which, nev, &
 #include "asterfort/utmess.h"
 #include "asterfort/znaup2.h"
 #include "asterfort/zvout.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+   integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    integer :: nopx, nbx, nrorth, nitref, nrstrt
+    integer(kind=8) :: nopx, nbx, nrorth, nitref, nrstrt
     common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
@@ -437,14 +437,14 @@ subroutine znaupd(ido, bmat, n, which, nev, &
 !
     character(len=1) :: bmat
     character(len=2) :: which
-    integer :: ido, info, ldv, lworkl, n, ncv, nev, neqact
+    integer(kind=8) :: ido, info, ldv, lworkl, n, ncv, nev, neqact
     real(kind=8) :: tol, alpha
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: iparam(11), ipntr(14), vali(6)
+    integer(kind=8) :: iparam(11), ipntr(14), vali(6)
     complex(kind=8) :: resid(n), v(ldv, ncv), workd(3*n), workl(lworkl)
     real(kind=8) :: rwork(ncv)
 !
@@ -459,8 +459,8 @@ subroutine znaupd(ido, bmat, n, which, nev, &
 !     | LOCAL SCALARS |
 !     %---------------%
 !
-    integer :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq, mode, msglvl, mxiter, nb, nev0, next
-    integer :: np, ritz, j
+ integer(kind=8) :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq, mode, msglvl, mxiter, nb, nev0, next
+    integer(kind=8) :: np, ritz, j
     save bounds, ih, iq, ishift, iw,&
      &           ldh, ldq, mode, msglvl, mxiter, nb,&
      &           nev0, next, np, ritz

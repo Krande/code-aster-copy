@@ -19,7 +19,7 @@
 interface
     subroutine mmmtex(ndexfr, ndim  , nnl   , nne   , nnm   , nbcps,&
                       matrff, matrfe, matrfm, matref, matrmf)
-        integer, intent(in) :: ndexfr, ndim, nne, nnl, nnm, nbcps
+        integer(kind=8), intent(in) :: ndexfr, ndim, nne, nnl, nnm, nbcps
         real(kind=8), intent(inout) :: matrff(18, 18), matref(27, 18), matrfe(18, 27)
         real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
     end subroutine mmmtex

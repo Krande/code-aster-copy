@@ -61,7 +61,7 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham, &
 !
     character(len=8) :: basemo, nommes
     character(len=24) :: vnoeud, vrange, vcham, vorien
-    integer :: nbmesu, nbmtot, nnoema, ncmpma
+    integer(kind=8) :: nbmesu, nbmtot, nnoema, ncmpma
 !
     character(len=1) :: typval
     character(len=8) :: nomres, k8bid, scal, compms, comcap
@@ -70,12 +70,12 @@ subroutine mpmod3(basemo, nommes, nbmesu, nbmtot, vcham, &
     character(len=19) :: chamno, ch1s, ch2s, chs, chames, chacap
     character(len=24) :: vref
 !
-    integer :: lord, lori, lrange, lref
-    integer :: imesu, ii, imode, iret, nbord, tmod(1)
-    integer :: icmp, ino, inomes, inocap
-    integer :: lnoeud, gd, nbnoeu, nbcmp
-    integer :: jcnsd, jcnsc, jcnsv, jcnsl
-    integer :: ibid, indice, nbcham, lch, ich, lcham
+    integer(kind=8) :: lord, lori, lrange, lref
+    integer(kind=8) :: imesu, ii, imode, iret, nbord, tmod(1)
+    integer(kind=8) :: icmp, ino, inomes, inocap
+    integer(kind=8) :: lnoeud, gd, nbnoeu, nbcmp
+    integer(kind=8) :: jcnsd, jcnsc, jcnsv, jcnsl
+    integer(kind=8) :: ibid, indice, nbcham, lch, ich, lcham
 !
     aster_logical :: zcmplx, orien, dcapt
 !

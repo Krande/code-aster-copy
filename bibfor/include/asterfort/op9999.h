@@ -20,6 +20,6 @@
 !
 interface
     subroutine op9999( options )
-        integer, intent(in) :: options
+        integer(kind=8), intent(in) :: options
     end subroutine op9999
 end interface

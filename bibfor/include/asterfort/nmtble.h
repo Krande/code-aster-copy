@@ -23,16 +23,16 @@ interface
                       hval_algo, ds_algorom)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        integer, intent(inout) :: loop_exte
+        integer(kind=8), intent(inout) :: loop_exte
         character(len=24), intent(in) :: model
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(in) :: sderro
         type(NL_DS_Conv), intent(in) :: ds_conv
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom

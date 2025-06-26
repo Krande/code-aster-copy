@@ -22,17 +22,17 @@ interface
     subroutine srimat(mod, imat, nmat, tempd, tempf, tref, materd, materf,&
                       matcst, ndt, ndi, nvi, nr)
         character(len=8) :: mod
-        integer :: imat
-        integer :: nmat
+        integer(kind=8) :: imat
+        integer(kind=8) :: nmat
         real(kind=8) :: tempd
         real(kind=8) :: tempf
         real(kind=8) :: tref
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         character(len=3) :: matcst
-        integer :: ndt
-        integer :: ndi
-        integer :: nvi
-        integer :: nr
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
     end subroutine srimat
 end interface

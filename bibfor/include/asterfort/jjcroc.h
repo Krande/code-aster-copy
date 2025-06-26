@@ -21,6 +21,6 @@
 interface
     subroutine jjcroc(knat, icre)
         character(len=8) :: knat
-        integer :: icre
+        integer(kind=8) :: icre
     end subroutine jjcroc
 end interface

@@ -34,7 +34,7 @@ subroutine mmfield_prep(field_in, field_out, &
     character(len=*), intent(in) :: field_out
     aster_logical, optional, intent(in) :: l_update_
     aster_logical, optional, intent(in) :: l_sort_
-    integer, optional, intent(in) :: nb_cmp_
+    integer(kind=8), optional, intent(in) :: nb_cmp_
     character(len=8), optional, intent(in):: list_cmp_(*)
     character(len=*), optional, intent(in) :: field_update_
     real(kind=8), optional, intent(in) :: alpha_
@@ -67,7 +67,7 @@ subroutine mmfield_prep(field_in, field_out, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp
+    integer(kind=8) :: nb_cmp
     aster_logical :: l_sort, l_update
     real(kind=8) :: alpha
     character(len=19) :: field_simple, field_update

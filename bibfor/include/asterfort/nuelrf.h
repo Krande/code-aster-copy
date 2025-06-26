@@ -19,6 +19,6 @@
 interface
     subroutine nuelrf(elrefe, nujni)
         character(len=8), intent(in) :: elrefe
-        integer, intent(out) :: nujni
+        integer(kind=8), intent(out) :: nujni
     end subroutine nuelrf
 end interface

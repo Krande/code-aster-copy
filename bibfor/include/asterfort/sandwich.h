@@ -35,25 +35,25 @@ interface
     real(kind=8) :: thiter
     real(kind=8) :: epiter
     real(kind=8) :: aphiter
-    integer :: cond109
-    integer :: ferrcomp
-    integer :: ferrsyme
+    integer(kind=8) :: cond109
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: epucisa
-    integer :: ferrmin
+    integer(kind=8) :: epucisa
+    integer(kind=8) :: ferrmin
     real(kind=8) :: rholmin
     real(kind=8) :: rhotmin
-    integer :: compress
+    integer(kind=8) :: compress
     real(kind=8) :: alphacc
     real(kind=8) :: eys
-    integer :: typdiag
-    integer :: clacier
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: typdiag
+    integer(kind=8) :: clacier
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: ht
     real(kind=8) :: effrts(8)
     real(kind=8) :: dnsits(6)
-    integer :: ierrl
-    integer :: ierrt
+    integer(kind=8) :: ierrl
+    integer(kind=8) :: ierrt
     end subroutine sandwich
 end interface

@@ -23,9 +23,9 @@ interface
                       repkz)
         character(len=*) :: mdgenz
         character(len=*) :: nmsstz
-        integer :: nusst
+        integer(kind=8) :: nusst
         character(len=*) :: questi
-        integer :: repi
+        integer(kind=8) :: repi
         character(len=*) :: repkz
     end subroutine mgutdm
 end interface

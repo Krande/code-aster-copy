@@ -23,23 +23,23 @@ interface
                       nterm1, nsomm1, csomm1, tyma, nbno2,&
                       connx, mxnbn2, mxnbpi, mxnbte, mxnbse,&
                       nbsel, corsel, iret)
-        integer :: mxnbse
-        integer :: mxnbte
-        integer :: mxnbpi
-        integer :: mxnbn2
+        integer(kind=8) :: mxnbse
+        integer(kind=8) :: mxnbte
+        integer(kind=8) :: mxnbpi
+        integer(kind=8) :: mxnbn2
         character(len=16) :: nomte
         character(len=8) :: elrefa
         character(len=8) :: fapg
-        integer :: npg
-        integer :: npoini
-        integer :: nterm1(mxnbpi)
-        integer :: nsomm1(mxnbpi, mxnbte)
+        integer(kind=8) :: npg
+        integer(kind=8) :: npoini
+        integer(kind=8) :: nterm1(mxnbpi)
+        integer(kind=8) :: nsomm1(mxnbpi, mxnbte)
         real(kind=8) :: csomm1(mxnbpi, mxnbte)
-        integer :: tyma(mxnbse)
-        integer :: nbno2(mxnbse)
-        integer :: connx(mxnbn2, mxnbse)
-        integer :: nbsel
-        integer :: corsel(mxnbse)
-        integer :: iret
+        integer(kind=8) :: tyma(mxnbse)
+        integer(kind=8) :: nbno2(mxnbse)
+        integer(kind=8) :: connx(mxnbn2, mxnbse)
+        integer(kind=8) :: nbsel
+        integer(kind=8) :: corsel(mxnbse)
+        integer(kind=8) :: iret
     end subroutine eclaty
 end interface

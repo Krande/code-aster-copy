@@ -21,7 +21,7 @@
 interface
     subroutine dfbdb(dim, b, e, deuxmu, lambda,&
                      ecrob, dsidep)
-        integer :: dim
+        integer(kind=8) :: dim
         real(kind=8) :: b(6)
         real(kind=8) :: e(6)
         real(kind=8) :: deuxmu

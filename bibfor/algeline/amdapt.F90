@@ -81,13 +81,13 @@ subroutine amdapt(neq, nbnd, nbsn, pe, nv, &
 !
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: neq, invp(neq), pe(neq+1), nv(neq)
-    integer :: nbnd, nbsn, lgind, fctnzs
+    integer(kind=8) :: neq, invp(neq), pe(neq+1), nv(neq)
+    integer(kind=8) :: nbnd, nbsn, lgind, fctnzs
     real(kind=8) :: fctops
-    integer :: parent(*), supnd(neq), adress(*)
+    integer(kind=8) :: parent(*), supnd(neq), adress(*)
 !
-    integer :: llist(neq), nnv(neq), ifm, niv
-    integer :: i, j, k, ncol, nlig, deb, fin, snj, ndi
+    integer(kind=8) :: llist(neq), nnv(neq), ifm, niv
+    integer(kind=8) :: i, j, k, ncol, nlig, deb, fin, snj, ndi
 !
 !     NNV EQUIVAUDRA A NV DANS LA NOUVELLE NUMEROTATION
 !     PARENT SERA  LE PARENT PAR INCONNUE ET NON PAR SUPERNOEUD

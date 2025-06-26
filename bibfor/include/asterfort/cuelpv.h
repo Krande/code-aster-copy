@@ -22,9 +22,9 @@
 !
 interface
     subroutine cuelpv(numlia, resocu, nbliai, lelpiv)
-        integer :: numlia
+        integer(kind=8) :: numlia
         character(len=24) :: resocu
-        integer :: nbliai
+        integer(kind=8) :: nbliai
         aster_logical :: lelpiv
     end subroutine cuelpv
 end interface

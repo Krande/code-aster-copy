@@ -22,7 +22,7 @@ interface
     subroutine search_opt_coef(coef, indi, pres_cont, dist_cont,&
                                       coef_opt , terminate)
         real(kind=8), intent(in) :: coef(2)
-        integer  :: indi(2)
+        integer(kind=8)  :: indi(2)
         real(kind=8), intent(inout) :: pres_cont(2)
         real(kind=8), intent(inout) :: dist_cont(2)
         real(kind=8), intent(out) :: coef_opt

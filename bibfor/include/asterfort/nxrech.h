@@ -31,7 +31,7 @@ interface
         character(len=24), intent(in) :: timeMap
         character(len=19), intent(in) :: varc_curr
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        integer :: lonch
+        integer(kind=8) :: lonch
         character(len=24) :: comporTher
         character(len=24) :: vtempp
         character(len=24) :: vtempr
@@ -44,7 +44,7 @@ interface
         character(len=24) :: cnvabt
         character(len=24) :: cnresi
         real(kind=8) :: rho
-        integer :: iterho
+        integer(kind=8) :: iterho
         aster_logical, intent(in) :: l_stat
     end subroutine nxrech
 end interface

@@ -23,9 +23,9 @@ interface
         character(len=*),   intent(in)   :: nmparz
         character(len=8),   intent(in)   :: listepara(:)
         real(kind=8),       intent(out)  :: valepara(:)
-        integer,            intent(out)  :: iret
-        integer, optional,  intent(out)  :: retpara_(:)
-        integer, optional,  intent(in)   :: nbpara_
-        integer, optional,  intent(out)  :: itab_
+        integer(kind=8),            intent(out)  :: iret
+        integer(kind=8), optional,  intent(out)  :: retpara_(:)
+        integer(kind=8), optional,  intent(in)   :: nbpara_
+        integer(kind=8), optional,  intent(out)  :: itab_
     end subroutine get_value_mode_local
 end interface

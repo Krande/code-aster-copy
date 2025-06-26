@@ -22,7 +22,7 @@
 !
 interface
     function cgverho(imate)
-        integer :: imate
+        integer(kind=8) :: imate
         aster_logical :: cgverho
     end function cgverho
 end interface

@@ -20,7 +20,7 @@ subroutine fgordo(nbextr, ext, ord)
     implicit none
 #include "jeveux.h"
     real(kind=8) :: ext(*), ord(*)
-    integer :: nbextr
+    integer(kind=8) :: nbextr
 !     RANGE LES EXTREMAS PAR AMPLITUDE DECROISSANTE
 !     -----------------------------------------------------------------
 ! IN  NBEXTR : I   : NOMBRE  D'EXTREMUM DE LA FONCTION
@@ -29,7 +29,7 @@ subroutine fgordo(nbextr, ext, ord)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     if (ext(1) .lt. ext(2)) then
         ord(1) = ext(1)

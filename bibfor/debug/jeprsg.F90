@@ -24,7 +24,7 @@ subroutine jeprsg(cunit, tgr, info)
 #include "asterfort/iunifi.h"
     character(len=*) :: cunit
     real(kind=8) :: tgr
-    integer :: info
+    integer(kind=8) :: info
 ! ----------------------------------------------------------------------
 ! IMPRIME UNE IMAGE OU LA LISTE DES ESPACES DISPONIBLES EN MEMOIRE
 !
@@ -34,23 +34,23 @@ subroutine jeprsg(cunit, tgr, info)
 !             =2 IMPRESSION DE LA LISTE
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: idinit, idxaxd, itrech, itiad, itcol, lmots, idfr
+    integer(kind=8) :: idinit, idxaxd, itrech, itiad, itcol, lmots, idfr
     common/ixadje/idinit(2), idxaxd(2), itrech, itiad, itcol, lmots, idfr
 ! ----------------------------------------------------------------------
     aster_logical :: lamov
     character(len=132) :: chaine, init, ente, diese
-    integer :: k, id, ida, nbc, is, nn, nc
+    integer(kind=8) :: k, id, ida, nbc, is, nn, nc
 ! DEB ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iz, julist, maplac, nc0
+    integer(kind=8) :: iz, julist, maplac, nc0
 !-----------------------------------------------------------------------
     julist = iunifi(cunit)
     if (julist .eq. 0) goto 90

@@ -20,10 +20,10 @@
 !
 interface
     subroutine somloc(m, adco, nbso, nusglo, nusloc)
-        integer :: m
-        integer :: adco
-        integer :: nbso
-        integer :: nusglo
-        integer :: nusloc
+        integer(kind=8) :: m
+        integer(kind=8) :: adco
+        integer(kind=8) :: nbso
+        integer(kind=8) :: nusglo
+        integer(kind=8) :: nusloc
     end subroutine somloc
 end interface

@@ -24,14 +24,14 @@ subroutine dffno(elrefe, ndim, nno, nnos, dff)
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfdf.h"
     character(len=*) :: elrefe
-    integer :: ndim, nno, nnos
+    integer(kind=8) :: ndim, nno, nnos
     real(kind=8) :: dff(*)
 ! BUT:   CALCUL DES DERIVEES DES FONCTIONS DE FORMES
 !        AUX NOEUDS D'UN ELREFE
 !
 
     real(kind=8) :: x(3, MT_NNOMAX), tab(3, MT_NNOMAX)
-    integer :: ino, ideri, ifonc
+    integer(kind=8) :: ino, ideri, ifonc
 ! ----------------------------------------------------------------------
 
     call elrfno(elrefe, nno, nnos, ndim, x)

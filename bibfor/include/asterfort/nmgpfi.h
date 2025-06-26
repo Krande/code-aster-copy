@@ -23,7 +23,7 @@ interface
                       angmas, instm, instp, dispPrev, dispIncr,&
                       sigmPrev, vim, sigmCurr, vip, fint,&
                       matr, codret)
-        integer :: ndim, nno, npg, imate, lgpg
+        integer(kind=8) :: ndim, nno, npg, imate, lgpg
         character(len=8) :: typmod(*)
         character(len=*) :: fami
         character(len=16) :: option, compor(*)
@@ -33,6 +33,6 @@ interface
         real(kind=8) :: dispPrev(*), dispIncr(*), sigmPrev(2*ndim, npg)
         real(kind=8) :: vim(lgpg, npg), sigmCurr(2*ndim, npg), vip(lgpg, npg)
         real(kind=8) :: matr(*), fint(*)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine nmgpfi
 end interface

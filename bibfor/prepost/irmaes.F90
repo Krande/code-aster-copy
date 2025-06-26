@@ -42,8 +42,8 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi, &
 !
     character(len=8)  :: nomaas, nomtyp(*), sdcarm, carael
     character(len=64) :: nomamd
-    integer :: nbimpr, caimpi(10, nbimpr), modnum(MT_NTYMAX)
-    integer :: nnotyp(*), nuanom(MT_NTYMAX, *), nvtyge
+    integer(kind=8) :: nbimpr, caimpi(10, nbimpr), modnum(MT_NTYMAX)
+    integer(kind=8) :: nnotyp(*), nuanom(MT_NTYMAX, *), nvtyge
     med_idt :: idfimd
 !
 ! --------------------------------------------------------------------------------------------------
@@ -69,22 +69,22 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad, iadzr, iadep, iadex, iadr1
-    integer :: ima, nbsect, nbcouc, nbsp, nummai, nbmail, jpoin, ibid
-    integer :: jcnxma(MT_NTYMAX), jepama(MT_NTYMAX), joripmf(MT_NTYMAX)
-    integer :: jr1eptu(MT_NTYMAX), jorituy(MT_NTYMAX), nmatyp(MT_NTYMAX)
-    integer :: j_pmf_cesl, j_pmf_cesd, j_cg_cesl, j_cg_cesd
-    integer :: j_tu_cesl, j_tu_cesd, j_tu_or_cesl, j_tu_or_cesd
-    integer :: icmp_cq_ep, icmp_cq_ex, icmp_gr_se, icmp_gr_ex, icmp_pf_g1
-    integer :: icmp_tu_r1, icmp_tu_ep, icmp_tu_g1, icmp_tu_g2, icmp_tu_g3, icmp_tu_g4
-    integer :: nbgamm
-    integer, parameter :: edfuin = 0, edelst = 5, ednoda = 0
+    integer(kind=8) :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad, iadzr, iadep, iadex, iadr1
+    integer(kind=8) :: ima, nbsect, nbcouc, nbsp, nummai, nbmail, jpoin, ibid
+    integer(kind=8) :: jcnxma(MT_NTYMAX), jepama(MT_NTYMAX), joripmf(MT_NTYMAX)
+    integer(kind=8) :: jr1eptu(MT_NTYMAX), jorituy(MT_NTYMAX), nmatyp(MT_NTYMAX)
+    integer(kind=8) :: j_pmf_cesl, j_pmf_cesd, j_cg_cesl, j_cg_cesd
+    integer(kind=8) :: j_tu_cesl, j_tu_cesd, j_tu_or_cesl, j_tu_or_cesd
+    integer(kind=8) :: icmp_cq_ep, icmp_cq_ex, icmp_gr_se, icmp_gr_ex, icmp_pf_g1
+    integer(kind=8) :: icmp_tu_r1, icmp_tu_ep, icmp_tu_g1, icmp_tu_g2, icmp_tu_g3, icmp_tu_g4
+    integer(kind=8) :: nbgamm
+    integer(kind=8), parameter :: edfuin = 0, edelst = 5, ednoda = 0
     character(len=3) :: saux03
     character(len=8) :: saux08, nomo
     character(len=64), parameter :: atepai = 'SCALE', atangv = 'ANGLE'
     aster_logical :: exicoq, exituy, exipmf, exigri, okgr, okcq, oktu, okpf
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: cg_cesv(:) => null()
     real(kind=8), pointer :: tu_cesv(:) => null()
     real(kind=8), pointer :: tu_or_cesv(:) => null()

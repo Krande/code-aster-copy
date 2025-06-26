@@ -20,7 +20,7 @@
 !
 interface
     subroutine arlver(modele,lgma  ,nbgma,nomsd,model,cine)
-        integer :: nbgma
+        integer(kind=8) :: nbgma
         character(len=8) :: modele
         character(len=8) :: lgma(*)
         character(len=10) :: nomsd

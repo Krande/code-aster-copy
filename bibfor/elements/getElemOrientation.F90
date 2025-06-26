@@ -27,8 +27,8 @@ subroutine getElemOrientation(ndim, nno, jv_geom, angl_naut)
 #include "asterfort/assert.h"
 #include "asterfort/rcangm.h"
 !
-    integer, intent(in) :: ndim, nno
-    integer, intent(in) :: jv_geom
+    integer(kind=8), intent(in) :: ndim, nno
+    integer(kind=8), intent(in) :: jv_geom
     real(kind=8), intent(out) :: angl_naut(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine getElemOrientation(ndim, nno, jv_geom, angl_naut)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: coor(3)
-    integer :: i_node, i_dim
+    integer(kind=8) :: i_node, i_dim
 !
 ! --------------------------------------------------------------------------------------------------
 !

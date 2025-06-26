@@ -21,6 +21,6 @@
 interface
     subroutine dtmeigen_fsi(sd_dtm_, buffdtm)
         character(len=*), intent(in)  :: sd_dtm_
-        integer, pointer              :: buffdtm(:)
+        integer(kind=8), pointer              :: buffdtm(:)
     end subroutine dtmeigen_fsi
 end interface

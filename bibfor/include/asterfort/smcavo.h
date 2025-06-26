@@ -19,8 +19,8 @@
 interface
     subroutine smcavo(x, nb_hist, trc, ind)
         real(kind=8), intent(in) :: x(5)
-        integer, intent(in) :: nb_hist
+        integer(kind=8), intent(in) :: nb_hist
         real(kind=8), intent(in) :: trc((3*nb_hist), 5)
-        integer, intent(out) :: ind(6)
+        integer(kind=8), intent(out) :: ind(6)
     end subroutine smcavo
 end interface

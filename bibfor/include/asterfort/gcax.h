@@ -21,8 +21,8 @@
 interface
     subroutine gcax(m, in, ip, ac, x,&
                     y)
-        integer :: m
-        integer :: in(m)
+        integer(kind=8) :: m
+        integer(kind=8) :: in(m)
         integer(kind=4) :: ip(*)
         real(kind=8) :: ac(*)
         real(kind=8) :: x(m)

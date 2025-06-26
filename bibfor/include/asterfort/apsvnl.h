@@ -22,7 +22,7 @@ interface
     subroutine apsvnl(sdcont_defi, sdappa, model_ndim, nt_node)
         character(len=24), intent(in) :: sdcont_defi
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: model_ndim 
-        integer, intent(in) :: nt_node
+        integer(kind=8), intent(in) :: model_ndim 
+        integer(kind=8), intent(in) :: nt_node
     end subroutine apsvnl
 end interface

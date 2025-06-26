@@ -43,10 +43,10 @@ subroutine xsifle(ndim, ifa, jptint, cface, igeom, &
 !
     character(len=8) :: nompar(4)
     character(len=16) :: option
-    integer :: ndim, ifa, cface(30, 6), igeom, nfh, singu, jlst, ipres
-    integer :: nfe, ddlc, ipref, itemps, nnop, ithet, jptint, igthet, idepl
-    integer :: ddlm, jbasec, contac, jheavn
-    integer :: jstno, jlsn
+    integer(kind=8) :: ndim, ifa, cface(30, 6), igeom, nfh, singu, jlst, ipres
+    integer(kind=8) :: nfe, ddlc, ipref, itemps, nnop, ithet, jptint, igthet, idepl
+    integer(kind=8) :: ddlm, jbasec, contac, jheavn
+    integer(kind=8) :: jstno, jlsn
     real(kind=8) :: valres(3)
     real(kind=8) :: basloc(9*nnop)
 !
@@ -84,16 +84,16 @@ subroutine xsifle(ndim, ifa, jptint, cface, igeom, &
 ! IN CONTAC : TYPE DE CONTACT P1P1 ou P2P1
 !
 !
-    integer :: nnof, npgf, ipoidf, ivff, idfdef
-    integer :: ipgf, zxain, heavn(nnop, 5)
-    integer :: ddld, ddls, ncompn, ino, ig, iret, jtab(7)
+    integer(kind=8) :: nnof, npgf, ipoidf, ivff, idfdef
+    integer(kind=8) :: ipgf, zxain, heavn(nnop, 5)
+    integer(kind=8) :: ddld, ddls, ncompn, ino, ig, iret, jtab(7)
     real(kind=8) :: xg(3), jac, ff(27), nd(3)
     real(kind=8) :: angl(2)
     real(kind=8) :: e, nu, mu, ka, coeff, coeff3, r27bid(27)
     real(kind=8) :: dfdi(nnop, ndim)
     real(kind=8) :: he(2)
 !
-    integer :: nnos, nno
+    integer(kind=8) :: nnos, nno
     character(len=8) :: elref, fpg, elc, elrefc
     real(kind=8) :: tau1(3), tau2(3)
     data he/-1.d0, 1.d0/

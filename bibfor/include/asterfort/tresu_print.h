@@ -30,14 +30,14 @@ interface
         character(len=16), intent(in) :: refer
         character(len=16), intent(in) :: legend
         aster_logical, intent(in) :: llab
-        integer, intent(in) :: nbref
+        integer(kind=8), intent(in) :: nbref
         character(len=*), intent(in) :: rela
         real(kind=8), intent(in) :: tole
         character(len=*), intent(in), optional :: ssigne
         real(kind=8), intent(in), optional :: refr(nbref)
         real(kind=8), intent(in), optional :: valr
-        integer, intent(in), optional :: refi(nbref)
-        integer, intent(in), optional :: vali
+        integer(kind=8), intent(in), optional :: refi(nbref)
+        integer(kind=8), intent(in), optional :: vali
         complex(kind=8), intent(in), optional :: refc(nbref)
         complex(kind=8), intent(in), optional :: valc
         aster_logical, intent(in), optional :: ignore

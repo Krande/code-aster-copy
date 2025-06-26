@@ -29,15 +29,15 @@ interface
                       angl_naut, yaenrh, adenhy, nfh)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer :: nbvari
-        integer :: dimcon
-        integer :: dimenr
+        integer(kind=8) :: nbvari
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimenr
         character(len=16) :: option
-        integer :: ndim
-        integer :: addeme
-        integer :: adcome
-        integer :: addep1
-        integer :: adcp11
+        integer(kind=8) :: ndim
+        integer(kind=8) :: addeme
+        integer(kind=8) :: adcome
+        integer(kind=8) :: addep1
+        integer(kind=8) :: adcp11
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: congep(dimcon)
         real(kind=8) :: vintm(nbvari)
@@ -49,11 +49,11 @@ interface
         real(kind=8) :: phi
         real(kind=8) :: rho11
         real(kind=8) :: satur
-        integer :: retcom
+        integer(kind=8) :: retcom
         real(kind=8) :: tbiot(6)
         real(kind=8) :: angl_naut(3)
-        integer :: yaenrh
-        integer :: adenhy
-        integer :: nfh
+        integer(kind=8) :: yaenrh
+        integer(kind=8) :: adenhy
+        integer(kind=8) :: nfh
     end subroutine xhmsat
 end interface 

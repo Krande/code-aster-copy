@@ -22,11 +22,11 @@ interface
     subroutine nmtael(fami, kpg, ksp, imate, ndimsi,&
                       matm, mat, sigm, epsm, deps,&
                       epm, sigdv, sigp)
-        integer :: ndimsi
+        integer(kind=8) :: ndimsi
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
         real(kind=8) :: matm(3)
         real(kind=8) :: mat(3)
         real(kind=8) :: sigm(ndimsi)

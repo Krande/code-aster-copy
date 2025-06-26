@@ -22,6 +22,6 @@ interface
     subroutine nmarnr(result, typtaz, numreu)
         character(len=8) :: result
         character(len=*) :: typtaz
-        integer :: numreu
+        integer(kind=8) :: numreu
     end subroutine nmarnr
 end interface

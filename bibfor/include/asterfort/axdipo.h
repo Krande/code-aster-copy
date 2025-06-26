@@ -23,6 +23,6 @@ interface
         character(len=8) :: noma
         character(len=8) :: caelem
         character(len=8) :: modele
-        integer :: iaxe
+        integer(kind=8) :: iaxe
     end subroutine axdipo
 end interface

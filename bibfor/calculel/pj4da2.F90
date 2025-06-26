@@ -24,7 +24,7 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3, &
 #include "asterfort/pj3da3.h"
 #include "asterfort/pj3da4.h"
     real(kind=8) :: cobary(3), geom1(*), geom2(*), d2, surf
-    integer :: ino2, i, tria3(*)
+    integer(kind=8) :: ino2, i, tria3(*)
 !  but :
 !    determiner la distance d entre le noeud ino2 et le tria3 i.
 !    determiner les coordonnees barycentriques
@@ -40,7 +40,7 @@ subroutine pj4da2(ino2, geom2, i, geom1, tria3, &
 !  out  surf       r  : surface du tria3 i
 !
 ! ----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
     aster_logical :: ok
     real(kind=8) :: dp, l1, l2, l3, la, lb, lc
     real(kind=8) :: a(3), b(3), c(3), m(3), ab(3), ac(3), v(3)

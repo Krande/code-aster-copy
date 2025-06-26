@@ -26,7 +26,7 @@ subroutine cotfac(xyz, n1, n2, n3, n4, &
 !
 ! ARGUMENTS
 ! ---------
-    integer :: n1, n2, n3, n4, iret
+    integer(kind=8) :: n1, n2, n3, n4, iret
     real(kind=8) :: xyz(3, *), xpt(*)
 !
 ! VARIABLES LOCALES

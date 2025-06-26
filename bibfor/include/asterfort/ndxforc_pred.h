@@ -29,7 +29,7 @@ interface
                             hval_measse   , ldccvg)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=24), intent(in) :: model, cara_elem, nume_dof
         character(len=19), intent(in) :: list_load, sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
@@ -38,10 +38,10 @@ interface
         type(NL_DS_System), intent(in) :: ds_system
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sddisc, sdnume
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
         character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
         character(len=19), intent(in) :: hval_measse(*)
-        integer, intent(out) :: ldccvg
+        integer(kind=8), intent(out) :: ldccvg
     end subroutine ndxforc_pred
 end interface

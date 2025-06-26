@@ -21,7 +21,7 @@
 interface
     subroutine csmbmd(nommat, neq, vsmb)
         character(len=*) :: nommat
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: vsmb(*)
     end subroutine csmbmd
 end interface

@@ -42,18 +42,18 @@ module mesh_operators_type
     type MESH_OPER_ORIE_SHELL
         aster_logical :: orieByVect = ASTER_FALSE
         real(kind=8) :: orieVect(3) = 0.d0
-        integer :: nbGroupCell = 0
+        integer(kind=8) :: nbGroupCell = 0
         character(len=24), pointer :: listOfGroupOfCell(:) => null()
-        integer :: nodeNume = 0
+        integer(kind=8) :: nodeNume = 0
     end type MESH_OPER_ORIE_SHELL
 ! --------------------------------------------------------------------------------------------------
 ! For MODI_MAILLAGE/ORIE_* operators
 ! --------------------------------------------------------------------------------------------------
     type MESH_OPER_MODI_PARA
-        integer :: orieShell = 0
+        integer(kind=8) :: orieShell = 0
         type(MESH_OPER_ORIE_SHELL), pointer :: meshOperOrieShell(:) => null()
-        integer :: orieSkin = 0
-        integer :: orieLine = 0
+        integer(kind=8) :: orieSkin = 0
+        integer(kind=8) :: orieLine = 0
     end type MESH_OPER_MODI_PARA
 !===================================================================================================
 !===================================================================================================

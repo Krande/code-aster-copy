@@ -90,7 +90,7 @@ subroutine ecrneu(imod, nbnode, ama, bma, cma, &
 !
 !  --> DECLARATION DES ARGUMENTS
 !
-    integer :: nbnode, min, man, ites
+    integer(kind=8) :: nbnode, min, man, ites
     real(kind=8) :: ama, bma, cma, ami, bmi, cmi
 !
 !  --> DECLARATION DES VARIABLES LOCALES
@@ -101,16 +101,16 @@ subroutine ecrneu(imod, nbnode, ama, bma, cma, &
     character(len=13) :: chlign, chlige
     character(len=80) :: chfone(4)
     real(kind=8) :: x, y, z
-    integer :: nblit, nblie, nblif
-    integer :: node, isc
+    integer(kind=8) :: nblit, nblie, nblif
+    integer(kind=8) :: node, isc
 !
 !  --------- FIN DECLARATION ---------
 !
 !  --> N  D'UNITE LOGIQUE ASSOCIE AU FICHIER
 !-----------------------------------------------------------------------
-    integer :: i, imod
+    integer(kind=8) :: i, imod
     real(kind=8), pointer :: coor(:) => null()
-    integer, pointer :: info(:) => null()
+    integer(kind=8), pointer :: info(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

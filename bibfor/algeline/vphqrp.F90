@@ -25,7 +25,7 @@ subroutine vphqrp(mat, neq, mxeq, icode, w, &
 #include "asterfort/vpzhes.h"
 #include "asterfort/vpzqrh.h"
 #include "asterfort/vpzrbk.h"
-    integer :: neq, mxeq, icode, iz, ier, nitqr
+    integer(kind=8) :: neq, mxeq, icode, iz, ier, nitqr
     real(kind=8) :: mat(mxeq, 1), wk(neq, 1), w(1), z(1)
 !     CALCUL DE TOUTES LES VALEURS PROPRES D'UNE MATRICE COMPLETE REELLE
 !     MISE SOUS FORME DE HESSENBERG PUIS RESOLUTION PAR LA METHODE QR
@@ -57,12 +57,12 @@ subroutine vphqrp(mat, neq, mxeq, icode, w, &
 !        HANDBOOK FOR AUTOMATIC COMPUTATION - LINEAR ALGEBRA - VOL.2
 !        PAGE XXX
 !     ------------------------------------------------------------------
-    integer :: jer, iz2, k, l, i, n2, iiz, npi, jw, j, is, ig, igz
+    integer(kind=8) :: jer, iz2, k, l, i, n2, iiz, npi, jw, j, is, ig, igz
     real(kind=8) :: z11
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: mxiter
+    integer(kind=8) :: mxiter
 !-----------------------------------------------------------------------
     ier = 0
     jer = 0

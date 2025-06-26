@@ -22,9 +22,9 @@ function blimax(n, dx, incx)
 !
 !
     implicit none
-    integer :: blimax
-    integer :: n, dx(1), incx
-    integer :: i, ix, imax, max
+    integer(kind=8) :: blimax
+    integer(kind=8) :: n, dx(1), incx
+    integer(kind=8) :: i, ix, imax, max
 !
     blimax = 0
     if (n .le. 0) goto 999

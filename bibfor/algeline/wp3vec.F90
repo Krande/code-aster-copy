@@ -32,7 +32,7 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq, &
 #include "asterfort/wptest.h"
     character(len=1) :: appr
     character(len=*) :: opt
-    integer :: mxresf, neq, nbfreq, nbvect, lagr(*), resufi(mxresf, *)
+    integer(kind=8) :: mxresf, neq, nbfreq, nbvect, lagr(*), resufi(mxresf, *)
     complex(kind=8) :: vecp(neq, *), shift, vauc(2*neq, *)
     real(kind=8) :: resufr(mxresf, *), vpr(*), vpi(*), omecor
 !     RESTITUTION DES VALEURS PROPRES ET DES MODES DU PB QUADRATIQUE
@@ -64,8 +64,8 @@ subroutine wp3vec(appr, opt, nbfreq, nbvect, neq, &
 !     ------------------------------------------------------------------
     real(kind=8) :: si, mod2, a, b, nmabp, nmabm, am, om, eps, seuilr
     real(kind=8) :: seuilp, c1, auxrj, seuilc, auxij, auxrk, auxik
-    integer :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
-    integer :: vali(5), nbfr, ibid
+    integer(kind=8) :: i, j, k, av1, av2, iadind, nbreel, nbcmpp, nbcmpc, nbfrga
+    integer(kind=8) :: vali(5), nbfr, ibid
     complex(kind=8) :: des, vpq, mhu, vpp, vpm
     aster_logical :: trouve, lconj
     character(len=1) :: kmsg

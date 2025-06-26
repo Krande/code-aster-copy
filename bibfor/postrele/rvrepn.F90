@@ -66,7 +66,7 @@ subroutine rvrepn(mailla, nlsnac, repere, sdnewr)
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer ::  avec1, avec2, nbn, alsnac
+    integer(kind=8) ::  avec1, avec2, nbn, alsnac
     real(kind=8), pointer :: vale(:) => null()
 !
 !====================== CORPS DE LA ROUTINE ===========================

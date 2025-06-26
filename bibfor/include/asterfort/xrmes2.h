@@ -22,15 +22,15 @@ interface
     subroutine xrmes2(ndim, nbnase, cpt, in, ivois,&
                       jsigse, nno, nbcmp, jcnset, dsg11,&
                       dsg22, dsg12)
-        integer :: nbnase
-        integer :: ndim
-        integer :: cpt
-        integer :: in
-        integer :: ivois
-        integer :: jsigse
-        integer :: nno
-        integer :: nbcmp
-        integer :: jcnset
+        integer(kind=8) :: nbnase
+        integer(kind=8) :: ndim
+        integer(kind=8) :: cpt
+        integer(kind=8) :: in
+        integer(kind=8) :: ivois
+        integer(kind=8) :: jsigse
+        integer(kind=8) :: nno
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: jcnset
         real(kind=8) :: dsg11(nbnase)
         real(kind=8) :: dsg22(nbnase)
         real(kind=8) :: dsg12(nbnase)

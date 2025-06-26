@@ -36,11 +36,11 @@ subroutine lkdnds(nmat, materf, i1, devsig, bprimp, &
 !     ------------------------------------------------------------------
 #include "asterfort/lcprte.h"
 #include "asterfort/lkdbds.h"
-    integer :: nmat, nvi, val
+    integer(kind=8) :: nmat, nvi, val
     real(kind=8) :: materf(nmat, 2), dndsig(6, 6), devsig(6), i1
     real(kind=8) :: bprimp, vint(nvi), para(3)
 !
-    integer :: ndt, ndi, i, j
+    integer(kind=8) :: ndt, ndi, i, j
     real(kind=8) :: zero, un
     real(kind=8) :: dsdsig(6, 6), di1dsi(6), sii
     real(kind=8) :: dbetds(6), dbetdi, mident(6, 6)

@@ -33,7 +33,7 @@ subroutine setMFrontPara(prepCrit, iFactorKeyword)
 #include "asterfort/utmess.h"
 !
     type(BehaviourPrep_Crit), pointer :: prepCrit(:)
-    integer, intent(in) :: iFactorKeyword
+    integer(kind=8), intent(in) :: iFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,10 +49,10 @@ subroutine setMFrontPara(prepCrit, iFactorKeyword)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: resi_inte_mfront_rela, valr(2)
-    integer:: extern_type, iveriborne
+    integer(kind=8):: extern_type, iveriborne
     character(len=16) :: extern_addr
     real(kind=8) :: resi_inte
-    integer :: iter_inte_maxi, iter_inte_mfront_maxi, vali(2)
+    integer(kind=8) :: iter_inte_maxi, iter_inte_mfront_maxi, vali(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !

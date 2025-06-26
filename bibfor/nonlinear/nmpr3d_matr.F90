@@ -29,8 +29,8 @@ subroutine nmpr3d_matr(nno, npg, poidsg, vff, dff, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nno
-    integer, intent(in) :: npg
+    integer(kind=8), intent(in) :: nno
+    integer(kind=8), intent(in) :: npg
     real(kind=8), intent(in) :: poidsg(npg)
     real(kind=8), intent(in) :: vff(nno, npg)
     real(kind=8), intent(in) :: dff(2, nno, npg)
@@ -58,7 +58,7 @@ subroutine nmpr3d_matr(nno, npg, poidsg, vff, dff, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kpg, n, i, m, j
+    integer(kind=8) :: kpg, n, i, m, j
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2)
     real(kind=8) :: t1, t2, t3, t, acv(2, 2)
 !

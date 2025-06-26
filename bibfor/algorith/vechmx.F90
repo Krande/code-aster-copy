@@ -36,12 +36,12 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis, &
 #include "asterfort/reajre.h"
 #include "asterfort/codent.h"
 
-    integer :: nbin_maxi, lastin
+    integer(kind=8) :: nbin_maxi, lastin
     character(len=8) :: lpain(nbin_maxi)
     character(len=19) :: lchin(nbin_maxi)
     character(len=19) :: lischa
     character(len=24) :: nomlis
-    integer :: ichar, nbch
+    integer(kind=8) :: ichar, nbch
     character(len=8) :: nomo
     character(len=19) :: vecele
 !
@@ -68,14 +68,14 @@ subroutine vechmx(nomo, lischa, ichar, nbch, nomlis, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbout
+    integer(kind=8) :: nbout
     parameter(nbout=1)
     character(len=8) :: lpaout(nbout)
     character(len=19) :: lchout(nbout)
 !
-    integer :: jlisci, ich, nbin
-    integer :: iret
-    integer :: indxch
+    integer(kind=8) :: jlisci, ich, nbin
+    integer(kind=8) :: iret
+    integer(kind=8) :: indxch
     character(len=16) :: option
     character(len=8) :: parain, paraou, newnom
     character(len=8) :: typech

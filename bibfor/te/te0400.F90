@@ -50,14 +50,14 @@ subroutine te0400(option, nomte)
 !
 !
 !
-    integer :: ninter, nnonsx
+    integer(kind=8) :: ninter, nnonsx
     parameter(ninter=3, nnonsx=540)
 !
-    integer :: ndim, nnop, nno, nse, nnotot
-    integer :: jcnset, jlonch, ivoisx
-    integer :: irese, i
+    integer(kind=8) :: ndim, nnop, nno, nse, nnotot
+    integer(kind=8) :: jcnset, jlonch, ivoisx
+    integer(kind=8) :: irese, i
     character(len=8) :: elrese(6), fami(6), elrefp
-    integer :: vcninx(990)
+    integer(kind=8) :: vcninx(990)
 !
     data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
     data fami/'BID', 'RIGI', 'XINT', 'BID', 'RIGI', 'XINT'/

@@ -28,7 +28,7 @@ subroutine mmnonf(ndim, nno, alias, ksi1, ksi2, ff)
     character(len=8) :: alias
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: ff(9)
-    integer :: nno, ndim
+    integer(kind=8) :: nno, ndim
 !
 ! ----------------------------------------------------------------------
 !

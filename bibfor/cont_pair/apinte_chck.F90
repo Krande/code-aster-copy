@@ -29,10 +29,10 @@ subroutine apinte_chck(proj_tole, elem_dime, &
 #include "asterfort/apdist.h"
 !
     real(kind=8), intent(in) :: proj_tole
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: elem_mast_nbnode
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_mast_nbnode
     real(kind=8), intent(in) :: elem_mast_coor(3, 9)
-    integer, intent(in) :: elem_slav_nbnode
+    integer(kind=8), intent(in) :: elem_slav_nbnode
     real(kind=8), intent(in) :: elem_slav_coor(3, 9)
     character(len=8), intent(in) :: elem_slav_code
     real(kind=8), intent(in) :: proj_coor(elem_dime-1, 4)
@@ -66,9 +66,9 @@ subroutine apinte_chck(proj_tole, elem_dime, &
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: dist, vect_pm(3)
     real(kind=8) :: tevapr, dist_sign, sig
-    integer :: i_node, i_dime
+    integer(kind=8) :: i_node, i_dime
     character(len=8) :: elin_slav_code
-    integer :: elin_slav_nbnode
+    integer(kind=8) :: elin_slav_nbnode
 !
 ! --------------------------------------------------------------------------------------------------
 !

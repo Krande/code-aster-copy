@@ -34,17 +34,17 @@ module HHO_monogen_module
 ! --------------------------------------------------------------------------------------------------
 !
 ! -- Maximum order of function for the moment
-    integer, parameter, private :: max_order = 6
+    integer(kind=8), parameter, private :: max_order = 6
 !
     type HHO_monomials
 ! ----- maximum degree of the monomials
-        integer :: max_order = max_order
+        integer(kind=8) :: max_order = max_order
 ! ----- number of variate of the monomial (X, Y, Z)
-        integer :: ndim = 0
+        integer(kind=8) :: ndim = 0
 ! ----- coefficient of the monomial
-        integer, dimension(3, 84) :: monomials = 0
+        integer(kind=8), dimension(3, 84) :: monomials = 0
 ! ----- degree of the monomial
-        integer, dimension(84)    :: degree_mono = 0
+        integer(kind=8), dimension(84)    :: degree_mono = 0
 ! ----- table with the evaluation of the monomial
         real(kind=8), dimension(3, 0:max_order) :: monoEval = 0.d0
 !
@@ -72,8 +72,8 @@ contains
         implicit none
 !
         class(HHO_monomials), intent(inout) :: this
-        integer, intent(in) :: ndim
-        integer, intent(in) :: order
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: order
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - generic tools
@@ -209,7 +209,7 @@ contains
 !   In  point        : coordinates of the point to evaluate
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i
+        integer(kind=8) :: i
 !
         if (this%ndim >= 1) then
             this%monoEval(1, 0) = 1.d0
@@ -245,7 +245,7 @@ contains
         implicit none
 !
         class(HHO_monomials), intent(in) :: this
-        integer                          :: degree
+        integer(kind=8)                          :: degree
 !
 ! --------------------------------------------------------------------------------------------------
 !

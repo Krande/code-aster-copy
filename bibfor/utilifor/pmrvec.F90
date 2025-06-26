@@ -20,7 +20,7 @@ subroutine pmrvec(cumul, n, m, a, x, &
                   y)
     implicit none
     character(len=*) :: cumul
-    integer :: n, m
+    integer(kind=8) :: n, m
     real(kind=8) :: a(n, m), x(m), y(n)
 !       ----------------------------------------------------------------
 !       PRODUIT D'UNE MATRICE RECTANGLE PLEINE PAR UN VECTEUR
@@ -37,7 +37,7 @@ subroutine pmrvec(cumul, n, m, a, x, &
 !       ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
     if (cumul .eq. 'ZERO') then
         do i = 1, n

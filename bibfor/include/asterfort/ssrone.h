@@ -21,7 +21,7 @@
 interface
     subroutine ssrone(mag, isma, rota)
         character(len=8) :: mag
-        integer :: isma
+        integer(kind=8) :: isma
         character(len=8) :: rota
     end subroutine ssrone
 end interface

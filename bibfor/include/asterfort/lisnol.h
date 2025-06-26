@@ -23,6 +23,6 @@ interface
         character(len=19) :: lischa
         character(len=*) :: genchz
         character(len=24) :: nomlis
-        integer :: nbch
+        integer(kind=8) :: nbch
     end subroutine lisnol
 end interface

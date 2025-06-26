@@ -43,15 +43,15 @@ subroutine w155ma(numa, nucou, nicou, nangl, nufib, &
 #include "asterfort/cesexi.h"
 #include "asterfort/utmess.h"
 !
-    integer :: numa, nucou, nangl, nufib, ksp1, ksp2
-    integer :: jce2l, jce2d, jce2v, iret, jce5l, jce5d, jce5v
+    integer(kind=8) :: numa, nucou, nangl, nufib, ksp1, ksp2
+    integer(kind=8) :: jce2l, jce2d, jce2v, iret, jce5l, jce5d, jce5v
     real(kind=8) :: c1, c2
     character(len=3) :: nicou
     character(len=16) :: motfac
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iposi, nbcou, nbsec, isect, icou, npgh, iad2, nbfib, iad2a
+    integer(kind=8) :: iposi, nbcou, nbsec, isect, icou, npgh, iad2, nbfib, iad2a
     real(kind=8) :: poi(2), omega, pi, angle, dxa
 !
 ! --------------------------------------------------------------------------------------------------

@@ -45,9 +45,9 @@ subroutine mm_cycl_prop(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_poin, i_cont_poin, i_zone, cycl_stat
+    integer(kind=8) :: nb_cont_poin, i_cont_poin, i_zone, cycl_stat
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: v_sdcont_cyceta(:) => null()
+    integer(kind=8), pointer :: v_sdcont_cyceta(:) => null()
     character(len=24) :: sdcont_cychis
     real(kind=8), pointer :: v_sdcont_cychis(:) => null()
     character(len=24) :: sdcont_cyccoe
@@ -57,7 +57,7 @@ subroutine mm_cycl_prop(ds_contact)
     real(kind=8) :: pres_frot(3), dist_frot(3)
     aster_logical :: propa, l_frot_zone
     real(kind=8) :: tole_stick, tole_slide
-    integer :: zone_frot, zone_frot_prop, it
+    integer(kind=8) :: zone_frot, zone_frot_prop, it
 !
 ! --------------------------------------------------------------------------------------------------
 !

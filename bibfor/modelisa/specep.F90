@@ -63,12 +63,12 @@ subroutine specep(casint, nomu, spectr, base, vite, &
 #include "asterfort/char8_to_int.h"
 !
     aster_logical :: casint
-    integer :: imodi, imodf, nbm, nuor(nbm), nbpf, ij, nbval
+    integer(kind=8) :: imodi, imodf, nbm, nuor(nbm), nbpf, ij, nbval
     character(len=8) :: nomu
     character(len=19) :: spectr, base
     real(kind=8) :: vite
 !
-    integer :: ibid, dim, ival(2)
+    integer(kind=8) :: ibid, dim, ival(2)
     real(kind=8) :: module
     real(kind=8) :: coefac(8), coefae(8), coefdc(6), coefde(6)
     aster_logical :: ltable, exiind
@@ -80,12 +80,12 @@ subroutine specep(casint, nomu, spectr, base, vite, &
     character(len=24) :: remf, fsic, chrefe, mlgnma, chnumi
 !
 !-----------------------------------------------------------------------
-    integer :: iaxe, ideb, idec, iex, iex1
-    integer :: iex2, ifsic, iinte, il, im1, im1b, im2
-    integer :: im2b, imail, inat, iremf, iscal, ispin
-    integer :: ispno, ispre, ispte, itypfl, iv, ivale, lwr
-    integer :: nbexcp, nbma, nbmano, nbmr, numno0, lnumi, lnumj, i1, ind
-    integer :: iprol, ire, iim, itab, nbfreq, isre, isim, ier2
+    integer(kind=8) :: iaxe, ideb, idec, iex, iex1
+    integer(kind=8) :: iex2, ifsic, iinte, il, im1, im1b, im2
+    integer(kind=8) :: im2b, imail, inat, iremf, iscal, ispin
+    integer(kind=8) :: ispno, ispre, ispte, itypfl, iv, ivale, lwr
+    integer(kind=8) :: nbexcp, nbma, nbmano, nbmr, numno0, lnumi, lnumj, i1, ind
+    integer(kind=8) :: iprol, ire, iim, itab, nbfreq, isre, isim, ier2
     real(kind=8) :: beta, coedim, coef1, coef2, coefd, difphi, fr
     real(kind=8) :: frc, frref, phi1, phi2, phie
     real(kind=8) :: rhof, s0, scal11, scal12, scal21, scal22

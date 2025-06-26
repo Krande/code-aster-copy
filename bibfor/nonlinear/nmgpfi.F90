@@ -45,7 +45,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 #include "blas/dscal.h"
 #include "asterfort/Behaviour_type.h"
 !
-    integer :: ndim, nno, npg, imate, lgpg
+    integer(kind=8) :: ndim, nno, npg, imate, lgpg
     character(len=8) :: typmod(2)
     character(len=*) :: fami
     character(len=16) :: option, compor(COMPOR_SIZE)
@@ -55,7 +55,7 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
     real(kind=8) :: dispPrev(*), dispIncr(*), sigmPrev(2*ndim, npg)
     real(kind=8) :: vim(lgpg, npg), sigmCurr(2*ndim, npg), vip(lgpg, npg)
     real(kind=8) :: matr(*), fint(*)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,22 +96,22 @@ subroutine nmgpfi(fami, option, typmod, ndim, nno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     aster_logical :: grand, axi
     aster_logical :: lMatr, lSigm
-    integer :: lij(3, 3), ia, ja, na, ib, jb, nb, kpg, kk, os, ija
-    integer :: nddl, ndu, vu(3, 27), ivf, iw, idff
-    integer :: cod(npg)
+    integer(kind=8) :: lij(3, 3), ia, ja, na, ib, jb, nb, kpg, kk, os, ija
+    integer(kind=8) :: nddl, ndu, vu(3, 27), ivf, iw, idff
+    integer(kind=8) :: cod(npg)
     real(kind=8) :: geomPrev(3*27), geomCurr(3*27), r, w, dff(nno, 4)
     real(kind=8) :: jacoPrev, jacoIncr, jacoCurr, fPrev(3, 3), fIncr(3, 3), coef
     real(kind=8) :: sigmPrevComp(6), tauCurr(6), dsidep(6, 3, 3)
     real(kind=8) :: rbid, tbid(6), t1, t2
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     type(Behaviour_Integ) :: BEHinteg
-    integer, parameter :: vij(3, 3) = reshape((/1, 4, 5, 4, 2, 6, 5, 6, 3/), (/3, 3/))
+    integer(kind=8), parameter :: vij(3, 3) = reshape((/1, 4, 5, 4, 2, 6, 5, 6, 3/), (/3, 3/))
     aster_logical :: resi
     blas_int :: b_incx, b_incy, b_n
-    integer, parameter :: ndimBizarre = 3
+    integer(kind=8), parameter :: ndimBizarre = 3
 !
 ! --------------------------------------------------------------------------------------------------
 !

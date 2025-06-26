@@ -24,8 +24,8 @@ interface
         character(len=8), intent(in) :: table_new
         character(len=8), intent(in) :: table_old
         real(kind=8), intent(in) :: time
-        integer, intent(in) :: nume_store
-        integer, intent(in) :: nb_obje
+        integer(kind=8), intent(in) :: nume_store
+        integer(kind=8), intent(in) :: nb_obje
         character(len=16), intent(in) :: obje_name(nb_obje)
         character(len=24), intent(in) :: obje_sdname(nb_obje)
     end subroutine catabl

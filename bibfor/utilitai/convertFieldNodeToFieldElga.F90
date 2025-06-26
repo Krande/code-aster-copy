@@ -42,7 +42,7 @@ subroutine convertFieldNodeToFieldElga(model, fieldNode, fieldElga)
     character(len=19), parameter :: fieldElemRefe = '&&ELGA.CELMOD'
     character(len=19) :: ligrel
     character(len=8) :: paraName, physName
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 

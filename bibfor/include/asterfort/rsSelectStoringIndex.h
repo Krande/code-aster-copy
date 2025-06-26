@@ -21,7 +21,7 @@ interface
                                     nbStore, numeStoreJv, timeStoreJv)
         character(len=*), intent(in) :: resultZ
         aster_logical, intent(in) :: lFromField
-        integer, intent(out) :: nbStore
+        integer(kind=8), intent(out) :: nbStore
         character(len=24), intent(out) :: numeStoreJv, timeStoreJv
     end subroutine rsSelectStoringIndex
 end interface

@@ -25,7 +25,7 @@ subroutine xvermo(nfiss, fiss, mai)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nfiss
+    integer(kind=8) :: nfiss
     character(len=8) :: fiss(nfiss), mai
 !
 ! ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine xvermo(nfiss, fiss, mai)
 !
 !
 !
-    integer :: ifiss
+    integer(kind=8) :: ifiss
     character(len=8) :: maif, valk(3)
 !
 ! ----------------------------------------------------------------------

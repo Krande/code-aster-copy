@@ -24,19 +24,19 @@ interface
     subroutine dgetv0(ido, bmat, itry, initv, n,&
                       j, v, ldv, resid, rnorm,&
                       ipntr, workd, ierr, alpha)
-        integer :: ldv
-        integer :: j
-        integer :: n
-        integer :: ido
+        integer(kind=8) :: ldv
+        integer(kind=8) :: j
+        integer(kind=8) :: n
+        integer(kind=8) :: ido
         character(len=1) :: bmat
-        integer :: itry
+        integer(kind=8) :: itry
         aster_logical :: initv
         real(kind=8) :: v(ldv, j)
         real(kind=8) :: resid(n)
         real(kind=8) :: rnorm
-        integer :: ipntr(3)
+        integer(kind=8) :: ipntr(3)
         real(kind=8) :: workd(2*n)
-        integer :: ierr
+        integer(kind=8) :: ierr
         real(kind=8) :: alpha
     end subroutine dgetv0
 end interface

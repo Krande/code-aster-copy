@@ -45,19 +45,19 @@ subroutine resu60(resu1, resu2)
 ! IN  : RESU1 : PREMIER CONCEPT DYNA_GENE HARMONIQUE
 ! IN  : RESU2 : SECOND CONCEPT DYNA_GENE HARMONIQUE
 !
-    integer :: nbsto1, nbsau1, nbsto2, nbsau2
-    integer :: nbstoc, nbsauv
+    integer(kind=8) :: nbsto1, nbsau1, nbsto2, nbsau2
+    integer(kind=8) :: nbstoc, nbsauv
     character(len=8) :: resu
-    integer :: i
-    integer :: flagd1, flagv1, flaga1, flagd2, flagv2, flaga2
+    integer(kind=8) :: i
+    integer(kind=8) :: flagd1, flagv1, flaga1, flagd2, flagv2, flaga2
     aster_logical :: flagd, flagv, flaga
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
 !
-    integer :: jacce, jvite
-    integer :: jdepl, jdesc
-    integer :: jfreq, jordr
+    integer(kind=8) :: jacce, jvite
+    integer(kind=8) :: jdepl, jdesc
+    integer(kind=8) :: jfreq, jordr
     complex(kind=8), pointer :: acce1(:) => null()
     complex(kind=8), pointer :: acce2(:) => null()
     complex(kind=8), pointer :: depl1(:) => null()
@@ -66,8 +66,8 @@ subroutine resu60(resu1, resu2)
     complex(kind=8), pointer :: vite2(:) => null()
     real(kind=8), pointer :: freq1(:) => null()
     real(kind=8), pointer :: freq2(:) => null()
-    integer, pointer :: ordr1(:) => null()
-    integer, pointer :: ordr2(:) => null()
+    integer(kind=8), pointer :: ordr1(:) => null()
+    integer(kind=8), pointer :: ordr2(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()

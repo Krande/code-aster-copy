@@ -28,9 +28,9 @@ subroutine cfacat(indic, nbliac, ajliai, spliai, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: nbliac
-    integer :: indic, ajliai, spliai
-    integer :: indfac, lmat
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: indic, ajliai, spliai
+    integer(kind=8) :: indfac, lmat
     real(kind=8) :: xjvmax
     character(len=24) :: sdcont_defi, sdcont_solv
     character(len=19) :: solveu

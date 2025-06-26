@@ -38,7 +38,7 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
 #include "asterfort/mecara.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbpain, codret
+    integer(kind=8) :: nbpain, codret
     character(len=8) :: modele, mater, carael
     character(len=8) :: lipain(*)
     character(len=16) :: option, typesd
@@ -70,8 +70,8 @@ subroutine ccaccl(option, modele, mater, carael, ligrel, &
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: iret1, iret2, kparin
-    integer :: ipara, inume, nbsp
+    integer(kind=8) :: iret1, iret2, kparin
+    integer(kind=8) :: ipara, inume, nbsp
     character(len=8) :: k8b, noma, curpar, carae2, parain
     character(len=16) :: concep, nomcmd
     character(len=19) :: compor, compo2, canbva

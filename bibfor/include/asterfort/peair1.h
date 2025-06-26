@@ -19,8 +19,8 @@
 interface
     subroutine peair1(mesh, nbma, lisma, aire, long)
         character(len=8), intent(in) :: mesh
-        integer :: nbma
-        integer :: lisma(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: lisma(*)
         real(kind=8) :: aire
         real(kind=8) :: long
     end subroutine peair1

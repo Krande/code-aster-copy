@@ -59,7 +59,7 @@ subroutine te0459(option, nomte)
 !
 !---------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxpara = 4
+    integer(kind=8), parameter :: maxpara = 4
     real(kind=8) :: valpar(maxpara)
     character(len=8) :: nompar(maxpara)
     type(HHO_Data) :: hhoData
@@ -67,8 +67,8 @@ subroutine te0459(option, nomte)
     type(HHO_Quadrature) :: hhoQuadFace
     real(kind=8) :: rhs_forces(MSIZE_FACE_VEC), NeumValuesQP(3, MAX_QP_FACE), PresQP(MAX_QP_FACE)
     real(kind=8) :: normal(3)
-    integer :: fbs, celldim, ipg, nbpara, idim
-    integer :: j_time, j_pres, j_forc
+    integer(kind=8) :: fbs, celldim, ipg, nbpara, idim
+    integer(kind=8) :: j_time, j_pres, j_forc
 !
 ! -- Retrieve HHO informations
 !

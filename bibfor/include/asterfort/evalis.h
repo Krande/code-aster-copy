@@ -26,7 +26,7 @@ interface
         character(len=19) :: phi
         character(len=19) :: sphi
         real(kind=8) :: freq
-        integer :: iff
+        integer(kind=8) :: iff
         character(len=8) :: nomres
     end subroutine evalis
 end interface

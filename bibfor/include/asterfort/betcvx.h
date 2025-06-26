@@ -22,12 +22,12 @@ interface
                       nvi, nseuil)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sig(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        integer :: nvi
-        integer :: nseuil
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nseuil
     end subroutine betcvx
 end interface

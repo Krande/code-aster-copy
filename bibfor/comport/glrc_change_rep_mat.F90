@@ -20,7 +20,7 @@ subroutine glrc_change_rep_mat(vmp, vfp, dspdep, dsidep)
 !
     implicit none
     real(kind=8) :: dspdep(6, *), dsidep(6, *), vmp(2, 2), vfp(2, 2)
-    integer :: t(2, 2), i, j, k, l, n, m
+    integer(kind=8) :: t(2, 2), i, j, k, l, n, m
 ! ----------------------------------------------------------------------
 !
 !   ROUTINE DE CHANGEMENT DE REPERE DE LA MATRICE TANGENTE POUR GLRC_LC

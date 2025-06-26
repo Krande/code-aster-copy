@@ -21,7 +21,7 @@
 interface
     subroutine asmpi_comm_logical(op, nbval, scl, vl)
         aster_logical, intent(inout), optional :: scl, vl(*)
-        integer, intent(in), optional :: nbval
+        integer(kind=8), intent(in), optional :: nbval
         character(len=*), intent(in) :: op
     end subroutine asmpi_comm_logical
 end interface

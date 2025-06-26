@@ -19,8 +19,8 @@
 !
 interface
     subroutine latrco(iTria, nbPoinInte, poinInte, triaCoorPara)
-        integer, intent(in) :: iTria
-        integer, intent(in) :: nbPoinInte
+        integer(kind=8), intent(in) :: iTria
+        integer(kind=8), intent(in) :: nbPoinInte
         real(kind=8), intent(in) :: poinInte(2, MAX_NB_INTE)
         real(kind=8), intent(out) :: triaCoorPara(2, 3)
     end subroutine latrco

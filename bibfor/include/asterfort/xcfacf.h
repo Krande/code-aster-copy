@@ -22,17 +22,17 @@ interface
     subroutine xcfacf(ptint, ptmax, ipt, ainter, lsn,&
                       lst, igeom, nno, ndim, typma,&
                       noma, nmaabs)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: ptint(*)
-        integer :: ptmax
-        integer :: ipt
+        integer(kind=8) :: ptmax
+        integer(kind=8) :: ipt
         real(kind=8) :: ainter(*)
         real(kind=8) :: lsn(nno)
         real(kind=8) :: lst(nno)
-        integer :: igeom
-        integer :: ndim
+        integer(kind=8) :: igeom
+        integer(kind=8) :: ndim
         character(len=8) :: typma
         character(len=8) :: noma
-        integer :: nmaabs
+        integer(kind=8) :: nmaabs
     end subroutine xcfacf
 end interface

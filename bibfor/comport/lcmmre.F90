@@ -66,9 +66,9 @@ subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    integer :: ndt, ndi, nmat, nr, nvi, nsfv, iret
-    integer :: nbfsys, ifa, nbsys, is, itmax, nfs, nsg
-    integer :: nbcomm(nmat, 3), nsfa, ifl, nuecou
+    integer(kind=8) :: ndt, ndi, nmat, nr, nvi, nsfv, iret
+    integer(kind=8) :: nbfsys, ifa, nbsys, is, itmax, nfs, nsg
+    integer(kind=8) :: nbcomm(nmat, 3), nsfa, ifl, nuecou
 !
     real(kind=8) :: dkooh(6, 6), fkooh(6, 6), timed, timef
     real(kind=8) :: sigf(6), sigd(6), msns(3, 3), pgl(3, 3), dgamm1
@@ -83,7 +83,7 @@ subroutine lcmmre(typmod, nmat, materd, materf, nbcomm, &
     character(len=8) :: typmod
     character(len=16) :: nomfam
     character(len=24) :: cpmono(5*nmat+1)
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------

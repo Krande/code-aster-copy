@@ -18,7 +18,7 @@
 !
 interface
     subroutine iredsu(macr, fileUnit, versio)
-        integer, intent(in) :: fileUnit, versio
+        integer(kind=8), intent(in) :: fileUnit, versio
         character(len=*), intent(in) :: macr
     end subroutine iredsu
 end interface

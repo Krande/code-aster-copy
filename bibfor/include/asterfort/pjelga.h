@@ -32,7 +32,7 @@ interface
         character(len=16) :: corres
         character(len=19) :: leres1
         character(len=19) :: ligre2
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine pjelga
 !
 end interface

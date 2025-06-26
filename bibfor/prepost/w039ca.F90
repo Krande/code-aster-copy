@@ -31,7 +31,7 @@ subroutine w039ca(ifi, form)
 #include "asterfort/lgphmo.h"
 #include "asterfort/w039c1.h"
 #include "asterfort/w039c3.h"
-    integer :: ifi
+    integer(kind=8) :: ifi
     character(len=*) :: form
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
@@ -39,7 +39,7 @@ subroutine w039ca(ifi, form)
 !       IMPRIMER LES "CARTES" DE DONNEES DES CHAM_MATER, CARA_ELE, ...
 ! ----------------------------------------------------------------------
 !
-    integer :: nocc, iocc, n1, ibid
+    integer(kind=8) :: nocc, iocc, n1, ibid
     character(len=4) :: rplo
     character(len=8) :: chmat, carele, mailla, charge, modele
     character(len=80) :: titre

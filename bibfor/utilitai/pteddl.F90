@@ -26,13 +26,13 @@ subroutine pteddl(typesd, resuz, nb_cmp, list_cmp, nb_equa, &
 #include "asterfort/select_dof_2.h"
 !
 !
-    integer, intent(in) :: nb_cmp
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_equa
     character(len=*), intent(in) :: typesd
     character(len=*), intent(in) :: resuz
     character(len=8), target, intent(in) :: list_cmp(nb_cmp)
-    integer, target, optional, intent(inout) :: tabl_equa(nb_equa, nb_cmp)
-    integer, target, optional, intent(inout) :: list_equa(nb_equa)
+    integer(kind=8), target, optional, intent(inout) :: tabl_equa(nb_equa, nb_cmp)
+    integer(kind=8), target, optional, intent(inout) :: list_equa(nb_equa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,8 +54,8 @@ subroutine pteddl(typesd, resuz, nb_cmp, list_cmp, nb_equa, &
 !
     character(len=19) :: resu
     character(len=8), pointer :: list_cmp_p(:) => null()
-    integer, pointer :: tabl_equa_p(:, :) => null()
-    integer, pointer :: list_equa_p(:) => null()
+    integer(kind=8), pointer :: tabl_equa_p(:, :) => null()
+    integer(kind=8), pointer :: list_equa_p(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

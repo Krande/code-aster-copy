@@ -28,7 +28,7 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
     character(len=32) :: repk
     character(len=8) :: nomob
@@ -44,7 +44,7 @@ subroutine dismxf(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: jinfo, long
+    integer(kind=8) :: jinfo, long
     character(len=8), pointer :: mailla(:) => null()
 !
 !

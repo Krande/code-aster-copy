@@ -37,8 +37,8 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: itypfl, nivpar, nivdef, nbm, npv, nuor(nbm)
-    integer :: nive, nbval, lfsvi, pas
+    integer(kind=8) :: itypfl, nivpar, nivdef, nbm, npv, nuor(nbm)
+    integer(kind=8) :: nive, nbval, lfsvi, pas
     character(len=19) :: melflu
     character(len=8) :: typflu
     real(kind=8) :: carac(2), freq(2*nbm*npv), freqi(*), vite(npv), amoc(*)
@@ -71,12 +71,12 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jvit1, jvit2
-    integer :: jtr1, jtr2
-    integer :: lprofv, lnoe, iret, modul, modul2
+    integer(kind=8) :: jvit1, jvit2
+    integer(kind=8) :: jtr1, jtr2
+    integer(kind=8) :: lprofv, lnoe, iret, modul, modul2
     character(len=3) :: i3
     character(len=8), pointer :: cmpName(:) => null()
-    integer, pointer :: nodeNume(:) => null()
+    integer(kind=8), pointer :: nodeNume(:) => null()
     character(len=8) :: fieldType, numzo, nbpzon
     character(len=8) :: xl1, xl2, xl3
     character(len=13) :: xcod, xvred, xfreq1, xamor, xbmin, xbmax
@@ -91,9 +91,9 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu, &
     character(len=100) :: chazp7, chazv7, chav40, chaz40
     character(len=255) :: ctrav1, ctrav2, ctrav3
     aster_logical :: calcul(2)
-    integer :: i, fileUnit, ik, im, imod, ind
-    integer :: iv, j, k, l1
-    integer :: l2, l3, n1, n2, npasv, nzone
+    integer(kind=8) :: i, fileUnit, ik, im, imod, ind
+    integer(kind=8) :: iv, j, k, l1
+    integer(kind=8) :: l2, l3, n1, n2, npasv, nzone
     real(kind=8) :: amor1, bmax, bmin, dif1, freq1, vred
     real(kind=8), pointer :: cste(:) => null()
     character(len=80), pointer :: trav1(:) => null()
@@ -103,7 +103,7 @@ subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu, &
     character(len=80), pointer :: trav5(:) => null()
     real(kind=8), pointer :: rap(:) => null()
     real(kind=8), pointer :: profv(:) => null()
-    integer, pointer :: tempo(:) => null()
+    integer(kind=8), pointer :: tempo(:) => null()
     real(kind=8), pointer :: fsvr(:) => null()
     real(kind=8), pointer :: ven(:) => null()
     real(kind=8), pointer :: vcn(:) => null()

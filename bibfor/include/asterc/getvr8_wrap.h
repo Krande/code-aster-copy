@@ -22,9 +22,9 @@ interface
     subroutine getvr8_wrap(motfac, motcle, iocc, mxval, r8val, nbval)
         character(len=*) :: motfac
         character(len=*) :: motcle
-        integer :: iocc
-        integer :: mxval
+        integer(kind=8) :: iocc
+        integer(kind=8) :: mxval
         real(kind=8) :: r8val(*)
-        integer :: nbval
+        integer(kind=8) :: nbval
     end subroutine getvr8_wrap
 end interface

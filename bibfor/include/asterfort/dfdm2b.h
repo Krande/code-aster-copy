@@ -19,7 +19,7 @@
 !
 interface
     subroutine dfdm2b(nno, poids, dfrdk, coor, jacp, normal)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: poids
         real(kind=8) :: dfrdk(*)
         real(kind=8) :: coor(18)

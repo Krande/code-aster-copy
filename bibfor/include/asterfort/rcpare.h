@@ -23,6 +23,6 @@ interface
         character(len=*) :: nommat
         character(len=*) :: pheno
         character(len=*) :: para
-        integer :: icodre
+        integer(kind=8) :: icodre
     end subroutine rcpare
 end interface

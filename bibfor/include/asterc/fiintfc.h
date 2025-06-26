@@ -22,10 +22,10 @@ interface
     subroutine fiintfc(nomfon, nbpu, param, val, iret,&
                        coderr, resu)
         character(len=*) :: nomfon
-        integer :: nbpu
+        integer(kind=8) :: nbpu
         character(len=*) :: param(*)
         real(kind=8) :: val(*)
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=*) :: coderr
         real(kind=8) :: resu(2)
     end subroutine fiintfc

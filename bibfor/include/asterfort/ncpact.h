@@ -20,8 +20,8 @@
 !
 interface
     subroutine ncpact(dg, nec, nbc)
-        integer :: dg(*)
-        integer :: nec
-        integer :: nbc
+        integer(kind=8) :: dg(*)
+        integer(kind=8) :: nec
+        integer(kind=8) :: nbc
     end subroutine ncpact
 end interface

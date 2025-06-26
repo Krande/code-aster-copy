@@ -46,11 +46,11 @@ subroutine nmdoin(ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: last_nume, user_nume, init_nume
+    integer(kind=8) :: last_nume, user_nume, init_nume
     real(kind=8) :: last_time, user_time, init_time, stin_time
     character(len=8) :: criterion
     real(kind=8) :: precision
-    integer :: iret
+    integer(kind=8) :: iret
     aster_logical :: l_user_time, l_stin_time, l_user_nume
 !
 ! --------------------------------------------------------------------------------------------------

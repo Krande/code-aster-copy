@@ -53,14 +53,14 @@ subroutine nm1dci(fami, kpg, ksp, imate, em, &
     real(kind=8) :: sigp, vip(2), dsde, sieleq
     character(len=16) :: option
     character(len=*) :: fami, materi
-    integer :: kpg, ksp, imate
+    integer(kind=8) :: kpg, ksp, imate
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES
 !     ------------------------------------------------------------------
     real(kind=8) :: sige, dp, valres(2), etm, etp, xp, xm, hm, hp
     real(kind=8) :: valrm(2)
 !
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=16) :: nomecl(2)
 !
     data nomecl/'D_SIGM_EPSI', 'SY'/

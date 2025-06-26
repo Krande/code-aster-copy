@@ -55,27 +55,27 @@ subroutine cfcrli(mesh, nume_dof, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_cont_node, model_ndim, nt_cont_poin
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_cont_node, model_ndim, nt_cont_poin
     character(len=24) :: sdcont_apcoef, sdcont_apcofr
-    integer :: jv_sdcont_apcoef, jv_sdcont_apcofr
+    integer(kind=8) :: jv_sdcont_apcoef, jv_sdcont_apcofr
     character(len=24) :: sdcont_ddlco, sdcont_nbddl
-    integer, pointer :: v_sdcont_ddlco(:) => null()
-    integer, pointer :: v_sdcont_nbddl(:) => null()
+    integer(kind=8), pointer :: v_sdcont_ddlco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_nbddl(:) => null()
     character(len=24) :: sdcont_apddl, sdcont_approj
-    integer :: jv_sdcont_apddl, jv_sdcont_approj
+    integer(kind=8) :: jv_sdcont_apddl, jv_sdcont_approj
     character(len=24) :: sdcont_coco
-    integer :: jv_sdcont_coco
+    integer(kind=8) :: jv_sdcont_coco
     character(len=24) :: sdcont_appoin, sdcont_numlia
-    integer :: jv_sdcont_appoin, jv_sdcont_numlia
+    integer(kind=8) :: jv_sdcont_appoin, jv_sdcont_numlia
     character(len=19) :: sdcont_liac, sdcont_liot
-    integer :: jv_sdcont_liac, jv_sdcont_liot
-    integer :: dof_nume, node_nume
-    integer :: i_node, i_dof, node_indx
+    integer(kind=8) :: jv_sdcont_liac, jv_sdcont_liot
+    integer(kind=8) :: dof_nume, node_nume
+    integer(kind=8) :: i_node, i_dof, node_indx
     character(len=8) :: node_name
-    integer :: nb_equa, nt_slav_nmax, nb_dof
+    integer(kind=8) :: nb_equa, nt_slav_nmax, nb_dof
     aster_logical :: l_frot
-    integer :: zcoco
+    integer(kind=8) :: zcoco
 !
 ! --------------------------------------------------------------------------------------------------
 !

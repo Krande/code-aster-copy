@@ -20,6 +20,6 @@
 !
 interface
     subroutine putvir(ival)
-        integer :: ival
+        integer(kind=8) :: ival
     end subroutine putvir
 end interface

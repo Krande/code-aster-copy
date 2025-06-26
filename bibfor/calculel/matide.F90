@@ -33,7 +33,7 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag, &
 #include "asterfort/jexnum.h"
 !
     character(len=*) :: matz
-    integer :: nbcmp
+    integer(kind=8) :: nbcmp
     real(kind=8) :: vdiag
     character(len=8) :: licmp(nbcmp), tdiag
     character(len=16) :: modlag
@@ -55,9 +55,9 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag, &
 !
 !
 !     ------------------------------------------------------------------
-    integer :: ilig, jcol, kterm, n, nz, nsmdi, jsmhc, nsmhc
-    integer :: jdelg, n1, nvale, jvale, nlong, jval2, nucmp, k, jcmp
-    integer :: kcmp
+    integer(kind=8) :: ilig, jcol, kterm, n, nz, nsmdi, jsmhc, nsmhc
+    integer(kind=8) :: jdelg, n1, nvale, jvale, nlong, jval2, nucmp, k, jcmp
+    integer(kind=8) :: kcmp
     character(len=8) :: nomgd, nocmp
     character(len=14) :: nonu
     character(len=1) :: ktyp
@@ -65,12 +65,12 @@ subroutine matide(matz, nbcmp, licmp, modlag, tdiag, &
     aster_logical :: ltypr, lsym, eliml, elimc
     real(kind=8) :: kmax
     complex(kind=8) :: ckmax
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: lddlelim(:) => null()
-    integer, pointer :: llag(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: lddlelim(:) => null()
+    integer(kind=8), pointer :: llag(:) => null()
 !
 !     ------------------------------------------------------------------
     call jemarq()

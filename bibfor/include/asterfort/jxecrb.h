@@ -21,11 +21,11 @@
 interface
     subroutine jxecrb(ic, iaddi, iadmo, lso, idco,&
                       idos)
-        integer :: ic
-        integer :: iaddi
-        integer :: iadmo
-        integer :: lso
-        integer :: idco
-        integer :: idos
+        integer(kind=8) :: ic
+        integer(kind=8) :: iaddi
+        integer(kind=8) :: iadmo
+        integer(kind=8) :: lso
+        integer(kind=8) :: idco
+        integer(kind=8) :: idos
     end subroutine jxecrb
 end interface

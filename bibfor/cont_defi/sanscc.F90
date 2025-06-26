@@ -42,7 +42,7 @@ subroutine sanscc(sdcont, keywf, mesh)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_keyw
+    integer(kind=8) :: nb_keyw
     parameter(nb_keyw=2)
     character(len=16) :: keyw_name(nb_keyw), keyw_type(nb_keyw)
 !

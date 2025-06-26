@@ -37,7 +37,7 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 #include "asterfort/locglo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iaxe
+    integer(kind=8) :: iaxe
     character(len=8) :: noma, caelem, modele
 !     DETERMINATION DE L'AXE DIRECTEUR D'UNE POUTRE DROITE
 !     APPELANT : SPECFF
@@ -53,15 +53,15 @@ subroutine axdipo(noma, caelem, modele, iaxe)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: nbtel, nbtel1
+    integer(kind=8) :: nbtel, nbtel1
     parameter(nbtel=9, nbtel1=7)
 !
-    integer :: ialpha, iangl, ias, iasmax, iaxe2, ibeta, icaori
-    integer :: icmp, icode, idesc, iexcar, igamma, itelok, ipbl
-    integer :: iptma, irana, iranb, irang, iret, itel
-    integer :: ivale, ixnw, jdme, nbec, nbmail, nbmtrd
-    integer :: ncmpor, nummai, nutyel, pobali, iaux1
-    integer :: ntyele(nbtel)
+    integer(kind=8) :: ialpha, iangl, ias, iasmax, iaxe2, ibeta, icaori
+    integer(kind=8) :: icmp, icode, idesc, iexcar, igamma, itelok, ipbl
+    integer(kind=8) :: iptma, irana, iranb, irang, iret, itel
+    integer(kind=8) :: ivale, ixnw, jdme, nbec, nbmail, nbmtrd
+    integer(kind=8) :: ncmpor, nummai, nutyel, pobali, iaux1
+    integer(kind=8) :: ntyele(nbtel)
 !
     aster_logical :: ntrouv
 !

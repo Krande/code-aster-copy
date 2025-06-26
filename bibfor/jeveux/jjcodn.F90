@@ -24,15 +24,15 @@ function jjcodn(icre, nomrep, nomec, irep, crep, &
 #include "asterfort/jxhcod.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomrep, nomec, crep(*)
-    integer :: icre, irep(*), nmax, nuti
+    integer(kind=8) :: icre, irep(*), nmax, nuti
 ! ----------------------------------------------------------------------
-    integer :: ilorep, ideno, ilnom, iluti, idehc
+    integer(kind=8) :: ilorep, ideno, ilnom, iluti, idehc
 !-----------------------------------------------------------------------
-    integer :: i, idehco, idenom, iin, in, j, jin
-    integer :: jjcodn, k, ll, lnom, lorep, ne
+    integer(kind=8) :: i, idehco, idenom, iin, in, j, jin
+    integer(kind=8) :: jjcodn, k, ll, lnom, lorep, ne
 !-----------------------------------------------------------------------
     parameter(ilorep=1, ideno=2, ilnom=3, iluti=5, idehc=6)
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=32) :: cle, nom, valk(2)
     aster_logical :: rinser
 ! DEB ------------------------------------------------------------------

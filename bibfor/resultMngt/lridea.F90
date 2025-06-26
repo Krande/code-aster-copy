@@ -62,14 +62,14 @@ subroutine lridea(fileUnit, &
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=8), intent(in) :: resultName
     character(len=16), intent(in) :: resultType
     character(len=8), intent(in) :: model, meshAst
-    integer, intent(in) :: fieldNb
+    integer(kind=8), intent(in) :: fieldNb
     character(len=16), intent(in) :: fieldList(100)
     character(len=10), intent(in) :: storeAccess
-    integer, intent(in) :: storeIndxNb, storeTimeNb
+    integer(kind=8), intent(in) :: storeIndxNb, storeTimeNb
     character(len=19), intent(in) :: storeIndx, storeTime
     real(kind=8), intent(in) :: storeEpsi
     character(len=8), intent(in) :: storeCrit
@@ -104,15 +104,15 @@ subroutine lridea(fileUnit, &
     real(kind=8) :: zero
     character(len=24) :: noojb
     real(kind=8) :: rbid, val(1000), fileTime, masgen, amrge
-    integer :: vali, nbval, iaux, ichamp
-    integer :: jcnsv, jcnsl, jcesd, jcesl
-    integer :: nbrec, numdat, numch, iast, isup, itype
-    integer :: inoide, inoast, cellNume, ielide, knoide, knoast
-    integer :: nbcmp, nbcmid, ich, icmp, nbcmp1, maxnod, lon1, versio
-    integer :: irec, valatt, ifield, fileIndx, ibid, ilu1
-    integer :: i, iexp, nbnoe, nbfiel, nbnoeu, nbelem
-    integer :: iret, idecal, icmp1, icmp2, inatur, kk, numode
-    integer :: nbvari, nvar, ier
+    integer(kind=8) :: vali, nbval, iaux, ichamp
+    integer(kind=8) :: jcnsv, jcnsl, jcesd, jcesl
+    integer(kind=8) :: nbrec, numdat, numch, iast, isup, itype
+    integer(kind=8) :: inoide, inoast, cellNume, ielide, knoide, knoast
+    integer(kind=8) :: nbcmp, nbcmid, ich, icmp, nbcmp1, maxnod, lon1, versio
+    integer(kind=8) :: irec, valatt, ifield, fileIndx, ibid, ilu1
+    integer(kind=8) :: i, iexp, nbnoe, nbfiel, nbnoeu, nbelem
+    integer(kind=8) :: iret, idecal, icmp1, icmp2, inatur, kk, numode
+    integer(kind=8) :: nbvari, nvar, ier
     aster_logical :: trouve, astock, chamok, zcmplx, ldepl, lcolle, lcolle2
     character(len=4) :: tychas, tychid
     character(len=6) :: kar
@@ -126,13 +126,13 @@ subroutine lridea(fileUnit, &
     character(len=16), pointer :: fid_nom(:) => null()
     character(len=8), pointer :: fid_cmp(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: cnsd(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: fid_loc(:) => null()
-    integer, pointer :: fid_par(:) => null()
-    integer, pointer :: permuta(:) => null()
-    integer, pointer :: fid_nbc(:) => null()
-    integer, pointer :: fid_num(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: fid_loc(:) => null()
+    integer(kind=8), pointer :: fid_par(:) => null()
+    integer(kind=8), pointer :: permuta(:) => null()
+    integer(kind=8), pointer :: fid_nbc(:) => null()
+    integer(kind=8), pointer :: fid_num(:) => null()
 !
     parameter(nbfiel=40, versio=5)
 !

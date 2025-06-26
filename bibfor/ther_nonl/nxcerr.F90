@@ -49,10 +49,10 @@ subroutine nxcerr(sddisc)
     real(kind=8) :: r8bid
     real(kind=8) :: resi_glob_rela, resi_glob_maxi, inikry
     real(kind=8), dimension(2) :: parcrr
-    integer, dimension(3) :: parcri
-    integer :: ibid, nbiter, iter_glob_maxi
+    integer(kind=8), dimension(3) :: parcri
+    integer(kind=8) :: ibid, nbiter, iter_glob_maxi
     character(len=24) :: infocv, infore
-    integer :: jifcv, jifre
+    integer(kind=8) :: jifcv, jifre
 !
 ! --------------------------------------------------------------------------------------------------
 !

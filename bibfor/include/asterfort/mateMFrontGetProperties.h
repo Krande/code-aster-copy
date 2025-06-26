@@ -26,6 +26,6 @@ interface
         real(kind=8), intent(out) :: mfront_valr(16)
         character(len=16), intent(out) :: mfront_valk(16)
         character(len=16), intent(out) :: mfront_prop(16)
-        integer, intent(out) :: mfront_nbvale
+        integer(kind=8), intent(out) :: mfront_nbvale
     end subroutine mateMFrontGetProperties
 end interface

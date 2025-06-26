@@ -44,14 +44,14 @@ subroutine srd2sh(nmat, materf, varh, dhds, devsig, rcos3t, d2shds)
     !!! Variables globales
     !!!
 
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: materf(nmat, 2), varh(2), d2shds(6, 6), dhds(6), devsig(6), rcos3t
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndi, ndt, i, j
+    integer(kind=8) :: ndi, ndt, i, j
     real(kind=8) :: sii, dikdjl(6, 6), dijdkl(6, 6)
     real(kind=8) :: dsiids(6), dsdsig(6, 6), mat1(6, 6), d2hds2(6, 6)
     real(kind=8) :: mat2(6, 6), mat3(6, 6), dhtds(6), mat4(6, 6), mat5(6, 6)

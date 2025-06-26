@@ -22,23 +22,23 @@ subroutine getvtx(motfac, motcle, iocc, nbval, vect, &
     implicit none
     character(len=*), intent(in) :: motfac
     character(len=*), intent(in) :: motcle
-    integer, intent(in), optional :: iocc
-    integer, intent(in), optional :: nbval
+    integer(kind=8), intent(in), optional :: iocc
+    integer(kind=8), intent(in), optional :: nbval
     character(len=*), intent(inout), optional :: vect(*)
     character(len=*), intent(inout), optional :: scal
-    integer, intent(out), optional :: nbret
+    integer(kind=8), intent(out), optional :: nbret
 #include "asterc/getvtx_wrap.h"
 #include "asterfort/assert.h"
 !
 #include "asterc/getres.h"
 !   really used variables
-    integer :: uioc, unbret, umax
+    integer(kind=8) :: uioc, unbret, umax
 !   this kind of dynamic allocation is not supported with gfortran < 4.8
 !    character(len=:), allocatable :: uvect
 !        allocate(character(len=len(scal)) :: uvect)
 !        ...
 !        deallocate(uvect)
-    integer, parameter :: maxlen = 2550
+    integer(kind=8), parameter :: maxlen = 2550
     character(len=maxlen) :: uvect(1)
     character(len=1) :: vdummy(1)
 !

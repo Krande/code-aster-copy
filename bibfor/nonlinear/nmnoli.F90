@@ -44,7 +44,7 @@ subroutine nmnoli(sddisc, sderro, ds_print, sdcrit, &
     type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_InOut), intent(inout) :: ds_inout
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     type(NL_DS_Print), intent(in) :: ds_print
 !
 ! --------------------------------------------------------------------------------------------------
@@ -75,9 +75,9 @@ subroutine nmnoli(sddisc, sderro, ds_print, sdcrit, &
 !
     character(len=19) :: sdarch
     character(len=24) :: sdarchAinfJv
-    integer, pointer :: sdarchAinf(:) => null()
-    integer :: numeStoring, numeInst
-    integer :: ifm, niv
+    integer(kind=8), pointer :: sdarchAinf(:) => null()
+    integer(kind=8) :: numeStoring, numeInst
+    integer(kind=8) :: ifm, niv
     aster_logical :: lreuse
     character(len=8) :: result
 !

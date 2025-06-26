@@ -25,10 +25,10 @@ subroutine pusure(nbpt, fn, vt1, vt2, iadh, &
 !
     implicit none
     real(kind=8) :: fn(*), vt1(*), vt2(*), t(*), pusee
-    integer :: iadh(*)
+    integer(kind=8) :: iadh(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbpt
+    integer(kind=8) :: i, nbpt
 !-----------------------------------------------------------------------
     pusee = 0.00d00
 !

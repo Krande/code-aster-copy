@@ -35,7 +35,7 @@ subroutine lcrofg(y, dp, s, seuil, dseuil)
 ! ----------------------------------------------------------------------
 !  COMMON LOI DE COMPORTEMENT ROUSSELIER
 !
-    integer :: itemax, jprolp, jvalep, nbvalp
+    integer(kind=8) :: itemax, jprolp, jvalep, nbvalp
     real(kind=8) :: prec, young, nu, sigy, sig1, rousd, f0, fcr, acce
     real(kind=8) :: pm, rpm, fonc, fcd, dfcddj, dpmaxi, typoro
     common/lcrou/prec, young, nu, sigy, sig1, rousd, f0, fcr, acce,&
@@ -44,7 +44,7 @@ subroutine lcrofg(y, dp, s, seuil, dseuil)
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
 !
-    integer :: ind1(6), ind2(6)
+    integer(kind=8) :: ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6)
     real(kind=8) :: lambda, mu, deuxmu, unk, troisk, cother
     real(kind=8) :: jm, dj, jp, djdf(3, 3)

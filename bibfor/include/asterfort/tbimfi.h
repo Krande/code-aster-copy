@@ -20,9 +20,9 @@
 !
 interface
     subroutine tbimfi(nparfi, table, newtab, iret)
-        integer :: nparfi
+        integer(kind=8) :: nparfi
         character(len=19) :: table
         character(len=19) :: newtab
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine tbimfi
 end interface

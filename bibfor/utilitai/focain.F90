@@ -56,8 +56,8 @@ subroutine focain(method, nomfon, cste, sortie, base)
 !     ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, lfon, lpro, lpros, lres, lvar
-    integer :: nbpts, nbval
+    integer(kind=8) :: i, lfon, lpro, lpros, lres, lvar
+    integer(kind=8) :: nbpts, nbval
 !-----------------------------------------------------------------------
     call jemarq()
     nomfi = nomfon

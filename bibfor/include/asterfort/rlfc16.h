@@ -20,10 +20,10 @@
 !
 interface
     subroutine rlfc16(nommat, neq, cxsol, nbsol, typsym)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=*) :: nommat
         complex(kind=8) :: cxsol(neq, *)
-        integer :: nbsol
-        integer :: typsym
+        integer(kind=8) :: nbsol
+        integer(kind=8) :: typsym
     end subroutine rlfc16
 end interface

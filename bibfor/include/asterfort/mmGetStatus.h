@@ -22,8 +22,8 @@ interface
     subroutine mmGetStatus(indco       ,&
                            l_prev_cont_, l_prev_fric_ ,&
                            indco_prev_ , indadhe_prev_, indadhe2_prev_)
-        integer, intent(out) :: indco
+        integer(kind=8), intent(out) :: indco
         aster_logical, optional, intent(out) :: l_prev_cont_, l_prev_fric_
-        integer, optional, intent(out) :: indco_prev_, indadhe_prev_, indadhe2_prev_
+        integer(kind=8), optional, intent(out) :: indco_prev_, indadhe_prev_, indadhe2_prev_
     end subroutine mmGetStatus
 end interface

@@ -27,7 +27,7 @@ interface
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         character(len=8), intent(in) :: result, model
-        integer, intent(inout) :: ther_crit_i(*)
+        integer(kind=8), intent(inout) :: ther_crit_i(*)
         real(kind=8), intent(inout) :: ther_crit_r(*)
         type(NL_DS_InOut), intent(inout) :: ds_inout
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara

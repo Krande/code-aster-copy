@@ -23,20 +23,20 @@ interface
                       tempe, enrmec, dimdef, dimcon, nmec,&
                       np1, np2, nenr, dimenr, enrhyd, nfh)
         character(len=16) :: nomte
-        integer :: ndim
-        integer :: mecani(5)
-        integer :: press1(7)
-        integer :: press2(7)
-        integer :: tempe(5)
-        integer :: enrmec(3)
-        integer :: dimdef
-        integer :: dimcon
-        integer :: nmec
-        integer :: np1
-        integer :: np2
-        integer :: nenr
-        integer :: dimenr
-        integer :: enrhyd(3)
-        integer :: nfh
+        integer(kind=8) :: ndim
+        integer(kind=8) :: mecani(5)
+        integer(kind=8) :: press1(7)
+        integer(kind=8) :: press2(7)
+        integer(kind=8) :: tempe(5)
+        integer(kind=8) :: enrmec(3)
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: nmec
+        integer(kind=8) :: np1
+        integer(kind=8) :: np2
+        integer(kind=8) :: nenr
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: enrhyd(3)
+        integer(kind=8) :: nfh
     end subroutine xgrdhm
 end interface 

@@ -25,9 +25,9 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla, &
     implicit none
 #include "asterfort/indent.h"
 #include "asterfort/xcalc_saut.h"
-    integer :: ndim, nno, nnos, nnol
-    integer :: nfh, ddls, ddlm
-    integer :: singu, pla(27), lact(8)
+    integer(kind=8) :: ndim, nno, nnos, nnol
+    integer(kind=8) :: nfh, ddls, ddlm
+    integer(kind=8) :: singu, pla(27), lact(8)
     real(kind=8) :: mmat(216, 216)
     real(kind=8) :: ffc(8), ffp(27), jac, tau1(3), tau2(3)
     real(kind=8) :: seuil, knp(3, 3), mu
@@ -67,8 +67,8 @@ subroutine xmmab3(ndim, nno, nnos, nnol, pla, &
 !
 !
 !
-    integer :: i, j, k, l, jn, nli, pli
-    integer :: alpj
+    integer(kind=8) :: i, j, k, l, jn, nli, pli
+    integer(kind=8) :: alpj
     real(kind=8) :: ffi, tauknp(2, 3), coefj
 !
 ! ----------------------------------------------------------------------

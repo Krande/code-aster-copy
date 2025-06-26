@@ -21,11 +21,11 @@
 interface 
     subroutine mnlfft(n, x, y, h, nt,&
                       ind)
-        integer :: nt
-        integer :: h
-        integer :: n
+        integer(kind=8) :: nt
+        integer(kind=8) :: h
+        integer(kind=8) :: n
         real(kind=8) :: x(n*(2*h+1))
         real(kind=8) :: y(n*nt)
-        integer :: ind
+        integer(kind=8) :: ind
     end subroutine mnlfft
 end interface 

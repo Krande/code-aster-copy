@@ -20,7 +20,7 @@
 !
 interface
     function ispbem(i)
-        integer :: i
-        integer :: ispbem
+        integer(kind=8) :: i
+        integer(kind=8) :: ispbem
     end function ispbem
 end interface

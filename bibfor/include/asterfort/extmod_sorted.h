@@ -20,14 +20,14 @@
 interface
     subroutine extmod_sorted(basemo, numddl, nume, nbnumo, dmode,&
                       nbeq, nbnoe, iddl, nbddl)
-        integer :: nbddl
-        integer :: nbnoe
-        integer :: nbnumo
+        integer(kind=8) :: nbddl
+        integer(kind=8) :: nbnoe
+        integer(kind=8) :: nbnumo
         character(len=8) :: basemo
         character(len=14) :: numddl
-        integer :: nume(nbnumo)
+        integer(kind=8) :: nume(nbnumo)
         real(kind=8) :: dmode(nbddl*nbnoe*nbnumo)
-        integer :: nbeq
-        integer :: iddl(nbddl)
+        integer(kind=8) :: nbeq
+        integer(kind=8) :: iddl(nbddl)
     end subroutine extmod_sorted
 end interface

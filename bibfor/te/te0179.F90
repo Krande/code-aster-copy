@@ -41,16 +41,16 @@ subroutine te0179(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jvGeom, jvMate, jvLoad, jvVect
+    integer(kind=8) :: jvGeom, jvMate, jvLoad, jvVect
     real(kind=8) :: rho, poids, nx, ny
     complex(kind=8) :: speedVale
-    integer :: jvWeight, jvShape, jvDShape
-    integer :: nbNode, npg, cellDime, ndof
-    integer :: ldec
-    integer :: i, ipg
+    integer(kind=8) :: jvWeight, jvShape, jvDShape
+    integer(kind=8) :: nbNode, npg, cellDime, ndof
+    integer(kind=8) :: ldec
+    integer(kind=8) :: i, ipg
     aster_logical :: l_axis
     real(kind=8) :: r
-    integer :: j_mater
+    integer(kind=8) :: j_mater
 !
 ! --------------------------------------------------------------------------------------------------
 !

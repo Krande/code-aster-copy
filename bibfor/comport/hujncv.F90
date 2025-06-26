@@ -22,11 +22,11 @@ subroutine hujncv(rouhuj, nitimp, iter, ndt, nvi, &
     implicit none
 #include "asterfort/utmess.h"
     character(len=*) :: rouhuj
-    integer :: nitimp, iter, ndt, nvi, umess
+    integer(kind=8) :: nitimp, iter, ndt, nvi, umess
     real(kind=8) :: erimp(nitimp, 3)
     real(kind=8) :: deps(ndt), sigd(ndt), vind(nvi)
 !
-    integer :: i
+    integer(kind=8) :: i
     write (umess, 2001)
 2001 format(t3, ' ITER', t10, ' ERR1=DDY',&
     &          t30, 'ERR2=DY', t50, 'ERR=DDY/DY')

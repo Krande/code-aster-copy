@@ -19,7 +19,7 @@
 interface
     subroutine isacti(sddisc, action_type_in, i_action)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: action_type_in
-        integer, intent(out) :: i_action
+        integer(kind=8), intent(in) :: action_type_in
+        integer(kind=8), intent(out) :: i_action
     end subroutine isacti
 end interface

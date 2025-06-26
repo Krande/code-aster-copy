@@ -22,13 +22,13 @@ interface
     subroutine mefasc(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                       idir, igrp, som, rint, dcent,&
                       ficent, d, fi, a, b)
-        integer :: nbtron
-        integer :: nbcyl
-        integer :: ndim(14)
-        integer :: nbgrp
-        integer :: numgrp(*)
-        integer :: idir
-        integer :: igrp
+        integer(kind=8) :: nbtron
+        integer(kind=8) :: nbcyl
+        integer(kind=8) :: ndim(14)
+        integer(kind=8) :: nbgrp
+        integer(kind=8) :: numgrp(*)
+        integer(kind=8) :: idir
+        integer(kind=8) :: igrp
         real(kind=8) :: som(9)
         real(kind=8) :: rint(*)
         real(kind=8) :: dcent(nbcyl)

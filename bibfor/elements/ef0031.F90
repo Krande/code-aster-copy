@@ -35,8 +35,8 @@ subroutine ef0031(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, ind
-    integer :: icompo, ichn, jgeom, jcara, iret, icontp, ibid
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano, ind
+    integer(kind=8) :: icompo, ichn, jgeom, jcara, iret, icontp, ibid
 !
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), effgt(32), alpha, beta
     real(kind=8) :: t2iu(4), t2ui(4), c, s

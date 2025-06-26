@@ -20,8 +20,8 @@
 !
 interface
     subroutine ut2vgl(nn, nc, p, vg, vl)
-        integer :: nn
-        integer :: nc
+        integer(kind=8) :: nn
+        integer(kind=8) :: nc
         real(kind=8) :: p(3, 3)
         real(kind=8) :: vg(*)
         real(kind=8) :: vl(*)

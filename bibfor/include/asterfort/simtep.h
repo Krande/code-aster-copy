@@ -23,18 +23,18 @@ interface
                       ipoids, ivf, idfde, xyz, depl,&
                       instan, angl_naut, mater, nharm, sigma)
         character(len=*) :: fami
-        integer :: nno
-        integer :: ndim
-        integer :: nbsig
-        integer :: npg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbsig
+        integer(kind=8) :: npg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: xyz(1)
         real(kind=8) :: depl(1)
         real(kind=8) :: instan
         real(kind=8) :: angl_naut(3)
-        integer :: mater
+        integer(kind=8) :: mater
         real(kind=8) :: nharm
         real(kind=8) :: sigma(1)
     end subroutine simtep

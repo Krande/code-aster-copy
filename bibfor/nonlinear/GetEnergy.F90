@@ -45,7 +45,7 @@ subroutine GetEnergy(ds_energy, energy_type_, vale_r)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cols, i_col, indx_col
+    integer(kind=8) :: nb_cols, i_col, indx_col
     character(len=24) :: energy_type
     type(NL_DS_Table) :: table
 !

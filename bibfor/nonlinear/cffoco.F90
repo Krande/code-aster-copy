@@ -46,7 +46,7 @@ subroutine cffoco(numedd, resoco, cnfoco)
 !
 !
 !
-    integer :: neq, i
+    integer(kind=8) :: neq, i
     real(kind=8), pointer :: atmu(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !

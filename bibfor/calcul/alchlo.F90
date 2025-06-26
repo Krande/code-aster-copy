@@ -34,7 +34,7 @@ subroutine alchlo(nin, lpain, nout, lpaout)
 #include "asterfort/scalai.h"
 #include "asterfort/typele.h"
 #include "asterfort/wkvect.h"
-    integer :: nin, nout
+    integer(kind=8) :: nin, nout
     character(len=8) :: lpain(nin), lpaout(nout)
 ! ----------------------------------------------------------------------
 !     entrees:
@@ -45,8 +45,8 @@ subroutine alchlo(nin, lpain, nout, lpaout)
 !     qui contiendra les  valeurs des champs "bien rangees"
 !     (pour les te00ij) de tous les elements d'un grel.
 !-----------------------------------------------------------------------
-    integer :: iparg, taille, gd
-    integer ::  iparin, iparou, nute
+    integer(kind=8) :: iparg, taille, gd
+    integer(kind=8) ::  iparin, iparou, nute
     character(len=24) :: nochl, nochl2
     character(len=8) :: nompar
     character(len=8) :: scal

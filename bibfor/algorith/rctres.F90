@@ -28,7 +28,7 @@ subroutine rctres(sigm, tresca)
 ! ----------------------------------------------------------------------
     real(kind=8) :: tr(6), tu(6), nul(6)
     real(kind=8) :: equi(3)
-    integer :: nt, nd
+    integer(kind=8) :: nt, nd
     common/tdim/nt, nd
     data nul/6*0.d0/
 ! ----------------------------------------------------------------------

@@ -22,7 +22,7 @@ subroutine nmasse(fami, kpg, ksp, poum, icodma, &
 !
     implicit none
 #include "asterfort/rcvalb.h"
-    integer :: kpg, ksp, icodma
+    integer(kind=8) :: kpg, ksp, icodma
     real(kind=8) :: inst
     real(kind=8) :: e, nu, deuxmu, troisk
     character(len=*) :: materi, fami, poum
@@ -41,7 +41,7 @@ subroutine nmasse(fami, kpg, ksp, poum, icodma, &
     character(len=8) :: nompar
     character(len=16) :: nomres(2)
     real(kind=8) :: valres(2), valpar
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
 !
     nompar = 'INST'
     valpar = inst

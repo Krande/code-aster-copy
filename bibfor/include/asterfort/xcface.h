@@ -23,25 +23,25 @@ interface
                       enr, nfiss, ifiss, fisco, nfisc,&
                       noma, nmaabs, typdis, pinter, ninter, ainter,&
                       nface, nptf, cface, minlst)
-        integer :: nfisc
+        integer(kind=8) :: nfisc
         character(len=8) :: elref
         real(kind=8) :: lsn(*)
         real(kind=8) :: lst(*)
-        integer :: jgrlsn
-        integer :: igeom
+        integer(kind=8) :: jgrlsn
+        integer(kind=8) :: igeom
         character(len=16) :: enr
-        integer :: nfiss
-        integer :: ifiss
-        integer :: fisco(*)
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: fisco(*)
         character(len=8) :: noma
-        integer :: nmaabs
+        integer(kind=8) :: nmaabs
         character(len=16) :: typdis
         real(kind=8) :: pinter(*)
-        integer :: ninter
+        integer(kind=8) :: ninter
         real(kind=8) :: ainter(*)
-        integer :: nface
-        integer :: nptf
-        integer :: cface(30, 6)
+        integer(kind=8) :: nface
+        integer(kind=8) :: nptf
+        integer(kind=8) :: cface(30, 6)
         real(kind=8) :: minlst
     end subroutine xcface
 end interface

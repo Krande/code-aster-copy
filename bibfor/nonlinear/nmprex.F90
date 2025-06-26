@@ -38,7 +38,7 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins, &
     character(len=24) :: numedd
     character(len=19) :: sddisc, incest
     character(len=19) :: solalg(*), depmoi, depest
-    integer :: numins
+    integer(kind=8) :: numins
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,9 +60,9 @@ subroutine nmprex(numedd, depmoi, solalg, sddisc, numins, &
 !
 !
 !
-    integer :: neq
+    integer(kind=8) :: neq
     character(len=19) :: depold
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: instam, instap, instaa, coef
     real(kind=8), pointer :: depes(:) => null()
     real(kind=8), pointer :: inces(:) => null()

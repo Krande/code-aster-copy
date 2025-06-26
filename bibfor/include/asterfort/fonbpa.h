@@ -24,8 +24,8 @@ interface
         character(len=*) :: nomf
         character(len=*) :: vec(*)
         character(len=*) :: typfon
-        integer :: mxpf
-        integer :: nbpf
+        integer(kind=8) :: mxpf
+        integer(kind=8) :: nbpf
         character(len=*) :: nompf(*)
     end subroutine fonbpa
 end interface

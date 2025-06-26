@@ -21,6 +21,6 @@
 interface
     subroutine dimmai(typem, dimma)
         character(len=*) :: typem
-        integer :: dimma
+        integer(kind=8) :: dimma
     end subroutine dimmai
 end interface

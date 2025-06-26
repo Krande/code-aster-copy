@@ -20,6 +20,6 @@
 !
           interface 
             subroutine jevema(imarq)
-              integer, intent(out) :: imarq
+              integer(kind=8), intent(out) :: imarq
             end subroutine jevema
           end interface 

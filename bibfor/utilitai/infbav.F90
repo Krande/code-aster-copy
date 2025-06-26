@@ -29,7 +29,7 @@ subroutine infbav()
 !      NIVPGM    :NIVEAU ACCESSIBLE AU PROGRAMMEUR  : 0 , 1 OU 2
 !      UNITE     :UNITE LOGIQUE DU FICHIER MESSAGE
 !
-    integer :: nivuti, nivpgm, unite
+    integer(kind=8) :: nivuti, nivpgm, unite
     common/inf001/nivuti, nivpgm, unite
 !-----FIN DE INF001-----------------------------------------------------
 !

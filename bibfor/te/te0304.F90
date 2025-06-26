@@ -40,9 +40,9 @@ subroutine te0304(option, nomte)
     character(len=16) :: nomte, option
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), xx, yy, zz, jac
     real(kind=8) :: tem, theta, hechp, valpar(4)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, i, itemp, itemps, ndim, nno
-    integer :: ipg, npg1, ivectt, ihechp, ino, jno, idec, jdec, kdec, ldec, ier
-    integer :: j, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, i, itemp, itemps, ndim, nno
+    integer(kind=8) :: ipg, npg1, ivectt, ihechp, ino, jno, idec, jdec, kdec, ldec, ier
+    integer(kind=8) :: j, nnos, jgano
 !
 !====
 ! 1.1 PREALABLES: RECUPERATION ADRESSES FONCTIONS DE FORMES...

@@ -22,10 +22,10 @@ interface
     subroutine vpbosc(typres, nbmode, nbvect, omeshi, valpro,&
                       nvpro, vpinf, vpmax, precdc, method,&
                       omecor)
-        integer :: nvpro
+        integer(kind=8) :: nvpro
         character(len=16) :: typres
-        integer :: nbmode
-        integer :: nbvect
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbvect
         complex(kind=8) :: omeshi
         complex(kind=8) :: valpro(nvpro)
         real(kind=8) :: vpinf

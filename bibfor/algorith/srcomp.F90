@@ -78,7 +78,7 @@ subroutine srcomp(mod, imate, instam, instap, &
     !!! Variables globales
     !!!
 
-    integer :: retcom, imate, invi
+    integer(kind=8) :: retcom, imate, invi
     character(len=8) :: mod(*)
     character(len=16) :: option
     real(kind=8) :: instam, instap, tm, tp, tref
@@ -92,7 +92,7 @@ subroutine srcomp(mod, imate, instam, instap, &
     !!! Variables locales
     !!!
 
-    integer :: nbmat, ndt, ndi, nvi, val, varv, i, k, matr, iret, indal
+    integer(kind=8) :: nbmat, ndt, ndi, nvi, val, varv, i, k, matr, iret, indal
 
     parameter(nbmat=90)
 

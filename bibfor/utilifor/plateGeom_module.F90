@@ -54,7 +54,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         real(kind=8), intent(in) :: xyzg(3, 4)
-        integer, intent(out) :: errorCode
+        integer(kind=8), intent(out) :: errorCode
         real(kind=8), intent(in) :: errorTole
         real(kind=8), intent(out) :: distAbso, distRela
 ! ----- Local

@@ -22,13 +22,13 @@ subroutine lcdevi(a, d)
 !       IN  A      :  TENSEUR
 !       OUT D      :  DEVIATEUR DE A = A - 1/3 TR(A) I
 !       ----------------------------------------------------------------
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: a(6), d(6), ta
     common/tdim/ndt, ndi
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     d = 0.d0
     ta = sum(a(1:ndi))/3.d0

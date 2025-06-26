@@ -54,14 +54,14 @@ subroutine algocup(ds_contact, numedd, matass)
 !
 !
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: atmu
-    integer :: jatmu
-    integer :: nbliai, neq, nbliac
-    integer :: lmat
+    integer(kind=8) :: jatmu
+    integer(kind=8) :: nbliai, neq, nbliac
+    integer(kind=8) :: lmat
     character(len=19) :: matrcu
     character(len=24) :: coco
-    integer :: nbliac_new, jcoco
+    integer(kind=8) :: nbliac_new, jcoco
     character(len=24) :: deficu, resocu
 !
 ! ----------------------------------------------------------------------

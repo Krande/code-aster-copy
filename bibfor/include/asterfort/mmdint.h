@@ -21,13 +21,13 @@
 interface
     subroutine mmdint(neqns, xadj, dhead, dforw, dbakw,&
                       qsize, llist, marker)
-        integer :: neqns
-        integer :: xadj(*)
-        integer :: dhead(*)
-        integer :: dforw(*)
-        integer :: dbakw(*)
-        integer :: qsize(*)
-        integer :: llist(*)
-        integer :: marker(*)
+        integer(kind=8) :: neqns
+        integer(kind=8) :: xadj(*)
+        integer(kind=8) :: dhead(*)
+        integer(kind=8) :: dforw(*)
+        integer(kind=8) :: dbakw(*)
+        integer(kind=8) :: qsize(*)
+        integer(kind=8) :: llist(*)
+        integer(kind=8) :: marker(*)
     end subroutine mmdint
 end interface

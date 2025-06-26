@@ -89,24 +89,24 @@ subroutine prcycb(nomres, soumat, repmat)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ier1, ier2, iord
-    integer :: j, k, ktrian, ldk0aa, ldk0aj, ldk0ia, ldk0ii
-    integer :: ldk0ij, ldk0jj, ldkpaa, ldkpaj, ldkpia, ldkpij, ldkpja
-    integer :: ldkpjj, ldm0aa, ldm0aj, ldm0ia, ldm0ii, ldm0ij, ldm0jj
-    integer :: ldmpaa, ldmpaj, ldmpia, ldmpij, ldmpja, ldmpjj, llcham
-    integer :: llnoa, llnod, llnog
-    integer :: lmatk, lmatm, ltetax, ltetgd, ltkaa, ltkag
-    integer :: ltkdg, ltkgg, ltkia, ltkig, ltmaa, ltmag, ltmdg
-    integer :: ltmgg, ltmia, ltmig, ltora, ltord, ltorg, ltvec1
-    integer :: ltvec3, ltveca, ltvecb, ltvecc, ltvecd, nbdax, nbddr
-    integer :: nbdga, nbmod, nbnoa, nbnod, nbnog, nbsec, nbsma
-    integer :: neq, ntail, ntrian, numa, numd, numg
+    integer(kind=8) :: i, ibid, ier1, ier2, iord
+    integer(kind=8) :: j, k, ktrian, ldk0aa, ldk0aj, ldk0ia, ldk0ii
+    integer(kind=8) :: ldk0ij, ldk0jj, ldkpaa, ldkpaj, ldkpia, ldkpij, ldkpja
+    integer(kind=8) :: ldkpjj, ldm0aa, ldm0aj, ldm0ia, ldm0ii, ldm0ij, ldm0jj
+    integer(kind=8) :: ldmpaa, ldmpaj, ldmpia, ldmpij, ldmpja, ldmpjj, llcham
+    integer(kind=8) :: llnoa, llnod, llnog
+    integer(kind=8) :: lmatk, lmatm, ltetax, ltetgd, ltkaa, ltkag
+    integer(kind=8) :: ltkdg, ltkgg, ltkia, ltkig, ltmaa, ltmag, ltmdg
+    integer(kind=8) :: ltmgg, ltmia, ltmig, ltora, ltord, ltorg, ltvec1
+    integer(kind=8) :: ltvec3, ltveca, ltvecb, ltvecc, ltvecd, nbdax, nbddr
+    integer(kind=8) :: nbdga, nbmod, nbnoa, nbnod, nbnog, nbsec, nbsma
+    integer(kind=8) :: neq, ntail, ntrian, numa, numd, numg
     real(kind=8) :: xprod
-    integer, pointer :: cycl_nuin(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: cycl_desc(:) => null()
+    integer(kind=8), pointer :: cycl_nuin(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: cycl_desc(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
-    integer, pointer :: cycl_nbsc(:) => null()
+    integer(kind=8), pointer :: cycl_nbsc(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data pgc/'PRCYCB'/

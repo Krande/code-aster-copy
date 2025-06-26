@@ -24,7 +24,7 @@ interface
     subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                       kemixt, cstex, csmex, lfatig, flexio,&
                       lrocht, cnoc, cresu, cpres, lsymm)
-        integer :: nbinti
+        integer(kind=8) :: nbinti
         character(len=16) :: kinti
         character(len=24) :: csigm
         character(len=24) :: cinst

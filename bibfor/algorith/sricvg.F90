@@ -49,14 +49,14 @@ subroutine sricvg(nr, itmax, toler, iter, r, nvi, vinf, dy, irtet)
     !!! Variables globales
     !!!
 
-    integer :: nr, itmax, iter, irtet, ndt, ndi, nvi
+    integer(kind=8) :: nr, itmax, iter, irtet, ndt, ndi, nvi
     real(kind=8) :: toler, r(nr), vinf(nvi), dy(nr)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: er
     common/tdim/ndt, ndi
 

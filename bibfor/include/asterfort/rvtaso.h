@@ -23,12 +23,12 @@
      &ncheff,i1)
               real(kind=8) :: releve(*)
               character(len=8) :: nomcmp(*)
-              integer :: nbcmp
-              integer :: nbco
-              integer :: nbsp
+              integer(kind=8) :: nbcmp
+              integer(kind=8) :: nbco
+              integer(kind=8) :: nbsp
               character(len=19) :: nomtab
-              integer :: iocc
+              integer(kind=8) :: iocc
               character(len=16) :: ncheff
-              integer :: i1
+              integer(kind=8) :: i1
             end subroutine rvtaso
           end interface 

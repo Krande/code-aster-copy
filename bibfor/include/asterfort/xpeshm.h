@@ -26,30 +26,30 @@ interface
                       ivf, ipoids, idfde, ivectu, ipesa,&
                       heavt, lonch, cnset, rho, axi,&
                       yaenrm, nfiss, nfh, jfisno)
-        integer :: ndim
-        integer :: nnop
-        integer :: nno
-        integer :: nnops
-        integer :: nddls
-        integer :: nddlm
-        integer :: npg
-        integer :: igeom
-        integer :: jpintt
-        integer :: jpmilt
-        integer :: jheavn
-        integer :: ivf
-        integer :: ipoids
-        integer :: idfde
-        integer :: ivectu
-        integer :: ipesa
-        integer :: heavt(*)
-        integer :: lonch(10)
-        integer :: cnset(*)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnops
+        integer(kind=8) :: nddls
+        integer(kind=8) :: nddlm
+        integer(kind=8) :: npg
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jpintt
+        integer(kind=8) :: jpmilt
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: ivf
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: idfde
+        integer(kind=8) :: ivectu
+        integer(kind=8) :: ipesa
+        integer(kind=8) :: heavt(*)
+        integer(kind=8) :: lonch(10)
+        integer(kind=8) :: cnset(*)
         real(kind=8) :: rho
         aster_logical :: axi
-        integer :: yaenrm
-        integer :: nfiss
-        integer :: nfh
-        integer :: jfisno
+        integer(kind=8) :: yaenrm
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nfh
+        integer(kind=8) :: jfisno
     end subroutine xpeshm
 end interface 

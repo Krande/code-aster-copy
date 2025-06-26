@@ -32,7 +32,7 @@ subroutine ndaram(result, sddyna, numarc)
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     character(len=8) :: result
-    integer :: numarc
+    integer(kind=8) :: numarc
     character(len=19) :: sddyna
 !
 ! ----------------------------------------------------------------------
@@ -51,15 +51,15 @@ subroutine ndaram(result, sddyna, numarc)
 !
 !
 !
-    integer :: jpara
+    integer(kind=8) :: jpara
     character(len=8) :: k8bid
     character(len=6) :: chford
     character(len=19) :: dgen, vgen, agen
-    integer :: jrestd, jrestv, jresta
-    integer :: nbmodp
+    integer(kind=8) :: jrestd, jrestv, jresta
+    integer(kind=8) :: nbmodp
     character(len=24) :: trgene
     character(len=19) :: depgep, vitgep, accgep
-    integer :: jdepgp, jvitgp, jaccgp
+    integer(kind=8) :: jdepgp, jvitgp, jaccgp
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

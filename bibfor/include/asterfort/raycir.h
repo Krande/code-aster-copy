@@ -21,11 +21,11 @@
 interface
     subroutine raycir(jvecpg, jdtau, jvecn, nbordr, nbvec,&
                       nommet)
-        integer :: jvecpg
-        integer :: jdtau
-        integer :: jvecn
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: jvecpg
+        integer(kind=8) :: jdtau
+        integer(kind=8) :: jvecn
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         character(len=16) :: nommet
     end subroutine raycir
 end interface

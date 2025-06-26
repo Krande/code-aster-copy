@@ -40,14 +40,14 @@ subroutine te0369(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom, jv_mate, jv_onde, jv_vect
+    integer(kind=8) :: jv_geom, jv_mate, jv_onde, jv_vect
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: jac, celer
-    integer :: ipoids, ivf, idfdx, idfdy
-    integer :: nno, npg, ndim, ndofbynode
-    integer :: idec, jdec, kdec, ldec
-    integer :: i, ii, ino, j, jno, ipg
-    integer :: j_mater, iret
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy
+    integer(kind=8) :: nno, npg, ndim, ndofbynode
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: i, ii, ino, j, jno, ipg
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------

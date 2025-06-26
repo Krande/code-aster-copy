@@ -20,7 +20,7 @@
 !
 interface
     subroutine fmodam(neq, vite, valmod, basmod, force)
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: vite(neq)
         character(len=24) :: valmod
         character(len=24) :: basmod

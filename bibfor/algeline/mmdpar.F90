@@ -20,9 +20,9 @@ subroutine mmdpar(nd, nbsn, nbsn1, supnd, nouv, &
                   parent, prov, invsup)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-    integer :: nd, nbsn, nbsn1, supnd(nbsn1), nouv(nd)
-    integer :: parent(nd), prov(nd), invsup(nd)
-    integer :: i, j, snjp, snj
+    integer(kind=8) :: nd, nbsn, nbsn1, supnd(nbsn1), nouv(nd)
+    integer(kind=8) :: parent(nd), prov(nd), invsup(nd)
+    integer(kind=8) :: i, j, snjp, snj
 !     CALCUL DE PARENT EN FONCTION DES SUPERNOEUDS
 !
 !     SAUVEGARDE DE PARENT NODAL

@@ -22,6 +22,6 @@ interface
     subroutine rsdocu(docu, resu_type, iret)
         character(len=4), intent(in)  :: docu
         character(len=*), intent(out)  :: resu_type
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine rsdocu
 end interface

@@ -23,9 +23,9 @@
 interface
     subroutine decod1(rec, irec, ifield, valatt, trouve)
         character(len=*) :: rec(20)
-        integer :: irec
-        integer :: ifield
-        integer :: valatt
+        integer(kind=8) :: irec
+        integer(kind=8) :: ifield
+        integer(kind=8) :: valatt
         aster_logical :: trouve
     end subroutine decod1
 end interface

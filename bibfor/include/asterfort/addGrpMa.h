@@ -21,8 +21,8 @@ interface
     subroutine addGrpMa(mesh, group_ma, listCells, nbCells, l_added_grpma)
         character(len=8), intent(in)  :: mesh
     character(len=24), intent(in) :: group_ma
-    integer, intent(in)           :: listCells(*)
-    integer, intent(in)           :: nbCells
+    integer(kind=8), intent(in)           :: listCells(*)
+    integer(kind=8), intent(in)           :: nbCells
     aster_logical, intent(out), optional :: l_added_grpma
     end subroutine addGrpMa
 end interface

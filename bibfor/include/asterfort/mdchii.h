@@ -23,10 +23,10 @@ interface
                       nbtv, codret)
         med_idt :: idfimd
         character(len=*) :: nochmd
-        integer :: typent
-        integer :: typgeo
+        integer(kind=8) :: typent
+        integer(kind=8) :: typgeo
         character(len=19) :: prefix
-        integer :: nbtv
-        integer :: codret
+        integer(kind=8) :: nbtv
+        integer(kind=8) :: codret
     end subroutine mdchii
 end interface

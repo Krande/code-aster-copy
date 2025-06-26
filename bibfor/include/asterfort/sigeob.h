@@ -24,7 +24,7 @@ interface
         real(kind=8) :: eps(6)
         real(kind=8) :: bt(6)
         real(kind=8) :: endo
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: lambda
         real(kind=8) :: mu
         real(kind=8) :: sigm(6)

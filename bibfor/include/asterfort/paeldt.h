@@ -22,11 +22,11 @@ interface
     subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
                       materi, em, ep, nup, depsth,&
                       tmoins, tplus, trefer)
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=4) :: fami
         character(len=1) :: poum
-        integer :: icdmat
+        integer(kind=8) :: icdmat
         character(len=8) :: materi
         real(kind=8) :: em
         real(kind=8) :: ep

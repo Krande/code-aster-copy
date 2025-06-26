@@ -46,9 +46,9 @@ subroutine ef0344(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lmater, jmat, nbmat, imat, icomp, nbpar, i, npg, nno, nc
-    integer :: ncc, jeffo, iret, itype
-    integer :: lorien, jdepl, lforcr, lforcf
+    integer(kind=8) :: lmater, jmat, nbmat, imat, icomp, nbpar, i, npg, nno, nc
+    integer(kind=8) :: ncc, jeffo, iret, itype
+    integer(kind=8) :: lorien, jdepl, lforcr, lforcf
     character(len=8) :: nompar
     character(len=32) :: messk(2)
     real(kind=8) :: valpar, e, g, a
@@ -58,15 +58,15 @@ subroutine ef0344(nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbres = 2
+    integer(kind=8), parameter :: nbres = 2
     real(kind=8) :: valres(nbres)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     character(len=16) :: nomres(nbres)
     data nomres/'E', 'NU'/
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 2
+    integer(kind=8), parameter :: nb_cara = 2
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'TVAR'/

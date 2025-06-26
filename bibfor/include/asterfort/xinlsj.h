@@ -21,9 +21,9 @@
 interface
     subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
         character(len=8) :: noma
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: fiss
-        integer :: nfiss
+        integer(kind=8) :: nfiss
         character(len=19) :: cnslj
     end subroutine xinlsj
 end interface

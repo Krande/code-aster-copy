@@ -50,14 +50,14 @@ subroutine te0548(option, nomte)
 !......................................................................
 !
 !
-    integer :: i, j, ifa, ipgf, isspg, ni, pli
-    integer :: ideppl, jaint, jcface, jlonch, jseuil, ipoidf, ivff, idfdef
-    integer :: iadzi, iazk24, ipoids, ivf, idfde, jgano, jdonco
-    integer :: ndim, nno, nnos, npg, nfh, ddlc, nnom, integ, ninter, nfe
-    integer :: nface, cface(30, 6), ibid, nnof, npgf, jptint
-    integer :: singu, jbasec, nptf
-    integer :: ddls, nddl, nnol, lact(8), nlact, igeom, ddlm
-    integer :: contac
+    integer(kind=8) :: i, j, ifa, ipgf, isspg, ni, pli
+    integer(kind=8) :: ideppl, jaint, jcface, jlonch, jseuil, ipoidf, ivff, idfdef
+    integer(kind=8) :: iadzi, iazk24, ipoids, ivf, idfde, jgano, jdonco
+    integer(kind=8) :: ndim, nno, nnos, npg, nfh, ddlc, nnom, integ, ninter, nfe
+    integer(kind=8) :: nface, cface(30, 6), ibid, nnof, npgf, jptint
+    integer(kind=8) :: singu, jbasec, nptf
+    integer(kind=8) :: ddls, nddl, nnol, lact(8), nlact, igeom, ddlm
+    integer(kind=8) :: contac
     character(len=8) :: elref, typma, fpg, elc, elrefc
     real(kind=8) :: seuil, ffi, g(3), rbid, ffp(27), ffc(8), nd(3)
     real(kind=8) :: ffpc(27), dfbid(27, 3), r3bid(3)

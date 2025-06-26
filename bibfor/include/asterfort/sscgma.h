@@ -19,7 +19,7 @@
 interface
     subroutine sscgma(ma, nbgmp, nbgmin)
         character(len=8), intent(in) :: ma
-        integer, intent(in)          :: nbgmp
-        integer, intent(in)          :: nbgmin
+        integer(kind=8), intent(in)          :: nbgmp
+        integer(kind=8), intent(in)          :: nbgmin
     end subroutine sscgma
 end interface

@@ -53,16 +53,16 @@ subroutine te0066(option, nomte)
     character(len=8) :: nompar(ca_nbcvrc_+1), fami, poum, novrc
     character(len=16) :: nomres(3)
     character(len=32) :: phenom
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     real(kind=8) :: valpar(ca_nbcvrc_+1), lambda(1), poids, epot, valres(3), lambor(3)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), flux, fluy, fluz
     real(kind=8) :: angmas(3), point(3), fluglo(3), fluloc(3), p(3, 3)
-    integer :: i, ipoids, ivf, idfde, igeom, imate, kpg, spt, ino
-    integer :: ndim, jgano, nno, kp, npg1, iener, itemp, itempe, l, ipar
+    integer(kind=8) :: i, ipoids, ivf, idfde, igeom, imate, kpg, spt, ino
+    integer(kind=8) :: ndim, jgano, nno, kp, npg1, iener, itemp, itempe, l, ipar
     aster_logical :: aniso
 !
 !-----------------------------------------------------------------------
-    integer :: iret, nbpar, nnos
+    integer(kind=8) :: iret, nbpar, nnos
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)

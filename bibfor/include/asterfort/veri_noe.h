@@ -23,12 +23,12 @@ interface
                         nbmaok, x3dca, iproj, noe, numail )
         character(len=8) :: mailla
         real(kind=8) :: dmax_cable
-        integer :: lnuma(*)
-        integer :: liproj(*)
-        integer :: nbmaok
+        integer(kind=8) :: lnuma(*)
+        integer(kind=8) :: liproj(*)
+        integer(kind=8) :: nbmaok
         real(kind=8) :: x3dca(3)
-        integer :: iproj
-        integer :: noe
-        integer :: numail
+        integer(kind=8) :: iproj
+        integer(kind=8) :: noe
+        integer(kind=8) :: numail
     end subroutine veri_noe
 end interface

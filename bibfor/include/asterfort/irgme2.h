@@ -22,19 +22,19 @@ interface
     subroutine irgme2(numold, ima, connex, nbord2, tabd,&
                       tabl, tabv, partie, jtype, nbno,&
                       listno, nbcmp, ifi, iadmax)
-        integer :: numold(*)
-        integer :: ima
+        integer(kind=8) :: numold(*)
+        integer(kind=8) :: ima
         character(len=24) :: connex
-        integer :: nbord2
-        integer :: tabd(*)
-        integer :: tabl(*)
-        integer :: tabv(*)
+        integer(kind=8) :: nbord2
+        integer(kind=8) :: tabd(*)
+        integer(kind=8) :: tabl(*)
+        integer(kind=8) :: tabv(*)
         character(len=*) :: partie
-        integer :: jtype
-        integer :: nbno
-        integer :: listno(*)
-        integer :: nbcmp
-        integer :: ifi
-        integer :: iadmax
+        integer(kind=8) :: jtype
+        integer(kind=8) :: nbno
+        integer(kind=8) :: listno(*)
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: ifi
+        integer(kind=8) :: iadmax
     end subroutine irgme2
 end interface

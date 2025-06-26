@@ -31,7 +31,7 @@ subroutine cnpc(main, macou, macsu, conneo)
 #include "asterfort/jelira.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: macou, macsu
+    integer(kind=8) :: macou, macsu
     character(len=8) :: main
     character(len=24) :: conneo
 !
@@ -46,8 +46,8 @@ subroutine cnpc(main, macou, macsu, conneo)
 ! OUT       CONNEO  CONNECTIVIT2 DES ORDRE DES NOEUDS
 ! ----------------------------------------------------------------------
 !
-    integer :: inc1, inc2, nbno1, nbno2, ntrou
-    integer :: jmacsu, jmacou, jconneo, varaux(1)
+    integer(kind=8) :: inc1, inc2, nbno1, nbno2, ntrou
+    integer(kind=8) :: jmacsu, jmacou, jconneo, varaux(1)
 
 ! ----------------------------------------------------------------------
 !

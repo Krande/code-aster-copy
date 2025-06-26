@@ -25,20 +25,20 @@ interface
                               cmpUserNb_ , cmpUserName_ ,&
                               nodeUserNb_, nodeUserNume_,&
                               cellUserNb_, cellUserNume_)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=*), intent(in) :: dsName
         aster_logical, intent(in) :: lResu
-        integer, intent(in) :: storeNb, storeListIndx(:)
-        integer, intent(in) :: fieldListNb
+        integer(kind=8), intent(in) :: storeNb, storeListIndx(:)
+        integer(kind=8), intent(in) :: fieldListNb
         character(len=*), intent(in) :: fieldListType(*)
         character(len=*), optional, intent(in) :: title_, titleKeywf_
-        integer, optional, intent(in) :: titleKeywfIocc_
+        integer(kind=8), optional, intent(in) :: titleKeywfIocc_
         character(len=*), optional, intent(in) :: realFormat_
-        integer, optional, intent(in) :: cmpUserNb_
+        integer(kind=8), optional, intent(in) :: cmpUserNb_
         character(len=8), optional, pointer :: cmpUserName_(:)
-        integer, optional, intent(in) :: cellUserNb_
-        integer, optional, pointer :: cellUserNume_(:)
-        integer, optional, intent(in) :: nodeUserNb_
-        integer, optional, pointer :: nodeUserNume_(:)
+        integer(kind=8), optional, intent(in) :: cellUserNb_
+        integer(kind=8), optional, pointer :: cellUserNume_(:)
+        integer(kind=8), optional, intent(in) :: nodeUserNb_
+        integer(kind=8), optional, pointer :: nodeUserNume_(:)
     end subroutine resuPrintIdeas
 end interface

@@ -21,8 +21,8 @@
 interface
     subroutine ante3d(nbsom, itetra, xbar, ksi1, ksi2,&
                       ksi3)
-        integer :: nbsom
-        integer :: itetra
+        integer(kind=8) :: nbsom
+        integer(kind=8) :: itetra
         real(kind=8) :: xbar(*)
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

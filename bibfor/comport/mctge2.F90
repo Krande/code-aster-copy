@@ -55,7 +55,7 @@ subroutine mctge2(deigy, dydx, direig, eigx, eigy, &
     aster_logical :: outofp
 !
 ! Declaration of integer type variables
-    integer :: i, j, mcomp, mdim, ndim
+    integer(kind=8) :: i, j, mcomp, mdim, ndim
 !
     parameter(mcomp=4, mdim=3, ndim=2)
 !

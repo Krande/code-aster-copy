@@ -20,7 +20,7 @@
 !
 interface
     subroutine dtmcase_coder(input_, koutput)
-        integer          , intent(in)   :: input_
+        integer(kind=8)          , intent(in)   :: input_
         character(len=*) , intent(out)  :: koutput
     end subroutine dtmcase_coder
 end interface

@@ -20,8 +20,8 @@
 !
 interface
     subroutine dclsma(n, tab, iran)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: tab(*)
-        integer :: iran(*)
+        integer(kind=8) :: iran(*)
     end subroutine dclsma
 end interface

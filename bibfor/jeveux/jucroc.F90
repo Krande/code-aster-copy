@@ -26,7 +26,7 @@ subroutine jucroc(nomc, nooc, nuoc, dim, ldec)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
     character(len=*) :: nomc, nooc
-    integer :: nuoc, dim, ldec
+    integer(kind=8) :: nuoc, dim, ldec
 !     CREATION D'UN OBJET DE COLLECTION
 !     ------------------------------------------------------------------
 ! IN  NOMC  : CH*24 : NOM (COMPLET)  DE LA COLLECTION

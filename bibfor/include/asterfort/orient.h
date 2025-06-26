@@ -23,9 +23,9 @@ interface
                       itran)
         character(len=24) :: mdgene
         character(len=8) :: sst
-        integer :: jcoor
-        integer :: ino
+        integer(kind=8) :: jcoor
+        integer(kind=8) :: ino
         real(kind=8) :: coordo(3)
-        integer :: itran
+        integer(kind=8) :: itran
     end subroutine orient
 end interface

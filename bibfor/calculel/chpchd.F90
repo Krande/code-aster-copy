@@ -95,7 +95,7 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 !         /'CESE->ELEM'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELEM
 ! -----------------------------------------------------------------
 !
-    integer :: ib, iret, nncp, ibid
+    integer(kind=8) :: ib, iret, nncp, ibid
     character(len=3) :: prol0, exixfm
     character(len=8) :: ma, ma2, tychi, nomgd, param, model
     character(len=16) :: cas, option, nomcmd, kbid

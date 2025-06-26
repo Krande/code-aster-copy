@@ -45,7 +45,7 @@ subroutine nmcrot(result, sd_obsv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbPara = 17
+    integer(kind=8), parameter :: nbPara = 17
     type(NL_DS_TableIO) :: tableio
     character(len=24), parameter :: paraName(nbPara) = (/'NOM_OBSERVATION  ', 'TYPE_OBJET       ', &
                                                          'NUME_REUSE       ', 'NUME_OBSE        ', &

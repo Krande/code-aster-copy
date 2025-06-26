@@ -56,9 +56,9 @@ subroutine cafthm(load, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FLUX_THM_REP'
-    integer :: n1, n2, n3, n4, nflux, jvalv, iocc
-    integer :: nbtou, nbma, jma, ncmp
-    integer :: iret, nfiss, jnfis
+    integer(kind=8) :: n1, n2, n3, n4, nflux, jvalv, iocc
+    integer(kind=8) :: nbtou, nbma, jma, ncmp
+    integer(kind=8) :: iret, nfiss, jnfis
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=19) :: carte

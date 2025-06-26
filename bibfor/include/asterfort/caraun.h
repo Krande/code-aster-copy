@@ -20,8 +20,8 @@ interface
     subroutine caraun(sdcont, nzocu , nbgdcu, coefcu,&
                       compcu, multcu, penacu, ntcmp)
         character(len=8), intent(in) :: sdcont
-        integer, intent(in) :: nzocu
+        integer(kind=8), intent(in) :: nzocu
         character(len=24), intent(in) :: nbgdcu, coefcu, compcu, multcu, penacu
-        integer, intent(out) :: ntcmp
+        integer(kind=8), intent(out) :: ntcmp
     end subroutine caraun
 end interface

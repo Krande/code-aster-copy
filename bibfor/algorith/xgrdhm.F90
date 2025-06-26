@@ -23,15 +23,15 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2, &
 !
 #include "asterfort/teattr.h"
 #include "asterfort/assert.h"
-    integer :: mecani(5), press1(7), press2(7), tempe(5)
-    integer :: dimdef, dimcon, ier, nfh
-    integer :: ndim, nmec, np1, np2, i
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer(kind=8) :: dimdef, dimcon, ier, nfh
+    integer(kind=8) :: ndim, nmec, np1, np2, i
     character(len=8) :: enr
     character(len=16) :: nomte
 !
 ! DECLARATIONS POUR XFEM
-    integer :: enrmec(3), enrhyd(3), dimenr
-    integer :: nenr
+    integer(kind=8) :: enrmec(3), enrhyd(3), dimenr
+    integer(kind=8) :: nenr
 !
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
@@ -76,7 +76,7 @@ subroutine xgrdhm(nomte, ndim, mecani, press1, press2, &
 !   ENRHYD(3) = NOMBRE DE DEFORMATIONS POUR L'ENRICHISSEMENT
 !               HYDRAULIQUE (TYPE HEAVISIDE)
 !
-    integer :: iaux
+    integer(kind=8) :: iaux
 !
 !====
 ! 1. REPERAGE DES CALCULS A FAIRE : MECANIQUE, HYDRAULIQUE, ETC.

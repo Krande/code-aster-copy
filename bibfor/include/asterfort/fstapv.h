@@ -23,7 +23,7 @@ interface
                       fnmoyc, fnrmst, fnrmsc, fnmax, fnmin,&
                       fmaxmo, fminmo, sfn, sfn2, tchoc,&
                       nbmaxr, nbminr)
-        integer :: nbpt
+        integer(kind=8) :: nbpt
         real(kind=8) :: fn(*)
         real(kind=8) :: t(*)
         real(kind=8) :: offset
@@ -38,7 +38,7 @@ interface
         real(kind=8) :: sfn
         real(kind=8) :: sfn2
         real(kind=8) :: tchoc
-        integer :: nbmaxr
-        integer :: nbminr
+        integer(kind=8) :: nbmaxr
+        integer(kind=8) :: nbminr
     end subroutine fstapv
 end interface

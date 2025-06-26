@@ -39,7 +39,7 @@ subroutine ldc_dis_contact_frot(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     implicit none
 #include "asterf_types.h"
     real(kind=8)        :: ppr(*)
-    integer             :: ppi(*)
+    integer(kind=8)             :: ppi(*)
     character(len=*)    :: ppc(*)
     real(kind=8)        :: yy0(*)
     real(kind=8)        :: dy0(*)
@@ -54,10 +54,10 @@ subroutine ldc_dis_contact_frot(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     real(kind=8) :: seuil, ft, dlam, dffx, dffy, dffz, ctamor, cnamor, xjeu
 !
 !   système d'équations
-    integer, parameter :: iux = 1, iuy = 2, iuz = 3, ifx = 4, ify = 5, ifz = 6
-    integer, parameter :: ivx=7, ivy=8, ivz=9, iuyan=10, iuzan=11, ifcy=12, ifcz=13, ije=14
+    integer(kind=8), parameter :: iux = 1, iuy = 2, iuz = 3, ifx = 4, ify = 5, ifz = 6
+    integer(kind=8), parameter :: ivx=7, ivy=8, ivz=9, iuyan=10, iuzan=11, ifcy=12, ifcz=13, ije=14
 !   paramètres du modèle :
-    integer, parameter  :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, iky = 7, ikz = 8
+    integer(kind=8), parameter  :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, iky = 7, ikz = 8
 !
     decoup = ASTER_FALSE
     dyy(iux) = dy0(iux)

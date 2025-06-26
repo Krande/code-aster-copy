@@ -21,9 +21,9 @@
 interface
     subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
         character(len=8) :: mailla
-        integer :: nbgrmx
+        integer(kind=8) :: nbgrmx
         character(len=24) :: nomrac
-        integer :: nbgrma
+        integer(kind=8) :: nbgrma
         character(len=24) :: nomcyl(*)
     end subroutine mefrac
 end interface

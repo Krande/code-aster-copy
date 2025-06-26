@@ -20,6 +20,6 @@ interface
     subroutine nmcret(sderro, errorCodeType, errorCodeVale)
         character(len=24), intent(in) :: sderro
         character(len=3), intent(in) :: errorCodeType
-        integer, intent(in) :: errorCodeVale
+        integer(kind=8), intent(in) :: errorCodeVale
     end subroutine nmcret
 end interface

@@ -36,7 +36,7 @@ subroutine tran78(nomres, typres, nomin)
     character(len=19) :: trange
 !
 !-----------------------------------------------------------------------
-    integer :: nmc
+    integer(kind=8) :: nmc
 !-----------------------------------------------------------------------
     call jemarq()
     trange = nomin

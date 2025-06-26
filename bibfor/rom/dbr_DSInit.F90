@@ -44,7 +44,7 @@ subroutine dbr_DSInit(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(ROM_DS_ParaDBR_POD)    :: paraPod
     type(ROM_DS_ParaDBR_Greedy) :: paraGreedy
     type(ROM_DS_ParaDBR_Trunc)  :: paraTrunc

@@ -26,9 +26,9 @@ interface
         character(len=*) :: mate, mateco
         character(len=*) :: cara
         character(len=8) :: chmat
-        integer :: nh
-        integer :: nbocc
-        integer :: iresu
+        integer(kind=8) :: nh
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: iresu
         character(len=*) :: nomcmd
     end subroutine peweib
 end interface

@@ -19,8 +19,8 @@
 subroutine trvocz(ndim, nbvmas, livmas, jrepmo, &
                   jcelds, jcelvs, trxmoy)
     implicit none
-    integer, intent(in) :: ndim, nbvmas, livmas(nbvmas)
-    integer, intent(in) :: jrepmo, jcelds, jcelvs
+    integer(kind=8), intent(in) :: ndim, nbvmas, livmas(nbvmas)
+    integer(kind=8), intent(in) :: jrepmo, jcelds, jcelvs
     real(kind=8), intent(out) :: trxmoy
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -46,8 +46,8 @@ subroutine trvocz(ndim, nbvmas, livmas, jrepmo, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: numavo, jgrel, jelem, iainfo, iaval, nlong, nbpg, nbsig
-    integer :: idecpg, j, kpg, lgcat
+    integer(kind=8) :: numavo, jgrel, jelem, iainfo, iaval, nlong, nbpg, nbsig
+    integer(kind=8) :: idecpg, j, kpg, lgcat
     real(kind=8) :: trxtmp, equi(17)
 !
 ! ----------------------------------------------------------------------

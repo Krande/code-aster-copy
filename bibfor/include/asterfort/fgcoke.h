@@ -21,7 +21,7 @@
 interface
     subroutine fgcoke(nbcycl, sigmin, sigmax, n, m,&
                       sm, rke)
-        integer :: nbcycl
+        integer(kind=8) :: nbcycl
         real(kind=8) :: sigmin(*)
         real(kind=8) :: sigmax(*)
         real(kind=8) :: n

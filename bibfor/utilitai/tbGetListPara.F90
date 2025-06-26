@@ -26,10 +26,10 @@ subroutine tbGetListPara(tabl_namez, nb_para, v_list_para, v_type_para, nb_line)
 #include "asterfort/as_deallocate.h"
 !
     character(len=*), intent(in) :: tabl_namez
-    integer, intent(out) :: nb_para
+    integer(kind=8), intent(out) :: nb_para
     character(len=24), pointer :: v_list_para(:)
     character(len=24), pointer :: v_type_para(:)
-    integer, intent(out) :: nb_line
+    integer(kind=8), intent(out) :: nb_line
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,11 +48,11 @@ subroutine tbGetListPara(tabl_namez, nb_para, v_list_para, v_type_para, nb_line)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24), pointer :: v_tblp(:) => null()
-    integer, pointer :: v_tbnp(:) => null()
-    integer :: i_para
+    integer(kind=8), pointer :: v_tbnp(:) => null()
+    integer(kind=8) :: i_para
     character(len=19) :: tabl_name
     character(len=24), pointer :: v_list_par1(:) => null()
-    integer, pointer :: v_tabint(:) => null()
+    integer(kind=8), pointer :: v_tabint(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

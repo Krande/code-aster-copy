@@ -21,6 +21,6 @@
 interface
     function jdcget(nomatr)
         character(len=*), intent(in) :: nomatr
-        integer :: jdcget
+        integer(kind=8) :: jdcget
     end function jdcget
 end interface

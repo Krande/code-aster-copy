@@ -33,7 +33,7 @@ subroutine te0023(option, nomte)
 !
 ! INITIALISATION DU CHAMP STRX_ELGA
 !
-    integer :: iorien, istrx, i, kpg, npg, ncomp
+    integer(kind=8) :: iorien, istrx, i, kpg, npg, ncomp
 !     ------------------------------------------------------------------
 !
     ASSERT(option .eq. 'INI_STRX')

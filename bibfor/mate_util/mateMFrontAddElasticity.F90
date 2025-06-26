@@ -36,8 +36,8 @@ subroutine mateMFrontAddElasticity(l_mfront_func, l_mfront_anis, &
 !
     aster_logical, intent(in) :: l_mfront_func, l_mfront_anis
     character(len=8), intent(in) :: mate
-    integer, intent(in) :: i_mate_add
-    integer, intent(in) :: mfront_nbvale
+    integer(kind=8), intent(in) :: i_mate_add
+    integer(kind=8), intent(in) :: mfront_nbvale
     character(len=16), intent(in) :: mfront_prop(16)
     real(kind=8), intent(in) :: mfront_valr(16)
     character(len=16), intent(in) :: mfront_valk(16)
@@ -64,7 +64,7 @@ subroutine mateMFrontAddElasticity(l_mfront_func, l_mfront_anis, &
     character(len=6) :: nom
     character(len=32) :: nomrc_mfront
     character(len=19) :: noobrc_add
-    integer :: nb_prop, i_prop, i_mfront, nb_prop_r, nb_prop_c, nb_prop_k
+    integer(kind=8) :: nb_prop, i_prop, i_mfront, nb_prop_r, nb_prop_c, nb_prop_k
     character(len=16) :: mf_prop_name, cv_prop_name
     character(len=32), pointer :: v_mate(:) => null()
     character(len=16), pointer :: v_mate_valk(:) => null()

@@ -35,15 +35,15 @@ subroutine ffgra1(nbfonc, idebit, nbp1, nbp2, long, &
 !
 !
 #include "jeveux.h"
-    integer :: nbfonc, idebit, nbp1, nbp2
+    integer(kind=8) :: nbfonc, idebit, nbp1, nbp2
     real(kind=8) :: long, disc(nbp1+nbp2), vale(nbp1+nbp2, nbfonc)
 !
-    integer :: nbtron, ideb(3), ifin(3)
+    integer(kind=8) :: nbtron, ideb(3), ifin(3)
     real(kind=8) :: xdeb(3), x0(3), coef18(90), coef30(90)
     real(kind=8) :: lambda
 !
 !-----------------------------------------------------------------------
-    integer :: i, imod, ip, itron, nbmod, nbp
+    integer(kind=8) :: i, imod, ip, itron, nbmod, nbp
     real(kind=8) :: coef1, coef2, coef3, coef4, dx, x, xref
 !
 !-----------------------------------------------------------------------

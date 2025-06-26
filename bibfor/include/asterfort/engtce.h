@@ -20,7 +20,7 @@
 !
 interface
     subroutine engtce(ific, chamel, typtes, preci, formr)
-        integer :: ific
+        integer(kind=8) :: ific
         character(len=19) :: chamel
         character(len=8) :: typtes
         character(len=10) :: preci

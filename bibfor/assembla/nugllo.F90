@@ -54,31 +54,31 @@ subroutine nugllo(nu, base)
 !----------------------------------------------------------------------
 !
 !
-    integer :: nbma, jconx2
-    integer :: rang, numa, nbnoma, nbno, ino, nuno
-    integer :: nec, nlili, neql, idprn2, ili, ntot
-    integer :: idpr21, idpr22, numinc, numec, nddl
-    integer :: neqg, iddl, jnulg
-    integer :: jnueql, ddl1g, ddl1l, jdelgl, j1
-    integer :: iel, igr, nel, k1, n1, j, ilib
-    integer :: nbproc, vali(1), jnugl, ieqg
+    integer(kind=8) :: nbma, jconx2
+    integer(kind=8) :: rang, numa, nbnoma, nbno, ino, nuno
+    integer(kind=8) :: nec, nlili, neql, idprn2, ili, ntot
+    integer(kind=8) :: idpr21, idpr22, numinc, numec, nddl
+    integer(kind=8) :: neqg, iddl, jnulg
+    integer(kind=8) :: jnueql, ddl1g, ddl1l, jdelgl, j1
+    integer(kind=8) :: iel, igr, nel, k1, n1, j, ilib
+    integer(kind=8) :: nbproc, vali(1), jnugl, ieqg
 !
     character(len=8) :: noma, mo
     character(len=19) :: ligrmo, nomlig, partit
 !----------------------------------------------------------------------
     aster_logical :: ldist, ldgrel
-    integer, pointer :: ddl_pres(:) => null()
-    integer, pointer :: delg_tmp(:) => null()
-    integer, pointer :: tab_eq(:) => null()
-    integer, pointer :: tab_no(:) => null()
-    integer, pointer :: adli(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: ddl_pres(:) => null()
+    integer(kind=8), pointer :: delg_tmp(:) => null()
+    integer(kind=8), pointer :: tab_eq(:) => null()
+    integer(kind=8), pointer :: tab_no(:) => null()
+    integer(kind=8), pointer :: adli(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=24), pointer :: prtk(:) => null()
-    integer, pointer :: delg(:) => null()
-    integer, pointer :: adne(:) => null()
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: prn1(:) => null()
-    integer, pointer :: maille(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
+    integer(kind=8), pointer :: adne(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: prn1(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
     mpi_int :: mrank, msize
 !
 !---- FONCTION D ACCES AUX ELEMENTS DES CHAMPS PRNO DES S.D. LIGREL

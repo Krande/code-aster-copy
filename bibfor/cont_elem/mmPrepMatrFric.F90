@@ -34,7 +34,7 @@ subroutine mmPrepMatrFric(ndim, nbcps, &
 #include "asterfort/mmmmpb.h"
 #include "asterfort/pmavec.h"
 !
-    integer, intent(in) :: ndim, nbcps
+    integer(kind=8), intent(in) :: ndim, nbcps
     real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
     real(kind=8), intent(in) :: rese(3), nrese
     real(kind=8), intent(in) :: dlagrf(2), djeut(3)
@@ -80,8 +80,8 @@ subroutine mmPrepMatrFric(ndim, nbcps, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbcpf
-    integer :: i, j, k
+    integer(kind=8) :: nbcpf
+    integer(kind=8) :: i, j, k
     real(kind=8) :: matprb(3, 3), hp1(3), hp2(3), hp(3, 2)
     real(kind=8) :: c1(3), c2(3), c3(3), gp1(3), gp2(3), gp3(3), gp(3, 3)
 !

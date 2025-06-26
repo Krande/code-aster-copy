@@ -23,8 +23,8 @@ interface
         character(len=*) :: nomte
         real(kind=8) :: rho
         real(kind=8) :: xnu
-        integer :: icdmat
+        integer(kind=8) :: icdmat
         real(kind=8) :: klv(*)
-        integer :: nl
+        integer(kind=8) :: nl
     end subroutine porigy
 end interface

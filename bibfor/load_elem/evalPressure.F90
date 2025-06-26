@@ -31,8 +31,8 @@ subroutine evalPressure(lFunc, lTime, time, &
 #include "asterfort/evalPressureSetFuncPara.h"
 !
     aster_logical, intent(in) :: lFunc, lTime
-    integer, intent(in) :: cellDime, nbNode, ipg
-    integer, intent(in) :: jvGeom, jvShapFunc, jvPres
+    integer(kind=8), intent(in) :: cellDime, nbNode, ipg
+    integer(kind=8), intent(in) :: jvGeom, jvShapFunc, jvPres
     real(kind=8), intent(in) :: time
     real(kind=8), intent(out) :: pres
     real(kind=8), optional, intent(out) :: cisa_
@@ -61,10 +61,10 @@ subroutine evalPressure(lFunc, lTime, time, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: paraNbMax = 7
+    integer(kind=8), parameter :: paraNbMax = 7
     character(len=8) :: paraName(paraNbMax)
     real(kind=8) :: paraVale(paraNbMax)
-    integer :: iNode, ldec, iret, paraNb
+    integer(kind=8) :: iNode, ldec, iret, paraNb
 !
 ! --------------------------------------------------------------------------------------------------
 !

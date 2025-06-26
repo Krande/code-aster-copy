@@ -51,13 +51,13 @@ subroutine nunuco_l(mesh, ds_contact, nume_dof, sdnume)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nt_patch, nb_equa, i_equa, i_patch, nume_node
+    integer(kind=8) :: nt_patch, nb_equa, i_equa, i_patch, nume_node
     character(len=8) :: type_equa
     character(len=24) :: sdcont_ddlc
-    integer, pointer :: v_sdcont_ddlc(:) => null()
+    integer(kind=8), pointer :: v_sdcont_ddlc(:) => null()
     character(len=24) :: sdnume_nuco
-    integer, pointer :: v_sdnume_nuco(:) => null()
-    integer, pointer :: v_mesh_conopa(:) => null()
+    integer(kind=8), pointer :: v_sdnume_nuco(:) => null()
+    integer(kind=8), pointer :: v_mesh_conopa(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

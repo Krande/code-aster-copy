@@ -20,6 +20,6 @@ interface
     subroutine romBaseCreate(base, nbMode_)
         use Rom_Datastructure_type
         type(ROM_DS_Empi), intent(in) :: base
-        integer, intent(in), optional :: nbMode_
+        integer(kind=8), intent(in), optional :: nbMode_
     end subroutine romBaseCreate
 end interface

@@ -22,6 +22,6 @@ interface
     subroutine postcoq3d(option,nomte,nbcou)
         character(len=16) :: nomte
         character(len=16) :: option
-        integer :: nbcou
+        integer(kind=8) :: nbcou
     end subroutine postcoq3d
 end interface

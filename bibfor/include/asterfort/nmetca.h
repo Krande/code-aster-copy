@@ -24,7 +24,7 @@ interface
         character(len=24), intent(in) :: model, mate
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
     end subroutine nmetca
 end interface

@@ -52,7 +52,7 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 #include "asterfort/utbtab.h"
 #include "asterfort/vectan.h"
 #include "asterfort/Behaviour_type.h"
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     character(len=16) :: nomte
     real(kind=8) :: sigmau(ncmp, 1), sigrtg(ncmp, 1)
 ! -----  VARIABLES LOCALES
@@ -67,9 +67,9 @@ subroutine caurtg(nomte, ncmp, sigmau, sigrtg)
 ! --- INITIALISATIONS :
 !     ---------------
 !-----------------------------------------------------------------------
-    integer :: i, idepl, igeom, ii, in, iret
+    integer(kind=8) :: i, idepl, igeom, ii, in, iret
     character(len=16), pointer :: compor(:) => null()
-    integer :: lzi, lzr, nb1, nb2
+    integer(kind=8) :: lzi, lzr, nb1, nb2
 !-----------------------------------------------------------------------
     lgreen = .false.
 !

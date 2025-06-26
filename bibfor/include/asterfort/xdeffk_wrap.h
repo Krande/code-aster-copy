@@ -20,8 +20,8 @@
 !
 interface
     subroutine xdeffk_wrap(kappa, mu, r, theta, ndim, fkpo, option, istano)
-        integer :: ndim
-        integer :: istano
+        integer(kind=8) :: ndim
+        integer(kind=8) :: istano
         real(kind=8) :: r
         real(kind=8) :: theta
         real(kind=8) :: kappa

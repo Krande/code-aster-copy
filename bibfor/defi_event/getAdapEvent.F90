@@ -25,8 +25,8 @@ subroutine getAdapEvent(sddisc, i_adap, eventType)
 #include "asterfort/jeveuo.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: i_adap
-    integer, intent(out) :: eventType
+    integer(kind=8), intent(in) :: i_adap
+    integer(kind=8), intent(out) :: eventType
 !
 ! --------------------------------------------------------------------------------------------------
 !

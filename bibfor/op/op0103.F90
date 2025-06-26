@@ -32,7 +32,7 @@ subroutine op0103()
 #include "asterfort/asmpi_info.h"
     character(len=8) :: model
     character(len=24) :: kdis
-    integer :: ib, nbproc, n1
+    integer(kind=8) :: ib, nbproc, n1
     mpi_int :: mrank, msize
 !------------------------------------------------------------------
 !

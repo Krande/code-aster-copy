@@ -43,7 +43,7 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbchs
+    integer(kind=8) :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
     aster_logical :: lcumul(nbchs), lcoc
     real(kind=8) :: lcoefr(nbchs)
@@ -76,11 +76,11 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
 !  A LA LISTE LICHS (CHAM_ELEM_S IN/OUT)
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: jce1k, jce1d, jce1v, jce1l, jce1c, nbma, n1, k
-    integer :: jce3d, jce3v, jce3l, vali(3)
-    integer :: jcmpgd, ichs, icmp, icmp3, ncmp3
-    integer :: ncmpmx, ncmp1, icmp1
-    integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, coefi, ncmp
+    integer(kind=8) :: jce1k, jce1d, jce1v, jce1l, jce1c, nbma, n1, k
+    integer(kind=8) :: jce3d, jce3v, jce3l, vali(3)
+    integer(kind=8) :: jcmpgd, ichs, icmp, icmp3, ncmp3
+    integer(kind=8) :: ncmpmx, ncmp1, icmp1
+    integer(kind=8) :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, coefi, ncmp
     character(len=8) :: ma, nomgd, nocmp, typces, nomcmp
     character(len=3) :: tsca
     character(len=19) :: ces1, ces3
@@ -88,12 +88,12 @@ subroutine cesfus(nbchs, lichs, lcumul, lcoefr, lcoefc, &
     complex(kind=8) :: coefc
     aster_logical :: cumul
     character(len=8), pointer :: ce3c(:) => null()
-    integer, pointer :: corr_cmp(:) => null()
+    integer(kind=8), pointer :: corr_cmp(:) => null()
     character(len=8), pointer :: licmp(:) => null()
-    integer, pointer :: nbcmp(:) => null()
-    integer, pointer :: vnbpt(:) => null()
-    integer, pointer :: vnbsp(:) => null()
-    integer, pointer :: nucmp(:) => null()
+    integer(kind=8), pointer :: nbcmp(:) => null()
+    integer(kind=8), pointer :: vnbpt(:) => null()
+    integer(kind=8), pointer :: vnbsp(:) => null()
+    integer(kind=8), pointer :: nucmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !        CALL IMPRSD('CHAMP',LICHS(1),6,'cesfus in 1')

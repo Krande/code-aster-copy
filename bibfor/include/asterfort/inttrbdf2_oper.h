@@ -21,7 +21,7 @@
 interface
     subroutine inttrbdf2_oper(nbequ, par, mgen, kgen, cgen, &
                             ktilda, ftild1, ftild2)
-        integer     , intent(in)  :: nbequ
+        integer(kind=8)     , intent(in)  :: nbequ
         real(kind=8)              :: par(:)
         real(kind=8), pointer  :: mgen(:)
         real(kind=8), pointer  :: kgen(:)

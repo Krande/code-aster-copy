@@ -23,11 +23,11 @@ interface
                       nbmax, noeu, tablev)
         character(len=19) :: macofo
         character(len=8) :: noma
-        integer :: nbmac
-        integer :: nbnoff
-        integer :: nbnose
-        integer :: nbmax
+        integer(kind=8) :: nbmac
+        integer(kind=8) :: nbnoff
+        integer(kind=8) :: nbnose
+        integer(kind=8) :: nbmax
         character(len=8) :: noeu
-        integer :: tablev(2)
+        integer(kind=8) :: tablev(2)
     end subroutine fonno2
 end interface

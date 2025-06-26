@@ -36,8 +36,8 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
-    integer :: sompgw, jrwork, tspaq, ipg, jvecno, jnorma
+    integer(kind=8) :: nbvec, jvectn, jvectu, jvectv, nbordr, kwork
+    integer(kind=8) :: sompgw, jrwork, tspaq, ipg, jvecno, jnorma
     character(len=16) :: nommet, forcri
     character(len=8) :: nompar(35)
     real(kind=8) :: respc(24), vnmax(6), vanocr(23)
@@ -80,15 +80,15 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
 ! ----------------------------------------------------------------------
 !
 ! ----------------------------------------------------------------------
-    integer :: i, j, k
-    integer :: mnmax(2)
+    integer(kind=8) :: i, j, k
+    integer(kind=8) :: mnmax(2)
 !
-    integer :: nparma, praccr(35)
-    integer :: ibid, jresun
-    integer :: jprof, np, dectau, ipar
-    integer :: jdtaum, jtauma, jsgnma, jdsgma
-    integer :: jdgama, jgamma, jepnma, jdenma
-    integer :: jdgpma, jgapma, jeppma, jdepma
+    integer(kind=8) :: nparma, praccr(35)
+    integer(kind=8) :: ibid, jresun
+    integer(kind=8) :: jprof, np, dectau, ipar
+    integer(kind=8) :: jdtaum, jtauma, jsgnma, jdsgma
+    integer(kind=8) :: jdgama, jgamma, jepnma, jdenma
+    integer(kind=8) :: jdgpma, jgapma, jeppma, jdepma
 !
     real(kind=8) :: epsilo, pi
     real(kind=8) :: valpar(35), valpu(35)

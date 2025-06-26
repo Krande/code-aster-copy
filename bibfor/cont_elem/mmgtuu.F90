@@ -32,7 +32,7 @@ subroutine mmgtuu(ndim, nne, nnm, &
 #include "asterfort/mmgtme.h"
 #include "asterfort/mmgtmm.h"
 !
-    integer, intent(in) :: ndim, nne, nnm
+    integer(kind=8), intent(in) :: ndim, nne, nnm
     real(kind=8), intent(in) :: wpg, ffe(9), ffm(9), dffm(2, 9), ddffm(3, 9)
     real(kind=8), intent(in) :: jacobi, coefac, coefff, jeu, dlagrc
     real(kind=8), intent(in) :: mprt1n(3, 3), mprt2n(3, 3), mprnt1(3, 3), mprnt2(3, 3)

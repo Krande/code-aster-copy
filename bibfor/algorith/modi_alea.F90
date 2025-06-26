@@ -47,7 +47,7 @@ subroutine modi_alea(ma, alea)
 #include "asterfort/jeveuo.h"
 #include "asterfort/assert.h"
 #include "asterfort/ggubs.h"
-    integer :: n1, jcoor, nno, ino
+    integer(kind=8) :: n1, jcoor, nno, ino
     character(len=8) :: ma8
     character(len=24) :: coorjv
     real(kind=8) :: xmin, xmax, ymin, ymax, zmin, zmax, xdim(3), x, y, z

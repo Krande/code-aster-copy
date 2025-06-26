@@ -30,17 +30,17 @@ subroutine lcelem(nomte, elem_dime, &
 #include "asterfort/lteatt.h"
 !
     character(len=16), intent(in) :: nomte
-    integer, intent(out) :: elem_dime
+    integer(kind=8), intent(out) :: elem_dime
     aster_logical, intent(out) :: l_axis
-    integer, intent(out) :: nb_dof
-    integer, intent(out) :: nb_lagr
-    integer, intent(out) :: indi_lagc(10)
+    integer(kind=8), intent(out) :: nb_dof
+    integer(kind=8), intent(out) :: nb_lagr
+    integer(kind=8), intent(out) :: indi_lagc(10)
     character(len=8), intent(out) :: elem_slav_code
     character(len=8), intent(out) :: elga_fami_slav
-    integer, intent(out) :: nb_node_slav
+    integer(kind=8), intent(out) :: nb_node_slav
     character(len=8), intent(out) :: elem_mast_code
     character(len=8), intent(out) :: elga_fami_mast
-    integer, intent(out) :: nb_node_mast
+    integer(kind=8), intent(out) :: nb_node_mast
 !
 ! --------------------------------------------------------------------------------------------------
 !

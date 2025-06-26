@@ -20,11 +20,11 @@
 !
 interface
     subroutine ptfocp(itype, option, xl, nno, nc, pgl, fer, fei)
-        integer :: itype
+        integer(kind=8) :: itype
         character(len=*) :: option
         real(kind=8) :: xl
-        integer :: nno
-        integer :: nc
+        integer(kind=8) :: nno
+        integer(kind=8) :: nc
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: fer(12)
         real(kind=8) :: fei(12)

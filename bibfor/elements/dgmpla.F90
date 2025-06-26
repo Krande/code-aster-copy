@@ -27,7 +27,7 @@ subroutine dgmpla(eb, nub, ea, sya, num, &
 !
     real(kind=8) :: eb, nub, ea(*), sya(*), num, nuf
     real(kind=8) :: h, a, b1, b, mp, rx(*), ry(*)
-    integer :: nnap, ilit1
+    integer(kind=8) :: nnap, ilit1
 !
 ! - PARAMETRES SORTANTS
     real(kind=8) :: drp, d3, w

@@ -24,8 +24,8 @@ interface
                       qik, x0pg, tetag, tetapg, rotm,&
                       rotkm1, rotk)
         real(kind=8) :: stoudy
-        integer :: kp
-        integer :: nno
+        integer(kind=8) :: kp
+        integer(kind=8) :: nno
         real(kind=8) :: ajacob
         real(kind=8) :: en(3, 2)
         real(kind=8) :: enprim(3, 2)

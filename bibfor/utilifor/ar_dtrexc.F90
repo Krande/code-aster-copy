@@ -118,7 +118,7 @@ subroutine ar_dtrexc(compq, n, t, ldt, q, &
 #include "asterfort/xerbla.h"
 #include "blas/lsame.h"
     character(len=1) :: compq
-    integer :: ifst, ilst, info, ldq, ldt, n
+    integer(kind=8) :: ifst, ilst, info, ldq, ldt, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     real(kind=8) :: q(ldq, *), t(ldt, *), work(*)
@@ -129,7 +129,7 @@ subroutine ar_dtrexc(compq, n, t, ldt, q, &
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: wantq
-    integer :: here, nbf, nbl, nbnext
+    integer(kind=8) :: here, nbf, nbl, nbnext
 !     ..
 !     .. EXTERNAL FUNCTIONS ..
 !     ..

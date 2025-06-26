@@ -25,9 +25,9 @@ interface
                       actite)
         character(len=19) :: sddisc
         character(len=19) :: tabinc(*)
-        integer :: liccvg(*)
+        integer(kind=8) :: liccvg(*)
         aster_logical :: itemax
         aster_logical :: conver
-        integer :: actite
+        integer(kind=8) :: actite
     end subroutine pmevdr
 end interface

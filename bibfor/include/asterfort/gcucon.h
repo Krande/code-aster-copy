@@ -20,6 +20,6 @@ interface
     subroutine gcucon(result_name, type_name, ier)
         character(len=*), intent(in) :: result_name
         character(len=*), intent(in) :: type_name
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine gcucon
 end interface

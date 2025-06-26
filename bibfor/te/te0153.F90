@@ -49,9 +49,9 @@ subroutine te0153(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codres(1)
-    integer :: i, iacce, imate, lmat, lorien, lsect
-    integer :: lvec, nc, nno
+    integer(kind=8) :: codres(1)
+    integer(kind=8) :: i, iacce, imate, lmat, lorien, lsect
+    integer(kind=8) :: lvec, nc, nno
     real(kind=8) :: e(1), rho(1), pgl(3, 3), mat(21), matr(21)
     real(kind=8) :: a, xl, xrig, xmas, matp(6, 6), mat2dm(4, 4), mat2dv(10)
     real(kind=8) :: r8b

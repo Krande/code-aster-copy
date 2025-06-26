@@ -25,21 +25,21 @@ interface
                       npg, ipg, wref, vff1, vff2,&
                       idf2, dffr2, geom, iu, ip,&
                       sigref, fhyref, vect)
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: nddl
-        integer :: ndim
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: nddl
+        integer(kind=8) :: ndim
         aster_logical :: axi
-        integer :: ipg
+        integer(kind=8) :: ipg
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)
-        integer :: idf2
+        integer(kind=8) :: idf2
         real(kind=8) :: dffr2(ndim-1, nno2, npg)
         real(kind=8) :: geom(ndim, nno2)
-        integer :: iu(3, 16)
-        integer :: ip(8)
+        integer(kind=8) :: iu(3, 16)
+        integer(kind=8) :: ip(8)
         real(kind=8) :: sigref
         real(kind=8) :: fhyref
         real(kind=8) :: vect(nddl)

@@ -33,12 +33,12 @@ subroutine cpncq8(main, numa, coor, ind, nomnoe, conneo)
 #include "asterfort/utmess.h"
 #include "asterfort/reerel.h"
 !
-    integer, intent(in) :: ind
-    integer, intent(in) :: numa
+    integer(kind=8), intent(in) :: ind
+    integer(kind=8), intent(in) :: numa
     real(kind=8), intent(out) :: coor(3, *)
     character(len=8), intent(in) :: main
     character(len=24), intent(in) :: nomnoe
-    integer, intent(in) :: conneo(*)
+    integer(kind=8), intent(in) :: conneo(*)
 !
 !
 ! ----------------------------------------------------------------------
@@ -54,8 +54,8 @@ subroutine cpncq8(main, numa, coor, ind, nomnoe, conneo)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: lino(8), jtab, lgnd, iret
-    integer :: inc1, inc2, aux
+    integer(kind=8) :: lino(8), jtab, lgnd, iret
+    integer(kind=8) :: inc1, inc2, aux
     real(kind=8) ::xe(3), xp(3), tabar(8*3)
 !
     character(len=8) :: nomnd, eletyp

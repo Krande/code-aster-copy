@@ -22,15 +22,15 @@ interface
     subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd,&
                       iord, iorg, iora, cmode, vecmod,&
                       neq, beta)
-        integer :: neq
-        integer :: nbdax
-        integer :: nbddr
-        integer :: nbmod
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbdax
+        integer(kind=8) :: nbddr
+        integer(kind=8) :: nbmod
         character(len=8) :: basmod
         character(len=24) :: tetgd
-        integer :: iord(nbddr)
-        integer :: iorg(nbddr)
-        integer :: iora(nbdax)
+        integer(kind=8) :: iord(nbddr)
+        integer(kind=8) :: iorg(nbddr)
+        integer(kind=8) :: iora(nbdax)
         complex(kind=8) :: cmode(nbmod+nbddr+nbdax)
         complex(kind=8) :: vecmod(neq)
         real(kind=8) :: beta

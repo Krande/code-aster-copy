@@ -18,7 +18,7 @@
 !
 interface
     subroutine caecha(load, model, mesh, geomDime, valeType)
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=4), intent(in) :: valeType
         character(len=8), intent(in) :: load, mesh, model
     end subroutine caecha

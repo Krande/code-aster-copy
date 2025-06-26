@@ -36,7 +36,7 @@ subroutine echell(geomi, ech)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: n1, i, iadcoo
+    integer(kind=8) :: n1, i, iadcoo
     character(len=19) :: geomi
     character(len=24) :: coorjv
     real(kind=8) :: ech

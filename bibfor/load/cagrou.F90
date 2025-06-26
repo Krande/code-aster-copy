@@ -61,30 +61,30 @@ subroutine cagrou(load, mesh, vale_type, phenom)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_term
+    integer(kind=8) :: nb_term
     parameter(nb_term=2)
     real(kind=8) :: coef_real_unit(nb_term)
     complex(kind=8) :: coef_cplx_unit(nb_term)
     character(len=8) :: dof_name(nb_term)
     character(len=8) :: node_name(nb_term)
-    integer :: node_nume(nb_term)
-    integer :: repe_type(nb_term)
+    integer(kind=8) :: node_nume(nb_term)
+    integer(kind=8) :: repe_type(nb_term)
     real(kind=8) :: repe_defi(3, nb_term)
     character(len=4) :: coef_type
     character(len=16) :: keywordfact
     character(len=19) :: list_rela
-    integer :: ibid
-    integer :: nliai
+    integer(kind=8) :: ibid
+    integer(kind=8) :: nliai
     real(kind=8) :: vale_real_zero
     character(len=8) :: vale_func_zero
     complex(kind=8) :: vale_cplx_zero
-    integer :: iocc, i_no, i_dof
+    integer(kind=8) :: iocc, i_no, i_dof
     character(len=24) :: list_node
-    integer :: jlino
-    integer :: nb_node
+    integer(kind=8) :: jlino
+    integer(kind=8) :: nb_node
     character(len=24) :: list_dof
-    integer :: jlidof
-    integer :: nb_dof, ier
+    integer(kind=8) :: jlidof
+    integer(kind=8) :: nb_dof, ier
     aster_logical :: lcolle
 !
     data repe_type/0, 0/

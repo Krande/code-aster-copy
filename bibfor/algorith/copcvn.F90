@@ -36,10 +36,10 @@ subroutine copcvn(nb, vec1, vec2, indir, fact)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nb, indir(nb)
+    integer(kind=8) :: nb, indir(nb)
     real(kind=8) :: vec1(*), vec2(nb)
     real(kind=8) :: fact
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
 !
     if (nb .eq. 0) goto 999

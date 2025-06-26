@@ -40,11 +40,11 @@ subroutine lkcnvx(sigd, sigf, nvi, vind, nmat, &
 #include "asterfort/lkcrip.h"
 #include "asterfort/lkcriv.h"
 #include "asterfort/utmess.h"
-    integer :: nmat, nvi
+    integer(kind=8) :: nmat, nvi
     real(kind=8) :: mater(nmat, 2), seuil
     real(kind=8) :: sigd(6), sigf(6), vind(nvi), vinf(nvi)
 !
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: i1, devsig(6), ubid, sigt(6), sigu(6)
     real(kind=8) :: xit, seuilp, seuilv, zero, un, somme
 !

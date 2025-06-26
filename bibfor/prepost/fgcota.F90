@@ -29,11 +29,11 @@ subroutine fgcota(npic, pic, ncyc, sigmin, sigmax)
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: pic(*), e1, e2, sigmax(*), sigmin(*)
-    integer :: npic, ncyc, k
+    integer(kind=8) :: npic, ncyc, k
     aster_logical :: cyczer
 !       ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     ncyc = 0
     i = 1

@@ -21,12 +21,12 @@
 interface
     subroutine mdgep4(neq, nbexci, psidel, temps, nomfon,&
                       iddl, rep)
-        integer :: neq
-        integer :: nbexci
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbexci
         real(kind=8) :: psidel(neq, *)
         real(kind=8) :: temps
         character(len=8) :: nomfon(*)
-        integer :: iddl
+        integer(kind=8) :: iddl
         real(kind=8) :: rep
     end subroutine mdgep4
 end interface

@@ -24,7 +24,7 @@ subroutine ibcael(type)
 #include "asterfort/utmess.h"
     character(len=*) :: type
     character(len=8) :: nomf
-    integer :: info
+    integer(kind=8) :: info
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

@@ -49,8 +49,8 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: tdisp, nbnop, lisnoe(nbnop), nbnot, nbordr, nnoini
-    integer :: tspaq
+    integer(kind=8) :: tdisp, nbnop, lisnoe(nbnop), nbnot, nbordr, nnoini
+    integer(kind=8) :: tspaq
     aster_logical :: fordef, post
     real(kind=8) :: vwork(tdisp), resu(7)
     character(len=8) :: nommai, nommap
@@ -85,14 +85,14 @@ subroutine avgrno(vwork, tdisp, lisnoe, nbnot, nbordr, &
 !  - LA TAILLE DU SOUS-PAQUET EST EGALE A LA TAILLE DU <<PAQUET>> DE
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
-    integer :: i
-    integer :: jcnrd, jcnrl, iret, icesd, icesl, icesv
-    integer :: tneces, tdisp2(1), n, k
-    integer :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
-    integer :: l, cnbno, ibidno, kwork, somnow, inop
-    integer :: nbma, adrma, jtypma
-    integer :: icmp, jad
-    integer :: vali(2), nbvecm, paract(35)
+    integer(kind=8) :: i
+    integer(kind=8) :: jcnrd, jcnrl, iret, icesd, icesl, icesv
+    integer(kind=8) :: tneces, tdisp2(1), n, k
+    integer(kind=8) :: nunoe, ideb, dim, j, ngam, tab2(18), ifin
+    integer(kind=8) :: l, cnbno, ibidno, kwork, somnow, inop
+    integer(kind=8) :: nbma, adrma, jtypma
+    integer(kind=8) :: icmp, jad
+    integer(kind=8) :: vali(2), nbvecm, paract(35)
 !
     real(kind=8) :: fatsoc, dgam, gamma, pi, dphi, tab1(18), phi0
     real(kind=8) :: vala, valb, coefpa, cudomx

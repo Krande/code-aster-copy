@@ -49,20 +49,20 @@ subroutine mltpre(mat19, renumz)
     character(len=1) :: base
     character(len=19) :: mat19, solv19
     character(len=14) :: nu
-    integer :: nec, i, icol
+    integer(kind=8) :: nec, i, icol
     character(len=8) :: nomgd
     character(len=8) :: renum, renum2
-    integer :: ismhc, iprno, diag
-    integer :: lgadjn, adjnc1, adjnc2, desc
-    integer :: supnd, anc, nouv, fils, frere, lgsn, lfront, nbass
-    integer :: debfsn, adpile, adress, nblign, lgbloc, ncbloc, lbd1, lbd2, rl
-    integer :: rl1, rl2, xadj1, xadj2, seq, parend, supnd2, trav1, trav2
-    integer :: trav3, trav4, p, q, invp, perm, invsup
-    integer :: lmat, lgind, global, local, decal
-    integer :: mrl, ino, nbsn, iddl, nbloc, neq, nrl, lgpile
-    integer :: n2, lt, lglist, deb, vois1, vois2, suit1, suit2, globa, loca
-    integer :: iret, optnum, ier, jrenu
-    integer :: noeud, ddl, permnd, invpnd, spndnd, ddlmoy, xadjd
+    integer(kind=8) :: ismhc, iprno, diag
+    integer(kind=8) :: lgadjn, adjnc1, adjnc2, desc
+    integer(kind=8) :: supnd, anc, nouv, fils, frere, lgsn, lfront, nbass
+    integer(kind=8) :: debfsn, adpile, adress, nblign, lgbloc, ncbloc, lbd1, lbd2, rl
+    integer(kind=8) :: rl1, rl2, xadj1, xadj2, seq, parend, supnd2, trav1, trav2
+    integer(kind=8) :: trav3, trav4, p, q, invp, perm, invsup
+    integer(kind=8) :: lmat, lgind, global, local, decal
+    integer(kind=8) :: mrl, ino, nbsn, iddl, nbloc, neq, nrl, lgpile
+    integer(kind=8) :: n2, lt, lglist, deb, vois1, vois2, suit1, suit2, globa, loca
+    integer(kind=8) :: iret, optnum, ier, jrenu
+    integer(kind=8) :: noeud, ddl, permnd, invpnd, spndnd, ddlmoy, xadjd
     character(len=24) :: nomloc, nomad1, nomad2, nomglo, nomadi
     character(len=24) :: nomdeb, nomvoi, nomsui, nopglo, noploc
     character(len=24) :: nomt01, nomt02, nomt04, nomt05, nomt06, nomt07
@@ -75,11 +75,11 @@ subroutine mltpre(mat19, renumz)
     aster_logical :: nivdbg, matgen
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: smde(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: delg(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
     data nomglo/'              .MLTF.GLOB'/
     data nomloc/'              .MLTF.LOCL'/
     data nomadi/'              .MLTF.ADNT'/

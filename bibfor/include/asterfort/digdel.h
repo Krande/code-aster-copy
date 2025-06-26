@@ -20,7 +20,7 @@
 !
 interface
     function digdel(modelo)
-        integer :: modelo
-        integer :: digdel
+        integer(kind=8) :: modelo
+        integer(kind=8) :: digdel
     end function digdel
 end interface

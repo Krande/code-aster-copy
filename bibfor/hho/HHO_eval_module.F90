@@ -59,10 +59,10 @@ contains
         implicit none
 !
         type(HHO_basis_cell), intent(inout) :: hhoBasisCell
-        integer, intent(in) :: order
+        integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer, intent(in) :: size_coeff
+        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -99,10 +99,10 @@ contains
         implicit none
 !
         type(HHO_basis_face), intent(inout) :: hhoBasisFace
-        integer, intent(in) :: order
+        integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer, intent(in) :: size_coeff
+        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -139,10 +139,10 @@ contains
         implicit none
 !
         type(HHO_basis_cell), intent(inout) :: hhoBasisCell
-        integer, intent(in) :: order
+        integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer, intent(in) :: size_coeff
+        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -156,7 +156,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
-        integer :: i, size_cmp, deca
+        integer(kind=8) :: i, size_cmp, deca
         blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
@@ -185,10 +185,10 @@ contains
         implicit none
 !
         type(HHO_basis_face), intent(inout) :: hhoBasisFace
-        integer, intent(in) :: order
+        integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer, intent(in) :: size_coeff
+        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval(3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -202,7 +202,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
-        integer :: i, size_cmp, deca
+        integer(kind=8) :: i, size_cmp, deca
         blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
@@ -231,10 +231,10 @@ contains
         implicit none
 !
         type(HHO_basis_cell), intent(inout) :: hhoBasisCell
-        integer, intent(in) :: order
+        integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer, intent(in) :: size_coeff
+        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval(3, 3)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -248,7 +248,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
-        integer :: i, j, size_cmp, deca
+        integer(kind=8) :: i, j, size_cmp, deca
         blas_int :: b_incx, b_incy, b_n
 !
         eval = 0.d0
@@ -279,10 +279,10 @@ contains
         implicit none
 !
         type(HHO_basis_cell), intent(inout) :: hhoBasisCell
-        integer, intent(in) :: order
+        integer(kind=8), intent(in) :: order
         real(kind=8), dimension(3), intent(in) :: pt
         real(kind=8), dimension(:), intent(in) :: coeff
-        integer, intent(in) :: size_coeff
+        integer(kind=8), intent(in) :: size_coeff
         real(kind=8) :: eval(6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -298,7 +298,7 @@ contains
 !
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval
         real(kind=8) :: mat(3, 3)
-        integer :: i, j, size_cmp, deca
+        integer(kind=8) :: i, j, size_cmp, deca
         blas_int :: b_incx, b_incy, b_n
 !
         if (hhoBasisCell%ndim == 2) then
@@ -359,10 +359,10 @@ contains
 !
         type(HHO_Quadrature), intent(in) :: hhoQuad
         character(len=8), intent(in) :: nomfunc
-        integer, intent(in) :: nbpara
+        integer(kind=8), intent(in) :: nbpara
         character(len=8), intent(in) :: nompara(*)
         real(kind=8), intent(inout) :: valpara(*)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(out) :: FuncValuesQP(*)
         real(kind=8), optional, intent(in) :: coeff_mult
 !
@@ -383,7 +383,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg, ipg, iret
+        integer(kind=8) :: npg, ipg, iret
         blas_int :: b_incx, b_n
 !
         npg = hhoQuad%nbQuadPoints
@@ -440,7 +440,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg, ipg, ino
+        integer(kind=8) :: npg, ipg, ino
         real(kind=8) :: ff(9)
         character(len=8) :: typma
         blas_int :: b_incx, b_n
@@ -493,7 +493,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg, ino, idim, celldim, ipg
+        integer(kind=8) :: npg, ino, idim, celldim, ipg
         real(kind=8) :: ff(9)
         character(len=8) :: typma
         blas_int :: b_incx, b_n
@@ -550,7 +550,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg, ino, idim, ipg
+        integer(kind=8) :: npg, ino, idim, ipg
         real(kind=8) :: ff(27)
         character(len=8) :: typma
         blas_int :: b_incx, b_n
@@ -606,7 +606,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: npg, ino, ipg
+        integer(kind=8) :: npg, ino, ipg
         real(kind=8) :: ff(27)
         character(len=8) :: typma
         blas_int :: b_incx, b_n

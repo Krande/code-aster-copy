@@ -54,12 +54,12 @@ subroutine pmfite(typfib, nf, ncarf, vf, ve, vs)
     implicit none
 #include "asterfort/utmess.h"
 !
-    integer :: typfib, nf, ncarf
+    integer(kind=8) :: typfib, nf, ncarf
     real(kind=8) :: vf(ncarf, nf), ve(nf), vs(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii
+    integer(kind=8) :: ii
     real(kind=8) :: eds, yy, zz, aire
 !
 ! --------------------------------------------------------------------------------------------------

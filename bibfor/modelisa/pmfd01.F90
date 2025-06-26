@@ -51,20 +51,20 @@ subroutine pmfd01(noma, carele, vmailfib, sdgf, cesdec, ngmxel)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ngmxel
+    integer(kind=8) :: ngmxel
     character(len=8) :: noma, carele, sdgf
     character(len=19) :: cesdec
     character(len=24) :: vmailfib
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbcmpmax = 20
+    integer(kind=8), parameter :: nbcmpmax = 20
     character(len=8) :: licmp(nbcmpmax)
 !
-    integer :: jmailfib, jpofig, jcafig, jces1d, jces1v, jces1l, jnbfig, jsdfig, jtyfig
-    integer :: iad, icmp, ncarfi, point, ima, ibid, nbma, ncarfimax
-    integer :: nb1, ispt, nncp, ifib, ig, nbgf, nbfig, nug, ipos, iret, tyfib
-    integer :: nbcp, jsp
+    integer(kind=8) :: jmailfib, jpofig, jcafig, jces1d, jces1v, jces1l, jnbfig, jsdfig, jtyfig
+    integer(kind=8) :: iad, icmp, ncarfi, point, ima, ibid, nbma, ncarfimax
+    integer(kind=8) :: nb1, ispt, nncp, ifib, ig, nbgf, nbfig, nug, ipos, iret, tyfib
+    integer(kind=8) :: nbcp, jsp
     real(kind=8) :: lcoefr(2)
     character(len=1) :: ki1
     character(len=2) :: ki2

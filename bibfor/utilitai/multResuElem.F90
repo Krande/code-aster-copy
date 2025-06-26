@@ -44,9 +44,9 @@ subroutine multResuElem(resu_elem, coef_mult)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nb_gr, nb_vale, igr
+    integer(kind=8) :: iret, nb_gr, nb_vale, igr
     real(kind=8), pointer :: v_vale(:) => null()
-    integer, pointer :: v_desc(:) => null()
+    integer(kind=8), pointer :: v_desc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -50,19 +50,19 @@ subroutine cmtref(chmat, nomail)
     aster_logical :: dbg
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, jlcm1, jltrf
-    integer :: nbcm1, nbtrf, kcm1, ktrf, codcm1, codtrf, igd
-    integer :: nccm1, nctrf, nucm1, nutrf, kk
-    integer :: ico, nm, nbma, ninter, codint, ncm1, ntrf
+    integer(kind=8) :: iret, jlcm1, jltrf
+    integer(kind=8) :: nbcm1, nbtrf, kcm1, ktrf, codcm1, codtrf, igd
+    integer(kind=8) :: nccm1, nctrf, nucm1, nutrf, kk
+    integer(kind=8) :: ico, nm, nbma, ninter, codint, ncm1, ntrf
     real(kind=8) :: tref
     character(len=8) :: mater, nocp
     character(len=8) ::  nomgd
     character(len=24) :: ktref
     character(len=19) :: carcm1, carcm2, cartrf
-    integer, pointer :: lismail(:) => null()
+    integer(kind=8), pointer :: lismail(:) => null()
     character(len=8), pointer :: valv(:) => null()
-    integer, pointer :: dcm1(:) => null()
-    integer, pointer :: dtrf(:) => null()
+    integer(kind=8), pointer :: dcm1(:) => null()
+    integer(kind=8), pointer :: dtrf(:) => null()
     character(len=8), pointer :: ncmp(:) => null()
     character(len=8), pointer :: vcm1(:) => null()
     real(kind=8), pointer :: vtrf(:) => null()

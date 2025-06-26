@@ -49,11 +49,11 @@ subroutine dtmforc_flam(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)  :: nl_ind
+    integer(kind=8), intent(in)  :: nl_ind
     character(len=*), intent(in)  :: sd_dtm_
     character(len=*), intent(in)  :: sd_nl_
-    integer, pointer  :: buffdtm(:)
-    integer, pointer  :: buffnl(:)
+    integer(kind=8), pointer  :: buffdtm(:)
+    integer(kind=8), pointer  :: buffnl(:)
     real(kind=8), intent(in)  :: time
     real(kind=8), pointer  :: depl(:)
     real(kind=8), pointer  :: vite(:)
@@ -61,8 +61,8 @@ subroutine dtmforc_flam(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
 !   -0.2- Local variables
     aster_logical     :: multi_support
-    integer           :: i, iex, nbexci, ier, par_coorno(2)
-    integer           :: nbno, ino, start, finish, critamor
+    integer(kind=8)           :: i, iex, nbexci, ier, par_coorno(2)
+    integer(kind=8)           :: nbno, ino, start, finish, critamor
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, depglo(3), vitglo(3), deploc(6), vitloc(6)
     real(kind=8)      :: dvitlo(3), xjeu, critfl
@@ -73,7 +73,7 @@ subroutine dtmforc_flam(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     character(len=19) :: nomres
     character(len=24) :: fcrit, frigi, famor
 !
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer :: coor_no(:) => null()
     real(kind=8), pointer :: origob(:) => null()
     real(kind=8), pointer :: coedep(:) => null()

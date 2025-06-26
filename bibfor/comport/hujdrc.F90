@@ -31,7 +31,7 @@ subroutine hujdrc(k, mater, sig, vin, pst)
 !       SEUIL  : SEUIL DE LA SURFACE DE CHARGE ANTERIEURE
 !   -------------------------------------------------------------------
 #include "asterfort/hujprj.h"
-    integer :: ndt, ndi, i, k
+    integer(kind=8) :: ndt, ndi, i, k
     real(kind=8) :: mater(22, 2), sig(6), vin(*)
     real(kind=8) :: b, pco, beta, pc, epsvpm, ptrac
     real(kind=8) :: un, zero

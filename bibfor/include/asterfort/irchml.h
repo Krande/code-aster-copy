@@ -27,15 +27,15 @@ interface
                       lsup_      , borsup_     ,&
                       linf_      , borinf_     ,&
                       realFormat_, cplxFormat_)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=*), intent(in) :: fieldNameZ, fieldTypeZ
         character(len=4), intent(in) :: fieldSupport
-        integer, intent(in) :: cmpUserNb
+        integer(kind=8), intent(in) :: cmpUserNb
         character(len=8), pointer :: cmpUserName(:)
-        integer, intent(in) :: nodeUserNb
-        integer, pointer :: nodeUserNume(:)
-        integer, intent(in) :: cellUserNb
-        integer, pointer :: cellUserNume(:)
+        integer(kind=8), intent(in) :: nodeUserNb
+        integer(kind=8), pointer :: nodeUserNume(:)
+        integer(kind=8), intent(in) :: cellUserNb
+        integer(kind=8), pointer :: cellUserNume(:)
         aster_logical, optional, intent(in) :: lMeshCoor_
         aster_logical, optional, intent(in) :: lsup_, linf_, lmax_, lmin_
         real(kind=8),  optional, intent(in) :: borsup_, borinf_

@@ -21,8 +21,8 @@
 interface
     subroutine impfn0(isor, ibl, fnmoyt, fnmoyc, fnrmst,&
                       fnrmsc, fmax)
-        integer :: isor
-        integer :: ibl
+        integer(kind=8) :: isor
+        integer(kind=8) :: ibl
         real(kind=8) :: fnmoyt
         real(kind=8) :: fnmoyc
         real(kind=8) :: fnrmst

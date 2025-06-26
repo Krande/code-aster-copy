@@ -22,7 +22,7 @@ subroutine lkdvds(dt, nbmat, mater, gv, dfdsv, &
     implicit none
 #include "asterfort/lcprte.h"
 #include "asterfort/r8inir.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), dvds(6, 6), dt
     real(kind=8) :: gv(6), dfdsv(6), seuilv
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -42,7 +42,7 @@ subroutine lkdvds(dt, nbmat, mater, gv, dfdsv, &
 ! OUT : DVDS  :  DERIVEE DE DEPSV/ DSIG  --------------------------
 ! =================================================================
     common/tdim/ndt, ndi
-    integer :: i, k, ndi, ndt
+    integer(kind=8) :: i, k, ndi, ndt
     real(kind=8) :: pa, aa(6, 6), a, n, un, zero
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------

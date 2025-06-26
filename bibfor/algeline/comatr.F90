@@ -60,15 +60,15 @@ subroutine comatr(option, typev, nbproc, rang, vnconv, &
 #include "asterfort/vecini.h"
 #include "asterfort/vecint.h"
 #include "blas/dnrm2.h"
-    integer :: nbproc, rang, dim1i, dim2i, dim1r, dim2r, dim1c, dim2c
-    integer :: vnconv(nbproc), vecti(dim1i, *)
+    integer(kind=8) :: nbproc, rang, dim1i, dim2i, dim1r, dim2r, dim1c, dim2c
+    integer(kind=8) :: vnconv(nbproc), vecti(dim1i, *)
     real(kind=8) :: vectr(dim1r, *)
     complex(kind=8) :: vectc(dim1c, *)
     character(len=1) :: option, typev
 !
 ! VARIABLES LOCALES
-    integer :: nconv, nconvg, i, j, idecal, iaux1, izero, idim1, idim2
-    integer :: ifm, niv
+    integer(kind=8) :: nconv, nconvg, i, j, idecal, iaux1, izero, idim1, idim2
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: rzero, res
     complex(kind=8) :: czero, dcmplx
     aster_logical :: ldebug

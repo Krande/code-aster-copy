@@ -47,7 +47,7 @@ subroutine nmimps(ds_print, ds_conv, sderro)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_resi, nb_resi
+    integer(kind=8) :: i_resi, nb_resi
     real(kind=8) :: valr(2)
     character(len=16) :: valk(2)
     aster_logical :: lprint, l_swap_rela_maxi, l_swap_comp_rela

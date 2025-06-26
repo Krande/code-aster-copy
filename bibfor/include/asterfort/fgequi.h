@@ -22,7 +22,7 @@ interface
     subroutine fgequi(tz, typz, ndim, equi)
         real(kind=8) :: tz(*)
         character(len=*) :: typz
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: equi(*)
     end subroutine fgequi
 end interface

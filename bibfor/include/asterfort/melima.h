@@ -23,9 +23,9 @@ interface
                       nb)
         character(len=19) :: chin
         character(len=8) :: ma
-        integer :: icode
-        integer :: ient
-        integer :: lima
-        integer :: nb
+        integer(kind=8) :: icode
+        integer(kind=8) :: ient
+        integer(kind=8) :: lima
+        integer(kind=8) :: nb
     end subroutine melima
 end interface

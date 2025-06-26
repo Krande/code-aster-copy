@@ -37,7 +37,7 @@ subroutine romLineicPrepNume(base, nbNodeWithDof)
 #include "asterfort/uttrir.h"
 !
     type(ROM_DS_Empi), intent(inout) :: base
-    integer, intent(in) ::  nbNodeWithDof
+    integer(kind=8), intent(in) ::  nbNodeWithDof
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,13 +52,13 @@ subroutine romLineicPrepNume(base, nbNodeWithDof)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: niv, ifm
+    integer(kind=8) :: niv, ifm
     type(ROM_DS_LineicNumb) :: lineicNume
-    integer :: nbNode, nbSlice, iNode, nbNodeSlice, nbCmp, nbEqua
+    integer(kind=8) :: nbNode, nbSlice, iNode, nbNodeSlice, nbCmp, nbEqua
     real(kind=8) :: toleNode
     character(len=8) :: lineicAxis, mesh
     character(len=24) :: lineicSect
-    integer, pointer :: v_grno(:) => null()
+    integer(kind=8), pointer :: v_grno(:) => null()
     real(kind=8), pointer :: v_coor(:) => null()
     real(kind=8), pointer :: v_coor_x(:) => null()
     real(kind=8), pointer :: v_coor_y(:) => null()

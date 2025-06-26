@@ -20,7 +20,7 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp, &
                   mxiter, ier, nitqr)
     implicit none
 #include "asterc/r8prem.h"
-    integer :: neq, mxcmp, mxiter, ier, nitqr
+    integer(kind=8) :: neq, mxcmp, mxiter, ier, nitqr
     real(kind=8) :: diag(neq), surdia(neq), vecpro(mxcmp, neq)
 !     CALCUL DE TOUTES LES VALEURS PROPRES ET DES VECTEURS PROPRES
 !     ASSOCIES PAR LA METHODE QL-IMPLICITE POUR UNE MATRICE TRIDIAGONALE
@@ -53,7 +53,7 @@ subroutine vpqlts(diag, surdia, neq, vecpro, mxcmp, &
     real(kind=8) :: zero, un, deux, epsmac
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ieq, j, jeq, jter, k, m
+    integer(kind=8) :: i, ieq, j, jeq, jter, k, m
 !
 !-----------------------------------------------------------------------
     ier = 0

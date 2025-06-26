@@ -20,8 +20,8 @@
 !
           interface 
             subroutine creaco(nbmato,ma,nblien)
-              integer :: nbmato
+              integer(kind=8) :: nbmato
               character(len=8) :: ma
-              integer :: nblien
+              integer(kind=8) :: nblien
             end subroutine creaco
           end interface 

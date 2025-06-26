@@ -21,12 +21,12 @@
 interface
     subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
                       ma2, jnivgr)
-        integer :: nbno
-        integer :: nbma
-        integer :: dirma(nbma)
-        integer :: dirno(nbno)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbma
+        integer(kind=8) :: dirma(nbma)
+        integer(kind=8) :: dirno(nbno)
         character(len=8) :: ma1
         character(len=8) :: ma2
-        integer :: jnivgr
+        integer(kind=8) :: jnivgr
     end subroutine xpoco1
 end interface

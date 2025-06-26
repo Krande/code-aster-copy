@@ -22,11 +22,11 @@ interface
     subroutine titrec(donnee, iligd, icold, nbtitr, mxpara,&
                       para, nbpara)
         character(len=*) :: donnee(*)
-        integer :: iligd
-        integer :: icold
-        integer :: nbtitr
-        integer :: mxpara
+        integer(kind=8) :: iligd
+        integer(kind=8) :: icold
+        integer(kind=8) :: nbtitr
+        integer(kind=8) :: mxpara
         character(len=*) :: para(*)
-        integer :: nbpara
+        integer(kind=8) :: nbpara
     end subroutine titrec
 end interface

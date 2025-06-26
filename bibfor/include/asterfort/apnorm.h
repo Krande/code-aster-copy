@@ -23,9 +23,9 @@
 interface
     subroutine apnorm(elem_nbnode, elem_code, elem_dime, elem_coor,&
                       ksi1       , ksi2     , elem_norm, elem_tau1, elem_tau2)
-        integer, intent(in) :: elem_nbnode
+        integer(kind=8), intent(in) :: elem_nbnode
         character(len=8), intent(in) :: elem_code
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         real(kind=8), intent(in) :: elem_coor(3,9)
         real(kind=8), intent(in) :: ksi1
         real(kind=8), intent(in) :: ksi2

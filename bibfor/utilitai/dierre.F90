@@ -26,7 +26,7 @@ subroutine dierre(sddisc, sdcrit, iterat)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmlere.h"
-    integer :: iterat
+    integer(kind=8) :: iterat
     character(len=19) :: sddisc, sdcrit
 !
 ! ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ subroutine dierre(sddisc, sdcrit, iterat)
 !
 !
     character(len=24) :: critcr
-    integer :: jcrr
+    integer(kind=8) :: jcrr
     real(kind=8) :: vrela(1), vmaxi(1), vchar(1)
 !
 ! ----------------------------------------------------------------------

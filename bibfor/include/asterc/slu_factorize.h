@@ -27,7 +27,7 @@ interface
         real(kind=8)    :: values(*)
         integer(kind=4) :: rowind(*)
         integer(kind=4) :: colptr(*)
-        integer         :: f_factors
+        integer(kind=8)         :: f_factors
         integer(kind=4) :: info
     end subroutine slu_factorize
 end interface

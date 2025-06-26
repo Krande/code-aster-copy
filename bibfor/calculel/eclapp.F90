@@ -22,7 +22,7 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
 #include "asterc/matfpe.h"
 #include "asterfort/r8inir.h"
 #include "blas/dnrm2.h"
-    integer :: ndim, nno2
+    integer(kind=8) :: ndim, nno2
     real(kind=8) :: coor(ndim, nno2), lonmin
 !
 ! ----------------------------------------------------------------------
@@ -37,7 +37,7 @@ subroutine eclapp(ndim, nno2, lonmin, coor)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: corr, l1, l2, d1(3), d2(3), prec
-    integer :: i
+    integer(kind=8) :: i
     blas_int :: b_incx, b_n
     parameter(prec=1.d-5)
 ! ----------------------------------------------------------------------

@@ -36,12 +36,12 @@ subroutine amogen(mat19)
     character(len=19) :: mat19
     character(len=8) :: masse, raid, listam
     character(len=16) :: nomcmd
-    integer :: nbid, jamog, iamog, idiff
-    integer :: vali(3)
-    integer :: iamat, n, m, m2, i, iam, iak, j, nbamor, nlist
-    integer :: iblo, iaconl, jrefa2, iadesc, n2, n1
+    integer(kind=8) :: nbid, jamog, iamog, idiff
+    integer(kind=8) :: vali(3)
+    integer(kind=8) :: iamat, n, m, m2, i, iam, iak, j, nbamor, nlist
+    integer(kind=8) :: iblo, iaconl, jrefa2, iadesc, n2, n1
     real(kind=8) :: kmin, valmin, kmax, rk
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !
     call jemarq()

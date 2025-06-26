@@ -25,7 +25,7 @@ subroutine vecink(n, s, x)
 !     POUR TOUS LES TYPES DE DONNEES VOIR AUSSI VECINI, VECINT, VECINK
 !     ET VECINC.
 !     ----------------------------------------------------------------
-    integer :: n, i
+    integer(kind=8) :: n, i
     character(len=*) :: x(n), s
     do i = 1, n
         x(i) = s

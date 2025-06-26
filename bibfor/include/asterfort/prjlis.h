@@ -27,8 +27,8 @@ interface
         character(len=8) :: maa
         character(len=8) :: modb
         character(len=8) :: mab
-        integer :: nbnoa
-        integer :: nbnob
+        integer(kind=8) :: nbnoa
+        integer(kind=8) :: nbnob
         character(len=16) :: motcle(2)
         character(len=8) :: linta
         character(len=8) :: lintb
@@ -36,9 +36,9 @@ interface
         character(len=8) :: intfb
         character(len=24) :: fpliao
         character(len=24) :: fplibo
-        integer :: iada(3)
-        integer :: iadb(3)
-        integer :: numlis
+        integer(kind=8) :: iada(3)
+        integer(kind=8) :: iadb(3)
+        integer(kind=8) :: numlis
         character(len=8) :: matprj
         character(len=8) :: modgen
         character(len=8) :: ssta

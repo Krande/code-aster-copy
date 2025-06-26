@@ -29,7 +29,7 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: nbocc, noemax
+    integer(kind=8) :: nbocc, noemax
     character(len=8) :: noma
 !
 !
@@ -44,11 +44,11 @@ subroutine acevmr(nbocc, noma, noemax, noemaf)
     character(len=24) :: magrma, manoma
     character(len=8) :: k8b
 !-----------------------------------------------------------------------
-    integer :: i, ii, ij, in, inoe
-    integer :: ioc, ldgm, ldnm, nb, nbgr, nbgrmx, nbv
-    integer :: nm, nn, noema2, noemaf
+    integer(kind=8) :: i, ii, ij, in, inoe
+    integer(kind=8) :: ioc, ldgm, ldnm, nb, nbgr, nbgrmx, nbv
+    integer(kind=8) :: nm, nn, noema2, noemaf
     character(len=24), pointer :: group_ma(:) => null()
-    integer, pointer :: parno2(:) => null()
+    integer(kind=8), pointer :: parno2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nbgrmx = 0

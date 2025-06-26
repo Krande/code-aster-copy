@@ -22,8 +22,8 @@ interface
     subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
                       dfrdkf, coor, dfrdeg, dfrdng, dfrdkg,&
                       dfdx, dfdy, dfdz, jac)
-        integer :: nno
-        integer :: nnf
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnf
         real(kind=8) :: poids
         real(kind=8) :: dfrdef(1)
         real(kind=8) :: dfrdnf(1)

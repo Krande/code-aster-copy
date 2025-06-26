@@ -21,9 +21,9 @@ subroutine jjanal(condlu, nval, nvalo, lval, cval)
     implicit none
 #include "asterfort/utmess.h"
     character(len=*) :: condlu, cval(*)
-    integer :: nval, nvalo, lval(*)
+    integer(kind=8) :: nval, nvalo, lval(*)
 !
-    integer :: long, i, j, nbsc
+    integer(kind=8) :: long, i, j, nbsc
 !
     do i = 1, nval
         cval(i) = ' '

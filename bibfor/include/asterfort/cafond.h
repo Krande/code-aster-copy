@@ -19,7 +19,7 @@
 interface
     subroutine cafond(load, mesh, model, geomDime, valeType)
         character(len=8), intent(in) :: load, mesh, model
-        integer, intent(in) :: geomDime
+        integer(kind=8), intent(in) :: geomDime
         character(len=4), intent(in) :: valeType
     end subroutine cafond
 end interface

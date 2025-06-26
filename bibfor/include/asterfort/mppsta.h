@@ -21,15 +21,15 @@
 interface
     subroutine mppsta(h, ldh, v, ldv, ddlsta,&
                       n, vectt, ddlexc, indico, proj)
-        integer :: n
-        integer :: ldv
-        integer :: ldh
+        integer(kind=8) :: n
+        integer(kind=8) :: ldv
+        integer(kind=8) :: ldh
         real(kind=8) :: h(ldh, ldh)
         real(kind=8) :: v(ldv, ldh)
-        integer :: ddlsta(n)
+        integer(kind=8) :: ddlsta(n)
         real(kind=8) :: vectt(ldv)
-        integer :: ddlexc(n)
-        integer :: indico
-        integer :: proj
+        integer(kind=8) :: ddlexc(n)
+        integer(kind=8) :: indico
+        integer(kind=8) :: proj
     end subroutine mppsta
 end interface

@@ -21,8 +21,8 @@
 interface
     subroutine nmdcen(sddisc, numins, nbini, nbins)
         character(len=19) :: sddisc
-        integer :: numins
-        integer :: nbini
-        integer :: nbins
+        integer(kind=8) :: numins
+        integer(kind=8) :: nbini
+        integer(kind=8) :: nbins
     end subroutine nmdcen
 end interface

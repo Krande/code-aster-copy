@@ -31,8 +31,8 @@ interface
         character(len=19) :: modx
         character(len=19) :: mody
         character(len=19) :: modz
-        integer :: i
-        integer :: j
+        integer(kind=8) :: i
+        integer(kind=8) :: j
         real(kind=8) :: mij
     end subroutine calcin
 end interface

@@ -46,8 +46,8 @@ subroutine romTableCreate(resultName, tablResu)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nbPara = 5
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: nbPara = 5
     character(len=8), parameter :: paraType(nbPara) = (/'R', 'R', 'I', 'I', 'I'/)
     character(len=24), parameter :: paraName(nbPara) = (/'COOR_REDUIT', 'INST       ', &
                                                          'NUME_MODE  ', 'NUME_ORDRE ', &

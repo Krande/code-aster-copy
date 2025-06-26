@@ -39,11 +39,11 @@ subroutine te0128(option, nomte)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, tpg
     real(kind=8) :: valpar(4), xx, yy, zz
     real(kind=8) :: echnp1, sigma, epsil, tz0
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, jgano
-    integer :: ndim, nno, ipg, npg1, iveres, iech, iray, nnos
-    integer :: idec, jdec, kdec, ldec
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, jgano
+    integer(kind=8) :: ndim, nno, ipg, npg1, iveres, iech, iray, nnos
+    integer(kind=8) :: idec, jdec, kdec, ldec
 !-----------------------------------------------------------------------
-    integer :: i, ier, ino, itemp, itemps, j, jno
+    integer(kind=8) :: i, ier, ino, itemp, itemps, j, jno
 !
 !-----------------------------------------------------------------------
     data nompar/'X', 'Y', 'Z', 'INST'/

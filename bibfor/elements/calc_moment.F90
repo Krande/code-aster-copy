@@ -24,7 +24,7 @@ subroutine calc_moment(e0, kappa, e_b, f_t, f_c, c, &
 ! PARAMETRES ENTRANTS
 #include "asterfort/assert.h"
     real(kind=8) :: e0, kappa, e_b, f_t, f_c, c, h, e_a, s_a, y_a, f_ta
-    integer :: cas
+    integer(kind=8) :: cas
 !
 ! PARAMETRES SORTANTS
     real(kind=8) :: eff, mom

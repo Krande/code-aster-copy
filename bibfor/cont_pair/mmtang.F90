@@ -23,7 +23,7 @@ subroutine mmtang(ndim, nno, coorma, dff, tau1, &
 !
     implicit none
 #include "asterfort/assert.h"
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
     real(kind=8) :: coorma(27)
     real(kind=8) :: dff(2, 9)
     real(kind=8) :: tau1(3), tau2(3)
@@ -46,7 +46,7 @@ subroutine mmtang(ndim, nno, coorma, dff, tau1, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: idim, ino
+    integer(kind=8) :: idim, ino
 !
 ! ----------------------------------------------------------------------
 !

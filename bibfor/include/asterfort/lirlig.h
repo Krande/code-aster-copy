@@ -20,9 +20,9 @@
 !
 interface
     subroutine lirlig(ifl, cnl, lig, ilec)
-        integer :: ifl
+        integer(kind=8) :: ifl
         character(len=14) :: cnl
         character(len=80) :: lig
-        integer :: ilec
+        integer(kind=8) :: ilec
     end subroutine lirlig
 end interface

@@ -24,11 +24,11 @@ interface
                       list_elem    , work_node , work_elem, field        , field_s       ,&
                       i_dof_monitor)
         use NonLin_Datastructure_type
-        integer, intent(in) :: nb_node
-        integer, intent(in) :: nb_elem
-        integer, intent(in) :: nb_poin
-        integer, intent(in) :: nb_spoi
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_elem
+        integer(kind=8), intent(in) :: nb_poin
+        integer(kind=8), intent(in) :: nb_spoi
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=24), intent(in) :: list_elem
         character(len=19), intent(in) :: field
         character(len=4), intent(in) :: field_disc
@@ -39,6 +39,6 @@ interface
         character(len=8), intent(in) :: type_extr_cmp
         character(len=19), intent(in) :: work_node
         character(len=19), intent(in) :: work_elem
-        integer, intent(inout) :: i_dof_monitor
+        integer(kind=8), intent(inout) :: i_dof_monitor
     end subroutine nmsui3
 end interface

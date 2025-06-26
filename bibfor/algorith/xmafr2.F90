@@ -40,7 +40,7 @@ subroutine xmafr2(tau1, tau2, b, abc)
 !
 !
 !
-    integer :: ndim, i, j, k
+    integer(kind=8) :: ndim, i, j, k
     real(kind=8) :: a(2, 3), bc(3, 2), c(3, 2)
 !
     call elrefe_info(fami='RIGI', ndim=ndim)

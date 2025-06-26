@@ -43,9 +43,9 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ifi, nbel, ligrel(*), nbgrel, longr(*), ncmpmx, nbnot, nbcmpt
-    integer :: nucmpu(*), celd(*), connex(*), point(*), numnoe(*), nbmat, ndim
-    integer :: nummai(*), ncmpv, nucmp(*)
+    integer(kind=8) :: ifi, nbel, ligrel(*), nbgrel, longr(*), ncmpmx, nbnot, nbcmpt
+    integer(kind=8) :: nucmpu(*), celd(*), connex(*), point(*), numnoe(*), nbmat, ndim
+    integer(kind=8) :: nummai(*), ncmpv, nucmp(*)
     real(kind=8) :: borsup, borinf, coor(*), vale(*)
     character(len=*) :: nomcmp(*), nomel(*), loc, nomnos(*), formr
     character(len=19) :: nolili
@@ -83,7 +83,7 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr, &
 !     NOLILI: NOM DU LIGREL
 !     FORMR : FORMAT D'ECRITURE DES REELS SUR "RESULTAT"
 !     ------------------------------------------------------------------
-    integer :: imodel, ilong
+    integer(kind=8) :: imodel, ilong
     real(kind=8) :: rundf
     character(len=7) :: cbid
     character(len=8) :: nomno, nomcp, forcmp, nomcor(3)
@@ -94,16 +94,16 @@ subroutine ircerl(ifi, nbel, ligrel, nbgrel, longr, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i2, iachml, iad, iadr, iaec, icm
-    integer :: icmp, icmp2, icoe, icoef, icoef2, icomax, icomp2
-    integer :: icou, id, iel, ielg, if, igre, igrel
-    integer :: iino, ilig, imai, imail, imax, imin, in
-    integer :: inmax, inmin, inom, inop, inot, inu, ipca
-    integer :: ipo2, ipoin, ipoin1, iposg, iposv, irepe, ires
-    integer :: iva, ival, ivmax, ivmin, j, jco, jmod
-    integer :: lgr, mode, modsau, nbcpt, nbno, ncmp
-    integer :: ncmp2, ncmpp, ncou, nec, npcalc, nsca, nscal
-    integer :: nuno
+    integer(kind=8) :: i, i2, iachml, iad, iadr, iaec, icm
+    integer(kind=8) :: icmp, icmp2, icoe, icoef, icoef2, icomax, icomp2
+    integer(kind=8) :: icou, id, iel, ielg, if, igre, igrel
+    integer(kind=8) :: iino, ilig, imai, imail, imax, imin, in
+    integer(kind=8) :: inmax, inmin, inom, inop, inot, inu, ipca
+    integer(kind=8) :: ipo2, ipoin, ipoin1, iposg, iposv, irepe, ires
+    integer(kind=8) :: iva, ival, ivmax, ivmin, j, jco, jmod
+    integer(kind=8) :: lgr, mode, modsau, nbcpt, nbno, ncmp
+    integer(kind=8) :: ncmp2, ncmpp, ncou, nec, npcalc, nsca, nscal
+    integer(kind=8) :: nuno
 !-----------------------------------------------------------------------
     call jemarq()
     rundf = r8vide()

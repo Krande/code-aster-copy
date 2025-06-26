@@ -29,7 +29,7 @@ subroutine lceib1(fami, kpg, ksp, imate, &
 #include "asterfort/verift.h"
 #include "asterfort/Behaviour_type.h"
     character(len=*) :: fami
-    integer :: imate, ndim, t(3, 3), kpg, ksp
+    integer(kind=8) :: imate, ndim, t(3, 3), kpg, ksp
     real(kind=8) :: epsm(6), lambda, deuxmu, epsthe(2), kdess, bendo
     real(kind=8) :: gamma, seuil
 ! ----------------------------------------------------------------------
@@ -53,9 +53,9 @@ subroutine lceib1(fami, kpg, ksp, imate, &
 ! OUT SEUIL
 ! ----------------------------------------------------------------------
 !
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=16) :: nomres(3)
-    integer :: i, k, ndimsi
+    integer(kind=8) :: i, k, ndimsi
     real(kind=8) :: valres(3), e, nu
     real(kind=8) :: sref, sechm, hydrm
     real(kind=8) :: k0, k1, sicr, trepsm, eps(6), kron(6)

@@ -33,10 +33,10 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl, &
 #include "asterfort/teattr.h"
 #include "asterfort/is_enr_line.h"
 !
-    integer, intent(in) :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
+    integer(kind=8), intent(in) :: ndim, nfh, nfe, ddls, nddl, nno, nnos, stano(*)
     aster_logical, intent(in) :: matsym, lcontx
     character(len=16), intent(in) :: option, nomte
-    integer, intent(in) :: ddlm, nfiss, jfisno
+    integer(kind=8), intent(in) :: ddlm, nfiss, jfisno
     real(kind=8), optional, intent(inout) :: mat(*)
     real(kind=8), optional, intent(out) :: vect(*)
 !
@@ -67,10 +67,10 @@ subroutine xteddl(ndim, nfh, nfe, ddls, nddl, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
-    integer :: ifh, fisno(nno, nfiss)
+    integer(kind=8) :: ier, istatu, ino, k, i, j, ielim, in, ddlmax
+    integer(kind=8) :: ifh, fisno(nno, nfiss)
     parameter(ddlmax=1053)
-    integer :: posddl(ddlmax), ddlc, nlag
+    integer(kind=8) :: posddl(ddlmax), ddlc, nlag
     character(len=8) :: tyenel
     aster_logical :: lelim, lmultc, lmat, lvec, lctlin
     real(kind=8) :: dmax, dmin, codia

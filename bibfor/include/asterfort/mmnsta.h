@@ -26,10 +26,10 @@ interface
                       tau1  , tau2  ,&
                       lcont , ladhe ,&
                       rese  , nrese)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         aster_logical, intent(in) :: leltf
         aster_logical, intent(in) :: lpenaf
-        integer, intent(in) :: indco
+        integer(kind=8), intent(in) :: indco
         real(kind=8), intent(in) :: coefaf, lambda
         real(kind=8), intent(in) :: djeut(3), dlagrf(2)
         real(kind=8), intent(in)  :: tau1(3), tau2(3)

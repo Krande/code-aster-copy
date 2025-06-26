@@ -20,9 +20,9 @@
 !
 interface
     subroutine vecinc(n, s, x, inc)
-        integer,         intent(in)   :: n
+        integer(kind=8),         intent(in)   :: n
         complex(kind=8), intent(in)   :: s
         complex(kind=8)               :: x(*)
-        integer, optional, intent(in) :: inc
+        integer(kind=8), optional, intent(in) :: inc
     end subroutine vecinc
 end interface

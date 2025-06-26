@@ -52,8 +52,8 @@ subroutine op0042()
 !
     character(len=6) :: nompro
     parameter(nompro='OP0042')
-    integer :: ifm, niv, n0, nuord, nchar, ibid, jordr, np, nc
-    integer :: nbordr, iret
+    integer(kind=8) :: ifm, niv, n0, nuord, nchar, ibid, jordr, np, nc
+    integer(kind=8) :: nbordr, iret
     real(kind=8) :: prec
     character(len=8) :: resuc1, resuco, modele, cara, crit
     character(len=16) :: nomcmd, tysd, pheno, concep, k16bid, compex

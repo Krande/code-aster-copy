@@ -22,10 +22,10 @@ interface
     subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
                             temp, diff)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         real(kind=8), intent(in) :: c
         real(kind=8), intent(in) :: temp
         real(kind=8), intent(out) :: diff

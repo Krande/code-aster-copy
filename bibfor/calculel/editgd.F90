@@ -28,15 +28,15 @@ subroutine editgd(ncmp, nedit, dg, ncmpmx, ctype, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: ncmp
-    integer, intent(in) :: nedit
-    integer, intent(inout) :: dg(*)
-    integer, intent(in) :: ncmpmx
+    integer(kind=8), intent(in) :: ncmp
+    integer(kind=8), intent(in) :: nedit
+    integer(kind=8), intent(inout) :: dg(*)
+    integer(kind=8), intent(in) :: ncmpmx
     character(len=8), intent(in) :: ctype
-    integer, intent(in) :: jnocmp
-    integer, intent(in) :: jncmp
-    integer, intent(in) :: jvalv
-    integer, intent(in) :: jvale
+    integer(kind=8), intent(in) :: jnocmp
+    integer(kind=8), intent(in) :: jncmp
+    integer(kind=8), intent(in) :: jvalv
+    integer(kind=8), intent(in) :: jvale
 ! ----------------------------------------------------------------------
 !     entrees:
 !     ncmp  : nombre de cmp a stocker
@@ -45,16 +45,16 @@ subroutine editgd(ncmp, nedit, dg, ncmpmx, ctype, &
 !     dg  : descripteur_grandeur a mettre a jour
 !
 ! ----------------------------------------------------------------------
-    integer :: ior
+    integer(kind=8) :: ior
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: i, j, iec, reste, code, deb2, debgd
-    integer :: lshift
+    integer(kind=8) :: i, j, iec, reste, code, deb2, debgd
+    integer(kind=8) :: lshift
     character(len=8) :: nomcmp
     character(len=24) :: valk
 !-----------------------------------------------------------------------
-    integer :: ico, indgd, ncmp2
+    integer(kind=8) :: ico, indgd, ncmp2
 !-----------------------------------------------------------------------
     debgd = (nedit-1)*ncmpmx
 !

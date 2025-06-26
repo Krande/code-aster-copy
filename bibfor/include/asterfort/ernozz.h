@@ -29,7 +29,7 @@ interface
         character(len=19) :: chvarc
         character(len=*) :: option
         character(len=*) :: ligrel
-        integer :: iordr
+        integer(kind=8) :: iordr
         character(len=*) :: resuco
         character(len=19) :: resuc1
         character(len=*) :: champ

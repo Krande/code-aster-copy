@@ -23,7 +23,7 @@ interface
                       oper, quant, option, rep, nomtab,&
                       xnovar, ncheff, i1, isd)
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=24) :: sdlieu
         character(len=19) :: sdeval
         character(len=24) :: sdmoy
@@ -34,7 +34,7 @@ interface
         character(len=*) :: nomtab
         character(len=24) :: xnovar
         character(len=16) :: ncheff
-        integer :: i1
-        integer :: isd
+        integer(kind=8) :: i1
+        integer(kind=8) :: isd
     end subroutine rvaffm
 end interface

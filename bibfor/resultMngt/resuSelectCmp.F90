@@ -30,13 +30,13 @@ subroutine resuSelectCmp(quantityIndx, &
 #include "asterfort/jexnum.h"
 #include "asterfort/as_allocate.h"
 !
-    integer, intent(in) :: quantityIndx
-    integer, intent(in) :: cmpUserNb
+    integer(kind=8), intent(in) :: quantityIndx
+    integer(kind=8), intent(in) :: cmpUserNb
     character(len=8), pointer :: cmpUserName(:)
-    integer, intent(out) :: cmpCataNb
+    integer(kind=8), intent(out) :: cmpCataNb
     character(len=8), pointer :: cmpCataName(:)
-    integer, intent(out) :: cmpNb
-    integer, pointer :: cmpIndx(:)
+    integer(kind=8), intent(out) :: cmpNb
+    integer(kind=8), pointer :: cmpIndx(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !

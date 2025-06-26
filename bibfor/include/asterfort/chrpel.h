@@ -22,7 +22,7 @@ interface
         character(len=*)  :: champ1
         character(len=*)  :: repere
         character(len=*)  :: nom_cham
-        integer :: icham
+        integer(kind=8) :: icham
         character(len=*)  :: type_cham
         character(len=*)  :: nomch
         character(len=8)  :: model

@@ -21,9 +21,9 @@
 interface
     subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
                       ug, factus)
-        integer :: nbsigr
-        integer :: nocc(*)
-        integer :: situ(*)
+        integer(kind=8) :: nbsigr
+        integer(kind=8) :: nocc(*)
+        integer(kind=8) :: situ(*)
         real(kind=8) :: saltij(*)
         character(len=*) :: nommat
         real(kind=8) :: ug

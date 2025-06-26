@@ -30,6 +30,6 @@ interface
         real(kind=8) :: rho
         real(kind=8) :: eta
         real(kind=8) :: f
-        integer :: indic
+        integer(kind=8) :: indic
     end subroutine nmceai
 end interface

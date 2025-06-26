@@ -55,17 +55,17 @@ subroutine op0176()
 !
     character(len=6) :: nompro
     parameter(nompro='OP0176')
-    integer :: ibid, storeNb, nbexcl, jexcl, nbarch
-    integer :: nbac, nbpa, iret, nbnosy, paraNb, nbrest
-    integer :: mesgUnit, ifm, niv
+    integer(kind=8) :: ibid, storeNb, nbexcl, jexcl, nbarch
+    integer(kind=8) :: nbac, nbpa, iret, nbnosy, paraNb, nbrest
+    integer(kind=8) :: mesgUnit, ifm, niv
     character(len=8) :: noma, nomo, nocara, nochmat
     character(len=16) :: typcon, nomcmd
     character(len=19) :: resultOutName, resultInName
     character(len=24) :: lisarc, lichex, paraJvName
     aster_logical :: lrest
-    integer :: nmail, nmode, ncara, nchmat
-    integer, pointer :: storeIndx(:) => null()
-    integer, pointer :: archi(:) => null()
+    integer(kind=8) :: nmail, nmode, ncara, nchmat
+    integer(kind=8), pointer :: storeIndx(:) => null()
+    integer(kind=8), pointer :: archi(:) => null()
     character(len=16), pointer :: paraName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

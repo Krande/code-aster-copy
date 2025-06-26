@@ -19,8 +19,8 @@
 subroutine prmade(deblis, liste, adjncy, xadjd, ndi)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-    integer :: deblis, liste(*), adjncy(*), xadjd(*), ndi
-    integer :: nd, nnzero
+    integer(kind=8) :: deblis, liste(*), adjncy(*), xadjd(*), ndi
+    integer(kind=8) :: nd, nnzero
     nd = deblis
     nnzero = 0
 1   continue

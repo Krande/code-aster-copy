@@ -20,13 +20,13 @@ subroutine cbecha(load, mesh, model, geomDime, valeType)
     implicit none
 #include "asterc/getfac.h"
 #include "asterfort/caecha.h"
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
     character(len=8), intent(in) :: load, mesh, model
 
 !     ------------------------------------------------------------------
 !
-    integer :: nbfac
+    integer(kind=8) :: nbfac
     character(len=16), parameter :: motfac = 'ECHANGE'
     call getfac(motfac, nbfac)
 !

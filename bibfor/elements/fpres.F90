@@ -26,14 +26,14 @@ subroutine fpres(nomte, xi, nb1, vecl, vectpt)
 #include "asterfort/utpvlg.h"
 #include "asterfort/vectci.h"
 #include "asterfort/vexpan.h"
-    integer :: nb1
+    integer(kind=8) :: nb1
     character(len=16) :: nomte
     real(kind=8) :: vecl(51), vectpt(9, 3, 3)
 !
 !
     real(kind=8) :: rnormc, f1, chg(6), kijkm1(40, 2), pgl(3, 3)
     real(kind=8) :: xi(3, *), vecl1(42), chgsrg(6, 8), chgsrl(6)
-    integer :: lzi, nb2, npgsn, lzr, jpres, j, i, jp, ip, intsn, i1, k
+    integer(kind=8) :: lzi, nb2, npgsn, lzr, jpres, j, i, jp, ip, intsn, i1, k
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

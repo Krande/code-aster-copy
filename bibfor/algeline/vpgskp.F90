@@ -91,13 +91,13 @@ subroutine vpgskp(nbeq, nconv, vect, alpha, lmatb, &
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterc/r8miem.h"
 #include "asterfort/mrmult.h"
-    integer :: nbeq, nconv, lmatb, typeps, ddlexc(nbeq)
+    integer(kind=8) :: nbeq, nconv, lmatb, typeps, ddlexc(nbeq)
     real(kind=8) :: vect(nbeq, nconv), alpha, vaux(nbeq), delta(nconv)
 !
 !----------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: i, j, k, step
+    integer(kind=8) :: i, j, k, step
     real(kind=8) :: eps, raux, rauold, delta1
 !----------------------------------------------------------------
 ! INITIALISATION DU PLUS PETIT REEL*8 EVITANT L'OVERFLOW

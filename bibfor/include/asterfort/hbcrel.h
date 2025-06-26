@@ -21,7 +21,7 @@
 interface
     subroutine hbcrel(vp, gamma, dg, nbmat, materf,&
                       sigeqe, i1e, etap, parame, seuil)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: vp(3)
         real(kind=8) :: gamma
         real(kind=8) :: dg

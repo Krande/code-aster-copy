@@ -50,8 +50,8 @@ subroutine te0044(option, nomte)
 !
 !      CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
     real(kind=8) :: r8bid, ul(12), pgl(3, 3), klc(12, 12), mat(144)
-    integer :: infodi, nbterm, nno, nc, ndim, itype, neq, kanl, irep, iiff
-    integer :: i, lorie, ldepl, lvite, jende, ldis, jfreq, ibid, iret
+    integer(kind=8) :: infodi, nbterm, nno, nc, ndim, itype, neq, kanl, irep, iiff
+    integer(kind=8) :: i, lorie, ldepl, lvite, jende, ldis, jfreq, ibid, iret
     character(len=3) :: stopz
     character(len=8) :: k8bid
 !

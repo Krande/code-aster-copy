@@ -25,16 +25,16 @@ interface
                       iadgks, ndeg, ndimte, iadgki, extim,&
                       time, iordr, unit)
         character(len=8) :: result
-        integer :: nnoff
+        integer(kind=8) :: nnoff
         real(kind=8) :: absc(*)
-        integer :: numero
-        integer :: iadgks
-        integer :: ndeg
-        integer :: ndimte
-        integer :: iadgki
+        integer(kind=8) :: numero
+        integer(kind=8) :: iadgks
+        integer(kind=8) :: ndeg
+        integer(kind=8) :: ndimte
+        integer(kind=8) :: iadgki
         aster_logical :: extim
         real(kind=8) :: time
-        integer :: iordr
-        integer :: unit
+        integer(kind=8) :: iordr
+        integer(kind=8) :: unit
     end subroutine gksimp
 end interface

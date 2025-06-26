@@ -31,7 +31,7 @@ subroutine casonl(load, mesh, model, geomDime)
 #include "asterfort/nocart.h"
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,10 +49,10 @@ subroutine casonl(load, mesh, model, geomDime)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'SOUR_NL'
-    integer :: nsour, jvalv, n1, ncmp, iocc
+    integer(kind=8) :: nsour, jvalv, n1, ncmp, iocc
     character(len=19) :: carte
     character(len=19) :: cartes(1)
-    integer :: ncmps(1)
+    integer(kind=8) :: ncmps(1)
     character(len=8), pointer :: vncmp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

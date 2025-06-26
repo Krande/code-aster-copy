@@ -34,8 +34,8 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
 #include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: ifmis
-    integer :: ifreq, nfreq
+    integer(kind=8) :: ifmis
+    integer(kind=8) :: ifreq, nfreq
     character(len=8) :: noma
     character(len=24) :: nogr
     real(kind=8) :: rigma(*), rigma2(*)
@@ -44,12 +44,12 @@ subroutine rigmi1(noma, nogr, ifreq, nfreq, ifmis, &
     character(len=24) :: magrma, manoma, tabrig
 !
 ! -----------------------------------------------------------------------
-    integer :: i1, ifr, ii, ij, im, in
-    integer :: inoe, iret, jrig, ldgm, ldnm
-    integer :: nb, nbmode, nbno, noemax
+    integer(kind=8) :: i1, ifr, ii, ij, im, in
+    integer(kind=8) :: inoe, iret, jrig, ldgm, ldnm
+    integer(kind=8) :: nb, nbmode, nbno, noemax
     real(kind=8) :: r1, r2, r3
-    integer, pointer :: noeud(:) => null()
-    integer, pointer :: parno(:) => null()
+    integer(kind=8), pointer :: noeud(:) => null()
+    integer(kind=8), pointer :: parno(:) => null()
 ! -----------------------------------------------------------------------
     call jemarq()
     ifr = iunifi('RESULTAT')

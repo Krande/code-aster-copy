@@ -21,8 +21,8 @@
 interface
     subroutine cfconn(defico, jdecno, ino, posno)
         character(len=24) :: defico
-        integer :: jdecno
-        integer :: ino
-        integer :: posno
+        integer(kind=8) :: jdecno
+        integer(kind=8) :: ino
+        integer(kind=8) :: posno
     end subroutine cfconn
 end interface

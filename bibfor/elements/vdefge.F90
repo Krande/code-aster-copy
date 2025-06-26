@@ -23,7 +23,7 @@ subroutine vdefge(nomte, nb1, npgsr, xr, epais, &
     character(len=16) :: nomte
     real(kind=8) :: epais
     real(kind=8) :: xr(*), sigma(6, *), effgt(8, *), effgtg(8, 8)
-    integer :: i, i1, j, k, l1, nb1, npgsr
+    integer(kind=8) :: i, i1, j, k, l1, nb1, npgsr
 !
     real(kind=8) :: demiep, wnc1, wnc2, wnc3, zic, zic1, zic2
     real(kind=8) :: zic3

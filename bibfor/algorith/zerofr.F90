@@ -26,7 +26,7 @@ subroutine zerofr(intini, algo, func, x1, x2, &
 #include "asterfort/zerofb.h"
 #include "asterfort/zerofc.h"
 #include "asterfort/zerofo.h"
-    integer :: intini, itmax, iter, iret
+    integer(kind=8) :: intini, itmax, iter, iret
     character(len=*) :: algo
     real(kind=8) :: solu, tol, x1, x2
     interface

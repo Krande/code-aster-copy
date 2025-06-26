@@ -20,10 +20,10 @@ interface
     subroutine chbord(nomo, nbCell, listCellNume, mabord, nbmapr, &
                       nbmabo)
         character(len=*) :: nomo
-        integer :: nbCell
-        integer, pointer :: listCellNume(:)
-        integer :: mabord(*)
-        integer :: nbmapr
-        integer :: nbmabo
+        integer(kind=8) :: nbCell
+        integer(kind=8), pointer :: listCellNume(:)
+        integer(kind=8) :: mabord(*)
+        integer(kind=8) :: nbmapr
+        integer(kind=8) :: nbmabo
     end subroutine chbord
 end interface

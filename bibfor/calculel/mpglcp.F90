@@ -27,7 +27,7 @@ subroutine mpglcp(typecp, nbnolo, coordo, alpha, beta, &
 #include "asterfort/dxtpgl.h"
 #include "asterfort/matrot.h"
     character(len=1) :: typecp
-    integer :: nbnolo
+    integer(kind=8) :: nbnolo
     real(kind=8) :: coordo(*), alpha, beta, gamma, pgl(3, 3)
 !     --- ARGUMENTS ---
 ! ----------------------------------------------------------------------

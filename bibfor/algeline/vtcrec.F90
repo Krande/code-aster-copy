@@ -54,14 +54,14 @@ subroutine vtcrec(champ, chmod, base, typc, neq)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: lchamp, jrefn
+    integer(kind=8) :: lchamp, jrefn
     character(len=1) :: classe
     character(len=1) :: type, type2
     character(len=8) :: nomgd
     character(len=19) :: nume_equa, nume_equa_new
     character(len=24) :: vale, refe, noojb
 !     ------------------------------------------------------------------
-    integer :: ibid, neq
+    integer(kind=8) :: ibid, neq
     character(len=19) :: chmod2
 !     ------------------------------------------------------------------
     data vale/'                   .VALE'/

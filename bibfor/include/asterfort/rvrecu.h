@@ -21,7 +21,7 @@
 interface
     subroutine rvrecu(mcf, iocc, champ, nomvec)
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: champ
         character(len=*) :: nomvec
     end subroutine rvrecu

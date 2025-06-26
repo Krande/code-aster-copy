@@ -25,18 +25,18 @@ interface
                       coel, nbphas, nfs, nsg, toutms,&
                       dvin, nhsr, numhsr, hsr, itmax,&
                       toler, iret)
-        integer :: nhsr
-        integer :: nsg
-        integer :: nfs
-        integer :: nbphas
-        integer :: nmat
+        integer(kind=8) :: nhsr
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nbphas
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: rela_comp
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vini(*)
         real(kind=8) :: x
         real(kind=8) :: dtime
@@ -47,10 +47,10 @@ interface
         real(kind=8) :: coel(nmat)
         real(kind=8) :: toutms(nbphas, nfs, nsg, 7)
         real(kind=8) :: dvin(*)
-        integer :: numhsr(*)
+        integer(kind=8) :: numhsr(*)
         real(kind=8) :: hsr(nsg, nsg, nhsr)
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmop
 end interface

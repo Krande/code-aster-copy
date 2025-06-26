@@ -24,7 +24,7 @@ subroutine xellin(elref1, nno1, elref2, nno2)
 #include "asterfort/jemarq.h"
 #include "asterfort/iselli.h"
     character(len=8) :: elref1, elref2
-    integer :: nno1, nno2
+    integer(kind=8) :: nno1, nno2
 !
 !                      RETOURNE LE TYPE DE L'ELEMENT "LINEARISE"
 !                      ET LE NOMBRE DE NOEUDS DE CHAQUE ELEMENT

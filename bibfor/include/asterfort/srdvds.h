@@ -20,7 +20,7 @@
 !
 interface
     subroutine srdvds(dt, nbmat, mater, gv, dfdsv, seuilv, dvds)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: dt
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: gv(6)

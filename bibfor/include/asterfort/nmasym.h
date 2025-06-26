@@ -24,9 +24,9 @@ interface
                       effnom, vim, effnop, vip, klv,&
                       fono)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: icodma
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: icodma
         character(len=*) :: option
         real(kind=8) :: xlong0
         real(kind=8) :: a

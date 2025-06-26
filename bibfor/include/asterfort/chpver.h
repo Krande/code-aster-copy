@@ -24,6 +24,6 @@ interface
         character(len=*) :: nocham
         character(len=*) :: locham
         character(len=*) :: gdcham
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine chpver
 end interface

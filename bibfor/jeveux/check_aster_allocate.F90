@@ -19,7 +19,7 @@
 subroutine check_aster_allocate(stage)
     use allocate_module
     implicit none
-    integer, intent(in) :: stage
+    integer(kind=8), intent(in) :: stage
 
 ! Check that objects allocated by 'as_allocate' have actually been deallocated.
 !   stage = 0: Reset the value cuvtrav (from common) to 0 (called before each command)
@@ -32,7 +32,7 @@ subroutine check_aster_allocate(stage)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    integer, save :: icode = -1
+    integer(kind=8), save :: icode = -1
 !
     if (stage .eq. 0) then
         cuvtrav = 0.d0

@@ -38,36 +38,36 @@ subroutine jeveuoc(nomlu, cel, pc)
     character(len=*), intent(in) :: cel
 
 !   ==================================================================
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: ibacol, iblono, inat, inatb, ixdeso, ixiadd, ixlono
-    integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
-    integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
-    integer :: jtype, lonoi, ltypi, n
+    integer(kind=8) :: ibacol, iblono, inat, inatb, ixdeso, ixiadd, ixlono
+    integer(kind=8) :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
+    integer(kind=8) :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
+    integer(kind=8) :: jtype, lonoi, ltypi, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: numatr
+    integer(kind=8) :: numatr
     common/idatje/numatr
 !     ------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
-    integer :: izr, izc, izl, izk8, izk16, izk24, izk32, izk80
+    integer(kind=8) :: izr, izc, izl, izk8, izk16, izk24, izk32, izk80
     equivalence(izr, zr), (izc, zc), (izl, zl), (izk8, zk8), (izk16, zk16),&
      &               (izk24, zk24), (izk32, zk32), (izk80, zk80)
 ! ----------------------------------------------------------------------
     character(len=1) :: genri, typei, kcel
     character(len=8) :: noml8
     character(len=32) :: noml32
-    integer :: icre, iret
-    integer :: iddeso, idiadd, idlono
+    integer(kind=8) :: icre, iret
+    integer(kind=8) :: iddeso, idiadd, idlono
     parameter(iddeso=1, idiadd=2, idlono=8)
 
-    integer :: jad, n1, jctab
+    integer(kind=8) :: jad, n1, jctab
     character(len=8) :: ktyp
     type(c_ptr) :: pc
 

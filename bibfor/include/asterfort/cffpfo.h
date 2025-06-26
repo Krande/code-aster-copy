@@ -21,8 +21,8 @@
 interface
     subroutine cffpfo(resoco, nbliai, nbliac, ndim)
         character(len=24) :: resoco
-        integer :: nbliai
-        integer :: nbliac
-        integer :: ndim
+        integer(kind=8) :: nbliai
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ndim
     end subroutine cffpfo
 end interface

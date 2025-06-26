@@ -24,22 +24,22 @@ interface
                   cxma, xyzma, normal, itria, xbar,&
                   iproj, excent)
         character(len=24) :: nmabet
-        integer :: nbmabe
-        integer :: nbnobe
+        integer(kind=8) :: nbmabe
+        integer(kind=8) :: nbnobe
         character(len=8) :: mailla
         character(len=8) :: caelem
         real(kind=8) :: dmax_cable
         character(len=8) :: nnoeca
         real(kind=8) :: x3dca(*)
-        integer :: noebe
-        integer :: numail
-        integer :: nbcnx
-        integer :: cxma(*)
+        integer(kind=8) :: noebe
+        integer(kind=8) :: numail
+        integer(kind=8) :: nbcnx
+        integer(kind=8) :: cxma(*)
         real(kind=8) :: xyzma(3, *)
         real(kind=8) :: normal(*)
-        integer :: itria
+        integer(kind=8) :: itria
         real(kind=8) :: xbar(*)
-        integer :: iproj
+        integer(kind=8) :: iproj
         real(kind=8) :: excent
     end subroutine projkm
 end interface

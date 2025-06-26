@@ -27,7 +27,7 @@ subroutine fetskp(mod, meth, nbpart)
 !
     implicit none
     character(len=8), intent(in) :: mod, meth
-    integer, intent(in) :: nbpart
+    integer(kind=8), intent(in) :: nbpart
 !
 #include "asterf_types.h"
 #include "jeveux.h"
@@ -59,18 +59,18 @@ subroutine fetskp(mod, meth, nbpart)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbmama, idco, nbmato, renum2, nbma, nomsdm, masd
-    integer :: nbmasd, id, co, renum
-    integer :: numsdm, nmap, i, ima
-    integer :: iocc, nocc, ifm, niv, nblien, renum3, idma
-    integer :: rang, nbproc, versco, n1, n2, n3, ier, iaux, iaux2
-    integer :: iexi, numsd0
+    integer(kind=8) :: nbmama, idco, nbmato, renum2, nbma, nomsdm, masd
+    integer(kind=8) :: nbmasd, id, co, renum
+    integer(kind=8) :: numsdm, nmap, i, ima
+    integer(kind=8) :: iocc, nocc, ifm, niv, nblien, renum3, idma
+    integer(kind=8) :: rang, nbproc, versco, n1, n2, n3, ier, iaux, iaux2
+    integer(kind=8) :: iexi, numsd0
     real(kind=8) :: tmps(7)
     character(len=8) :: ma
     character(len=8) :: kersco
     character(len=24) :: k24b
     integer(kind=4), pointer :: vedlo(:) => null()
-    integer, pointer :: vrenum1(:) => null()
+    integer(kind=8), pointer :: vrenum1(:) => null()
     integer(kind=4), pointer :: vvelo(:) => null()
     mpi_int :: mrank, msize
 !

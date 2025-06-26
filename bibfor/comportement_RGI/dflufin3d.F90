@@ -32,7 +32,7 @@ subroutine dflufin3d(sige6, bw, pw, bg, pg, dsw6, delta, rc, &
 
     real(kind=8) :: tauflu1, sigs, sig0, sigd6(6), sigeq, sigs3, taulim
     real(kind=8) :: taueq, tauflu0, xdenom, dfmx
-    integer i
+    integer(kind=8) i
 
 !     initialisation
     taueq = 0.d0

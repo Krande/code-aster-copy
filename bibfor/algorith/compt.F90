@@ -38,9 +38,9 @@ subroutine compt(nbpt, fn, offset, t, elapse, &
     real(kind=8) :: fn(*), t(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ichoc, idebur, idebut, idech, ifin, ifinr
-    integer :: irebo, j, jfin, nbchoc, nbinst, nbpas, nbpt
-    integer :: nbrebo
+    integer(kind=8) :: i, ichoc, idebur, idebut, idech, ifin, ifinr
+    integer(kind=8) :: irebo, j, jfin, nbchoc, nbinst, nbpas, nbpt
+    integer(kind=8) :: nbrebo
     real(kind=8) :: dt, elapse, offset, tchmax, tchmin, tchoc, tchocm
     real(kind=8) :: tchoct, trebo, trebom, zero
 !-----------------------------------------------------------------------

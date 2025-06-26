@@ -22,7 +22,7 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv, &
     implicit none
 #include "asterfort/lcdevi.h"
 #include "asterfort/r8inir.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), depsv(6), ddepsv(6)
     real(kind=8) :: dgamv, ddgamv(6)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
@@ -42,7 +42,7 @@ subroutine lkdepv(nbmat, mater, depsv, ddepsv, dgamv, &
 !     :         RAPPORT A DEPS ------------------------------------
 ! =================================================================
     common/tdim/ndt, ndi
-    integer :: i, k, ndi, ndt
+    integer(kind=8) :: i, k, ndi, ndt
     real(kind=8) :: zero, un, mun, deux, trois
     real(kind=8) :: devia(6, 6), deviat(6, 6)
 ! =================================================================

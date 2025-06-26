@@ -53,15 +53,15 @@ subroutine romResultGetInfo(resultNameZ, result)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iret
-    integer :: nbStore, nbLine
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iret
+    integer(kind=8) :: nbStore, nbLine
     character(len=8)  :: resultName, modelRefe
     character(len=24) :: tablName, comporRefe
     character(len=16) :: resultType
     aster_logical :: lTablFromResu
-    integer, pointer :: tbnp(:) => null()
-    integer, pointer :: listStore(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: listStore(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -43,7 +43,7 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, &
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: iocc, nbnoff
+    integer(kind=8) :: iocc, nbnoff
     character(len=8) :: resu, nomail, typfon
 ! FONCTION REALISEE:
 !
@@ -65,16 +65,16 @@ subroutine fonmai2(resu, nomail, typfon, iocc, nbnoff, &
 !
     real(kind=8) :: vecori(3)
 !
-    integer :: jcour2, iatyma, idnono, idlino
-    integer :: i, nbma, n1, im, nig
-    integer :: nid, numno, iret, trouv, numma
+    integer(kind=8) :: jcour2, iatyma, idnono, idlino
+    integer(kind=8) :: i, nbma, n1, im, nig
+    integer(kind=8) :: nid, numno, iret, trouv, numma
     character(len=8) :: k8b, nomma, typm, ndorig, ndextr
     character(len=8) :: noeud
     character(len=16) :: k16bid, nomcmd, motfac
     character(len=16) :: motcle(2), typmcl(2)
     character(len=24) :: conec, typp, noeord
     character(len=24) :: mesnoe, mafour, nogrp
-    integer, pointer :: maillestriees(:) => null()
+    integer(kind=8), pointer :: maillestriees(:) => null()
 ! DEB-------------------------------------------------------------------
     call jemarq()
 !

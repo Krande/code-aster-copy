@@ -21,7 +21,7 @@ interface
     subroutine checkListOfGrpMa(mesh, listGrpMa, nbGrpMa, l_stop_local)
         character(len=*), intent(in)    :: mesh
         character(len=*), intent(in)    :: listGrpMa(*)
-        integer, intent(in)             :: nbGrpMa
+        integer(kind=8), intent(in)             :: nbGrpMa
         aster_logical, intent(in)       :: l_stop_local
     end subroutine checkListOfGrpMa
 end interface

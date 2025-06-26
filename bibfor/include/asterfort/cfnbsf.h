@@ -21,9 +21,9 @@
 interface
     subroutine cfnbsf(defico, isurf, typent, nbent, jdec)
         character(len=24) :: defico
-        integer :: isurf
+        integer(kind=8) :: isurf
         character(len=4) :: typent
-        integer :: nbent
-        integer :: jdec
+        integer(kind=8) :: nbent
+        integer(kind=8) :: jdec
     end subroutine cfnbsf
 end interface

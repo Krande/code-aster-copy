@@ -21,11 +21,11 @@
 interface
     subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
                       iassmx)
-        integer :: iassef
-        integer :: nbgd
+        integer(kind=8) :: iassef
+        integer(kind=8) :: nbgd
         character(len=19) :: caelem
         character(len=8) :: nomcmp(nbgd)
         real(kind=8) :: valres(nbgd*iassef)
-        integer :: iassmx
+        integer(kind=8) :: iassmx
     end subroutine recugd
 end interface

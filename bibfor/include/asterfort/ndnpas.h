@@ -23,9 +23,9 @@
 interface
     subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna,&
                       valinc, solalg)
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=24) :: numedd
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=19) :: sddisc
         character(len=19) :: sddyna
         character(len=19) :: valinc(*)

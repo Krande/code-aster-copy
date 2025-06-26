@@ -21,9 +21,9 @@
 interface
     subroutine btkb(ndimc, ndimx, nddle, wmatc, btild,&
                     wmatcb, ktildi)
-        integer :: ndimx
-        integer :: ndimc
-        integer :: nddle
+        integer(kind=8) :: ndimx
+        integer(kind=8) :: ndimc
+        integer(kind=8) :: nddle
         real(kind=8) :: wmatc(ndimc, ndimc)
         real(kind=8) :: btild(ndimc, ndimx)
         real(kind=8) :: wmatcb(ndimc, ndimx)

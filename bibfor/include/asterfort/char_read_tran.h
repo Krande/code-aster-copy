@@ -26,8 +26,8 @@ interface
                               l_cent_     , cent_     ,&
                               l_angl_naut_, angl_naut_)
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: iocc
+        integer(kind=8), intent(in) :: ndim
         aster_logical, optional, intent(out) :: l_tran_
         real(kind=8), optional, intent(out) :: tran_(3)
         aster_logical, optional, intent(out) :: l_cent_

@@ -22,7 +22,7 @@ interface
     subroutine cazouu(keywf, nb_cont_zone, keyw_,keyw_type_)
         character(len=16), intent(in) :: keywf
         character(len=*), intent(in) :: keyw_type_
-        integer, intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: nb_cont_zone
         character(len=*), intent(in) :: keyw_
     end subroutine cazouu
 end interface

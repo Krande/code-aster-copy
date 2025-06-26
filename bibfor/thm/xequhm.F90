@@ -64,11 +64,11 @@ subroutine xequhm(ds_thm, &
 ! OUT         : RETCOM RETOUR DES LOIS DE COMPORTEMENT
 ! ======================================================================
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: imate, ndim, nbvari, kpi, npg, dimdef, dimcon, retcom
-    integer :: mecani(5), press1(7), press2(7), tempe(5)
-    integer :: addeme, adcome, addete, i, j
-    integer :: nbpha1, addep1, adcp11, nfh
-    integer :: nbpha2, addep2
+    integer(kind=8) :: imate, ndim, nbvari, kpi, npg, dimdef, dimcon, retcom
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer(kind=8) :: addeme, adcome, addete, i, j
+    integer(kind=8) :: nbpha1, addep1, adcp11, nfh
+    integer(kind=8) :: nbpha2, addep2
     real(kind=8) :: defgem(dimdef), defgep(dimdef), congem(dimcon)
     real(kind=8) :: congep(dimcon), vintm(nbvari), vintp(nbvari)
     real(kind=8) :: pesa(3), dt, rinstp
@@ -79,9 +79,9 @@ subroutine xequhm(ds_thm, &
     aster_logical :: lSigm, lVect, lMatr
 !
 ! DECLARATIONS POUR XFEM
-    integer :: dimenr, enrmec(3), enrhyd(3)
-    integer :: yaenrm, adenme
-    integer :: yaenrh, adenhy, ifh
+    integer(kind=8) :: dimenr, enrmec(3), enrhyd(3)
+    integer(kind=8) :: yaenrm, adenme
+    integer(kind=8) :: yaenrh, adenhy, ifh
     real(kind=8) :: r(dimenr), drds(dimenr, dimcon)
     real(kind=8) :: dsde(dimcon, dimenr)
 ! ======================================================================

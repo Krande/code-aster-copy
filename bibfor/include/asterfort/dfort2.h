@@ -22,14 +22,14 @@ interface
     subroutine dfort2(nsommx, icnc, noeu1, tbelzo, nbelt,&
                       tbnozo, nbnozo, nbnoe, xy, aire,&
                       energi, pe)
-        integer :: nbnoe
-        integer :: nbelt
-        integer :: nsommx
-        integer :: icnc(nsommx+2, *)
-        integer :: noeu1
-        integer :: tbelzo(nbelt)
-        integer :: tbnozo(nbnoe)
-        integer :: nbnozo(3)
+        integer(kind=8) :: nbnoe
+        integer(kind=8) :: nbelt
+        integer(kind=8) :: nsommx
+        integer(kind=8) :: icnc(nsommx+2, *)
+        integer(kind=8) :: noeu1
+        integer(kind=8) :: tbelzo(nbelt)
+        integer(kind=8) :: tbnozo(nbnoe)
+        integer(kind=8) :: nbnozo(3)
         real(kind=8) :: xy(3, *)
         real(kind=8) :: aire(*)
         real(kind=8) :: energi(*)

@@ -34,13 +34,13 @@ subroutine te0270(option, nomte)
 #include "asterfort/vff2dn.h"
 !
     character(len=16) :: option, nomte
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, r, z, nx, ny, tpg, theta, coen, coenp1
     real(kind=8) :: texn, texnp1
-    integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: itemps, ivectt, k, i, itex, icoefh, itemp, icode
+    integer(kind=8) :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: itemps, ivectt, k, i, itex, icoefh, itemp, icode
 !
 !
 !====

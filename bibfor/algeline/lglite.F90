@@ -34,7 +34,7 @@ subroutine lglite(yf, nbmat, mater, f0, devg, &
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: nbmat, codret
+    integer(kind=8) :: nbmat, codret
     real(kind=8) :: yf(10), mater(nbmat, 2), f0
     real(kind=8) :: devg(6), devgii, traceg, dy(10)
 ! --- BUT : CALCUL DES DIFFERENTS INCREMENTS ---------------------------
@@ -50,7 +50,7 @@ subroutine lglite(yf, nbmat, mater, f0, devg, &
 ! OUT : DY     : INCREMENTS (DSIG, DI1, DGAMP, DEVP, DDELTA) -----------
 ! ======================================================================
 ! ======================================================================
-    integer :: jpara, jderiv, ndt, ndi
+    integer(kind=8) :: jpara, jderiv, ndt, ndi
     real(kind=8) :: pref, epssig, gamcjs, mu, k, snii, rn, gn
     real(kind=8) :: rcos3t
     real(kind=8) :: dfdl, sn(6), invn, gampn, evpn, deltan, q(6)

@@ -29,9 +29,9 @@ subroutine rsbary(lr8, nr8, tous, lexi, x, i1, i2, iposit, prec, crit)
 !     ARGUMENTS:
 !     ----------
     real(kind=8), intent(in) :: x, prec, lr8(*)
-    integer, intent(in) :: nr8
+    integer(kind=8), intent(in) :: nr8
     aster_logical, intent(in) :: tous, lexi(*)
-    integer, intent(out) :: i1, i2, iposit
+    integer(kind=8), intent(out) :: i1, i2, iposit
     character(len=8), intent(in) :: crit
 !
 ! ----------------------------------------------------------------------
@@ -60,7 +60,7 @@ subroutine rsbary(lr8, nr8, tous, lexi, x, i1, i2, iposit, prec, crit)
 !
 !
 ! ----------------------------------------------------------------------
-    integer :: imax, imin, ipp, ip, is, iss, ns
+    integer(kind=8) :: imax, imin, ipp, ip, is, iss, ns
     real(kind=8) :: xmax, xmin
     real(kind=8), pointer :: v_diff(:) => null()
     aster_logical, pointer :: v_active(:) => null()

@@ -23,16 +23,16 @@ interface
                       numnog, nbnog, nummag, numgrp, coor,&
                       cent, req, xint, yint, zint,&
                       rint, nbgrp)
-        integer :: nbgrp
-        integer :: nbz
-        integer :: nbcyl
+        integer(kind=8) :: nbgrp
+        integer(kind=8) :: nbz
+        integer(kind=8) :: nbcyl
         character(len=19) :: caelem
-        integer :: iequiv
-        integer :: irot(3)
-        integer :: numnog(*)
-        integer :: nbnog(*)
-        integer :: nummag(*)
-        integer :: numgrp(*)
+        integer(kind=8) :: iequiv
+        integer(kind=8) :: irot(3)
+        integer(kind=8) :: numnog(*)
+        integer(kind=8) :: nbnog(*)
+        integer(kind=8) :: nummag(*)
+        integer(kind=8) :: numgrp(*)
         real(kind=8) :: coor(*)
         real(kind=8) :: cent(2*nbcyl)
         real(kind=8) :: req(nbgrp)

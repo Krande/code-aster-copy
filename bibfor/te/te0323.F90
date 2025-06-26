@@ -39,9 +39,9 @@ subroutine te0323(option, nomte)
 !
     character(len=8) :: lielrf(10)
     aster_logical :: axi
-    integer :: nno1, nno2, npg, ivf2, idf2, nnos, jgn, nddl
-    integer :: iw, ivf1, idf1, igeom, ivectu, jvSief, ndim, ntrou
-    integer :: iu(3, 16), ip(8)
+    integer(kind=8) :: nno1, nno2, npg, ivf2, idf2, nnos, jgn, nddl
+    integer(kind=8) :: iw, ivf1, idf1, igeom, ivectu, jvSief, ndim, ntrou
+    integer(kind=8) :: iu(3, 16), ip(8)
     real(kind=8) :: sigref, fhyref
 !
     call elref2(nomte, 2, lielrf, ntrou)

@@ -19,6 +19,6 @@
 interface
     subroutine mateInfo(mate, mate_nb)
         character(len=8), intent(in) :: mate
-        integer, intent(in) :: mate_nb
+        integer(kind=8), intent(in) :: mate_nb
     end subroutine mateInfo
 end interface

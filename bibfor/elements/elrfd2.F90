@@ -25,9 +25,9 @@ subroutine elrfd2(elrefz, x, dimd, dff2, nno, ndim)
 #include "asterfort/elrfno.h"
 !
     character(len=*), intent(in) :: elrefz
-    integer, intent(in)          :: dimd
+    integer(kind=8), intent(in)          :: dimd
     real(kind=8), intent(in)     :: x(*)
-    integer, intent(out)         :: nno, ndim
+    integer(kind=8), intent(out)         :: nno, ndim
     real(kind=8), intent(out)    :: dff2(3, 3, *)
 !
 ! --------------------------------------------------------------------------------------------------

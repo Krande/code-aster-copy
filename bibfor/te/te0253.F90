@@ -52,21 +52,21 @@ subroutine te0253(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k, l
-    integer :: n1, n2
-    integer :: nn, nno2, nt1, nt2
-    integer :: ipg, ij, ik, ijkl, codret
-    integer :: jvDispm, jvDispp, jvDisp
-    integer :: jv_geom, jv_mate
-    integer :: jvVect, jv_codret, jv_matr
+    integer(kind=8) :: i, j, k, l
+    integer(kind=8) :: n1, n2
+    integer(kind=8) :: nn, nno2, nt1, nt2
+    integer(kind=8) :: ipg, ij, ik, ijkl, codret
+    integer(kind=8) :: jvDispm, jvDispp, jvDisp
+    integer(kind=8) :: jv_geom, jv_mate
+    integer(kind=8) :: jvVect, jv_codret, jv_matr
     character(len=16) :: rela_comp
     real(kind=8) :: a(2, 2, 9, 9), mmat(9, 9)
     real(kind=8) :: b(18, 18), e(9, 9), ul(18), us(9), c(171), d(45)
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: poids, rho, celer
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg
-    integer :: j_mater, iret
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg
+    integer(kind=8) :: j_mater, iret
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: FEForm
     aster_logical :: l_axis

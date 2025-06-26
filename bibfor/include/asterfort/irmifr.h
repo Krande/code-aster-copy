@@ -20,10 +20,10 @@
 !
 interface
     subroutine irmifr(ifmis, freq, ifreq, nfreq, ic)
-        integer :: ifmis
+        integer(kind=8) :: ifmis
         real(kind=8) :: freq
-        integer :: ifreq
-        integer :: nfreq
-        integer :: ic
+        integer(kind=8) :: ifreq
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: ic
     end subroutine irmifr
 end interface

@@ -22,7 +22,7 @@ subroutine nmcrpm(list, nbinst, dtmin)
 !
     implicit none
     real(kind=8) :: list(*), dtmin
-    integer :: nbinst
+    integer(kind=8) :: nbinst
 !
 ! ----------------------------------------------------------------------
 !
@@ -39,7 +39,7 @@ subroutine nmcrpm(list, nbinst, dtmin)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: deltat
 !
 ! ----------------------------------------------------------------------

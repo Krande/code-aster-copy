@@ -24,7 +24,7 @@ subroutine fgequi(tz, typz, ndim, equi)
 #include "asterfort/lciv2s.h"
 #include "asterfort/lcqeqv.h"
 #include "asterfort/r8inir.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: tz(*), equi(*)
     character(len=*) :: typz
 ! person_in_charge: thomas.de-soza at edf.fr
@@ -56,12 +56,12 @@ subroutine fgequi(tz, typz, ndim, equi)
     real(kind=8) :: t(6), tn(6), tr(6), tu(6), vecp(3, 3), nul(6)
     real(kind=8) :: rac2, hyd, jacaux(3)
     real(kind=8) :: tol, toldyn
-    integer :: nbvec, nperm
-    integer :: type, iordre
+    integer(kind=8) :: nbvec, nperm
+    integer(kind=8) :: type, iordre
     character(len=8) :: typ
     common/tdim/nt, nd
 !-----------------------------------------------------------------------
-    integer :: i, j, nd, nitjac, nt
+    integer(kind=8) :: i, j, nd, nitjac, nt
 !-----------------------------------------------------------------------
     data nul/6*0.d0/
     data nperm, tol, toldyn/12, 1.d-10, 1.d-2/

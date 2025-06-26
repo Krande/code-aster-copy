@@ -20,6 +20,6 @@
 !
 interface
     subroutine ulimpr(impr)
-        integer :: impr
+        integer(kind=8) :: impr
     end subroutine ulimpr
 end interface

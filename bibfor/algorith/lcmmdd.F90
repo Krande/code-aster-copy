@@ -24,8 +24,8 @@ subroutine lcmmdd(taus, coeft, ifa, nmat, nbcomm, &
 #include "asterc/r8maem.h"
 #include "asterc/r8miem.h"
 #include "asterfort/lcmmdh.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), iret
-    integer :: ifl, is, ir, nbsys, nfs, nsg, nuecou
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), iret
+    integer(kind=8) :: ifl, is, ir, nbsys, nfs, nsg, nuecou
     real(kind=8) :: taus, coeft(nmat), dgamma, dp, vind(*), dalpha
     real(kind=8) :: rp, sgns, hsr(nsg, nsg), dy(12), dt
     real(kind=8) :: n, gamma0, rmin, alphar(12)

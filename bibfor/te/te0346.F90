@@ -58,10 +58,10 @@ subroutine te0346(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nno, nc, i, j, jcret, npg, ipoids
-    integer :: igeom, imate, icontm, iorien, iinstp
-    integer :: ideplm, ideplp, iinstm, ivectu, icontp, imat
-    integer :: istrxm, istrxp, ldep, codret
+    integer(kind=8) :: nno, nc, i, j, jcret, npg, ipoids
+    integer(kind=8) :: igeom, imate, icontm, iorien, iinstp
+    integer(kind=8) :: ideplm, ideplp, iinstm, ivectu, icontp, imat
+    integer(kind=8) :: istrxm, istrxp, ldep, codret
     character(len=4) :: fami
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, defo_comp
@@ -72,7 +72,7 @@ subroutine te0346(option, nomte)
     real(kind=8) :: b(14), rgeom(105), angp(3)
     real(kind=8) :: a, xiy, xiz, iyr2, izr2
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 11
+    integer(kind=8), parameter :: nb_cara = 11
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'A1   ', 'IY1  ', 'IZ1  ', &
                                                           'AY1  ', 'AZ1  ', 'EY1  ', &

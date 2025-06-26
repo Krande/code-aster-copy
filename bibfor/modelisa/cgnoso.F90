@@ -33,7 +33,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 #include "asterfort/utreno.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: iocc, nbno
+    integer(kind=8) :: iocc, nbno
     character(len=*) :: mofaz, nomaz, lisnoz
 !
 !       CGNOSO -- TRAITEMENT DE L'OPTION "SEGM_DROI_ORDO"
@@ -50,7 +50,7 @@ subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, jnoeu, numori, numext, n1, iera
+    integer(kind=8) :: iret, jnoeu, numori, numext, n1, iera
     real(kind=8) :: tole
     character(len=8) :: noma, crit, nom1
     character(len=16) :: motfac, motcle(2), typmcl(2)

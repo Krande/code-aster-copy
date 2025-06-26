@@ -27,7 +27,7 @@ interface
         real(kind=8), intent(in) :: d0(2)
         real(kind=8), intent(in) :: e0(2)
         real(kind=8), intent(in) :: f0(2)
-        integer, intent(out) :: nbroot
+        integer(kind=8), intent(out) :: nbroot
         real(kind=8), intent(out) :: x(4)
         real(kind=8), intent(out) :: y(4)
     end subroutine dracs2

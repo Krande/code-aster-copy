@@ -29,9 +29,9 @@ subroutine elimcq(sdcont, mesh, nb_cont_zone, nb_cont_surf, nb_cont_node)
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(inout) :: nb_cont_node
+    integer(kind=8), intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(inout) :: nb_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,10 +49,10 @@ subroutine elimcq(sdcont, mesh, nb_cont_zone, nb_cont_surf, nb_cont_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_node0
+    integer(kind=8) :: nb_cont_node0
     character(len=24) :: sdcont_defi
-    integer, pointer :: v_poin_node(:) => null()
-    integer, pointer :: v_list_node(:) => null()
+    integer(kind=8), pointer :: v_poin_node(:) => null()
+    integer(kind=8), pointer :: v_list_node(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

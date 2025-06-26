@@ -21,7 +21,7 @@
 interface
     subroutine utncmp(cham19, ncmp, nomobj)
         character(len=*) :: cham19
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: nomobj
     end subroutine utncmp
 end interface

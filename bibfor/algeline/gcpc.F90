@@ -84,19 +84,19 @@ subroutine gcpc(m, in, ip, ac, inpc, &
 #include "asterfort/isParallelMatrix.h"
 !
     integer(kind=4) :: ip(*), ippc(*)
-    integer :: m, in(m), inpc(m), irep, niter, perm(m)
+    integer(kind=8) :: m, in(m), inpc(m), irep, niter, perm(m)
     real(kind=8) :: ac(m), acpc(m), bf(m), xp(m), r(m), rr(m), p(m), epsi
     character(len=19) :: criter, matas, solveu
-    integer :: istop, iret
+    integer(kind=8) :: istop, iret
 !
 ! -----------------------------------------------------------------
     real(kind=8) :: zero, bnorm, anorm, epsix, anormx, rrri, gama, rrrim1
     real(kind=8) :: paraaf, anorxx, rau, valr(2), blreps
-    integer :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali, pcpiv, redmpi
+    integer(kind=8) :: ifm, niv, jcri, jcrr, jcrk, iter, ier, vali, pcpiv, redmpi
     character(len=24) :: precon, solvbd, usersm, renum
     character :: prec, rank
     complex(kind=8) :: cbid
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
     real(kind=8), pointer :: xtrav(:) => null()

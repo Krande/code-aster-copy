@@ -46,19 +46,19 @@ subroutine cetule(model0, tbgrca, codret)
 #include "asterfort/jemarq.h"
 #include "asterfort/ltnotb.h"
 #include "asterfort/tbliva.h"
-    integer :: nbmcle
+    integer(kind=8) :: nbmcle
     parameter(nbmcle=3)
 !
 ! DECLARATION PARAMETRES D'APPELS
 ! -------------------------------
     character(len=*) :: model0
     real(kind=8) :: tbgrca(nbmcle)
-    integer :: codret
+    integer(kind=8) :: codret
 !     ------------------------------------------------------------------
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: ibid, iaux, vali, iret
+    integer(kind=8) :: ibid, iaux, vali, iret
 !
     real(kind=8) :: valeur, rbid
 !

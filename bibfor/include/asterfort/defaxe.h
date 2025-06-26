@@ -21,9 +21,9 @@
 interface
     function defaxe(icoq, imod, z, long, nbm,&
                     tcoef)
-        integer :: nbm
-        integer :: icoq
-        integer :: imod
+        integer(kind=8) :: nbm
+        integer(kind=8) :: icoq
+        integer(kind=8) :: imod
         real(kind=8) :: z
         real(kind=8) :: long
         real(kind=8) :: tcoef(10, nbm)

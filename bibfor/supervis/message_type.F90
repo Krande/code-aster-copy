@@ -38,12 +38,12 @@ module message_type
     type Message
         character(len=2) :: typ
         character(len=24) :: id = "?"
-        integer :: except
-        integer :: nk
+        integer(kind=8) :: except
+        integer(kind=8) :: nk
         character(len=256), allocatable :: valk(:)
-        integer :: ni
-        integer, allocatable :: vali(:)
-        integer :: nr
+        integer(kind=8) :: ni
+        integer(kind=8), allocatable :: vali(:)
+        integer(kind=8) :: nr
         real(kind=8), allocatable :: valr(:)
     end type Message
 !

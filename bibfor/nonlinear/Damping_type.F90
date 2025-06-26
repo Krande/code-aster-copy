@@ -38,9 +38,9 @@ module Damping_type
         aster_logical :: lReacVite = ASTER_FALSE
 ! - Modes for damping
         character(len=8) :: dampMode = " "
-        integer :: nbMode = 0
+        integer(kind=8) :: nbMode = 0
 ! - Values of damping
-        integer :: nbDampVale = 0
+        integer(kind=8) :: nbDampVale = 0
         character(len=24) :: jvListDamp = " "
 ! - Name of datastructure to save parameters
         character(len=24) :: jvDataDamp = " "

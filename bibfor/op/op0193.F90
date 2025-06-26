@@ -30,7 +30,7 @@ subroutine op0193()
 #include "asterfort/jemarq.h"
 #include "asterfort/mpmod2.h"
 #include "asterfort/mptran.h"
-    integer :: n1, nbmesu, nbmode
+    integer(kind=8) :: n1, nbmesu, nbmode
 !
     character(len=8) :: basemo, nommes
     character(len=24) :: vrange, vnoeud, basepr, vcham

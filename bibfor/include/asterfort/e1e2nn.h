@@ -22,7 +22,7 @@ interface
     subroutine e1e2nn(nno, dfde, dfdk, e1n, e2n,&
                       nxn, nyn, nzn, normn, j1n,&
                       j2n, san, can)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: dfde(9, 9)
         real(kind=8) :: dfdk(9, 9)
         real(kind=8) :: e1n(3, 9)

@@ -33,14 +33,14 @@ subroutine cripoi(nbm, b, crit)
 #include "asterc/r8prem.h"
 #include "asterfort/dcabs2.h"
 #include "asterfort/utmess.h"
-    integer :: nbm
+    integer(kind=8) :: nbm
     complex(kind=8) :: b(nbm, nbm)
     real(kind=8) :: crit
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: bii, bij, sommii, sommij, tole, tolr, x
     real(kind=8) :: y
 !-----------------------------------------------------------------------

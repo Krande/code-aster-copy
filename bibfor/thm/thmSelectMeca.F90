@@ -45,21 +45,21 @@ subroutine thmSelectMeca(ds_thm, &
 #include "asterfort/utmess.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
     character(len=8), intent(in) :: typmod(2)
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: instam, instap, dtemp
-    integer, intent(in) :: ndim, dimdef, dimcon
-    integer, intent(in) :: addeme, addete, adcome, addep1, addep2
+    integer(kind=8), intent(in) :: ndim, dimdef, dimcon
+    integer(kind=8), intent(in) :: addeme, addete, adcome, addep1, addep2
     real(kind=8), intent(in) :: vintm(*)
     real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
     real(kind=8), intent(inout) :: congep(dimcon)
     real(kind=8), intent(inout) :: vintp(*)
     real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,14 +109,14 @@ subroutine thmSelectMeca(ds_thm, &
 !
     aster_logical :: lMatr, LSigm
     character(len=16) :: compor_meca(COMPOR_SIZE)
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: dsdeme(6, 6), alpha0, ther_meca(6)
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
     character(len=16) :: meca, defo, extern_addr
-    integer :: nb_vari_meca, nume_meca, nume_thmc
+    integer(kind=8) :: nb_vari_meca, nume_meca, nume_thmc
     type(Behaviour_Integ) :: BEHinteg
-    integer, parameter :: kpg = 1, ksp = 1
+    integer(kind=8), parameter :: kpg = 1, ksp = 1
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -91,13 +91,13 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
 ! ---------
     character(len=19) :: lirela
     character(len=8) :: mailla, nnoeca
-    integer :: noebe, nbcnx, cxma(*), itria, iproj
+    integer(kind=8) :: noebe, nbcnx, cxma(*), itria, iproj
     real(kind=8) :: normal(*), xbar(*), excent
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i1, i2, i3, ibloc, icnx, iterm, ind
-    integer :: nbbloc, nbsom, nbterm, nbtmax, nnomax, noeca
+    integer(kind=8) :: i1, i2, i3, ibloc, icnx, iterm, ind
+    integer(kind=8) :: nbbloc, nbsom, nbterm, nbtmax, nnomax, noeca
     real(kind=8) :: ksi1, ksi2, zero
     complex(kind=8) :: cbid
     character(len=8) :: k8b
@@ -105,7 +105,7 @@ subroutine reci2d(lirela, mailla, nnoeca, noebe, nbcnx, &
 !
     real(kind=8) :: ffel2d, x(2), ff(9)
     real(kind=8), pointer :: coemur(:) => null()
-    integer, pointer :: dimens(:) => null()
+    integer(kind=8), pointer :: dimens(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()

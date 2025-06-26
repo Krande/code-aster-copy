@@ -25,13 +25,13 @@ interface
                       tang_1        , tang_2, norm  , pres_frot   , dist_frot   , &
                       indi_frot_eval)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         character(len=19), intent(in) :: chdepd
         real(kind=8), intent(in) :: coef_frot
-        integer, intent(in) :: nummae
+        integer(kind=8), intent(in) :: nummae
         character(len=8), intent(in) :: aliase
-        integer, intent(in) :: nne
-        integer, intent(in) :: nummam
+        integer(kind=8), intent(in) :: nne
+        integer(kind=8), intent(in) :: nummam
         real(kind=8), intent(in) :: ksipc1
         real(kind=8), intent(in) :: ksipc2
         real(kind=8), intent(in) :: ksipr1
@@ -43,6 +43,6 @@ interface
         real(kind=8), intent(in) :: norm(3)
         real(kind=8), intent(out) :: pres_frot(3)
         real(kind=8), intent(out) :: dist_frot(3)
-        integer, intent(out) :: indi_frot_eval
+        integer(kind=8), intent(out) :: indi_frot_eval
     end subroutine mmstaf
 end interface

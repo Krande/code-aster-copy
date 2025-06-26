@@ -24,11 +24,11 @@ interface
     subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
         character(len=8) :: noma
         character(len=8) :: nomo
-        integer :: lmax
-        integer :: nbepo
-        integer :: ntyele(*)
+        integer(kind=8) :: lmax
+        integer(kind=8) :: nbepo
+        integer(kind=8) :: ntyele(*)
         character(len=16) :: nomele(*)
-        integer :: ivr(*)
-        integer :: nbocc(*)
+        integer(kind=8) :: ivr(*)
+        integer(kind=8) :: nbocc(*)
     end subroutine aceaor
 end interface

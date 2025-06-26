@@ -23,7 +23,7 @@ subroutine coefdg(compor, mat, dpida2)
     implicit none
 #include "asterfort/rcvalb.h"
     character(len=16) :: compor
-    integer :: mat
+    integer(kind=8) :: mat
     real(kind=8) :: dpida2
 !
 ! ---------------------------------------------------------------------
@@ -34,7 +34,7 @@ subroutine coefdg(compor, mat, dpida2)
 !
     real(kind=8) :: val(1)
     character(len=8) :: nom(2), fami, poum
-    integer :: k2(5), kpg, spt
+    integer(kind=8) :: k2(5), kpg, spt
 ! ---------------------------------------------------------------------
     fami = 'FPG1'
     kpg = 1

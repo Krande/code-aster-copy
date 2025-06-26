@@ -20,7 +20,7 @@
 !
 interface
     function scalai(gd)
-        integer :: gd
+        integer(kind=8) :: gd
         character(len=8) :: scalai
     end function scalai
 end interface

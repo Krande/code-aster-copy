@@ -84,15 +84,15 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshz
-        integer, intent(in) :: nbCell, listCell(*)
-        integer, intent(inout) :: cellNbNode(nbCell), cellNodeIndx(nbCell)
+        integer(kind=8), intent(in) :: nbCell, listCell(*)
+        integer(kind=8), intent(inout) :: cellNbNode(nbCell), cellNodeIndx(nbCell)
         aster_logical, intent(out) :: lCellSurf, lCellLine
 ! - Local
-        integer :: iCell, cellNume, cellTypeNume
+        integer(kind=8) :: iCell, cellNume, cellTypeNume
         character(len=8) :: mesh, cellTypeName
         character(len=4) :: cellTopo
-        integer, pointer :: skinCellType(:) => null()
-        integer, pointer :: meshConnexLen(:) => null()
+        integer(kind=8), pointer :: skinCellType(:) => null()
+        integer(kind=8), pointer :: meshConnexLen(:) => null()
 !   ------------------------------------------------------------------------------------------------
         mesh = meshz
         lCellSurf = ASTER_FALSE
@@ -135,21 +135,21 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshz
-        integer, intent(in) :: nbSkinCell
-        integer, pointer :: cellSkinNume(:)
+        integer(kind=8), intent(in) :: nbSkinCell
+        integer(kind=8), pointer :: cellSkinNume(:)
         aster_logical, intent(in) :: lCell2d, lCell1d
-        integer, pointer :: cellSuppNume(:)
-        integer, optional, intent(in) :: nbCellSupport_
-        integer, optional, pointer :: suppNume_(:)
+        integer(kind=8), pointer :: cellSuppNume(:)
+        integer(kind=8), optional, intent(in) :: nbCellSupport_
+        integer(kind=8), optional, pointer :: suppNume_(:)
 ! - Local
         character(len=8) :: mesh
         character(len=2) :: kdim
         real(kind=8), pointer :: meshNodeCoor(:) => null()
-        integer, parameter :: zero = 0
+        integer(kind=8), parameter :: zero = 0
         aster_logical, parameter :: skinInsideVolume = ASTER_TRUE
-        integer :: ibid(1), iSkinCell
+        integer(kind=8) :: ibid(1), iSkinCell
         character(len=24), parameter :: jvCellVolume = '&&UTMASU'
-        integer, pointer :: vCellVolume(:) => null()
+        integer(kind=8), pointer :: vCellVolume(:) => null()
 !   ------------------------------------------------------------------------------------------------
         mesh = meshz
         kdim = '  '
@@ -197,20 +197,20 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshz
-        integer, intent(in) :: modelDime
-        integer, intent(in) :: nbSkinCell, cellSkinNume(nbSkinCell), cellSuppNume(nbSkinCell)
-        integer, intent(in) :: cellSkinNbNode(nbSkinCell), cellSkinNodeIndx(nbSkinCell)
+        integer(kind=8), intent(in) :: modelDime
+        integer(kind=8), intent(in) :: nbSkinCell, cellSkinNume(nbSkinCell), cellSuppNume(nbSkinCell)
+        integer(kind=8), intent(in) :: cellSkinNbNode(nbSkinCell), cellSkinNodeIndx(nbSkinCell)
         aster_logical, intent(out) :: lMisoriented
 ! - Local
         character(len=8) :: mesh, skinCellType, suppCellType, cellName
-        integer :: iSkinCell, suppNume, nodeFirst, iNode
-        integer :: skinNume
-        integer :: skinNbNode, skinNodeNume(27), suppNbNode, suppNodeNume(27)
+        integer(kind=8) :: iSkinCell, suppNume, nodeFirst, iNode
+        integer(kind=8) :: skinNume
+        integer(kind=8) :: skinNbNode, skinNodeNume(27), suppNbNode, suppNodeNume(27)
         real(kind=8) :: signNorm
         real(kind=8), pointer :: meshNodeCoor(:) => null()
-        integer, pointer :: meshConnexLen(:) => null()
-        integer, pointer :: meshConnex(:) => null()
-        integer, pointer :: meshCellType(:) => null()
+        integer(kind=8), pointer :: meshConnexLen(:) => null()
+        integer(kind=8), pointer :: meshConnex(:) => null()
+        integer(kind=8), pointer :: meshCellType(:) => null()
 !   ------------------------------------------------------------------------------------------------
         mesh = meshz
         call jeveuo(mesh//'.TYPMAIL        ', 'L', vi=meshCellType)
@@ -278,14 +278,14 @@ contains
                                           suppCellType, meshNodeCoor, signNorm)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: modelDime
-        integer, intent(in) :: skinNodeNume(27), suppNodeNume(27)
+        integer(kind=8), intent(in) :: modelDime
+        integer(kind=8), intent(in) :: skinNodeNume(27), suppNodeNume(27)
         character(len=8), intent(in) :: skinCellType, suppCellType
         real(kind=8), intent(in) :: meshNodeCoor(*)
         real(kind=8), intent(out) :: signNorm
 ! - Local
-        integer :: node1, node2, node3, iDime, iNode
-        integer :: skinNbNode, suppNbNode
+        integer(kind=8) :: node1, node2, node3, iDime, iNode
+        integer(kind=8) :: skinNbNode, suppNbNode
         real(kind=8) :: node1Coor(3), node2Coor(3), node3Coor(3)
         real(kind=8) :: n1n3(3), n1n2(3), normal(3), n1g(3), norm
         real(kind=8) :: xgm(3), xg3d(3)
@@ -396,7 +396,7 @@ contains
     subroutine checkInclude()
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-        integer :: cellTypeNume, nbCell
+        integer(kind=8) :: cellTypeNume, nbCell
 !   ------------------------------------------------------------------------------------------------
         nbCell = 0
         call jenonu(jexnom('&CATA.TM.NOMTM', 'POI1'), cellTypeNume)
@@ -491,9 +491,9 @@ contains
 ! - Parameters
         character(len=8), intent(in) :: cellTypeName
         character(len=4), optional, intent(out) :: cellTopo_
-        integer, optional, intent(out) :: cellOrder_
+        integer(kind=8), optional, intent(out) :: cellOrder_
 ! - Local
-        integer :: cellOrder
+        integer(kind=8) :: cellOrder
         character(len=4) :: cellTopo
 !   ------------------------------------------------------------------------------------------------
         if (cellTypeName .eq. 'POI1') then
@@ -600,7 +600,7 @@ contains
 ! - Parameters
         aster_logical, intent(out) :: lPrefCellName, lPrefCellNume
         character(len=8), intent(out) :: prefCellName
-        integer, intent(out) :: prefCellNume
+        integer(kind=8), intent(out) :: prefCellNume
 !   ------------------------------------------------------------------------------------------------
         lPrefCellName = ASTER_FALSE
         lPrefCellNume = ASTER_FALSE
@@ -625,9 +625,9 @@ contains
 ! - Parameters
         character(len=8), intent(inout) :: cellName
         character(len=8), intent(in) :: prefCellName
-        integer, intent(inout) :: prefCellNume
+        integer(kind=8), intent(inout) :: prefCellNume
 ! - Local
-        integer :: lenPrefName, lenPrefPrev
+        integer(kind=8) :: lenPrefName, lenPrefPrev
         character(len=8) :: knume
 !   ------------------------------------------------------------------------------------------------
         lenPrefName = lxlgut(prefCellName)
@@ -657,7 +657,7 @@ contains
 ! - Parameters
         aster_logical, intent(out) :: lPrefNodeNume
         character(len=8), intent(out) :: prefNodeName
-        integer, intent(out) :: prefNodeNume
+        integer(kind=8), intent(out) :: prefNodeNume
 !   ------------------------------------------------------------------------------------------------
         lPrefNodeNume = ASTER_FALSE
         prefNodeName = ' '
@@ -683,9 +683,9 @@ contains
         character(len=8), intent(inout) :: nodeName
         aster_logical, intent(in) :: lPrefNodeNume
         character(len=8), intent(in) :: prefNodeName
-        integer, intent(inout) :: prefNodeNume
+        integer(kind=8), intent(inout) :: prefNodeNume
 ! - Local
-        integer :: lenPrefName, lenPrefPrev
+        integer(kind=8) :: lenPrefName, lenPrefPrev
         character(len=8) :: knume
 !   ------------------------------------------------------------------------------------------------
         lenPrefName = lxlgut(prefNodeName)
@@ -718,14 +718,14 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(in) :: cellNume
+        integer(kind=8), intent(in) :: cellNume
         character(len=24), intent(out) :: groupCell(4)
-        integer, intent(out) :: nbGroupCell
+        integer(kind=8), intent(out) :: nbGroupCell
 ! - Local
         character(len=8) :: mesh
-        integer :: iexi, nbGroup, iGroup, iCell, nbCell
+        integer(kind=8) :: iexi, nbGroup, iGroup, iCell, nbCell
         character(len=24) :: groupName
-        integer, pointer :: cellList(:) => null()
+        integer(kind=8), pointer :: cellList(:) => null()
 !   ------------------------------------------------------------------------------------------------
         mesh = meshZ
         nbGroupCell = 0
@@ -765,7 +765,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(out) :: meshDime
+        integer(kind=8), intent(out) :: meshDime
 ! ----- Local
         character(len=8) :: mesh
         character(len=24) :: answer
@@ -799,11 +799,11 @@ contains
 ! ----- Parameters
         character(len=*), intent(in) :: meshZ, nodeGroupZ
         character(len=8), intent(out) :: nodeName
-        integer, intent(out) :: nodeNume
+        integer(kind=8), intent(out) :: nodeNume
 ! ----- Local
         character(len=8) :: mesh
         character(len=24) :: nodeGroup
-        integer :: iret
+        integer(kind=8) :: iret
 !   ------------------------------------------------------------------------------------------------
 !
         mesh = meshZ
@@ -837,13 +837,13 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: meshZ, factorKeywordZ
-        integer, intent(in) :: iFactorKeyword
+        integer(kind=8), intent(in) :: iFactorKeyword
         character(len=24), pointer :: listOfGroups(:)
-        integer, intent(out) :: nbGroup
+        integer(kind=8), intent(out) :: nbGroup
 ! ----- Local
         character(len=8) :: mesh
         character(len=24) :: k24Dummy
-        integer :: nbRet
+        integer(kind=8) :: nbRet
 !   ------------------------------------------------------------------------------------------------
 !
         mesh = meshZ
@@ -874,16 +874,16 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: meshZ
-        integer, intent(in) :: nbCell
-        integer, pointer :: listCellNume(:)
+        integer(kind=8), intent(in) :: nbCell
+        integer(kind=8), pointer :: listCellNume(:)
         aster_logical, intent(in) :: onlySkin1D
         character(len=8), pointer :: listCellType(:)
         aster_logical, intent(out) :: hasSkin1D, hasSkin2D
 ! ----- Local
         character(len=8) :: mesh
-        integer :: cellNume, iCell, cellTypeNume
+        integer(kind=8) :: cellNume, iCell, cellTypeNume
         character(len=8) :: cellTypeName
-        integer, pointer :: typmail(:) => null()
+        integer(kind=8), pointer :: typmail(:) => null()
 !
 !   ------------------------------------------------------------------------------------------------
 !
@@ -943,17 +943,17 @@ contains
 ! ----- Parameters
         character(len=*), intent(in) :: meshZ
         real(kind=8), intent(out) :: edgeMin, edgeMax
-        integer, optional, intent(in) :: nbCell_
-        integer, optional, pointer :: listCellNume_(:)
+        integer(kind=8), optional, intent(in) :: nbCell_
+        integer(kind=8), optional, pointer :: listCellNume_(:)
 ! ----- Local
         character(len=8) :: mesh, cellTypeName
-        integer :: nbCell, nbCellMesh
-        integer :: cellNume, cellTypeNume, nodeNume
-        integer :: iNode, iCell
+        integer(kind=8) :: nbCell, nbCellMesh
+        integer(kind=8) :: cellNume, cellTypeNume, nodeNume
+        integer(kind=8) :: iNode, iCell
         real(kind=8) :: x(MT_MAX_NBNODE_LINE), y(MT_MAX_NBNODE_LINE), z(MT_MAX_NBNODE_LINE)
         real(kind=8) :: d1, d2, d3, d4
-        integer, pointer :: meshDime(:) => null(), meshTypeCell(:) => null()
-        integer, pointer :: meshConnex(:) => null()
+        integer(kind=8), pointer :: meshDime(:) => null(), meshTypeCell(:) => null()
+        integer(kind=8), pointer :: meshConnex(:) => null()
         real(kind=8), pointer :: meshNodeCoor(:) => null()
         aster_logical :: l_pmesh, onAllMesh
 !
@@ -1151,12 +1151,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: meshZ, groupNameZ
-        integer, intent(out) :: nbCell
-        integer, pointer :: listCellNume(:)
+        integer(kind=8), intent(out) :: nbCell
+        integer(kind=8), pointer :: listCellNume(:)
 ! ----- Local
         character(len=8) :: mesh
         character(len=24) :: groupName
-        integer :: iexi, iret
+        integer(kind=8) :: iexi, iret
 !
 !   ------------------------------------------------------------------------------------------------
 !

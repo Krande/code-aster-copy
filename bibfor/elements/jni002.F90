@@ -41,9 +41,9 @@ subroutine jni002(elrefa, nmaxob, liobj, nbobj)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpg(MT_NBFAMX), iret, ndim, nno, nnos, nbfpg
-    integer :: nmaxob, nbobj, lonfam, ifam, lon2, decal, idim
-    integer :: ipg, ino, nderiv, jvi, jvr, npg, nno2, jdim
+    integer(kind=8) :: nbpg(MT_NBFAMX), iret, ndim, nno, nnos, nbfpg
+    integer(kind=8) :: nmaxob, nbobj, lonfam, ifam, lon2, decal, idim
+    integer(kind=8) :: ipg, ino, nderiv, jvi, jvr, npg, nno2, jdim
     real(kind=8) :: rvide
     real(kind=8) :: xpg(3*MT_NBPGMX), poipg(MT_NBPGMX)
     real(kind=8) :: ff(MT_NNOMAX), dff(3, MT_NNOMAX), dff2(3, 3, MT_NNOMAX)

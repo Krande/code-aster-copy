@@ -21,7 +21,7 @@
 interface
     subroutine utnbnv(typmav, nbsv, nbnv)
         character(len=8) :: typmav
-        integer :: nbsv
-        integer :: nbnv
+        integer(kind=8) :: nbsv
+        integer(kind=8) :: nbnv
     end subroutine utnbnv
 end interface

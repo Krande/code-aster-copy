@@ -22,14 +22,14 @@ interface
     subroutine afretu(iprno, lonlis, klisno, noepou, noma,&
                       vale1, nbcoef, idec, coef, nomddl,&
                       lisrel)
-        integer :: nbcoef
-        integer :: lonlis
-        integer :: iprno(*)
+        integer(kind=8) :: nbcoef
+        integer(kind=8) :: lonlis
+        integer(kind=8) :: iprno(*)
         character(len=8) :: klisno(lonlis)
         character(len=8) :: noepou
         character(len=8) :: noma
         character(len=24) :: vale1
-        integer :: idec
+        integer(kind=8) :: idec
         real(kind=8) :: coef(nbcoef)
         character(len=8) :: nomddl(nbcoef)
         character(len=19) :: lisrel

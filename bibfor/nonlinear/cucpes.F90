@@ -27,7 +27,7 @@ subroutine cucpes(deficu, resocu, jsecmb, neq, nbliac_new)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: deficu, resocu
-    integer :: jsecmb, neq, nbliac_new
+    integer(kind=8) :: jsecmb, neq, nbliac_new
 !
 ! ----------------------------------------------------------------------
 !
@@ -44,16 +44,16 @@ subroutine cucpes(deficu, resocu, jsecmb, neq, nbliac_new)
 !
 !
 !
-    integer :: iliac
+    integer(kind=8) :: iliac
     character(len=19) :: mu
-    integer :: jmu
+    integer(kind=8) :: jmu
     character(len=24) :: apcoef, apddl, appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=24) :: coefpe
-    integer :: jcoef_pena
+    integer(kind=8) :: jcoef_pena
     character(len=24) :: jeux
-    integer :: jjeux
-    integer :: nbliai
+    integer(kind=8) :: jjeux
+    integer(kind=8) :: nbliai
 !
 ! ----------------------------------------------------------------------
 !

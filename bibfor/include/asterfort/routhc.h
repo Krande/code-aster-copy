@@ -26,6 +26,6 @@ interface
         complex(kind=8) :: pr
         real(kind=8) :: a0(*)
         real(kind=8) :: dr(*)
-        integer :: ior
+        integer(kind=8) :: ior
     end subroutine routhc
 end interface

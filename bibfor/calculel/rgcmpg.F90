@@ -18,9 +18,9 @@
 
 function rgcmpg(icode, irgcmp)
     implicit none
-    integer :: rgcmpg
+    integer(kind=8) :: rgcmpg
 #include "asterfort/exisdg.h"
-    integer :: icode, irgcmp
+    integer(kind=8) :: icode, irgcmp
 !
 ! --- ------------------------------------------------------------------
 !
@@ -35,7 +35,7 @@ function rgcmpg(icode, irgcmp)
 ! OUT
 !     RGCMPG : RANG DE LA VALEUR DANS L'ENTIER CODE
 ! --- ------------------------------------------------------------------
-    integer :: icmp, irgval
+    integer(kind=8) :: icmp, irgval
 ! --- ------------------------------------------------------------------
 !
     irgval = 0

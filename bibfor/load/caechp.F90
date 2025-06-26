@@ -49,7 +49,7 @@ subroutine caechp(load, loadLigrel, mesh, model, geomDime, valeType)
     character(len=8), intent(in) :: load
     character(len=19), intent(in) :: loadLigrel
     character(len=8), intent(in) :: mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
@@ -70,17 +70,17 @@ subroutine caechp(load, loadLigrel, mesh, model, geomDime, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'ECHANGE_PAROI'
-    integer, parameter :: nfismx = 100, nbtymx = 7
-    integer :: nechp, ibid, jvalv, iocc, nh, nt, j
-    integer :: nbtyp, jlistt, nbm, nfiss, jma, ntcon
+    integer(kind=8), parameter :: nfismx = 100, nbtymx = 7
+    integer(kind=8) :: nechp, ibid, jvalv, iocc, nh, nt, j
+    integer(kind=8) :: nbtyp, jlistt, nbm, nfiss, jma, ntcon
     aster_logical :: ltcon, lcoefh
-    integer :: igrel, inema
-    integer :: jligr, ncmp
+    integer(kind=8) :: igrel, inema
+    integer(kind=8) :: jligr, ncmp
     real(kind=8) :: t(3), cechpr
     character(len=8) :: k8b, cechpf, fiss(nfismx)
     character(len=24) :: liel, modelisa, llist1, llist2, llistt
     character(len=19) :: carte
-    integer :: nb_elem_late, nb_noel_maxi
+    integer(kind=8) :: nb_elem_late, nb_noel_maxi
     character(len=24) :: mesmai, lismai
     character(len=8), pointer :: vncmp(:) => null()
 !

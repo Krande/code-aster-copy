@@ -30,8 +30,8 @@ subroutine lcmmop(fami, kpg, ksp, rela_comp, nbcomm, &
 #include "asterfort/lcmmfe.h"
 #include "asterfort/lcmmfi.h"
 #include "asterfort/lcnrts.h"
-    integer :: kpg, ksp, nmat, nbcomm(nmat, 3), nvi, nbphas, itmax, iret
-    integer :: nfs, nsg, nhsr, numhsr(*)
+    integer(kind=8) :: kpg, ksp, nmat, nbcomm(nmat, 3), nvi, nbphas, itmax, iret
+    integer(kind=8) :: nfs, nsg, nhsr, numhsr(*)
     real(kind=8) :: vini(*), dvin(*), x, dtime, coeft(nmat), coel(nmat)
     real(kind=8) :: sigi(6), epsd(6), detot(6)
 !     POUR GAGNER EN TEMPS CPU
@@ -140,10 +140,10 @@ subroutine lcmmop(fami, kpg, ksp, rela_comp, nbcomm, &
     real(kind=8) :: devi(6), ms(6), taus, dgamma, dalpha, dp
     real(kind=8) :: devgeq, dbeta, beta, dvineq, granb(6)
     real(kind=8) :: crit, sgns, expbp(nsg), dy(nsg)
-    integer :: itens, nbfsys, i, nuvi, ifa, nbsys, is, iv
-    integer :: indpha, indfv, iphas, indcp, indfa, iexp
-    integer :: ifl, nuecou, ihsr
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: itens, nbfsys, i, nuvi, ifa, nbsys, is, iv
+    integer(kind=8) :: indpha, indfv, iphas, indcp, indfa, iexp
+    integer(kind=8) :: ifl, nuecou, ihsr
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
 ! --  VARIABLES INTERNES

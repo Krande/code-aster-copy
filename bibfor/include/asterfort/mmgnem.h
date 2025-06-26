@@ -23,7 +23,7 @@ interface
                       mprt1n, mprt2n, &
                       kappa , vech1 , vech2 , h     ,&
                       matrem)
-        integer, intent(in) :: ndim, nnm, nne
+        integer(kind=8), intent(in) :: ndim, nnm, nne
         real(kind=8), intent(in) :: wpg, ffe(9),dffm(2,9)
         real(kind=8), intent(in) :: jacobi, coefac, jeu, dlagrc
         real(kind=8), intent(in) :: mprt1n(3,3), mprt2n(3,3)

@@ -26,8 +26,8 @@ interface
         character(len=1) :: base
         character(len=19) :: nomnum
         character(len=19) :: nomsto
-        integer :: nbmode
-        integer :: nbloc
-        integer :: nterm
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: nterm
     end subroutine mefsm1
 end interface

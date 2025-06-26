@@ -19,7 +19,7 @@
 subroutine trfmot(mot, field, ifield)
     implicit none
     character(len=*) :: mot, field
-    integer :: ifield
+    integer(kind=8) :: ifield
 !
 !     EXTRACTION DU CHAMP IFIELD DE L'ENREGISTREMENT
 !
@@ -29,7 +29,7 @@ subroutine trfmot(mot, field, ifield)
 ! IN  : IFLIED : I    : NUMERO DU CHAMP RECHERCHE
 !
 !-----------------------------------------------------------------------
-    integer :: nbmot, nbcar, ideb, i, j
+    integer(kind=8) :: nbmot, nbcar, ideb, i, j
 !
 !- INITIALISATION
 !

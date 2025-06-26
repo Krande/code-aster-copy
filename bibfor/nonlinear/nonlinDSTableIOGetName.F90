@@ -42,7 +42,7 @@ subroutine nonlinDSTableIOGetName(tableio)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=8) :: resultName
     character(len=24) :: tablName
     character(len=16) :: tablSymbName

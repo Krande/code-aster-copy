@@ -26,7 +26,7 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: lima1(*), lima2(*), nbma
+    integer(kind=8) :: lima1(*), lima2(*), nbma
     character(len=*) :: chs1, chs2
 !
 !     COMMANDE:  CREA_RESU
@@ -36,9 +36,9 @@ subroutine cetran(lima1, lima2, nbma, chs1, chs2)
 !
 !
 !
-    integer :: nbpt, nbpt2, nbsp, nbsp2, ncmp1, ncmp2, ipt, isp, iad1
-    integer :: iad2, jce1d, jce1v, jce1l, icmp1, jce2d
-    integer ::  jce2v, jce2l, icmp2, ima, ima1, ima2
+    integer(kind=8) :: nbpt, nbpt2, nbsp, nbsp2, ncmp1, ncmp2, ipt, isp, iad1
+    integer(kind=8) :: iad2, jce1d, jce1v, jce1l, icmp1, jce2d
+    integer(kind=8) ::  jce2v, jce2l, icmp2, ima, ima1, ima2
     character(len=3) :: tsca
     character(len=8) :: nomgd, nomgd2, nocmp
     character(len=19) :: ces1, ces2

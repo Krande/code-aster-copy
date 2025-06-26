@@ -30,7 +30,7 @@ subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
 #include "asterfort/utdidt.h"
-    integer :: nb_inst_ins, nume_inst, nb_inst_ini
+    integer(kind=8) :: nb_inst_ins, nume_inst, nb_inst_ini
     character(len=19) :: sddisc
     real(kind=8) :: newins(nb_inst_ins)
     real(kind=8) :: dt0
@@ -58,9 +58,9 @@ subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins, &
 !
 !
 !
-    integer :: i_inst, nb_inst_new
+    integer(kind=8) :: i_inst, nb_inst_new
     character(len=24) :: tpsdit
-    integer :: jtemps
+    integer(kind=8) :: jtemps
     real(kind=8) :: time, deltat, dtmin
 !
 ! ----------------------------------------------------------------------

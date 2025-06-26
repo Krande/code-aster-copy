@@ -50,8 +50,8 @@ subroutine nmjalo(sddisc, inst, prec, jalon)
 !
 !
     character(len=24) :: tpsipo
-    integer :: jipo
-    integer :: ipo, nipo
+    integer(kind=8) :: jipo
+    integer(kind=8) :: ipo, nipo
 !
 ! ----------------------------------------------------------------------
 !

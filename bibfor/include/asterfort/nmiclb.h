@@ -23,11 +23,11 @@ interface
                       dlong0, effnom, vim, effnop, vip,&
                       klv, fono, epsm, carcri, codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: option
         character(len=16) :: rela_comp
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: xlong0
         real(kind=8) :: aire
         real(kind=8) :: tmoins
@@ -41,6 +41,6 @@ interface
         real(kind=8) :: fono(6)
         real(kind=8) :: epsm
         real(kind=8) :: carcri(CARCRI_SIZE)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine nmiclb
 end interface

@@ -24,17 +24,17 @@ interface
                              nb_node_out, ichk)
         character(len=19), intent(in) :: field_in_s
         character(len=19), intent(in) :: field_out_s
-        integer, intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_node
         character(len=24), intent(in) :: list_node
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=16), intent(in) :: type_comp
         character(len=16), intent(in) :: crit
-        integer, intent(in) :: nb_form
+        integer(kind=8), intent(in) :: nb_form
         character(len=8), intent(in) :: name_form(nb_form)
         character(len=8), intent(in) :: name_gd
-        integer, intent(in) :: nb_cmp_resu
+        integer(kind=8), intent(in) :: nb_cmp_resu
         character(len=24), intent(in) :: work_out_val
-        integer, intent(out) :: ichk
-        integer, intent(out) :: nb_node_out
+        integer(kind=8), intent(out) :: ichk
+        integer(kind=8), intent(out) :: nb_node_out
     end subroutine ccchuc_chamno
 end interface

@@ -23,6 +23,6 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(inout) :: err_appa
+        integer(kind=8), intent(inout) :: err_appa
     end subroutine apcaln
 end interface

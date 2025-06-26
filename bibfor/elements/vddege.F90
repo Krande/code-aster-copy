@@ -26,7 +26,7 @@ subroutine vddege(nomte, nb2, npgsn, xr, deggtg, &
 #include "asterfort/matrq9.h"
     character(len=16) :: nomte
     real(kind=8) :: xr(*), deggtg(72), deggt(8, 9), mat(9, 9)
-    integer :: i, i1, j, k, l1, nb2, npgsn, icmp, ino, ipg
+    integer(kind=8) :: i, i1, j, k, l1, nb2, npgsn, icmp, ino, ipg
 !
     do i = 1, nb2
         do j = 1, 8

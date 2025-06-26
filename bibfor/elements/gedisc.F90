@@ -21,7 +21,7 @@ subroutine gedisc(ndim, nno, npg, vff, geom, &
 !
     implicit none
 #include "blas/ddot.h"
-    integer :: ndim, nno, npg
+    integer(kind=8) :: ndim, nno, npg
     real(kind=8) :: vff(nno, npg), geom(ndim, nno), pg(ndim+1, npg)
 ! ----------------------------------------------------------------------
 !             CALCUL DES COORDONNEES DES POINTS DE GAUSS
@@ -33,7 +33,7 @@ subroutine gedisc(ndim, nno, npg, vff, geom, &
 ! IN  GEOM   COORDONNEES DES NOEUDS
 ! OUT PG     COORDONNEES DES POINTS DE GAUSS + POIDS
 ! ----------------------------------------------------------------------
-    integer :: g, i
+    integer(kind=8) :: g, i
     blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
     do g = 1, npg

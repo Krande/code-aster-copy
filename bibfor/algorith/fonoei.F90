@@ -54,13 +54,13 @@ subroutine fonoei(ds_thm, ndim, dt, fnoevo, dimdef, dimcon, &
 ! ======================================================================
     type(THM_DS), intent(in) :: ds_thm
     aster_logical :: fnoevo
-    integer :: dimdef, dimcon
-    integer :: ndim
+    integer(kind=8) :: dimdef, dimcon
+    integer(kind=8) :: ndim
     real(kind=8) :: dt, congem(dimcon), r(dimdef)
 ! ======================================================================
-    integer :: addeme, adcome
-    integer :: addep1, adcp11, addep2
-    integer :: i, adcop1, adcop2, f, addlh1
+    integer(kind=8) :: addeme, adcome
+    integer(kind=8) :: addep1, adcp11, addep2
+    integer(kind=8) :: i, adcop1, adcop2, f, addlh1
 !
 ! ======================================================================
 ! --- CALCUL DU RESIDU R -----------------------------------------------

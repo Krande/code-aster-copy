@@ -23,7 +23,7 @@ subroutine hatSmooth(nno, nnos, v_basf, vector)
 !
     implicit none
 !
-    integer, intent(in) :: nno, nnos
+    integer(kind=8), intent(in) :: nno, nnos
     real(kind=8), intent(in), pointer, dimension(:) :: v_basf
     real(kind=8), intent(inout), dimension(nno) :: vector
 ! --------------------------------------------------------------------------------------------------

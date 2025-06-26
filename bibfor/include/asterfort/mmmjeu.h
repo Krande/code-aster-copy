@@ -22,7 +22,7 @@ interface
                       ddeple, ddeplm,&
                       norm  , mprojt,&
                       jeu   , djeu  , djeut )
-        integer, intent(in) :: ndim, i_reso_geom
+        integer(kind=8), intent(in) :: ndim, i_reso_geom
         real(kind=8), intent(in) :: jeusup,  norm(3)
         real(kind=8), intent(in):: geomm(3), geome(3)
         real(kind=8), intent(in) :: ddeple(3), ddeplm(3)

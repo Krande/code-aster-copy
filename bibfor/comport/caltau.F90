@@ -34,11 +34,11 @@ subroutine caltau(ifa, is, sigf, fkooh, nfs, &
 #include "asterfort/tnsvec.h"
 #include "blas/daxpy.h"
 #include "blas/dscal.h"
-    integer :: j, i, is, ifa, nfs, nsg
+    integer(kind=8) :: j, i, is, ifa, nfs, nsg
     real(kind=8) :: taus, mus(6), msns(3, 3), id6(6), ns(3), ms(3), sigf(6)
     real(kind=8) :: fesig(3, 3), s(3, 3), fetfe(3, 3), fetfe6(6)
     real(kind=8) :: toutms(nfs, nsg, 6), fkooh(6, 6)
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------

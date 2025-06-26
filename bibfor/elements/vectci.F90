@@ -19,13 +19,13 @@
 subroutine vectci(intsn, nb1, xi, xr, rnormc)
     implicit none
 !
-    integer :: nb1, intsn
+    integer(kind=8) :: nb1, intsn
     real(kind=8) :: rnormc
     real(kind=8) :: xi(3, *), xr(*), vecta(2, 3), vectc(3)
 !     REAL*8 VECTN(3),VECPTX(3,3)
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i2, intsx, j, k, l1, l2
+    integer(kind=8) :: i1, i2, intsx, j, k, l1, l2
 !
 !-----------------------------------------------------------------------
     l1 = 207

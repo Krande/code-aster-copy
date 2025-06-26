@@ -24,18 +24,18 @@ interface
                       refcoo, gscoo, wg, nochmd, codret)
         character(len=19) :: chanom
         character(len=8) :: typech
-        integer :: tyelas
+        integer(kind=8) :: tyelas
         character(len=16) :: nomte
         aster_logical :: lfichUniq
         character(len=16) :: nomfpg
-        integer :: nnos
-        integer :: nno
-        integer :: nbpg
-        integer :: ndim
+        integer(kind=8) :: nnos
+        integer(kind=8) :: nno
+        integer(kind=8) :: nbpg
+        integer(kind=8) :: ndim
         real(kind=8) :: refcoo(*)
         real(kind=8) :: gscoo(*)
         real(kind=8) :: wg(*)
         character(len=64) :: nochmd
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine uteref
 end interface

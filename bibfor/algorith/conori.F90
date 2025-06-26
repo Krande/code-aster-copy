@@ -90,17 +90,17 @@ subroutine conori(ma)
 #include "asterfort/int_to_char8.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: idum, ic, ifm, niv, ichk
-    integer :: io8gco, nbgco, igco
-    integer :: imigma, nbgma, igma
-    integer :: nbmag, imag
-    integer :: imac
-    integer :: imityc, ityc
-    integer :: imicoc, nbcoc, icoc
-    integer :: inoc
-    integer :: nbmar, imar
-    integer :: imicor, nbcor, icor
-    integer :: iatyma
+    integer(kind=8) :: idum, ic, ifm, niv, ichk
+    integer(kind=8) :: io8gco, nbgco, igco
+    integer(kind=8) :: imigma, nbgma, igma
+    integer(kind=8) :: nbmag, imag
+    integer(kind=8) :: imac
+    integer(kind=8) :: imityc, ityc
+    integer(kind=8) :: imicoc, nbcoc, icoc
+    integer(kind=8) :: inoc
+    integer(kind=8) :: nbmar, imar
+    integer(kind=8) :: imicor, nbcor, icor
+    integer(kind=8) :: iatyma
 !
     character(len=8) :: kmac, ktyc, knoc, kmar, ktyr, knor
     character(len=8) :: ma, kbid
@@ -108,8 +108,8 @@ subroutine conori(ma)
     aster_logical :: lomodi, loreo0, loreor, lomod0, locor0, lface, lface0
 !
 !-----------------------------------------------------------------------
-    integer :: i, ikmar, iktyr, imai, imarc, imaz, inoe
-    integer :: inor, jmb, jmic, nbmac, nbmarc, nbnoe, nbnomx
+    integer(kind=8) :: i, ikmar, iktyr, imai, imarc, imaz, inoe
+    integer(kind=8) :: inor, jmb, jmic, nbmac, nbmarc, nbnoe, nbnomx
 !
 !-----------------------------------------------------------------------
     parameter(nbnomx=100)

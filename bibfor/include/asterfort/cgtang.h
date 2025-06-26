@@ -21,9 +21,9 @@
 interface
     subroutine cgtang(ndim, nno, npg, geom, dffr,&
                       t)
-        integer :: npg
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: geom(ndim, nno)
         real(kind=8) :: dffr(nno, npg)
         real(kind=8) :: t(3, 3)

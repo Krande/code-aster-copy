@@ -21,9 +21,9 @@
 interface
     subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
         character(len=*) :: mofaz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: nomaz
         aster_logical :: l_write
-        integer :: nbgraj
+        integer(kind=8) :: nbgraj
     end subroutine cgrcbp
 end interface

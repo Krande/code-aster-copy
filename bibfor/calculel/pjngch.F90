@@ -46,8 +46,8 @@ subroutine pjngch(cham1z, cham2z, corres)
 !  CHAM2 : IN/JXOUT CHAMP RESULTAT DE LA PROJECTION
 !  CORRES: IN/JXIN  SD_CORRESP_2_MAILLA
 !----------------------------------------------------------------------
-    integer :: ibid, nx, jngi1, jngi2, ieq, nbocc, nbeq, ioc
-    integer :: nb1, nb2, idec1, idec2, jlno1, jlno2
+    integer(kind=8) :: ibid, nx, jngi1, jngi2, ieq, nbocc, nbeq, ioc
+    integer(kind=8) :: nb1, nb2, idec1, idec2, jlno1, jlno2
     character(len=1) :: type
     character(len=8) :: noma1, noma2, cnref, noma3, k8
     character(len=16) :: corr16, method

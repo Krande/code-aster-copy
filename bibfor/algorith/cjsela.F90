@@ -33,7 +33,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd, &
 #include "asterf_types.h"
 #include "asterfort/cjsci1.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, iret
+    integer(kind=8) :: ndt, ndi, nvi, iret
     real(kind=8) :: coef, e, nu, al, la, mu, hook(6, 6), i1
     real(kind=8) :: deps(6), dsig(6), sigd(6), sigf(6)
     real(kind=8) :: vind(*), vinf(*)
@@ -41,7 +41,7 @@ subroutine cjsela(mod, crit, materf, deps, sigd, &
     character(len=8) :: mod
     real(kind=8) :: zero, un, d12, deux, trois, pa, qinit
     aster_logical :: tract
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     common/tdim/ndt, ndi
 !

@@ -20,10 +20,10 @@
 function bool_to_int(bool)
     implicit none
 #include "asterf_types.h"
-    integer :: bool_to_int
+    integer(kind=8) :: bool_to_int
     aster_logical, intent(in) :: bool
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     i = 0
     if (bool) then

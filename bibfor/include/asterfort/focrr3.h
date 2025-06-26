@@ -24,6 +24,6 @@ interface
         character(len=19) :: resu
         character(len=16) :: nopara
         character(len=1) :: base
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine focrr3
 end interface

@@ -20,6 +20,6 @@ interface
     subroutine ddr_comp(base, v_equa)
         use Rom_Datastructure_type
         type(ROM_DS_Empi), intent(in) :: base
-        integer, pointer  :: v_equa(:)
+        integer(kind=8), pointer  :: v_equa(:)
     end subroutine ddr_comp
 end interface

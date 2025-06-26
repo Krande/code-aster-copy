@@ -64,7 +64,7 @@ subroutine fstapv(nbpt, fn, t, offset, fnmoyt, &
 !       SMINR   SOMME DES MINIMAS RELATIFS
 !
 !-----------------------------------------------------------------------
-    integer :: i, ift, itct, nbmaxr, nbminr, nbpt
+    integer(kind=8) :: i, ift, itct, nbmaxr, nbminr, nbpt
     real(kind=8) :: ttot
 !-----------------------------------------------------------------------
     call jemarq()

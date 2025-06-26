@@ -20,7 +20,7 @@ function sdeiso(vect)
 ! person_in_charge: olivier.boiteau at edf.fr
 !
     implicit none
-    integer :: sdeiso
+    integer(kind=8) :: sdeiso
 #include "asterfort/assert.h"
     character(len=5) :: vect
 !
@@ -41,7 +41,7 @@ function sdeiso(vect)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: zslvk, zslvr, zslvi
+    integer(kind=8) :: zslvk, zslvr, zslvi
     parameter(zslvk=20, zslvr=15, zslvi=15)
 !
 ! ----------------------------------------------------------------------

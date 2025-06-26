@@ -28,7 +28,7 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
 #include "blas/ddot.h"
 !
     aster_logical, intent(in) :: l_axi, l_large
-    integer, intent(in) :: ndim, nno
+    integer(kind=8), intent(in) :: ndim, nno
     real(kind=8), intent(in) :: vff(nno), r, dfdi(nno, ndim), disp(ndim, nno)
     real(kind=8), intent(out) :: f(3, 3)
     real(kind=8), optional, intent(out) :: epsi_(:)
@@ -54,7 +54,7 @@ subroutine nmepsi(ndim, nno, l_axi, l_large, vff, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: grad(3, 3), ur
     real(kind=8), parameter :: r2 = sqrt(2.d0)/2.d0
     real(kind=8), parameter :: unity(9) = (/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/)

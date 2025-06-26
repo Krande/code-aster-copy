@@ -21,7 +21,7 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3, &
                   fnmmoy, fnmety, npari, lpari, valek)
     implicit none
 #include "asterfort/tbajli.h"
-    integer :: nbpt, nbchoc, npari
+    integer(kind=8) :: nbpt, nbchoc, npari
     real(kind=8) :: fn(*), t(*), vn(*), offset, elapse, wk3(*), fnmaxa, fnmety
     real(kind=8) :: fnmmoy
     character(len=16) :: lpari(*)
@@ -37,8 +37,8 @@ subroutine impact(nmtab, nbpt, fn, vn, wk3, &
 ! OUT : NBCHOC : NB DE CHOC GLOBAUX ( CRITERE ELAPSE )
 ! ----------------------------------------------------------------------
 !
-    integer :: ipar(2), irebo, ichoc, idebut, ifin, nbpas, i, j, idech, nbrebo
-    integer :: k
+    integer(kind=8) :: ipar(2), irebo, ichoc, idebut, ifin, nbpas, i, j, idech, nbrebo
+    integer(kind=8) :: k
     real(kind=8) :: impuls, para(5), zero, fnmax, tchoc, vinit, dt, tfnmax
     real(kind=8) :: fnmmo2
     complex(kind=8) :: c16b

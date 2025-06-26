@@ -18,7 +18,7 @@
 !
 interface
     subroutine nmasfi(list_func_acti, hval_veasse, cnffdo, sddyna_)
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: hval_veasse(*), cnffdo
         character(len=19), optional, intent(in) :: sddyna_
     end subroutine nmasfi

@@ -22,7 +22,7 @@ subroutine kndoub(long, lkn, nbkn, iret)
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/knindi.h"
-    integer :: long, iret, nbkn
+    integer(kind=8) :: long, iret, nbkn
     character(len=*) :: lkn(nbkn)
 ! ---------------------------------------------------------------------
 ! BUT: VERIFIER QU'IL N'Y A PAS DE DOUBLONS DANS UNE LISTE DE KN
@@ -35,7 +35,7 @@ subroutine kndoub(long, lkn, nbkn, iret)
 !                     /0 : IL N'Y A PAS DE DOUBLONS
 !                     /I1>0 : NUMERO DU 1ER DOUBLON DANS LKN
 !----------------------------------------------------------------------
-    integer :: k1, k2
+    integer(kind=8) :: k1, k2
 ! DEB
 !
     ASSERT((long .eq. 8) .or. (long .eq. 16) .or. (long .eq. 24))

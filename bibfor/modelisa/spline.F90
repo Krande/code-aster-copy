@@ -66,11 +66,11 @@ subroutine spline(x, y, n, dy1, dyn, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
     real(kind=8) :: x(*), y(*), dy1, dyn, d2y(*)
-    integer :: n, iret
+    integer(kind=8) :: n, iret
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: bignum, p, qn, sig, un
     real(kind=8), pointer :: work(:) => null()
 !

@@ -34,25 +34,25 @@ subroutine ef0142(nomte)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, jeffo, labsc, lmater, lopt, nbpar
-    integer :: nbref, nbres
+    integer(kind=8) :: i, jeffo, labsc, lmater, lopt, nbpar
+    integer(kind=8) :: nbref, nbres
     real(kind=8) :: absmoy, cm, phie, phii, rhofe, rhofi, rhos
     real(kind=8) :: valpar
 !-----------------------------------------------------------------------
     parameter(nbres=3, nbref=6)
     real(kind=8) :: valres(nbres), valref(nbref)
-    integer :: codres(nbres), codref(nbref)
+    integer(kind=8) :: codres(nbres), codref(nbref)
     character(len=8) :: nompar
     character(len=16) :: nomres(nbres), nomref(nbref)
     real(kind=8) :: zero, e, nu, rho
     real(kind=8) :: klv(78), klc(12, 12)
     character(len=24) :: suropt
-    integer :: iret
+    integer(kind=8) :: iret
 !     ------------------------------------------------------------------
     data nomres/'E', 'NU', 'RHO'/
     data nomref/'E', 'NU', 'RHO', 'PROF_RHO_F_INT', 'PROF_RHO_F_EXT', 'COEF_MASS_AJOU'/
 !     --------------------------------------------------
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/

@@ -21,6 +21,6 @@
 interface
     subroutine infoma(nomu, niv_)
         character(len=8) :: nomu
-        integer, optional :: niv_
+        integer(kind=8), optional :: niv_
     end subroutine infoma
 end interface

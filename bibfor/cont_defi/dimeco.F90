@@ -29,11 +29,11 @@ subroutine dimeco(sdcont, model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem, 
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: model_ndim
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(in) :: nb_cont_elem
-    integer, intent(in) :: nb_cont_node
+    integer(kind=8), intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(in) :: nb_cont_elem
+    integer(kind=8), intent(in) :: nb_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,19 +52,19 @@ subroutine dimeco(sdcont, model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nt_elem_node
-    integer :: nb_cont_point, nb_cont_poinc
-    integer :: nt_cont_point, nt_cont_poinc
-    integer :: i_zone, i_elem_mast, i_elem_slav
-    integer :: nb_node_slav, nb_node_mast, nb_elem_slav, nb_elem_mast
-    integer :: nt_node_slav, nt_node_mast, nt_elem_slav, nt_elem_mast
-    integer :: nb_node_slavc, nb_node_mastc, nb_elem_slavc, nb_elem_mastc
-    integer :: nt_node_esclc, nt_node_mastc, nt_elem_esclc, nt_elem_mastc
-    integer :: node_nbelem
-    integer :: jdecme, jdecmm, elem_slav_indx, elem_mast_indx
+    integer(kind=8) :: nt_elem_node
+    integer(kind=8) :: nb_cont_point, nb_cont_poinc
+    integer(kind=8) :: nt_cont_point, nt_cont_poinc
+    integer(kind=8) :: i_zone, i_elem_mast, i_elem_slav
+    integer(kind=8) :: nb_node_slav, nb_node_mast, nb_elem_slav, nb_elem_mast
+    integer(kind=8) :: nt_node_slav, nt_node_mast, nt_elem_slav, nt_elem_mast
+    integer(kind=8) :: nb_node_slavc, nb_node_mastc, nb_elem_slavc, nb_elem_mastc
+    integer(kind=8) :: nt_node_esclc, nt_node_mastc, nt_elem_esclc, nt_elem_mastc
+    integer(kind=8) :: node_nbelem
+    integer(kind=8) :: jdecme, jdecmm, elem_slav_indx, elem_mast_indx
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_ndimco
-    integer, pointer :: v_sdcont_ndimco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_ndimco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

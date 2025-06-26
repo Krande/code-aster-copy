@@ -27,7 +27,7 @@ subroutine lceiou(fami, kpg, ksp, mat, option, &
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
     character(len=16) :: option
-    integer :: mat, kpg, ksp
+    integer(kind=8) :: mat, kpg, ksp
     real(kind=8) :: mu(3), su(3), de(6), ddedt(6, 6), vim(*), vip(*), r
     character(len=*) :: fami
     real(kind=8), optional, intent(in) :: pfluide
@@ -49,10 +49,10 @@ subroutine lceiou(fami, kpg, ksp, mat, option, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: resi, rigi, elas
-    integer :: regime
+    integer(kind=8) :: regime
     real(kind=8) :: sc, gc, dc, c, h, ka, sk, val(4), tmp, ga, kap, gap
     real(kind=8) :: dn, tn, t(3), ddndtn
-    integer :: cod(4)
+    integer(kind=8) :: cod(4)
     character(len=16) :: nom(4)
     character(len=1) :: poum
 !

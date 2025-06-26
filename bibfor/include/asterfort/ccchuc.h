@@ -28,11 +28,11 @@ interface
         character(len=16), intent(in) :: type_comp
         character(len=16), intent(in) :: crit
         character(len=16), intent(in) :: norm
-        integer, intent(in) :: nb_form
+        integer(kind=8), intent(in) :: nb_form
         character(len=8), intent(in) :: name_form(nb_form)
-        integer , intent(in) :: nume_field_out
+        integer(kind=8) , intent(in) :: nume_field_out
         character(len=19), intent(in) :: list_ordr
-        integer , intent(in) :: nb_ordr
-        integer , intent(in) :: iocc
+        integer(kind=8) , intent(in) :: nb_ordr
+        integer(kind=8) , intent(in) :: iocc
     end subroutine ccchuc
 end interface

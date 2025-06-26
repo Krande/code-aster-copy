@@ -24,7 +24,7 @@ interface
                       taillr, conf, lnoff, liss, ndeg, typdis)
         character(len=8) :: resu
         character(len=8) :: modele
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=16) :: option
         character(len=8) :: typfis
         character(len=8) :: nomfis
@@ -33,9 +33,9 @@ interface
         character(len=24) :: basfon
         character(len=24) :: taillr
         character(len=8) :: conf
-        integer :: lnoff
+        integer(kind=8) :: lnoff
         character(len=24) :: liss
-        integer :: ndeg
+        integer(kind=8) :: ndeg
         character(len=16) :: typdis
     end subroutine cglect
 end interface

@@ -35,10 +35,10 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, &
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: stopz, nmparz, louez
-    integer, intent(in), optional :: numa
-    integer, intent(in), optional :: nval
-    integer, intent(out), optional :: itab(*), iad
-    integer, intent(out) :: iret
+    integer(kind=8), intent(in), optional :: numa
+    integer(kind=8), intent(in), optional :: nval
+    integer(kind=8), intent(out), optional :: itab(*), iad
+    integer(kind=8), intent(out) :: iret
 !----------------------------------------------------------------------
 !
 ! But:
@@ -112,11 +112,11 @@ subroutine tecach(stopz, nmparz, louez, iret, nval, &
     character(len=8) :: nompar, stop8
     character(len=1) :: loue
     aster_logical :: exichl, etendu
-    integer :: inuma, inval, jtab(8)
-    integer :: iparg
-    integer :: jceld, adiel, debugr, nbspt, ncdyn
-    integer :: lgcata, decael, lonchl, iachlo, ilchlo
-    integer :: k, iel2, igr2, debgr2
+    integer(kind=8) :: inuma, inval, jtab(8)
+    integer(kind=8) :: iparg
+    integer(kind=8) :: jceld, adiel, debugr, nbspt, ncdyn
+    integer(kind=8) :: lgcata, decael, lonchl, iachlo, ilchlo
+    integer(kind=8) :: k, iel2, igr2, debgr2
     character(len=24) :: valk(3)
     aster_logical :: stpcat, stpexi, stpinc
 !-------------------------------------------------------------------

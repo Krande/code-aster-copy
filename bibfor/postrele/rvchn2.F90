@@ -36,22 +36,22 @@ subroutine rvchn2(deplaz, nomjv, nbno, numnd, orig, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbno, numnd(*)
+    integer(kind=8) :: nbno, numnd(*)
     character(len=*) :: deplaz, nomjv
     real(kind=8) :: orig(3), axez(3)
 !
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: ino
-    integer :: iavald, nunoe, numdx, numdy, numdz, numdrx
-    integer :: numdry, numdrz, i, nbNode, nbCmp
+    integer(kind=8) :: ino
+    integer(kind=8) :: iavald, nunoe, numdx, numdy, numdz, numdrx
+    integer(kind=8) :: numdry, numdrz, i, nbNode, nbCmp
     real(kind=8) :: valed(3), vald(3), valer(3), valr(3), pscal
     real(kind=8) :: xnormr, epsi, axer(3), axet(3), pgl(3, 3)
     character(len=8) :: nomnoe, mesh
     character(len=8) :: gran_name
     character(len=19) :: depla
-    integer, pointer :: tablCmp(:) => null()
-    integer, pointer :: listNode(:) => null()
+    integer(kind=8), pointer :: tablCmp(:) => null()
+    integer(kind=8), pointer :: listNode(:) => null()
     character(len=8), pointer :: listCmp(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------

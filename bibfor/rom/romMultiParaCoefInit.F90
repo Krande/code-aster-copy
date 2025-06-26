@@ -45,8 +45,8 @@ subroutine romMultiParaCoefInit(ds_multipara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_matr, i_vect
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_matr, i_vect
 !
 ! --------------------------------------------------------------------------------------------------
 !

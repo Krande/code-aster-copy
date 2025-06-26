@@ -20,13 +20,13 @@ function exigfa(dgf, ngf)
     implicit none
 #include "asterf_types.h"
     aster_logical :: exigfa
-    integer :: dgf(*), ngf
+    integer(kind=8) :: dgf(*), ngf
 !     INDIQUE L'EXISTENCE DU NUM GROUPE NGF DANS DESCRIPTEUR-GROUPE DGF
 !     DGF    = DESCRIPTEUR-GROUPE DE LA FAMILLE (VECTEUR ENTIERS)
 !     NGF    = NUMERO DU GROUPE
 !     ------------------------------------------------------------------
-    integer :: iand
-    integer :: iec, reste, code
+    integer(kind=8) :: iand
+    integer(kind=8) :: iec, reste, code
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

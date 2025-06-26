@@ -23,7 +23,7 @@
 interface
     subroutine dsortc(which, apply, n, xreal, ximag,&
                       y)
-        integer :: n
+        integer(kind=8) :: n
         character(len=2) :: which
         aster_logical :: apply
         real(kind=8) :: xreal(0:n-1)

@@ -20,8 +20,8 @@
 !
 interface
     function maxint(n, x)
-        integer :: n
-        integer :: x(n)
-        integer :: maxint
+        integer(kind=8) :: n
+        integer(kind=8) :: x(n)
+        integer(kind=8) :: maxint
     end function maxint
 end interface

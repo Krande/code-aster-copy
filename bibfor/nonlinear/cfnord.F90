@@ -38,10 +38,10 @@ subroutine cfnord(noma, typent, nument, itype, vector, &
 !
     character(len=8) :: noma
     character(len=4) :: typent
-    integer :: nument
+    integer(kind=8) :: nument
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: vector(3)
-    integer :: itype
+    integer(kind=8) :: itype
     aster_logical :: lnfixe
 !
 ! ----------------------------------------------------------------------

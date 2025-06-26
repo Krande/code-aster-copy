@@ -23,7 +23,7 @@ interface
         use Rom_Datastructure_type
         character(len=1), intent(in)       :: object_type
         character(len=8), intent(in)       :: object_name_
-        integer, intent(in)                :: i_coef
+        integer(kind=8), intent(in)                :: i_coef
         type(ROM_DS_MultiCoef), intent(in) :: ds_multicoef
     end subroutine romCoefInfo
 end interface

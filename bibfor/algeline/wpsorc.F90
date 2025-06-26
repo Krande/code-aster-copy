@@ -118,8 +118,8 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect, &
 #include "asterfort/wp2ayc.h"
 #include "asterfort/znaupd.h"
 #include "asterfort/zneupd.h"
-    integer :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*), neqact, maxitr
-    integer :: ifm, niv, priram(8), nconv, lamor
+ integer(kind=8) :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*), neqact, maxitr
+    integer(kind=8) :: ifm, niv, priram(8), nconv, lamor
     real(kind=8) :: tolsor, alpha, rwork(*)
     aster_logical :: selec(*), flage
     complex(kind=8) :: sigma, vect(nbeq, *), dsor(*), resid(*), workd(*), workl(*), vaux(*)
@@ -129,17 +129,17 @@ subroutine wpsorc(lmasse, lamor, lmatra, nbeq, nbvect, &
 ! DECLARATION VARIABLES LOCALES
 !
 ! POUR LE FONCTIONNEMENT GLOBAL
-    integer :: i, j
-    integer :: vali(11)
-    integer :: au1, au2, au3
+    integer(kind=8) :: i, j
+    integer(kind=8) :: vali(11)
+    integer(kind=8) :: au1, au2, au3
 !
 ! POUR ARPACK
-    integer :: ido, info, ishfts, mode, iparam(11), ipntr(14)
+    integer(kind=8) :: ido, info, ishfts, mode, iparam(11), ipntr(14)
     aster_logical :: rvec
     character(len=1) :: bmat
     character(len=2) :: which
 !
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+   integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd

@@ -30,7 +30,7 @@ subroutine extrai(nin, lchin, lpain, init)
 #include "asterfort/nbelem.h"
 #include "asterfort/typele.h"
 
-    integer :: nin
+    integer(kind=8) :: nin
     character(len=*) :: lchin(*), init
     character(len=8) :: lpain(*)
 !-----------------------------------------------------------------------

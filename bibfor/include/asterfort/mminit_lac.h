@@ -27,6 +27,6 @@ interface
         character(len=19), intent(in) :: hat_valinc(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sdnume
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
     end subroutine mminit_lac
 end interface

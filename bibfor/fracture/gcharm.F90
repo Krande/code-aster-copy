@@ -58,8 +58,8 @@ subroutine gcharm(lfchar, cartei, nomfct, newfct, time, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jvalin, jvalou
-    integer :: nbvale, iret, in, k, i, nb, npt
+    integer(kind=8) :: jvalin, jvalou
+    integer(kind=8) :: nbvale, iret, in, k, i, nb, npt
     real(kind=8) :: const
     character(len=8) :: charge
     character(len=19) :: nch19

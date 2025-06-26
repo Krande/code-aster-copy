@@ -18,7 +18,7 @@
 !
 interface
     function binomial(n, k)
-        integer, intent(in) :: n, k
-        integer             :: binomial
+        integer(kind=8), intent(in) :: n, k
+        integer(kind=8)             :: binomial
     end function binomial
 end interface

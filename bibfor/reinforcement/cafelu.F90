@@ -83,7 +83,7 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
 
 #include "asterfort/cafeluiter.h"
 
-    integer :: typco
+    integer(kind=8) :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: effm
     real(kind=8) :: effn
@@ -95,15 +95,15 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
     real(kind=8) :: fbeton
     real(kind=8) :: gammas
     real(kind=8) :: gammac
-    integer :: clacier
+    integer(kind=8) :: clacier
     real(kind=8) :: eys
-    integer :: typdiag
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: typdiag
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
     real(kind=8) :: sigmsi
@@ -111,9 +111,9 @@ subroutine cafelu(typco, alphacc, effm, effn, ht, bw, &
     real(kind=8) :: ecinf
     real(kind=8) :: ecsup
     real(kind=8) :: alpha
-    integer :: pivot
-    integer :: etat
-    integer :: ierr
+    integer(kind=8) :: pivot
+    integer(kind=8) :: etat
+    integer(kind=8) :: ierr
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL

@@ -50,8 +50,8 @@ subroutine cjsnor(mater, sig, x, nor, devnul, &
     parameter(six=6.d0)
 !
     real(kind=8) :: g, pa, qinit, q(6), tq(6), coef, qii, cos3tq, trav, trav2
-    integer :: i
-    integer :: ndt, ndi
+    integer(kind=8) :: i
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !
 !

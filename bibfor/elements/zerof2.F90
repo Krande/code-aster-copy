@@ -29,7 +29,7 @@ subroutine zerof2(func, x0, xap, epsi, nitmax, &
         end function func
     end interface
     real(kind=8) :: x0, xap, epsi, solu
-    integer :: nitmax, iret
+    integer(kind=8) :: nitmax, iret
 ! ----------------------------------------------------------------------
 !     BUT:
 !         TROUVER UNE RACINE DE L'EQUATION func(X)=0
@@ -55,8 +55,8 @@ subroutine zerof2(func, x0, xap, epsi, nitmax, &
     real(kind=8) :: fy, fz, x, y, z, a, b, fa, fb, fdbg(20), xdbg(20), ecresd
     real(kind=8) :: fx
     real(kind=8) :: valr(44)
-    integer :: n, k, nd
-    integer :: vali
+    integer(kind=8) :: n, k, nd
+    integer(kind=8) :: vali
 ! DEB-------------------------------------------------------------------
 !
 !     INITIALISATIONS

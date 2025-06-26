@@ -37,7 +37,7 @@ subroutine romMultiParaCoefOneCompute(ds_empi, ds_multipara, ds_solveROM, &
     type(ROM_DS_Empi), intent(in) :: ds_empi
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
     type(ROM_DS_Solve), intent(in) :: ds_solveROM
-    integer, intent(in) :: i_mode_until, i_mode_coef, i_coef
+    integer(kind=8), intent(in) :: i_mode_until, i_mode_coef, i_coef
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,8 +56,8 @@ subroutine romMultiParaCoefOneCompute(ds_empi, ds_multipara, ds_solveROM, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_mode, i_mode, vali(2)
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_mode, i_mode, vali(2)
     character(len=1) :: syst_2mbr_type
     character(len=24) :: syst_solu, syst_matr, syst_2mbr
     complex(kind=8), pointer :: vc_syst_solu(:) => null()

@@ -26,12 +26,12 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic, &
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, nbordr, jitrv, npic(nbvec)
-    integer :: jopic, ncycl(nbvec), jpic
+    integer(kind=8) :: nbvec, nbordr, jitrv, npic(nbvec)
+    integer(kind=8) :: jopic, ncycl(nbvec), jpic
 !    integer :: omin(nbvec*(nbordr+2)), omax(nbvec*(nbordr+2))
     real(kind=8) :: fatsoc
 !    real(kind=8) :: vmin(nbvec*(nbordr+2)), vmax(nbvec*(nbordr+2))
-    integer :: jomin, jomax, jvmin, jvmax
+    integer(kind=8) :: jomin, jomax, jvmin, jvmax
 ! ----------------------------------------------------------------------
 ! BUT: COMPTAGE DE CYCLE PAR LA METHODE RAINFLOW (POSTDAM)
 ! ----------------------------------------------------------------------
@@ -62,7 +62,7 @@ subroutine avrain(nbvec, nbordr, jitrv, npic, jpic, &
 !
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: ivect, i, npicb, adrs, j, k, npicr
+    integer(kind=8) :: ivect, i, npicb, adrs, j, k, npicr
 !
     real(kind=8) :: e1, e2, e3, r1, r2, rad, rd, x, y
 !

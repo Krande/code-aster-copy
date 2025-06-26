@@ -33,7 +33,7 @@ subroutine juagrn(nom, long)
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nom
-    integer :: long
+    integer(kind=8) :: long
 !     Redimensionnement d'un repertoire de nom
 !     ------------------------------------------------------------------
 ! IN  NOM  : K24 : NOM DE L'OBJET A REDIMENSIONNER
@@ -47,7 +47,7 @@ subroutine juagrn(nom, long)
     character(len=32) :: no4
     character(len=80) :: no5
 !
-    integer :: lonma2, lonmax, iaux, jadr, ltyp
+    integer(kind=8) :: lonma2, lonmax, iaux, jadr, ltyp
 !-----------------------------------------------------------------------
     call jemarq()
     call jelira(nom, 'NOMMAX', lonmax)

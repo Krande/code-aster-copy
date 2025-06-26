@@ -26,14 +26,14 @@ function gtstat(istat)
 #include "asterf_types.h"
     aster_logical :: gtstat
 !     ARGUMENT IN
-    integer :: istat
+    integer(kind=8) :: istat
 !-----------------------------------------------------------------------
 !     FONCTION "GeT STATus" : DIT SI LE STATUT ISTAT EST ACTUELLEMENT
 !     ACTIVE OU NON.
 !
 !     LA VALEUR DU STATUT GLOBAL IGLBST EST STOCKE DANS LE COMMON CGLBST
 !-----------------------------------------------------------------------
-    integer :: iglbst
+    integer(kind=8) :: iglbst
     common/cglbst/iglbst
 !
     if (istat .eq. ST_OK) then

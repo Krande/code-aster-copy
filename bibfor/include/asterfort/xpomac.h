@@ -28,8 +28,8 @@ interface
         character(len=8) :: malini
         character(len=24) :: mailc
         character(len=24) :: listno
-        integer :: nbnoc
-        integer :: nbmac
+        integer(kind=8) :: nbnoc
+        integer(kind=8) :: nbmac
         character(len=8) :: maxfem
         character(len=24) :: nivgrm
         character(len=19) :: cns1

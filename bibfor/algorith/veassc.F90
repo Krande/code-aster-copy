@@ -53,13 +53,13 @@ subroutine veassc(lischa, vecele)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ichar, nbchar
+    integer(kind=8) :: ichar, nbchar
     character(len=8) :: newnom
     character(len=19) :: chamno, lchout
     character(len=13) :: prefob
-    integer :: genrec
+    integer(kind=8) :: genrec
     aster_logical :: lveac
-    integer :: nbveac, iexis
+    integer(kind=8) :: nbveac, iexis
 !
 ! ----------------------------------------------------------------------
 !

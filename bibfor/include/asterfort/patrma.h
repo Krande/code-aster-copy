@@ -24,9 +24,9 @@ interface
         character(len=*) :: llist1
         character(len=*) :: llist2
         real(kind=8) :: t(3)
-        integer :: nbtymx
+        integer(kind=8) :: nbtymx
         character(len=8) :: nomma
         character(len=*) :: llistt
-        integer :: ntypm
+        integer(kind=8) :: ntypm
     end subroutine patrma
 end interface

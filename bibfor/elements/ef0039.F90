@@ -25,7 +25,7 @@ subroutine ef0039(nomte)
 ! ----------------------------------------------------------------------
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
-    integer :: itab(2), ieffo, n1, i, iret, icontg
+    integer(kind=8) :: itab(2), ieffo, n1, i, iret, icontg
 !     ------------------------------------------------------------------
 !
     call tecach('OOO', 'PEFFORR', 'E', iret, nval=2, &

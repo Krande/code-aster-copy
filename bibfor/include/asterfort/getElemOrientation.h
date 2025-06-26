@@ -18,8 +18,8 @@
 
 interface
     subroutine getElemOrientation(ndim, nno, jv_geom, angl_naut)
-        integer, intent(in) :: ndim, nno
-        integer, intent(in) :: jv_geom
+        integer(kind=8), intent(in) :: ndim, nno
+        integer(kind=8), intent(in) :: jv_geom
         real(kind=8), intent(out) :: angl_naut(3)
     end subroutine getElemOrientation
 end interface

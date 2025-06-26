@@ -65,9 +65,9 @@ subroutine chckVari(comporPrevZ, comporCurrZ, variZ, ligrelZ)
     aster_logical :: inconsistentBehaviour, nbVariDifferent, hasPreviousBehaviour
     character(len=19) :: ligrel, ligrelPrev
     character(len=8) :: meshCompor, meshField, mesh
-    integer :: nbCell
+    integer(kind=8) :: nbCell
     character(len=8), pointer :: cesk(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

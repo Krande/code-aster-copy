@@ -26,6 +26,6 @@ interface
         real(kind=8) :: pref
         real(kind=8) :: epssig
         real(kind=8) :: q(6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine calcq
 end interface

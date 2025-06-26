@@ -55,23 +55,23 @@ subroutine op0150()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: storeIndxNb, storeCreaNb, storeTimeNb
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: storeIndxNb, storeCreaNb, storeTimeNb
     character(len=19) :: storeTime, storeIndx
     character(len=8) :: storeCrit
     real(kind=8) :: storeEpsi
     character(len=4) :: storePara
     character(len=10) :: storeAccess
-    integer :: empiNumePlan, empiSnapNb
+    integer(kind=8) :: empiNumePlan, empiSnapNb
     character(len=24) :: empiFieldType
-    integer :: fieldStoreNb(100)
+    integer(kind=8) :: fieldStoreNb(100)
     character(len=16) :: fieldList(100)
-    integer :: nbOcc, iField, fieldNb
+    integer(kind=8) :: nbOcc, iField, fieldNb
     character(len=8) :: resultName, resultNameReuse
     character(len=8) :: meshAst, model, caraElem, materField
     character(len=8) :: matrRigi, matrMass
     character(len=16) :: nomcmd, resultType2, resultType
-    integer :: fileUnit, nbret
+    integer(kind=8) :: fileUnit, nbret
     character(len=16) :: fileFormat
     character(len=24) :: listLoad
     aster_logical:: lReuse, lLireResu, lVeriVari

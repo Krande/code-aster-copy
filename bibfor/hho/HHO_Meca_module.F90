@@ -118,7 +118,7 @@ contains
 !
         character(len=24), intent(in) :: model
         character(len=19), intent(in) :: list_load
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(HHO_Field), intent(out) :: hhoField
 !
 ! --------------------------------------------------------------------------------------------------
@@ -136,7 +136,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -183,7 +183,7 @@ contains
 !
 ! --- Local variables
 !
-        integer :: cbs, fbs, total_dofs, gbs
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs
         type(HHO_matrix) :: gradfullvec, stabvec
 !
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
@@ -241,7 +241,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical :: l_rigi_meca, l_vari
-        integer :: cbs, fbs, total_dofs
+        integer(kind=8) :: cbs, fbs, total_dofs
 !
 ! --- Verif compor
 !
@@ -391,7 +391,7 @@ contains
         implicit none
 !
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         real(kind=8), intent(in) :: time
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8) :: coeff
@@ -406,7 +406,7 @@ contains
 !
         type(Behaviour_Integ) :: BEHinteg
         character(len=16) :: elas_keyword
-        integer :: elas_id, ipg
+        integer(kind=8) :: elas_id, ipg
         real(kind=8) :: e
 !
         coeff = 0.d0
@@ -449,7 +449,7 @@ contains
 !
 ! --- Local variables
 !
-        integer :: jmate, imate
+        integer(kind=8) :: jmate, imate
 !
         if (hhoData%adapt()) then
             call jevech('PMATERC', 'L', jmate)
@@ -477,9 +477,9 @@ contains
 !  initialize HHO_MECA_STATE
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iinstm, iinstp, iret, num_tot, num_mk
-        integer :: mk_cbs, mk_fbs, mk_total_dofs, iFace, iDof
-        integer :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
+        integer(kind=8) :: iinstm, iinstp, iret, num_tot, num_mk
+        integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, iFace, iDof
+        integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, total_dofs
         real(kind=8) :: tmp_prev(MSIZE_TDOFS_MIX), tmp_incr(MSIZE_TDOFS_MIX)
 !
         if (hhoComporState%option .ne. "RIGI_MECA" .and. hhoComporState%option .ne. &
@@ -595,8 +595,8 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_matrix) :: mass_vec
         character(len=32) :: phenom
-        integer :: cbs, fbs, total_dofs, faces_dofs
-        integer :: jmate, ipg, icodre(3), dimMatScal
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs
+        integer(kind=8) :: jmate, ipg, icodre(3), dimMatScal
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, rho, rho_(1), coeff
         real(kind=8) :: mass_scal(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
@@ -686,8 +686,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         type(HHO_basis_cell) :: hhoBasisCell
-        integer :: cbs, fbs, total_dofs, gbs, gbs_sym
-        integer :: ipg, ncomp, gbs_curr, gbs_cmp
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs, gbs_sym
+        integer(kind=8) :: ipg, ncomp, gbs_curr, gbs_cmp
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: Cauchy_curr(6), PK1_curr(3, 3), G_curr(3, 3), F_curr(3, 3)

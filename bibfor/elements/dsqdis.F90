@@ -26,8 +26,8 @@ subroutine dsqdis(xyzl, caraq4, df, dci, an)
     real(kind=8) :: xyzl(3, *), df(3, 3), dci(2, 2), an(4, 12), caraq4(*)
 !     MATRICE AN(4,12) DU CISAILLEMENT POUR LE DSQ
 !     -------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: nc, k, ic, int, j, i, iret
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: nc, k, ic, int, j, i, iret
     real(kind=8) :: qsi, eta, peta, meta, pqsi, mqsi, det, jacob(5)
     real(kind=8) :: l(4), c(4), s(4), x(4), y(4)
     real(kind=8) :: hft2(2, 6), tb(6, 12), ta(6, 4), dt(2, 6)

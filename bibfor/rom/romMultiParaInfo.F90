@@ -42,8 +42,8 @@ subroutine romMultiParaInfo(ds_multipara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_matr, i_vect, i_vari_para
-    integer :: nb_matr, nb_vect, nb_vari_para, nbEqua
+    integer(kind=8) :: i_matr, i_vect, i_vari_para
+    integer(kind=8) :: nb_matr, nb_vect, nb_vari_para, nbEqua
 !
 ! --------------------------------------------------------------------------------------------------
 !

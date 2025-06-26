@@ -31,7 +31,7 @@ subroutine togene(dplmod, fphys, fgene, coef)
     real(kind=8), intent(out) :: fgene(:)
     real(kind=8), optional, intent(in)  :: coef
 !-----------------------------------------------------------------------
-    integer :: i, j, nbmode
+    integer(kind=8) :: i, j, nbmode
     real(kind=8) :: coef_m
 !-----------------------------------------------------------------------
     coef_m = 1.d0

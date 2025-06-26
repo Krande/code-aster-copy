@@ -22,7 +22,7 @@ subroutine impres_component_hpc(nomgd, ntncmp, ncmpvl, ncmpve, indcmp)
     implicit none
     character(len=32)  :: nomgd
     character(len=*)  :: ntncmp
-    integer :: ncmpvl, ncmpve
+    integer(kind=8) :: ncmpvl, ncmpve
     character(len=24)  :: indcmp
 !
 #include "asterf_types.h"
@@ -50,8 +50,8 @@ subroutine impres_component_hpc(nomgd, ntncmp, ncmpvl, ncmpve, indcmp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jnocm1, cmpt, icmp1, vnbcmp(1), nbcmpmax, rang, nbproc
-    integer :: jtest, jnocmp, jnocm3, nb_cmp_tot, iproc, jindir, numcmp
+    integer(kind=8) :: jnocm1, cmpt, icmp1, vnbcmp(1), nbcmpmax, rang, nbproc
+    integer(kind=8) :: jtest, jnocmp, jnocm3, nb_cmp_tot, iproc, jindir, numcmp
     mpi_int, pointer :: v_count(:) => null()
     mpi_int, pointer :: v_displ(:) => null()
     character(len=16), pointer :: v_nomcmp(:) => null()

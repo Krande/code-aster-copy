@@ -21,7 +21,7 @@
 interface
     subroutine lglpmv(cumul, n, a, x, y)
         character(len=*) :: cumul
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: a(6, 6)
         real(kind=8) :: x(6)
         real(kind=8) :: y(6)

@@ -21,12 +21,12 @@
 interface
     subroutine ircmpf(nofimd, nvalty, profil, noprof, nosdfu,&
                       typent, typmai)
-        integer :: nvalty
+        integer(kind=8) :: nvalty
         character(len=*) :: nofimd
-        integer :: profil(nvalty)
+        integer(kind=8) :: profil(nvalty)
         character(len=*) :: noprof
         character(len=8) :: nosdfu
-        integer :: typent
-        integer :: typmai
+        integer(kind=8) :: typent
+        integer(kind=8) :: typmai
     end subroutine ircmpf
 end interface

@@ -43,17 +43,17 @@ subroutine xfem_count_ddl(neq, deeq, k8cmp, nbnomax, ino_xfem, &
 !-----------------------------------------------------------------------
 !
     character(len=8) :: k8cmp(*)
-    integer :: deeq(*), neq, nbnomax, nbnoxfem, maxi_ddl
-    integer :: ino_xfem(nbnomax)
-    integer :: ieq_loc(neq), neq_mloc(nbnoxfem)
+    integer(kind=8) :: deeq(*), neq, nbnomax, nbnoxfem, maxi_ddl
+    integer(kind=8) :: ino_xfem(nbnomax)
+    integer(kind=8) :: ieq_loc(neq), neq_mloc(nbnoxfem)
     aster_logical :: is_xfem(nbnomax)
 !
 !-----------------------------------------------------------------------
 !
     character(len=8) :: nocmp
-    integer :: ieq, nuno, nucmp, j
-    integer :: ipos
-    integer :: ddlmax
+    integer(kind=8) :: ieq, nuno, nucmp, j
+    integer(kind=8) :: ipos
+    integer(kind=8) :: ddlmax
     parameter(ddlmax=52)
 !
 !   REMARQUE: ON A AU PLUS 27 DDLS POUR UN ELEMENT XFEM (cf. 3D_XHHC)

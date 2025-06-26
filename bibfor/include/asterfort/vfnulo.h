@@ -19,8 +19,8 @@
 interface
     subroutine vfnulo(maxfa , maxar, ndim , nnos , nface,&
                       nbnofa, nosar, nosfa, narfa)
-        integer, intent(in) :: maxfa, maxar, ndim, nnos, nface
-        integer, intent(out) :: nbnofa(1:nface)
-        integer, intent(out) :: nosar(1:maxar, 2), nosfa(1:maxfa, *), narfa(1:maxfa, *)
+        integer(kind=8), intent(in) :: maxfa, maxar, ndim, nnos, nface
+        integer(kind=8), intent(out) :: nbnofa(1:nface)
+        integer(kind=8), intent(out) :: nosar(1:maxar, 2), nosfa(1:maxfa, *), narfa(1:maxfa, *)
     end subroutine vfnulo
 end interface

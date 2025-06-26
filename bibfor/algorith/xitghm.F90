@@ -24,15 +24,15 @@ subroutine xitghm(modint, mecani, press1, ndim, nno, &
     implicit none
 !
 #   include "asterfort/elrefe_info.h"
-    integer :: mecani(5), press1(7)
-    integer :: ndim, nnos, nno, nnom
-    integer :: npi, npg, nddls, nddlm, dimuel
-    integer :: ipoids, ivf, idfde
+    integer(kind=8) :: mecani(5), press1(7)
+    integer(kind=8) :: ndim, nnos, nno, nnom
+    integer(kind=8) :: npi, npg, nddls, nddlm, dimuel
+    integer(kind=8) :: ipoids, ivf, idfde
     character(len=3) :: modint
 !
 ! DECLARATION POUR XFEM
-    integer :: ddld, ddlm, ddlp, ddlc
-    integer :: nnop, nnops, nnopm
+    integer(kind=8) :: ddld, ddlm, ddlp, ddlc
+    integer(kind=8) :: nnop, nnops, nnopm
     character(len=8) :: fami(3), elrese(3)
 !
     data elrese/'SE3', 'TR6', 'T10'/

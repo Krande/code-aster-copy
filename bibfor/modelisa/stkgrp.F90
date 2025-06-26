@@ -51,16 +51,16 @@ subroutine stkgrp(ifl, icl, iv, rv, cv, &
 #include "asterfort/utmess.h"
 !
     real(kind=8) :: rv
-    integer :: deblig, nbm
+    integer(kind=8) :: deblig, nbm
     character(len=8) :: mcl(nbm), nom, b8
     character(len=14) :: cnl
     character(len=*) :: cv
     character(len=24) :: grn, grm, grp, nomg
     save b8
 !-----------------------------------------------------------------------
-    integer :: i, iadg, icl, ifl, ifn, iret
-    integer :: irtet, irteti, iv, nbitem, num
-    integer :: numm, numn
+    integer(kind=8) :: i, iadg, icl, ifl, ifn, iret
+    integer(kind=8) :: irtet, irteti, iv, nbitem, num
+    integer(kind=8) :: numm, numn
 !-----------------------------------------------------------------------
     data b8/'        '/
 !

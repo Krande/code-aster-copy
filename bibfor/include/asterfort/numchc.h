@@ -21,7 +21,7 @@
 interface
     subroutine numchc(nu, ccid, nbchc, lchci, base)
         character(len=*) :: nu, ccid
-        integer :: nbchc
+        integer(kind=8) :: nbchc
         character(len=*) :: lchci(*)
         character(len=1) :: base
     end subroutine numchc

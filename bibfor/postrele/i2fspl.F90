@@ -39,9 +39,9 @@ subroutine i2fspl(tvois2, tplace, n, existe, adrdbt)
 !*****************************************************************
 !
     aster_logical :: existe, tplace(*)
-    integer :: tvois2(*), n, adrdbt
+    integer(kind=8) :: tvois2(*), n, adrdbt
 !
-    integer :: i
+    integer(kind=8) :: i
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

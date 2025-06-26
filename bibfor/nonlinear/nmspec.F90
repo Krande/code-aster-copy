@@ -42,11 +42,11 @@ subroutine nmspec(model, ds_material, caraElem, listLoad, listFuncActi, &
     character(len=24), intent(in) :: model, caraElem
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=19), intent(in) :: listLoad
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: numeTime
+    integer(kind=8), intent(in) :: numeTime
     character(len=19), intent(in) :: sddyna
     character(len=24), intent(in) :: sderro
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara

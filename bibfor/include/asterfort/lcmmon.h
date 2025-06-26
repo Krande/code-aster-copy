@@ -25,17 +25,17 @@ interface
                       epsd, detot, coel, dvin, nfs,&
                       nsg, toutms, hsr, itmax, toler,&
                       iret)
-        integer :: nsg
-        integer :: nfs
-        integer :: neps
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: neps
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: rela_comp
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vini(*)
         real(kind=8) :: x
         real(kind=8) :: dtime
@@ -48,8 +48,8 @@ interface
         real(kind=8) :: dvin(*)
         real(kind=8) :: toutms(nfs, nsg, 6)
         real(kind=8) :: hsr(nsg, nsg, 1)
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmon
 end interface

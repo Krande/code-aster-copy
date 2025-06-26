@@ -38,9 +38,9 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: lmasse, lamor, lraide, nitf, nbfreq, neq
-    integer :: mxresf
-    integer :: resufi(mxresf, *)
+    integer(kind=8) :: lmasse, lamor, lraide, nitf, nbfreq, neq
+    integer(kind=8) :: mxresf
+    integer(kind=8) :: resufi(mxresf, *)
     complex(kind=8) :: vecpro(neq, *)
     real(kind=8) :: tolf, resufr(mxresf, *)
     character(len=*) :: resufk(mxresf, *)
@@ -52,7 +52,7 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf, &
 !     -----------------------------------------------------------------
 !
 !     -----------------------------------------------------------------
-    integer :: lmat(3), ibid
+    integer(kind=8) :: lmat(3), ibid
     character(len=1) :: typcst(3), kbid
     character(len=8) :: nomddl
     character(len=19) :: matdyn, k19bid, matass, chcine, criter, matpre
@@ -63,10 +63,10 @@ subroutine wp1inv(lmasse, lamor, lraide, tolf, nitf, &
     real(kind=8) :: const(6)
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: icomb, ieq, imode, iter, jter, lacc1, lacc2
-    integer :: ldynam
+    integer(kind=8) :: icomb, ieq, imode, iter, jter, lacc1, lacc2
+    integer(kind=8) :: ldynam
     real(kind=8) :: dseed, err, err2
-    integer :: iret
+    integer(kind=8) :: iret
     complex(kind=8), pointer :: yn_associe_a_xn(:) => null()
 !-----------------------------------------------------------------------
     data nomddl/'        '/

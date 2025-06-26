@@ -60,18 +60,18 @@ subroutine ntcrli(listInst, sddisc, lostat)
 !
     character(len=16), parameter :: factorKeyword = 'INCREMENT'
     character(len=19), parameter :: listInstWorkJv = '&&NMCRLI.PROVLI'
-    integer :: ifm, niv
-    integer :: numeInit, numeEnd
-    integer :: nbInstNew, nbInst, nbret
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: numeInit, numeEnd
+    integer(kind=8) :: nbInstNew, nbInst, nbret
     real(kind=8) :: tole, dtmin, dt0, instInit
     character(len=24) :: list_inst_info
     character(len=24) :: list_inst_ditr
     character(len=16) :: list_inst_type
     character(len=24) :: sddisc_bcle
-    integer, pointer :: v_sddisc_bcle(:) => null()
+    integer(kind=8), pointer :: v_sddisc_bcle(:) => null()
     real(kind=8), pointer :: listInstWork(:) => null()
     character(len=24) :: sddisc_dini
-    integer, pointer :: v_sddisc_dini(:) => null()
+    integer(kind=8), pointer :: v_sddisc_dini(:) => null()
     character(len=24) :: sddisc_lipo
     character(len=24) :: sddisc_ditr
     character(len=24) :: sddisc_linf

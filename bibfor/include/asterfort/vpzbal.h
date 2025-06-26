@@ -21,11 +21,11 @@
 interface
     subroutine vpzbal(mat, neq, mxeq, d, k,&
                       l)
-        integer :: mxeq
+        integer(kind=8) :: mxeq
         real(kind=8) :: mat(mxeq, 1)
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: d(1)
-        integer :: k
-        integer :: l
+        integer(kind=8) :: k
+        integer(kind=8) :: l
     end subroutine vpzbal
 end interface

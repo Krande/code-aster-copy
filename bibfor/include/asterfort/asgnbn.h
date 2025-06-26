@@ -21,13 +21,13 @@
 interface
     subroutine asgnbn(ibla, nbloc, bloca, nbterm, inobl, iadbl,&
                       nomblo, numblo, fact)
-        integer :: nbterm, nbloc
-        integer :: ibla
+        integer(kind=8) :: nbterm, nbloc
+        integer(kind=8) :: ibla
         real(kind=8) :: bloca(*)
-        integer :: inobl(nbterm)
-        integer :: iadbl(nbterm)
+        integer(kind=8) :: inobl(nbterm)
+        integer(kind=8) :: iadbl(nbterm)
         character(len=24) :: nomblo
-        integer :: numblo
+        integer(kind=8) :: numblo
         real(kind=8) :: fact
     end subroutine asgnbn
 end interface

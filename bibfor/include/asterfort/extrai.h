@@ -20,7 +20,7 @@
 !
 interface
     subroutine extrai(nin, lchin, lpain, init)
-        integer :: nin
+        integer(kind=8) :: nin
         character(len=*) :: lchin(*)
         character(len=8) :: lpain(*)
         character(len=*) :: init

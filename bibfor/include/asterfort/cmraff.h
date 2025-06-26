@@ -19,6 +19,6 @@
 interface
     subroutine cmraff(mesh_in, mesh_out, level, info)
         character(len=8), intent(in) :: mesh_in, mesh_out
-        integer, intent(in) :: level, info
+        integer(kind=8), intent(in) :: level, info
     end subroutine cmraff
 end interface

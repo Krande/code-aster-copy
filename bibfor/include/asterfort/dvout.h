@@ -19,10 +19,10 @@
 !
 interface
     subroutine dvout(lout, n, sx, idigit, ifmt)
-        integer :: lout
-        integer :: n
+        integer(kind=8) :: lout
+        integer(kind=8) :: n
         real(kind=8) :: sx(*)
-        integer :: idigit
+        integer(kind=8) :: idigit
         character(len=*) :: ifmt
     end subroutine dvout
 end interface

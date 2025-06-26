@@ -37,7 +37,7 @@ subroutine crsmos(nomsto, typroz, neq)
 !
 !
 !
-    integer :: i, j, nterm, ico, jsmde, jsmdi, jsmhc, neq
+    integer(kind=8) :: i, j, nterm, ico, jsmde, jsmdi, jsmhc, neq
     character(len=19) :: sto19
     character(len=5) :: typrof
 !     ------------------------------------------------------------------

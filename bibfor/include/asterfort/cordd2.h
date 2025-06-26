@@ -21,14 +21,14 @@
 interface
     subroutine cordd2(jprn1, jprn2, ili, ecodl, nec,&
                       ncmp, n, nddloc, pos)
-        integer :: jprn1
-        integer :: jprn2
-        integer :: ili
-        integer :: ecodl(*)
-        integer :: nec
-        integer :: ncmp
-        integer :: n
-        integer :: nddloc
-        integer :: pos(1)
+        integer(kind=8) :: jprn1
+        integer(kind=8) :: jprn2
+        integer(kind=8) :: ili
+        integer(kind=8) :: ecodl(*)
+        integer(kind=8) :: nec
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: n
+        integer(kind=8) :: nddloc
+        integer(kind=8) :: pos(1)
     end subroutine cordd2
 end interface

@@ -32,8 +32,8 @@ subroutine mmstat(mesh, iter_newt, nume_inst, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: iter_newt
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: disp_curr
     character(len=19), intent(in) :: disp_cumu_inst

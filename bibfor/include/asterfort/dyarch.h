@@ -21,12 +21,12 @@
 interface
     subroutine dyarch(nbpas, lisins, lisarc, nbarch, ich,&
                       nbexcl, type)
-        integer :: nbpas
+        integer(kind=8) :: nbpas
         character(len=*) :: lisins
         character(len=*) :: lisarc
-        integer :: nbarch
-        integer :: ich
-        integer :: nbexcl
+        integer(kind=8) :: nbarch
+        integer(kind=8) :: ich
+        integer(kind=8) :: nbexcl
         character(len=*) :: type(*)
     end subroutine dyarch
 end interface

@@ -37,7 +37,7 @@ subroutine vrcomp(comporCurrZ, variZ, ligrelCurrZ, iret, &
 #include "asterfort/vrcomp_prep.h"
 !
     character(len=*), intent(in) :: comporCurrZ, variZ, ligrelCurrZ
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
     character(len=*), optional, intent(in) :: comporPrevZ_
     character(len=1), optional, intent(in) :: typeStop_
     aster_logical, intent(in), optional :: verbose_
@@ -118,9 +118,9 @@ subroutine vrcomp(comporCurrZ, variZ, ligrelCurrZ, iret, &
     character(len=19) :: ligrelCurr, ligrelPrev
     aster_logical :: verbose
     character(len=8) :: meshCompor, meshField, mesh
-    integer :: nbCell
+    integer(kind=8) :: nbCell
     character(len=8), pointer :: cesk(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

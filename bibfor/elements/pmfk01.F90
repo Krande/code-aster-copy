@@ -58,7 +58,7 @@ subroutine pmfk01(cars, gxjx, xl, sk)
 ! LOC ------------------------------------------------------------------
 ! LOC I   ! IP     !   12    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 !     ------------------------------------------------------------------
-    integer :: i, ip(12)
+    integer(kind=8) :: i, ip(12)
     real(kind=8) :: xl, sk(*), cars(6), gxjx
     real(kind=8) :: ks11, ks12, ks13, ks22, ks33, ks23
     real(kind=8) :: zero

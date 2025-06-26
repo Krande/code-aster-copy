@@ -72,12 +72,12 @@ subroutine libint(imped, nume91, nbint, lisint, nbeq1)
 !
     character(len=19) :: imped, nume91
     character(len=24) :: indin1
-    integer :: j1, k1, l1, m1, n1, nbeq1, llint1, nbddl1, lintf, nbint, lklibr
-    integer :: lag1, lag2, ind, lsmhc
+    integer(kind=8) :: j1, k1, l1, m1, n1, nbeq1, llint1, nbddl1, lintf, nbint, lklibr
+    integer(kind=8) :: lag1, lag2, ind, lsmhc
     real(kind=8) :: abs
     character(len=24) :: lisint
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: delg(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
 !
     call jeveuo(lisint, 'L', lintf)
 !-- RECUPERATION DE LA MATRICE DE RAIDEUR

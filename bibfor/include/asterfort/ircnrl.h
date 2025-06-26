@@ -26,22 +26,22 @@ interface
                       lcor, ndim, coor, numnoe, nbcmpt,&
                       nucmpu, lsup, borsup, linf, borinf,&
                       lmax, lmin, formr)
-        integer :: ifi
-        integer :: nbno
-        integer :: prno(*)
-        integer :: nueq(*)
-        integer :: nec
-        integer :: dg(*)
-        integer :: ncmpmx
+        integer(kind=8) :: ifi
+        integer(kind=8) :: nbno
+        integer(kind=8) :: prno(*)
+        integer(kind=8) :: nueq(*)
+        integer(kind=8) :: nec
+        integer(kind=8) :: dg(*)
+        integer(kind=8) :: ncmpmx
         real(kind=8) :: vale(*)
         character(len=*) :: nomcmp(*)
         character(len=*) :: nomnoe(*)
         aster_logical :: lcor
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: coor(*)
-        integer :: numnoe(*)
-        integer :: nbcmpt
-        integer :: nucmpu(*)
+        integer(kind=8) :: numnoe(*)
+        integer(kind=8) :: nbcmpt
+        integer(kind=8) :: nucmpu(*)
         aster_logical :: lsup
         real(kind=8) :: borsup
         aster_logical :: linf

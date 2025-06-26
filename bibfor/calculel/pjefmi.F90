@@ -25,7 +25,7 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim, &
 #include "asterfort/assert.h"
 #include "asterfort/elrfvf.h"
     character(len=8) :: elrefp
-    integer :: nnop, ndim
+    integer(kind=8) :: nnop, ndim
     real(kind=8) :: coor(ndim*nnop)
     real(kind=8) :: xg(ndim), x1(ndim), x2(ndim), xmi(ndim)
     real(kind=8), intent(out) :: distv
@@ -54,11 +54,11 @@ subroutine pjefmi(elrefp, nnop, coor, xg, ndim, &
 ! out distv  : distance entre le point 1 et son projete
 !
 ! ----------------------------------------------------------------------
-    integer :: nbnomx
+    integer(kind=8) :: nbnomx
     parameter(nbnomx=27)
     real(kind=8) :: xr1(3), xr2(3), d1, d2
     real(kind=8) :: ff(nbnomx)
-    integer :: k, idim, ino, nno
+    integer(kind=8) :: k, idim, ino, nno
     aster_logical :: lext
 ! ----------------------------------------------------------------------
 !

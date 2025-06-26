@@ -29,8 +29,8 @@ subroutine afdi2d(irep, eta, car, val, jdc, &
 !
 ! --------------------------------------------------------------------------------------------------
     implicit none
-    integer :: irep, jdv(3), jdc(3), ivr(*), iv, ncmp, ntp, ifm
-    integer :: isym, jdcinf, jdvinf
+    integer(kind=8) :: irep, jdv(3), jdc(3), ivr(*), iv, ncmp, ntp, ifm
+    integer(kind=8) :: isym, jdcinf, jdvinf
     real(kind=8) :: eta, val(*)
     character(len=1) :: kma(3)
     character(len=*) :: car
@@ -43,7 +43,7 @@ subroutine afdi2d(irep, eta, car, val, jdc, &
 #include "asterfort/infdis.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: jj, ll, dimmat, ibid
+    integer(kind=8) :: jj, ll, dimmat, ibid
     real(kind=8) :: r8bid
     aster_logical :: nonsym
     character(len=7) :: ki

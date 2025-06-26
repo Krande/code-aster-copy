@@ -31,11 +31,11 @@ subroutine utlicm(quantityName, &
 #include "asterfort/wkvect.h"
 !
     character(len=8), intent(in):: quantityName
-    integer, intent(in) :: cmpUserNb
+    integer(kind=8), intent(in) :: cmpUserNb
     character(len=8), pointer :: cmpUserName(:)
-    integer, intent(in) :: cmpCataNb
+    integer(kind=8), intent(in) :: cmpCataNb
     character(len=8), pointer :: cmpCataName(:)
-    integer, intent(out) :: cmpValidNb
+    integer(kind=8), intent(out) :: cmpValidNb
     character(len=*), intent(in) :: numcmp, ntncmp, ntucmp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,8 +57,8 @@ subroutine utlicm(quantityName, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, nivinf, iCmp
-    integer, pointer :: cmpIndx(:) => null()
+    integer(kind=8) :: ifm, nivinf, iCmp
+    integer(kind=8), pointer :: cmpIndx(:) => null()
     character(len=16), pointer :: cmpValidName(:) => null()
     character(len=16), pointer :: cmpValidUnit(:) => null()
 !

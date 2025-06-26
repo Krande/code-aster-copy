@@ -27,7 +27,7 @@ subroutine nmextf(keyw_fact, i_keyw_fact, type_extr_cmp)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keyw_fact
-    integer, intent(in) :: i_keyw_fact
+    integer(kind=8), intent(in) :: i_keyw_fact
     character(len=8), intent(out) :: type_extr_cmp
 !
 ! --------------------------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ subroutine elraca(elrefz, &
 #include "asterfort/elrfno.h"
 !
     character(len=*), intent(in)            :: elrefz
-    integer, optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
+    integer(kind=8), optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
     real(kind=8), optional, intent(out)     :: nodeCoor_(3*MT_NNOMAX), cellVolu_
     character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
 !
@@ -53,8 +53,8 @@ subroutine elraca(elrefz, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefa
-    integer :: i, deca
-    integer :: ndim, nno, nnos, nbfpg, nbpg(MT_NBFAMX)
+    integer(kind=8) :: i, deca
+    integer(kind=8) :: ndim, nno, nnos, nbfpg, nbpg(MT_NBFAMX)
     character(len=8) :: fapg(MT_NBFAMX)
     real(kind=8) :: coorno(3, MT_NNOMAX), nodeCoor(3*MT_NNOMAX), cellVolu
 !

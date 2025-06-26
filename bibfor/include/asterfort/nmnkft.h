@@ -19,6 +19,6 @@
 interface
     subroutine nmnkft(solver, sddisc, iterat_)
         character(len=19), intent(in) :: solver, sddisc
-        integer, optional, intent(in) :: iterat_
+        integer(kind=8), optional, intent(in) :: iterat_
     end subroutine nmnkft
 end interface

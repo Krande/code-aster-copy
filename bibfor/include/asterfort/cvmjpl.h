@@ -23,11 +23,11 @@ interface
                       epsd, deps, sigf, vinf, sigd,&
                       vind, nvi, nr, dsde)
         common/tdim/ ndt,ndi
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
-        integer :: nvi
-        integer :: nmat
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: timed

@@ -22,6 +22,6 @@ interface
     subroutine cfecrd(resoco, questz, ival)
         character(len=24) :: resoco
         character(len=*) :: questz
-        integer :: ival
+        integer(kind=8) :: ival
     end subroutine cfecrd
 end interface

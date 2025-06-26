@@ -20,7 +20,7 @@
 !
 interface
     function det_mat(ndim,m)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: m(ndim,ndim)
         real(kind=8) :: det_mat
     end function det_mat

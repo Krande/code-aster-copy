@@ -42,7 +42,7 @@ subroutine carc_chck(prepMapCarcri)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iFactorKeyword, nbFactorKeyword
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword
     aster_logical :: l_mfront_proto, l_mfront_offi, l_umat, lProtoAQ
     character(len=16) :: rela_comp
 !

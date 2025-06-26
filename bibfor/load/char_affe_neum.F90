@@ -31,11 +31,11 @@ subroutine char_affe_neum(model, mesh, ndim, &
 #include "asterfort/vetyma.h"
 !
     character(len=8), intent(in) :: model, mesh
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc, nbMap
+    integer(kind=8), intent(in) :: iocc, nbMap
     character(len=19), intent(in) :: map(nbMap)
-    integer, intent(in) :: nbCmp(nbMap)
+    integer(kind=8), intent(in) :: nbCmp(nbMap)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,9 +57,9 @@ subroutine char_affe_neum(model, mesh, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24), parameter:: listCell = '&&LIST_ELEM'
-    integer, pointer :: cellNume(:) => null()
-    integer :: nbCell
-    integer :: iMap
+    integer(kind=8), pointer :: cellNume(:) => null()
+    integer(kind=8) :: nbCell
+    integer(kind=8) :: iMap
 !
 ! --------------------------------------------------------------------------------------------------
 !

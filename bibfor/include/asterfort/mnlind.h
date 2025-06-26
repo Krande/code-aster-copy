@@ -20,10 +20,10 @@
 !
 interface 
     subroutine mnlind(n, deb, cle, vect, ind)
-        integer :: n
-        integer :: deb
+        integer(kind=8) :: n
+        integer(kind=8) :: deb
         real(kind=8) :: cle
         real(kind=8) :: vect(n)
-        integer :: ind
+        integer(kind=8) :: ind
     end subroutine mnlind
 end interface 

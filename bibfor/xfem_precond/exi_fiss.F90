@@ -36,7 +36,7 @@ function exi_fiss(model)
 !
     character(len=8) :: nomfis
     character(len=16) :: typdis
-    integer :: jmofis, jnfiss, nfiss, ifiss, iret
+    integer(kind=8) :: jmofis, jnfiss, nfiss, ifiss, iret
 !---------------------------------------------------------------------
 !
 !

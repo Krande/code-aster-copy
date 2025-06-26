@@ -41,7 +41,7 @@ subroutine srd2de(devsig, d2dets)
     !!! Variables locales
     !!!
 
-    integer :: ndi, ndt
+    integer(kind=8) :: ndi, ndt
     real(kind=8) :: r2
     common/tdim/ndt, ndi
 

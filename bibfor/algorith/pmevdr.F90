@@ -30,7 +30,7 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
 !
     aster_logical :: itemax, conver
     character(len=19) :: sddisc, tabinc(*)
-    integer :: liccvg(*), actite
+    integer(kind=8) :: liccvg(*), actite
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,11 +64,11 @@ subroutine pmevdr(sddisc, tabinc, liccvg, itemax, conver, &
 !
 !
 !
-    integer :: ifm, niv
-    integer :: faccvg, ldccvg, numins
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: faccvg, ldccvg, numins
     aster_logical :: lerror, lsvimx, ldvres, linsta, lcritl, lresmx
     character(len=24) :: k24bla
-    integer :: ievdac
+    integer(kind=8) :: ievdac
 !
 ! ----------------------------------------------------------------------
 !

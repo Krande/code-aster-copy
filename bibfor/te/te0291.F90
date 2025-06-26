@@ -41,9 +41,9 @@ subroutine te0291(option, nomte)
 !
 !
 !
-    integer :: nno, kp, npg1, i, k, nnos, jgano, ndim
-    integer :: ipoids, ivf, idfde, igeom, niv, nbcmp
-    integer :: ierr, imate, isigm, isigno, mater
+    integer(kind=8) :: nno, kp, npg1, i, k, nnos, jgano, ndim
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, niv, nbcmp
+    integer(kind=8) :: ierr, imate, isigm, isigno, mater
 !
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), poids, valres(2)
     real(kind=8) :: sigl11, sigl22, sigl33, sigl12, sigl13, sigl23
@@ -51,7 +51,7 @@ subroutine te0291(option, nomte)
     real(kind=8) :: esig11, esig22, esig33, esig12, esig13, esig23
     real(kind=8) :: e, nu, eest, nor, norsig, nu0, he, r
 !
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=4) :: fami
     character(len=16) :: nomres(2)
 !

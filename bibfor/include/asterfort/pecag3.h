@@ -23,12 +23,12 @@
 interface
     subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                       nbmail, noment, valpar)
-        integer :: ndim
+        integer(kind=8) :: ndim
         aster_logical :: nsymx
         aster_logical :: nsymy
         character(len=*) :: noma
         character(len=*) :: motcle
-        integer :: nbmail
+        integer(kind=8) :: nbmail
         character(len=*) :: noment(*)
         real(kind=8) :: valpar(*)
     end subroutine pecag3

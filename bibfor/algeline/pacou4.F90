@@ -23,14 +23,14 @@ subroutine pacou4(a, n, c, d, sing)
 ! ---------
 #include "asterf_types.h"
 #include "jeveux.h"
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: a(n, *), c(*), d(*)
     aster_logical :: sing
 !
 ! --------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: scale, sigma, sum, tau
 !-----------------------------------------------------------------------
     sing = .false.

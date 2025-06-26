@@ -29,7 +29,7 @@ subroutine utpvlg(nn, nc, p, vl, vg)
 !OUT  R   VG   NN*NC COMPOSANTES DU VECTEUR DANS GLOBAL
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, nc, nn
+    integer(kind=8) :: i, nc, nn
 !-----------------------------------------------------------------------
     if (mod(nc, 3) .eq. 0) then
         do i = 1, nn*nc, 3

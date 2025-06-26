@@ -78,15 +78,15 @@ subroutine vefpme(stop, &
     character(len=24) :: lchin(LOAD_NEUM_NBMAXIN)
     aster_logical, parameter :: applyPilo = ASTER_TRUE
     aster_logical :: applySuiv
-    integer :: nbLoad, iLoad, loadNume, nbFieldInGene
-    integer :: nharm
+    integer(kind=8) :: nbLoad, iLoad, loadNume, nbFieldInGene
+    integer(kind=8) :: nharm
     real(kind=8) :: timePrev, timeCurr, timeTheta
     character(len=8) :: loadName, model
     character(len=13) :: loadPreObject
     character(len=24) :: ligrelCalc, loadLigrel
     character(len=24) :: vectElem, resuElem
     character(len=24), pointer :: listLoadName(:) => null()
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     aster_logical :: noLoadInList
     character(len=1) :: jvBase
     character(len=24) :: varcCurr

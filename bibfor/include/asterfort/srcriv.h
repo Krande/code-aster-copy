@@ -20,7 +20,7 @@
 !
 interface
     subroutine srcriv(vintr, invar, s, nbmat, mater, tmp, ucriv, seuil)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: vintr
         real(kind=8) :: invar
         real(kind=8) :: s(6)

@@ -85,18 +85,18 @@ subroutine op0091()
     character(len=14) :: nume14
     character(len=19) :: imped, nume91, solveu, nompar(4), typpar(4)
     character(len=24) :: indin1, indin2, lino1, lino2, tramo1, tramo2
-    integer :: i1, l1, ibid, lmodge, lresge, nblia, lllia, iret, nbsst
-    integer :: j1, k1, imast1, imast2, nbeq1, nbeq2, ddla1, ddla2, nbmod, lnosst
-    integer :: lnusst, isst1, nl, nc, nbddl1, tach1, nbexp, lomeg, lmod1, lmass
-    integer :: lbid, ltrsst, nbsla, lraid, leff1, leff2, ltrain, lintf, nbint
-    integer :: lcopy1, lsecme, limped, unit, lmasst, nbmas, lslast, nindep, jadr
-    integer :: ltramo, kk1, ll1
+    integer(kind=8) :: i1, l1, ibid, lmodge, lresge, nblia, lllia, iret, nbsst
+    integer(kind=8) :: j1, k1, imast1, imast2, nbeq1, nbeq2, ddla1, ddla2, nbmod, lnosst
+    integer(kind=8) :: lnusst, isst1, nl, nc, nbddl1, tach1, nbexp, lomeg, lmod1, lmass
+    integer(kind=8) :: lbid, ltrsst, nbsla, lraid, leff1, leff2, ltrain, lintf, nbint
+    integer(kind=8) :: lcopy1, lsecme, limped, unit, lmasst, nbmas, lslast, nindep, jadr
+    integer(kind=8) :: ltramo, kk1, ll1
     real(kind=8) :: trvint, rbid, vr(2), temp
     complex(kind=8) :: cbid
     character(len=24) :: lisint, modet
     real(kind=8), pointer :: vec_obs_temp_ro(:) => null()
     real(kind=8), pointer :: matr_rotation(:) => null()
-    integer, pointer :: lipr(:) => null()
+    integer(kind=8), pointer :: lipr(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
     cbid = (0.d0, 0.d0)

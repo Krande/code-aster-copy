@@ -22,8 +22,8 @@ interface
                       nosy, nbcmpg, cmpg, paraInNb, paraInName,&
                       nbordr, ordr, nbdisc, disc, nume,&
                       lhist)
-        integer :: iocc, nbcmpg, nbnosy, cmpg(*), nbordr, nbdisc, ordr(*), nume(*)
-        integer, intent(in) :: paraInNb, fileUnit
+        integer(kind=8) :: iocc, nbcmpg, nbnosy, cmpg(*), nbordr, nbdisc, ordr(*), nume(*)
+        integer(kind=8), intent(in) :: paraInNb, fileUnit
         character(len=*), intent(out) :: resultName
         character(len=*), intent(in) :: paraInName(*), fileFormat
         real(kind=8) :: disc(*)

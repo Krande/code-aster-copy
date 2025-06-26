@@ -19,7 +19,7 @@
 subroutine xveri0(ndime, elrefp, ksi, iret)
     implicit none
     character(len=8) :: elrefp
-    integer :: iret, ndime
+    integer(kind=8) :: iret, ndime
     real(kind=8) :: ksi(*)
 !
 !     BUT: VERIFIER SI LES COORDONNEES DE REFERENCE CALCULEES
@@ -33,7 +33,7 @@ subroutine xveri0(ndime, elrefp, ksi, iret)
 !        IRET  : CODE RETOUR : SI IRET = 0 ALORS OK
 !                                      > 0 ALORS NOOK
 !----------------------------------------------------------------------
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: plan, tole, zero, one
     parameter(tole=1.d-12)
 !INTRODUCTION D UNE TOLERENCE GEOMETRIQUE POUR CAPTER LES POINTS SUR LE BORD DE L ELEMENT

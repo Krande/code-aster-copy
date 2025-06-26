@@ -22,7 +22,7 @@ interface
                       hval_veasse, cndonn)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19), intent(in) :: sddyna

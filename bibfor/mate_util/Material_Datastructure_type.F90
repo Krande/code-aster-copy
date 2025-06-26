@@ -43,7 +43,7 @@ module Material_Datastructure_type
 
 ! - Type: external state variable
     type Mat_DS_VarcAffe
-        integer               :: indx_cata
+        integer(kind=8)               :: indx_cata
         real(kind=8)          :: vale_refe
         character(len=16)     :: vale_phys_para
         character(len=8)      :: evol
@@ -52,15 +52,15 @@ module Material_Datastructure_type
         character(len=16)     :: evol_prol_r
         character(len=8)      :: evol_func
         aster_logical         :: l_affe_tout
-        integer, pointer      :: v_elem(:)
-        integer               :: nb_elem
+        integer(kind=8), pointer      :: v_elem(:)
+        integer(kind=8)               :: nb_elem
     end type Mat_DS_VarcAffe
 
 ! - Type: external state variable
     type Mat_DS_VarcCata
         character(len=8)               :: name
         character(len=8)               :: type_phys_para
-        integer                        :: nb_cmp
+        integer(kind=8)                        :: nb_cmp
         character(len=16)              :: field_type_def
         type(Mat_DS_VarcComp), pointer :: list_cmp(:)
     end type Mat_DS_VarcCata
@@ -68,15 +68,15 @@ module Material_Datastructure_type
 ! - Type: list of external state variables affected
     type Mat_DS_VarcListAffe
         type(Mat_DS_VarcAffe), pointer :: list_affe_varc(:)
-        integer                        :: nb_affe_varc
-        integer                        :: nb_varc_acti
-        integer                        :: nb_varc_cmp
+        integer(kind=8)                        :: nb_affe_varc
+        integer(kind=8)                        :: nb_varc_acti
+        integer(kind=8)                        :: nb_varc_cmp
     end type Mat_DS_VarcListAffe
 
 ! - Type: catalog of external state variables
     type Mat_DS_VarcListCata
         type(Mat_DS_VarcCata), pointer :: list_cata_varc(:)
-        integer                        :: nb_varc
+        integer(kind=8)                        :: nb_varc
     end type Mat_DS_VarcListCata
 !
 end module

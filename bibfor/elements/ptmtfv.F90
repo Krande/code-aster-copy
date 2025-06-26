@@ -27,7 +27,7 @@ subroutine ptmtfv(m, rho, e, rof, ce, &
 #include "asterc/r8pi.h"
 #include "asterfort/fun1.h"
 #include "asterfort/utmess.h"
-    integer :: itype, isect
+    integer(kind=8) :: itype, isect
     real(kind=8) :: m(*)
     real(kind=8) :: rho, e, rof, ce, a1, ai1, a2, ai2, xl, xiy1, xiy2, xiz1
     real(kind=8) :: xiz2
@@ -87,7 +87,7 @@ subroutine ptmtfv(m, rho, e, rof, ce, &
 !     FUN2     -
 !-----------------------------------------------------------------------
 !
-    integer :: ip(16), i
+    integer(kind=8) :: ip(16), i
     real(kind=8) :: as, se, r1, r2, zial, yial, xl2
     real(kind=8) :: asy, asy1, asy2, asz, asz1, asz2, phiy, phiz, phiy2, phiz2
     real(kind=8) :: xiy, xiz, cy, cz, vs, vf, rosf

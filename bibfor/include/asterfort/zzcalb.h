@@ -22,12 +22,12 @@ interface
     subroutine zzcalb(igr, iel, npg, nno, wi,&
                       desc, sig, x, y, xmin,&
                       xmax, ymin, ymax, f)
-        integer :: igr
-        integer :: iel
-        integer :: npg
-        integer :: nno
+        integer(kind=8) :: igr
+        integer(kind=8) :: iel
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
         real(kind=8) :: wi(1)
-        integer :: desc(1)
+        integer(kind=8) :: desc(1)
         real(kind=8) :: sig(1)
         real(kind=8) :: x(1)
         real(kind=8) :: y(1)

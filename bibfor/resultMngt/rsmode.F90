@@ -44,15 +44,15 @@ subroutine rsmode(resultZ)
 !
 !    IN/JXVAR : RESU  NOM DU CONCEPT SD_RESULTAT
 !-----------------------------------------------------------------------
-    integer :: iret, neq, numeStore, isymb, k, iStore
-    integer :: nbnosy, nbStore, iexi, nbval, jliprf, nbval2
+    integer(kind=8) :: iret, neq, numeStore, isymb, k, iStore
+    integer(kind=8) :: nbnosy, nbStore, iexi, nbval, jliprf, nbval2
     character(len=1) :: kbid, typ1
     character(len=8) :: result8, nomgd, ma1, fieldMesh
     character(len=19) :: result19
     character(len=14) :: numeDof
     character(len=16) :: fieldType
     character(len=19) :: fieldNumeEqua, champt, fieldName, numeEqua
-    integer, pointer :: listStore(:) => null()
+    integer(kind=8), pointer :: listStore(:) => null()
 !-----------------------------------------------------------------------
 !
 !

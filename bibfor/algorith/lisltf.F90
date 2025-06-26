@@ -26,7 +26,7 @@ subroutine lisltf(lischa, ichar, typfct)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
-    integer :: ichar
+    integer(kind=8) :: ichar
     character(len=16) :: typfct
 !
 ! ----------------------------------------------------------------------
@@ -50,8 +50,8 @@ subroutine lisltf(lischa, ichar, typfct)
 !
 !
     character(len=24) :: typfon
-    integer :: jtfon
-    integer :: nbchar
+    integer(kind=8) :: jtfon
+    integer(kind=8) :: nbchar
 !
 ! ----------------------------------------------------------------------
 !

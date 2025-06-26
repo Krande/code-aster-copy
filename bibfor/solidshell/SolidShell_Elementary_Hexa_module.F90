@@ -86,7 +86,7 @@ contains
         type(SSH_KINE_HEXA) :: kineHexa
         type(SSH_STAB_HEXA) :: stabHexa
         real(kind=8) :: zeta, poids, jacob, Ueff
-        integer :: nbIntePoint, kpg, jvCoor, jvWeight
+        integer(kind=8) :: nbIntePoint, kpg, jvCoor, jvWeight
         real(kind=8) :: tBDB(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -167,7 +167,7 @@ contains
         type(SSH_GEOM_HEXA) :: geomHexa
         type(SSH_KINE_HEXA) :: kineHexa
         real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
-        integer :: nbIntePoint, kpg, jvCoor
+        integer(kind=8) :: nbIntePoint, kpg, jvCoor
         character(len=16), parameter :: option = 'EPVC_ELGA'
         real(kind=8) :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS)
 !   ------------------------------------------------------------------------------------------------
@@ -237,7 +237,7 @@ contains
         type(SSH_GEOM_HEXA) :: geomHexa
         type(SSH_KINE_HEXA) :: kineHexa
         real(kind=8) :: disp(SSH_NBDOF_HEXA)
-        integer :: jvCompor, jvDisp, iretc, iDof
+        integer(kind=8) :: jvCompor, jvDisp, iretc, iDof
         character(len=16) :: defoComp
 !   ------------------------------------------------------------------------------------------------
 !
@@ -297,7 +297,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Local
         real(kind=8) :: zeta, poids, jacob
-        integer :: nbIntePoint, kpg, jvCoor, jvWeight
+        integer(kind=8) :: nbIntePoint, kpg, jvCoor, jvWeight
 !   ------------------------------------------------------------------------------------------------
 !
         nbIntePoint = elemProp%elemInte%nbIntePoint
@@ -347,8 +347,8 @@ contains
         real(kind=8), intent(out)       :: matrGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 ! - Local
-        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-        integer :: iNodeGeom, jNodeGeom
+        integer(kind=8), parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer(kind=8) :: iNodeGeom, jNodeGeom
         real(kind=8) :: const(SSH_SIZE_TENS)
         real(kind=8) :: GCova0(SSH_SIZE_TENS), GCovaZETA(SSH_SIZE_TENS)
         real(kind=8) :: GCovaZETAZETA(SSH_SIZE_TENS)
@@ -421,7 +421,7 @@ contains
         type(SSH_GEOM_HEXA) :: geomHexa
         type(SSH_KINE_HEXA) :: kineHexa
         real(kind=8) :: zeta, epsi(SSH_SIZE_TENS)
-        integer :: nbIntePoint, kpg, jvCoor
+        integer(kind=8) :: nbIntePoint, kpg, jvCoor
 !   ------------------------------------------------------------------------------------------------
 !
         nbIntePoint = elemProp%elemInte%nbIntePoint
@@ -482,7 +482,7 @@ contains
         type(SSH_KINE_HEXA) :: kineHexa
         type(SSH_EPSG_HEXA) :: epsgHexa
         real(kind=8) :: zeta
-        integer :: nbIntePoint, kpg, jvCoor
+        integer(kind=8) :: nbIntePoint, kpg, jvCoor
 !   ------------------------------------------------------------------------------------------------
 !
         nbIntePoint = elemProp%elemInte%nbIntePoint
@@ -538,7 +538,7 @@ contains
         type(SSH_EPSG_HEXA) :: epsgHexa
         type(SSH_EPSL_HEXA) :: epslHexa
         real(kind=8) :: zeta
-        integer :: cod, nbIntePoint, kpg, jvCoor
+        integer(kind=8) :: cod, nbIntePoint, kpg, jvCoor
 !   ------------------------------------------------------------------------------------------------
 !
         nbIntePoint = elemProp%elemInte%nbIntePoint
@@ -596,15 +596,15 @@ contains
         real(kind=8), intent(out)       :: loadNoda(SSH_NBDOF_MAX)
 ! - Local
         character(len=4) :: inteFami
-        integer, parameter :: nbNode = SSH_NBNODE_HEXA, nbNodeGeom = SSH_NBNODEG_HEXA
-        integer :: iNodeGeom, iDim, nbIntePoint, kpg, kdec, ldec, iret
-        integer :: jvPres, jvPesa, jvForc, jvTime
-        integer :: jvShape, jvDShape, jvWeight
+        integer(kind=8), parameter :: nbNode = SSH_NBNODE_HEXA, nbNodeGeom = SSH_NBNODEG_HEXA
+        integer(kind=8) :: iNodeGeom, iDim, nbIntePoint, kpg, kdec, ldec, iret
+        integer(kind=8) :: jvPres, jvPesa, jvForc, jvTime
+        integer(kind=8) :: jvShape, jvDShape, jvWeight
         real(kind=8) :: presSup, presInf, area, fx, fy, fz, xx, yy, zz
         real(kind=8) :: coefGrav, jacob
         real(kind=8) :: rho(1)
-        integer :: valeIret(1)
-        integer, parameter :: nbPara = 4
+        integer(kind=8) :: valeIret(1)
+        integer(kind=8), parameter :: nbPara = 4
         real(kind=8) :: paraVale(nbPara)
         character(len=8), parameter :: paraName(nbPara) = (/'X   ', 'Y   ', 'Z   ', 'INST'/)
 !   ------------------------------------------------------------------------------------------------
@@ -777,13 +777,13 @@ contains
         type(SSH_MATE_PARA), intent(in) :: matePara
         real(kind=8), intent(out)       :: matrMass(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 ! - Local
-        integer, parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
-        integer :: iNodeGeom, jNodeGeom
+        integer(kind=8), parameter :: nbNodeGeom = SSH_NBNODEG_HEXA
+        integer(kind=8) :: iNodeGeom, jNodeGeom
         real(kind=8) :: poids, jacob, XI(3)
         real(kind=8) :: rho(1), N(SSH_NBNODEG_HEXA), NPinch
-        integer :: valeIret(1)
+        integer(kind=8) :: valeIret(1)
         character(len=4) :: inteFami
-        integer :: nbIntePoint, kpg, jvCoor, jvWeight
+        integer(kind=8) :: nbIntePoint, kpg, jvCoor, jvWeight
         real(kind=8) :: matrMassPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -857,13 +857,13 @@ contains
 ! - Parameters
         type(SSH_ELEM_PROP), intent(in) :: elemProp
         type(SSH_CELL_GEOM), intent(in) :: cellGeom
-        integer, intent(in)             :: nbIntePoint
+        integer(kind=8), intent(in)             :: nbIntePoint
         real(kind=8), intent(in)        :: sigm(SSH_SIZE_TENS, nbIntePoint)
         real(kind=8), intent(out)       :: matrRigiGeom(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 ! - Local
         type(SSH_GEOM_HEXA) :: geomHexa
         real(kind=8) :: zeta, poids, jacob
-        integer :: kpg, jvCoor, jvWeight
+        integer(kind=8) :: kpg, jvCoor, jvWeight
         real(kind=8) :: matrRigiGeomPt(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -916,7 +916,7 @@ contains
         type(SSH_KINE_HEXA) :: kineHexa
         real(kind=8) :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
         real(kind=8) :: forcNoda(SSH_NBDOF_MAX)
-        integer :: iDof, iCmp, nbIntePoint
+        integer(kind=8) :: iDof, iCmp, nbIntePoint
 !   ------------------------------------------------------------------------------------------------
 !
         refeForcNoda = 0.d0
@@ -1017,8 +1017,8 @@ contains
         real(kind=8), intent(out)       :: siefElga(SSH_SIZE_TENS*SSH_NBPG_MAX)
 ! - Local
         character(len=4) :: inteFami
-        integer, parameter :: kspg = 1
-        integer :: nbIntePoint, kpg
+        integer(kind=8), parameter :: kspg = 1
+        integer(kind=8) :: nbIntePoint, kpg
         real(kind=8) :: epsiExteStatVari(SSH_SIZE_TENS), timeCurr
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1070,8 +1070,8 @@ contains
         real(kind=8), intent(out)       :: epvcElga(SSH_NBPG_MAX, SSH_SIZE_TENS)
 ! - Local
         character(len=4) :: inteFami
-        integer, parameter :: kspg = 1
-        integer :: nbIntePoint, kpg
+        integer(kind=8), parameter :: kspg = 1
+        integer(kind=8) :: nbIntePoint, kpg
         real(kind=8) :: epsiExteStatVari(SSH_SIZE_TENS), timeCurr
 !   ------------------------------------------------------------------------------------------------
 !

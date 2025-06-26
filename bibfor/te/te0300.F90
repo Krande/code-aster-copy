@@ -50,10 +50,10 @@ subroutine te0300(option, nomte)
 ! VECTEURS DIMENSIONNES POUR  NNO = 3 , NPG = 4
 !.......................................................................
 !
-    integer :: nno, nnos, jgano, ndim, npg, kp, compt, i, j, k
-    integer :: idepl, ific, ifond, iforc, imate, ipres, ithet
-    integer :: ipoids, ivf, idfdk, igeom, itemps
-    integer :: iforf, ipref, icode, ino, ind
+    integer(kind=8) :: nno, nnos, jgano, ndim, npg, kp, compt, i, j, k
+    integer(kind=8) :: idepl, ific, ifond, iforc, imate, ipres, ithet
+    integer(kind=8) :: ipoids, ivf, idfdk, igeom, itemps
+    integer(kind=8) :: iforf, ipref, icode, ino, ind
 !
     real(kind=8) :: depi, eps, valres(3), devres(3), valpar(3)
     real(kind=8) :: tcla, tcla1, tcla2, u1s(2), u2s(2), ux, uy
@@ -68,7 +68,7 @@ subroutine te0300(option, nomte)
     real(kind=8) :: fkpo(3, 3), ffp(9), mu, pt_ree(2), pt_loc(2)
     real(kind=8) :: xno1, xno2, yno1, yno2, d1, d2
 !
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=4) :: fami
     character(len=8) :: nompar(3), elrefe
     character(len=16) :: nomres(3)

@@ -23,6 +23,6 @@ interface
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: model
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: model_ndim
+        integer(kind=8), intent(in) :: model_ndim
     end subroutine caraxi
 end interface

@@ -75,8 +75,8 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/fointe.h"
-    integer :: noe(9, 6, 4), ifa, tymvol, iref1, iref2, ivois, igeom, isig
-    integer :: nbcmp, nnof
+    integer(kind=8) :: noe(9, 6, 4), ifa, tymvol, iref1, iref2, ivois, igeom, isig
+    integer(kind=8) :: nbcmp, nnof
     real(kind=8) :: inst
     real(kind=8) :: nx(9), ny(9), nz(9)
     real(kind=8) :: chx(9), chy(9), chz(9)
@@ -87,15 +87,15 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1, &
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: iaux
-    integer :: in
-    integer :: ier, ier1, ier2, ier3
+    integer(kind=8) :: iaux
+    integer(kind=8) :: in
+    integer(kind=8) :: ier, ier1, ier2, ier3
 !
 !     IMAV : NUMERO DE LA MAILLE SURFACIQUE A TRAITER
-    integer :: ino, imav
-    integer :: iagd, iacmp
-    integer :: iade1, iava1, iaptm1, igd1, ient1, ncmpm1, numgd1
-    integer :: iade2, iava2, iaptm2, igd2, ient2, ncmpm2, numgd2
+    integer(kind=8) :: ino, imav
+    integer(kind=8) :: iagd, iacmp
+    integer(kind=8) :: iade1, iava1, iaptm1, igd1, ient1, ncmpm1, numgd1
+    integer(kind=8) :: iade2, iava2, iaptm2, igd2, ient2, ncmpm2, numgd2
 !
     real(kind=8) :: pr, fx, fy, fz, valpar(4)
     real(kind=8) :: prc(9), fxc(9), fyc(9), fzc(9)

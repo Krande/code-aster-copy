@@ -31,11 +31,11 @@ subroutine trlds(a, nmax, nordre, ierr)
 !A    ---
 !A    TRIANGULATION EN PLACE DE LA MATRICE CARREE A
 #include "asterfort/iunifi.h"
-    integer :: nmax, nordre
+    integer(kind=8) :: nmax, nordre
     real(kind=8) :: a(nmax, nordre), r8val
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibm, ierr, ifm, in, jn
+    integer(kind=8) :: i, ibm, ierr, ifm, in, jn
 !-----------------------------------------------------------------------
     ierr = 0
     do in = 1, nordre

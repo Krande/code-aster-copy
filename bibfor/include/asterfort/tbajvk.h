@@ -21,7 +21,7 @@
 interface
     subroutine tbajvk(table, nbpara, nompar, vk, livk)
         character(len=*) :: table
-        integer :: nbpara
+        integer(kind=8) :: nbpara
         character(len=*) :: nompar
         character(len=*) :: vk
         character(len=*) :: livk(*)

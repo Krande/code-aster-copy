@@ -24,16 +24,16 @@ interface
     subroutine asmcyc(cmass, ndim, soumat, beta, ni,&
                       nj, na, axok, liax, nbliax,&
                       libid)
-        integer :: nbliax
+        integer(kind=8) :: nbliax
         complex(kind=8) :: cmass(*)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=24) :: soumat
         real(kind=8) :: beta
-        integer :: ni
-        integer :: nj
-        integer :: na
+        integer(kind=8) :: ni
+        integer(kind=8) :: nj
+        integer(kind=8) :: na
         aster_logical :: axok
-        integer :: liax(nbliax)
-        integer :: libid(*)
+        integer(kind=8) :: liax(nbliax)
+        integer(kind=8) :: libid(*)
     end subroutine asmcyc
 end interface

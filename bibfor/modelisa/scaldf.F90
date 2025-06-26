@@ -36,10 +36,10 @@ subroutine scaldf(nbfonc, nbp, nbmr, disc, vale, &
 !
 !
 #include "jeveux.h"
-    integer :: nbfonc, nbp, nbmr
+    integer(kind=8) :: nbfonc, nbp, nbmr
     real(kind=8) :: disc(nbp), vale(nbp, nbfonc), defm(nbp, nbmr)
     real(kind=8) :: b(nbfonc, nbmr)
-    integer :: ifo, imr, ip
+    integer(kind=8) :: ifo, imr, ip
     real(kind=8) :: dx, y1, y2, yy
 !-----------------------------------------------------------------------
 !

@@ -23,12 +23,12 @@ interface
                       noma2z, liso1z, liso2z, lonlis)
         character(len=*) :: lisi1z
         character(len=*) :: lisi2z
-        integer :: lonli1
-        integer :: lonli2
+        integer(kind=8) :: lonli1
+        integer(kind=8) :: lonli2
         character(len=*) :: noma1z
         character(len=*) :: noma2z
         character(len=*) :: liso1z
         character(len=*) :: liso2z
-        integer :: lonlis
+        integer(kind=8) :: lonlis
     end subroutine pacoa2
 end interface

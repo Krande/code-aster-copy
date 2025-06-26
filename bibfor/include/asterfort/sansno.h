@@ -26,7 +26,7 @@ interface
         character(len=24), intent(in) :: sans
         character(len=24), intent(in) :: psans
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_keyw
+        integer(kind=8), intent(in) :: nb_keyw
         character(len=16), intent(in) :: keyw_type(nb_keyw)
         character(len=16), intent(in) :: keyw_name(nb_keyw)
     end subroutine sansno

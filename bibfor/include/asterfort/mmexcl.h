@@ -23,10 +23,10 @@
 interface
     subroutine mmexcl(type_inte  , pair_type  , i_poin_elem, ndexfr,&
                       l_node_excl, l_excl_frot)
-        integer, intent(in) :: type_inte
-        integer, intent(in) :: pair_type
-        integer, intent(in) :: i_poin_elem
-        integer, intent(in) :: ndexfr
+        integer(kind=8), intent(in) :: type_inte
+        integer(kind=8), intent(in) :: pair_type
+        integer(kind=8), intent(in) :: i_poin_elem
+        integer(kind=8), intent(in) :: ndexfr
         aster_logical, intent(out) :: l_node_excl
         aster_logical, intent(out) :: l_excl_frot
     end subroutine mmexcl

@@ -56,14 +56,14 @@ subroutine arlgrm(mail, nomgrp, dime, ima, connex, loncum, &
 !     ----------
     character(len=19) :: nomgrp
     character(len=8) :: mail
-    integer :: ima, dime
-    integer :: connex(*), loncum(*)
-    integer :: nummai
+    integer(kind=8) :: ima, dime
+    integer(kind=8) :: connex(*), loncum(*)
+    integer(kind=8) :: nummai
     character(len=8) :: nommai
-    integer :: nbno, itypm
-    integer :: cxno(27)
+    integer(kind=8) :: nbno, itypm
+    integer(kind=8) :: cxno(27)
 !-----------------------------------------------------------------------
-    integer :: jgrp, jtyp, aima
+    integer(kind=8) :: jgrp, jtyp, aima
 !-----------------------------------------------------------------------
 
     call jemarq()

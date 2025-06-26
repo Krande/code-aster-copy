@@ -22,13 +22,13 @@ interface
     subroutine lcmmkg(zinv, nvi, vind, vinf, nmat,&
                       materf, mod, nr, dsde)
         real(kind=8) :: zinv(6, 6)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(*)
         character(len=8) :: mod
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: dsde(6, 3, 3)
     end subroutine lcmmkg
 end interface

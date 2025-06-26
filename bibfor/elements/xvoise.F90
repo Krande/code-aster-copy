@@ -20,10 +20,10 @@ subroutine xvoise(nnotot, nse, nnop, nno, jcnset, &
                   cninv, cvoise)
     implicit none
 #include "jeveux.h"
-    integer :: nvois
+    integer(kind=8) :: nvois
     parameter(nvois=3)
-    integer :: nnotot, nse, nnop, nno, jcnset
-    integer :: cninv(nnotot, nse+1), cvoise(nvois, nse)
+    integer(kind=8) :: nnotot, nse, nnop, nno, jcnset
+    integer(kind=8) :: cninv(nnotot, nse+1), cvoise(nvois, nse)
 !
 !     BUT:
 !         RECHERCHE DES VOISINS DES SOUS ELEMENTS DE
@@ -53,9 +53,9 @@ subroutine xvoise(nnotot, nse, nnop, nno, jcnset, &
 !
 !
 !
-    integer :: nbmav1, nbmav2
-    integer :: ise, in, ino, jno, imav1, numav1, indma1
-    integer :: insui, inosui, jnosui, imav2, numav2, indma2
+    integer(kind=8) :: nbmav1, nbmav2
+    integer(kind=8) :: ise, in, ino, jno, imav1, numav1, indma1
+    integer(kind=8) :: insui, inosui, jnosui, imav2, numav2, indma2
 !
 ! ----------------------------------------------------------------------
 ! -----------------  BOUCLE SUR LES NSE SIMPLEXES  ------------------

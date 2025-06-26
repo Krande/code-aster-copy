@@ -23,9 +23,9 @@ interface
                       timef, yf, deps, nr, nvi,&
                       vind, vinf, yd, dy, crit,&
                       drdy, iret)
-        integer :: nvi
-        integer :: nr
-        integer :: nmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: coefel(nmat)
         real(kind=8) :: coeft(nmat)
@@ -39,6 +39,6 @@ interface
         real(kind=8) :: dy(nr)
         real(kind=8) :: crit(*)
         real(kind=8) :: drdy(nr, nr)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine hayjac
 end interface

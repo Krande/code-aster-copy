@@ -21,7 +21,7 @@
 interface
     subroutine matinv(stop, ndim, mat, inv, det)
         character(len=1), intent(in) :: stop
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: mat(ndim, ndim)
         real(kind=8), intent(out) :: inv(ndim, ndim)
         real(kind=8), intent(out) :: det

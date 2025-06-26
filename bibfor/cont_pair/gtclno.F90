@@ -26,11 +26,11 @@ subroutine gtclno(jv_geom, list_node, nb_node, testnode, nume_node_cl)
 !
 !
 
-    integer, intent(in) :: jv_geom
-    integer, pointer :: list_node(:)
-    integer, intent(in) :: nb_node
+    integer(kind=8), intent(in) :: jv_geom
+    integer(kind=8), pointer :: list_node(:)
+    integer(kind=8), intent(in) :: nb_node
     real(kind=8), intent(in) :: testnode(3)
-    integer, intent(out) :: nume_node_cl
+    integer(kind=8), intent(out) :: nume_node_cl
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ subroutine gtclno(jv_geom, list_node, nb_node, testnode, nume_node_cl)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: i_dime, i_node, node_nume
+    integer(kind=8)      :: i_dime, i_node, node_nume
     real(kind=8) :: vect_pm(3), dist_min, dist
 
 !

@@ -19,8 +19,8 @@
 interface
     subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: i_adap
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: i_adap
+        integer(kind=8), intent(in) :: nume_inst
         character(len=19), intent(in) :: hval_incr(*)
         real(kind=8), intent(out) :: dtp
     end subroutine nmcadt

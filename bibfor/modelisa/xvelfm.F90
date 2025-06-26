@@ -28,7 +28,7 @@ subroutine xvelfm(nb_cracks, cracks, model_xfem)
 !
 !
     character(len=8), intent(in) :: model_xfem
-    integer, intent(in) :: nb_cracks
+    integer(kind=8), intent(in) :: nb_cracks
     character(len=8), intent(in) :: cracks(nb_cracks)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine xvelfm(nb_cracks, cracks, model_xfem)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_crack, iret
+    integer(kind=8) :: i_crack, iret
     aster_logical :: ltrouv
     character(len=8) :: valk(2)
     character(len=16) :: typdis

@@ -23,9 +23,9 @@ interface
                     pres_cont_curr,pres_cont_prev)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        integer, intent(in) :: i_cont_poin
-        integer, intent(in) :: indi_cont_eval
-        integer, intent(in) :: indi_cont_prev
+        integer(kind=8), intent(in) :: i_cont_poin
+        integer(kind=8), intent(in) :: indi_cont_eval
+        integer(kind=8), intent(in) :: indi_cont_prev
         real(kind=8), intent(in) :: pres_cont_curr
         real(kind=8), intent(in) :: pres_cont_prev
     end subroutine mm_cycl_d4

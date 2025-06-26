@@ -24,6 +24,6 @@ interface
         character(len=*) :: ligrel
         character(len=24) :: chvois
         character(len=24) :: cvoisx
-        integer :: tabido(5)
+        integer(kind=8) :: tabido(5)
     end subroutine reslo2
 end interface

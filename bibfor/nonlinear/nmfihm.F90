@@ -39,8 +39,8 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
 #include "asterfort/gedisc.h"
 #include "asterfort/nmcomp.h"
 !
-    integer :: ndim, mate, npg, ipg, idf2, lgpg, nno1, nno2, nddl, iu(3, 16)
-    integer :: ip(8)
+    integer(kind=8) :: ndim, mate, npg, ipg, idf2, lgpg, nno1, nno2, nddl, iu(3, 16)
+    integer(kind=8) :: ip(8)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), dffr2(ndim-1, nno2, npg)
     real(kind=8) :: wref(npg), geom(ndim, nno2), ddlm(nddl), ddld(nddl), tm, tp
     real(kind=8) :: sigm(2*ndim-1, npg), sigp(2*ndim-1, npg)
@@ -51,7 +51,7 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     character(len=8), intent(in) :: typmod(2)
     aster_logical, intent(in) :: lSigm, lVect, lMatr
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -96,9 +96,9 @@ subroutine nmfihm(ndim, nddl, nno1, nno2, npg, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=4), parameter :: fami = "RIGI"
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     aster_logical :: axi, ifhyme
-    integer :: i, j, kk, m, n, os, p, q, kpg, cod(npg)
+    integer(kind=8) :: i, j, kk, m, n, os, p, q, kpg, cod(npg)
     real(kind=8) :: dsidep(6, 6), b(2*ndim-1, ndim+1, 2*nno1+nno2)
     real(kind=8) :: sigmo(6), sigma(6), epsm(6), deps(6), wg
     real(kind=8) :: coopg(ndim+1, npg), rot(ndim*ndim)

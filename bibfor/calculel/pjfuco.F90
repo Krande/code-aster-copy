@@ -48,10 +48,10 @@ subroutine pjfuco(c1, c2, base, c3)
 !
     character(len=8) :: ma1, ma2
     character(len=24) :: valk(2)
-    integer :: i1, i2, i3, j1, j2, j3, k
-    integer :: ino2, deca1, deca2, deca3, nbno, lont, nbno2
-    integer :: i1nb, i2nb, i3nb, i1nu, i2nu, i3nu, i1cf, i2cf, i3cf, i1ou2
-    integer, pointer :: tmp1(:) => null()
+    integer(kind=8) :: i1, i2, i3, j1, j2, j3, k
+    integer(kind=8) :: ino2, deca1, deca2, deca3, nbno, lont, nbno2
+    integer(kind=8) :: i1nb, i2nb, i3nb, i1nu, i2nu, i3nu, i1cf, i2cf, i3cf, i1ou2
+    integer(kind=8), pointer :: tmp1(:) => null()
 !
 !
 !

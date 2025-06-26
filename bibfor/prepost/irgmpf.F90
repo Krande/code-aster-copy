@@ -18,7 +18,7 @@
 
 subroutine irgmpf(ifi, versio)
     implicit none
-    integer :: ifi, versio
+    integer(kind=8) :: ifi, versio
 !
 !     BUT :   ECRITURE D'UN RESULTAT AU FORMAT GMSH
 !

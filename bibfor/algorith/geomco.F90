@@ -44,7 +44,7 @@ subroutine geomco(noma, ds_contact, depplu)
 ! IN  DEPPLU : CHAMP DE DEPLACEMENTS A L'ITERATION DE NEWTON PRECEDENTE
 !
     character(len=19) :: oldgeo, newgeo
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !

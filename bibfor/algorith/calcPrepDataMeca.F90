@@ -85,7 +85,7 @@ subroutine calcPrepDataMeca(modelZ, materFieldZ, matecoZ, caraElemZ, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=19) :: disp_curr, varc_prev, varc_curr, sigm_curr, vari_curr, modelLigrel
     character(len=19) :: merigi, veinte
     character(len=24) :: varc_refe

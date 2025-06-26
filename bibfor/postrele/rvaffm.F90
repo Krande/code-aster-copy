@@ -30,7 +30,7 @@ subroutine rvaffm(mcf, iocc, sdlieu, sdeval, sdmoy, &
 #include "asterfort/jexnum.h"
 #include "asterfort/rvinfa.h"
 #include "asterfort/rvtamo.h"
-    integer :: i1, iocc, isd
+    integer(kind=8) :: i1, iocc, isd
     character(len=16) :: ncheff, oper
     character(len=19) :: sdeval
     character(len=24) :: sdlieu, sdmoy, xnovar
@@ -44,8 +44,8 @@ subroutine rvaffm(mcf, iocc, sdlieu, sdeval, sdmoy, &
 ! IN  QUANT  : K : NOM DE LA QUANTITE TRAITEE
 ! IN  OPTION : K : NOM DE L' OPTION   TRAITEE
 !     ------------------------------------------------------------------
-    integer :: anocp, nbcp, ioc, aabsc, nbpt, nboc, asdmo
-    integer :: i, ifm, anomnd, nbco, nbsp, k, niv
+    integer(kind=8) :: anocp, nbcp, ioc, aabsc, nbpt, nboc, asdmo
+    integer(kind=8) :: i, ifm, anomnd, nbco, nbsp, k, niv
     real(kind=8) ::  s1, s2
     character(len=4) :: docul
     character(len=24) :: nabsc, nnocp

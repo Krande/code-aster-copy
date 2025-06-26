@@ -21,13 +21,13 @@
 interface
     subroutine folocx(vale, n, x, prolgd, i,&
                       epsi, coli, ier)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: vale(n)
         real(kind=8) :: x
         character(len=*) :: prolgd
-        integer :: i
+        integer(kind=8) :: i
         real(kind=8) :: epsi
         character(len=1) :: coli
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine folocx
 end interface

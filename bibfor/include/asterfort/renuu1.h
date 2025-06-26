@@ -21,11 +21,11 @@
 interface
     subroutine renuu1(coin, longi, ordo, longo, nbco,&
                       newn)
-        integer :: coin(*)
-        integer :: longi
-        integer :: ordo(*)
-        integer :: longo
-        integer :: nbco(*)
-        integer :: newn(*)
+        integer(kind=8) :: coin(*)
+        integer(kind=8) :: longi
+        integer(kind=8) :: ordo(*)
+        integer(kind=8) :: longo
+        integer(kind=8) :: nbco(*)
+        integer(kind=8) :: newn(*)
     end subroutine renuu1
 end interface

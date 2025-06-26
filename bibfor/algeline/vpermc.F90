@@ -26,7 +26,7 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr, &
 #include "asterfort/mcmult.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: lmasse, lraide, nbprop, excl(*)
+    integer(kind=8) :: lmasse, lraide, nbprop, excl(*)
     complex(kind=8) :: vecp(*)
     real(kind=8) :: fr(*), am(*), omecor, ernorm(*)
 !     CALCUL DE LA NORME D'ERREUR MODALE
@@ -55,7 +55,7 @@ subroutine vpermc(lmasse, lraide, nbprop, vecp, fr, &
     real(kind=8) :: valr
     real(kind=8) :: ami, fri
     complex(kind=8) :: freq2, anorm1, anorm2
-    integer :: iaux1, iaux2, iaux4, i, j, ivec, neq
+    integer(kind=8) :: iaux1, iaux2, iaux4, i, j, ivec, neq
 !
 !     ------------------------------------------------------------------
 !

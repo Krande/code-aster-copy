@@ -24,28 +24,28 @@ interface
                       basloc, nnop, npg, idecpg, typmod,&
                       imate, idepl, lsn, lst,&
                       nfiss, heavn, jstno, sig)
-        integer :: nfiss
-        integer :: npg
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: npg
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         real(kind=8) :: coorse(*)
         character(len=8) :: elrese
-        integer :: igeom
+        integer(kind=8) :: igeom
         real(kind=8) :: he(nfiss)
-        integer :: nfh
-        integer :: ddlc
-        integer :: ddlm
-        integer :: nfe
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nfe
         real(kind=8) :: basloc(6*nnop)
-        integer :: idecpg
+        integer(kind=8) :: idecpg
         character(len=8) :: typmod(*)
-        integer :: imate
-        integer :: idepl
+        integer(kind=8) :: imate
+        integer(kind=8) :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: heavn(nnop, 5)
-        integer :: jstno
+        integer(kind=8) :: heavn(nnop, 5)
+        integer(kind=8) :: jstno
         real(kind=8) :: sig(4, npg)
     end subroutine xside2
 end interface

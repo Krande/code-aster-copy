@@ -68,20 +68,20 @@ subroutine cynupl(nume_equa, indirf, modcyc, mailsk, nbsec)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, icomp, iec, ieq, ier, i_ligr_mesh, i_ligr_link
-    integer :: ipoint, j, lddeeq, ldnueq, ldprno, linueq
-    integer ::   llprno, ltinse, lttds, nbcmp, nbcpmx
-    integer :: nbddl, nbnot, nbsec, nddlt, neqsec, nsecpr
-    integer :: ntail, nugd, numnos, numsec
+    integer(kind=8) :: i, iad, icomp, iec, ieq, ier, i_ligr_mesh, i_ligr_link
+    integer(kind=8) :: ipoint, j, lddeeq, ldnueq, ldprno, linueq
+    integer(kind=8) ::   llprno, ltinse, lttds, nbcmp, nbcpmx
+    integer(kind=8) :: nbddl, nbnot, nbsec, nddlt, neqsec, nsecpr
+    integer(kind=8) :: ntail, nugd, numnos, numsec
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     character(len=6) :: pgc
     character(len=8) :: modcyc, mailsk, nomgd
     character(len=19) :: nume_equa_sec, nume_equa, chamno
     character(len=24) :: indirf, lili, prno, deeq, nueq
-    integer :: idec(nbcpmx), nec
-    integer, pointer :: skeleton(:) => null()
-    integer, pointer :: vnueq(:) => null()
+    integer(kind=8) :: idec(nbcpmx), nec
+    integer(kind=8), pointer :: skeleton(:) => null()
+    integer(kind=8), pointer :: vnueq(:) => null()
 !
 !-----------------------------------------------------------------------
 !

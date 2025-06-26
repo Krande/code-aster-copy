@@ -26,7 +26,7 @@ function int_to_char8(to_convert, lcolle, nommai, typent)
 #include "asterfort/jexnum.h"
 #include "asterc/int_to_string_conversion.h"
 !
-    integer, intent(in) :: to_convert
+    integer(kind=8), intent(in) :: to_convert
     aster_logical, optional, intent(in) :: lcolle
     character(len=8), optional, intent(in) :: nommai
     character(len=*), optional, intent(in) :: typent

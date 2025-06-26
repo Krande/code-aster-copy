@@ -21,6 +21,6 @@
 interface
     subroutine rvmima(nomres, iocc)
         character(len=*) :: nomres
-        integer :: iocc
+        integer(kind=8) :: iocc
     end subroutine rvmima
 end interface

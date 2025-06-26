@@ -47,13 +47,13 @@ subroutine maskmn(nbcmp, nbno, nbec, mcoddl, imask, &
 !-----------------------------------------------------------------------
 #include "asterfort/isdeco.h"
 #include "asterfort/isgeco.h"
-    integer :: i, iec, iexcmp, j, nbcmp, nbcpmx, nbdef
-    integer :: nbec, nbecmx, nbno
+    integer(kind=8) :: i, iec, iexcmp, j, nbcmp, nbcpmx, nbdef
+    integer(kind=8) :: nbec, nbecmx, nbno
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     parameter(nbecmx=10)
-    integer :: mcoddl(nbno*nbec, 2), imask(nbno*nbec)
-    integer :: idec(nbcpmx), numord(nbno), icoco(nbecmx), icici(nbecmx)
+    integer(kind=8) :: mcoddl(nbno*nbec, 2), imask(nbno*nbec)
+    integer(kind=8) :: idec(nbcpmx), numord(nbno), icoco(nbecmx), icici(nbecmx)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

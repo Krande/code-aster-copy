@@ -28,7 +28,7 @@ interface
         aster_logical :: matrix
         character(len=4) :: typnoe
         character(len=8) :: nomacr
-        integer :: iadm1
-        integer :: iadm2
+        integer(kind=8) :: iadm1
+        integer(kind=8) :: iadm2
     end subroutine ssvaro
 end interface

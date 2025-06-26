@@ -24,11 +24,11 @@ interface
                       angl_naut, sigp, dsidep)
                       
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    integer, intent(in)          :: ndim
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: ndim
     character(len=16), intent(in):: phenom
-    integer, intent(in)          :: imate
+    integer(kind=8), intent(in)          :: imate
     character(len=*), intent(in) :: poum
     real(kind=8),intent(in)      :: deps(2*ndim)
     real(kind=8),intent(in)      :: sigm(2*ndim)

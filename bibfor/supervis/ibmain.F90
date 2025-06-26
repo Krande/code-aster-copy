@@ -37,8 +37,8 @@ subroutine ibmain()
 #include "asterfort/utmess.h"
 
     character(len=8) :: nomf
-    integer :: unmega, idebug, iret, lois
-    integer :: mxdyn
+    integer(kind=8) :: unmega, idebug, iret, lois
+    integer(kind=8) :: mxdyn
     real(kind=8) :: valr(2), moctet, memory
 
 !   Initialization of loggers

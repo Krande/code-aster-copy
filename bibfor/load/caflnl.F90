@@ -50,7 +50,7 @@ subroutine caflnl(load, mesh, model)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FLUX_NL'
-    integer :: nflux, jvalv, nf, iocc, nbtou, nbma, jma, ncmp, lprol
+    integer(kind=8) :: nflux, jvalv, nf, iocc, nbtou, nbma, jma, ncmp, lprol
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=19) :: carte

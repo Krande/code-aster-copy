@@ -26,7 +26,7 @@ subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
     character(len=19) :: sddisc
-    integer :: nume_inst, i_event_acti, retdec
+    integer(kind=8) :: nume_inst, i_event_acti, retdec
     real(kind=8) :: dtmin
 !
 ! ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ subroutine nmdecv(sddisc, nume_inst, i_event_acti, dtmin, retdec)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbnivo, lenivo
+    integer(kind=8) :: nbnivo, lenivo
     real(kind=8) :: pasmin
 !
 ! ----------------------------------------------------------------------

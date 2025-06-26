@@ -25,7 +25,7 @@ subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, &
 #include "blas/ddot.h"
 !
     real(kind=8) :: pinref(*), pmiref(*), crit
-    integer :: pi1, pi2, m12, ndime
+    integer(kind=8) :: pi1, pi2, m12, ndime
 !
 !
 ! FONCTION REALISEE:  CALCUL D UN CRITERE DE COURBURE SUR UNE ARETE DANS
@@ -34,7 +34,7 @@ subroutine xcedge(ndime, pinref, pi1, pi2, pmiref, &
 !       >0 SI ARETE COURBE
 !
     real(kind=8) :: pipk(ndime), pimik(ndime), rbid, cosi
-    integer :: i
+    integer(kind=8) :: i
     blas_int :: b_incx, b_incy, b_n
 !
     crit = 0.d0

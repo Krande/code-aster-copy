@@ -21,15 +21,15 @@
 interface
     subroutine mmctan(numema, alias, nno, ndim, coorma,&
                       coorno, epsmax, tau1, tau2, err_appa)
-        integer :: numema
+        integer(kind=8) :: numema
         character(len=8) :: alias
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: coorma(27)
         real(kind=8) :: coorno(3)
         real(kind=8) :: epsmax
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        integer, intent(inout) :: err_appa
+        integer(kind=8), intent(inout) :: err_appa
     end subroutine mmctan
 end interface

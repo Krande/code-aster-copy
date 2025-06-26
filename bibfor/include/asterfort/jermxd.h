@@ -21,6 +21,6 @@
 interface
     subroutine jermxd(rval, iret)
         real(kind=8) :: rval
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine jermxd
 end interface

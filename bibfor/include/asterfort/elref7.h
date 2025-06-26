@@ -22,9 +22,9 @@ interface
     subroutine elref7(elrefv, tymvol, ndegre, nbf, elref1,&
                       elref2)
         character(len=8) :: elrefv
-        integer :: tymvol
-        integer :: ndegre
-        integer :: nbf
+        integer(kind=8) :: tymvol
+        integer(kind=8) :: ndegre
+        integer(kind=8) :: nbf
         character(len=8) :: elref1
         character(len=8) :: elref2
     end subroutine elref7

@@ -23,7 +23,7 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Print), intent(in) :: ds_print
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: iterat
-        integer, intent(out) :: retsup
+        integer(kind=8), intent(in) :: iterat
+        integer(kind=8), intent(out) :: retsup
     end subroutine nmitsp
 end interface

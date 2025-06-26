@@ -22,16 +22,16 @@ interface
     subroutine ecrneu(imod, nbnode, ama, bma, cma,&
                       ami, bmi, cmi, min, man,&
                       ites)
-        integer :: imod
-        integer :: nbnode
+        integer(kind=8) :: imod
+        integer(kind=8) :: nbnode
         real(kind=8) :: ama
         real(kind=8) :: bma
         real(kind=8) :: cma
         real(kind=8) :: ami
         real(kind=8) :: bmi
         real(kind=8) :: cmi
-        integer :: min
-        integer :: man
-        integer :: ites
+        integer(kind=8) :: min
+        integer(kind=8) :: man
+        integer(kind=8) :: ites
     end subroutine ecrneu
 end interface

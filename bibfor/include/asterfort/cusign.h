@@ -20,8 +20,8 @@
 !
 interface
     subroutine cusign(jcmpg, icmp, sign)
-        integer :: jcmpg
-        integer :: icmp
+        integer(kind=8) :: jcmpg
+        integer(kind=8) :: icmp
         real(kind=8) :: sign
     end subroutine cusign
 end interface

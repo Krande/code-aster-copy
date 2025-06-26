@@ -27,7 +27,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomfon, chprol(*)
-    integer :: nbvar, nbres, ier
+    integer(kind=8) :: nbvar, nbres, ier
     real(kind=8) :: var(*), fon(*), varres(*), fonres(*)
 !     INTERPOLATION-EXTRAPOLATION DE TOUTE UNE FONCTION
 !     ------------------------------------------------------------------
@@ -61,7 +61,7 @@ subroutine fointr(nomfon, chprol, nbvar, var, fon, &
     character(len=19) :: nomf
     character(len=24) :: valk(3)
     real(kind=8) :: valr(3)
-    integer :: i, ires, ivar, jres, lnova, lonuti
+    integer(kind=8) :: i, ires, ivar, jres, lnova, lonuti
 !-----------------------------------------------------------------------
 !     FONCTION EN LIGNE
 !

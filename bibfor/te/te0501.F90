@@ -47,7 +47,7 @@ subroutine te0501(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: kp, imate, ifon(6)
+    integer(kind=8) :: kp, imate, ifon(6)
     real(kind=8) :: tpg, alpha, dalpha
     real(kind=8) :: rigi(MAX_BS, MAX_BS)
     real(kind=8) ::  valQPK(3, 3, MAX_QP)

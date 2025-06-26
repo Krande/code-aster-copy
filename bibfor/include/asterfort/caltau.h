@@ -22,10 +22,10 @@ interface
     subroutine caltau(ifa, is, sigf, fkooh,&
                       nfs, nsg, toutms, taus, mus,&
                       msns)
-        integer :: nsg
-        integer :: nfs
-        integer :: ifa
-        integer :: is
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: ifa
+        integer(kind=8) :: is
         real(kind=8) :: sigf(6)
         real(kind=8) :: fkooh(6, 6)
         real(kind=8) :: toutms(nfs, nsg, 6)

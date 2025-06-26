@@ -22,14 +22,14 @@ interface
     subroutine oreino(noma, lnoeud, nbno, nori, next,&
                       coor, crit, prec, iera, ier)
         character(len=8) :: noma
-        integer :: lnoeud(*)
-        integer :: nbno
-        integer :: nori
-        integer :: next
+        integer(kind=8) :: lnoeud(*)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nori
+        integer(kind=8) :: next
         real(kind=8) :: coor(*)
         character(len=*) :: crit
         real(kind=8) :: prec
-        integer :: iera
-        integer :: ier
+        integer(kind=8) :: iera
+        integer(kind=8) :: ier
     end subroutine oreino
 end interface

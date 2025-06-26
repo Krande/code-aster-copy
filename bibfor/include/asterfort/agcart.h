@@ -20,7 +20,7 @@
 !
 interface
     subroutine agcart(ngdmxn, chinz)
-        integer :: ngdmxn
+        integer(kind=8) :: ngdmxn
         character(len=*) :: chinz
     end subroutine agcart
 end interface

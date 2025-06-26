@@ -33,7 +33,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vecma.h"
-    integer :: irmetg, nbt, neq, iterat, icodma
+    integer(kind=8) :: irmetg, nbt, neq, iterat, icodma
     real(kind=8) :: ul(neq), dul(neq), utl(neq)
     real(kind=8) :: sim(neq), varim(7)
     real(kind=8) :: klv(nbt), klv2(nbt), varip(7)
@@ -60,7 +60,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma, &
 !***************** DECLARATION DES VARIABLES LOCALES *******************
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbpar, nbre1
+    integer(kind=8) :: i, nbpar, nbre1
     real(kind=8) :: a1, a2, c1, c2, dbar1, dbar2, dmsdt
     real(kind=8) :: dmsdt2, dnsdt, dnsdt2, dnsdu, dnsdu2, dry2, dryr
     real(kind=8) :: dryu1, dryu2, du2, dur, dxu1, dxu2, feq1
@@ -72,7 +72,7 @@ subroutine dicorn(irmetg, nbt, neq, iterat, icodma, &
     parameter(nbre1=15)
     real(kind=8) :: nu1, mu1, nu2, mu2, ky, kz, krx, krz, rp0
     real(kind=8) :: si(12), k01(78), k02(78), klc(144), valre1(nbre1)
-    integer :: codre1(nbre1), kpg, spt
+    integer(kind=8) :: codre1(nbre1), kpg, spt
     character(len=8) :: nompar, nomre1(nbre1), fami, poum
 !
 !************ FIN DES DECLARATIONS DES VARIABLES LOCALES ***************

@@ -49,24 +49,24 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, intent(in) :: index
-    integer, pointer :: buffdtm(:)
-    integer, pointer              :: buffint(:)
-    integer, optional, intent(in) :: nlaccnt
+    integer(kind=8), intent(in) :: index
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer              :: buffint(:)
+    integer(kind=8), optional, intent(in) :: nlaccnt
 
 !
 !   -0.2- Local variables
     aster_logical    :: instrum
-    integer          :: nbmode, ntotex, nbnli, itime
-    integer          :: iret, i, nlcase, nlacc
+    integer(kind=8)          :: nbmode, ntotex, nbnli, itime
+    integer(kind=8)          :: iret, i, nlcase, nlacc
     real(kind=8)     :: temps, dt, r8b, tps(7)
     character(len=7) :: casek7
     character(len=8) :: sd_dtm, sd_int, sd_nl
     character(len=24) :: sd_fextnl_tmp
 !
-    integer, pointer :: idescf(:) => null()
-    integer, pointer :: liad(:) => null()
-    integer, pointer :: inumor(:) => null()
+    integer(kind=8), pointer :: idescf(:) => null()
+    integer(kind=8), pointer :: liad(:) => null()
+    integer(kind=8), pointer :: inumor(:) => null()
     real(kind=8), pointer :: depl0(:) => null()
     real(kind=8), pointer :: vite0(:) => null()
     real(kind=8), pointer :: acce0(:) => null()
@@ -82,11 +82,11 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
     real(kind=8), pointer :: fadd_nl(:) => null()
     real(kind=8), pointer :: coefm(:) => null()
     character(len=8), pointer :: nomfon(:) => null()
-    integer, pointer          :: buffnl(:) => null()
+    integer(kind=8), pointer          :: buffnl(:) => null()
     mpi_int :: i_proc, nb_proc, mpicou
     aster_logical :: one_proc
-    integer :: nb_nbnli_mpi, nbr_nbnli_mpi, idx_start, idx_end
-    integer :: iret_mpi
+    integer(kind=8) :: nb_nbnli_mpi, nbr_nbnli_mpi, idx_start, idx_end
+    integer(kind=8) :: iret_mpi
     character(len=16), pointer :: valk(:) => null()
 
 !

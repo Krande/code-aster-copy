@@ -32,12 +32,12 @@ subroutine mltblc(nbsn, debfsn, mxbloc, seq, nbloc, &
 #include "asterc/ismaem.h"
 #include "asterc/lor8em.h"
 #include "asterfort/utmess.h"
-    integer :: nbsn, seq(nbsn), debfsn(nbsn+1), mxbloc, nbloc, decal(nbsn)
-    integer :: lgbloc(*), ncbloc(*)
-    integer :: i, l, i0, long
-    integer :: vali(3), lm, lr
+    integer(kind=8) :: nbsn, seq(nbsn), debfsn(nbsn+1), mxbloc, nbloc, decal(nbsn)
+    integer(kind=8) :: lgbloc(*), ncbloc(*)
+    integer(kind=8) :: i, l, i0, long
+    integer(kind=8) :: vali(3), lm, lr
 !-----------------------------------------------------------------------
-    integer :: ib, ni
+    integer(kind=8) :: ib, ni
 !-----------------------------------------------------------------------
     lm = ismaem()
     lr = lor8em()

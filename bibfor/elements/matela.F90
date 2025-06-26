@@ -21,7 +21,7 @@ subroutine matela(icodma, materi, itemp, temp, e, &
     implicit none
 #include "asterfort/rcvalb.h"
     real(kind=8) :: temp, e, nu
-    integer :: icodma, itemp
+    integer(kind=8) :: icodma, itemp
     character(len=*) :: materi
 !
 !     RECUPERATION DES VALEURS DE E, NU
@@ -35,12 +35,12 @@ subroutine matela(icodma, materi, itemp, temp, e, &
 ! OUT E      : R8  : MODULE D'YOUNG
 ! OUT NU     : R8  : COEFFICIENT DE POISSON
 !
-    integer :: nbres, nbpar, i
+    integer(kind=8) :: nbres, nbpar, i
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     parameter(nbres=2)
     real(kind=8) :: valpar, valres(nbres)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     character(len=8) :: nompar
     character(len=16) :: nomres(nbres)
     data nomres/'E', 'NU'/

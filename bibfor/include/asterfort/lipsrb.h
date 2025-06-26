@@ -32,10 +32,10 @@ interface
         character(len=24) :: lino2
         character(len=24) :: indin1
         character(len=24) :: indin2
-        integer :: ddlmas
-        integer :: ddlsla
-        integer :: nbmoma
-        integer :: imast
+        integer(kind=8) :: ddlmas
+        integer(kind=8) :: ddlsla
+        integer(kind=8) :: nbmoma
+        integer(kind=8) :: imast
         character(len=24) :: tramod
     end subroutine lipsrb
 end interface

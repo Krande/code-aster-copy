@@ -32,7 +32,7 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 #include "asterfort/rsutn1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ier
+    integer(kind=8) :: ier
     character(len=1) :: base
     character(len=16) :: nopara
     character(len=19) :: nomfon, resu
@@ -45,8 +45,8 @@ subroutine focrr3(nomfon, resu, nopara, base, ier)
 ! IN  : BASE   : BASE OU L'ON CREE LA FONCTION
 ! OUT : IER    : CODE RETOUR, = 0 : OK
 !     ------------------------------------------------------------------
-    integer :: nbordr, iret, kordr, lpro, lfon, lvar, iordr, nbacc, nbpar
-    integer :: iad1, iad2, nbpt
+    integer(kind=8) :: nbordr, iret, kordr, lpro, lfon, lvar, iordr, nbacc, nbpar
+    integer(kind=8) :: iad1, iad2, nbpt
     real(kind=8) :: rundf
     character(len=8) :: type
     character(len=16) :: nomacc

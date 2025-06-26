@@ -37,7 +37,7 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 #include "asterfort/utmasu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbma2d
+    integer(kind=8) :: nbma2d
     character(len=8) :: mo
     character(len=24) :: mail2d, mail3d, mailto
 !
@@ -59,14 +59,14 @@ subroutine srlima(mo, mail2d, mail3d, mailto, nbma2d)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: n1, n2, n3
-    integer :: ima, iret, jcesd, jcesl, iad1, numa2d, numa3d
-    integer :: nbma, nbmamo, jlima, nbmat, jmato, ndim, ndim2
+    integer(kind=8) :: n1, n2, n3
+    integer(kind=8) :: ima, iret, jcesd, jcesl, iad1, numa2d, numa3d
+    integer(kind=8) :: nbma, nbmamo, jlima, nbmat, jmato, ndim, ndim2
     character(len=8) :: ma, limocl(3), tymocl(3)
     character(len=24) :: mesmai, limamo
     character(len=19) :: ces, cel
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: listCell2d(:) => null(), listCell3d(:) => null()
+    integer(kind=8), pointer :: listCell2d(:) => null(), listCell3d(:) => null()
 !
     data limocl/'TOUT', 'MAILLE', 'GROUP_MA'/
     data tymocl/'TOUT', 'MAILLE', 'GROUP_MA'/

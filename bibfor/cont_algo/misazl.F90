@@ -44,9 +44,9 @@ subroutine misazl(ds_contact, sdnume, vector)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_equa, nb_equa, nt_patch
+    integer(kind=8) :: i_equa, nb_equa, nt_patch
     character(len=24) :: sdnuco
-    integer, pointer :: p_nuco(:) => null()
+    integer(kind=8), pointer :: p_nuco(:) => null()
     real(kind=8), pointer :: p_vale(:) => null()
     character(len=24) :: sdcont_lagc
     real(kind=8), pointer :: v_sdcont_lagc(:) => null()

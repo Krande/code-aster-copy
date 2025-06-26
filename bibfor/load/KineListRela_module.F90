@@ -58,7 +58,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         character(len=*), intent(in) :: relaTypeZ
-        integer, intent(in) :: nbTermMaxi
+        integer(kind=8), intent(in) :: nbTermMaxi
         character(len=19), intent(in) :: listLineRela
         type(KINE_LIST_RELA), intent(out) :: kineListRela
         character(len=4), intent(in), optional :: coefImpoType_
@@ -138,7 +138,7 @@ contains
     subroutine kineListRelaSave(titleZ, nbTerm, kineListRela, epsiDebg_)
 ! - Parameters
         character(len=*), intent(in) :: titleZ
-        integer, intent(in) :: nbTerm
+        integer(kind=8), intent(in) :: nbTerm
         type(KINE_LIST_RELA), intent(in) :: kineListRela
         aster_logical, optional, intent(in) :: epsiDebg_
 ! - Local

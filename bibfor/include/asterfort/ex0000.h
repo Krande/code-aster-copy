@@ -19,6 +19,6 @@
 !
 interface
     subroutine ex0000(nuoper)
-        integer, intent(in) :: nuoper
+        integer(kind=8), intent(in) :: nuoper
     end subroutine ex0000
 end interface

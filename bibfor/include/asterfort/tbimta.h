@@ -21,8 +21,8 @@
 interface
     subroutine tbimta(table, ifr, nparim, lipaim, formar)
         character(len=*) :: table
-        integer :: ifr
-        integer :: nparim
+        integer(kind=8) :: ifr
+        integer(kind=8) :: nparim
         character(len=*) :: lipaim(*)
         character(len=*) :: formar
     end subroutine tbimta

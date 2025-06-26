@@ -20,7 +20,7 @@ subroutine dxsiro(ne, t2iu, tensav, tensap)
     implicit none
 #include "asterfort/utbtab.h"
 #include "asterfort/pmavec.h"
-    integer, intent(in) :: ne
+    integer(kind=8), intent(in) :: ne
     real(kind=8), intent(in) :: t2iu(2, 2)
     real(kind=8), intent(in) :: tensav(*)
     real(kind=8), intent(out) :: tensap(*)
@@ -40,7 +40,7 @@ subroutine dxsiro(ne, t2iu, tensav, tensap)
     real(kind=8) :: sigmav(2, 2), sigmap(2, 2), cisaav(2), cisaap(2)
     real(kind=8) :: t2ui(2, 2), xab(2, 2)
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
 !
 !   Transposée de t2iu pour changement de repère des efforts tranchants

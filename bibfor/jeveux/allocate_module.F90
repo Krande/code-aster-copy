@@ -41,7 +41,7 @@ module allocate_module
 !------------------------------------------------------------------------
 !   -- commons jeveux :
 !   --------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
@@ -49,7 +49,7 @@ module allocate_module
 !
     type array_1
         aster_logical, allocatable :: vl(:)
-        integer, allocatable :: vi(:)
+        integer(kind=8), allocatable :: vi(:)
         integer(kind=4), allocatable :: vi4(:)
         real(kind=8), allocatable :: vr(:)
         complex(kind=8), allocatable :: vc(:)
@@ -66,20 +66,20 @@ module allocate_module
 !
     type save_lvec
         type(array_1), allocatable :: lvec(:)
-        integer :: nmax = 0, kfree = 0
+        integer(kind=8) :: nmax = 0, kfree = 0
     end type save_lvec
 !
     type(save_lvec), target :: slvec
 !
 ! -- pour mesurer le taux de remplissage de slvec
-    integer, save :: kmax = 0
+    integer(kind=8), save :: kmax = 0
 !
 !
 contains
 !
     subroutine init_slvec(slvec, nmax)
         type(save_lvec) :: slvec
-        integer :: nmax, k
+        integer(kind=8) :: nmax, k
 !
         allocate (slvec%lvec(nmax))
         slvec%nmax = nmax
@@ -106,9 +106,9 @@ contains
     subroutine allocate_slvec(lon1, vl, vi, vi4, vr, &
                               vc, vk8, vk16, vk24, vk32, &
                               vk80)
-        integer :: lon1
+        integer(kind=8) :: lon1
         aster_logical, pointer, optional :: vl(:)
-        integer, pointer, optional :: vi(:)
+        integer(kind=8), pointer, optional :: vi(:)
         integer(kind=4), pointer, optional :: vi4(:)
         real(kind=8), pointer, optional :: vr(:)
         complex(kind=8), pointer, optional :: vc(:)
@@ -118,7 +118,7 @@ contains
         character(len=32), optional, pointer :: vk32(:)
         character(len=80), optional, pointer :: vk80(:)
 !
-        integer :: k, ktrou
+        integer(kind=8) :: k, ktrou
         type(c_ptr) :: pteur_c
 !
         ktrou = 0
@@ -216,9 +216,9 @@ contains
     subroutine deallocate_slvec(ierr, vl, vi, vi4, vr, &
                                 vc, vk8, vk16, vk24, vk32, &
                                 vk80)
-        integer, intent(out) :: ierr
+        integer(kind=8), intent(out) :: ierr
         aster_logical, pointer, optional :: vl(:)
-        integer, pointer, optional :: vi(:)
+        integer(kind=8), pointer, optional :: vi(:)
         integer(kind=4), pointer, optional :: vi4(:)
         real(kind=8), pointer, optional :: vr(:)
         complex(kind=8), pointer, optional :: vc(:)
@@ -228,7 +228,7 @@ contains
         character(len=32), optional, pointer :: vk32(:)
         character(len=80), optional, pointer :: vk80(:)
 !
-        integer :: k, ktrou
+        integer(kind=8) :: k, ktrou
         type(c_ptr) :: pteur_c
 !
         ierr = 1
@@ -332,7 +332,7 @@ contains
     subroutine deallocate_all_slvec()
 ! but : desallouer tous les objets de slvec qui ne n'ont pas ete
 !
-        integer :: k, n1, n2, lonty, lsic
+        integer(kind=8) :: k, n1, n2, lonty, lsic
         character(len=3) :: tsca
 !
         n2 = 0

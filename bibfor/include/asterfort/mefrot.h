@@ -25,7 +25,7 @@ interface
                       itypg, zg, tg, dg, rugg,&
                       axg, xig, afluid, pm, cfg,&
                       vitg, rhog, viscg)
-        integer :: ndim(14)
+        integer(kind=8) :: ndim(14)
         real(kind=8) :: som(9)
         real(kind=8) :: vit0
         character(len=8) :: promas
@@ -40,7 +40,7 @@ interface
         real(kind=8) :: vit(0:*)
         real(kind=8) :: rho(0:*)
         real(kind=8) :: visc(*)
-        integer :: itypg(*)
+        integer(kind=8) :: itypg(*)
         real(kind=8) :: zg(*)
         real(kind=8) :: tg(*)
         real(kind=8) :: dg(*)

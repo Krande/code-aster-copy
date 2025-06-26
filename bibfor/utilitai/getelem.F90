@@ -35,9 +35,9 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
 !
     character(len=8), intent(in) :: mesh
     character(len=*), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=1), intent(in) :: stop_void
-    integer, intent(out) :: nb_elem
+    integer(kind=8), intent(out) :: nb_elem
     character(len=24), intent(in) :: list_elem
     character(len=8), intent(in), optional :: model
     character(len=*), intent(in), optional :: suffix
@@ -86,17 +86,17 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
     character(len=24) :: moclm(5)
     character(len=16) :: typmcl(5)
     character(len=24) :: list_lect
-    integer, pointer :: p_list_lect(:) => null()
+    integer(kind=8), pointer :: p_list_lect(:) => null()
     character(len=24) :: list_excl
-    integer, pointer :: p_list_excl(:) => null()
-    integer, pointer :: p_list_elem(:) => null()
+    integer(kind=8), pointer :: p_list_excl(:) => null()
+    integer(kind=8), pointer :: p_list_elem(:) => null()
     character(len=24) :: keyword
     character(len=8) :: model_name, suffix_name, answer
     aster_logical :: l_keep_prop, l_all, onAllCells
-    integer :: nb_mocl, nb_elem_gl, nocc
-    integer :: nb_lect, nb_excl, nb_elim
-    integer :: nume_lect, nume_excl
-    integer :: i_lect, i_excl, i_elem
+    integer(kind=8) :: nb_mocl, nb_elem_gl, nocc
+    integer(kind=8) :: nb_lect, nb_excl, nb_elim
+    integer(kind=8) :: nume_lect, nume_excl
+    integer(kind=8) :: i_lect, i_excl, i_elem
 !
 ! --------------------------------------------------------------------------------------------------
 !

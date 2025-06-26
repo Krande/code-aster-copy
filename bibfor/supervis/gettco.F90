@@ -47,7 +47,7 @@ subroutine gettco(name, typeco, errstop)
 
     character(len=19) :: name19
     character(len=24) :: attr
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24), pointer :: vk(:) => null()
     aster_logical :: error
 

@@ -24,9 +24,9 @@ interface
                       ea, rh1000, mu0, fprg, frco,&
                       frli, sa, regl,analy)
         character(len=19) :: tablca
-        integer :: icabl
-        integer :: nbnoca
-        integer :: nbf0
+        integer(kind=8) :: icabl
+        integer(kind=8) :: nbnoca
+        integer(kind=8) :: nbf0
         real(kind=8) :: f0
         real(kind=8) :: delta
         character(len=24) :: typrel

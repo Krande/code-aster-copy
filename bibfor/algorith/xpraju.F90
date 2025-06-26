@@ -56,8 +56,8 @@ subroutine xpraju(noma, fiss, cnslt, cnsvt, cnsvn, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, nbno, ifm, niv, cptzo, cptaju
-    integer :: jlisno
+    integer(kind=8) :: i, nbno, ifm, niv, cptzo, cptaju
+    integer(kind=8) :: jlisno
     real(kind=8) :: modzon, dmin
     real(kind=8), pointer :: ltno(:) => null()
     real(kind=8), pointer :: vnno(:) => null()

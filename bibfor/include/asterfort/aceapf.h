@@ -22,7 +22,7 @@ interface
     subroutine aceapf(nomu, noma, lmax, nbocc)
         character(len=8) :: nomu
         character(len=8) :: noma
-        integer :: lmax
-        integer :: nbocc
+        integer(kind=8) :: lmax
+        integer(kind=8) :: nbocc
     end subroutine aceapf
 end interface

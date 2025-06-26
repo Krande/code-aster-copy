@@ -27,11 +27,11 @@ subroutine somloc(m, adco, nbso, nusglo, nusloc)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/utmess.h"
-    integer :: m, adco, nbso, nusglo, nusloc
+    integer(kind=8) :: m, adco, nbso, nusglo, nusloc
 !
     aster_logical :: trouve
-    integer :: is
-    integer :: vali(2)
+    integer(kind=8) :: is
+    integer(kind=8) :: vali(2)
 !
     trouve = .false.
     do is = 1, nbso

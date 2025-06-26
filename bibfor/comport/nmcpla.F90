@@ -39,8 +39,8 @@ subroutine nmcpla(BEHinteg, &
 #include "asterfort/Behaviour_type.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: imat, ndim, kpg, ksp, iret
-    integer :: neps, nsig, ndsde
+    integer(kind=8) :: imat, ndim, kpg, ksp, iret
+    integer(kind=8) :: neps, nsig, ndsde
     character(len=16), intent(in) :: compor_plas(COMPOR_SIZE)
     character(len=16), intent(in) :: compor_creep(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
@@ -117,13 +117,13 @@ subroutine nmcpla(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndt_local, ndi_local
-    integer :: ndt, ndi
-    integer :: nvi_flua, nvi_plas, idx_vi_plas
-    integer :: i, retcom, ire2, iret1, iret2, iret3
-    integer :: nume_plas, nume_flua
-    integer :: k, iter, itemax
-    integer :: cerr(5)
+    integer(kind=8) :: ndt_local, ndi_local
+    integer(kind=8) :: ndt, ndi
+    integer(kind=8) :: nvi_flua, nvi_plas, idx_vi_plas
+    integer(kind=8) :: i, retcom, ire2, iret1, iret2, iret3
+    integer(kind=8) :: nume_plas, nume_flua
+    integer(kind=8) :: k, iter, itemax
+    integer(kind=8) :: cerr(5)
     character(len=8) :: elem_model, nomc(5)
     character(len=16) :: rela_flua, rela_plas
     real(kind=8) :: nu, angmas(3)

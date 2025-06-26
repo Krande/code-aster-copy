@@ -65,7 +65,7 @@ subroutine nonlinLoadDirichletCompute(list_load, model, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: vebudi, cnbudi
     character(len=8) :: mesh
     real(kind=8) :: alpha

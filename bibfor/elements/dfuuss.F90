@@ -33,7 +33,7 @@ subroutine dfuuss(nmnbn, nmplas, nmdpla, nmprox, bend, &
 ! OUT DFUU : DIRECTIONS DE L ECOULEMENT DES DEFORMATIONS PLASTIQUES
 !
 #include "asterfort/dfplgl.h"
-    integer :: bend, nmprox(2)
+    integer(kind=8) :: bend, nmprox(2)
 !
     real(kind=8) :: dfuu(*), nmnbn(6), nmplas(2, 3), nmdpla(2, 2)
 !

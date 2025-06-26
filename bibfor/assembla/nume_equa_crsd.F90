@@ -37,7 +37,7 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_c
 !
     character(len=*), intent(in) :: nume_equaz
     character(len=1), intent(in) :: base
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_equa
     character(len=*), intent(in) :: meshz
     character(len=*), intent(in) :: gran_namez
     aster_logical, optional, intent(in) :: l_coll_constz
@@ -58,11 +58,11 @@ subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_c
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_equa2
+    integer(kind=8) :: nb_equa2
     character(len=19) :: nume_equa
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: delg(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
     aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------

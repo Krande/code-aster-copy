@@ -21,7 +21,7 @@
 interface
     subroutine liglma(ligrel, nbma, linuma, linute)
         character(len=19) :: ligrel
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=*) :: linuma
         character(len=*) :: linute
     end subroutine liglma

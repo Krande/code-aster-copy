@@ -32,15 +32,15 @@ subroutine gtgrma(main, maax, nmgrma, lima, nbma)
 
     character(len=8), intent(in) :: main, maax
     character(len=24), intent(in) :: nmgrma
-    integer, pointer :: lima(:)
-    integer, intent(out) :: nbma
+    integer(kind=8), pointer :: lima(:)
+    integer(kind=8), intent(out) :: nbma
 ! -------------------------------------------------------------------------------------------------
 !   RECUPERATION DE LA LISTE DES NUMERO DE MAILLE DU GROUP NMGRMA
 ! -------------------------------------------------------------------------------------------------
 !   MAIN est présent uniquement pour afficher le maillage donné par l'utilisateur dans le message
 !   d'erreur
 ! -------------------------------------------------------------------------------------------------
-    integer :: jgrma, inc, iret
+    integer(kind=8) :: jgrma, inc, iret
     character(len=24) :: valk(2)
 ! -------------------------------------------------------------------------------------------------
     call jemarq()

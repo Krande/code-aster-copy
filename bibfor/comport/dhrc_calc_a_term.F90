@@ -25,8 +25,8 @@ subroutine dhrc_calc_a_term(i, j, sup_s, inf_s, a0, aa_t, ga_t, aa_c, ga_c, vint
 !
 #include "asterfort/assert.h"
 !
-    integer, intent(in) :: i, j, sup_s, inf_s
-    integer, optional, intent(in) :: sup_d, inf_d
+    integer(kind=8), intent(in) :: i, j, sup_s, inf_s
+    integer(kind=8), optional, intent(in) :: sup_d, inf_d
     real(kind=8), optional, intent(in) :: rvp
     real(kind=8), intent(in) :: vint(*)
     real(kind=8), intent(in) :: a0(6, 6)

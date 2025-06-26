@@ -23,10 +23,10 @@ interface
                       nb_vale  , vale_resu)
         character(len=8), intent(in) :: node_name
         character(len=19), intent(in) :: field
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=24), intent(in) :: list_cmp
         character(len=8), intent(in) :: type_extr_cmp
         real(kind=8), intent(out) :: vale_resu(*)
-        integer, intent(out) :: nb_vale
+        integer(kind=8), intent(out) :: nb_vale
     end subroutine nmexti
 end interface

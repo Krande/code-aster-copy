@@ -66,14 +66,14 @@ subroutine crcoch()
 #include "blas/dcopy.h"
 #include "jeveux.h"
 !
-    integer :: ibid, ier, icompt, iret, numini, numfin
-    integer :: n1, nis, nbinst, nbval, nume, j, ie
-    integer :: iad, jinst, jchout
-    integer :: nbv(1), jrefe
-    integer :: jcpt, nbr, ivmx, k, iocc, nboini
-    integer :: nb_ondp, nbLoad, tnum(1)
-    integer :: nbordr1, nbordr2
-    integer :: neq, jchou1, jchou2
+    integer(kind=8) :: ibid, ier, icompt, iret, numini, numfin
+    integer(kind=8) :: n1, nis, nbinst, nbval, nume, j, ie
+    integer(kind=8) :: iad, jinst, jchout
+    integer(kind=8) :: nbv(1), jrefe
+    integer(kind=8) :: jcpt, nbr, ivmx, k, iocc, nboini
+    integer(kind=8) :: nb_ondp, nbLoad, tnum(1)
+    integer(kind=8) :: nbordr1, nbordr2
+    integer(kind=8) :: neq, jchou1, jchou2
     real(kind=8) :: rbid, tps, prec, partps(3)
     complex(kind=8) :: cbid
     character(len=1) :: typmat

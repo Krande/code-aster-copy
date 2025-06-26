@@ -21,7 +21,7 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
         aster_logical, intent(in) :: lTablFromResu
-        integer, intent(in) :: nbModeIn
-        integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
+        integer(kind=8), intent(in) :: nbModeIn
+        integer(kind=8), optional, intent(in) :: nbSnapIn_, nbStoreIn_
     end subroutine romTableChck
 end interface

@@ -24,6 +24,6 @@ interface
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine tgveri_use
 end interface

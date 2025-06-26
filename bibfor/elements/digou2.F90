@@ -40,11 +40,11 @@ subroutine digou2(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdc, irep, imat, ivarim, ifono, icontp, ivarip, icontm, neq
+    integer(kind=8) :: jdc, irep, imat, ivarim, ifono, icontp, ivarip, icontm, neq
     real(kind=8) :: r8bid, klv(78), klv2(78)
     character(len=8) :: k8bid
     blas_int :: b_incx, b_incy, b_n

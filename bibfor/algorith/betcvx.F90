@@ -53,7 +53,7 @@ subroutine betcvx(BEHinteg, &
 !       VAR NSEUIL :  SEUIL ELASTIQUE PRECEDENT / NOUVEAU SEUIL CALCULE
 !       ----------------------------------------------------------------
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: nvi, nmat, nseuil
+    integer(kind=8) :: nvi, nmat, nseuil
     real(kind=8) :: pc, pt, sig(6), dev(6), vind(*), vinf(*)
     real(kind=8) :: mater(nmat, 2)
     real(kind=8) :: fcp, ftp, fc, ft, beta
@@ -64,7 +64,7 @@ subroutine betcvx(BEHinteg, &
     real(kind=8) :: lasts, d13, dlambc, dlambt, epsi, zero
     parameter(zero=0.d0)
 !       ---------------------------------------------------------------
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !       ----------------------------------------------------------------
 !

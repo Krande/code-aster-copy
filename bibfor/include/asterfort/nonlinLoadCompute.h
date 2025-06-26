@@ -32,7 +32,7 @@ interface
 !
         character(len=4), intent(in)            :: mode
         character(len=19), intent(in)           :: list_load
-        integer, intent(in)                     :: list_func_acti(*)
+        integer(kind=8), intent(in)                     :: list_func_acti(*)
         character(len=24), intent(in)           :: model, cara_elem, nume_dof
         type(NL_DS_Material), intent(in)        :: ds_material
         type(NL_DS_Constitutive), intent(in)    :: ds_constitutive

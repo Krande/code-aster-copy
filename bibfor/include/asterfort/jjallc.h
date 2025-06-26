@@ -20,9 +20,9 @@
 !
 interface
     subroutine jjallc(iclasi, idatci, cel, ibacol)
-        integer :: iclasi
-        integer :: idatci
+        integer(kind=8) :: iclasi
+        integer(kind=8) :: idatci
         character(len=*) :: cel
-        integer :: ibacol
+        integer(kind=8) :: ibacol
     end subroutine jjallc
 end interface

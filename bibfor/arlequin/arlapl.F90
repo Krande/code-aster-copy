@@ -31,9 +31,9 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte, &
 !
 !     ARGUMENTS:
 !     ----------
-    integer :: ndim, nns, ndml1, ndml2
+    integer(kind=8) :: ndim, nns, ndml1, ndml2
     character(len=16) :: nomte
-    integer :: npgs, ipoids, ivfs, idfdes
+    integer(kind=8) :: npgs, ipoids, ivfs, idfdes
 !
 ! ----------------------------------------------------------------------
 !
@@ -52,13 +52,13 @@ subroutine arlapl(ndim, nns, ndml1, ndml2, nomte, &
 ! IN  IVFS   : POINTEUR VERS FONCTIONS DE FORME DE LA MAILLE SUPPORT S
 ! IN  IDFDES : POINTEUR VERS DER. FONCTIONS DE FORME DE LA MAILLE S
 !
-    integer :: nliai, nddl
+    integer(kind=8) :: nliai, nddl
     parameter(nliai=12, nddl=nliai*nliai)
-    integer :: jrefe1, jrefe2, jcoor1, jcoor2, jinfor, jcoors
+    integer(kind=8) :: jrefe1, jrefe2, jcoor1, jcoor2, jinfor, jcoors
     real(kind=8) :: mcplc1(2*ndim*ndml2, ndim*ndml1)
     real(kind=8) :: mcplc2(2*ndim*ndml2, 2*ndim*ndml2)
     character(len=8) :: elrf1, elrf2
-    integer :: iaux, jaux, ijkl1, ijkl2, imatu1, imatu2
+    integer(kind=8) :: iaux, jaux, ijkl1, ijkl2, imatu1, imatu2
 !
 ! ----------------------------------------------------------------------
 !

@@ -33,7 +33,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nfic, niv, ndim, nbobo
+    integer(kind=8) :: nfic, niv, ndim, nbobo
 !
 !     BUT: LIRE LE FICHIER DE MAILLAGE GIBI (PROCEDURE SAUVER) :
 !
@@ -45,7 +45,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 ! ----------------------------------------------------------------------
 !
     real(kind=8) :: r8bid
-    integer :: nbobno, ipile, nivo, nberr, nboblu
+    integer(kind=8) :: nbobno, ipile, nivo, nberr, nboblu
     character(len=1) :: ityp
     character(len=4) :: k4bid, kbid4
     character(len=6) :: k6bid
@@ -54,7 +54,7 @@ subroutine gilir2(nfic, niv, ndim, nbobo)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iaptin, iret, nbnoto, nbval
+    integer(kind=8) :: i, iaptin, iret, nbnoto, nbval
 !-----------------------------------------------------------------------
     call jemarq()
 !

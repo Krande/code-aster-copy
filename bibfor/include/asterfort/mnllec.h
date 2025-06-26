@@ -21,17 +21,17 @@
 interface 
     subroutine mnllec(imat, numedd, ordman, epsman, pasman, epscor, h,&
                       hf, itemax, nbran, nextr, epsbif)
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=24) :: numedd
-        integer :: ordman
+        integer(kind=8) :: ordman
         real(kind=8) :: epsman
-        integer :: pasman
+        integer(kind=8) :: pasman
         real(kind=8) :: epscor
-        integer :: h
-        integer :: hf
-        integer :: itemax
-        integer :: nbran
-        integer :: nextr
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
+        integer(kind=8) :: itemax
+        integer(kind=8) :: nbran
+        integer(kind=8) :: nextr
         real(kind=8) :: epsbif
     end subroutine mnllec
 end interface 

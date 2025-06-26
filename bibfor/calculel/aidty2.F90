@@ -35,9 +35,9 @@ subroutine aidty2(impr)
 #include "asterfort/wkvect.h"
 !
     character(len=16) :: nomte, noop
-    integer :: nbte, nbop, ianop2, iop, ite, ioptte, iaopmo, nucalc
-    integer :: impr
-    integer, pointer :: optte(:) => null()
+    integer(kind=8) :: nbte, nbop, ianop2, iop, ite, ioptte, iaopmo, nucalc
+    integer(kind=8) :: impr
+    integer(kind=8), pointer :: optte(:) => null()
 !
     call jemarq()
 !

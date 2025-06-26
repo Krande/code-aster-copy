@@ -21,8 +21,8 @@
 interface
     subroutine mgis_set_external_state_variables(extern_addr, state, values, nbvar)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(in) :: state
+        integer(kind=8), intent(in) :: state
         real(kind=8), intent(in) :: values(*)
-        integer, intent(in) :: nbvar
+        integer(kind=8), intent(in) :: nbvar
     end subroutine mgis_set_external_state_variables
 end interface

@@ -19,7 +19,7 @@
 interface
     subroutine mgis_load_library(extern_addr, model, strain)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(in) :: model
-        integer, intent(in) :: strain
+        integer(kind=8), intent(in) :: model
+        integer(kind=8), intent(in) :: strain
     end subroutine mgis_load_library
 end interface

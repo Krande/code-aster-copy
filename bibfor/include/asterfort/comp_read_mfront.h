@@ -19,7 +19,7 @@
 interface
     subroutine comp_read_mfront(keywf, i_comp, extern_addr)
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_comp
+        integer(kind=8), intent(in) :: i_comp
         character(len=16), intent(out) :: extern_addr
     end subroutine comp_read_mfront
 end interface

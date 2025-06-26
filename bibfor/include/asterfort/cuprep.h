@@ -23,7 +23,7 @@ interface
                       time_curr)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: nb_equa
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: disp_curr
         character(len=19), intent(in) :: disp_iter

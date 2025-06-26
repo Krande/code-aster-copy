@@ -26,7 +26,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
 #include "asterfort/mrmult.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: lmasse, lamor, lraide, neq, nbvect, iddl(*)
+    integer(kind=8) :: lmasse, lamor, lraide, neq, nbvect, iddl(*)
     real(kind=8) :: masseg(*), amorg(*), raideg(*), vect(neq, *)
 !     CALCUL DES PARAMETRES MODAUX :
 !            MASSE, AMORTISSEMENT ET RAIDEUR GENERALISES
@@ -45,7 +45,7 @@ subroutine vppgen(lmasse, lamor, lraide, masseg, amorg, &
 !
     real(kind=8) :: rzero
     character(len=24) :: vecaux, vecau1
-    integer :: ieq, ivect, laux, laux1
+    integer(kind=8) :: ieq, ivect, laux, laux1
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data vecaux/'&&VPPGEN.VECTEUR.AUX0'/

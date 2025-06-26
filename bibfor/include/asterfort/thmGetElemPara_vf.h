@@ -27,9 +27,9 @@ interface
         type(THM_DS), intent(inout) :: ds_thm
         aster_logical, intent(out) :: l_axi, l_vf
         character(len=8), intent(out) :: type_elem(2)
-        integer, intent(out) :: ndim
-        integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
-        integer, intent(out) :: dimdef, dimcon, dimuel
-        integer, intent(out) :: nno, nnos, nface
+        integer(kind=8), intent(out) :: ndim
+        integer(kind=8), intent(out) :: mecani(5), press1(7), press2(7), tempe(5)
+        integer(kind=8), intent(out) :: dimdef, dimcon, dimuel
+        integer(kind=8), intent(out) :: nno, nnos, nface
     end subroutine thmGetElemPara_vf
 end interface

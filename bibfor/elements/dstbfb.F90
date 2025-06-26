@@ -21,7 +21,7 @@ subroutine dstbfb(jacob, bfb)
     real(kind=8) :: jacob(*), bfb(3, 9)
 !     MATRICE BFB(3,9) POUR L'ELEMENT DST
 !     ------------------------------------------------------------------
-    integer :: k, j
+    integer(kind=8) :: k, j
     real(kind=8) :: vj11, vj12, vj21, vj22
 !     ------------------------------------------------------------------
     vj11 = jacob(1)

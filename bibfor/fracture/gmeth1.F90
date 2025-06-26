@@ -31,7 +31,7 @@ subroutine gmeth1(nnoff, ndeg, gthi, gs, objcur, xl, gi)
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 
-    integer           :: nnoff, ndeg
+    integer(kind=8)           :: nnoff, ndeg
     real(kind=8)      :: gthi(1), gs(1), gi(1), xl
     character(len=24) :: objcur
 
@@ -50,8 +50,8 @@ subroutine gmeth1(nnoff, ndeg, gthi, gs, objcur, xl, gi)
 !   GI      --> VALEUR DE GI
 ! ......................................................................
 
-    integer           :: iadrt3
-    integer           :: i, j
+    integer(kind=8)           :: iadrt3
+    integer(kind=8)           :: i, j
     character(len=24) :: matr
     real(kind=8)      :: som
 

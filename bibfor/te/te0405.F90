@@ -33,7 +33,7 @@ subroutine te0405(option, nomte)
 #include "asterfort/jevech.h"
     character(len=16) :: option, nomte
 !
-    integer :: icour
+    integer(kind=8) :: icour
 ! DEB ------------------------------------------------------------------
 !
     call jevech('PCOURAN', 'E', icour)

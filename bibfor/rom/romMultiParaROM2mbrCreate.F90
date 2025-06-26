@@ -32,7 +32,7 @@ subroutine romMultiParaROM2mbrCreate(base, ds_multipara, i_coef, syst_2mbrROM)
 !
     type(ROM_DS_Empi), intent(in) :: base
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-    integer, intent(in) :: i_coef
+    integer(kind=8), intent(in) :: i_coef
     character(len=19), intent(in) :: syst_2mbrROM
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,9 +50,9 @@ subroutine romMultiParaROM2mbrCreate(base, ds_multipara, i_coef, syst_2mbrROM)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbMode, nbEqua, nbVect
-    integer :: iMode, iVect
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbMode, nbEqua, nbVect
+    integer(kind=8) :: iMode, iVect
     aster_logical :: l_coef_cplx, l_coef_real
     real(kind=8) :: coef_r
     complex(kind=8) :: coef_c, coef_cplx

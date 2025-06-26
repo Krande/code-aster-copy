@@ -22,7 +22,7 @@ interface
     subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, deuxmu, lamf, deumuf, &
                                gt, gc, gf, seuil, alpha, alfmc, epsic, epsiels, epsilim,&
                                is_param_opt_, val_param_opt_)
-      integer, intent(in) :: imate
+      integer(kind=8), intent(in) :: imate
       character(len=16), intent(in) :: compor
       real(kind=8), optional, intent(out) :: lambda
       real(kind=8), optional, intent(out) :: deuxmu

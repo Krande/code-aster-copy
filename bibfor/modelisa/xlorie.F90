@@ -45,11 +45,11 @@ subroutine xlorie(fiss)
 !
 !
 !
-    integer :: ibid, ir, in, ncouch
+    integer(kind=8) :: ibid, ir, in, ncouch
     real(kind=8) :: rayon
     character(len=16) :: typenr
     character(len=24) :: xcarfo
-    integer :: jcaraf
+    integer(kind=8) :: jcaraf
 !
 ! ----------------------------------------------------------------------
 !

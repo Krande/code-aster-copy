@@ -21,11 +21,11 @@
 interface
     subroutine xrmev2(cpt, npg, ndim, igeom, jsigse,&
                       coorse, tvolse)
-        integer :: cpt
-        integer :: npg
-        integer :: ndim
-        integer :: igeom
-        integer :: jsigse
+        integer(kind=8) :: cpt
+        integer(kind=8) :: npg
+        integer(kind=8) :: ndim
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jsigse
         real(kind=8) :: coorse(*)
         real(kind=8) :: tvolse
     end subroutine xrmev2

@@ -27,6 +27,6 @@ interface
         real(kind=8) :: pgl(*)
         real(kind=8) :: rig(*)
         real(kind=8) :: ener(*)
-        integer :: multic
+        integer(kind=8) :: multic
     end subroutine dktrig
 end interface

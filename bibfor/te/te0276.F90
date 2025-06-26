@@ -36,10 +36,10 @@ subroutine te0276(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ipg, npg1, iveres, ihechp, itemps, itemp
-    integer :: idec, jdec, kdec, ldec, ino, jno, i, j
-    integer ::  nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom
+    integer(kind=8) :: ndim, nno, ipg, npg1, iveres, ihechp, itemps, itemp
+    integer(kind=8) :: idec, jdec, kdec, ldec, ino, jno, i, j
+    integer(kind=8) ::  nnos, jgano
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: jac, tem, h
 !     ------------------------------------------------------------------

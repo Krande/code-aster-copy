@@ -35,19 +35,19 @@ subroutine mltdrb(nbloc, ncbloc, decal, seq, nbsn, &
 #include "asterfort/mlfmlt.h"
 #include "asterfort/mlfmul.h"
 !
-    integer :: nbsn, nbnd, nbloc, ncbloc(nbnd), decal(nbsn)
+    integer(kind=8) :: nbsn, nbnd, nbloc, ncbloc(nbnd), decal(nbsn)
     integer(kind=4) :: global(*)
-    integer :: seq(nbsn), supnd(nbsn+1), lgsn(nbsn)
-    integer :: adress(nbsn+1), invp(nbnd), perm(nbnd), ad(nbnd)
-    integer :: typsym, nbsm
+    integer(kind=8) :: seq(nbsn), supnd(nbsn+1), lgsn(nbsn)
+    integer(kind=8) :: adress(nbsn+1), invp(nbnd), perm(nbnd), ad(nbnd)
+    integer(kind=8) :: typsym, nbsm
     real(kind=8) :: temp(nbnd), x(nbnd, nbsm), trav(nbnd, nbsm), s(nbsm)
     character(len=24) :: factol, factou, factor
-    integer :: ib, nc, isnd, long, l, i, ndj, p
+    integer(kind=8) :: ib, nc, isnd, long, l, i, ndj, p
 !
-    integer :: deb1
-    integer :: sni, k, j, deb, ifac, ism
-    integer :: seuil, tranch, nproc, larg
-    integer :: opta, optb, nb
+    integer(kind=8) :: deb1
+    integer(kind=8) :: sni, k, j, deb, ifac, ism
+    integer(kind=8) :: seuil, tranch, nproc, larg
+    integer(kind=8) :: opta, optb, nb
     nb = llbloc()
     call jemarq()
     optb = 1

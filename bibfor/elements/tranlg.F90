@@ -20,15 +20,15 @@ subroutine tranlg(nb1, nddlx, nddlet, plg, matloc, &
                   xr)
     implicit none
 !
-    integer :: nb1, nddlet, nddlx
+    integer(kind=8) :: nb1, nddlet, nddlx
     real(kind=8) :: xr(*)
     real(kind=8) :: matloc(nddlx, nddlx), plg(9, 3, 3)
     real(kind=8) :: matxp(48, 48), matx(51, 51)
     real(kind=8) :: kb12pt(48, 3), kb21pg(3, 48), kb22pt(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, ib, j, j1, j2
-    integer :: jb, k, k1, kompt, nb2, nddle
+    integer(kind=8) :: i, i1, i2, ib, j, j1, j2
+    integer(kind=8) :: jb, k, k1, kompt, nb2, nddle
 !
 !-----------------------------------------------------------------------
     nddle = 6*nb1

@@ -31,12 +31,12 @@ interface
         real(kind=8), intent(in) :: coorne(3)
         real(kind=8), intent(out) :: tau1m(3)
         real(kind=8), intent(out) :: tau2m(3)
-        integer, intent(in) :: izone
-        integer, intent(in) :: ndimg
-        integer, intent(in) :: posnom(1)
-        integer, intent(in) :: posnoe
-        integer, intent(in) :: numnoe
-        integer, intent(in) :: iliai
+        integer(kind=8), intent(in) :: izone
+        integer(kind=8), intent(in) :: ndimg
+        integer(kind=8), intent(in) :: posnom(1)
+        integer(kind=8), intent(in) :: posnoe
+        integer(kind=8), intent(in) :: numnoe
+        integer(kind=8), intent(in) :: iliai
         aster_logical, intent(in) :: lctfd
     end subroutine cfapno
 end interface

@@ -25,7 +25,7 @@ subroutine nmacto(sddisc, i_echec_acti)
 #include "asterfort/dieven.h"
 #include "asterfort/utdidt.h"
     character(len=19), intent(in) :: sddisc
-    integer, intent(out) :: i_echec_acti
+    integer(kind=8), intent(out) :: i_echec_acti
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -40,7 +40,7 @@ subroutine nmacto(sddisc, i_echec_acti)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_echec, i_echec
+    integer(kind=8) :: nb_echec, i_echec
     aster_logical :: lacti
 !
 ! ----------------------------------------------------------------------

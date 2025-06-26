@@ -29,7 +29,7 @@ subroutine jjldyn(imode, lmin, ltot)
 #include "asterfort/utmess.h"
 #include "asterfort/utptme.h"
 #include "asterfort/uttcpu.h"
-    integer :: imode, lmin, ltot
+    integer(kind=8) :: imode, lmin, ltot
 ! ----------------------------------------------------------------------
 ! LIBERE LES SEGMENTS DE VALEURS ALLOUES DYNAMIQUEMENT
 !
@@ -44,24 +44,24 @@ subroutine jjldyn(imode, lmin, ltot)
 ! OUT  LTOT  : LONGUEUR CUMULEE EN ENTIERS DES SEGMENTS DESALLOUES
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadmi, iadmoc, iadyn, iadyoc, ibacol
-    integer :: ibiadd, ibiadm, iblono, ic, idm
-    integer :: isd, isdc, isf, ixdeso, ixiadd, ixiadm
-    integer :: ixlono, j, jcara, jdate, jdocu, jgenr, jhcod
-    integer :: jiacce, jiadd, jiadm, jindir, jj, jlong, jlono
-    integer :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
-    integer :: lonoi, lsv, ltypi, n, nbacce, ncla1, ncla2
-    integer :: nmax
+    integer(kind=8) :: i, iadmi, iadmoc, iadyn, iadyoc, ibacol
+    integer(kind=8) :: ibiadd, ibiadm, iblono, ic, idm
+    integer(kind=8) :: isd, isdc, isf, ixdeso, ixiadd, ixiadm
+    integer(kind=8) :: ixlono, j, jcara, jdate, jdocu, jgenr, jhcod
+    integer(kind=8) :: jiacce, jiadd, jiadm, jindir, jj, jlong, jlono
+    integer(kind=8) :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
+    integer(kind=8) :: lonoi, lsv, ltypi, n, nbacce, ncla1, ncla2
+    integer(kind=8) :: nmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &               jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &               kitlec(n), kitecr(n), kiadm(n),&
      &               iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -72,33 +72,33 @@ subroutine jjldyn(imode, lmin, ltot)
      &               dn2(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
     common/jiacce/jiacce(n), nbacce(2*n)
     common/jindir/jindir(n)
-    integer :: isstat
+    integer(kind=8) :: isstat
     common/iconje/isstat
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
-    integer :: icdyn, mxltot
+    integer(kind=8) :: icdyn, mxltot
     common/xdynje/icdyn, mxltot
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: datei
+    integer(kind=8) :: datei
     common/iheuje/datei
-    integer :: indiq_jjagod, indiq_jjldyn
+    integer(kind=8) :: indiq_jjagod, indiq_jjldyn
     common/idagod/indiq_jjagod, indiq_jjldyn
 ! ----------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idlono
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idlono
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3, idlono=8)
 ! ----------------------------------------------------------------------
     character(len=1) :: cgenr
     character(len=8) :: nomk(5)
 !    CHARACTER*32   NOM32
-    integer :: iaddi(2), lgs, nbioav(2)
-    integer :: rang, nbproc, iret, iret2
+    integer(kind=8) :: iaddi(2), lgs, nbioav(2)
+    integer(kind=8) :: rang, nbproc, iret, iret2
     real(kind=8) :: valp(5), vx(3), v0
     real(kind=4) :: graine
     mpi_int :: mrank, msize

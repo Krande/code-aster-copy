@@ -58,8 +58,8 @@ subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
 #include "asterfort/lklini.h"
 #include "asterfort/srlini.h"
 #include "asterfort/Behaviour_type.h"
-    integer :: typess, nmat, nr, nvi, kpg, ksp, nfs, nsg
-    integer :: nbcomm(nmat, 3), iret
+    integer(kind=8) :: typess, nmat, nr, nvi, kpg, ksp, nfs, nsg
+    integer(kind=8) :: nbcomm(nmat, 3), iret
     real(kind=8) :: deps(6), epsd(6), essai
     real(kind=8) :: yd(*), dy(*)
     real(kind=8) :: materf(nmat, 2)

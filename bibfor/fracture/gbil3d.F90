@@ -41,7 +41,7 @@ subroutine gbil3d(dudm, dvdm, dtdm, dfudm, dfvdm, &
     real(kind=8) :: somm1u, somm2u, somm1v, somm2v, prod, siginv(3, 3)
     real(kind=8) :: s2th1u, s2th2u, s2th3u, s2th1v, s2th2v, s2th3v
     real(kind=8) :: s1th, s2th, tther, tfor, tdyn, r8tmp33(3, 3)
-    integer :: i, j, k, p, l, m
+    integer(kind=8) :: i, j, k, p, l, m
 !
     divt = dtdm(1, 1)+dtdm(2, 2)+dtdm(3, 3)
 !

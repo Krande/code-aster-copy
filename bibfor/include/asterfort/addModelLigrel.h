@@ -19,7 +19,7 @@
 interface
     subroutine addModelLigrel(modelZ, nbLigr, listLigr)
         character(len=*), intent(in) :: modelZ
-        integer, intent(inout) :: nbLigr
+        integer(kind=8), intent(inout) :: nbLigr
         character(len=24), pointer :: listLigr(:)
     end subroutine addModelLigrel
 end interface

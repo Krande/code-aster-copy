@@ -20,9 +20,9 @@
 !
 interface
     subroutine rrlds(a, nmax, nordre, x, nves)
-        integer :: nves
-        integer :: nordre
-        integer :: nmax
+        integer(kind=8) :: nves
+        integer(kind=8) :: nordre
+        integer(kind=8) :: nmax
         real(kind=8) :: a(nmax, nordre)
         real(kind=8) :: x(nmax, nves)
     end subroutine rrlds

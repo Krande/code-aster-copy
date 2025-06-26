@@ -41,7 +41,7 @@ function xvfimo(modele, fiss)
 !     FISS   : NOM DE LA SD_FISS_XFEM
 ! ======================================================================
 !
-    integer :: ier, nfiss, i
+    integer(kind=8) :: ier, nfiss, i
     character(len=8), pointer :: vfiss(:) => null()
 !
     call jemarq()

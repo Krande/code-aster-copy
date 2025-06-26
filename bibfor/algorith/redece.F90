@@ -39,10 +39,10 @@ subroutine redece(BEHinteg, &
 
     type(Behaviour_Integ) :: BEHinteg
     character(len=*) :: fami
-    integer :: imate, ndim, kpg, ksp, numlc
-    integer :: neps, nsig, ndsde
+    integer(kind=8) :: imate, ndim, kpg, ksp, numlc
+    integer(kind=8) :: neps, nsig, ndsde
     aster_logical, intent(in) :: l_epsi_varc
-    integer, intent(in):: nvi
+    integer(kind=8), intent(in):: nvi
     real(kind=8) :: carcri(*), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(neps), deps(neps)
@@ -54,7 +54,7 @@ subroutine redece(BEHinteg, &
     character(len=16) :: compor(*), option
     character(len=8), intent(in) :: materi
     character(len=16), intent(in) :: mult_comp
-    integer, intent(out):: codret
+    integer(kind=8), intent(out):: codret
 
 ! --------------------------------------------------------------------------------------------------
 ! INTEGRATION DU COMPORTEMENT : PRISE EN CHARGE D'UN EVENTUEL REDECOUPAGE LOCAL DU PAS DE TEMPS
@@ -97,9 +97,9 @@ subroutine redece(BEHinteg, &
 !               codret=2 : ok loi de comportement mais condition non respectee -> pas de cvg globale
 ! --------------------------------------------------------------------------------------------------
     aster_logical:: lMatrPred, lMatr, lSigm, lVari
-    integer, parameter:: SANS = 0, FORCE = 1, AUTO = 2, NBR_DECOUP_MAX = 5
-    integer:: decoup
-    integer :: niv_dec, niv_ini, npas, iip, codret_sub, pas
+    integer(kind=8), parameter:: SANS = 0, FORCE = 1, AUTO = 2, NBR_DECOUP_MAX = 5
+    integer(kind=8):: decoup
+    integer(kind=8) :: niv_dec, niv_ini, npas, iip, codret_sub, pas
     real(kind=8) :: epsm_sub(neps), deps_sub(neps), sigm_sub(nsig), vim_sub(nvi)
     real(kind=8) :: deltat, tm, tp
     real(kind=8) :: dsidep_sub(merge(nsig, 6, nsig*neps .eq. ndsde), &

@@ -18,7 +18,7 @@
 !
 interface
     function factorial(n)
-        integer, intent(in) :: n
-        integer             :: factorial
+        integer(kind=8), intent(in) :: n
+        integer(kind=8)             :: factorial
     end function factorial
 end interface

@@ -36,7 +36,7 @@ subroutine hsaco(vectt, dudxnc, hsc)
 !
     real(kind=8) :: hsc(5, 9)
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !DEB
 !

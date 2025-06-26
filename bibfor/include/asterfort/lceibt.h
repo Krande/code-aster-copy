@@ -21,7 +21,7 @@
 interface
     subroutine lceibt(ndimsi, eps, epsf, dep, invn,&
                       cn, dsidep)
-        integer :: ndimsi
+        integer(kind=8) :: ndimsi
         real(kind=8) :: eps(6)
         real(kind=8) :: epsf(6)
         real(kind=8) :: dep(6, 12)

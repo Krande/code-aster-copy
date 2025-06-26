@@ -27,7 +27,7 @@ subroutine meta_kit_nvar(metaPhas, metaRela, metaGlob, &
 #include "asterc/lcdiscard.h"
 !
     character(len=16), intent(in) :: metaPhas, metaRela, metaGlob
-    integer, intent(out) :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
+    integer(kind=8), intent(out) :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine meta_kit_nvar(metaPhas, metaRela, metaGlob, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: metaPhasPy, metaRelaPy, metaGlobPy
-    integer :: idummy, idummy2
+    integer(kind=8) :: idummy, idummy2
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -33,6 +33,6 @@ interface
         real(kind=8) :: f_ta
         real(kind=8) :: kappa
         real(kind=8) :: e0
-        integer :: cas
+        integer(kind=8) :: cas
     end subroutine calc_axe_neutre
 end interface

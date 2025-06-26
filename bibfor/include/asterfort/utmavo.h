@@ -21,11 +21,11 @@ interface
                       nomz, nbmavo, mailvo)
         character(len=8) :: mail
         character(len=2) :: kdim
-        integer, pointer :: listCellNume(:)
-        integer :: nbCell
+        integer(kind=8), pointer :: listCellNume(:)
+        integer(kind=8) :: nbCell
         character(len=1) :: base
         character(len=*) :: nomz
-        integer :: nbmavo
-        integer :: mailvo(*)
+        integer(kind=8) :: nbmavo
+        integer(kind=8) :: mailvo(*)
     end subroutine utmavo
 end interface

@@ -19,6 +19,6 @@
 interface
     subroutine mgis_get_number_of_props(extern_addr, nbprop)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(out) :: nbprop
+        integer(kind=8), intent(out) :: nbprop
     end subroutine mgis_get_number_of_props
 end interface

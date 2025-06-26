@@ -19,8 +19,8 @@
 !
 interface
     subroutine cesred_wrap(ces1z, nbma, lima, nbcmp, licmp, base, ces2z)
-        integer :: nbma, nbcmp
-        integer :: lima(nbma)
+        integer(kind=8) :: nbma, nbcmp
+        integer(kind=8) :: lima(nbma)
         character(len=*) :: ces1z, ces2z, base
         character(len=8) :: licmp(*)
     end subroutine cesred_wrap

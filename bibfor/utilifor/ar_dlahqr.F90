@@ -139,7 +139,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
 #include "blas/dlanhs.h"
 #include "blas/drot.h"
     aster_logical :: wantt, wantz
-    integer :: ihi, ihiz, ilo, iloz, info, ldh, ldz, n
+    integer(kind=8) :: ihi, ihiz, ilo, iloz, info, ldh, ldz, n
 !     ..
 !     .. ARRAY ARGUMENTS ..
     real(kind=8) :: h(ldh, *), wi(*), wr(*), z(ldz, *)
@@ -151,7 +151,7 @@ subroutine ar_dlahqr(wantt, wantz, n, ilo, ihi, &
     parameter(dat1=0.75d+0, dat2=-0.4375d+0)
 !     ..
 !     .. LOCAL SCALARS ..
-    integer :: i, i1, i2, itn, its, j, k, l, m, nh, nr, nz
+    integer(kind=8) :: i, i1, i2, itn, its, j, k, l, m, nh, nr, nz
     real(kind=8) :: cs, h00, h10, h11, h12, h21, h22, h33, h33s, h43h34, h44
     real(kind=8) :: h44s, s, smlnum, sn, sum, t1, t2, t3, tst1, ulp, unfl, v1
     real(kind=8) :: v2, v3

@@ -28,8 +28,8 @@ interface
         character(len=24) :: carele
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
-        integer :: fonact(*)
-        integer :: iterat
+        integer(kind=8) :: fonact(*)
+        integer(kind=8) :: iterat
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sdnume
         character(len=19) :: sddyna
@@ -41,6 +41,6 @@ interface
         character(len=19) :: veelem(*)
         character(len=19) :: veasse(*)
         type(NL_DS_Conv), intent(inout) :: ds_conv
-        integer :: ldccvg
+        integer(kind=8) :: ldccvg
     end subroutine nmreli
 end interface

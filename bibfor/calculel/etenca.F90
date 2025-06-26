@@ -38,7 +38,7 @@ subroutine etenca(chinz, ligrlz, iret)
 !
     character(len=19) :: ligrel, chin
     character(len=*) :: ligrlz, chinz
-    integer :: iret
+    integer(kind=8) :: iret
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !     CHINZ  : NOM DE LA CARTE A ETENDRE
@@ -62,13 +62,13 @@ subroutine etenca(chinz, ligrlz, iret)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: nma, nms, nbedit, igd, code, ient, i, ii, nb
-    integer :: desc, grpma, lima, ialima, illima, jmalut
-    integer :: ptma, ptms, noli, iexi
+    integer(kind=8) :: nma, nms, nbedit, igd, code, ient, i, ii, nb
+    integer(kind=8) :: desc, grpma, lima, ialima, illima, jmalut
+    integer(kind=8) :: ptma, ptms, noli, iexi
     aster_logical :: bonlig, lalloc
     character(len=8) :: ma
     character(len=24) :: ligri
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
     character(len=24) :: valk
 !
 !

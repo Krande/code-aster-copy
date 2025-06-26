@@ -53,13 +53,13 @@ subroutine ermev3(nno, ipg, ivf, isig, nbcmp, &
 !
     implicit none
 #include "jeveux.h"
-    integer :: nno, ipg, ivf, isig, nbcmp
+    integer(kind=8) :: nno, ipg, ivf, isig, nbcmp
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), dsx, dsy, dsz, norme
 !
 !
 !
 !
-    integer :: i, k
+    integer(kind=8) :: i, k
 !
     real(kind=8) :: dsig11, dsig12, dsig13
     real(kind=8) :: dsig21, dsig22, dsig23

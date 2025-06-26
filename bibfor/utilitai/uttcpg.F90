@@ -39,7 +39,7 @@ subroutine uttcpg(action, typimp)
 !        MTPNIV : NIVEAU D'IMPRESSION DES MESURES DE TEMPS DEMANDE
 !                 PAR L'UTILISATEUR
 !        MTPSTA : IMPRESSION DES STATISTIQUES OU NON EN PARALLELE
-    integer :: mtpniv, mtpsta, indmax
+    integer(kind=8) :: mtpniv, mtpsta, indmax
     parameter(indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)
@@ -47,9 +47,9 @@ subroutine uttcpg(action, typimp)
     common/mestp2/snolon
     common/mestp3/valmes, valmei
 !
-    integer :: ndim, nbmesu
+    integer(kind=8) :: ndim, nbmesu
     parameter(ndim=30)
-    integer :: ifm, k
+    integer(kind=8) :: ifm, k
     character(len=1) :: prpal(ndim)
     character(len=24) :: nomc(ndim)
     character(len=80) :: noml(ndim)

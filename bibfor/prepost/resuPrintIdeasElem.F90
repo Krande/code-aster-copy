@@ -50,14 +50,14 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 #include "asterfort/utcmp3.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: title, dsName
-    integer, intent(in) :: storeIndx
+    integer(kind=8), intent(in) :: storeIndx
     character(len=*), optional, intent(in) :: fieldName_, fieldType_
-    integer, optional, intent(in) :: cmpUserNb_
+    integer(kind=8), optional, intent(in) :: cmpUserNb_
     character(len=8), optional, pointer :: cmpUserName_(:)
-    integer, optional, intent(in) :: cellUserNb_
-    integer, optional, pointer :: cellUserNume_(:)
+    integer(kind=8), optional, intent(in) :: cellUserNb_
+    integer(kind=8), optional, pointer :: cellUserNume_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -80,36 +80,36 @@ subroutine resuPrintIdeasElem(fileUnit, dsName, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, titleLength
+    integer(kind=8) :: iret, titleLength
     character(len=8) :: meshName, quantityName
     character(len=4) :: fieldSupport
     character(len=19) :: fieldName
     character(len=16) :: fieldType
     character(len=24) :: permutJvName
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
     character(len=19) :: liliName
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: lielLen(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: lielLen(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     character(len=80), pointer :: meshTitle(:) => null()
     aster_logical :: lMeshIdeas
     character(len=1) :: type
-    integer :: fieldScalar, quantityIndx, jvVale, grelNb, iCell
-    integer :: meshNodeNb, meshCellNb
-    integer :: cmpCataNb, cmpListNb, cmpVariNb
-    integer, pointer :: cmpListIndx(:) => null()
+    integer(kind=8) :: fieldScalar, quantityIndx, jvVale, grelNb, iCell
+    integer(kind=8) :: meshNodeNb, meshCellNb
+    integer(kind=8) :: cmpCataNb, cmpListNb, cmpVariNb
+    integer(kind=8), pointer :: cmpListIndx(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
-    integer, pointer :: cmpVariIndx(:) => null()
-    integer, pointer :: permuta(:) => null()
-    integer :: maxnod
-    integer :: versio
+    integer(kind=8), pointer :: cmpVariIndx(:) => null()
+    integer(kind=8), pointer :: permuta(:) => null()
+    integer(kind=8) :: maxnod
+    integer(kind=8) :: versio
     character(len=8), pointer :: cellName(:) => null()
-    integer, pointer :: cellNbNode(:) => null()
-    integer, pointer :: cellType(:) => null()
-    integer :: cmpUserNb, cellUserNb
+    integer(kind=8), pointer :: cellNbNode(:) => null()
+    integer(kind=8), pointer :: cellType(:) => null()
+    integer(kind=8) :: cmpUserNb, cellUserNb
     character(len=8), pointer :: cmpUserName(:) => null()
-    integer, pointer :: cellUserNume(:) => null()
+    integer(kind=8), pointer :: cellUserNume(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -34,7 +34,7 @@ subroutine op0185()
 !
     character(len=8) :: sd1, sd2
     character(len=16) :: typsup, typinf, oper
-    integer :: iret
+    integer(kind=8) :: iret
 !----------------------------------------------------------------------
     call jemarq()
     call getres(sd2, typsup, oper)

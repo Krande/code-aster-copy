@@ -25,8 +25,8 @@ interface
                       omega, dn1n2, epsi, crit)
         real(kind=8) :: coor(*)
         real(kind=8) :: zk1(3)
-        integer :: izk
-        integer :: icoude
+        integer(kind=8) :: izk
+        integer(kind=8) :: icoude
         real(kind=8) :: zk2(3)
         real(kind=8) :: rayon
         real(kind=8) :: theta

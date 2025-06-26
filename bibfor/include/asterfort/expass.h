@@ -20,6 +20,6 @@
 !
 interface
     subroutine expass(jxvrf)
-        integer :: jxvrf
+        integer(kind=8) :: jxvrf
     end subroutine expass
 end interface

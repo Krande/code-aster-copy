@@ -84,10 +84,10 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
     character(len=8) :: crit
     character(len=*) :: nochmd, nomamd
 !
-    integer :: nrofic, typent
-    integer :: nbcmpv
-    integer :: iinst, numpt, numord
-    integer :: codret
+    integer(kind=8) :: nrofic, typent
+    integer(kind=8) :: nbcmpv
+    integer(kind=8) :: iinst, numpt, numord
+    integer(kind=8) :: codret
     character(len=1), optional, intent(in) :: base
 !
     real(kind=8) :: inst
@@ -100,13 +100,13 @@ subroutine lrcnme(chanom, nochmd, nomamd, nomaas, nomgd, &
     character(len=6) :: nompro
     parameter(nompro='LRCNME')
 !
-    integer :: iaux, iret, jcmpva, nbcmpa, nbcham, i, nbcmp, jcmp, junit
-    integer :: ibid, nseqca, tycha, j
+    integer(kind=8) :: iaux, iret, jcmpva, nbcmpa, nbcham, i, nbcmp, jcmp, junit
+    integer(kind=8) :: ibid, nseqca, tycha, j
     med_idt :: idfimd
-    integer :: jnocmp, ncmprf, ubid
+    integer(kind=8) :: jnocmp, ncmprf, ubid
     parameter(ubid=1)
-    integer :: unbid(ubid)
-    integer :: edlect
+    integer(kind=8) :: unbid(ubid)
+    integer(kind=8) :: edlect
     parameter(edlect=0)
 !
     character(len=1) :: saux01

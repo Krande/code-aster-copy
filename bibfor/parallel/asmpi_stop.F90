@@ -46,9 +46,9 @@ subroutine asmpi_stop(imode)
 #include "asterfort/gtstat.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/ststat.h"
-    integer :: imode
+    integer(kind=8) :: imode
 
-    integer :: lout, imod2
+    integer(kind=8) :: lout, imod2
     character(len=16) :: compex
     aster_logical :: labort
 !

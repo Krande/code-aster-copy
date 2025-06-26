@@ -24,7 +24,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
 #include "asterfort/assert.h"
 !
     character(len=8), intent(in) :: elrefa
-    integer, intent(in) :: nnos, npg, nno
+    integer(kind=8), intent(in) :: nnos, npg, nno
     real(kind=8), intent(in) :: mganos(MT_NBPGMX, MT_NNOMAX)
     real(kind=8), intent(out) :: mgano2(MT_NBPGMX, MT_NNOMAX)
 !
@@ -45,7 +45,7 @@ subroutine inmat5(elrefa, nno, nnos, npg, mganos, mgano2)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kpg, kno, knos, k
+    integer(kind=8) :: kpg, kno, knos, k
     real(kind=8) :: nosom(MT_NNOMAX, MT_NNOMAX)
     real(kind=8), parameter :: demi = 0.5d0, quart = 0.25d0
 !

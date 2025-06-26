@@ -21,9 +21,9 @@
 interface 
     subroutine mnluil(x, omega, alpha, eta, h,&
                       hf, nt, sort)
-        integer :: nt
-        integer :: hf
-        integer :: h
+        integer(kind=8) :: nt
+        integer(kind=8) :: hf
+        integer(kind=8) :: h
         real(kind=8) :: x(2*h+1)
         real(kind=8) :: omega
         real(kind=8) :: alpha

@@ -50,12 +50,12 @@ subroutine arlmom(mailar, modarl)
 ! IN  MODARL : NOM DU PSEUDO-MODELE
 !
     character(len=24) :: modmai
-    integer :: jmoma
-    integer :: jdime
-    integer :: nbma
+    integer(kind=8) :: jmoma
+    integer(kind=8) :: jdime
+    integer(kind=8) :: nbma
     character(len=19) :: ligarl
-    integer :: igrel, iel, ima, nute, nbelgr
-    integer :: ialiel, illiel, iaux1
+    integer(kind=8) :: igrel, iel, ima, nute, nbelgr
+    integer(kind=8) :: ialiel, illiel, iaux1
 !
 ! ----------------------------------------------------------------------
 !

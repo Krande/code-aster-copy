@@ -28,11 +28,11 @@ subroutine cescel_wrap(cesz, ligrez, optini, nompaz, prolz, &
     character(len=*)    :: optini
     character(len=*)    :: nompaz
     character(len=*)    :: prolz
-    integer             :: nncp
+    integer(kind=8)             :: nncp
     character(len=*)    :: basez
     character(len=*)    :: celz
     character(len=1)    :: kstop
-    integer             :: iret
+    integer(kind=8)             :: iret
 !
     call cescel(cesz, ligrez, optini, nompaz, prolz, &
                 nncp, basez, celz, kstop, iret)

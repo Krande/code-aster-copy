@@ -35,12 +35,12 @@ subroutine utcrre(result, nbval)
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsrusd.h"
-    integer :: nbval
+    integer(kind=8) :: nbval
     character(len=8) :: result
 !
 !
-    integer :: iret
-    integer :: nbav
+    integer(kind=8) :: iret
+    integer(kind=8) :: nbav
 !
     character(len=8) :: k8bid
     character(len=19) :: resu19

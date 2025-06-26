@@ -27,7 +27,7 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 #include "asterfort/jeveuo.h"
 #include "asterfort/juveca.h"
     character(len=19) :: sddisc
-    integer :: nbins, numins, nbini
+    integer(kind=8) :: nbins, numins, nbini
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,9 +45,9 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ipas, nbnew
+    integer(kind=8) :: ipas, nbnew
     character(len=24) :: tpsdin
-    integer :: jnivtp
+    integer(kind=8) :: jnivtp
 !
 ! ----------------------------------------------------------------------
 !

@@ -28,7 +28,7 @@ subroutine lccgad(BEHinteg, &
 #include "asterfort/rcvalb.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: mat, kpg, ksp
+    integer(kind=8) :: mat, kpg, ksp
     real(kind=8) :: mu, su, glis, dde(2)
     real(kind=8) :: vim(*), vip(*)
     character(len=16) :: option
@@ -58,7 +58,7 @@ subroutine lccgad(BEHinteg, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: resi, rigi, elas, adh
-    integer :: cod(2)
+    integer(kind=8) :: cod(2)
     real(kind=8) :: val(2), n, courb, de, sut, val2(2)
     real(kind=8) :: frot, r, mult, frotc
     character(len=16) :: nom(2), nom2(2)

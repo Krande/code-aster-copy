@@ -20,9 +20,9 @@
 !
 interface
     subroutine cvnorm(mat, vect, ndim, iretou)
-        integer :: ndim
+        integer(kind=8) :: ndim
         complex(kind=8) :: mat(*)
         complex(kind=8) :: vect(ndim)
-        integer :: iretou
+        integer(kind=8) :: iretou
     end subroutine cvnorm
 end interface

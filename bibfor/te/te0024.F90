@@ -38,10 +38,10 @@ subroutine te0024(option, nomte)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), jac
     real(kind=8) :: gradx, grady, gradz
     character(len=8) :: elp
-    integer :: ndim, nno, nnos, npg
-    integer :: ino, i
-    integer :: ipoids, ivf, idfde, jgan, igeom, ineut
-    integer :: igr
+    integer(kind=8) :: ndim, nno, nnos, npg
+    integer(kind=8) :: ino, i
+    integer(kind=8) :: ipoids, ivf, idfde, jgan, igeom, ineut
+    integer(kind=8) :: igr
 !
 !
 ! DEB ------------------------------------------------------------------

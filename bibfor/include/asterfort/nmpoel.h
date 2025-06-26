@@ -23,11 +23,11 @@ interface
                       nc, pgl, ugl,&
                       epsthe, e, em, effm, fl,&
                       effl)
-        integer :: npg
+        integer(kind=8) :: npg
         real(kind=8) :: klv(*)
         real(kind=8) :: xl
-        integer :: nno
-        integer :: nc
+        integer(kind=8) :: nno
+        integer(kind=8) :: nc
         real(kind=8) :: pgl(*)
         real(kind=8) :: ugl(*)
         real(kind=8) :: epsthe

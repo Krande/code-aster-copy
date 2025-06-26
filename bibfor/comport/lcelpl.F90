@@ -45,7 +45,7 @@ subroutine lcelpl(loi, nmat, materf, &
     common/tdim/ndt, ndi
 !     ------------------------------------------------------------
     character(len=16) :: loi
-    integer :: nmat, nvi, ndi, ndt
+    integer(kind=8) :: nmat, nvi, ndi, ndt
     real(kind=8) ::  materf(nmat, 2)
     real(kind=8) :: vinf(nvi), vind(nvi)
     real(kind=8) :: deps(6)

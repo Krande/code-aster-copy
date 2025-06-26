@@ -44,8 +44,8 @@ subroutine rrcComp(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iFieldBuild, nbFieldBuild, nbStore
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iFieldBuild, nbFieldBuild, nbStore
     character(len=8) :: resultDomName, resultRomName
     type(ROM_DS_FieldBuild) :: fieldBuild
 !

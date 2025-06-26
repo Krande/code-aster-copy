@@ -26,7 +26,7 @@ interface
         character(len=2) :: comp
         real(kind=8) :: b
         real(kind=8) :: eps
-        integer :: crit
+        integer(kind=8) :: crit
         aster_logical :: compr8
     end function compr8
 end interface

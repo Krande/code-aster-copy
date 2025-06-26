@@ -44,14 +44,14 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer :: ipas, nbmode, nbsauv, nbnoli, nbvint
-    integer :: ndec
-    integer :: ind, iret, nlcase
-    integer :: index, iarch_sd
+    integer(kind=8) :: ipas, nbmode, nbsauv, nbnoli, nbvint
+    integer(kind=8) :: ndec
+    integer(kind=8) :: ind, iret, nlcase
+    integer(kind=8) :: index, iarch_sd
     real(kind=8) :: t, dt
     character(len=7) :: casek7, intk7
     character(len=8) :: sd_dtm, sd_int, sd_nl
@@ -59,10 +59,10 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     character(len=24) :: nomres
     type(c_ptr) :: pc
 !
-    integer, pointer :: vindx(:) => null()
-    integer, pointer :: allocs(:) => null()
-    integer, pointer :: isto(:) => null()
-    integer, pointer :: iorsto(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: allocs(:) => null()
+    integer(kind=8), pointer :: isto(:) => null()
+    integer(kind=8), pointer :: iorsto(:) => null()
     real(kind=8), pointer :: depgen(:) => null()
     real(kind=8), pointer :: vitgen(:) => null()
     real(kind=8), pointer :: accgen(:) => null()
@@ -77,7 +77,7 @@ subroutine dtmarch(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8), pointer :: accsto(:) => null()
     real(kind=8), pointer :: vint(:) => null()
     real(kind=8), pointer :: vintsto(:) => null()
-    integer, pointer :: buffnl(:) => null()
+    integer(kind=8), pointer :: buffnl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 !   0 - Initializations

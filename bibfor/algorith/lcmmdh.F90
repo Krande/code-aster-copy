@@ -23,7 +23,7 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap, &
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcmmdc.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), is, nbsys, nfs, nsg
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), is, nbsys, nfs, nsg
     real(kind=8) :: coeft(*), alphap(12), hs, hsr(nsg, nsg), soms1, soms2, soms3
 ! person_in_charge: jean-michel.proix at edf.fr
 ! ======================================================================
@@ -42,7 +42,7 @@ subroutine lcmmdh(coeft, ifa, nmat, nbcomm, alphap, &
     real(kind=8) :: a, b, y, termea, termeb, termey, denom, ceff, rmin, beta
     real(kind=8) :: numer
     real(kind=8) :: alphas, dcdals, unsurd, gc0, k
-    integer :: iei, iu, iv, ifl, is3, iv3, nuecou
+    integer(kind=8) :: iei, iu, iv, ifl, is3, iv3, nuecou
 !     ----------------------------------------------------------------
 !
 !

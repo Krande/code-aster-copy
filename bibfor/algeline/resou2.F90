@@ -30,13 +30,13 @@ subroutine resou2(matass, matpre, solveu, chcine, nsecm, &
 !-----------------------------------------------------------------------
 !
     character(len=*) :: matass, matpre, solveu, chcine
-    integer :: nsecm
+    integer(kind=8) :: nsecm
     character(len=*) :: chsecm, chsolu, base
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
     character(len=*) :: criter
     aster_logical :: prepos
-    integer :: istop, iret
+    integer(kind=8) :: istop, iret
 !
 !-----------------------------------------------------------------------
 ! BUT : RESOUDRE UN SYSTEME LINEAIRE D'EQUATIONS (REEL OU COMPLEXE)

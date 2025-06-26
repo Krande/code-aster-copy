@@ -23,9 +23,9 @@
 interface
     subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
         character(len=24) :: intitu
-        integer :: nbinti
+        integer(kind=8) :: nbinti
         aster_logical :: lsn
         aster_logical :: lfatig
-        integer :: nbtran
+        integer(kind=8) :: nbtran
     end subroutine rcevo0
 end interface

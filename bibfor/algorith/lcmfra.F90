@@ -19,9 +19,9 @@
 subroutine lcmfra(vp, itemax, precvg, chi, iret)
     implicit none
 #include "asterc/r8prem.h"
-    integer, intent(in)      :: itemax
+    integer(kind=8), intent(in)      :: itemax
     real(kind=8), intent(in) :: vp(3), precvg
-    integer, intent(out)     :: iret
+    integer(kind=8), intent(out)     :: iret
     real(kind=8), intent(out):: chi
 ! --------------------------------------------------------------------------------------------------
 !  CRITERE ENDO_FISS_EXP: CALCUL DU RAYON SEUIL
@@ -32,7 +32,7 @@ subroutine lcmfra(vp, itemax, precvg, chi, iret)
 ! OUT CHI     SCALING TEL QUE VP/CHI SOIT SUR LA FRONTIERE DU CRITERE
 ! OUT ITET    CODE RETOUR: 0=OK, 1=NON CONVERGENCE
 ! --------------------------------------------------------------------------------------------------
-    integer :: iter
+    integer(kind=8) :: iter
     real(kind=8) :: nors, n(3), tra, nora, ymax, y, e(3), nore, f, df, gamma, prectr
     real(kind=8) :: precy3, yt, ft
 ! --------------------------------------------------------------------------------------------------

@@ -21,7 +21,7 @@
 interface
     subroutine rmfile(k80, info, iret)
         character(len=*), intent(in) :: k80(*)
-        integer, intent(in) :: info
-        integer, intent(out) :: iret
+        integer(kind=8), intent(in) :: info
+        integer(kind=8), intent(out) :: iret
     end subroutine rmfile
 end interface

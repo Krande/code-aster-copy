@@ -39,13 +39,13 @@ module Behaviour_type
 ! ==================================================================================================
     type Behaviour_Para
 ! ----- Dimension of physic for behaviour
-        integer :: ldcDime = 0
+        integer(kind=8) :: ldcDime = 0
 ! ----- Name of quadrature scheme
         character(len=4) :: fami = " "
 ! ----- Adress for material parameters
-        integer :: jvMaterCode = 0
+        integer(kind=8) :: jvMaterCode = 0
 ! ----- Type for elasticity (anisotropy ?)
-        integer :: elasType = ELAS_UNDEF
+        integer(kind=8) :: elasType = ELAS_UNDEF
 ! ----- Flag for metallurgical case (temperature)
         aster_logical :: lElasIsMeta = ASTER_FALSE
 ! ----- Times
@@ -75,7 +75,7 @@ module Behaviour_type
 ! ----- Activation of IMPLEX method
         aster_logical :: lImplex = ASTER_FALSE
 ! ----- Offset for index of behaviour
-        integer :: lawIndexOffset = 0
+        integer(kind=8) :: lawIndexOffset = 0
 ! ----- Flags for standard FE
         aster_logical :: lStandardFE = ASTER_FALSE
         aster_logical :: lAxis = ASTER_FALSE
@@ -91,9 +91,9 @@ module Behaviour_type
         aster_logical :: lMGIS = ASTER_FALSE
         aster_logical :: lUMAT = ASTER_FALSE
 ! ----- Index of quadrature point
-        integer :: kpg = 0
+        integer(kind=8) :: kpg = 0
 ! ----- Index of "sub"-point (plates, pipes, beams, etc.)
-        integer :: ksp = 0
+        integer(kind=8) :: ksp = 0
     end type Behaviour_Para
 ! ==================================================================================================
 ! Type: External state variables - geometric properties
@@ -136,9 +136,9 @@ module Behaviour_type
 ! ----- Flag
         aster_logical :: exist = ASTER_FALSE
 ! ----- Number of components
-        integer :: nbComp = 0
+        integer(kind=8) :: nbComp = 0
 ! ----- Type of field to compute strain
-        integer :: typeForStrain = ESVA_FIELD_TYPE_UNKW
+        integer(kind=8) :: typeForStrain = ESVA_FIELD_TYPE_UNKW
 ! ----- Values of field
         real(kind=8) :: valePrev(ESVA_FIELD_NBCMPMAXI) = 0.d0
         real(kind=8) :: valeCurr(ESVA_FIELD_NBCMPMAXI) = 0.d0
@@ -153,7 +153,7 @@ module Behaviour_type
 ! ==================================================================================================
     type BehaviourESVA_Exte
 ! ----- Number of external state variables used (as scalar) in external solver
-        integer :: nbESVAScal = 0
+        integer(kind=8) :: nbESVAScal = 0
 ! ----- Value of external state variables used (as scalar) in external solver
         real(kind=8) :: scalESVAPrev(ESVA_EXTE_NBMAXI) = 0.d0
 ! ----- Incremental value of external state variables used (as scalar)  in external solver
@@ -172,7 +172,7 @@ module Behaviour_type
         aster_logical :: lhasInelasticStrains = ASTER_FALSE
 
 ! ----- Integer coded for presence of external state variables
-        integer :: tabcod(60) = 0
+        integer(kind=8) :: tabcod(60) = 0
 
 ! ----- Geometric properties
         type(BehaviourESVA_Geom) :: behavESVAGeom

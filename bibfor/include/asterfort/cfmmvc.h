@@ -24,9 +24,9 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
         real(kind=8), pointer :: v_ncomp_jeux(:)
-        integer, pointer :: v_ncomp_loca(:)
+        integer(kind=8), pointer :: v_ncomp_loca(:)
         character(len=16), pointer :: v_ncomp_enti(:)
-        integer, pointer :: v_ncomp_zone(:)
-        integer, intent(out) :: nt_ncomp_poin
+        integer(kind=8), pointer :: v_ncomp_zone(:)
+        integer(kind=8), intent(out) :: nt_ncomp_poin
     end subroutine cfmmvc
 end interface

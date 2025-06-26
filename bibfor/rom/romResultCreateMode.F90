@@ -50,10 +50,10 @@ subroutine romResultCreateMode(result, fieldName, mode)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: numeStoreFirst
+    integer(kind=8) :: numeStoreFirst
     character(len=8) :: model
     character(len=24) :: fieldRefe
-    integer :: iret, nbStore, jvPara
+    integer(kind=8) :: iret, nbStore, jvPara
     character(len=8) :: resultName
     character(len=16) :: resultType
 !

@@ -29,7 +29,7 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres, &
 #include "asterfort/mtxcnl.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbcomb, lmat(*), lres
+    integer(kind=8) :: nbcomb, lmat(*), lres
     character(len=*) :: typcst(*)
     character(len=*) :: typres
     real(kind=8) :: const(*)
@@ -56,8 +56,8 @@ subroutine mtconl(nbcomb, typcst, const, lmat, typres, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: icomb, iconst, ier1, ier2, jcomb, lconl1
-    integer :: lconl2, neq
+    integer(kind=8) :: icomb, iconst, ier1, ier2, jcomb, lconl1
+    integer(kind=8) :: lconl2, neq
 !-----------------------------------------------------------------------
     call jemarq()
     typrez = typres

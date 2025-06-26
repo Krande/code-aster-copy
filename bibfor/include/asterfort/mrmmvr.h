@@ -24,14 +24,14 @@ interface
     subroutine mrmmvr(cumul, lmat, smdi, smhc, lmatd,&
                       neq, neql, vect, xsol, nbvect,&
                       vectmp, prepos)
-        integer :: nbvect
-        integer :: neq
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: neq
         character(len=*) :: cumul
-        integer :: lmat
-        integer :: smdi(*)
+        integer(kind=8) :: lmat
+        integer(kind=8) :: smdi(*)
         integer(kind=4) :: smhc(*)
         aster_logical :: lmatd
-        integer :: neql
+        integer(kind=8) :: neql
         real(kind=8) :: vect(neq, nbvect)
         real(kind=8) :: xsol(neq, nbvect)
         real(kind=8) :: vectmp(neq)

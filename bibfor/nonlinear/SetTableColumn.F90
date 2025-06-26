@@ -33,7 +33,7 @@ subroutine SetTableColumn(table, name_, flag_acti_, &
     aster_logical, optional, intent(in) :: flag_acti_
     aster_logical, optional, intent(in) :: flag_affe_
     real(kind=8), optional, intent(in) :: valer_
-    integer, optional, intent(in) :: valei_
+    integer(kind=8), optional, intent(in) :: valei_
     character(len=*), optional, intent(in) :: valek_
     character(len=1), optional, intent(in) :: mark_
 !
@@ -57,7 +57,7 @@ subroutine SetTableColumn(table, name_, flag_acti_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, nb_cols, i_col_name
+    integer(kind=8) :: i_col, nb_cols, i_col_name
 !
 ! --------------------------------------------------------------------------------------------------
 !

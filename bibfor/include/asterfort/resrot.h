@@ -25,8 +25,8 @@ interface
         real(kind=8) :: coor(18)
         real(kind=8) :: ff(81)
         real(kind=8) :: rho
-        integer :: nno
-        integer :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: npg
         real(kind=8) :: frx(9)
         real(kind=8) :: fry(9)
     end subroutine resrot

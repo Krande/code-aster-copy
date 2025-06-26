@@ -23,6 +23,6 @@ interface
         character(len=8), intent(in) :: modele
         character(len=8), intent(in) :: nomfis
         character(len=8), intent(in) :: typfis
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
     end subroutine cgvcmo
 end interface

@@ -26,8 +26,8 @@ interface
         character(len=19) :: raide
         character(len=19) :: raidfa
         character(len=14) :: nume
-        integer :: nbpsmo
-        integer :: nbmoda
-        integer :: nbmoad
+        integer(kind=8) :: nbpsmo
+        integer(kind=8) :: nbmoda
+        integer(kind=8) :: nbmoad
     end subroutine psmo93
 end interface

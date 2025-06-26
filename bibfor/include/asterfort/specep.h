@@ -23,15 +23,15 @@
 interface
     subroutine specep(casint, nomu, spectr, base, vite,&
                       nuor, imodi, imodf, nbm, nbpf)
-        integer :: nbm
+        integer(kind=8) :: nbm
         aster_logical :: casint
         character(len=8) :: nomu
         character(len=19) :: spectr
         character(len=19) :: base
         real(kind=8) :: vite
-        integer :: nuor(nbm)
-        integer :: imodi
-        integer :: imodf
-        integer :: nbpf
+        integer(kind=8) :: nuor(nbm)
+        integer(kind=8) :: imodi
+        integer(kind=8) :: imodf
+        integer(kind=8) :: nbpf
     end subroutine specep
 end interface

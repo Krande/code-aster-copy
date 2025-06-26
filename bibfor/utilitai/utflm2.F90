@@ -35,12 +35,12 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai, &
 #include "asterfort/as_allocate.h"
 !
     character(len=8), intent(in) :: mailla
-    integer, intent(in) :: nbma
-    integer, intent(in) :: tabmai(nbma)
-    integer, intent(in) :: dim
+    integer(kind=8), intent(in) :: nbma
+    integer(kind=8), intent(in) :: tabmai(nbma)
+    integer(kind=8), intent(in) :: dim
     character(len=*), intent(in) :: typmai
-    integer, intent(out) :: nbtrou
-    integer, intent(out) :: tatrou(nbma)
+    integer(kind=8), intent(out) :: nbtrou
+    integer(kind=8), intent(out) :: tatrou(nbma)
 
 ! person_in_charge: josselin.delmas at edf.fr
 !
@@ -73,12 +73,12 @@ subroutine utflm2(mailla, tabmai, nbma, dim, typmai, &
 !
 !
 !
-    integer :: nbtyp, i, ii, itrou, itych
-    integer, pointer :: dime_topo(:) => null()
-    integer, pointer :: liste_m_temp(:) => null()
-    integer, pointer :: liste_typmai(:) => null()
+    integer(kind=8) :: nbtyp, i, ii, itrou, itych
+    integer(kind=8), pointer :: dime_topo(:) => null()
+    integer(kind=8), pointer :: liste_m_temp(:) => null()
+    integer(kind=8), pointer :: liste_typmai(:) => null()
     character(len=8), pointer :: type_maille(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 !
 ! ----------------------------------------------------------------------

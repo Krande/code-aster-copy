@@ -21,7 +21,7 @@
 interface
     subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn,&
                       lfichUniq)
-        integer, intent(in) :: keywfIocc, fileUnit, fileVersion
+        integer(kind=8), intent(in) :: keywfIocc, fileUnit, fileVersion
         character(len=8), intent(in) :: fileFormat, modelIn
         aster_logical :: lfichUniq
     end subroutine irmfac

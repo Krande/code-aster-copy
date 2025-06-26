@@ -52,8 +52,8 @@ subroutine dbrMainPod(paraPod, baseOut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbSing, nbMode, nbSnap, iSnap, nbModeMaxi, m, n
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbSing, nbMode, nbSnap, iSnap, nbModeMaxi, m, n
     real(kind=8), pointer :: q(:) => null()
     real(kind=8), pointer :: v(:) => null()
     real(kind=8), pointer :: s(:) => null()

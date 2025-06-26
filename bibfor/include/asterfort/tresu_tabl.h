@@ -29,7 +29,7 @@ interface
         character(len=8), intent(in) :: typtes
         character(len=*), intent(in) :: typres
         character(len=16), intent(in) :: tbtxt(2)
-        integer, intent(in) :: refi
+        integer(kind=8), intent(in) :: refi
         real(kind=8), intent(in) :: refr
         complex(kind=8), intent(in) :: refc
         real(kind=8), intent(in) :: epsi

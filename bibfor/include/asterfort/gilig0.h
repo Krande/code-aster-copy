@@ -20,10 +20,10 @@
 !
 interface
     subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
-        integer :: nfic
-        integer :: nboblu
-        integer :: nbobno
-        integer :: nbobo
-        integer :: niv
+        integer(kind=8) :: nfic
+        integer(kind=8) :: nboblu
+        integer(kind=8) :: nbobno
+        integer(kind=8) :: nbobo
+        integer(kind=8) :: niv
     end subroutine gilig0
 end interface

@@ -28,7 +28,7 @@ interface
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*)
-    integer :: kpg, ksp, ndim, imate
+    integer(kind=8) :: kpg, ksp, ndim, imate
     real(kind=8) :: eps(:), gonf, pres, sig(:), energi(2)
 
     end subroutine nmelnl

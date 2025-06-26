@@ -34,7 +34,7 @@ subroutine caonde(load, mesh, valeType, nbOcc)
 !
     character(len=8), intent(in) :: load, mesh
     character(len=4), intent(in) :: valeType
-    integer, intent(in) :: nbOcc
+    integer(kind=8), intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,9 +53,9 @@ subroutine caonde(load, mesh, valeType, nbOcc)
 !
     character(len=16), parameter :: keywordfact = 'ONDE_FLUI'
     character(len=24), parameter :: listCell = '&&CAONDE.LIST_ELEM'
-    integer :: iocc, n, jvalv, nbCell, jvCell
+    integer(kind=8) :: iocc, n, jvalv, nbCell, jvCell
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

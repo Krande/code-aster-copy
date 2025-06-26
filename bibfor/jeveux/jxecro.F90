@@ -28,7 +28,7 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, &
 #include "asterfort/jxlirb.h"
 #include "asterfort/jxouvr.h"
 #include "asterfort/utmess.h"
-    integer :: ic, iadmi, iaddi(2), lso, idco, idos
+    integer(kind=8) :: ic, iadmi, iaddi(2), lso, idco, idos
 ! ----------------------------------------------------------------------
 ! ECRITURE D'UN SEGMENT DE VALEUR
 !
@@ -39,26 +39,26 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, &
 ! IN  IDCO  : IDENTIFICATEUR DE COLLECTION
 ! IN  IDOS  : IDENTIFICATEUR D'OBJET SIMPLE OU D'OBJET DE COLLECTION
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: jadm, iso, jiecr, jusadi, k, kd
-    integer :: kl, ladm, lsa, lsadi, n, nbl, numdeb
-    integer :: numext
+    integer(kind=8) :: jadm, iso, jiecr, jusadi, k, kd
+    integer(kind=8) :: kl, ladm, lsa, lsadi, n, nbl, numdeb
+    integer(kind=8) :: numext
 !-----------------------------------------------------------------------
     parameter(n=5)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq, ibc
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq, ibc
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &               kitlec(n), kitecr(n), kiadm(n),&
      &               iitlec(n), iitecr(n), nitecr(n), kmarq(n)
     aster_logical :: litlec
     common/lficje/litlec(n)
-    integer :: idn, iext, nbenrg
+    integer(kind=8) :: idn, iext, nbenrg
     common/iextje/idn(n), iext(n), nbenrg(n)
     character(len=8) :: nombas
     common/kbasje/nombas(n)
@@ -68,10 +68,10 @@ subroutine jxecro(ic, iadmi, iaddi, lso, idco, &
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n), dn2(n)
-    integer :: indiq_jjagod, indiq_jjldyn
+    integer(kind=8) :: indiq_jjagod, indiq_jjldyn
     common/idagod/indiq_jjagod, indiq_jjldyn
 !     ------------------------------------------------------------------
-    integer :: iadmo, kadd, ladd, nde, lgbl, lso2
+    integer(kind=8) :: iadmo, kadd, ladd, nde, lgbl, lso2
     aster_logical :: lpetit
     parameter(nde=6)
 ! ----------------------------------------------------------------------

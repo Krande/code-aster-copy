@@ -24,11 +24,11 @@ interface
         character(len=24) :: resoco
         character(len=19) :: matass
         character(len=19) :: solveu
-        integer :: neq
-        integer :: nbliai
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
         character(len=16) :: precon
         real(kind=8) :: tole
-        integer :: premax
+        integer(kind=8) :: premax
         real(kind=8) :: epsi
     end subroutine cfgcpc
 end interface

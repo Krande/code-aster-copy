@@ -23,8 +23,8 @@ interface
                       tau1, tau2)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: model_ndim
-        integer, intent(in) :: elem_mast_indx
+        integer(kind=8), intent(in) :: model_ndim
+        integer(kind=8), intent(in) :: elem_mast_indx
         real(kind=8), intent(in) :: poin_coor(3)
         real(kind=8), intent(inout) :: tau1(3)
         real(kind=8), intent(inout) :: tau2(3)

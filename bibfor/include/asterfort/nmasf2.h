@@ -21,11 +21,11 @@
 interface
     subroutine nmasf2(nno, npg, ipoids, ivf, idfde,&
                       geom, typmod, sigm, dfdi, vectu)
-        integer :: npg
-        integer :: nno
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: geom(2, nno)
         character(len=8) :: typmod(*)
         real(kind=8) :: sigm(10, npg)

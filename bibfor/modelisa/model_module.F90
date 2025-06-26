@@ -54,11 +54,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: modelz
-        integer, intent(out) :: nbCell
-        integer, pointer :: modelCells(:)
+        integer(kind=8), intent(out) :: nbCell
+        integer(kind=8), pointer :: modelCells(:)
         aster_logical, intent(out) :: hasFE
 ! ----- Local
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=8) :: model, mesh
 !   ------------------------------------------------------------------------------------------------
 !
@@ -91,12 +91,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: modelz
-        integer, intent(out) :: nbCellFSI
-        integer, pointer :: cellFSI(:)
+        integer(kind=8), intent(out) :: nbCellFSI
+        integer(kind=8), pointer :: cellFSI(:)
 ! ----- Local
-        integer :: iCell, nbCell, iCellFSI
-        integer :: cellTypeNume
-        integer, pointer :: modelCells(:) => null()
+        integer(kind=8) :: iCell, nbCell, iCellFSI
+        integer(kind=8) :: cellTypeNume
+        integer(kind=8), pointer :: modelCells(:) => null()
         character(len=16) :: cellTypeName
         aster_logical, pointer :: isCellFSI(:) => null()
         aster_logical :: hasFE
@@ -147,12 +147,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: modelz
-        integer, intent(out) :: nbCellFluid
-        integer, pointer :: cellFluid(:)
+        integer(kind=8), intent(out) :: nbCellFluid
+        integer(kind=8), pointer :: cellFluid(:)
 ! ----- Local
-        integer :: iCell, nbCell, iCellFluid
-        integer :: cellTypeNume
-        integer, pointer :: modelCells(:) => null()
+        integer(kind=8) :: iCell, nbCell, iCellFluid
+        integer(kind=8) :: cellTypeNume
+        integer(kind=8), pointer :: modelCells(:) => null()
         character(len=16) :: cellTypeName
         aster_logical, pointer :: isCellFluid(:) => null()
         aster_logical :: hasFE
@@ -203,12 +203,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: modelz
-        integer, intent(out) :: nbCellPlate
-        integer, pointer :: cellPlate(:)
+        integer(kind=8), intent(out) :: nbCellPlate
+        integer(kind=8), pointer :: cellPlate(:)
 ! ----- Local
-        integer :: iCell, nbCell, iCellPlate
-        integer :: cellTypeNume
-        integer, pointer :: modelCells(:) => null()
+        integer(kind=8) :: iCell, nbCell, iCellPlate
+        integer(kind=8) :: cellTypeNume
+        integer(kind=8), pointer :: modelCells(:) => null()
         character(len=16) :: cellTypeName
         aster_logical, pointer :: isCellPlate(:) => null()
         aster_logical :: hasFE

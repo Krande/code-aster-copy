@@ -34,7 +34,7 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 !
     character(len=8), intent(in) :: noma
     character(len=24), intent(in) :: defico
-    integer, intent(in) :: posent
+    integer(kind=8), intent(in) :: posent
     character(len=4), intent(in) :: typent
     character(len=8), intent(out) :: noment
 !
@@ -57,8 +57,8 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nummai, numnoe(1)
-    integer :: posmai, posnoe(1)
+    integer(kind=8) :: nummai, numnoe(1)
+    integer(kind=8) :: posmai, posnoe(1)
 !
 ! ----------------------------------------------------------------------
 !

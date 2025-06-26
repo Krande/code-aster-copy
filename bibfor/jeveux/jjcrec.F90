@@ -25,7 +25,7 @@ subroutine jjcrec(icl, ida, genri, typei, nb, &
 #include "asterfort/jjecrs.h"
 #include "asterfort/jjprem.h"
 #include "asterfort/utmess.h"
-    integer :: icl, ida, nb, iadmi
+    integer(kind=8) :: icl, ida, nb, iadmi
     character(len=*) :: genri, typei
 ! ----------------------------------------------------------------------
 ! CREATION D'UN OBJET SIMPLE ATTRIBUT COMPOSANT UNE COLLECTION
@@ -37,27 +37,27 @@ subroutine jjcrec(icl, ida, genri, typei, nb, &
 ! IN  NB    : LONGEUR EN MOTS DU SEGMENT DE VALEUR ASSOCIE
 ! OUT IADMI : ADRESSE DU SEGMENT DE VALEUR DANS ISZON
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !
 !-----------------------------------------------------------------------
-    integer :: iadyn, iv, jcara, jdate, jdocu, jgenr, jhcod
-    integer :: jiadd, jiadm, jlong, jlono, jltyp, jluti
-    integer :: jmarq, jorig, jrnom, jtype, l, lonoi, n
-    integer :: nbl, nhc
+    integer(kind=8) :: iadyn, iv, jcara, jdate, jdocu, jgenr, jhcod
+    integer(kind=8) :: jiadd, jiadm, jlong, jlono, jltyp, jluti
+    integer(kind=8) :: jmarq, jorig, jrnom, jtype, l, lonoi, n
+    integer(kind=8) :: nbl, nhc
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
     character(len=4) :: ifmt
-    integer :: ilorep, ideno, ilnom, ilmax, iluti, idehc
+    integer(kind=8) :: ilorep, ideno, ilnom, ilmax, iluti, idehc
     parameter(ilorep=1, ideno=2, ilnom=3, ilmax=4, iluti=5, idehc=6)
-    integer :: irt
+    integer(kind=8) :: irt
 ! DEB ------------------------------------------------------------------
     irt = 0
     genr(jgenr(icl)+ida) = genri(1:1)

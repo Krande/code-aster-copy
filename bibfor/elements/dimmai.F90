@@ -19,7 +19,7 @@
 subroutine dimmai(typem, dimma)
     implicit none
     character(len=*) :: typem
-    integer :: dimma
+    integer(kind=8) :: dimma
 !
     if (typem(1:2) .eq. 'TE' .or. typem(1:2) .eq. 'PE' .or. typem(1:2) .eq. 'HE') then
         dimma = 3

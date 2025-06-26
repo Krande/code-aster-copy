@@ -20,11 +20,11 @@ interface
     subroutine romModeParaSave(resultName, numeMode    ,&
                                model     , modeSymbName, modeSing, numeSlice, nbSnap)
         character(len=8), intent(in) :: resultName
-        integer, intent(in) :: numeMode
+        integer(kind=8), intent(in) :: numeMode
         character(len=8), intent(in)  :: model
         character(len=24), intent(in) :: modeSymbName
-        integer, intent(in)           :: numeSlice
+        integer(kind=8), intent(in)           :: numeSlice
         real(kind=8), intent(in)      :: modeSing
-        integer, intent(in)           :: nbSnap
+        integer(kind=8), intent(in)           :: nbSnap
     end subroutine romModeParaSave
 end interface

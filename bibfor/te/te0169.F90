@@ -36,8 +36,8 @@ subroutine te0169(option, nomte)
 !
     real(kind=8) :: w(9), l1(3), l2(3), forref
     real(kind=8) :: norml1, norml2, coef1, coef2
-    integer :: jefint, jvSief, igeom, jvDisp, ivectu, nno, nc
-    integer :: ino, i, kc
+    integer(kind=8) :: jefint, jvSief, igeom, jvDisp, ivectu, nno, nc
+    integer(kind=8) :: ino, i, kc
     blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !

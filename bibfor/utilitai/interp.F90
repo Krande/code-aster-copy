@@ -36,7 +36,7 @@ subroutine interp(tabx, taby, necr, x, y, &
 !
     implicit none
     real(kind=8) :: tabx(*), taby(*)
-    integer :: ipt, iseg, necr
+    integer(kind=8) :: ipt, iseg, necr
     real(kind=8) :: x, x1, x2, y, y1, y2
 !-----------------------------------------------------------------------
     do 1, ipt = 2, necr

@@ -43,7 +43,7 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
 #include "asterfort/as_allocate.h"
 #include "blas/zdotc.h"
 !
-    integer :: neq, nbmo
+    integer(kind=8) :: neq, nbmo
     character(len=8) :: matras, nomres, basemo
     character(len=14) :: nu
     character(len=19) :: nomsto
@@ -53,9 +53,9 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: iddeeq, nueq, ntbloc, nbloc, iaconl, jrefa, iadesc, nbj
-    integer :: i, j, k, imatra, iblo, ldblo, n1bloc, n2bloc, hc, ldblo1, ldblo2
-    integer :: iret
+    integer(kind=8) :: iddeeq, nueq, ntbloc, nbloc, iaconl, jrefa, iadesc, nbj
+    integer(kind=8) :: i, j, k, imatra, iblo, ldblo, n1bloc, n2bloc, hc, ldblo1, ldblo2
+    integer(kind=8) :: iret
     character(len=1) :: typbase
     character(len=19) :: matr, resu
     character(len=24) :: nomcha
@@ -65,9 +65,9 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
     real(kind=8), pointer :: vbasemo(:) => null()
     complex(kind=8), pointer :: vectass2(:) => null()
     complex(kind=8), pointer :: vectass3(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !-----------------------------------------------------------------------
 !

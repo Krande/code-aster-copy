@@ -30,11 +30,11 @@ interface
         real(kind=8) :: scmaxi
         real(kind=8) :: scmaxs
         real(kind=8) :: ssmax
-        integer :: uc
+        integer(kind=8) :: uc
         real(kind=8) :: dnsinf
         real(kind=8) :: dnssup
         real(kind=8) :: effm
         real(kind=8) :: effn
-        integer :: verif
+        integer(kind=8) :: verif
     end subroutine verifels
 end interface

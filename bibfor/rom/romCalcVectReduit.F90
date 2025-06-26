@@ -27,7 +27,7 @@ subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type,
 #include "blas/zdotc.h"
 #include "blas/ddot.h"
 !
-    integer, intent(in) :: i_mode, nb_vect, nb_equa
+    integer(kind=8), intent(in) :: i_mode, nb_vect, nb_equa
     character(len=8), intent(in) :: l_vect_name(:)
     character(len=8), intent(in) :: l_vect_type(:)
     character(len=24), intent(in) :: l_vect_redu(:)
@@ -53,7 +53,7 @@ subroutine romCalcVectReduit(i_mode, nb_equa, nb_vect, l_vect_name, l_vect_type,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_vect, i_equa
+    integer(kind=8) :: i_vect, i_equa
     complex(kind=8), pointer :: vc_vect_redu(:) => null()
     real(kind=8), pointer :: vr_vect_redu(:) => null()
     real(kind=8), pointer :: jv_vect_r(:) => null()

@@ -23,13 +23,13 @@
 interface
     subroutine i2gspl(debspl, tvois1, tvois2, tplace, schm,&
                       achm, pts, pta)
-        integer :: debspl
-        integer :: tvois1(*)
-        integer :: tvois2(*)
+        integer(kind=8) :: debspl
+        integer(kind=8) :: tvois1(*)
+        integer(kind=8) :: tvois2(*)
         aster_logical :: tplace(*)
-        integer :: schm(*)
-        integer :: achm(*)
-        integer :: pts
-        integer :: pta
+        integer(kind=8) :: schm(*)
+        integer(kind=8) :: achm(*)
+        integer(kind=8) :: pts
+        integer(kind=8) :: pta
     end subroutine i2gspl
 end interface

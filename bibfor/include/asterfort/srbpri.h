@@ -20,9 +20,9 @@
 !
 interface
     function srbpri(val, vin, nvi, nbmat, mater, para, invar, s, tmp)
-        integer :: nbmat
-        integer :: val
-        integer :: nvi
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: val
+        integer(kind=8) :: nvi
         real(kind=8) :: vin(nvi)
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: para(3)

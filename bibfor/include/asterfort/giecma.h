@@ -23,13 +23,13 @@
 interface
     subroutine giecma(nfic, trouve, nbele, nomobj, tymail,&
                       nbno, ecrma, icoma)
-        integer :: nfic
+        integer(kind=8) :: nfic
         aster_logical :: trouve
-        integer :: nbele
+        integer(kind=8) :: nbele
         character(len=8) :: nomobj
         character(len=8) :: tymail
-        integer :: nbno
+        integer(kind=8) :: nbno
         aster_logical :: ecrma(*)
-        integer :: icoma
+        integer(kind=8) :: icoma
     end subroutine giecma
 end interface

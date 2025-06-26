@@ -28,6 +28,6 @@ interface
         character(len=19) :: solveu
         character(len=19) :: matass
         character(len=8) :: noma
-        integer :: ctccvg
+        integer(kind=8) :: ctccvg
     end subroutine algoco
 end interface

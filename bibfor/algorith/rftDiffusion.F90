@@ -26,7 +26,7 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: fami, poum
-    integer, intent(in) :: kpg, ksp, imate
+    integer(kind=8), intent(in) :: kpg, ksp, imate
     real(kind=8), intent(in) :: c, temp
     real(kind=8), intent(out) :: diff
 ! ......................................................................
@@ -38,7 +38,7 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 !
 !   diff (out) : coefficient de diffusion
 ! ......................................................................
-    integer           :: codret(5), nbpar
+    integer(kind=8)           :: codret(5), nbpar
     real(kind=8)      :: valres(5), hygr, valpar(2), dpc
     real(kind=8)      :: richardsDiffusionCoef, vapourDiffusionCoef
     real(kind=8)      :: perm_in, qsr_k, poro, a_mil, b_mil, t0_C, vg_m_p
@@ -118,11 +118,11 @@ contains
 !      dpc (out) : capillar pressure derivative
 !
 !      .................................................................
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         real(kind=8), intent(in) :: c, temp
         real(kind=8), intent(out) :: hygr, dpc, beta, poro, t0_C
 !
-        integer           :: codret(5)
+        integer(kind=8)           :: codret(5)
         real(kind=8)      :: valres(5)
         character(len=16) :: nomres(5)
         real(kind=8)      :: alpha, ad, satu

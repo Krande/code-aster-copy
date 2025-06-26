@@ -20,10 +20,10 @@
 !
 interface
     subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=*) :: tymaz
         character(len=*) :: nomaz
         character(len=24) :: lisma
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine cgmftm
 end interface

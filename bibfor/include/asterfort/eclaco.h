@@ -22,17 +22,17 @@ interface
     subroutine eclaco(ipg, mxnbn2, connx, nbno2, i1,&
                       i2, i3, i4, i5, i6,&
                       i7, i8)
-        integer :: mxnbn2
-        integer :: ipg
-        integer :: connx(mxnbn2, *)
-        integer :: nbno2(*)
-        integer :: i1
-        integer :: i2
-        integer :: i3
-        integer :: i4
-        integer :: i5
-        integer :: i6
-        integer :: i7
-        integer :: i8
+        integer(kind=8) :: mxnbn2
+        integer(kind=8) :: ipg
+        integer(kind=8) :: connx(mxnbn2, *)
+        integer(kind=8) :: nbno2(*)
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
+        integer(kind=8) :: i3
+        integer(kind=8) :: i4
+        integer(kind=8) :: i5
+        integer(kind=8) :: i6
+        integer(kind=8) :: i7
+        integer(kind=8) :: i8
     end subroutine eclaco
 end interface

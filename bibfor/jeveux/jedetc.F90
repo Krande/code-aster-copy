@@ -27,7 +27,7 @@ subroutine jedetc(clas, souch, ipos)
 #include "asterfort/jxlibd.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: clas, souch
-    integer, intent(in) :: ipos
+    integer(kind=8), intent(in) :: ipos
 ! ----------------------------------------------------------------------
 ! DESTRUCTION D'UN ENSEMBLE D'OBJETS JEVEUX
 !
@@ -35,21 +35,21 @@ subroutine jedetc(clas, souch, ipos)
 ! IN  SOUCH  : SOUS-CHAINE RECHERCHEE
 ! IN  IPOS   : POSITION DE LA SOUS-CHAINE RECHERCHEE
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 !-----------------------------------------------------------------------
-    integer :: iadmar, iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadd
-    integer :: ibiadm, iblono, ibmarq, ixdeso, ixiadd, ixiadm, ixlono
-    integer :: ixmarq, jcara, jdate, jdocu, jgenr, jhcod, jiadd
-    integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
-    integer :: jrnom, jtype, k, kk, l, lonoi, n
+    integer(kind=8) :: iadmar, iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadd
+    integer(kind=8) :: ibiadm, iblono, ibmarq, ixdeso, ixiadd, ixiadm, ixlono
+    integer(kind=8) :: ixmarq, jcara, jdate, jdocu, jgenr, jhcod, jiadd
+    integer(kind=8) :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
+    integer(kind=8) :: jrnom, jtype, k, kk, l, lonoi, n
 !
 !-----------------------------------------------------------------------
     parameter(n=5)
@@ -62,19 +62,19 @@ subroutine jedetc(clas, souch, ipos)
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
-    integer :: nivo
+    integer(kind=8) :: nivo
     common/jvnivo/nivo
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlono, idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlono, idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
      &               idmarq=4,&
      &               idlono=8, idnum=10)
 !     ------------------------------------------------------------------
-    integer :: ncla1, ncla2, ic, j, iret, id(idnum), nmax, iaddi(2)
+    integer(kind=8) :: ncla1, ncla2, ic, j, iret, id(idnum), nmax, iaddi(2)
     character(len=32) :: crnom, nom32
     character(len=1) :: kclas
 ! DEB ------------------------------------------------------------------

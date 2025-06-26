@@ -21,7 +21,7 @@ interface
                                      storeIndxNb, storeIndx  ,&
                                      storeTimeNb, storeTime  ,&
                                      storeEpsi  , storeCrit)
-        integer, intent(out) :: storeIndxNb, storeTimeNb
+        integer(kind=8), intent(out) :: storeIndxNb, storeTimeNb
         character(len=10), intent(out) :: storeAccess
         character(len=19), intent(out) :: storeIndx, storeTime
         real(kind=8), intent(out) :: storeEpsi

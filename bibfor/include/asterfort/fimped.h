@@ -22,7 +22,7 @@ interface
     subroutine fimped(modele, mateco, numedd, neq, vitini,&
                       vitent, veccor, veanec, vaanec, temps,&
                       foimpe)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=24) :: modele
         character(len=24) :: mateco
         character(len=24) :: numedd

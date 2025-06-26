@@ -23,6 +23,6 @@ interface
         character(len=19) :: resu
         character(len=8) :: modele
         character(len=8) :: carele
-        integer :: nbocc
+        integer(kind=8) :: nbocc
     end subroutine pevolu
 end interface

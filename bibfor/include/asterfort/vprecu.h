@@ -25,19 +25,19 @@ interface
                       nbpark)
         character(len=*), intent(in) :: modes
         character(len=*), intent(in) :: nomsy
-        integer, intent(in) :: nbvect
-        integer, intent(in) :: lposi(*)
+        integer(kind=8), intent(in) :: nbvect
+        integer(kind=8), intent(in) :: lposi(*)
         character(len=*), intent(in) :: nomvec
-        integer, intent(in) :: nbpara
+        integer(kind=8), intent(in) :: nbpara
         character(len=*), intent(in) :: nopara
         character(len=*), intent(in) :: nomvai
         character(len=*), intent(in) :: nomvar
         character(len=*), intent(in) :: nomvak
-        integer, intent(out) :: neq
-        integer, intent(out) :: nbmode
+        integer(kind=8), intent(out) :: neq
+        integer(kind=8), intent(out) :: nbmode
         character(len=*), intent(out) :: typmod
-        integer, intent(out) :: nbpari
-        integer, intent(out) :: nbparr
-        integer, intent(out) :: nbpark
+        integer(kind=8), intent(out) :: nbpari
+        integer(kind=8), intent(out) :: nbparr
+        integer(kind=8), intent(out) :: nbpark
     end subroutine vprecu
 end interface

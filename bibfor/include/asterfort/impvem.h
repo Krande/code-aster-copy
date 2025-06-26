@@ -20,6 +20,6 @@
 !
 interface
     subroutine impvem(ifi)
-        integer :: ifi
+        integer(kind=8) :: ifi
     end subroutine impvem
 end interface

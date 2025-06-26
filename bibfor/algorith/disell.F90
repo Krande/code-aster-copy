@@ -40,7 +40,7 @@ subroutine disell(pz, az, bz, h)
 !
 !
 !
-    integer :: iter, nitmx
+    integer(kind=8) :: iter, nitmx
     real(kind=8) :: a, b, p(2)
     real(kind=8) :: eps, epsc, ba, r, z, cosx, sinx, t, a0, a1, a2, a3, a4, k
     real(kind=8) :: phi, qq, rr, dd

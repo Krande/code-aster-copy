@@ -31,7 +31,7 @@ subroutine dgplas(ea, sya, eb, nub, ftj, fcj, &
 #include "asterfort/dgmpla.h"
 #include "asterfort/calc_myf_gf.h"
 #include "asterfort/utmess.h"
-    integer :: nnap, ilit, icisai, ipentetrac, ipenteflex
+    integer(kind=8) :: nnap, ilit, icisai, ipentetrac, ipenteflex
 !
     real(kind=8) :: ea(*), sya(*), eb, nub, num, nuf, w, emaxm, emaxf, ef
     real(kind=8) :: a, b1, b, syt, syf, dxd, drd, h, c, omx, rx(*), ry(*)

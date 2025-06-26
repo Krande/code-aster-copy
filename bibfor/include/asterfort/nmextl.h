@@ -25,11 +25,11 @@ interface
         character(len=*), intent(in) :: mesh
         character(len=*), intent(in) :: model
         character(len=16), intent(in) :: keyw_fact
-        integer, intent(in) :: i_keyw_fact
+        integer(kind=8), intent(in) :: i_keyw_fact
         character(len=4), intent(in) :: field_disc
         character(len=24), intent(in) :: field_type
-        integer, intent(out) :: nb_node
-        integer, intent(out) :: nb_elem
+        integer(kind=8), intent(out) :: nb_node
+        integer(kind=8), intent(out) :: nb_elem
         character(len=24), intent(in) :: list_node
         character(len=24), intent(in) :: list_elem
         character(len=8), intent(out) :: type_extr

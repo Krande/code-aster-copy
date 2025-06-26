@@ -23,9 +23,9 @@ subroutine pacou5(r, qt, n, u, v)
 ! ---------
 #include "jeveux.h"
 #include "asterfort/pacou6.h"
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: r(n, *), qt(n, *), u(*), v(*)
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 ! ---------------------------------------------------------------------
 !
     do k = n, 1, -1

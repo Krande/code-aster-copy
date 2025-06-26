@@ -21,7 +21,7 @@
 
 interface 
     subroutine lcexpo(a, e, mseq, nsqu)
-        integer,intent(in) :: mseq, nsqu
+        integer(kind=8),intent(in) :: mseq, nsqu
         real(kind=8),intent(in) :: a(6)
         real(kind=8),intent(out):: e(6)
     end subroutine lcexpo

@@ -21,16 +21,16 @@
 interface
     subroutine xmilfi(elp, n, ndime, nno, ptint, ndim,&
                       jtabco, jtabls, ipp, ip, milfi)
-        integer :: ndime
-        integer :: ndim
-        integer :: n(3)
+        integer(kind=8) :: ndime
+        integer(kind=8) :: ndim
+        integer(kind=8) :: n(3)
         character(len=8) :: elp
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: ptint(*)
-        integer :: jtabco
-        integer :: jtabls
-        integer :: ipp
-        integer :: ip
+        integer(kind=8) :: jtabco
+        integer(kind=8) :: jtabls
+        integer(kind=8) :: ipp
+        integer(kind=8) :: ip
         real(kind=8) :: milfi(ndim)
     end subroutine xmilfi
 end interface

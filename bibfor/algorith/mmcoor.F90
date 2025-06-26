@@ -23,7 +23,7 @@ subroutine mmcoor(alias, nno, ndim, coorma, ksi1, &
 !
     implicit none
 #include "asterfort/mmnonf.h"
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
     character(len=8) :: alias
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: coorma(27), coorpt(3)
@@ -48,7 +48,7 @@ subroutine mmcoor(alias, nno, ndim, coorma, ksi1, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: idim, ino
+    integer(kind=8) :: idim, ino
     real(kind=8) :: ff(9)
 !
 !-----------------------------------------------------------------------

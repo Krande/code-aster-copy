@@ -19,6 +19,6 @@
 interface
     subroutine rsGetSize(resultName, resultSize)
         character(len=8), intent(in) :: resultName
-        integer, intent(out) :: resultSize
+        integer(kind=8), intent(out) :: resultSize
     end subroutine rsGetSize
 end interface

@@ -20,7 +20,7 @@
 !
 interface
     subroutine lglcvx(sig, vin, nbmat, mater, seuil)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(*)
         real(kind=8) :: mater(nbmat, 2)

@@ -21,10 +21,10 @@ subroutine i2rdli(n, t, adr)
 #include "asterf_types.h"
 !
 !
-    integer :: n, t(*), adr
+    integer(kind=8) :: n, t(*), adr
 !
     aster_logical :: fini, trouve
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

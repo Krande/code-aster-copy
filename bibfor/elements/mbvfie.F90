@@ -22,8 +22,8 @@ subroutine mbvfie(nno, kpg, dff, sigpk2, ipoids, h, covadef, vecfie)
 #include "asterfort/r8inir.h"
 #include "jeveux.h"
 !
-    integer :: nno, kpg
-    integer :: ipoids
+    integer(kind=8) :: nno, kpg
+    integer(kind=8) :: ipoids
     real(kind=8) :: h
     real(kind=8) :: sigpk2(2, 2)
     real(kind=8) :: dff(2, nno), covadef(3, 3)
@@ -43,7 +43,7 @@ subroutine mbvfie(nno, kpg, dff, sigpk2, ipoids, h, covadef, vecfie)
 ! OUT VECFIE       VECTEUR FORCE INTERNE
 ! ----------------------------------------------------------------------
 !
-    integer :: a, p, i, alpha, gamma
+    integer(kind=8) :: a, p, i, alpha, gamma
 
     call r8inir(3*nno, 0.d0, vecfie, 1)
 

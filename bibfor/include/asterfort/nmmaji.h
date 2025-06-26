@@ -31,6 +31,6 @@ interface
         character(len=*) :: incmoz
         character(len=*) :: ddincz
         character(len=*) :: incplz
-        integer :: ordre
+        integer(kind=8) :: ordre
     end subroutine nmmaji
 end interface

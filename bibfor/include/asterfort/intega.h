@@ -23,7 +23,7 @@ interface
                       vectz, mat11, mat22, mat33, mat12,&
                       mat13, mat23, nx, ny, nz,&
                       inte)
-        integer :: npgf
+        integer(kind=8) :: npgf
         real(kind=8) :: jac(9)
         real(kind=8) :: poidsf(9)
         real(kind=8) :: vectx(9)

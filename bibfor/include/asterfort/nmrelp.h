@@ -23,8 +23,8 @@ interface
                       solalg         , veelem     , veasse     , ds_conv   , ldccvg, &
                       sddyna_ )
         use NonLin_Datastructure_type
-        integer :: list_func_acti(*)
-        integer :: iter_newt, ldccvg
+        integer(kind=8) :: list_func_acti(*)
+        integer(kind=8) :: iter_newt, ldccvg
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_Measure), intent(inout) :: ds_measure

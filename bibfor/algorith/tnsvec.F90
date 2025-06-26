@@ -19,7 +19,7 @@
 subroutine tnsvec(choix, ndim, mat, vec, r)
     implicit none
 #include "asterfort/assert.h"
-    integer :: ndim, i, choix
+    integer(kind=8) :: ndim, i, choix
     real(kind=8) :: mat(3, 3), vec(2*ndim), r
 !     FONCTION TRANSFORMANT UNE MATRICE SYMETRIQUE (TENSEUR) 3,3
 !     EN VECTEUR 6 (OU 4 EN 2D) ET MULTIPLIANT LES TERMES NON DIAGONAUX

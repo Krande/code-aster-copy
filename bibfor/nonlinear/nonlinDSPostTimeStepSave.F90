@@ -38,7 +38,7 @@ subroutine nonlinDSPostTimeStepSave(mod45, sdmode, sdstab, &
 !
     character(len=4), intent(in) :: mod45
     character(len=8), intent(in) :: sdmode, sdstab
-    integer, intent(in) :: nume_inst, nb_freq, nfreq_calibr
+    integer(kind=8), intent(in) :: nume_inst, nb_freq, nfreq_calibr
     real(kind=8), intent(in) :: inst
     type(NL_DS_PostTimeStep), intent(inout) :: ds_posttimestep
 !
@@ -54,10 +54,10 @@ subroutine nonlinDSPostTimeStepSave(mod45, sdmode, sdstab, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: field
-    integer :: iret, nb_dof_stab, nb_freq_save, i_freq, jv_para
-    integer :: vali(3)
+    integer(kind=8) :: iret, nb_dof_stab, nb_freq_save, i_freq, jv_para
+    integer(kind=8) :: vali(3)
     complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     real(kind=8) :: valr(4)
     character(len=24) :: ds_name, valk(3)

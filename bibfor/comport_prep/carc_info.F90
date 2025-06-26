@@ -40,7 +40,7 @@ subroutine carc_info(prepMapCarcri)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
-    integer :: nbInfo, nbFactorKeyword
+    integer(kind=8) :: nbInfo, nbFactorKeyword
 !
 ! --------------------------------------------------------------------------------------------------
 !

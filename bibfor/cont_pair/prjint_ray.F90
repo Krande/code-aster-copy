@@ -36,19 +36,19 @@ subroutine prjint_ray(proj_tole, dist_ratio, elem_dime, &
 #include "asterfort/projInsideCell.h"
 !
     real(kind=8), intent(in) :: proj_tole, dist_ratio
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: elem_mast_nbnode
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_mast_nbnode
     real(kind=8), intent(in) :: elem_mast_coor(3, 9)
     character(len=8), intent(in) :: elem_mast_code
-    integer, intent(in) :: elem_slav_nbnode
+    integer(kind=8), intent(in) :: elem_slav_nbnode
     real(kind=8), intent(in) :: elem_slav_coor(3, 9)
     character(len=8), intent(in) :: elem_slav_code
     real(kind=8), intent(out) :: poin_inte_ma(elem_dime-1, 8)
     real(kind=8), intent(out) :: poin_inte_es(elem_dime-1, 8)
     real(kind=8), intent(out) :: inte_weight
-    integer, intent(out) :: nb_poin_inte
-    integer, optional, intent(inout) :: inte_neigh_(4)
-    integer, optional, intent(inout) :: ierror_
+    integer(kind=8), intent(out) :: nb_poin_inte
+    integer(kind=8), optional, intent(inout) :: inte_neigh_(4)
+    integer(kind=8), optional, intent(inout) :: ierror_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,12 +78,12 @@ subroutine prjint_ray(proj_tole, dist_ratio, elem_dime, &
     aster_logical, parameter :: debug = ASTER_FALSE
     aster_logical :: error
     real(kind=8) :: proj_coop(elem_dime-1, 9), coor_test(elem_dime-1)
-    integer :: i_node, iret, nb_node_proj, test
-    integer :: inte_neigh(4), nb_poin_inte_ma, nb_poin_inte_es
+    integer(kind=8) :: i_node, iret, nb_node_proj, test
+    integer(kind=8) :: inte_neigh(4), nb_poin_inte_ma, nb_poin_inte_es
     real(kind=8) :: poin_inte_ma_tmp(elem_dime-1, 16)
     real(kind=8) :: poin_inte_es_tmp(elem_dime-1, 16)
     character(len=8) :: elin_mast_code
-    integer :: elin_mast_nbnode
+    integer(kind=8) :: elin_mast_nbnode
 !
 ! --------------------------------------------------------------------------------------------------
 !

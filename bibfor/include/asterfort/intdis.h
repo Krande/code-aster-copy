@@ -21,9 +21,9 @@
 interface
     subroutine intdis(coint, nnoint, noddli, ddlsst, nbsst)
         character(len=24) :: coint
-        integer :: nnoint
+        integer(kind=8) :: nnoint
         character(len=24) :: noddli
         character(len=24) :: ddlsst
-        integer :: nbsst
+        integer(kind=8) :: nbsst
     end subroutine intdis
 end interface

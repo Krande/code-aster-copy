@@ -22,6 +22,6 @@ interface
     subroutine crsmos(nomsto, typroz, neq)
         character(len=*) :: nomsto
         character(len=*) :: typroz
-        integer :: neq
+        integer(kind=8) :: neq
     end subroutine crsmos
 end interface

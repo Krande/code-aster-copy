@@ -43,7 +43,7 @@ subroutine fsplit(fieldType, fieldSupport, fieldQuantity)
 ! OUT  : fieldSupport   : SUPPORT DU CHAMP XXXX
 ! OUT  : fieldQuantity  : NOM DE LA GRANDEUR PHYSIQUE AVEC SON TYPE YYYY..._Z
 ! ----------------------------------------------------------------------
-    integer :: I, J, K, L
+    integer(kind=8) :: I, J, K, L
 !-----------------------------------------------------------------------
 !
     fieldSupport = ''

@@ -20,6 +20,6 @@
 !
 interface
     function lofiem()
-        integer :: lofiem
+        integer(kind=8) :: lofiem
     end function lofiem
 end interface

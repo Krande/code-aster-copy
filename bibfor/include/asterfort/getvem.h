@@ -25,9 +25,9 @@ interface
         character(len=*) :: typent
         character(len=*) :: motfac
         character(len=*) :: motcle
-        integer :: iocc
-        integer :: mxval
+        integer(kind=8) :: iocc
+        integer(kind=8) :: mxval
         character(len=*) :: vk(*)
-        integer :: nbval
+        integer(kind=8) :: nbval
     end subroutine getvem
 end interface

@@ -40,7 +40,7 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel, &
     character(len=8) :: nomo2, nompar
     character(len=16) :: corres, option
     character(len=19) :: chbid, ligrel
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! COMMANDE PROJ_CHAMP
 !   RECOPIE DES VALEURS PROJETEES AUX NOEUDS DU MAILLAGE 2 PRIME
@@ -56,22 +56,22 @@ subroutine pjcorr(nomo2, chbid, cns1z, ces2z, ligrel, &
     character(len=19) :: cns1, ces2, cel2
     character(len=19) :: cham1s, dcel
     character(len=24) :: valk(5)
-    integer ::  ipo, nbma
-    integer ::  jce2l, jce2d, jce2k, icmp2
+    integer(kind=8) ::  ipo, nbma
+    integer(kind=8) ::  jce2l, jce2d, jce2k, icmp2
 !
-    integer :: jcesk, jcesd, jcesv, jcesl
+    integer(kind=8) :: jcesk, jcesd, jcesv, jcesl
 !
-    integer ::  jcns1l
-    integer :: nbno1, nbmax, ncmp1, ncmp2
-    integer :: iad2, nval
-    integer :: iad, nbpt, nbsp, icmp1
+    integer(kind=8) ::  jcns1l
+    integer(kind=8) :: nbno1, nbmax, ncmp1, ncmp2
+    integer(kind=8) :: iad2, nval
+    integer(kind=8) :: iad, nbpt, nbsp, icmp1
 !
-    integer :: ima, ipt, isp, jcesc
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8) :: ima, ipt, isp, jcesc
+    integer(kind=8), pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
-    integer, pointer :: pjef_el(:) => null()
+    integer(kind=8), pointer :: pjef_el(:) => null()
     character(len=8), pointer :: ce2c(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     real(kind=8), pointer :: ce2v(:) => null()

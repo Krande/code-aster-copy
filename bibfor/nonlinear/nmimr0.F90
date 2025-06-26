@@ -48,7 +48,7 @@ subroutine nmimr0(ds_print, loop_name)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, nb_cols
+    integer(kind=8) :: i_col, nb_cols
     character(len=24) :: col_name
     type(NL_DS_Table) :: table_cvg
 !

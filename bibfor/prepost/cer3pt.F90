@@ -44,8 +44,8 @@ subroutine cer3pt(cupn0, cvpn0, cupn1, cvpn1, cupn2, &
 !                     3 POINT ET DE CENTRE "On".
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: flag
-    integer :: vali
+    integer(kind=8) :: flag
+    integer(kind=8) :: vali
 !
     real(kind=8) :: du01, dv01, du02, dv02, du12, dv12
     real(kind=8) :: cuon01, cvon01, cuon02, cvon02, cuon12, cvon12

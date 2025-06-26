@@ -44,10 +44,10 @@ subroutine te0594(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim, nfh, nfe, igeom, nnop, jptint, jcface
-    integer :: jlonch, jlst, itps, ihechp, jstno, jbasec
-    integer :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
-    integer :: imattt, nddlno
+    integer(kind=8) :: ndim, nfh, nfe, igeom, nnop, jptint, jcface
+    integer(kind=8) :: jlonch, jlst, itps, ihechp, jstno, jbasec
+    integer(kind=8) :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
+    integer(kind=8) :: imattt, nddlno
     character(len=8) :: elrefp
     character(len=4) :: fonree
 !

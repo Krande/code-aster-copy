@@ -72,27 +72,27 @@ subroutine celces(celz, basez, cesz, l_copy_nan_, undf0_, rect_)
     character(len=4) :: typces, kmpic
     character(len=8) :: mesh, nomgd
     character(len=19) :: cel, ces, ligrel
-    integer :: nec, gd, nb_cmp_mx, nb_cell, mval
-    integer :: iadg, nume_cmp, nb_cmp
-    integer :: jv_celv, jv_molo
-    integer :: jv_cesl, jv_cesv, jv_cesd
-    integer :: ieq, i_cmp_cata, i_grel, i_elem, ierr
-    integer :: nb_pt, nb_grel, imolo, nb_grel_ligr
-    integer :: i_cmp, i_pt, i_spt, elem_nume, iad, vali(2)
-    integer :: nb_pt_max, nb_elem, nb_cmp_max, nb_spt, nb_dyn, nb_dyn_max, lgcata
-    integer :: ico, adiel, nb_cmp_cumu, kpt
+    integer(kind=8) :: nec, gd, nb_cmp_mx, nb_cell, mval
+    integer(kind=8) :: iadg, nume_cmp, nb_cmp
+    integer(kind=8) :: jv_celv, jv_molo
+    integer(kind=8) :: jv_cesl, jv_cesv, jv_cesd
+    integer(kind=8) :: ieq, i_cmp_cata, i_grel, i_elem, ierr
+    integer(kind=8) :: nb_pt, nb_grel, imolo, nb_grel_ligr
+    integer(kind=8) :: i_cmp, i_pt, i_spt, elem_nume, iad, vali(2)
+    integer(kind=8) :: nb_pt_max, nb_elem, nb_cmp_max, nb_spt, nb_dyn, nb_dyn_max, lgcata
+    integer(kind=8) :: ico, adiel, nb_cmp_cumu, kpt
     character(len=24) :: valk(2)
     aster_logical :: sdveri, l_copy_nan, undf0, rect, diff
-    integer, pointer :: v_liel(:) => null()
-    integer, pointer :: v_liel_long(:) => null()
-    integer, pointer :: v_celd(:) => null()
-    integer, pointer :: v_long_pt(:) => null()
-    integer, pointer :: long_pt_cumu(:) => null()
-    integer, pointer :: v_nbcmp(:) => null()
-    integer, pointer :: v_nbpt(:) => null()
-    integer, pointer :: v_nbspt(:) => null()
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: v_liel(:) => null()
+    integer(kind=8), pointer :: v_liel_long(:) => null()
+    integer(kind=8), pointer :: v_celd(:) => null()
+    integer(kind=8), pointer :: v_long_pt(:) => null()
+    integer(kind=8), pointer :: long_pt_cumu(:) => null()
+    integer(kind=8), pointer :: v_nbcmp(:) => null()
+    integer(kind=8), pointer :: v_nbpt(:) => null()
+    integer(kind=8), pointer :: v_nbspt(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
 !
 #define numail(i_grel,i_elem) v_liel(v_liel_long(i_grel)+i_elem-1)

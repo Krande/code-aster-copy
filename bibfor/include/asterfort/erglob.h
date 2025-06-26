@@ -27,7 +27,7 @@ interface
         aster_logical :: yathm
         aster_logical :: perman
         character(len=*) :: option
-        integer :: iord
+        integer(kind=8) :: iord
         character(len=*) :: resuco
         character(len=19) :: resuc1
     end subroutine erglob

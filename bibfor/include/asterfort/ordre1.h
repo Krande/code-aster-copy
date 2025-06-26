@@ -21,8 +21,8 @@
 interface
     subroutine ordre1(numcle, nomnoe, ddl, coef, coefc,&
                       nbterm)
-        integer, intent(in) :: nbterm
-        integer, intent(inout) :: numcle(nbterm)
+        integer(kind=8), intent(in) :: nbterm
+        integer(kind=8), intent(inout) :: numcle(nbterm)
         real(kind=8), intent(inout) :: coef(nbterm)
         complex(kind=8), intent(inout) :: coefc(nbterm)
         character(len=8), intent(inout) :: nomnoe(nbterm)

@@ -27,10 +27,10 @@ interface
         type(Behaviour_Integ), intent(in) :: BEHinteg
         aster_logical, intent(in) :: l_epsi_varc
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: typmod(*)
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: crit(*)
         real(kind=8) :: epsdt(6)
         real(kind=8) :: depst(6)
@@ -40,8 +40,8 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
         real(kind=8) :: dsde(6, 6)
-        integer :: icomp
-        integer :: nvi
-        integer :: irteti
+        integer(kind=8) :: icomp
+        integer(kind=8) :: nvi
+        integer(kind=8) :: irteti
     end subroutine plasbe
 end interface

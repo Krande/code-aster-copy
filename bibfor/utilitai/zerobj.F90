@@ -42,7 +42,7 @@ function zerobj(obj)
 ! ----------------------------------------------------------------------
     character(len=1) :: typsca, xous, genr
     character(len=24) :: obj2
-    integer :: i, j, n, jval, long, iret, iexi
+    integer(kind=8) :: i, j, n, jval, long, iret, iexi
 !
 ! -DEB------------------------------------------------------------------
 !

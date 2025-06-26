@@ -52,15 +52,15 @@ subroutine ajlipa(modelz, base, kdis)
     character(len=16) :: typres, nomcom
     character(len=19) :: ligrmo, partsd
     character(len=24) :: k24b
-    integer :: i, rang, nbproc, ifm, niv, ibid, nbsd, nbma
-    integer :: nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
-    integer :: iexi
-    integer :: icobis, dist0, jnumsd, vali(3), nbmamo, ima
-    integer ::  jprti, jprtk
+    integer(kind=8) :: i, rang, nbproc, ifm, niv, ibid, nbsd, nbma
+    integer(kind=8) :: nmpp, nmp0, nmp0af, ico, nbpro1, krang, nmp1
+    integer(kind=8) :: iexi
+    integer(kind=8) :: icobis, dist0, jnumsd, vali(3), nbmamo, ima
+    integer(kind=8) ::  jprti, jprtk
     aster_logical :: plein0, exi_partsd
-    integer, pointer :: fdim(:) => null()
+    integer(kind=8), pointer :: fdim(:) => null()
     character(len=8), pointer :: fref(:) => null()
-    integer, pointer :: maille(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
     mpi_int :: mrank, msize
     data k24b/' '/
 

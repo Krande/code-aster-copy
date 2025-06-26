@@ -18,12 +18,12 @@
 !
 subroutine ordis(listis, nbterm)
     implicit none
-    integer :: listis(*), nbterm
+    integer(kind=8) :: listis(*), nbterm
 !
 !     REARRANGEMENT D'UNE LISTE D'ENTIERS PAR ORDRE CROISSANT
 ! ------------------------------------------------------------------
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !
     do j = 2, nbterm
         k = listis(j)

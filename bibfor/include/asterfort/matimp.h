@@ -21,7 +21,7 @@
 interface
     subroutine matimp(matz, ific, typimz)
         character(len=*) :: matz
-        integer :: ific
+        integer(kind=8) :: ific
         character(len=*) :: typimz
     end subroutine matimp
 end interface

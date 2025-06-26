@@ -37,7 +37,7 @@ subroutine ddr_comp(base, v_equa)
 #include "blas/dgesv.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
-    integer, pointer :: v_equa(:)
+    integer(kind=8), pointer :: v_equa(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,10 +53,10 @@ subroutine ddr_comp(base, v_equa)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, iret
-    integer :: iEqua, iMode, i_vect, i_matr, k_mode
-    integer :: nbEqua, nbMode, nb_vect, jvPara, nb_motr
-    integer :: equa_maxi, lval, ntp, ntm
+    integer(kind=8) :: ifm, niv, iret
+    integer(kind=8) :: iEqua, iMode, i_vect, i_matr, k_mode
+    integer(kind=8) :: nbEqua, nbMode, nb_vect, jvPara, nb_motr
+    integer(kind=8) :: equa_maxi, lval, ntp, ntm
     integer(kind=4) :: info
     integer(kind=4), pointer :: IPIV(:) => null()
     character(len=8) :: resultName
@@ -68,9 +68,9 @@ subroutine ddr_comp(base, v_equa)
     real(kind=8), pointer :: v_base(:) => null()
     real(kind=8), pointer :: v_matr(:) => null()
     real(kind=8), pointer :: v_vect(:) => null()
-    integer, pointer :: v_npl(:) => null()
-    integer, pointer :: v_tuan(:) => null()
-    integer, pointer :: v_list_loca(:) => null()
+    integer(kind=8), pointer :: v_npl(:) => null()
+    integer(kind=8), pointer :: v_tuan(:) => null()
+    integer(kind=8), pointer :: v_list_loca(:) => null()
     blas_int :: b_lda, b_ldb, b_n, b_nrhs
 !
 ! --------------------------------------------------------------------------------------------------

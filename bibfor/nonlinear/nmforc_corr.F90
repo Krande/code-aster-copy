@@ -49,7 +49,7 @@ subroutine nmforc_corr(list_func_acti, &
 #include "asterfort/nonlinSubStruCompute.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: model, cara_elem, nume_dof
     character(len=19), intent(in) :: list_load, sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
@@ -57,7 +57,7 @@ subroutine nmforc_corr(list_func_acti, &
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
     character(len=19), intent(in) :: hval_measse(*)
@@ -90,8 +90,8 @@ subroutine nmforc_corr(list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = CORR_NEWTON
-    integer :: ifm, niv
+    integer(kind=8), parameter :: phaseType = CORR_NEWTON
+    integer(kind=8) :: ifm, niv
     character(len=19) :: cndyna, cnsstr, cnhyst
     character(len=19) :: dispCurr
     real(kind=8) :: timePrev, timeCurr

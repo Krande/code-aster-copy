@@ -40,7 +40,7 @@ subroutine srcalg(dfdsig, vecn, g, devgii)
     !!! Variables globales
     !!!
 
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
     real(kind=8) :: dfdsig(6), vecn(6), g(6), devgii
     common/tdim/ndt, ndi
 

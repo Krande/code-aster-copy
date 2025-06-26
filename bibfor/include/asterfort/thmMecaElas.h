@@ -24,7 +24,7 @@ interface
         type(THM_DS), intent(in) :: ds_thm
         aster_logical, intent(in) :: lMatr, lSigm
         real(kind=8), intent(in) :: dtemp
-        integer, intent(in) :: dimcon, adcome
+        integer(kind=8), intent(in) :: dimcon, adcome
         real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), intent(in) :: deps(6)
         real(kind=8), intent(inout) :: congep(dimcon)

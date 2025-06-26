@@ -26,8 +26,8 @@ interface
         character(len=8) :: result
         character(len=19) :: sddisc
         aster_logical :: lreuse
-        integer :: numder
+        integer(kind=8) :: numder
         real(kind=8) :: insder
-        integer :: numarc
+        integer(kind=8) :: numarc
     end subroutine nmarpr
 end interface

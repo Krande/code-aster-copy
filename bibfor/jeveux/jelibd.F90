@@ -38,19 +38,19 @@ subroutine jelibd(nomlu, ltot)
 #include "asterfort/utmess.h"
     character(len=*) :: nomlu
 !
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     -----------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadmi, iadyn, ibacol, ibiadm
-    integer :: inat, ixdeso, ixiadd, ixiadm, jcara
-    integer :: jdate, jdocu, jgenr, jhcod, jiacce, jiadd, jiadm
-    integer :: jindir, jlong, jlono, jltyp, jluti, jmarq, jorig
-    integer :: jrnom, jtype, k, ltot, ltypi, n
-    integer :: nbacce, nbmax
+    integer(kind=8) :: iadmi, iadyn, ibacol, ibiadm
+    integer(kind=8) :: inat, ixdeso, ixiadd, ixiadm, jcara
+    integer(kind=8) :: jdate, jdocu, jgenr, jhcod, jiacce, jiadd, jiadm
+    integer(kind=8) :: jindir, jlong, jlono, jltyp, jluti, jmarq, jorig
+    integer(kind=8) :: jrnom, jtype, k, ltot, ltypi, n
+    integer(kind=8) :: nbacce, nbmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -58,8 +58,8 @@ subroutine jelibd(nomlu, ltot)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -69,28 +69,28 @@ subroutine jelibd(nomlu, ltot)
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
     common/jiacce/jiacce(n), nbacce(2*n)
     common/jindir/jindir(n)
-    integer :: isstat
+    integer(kind=8) :: isstat
     common/iconje/isstat
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
-    integer :: icdyn, mxltot
+    integer(kind=8) :: icdyn, mxltot
     common/xdynje/icdyn, mxltot
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: datei
+    integer(kind=8) :: datei
     common/iheuje/datei
 ! ----------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3)
 ! ----------------------------------------------------------------------
     character(len=32) :: noml32
-    integer :: icre, iret
+    integer(kind=8) :: icre, iret
 !
     noml32 = nomlu
     ltot = 0

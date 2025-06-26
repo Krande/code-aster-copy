@@ -30,14 +30,14 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi, &
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: nfreq, mxfreq, resufi(mxfreq, *), lamor
+    integer(kind=8) :: nfreq, mxfreq, resufi(mxfreq, *), lamor
     real(kind=8) :: resufr(mxfreq, *)
     character(len=*) :: option, resufk(mxfreq, *), typres
     character(len=1) :: ktyp
     aster_logical :: lns
 !
 ! VARIABLES LOCALES
-    integer :: ifm, ifreq, indf, niv, vali(4), ideb, ifin, ipas, counter
+    integer(kind=8) :: ifm, ifreq, indf, niv, vali(4), ideb, ifin, ipas, counter
     real(kind=8) :: am, undf, erc, errmoy
     real(kind=8) :: valr(5)
     character(len=27) :: valk(4)

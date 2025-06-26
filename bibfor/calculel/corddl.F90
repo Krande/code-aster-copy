@@ -42,14 +42,14 @@ subroutine corddl(admodl, lcmodl, idprn1, idprn2, ili, &
 #include "jeveux.h"
 #include "asterfort/entcod.h"
 !-----------------------------------------------------------------------
-    integer :: i, idprn1, idprn2, iec, iecdg, iecdl, ili
-    integer :: in, k, mode, n, nbecmx, ncmp
-    integer :: nddloc, nec
+    integer(kind=8) :: i, idprn1, idprn2, iec, iecdg, iecdl, ili
+    integer(kind=8) :: in, k, mode, n, nbecmx, ncmp
+    integer(kind=8) :: nddloc, nec
 !-----------------------------------------------------------------------
     parameter(nbecmx=10)
-    integer :: ifin(nbecmx)
-    integer :: admodl, lcmodl, pos(1)
-    integer :: ecodg, ecodl
+    integer(kind=8) :: ifin(nbecmx)
+    integer(kind=8) :: admodl, lcmodl, pos(1)
+    integer(kind=8) :: ecodg, ecodl
 !
 !     ECODG : ENTIER CODE DE N
 !     ECODL : ENTIER CODE DE K

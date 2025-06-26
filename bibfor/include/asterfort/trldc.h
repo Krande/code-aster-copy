@@ -21,7 +21,7 @@
 interface
     subroutine trldc(a, nordre, ierr)
         complex(kind=8) :: a(*)
-        integer :: nordre
-        integer :: ierr
+        integer(kind=8) :: nordre
+        integer(kind=8) :: ierr
     end subroutine trldc
 end interface

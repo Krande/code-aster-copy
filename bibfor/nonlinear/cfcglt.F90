@@ -26,7 +26,7 @@ subroutine cfcglt(resoco, iliai, glis)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: resoco
-    integer :: iliai
+    integer(kind=8) :: iliai
     real(kind=8) :: glis
 !
 ! ----------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine cfcglt(resoco, iliai, glis)
 !
 !
     character(len=24) :: jeuite, jeux
-    integer :: jjeuit, jjeux
+    integer(kind=8) :: jjeuit, jjeux
     real(kind=8) :: jexold, jeyold, jexini, jeyini, jexnew, jeynew
 !
 ! ----------------------------------------------------------------------

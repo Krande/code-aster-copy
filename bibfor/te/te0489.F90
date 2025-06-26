@@ -65,18 +65,18 @@ subroutine te0489(option, nomte)
 !
 !
 !
-    integer :: mxcmel
+    integer(kind=8) :: mxcmel
     parameter(mxcmel=162)
-    integer :: nbpgmx
+    integer(kind=8) :: nbpgmx
     parameter(nbpgmx=27)
 !
-    integer :: jtab(7)
-    integer :: iret, npg1, ipoids, ivf, idfde, jgano, icompo
-    integer :: idera1, idera2
-    integer :: nbcmp, imate, idecal, isig
-    integer :: nno, nbsig, nnos, isigtm, isigtp, idvar1
-    integer :: idvar2, nbvarint, npg, i, k, ndim, igau, icodre(3)
-    integer :: nbvari, jprolp, jvalep, nbvalp, ibid
+    integer(kind=8) :: jtab(7)
+    integer(kind=8) :: iret, npg1, ipoids, ivf, idfde, jgano, icompo
+    integer(kind=8) :: idera1, idera2
+    integer(kind=8) :: nbcmp, imate, idecal, isig
+    integer(kind=8) :: nno, nbsig, nnos, isigtm, isigtp, idvar1
+    integer(kind=8) :: idvar2, nbvarint, npg, i, k, ndim, igau, icodre(3)
+    integer(kind=8) :: nbvari, jprolp, jvalep, nbvalp, ibid
     real(kind=8) :: sigma1(mxcmel), sigma2(mxcmel)
     real(kind=8) :: sigt1(mxcmel), sigt2(mxcmel)
     real(kind=8) :: dchav(nbpgmx), dchat(nbpgmx)

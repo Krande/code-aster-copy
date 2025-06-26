@@ -51,7 +51,7 @@ subroutine comp_meca_code(rela_comp, defo_comp, type_cpla, kit_comp, &
 !
 ! - Empty kit_comp for KIT_META
     character(len=16), parameter :: NoKitComp(4) = (/'VIDE', 'VIDE', 'VIDE', 'VIDE'/)
-    integer :: nb_comp_elem, ikit
+    integer(kind=8) :: nb_comp_elem, ikit
     character(len=16) :: comp_elem(20)
 !
 ! --------------------------------------------------------------------------------------------------

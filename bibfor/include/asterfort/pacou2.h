@@ -33,12 +33,12 @@ interface
         real(kind=8) :: masg(*)
         real(kind=8) :: vecr4(*)
         real(kind=8) :: vecr5(*)
-        integer :: veci1(*)
+        integer(kind=8) :: veci1(*)
         real(kind=8) :: vg
-        integer :: indic
-        integer :: nbm
-        integer :: nmode
-        integer :: n
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbm
+        integer(kind=8) :: nmode
+        integer(kind=8) :: n
         real(kind=8) :: pacou2
     end function pacou2
 end interface

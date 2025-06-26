@@ -56,10 +56,10 @@ subroutine nonlinDSPostTimeStepInit(result, model, ds_algopara, ds_constitutive,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_hpp, l_pou_d_em
     character(len=8) :: answer
-    integer, parameter :: nbPara = 10
+    integer(kind=8), parameter :: nbPara = 10
     character(len=24), parameter :: paraName(nbPara) = (/ &
                                     'INST           ', 'NUME_INST      ', &
                                     'NB_MODE        ', 'NUME_MODE      ', 'TYPE_MODE      ', &

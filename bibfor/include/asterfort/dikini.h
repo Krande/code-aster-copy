@@ -23,7 +23,7 @@ interface
                       nu2, mu2, dxu2, dryu2, ky,&
                       kz, krx, krz, k01, k02,&
                       rbid)
-        integer :: nbt
+        integer(kind=8) :: nbt
         real(kind=8) :: nu1
         real(kind=8) :: mu1
         real(kind=8) :: dxu1

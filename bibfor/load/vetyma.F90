@@ -33,10 +33,10 @@ subroutine vetyma(mesh, ndim, loadType, listCell, nbCell)
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nbCell
+    integer(kind=8), intent(in) :: nbCell
     character(len=24), intent(in) :: listCell
     character(len=16), intent(in) :: loadType
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,11 +57,11 @@ subroutine vetyma(mesh, ndim, loadType, listCell, nbCell)
     character(len=24) :: valk(2)
     character(len=8) :: cellName, cellTypeName
     character(len=4) :: cellTopo, topo_2d, topo_3d, topoRequired
-    integer :: nerr
-    integer :: cellNume, cellOrder, cellTypeNume
-    integer :: iCell, orderMini
-    integer, pointer :: listCellNume(:) => null()
-    integer, pointer :: meshTypmail(:) => null()
+    integer(kind=8) :: nerr
+    integer(kind=8) :: cellNume, cellOrder, cellTypeNume
+    integer(kind=8) :: iCell, orderMini
+    integer(kind=8), pointer :: listCellNume(:) => null()
+    integer(kind=8), pointer :: meshTypmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

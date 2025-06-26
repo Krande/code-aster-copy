@@ -64,17 +64,17 @@ subroutine trasst(modgen, numsst, isst1, lisint, nbeq1, &
     character(len=8) :: modgen, rest1, mraid, mmass
     character(len=19) :: imped, lismat(2), nume91, solveu
     character(len=24) :: indin1
-    integer :: i1, ibid, iret, j1, k1, l1, nbeq1, nbmod, isst1, llint1, nbddl1
-    integer :: tach1, lmod1, lbid, leff1
-    integer :: lintf, nbint, lcopy1, lsecme, limped, unit, numsst
+    integer(kind=8) :: i1, ibid, iret, j1, k1, l1, nbeq1, nbmod, isst1, llint1, nbddl1
+    integer(kind=8) :: tach1, lmod1, lbid, leff1
+    integer(kind=8) :: lintf, nbint, lcopy1, lsecme, limped, unit, numsst
     real(kind=8) :: travm, travk, traint, comlin(2), shift, pi
     character(len=24) :: lisint
     real(kind=8), pointer :: mode_sst1_eff2(:) => null()
     real(kind=8), pointer :: pulsa_propres(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: matrice_mass(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: matrice_mass(:) => null()
     real(kind=8), pointer :: trav_sst(:) => null()
-    integer, pointer :: matrice_raid(:) => null()
+    integer(kind=8), pointer :: matrice_raid(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)

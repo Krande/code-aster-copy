@@ -22,16 +22,16 @@ interface
     subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci,&
                       itmax, toler, alpham, dgamma, dalpha,&
                       iret)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: coeft(nmat)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=16) :: necrci
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
         real(kind=8) :: alpham
         real(kind=8) :: dgamma
         real(kind=8) :: dalpha
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmfc
 end interface

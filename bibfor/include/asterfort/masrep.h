@@ -23,15 +23,15 @@
 interface
     subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
                       ligrma, nbno, tabnoe, rignoe, ndim)
-        integer :: nbgr
+        integer(kind=8) :: nbgr
         character(len=8) :: noma
-        integer :: ioc
+        integer(kind=8) :: ioc
         real(kind=8) :: rigi(6)
         aster_logical :: lvale
         character(len=24) :: ligrma(nbgr)
-        integer :: nbno
+        integer(kind=8) :: nbno
         character(len=8) :: tabnoe(*)
         real(kind=8) :: rignoe(*)
-        integer :: ndim
+        integer(kind=8) :: ndim
     end subroutine masrep
 end interface

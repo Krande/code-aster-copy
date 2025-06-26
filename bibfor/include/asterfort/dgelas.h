@@ -30,6 +30,6 @@ interface
         real(kind=8) :: num
         real(kind=8) :: ef
         real(kind=8) :: nuf
-        integer :: icisai
+        integer(kind=8) :: icisai
     end subroutine dgelas
 end interface

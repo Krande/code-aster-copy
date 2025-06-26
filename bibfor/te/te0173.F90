@@ -44,17 +44,17 @@ subroutine te0173(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lFunc, lTime
-    integer :: jvGeom, jvMate, jvLoad, jvTime, jvVect
+    integer(kind=8) :: jvGeom, jvMate, jvLoad, jvTime, jvVect
     aster_logical :: lReal
     real(kind=8) :: x, y, z, speedDire
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: jac, rho
     real(kind=8) :: time, speedVale
-    integer :: jvWeight, jvShape, jvDShapeX, jvDShapeY
-    integer :: nbNode, npg, cellDime, ndofbynode
-    integer :: idec, jdec, kdec, ldec
-    integer :: i, ii, ino, j, jno, ipg
-    integer :: j_mater, iret
+    integer(kind=8) :: jvWeight, jvShape, jvDShapeX, jvDShapeY
+    integer(kind=8) :: nbNode, npg, cellDime, ndofbynode
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: i, ii, ino, j, jno, ipg
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------

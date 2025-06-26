@@ -46,9 +46,9 @@ subroutine romFieldBuildOnDom(resultRom, fieldBuild)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(ROM_DS_Empi) :: base
-    integer :: nbMode, nbEqua, nbStore
+    integer(kind=8) :: nbMode, nbEqua, nbStore
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
 !
 ! --------------------------------------------------------------------------------------------------

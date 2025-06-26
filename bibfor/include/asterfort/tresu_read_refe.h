@@ -21,7 +21,7 @@
 interface
     subroutine tresu_read_refe(mclfac, iocc, tbref)
         character(len=*), intent(in) :: mclfac
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=16), intent(out) :: tbref(2)
     end subroutine tresu_read_refe
 end interface

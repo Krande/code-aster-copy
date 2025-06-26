@@ -27,10 +27,10 @@ interface
         character(len=19) :: lload_name
         character(len=8) :: resuco
         character(len=8) :: resuc1
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=8) :: modele
         character(len=24) :: mate
         character(len=8) :: cara
-        integer :: nb_load
+        integer(kind=8) :: nb_load
     end subroutine thcalr
 end interface

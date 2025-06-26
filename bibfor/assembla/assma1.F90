@@ -47,13 +47,13 @@ subroutine assma1(matas, ldist, lmhpc)
     character(len=*) :: matas
 !---------------------------------------------------------------
     aster_logical :: lmnsy, exilag, ldist, lmhpc
-    integer :: nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd, comm(1)
-    integer :: ilig, jcol, kterm, nlong, nvale, jvalm1, jvalm2, jconl
+    integer(kind=8) :: nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd, comm(1)
+    integer(kind=8) :: ilig, jcol, kterm, nlong, nvale, jvalm1, jvalm2, jconl
     character(len=1) :: ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19
     real(kind=8) :: rmin, rmax, rcoef
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !=================================================================
     call jemarq()

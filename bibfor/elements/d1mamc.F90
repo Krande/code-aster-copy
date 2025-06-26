@@ -44,8 +44,8 @@ subroutine d1mamc(fami, mater, instan, poum, kpg, &
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
     character(len=*) :: fami, poum
-    integer :: kpg, ksp
-    integer :: mater, nbsig
+    integer(kind=8) :: kpg, ksp
+    integer(kind=8) :: mater, nbsig
     real(kind=8) :: angl(3), d1(nbsig, 1), instan
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================

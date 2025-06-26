@@ -152,12 +152,12 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
 #include "blas/dgemv.h"
 #include "blas/dlarnv.h"
 #include "blas/dnrm2.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    integer :: nopx, nbx, nrorth, nitref, nrstrt
+    integer(kind=8) :: nopx, nbx, nrorth, nitref, nrstrt
     common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
@@ -167,14 +167,14 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
 !
     character(len=1) :: bmat
     aster_logical :: initv
-    integer :: ido, ierr, itry, j, ldv, n
+    integer(kind=8) :: ido, ierr, itry, j, ldv, n
     real(kind=8) :: rnorm, alpha
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: ipntr(3)
+    integer(kind=8) :: ipntr(3)
     real(kind=8) :: resid(n), v(ldv, j), workd(2*n)
 !
 !     %------------%
@@ -190,7 +190,7 @@ subroutine dgetv0(ido, bmat, itry, initv, n, &
 !
     aster_logical :: first, inits, orth
     integer(kind=4) :: iseed4(4)
-    integer :: idist, iseed(4), iter, msglvl, jj
+    integer(kind=8) :: idist, iseed(4), iter, msglvl, jj
     real(kind=8) :: rnorm0
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_m

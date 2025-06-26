@@ -22,9 +22,9 @@
 !
 interface
     subroutine zzappa(num, liste, n, app)
-        integer :: num
-        integer :: liste(1)
-        integer :: n
+        integer(kind=8) :: num
+        integer(kind=8) :: liste(1)
+        integer(kind=8) :: n
         aster_logical :: app
     end subroutine zzappa
 end interface

@@ -23,8 +23,8 @@ interface
                       ynoca, znoca, comima, gromai)
         character(len=19) :: tablca
         character(len=8) :: mailla
-        integer :: icabl
-        integer :: nbnoca(*)
+        integer(kind=8) :: icabl
+        integer(kind=8) :: nbnoca(*)
         character(len=19) :: xnoca
         character(len=19) :: ynoca
         character(len=19) :: znoca

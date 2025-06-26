@@ -20,8 +20,8 @@
 !
 interface
     function ulisop(unit, name)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=16) :: name
-        integer :: ulisop
+        integer(kind=8) :: ulisop
     end function ulisop
 end interface

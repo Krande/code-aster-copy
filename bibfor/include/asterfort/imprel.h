@@ -21,7 +21,7 @@
 interface
     subroutine imprel(titre, nbterm, coef, lisddl, lisno, beta, epsi)
 !
-        integer, intent(in)             :: nbterm
+        integer(kind=8), intent(in)             :: nbterm
         real(kind=8), intent(in)        :: coef(nbterm), beta
         character(len=8), intent(in)    :: lisddl(nbterm), lisno(nbterm)
         character(len=*), intent(in)    :: titre

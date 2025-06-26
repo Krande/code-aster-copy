@@ -35,7 +35,7 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 !
     implicit none
     character(len=8) :: nomu, noma
-    integer :: lmax, nbocc
+    integer(kind=8) :: lmax, nbocc
 !
 #include "jeveux.h"
 #include "asterfort/alcart.h"
@@ -56,11 +56,11 @@ subroutine aceapc(nomu, noma, lmax, nbocc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: igm, ioc, ng, nm, nsec, ifly, isiy, iflz, isiz
-    integer :: jdcc, jdco, jdls, jdvc
+    integer(kind=8) :: igm, ioc, ng, nm, nsec, ifly, isiy, iflz, isiz
+    integer(kind=8) :: jdcc, jdco, jdls, jdvc
 !
-    integer :: nfl, nfly, nflz
-    integer :: nsi, nsiy, nsiz
+    integer(kind=8) :: nfl, nfly, nflz
+    integer(kind=8) :: nsi, nsiy, nsiz
     real(kind=8) :: xfl, xfly, xflz
     real(kind=8) :: xsi, xsiy, xsiz
     character(len=19) :: sec

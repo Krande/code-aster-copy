@@ -20,8 +20,8 @@
 interface
     subroutine mmssfr(defico, izone, posmae, ndexfr)
         character(len=24) :: defico
-        integer :: izone
-        integer :: posmae
-        integer :: ndexfr(1)
+        integer(kind=8) :: izone
+        integer(kind=8) :: posmae
+        integer(kind=8) :: ndexfr(1)
     end subroutine mmssfr
 end interface

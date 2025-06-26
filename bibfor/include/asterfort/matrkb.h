@@ -21,10 +21,10 @@
 interface
     subroutine matrkb(nb1, ndimx, nddlx, nddlet, ktdc,&
                       alpha, rig1, coef)
-        integer :: nddlx
-        integer :: ndimx
-        integer :: nb1
-        integer :: nddlet
+        integer(kind=8) :: nddlx
+        integer(kind=8) :: ndimx
+        integer(kind=8) :: nb1
+        integer(kind=8) :: nddlet
         real(kind=8) :: ktdc(ndimx, ndimx)
         real(kind=8) :: alpha
         real(kind=8) :: rig1(nddlx, nddlx)

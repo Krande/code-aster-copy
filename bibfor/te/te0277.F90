@@ -38,7 +38,7 @@ subroutine te0277(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: icode, itemp, itemps, jgano, nbres, ndim, nnos
+    integer(kind=8) :: icode, itemp, itemps, jgano, nbres, ndim, nnos
 !
     real(kind=8) :: z1, z2
 !-----------------------------------------------------------------------
@@ -46,8 +46,8 @@ subroutine te0277(option, nomte)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2
     real(kind=8) :: z, hechp, nx, ny, tpg
-    integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: iveres, i, l, li, ihechp
+    integer(kind=8) :: nno, kp, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: iveres, i, l, li, ihechp
     aster_logical :: laxi
 !
 !-----------------------------------------------------------------------

@@ -40,12 +40,12 @@ subroutine op0040()
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
 !
-    integer :: ifm, niv, ibid, nb_cmp, icmp, jatach, nbcham
-    integer :: isy, iord, ifi, n2
+    integer(kind=8) :: ifm, niv, ibid, nb_cmp, icmp, jatach, nbcham
+    integer(kind=8) :: isy, iord, ifi, n2
     character(len=16) :: nomsym, nomfi
     character(len=19) :: resuin, nomcha
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
 !
     call infniv(ifm, niv)

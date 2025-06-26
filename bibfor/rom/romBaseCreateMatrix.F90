@@ -48,9 +48,9 @@ subroutine romBaseCreateMatrix(base, matrPhi)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iMode, iret, iEqua
-    integer :: nbEqua, nbMode, numeMode
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iMode, iret, iEqua
+    integer(kind=8) :: nbEqua, nbMode, numeMode
     character(len=24) :: resultField, fieldName
     character(len=4) :: fieldSupp
     character(len=8) :: resultName

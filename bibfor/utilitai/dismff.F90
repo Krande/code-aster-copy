@@ -28,7 +28,7 @@ subroutine dismff(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
     character(len=32) :: repk
     character(len=8) :: nomob
@@ -44,7 +44,7 @@ subroutine dismff(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: jinfo
+    integer(kind=8) :: jinfo
 !
 !
     call jemarq()

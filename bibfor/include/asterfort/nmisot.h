@@ -24,11 +24,11 @@ interface
                       iret)
         aster_logical, intent(in) :: l_epsi_varc
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor
         real(kind=8) :: crit(*)
         real(kind=8) :: deps(6)
@@ -38,6 +38,6 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmisot
 end interface

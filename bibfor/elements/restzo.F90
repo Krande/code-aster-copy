@@ -31,7 +31,7 @@ function restzo(zimat, nmnbn, bend, normm, normn)
 !
 #include "asterfort/distfo.h"
 #include "asterfort/rcvalb.h"
-    integer :: i, zimat, restzo, bend, icodre(4)
+    integer(kind=8) :: i, zimat, restzo, bend, icodre(4)
 !
     real(kind=8) :: nmnbn(6), dx, dy, normn, normm, mpcste(2)
     real(kind=8) :: valres(4)

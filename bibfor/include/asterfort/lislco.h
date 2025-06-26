@@ -21,7 +21,7 @@
 interface
     subroutine lislco(lischa, ichar, genrec)
         character(len=19) :: lischa
-        integer :: ichar
-        integer :: genrec
+        integer(kind=8) :: ichar
+        integer(kind=8) :: genrec
     end subroutine lislco
 end interface

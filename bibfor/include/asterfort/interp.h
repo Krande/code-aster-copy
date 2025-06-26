@@ -23,9 +23,9 @@ interface
                       iseg)
         real(kind=8) :: tabx(*)
         real(kind=8) :: taby(*)
-        integer :: necr
+        integer(kind=8) :: necr
         real(kind=8) :: x
         real(kind=8) :: y
-        integer :: iseg
+        integer(kind=8) :: iseg
     end subroutine interp
 end interface

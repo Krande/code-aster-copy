@@ -70,13 +70,13 @@ subroutine flust2(melflu, typflu, base, noma, nuor, &
 #include "asterfort/wkvect.h"
     character(len=19) :: melflu
     character(len=8) :: typflu, base, noma
-    integer :: nuor(*)
+    integer(kind=8) :: nuor(*)
     real(kind=8) :: amor(*), freq(*), masg(*), fact(*), vite(*)
-    integer :: nbm, npv, nivpar, nivdef
+    integer(kind=8) :: nbm, npv, nivpar, nivdef
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ibid
+    integer(kind=8) :: ibid
     real(kind=8) :: carac(2)
     aster_logical :: lnul, lneg, calcul(2)
     character(len=8) :: k8b
@@ -88,9 +88,9 @@ subroutine flust2(melflu, typflu, base, noma, nuor, &
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iamfr, icodim, icoupl, ier, ifreqi, igrap, imist
-    integer :: imod, ind, ipoids, iv, iwork, lfact, lfsic
-    integer :: lmasg, lwork(1), n1, nt, numod
+    integer(kind=8) :: iamfr, icodim, icoupl, ier, ifreqi, igrap, imist
+    integer(kind=8) :: imod, ind, ipoids, iv, iwork, lfact, lfsic
+    integer(kind=8) :: lmasg, lwork(1), n1, nt, numod
     real(kind=8) :: fi, phid, phie(1), pi, vlim, vecr5(1)
 !-----------------------------------------------------------------------
     call jemarq()

@@ -39,8 +39,8 @@ subroutine maskau(nbno, nbec, imask)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: i, nbec, nbno
-    integer :: imask(nbno*nbec)
+    integer(kind=8) :: i, nbec, nbno
+    integer(kind=8) :: imask(nbno*nbec)
 !-----------------------------------------------------------------------
 !
     if (nbno .eq. 0) goto 999

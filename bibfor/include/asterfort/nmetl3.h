@@ -23,7 +23,7 @@ interface
         character(len=24), intent(in) :: model
         character(len=24), intent(in) :: compor
         type(NL_DS_InOut), intent(in) :: ds_inout
-        integer, intent(in) :: i_field
+        integer(kind=8), intent(in) :: i_field
         aster_logical, intent(in) :: verbose
     end subroutine nmetl3
 end interface

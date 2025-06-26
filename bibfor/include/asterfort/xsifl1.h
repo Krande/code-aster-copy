@@ -25,37 +25,37 @@ interface
                       ndim, nfh, nnop, nnops, itemps,&
                       nompar, option, singu, xg, igeom)
         character(len=8) :: elrefp
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         real(kind=8) :: angl(2)
         real(kind=8) :: basloc(9*nnop)
         real(kind=8) :: coeff
         real(kind=8) :: coeff3
-        integer :: ddlm
-        integer :: ddls
-        integer :: heavn(nnop,5)
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: ddls
+        integer(kind=8) :: heavn(nnop,5)
         real(kind=8) :: dfdi(nnop, ndim)
         real(kind=8) :: ff(27)
         real(kind=8) :: he(2)
-        integer :: idepl
-        integer :: igthet
-        integer :: ipref
-        integer :: ipres
-        integer :: ithet
+        integer(kind=8) :: idepl
+        integer(kind=8) :: igthet
+        integer(kind=8) :: ipref
+        integer(kind=8) :: ipres
+        integer(kind=8) :: ithet
         real(kind=8) :: jac
-        integer :: jlst
-        integer :: jlsn
-        integer :: jstno
+        integer(kind=8) :: jlst
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jstno
         real(kind=8) :: ka
         real(kind=8) :: mu
         real(kind=8) :: nd(3)
-        integer :: nfh
-        integer :: nnops
-        integer :: itemps
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nnops
+        integer(kind=8) :: itemps
         character(len=8) :: nompar(4)
         character(len=16) :: option
-        integer :: singu
+        integer(kind=8) :: singu
         real(kind=8) :: xg(3)
-        integer :: igeom
+        integer(kind=8) :: igeom
     end subroutine xsifl1
 end interface 

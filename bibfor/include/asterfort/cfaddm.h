@@ -26,9 +26,9 @@ interface
                       tau2, norm, jeu, coornp)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer :: node_slav_indx, i_cont_link
-        integer :: nb_node_mast, model_ndim
-        integer :: nods_mast_indx(*)
+        integer(kind=8) :: node_slav_indx, i_cont_link
+        integer(kind=8) :: nb_node_mast, model_ndim
+        integer(kind=8) :: nods_mast_indx(*)
         real(kind=8) :: coef_node(*)
         real(kind=8) :: jeu, coornp(3)
         real(kind=8) :: norm(3), tau1(3), tau2(3)

@@ -49,7 +49,7 @@ subroutine romCoefComputeFromField(base, v_field, v_vect)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbEqua, nbMode
+    integer(kind=8) :: nbEqua, nbMode
     integer(kind=4) :: info
     real(kind=8), pointer :: v_matr_phi(:) => null()
     real(kind=8), pointer :: v_matr(:) => null()

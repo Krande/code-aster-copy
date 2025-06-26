@@ -22,7 +22,7 @@ subroutine nmtari(type, ndimsi, mat, sigel, vim, &
 !
     implicit none
 #include "asterfort/nmtacr.h"
-    integer :: ndimsi, type
+    integer(kind=8) :: ndimsi, type
     real(kind=8) :: mat(14), sigel(ndimsi), vim(9), epm(ndimsi), dp, sp, xi
     real(kind=8) :: dsidep(6, 6)
 !
@@ -40,7 +40,7 @@ subroutine nmtari(type, ndimsi, mat, sigel, vim, &
 ! OUT DSIDEP MATRICE TANGENTE
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, mode
+    integer(kind=8) :: i, j, mode
     real(kind=8) :: tmp
     real(kind=8) :: tang(6, 6)
     real(kind=8) :: f, g, fdp, gdp, fds, gds, fdx, gdx, dpmax, sig(6)

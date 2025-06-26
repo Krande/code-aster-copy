@@ -43,7 +43,7 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez, &
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: nbcomb
+    integer(kind=8) :: nbcomb
     character(len=*) :: typcst(nbcomb), ddlexc
     character(len=*) :: matrez, numedd
     character(len=*) :: limat(nbcomb)
@@ -95,13 +95,13 @@ subroutine mtcmbl(nbcomb, typcst, const, limat, matrez, &
     character(len=8) :: typmat, kmpic, kmpic1, kmatd
     character(len=19) :: matemp, mat1, matres, mati
     character(len=24) :: valk(2)
-    integer :: jrefar, jrefai, ier, ier1
-    integer :: i, lres, nbloc, lgbloc
+    integer(kind=8) :: jrefar, jrefai, ier, ier1
+    integer(kind=8) :: i, lres, nbloc, lgbloc
     aster_logical :: reutil, symr, symi, matd
     character(len=24) :: kxfem
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: lispoint(:) => null()
+    integer(kind=8), pointer :: lispoint(:) => null()
 !   -----------------------------------------------------------------
     call jemarq()
 !

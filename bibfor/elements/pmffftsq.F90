@@ -41,7 +41,7 @@ subroutine pmffftsq(fv, sv)
 ! LOC ------------------------------------------------------------------
 ! LOC I   ! IP     !   12    ! POINTEUR SUR L'ELEMENT DIAGONAL PRECEDENT
 !
-    integer :: ip(18), i, j
+    integer(kind=8) :: ip(18), i, j
     real(kind=8) :: fv(18), sv(171)
     data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120, 136, 153/
 !

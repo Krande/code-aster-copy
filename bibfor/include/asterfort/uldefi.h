@@ -21,7 +21,7 @@
 interface
     subroutine uldefi(unit, ficnom, ddnom, typf, acces,&
                       autor)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: ficnom
         character(len=*) :: ddnom
         character(len=*) :: typf

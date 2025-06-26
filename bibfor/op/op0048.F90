@@ -56,7 +56,7 @@ subroutine op0048()
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nvrcmx
+    integer(kind=8) :: nvrcmx
     parameter(nvrcmx=2)
     character(len=8) :: tab_nomvrc(nvrcmx), tab_nomgrd(nvrcmx)
     character(len=8) :: tab_nomcmp(nvrcmx)
@@ -67,8 +67,8 @@ subroutine op0048()
     character(len=6) :: nompro
     parameter(nompro='OP0048')
 !
-    integer :: ier, iret, ibid, nbno, ino, k, l, nbvarc, jcesd1, jcesl1
-    integer :: nbma, ima, iad, itrou, nbcmp, itest, nucmp, cpt_dbl, ind
+    integer(kind=8) :: ier, iret, ibid, nbno, ino, k, l, nbvarc, jcesd1, jcesl1
+    integer(kind=8) :: nbma, ima, iad, itrou, nbcmp, itest, nucmp, cpt_dbl, ind
     real(kind=8) :: inst
     character(len=2) :: codret
     character(len=8) :: chnout, resu, model, chmat, carael, tych, mesh
@@ -76,7 +76,7 @@ subroutine op0048()
     character(len=16) :: nomsym, k16bi1, k16bi2
     character(len=19) :: celvrc, cnovrc, cnsvrc, cnsvr2, ces1
     character(len=19) :: cart2
-    integer, pointer :: cnsvrc_d(:) => null()
+    integer(kind=8), pointer :: cnsvrc_d(:) => null()
     real(kind=8), pointer :: cnsvrc_v(:) => null()
     real(kind=8), pointer :: cnsvr2_v(:) => null()
     character(len=8), pointer :: cvrcvarc(:) => null()

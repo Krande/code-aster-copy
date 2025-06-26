@@ -28,7 +28,7 @@ interface
         character(len=19), intent(in) :: vale(*)
         character(len=19), intent(in) :: sddisc
         character(len=4), intent(in) :: loop_name
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         aster_logical, intent(in) :: lsvimx
         aster_logical, intent(in) :: ldvres
         aster_logical, intent(in) :: lresmx

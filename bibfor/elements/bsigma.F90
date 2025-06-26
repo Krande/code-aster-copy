@@ -19,7 +19,7 @@
 subroutine bsigma(ip, xl, phiy, phiz, b, &
                   intpol)
     implicit none
-    integer :: ip, intpol
+    integer(kind=8) :: ip, intpol
     real(kind=8) :: xl, phiy, phiz, b(4, 14)
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DES FONCTIONS DE FORME DE DEFORMATIONS
@@ -57,7 +57,7 @@ subroutine bsigma(ip, xl, phiy, phiz, b, &
 !                          3   UZ'   .DERIVEE DE UZ PAR RAPPORT A X
 !                          4   TX'   .PARAMETRE DE GAUCHISSEMENT
 ! ......................................................................
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: a, k, dy, dz
 ! ......................................................................
 !

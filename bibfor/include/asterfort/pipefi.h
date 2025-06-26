@@ -22,9 +22,9 @@ interface
     subroutine pipefi(npg, lgpg, mate, geom, vim,&
                       ddepl, deplm, ddepl0, ddepl1, dtau,&
                       typmod, compor, copilo)
-        integer :: lgpg
-        integer :: npg
-        integer :: mate
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: mate
         real(kind=8) :: geom(2, 4)
         real(kind=8) :: vim(lgpg, npg)
         real(kind=8) :: ddepl(2, 4)

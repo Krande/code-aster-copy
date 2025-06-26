@@ -23,9 +23,9 @@ subroutine greihm(ndim, mecani, press1, press2, &
 #include "asterfort/lteatt.h"
 #include "asterfort/assert.h"
 !
-    integer :: mecani(8), press1(9), press2(9), tempe(5)
-    integer :: dimdef, dimcon
-    integer :: ndim
+    integer(kind=8) :: mecani(8), press1(9), press2(9), tempe(5)
+    integer(kind=8) :: dimdef, dimcon
+    integer(kind=8) :: ndim
 !   TABLEAU MECANI :
 !   MECANI(1) = 1 : IL Y A UNE EQUATION MECANIQUE
 !               0 : SINON

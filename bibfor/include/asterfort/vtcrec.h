@@ -24,6 +24,6 @@ interface
         character(len=*) :: chmod
         character(len=*) :: base
         character(len=*) :: typc
-        integer :: neq
+        integer(kind=8) :: neq
     end subroutine vtcrec
 end interface

@@ -24,6 +24,6 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: disp_iter
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: ctccvg
+        integer(kind=8), intent(in) :: ctccvg
     end subroutine cfpost
 end interface

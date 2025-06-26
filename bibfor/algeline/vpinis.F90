@@ -49,8 +49,8 @@ subroutine vpinis(eigsol)
 !
 ! --- VARIABLES LOCALES
 !
-    integer           :: iret, ibuff, itemax, nbborn, nborto, nbrss
-    integer           :: nbvect, nbvec2, nfreq, nitv, nperm, maxitr
+    integer(kind=8)           :: iret, ibuff, itemax, nbborn, nborto, nbrss
+    integer(kind=8)           :: nbvect, nbvec2, nfreq, nitv, nperm, maxitr
     real(kind=8)      :: alpha, fcorig, omecor, precsh, precdc, prorto, prsudg, seuil, undf
     real(kind=8)      :: tol, toldyn, tolsor, vectf(2)
     character(len=1)  :: appr

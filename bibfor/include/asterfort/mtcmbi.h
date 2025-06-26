@@ -21,9 +21,9 @@
 interface
     subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
         character(len=*) :: typmat
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: coef
         complex(kind=8) :: ccoef
-        integer :: lres
+        integer(kind=8) :: lres
     end subroutine mtcmbi
 end interface

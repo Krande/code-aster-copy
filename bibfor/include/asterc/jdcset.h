@@ -21,6 +21,6 @@
 interface
     subroutine jdcset(nomatr, ival)
         character(len=*), intent(in) :: nomatr
-        integer, intent(in) :: ival
+        integer(kind=8), intent(in) :: ival
     end subroutine jdcset
 end interface

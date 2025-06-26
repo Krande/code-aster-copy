@@ -22,8 +22,8 @@ interface
     subroutine ancrca(icabl, nbno, s, alpha, f0,&
                       delta, ea, frco, frli, sa,&
                       d, f)
-        integer :: icabl
-        integer :: nbno
+        integer(kind=8) :: icabl
+        integer(kind=8) :: nbno
         real(kind=8) :: s(*)
         real(kind=8) :: alpha(*)
         real(kind=8) :: f0

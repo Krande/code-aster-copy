@@ -66,10 +66,10 @@ subroutine modirepresu(resuou, resuin)
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 !
-    integer :: n0, n1, nbordr, iret, nocc, i, j, np, iordr, ndim
-    integer :: iord, ioc, ibid, nc
-    integer :: jordr, nbnosy, jpa, iadin, iadou
-    integer :: nbpara, nbac, nbpa, ifm, niv, nncp
+    integer(kind=8) :: n0, n1, nbordr, iret, nocc, i, j, np, iordr, ndim
+    integer(kind=8) :: iord, ioc, ibid, nc
+    integer(kind=8) :: jordr, nbnosy, jpa, iadin, iadou
+    integer(kind=8) :: nbpara, nbac, nbpa, ifm, niv, nncp
     real(kind=8) :: prec
     real(kind=8) :: lcoer(2)
     real(kind=8) :: r8b
@@ -84,7 +84,7 @@ subroutine modirepresu(resuou, resuin)
     character(len=19) :: chams1, chams0, chafus, chs(2), ligrel, ligrel1
     character(len=24) :: nompar, champ0, champ01, champ1, champ2
     character(len=24) :: valk(2)
-    integer, pointer :: nume_ordre(:) => null()
+    integer(kind=8), pointer :: nume_ordre(:) => null()
 !
     aster_logical :: lreuse, lcumu(2), lcoc(2), lModelVariable, check
 !

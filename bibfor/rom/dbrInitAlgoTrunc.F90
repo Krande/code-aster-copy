@@ -49,13 +49,13 @@ subroutine dbrInitAlgoTrunc(paraTrunc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
-    integer :: ifm, niv
-    integer :: nbEquaRom, nbNodeRom
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbEquaRom, nbNodeRom
     character(len=8) :: modelRom, modelDom
     character(len=24) :: numeRom, numeDom, noojb
-    integer, pointer :: numeNodeRom(:) => null()
+    integer(kind=8), pointer :: numeNodeRom(:) => null()
     type(ROM_DS_Field) :: mode
 !
 ! --------------------------------------------------------------------------------------------------

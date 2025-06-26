@@ -20,6 +20,6 @@
 !
 interface
     subroutine gcecdu(numint)
-        integer :: numint
+        integer(kind=8) :: numint
     end subroutine gcecdu
 end interface

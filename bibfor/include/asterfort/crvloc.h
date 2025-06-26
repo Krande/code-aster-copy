@@ -21,15 +21,15 @@
 interface
     subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc,&
                       nvtot, nvoima, nscoma, touvoi)
-        integer :: nscoma
-        integer :: nvoima
-        integer, intent(in) :: dim
-        integer :: adcom0
-        integer :: iatyma
-        integer, intent(in) :: jconnex0
-        integer, intent(in) :: jconnexc
-        integer :: vgeloc(*)
-        integer :: nvtot
-        integer :: touvoi(1:nvoima, 1:nscoma+2)
+        integer(kind=8) :: nscoma
+        integer(kind=8) :: nvoima
+        integer(kind=8), intent(in) :: dim
+        integer(kind=8) :: adcom0
+        integer(kind=8) :: iatyma
+        integer(kind=8), intent(in) :: jconnex0
+        integer(kind=8), intent(in) :: jconnexc
+        integer(kind=8) :: vgeloc(*)
+        integer(kind=8) :: nvtot
+        integer(kind=8) :: touvoi(1:nvoima, 1:nscoma+2)
     end subroutine crvloc
 end interface

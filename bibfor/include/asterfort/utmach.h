@@ -22,10 +22,10 @@ interface
     subroutine utmach(champz, ncmp, nocmp, typemz, litroz,&
                       nbtrou)
         character(len=*) :: champz
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=8) :: nocmp(*)
         character(len=*) :: typemz
         character(len=*) :: litroz
-        integer :: nbtrou
+        integer(kind=8) :: nbtrou
     end subroutine utmach
 end interface

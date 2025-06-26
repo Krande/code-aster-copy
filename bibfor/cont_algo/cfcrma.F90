@@ -32,7 +32,7 @@ subroutine cfcrma(neqmat, noma, resoco)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: neqmat
+    integer(kind=8) :: neqmat
     character(len=8) :: noma
     character(len=24) :: resoco
 !
@@ -54,13 +54,13 @@ subroutine cfcrma(neqmat, noma, resoco)
 !
 !
 
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
     real(kind=8) :: tmax, tvala, tvmax, tv
-    integer :: itbloc, hmax, ivala, ntblc, nblc, nbcol, tbmax
+    integer(kind=8) :: itbloc, hmax, ivala, ntblc, nblc, nbcol, tbmax
     character(len=19) :: stoc, macont
-    integer :: ieq, icol, icompt, iblc
-    integer :: jschc, jscdi, jscbl, jscib, jscde
-    integer :: jrefa
+    integer(kind=8) :: ieq, icol, icompt, iblc
+    integer(kind=8) :: jschc, jscdi, jscbl, jscib, jscde
+    integer(kind=8) :: jrefa
 !
 ! ----------------------------------------------------------------------
 !

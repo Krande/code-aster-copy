@@ -33,7 +33,7 @@ subroutine pomass(nomte, e, xnu, rho, kanl, mlv)
 !
     implicit none
 !
-    integer :: kanl
+    integer(kind=8) :: kanl
     character(len=*) :: nomte
     real(kind=8) :: mlv(*), e, xnu, rho
 !
@@ -46,7 +46,7 @@ subroutine pomass(nomte, e, xnu, rho, kanl, mlv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: istruc, itype
+    integer(kind=8) :: istruc, itype
     real(kind=8) :: g, a, a2, alfay, alfay2, alfaz, alfaz2, ey, ez
     real(kind=8) :: xiy, xjx, xjx2, xiy2, xiz, xiz2, xl
     real(kind=8) :: mlv2(78)
@@ -54,7 +54,7 @@ subroutine pomass(nomte, e, xnu, rho, kanl, mlv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 17
+    integer(kind=8), parameter :: nb_cara = 17
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1', 'JX1', &

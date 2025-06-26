@@ -23,12 +23,12 @@
 interface
     subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
                       ldeps, jitab)
-        integer :: itab(*)
+        integer(kind=8) :: itab(*)
         character(len=*) :: gen1
-        integer :: lty1
-        integer :: lon1
-        integer :: jadm
+        integer(kind=8) :: lty1
+        integer(kind=8) :: lon1
+        integer(kind=8) :: jadm
         aster_logical :: ldeps
-        integer :: jitab
+        integer(kind=8) :: jitab
     end subroutine jxlocs
 end interface

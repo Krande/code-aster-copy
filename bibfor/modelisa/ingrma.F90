@@ -44,7 +44,7 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 #include "asterfort/char8_to_int.h"
 !
     character(len=8) :: sdmail, nomma
-    integer :: lgrma(*), nbgrma, codret
+    integer(kind=8) :: lgrma(*), nbgrma, codret
 !
 ! 0.2. ==> JEVEUX
 !
@@ -52,7 +52,7 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 ! 0.3. ==> VARIABLES LOCALES
 !
     character(len=24) :: grpmai
-    integer :: i, j, ier, num, nbg, nbmag, jgrma
+    integer(kind=8) :: i, j, ier, num, nbg, nbmag, jgrma
 !
 !====
 ! 1. PREALABLES

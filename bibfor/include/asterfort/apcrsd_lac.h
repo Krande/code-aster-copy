@@ -26,10 +26,10 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: sdappa
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nt_poin
-        integer, intent(in) :: nb_cont_elem
-        integer, intent(in) :: nb_cont_node
-        integer, intent(in) :: nt_elem_node
-        integer, intent(in) :: nb_node_mesh
+        integer(kind=8), intent(in) :: nt_poin
+        integer(kind=8), intent(in) :: nb_cont_elem
+        integer(kind=8), intent(in) :: nb_cont_node
+        integer(kind=8), intent(in) :: nt_elem_node
+        integer(kind=8), intent(in) :: nb_node_mesh
     end subroutine apcrsd_lac
 end interface

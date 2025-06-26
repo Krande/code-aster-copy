@@ -21,9 +21,9 @@ interface
                                         tperm)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: angl_naut(3)
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: phi, endo
         real(kind=8), intent(out) :: tperm(ndim, ndim)
     end subroutine thmGetPermeabilityTensor

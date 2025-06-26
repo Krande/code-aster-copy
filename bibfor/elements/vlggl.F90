@@ -25,7 +25,7 @@ subroutine vlggl(nno, nbrddl, pgl, v, code, &
 ! OU INVERSEMENT. ON AGIT UNIQUEMENT SUR LES DDL DE POUTRE,
 ! LES DDL DE COQUE RESTENT INCHANGES.
 !
-    integer :: i, j, l, nno, nbrddl, m
+    integer(kind=8) :: i, j, l, nno, nbrddl, m
 !JMP      PARAMETER          (NBRDDL=63)
     real(kind=8) :: v(nbrddl), p(nbrddl, nbrddl), pgl(3, 3)
     real(kind=8) :: vtemp(nbrddl)

@@ -53,8 +53,8 @@ subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark, &
 !
 ! --- INPUT
 !
-    integer, intent(in) :: nbpark, nbpari, nbparr, mxresf, nconv, nblagr
-    integer, intent(in) :: nfreqg
+    integer(kind=8), intent(in) :: nbpark, nbpari, nbparr, mxresf, nconv, nblagr
+    integer(kind=8), intent(in) :: nfreqg
     character(len=4), intent(in) :: mod45b
     character(len=8), intent(in) :: modes
     character(len=16), intent(in) :: typcon, compex
@@ -69,18 +69,18 @@ subroutine vppost(vecrer, vecrei, vecrek, vecvp, nbpark, &
 ! --- INPUT/OUTPUT
 !
     mpi_int, intent(inout) :: mpicou, mpicow
-    integer, intent(inout) :: icom1, icom2
+    integer(kind=8), intent(inout) :: icom1, icom2
     real(kind=8), intent(inout) :: omemax, omemin, vpinf, vpmax
     aster_logical, intent(inout) :: lcomod
 !
 !
 ! --- VARIABLES LOCALES
 !
-    integer :: nbpara
+    integer(kind=8) :: nbpara
     parameter(nbpara=27)
-    integer :: nparr, ibid, nbrss, iret, lraide, lmasse, lamor, neq, lddl, lprod
-    integer :: lmat(3), lmtpsc, lmatra, ierx, ifm, niv
-    integer :: lresui, lresur, lresuk, lvec
+    integer(kind=8) :: nparr, ibid, nbrss, iret, lraide, lmasse, lamor, neq, lddl, lprod
+    integer(kind=8) :: lmat(3), lmtpsc, lmatra, ierx, ifm, niv
+    integer(kind=8) :: lresui, lresur, lresuk, lvec
     real(kind=8) :: omecor, rbid, precdc, precsh, seuil
     complex(kind=8) :: czero
     character(len=1) :: ktyp, k1blan, ctyp

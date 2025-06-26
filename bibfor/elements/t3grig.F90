@@ -46,7 +46,7 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, &
 !     OUT RIG    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM)
 !     ------------------------------------------------------------------
-    integer :: multic
+    integer(kind=8) :: multic
     real(kind=8) :: depl(18)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
@@ -65,10 +65,10 @@ subroutine t3grig(nomte, xyzl, option, pgl, rig, &
     real(kind=8) :: bsigth(24), enerth, carat3(25)
     real(kind=8) :: t2iu(4), t2ui(4), t1ve(9), qsi, eta
     aster_logical :: coupmf, indith
-    integer :: i, jcoqu, jdepg, k
+    integer(kind=8) :: i, jcoqu, jdepg, k
     real(kind=8) :: ctor, excent, zero
     real(kind=8) :: aire
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &

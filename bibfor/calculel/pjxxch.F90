@@ -45,7 +45,7 @@ subroutine pjxxch(correz, ch1z, ch2z, tychv, prfchz, &
     character(len=*)    :: correz, ch1z, ch2z, prfchz, ligrez
     character(len=4)    :: tychv
     character(len=1)    :: base
-    integer             :: iret
+    integer(kind=8)             :: iret
     type(prolongation)  :: prolong
 !
 ! --------------------------------------------------------------------------------------------------

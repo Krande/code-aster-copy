@@ -22,13 +22,13 @@ interface
     subroutine eps1mc(nno, ndim, nbsig, npg, ipoids,&
                       ivf, idfde, xyz, depl, nharm,&
                       eps1)
-        integer :: nno
-        integer :: ndim
-        integer :: nbsig
-        integer :: npg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbsig
+        integer(kind=8) :: npg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: xyz(1)
         real(kind=8) :: depl(1)
         real(kind=8) :: nharm

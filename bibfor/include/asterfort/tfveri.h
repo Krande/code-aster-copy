@@ -21,7 +21,7 @@
 interface
     subroutine tfveri(nommcf, nbocc, itypfl)
         character(len=16) :: nommcf
-        integer :: nbocc
-        integer :: itypfl
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: itypfl
     end subroutine tfveri
 end interface

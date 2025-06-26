@@ -137,7 +137,7 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha, &
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i, iret, nbordr
+    integer(kind=8) :: i, iret, nbordr
     real(kind=8) :: alpha, alphar, ay, az, ey, ez, pctx
     real(kind=8) :: pcty, prec, s, xg, yg, zero
 !

@@ -20,7 +20,7 @@
 !
 interface
     subroutine rcangm(ndim, coor, angl_naut)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: coor(3)
         real(kind=8) :: angl_naut(3)
     end subroutine rcangm

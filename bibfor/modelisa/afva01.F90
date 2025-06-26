@@ -41,12 +41,12 @@ subroutine afva01(affeType, dsName, fieldType, lautr)
 !       ON TROUVE DES COMPOSANTES AUTRES QUE 'TEMP' ET 'LAGR'
 ! ----------------------------------------------------------------------
 !
-    integer :: nb_cmp, k, jordr, j, iret, nbordr(1), ibid
+    integer(kind=8) :: nb_cmp, k, jordr, j, iret, nbordr(1), ibid
     character(len=19) :: ch19, kbid, res19
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
 ! ----------------------------------------------------------------------
 !

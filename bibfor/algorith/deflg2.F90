@@ -37,7 +37,7 @@ subroutine deflg2(gn, lamb, logl, pes, feta, &
     real(kind=8) :: gn(3, 3), lamb(3), logl(3)
     real(kind=8) :: di(3), theta(3, 3)
     real(kind=8) :: pe(3, 3, 3, 3), me(3, 3, 3, 3), xi(3, 3), feta(4), pes(6, 6)
-    integer :: nbvec, i, icas, j, k, l, a, b
+    integer(kind=8) :: nbvec, i, icas, j, k, l, a, b
 ! ----------------------------------------------------------------------
 !
     nbvec = 3

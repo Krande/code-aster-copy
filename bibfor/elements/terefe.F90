@@ -44,7 +44,7 @@ subroutine terefe(refe_name, type_elem, refe_vale)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jvrefe, index
+    integer(kind=8) :: jvrefe, index
     real(kind=8) :: val
     character(len=16) :: kmess(2)
 !

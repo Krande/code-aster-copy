@@ -19,7 +19,7 @@
 subroutine utremt(mot, liste, nbval, place)
     implicit none
     character(len=*) :: mot, liste(*)
-    integer :: nbval, place
+    integer(kind=8) :: nbval, place
 !
 !     ------------------------------------------------------------------
 !     RECHERCHE UN MOT DONNE DANS UN LISTE (TABLEAU) DE MOTS
@@ -31,7 +31,7 @@ subroutine utremt(mot, liste, nbval, place)
 !                         = 0  SI LE MOT EST ABSENT DE LA LISTE
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     place = 0
     do i = 1, nbval

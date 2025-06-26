@@ -21,14 +21,14 @@
 interface
     subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
                       nbfor, nbdef, tydef, inord)
-        integer :: nbdef
-        integer :: nbfor
+        integer(kind=8) :: nbdef
+        integer(kind=8) :: nbfor
         character(len=*) :: nmresz
         character(len=*) :: numrfz
         character(len=*) :: raildz
-        integer :: lddl(nbfor, nbdef)
+        integer(kind=8) :: lddl(nbfor, nbdef)
         character(len=16) :: nocmp(nbdef)
         character(len=16) :: tydef
-        integer :: inord
+        integer(kind=8) :: inord
     end subroutine defsta
 end interface

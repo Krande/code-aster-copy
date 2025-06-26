@@ -20,7 +20,7 @@
 !
 interface
     subroutine jjlidy(iadyn, iadmi)
-        integer :: iadyn
-        integer :: iadmi
+        integer(kind=8) :: iadyn
+        integer(kind=8) :: iadmi
     end subroutine jjlidy
 end interface

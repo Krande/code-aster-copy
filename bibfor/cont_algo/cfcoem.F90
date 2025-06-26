@@ -33,12 +33,12 @@ subroutine cfcoem(ds_contact, l_frot, node_slav_indx, i_cont_link, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: node_slav_indx
-    integer, intent(in) :: i_cont_link
-    integer, intent(in) :: nb_dof_tot
-    integer, intent(in) :: nb_node_mast
-    integer, intent(in) :: nods_mast_indx(9)
-    integer, intent(in) :: dof_indx(30)
+    integer(kind=8), intent(in) :: node_slav_indx
+    integer(kind=8), intent(in) :: i_cont_link
+    integer(kind=8), intent(in) :: nb_dof_tot
+    integer(kind=8), intent(in) :: nb_node_mast
+    integer(kind=8), intent(in) :: nods_mast_indx(9)
+    integer(kind=8), intent(in) :: dof_indx(30)
     real(kind=8), intent(in) :: coef_cont(30)
     real(kind=8), intent(in) :: coef_fric_x(30)
     real(kind=8), intent(in) :: coef_fric_y(30)
@@ -68,17 +68,17 @@ subroutine cfcoem(ds_contact, l_frot, node_slav_indx, i_cont_link, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_dof_slav, nb_dof_mast, nb_slav_maxi
-    integer :: jdecal, jdecdl, node_mast_indx
-    integer :: i_dof_mast, i_dof_slav, i_node_mast
+    integer(kind=8) :: nb_dof_slav, nb_dof_mast, nb_slav_maxi
+    integer(kind=8) :: jdecal, jdecdl, node_mast_indx
+    integer(kind=8) :: i_dof_mast, i_dof_slav, i_node_mast
     character(len=24) :: sdcont_apcoef, sdcont_apcofr
     real(kind=8), pointer :: v_sdcont_apcoef(:) => null()
     real(kind=8), pointer :: v_sdcont_apcofr(:) => null()
     character(len=24) :: sdcont_nbddl, sdcont_apddl
-    integer, pointer :: v_sdcont_nbddl(:) => null()
-    integer, pointer :: v_sdcont_apddl(:) => null()
+    integer(kind=8), pointer :: v_sdcont_nbddl(:) => null()
+    integer(kind=8), pointer :: v_sdcont_apddl(:) => null()
     character(len=24) :: sdcont_appoin
-    integer, pointer :: v_sdcont_appoin(:) => null()
+    integer(kind=8), pointer :: v_sdcont_appoin(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

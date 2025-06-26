@@ -36,7 +36,7 @@ subroutine w039c4(carte, ifi, form)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
     character(len=*) :: carte, form
-    integer :: ifi
+    integer(kind=8) :: ifi
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,13 +50,13 @@ subroutine w039c4(carte, ifi, form)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iret, nugd, n1, jnocmp, nbCmpDyna
-    integer :: jcesk, jcesd, jcesc, jcesv, jcesl
+    integer(kind=8) :: iret, nugd, n1, jnocmp, nbCmpDyna
+    integer(kind=8) :: jcesk, jcesd, jcesc, jcesv, jcesl
     character(len=8) :: typech, tsca, nomgd, k8bid
     character(len=19) :: cart1, chels1, chels2
     character(len=16) :: field_type
     character(len=64) :: nommed
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 ! ----------------------------------------------------------------------
 
     call jemarq()

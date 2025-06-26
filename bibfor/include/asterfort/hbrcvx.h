@@ -21,7 +21,7 @@
 interface
     subroutine hbrcvx(sig, vid, nmat, materf, seuil,&
                       vp, vecp)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: sig(6)
         real(kind=8) :: vid(3)
         real(kind=8) :: materf(nmat, 2)

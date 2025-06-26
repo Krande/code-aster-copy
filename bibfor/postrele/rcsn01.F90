@@ -23,20 +23,20 @@ subroutine rcsn01(nbm, adrm, ipt, sn3, sn4, &
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: nbm, adrm(*), ipt, nbth, iocs
+    integer(kind=8) :: nbm, adrm(*), ipt, nbth, iocs
     real(kind=8) :: sn3, sn4, alphaa, alphab, sn6
 !
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3600
 !     CALCUL DU SN
 !
 !     ------------------------------------------------------------------
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
 !
-    integer :: iad, icmp, nbcmp, decal, jcesl, nbinst, i
-    integer :: jmoye, jmoy2
+    integer(kind=8) :: iad, icmp, nbcmp, decal, jcesl, nbinst, i
+    integer(kind=8) :: jmoye, jmoy2
     real(kind=8) :: ta, tb, tab, dt1, dt1max, tabmax
     character(len=24) :: chtemp
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
     character(len=24), pointer :: cham_ther(:) => null()
     character(len=24), pointer :: cesv(:) => null()
 !

@@ -24,7 +24,7 @@ subroutine relax_cable(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 #include "asterfort/rcvala.h"
 !
     real(kind=8)     :: ppr(*)
-    integer          :: ppi(*)
+    integer(kind=8)          :: ppi(*)
     character(len=*) :: ppc(*)
     real(kind=8)     :: yy0(*)
     real(kind=8)     :: dy0(*)
@@ -52,13 +52,13 @@ subroutine relax_cable(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 ! ----------------------------------------------------------------------
 !
 !   Système d'équations
-    integer :: isig, iepsi, iepvis, itemper
+    integer(kind=8) :: isig, iepsi, iepvis, itemper
     parameter(isig=1, iepsi=2, iepvis=3, itemper=4)
 !
-    integer, parameter :: nbcar = 6
+    integer(kind=8), parameter :: nbcar = 6
     character(len=16)  :: nomcar(nbcar)
     real(kind=8)       :: valcar(nbcar)
-    integer            :: codcar(nbcar)
+    integer(kind=8)            :: codcar(nbcar)
     data nomcar/'ECOU_K', 'ECOU_N', 'ECRO_N', 'ECRO_B', 'ECRO_C', 'F_PRG'/
 !
     real(kind=8) :: young, kecoul, necoul, necrou, becrou, cecrou, fprg

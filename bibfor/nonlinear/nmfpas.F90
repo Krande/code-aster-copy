@@ -43,8 +43,8 @@ subroutine nmfpas(fonact, sddyna, sdpilo, sddisc, &
     character(len=19) :: solalg(*), valinc(*), veasse(*)
     character(len=19) :: sddyna, sdpilo, sddisc
     real(kind=8) :: eta
-    integer :: nbiter, numins
-    integer :: fonact(*)
+    integer(kind=8) :: nbiter, numins
+    integer(kind=8) :: fonact(*)
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_Contact), intent(in) :: ds_contact
 !

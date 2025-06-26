@@ -41,8 +41,8 @@ subroutine pmsta1(sigm, sigp, deps, vim, vip, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 !
-    integer :: nbpar, i, nbvari, igrad, ncmp, nbvita, iforta, liccvg(5)
-    integer :: actite, jvari
+    integer(kind=8) :: nbpar, i, nbvari, igrad, ncmp, nbvita, iforta, liccvg(5)
+    integer(kind=8) :: actite, jvari
     aster_logical :: itemax, conver
     character(len=4) :: nomeps(6), nomsig(6), nomgrd(9)
     character(len=8) :: k8b, typpar(*), nomvi(*), vk8(2)

@@ -32,7 +32,7 @@ subroutine mdveri()
 #include "asterfort/getvtx.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: i, ibid, jref1
+    integer(kind=8) :: i, ibid, jref1
     character(len=8) :: nomres, method, amogen, channo
     character(len=8) :: matr1, matr2, basemo
     character(len=24) :: ref1, ref2
@@ -41,7 +41,7 @@ subroutine mdveri()
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: kf, n1, nagen, nared, nbexc, nm
+    integer(kind=8) :: kf, n1, nagen, nared, nbexc, nm
     character(len=24), pointer :: vref2(:) => null()
 !-----------------------------------------------------------------------
     call getres(nomres, typres, nomcmd)

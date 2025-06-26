@@ -23,11 +23,11 @@ subroutine jxferm(iclas)
 #include "asterc/closdr.h"
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
-    integer :: iclas
+    integer(kind=8) :: iclas
 !     ------------------------------------------------------------------
-    integer :: n
+    integer(kind=8) :: n
 !-----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
 !-----------------------------------------------------------------------
     parameter(n=5)
     character(len=2) :: dn2
@@ -37,15 +37,15 @@ subroutine jxferm(iclas)
      &                 dn2(n)
     character(len=8) :: nombas
     common/kbasje/nombas(n)
-    integer :: idn, iext, nbenrg
+    integer(kind=8) :: idn, iext, nbenrg
     common/iextje/idn(n), iext(n), nbenrg(n)
     character(len=128) :: repglo, repvol
     common/banvje/repglo, repvol
-    integer :: lrepgl, lrepvo
+    integer(kind=8) :: lrepgl, lrepvo
     common/balvje/lrepgl, lrepvo
 !     ------------------------------------------------------------------
     character(len=512) :: nom512
-    integer :: ier
+    integer(kind=8) :: ier
 ! DEB ------------------------------------------------------------------
     ier = 0
     do k = 1, iext(iclas)

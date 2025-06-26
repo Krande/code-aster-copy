@@ -20,9 +20,9 @@
 !
 interface
     subroutine tesfin(icl, iv, cv, irteti)
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         character(len=*) :: cv
-        integer :: irteti
+        integer(kind=8) :: irteti
     end subroutine tesfin
 end interface

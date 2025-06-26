@@ -21,12 +21,12 @@
 interface
     subroutine maskcb(nbcmp, nbno, nbec, mcoddl, imask,&
                       numord, nbdef)
-        integer :: nbec
-        integer :: nbno
-        integer :: nbcmp
-        integer :: mcoddl(nbno*nbec, 2)
-        integer :: imask(nbno*nbec)
-        integer :: numord(nbno)
-        integer :: nbdef
+        integer(kind=8) :: nbec
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: mcoddl(nbno*nbec, 2)
+        integer(kind=8) :: imask(nbno*nbec)
+        integer(kind=8) :: numord(nbno)
+        integer(kind=8) :: nbdef
     end subroutine maskcb
 end interface

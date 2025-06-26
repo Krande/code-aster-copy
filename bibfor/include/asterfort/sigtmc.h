@@ -23,11 +23,11 @@ interface
                       instan, mater, angl_naut,&
                       option, sigma)
         character(len=*) :: fami
-        integer :: ndim
-        integer :: nbsig
-        integer :: npg
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbsig
+        integer(kind=8) :: npg
         real(kind=8) :: instan
-        integer :: mater
+        integer(kind=8) :: mater
         real(kind=8) :: angl_naut(3)
         character(len=16) :: option
         real(kind=8) :: sigma(1)

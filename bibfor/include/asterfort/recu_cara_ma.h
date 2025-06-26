@@ -22,7 +22,7 @@ interface
     subroutine recu_cara_ma(mailla, carte, numa, cara, vale)
         character(len=8) :: mailla
         character(len=19) :: carte
-        integer :: numa
+        integer(kind=8) :: numa
         character(len=8) :: cara
         real(kind=8) :: vale
     end subroutine recu_cara_ma

@@ -71,7 +71,7 @@ subroutine caliel(valeTypeZ, loadZ, modelZ)
     character(len=16) :: option
     character(len=19) :: modelLigrel
     character(len=19), parameter :: lisrel = '&&CALIEL.RLLISTE'
-    integer :: iocc, nbOcc, iop, nbLigr
+    integer(kind=8) :: iocc, nbOcc, iop, nbLigr
     character(len=24), pointer :: listLigr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

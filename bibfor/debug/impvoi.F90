@@ -20,8 +20,8 @@ subroutine impvoi(texte, nbma, iaddvo, iadvoi)
     implicit none
 #include "jeveux.h"
     character(len=*) :: texte
-    integer :: nbma, iaddvo, iadvoi
-    integer :: ima, iv, is
+    integer(kind=8) :: nbma, iaddvo, iadvoi
+    integer(kind=8) :: ima, iv, is
 !-----------FONCTIONS  D ACCES A VGE -----------------------------------
 !     IADDVO : ADRESSE JEVEUX DU TABLEAU DE POINTEURS DANS LA SD EL_VOIS
 !     IADVOI : ADRESSE JEVEUX DE LA SD EL_VOIS

@@ -25,8 +25,8 @@ subroutine cuadu(deficu, resocu, neq, nbliac)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: neq
-    integer :: nbliac
+    integer(kind=8) :: neq
+    integer(kind=8) :: nbliac
     character(len=24) :: deficu
     character(len=24) :: resocu
 !
@@ -45,13 +45,13 @@ subroutine cuadu(deficu, resocu, neq, nbliac)
 !
 !
 !
-    integer :: iliac, nbddl
-    integer :: lliac, jdecal
+    integer(kind=8) :: iliac, nbddl
+    integer(kind=8) :: lliac, jdecal
     real(kind=8) :: val
     character(len=19) :: liac, mu, delt0
-    integer :: jliac, jmu, jdelt0
+    integer(kind=8) :: jliac, jmu, jdelt0
     character(len=24) :: apddl, apcoef, apjeu, poinoe
-    integer :: japddl, japcoe, japjeu, jpoi
+    integer(kind=8) :: japddl, japcoe, japjeu, jpoi
 ! ======================================================================
     call jemarq()
 ! ======================================================================

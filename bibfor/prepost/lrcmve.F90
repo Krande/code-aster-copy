@@ -38,13 +38,13 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nmatyp, nbnoma, lgproa, ntypel, npgmax
-    integer :: ncmprf, nbcmpv, jnumma, nbma
-    integer :: indpg(ntypel, npgmax), npgma(nbma), npgmm(nbma), nspmm(nbma)
-    integer :: adsl, adsv, adsd, nutyma
-    integer :: nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: nmatyp, nbnoma, lgproa, ntypel, npgmax
+    integer(kind=8) :: ncmprf, nbcmpv, jnumma, nbma
+    integer(kind=8) :: indpg(ntypel, npgmax), npgma(nbma), npgmm(nbma), nspmm(nbma)
+    integer(kind=8) :: adsl, adsv, adsd, nutyma
+    integer(kind=8) :: nuanom(MT_NTYMAX, MT_NNOMAX)
     aster_logical :: lrenum
-    integer :: codret
+    integer(kind=8) :: codret
     character(len=*) :: nochmd
     character(len=*) :: nomcmr(*), typech
     character(len=*) :: ntvale, ntproa, ncmpvm, nmcmfi, numcmp
@@ -97,12 +97,12 @@ subroutine lrcmve(ntvale, nmatyp, nbnoma, ntproa, lgproa, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'LRCMVE'
-    integer :: iaux, jaux, kaux, laux
-    integer :: nrcmp, ncmpdb, nbpt, nbptm
-    integer :: nuval, ipg
-    integer :: nbcmfi, i, kk, ima, nbspm, i2, isp
-    integer :: adremp, advale, adncfi, adnucm, adncvm, adproa, nummod
-    integer :: ifm, niv
+    integer(kind=8) :: iaux, jaux, kaux, laux
+    integer(kind=8) :: nrcmp, ncmpdb, nbpt, nbptm
+    integer(kind=8) :: nuval, ipg
+    integer(kind=8) :: nbcmfi, i, kk, ima, nbspm, i2, isp
+    integer(kind=8) :: adremp, advale, adncfi, adnucm, adncvm, adproa, nummod
+    integer(kind=8) :: ifm, niv
     character(len=8) :: saux08
     character(len=24) :: ntcmpl
     character(len=24) :: valk(2)

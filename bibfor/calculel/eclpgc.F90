@@ -86,7 +86,7 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
 ! ---------------------------------------------------------------------
 !     VARIABLES NECESSAIRES A L'APPEL DE ECLATY :
 !     ON COMPREND LE SENS DE CES VARIABLES EN REGARDANT ECLATY
-    integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
+    integer(kind=8) :: mxnbn2, mxnbpi, mxnbte, mxnbse
 !     MXNBN2 : MAX DU NOMBRE DE NOEUDS D'UN SOUS-ELEMENT (HEXA8)
     parameter(mxnbn2=8)
 !     MXNBPI : MAX DU NOMBRE DE POINT_I (HEXA A 27 POINTS DE GAUSS)
@@ -98,21 +98,21 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
 !     MXNBSE : MAX DU NOMBRE DE SOUS-ELEMENTS
     parameter(mxnbse=27)
 !
-    integer :: corsel(mxnbse), nse1
-    integer :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
-    integer :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
+    integer(kind=8) :: corsel(mxnbse), nse1
+    integer(kind=8) :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
+    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
 ! ---------------------------------------------------------------------
     aster_logical :: lvari
-    integer :: numa, jnofpg, kk, iret
-    integer :: k, te, npg1, npoini, ideca2
-    integer :: igr, jcmaco, jcliel, jcnsl2
-    integer :: ibid, nbpg, ino, nbgr, inogl, kse
-    integer :: iamol1, jcnsv2, mxcmp
-    integer :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
-    integer :: iipg, jceld1, moloc1, nb_cmp_mx, jcmpgd
+    integer(kind=8) :: numa, jnofpg, kk, iret
+    integer(kind=8) :: k, te, npg1, npoini, ideca2
+    integer(kind=8) :: igr, jcmaco, jcliel, jcnsl2
+    integer(kind=8) :: ibid, nbpg, ino, nbgr, inogl, kse
+    integer(kind=8) :: iamol1, jcnsv2, mxcmp
+    integer(kind=8) :: ima, nbelgr, jval2, nbno, nddl, iddl, adiel
+    integer(kind=8) :: iipg, jceld1, moloc1, nb_cmp_mx, jcmpgd
     parameter(mxcmp=200)
-    integer :: nuddl(mxcmp), mxvari, iel, nb_cmp
+    integer(kind=8) :: nuddl(mxcmp), mxvari, iel, nb_cmp
     character(len=8) :: ma2, nomg1, nomg2, elrefa, fapg
     character(len=16) :: nomte
     character(len=16) :: optio, param
@@ -120,10 +120,10 @@ subroutine eclpgc(ch1, ch2, ligrel, ma2, numeq, &
     character(len=24) :: valk(2), nomfpg
     character(len=24), pointer :: celk(:) => null()
     real(kind=8), pointer :: celv(:) => null()
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
 !     FONCTIONS FORMULES :
 !     NBNOMA(IMA)=NOMBRE DE NOEUDS DE LA MAILLE IMA

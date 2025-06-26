@@ -32,8 +32,8 @@ interface
         character(len=*) :: basez
         character(len=*) :: cnoz
         character(len=1) :: kstop
-        integer          :: iret
-        integer,            optional :: nbz
+        integer(kind=8)          :: iret
+        integer(kind=8),            optional :: nbz
         character(len=24),  optional :: vchamz
         aster_logical,      optional :: lprofconst
         type(prolongation), optional :: prolong

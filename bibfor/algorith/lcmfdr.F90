@@ -32,11 +32,11 @@ subroutine lcmfdr(sig, vp, chi, precvg, dchids)
 ! precvg    précision du calcul (pour l'exponentiel matriciel)
 ! dchids(6) dérivée de chi par rapport a sig (1:6)
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter:: mexp = 6, factom = 720
+    integer(kind=8), parameter:: mexp = 6, factom = 720
     real(kind=8), parameter, dimension(6):: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8), parameter :: srac2 = sqrt(0.5d0)
 ! --------------------------------------------------------------------------------------------------
-    integer :: nexp
+    integer(kind=8) :: nexp
     real(kind=8) :: sbnor, sbtr, gamma, sbtnor, u(6), preexp, vpmax, targ
     real(kind=8) :: sb(6), e(6), e2(6), enor, h
 ! --------------------------------------------------------------------------------------------------

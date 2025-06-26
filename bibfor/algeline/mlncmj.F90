@@ -30,14 +30,14 @@ subroutine mlncmj(nb, n, p, frontl, frontu, &
     implicit none
 ! aslint: disable=C1513
 #include "blas/zgemm.h"
-    integer :: n, p, adper(*), restm, decal
+    integer(kind=8) :: n, p, adper(*), restm, decal
     complex(kind=8) :: frontl(*), frontu(*), frnl(*), frnu(*)
-    integer :: nmb
+    integer(kind=8) :: nmb
     character(len=1) :: tra, trb
-    integer :: i1, j1, k, m, it, nb, numprc
+    integer(kind=8) :: i1, j1, k, m, it, nb, numprc
     complex(kind=8) :: t1(p, nb, *), t2(p, nb, *), alpha, beta
     complex(kind=8) :: cl(nb, nb, *), cu(nb, nb, *)
-    integer :: i, kb, j, ib, ia, ind, add
+    integer(kind=8) :: i, kb, j, ib, ia, ind, add
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
     m = n-p
     nmb = m/nb

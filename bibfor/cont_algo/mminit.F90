@@ -46,8 +46,8 @@ subroutine mminit(mesh, ds_contact, sddyna, hat_valinc, ds_measure, &
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: sdnume
-    integer, intent(in) :: nume_inst
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,8 +75,8 @@ subroutine mminit(mesh, ds_contact, sddyna, hat_valinc, ds_measure, &
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     character(len=24) :: sdcont_etatct
     real(kind=8), pointer :: v_sdcont_etatct(:) => null()
-    integer :: ztabf, zetat
-    integer :: ipc, nb_inte_poin, ifm, niv
+    integer(kind=8) :: ztabf, zetat
+    integer(kind=8) :: ipc, nb_inte_poin, ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

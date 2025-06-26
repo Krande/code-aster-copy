@@ -23,11 +23,11 @@ interface
                                alpha    , alpha_l     , alpha_t, alpha_n,&
                                z_h_r_   , deps_ch_tref_)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: ipg
-        integer, intent(in) :: ispg
-        integer, intent(in) :: elas_type
+        integer(kind=8), intent(in) :: ipg
+        integer(kind=8), intent(in) :: ispg
+        integer(kind=8), intent(in) :: elas_type
         character(len=16), intent(in) :: elas_keyword
         character(len=8), optional, intent(in) :: materi_
         real(kind=8), optional, intent(in) :: temp_vale_

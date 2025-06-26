@@ -23,6 +23,6 @@ interface
         character(len=*) :: cns1z
         character(len=*) :: basez
         character(len=*) :: cns2z
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine cnsprm
 end interface

@@ -27,7 +27,7 @@ subroutine matrHookePlaneStress(elas_type, angl_naut, &
 #include "asterfort/utbtab.h"
 !
 !
-    integer, intent(in) :: elas_type
+    integer(kind=8), intent(in) :: elas_type
     real(kind=8), intent(in) :: angl_naut(3)
     real(kind=8), intent(in) :: h(3), g
     real(kind=8), intent(in) :: g1
@@ -57,7 +57,7 @@ subroutine matrHookePlaneStress(elas_type, angl_naut, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: irep, i, j
+    integer(kind=8) :: irep, i, j
     real(kind=8) :: matr_tran(4, 4), dorth(4, 4), work(4, 4)
 !
 ! --------------------------------------------------------------------------------------------------

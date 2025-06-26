@@ -19,6 +19,6 @@
 interface
     subroutine getErrorCode(codret, ldccvg)
         character(len=19), intent(in) :: codret
-        integer, intent(out) :: ldccvg
+        integer(kind=8), intent(out) :: ldccvg
     end subroutine getErrorCode
 end interface

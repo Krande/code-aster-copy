@@ -42,7 +42,7 @@ subroutine resrot(rota, coor, ff, rho, nno, &
     real(kind=8) :: rota(3), coor(18), ff(81)
     real(kind=8) :: fx(9), fy(9), frx(9), fry(9)
     real(kind=8) :: omo, omm, om1, om2
-    integer :: npg, nno, i, k, kp
+    integer(kind=8) :: npg, nno, i, k, kp
 !
 !-----------------------------------------------------------------------
     real(kind=8) :: rho

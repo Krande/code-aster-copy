@@ -27,9 +27,9 @@ function nbpara(opt, te, statut)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 
-    integer :: opt, te
+    integer(kind=8) :: opt, te
     character(len=3) :: statut
-    integer :: nbpara
+    integer(kind=8) :: nbpara
 !-----------------------------------------------------------------------
 !     entrees:
 !        opt     : option_simple
@@ -40,8 +40,8 @@ function nbpara(opt, te, statut)
 !        nbpara: nombre de champ parametre de statut: statut
 !                pour le calcul(opt,te)
 !-----------------------------------------------------------------------
-    integer :: optmod, jj
-    integer ::  nucalc
+    integer(kind=8) :: optmod, jj
+    integer(kind=8) ::  nucalc
 !-----------------------------------------------------------------------
 
     jj = zi(ca_iaoptt_-1+(te-1)*ca_lgco_+opt)

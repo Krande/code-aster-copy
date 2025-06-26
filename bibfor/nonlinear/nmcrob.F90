@@ -70,15 +70,15 @@ subroutine nmcrob(meshz, modelz, sddisc, ds_inout, cara_elemz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_obsv, nb_keyw_fact, nume_reuse
+    integer(kind=8) :: nb_obsv, nb_keyw_fact, nume_reuse
     character(len=19) :: sdarch
     character(len=8) :: result
     character(len=14) :: sdextr_obsv
     character(len=16) :: keyw_fact
     character(len=24) :: sdarchAinfJv
-    integer, pointer :: v_arch_info(:) => null()
+    integer(kind=8), pointer :: v_arch_info(:) => null()
     character(len=24) :: extr_info
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

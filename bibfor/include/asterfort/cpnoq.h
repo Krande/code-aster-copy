@@ -20,8 +20,8 @@
 !
 interface
     subroutine cpnoq(main,numa,coor,ind,nomnoe)
-        integer :: ind
-        integer :: numa
+        integer(kind=8) :: ind
+        integer(kind=8) :: numa
         real(kind=8) :: coor(3, *)
         character(len=8) :: main
         character(len=24) :: nomnoe

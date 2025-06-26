@@ -28,7 +28,7 @@ subroutine thmGetParaHydr(j_mater, ds_thm)
 #include "asterfort/rcvala.h"
 #include "asterfort/THM_type.h"
 !
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     type(THM_DS), intent(inout) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,18 +44,18 @@ subroutine thmGetParaHydr(j_mater, ds_thm)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para_vgm = 6
+    integer(kind=8), parameter :: nb_para_vgm = 6
     real(kind=8) :: para_vale_vgm(nb_para_vgm)
-    integer :: icodre_vgm(nb_para_vgm)
+    integer(kind=8) :: icodre_vgm(nb_para_vgm)
     character(len=16), parameter :: para_name_vgm(nb_para_vgm) = (/'VG_N    ', &
                                                                    'VG_PR   ', &
                                                                    'VG_SR   ', &
                                                                    'VG_SMAX ', &
                                                                    'VG_SATUR', &
                                                                    'VG_PENTR'/)
-    integer, parameter :: nb_para = 1
+    integer(kind=8), parameter :: nb_para = 1
     real(kind=8) :: para_vale(nb_para)
-    integer :: icodre(nb_para)
+    integer(kind=8) :: icodre(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'EMMAG'/)
     character(len=16) :: hydr
 !

@@ -58,7 +58,7 @@ subroutine nmsolm(sddyna, solalg)
     aster_logical :: ldepl, lvite, lacce
     real(kind=8) :: coevit, coeacc
     character(len=19) :: ddepla, dvitla, daccla
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !

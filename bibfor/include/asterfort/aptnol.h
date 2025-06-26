@@ -21,7 +21,7 @@
 interface
     subroutine aptnol(sdappa, model_ndim, nt_node)
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: model_ndim 
-        integer, intent(in) :: nt_node
+        integer(kind=8), intent(in) :: model_ndim 
+        integer(kind=8), intent(in) :: nt_node
     end subroutine aptnol
 end interface

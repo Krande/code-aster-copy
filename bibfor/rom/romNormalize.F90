@@ -31,7 +31,7 @@ subroutine romNormalize(vect_type, vect_vale, nb_equa)
 !
     character(len=1), intent(in) :: vect_type
     character(len=19), intent(in) :: vect_vale
-    integer, intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_equa
 !
 ! --------------------------------------------------------------------------------------------------
 !

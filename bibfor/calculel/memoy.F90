@@ -32,7 +32,7 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr, &
 #include "asterfort/scalai.h"
 #include "asterfort/utmess.h"
     character(len=*) :: champa, champb
-    integer :: ncpa, ncpb, nbmail, numail(*)
+    integer(kind=8) :: ncpa, ncpb, nbmail, numail(*)
     real(kind=8) :: vr(2)
 !     BUT :  FAIRE LA "MOYENNE" DE LA COMPOSANTE NCPA D'UN CHAM_ELEM
 !            EN PONDERANT PAR LA COMPOSANTE NCPB D'UN AUTRE CHAM_ELEM
@@ -54,19 +54,19 @@ subroutine memoy(champa, ncpa, champb, ncpb, vr, &
 !
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: longt1, longt2, ncmpel, mode, j, igd1, igd2
+    integer(kind=8) :: longt1, longt2, ncmpel, mode, j, igd1, igd2
     real(kind=8) :: rzero
     character(len=8) :: scal1, scal2
     character(len=19) :: champ1, champ2, ligrel, ligre1, ligre2
     aster_logical :: first
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacelk, ibid, icoef, idecg1
-    integer :: idecg2, iel, im, inum
-    integer :: k, mode1, mode2, nbgr, nel
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: celd1(:) => null()
-    integer, pointer :: celd2(:) => null()
+    integer(kind=8) :: i, iacelk, ibid, icoef, idecg1
+    integer(kind=8) :: idecg2, iel, im, inum
+    integer(kind=8) :: k, mode1, mode2, nbgr, nel
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: celd1(:) => null()
+    integer(kind=8), pointer :: celd2(:) => null()
     real(kind=8), pointer :: val1(:) => null()
     real(kind=8), pointer :: val2(:) => null()
 !-----------------------------------------------------------------------

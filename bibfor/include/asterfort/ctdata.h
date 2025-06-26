@@ -29,13 +29,13 @@ interface
         aster_logical :: toucmp
         character(len=24) :: nkcmp
         character(len=24) :: nkvari
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=19) :: chpgs
         character(len=19) :: chpsu
         character(len=8) :: noma
-        integer :: nbno
-        integer :: nbma
-        integer :: nbval
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbma
+        integer(kind=8) :: nbval
         character(len=1) :: tsca
     end subroutine ctdata
 end interface

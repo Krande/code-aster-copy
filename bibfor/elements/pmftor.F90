@@ -26,7 +26,7 @@ subroutine pmftor(ety, etz, sk)
 !     ETZ = EXCENTRICITE DU CENTRE DE TORSION SELON Z
 !     SK = MATRICE DE RIGIDITE
 !    -------------------------------------------------------------------
-    integer :: ip(12)
+    integer(kind=8) :: ip(12)
     real(kind=8) :: etz2, ety2
     data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/
 !

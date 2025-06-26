@@ -30,11 +30,11 @@ subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
 #include "asterfort/infniv.h"
     real(kind=8) :: sigmax(*), sigmin(*)
     real(kind=8) :: ampmax, smax(*), smin(*)
-    integer :: ncyc, cycmax
+    integer(kind=8) :: ncyc, cycmax
 !       ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifm, niv
+    integer(kind=8) :: i, ifm, niv
 !-----------------------------------------------------------------------
     call infniv(ifm, niv)
 !

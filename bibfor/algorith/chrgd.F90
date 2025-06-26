@@ -27,12 +27,12 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
 #include "asterfort/utmess.h"
 #include "blas/dgemv.h"
 !
-    integer, intent(in) :: nbcmp, jcesd, jcesl, jcesv, imai, ipt, isp
+    integer(kind=8), intent(in) :: nbcmp, jcesd, jcesl, jcesv, imai, ipt, isp
     real(kind=8), dimension(:, :), intent(in) :: p
     character(len=*), intent(in) :: type_gd
     character, intent(in) :: rc
 !
-    integer, dimension(:), intent(in), optional :: permvec
+    integer(kind=8), dimension(:), intent(in), optional :: permvec
 ! ----------------------------------------------------------------------
 !
 !     BUT : CHANGEMENT DE REPERE D'UNE GRANDEUR REELLE EN UN SOUS-POINT
@@ -49,10 +49,10 @@ subroutine chrgd(nbcmp, jcesd, jcesl, jcesv, imai, &
 !     PERMVEC  IN  I    : VECTEUR DE PERMUTATION (POUR DIM 2 & CHANGEMENT CYLINDRIQUE)
 ! ---------------------------------------------------------------------
 !
-    integer :: ii, iad, kk
+    integer(kind=8) :: ii, iad, kk
     real(kind=8), dimension(6) :: val1, val1r, val1i
     real(kind=8), dimension(6) :: val, valr, vali
-    integer, dimension(6) :: permvec_loc
+    integer(kind=8), dimension(6) :: permvec_loc
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
 !   Lecture des composantes du champ (vecteur ou tenseur) au sous-point courant

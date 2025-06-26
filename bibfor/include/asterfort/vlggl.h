@@ -21,8 +21,8 @@
 interface
     subroutine vlggl(nno, nbrddl, pgl, v, code,&
                      p, vtemp)
-        integer :: nbrddl
-        integer :: nno
+        integer(kind=8) :: nbrddl
+        integer(kind=8) :: nno
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: v(nbrddl)
         character(len=2) :: code

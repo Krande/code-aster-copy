@@ -54,19 +54,19 @@ subroutine mearcc(option, mo, chin, chout)
 !     OUT CHOUT  : CHAMP DE CONTRAINTES ELNO REDUIT AUX MAILLES DE PEAU
 !
 !
-    integer :: nbcmp, nbnomx
+    integer(kind=8) :: nbcmp, nbnomx
     parameter(nbcmp=6, nbnomx=9)
 !
-    integer :: nbma, ibid, jma2d, jma3d, ndim
-    integer :: jcesd3, jcesk3, jcesl3, jcesd2, ima
-    integer :: jcesk2, jcesl2, jcesc2, jlcnx, jcnx, ipt, icp, ino2, ino3
-    integer :: jco3, jco2, npt3, npt2, ipt2, ipt3, k, npt
-    integer :: iad3, iad2, nucmp, numasu, numavo, nbcmp2
+    integer(kind=8) :: nbma, ibid, jma2d, jma3d, ndim
+    integer(kind=8) :: jcesd3, jcesk3, jcesl3, jcesd2, ima
+    integer(kind=8) :: jcesk2, jcesl2, jcesc2, jlcnx, jcnx, ipt, icp, ino2, ino3
+    integer(kind=8) :: jco3, jco2, npt3, npt2, ipt2, ipt3, k, npt
+    integer(kind=8) :: iad3, iad2, nucmp, numasu, numavo, nbcmp2
 !
     character(len=8) :: ma, comp(nbcmp), k8b, nomasu, nomavo, valk(2)
     character(len=19) :: chous, chins
     character(len=24) :: mail2d, mail3d, mailto, ligrmo
-    integer, pointer :: pt3d(:) => null()
+    integer(kind=8), pointer :: pt3d(:) => null()
     real(kind=8), pointer :: cesv2(:) => null()
     real(kind=8), pointer :: cesv3(:) => null()
     character(len=8), pointer :: cesc3(:) => null()

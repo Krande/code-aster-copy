@@ -50,13 +50,13 @@ subroutine pj3dfb(boite, maillz, geom1, geom2)
     real(kind=8) :: yymax, yymin, ymax, ymin
     real(kind=8) :: dz, ddz, zmin, zmax, zzmin, zzmax
     character(len=24) :: maille
-    integer :: p1, q1, r1, p2, q2, r2, p, q, r, nx, ny, nz, ndec, nno
-    integer :: iatr3, ntr3, nno1, nno2, i, iposi, ifm, niv, vali(2)
-    integer :: iabtdi, iabtvr, iabtnb, iabtlc, k, ino, ib, lont, iabtco
-    integer :: nbtot, nbmax, nbmin, nbtet, nbmoy
+    integer(kind=8) :: p1, q1, r1, p2, q2, r2, p, q, r, nx, ny, nz, ndec, nno
+    integer(kind=8) :: iatr3, ntr3, nno1, nno2, i, iposi, ifm, niv, vali(2)
+    integer(kind=8) :: iabtdi, iabtvr, iabtnb, iabtlc, k, ino, ib, lont, iabtco
+    integer(kind=8) :: nbtot, nbmax, nbmin, nbtet, nbmoy
     aster_logical :: dbg
-    integer, pointer :: lino1(:) => null()
-    integer, pointer :: lino2(:) => null()
+    integer(kind=8), pointer :: lino1(:) => null()
+    integer(kind=8), pointer :: lino2(:) => null()
 !
 ! DEB ------------------------------------------------------------------
     call jemarq()

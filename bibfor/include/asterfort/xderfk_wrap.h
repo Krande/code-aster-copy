@@ -22,8 +22,8 @@ interface
     subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
         real(kind=8) :: kappa
         real(kind=8) :: mu
-        integer :: ndim
-        integer :: istano
+        integer(kind=8) :: ndim
+        integer(kind=8) :: istano
         real(kind=8) :: r
         real(kind=8) :: theta
         real(kind=8) :: dfkdpo(ndim,ndim,2)

@@ -56,8 +56,8 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
     type(FE_basis), intent(in) :: FEBasis
     character(len=16), intent(in) :: option
     character(len=8), intent(in) :: typmod(2)
-    integer, intent(in) :: imate
-    integer, intent(in) :: ndim, nno, npg, lgpg
+    integer(kind=8), intent(in) :: imate
+    integer(kind=8), intent(in) :: ndim, nno, npg, lgpg
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE), angmas(*)
     character(len=16), intent(in) :: mult_comp
@@ -68,7 +68,7 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
     aster_logical, intent(in) :: matsym
     real(kind=8), intent(inout) :: matuu(*)
     real(kind=8), intent(inout) :: vectu(ndim*nno)
-    integer, intent(inout) :: codret
+    integer(kind=8), intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -107,10 +107,10 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     aster_logical :: lVect, lMatr, lSigm, lMatrPred, lMFront, lPred
-    integer :: kpg, ipoids, ivf, idfde
-    integer :: cod(MAX_QP)
+    integer(kind=8) :: kpg, ipoids, ivf, idfde
+    integer(kind=8) :: cod(MAX_QP)
     real(kind=8) :: dsidep(6, 6), coorpg(3), BGSEval(3, MAX_BS)
     real(kind=8) :: fPrev(3, 3), fCurr(3, 3), fIncr(3, 3), gPrev(3, 3), gCurr(3, 3)
     real(kind=8) :: epsgPrev(6), epsgIncr(6), epsgCurr(6)

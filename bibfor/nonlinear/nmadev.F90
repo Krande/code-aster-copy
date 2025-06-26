@@ -34,7 +34,7 @@ subroutine nmadev(sddisc, sderro, iterat)
 !
     character(len=19) :: sddisc
     character(len=24) :: sderro
-    integer :: iterat
+    integer(kind=8) :: iterat
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,8 +50,8 @@ subroutine nmadev(sddisc, sderro, iterat)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: vali, nb_event_ok
-    integer :: i_adap, nb_adap, eventType
+    integer(kind=8) :: vali, nb_event_ok
+    integer(kind=8) :: i_adap, nb_adap, eventType
     real(kind=8) :: vale
     character(len=8) :: cricom, metlis
     character(len=16) :: nopara

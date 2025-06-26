@@ -101,8 +101,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: nbin = 2
-        integer, parameter :: nbout = 2
+        integer(kind=8), parameter :: nbin = 2
+        integer(kind=8), parameter :: nbout = 2
         character(len=8)  :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
         character(len=19) :: ligrel_model
@@ -168,8 +168,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: nbin = 1
-        integer, parameter :: nbout = 1
+        integer(kind=8), parameter :: nbin = 1
+        integer(kind=8), parameter :: nbout = 1
         character(len=8)  :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
         character(len=19) :: ligrel_model, chbase, chelno
@@ -223,11 +223,11 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: mxchin
+        integer(kind=8), intent(in) :: mxchin
         character(len=*), intent(in) :: model
         character(len=*), intent(inout) :: lpain(mxchin)
         character(len=*), intent(inout) :: lchin(mxchin)
-        integer, intent(inout) :: nchin
+        integer(kind=8), intent(inout) :: nchin
 !
 ! --------------------------------------------------------------------------------------------------
 !

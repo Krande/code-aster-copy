@@ -62,8 +62,8 @@ subroutine crvarc()
 !
 ! ------------------------------------------------------------------------------
 !
-    integer         :: nbfac, jinst, nbin, iret, iexi, jcara
-    integer         :: n1, n2, inst, nbinst, ordr, nbordr
+    integer(kind=8)         :: nbfac, jinst, nbin, iret, iexi, jcara
+    integer(kind=8)         :: n1, n2, inst, nbinst, ordr, nbordr
     real(kind=8)    :: vinst, prec
 !
     character(len=5)    :: LesInst, LeCas
@@ -73,15 +73,15 @@ subroutine crvarc()
     character(len=19)   :: ligrel, chout, chinst, listr, temper
     character(len=24)   :: chcara(18), lchin(10), chtemp, chgeom
 !
-    integer             :: vali, lesordres(1)
+    integer(kind=8)             :: vali, lesordres(1)
     real(kind=8)        :: valr
     character(len=24)   :: valk
 !
-    integer             :: ibib
+    integer(kind=8)             :: ibib
     character(len=8)    :: k8bid
     complex(kind=8)     :: c16bid
 !
-    integer, pointer :: lordr(:) => null()
+    integer(kind=8), pointer :: lordr(:) => null()
     real(kind=8), pointer :: linst(:) => null()
     character(len=24), pointer :: celk(:) => null()
 !

@@ -44,7 +44,7 @@ subroutine critev(epsp, epsd, eta, lambda, deuxmu, &
 ! OUT CRITP  : VALEUR DE LA DERIVEE DU CRITERE POUR ETA DONNEE EN ENTREE
 ! ----------------------------------------------------------------------
 !
-    integer :: k, i
+    integer(kind=8) :: k, i
     real(kind=8) :: tr(6), vecp(3, 3)
     real(kind=8) :: epm(3), tre, rac2, phi
     real(kind=8) :: treps, sigel(3), ppeps(6), dfde(6)

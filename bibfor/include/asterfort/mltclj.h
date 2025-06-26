@@ -22,15 +22,15 @@ interface
     subroutine mltclj(nb, n, ll, m, it,&
                       p, front, frn, adper, trav,&
                       c)
-        integer :: p
-        integer :: nb
-        integer :: n
-        integer :: ll
-        integer :: m
-        integer :: it
+        integer(kind=8) :: p
+        integer(kind=8) :: nb
+        integer(kind=8) :: n
+        integer(kind=8) :: ll
+        integer(kind=8) :: m
+        integer(kind=8) :: it
         complex(kind=8) :: front(*)
         complex(kind=8) :: frn(*)
-        integer :: adper(*)
+        integer(kind=8) :: adper(*)
         complex(kind=8) :: trav(p, nb, *)
         complex(kind=8) :: c(nb, nb, *)
     end subroutine mltclj

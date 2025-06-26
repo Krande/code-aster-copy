@@ -41,8 +41,8 @@ subroutine crsvpe(motfac, solveu, kellag)
 ! IN  K3 KELLAG  : ELIM_LAGR
 ! ----------------------------------------------------------
 !
-    integer :: iret, niremp, nmaxit, reacpr, pcpiv
-    integer :: lch, i, lslvo, redmpi
+    integer(kind=8) :: iret, niremp, nmaxit, reacpr, pcpiv
+    integer(kind=8) :: lch, i, lslvo, redmpi
     real(kind=8) :: fillin, epsmax, resipc, blreps
     character(len=8) :: kacmum
     character(len=24) :: kalgo, kprec, renum
@@ -51,7 +51,7 @@ subroutine crsvpe(motfac, solveu, kellag)
     character(len=2500) :: myopt
     character(len=24), pointer :: slvk(:) => null()
     character(len=80), pointer :: slvo(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
 !
 !------------------------------------------------------------------

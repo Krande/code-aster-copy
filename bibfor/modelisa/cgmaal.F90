@@ -31,7 +31,7 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iocc, nbma
+    integer(kind=8) :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
 !
 !       CGMAAL -- TRAITEMENT DE L'OPTION APPUI_LACHE
@@ -47,8 +47,8 @@ subroutine cgmaal(mofaz, iocc, nomaz, lismaz, nbma)
 !  NBMA          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer :: nbmc, nbno, nci, adrvlc, acncin, i, j, nbmat, ityp
-    integer :: nuno, jadr, numa, idlist, jnoeu, idlima
+    integer(kind=8) :: nbmc, nbno, nci, adrvlc, acncin, i, j, nbmat, ityp
+    integer(kind=8) :: nuno, jadr, numa, idlist, jnoeu, idlima
     character(len=8) :: noma, motcle(2), tymocl(2)
     character(len=16) :: motfac
     character(len=24) :: mesnoe, lismai, listrv, ncncin

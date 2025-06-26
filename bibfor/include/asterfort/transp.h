@@ -21,11 +21,11 @@
 interface
     subroutine transp(a, nlamax, dimal, dimac, b,&
                       nlbmax)
-        integer :: nlbmax
-        integer :: nlamax
+        integer(kind=8) :: nlbmax
+        integer(kind=8) :: nlamax
         real(kind=8) :: a(nlamax, *)
-        integer :: dimal
-        integer :: dimac
+        integer(kind=8) :: dimal
+        integer(kind=8) :: dimac
         real(kind=8) :: b(nlbmax, *)
     end subroutine transp
 end interface

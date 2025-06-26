@@ -29,7 +29,7 @@ function diinst(sddisc, numins)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: numins
+    integer(kind=8) :: numins
     character(len=19) :: sddisc
 !
 ! ----------------------------------------------------------------------
@@ -49,7 +49,7 @@ function diinst(sddisc, numins)
 !
 !
 !
-    integer :: iret, jinst
+    integer(kind=8) :: iret, jinst
     character(len=24) :: tpsdit
     character(len=16) :: typeco
 !

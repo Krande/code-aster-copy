@@ -21,11 +21,11 @@
 interface
     subroutine dnconv(n, ritzr, ritzi, bounds, tol,&
                       nconv)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: ritzr(n)
         real(kind=8) :: ritzi(n)
         real(kind=8) :: bounds(n)
         real(kind=8) :: tol
-        integer :: nconv
+        integer(kind=8) :: nconv
     end subroutine dnconv
 end interface

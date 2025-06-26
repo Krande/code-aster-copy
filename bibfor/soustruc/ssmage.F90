@@ -59,7 +59,7 @@ subroutine ssmage(nomu, option)
     character(len=14) :: nu
     character(len=19) :: matas
     character(len=24) :: mateco, mater
-    integer :: iarefm
+    integer(kind=8) :: iarefm
     real(kind=8), pointer :: varm(:) => null()
     character(len=24) :: listElemCalc
 !-----------------------------------------------------------------------

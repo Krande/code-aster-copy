@@ -20,8 +20,8 @@
 !
 interface
     subroutine vecma(mv, n, mp, m)
-        integer :: m
-        integer :: n
+        integer(kind=8) :: m
+        integer(kind=8) :: n
         real(kind=8) :: mv(n)
         real(kind=8) :: mp(m, m)
     end subroutine vecma

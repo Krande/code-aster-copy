@@ -42,7 +42,7 @@ subroutine nmetca(model, mesh, mate, hval_incr, &
     character(len=24), intent(in) :: model, mate
     character(len=19), intent(in) :: hval_incr(*)
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     type(NL_DS_ErrorIndic), intent(inout) :: ds_errorindic
 !
 ! --------------------------------------------------------------------------------------------------
@@ -63,15 +63,15 @@ subroutine nmetca(model, mesh, mate, hval_incr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: nbout = 1
-    integer, parameter :: nbin = 6
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: nbout = 1
+    integer(kind=8), parameter :: nbin = 6
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
-    integer, parameter :: npara = 2
+    integer(kind=8), parameter :: npara = 2
     character(len=8) :: licmp(npara)
     real(kind=8) :: rcmp(npara)
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=1) :: base
     character(len=24) :: ligrmo, chgeom, chtime, cartca
     character(len=19) :: sigm_prev, sigm_curr, chelem

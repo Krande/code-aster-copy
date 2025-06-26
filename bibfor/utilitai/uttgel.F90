@@ -37,7 +37,7 @@ subroutine uttgel(nomte, typgeo)
 !
 ! 0.2. ==> VARIABLES LOCALES
 !
-    integer :: ibid
+    integer(kind=8) :: ibid
     character(len=8) :: alias8
     character(len=3) :: codtma
 

@@ -21,7 +21,7 @@
 interface
     subroutine calcvh(nbmat, materf, eta, vp, sigeqe,&
                       vh, vg)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: materf(nbmat, 2)
         real(kind=8) :: eta
         real(kind=8) :: vp(3)

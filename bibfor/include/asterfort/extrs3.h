@@ -23,10 +23,10 @@ interface
                       type, iad)
         character(len=*) :: resu
         character(len=*) :: param
-        integer :: iordr
+        integer(kind=8) :: iordr
         character(len=1) :: cel
-        integer :: itype
+        integer(kind=8) :: itype
         character(len=*) :: type
-        integer :: iad
+        integer(kind=8) :: iad
     end subroutine extrs3
 end interface

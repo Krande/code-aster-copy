@@ -26,7 +26,7 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
     character(len=19) :: chanom
     character(len=*) :: partie, nochmd
 !
-    integer :: ifichi, codret
+    integer(kind=8) :: ifichi, codret
 !        UTILITAIRE D'IMPRESSION DU CHAMP CHANOM NOEUD/ELEMENT
 !        ENTIER/REEL AU FORMAT MED
 !     ENTREES:
@@ -39,7 +39,7 @@ subroutine irchmd(ifichi, chanom, partie, nochmd, codret)
 !     SORTIES:
 !        CODRET : CODE DE RETOUR (0 : PAS DE PB, NON NUL SI PB)
 !
-    integer :: numord, nbCmpDyna
+    integer(kind=8) :: numord, nbCmpDyna
 !
     character(len=8) :: typech, noresu, sdcarm
     character(len=16) :: nomsym

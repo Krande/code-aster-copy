@@ -23,23 +23,23 @@ interface
                       m, omega, xpg, nno, ncou,&
                       nsect, ff, df1, df2, rayon,&
                       theta, mmt, b)
-        integer :: igau
-        integer :: icou
-        integer :: isect
+        integer(kind=8) :: igau
+        integer(kind=8) :: icou
+        integer(kind=8) :: isect
         real(kind=8) :: h
         real(kind=8) :: a
-        integer :: m
+        integer(kind=8) :: m
         real(kind=8) :: omega
         real(kind=8) :: xpg(4)
-        integer :: nno
-        integer :: ncou
-        integer :: nsect
+        integer(kind=8) :: nno
+        integer(kind=8) :: ncou
+        integer(kind=8) :: nsect
         real(kind=8) :: ff(*)
         real(kind=8) :: df1(*)
         real(kind=8) :: df2(*)
         real(kind=8) :: rayon
         real(kind=8) :: theta
-        integer :: mmt
+        integer(kind=8) :: mmt
         real(kind=8) :: b(4, *)
     end subroutine bcoudc
 end interface

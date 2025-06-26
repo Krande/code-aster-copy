@@ -24,39 +24,39 @@ interface
                       toler, ndt, ndi, nr, crit, &
                       nvi, vind, nfs, nsg, toutms, &
                       nhsr, numhsr, sigd, mult_comp_)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: comp(*)
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: tempd
         real(kind=8) :: tempf
         real(kind=8) :: tref
-        integer :: impexp
+        integer(kind=8) :: impexp
         character(len=8) :: typma
         real(kind=8) :: hsr(*)
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         character(len=3) :: matcst
-        integer :: nbcomm(*)
+        integer(kind=8) :: nbcomm(*)
         character(len=24) :: cpmono(*)
         real(kind=8) :: angmas(3)
         real(kind=8) :: pgl(3, 3)
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
         real(kind=8) :: crit(*)
-        integer, intent(in) :: nvi
+        integer(kind=8), intent(in) :: nvi
         real(kind=8) :: vind(*)
-        integer :: nfs
-        integer :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nsg
         real(kind=8) :: toutms(*)
-        integer :: nhsr
-        integer :: numhsr(*)
+        integer(kind=8) :: nhsr
+        integer(kind=8) :: numhsr(*)
         real(kind=8) :: sigd(6)
         character(len=16), optional, intent(in) :: mult_comp_
     end subroutine lcmate

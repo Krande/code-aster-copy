@@ -38,9 +38,9 @@ subroutine te0114(option, nomte)
 !
     real(kind=8) :: r, xh, wi, u(3, 9), depg(54)
     real(kind=8) :: dfdr(9), dfdz(9), poids
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: npg, nnos, jgano, ndim, kdec, nh
-    integer :: nno, kp, iharmo, i, idefo, idepl, idpg, igau, isig
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: npg, nnos, jgano, ndim, kdec, nh
+    integer(kind=8) :: nno, kp, iharmo, i, idefo, idepl, idpg, igau, isig
 !
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &

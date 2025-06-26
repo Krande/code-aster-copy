@@ -22,6 +22,6 @@ interface
     subroutine mtcopy(matin, matout, ier)
         character(len=*) :: matin
         character(len=*) :: matout
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine mtcopy
 end interface

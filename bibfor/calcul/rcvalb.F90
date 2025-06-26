@@ -29,21 +29,21 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat, nomat, &
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"
 !
-    integer, intent(in) :: nbres
-    integer, intent(in) :: nbpar
+    integer(kind=8), intent(in) :: nbres
+    integer(kind=8), intent(in) :: nbpar
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
     character(len=*), intent(in) :: poum
-    integer, intent(in) :: jmat
+    integer(kind=8), intent(in) :: jmat
     character(len=*), intent(in) :: nomat
     character(len=*), intent(in) :: phenom
     character(len=*), intent(in) :: nompar(nbpar)
     real(kind=8), intent(in) :: valpar(nbpar)
     character(len=*), intent(in) :: nomres(nbres)
     real(kind=8), intent(out) :: valres(nbres)
-    integer, intent(out) :: codret(nbres)
-    integer, intent(in) :: iarret
+    integer(kind=8), intent(out) :: codret(nbres)
+    integer(kind=8), intent(in) :: iarret
     character(len=3), intent(in), optional :: nan
 
 ! ----------------------------------------------------------------------
@@ -75,8 +75,8 @@ subroutine rcvalb(fami, kpg, ksp, poum, jmat, nomat, &
 !        icodre(*) : pour chaque resultat, 0 si on a trouve, 1 sinon
 ! ----------------------------------------------------------------------
 
-    integer, parameter :: nbpamx = 20
-    integer :: nbpar2, ipar, nbpart, ier
+    integer(kind=8), parameter :: nbpamx = 20
+    integer(kind=8) :: nbpar2, ipar, nbpart, ier
     real(kind=8) :: valpa2(nbpamx), valvrc
     character(len=8) :: nompa2(nbpamx), novrc
 ! ----------------------------------------------------------------------

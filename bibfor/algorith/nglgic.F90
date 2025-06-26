@@ -48,8 +48,8 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
     character(len=8), intent(in)    :: typmod(2)
     character(len=*), intent(in)    :: fami
     character(len=16), intent(in)   :: option, compor(COMPOR_SIZE)
-    integer, intent(in)             :: ndim, nno, nnob, npg, nddl, lgpg
-    integer, intent(in)             :: mate, iw, idff, idffb
+    integer(kind=8), intent(in)             :: ndim, nno, nnob, npg, nddl, lgpg
+    integer(kind=8), intent(in)             :: mate, iw, idff, idffb
     real(kind=8), intent(in)        :: geomi(ndim, nno), carcri(CARCRI_SIZE), instm, instp
     real(kind=8), intent(in)        :: vff(nno, npg), vffb(nnob, npg)
     real(kind=8), intent(in)        :: angmas(3), ddlm(nddl), ddld(nddl), siefm(3*ndim+4, npg)
@@ -57,7 +57,7 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
     real(kind=8), intent(out)        :: fint(nddl), matr(nddl, nddl)
     real(kind=8), intent(out)        :: siefp(3*ndim+4, npg), vip(lgpg, npg)
     aster_logical, intent(in)       :: lMatr, lVect, lSigm, lVari
-    integer, intent(out)            :: codret
+    integer(kind=8), intent(out)            :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -126,13 +126,13 @@ subroutine nglgic(fami, option, typmod, ndim, nno, &
                                                  0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0, &
                                                  0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0/), (/6, 6/))
 ! ----------------------------------------------------------------------
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     type(GDLOG_DS):: gdlm, gdlp
     aster_logical :: axi, resi
-    integer       :: g, n, i, iok(1)
-    integer       :: xu(ndim, nno), xg(2, nnob), xq(2, nnob)
-    integer       :: cod(npg)
-    integer       :: nnu, nng, nnq, ndu, ndg, ndq, neu, neg, neq
+    integer(kind=8)       :: g, n, i, iok(1)
+    integer(kind=8)       :: xu(ndim, nno), xg(2, nnob), xq(2, nnob)
+    integer(kind=8)       :: cod(npg)
+    integer(kind=8)       :: nnu, nng, nnq, ndu, ndg, ndq, neu, neg, neq
     real(kind=8)  :: dev(2*ndim, 2*ndim), dh(2*ndim, 2*ndim), hyd(2*ndim), kr(2*ndim)
     real(kind=8)  :: r, dff(nno, ndim), dffb(nnob, ndim), poids, rinco
     real(kind=8)  :: fm(3, 3), fp(3, 3)

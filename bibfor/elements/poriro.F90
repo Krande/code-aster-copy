@@ -24,7 +24,7 @@ subroutine poriro(itype, m, rho, omega, e, &
 #include "asterc/r8gaem.h"
 #include "asterfort/fun1.h"
 #include "asterfort/utmess.h"
-    integer :: itype
+    integer(kind=8) :: itype
     real(kind=8) :: e, rho, a1, a2, xl, xiy1, xiy2, xiz1, xiz2, g
     real(kind=8) :: m(*), alfay1, alfay2, alfaz1, alfaz2
 !     CALCUL DE LA MATRICE DE RAIDEUR CENTRIFUGE DES ELEMENTS DE POUTRE
@@ -64,7 +64,7 @@ subroutine poriro(itype, m, rho, omega, e, &
     real(kind=8) :: c040, c060, c070, c105, c120, c140, c210, c420
     real(kind=8) :: c240
 !
-    integer :: ip(13), i
+    integer(kind=8) :: ip(13), i
 !-----------------------------------------------------------------------
     real(kind=8) :: phiqy, phiqz, phis, phiyz, qy, qz
 !-----------------------------------------------------------------------

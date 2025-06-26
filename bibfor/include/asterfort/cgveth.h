@@ -21,6 +21,6 @@
 interface
     subroutine cgveth(typfis, ndim)
         character(len=8) :: typfis
-        integer :: ndim
+        integer(kind=8) :: ndim
     end subroutine cgveth
 end interface

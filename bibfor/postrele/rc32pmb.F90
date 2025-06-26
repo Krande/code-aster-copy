@@ -31,7 +31,7 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb, &
 #include "asterfort/rctres.h"
 #include "asterfort/utmess.h"
 !
-    integer :: iocc, ns
+    integer(kind=8) :: iocc, ns
     real(kind=8) :: pm, pb, pmpb
     character(len=4) :: lieu
 !
@@ -40,8 +40,8 @@ subroutine rc32pmb(lieu, iocc, ns, pm, pb, &
 !              CALCUL DU PM, PB, ET DU PMPB
 !
 !     ------------------------------------------------------------------
-    integer :: jinfoi, npres, nmeca, n1, jsigu, j, jinfor, k, jchara
-    integer :: jcharb, numcha, iret
+    integer(kind=8) :: jinfoi, npres, nmeca, n1, jsigu, j, jinfor, k, jchara
+    integer(kind=8) :: jcharb, numcha, iret
     real(kind=8) :: sigmoya(6), sigmoyb(6), ma(12), mb(12), pma, pmb
     real(kind=8) :: sigflea(6), sigfleb(6), pba, pbb, siglina(6)
     real(kind=8) :: siglinb(6), pmba, pmbb, seis(72)

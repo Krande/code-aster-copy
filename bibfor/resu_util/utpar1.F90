@@ -24,9 +24,9 @@ subroutine utpar1(resu_type, nb_para_maxi, para_list, nb_para)
 !
 !
     character(len=*), intent(in) :: resu_type
-    integer, intent(in) :: nb_para_maxi
+    integer(kind=8), intent(in) :: nb_para_maxi
     character(len=32), intent(out) :: para_list(nb_para_maxi)
-    integer, intent(out) :: nb_para
+    integer(kind=8), intent(out) :: nb_para
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,7 +43,7 @@ subroutine utpar1(resu_type, nb_para_maxi, para_list, nb_para)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ico
+    integer(kind=8) :: ico
 !
 ! --------------------------------------------------------------------------------------------------
 !

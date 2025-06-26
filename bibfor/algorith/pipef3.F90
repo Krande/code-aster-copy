@@ -33,7 +33,7 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg, &
 #include "asterfort/utmess.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-    integer :: mate, npg, lgpg, nno, ndim, nddl
+    integer(kind=8) :: mate, npg, lgpg, nno, ndim, nddl
     real(kind=8) :: geom(nddl), vim(lgpg, npg), ddepl(nddl), deplm(nddl)
     real(kind=8) :: wref(npg), vff(nno, npg), dfde(2, nno, npg)
     real(kind=8) :: ddepl0(nddl), ddepl1(nddl), dtau
@@ -49,7 +49,7 @@ subroutine pipef3(ndim, nno, nddl, npg, lgpg, &
 ! OUT : COPILO
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, kpg
+    integer(kind=8) :: i, j, kpg
     real(kind=8) :: up(nddl), ud(nddl), sup(3), sud(3), b(3, 60), poids
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

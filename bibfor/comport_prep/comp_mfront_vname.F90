@@ -34,7 +34,7 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
 #include "asterc/mgis_get_isvs_types.h"
 !
     character(len=16), intent(in) :: extern_addr
-    integer, intent(in) :: nbVariMeca
+    integer(kind=8), intent(in) :: nbVariMeca
     character(len=16), pointer :: infoVari(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,12 +51,12 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, leng, variTypeMGIS, lenTronca
-    integer :: lenMaxi
+    integer(kind=8) :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, leng, variTypeMGIS, lenTronca
+    integer(kind=8) :: lenMaxi
     character(len=16) :: variName, variNameMGIS
     character(len=80), pointer :: variNameList(:) => null()
-    integer, pointer :: variSizeList(:) => null()
-    integer, pointer :: variTypeList(:) => null()
+    integer(kind=8), pointer :: variSizeList(:) => null()
+    integer(kind=8), pointer :: variTypeList(:) => null()
     character(len=2) :: nomk2
     character(len=2), parameter :: cmpNameSTensor(6) = &
                                    (/'XX', 'YY', 'ZZ', 'XY', 'XZ', 'YZ'/)

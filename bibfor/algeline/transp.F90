@@ -31,10 +31,10 @@ subroutine transp(a, nlamax, dimal, dimac, b, &
 ! ------------------------------------------------------------------
     implicit none
 #include "asterfort/utmess.h"
-    integer :: dimal, dimac, nlamax, nlbmax
+    integer(kind=8) :: dimal, dimac, nlamax, nlbmax
     real(kind=8) :: a(nlamax, *), b(nlbmax, *)
 !-----------------------------------------------------------------------
-    integer :: icol, ilig
+    integer(kind=8) :: icol, ilig
 !-----------------------------------------------------------------------
     if (dimac .gt. nlbmax) then
         call utmess('F', 'ALGELINE3_51')

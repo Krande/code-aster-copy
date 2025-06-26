@@ -20,7 +20,7 @@ subroutine gcucon(result_name, type_name, ier)
     implicit none
     character(len=*), intent(in) :: result_name
     character(len=*), intent(in) :: type_name
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
 
 #include "asterf_types.h"
 #include "jeveux.h"

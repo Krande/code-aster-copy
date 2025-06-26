@@ -23,7 +23,7 @@ interface
                                        l_elas       , l_elas_func, l_elas_istr, l_elas_orth)
         character(len=8), intent(in) :: mate
         character(len=32), pointer :: v_mate_read(:)
-        integer, intent(in) :: i_mate_mfront, i_mate_elas, i_mate_add
+        integer(kind=8), intent(in) :: i_mate_mfront, i_mate_elas, i_mate_add
         aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
     end subroutine mateMFrontAddProperties
 end interface

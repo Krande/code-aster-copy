@@ -30,9 +30,9 @@ subroutine listco(sdcont, keywf, mesh, model, nb_cont_zone, &
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(out) :: nb_cont_elem
-    integer, intent(out) :: nb_cont_node
+    integer(kind=8), intent(in) :: nb_cont_zone
+    integer(kind=8), intent(out) :: nb_cont_elem
+    integer(kind=8), intent(out) :: nb_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !

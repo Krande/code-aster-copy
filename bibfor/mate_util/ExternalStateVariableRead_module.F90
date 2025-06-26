@@ -65,8 +65,8 @@ contains
         type(EXTE_VARI_AFFE), intent(out) :: exteVariAffe
 ! ----- Locals
         character(len=16), parameter :: factorKeyword = "AFFE_VARC"
-        integer :: nbFactorKeyword, nbCmpTotal, nocc
-        integer :: iFactorKeyword
+        integer(kind=8) :: nbFactorKeyword, nbCmpTotal, nocc
+        integer(kind=8) :: iFactorKeyword
         character(len=8) :: exteVariName
         type(EXTE_VARI_DESC) :: exteVariDesc
 !   ------------------------------------------------------------------------------------------------
@@ -122,11 +122,11 @@ contains
 ! ----- Parameters
         type(EXTE_VARI_CATA), pointer :: exteVariCata(:)
         character(len=16), intent(in) :: factorKeyword
-        integer, intent(in) :: nbFactorKeyword
-        integer, intent(out) :: nbCmpTotal
+        integer(kind=8), intent(in) :: nbFactorKeyword
+        integer(kind=8), intent(out) :: nbCmpTotal
 ! ----- Locals
-        integer :: iExteVariCata, iFactorKeyword
-        integer :: nbCmp, nocc
+        integer(kind=8) :: iExteVariCata, iFactorKeyword
+        integer(kind=8) :: nbCmp, nocc
         aster_logical :: l_found
         character(len=8) :: exteVariName
 !   ------------------------------------------------------------------------------------------------
@@ -169,7 +169,7 @@ contains
         character(len=8), intent(in) :: exteVariName
         type(EXTE_VARI_DESC), intent(inout) :: exteVariDesc
 ! ----- Locals
-        integer :: iExteVariCata, cataIndx
+        integer(kind=8) :: iExteVariCata, cataIndx
 !   ------------------------------------------------------------------------------------------------
 !
         cataIndx = 0
@@ -200,10 +200,10 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: factorKeyword
-        integer, intent(in) :: iFactorKeyword
+        integer(kind=8), intent(in) :: iFactorKeyword
         type(EXTE_VARI_DESC), intent(inout) :: exteVariDesc
 ! ----- Locals
-        integer :: nocc
+        integer(kind=8) :: nocc
         real(kind=8):: valeRefe
 !   ------------------------------------------------------------------------------------------------
 !
@@ -232,11 +232,11 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=16), intent(in) :: factorKeyword
-        integer, intent(in) :: iFactorKeyword
+        integer(kind=8), intent(in) :: iFactorKeyword
         type(EXTE_VARI_CATA), pointer :: exteVariCata(:)
         type(EXTE_VARI_DESC), intent(inout) :: exteVariDesc
 ! ----- Locals
-        integer :: n1, n2, cataIndx
+        integer(kind=8) :: n1, n2, cataIndx
         character(len=8) :: affeType, exteVariName
         character(len=8) :: funcResult, resultName, fieldName, dsName
         character(len=16) :: funcExtrLeft, funcExtrRight, fieldType

@@ -22,6 +22,6 @@ interface
     function cfdisd(resoco, questz)
         character(len=19) :: resoco
         character(len=*) :: questz
-        integer :: cfdisd
+        integer(kind=8) :: cfdisd
     end function cfdisd
 end interface

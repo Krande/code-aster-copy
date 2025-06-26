@@ -20,9 +20,9 @@
 !
 interface
     subroutine lcodrm(elem_dime, pair_tole, nb_poin_inte, poin_inte, poin_inte2)
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         real(kind=8), intent(in) :: pair_tole
-        integer, intent(inout) :: nb_poin_inte
+        integer(kind=8), intent(inout) :: nb_poin_inte
         real(kind=8), intent(inout) :: poin_inte(elem_dime-1,nb_poin_inte)
         real(kind=8),optional ,intent(inout) :: poin_inte2(elem_dime-1,nb_poin_inte)
     end subroutine lcodrm

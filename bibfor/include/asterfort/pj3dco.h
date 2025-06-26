@@ -26,12 +26,12 @@ interface
                       listInterc_  , nbInterc_)
         character(len=*), intent(in) :: typeSelect
         character(len=8), intent(in) :: entity1, entity2
-        integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+        integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
         character(len=*), intent(in) :: geom1, geom2
         character(len=16), intent(in)  :: corrMesh
         aster_logical, intent(in) :: l_dmax
         real(kind=8), intent(in) :: dmax, dala
         character(len=16), optional, intent(in)  :: listInterc_
-        integer, optional, intent(in)  :: nbInterc_
+        integer(kind=8), optional, intent(in)  :: nbInterc_
     end subroutine pj3dco
 end interface 

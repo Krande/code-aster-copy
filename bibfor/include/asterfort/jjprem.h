@@ -20,8 +20,8 @@
 !
 interface
     function jjprem(nombre, iret)
-        integer :: nombre
-        integer :: iret
-        integer :: jjprem
+        integer(kind=8) :: nombre
+        integer(kind=8) :: iret
+        integer(kind=8) :: jjprem
     end function jjprem
 end interface

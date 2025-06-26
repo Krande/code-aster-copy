@@ -21,7 +21,7 @@
 interface
     subroutine jjvern(noml32, icre, iret)
         character(len=32) :: noml32
-        integer :: icre
-        integer :: iret
+        integer(kind=8) :: icre
+        integer(kind=8) :: iret
     end subroutine jjvern
 end interface

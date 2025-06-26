@@ -52,23 +52,23 @@ subroutine dtminit(sd_dtm_, sd_int_)
 !
 !   -0.2- Local variables
     aster_logical :: reuse
-    integer :: nbrede, nbrevi, nbsauv, nbnli, nbpal
-    integer :: nbmode, iret, jmass, nbvint, jchor
-    integer :: nltreat, append, appendind, i
+    integer(kind=8) :: nbrede, nbrevi, nbsauv, nbnli, nbpal
+    integer(kind=8) :: nbmode, iret, jmass, nbvint, jchor
+    integer(kind=8) :: nltreat, append, appendind, i
 !
     real(kind=8) :: tinit, dt
     character(len=8) :: sd_dtm, sd_int, nomres, basemo, sd_nl
     character(len=24) :: matasm, solver
 !
-    integer, pointer :: vindx(:) => null()
-    integer, pointer :: matdesc(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: matdesc(:) => null()
     real(kind=8), pointer :: vint(:) => null()
     real(kind=8), pointer :: depl(:) => null()
     real(kind=8), pointer :: vite(:) => null()
     real(kind=8), pointer :: acce(:) => null()
     real(kind=8), pointer :: fext(:) => null()
-    integer, pointer :: buffdtm(:) => null()
-    integer, pointer :: buffint(:) => null()
+    integer(kind=8), pointer :: buffdtm(:) => null()
+    integer(kind=8), pointer :: buffint(:) => null()
 !
 !   0 - Initializations
     sd_dtm = sd_dtm_

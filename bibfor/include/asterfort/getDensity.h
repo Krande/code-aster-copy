@@ -18,7 +18,7 @@
 !
 interface
     subroutine getDensity(jvMater, rho, elasKeywordZ_)
-        integer, intent(in) :: jvMater
+        integer(kind=8), intent(in) :: jvMater
         real(kind=8), intent(out) :: rho
         character(len=*), optional, intent(in) :: elasKeywordZ_
     end subroutine getDensity

@@ -21,7 +21,7 @@
 interface
     subroutine pmfpti(num, poids, vff, xl, xi,&
                       wi, b, g)
-        integer :: num
+        integer(kind=8) :: num
         real(kind=8) :: poids(*)
         real(kind=8) :: vff(2,*)
         real(kind=8) :: xl

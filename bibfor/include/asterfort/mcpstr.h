@@ -26,9 +26,9 @@ interface
         real(kind=8)  :: stress(6)
         real(kind=8)  :: pstrs(3)
         real(kind=8)  :: eigprj(3,3)
-        integer       :: codret
-        integer       :: ii
-        integer       :: jj
-        integer       :: mm
+        integer(kind=8)       :: codret
+        integer(kind=8)       :: ii
+        integer(kind=8)       :: jj
+        integer(kind=8)       :: mm
     end subroutine mcpstr
 end interface

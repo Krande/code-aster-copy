@@ -21,7 +21,7 @@
 interface
     subroutine meharm(modele, nh, chharm)
         character(len=*) :: modele
-        integer :: nh
+        integer(kind=8) :: nh
         character(len=24) :: chharm
     end subroutine meharm
 end interface

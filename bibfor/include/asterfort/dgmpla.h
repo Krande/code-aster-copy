@@ -33,7 +33,7 @@ interface
         real(kind=8) :: a
         real(kind=8) :: b1
         real(kind=8) :: b
-        integer :: nnap
+        integer(kind=8) :: nnap
         real(kind=8) :: rx(*)
         real(kind=8) :: ry(*)
         real(kind=8) :: mp

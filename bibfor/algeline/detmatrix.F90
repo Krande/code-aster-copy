@@ -32,7 +32,7 @@ subroutine detmatrix(matass)
 #include "asterfort/detlsp.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/xfem_precond.h"
-    integer :: ier
+    integer(kind=8) :: ier
     character(len=19) :: solveu
     character(len=24) :: kxfem
 !-----------------------------------------------------------------------

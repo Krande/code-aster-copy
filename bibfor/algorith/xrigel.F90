@@ -30,9 +30,9 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, igeom, &
 #include "asterfort/nbsigm.h"
 #include "asterfort/xrige2.h"
 #include "asterfort/xrige3.h"
-    integer :: nnop, igeom
-    integer :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
-    integer :: jpintt, jpmilt, heavn(27, 5), jstno, imate
+    integer(kind=8) :: nnop, igeom
+    integer(kind=8) :: ddlh, nfe, ddlc, cnset(4*32), heavt(36), lonch(10)
+    integer(kind=8) :: jpintt, jpmilt, heavn(27, 5), jstno, imate
     real(kind=8) :: lsn(nnop)
     real(kind=8) :: lst(nnop), matuu(*), sig(*), basloc(*)
 !
@@ -65,10 +65,10 @@ subroutine xrigel(nnop, ddlh, nfe, ddlc, igeom, &
 !
 !
 !
-    integer :: nse, npg
-    integer :: j, ise, in, ino, idebs
-    integer :: idecpg, nbsig, ndim
-    integer :: irese, nno
+    integer(kind=8) :: nse, npg
+    integer(kind=8) :: j, ise, in, ino, idebs
+    integer(kind=8) :: idecpg, nbsig, ndim
+    integer(kind=8) :: irese, nno
 !
     real(kind=8) :: he, coorse(81)
 !

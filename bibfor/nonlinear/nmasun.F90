@@ -50,9 +50,9 @@ subroutine nmasun(ds_contact, matass)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=14) :: numedu
-    integer :: nbliac
+    integer(kind=8) :: nbliac
     character(len=19) :: matrcu
     aster_logical :: lmodim
 !

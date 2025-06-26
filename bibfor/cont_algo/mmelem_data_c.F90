@@ -35,15 +35,15 @@ subroutine mmelem_data_c(l_axi_, model_ndim_, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     aster_logical, intent(in), optional :: l_axi_
-    integer, intent(in), optional :: model_ndim_
+    integer(kind=8), intent(in), optional :: model_ndim_
     character(len=8), intent(in), optional :: typg_slav_name_
     character(len=8), intent(in), optional :: typg_mast_name_
-    integer, intent(out), optional :: nb_cont_type_
-    integer, intent(out), optional :: nb_node_elem_
-    integer, intent(out), optional :: typg_cont_nume_
-    integer, intent(out), optional :: typf_cont_nume_
-    integer, intent(out), optional :: typf_frot_nume_
-    integer, intent(out), optional :: get_elem_indx_
+    integer(kind=8), intent(out), optional :: nb_cont_type_
+    integer(kind=8), intent(out), optional :: nb_node_elem_
+    integer(kind=8), intent(out), optional :: typg_cont_nume_
+    integer(kind=8), intent(out), optional :: typf_cont_nume_
+    integer(kind=8), intent(out), optional :: typf_frot_nume_
+    integer(kind=8), intent(out), optional :: get_elem_indx_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -66,8 +66,8 @@ subroutine mmelem_data_c(l_axi_, model_ndim_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cont_geom = 40
-    integer, parameter :: nb_cont_solv = 40
+    integer(kind=8), parameter :: nb_cont_geom = 40
+    integer(kind=8), parameter :: nb_cont_solv = 40
 !
 ! - Name of geometry type for slave element
 !
@@ -107,7 +107,7 @@ subroutine mmelem_data_c(l_axi_, model_ndim_, &
 !
 ! - Number of nodes for contact/friction element
 !
-    integer, parameter, dimension(nb_cont_geom) :: nb_node = (/ &
+    integer(kind=8), parameter, dimension(nb_cont_geom) :: nb_node = (/ &
                                                    4, 6, 5, 5, 6, &
                                                    9, 9, 12, 8, 12, &
                                                    12, 16, 7, 7, 10, &
@@ -143,7 +143,7 @@ subroutine mmelem_data_c(l_axi_, model_ndim_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_cont_geom, elem_indx
+    integer(kind=8) :: i_cont_geom, elem_indx
     character(len=16) :: typg_cont_name, valk(2), typf_cont_name, typf_frot_name
 !
 ! --------------------------------------------------------------------------------------------------

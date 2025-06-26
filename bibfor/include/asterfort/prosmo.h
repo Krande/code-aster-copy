@@ -23,7 +23,7 @@
 interface
     subroutine prosmo(matrez, limat, nbmat, basez, numedd,&
                       lsym, rouc)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         character(len=*) :: matrez
         character(len=*) :: limat(nbmat)
         character(len=*) :: basez

@@ -23,11 +23,11 @@ subroutine mavec(mp, m, mv, n)
 !       OUT     MV = VECTEUR DEMI - MATRICE STOCKE COLONNE , LONGUEUR N
 !       ----------------------------------------------------------------
 #include "asterfort/assert.h"
-    integer :: m, n
+    integer(kind=8) :: m, n
     real(kind=8) :: mv(n), mp(m, m)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     ASSERT(n .ge. m*(m+1)/2)
 !

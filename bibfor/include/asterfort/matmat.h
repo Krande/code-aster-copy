@@ -21,11 +21,11 @@
 interface 
     subroutine matmat(a, b, nl, nc1, nc2,&
                       c)
-        integer :: nc1
-        integer :: nl
+        integer(kind=8) :: nc1
+        integer(kind=8) :: nl
         real(kind=8) :: a(nl, *)
         real(kind=8) :: b(nc1, *)
-        integer :: nc2
+        integer(kind=8) :: nc2
         real(kind=8) :: c(nl, *)
     end subroutine matmat
 end interface 

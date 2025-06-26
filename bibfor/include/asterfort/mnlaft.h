@@ -21,8 +21,8 @@
 interface 
     subroutine mnlaft(x, y, h, nt,&
                       pq)
-        integer :: nt
-        integer :: h
+        integer(kind=8) :: nt
+        integer(kind=8) :: h
         real(kind=8) :: x(2*h+1)
         real(kind=8) :: y(2*h+1)
         real(kind=8) :: pq(2*h+1)

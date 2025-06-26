@@ -45,9 +45,9 @@ subroutine nmerge(sderro, eventToTest, eventFlag)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iEvent, eventState
+    integer(kind=8) :: iEvent, eventState
     character(len=24) :: eventENOMJv, eventEACTJv
-    integer, pointer :: eventEACT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null()
     character(len=16), pointer :: eventENOM(:) => null()
     character(len=16) :: eventName
 !

@@ -53,17 +53,17 @@ subroutine cfjefi(mesh, disp_iter, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iliai, jdecal, nbddl
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iliai, jdecal, nbddl
     real(kind=8) :: jeuini, jeuold, jeuinc
     aster_logical :: l_pena_cont, l_frot
     character(len=24) :: sdcont_apcoef, sdcont_apddl, sdcont_appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=24) :: sdcont_apcofr
-    integer :: japcof
+    integer(kind=8) :: japcof
     character(len=24) :: sdcont_jeuite, sdcont_jeux
-    integer :: jjeuit, jjeux
-    integer :: nbliai, nb_equa, model_ndim
+    integer(kind=8) :: jjeuit, jjeux
+    integer(kind=8) :: nbliai, nb_equa, model_ndim
     real(kind=8), pointer :: vale(:) => null()
 !
 ! ----------------------------------------------------------------------

@@ -38,7 +38,7 @@ module endo_crit_tc_module
 
     ! Damage criterion
     type CRITERION
-        integer                 :: ndimsi
+        integer(kind=8)                 :: ndimsi
         real(kind=8)            :: p
         real(kind=8)            :: prec
         real(kind=8), allocatable:: tns(:)

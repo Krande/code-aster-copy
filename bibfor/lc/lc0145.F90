@@ -44,7 +44,7 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: imate, ndim, kpg, ksp, icomp, nvi
+    integer(kind=8), intent(in) :: imate, ndim, kpg, ksp, icomp, nvi
     real(kind=8), intent(in) :: crit(*), angmas(*)
     real(kind=8), intent(in) :: instam, instap
     real(kind=8), intent(in) :: epsm(6), deps(6), sigm(6), vim(*)
@@ -52,7 +52,7 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
     character(len=8), intent(in) :: typmod(*)
     character(len=*), intent(in) :: fami
 !
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
     real(kind=8), intent(out) :: sigp(6)
     real(kind=8), intent(out) :: vip(*)
     real(kind=8), intent(out) :: dsidep(6, 6)
@@ -64,14 +64,14 @@ subroutine lc0145(fami, kpg, ksp, ndim, imate, &
 
     real(kind=8)        ::  depsldc(6), epsmldc(6), sigmldc(6)
 
-    integer, parameter   :: nbval = 12
-    integer             :: icodre(nbval)
+    integer(kind=8), parameter   :: nbval = 12
+    integer(kind=8)             :: icodre(nbval)
     character(len=16)   :: nomres(nbval)
     real(kind=8)        :: valres(nbval)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer       :: ii, jj, iret, jcret, nbres
+    integer(kind=8)       :: ii, jj, iret, jcret, nbres
     real(kind=8)  :: epsmeca(6), perturb, vperturb(6), NormSigm, numerateur
     real(kind=8)  :: sigptb(6), viptb(1), dsideptb(6, 6)
     aster_logical :: rigi, resi, elas, isnogood

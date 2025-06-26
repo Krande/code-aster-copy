@@ -24,7 +24,7 @@ interface
     subroutine cfgeom(iter_newt, mesh     , ds_measure, ds_contact,&
                       disp_curr, time_curr)
         use NonLin_Datastructure_type
-        integer, intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: iter_newt
         character(len=8), intent(in) :: mesh
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(inout) :: ds_contact

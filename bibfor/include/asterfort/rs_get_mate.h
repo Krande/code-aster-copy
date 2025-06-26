@@ -21,8 +21,8 @@
 interface
     subroutine rs_get_mate(result_, nume, chmate, codret)
         character(len=*), intent(in) :: result_
-        integer, intent(in) :: nume
+        integer(kind=8), intent(in) :: nume
         character(len=*), intent(out) :: chmate
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine rs_get_mate
 end interface

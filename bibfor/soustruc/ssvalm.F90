@@ -37,7 +37,7 @@ subroutine ssvalm(statut, option, mo, ma, isma, &
 #include "asterfort/wkvect.h"
     character(len=8) :: mo, ma
     character(len=*) :: option, statut
-    integer :: isma, jresl
+    integer(kind=8) :: isma, jresl
 ! ----------------------------------------------------------------------
 !     BUT:
 !
@@ -77,10 +77,10 @@ subroutine ssvalm(statut, option, mo, ma, isma, &
     real(kind=8) :: lambda(6, 6), angl(3), pgl(3, 3)
     character(len=24) :: nomob
 !-----------------------------------------------------------------------
-    integer :: i, iadesm, ianmcr, iavmat
-    integer :: iret, j, jsma, nbsma, nbssa, nbvel, nddle
-    integer :: ndim, nmxval
-    integer, pointer :: sssa(:) => null()
+    integer(kind=8) :: i, iadesm, ianmcr, iavmat
+    integer(kind=8) :: iret, j, jsma, nbsma, nbssa, nbvel, nddle
+    integer(kind=8) :: ndim, nmxval
+    integer(kind=8), pointer :: sssa(:) => null()
     real(kind=8), pointer :: para_r(:) => null()
 !-----------------------------------------------------------------------
     optio2 = option

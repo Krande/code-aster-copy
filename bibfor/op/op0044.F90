@@ -85,20 +85,20 @@ subroutine op0044()
 #include "asterfort/wp1mul.h"
 #include "asterfort/onerrf.h"
 !
-    integer :: nbpari, nbparr, nbpark, nbpara, mxddl
+    integer(kind=8) :: nbpari, nbparr, nbpark, nbpara, mxddl
     parameter(nbpari=8, nbparr=16, nbpark=3, nbpara=27)
     parameter(mxddl=1)
 !
-    integer :: indf, ifreq, ifm, iret, ierfr, ierd, idet1, ieme1, ierx, idet2
-    integer :: ieme2, ieq, i, ibid, npivot(2), islvi_old
-    integer :: jvalp, jdet, jidet, jieme, jnpas, kfreq, k
-    integer :: lmat(3), l, lamor, ltypre, lbrss, lmo, lmf, lborne, lmasse
-    integer :: lraide, ldynam, lfreq, lamort, lddl, lprod, nblagr, lresui
-    integer :: lresur, lresuk, lvalp, lvec, lenout
-    integer :: mxfreq, ncritr, nbrss, nitsep, nitaju, nitv, idet(2), nfreqr
-    integer :: nfreq, ncrit, nbmod, na1, namorr, niv, nbcine, neqact
-    integer :: nfreqb, mxresf, ndim, nparr, neq, jrefa
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8) :: indf, ifreq, ifm, iret, ierfr, ierd, idet1, ieme1, ierx, idet2
+    integer(kind=8) :: ieme2, ieq, i, ibid, npivot(2), islvi_old
+    integer(kind=8) :: jvalp, jdet, jidet, jieme, jnpas, kfreq, k
+    integer(kind=8) :: lmat(3), l, lamor, ltypre, lbrss, lmo, lmf, lborne, lmasse
+    integer(kind=8) :: lraide, ldynam, lfreq, lamort, lddl, lprod, nblagr, lresui
+    integer(kind=8) :: lresur, lresuk, lvalp, lvec, lenout
+    integer(kind=8) :: mxfreq, ncritr, nbrss, nitsep, nitaju, nitv, idet(2), nfreqr
+    integer(kind=8) :: nfreq, ncrit, nbmod, na1, namorr, niv, nbcine, neqact
+    integer(kind=8) :: nfreqb, mxresf, ndim, nparr, neq, jrefa
+    integer(kind=8), pointer :: slvi(:) => null()
 !
     real(kind=8) :: tolsep, tolaju, tolv, fcorig, omecor, precsh, omeg, det1
     real(kind=8) :: det2, fr, am, zam(3), zfr(3), seuil, vpinf, vpmax, omgmin

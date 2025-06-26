@@ -25,8 +25,8 @@ interface
                       deltac, ratio , optdec      , ldcext, durdec,&
                       retdec)
         character(len=19) :: sddisc
-        integer :: i_event_acti, iterat, retdec
-        integer :: nbrpas
+        integer(kind=8) :: i_event_acti, iterat, retdec
+        integer(kind=8) :: nbrpas
         aster_logical :: ldcext
         real(kind=8) :: ratio, deltac, durdec
         character(len=4) :: typdec

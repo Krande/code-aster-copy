@@ -41,15 +41,15 @@ subroutine lectvl(zcmplx, itype, nbabs, inatur, ideas, &
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
     aster_logical :: zcmplx
-    integer :: itype, nbabs, inatur, ideas, nbmesu, labs, lvalc, lvalr
+    integer(kind=8) :: itype, nbabs, inatur, ideas, nbmesu, labs, lvalc, lvalr
     real(kind=8) :: amin, apas
 !
 !
 !
 !
 !
-    integer :: i, nbli, rest, nbval, lig, incr, iabs
-    integer :: icmpr, icmpi, icmpa
+    integer(kind=8) :: i, nbli, rest, nbval, lig, incr, iabs
+    integer(kind=8) :: icmpr, icmpi, icmpa
     real(kind=8) :: val(6)
 !
 !-----------------------------------------------------------------------

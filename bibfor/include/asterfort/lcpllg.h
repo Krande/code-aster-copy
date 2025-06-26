@@ -23,22 +23,22 @@ interface
                       nr, nvi, deps, sigd, vind,&
                       seuil, icomp, sigf, vinf, devg,&
                       devgii, irtet)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: toler
-        integer :: itmax
+        integer(kind=8) :: itmax
         character(len=8) :: mod
         real(kind=8) :: mater(nbmat, 2)
-        integer :: nr
-        integer :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nvi
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
         real(kind=8) :: vind(*)
         real(kind=8) :: seuil
-        integer :: icomp
+        integer(kind=8) :: icomp
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
         real(kind=8) :: devg(6)
         real(kind=8) :: devgii
-        integer :: irtet
+        integer(kind=8) :: irtet
     end subroutine lcpllg
 end interface

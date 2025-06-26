@@ -20,7 +20,7 @@
 interface
     subroutine cnscre(maz, nomgdz, ncmp, licmp, basez,&
                       cnsz, undf0_)
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: maz
         character(len=*) :: nomgdz
         character(len=*) :: licmp(ncmp)

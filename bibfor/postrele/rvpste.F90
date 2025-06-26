@@ -65,7 +65,7 @@ subroutine rvpste(lieu, ssch19, nomsd, typaff)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: alieu, ibid, l, nbl, anomsd, i, anbndf, aclocf, adescm
+    integer(kind=8) :: alieu, ibid, l, nbl, anomsd, i, anbndf, aclocf, adescm
     character(len=24) :: nrefe, descm
     character(len=19) :: sdlieu, sdeval
     character(len=4) :: docu

@@ -70,7 +70,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
     !
-    integer :: icham
+    integer(kind=8) :: icham
     character(len=*) :: champ1, repere, type_chamz, nomch, nom_cham
     character(len=8) :: model, carele
     character(len=19) :: ligrel
@@ -94,22 +94,22 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, jj, kk, ino, iad, ipt, isp
-    integer :: jcesd, jcesv, jcesl, nbpt, nbcmp
-    integer :: ilcnx1, nbsp, inel, npain
-    integer :: ibid, nbma, iret, inbno
-    integer :: ndim, nbm, idmail, nbmail, imai
-    integer :: inoeu, iret0, iret1, nbgno, igno, nncp
-    integer :: ierk, ipaxe, ipaxe2
-    integer :: nbno, nbpg, nuno, ipg
-    integer :: type_pt, ndim_type
-    integer :: iocc, nocc
-    integer :: iexist, jcesd_gauss, jcesl_gauss, icoo
+    integer(kind=8) :: ii, jj, kk, ino, iad, ipt, isp
+    integer(kind=8) :: jcesd, jcesv, jcesl, nbpt, nbcmp
+    integer(kind=8) :: ilcnx1, nbsp, inel, npain
+    integer(kind=8) :: ibid, nbma, iret, inbno
+    integer(kind=8) :: ndim, nbm, idmail, nbmail, imai
+    integer(kind=8) :: inoeu, iret0, iret1, nbgno, igno, nncp
+    integer(kind=8) :: ierk, ipaxe, ipaxe2
+    integer(kind=8) :: nbno, nbpg, nuno, ipg
+    integer(kind=8) :: type_pt, ndim_type
+    integer(kind=8) :: iocc, nocc
+    integer(kind=8) :: iexist, jcesd_gauss, jcesl_gauss, icoo
 !
-    integer, parameter :: type_unknown = 0, type_noeud = 1, type_gauss = 2
+    integer(kind=8), parameter :: type_unknown = 0, type_noeud = 1, type_gauss = 2
 !   nb max de points (noeuds|gauss) par élément
-    integer, parameter :: nptmax = 30
-    integer, dimension(6) :: permvec
+    integer(kind=8), parameter :: nptmax = 30
+    integer(kind=8), dimension(6) :: permvec
     real(kind=8) :: valr, xnormr, tmp
     real(kind=8), dimension(3) :: xbary, angnot
     real(kind=8), dimension(3) :: orig, axez, vectx, vecty
@@ -117,7 +117,7 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
     real(kind=8), dimension(3, 3) :: pgl, pgcyl, pgu, pglelem
     real(kind=8), dimension(3, nptmax), target :: xno, xpg
     character(len=3) :: tsca
-    integer, parameter :: nbCmpMax = 8
+    integer(kind=8), parameter :: nbCmpMax = 8
     character(len=8) :: ma, k8b, typmcl(2), nomgd, tych, nom_cmp(nbCmpMax)
     character(len=8) :: lpain(5), paout, licmp(9), nomgdr, paoutc
     character(len=16) :: option, motcle(2), type_cham
@@ -127,11 +127,11 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
     character(len=24) :: mesmai, chgeom, lchin(5), chaout
     character(len=24) :: valk(3), chcara(18)
 !
-    integer :: jcesvrepso(3), jcesdrepso(3), adressev(3)
-    integer :: nbptii, nbspii, ncmpii
+    integer(kind=8) :: jcesvrepso(3), jcesdrepso(3), adressev(3)
+    integer(kind=8) :: nbptii, nbspii, ncmpii
     character(len=19) :: chrel(3), chres(3)
 !
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: coo_gauss(:) => null()
     real(kind=8), dimension(:, :), pointer :: xpt => null()

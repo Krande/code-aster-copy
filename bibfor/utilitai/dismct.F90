@@ -29,7 +29,7 @@ subroutine dismct(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
     character(len=*) :: nomobz, repkz
@@ -49,7 +49,7 @@ subroutine dismct(questi, nomobz, repi, repkz, ierd)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ianbno, ityma, nbtyma
+    integer(kind=8) :: ianbno, ityma, nbtyma
 !-----------------------------------------------------------------------
     call jemarq()
     ASSERT(nomobz .eq. '&')

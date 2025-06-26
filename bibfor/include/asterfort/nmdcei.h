@@ -21,7 +21,7 @@
 interface
     subroutine nmdcei(sddisc, nume_inst, newins, nb_inst_ini, nb_inst_ins,&
                       typext, dt0)
-        integer :: nb_inst_ins, nume_inst, nb_inst_ini
+        integer(kind=8) :: nb_inst_ins, nume_inst, nb_inst_ini
         character(len=19) :: sddisc
         real(kind=8) :: newins(nb_inst_ins)
         real(kind=8) :: dt0

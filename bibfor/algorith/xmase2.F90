@@ -38,8 +38,8 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he, &
 #include "asterfort/iimatu.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/indent.h"
-    integer :: ndim, igeom, imate, nnop, npg, nfh, ddlc, nfe, heavn(27, 5)
-    integer :: jstno, nnops, ddlm
+    integer(kind=8) :: ndim, igeom, imate, nnop, npg, nfh, ddlc, nfe, heavn(27, 5)
+    integer(kind=8) :: jstno, nnops, ddlm
     character(len=8) :: elrefp
     real(kind=8) :: basloc(6*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), matuu(*)
@@ -74,17 +74,17 @@ subroutine xmase2(elrefp, ndim, coorse, igeom, he, &
 !
 !
 !
-    integer :: retour(1)
-    integer :: kpg, kk, n, i, m, j, j1, kkd
-    integer :: nno, nnos, npgbis, ddls, ddld, cpt, ndimb
-    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se
+    integer(kind=8) :: retour(1)
+    integer(kind=8) :: kpg, kk, n, i, m, j, j1, kkd
+    integer(kind=8) :: nno, nnos, npgbis, ddls, ddld, cpt, ndimb
+    integer(kind=8) :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se
 !
     real(kind=8) :: rho(1)
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
     real(kind=8) :: enr(ndim, nnop, 1+nfh+ndim*nfe)
     real(kind=8) :: fk(27, 3, 3), ka, mu
-    integer :: alp, dec(nnop), nn, mn, ii, jj, irese, singu
-    integer :: ddln, ij, kddl(ndim, 1+nfh+ndim*nfe)
+    integer(kind=8) :: alp, dec(nnop), nn, mn, ii, jj, irese, singu
+    integer(kind=8) :: ddln, ij, kddl(ndim, 1+nfh+ndim*nfe)
 !
     character(len=16) :: phenom
     aster_logical :: axi

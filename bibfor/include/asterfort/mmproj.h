@@ -26,11 +26,11 @@ interface
                       ksi1, ksi2, tau1, tau2, iproj,&
                       niverr)
         character(len=8) :: alias
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: coorma(27)
         real(kind=8) :: coorpt(3)
-        integer :: itemax
+        integer(kind=8) :: itemax
         real(kind=8) :: epsmax
         real(kind=8) :: toleou
         aster_logical :: dirapp
@@ -39,7 +39,7 @@ interface
         real(kind=8) :: ksi2
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        integer :: iproj
-        integer :: niverr
+        integer(kind=8) :: iproj
+        integer(kind=8) :: niverr
     end subroutine mmproj
 end interface

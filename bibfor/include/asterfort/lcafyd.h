@@ -22,17 +22,17 @@ interface
     subroutine lcafyd(compor, materd, materf, nbcomm, cpmono,&
                       nmat, mod, nvi, vind,&
                       sigd, nr, yd)
-        integer :: nvi
-        integer :: nmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         character(len=8) :: mod
         real(kind=8) :: vind(*)
         real(kind=8) :: sigd(6)
-        integer :: nr
+        integer(kind=8) :: nr
         real(kind=8) :: yd(*)
     end subroutine lcafyd
 end interface

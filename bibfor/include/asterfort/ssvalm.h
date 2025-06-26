@@ -25,8 +25,8 @@ interface
         character(len=*) :: option
         character(len=8) :: mo
         character(len=8) :: ma
-        integer :: isma
-        integer :: jresl
-        integer :: nbvel
+        integer(kind=8) :: isma
+        integer(kind=8) :: jresl
+        integer(kind=8) :: nbvel
     end subroutine ssvalm
 end interface

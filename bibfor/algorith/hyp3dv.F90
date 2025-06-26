@@ -27,7 +27,7 @@ subroutine hyp3dv(c11, c22, c33, c12, c13, &
     real(kind=8) :: c12, c13, c23
     real(kind=8) :: k
     real(kind=8) :: cvol(6, 6)
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! ----------------------------------------------------------------------
 !

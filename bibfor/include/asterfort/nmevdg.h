@@ -20,7 +20,7 @@
 !
 interface
     subroutine nmevdg(sddisc, vale, i_echec, i_echec_acti)
-        integer :: i_echec, i_echec_acti
+        integer(kind=8) :: i_echec, i_echec_acti
         character(len=19) :: sddisc, vale(*)
     end subroutine nmevdg
 end interface

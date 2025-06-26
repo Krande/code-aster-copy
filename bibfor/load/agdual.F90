@@ -38,8 +38,8 @@ subroutine agdual(load, type_liai, nbrela, nbterm)
 !
     character(len=8), intent(in) :: load
     character(len=*), intent(in) :: type_liai
-    integer, intent(in) :: nbrela
-    integer, intent(in) :: nbterm
+    integer(kind=8), intent(in) :: nbrela
+    integer(kind=8), intent(in) :: nbterm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,8 +58,8 @@ subroutine agdual(load, type_liai, nbrela, nbterm)
 !
     character(len=8), pointer :: prdk(:) => null()
     character(len=8), pointer :: prdso(:) => null()
-    integer, pointer :: prdi(:) => null()
-    integer :: nbpaqu_max, n1, n2, iexi, kpaqu, term1
+    integer(kind=8), pointer :: prdi(:) => null()
+    integer(kind=8) :: nbpaqu_max, n1, n2, iexi, kpaqu, term1
     character(len=13) :: chdual
 !
 ! --------------------------------------------------------------------------------------------------

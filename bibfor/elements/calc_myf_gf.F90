@@ -28,7 +28,7 @@ subroutine calc_myf_gf(em, ftj, fcj, h, ea, omx, &
 #include "asterfort/calc_moment.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: em, ftj, fcj, h, ea, omx, ya, sya, kappa_flex
-    integer :: ipenteflex
+    integer(kind=8) :: ipenteflex
 !
 ! PARAMETRES SORTANTS
     real(kind=8) :: pendf, myf
@@ -57,7 +57,7 @@ subroutine calc_myf_gf(em, ftj, fcj, h, ea, omx, &
 !       MYF   : MOMENT DE FLEXION
 ! ----------------------------------------------------------------------
 ! PARAMETRES INTERMEDIAIRES
-    integer :: nb_decoup, ind_s, i, cas
+    integer(kind=8) :: nb_decoup, ind_s, i, cas
     real(kind=8) :: e_t, e_c, e_u, kappa_y, kappa_test, pentelf
     real(kind=8) :: kappa_s, dpent_min, pendt_c, kappa_c, momen_c
     real(kind=8) :: kappa_f, momen_f, pendt_f, dkappa, dpent_p, kappa

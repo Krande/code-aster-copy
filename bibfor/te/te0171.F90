@@ -45,13 +45,13 @@ subroutine te0171(option, nomte)
     real(kind=8) :: a(2, 2, 27, 27), mmat(27, 27)
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27)
     real(kind=8) :: poids, rho, celer
-    integer :: jv_geom, jv_mate, jv_matr
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg
-    integer :: ij, ik, ijkl
-    integer :: ipg, ino1, ino2, k, l
-    integer :: ldec
-    integer :: j_mater, iret
+    integer(kind=8) :: jv_geom, jv_mate, jv_matr
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg
+    integer(kind=8) :: ij, ik, ijkl
+    integer(kind=8) :: ipg, ino1, ino2, k, l
+    integer(kind=8) :: ldec
+    integer(kind=8) :: j_mater, iret
     character(len=16) :: FEForm
 !
 ! --------------------------------------------------------------------------------------------------

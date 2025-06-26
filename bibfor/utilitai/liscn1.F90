@@ -28,11 +28,11 @@ subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
 !
 !
     character(len=19), intent(in) :: lisold
-    integer, intent(in)  :: ichar
+    integer(kind=8), intent(in)  :: ichar
     character(len=16), intent(out) :: typfct
     character(len=8), intent(out)  :: nomfct
     real(kind=8), intent(out)  :: phase
-    integer, intent(out)  :: npuis
+    integer(kind=8), intent(out)  :: npuis
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: fomult
-    integer :: jalifc
+    integer(kind=8) :: jalifc
 !
 ! ----------------------------------------------------------------------
 !

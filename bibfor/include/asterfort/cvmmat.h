@@ -23,22 +23,22 @@ interface
                       nmat, materd, materf, matcst, typma,&
                       ndt, ndi, nr, crit, vim,&
                       nvi, sigd)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         character(len=3) :: matcst
         character(len=8) :: typma
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
         real(kind=8) :: crit(*)
         real(kind=8) :: vim(*)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: sigd(6)
     end subroutine cvmmat
 end interface

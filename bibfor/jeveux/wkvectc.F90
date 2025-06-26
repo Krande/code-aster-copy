@@ -31,7 +31,7 @@ subroutine wkvectc(nom, carac, dim, pc)
 !
     character(len=*), intent(in) :: nom
     character(len=*), intent(in) :: carac
-    integer, intent(in) :: dim
+    integer(kind=8), intent(in) :: dim
 !
 ! --------------------------------------------------------------------
 ! Creation d'un vecteur jeveux
@@ -41,7 +41,7 @@ subroutine wkvectc(nom, carac, dim, pc)
 ! in  dim   : is    : taille du vecteur
 ! out pc    : c_ptr : pointeur C vers le vecteur de valeurs
 ! --------------------------------------------------------------------
-    integer :: jad
+    integer(kind=8) :: jad
     character(len=8) :: ktyp
     type(c_ptr) :: pc
 ! --------------------------------------------------------------------

@@ -33,11 +33,11 @@ subroutine cdnfon(zimat, kfonc, xx, dn, fxx, &
 ! OUT IER : CODE RETOUR
 !
 #include "asterfort/rcvalb.h"
-    integer :: dn, ier, zimat, kpg, spt
+    integer(kind=8) :: dn, ier, zimat, kpg, spt
 !
     real(kind=8) :: xx, fxx, val(1)
 !
-    integer :: codres(1)
+    integer(kind=8) :: codres(1)
     character(len=8) :: kfonc, kaux, fami, poum
     character(len=16) :: phenom
 !

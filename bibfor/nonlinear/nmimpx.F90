@@ -41,9 +41,9 @@ subroutine nmimpx(ds_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: line_width
+    integer(kind=8) :: line_width
     character(len=512) :: sep_line
-    integer :: mesg_unit
+    integer(kind=8) :: mesg_unit
 !
 ! --------------------------------------------------------------------------------------------------
 !

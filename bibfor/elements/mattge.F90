@@ -32,7 +32,7 @@ subroutine mattge(nomte, dtild, sina, cosa, r, &
 !     CALCULS DE LA MATRICE TANGENTE
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     blas_int :: b_incx, b_n
 !-----------------------------------------------------------------------
     if (nomte .eq. 'MECXSE3') then

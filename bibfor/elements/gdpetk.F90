@@ -40,7 +40,7 @@ subroutine gdpetk(tetag, tetapg, petikm, petik)
     real(kind=8) :: petik2(3), v1(3), amat1(3, 3), amat2(3, 3), amat3(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: coef1, coef2, coef3, demi, epsil, prosca
     real(kind=8) :: teta1, teta2, un
     blas_int :: b_incx, b_incy, b_n

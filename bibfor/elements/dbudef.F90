@@ -41,7 +41,7 @@ subroutine dbudef(depl, b, d, nbsig, nbinco, &
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    integer :: nbsig
+    integer(kind=8) :: nbsig
     real(kind=8) :: depl(1), b(nbsig, 1), d(nbsig, 1), sigma(1)
 ! -----  VARIABLES LOCALES
     real(kind=8) :: eps(6)
@@ -50,7 +50,7 @@ subroutine dbudef(depl, b, d, nbsig, nbinco, &
 ! --- INITIALISATION :
 !     ----------------
 !-----------------------------------------------------------------------
-    integer :: i, j, nbinco
+    integer(kind=8) :: i, j, nbinco
     real(kind=8) :: s, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

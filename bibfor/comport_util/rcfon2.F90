@@ -29,9 +29,9 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy, &
 !
 !
     character(len=1), intent(in) :: quest
-    integer, intent(in) :: jprol
-    integer, intent(in) :: jvale
-    integer, intent(in) :: nbvale
+    integer(kind=8), intent(in) :: jprol
+    integer(kind=8), intent(in) :: jvale
+    integer(kind=8), intent(in) :: nbvale
     real(kind=8), optional, intent(in) :: sieleq
     real(kind=8), optional, intent(in) :: e
     real(kind=8), optional, intent(in) :: nu
@@ -72,7 +72,7 @@ subroutine rcfon2(quest, jprol, jvale, nbvale, sigy, &
     aster_logical :: tessup
     character(len=1) :: type_prol
     character(len=24) :: func_name
-    integer :: jp, jr, i, i0
+    integer(kind=8) :: jp, jr, i, i0
     real(kind=8) :: p0, rp0, pp, equ, deuxmu, rpm
 !
 ! --------------------------------------------------------------------------------------------------

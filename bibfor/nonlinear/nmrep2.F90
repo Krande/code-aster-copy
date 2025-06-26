@@ -24,7 +24,7 @@ subroutine nmrep2(n, r, g, gu, rmin, &
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
-    integer :: n, posopt
+    integer(kind=8) :: n, posopt
     real(kind=8) :: r(*), g(*)
     real(kind=8) :: gu, rmin, rmax, rexm, rexp
 !
@@ -51,7 +51,7 @@ subroutine nmrep2(n, r, g, gu, rmin, &
 ! ----------------------------------------------------------------------
 !
     aster_logical :: gauche, droite
-    integer :: i, c, j, pos
+    integer(kind=8) :: i, c, j, pos
     real(kind=8) :: a, b, det, v, d, x, pente, dg, x1, y1, x2, y2, x3, y3
     real(kind=8) :: appuig, appuid, valg, vald, val, valopt, xopt
     real(kind=8) :: diff

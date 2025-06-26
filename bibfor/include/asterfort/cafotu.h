@@ -21,6 +21,6 @@ interface
         aster_logical, intent(in) :: mapAlreadyCreated
         character(len=8), intent(in) :: load, mesh, model
         character(len=4), intent(in) :: valeType
-        integer, intent(in) :: nbOcc, geomDime
+        integer(kind=8), intent(in) :: nbOcc, geomDime
     end subroutine cafotu
 end interface

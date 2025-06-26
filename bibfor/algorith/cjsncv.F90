@@ -25,11 +25,11 @@ subroutine cjsncv(roucjs, nitimp, iter, ndt, nvi, &
     implicit none
 #include "asterfort/utmess.h"
     character(len=*) :: roucjs
-    integer :: nitimp, iter, ndt, nvi, umess
+    integer(kind=8) :: nitimp, iter, ndt, nvi, umess
     real(kind=8) :: erimp(nitimp, 3)
     real(kind=8) :: epsd(ndt), deps(ndt), sigd(ndt), vind(nvi)
 !
-    integer :: i
+    integer(kind=8) :: i
     write (umess, 2001)
 2001 format(&
     &       t3, ' ITER', t10, ' ERR1=DDY',&

@@ -35,16 +35,16 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm, &
 !
     character(len=8), intent(in) :: name_gd
     character(len=8), intent(in) :: model
-    integer, intent(in) :: nb_cmp_max
-    integer, intent(in) :: nb_cmp_in
+    integer(kind=8), intent(in) :: nb_cmp_max
+    integer(kind=8), intent(in) :: nb_cmp_in
     character(len=16), intent(in) :: norm
     character(len=4), intent(in) :: calc_elem
-    integer, intent(in) :: nb_coef_user
+    integer(kind=8), intent(in) :: nb_coef_user
     real(kind=8), intent(in) :: coef_user(*)
     character(len=24), intent(in) :: list_cmp
     character(len=19), intent(in) :: chcoef
     character(len=19), intent(in) :: chcalc
-    integer, intent(out) :: nb_cmp_act
+    integer(kind=8), intent(out) :: nb_cmp_act
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,9 +85,9 @@ subroutine calc_norm_coef(model, name_gd, nb_cmp_max, nb_cmp_in, norm, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: list_coe_act, list_cmp_act
-    integer :: j_lcoe_act, j_lcmp_act
-    integer :: j_lcmp_act_in
-    integer :: icmp, i_calc_elem
+    integer(kind=8) :: j_lcoe_act, j_lcmp_act
+    integer(kind=8) :: j_lcmp_act_in
+    integer(kind=8) :: icmp, i_calc_elem
     character(len=4) :: ki
     real(kind=8) :: coef_init, coef_cross
     character(len=4) :: prod_type

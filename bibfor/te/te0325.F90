@@ -36,20 +36,20 @@ subroutine te0325(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
-    integer :: icodre(1), spt
+    integer(kind=8) :: icodre(1), spt
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: jac, nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9)
     real(kind=8) :: norm(3)
     real(kind=8) :: acloc(3, 9), acc(3, 9), flufn(9)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ipg, npg1, ivectt, imate
-    integer :: idec, jdec, kdec, ldec, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom
+    integer(kind=8) :: ndim, nno, ipg, npg1, ivectt, imate
+    integer(kind=8) :: idec, jdec, kdec, ldec, nnos, jgano
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacce, idim, ino, itemp, j, jno
-    integer :: k, mater
+    integer(kind=8) :: i, iacce, idim, ino, itemp, j, jno
+    integer(kind=8) :: k, mater
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &

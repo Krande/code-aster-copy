@@ -20,8 +20,8 @@
 !
 interface
     subroutine nmimpr_mess(indx_mesg, vali_, valr_)
-        integer, intent(in) :: indx_mesg
-        integer, optional, intent(in) :: vali_
+        integer(kind=8), intent(in) :: indx_mesg
+        integer(kind=8), optional, intent(in) :: vali_
         real(kind=8), optional, intent(in) :: valr_
     end subroutine nmimpr_mess
 end interface

@@ -83,11 +83,11 @@ module lcgtn_module
 
     ! GTN class
     type CONSTITUTIVE_LAW
-        integer       :: exception = 0
+        integer(kind=8)       :: exception = 0
         aster_logical :: elas, rigi, vari, pred
         aster_logical :: grvi = ASTER_FALSE
         aster_logical :: loaded = ASTER_FALSE
-        integer       :: ndimsi, itemax
+        integer(kind=8)       :: ndimsi, itemax
         real(kind=8)  :: theta
         real(kind=8)  :: cvuser
         real(kind=8)  :: dt
@@ -107,13 +107,13 @@ module lcgtn_module
         real(kind=8) :: sieq_ecr = 0.d0
         real(kind=8) :: sieq_vsc = 0.d0
         real(kind=8) :: sieq_nlc = 0.d0
-        integer      :: arret = 0
+        integer(kind=8)      :: arret = 0
     end type POST_TREATMENT
 
-    integer, parameter:: ELASTIC_STATE = 0
-    integer, parameter:: PLASTIC_STATE = 1
-    integer, parameter:: SINGULAR_STATE = 2
-    integer, parameter:: BROKEN_STATE = 3
+    integer(kind=8), parameter:: ELASTIC_STATE = 0
+    integer(kind=8), parameter:: PLASTIC_STATE = 1
+    integer(kind=8), parameter:: SINGULAR_STATE = 2
+    integer(kind=8), parameter:: BROKEN_STATE = 3
 
     aster_logical:: DBG = ASTER_FALSE
     real(kind=8) :: dbg_tmp1, dbg_tmp2, dbg_tmp3, dbg_tmp4
@@ -129,7 +129,7 @@ contains
 
         implicit none
 
-        integer, intent(in)          :: kpg, ksp, imate, itemax, ndimsi
+        integer(kind=8), intent(in)          :: kpg, ksp, imate, itemax, ndimsi
         real(kind=8), intent(in)    :: precvg, deltat, parm_theta
         character(len=16), intent(in):: option
         character(len=*), intent(in) :: fami
@@ -146,9 +146,9 @@ contains
 ! parm_theta    theta value for the porosity prediction (theta-predictor)
 ! deltat    time increment
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter   :: nbel = 2, nbec = 10, nben = 16
+        integer(kind=8), parameter   :: nbel = 2, nbec = 10, nben = 16
 ! --------------------------------------------------------------------------------------------------
-        integer             :: iokel(nbel), iokec(nbec), ioken(nben)
+        integer(kind=8)             :: iokel(nbel), iokec(nbec), ioken(nben)
         real(kind=8)        :: valel(nbel), valec(nbec), valen(nben)
         real(kind=8)        :: r8nan
         character(len=16)   :: nomel(nbel), nomec(nbec), nomen(nben)
@@ -295,7 +295,7 @@ contains
     subroutine InitGradVari(self, fami, kpg, ksp, imate, lag, apg)
 
         implicit none
-        integer, intent(in)          :: kpg, ksp, imate
+        integer(kind=8), intent(in)          :: kpg, ksp, imate
         real(kind=8), intent(in)     :: lag, apg
         character(len=*), intent(in) :: fami
         type(CONSTITUTIVE_LAW), intent(inout)      :: self
@@ -307,9 +307,9 @@ contains
 ! lag       Lagrangian value
 ! apg       nonlocal hardening variable
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter:: nb = 2
+        integer(kind=8), parameter:: nb = 2
 ! --------------------------------------------------------------------------------------------------
-        integer             :: iok(nb)
+        integer(kind=8)             :: iok(nb)
         real(kind=8)        :: vale(nb)
         character(len=16)   :: nom(nb)
 ! --------------------------------------------------------------------------------------------------
@@ -334,7 +334,7 @@ contains
 
         implicit none
         aster_logical, intent(in)            :: visc
-        integer, intent(in)                  :: kpg, ksp, imate
+        integer(kind=8), intent(in)                  :: kpg, ksp, imate
         real(kind=8), intent(in)             :: deltat
         character(len=*), intent(in)         :: fami
         type(CONSTITUTIVE_LAW), intent(inout):: self
@@ -372,7 +372,7 @@ contains
 ! deps_vi   derivee dka  / deps  (grad_vari)
 ! dphi_vi   derivee dka  / dphi  (grad_vari)
 ! --------------------------------------------------------------------------------------------------
-        integer         :: state
+        integer(kind=8)         :: state
         real(kind=8)    :: kam, dka, epm(self%ndimsi), ep(self%ndimsi), rac2(self%ndimsi)
         real(kind=8)    :: vdum1(self%ndimsi), vdum2(self%ndimsi), rdum
         real(kind=8)    :: sigm(self%ndimsi)
@@ -492,7 +492,7 @@ contains
 ! deps_ka   derivate dka / deps  (grad_vari)
 ! dphi_ka   derivate dka / dphi  (grad_vari)
 ! --------------------------------------------------------------------------------------------------
-        integer     :: iteint, iteext, i, typmin, typmax, flow_type
+        integer(kind=8)     :: iteint, iteext, i, typmin, typmax, flow_type
         real(kind=8):: kr(size(eps)), cvsigm, cv_fine, cveps, cv_g, jac
         real(kind=8):: tel(size(eps)), telh, telq, teld(size(eps))
         real(kind=8):: tels, deph, depd(size(eps))
@@ -1087,7 +1087,7 @@ contains
 ! dka           solution hardening variable
 ! --------------------------------------------------------------------------------------------------
         aster_logical:: buffer
-        integer     :: ite
+        integer(kind=8)     :: ite
         real(kind=8):: ts_min, equ, d_equ, kv, kvmin
         type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
@@ -1154,7 +1154,7 @@ contains
 ! g0     right hand side term
 ! cvg    accuracy
 ! --------------------------------------------------------------------------------------------------
-        integer     :: ite
+        integer(kind=8)     :: ite
         real(kind=8):: equ, d_equ, pmin, pmax, equ_min, equ_max, gm
         type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
@@ -1323,7 +1323,7 @@ contains
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in)  :: cv_ts, dkaz
-        integer, intent(out)      :: flow_type
+        integer(kind=8), intent(out)      :: flow_type
         real(kind=8), intent(out) :: dka
 ! --------------------------------------------------------------------------------------------------
 ! cv_ts         precision souhaitee sur T(ka) + c0 + c1*ka = 0
@@ -1332,7 +1332,7 @@ contains
 ! dka           solution: increment of the hardening variable
 ! --------------------------------------------------------------------------------------------------
         aster_logical:: buffer
-        integer     :: ite
+        integer(kind=8)     :: ite
         real(kind=8):: dkasvm, equ, d_equ, c0, c1, tsm, tss, kv, kvmin, kvmax
         type(newton_state):: mem
 ! --------------------------------------------------------------------------------------------------
@@ -1430,7 +1430,7 @@ contains
 ! On assure in fine G(p,q,ts) > 0 et G(p,q,ts+cv_ts) < 0
 ! Une attention particuliere est portee aux questions d'arrondis numeriques
 ! --------------------------------------------------------------------------------------------------
-        integer     :: ite
+        integer(kind=8)     :: ite
         real(kind=8):: tsmin, tsmax, xmin, xmax, gmin, gmax
         real(kind=8):: x, equ, d_equ, ts_m, ts_p, equ2, dts
         real(kind=8):: a, b, d, c1, c2
@@ -1886,7 +1886,7 @@ contains
 
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in)             :: eps(:), sigm(:)
-        integer, intent(out)                 :: state
+        integer(kind=8), intent(out)                 :: state
         real(kind=8), intent(out)            :: dka, ep(:), t(:)
         real(kind=8), intent(out)            :: deps_t(:, :), dphi_t(:), deps_ka(:), dphi_ka
 ! --------------------------------------------------------------------------------------------------

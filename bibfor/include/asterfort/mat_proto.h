@@ -23,12 +23,12 @@ interface
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         character(len=1), intent(in) :: poum
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=*), intent(in) :: itface
-        integer, intent(inout) :: nprops
+        integer(kind=8), intent(inout) :: nprops
         real(kind=8), intent(out) :: props(*)
     end subroutine mat_proto
 end interface 

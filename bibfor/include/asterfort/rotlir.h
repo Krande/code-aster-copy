@@ -26,12 +26,12 @@ interface
         character(len=8) :: sst1
         character(len=8) :: intf1
         character(len=24) :: lino1
-        integer :: codret
+        integer(kind=8) :: codret
         character(len=24) :: indin1
         character(len=24) :: tramo1
-        integer :: ddla1
-        integer :: nbeq1
-        integer :: imast
-        integer :: numlia
+        integer(kind=8) :: ddla1
+        integer(kind=8) :: nbeq1
+        integer(kind=8) :: imast
+        integer(kind=8) :: numlia
     end subroutine rotlir
 end interface

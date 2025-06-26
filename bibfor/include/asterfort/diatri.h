@@ -23,8 +23,8 @@
 interface
     subroutine diatri(n, d, e, vector, evec,&
                       ldevec)
-        integer :: ldevec
-        integer :: n
+        integer(kind=8) :: ldevec
+        integer(kind=8) :: n
         real(kind=8) :: d(*)
         real(kind=8) :: e(*)
         aster_logical :: vector

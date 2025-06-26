@@ -25,7 +25,7 @@ interface
         character(len=16), intent(in) :: tbtxt(2)
         character(len=80), intent(in) :: refk
         character(len=80), intent(in) :: valk
-        integer, intent(in) :: ific
+        integer(kind=8), intent(in) :: ific
         aster_logical, intent(in) :: llab
     end subroutine tresu_str
 end interface

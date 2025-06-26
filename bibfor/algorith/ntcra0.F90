@@ -40,12 +40,12 @@ subroutine ntcra0(sddisc)
 !
 ! ----------------------------------------------------------------------
 !
-    integer, parameter :: iocc = 0
+    integer(kind=8), parameter :: iocc = 0
     character(len=16), parameter :: factorKeyword = ' ', keywStep = ' '
     character(len=1), parameter :: base = 'V'
     character(len=19) :: sdarch
     character(len=24) :: sdarchAinfJv, sdarchAexcJv
-    integer, pointer :: sdarchAinf(:) => null()
+    integer(kind=8), pointer :: sdarchAinf(:) => null()
     character(len=16), pointer :: sdarchAexc(:) => null()
 !
 ! ----------------------------------------------------------------------

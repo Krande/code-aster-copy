@@ -38,7 +38,7 @@ subroutine mctgel(dydx, rprops)
 !
 !
 ! Declaration of integer type variables
-    integer :: i, j, mdim
+    integer(kind=8) :: i, j, mdim
 !
     parameter(mdim=3)
 !

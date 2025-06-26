@@ -24,30 +24,30 @@ interface
                       iparam, ipntr, workd, workl, lworkl,&
                       info, neqact, alpha, nsta, ddlsta,&
                       vstab, csta, ldynfa, ddlexc, redem)
-        integer :: lworkl
-        integer :: ldv
-        integer :: ncv
-        integer :: n
-        integer :: ido
+        integer(kind=8) :: lworkl
+        integer(kind=8) :: ldv
+        integer(kind=8) :: ncv
+        integer(kind=8) :: n
+        integer(kind=8) :: ido
         character(len=1) :: bmat
         character(len=2) :: which
-        integer :: nev
+        integer(kind=8) :: nev
         real(kind=8) :: tol
         real(kind=8) :: resid(n)
         real(kind=8) :: v(ldv, ncv)
-        integer :: iparam(11)
-        integer :: ipntr(14)
+        integer(kind=8) :: iparam(11)
+        integer(kind=8) :: ipntr(14)
         real(kind=8) :: workd(3*n)
         real(kind=8) :: workl(lworkl)
-        integer :: info
-        integer :: neqact
+        integer(kind=8) :: info
+        integer(kind=8) :: neqact
         real(kind=8) :: alpha
-        integer :: nsta
-        integer :: ddlsta(n)
+        integer(kind=8) :: nsta
+        integer(kind=8) :: ddlsta(n)
         real(kind=8) :: vstab(n)
         real(kind=8) :: csta
-        integer :: ldynfa
-        integer :: ddlexc(n)
-        integer :: redem
+        integer(kind=8) :: ldynfa
+        integer(kind=8) :: ddlexc(n)
+        integer(kind=8) :: redem
     end subroutine dnaups
 end interface

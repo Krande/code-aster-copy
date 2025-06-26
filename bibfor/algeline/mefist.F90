@@ -59,13 +59,13 @@ subroutine mefist(melflu, ndim, som, alpha, ru, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: ndim(14), numgrp(*), nuor(*)
+    integer(kind=8) :: ndim(14), numgrp(*), nuor(*)
     real(kind=8) :: fact(*), facpar(*), rtbloc
     real(kind=8) :: som(9), alpha, ru, matma(*), freq(*), masg(*), vite(*)
     real(kind=8) :: xint(*), yint(*), rint(*), z(*), phix(*), phiy(*), defm(*)
     character(len=8) :: promas, provis, base
     character(len=19) :: melflu
-    integer :: itypg(*)
+    integer(kind=8) :: itypg(*)
     real(kind=8) :: zg(*), hg(*), dg(*), tg(*), cdg(*), cpg(*), rugg(*)
 !     AFFECTATION
 !     OPERATEUR APPELANT : OP0144 , FLUST3
@@ -122,19 +122,19 @@ subroutine mefist(melflu, ndim, som, alpha, ru, &
 !                MODALE DU SYSTEME AVANT PRISE EN COMPTE DU COUPLAGE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, j, nbpara, iret
+    integer(kind=8) :: i, j, nbpara, iret
 !-----------------------------------------------------------------------
-    integer :: iaflu, ialfi, ialfr, iaxg, ibeta, icf, icfg
-    integer :: icham, icp, id, idcent, idpst, idvit, iencei
-    integer :: ifi, ificen, ifm, ifre, ii, iimag, iind
-    integer :: iksi, imat1, imat2, imata, imatc, imatm, imatr
-    integer :: imatv, ind, iorig, ipm, ippxx, ippxy, ippyx
-    integer :: ippyy, ipst, ire, ireel, irho, irhog, isgn
-    integer :: itmp, ivec, ivisc, iviscg, ivit, ivitg
-    integer :: ivnxx, ivnxy, ivnyx, ivnyy, iwct, ixig, jj
-    integer :: k, kk, m, n, nbcyl, nbfin, nbgrp
-    integer :: nbgtot, nbmod, nbnoe, nbtot, nbv, nbz, nima
-    integer :: nima2, nn, ntypg, nv, nv0
+    integer(kind=8) :: iaflu, ialfi, ialfr, iaxg, ibeta, icf, icfg
+    integer(kind=8) :: icham, icp, id, idcent, idpst, idvit, iencei
+    integer(kind=8) :: ifi, ificen, ifm, ifre, ii, iimag, iind
+    integer(kind=8) :: iksi, imat1, imat2, imata, imatc, imatm, imatr
+    integer(kind=8) :: imatv, ind, iorig, ipm, ippxx, ippxy, ippyx
+    integer(kind=8) :: ippyy, ipst, ire, ireel, irho, irhog, isgn
+    integer(kind=8) :: itmp, ivec, ivisc, iviscg, ivit, ivitg
+    integer(kind=8) :: ivnxx, ivnxy, ivnyx, ivnyy, iwct, ixig, jj
+    integer(kind=8) :: k, kk, m, n, nbcyl, nbfin, nbgrp
+    integer(kind=8) :: nbgtot, nbmod, nbnoe, nbtot, nbv, nbz, nima
+    integer(kind=8) :: nima2, nn, ntypg, nv, nv0
     real(kind=8) :: dh, vit0
 !-----------------------------------------------------------------------
     parameter(nbpara=5)

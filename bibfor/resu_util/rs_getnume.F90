@@ -29,8 +29,8 @@ subroutine rs_getnume(result_, inst, criter_, prec, nume, &
     real(kind=8), intent(in) :: inst
     character(len=*), intent(in) :: criter_
     real(kind=8), intent(in) :: prec
-    integer, intent(out) :: nume
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: nume
+    integer(kind=8), intent(out) :: iret
     character(len=*), optional, intent(in) :: vari_name_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ subroutine rs_getnume(result_, inst, criter_, prec, nume, &
     character(len=16) :: vari_name
     character(len=8) :: result, k8bid
     complex(kind=8) :: c16bid
-    integer :: tnum(1), ibid, nb_find
+    integer(kind=8) :: tnum(1), ibid, nb_find
 !
 ! --------------------------------------------------------------------------------------------------
 !

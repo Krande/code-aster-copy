@@ -30,7 +30,7 @@ subroutine nmpila(numedd, sdpilo, dtau, depdel, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/zerop2.h"
 !
-    integer :: pilcvg, nbeffe
+    integer(kind=8) :: pilcvg, nbeffe
     character(len=19) :: sdpilo
     character(len=24) :: numedd
     character(len=19) :: ddepl0, ddepl1, depdel
@@ -62,11 +62,11 @@ subroutine nmpila(numedd, sdpilo, dtau, depdel, &
 !
 !
 !
-    integer :: i, nrac
+    integer(kind=8) :: i, nrac
     real(kind=8) :: r0, r1, r2, dtau2, rac(2)
-    integer :: jdepde
-    integer :: neq
-    integer :: ifm, niv
+    integer(kind=8) :: jdepde
+    integer(kind=8) :: neq
+    integer(kind=8) :: ifm, niv
     character(len=19) :: chapil
     real(kind=8), pointer :: coef(:) => null()
     real(kind=8), pointer :: dep0(:) => null()

@@ -42,7 +42,7 @@ subroutine cbrayo(load, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'RAYONNEMENT'
-    integer :: nbfac
+    integer(kind=8) :: nbfac
 !
 ! --------------------------------------------------------------------------------------------------
 !

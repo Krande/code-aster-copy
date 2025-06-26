@@ -21,13 +21,13 @@
 interface
     subroutine avsieq(nbordr, vwork, tdisp, kwork, sommw,&
                       tspaq, i, jvsieq)
-        integer :: tdisp
-        integer :: nbordr
+        integer(kind=8) :: tdisp
+        integer(kind=8) :: nbordr
         real(kind=8) :: vwork(tdisp)
-        integer :: kwork
-        integer :: sommw
-        integer :: tspaq
-        integer :: i
-        integer :: jvsieq
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sommw
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: i
+        integer(kind=8) :: jvsieq
     end subroutine avsieq
 end interface

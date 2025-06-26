@@ -26,7 +26,7 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd, &
 #include "asterfort/lglnvi.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nr, nvi, imat, nbmat
+    integer(kind=8) :: ndt, ndi, nr, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
     character(len=3) :: matcst
     character(len=8) :: mod
@@ -56,11 +56,11 @@ subroutine lglmat(mod, imat, nbmat, tempd, materd, &
 ! --- : NR     : NOMBRE D'EQUATION DU SYSTEME NL ------------------
 ! --- : NVI    : NB DE VARIABLES INTERNES -------------------------
 ! =================================================================
-    integer :: ii
+    integer(kind=8) :: ii
     real(kind=8) :: e, nu, mu, k, gamma, ksi, sigc, mult, me, ae
     real(kind=8) :: un, deux, trois, sigmp2, sigmp1, apic, mpic
     real(kind=8) :: cohere
-    integer :: cerr(17)
+    integer(kind=8) :: cerr(17)
     character(len=16) :: nomc(17)
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------

@@ -63,13 +63,13 @@ subroutine pmfitsbts(typfib, nf, ncarf, vf, vsig, b, wi, nbassepou, yj, zj, maxf
 #include "asterfort/pmpitp.h"
 #include "asterfort/r8inir.h"
 !
-    integer :: typfib, nf, ncarf, nbassepou, maxfipoutre, nbfipoutre(*)
+    integer(kind=8) :: typfib, nf, ncarf, nbassepou, maxfipoutre, nbfipoutre(*)
     real(kind=8) :: vf(ncarf, nf), vsig(nf), vs2(3), b(4), wi, ve(*), vet(12), vs(6)
 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, i, pos, posfib
+    integer(kind=8) :: ii, i, pos, posfib
     real(kind=8) :: yj(*), zj(*), flp(12, *)
     real(kind=8) :: vfv(7, *), vsigv(*)
 !

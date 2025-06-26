@@ -58,7 +58,7 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- INPUT
 !
-    integer, intent(in) :: mxresf, neqact, nblagr, nbddl, nbddl2
+    integer(kind=8), intent(in) :: mxresf, neqact, nblagr, nbddl, nbddl2
     real(kind=8), intent(in)    :: omeshi
     complex(kind=8), intent(in) :: sigma
     character(len=4), intent(in) :: mod45b
@@ -68,24 +68,24 @@ subroutine vpcals(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- OUTPUT
 !
-    integer, intent(out) :: nconv
+    integer(kind=8), intent(out) :: nconv
     real(kind=8), intent(out) :: vpinf, vpmax, csta
     aster_logical, intent(out) :: flage
 !
 !
 ! --- INPUT/OUTPUT
 !
-    integer, intent(inout) :: npivot
+    integer(kind=8), intent(inout) :: npivot
     real(kind=8), intent(inout) :: omemax, omemin
 !
 !
 ! --- VARIABLES LOCALES
 !
-    integer :: imet, lamor, lmasse, lmatra, lraide, maxitr, nbvect, neq, nfreq
-    integer :: lonwl, lselec, lresid, lworkd, lworkl, lworkv, ldsor, laux, lworkr
-    integer :: lauc, laur, laul, ldiagr, lsurdr, lprod, lddl, eddl, eddl2
-    integer :: nfreq1, izero, mfreq, ifreq, ifm, niv, priram(8)
-    integer :: lresui, lresur, lresuk, lvec, redem, jstab
+    integer(kind=8) :: imet, lamor, lmasse, lmatra, lraide, maxitr, nbvect, neq, nfreq
+    integer(kind=8) :: lonwl, lselec, lresid, lworkd, lworkl, lworkv, ldsor, laux, lworkr
+    integer(kind=8) :: lauc, laur, laul, ldiagr, lsurdr, lprod, lddl, eddl, eddl2
+    integer(kind=8) :: nfreq1, izero, mfreq, ifreq, ifm, niv, priram(8)
+    integer(kind=8) :: lresui, lresur, lresuk, lvec, redem, jstab
     real(kind=8) :: alpha, quapi2, omecor, precdc, precsh, rbid, rzero, tolsor
     character(len=1) :: appr
     character(len=8) :: method

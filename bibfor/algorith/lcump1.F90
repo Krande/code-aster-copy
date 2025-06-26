@@ -36,7 +36,7 @@ subroutine lcump1(cmat, nmat, ambda1, ambda2, x1, &
 !
 !     IMPLICIT REAL*8(A-H,O-Z)
     implicit none
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: cmat(nmat)
     real(kind=8) :: ambda1, ambda2, delta, risp, rrsp, uii, uri
     real(kind=8) :: urr, visp, vrsp, x1, x2

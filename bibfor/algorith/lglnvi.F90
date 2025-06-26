@@ -22,7 +22,7 @@ subroutine lglnvi(mod, ndt, ndi, nvi)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi
+    integer(kind=8) :: ndt, ndi, nvi
     character(len=8) :: mod
 ! |---------------------------------------------------------------|
 ! |-- BUT : RECUPERATION DU NOMBRE DE VARIABLES INTERNES ---------|

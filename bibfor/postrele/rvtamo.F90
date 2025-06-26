@@ -39,7 +39,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp, &
 #include "asterfort/tbexip.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbcp, nbco, nbsp, iocc, i1
+    integer(kind=8) :: nbcp, nbco, nbsp, iocc, i1
     real(kind=8) :: t(*)
     character(len=16) :: ncheff
     character(len=24) :: xnovar
@@ -52,9 +52,9 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp, &
 ! IN  : NBCO   : NOMBRE DE COUCHES
 ! IN  : NBSP   : NOMBRE DE SOUS-POINTS
 !     ------------------------------------------------------------------
-    integer :: nbpar, ilign, i, l, m, icp, isp, jacc, ik, ir, ii, valei(10), n1, adracc, adrval
-    integer :: i10, i20, i30, ico, nbacc, nbpr, jaces, iac, iadr, nbvari, jvari, nbcmp2
-    integer :: iord(1)
+    integer(kind=8) :: nbpar, ilign, i, l, m, icp, isp, jacc, ik, ir, ii, valei(10), n1, adracc, adrval
+    integer(kind=8) :: i10, i20, i30, ico, nbacc, nbpr, jaces, iac, iadr, nbvari, jvari, nbcmp2
+    integer(kind=8) :: iord(1)
     real(kind=8) :: prec, valer(12)
     aster_logical :: exist
     complex(kind=8) :: c16b

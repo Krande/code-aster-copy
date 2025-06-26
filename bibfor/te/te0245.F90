@@ -45,8 +45,8 @@ subroutine te0245(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lcastr, lmater, lsect, igeom
-    integer :: dimModel, ier
+    integer(kind=8) :: lcastr, lmater, lsect, igeom
+    integer(kind=8) :: dimModel, ier
     real(kind=8) :: rho, a, xl
     character(len=8) :: attrib
 !

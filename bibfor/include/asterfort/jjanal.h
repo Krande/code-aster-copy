@@ -21,9 +21,9 @@
 interface
     subroutine jjanal(condlu, nval, nvalo, lval, cval)
         character(len=*) :: condlu
-        integer :: nval
-        integer :: nvalo
-        integer :: lval(*)
+        integer(kind=8) :: nval
+        integer(kind=8) :: nvalo
+        integer(kind=8) :: lval(*)
         character(len=*) :: cval(*)
     end subroutine jjanal
 end interface

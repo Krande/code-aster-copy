@@ -45,7 +45,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate, &
 #include "asterfort/rupmat.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    integer :: mate, kpg, ksp
+    integer(kind=8) :: mate, kpg, ksp
     character(len=16) :: compor
     character(len=*) :: fami
     character(len=1) :: poum
@@ -53,7 +53,7 @@ subroutine lcpima(fami, kpg, ksp, poum, mate, &
 !
 !  COMMON MATERIAU POUR VON MISES
 !
-    integer :: jprol, jvale, nbval
+    integer(kind=8) :: jprol, jvale, nbval
     real(kind=8) :: pm, young, nu, mu, unk, troisk, cother, val(1)
     real(kind=8) :: sigm0, epsi0, dt, coefm, rpm, pente
 !
@@ -65,12 +65,12 @@ subroutine lcpima(fami, kpg, ksp, poum, mate, &
 !
 ! DECLARATION LOCALE
 !
-    integer :: icodre(3), lgpg
+    integer(kind=8) :: icodre(3), lgpg
     character(len=16) :: nomres(3)
     character(len=8) :: kbid, para_type
     real(kind=8) :: epsthe, sigy, aire, dsde, valrm(2)
     real(kind=8) :: r8bid, valres(3), para_vale, apui, npui, rprim
-    integer :: iret1, iret2
+    integer(kind=8) :: iret1, iret2
 ! ----------------------------------------------------------------------
 !
     r8bid = 0.d0

@@ -42,8 +42,8 @@ subroutine te0453(option, nomte)
 !
     aster_logical :: axi, grand
     real(kind=8) :: eps(6), vpg(162), poids, dfdi(60), f(3, 3), rbid, tmp
-    integer :: jgano, ndim, ncmp, nno, npg, kpg, ksig, nnos
-    integer :: ipoids, ivf, idfde, igeom, idepl
+    integer(kind=8) :: jgano, ndim, ncmp, nno, npg, kpg, ksig, nnos
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, idepl
 ! ......................................................................
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &

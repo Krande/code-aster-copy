@@ -28,7 +28,7 @@ subroutine lisnnn(motfac, iexci, charge)
 #include "asterfort/jemarq.h"
 !
     character(len=16) :: motfac
-    integer :: iexci
+    integer(kind=8) :: iexci
     character(len=8) :: charge
 !
 ! ----------------------------------------------------------------------
@@ -46,8 +46,8 @@ subroutine lisnnn(motfac, iexci, charge)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nval
-    integer :: eximve, eximvg
+    integer(kind=8) :: nval
+    integer(kind=8) :: eximve, eximvg
 !
 ! ----------------------------------------------------------------------
 !

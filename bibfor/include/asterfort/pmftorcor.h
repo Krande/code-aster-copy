@@ -20,8 +20,8 @@
 !
 interface
     subroutine pmftorcor(tygrfi, nbpout, gxjx, gxjxpout, deplm, deplp, xl, fl)
-        integer :: tygrfi
-        integer :: nbpout
+        integer(kind=8) :: tygrfi
+        integer(kind=8) :: nbpout
         real(kind=8) :: gxjx
         real(kind=8) :: gxjxpout(*)
         real(kind=8) :: deplm(*)

@@ -21,10 +21,10 @@
 interface
     subroutine irrcvx(fami, kpg, ksp, nmat, mater,&
                       sig, vin, seuil)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sig(6)
         real(kind=8) :: vin(*)

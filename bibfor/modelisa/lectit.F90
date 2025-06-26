@@ -39,16 +39,16 @@ subroutine lectit(ifl, icl, iv, rv, cv, &
 #include "asterfort/lxscan.h"
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
-    integer :: nbm
+    integer(kind=8) :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm)
-    integer :: dim(nbm), nbt(nbm)
+    integer(kind=8) :: dim(nbm), nbt(nbm)
     character(len=14) :: cnl
     character(len=*) :: cv
     character(len=80) :: lig
 !-----------------------------------------------------------------------
-    integer :: icl, ideb, ifl, ifm, irtet, irteti
-    integer :: iv, nbg
+    integer(kind=8) :: icl, ideb, ifl, ifm, irtet, irteti
+    integer(kind=8) :: iv, nbg
 !-----------------------------------------------------------------------
     irteti = 0
 !

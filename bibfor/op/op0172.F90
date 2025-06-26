@@ -56,8 +56,8 @@ subroutine op0172()
 #include "asterfort/char8_to_int.h"
 !
 !
-    integer :: ibid, aprno, iddl, ncmp, nec, gd, nbmode
-    integer :: vali
+    integer(kind=8) :: ibid, aprno, iddl, ncmp, nec, gd, nbmode
+    integer(kind=8) :: vali
     real(kind=8) :: r8b, zero, rigi(6), amosol, seuil, amomo, poucen
     real(kind=8) :: valrr(2), coef_corr_amor
     real(kind=8) :: a(3), b(3), c(3), valr(6)
@@ -73,16 +73,16 @@ subroutine op0172()
     character(len=24) :: magrno, magrma, manoma, nomgr, amo_neg
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadmo1, iamomo, ic, idam, iddeeq, idepmo
-    integer :: idga, idgm, idgn, idn2, idno, ienemo, ienmot
-    integer :: ifr, ii, ij, im, imod, in, ino
-    integer :: inoe, ire, iret, irigno, jbor
-    integer :: jfreq, jnbp, jnume, jnuor, jpas, jval
-    integer :: ldgm, ldgn, ldnm, nb, nba, nbb
-    integer :: nben, nbg, nbga, nbgr, nbmd, nbmod2, nbno
-    integer :: nbnoeu, nbocc, nbs, nbv, nbvale, ncg, nco
-    integer :: ncompo, neq, ngn, nk, nkr, nm, nmm
-    integer :: nmt, nn, nno, nrp
+    integer(kind=8) :: i, iadmo1, iamomo, ic, idam, iddeeq, idepmo
+    integer(kind=8) :: idga, idgm, idgn, idn2, idno, ienemo, ienmot
+    integer(kind=8) :: ifr, ii, ij, im, imod, in, ino
+    integer(kind=8) :: inoe, ire, iret, irigno, jbor
+    integer(kind=8) :: jfreq, jnbp, jnume, jnuor, jpas, jval
+    integer(kind=8) :: ldgm, ldgn, ldnm, nb, nba, nbb
+    integer(kind=8) :: nben, nbg, nbga, nbgr, nbmd, nbmod2, nbno
+    integer(kind=8) :: nbnoeu, nbocc, nbs, nbv, nbvale, ncg, nco
+    integer(kind=8) :: ncompo, neq, ngn, nk, nkr, nm, nmm
+    integer(kind=8) :: nmt, nn, nno, nrp
     real(kind=8) :: alfa, amoge, beta, enesol, f, omega, pi
     real(kind=8) :: xg, yg, zg, zrig
     real(kind=8), pointer :: vale(:) => null()

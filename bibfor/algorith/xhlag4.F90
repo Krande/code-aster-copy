@@ -37,9 +37,9 @@ subroutine xhlag4(ffc, idepl, idepm, lact, ndim, &
 ! OUT LAMB  : CHAMP DEMANDE AU POINT DE GAUSS
 ! IN NVEC   : NOMBRE D ADRESSES DEPLACEMENT: 1 OU 2
 ! IN CHAMP  : NOM DU CHAMP: LAMBDA, MU OU W
-    integer :: i, idepl, idepm
-    integer :: j, lact(16), ndim, nli, nnops
-    integer :: pla(27), pli, nvec, indcha
+    integer(kind=8) :: i, idepl, idepm
+    integer(kind=8) :: j, lact(16), ndim, nli, nnops
+    integer(kind=8) :: pla(27), pli, nvec, indcha
     real(kind=8) :: ffc(16), ffi, lamb(3)
     character(len=8) :: champ
 !

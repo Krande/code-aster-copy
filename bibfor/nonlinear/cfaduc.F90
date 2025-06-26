@@ -25,7 +25,7 @@ subroutine cfaduc(resoco, nbliac)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: nbliac
+    integer(kind=8) :: nbliac
     character(len=24) :: resoco
 !
 ! ----------------------------------------------------------------------
@@ -43,12 +43,12 @@ subroutine cfaduc(resoco, nbliac)
 !
 !
 !
-    integer :: iliai, iliac
+    integer(kind=8) :: iliai, iliac
     real(kind=8) :: jeuini
     character(len=19) :: liac, mu
-    integer :: jliac, jmu
+    integer(kind=8) :: jliac, jmu
     character(len=24) :: jeux
-    integer :: jjeux
+    integer(kind=8) :: jjeux
 !
 ! ----------------------------------------------------------------------
 !

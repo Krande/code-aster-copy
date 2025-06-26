@@ -27,7 +27,7 @@ subroutine getExternalStrainModel(defo_comp, strain_model)
 #include "asterfort/BehaviourMGIS_type.h"
 !
     character(len=16), intent(in) :: defo_comp
-    integer, intent(out) :: strain_model
+    integer(kind=8), intent(out) :: strain_model
 !
 ! --------------------------------------------------------------------------------------------------
 !

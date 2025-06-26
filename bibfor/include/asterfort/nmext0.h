@@ -23,11 +23,11 @@ interface
                       nb_cmp    , work_node, work_poin, work_elem, type_extr_elem,&
                       type_extr )
         character(len=4), intent(in) :: field_disc
-        integer, intent(in) :: nb_node
-        integer, intent(in) :: nb_elem
-        integer, intent(in) :: nb_poin
-        integer, intent(in) :: nb_spoi
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_elem
+        integer(kind=8), intent(in) :: nb_poin
+        integer(kind=8), intent(in) :: nb_spoi
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=8), intent(in) :: type_extr_elem
         character(len=8), intent(in) :: type_extr
         character(len=19), intent(in) :: work_poin

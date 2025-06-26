@@ -56,18 +56,18 @@ subroutine cfmxr0(mesh, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cmp = 30
-    integer, parameter :: nb_per = 4
-    integer :: zresu, zperc
-    integer :: ifm, niv
-    integer :: i_zone, i_cmp, i_node_slav, ibid
-    integer :: nb_node_slav, node_slav_indx(1), node_slav_nume(1)
-    integer :: nb_node_mesh, i_node, node_nume
-    integer :: nb_cont_zone
+    integer(kind=8), parameter :: nb_cmp = 30
+    integer(kind=8), parameter :: nb_per = 4
+    integer(kind=8) :: zresu, zperc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_zone, i_cmp, i_node_slav, ibid
+    integer(kind=8) :: nb_node_slav, node_slav_indx(1), node_slav_nume(1)
+    integer(kind=8) :: nb_node_mesh, i_node, node_nume
+    integer(kind=8) :: nb_cont_zone
     character(len=19) :: cnsinr, cnsper, cnoinr
-    integer :: jcnslr
-    integer :: jcnslp
-    integer :: jdecne
+    integer(kind=8) :: jcnslr
+    integer(kind=8) :: jcnslp
+    integer(kind=8) :: jdecne
     aster_logical :: l_cont_cont, l_cont_disc
     real(kind=8), pointer :: cnsvp(:) => null()
     real(kind=8), pointer :: cnsvr(:) => null()

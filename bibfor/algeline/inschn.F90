@@ -20,13 +20,13 @@ subroutine inschn(andi, ndi, xadj, adjncy, chaine, &
                   nouv, place, debut)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-    integer :: andi, xadj(*), ndi, chaine(*), nouv(*), adjncy(*)
-    integer :: place(*)
+    integer(kind=8) :: andi, xadj(*), ndi, chaine(*), nouv(*), adjncy(*)
+    integer(kind=8) :: place(*)
 !     INSERTION DANS LA CHAINE,
 !     DES VOISINS DE NDI,(DE NUMERO SUPERIEUR)
 !     QUI NE SONT PAS ENCORE DANS LA CHAINE (PLACE(NDJ)=0)
-    integer :: j, suiv, cour, ndj
-    integer :: debut
+    integer(kind=8) :: j, suiv, cour, ndj
+    integer(kind=8) :: debut
 !
     do j = xadj(andi), xadj(andi+1)-1
         ndj = nouv(adjncy(j))

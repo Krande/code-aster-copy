@@ -53,16 +53,16 @@ subroutine mtmchc(matas, action)
     character(len=8) :: kbid
     character(len=14) :: nu
     character(len=19) :: mat, nomsto
-    integer :: typmat, ielim, jelim, kdeb, kfin, ilig, jcol
-    integer :: jsmhc, jvalm, jvalm2, jccva, nelim
-    integer :: jnequ, ieq, k, deciel, neq, ier
-    integer :: nblocm, decjel, iremp, jccid, keta, imatd
+    integer(kind=8) :: typmat, ielim, jelim, kdeb, kfin, ilig, jcol
+    integer(kind=8) :: jsmhc, jvalm, jvalm2, jccva, nelim
+    integer(kind=8) :: jnequ, ieq, k, deciel, neq, ier
+    integer(kind=8) :: nblocm, decjel, iremp, jccid, keta, imatd
     aster_logical :: nonsym
-    integer, pointer :: elim(:) => null()
-    integer, pointer :: remplis(:) => null()
-    integer, pointer :: ccll(:) => null()
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: nulg(:) => null()
+    integer(kind=8), pointer :: elim(:) => null()
+    integer(kind=8), pointer :: remplis(:) => null()
+    integer(kind=8), pointer :: ccll(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: nulg(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------------
     call jemarq()

@@ -49,13 +49,13 @@ subroutine cfrsmu(ds_contact, reapre)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iliai, posnoe
-    integer :: nbliai
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iliai, posnoe
+    integer(kind=8) :: nbliai
     character(len=19) :: svmu, mu
-    integer :: jsvmu, jmu
+    integer(kind=8) :: jsvmu, jmu
     character(len=24) :: numlia
-    integer :: jnumli
+    integer(kind=8) :: jnumli
     aster_logical :: lgcp
 !
 ! ----------------------------------------------------------------------

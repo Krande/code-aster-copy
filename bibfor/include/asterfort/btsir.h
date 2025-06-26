@@ -21,8 +21,8 @@
 interface
     subroutine btsir(lonlig, loncol, jacgau, bmat, sigma,&
                      bsigma)
-        integer :: loncol
-        integer :: lonlig
+        integer(kind=8) :: loncol
+        integer(kind=8) :: lonlig
         real(kind=8) :: jacgau
         real(kind=8) :: bmat(loncol, 1)
         real(kind=8) :: sigma(1)

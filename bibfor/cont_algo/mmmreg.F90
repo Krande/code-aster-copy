@@ -41,7 +41,7 @@ subroutine mmmreg(mesh, ds_contact, v_disp_cumu, nb_dof, &
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: nb_dof
+    integer(kind=8), intent(in) :: nb_dof
     real(kind=8), pointer :: v_disp_cumu(:)
     real(kind=8), pointer :: v_slav_slide(:)
     real(kind=8), pointer :: v_mast_slide(:)
@@ -63,22 +63,22 @@ subroutine mmmreg(mesh, ds_contact, v_disp_cumu, nb_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_cont_poin, i_zone, i_elem_slav, i_poin_elem, i_node
-    integer :: nb_poin_elem, nb_elem_slav, nb_cont_zone, model_ndim, nt_cont_poin
-    integer :: node_slav_nume, elem_slav_nume
-    integer :: node_mast_nume, elem_mast_nume
-    integer :: elem_slav_nbnode, elem_mast_nbnode
-    integer :: elem_slav_indx, jdecme
+    integer(kind=8) :: i_cont_poin, i_zone, i_elem_slav, i_poin_elem, i_node
+    integer(kind=8) :: nb_poin_elem, nb_elem_slav, nb_cont_zone, model_ndim, nt_cont_poin
+    integer(kind=8) :: node_slav_nume, elem_slav_nume
+    integer(kind=8) :: node_mast_nume, elem_mast_nume
+    integer(kind=8) :: elem_slav_nbnode, elem_mast_nbnode
+    integer(kind=8) :: elem_slav_indx, jdecme
     real(kind=8) :: ksipc1, ksipc2, ksipr1, ksipr2
-    integer :: ztabf
+    integer(kind=8) :: ztabf
     real(kind=8) :: disp_mast(3), disp_slav(3)
     real(kind=8) :: tau1(3), tau2(3), ff(9)
     character(len=8) :: elem_slav_type, elem_mast_type
     aster_logical :: l_veri
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
-    integer, pointer :: v_mesh_loncum(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_mesh_loncum(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

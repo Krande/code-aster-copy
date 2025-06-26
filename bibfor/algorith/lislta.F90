@@ -26,7 +26,7 @@ subroutine lislta(lischa, ichar, typapp)
 #include "asterfort/jeveuo.h"
 #include "asterfort/lisnnb.h"
     character(len=19) :: lischa
-    integer :: ichar
+    integer(kind=8) :: ichar
     character(len=16) :: typapp
 !
 ! ----------------------------------------------------------------------
@@ -50,8 +50,8 @@ subroutine lislta(lischa, ichar, typapp)
 !
 !
     character(len=24) :: typeap
-    integer :: jtypa
-    integer :: nbchar
+    integer(kind=8) :: jtypa
+    integer(kind=8) :: nbchar
 !
 ! ----------------------------------------------------------------------
 !

@@ -20,7 +20,7 @@
 !
 interface
     subroutine acevmb(nbocc, nlg)
-        integer :: nbocc
-        integer :: nlg
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: nlg
     end subroutine acevmb
 end interface

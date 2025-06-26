@@ -38,17 +38,17 @@ subroutine hypela(fami, kpg, ksp, ndim, typmod, &
 !
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     real(kind=8), intent(in) :: crit(*)
     real(kind=8), intent(in) :: eps(2*ndim)
     character(len=16), intent(in) :: option
     real(kind=8), intent(out) :: sig(6)
     real(kind=8), intent(out) :: dsidep(6, 6)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 !
 ! ----------------------------------------------------------------------
@@ -83,13 +83,13 @@ subroutine hypela(fami, kpg, ksp, ndim, typmod, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, l, m
+    integer(kind=8) :: i, j, l, m
     real(kind=8) :: c11, c22, c12, c33, c13, c23
     real(kind=8) :: epstot(6)
     real(kind=8) :: cvol(6, 6), ciso(6, 6)
     real(kind=8) :: svol(6), siso(6)
     real(kind=8) :: c10, c01, c20, k
-    integer :: nitmax
+    integer(kind=8) :: nitmax
     real(kind=8) :: epsi
     character(len=1) :: poum
     blas_int :: b_incx, b_n

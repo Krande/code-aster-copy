@@ -74,25 +74,25 @@ subroutine tabchs(tabin, typchs, base, nomgd, ma, &
 !
 !
 !      ==> VARIABLES LOCALES
-    integer :: ncmp, jcnsl, i
-    integer :: vali(2), nblig, isp
-    integer :: nbval, ier
-    integer :: nuno, numa, nbma, jcesd, nbssp
-    integer :: jcesl, jcesc, iad
-    integer :: nbcol, nbno, ksp, kpt, jcon1, jcon2
-    integer :: jcolma, jcolno, jcolpt, jcolsp, ipt
-    integer :: icmp, ili, iret, jobj2, jobj3
+    integer(kind=8) :: ncmp, jcnsl, i
+    integer(kind=8) :: vali(2), nblig, isp
+    integer(kind=8) :: nbval, ier
+    integer(kind=8) :: nuno, numa, nbma, jcesd, nbssp
+    integer(kind=8) :: jcesl, jcesc, iad
+    integer(kind=8) :: nbcol, nbno, ksp, kpt, jcon1, jcon2
+    integer(kind=8) :: jcolma, jcolno, jcolpt, jcolsp, ipt
+    integer(kind=8) :: icmp, ili, iret, jobj2, jobj3
     character(len=8) :: nono, tsca, noma
     character(len=24) :: objlg, objr, objtmp
     character(len=24) :: valk(3)
     aster_logical :: lmail, lnoeu, lpoin, lspoin
     character(len=24), pointer :: ncmp1(:) => null()
-    integer, pointer :: ncmp2(:) => null()
-    integer, pointer :: pg_tot(:) => null()
-    integer, pointer :: sp_tot(:) => null()
+    integer(kind=8), pointer :: ncmp2(:) => null()
+    integer(kind=8), pointer :: pg_tot(:) => null()
+    integer(kind=8), pointer :: sp_tot(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     aster_logical :: lcolle, lcolle2
 ! ---------------------------------------------------------------------

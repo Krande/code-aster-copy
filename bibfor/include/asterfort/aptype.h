@@ -19,8 +19,8 @@
 interface
     subroutine aptype(elem_type, elem_nbnode, elem_code, elem_dime)
         character(len=8), intent(in) :: elem_type
-        integer, intent(out) :: elem_nbnode
+        integer(kind=8), intent(out) :: elem_nbnode
         character(len=8), intent(out) :: elem_code
-        integer, intent(out) :: elem_dime
+        integer(kind=8), intent(out) :: elem_dime
     end subroutine aptype
 end interface

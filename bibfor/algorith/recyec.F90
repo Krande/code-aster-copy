@@ -54,7 +54,7 @@ subroutine recyec(nmresz, mdcycz, numsec, typsdz)
 !-----------------ECRITURE DU TITRE-------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer ::   numsec
+    integer(kind=8) ::   numsec
     character(len=24), pointer :: cycl_refe(:) => null()
     character(len=8), pointer :: cycl_type(:) => null()
 !-----------------------------------------------------------------------

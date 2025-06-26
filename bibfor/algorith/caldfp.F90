@@ -39,7 +39,7 @@ subroutine caldfp(msns, gamsns, dfpmdg, iret)
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    integer :: iret, iopt, i, j, k, l
+    integer(kind=8) :: iret, iopt, i, j, k, l
     real(kind=8) :: msns(3, 3), gamsns(3, 3), ddetdg
     real(kind=8) :: id(3, 3), coef, expo
     real(kind=8) :: det2, dfpmdg(3, 3)

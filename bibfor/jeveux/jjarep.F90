@@ -30,7 +30,7 @@ subroutine jjarep(iclas, nrmax)
 #include "asterfort/jxhcod.h"
 #include "asterfort/jxlibd.h"
 #include "asterfort/utmess.h"
-    integer :: iclas, nrmax
+    integer(kind=8) :: iclas, nrmax
 ! ----------------------------------------------------------------------
 !     PERMET D'AGRANDIR UN REPERTOIRE DE NOM
 !
@@ -38,19 +38,19 @@ subroutine jjarep(iclas, nrmax)
 !     IN    NRMAX  : DIMENSION DU NOUVEAU REPERTOIRE
 !
 ! ----------------------------------------------------------------------
-    integer :: igenr(1), itype(1), idocu(1), iorig(1), irnom(4)
+    integer(kind=8) :: igenr(1), itype(1), idocu(1), iorig(1), irnom(4)
     equivalence(igenr, genr), (itype, type),&
      &                 (idocu, docu), (iorig, orig), (irnom, rnom)
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: i, ic, idatin, iin, il, in, ind
-    integer :: ipgca, iref, j, jcara, jdate, jdocu
-    integer :: jgenr, jhcod, jiadd, jiadm, jindir, jlong
-    integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
-    integer :: k, khcdy, kl, kn, knody, ldynol
-    integer :: lhcod, lloc, lon, lonoi, ltot, n, nbatt
-    integer :: nbtot, ne
+    integer(kind=8) :: i, ic, idatin, iin, il, in, ind
+    integer(kind=8) :: ipgca, iref, j, jcara, jdate, jdocu
+    integer(kind=8) :: jgenr, jhcod, jiadd, jiadm, jindir, jlong
+    integer(kind=8) :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
+    integer(kind=8) :: k, khcdy, kl, kn, knody, ldynol
+    integer(kind=8) :: lhcod, lloc, lon, lonoi, ltot, n, nbatt
+    integer(kind=8) :: nbtot, ne
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -58,8 +58,8 @@ subroutine jjarep(iclas, nrmax)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 ! ----------------------------------------------------------------------
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -67,21 +67,21 @@ subroutine jjarep(iclas, nrmax)
     common/kbasje/nombas(n)
     common/jindir/jindir(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
 ! ----------------------------------------------------------------------
     character(len=32) :: clel, cle
     character(len=4) :: z
-    integer :: jcod, kadhc, jnom, kadno, lorep, iadrs(20), kat(20)
-    integer :: lgnom, nuti, lso(20), imq(2), iaddi(2), kdy(20)
+    integer(kind=8) :: jcod, kadhc, jnom, kadno, lorep, iadrs(20), kat(20)
+    integer(kind=8) :: lgnom, nuti, lso(20), imq(2), iaddi(2), kdy(20)
     parameter(nbatt=12, nbtot=nbatt+3, lgnom=32)
-    integer :: numatt(nbtot), idm(nbtot), idy(nbtot), irt
+    integer(kind=8) :: numatt(nbtot), idm(nbtot), idy(nbtot), irt
     data numatt, z/2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 16, 7, 13, 20, 17, 'INIT'/
 ! DEB ------------------------------------------------------------------
     ipgca = ipgc

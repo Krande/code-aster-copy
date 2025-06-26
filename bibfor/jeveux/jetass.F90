@@ -39,26 +39,26 @@ subroutine jetass(clas)
 !
 ! IN  CLAS   : NOM DE CLASSE ASSOCIEE
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibacol, ibiadd, ic, idco, idcol, idcop, idec
-    integer :: idos, idosl, idosp, ixiadd, jcara, jdate
-    integer :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlono
-    integer :: jltyp, jluti, jmarq, jorig, jrnom, jtype, jusadi
-    integer :: k, kadd, klib, ladd, ld, lgl, n
-    integer :: ncla1, ncla2
+    integer(kind=8) :: ibacol, ibiadd, ic, idco, idcol, idcop, idec
+    integer(kind=8) :: idos, idosl, idosp, ixiadd, jcara, jdate
+    integer(kind=8) :: jdocu, jgenr, jhcod, jiadd, jiadm, jlong, jlono
+    integer(kind=8) :: jltyp, jluti, jmarq, jorig, jrnom, jtype, jusadi
+    integer(kind=8) :: k, kadd, klib, ladd, ld, lgl, n
+    integer(kind=8) :: ncla1, ncla2
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -66,8 +66,8 @@ subroutine jetass(clas)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -82,12 +82,12 @@ subroutine jetass(clas)
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
 !     ------------------------------------------------------------------
-    integer :: idiadd
+    integer(kind=8) :: idiadd
     parameter(idiadd=2)
 !     ------------------------------------------------------------------
     aster_logical :: libre, actu
     character(len=1) :: kclas
-    integer :: itp(1), jitp, iaditp, iaddi(2), iaddib(2), lgbl, iadyn
+    integer(kind=8) :: itp(1), jitp, iaditp, iaddi(2), iaddib(2), lgbl, iadyn
 ! DEB ------------------------------------------------------------------
     iaddi(2) = 0
     iaddib(2) = 0

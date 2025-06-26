@@ -31,8 +31,8 @@ subroutine nmrech(fm, f, fopt, fcvg, rhomin, &
     real(kind=8) :: rhom, rho, rhoopt
     real(kind=8) :: fm, f, fopt, fcvg
     aster_logical :: stite
-    integer :: ldcopt, ldccvg
-    integer :: opt, act
+    integer(kind=8) :: ldcopt, ldccvg
+    integer(kind=8) :: opt, act
 !
 ! ----------------------------------------------------------------------
 !

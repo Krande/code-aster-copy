@@ -24,7 +24,7 @@ interface
         real(kind=8), intent(in) :: fm(3, 3)
         real(kind=8), intent(in) :: df(3, 3)
         real(kind=8), intent(out) :: dtaudf(6, 3, 3)
-        integer, intent(in) :: nmat
+        integer(kind=8), intent(in) :: nmat
         real(kind=8), optional, intent(in) :: materd_(nmat, 2)
         real(kind=8), optional, intent(in) :: young_
         real(kind=8), optional, intent(in) :: nu_

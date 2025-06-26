@@ -20,7 +20,7 @@
 interface
     subroutine cgComporNodes(result, nume_ordre, nb_point, fondNoeudNume, compValues)
         character(len=8), intent(in) :: result
-        integer, intent(in) :: nume_ordre, nb_point, fondNoeudNume(*)
+        integer(kind=8), intent(in) :: nume_ordre, nb_point, fondNoeudNume(*)
         character(len=8), pointer :: compValues(:)
     end subroutine cgComporNodes
 end interface

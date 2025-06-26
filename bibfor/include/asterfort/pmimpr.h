@@ -20,12 +20,12 @@ interface
     subroutine pmimpr(ind, inst, indimp, valimp,&
                       iter, eps, sig, vi, nbvari,&
                       r, ee, eini)
-        integer :: nbvari
-        integer :: ind
+        integer(kind=8) :: nbvari
+        integer(kind=8) :: ind
         real(kind=8) :: inst
-        integer :: indimp(6)
+        integer(kind=8) :: indimp(6)
         real(kind=8) :: valimp(6)
-        integer :: iter
+        integer(kind=8) :: iter
         real(kind=8) :: eps(6)
         real(kind=8) :: sig(6)
         real(kind=8) :: vi(nbvari)

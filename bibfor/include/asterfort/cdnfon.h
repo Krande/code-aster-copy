@@ -21,11 +21,11 @@
 interface
     subroutine cdnfon(zimat, kfonc, xx, dn, fxx,&
                       ier)
-        integer :: zimat
+        integer(kind=8) :: zimat
         character(len=8) :: kfonc
         real(kind=8) :: xx
-        integer :: dn
+        integer(kind=8) :: dn
         real(kind=8) :: fxx
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine cdnfon
 end interface

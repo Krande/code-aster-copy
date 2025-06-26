@@ -23,7 +23,7 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim, &
     implicit none
 #include "asterfort/nmtacr.h"
 #include "asterfort/zeroco.h"
-    integer :: ndimsi
+    integer(kind=8) :: ndimsi
     real(kind=8) :: crit(3), mat(14), sigel(*), vim(9), epm(*), dp, xi
     real(kind=8) :: sp, f
 ! ----------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine nmtasp(ndimsi, crit, mat, sigel, vim, &
 !               IRET=1 => ECHEC
 ! ----------------------------------------------------------------------
 !
-    integer :: niter, iret
+    integer(kind=8) :: niter, iret
     real(kind=8) :: g, fds, gds, fdp, gdp, fdx, gdx, dpmax, sig(6), tang(6, 6)
     real(kind=8) :: x(4), y(4), ff(4)
 !

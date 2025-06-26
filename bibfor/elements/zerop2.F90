@@ -21,7 +21,7 @@ subroutine zerop2(b, c, x, n)
 !
     implicit none
     real(kind=8) :: b, c, x(2)
-    integer :: n
+    integer(kind=8) :: n
 !
 ! ----------------------------------------------------------------------
 ! RESOLUTION D'UN POLYNOME DE DEGRE 2 : X**2 + B X + C = 0

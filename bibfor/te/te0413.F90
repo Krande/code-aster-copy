@@ -51,7 +51,7 @@ subroutine te0413(option, nomte)
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
 !
-    integer :: npgmx
+    integer(kind=8) :: npgmx
     parameter(npgmx=4)
 !
     real(kind=8) :: pgl(3, 3)
@@ -59,9 +59,9 @@ subroutine te0413(option, nomte)
     real(kind=8) :: disse(npgmx), dse
     real(kind=8) :: ep, seuil
 !
-    integer :: ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: jgeom, ipg, idener, imate
-    integer :: icacoq, jvari, nbvar
+    integer(kind=8) :: ndim, nno, nnoel, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: jgeom, ipg, idener, imate
+    integer(kind=8) :: icacoq, jvari, nbvar
 !
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: valk(2)

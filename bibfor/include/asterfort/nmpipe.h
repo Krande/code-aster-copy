@@ -33,9 +33,9 @@ interface
         character(len=19) :: ddepl0
         character(len=19) :: ddepl1
         real(kind=8) :: tau
-        integer :: nbeffe
+        integer(kind=8) :: nbeffe
         real(kind=8) :: eta(2)
-        integer :: pilcvg
+        integer(kind=8) :: pilcvg
         character(len=24) :: typpil
         character(len=24) :: carele
     end subroutine nmpipe

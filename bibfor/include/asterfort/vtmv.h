@@ -20,7 +20,7 @@
 !
 interface
     subroutine vtmv(n, v, a, r)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: v(n)
         real(kind=8) :: a(n, n)
         real(kind=8) :: r

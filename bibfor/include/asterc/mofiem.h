@@ -20,6 +20,6 @@
 !
 interface
     function mofiem()
-        integer :: mofiem
+        integer(kind=8) :: mofiem
     end function mofiem
 end interface

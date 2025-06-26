@@ -29,7 +29,7 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: ipif, inume, ier
+    integer(kind=8) :: ipif, inume, ier
     real(kind=8) :: rvar, epsi, resu
     character(len=*) :: nomf
 !     INTERPOLATION DANS LES NAPPES
@@ -43,7 +43,7 @@ subroutine fointn(ipif, nomf, rvar, inume, epsi, &
 ! OUT : IER    : CODE RETOUR
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: lprol, lvar, nbpt, jpro, nbpcum, i, ipt, lfon
+    integer(kind=8) :: lprol, lvar, nbpt, jpro, nbpcum, i, ipt, lfon
     character(len=1) :: coli
     character(len=16) :: prolgd
     character(len=19) :: nomfon

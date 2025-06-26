@@ -28,7 +28,7 @@ subroutine jxveuo(cel, itab, inat, jitab)
 #include "asterfort/jxliro.h"
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
-    integer :: itab(*), inat, jitab
+    integer(kind=8) :: itab(*), inat, jitab
     character(len=*) :: cel
 ! ----------------------------------------------------------------------
 ! MISE EN MEMOIRE D'UN SEGMENT DE VALEUR
@@ -39,16 +39,16 @@ subroutine jxveuo(cel, itab, inat, jitab)
 ! IN  INAT   : TYPE D'OBJET 1:OS, 2:CO, 3:OC
 ! OUT JITAB  : ADRESSE PAR RAPPORT A ITAB
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadyn, ibacol, ibiadd, ibiadm, iblong, iblono, ibluti
-    integer :: ibmarq, ic, idco, idos, ista, iusa, ixdeso
-    integer :: ixiadd, ixiadm, ixlong, ixlono, ixluti, ixmarq, jcara
-    integer :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jlong
-    integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
-    integer :: k, longj, lonoj, lonok, lonti, lutilo, n
+    integer(kind=8) :: iadyn, ibacol, ibiadd, ibiadm, iblong, iblono, ibluti
+    integer(kind=8) :: ibmarq, ic, idco, idos, ista, iusa, ixdeso
+    integer(kind=8) :: ixiadd, ixiadm, ixlong, ixlono, ixluti, ixmarq, jcara
+    integer(kind=8) :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jlong
+    integer(kind=8) :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
+    integer(kind=8) :: k, longj, lonoj, lonok, lonti, lutilo, n
 !
 !-----------------------------------------------------------------------
     parameter(n=5)
@@ -57,21 +57,21 @@ subroutine jxveuo(cel, itab, inat, jitab)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 ! ----------------------------------------------------------------------
-    integer :: idehc
+    integer(kind=8) :: idehc
     parameter(idehc=6)
 ! ----------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
     character(len=1) :: typei, genri
-    integer :: ltypi, iaddi(2), iadmi, lonoi, irt
+    integer(kind=8) :: ltypi, iaddi(2), iadmi, lonoi, irt
     aster_logical :: ldeps, lconst
 ! ----------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlong, idlono, idluti
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlong, idlono, idluti
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
      &               idmarq=4, idlong=7,&
      &               idlono=8, idluti=9)

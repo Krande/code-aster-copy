@@ -67,13 +67,13 @@ subroutine xasshv_frac(ds_thm, &
 ! IO  ds_thm           : datastructure for THM
 
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: nddls, nnop, dimuel, i, ndim, nnops
-    integer :: nddlm, contac, jmate, ncompv, nvec, pla(27), pos(16)
-    integer :: nface, npgf, nbspg, isspg, nptf, cface(30, 6)
-    integer :: ipgf, ifa, jcohes, lact(16), algocr, jheavn, ncompn
-    integer :: jptint, igeom, jbasec, nlact(2), nfiss, ibid, ino
-    integer :: ifiss, nfh, jheafa, ncomph
-    integer :: idepm, idepd
+    integer(kind=8) :: nddls, nnop, dimuel, i, ndim, nnops
+    integer(kind=8) :: nddlm, contac, jmate, ncompv, nvec, pla(27), pos(16)
+    integer(kind=8) :: nface, npgf, nbspg, isspg, nptf, cface(30, 6)
+    integer(kind=8) :: ipgf, ifa, jcohes, lact(16), algocr, jheavn, ncompn
+    integer(kind=8) :: jptint, igeom, jbasec, nlact(2), nfiss, ibid, ino
+    integer(kind=8) :: ifiss, nfh, jheafa, ncomph
+    integer(kind=8) :: idepm, idepd
     real(kind=8) :: dt, parm_theta, ta1, cohes(5), lamb(3), g(3)
     real(kind=8) :: rinstp, rinstm, carcri(*), jac, r
     real(kind=8) :: ffp(27), ffpc(27), ffc(16), dfdic(nnops, 3)

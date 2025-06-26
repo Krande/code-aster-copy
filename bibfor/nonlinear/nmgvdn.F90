@@ -22,7 +22,7 @@ subroutine nmgvdn(ndim, nno1, nno2, iu, ia)
 !
     implicit none
 !
-    integer :: ndim, nno1, nno2, iu(ndim*nno1), ia(nno2)
+    integer(kind=8) :: ndim, nno1, nno2, iu(ndim*nno1), ia(nno2)
 ! ---------------------------------------------------------------------
 !
 !     POSITION DES INDICES POUR LES DEGRES DE LIBERTE
@@ -31,7 +31,7 @@ subroutine nmgvdn(ndim, nno1, nno2, iu, ia)
 ! IN  NNO1    : NOMBRE DE NOEUDS (FAMILLE U)
 ! IN  NNO2    : NOMBRE DE NOEUDS (FAMILLE A)
 ! ---------------------------------------------------------------------
-    integer :: n, i, os
+    integer(kind=8) :: n, i, os
 ! ---------------------------------------------------------------------
 !
 !

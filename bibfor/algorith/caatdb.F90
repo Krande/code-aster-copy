@@ -21,7 +21,7 @@ subroutine caatdb(nno, a, d, b, jac, &
 !     CALCUL DE TADB POUR LE HEXA8 STABILISE
 !-----------------------------------------------------------------------
     implicit none
-    integer :: kk, kkd, n, i, m, j, k, kl, nno, j1
+    integer(kind=8) :: kk, kkd, n, i, m, j, k, kl, nno, j1
     real(kind=8) :: matuu(1)
     real(kind=8) :: d(6, 6), jac, tmp, sig(6)
     real(kind=8) :: a(6, 3, 8)

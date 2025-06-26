@@ -22,8 +22,8 @@ subroutine dinonc(nomte, icodre, valre, klv, raide, &
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
     character(len=16) :: nomte
-    integer :: icodre(*)
-    integer :: nbpar
+    integer(kind=8) :: icodre(*)
+    integer(kind=8) :: nbpar
     real(kind=8) :: valre(*), klv(*), raide(*), param(6, nbpar)
     aster_logical :: okdire(6)
 !
@@ -60,7 +60,7 @@ subroutine dinonc(nomte, icodre, valre, klv, raide, &
 !     okdire : vrai si la direction est affectée par le comportement
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, jj
+    integer(kind=8) :: ii, jj
 !
     do ii = 1, 6
         okdire(ii) = .false.

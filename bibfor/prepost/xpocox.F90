@@ -24,8 +24,8 @@ subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1, &
 #include "asterfort/cesexi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbmac, ima, inmtot, jresd1, jresv1, jresl1, nbcmpc
-    integer :: jresd2, jresv2, jresl2
+    integer(kind=8) :: nbmac, ima, inmtot, jresd1, jresv1, jresl1, nbcmpc
+    integer(kind=8) :: jresd2, jresv2, jresl2
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -48,7 +48,7 @@ subroutine xpocox(nbmac, ima, inmtot, nbcmpc, jresd1, &
 !
 !
 !
-    integer :: icmp, iadr1, iadr2, ima2
+    integer(kind=8) :: icmp, iadr1, iadr2, ima2
 !
 ! ----------------------------------------------------------------------
 !

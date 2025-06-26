@@ -61,27 +61,27 @@ subroutine promor(nuz, base, printz)
     aster_logical :: ldist, ldgrel, lmadis, printt, lligrel_cp
     character(len=19) :: nomlig
     character(len=24) :: crco
-    integer :: iconx2, ili, iel
-    integer :: idprn1
-    integer :: idprn2, ifm, niv, iret, nnoe, jnueq
-    integer :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1, n12
-    integer :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
-    integer :: iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
-    integer :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
-    integer ::  rang, imd, jsmh1, ili2
+    integer(kind=8) :: iconx2, ili, iel
+    integer(kind=8) :: idprn1
+    integer(kind=8) :: idprn2, ifm, niv, iret, nnoe, jnueq
+    integer(kind=8) :: vali(3), neqx, iilib, igr, numa, k1, n1, iad1, nddl1, n12
+    integer(kind=8) :: iddl, jddl, iamail, jsmhc, ncoef, jsmde, igd, nbss
+    integer(kind=8) :: iadequ, nlili, nequ, iimax, jnoip, jsuiv, mxddlt
+    integer(kind=8) :: ima, nddlt, jalm, jsmdi, nel, nec, nbsma
+    integer(kind=8) ::  rang, imd, jsmh1, ili2
 !
     character(len=19) :: partit
     real(kind=8) :: valr(2), rcoef, requ
-    integer :: nbproc
-    integer, pointer :: maille(:) => null()
-    integer, pointer :: adne(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: adli(:) => null()
+    integer(kind=8) :: nbproc
+    integer(kind=8), pointer :: maille(:) => null()
+    integer(kind=8), pointer :: adne(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: adli(:) => null()
     character(len=24), pointer :: prtk(:) => null()
     character(len=24), pointer :: tco(:) => null()
-    integer, pointer :: sssa(:) => null()
-    integer, pointer :: v_refp(:) => null()
-    integer, pointer :: v_crco(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: v_refp(:) => null()
+    integer(kind=8), pointer :: v_crco(:) => null()
     mpi_int :: mrank, msize
 !
 !-----------------------------------------------------------------------

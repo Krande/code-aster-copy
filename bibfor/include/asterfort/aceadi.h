@@ -26,9 +26,9 @@ interface
         character(len=8) :: noma
         character(len=8) :: nomo
         character(len=*) :: mcf
-        integer :: lmax
-        integer :: nbocc
+        integer(kind=8) :: lmax
+        integer(kind=8) :: nbocc
         type (cara_elem_carte) :: infcarte(*)
-        integer :: ivr(*)
+        integer(kind=8) :: ivr(*)
     end subroutine aceadi
 end interface

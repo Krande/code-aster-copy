@@ -29,7 +29,7 @@ subroutine pusur2(jdg, nbpt, ang, fn, vt1, &
     real(kind=8) :: ang(*), fn(*), vt1(*), vt2(*), angle(*), t(*), puse, tmp
 !
 !-----------------------------------------------------------------------
-    integer :: i, jdg, nbpt, noccur
+    integer(kind=8) :: i, jdg, nbpt, noccur
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     zero = 0.00d00

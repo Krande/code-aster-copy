@@ -37,12 +37,12 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
 #include "asterfort/nbec.h"
 #include "asterfort/select_dof_gene.h"
 !
-    integer, pointer, optional :: listEqua_(:), tablEqua_(:, :)
-    integer, pointer, optional :: tablCmp_(:)
+    integer(kind=8), pointer, optional :: listEqua_(:), tablEqua_(:, :)
+    integer(kind=8), pointer, optional :: tablCmp_(:)
     character(len=*), optional, intent(in) :: numeDofZ_, fieldNodeZ_
-    integer, optional, intent(in) :: nbNodeToSelect_
-    integer, pointer, optional :: listNodeToSelect_(:)
-    integer, optional, intent(in) :: nbCmpToSelect_
+    integer(kind=8), optional, intent(in) :: nbNodeToSelect_
+    integer(kind=8), pointer, optional :: listNodeToSelect_(:)
+    integer(kind=8), optional, intent(in) :: nbCmpToSelect_
     character(len=8), pointer, optional :: listCmpToSelect_(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -84,25 +84,25 @@ subroutine select_dof(listEqua_, tablEqua_, tablCmp_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: iLigrMesh = 1
-    integer, parameter :: nbEcMax = 10
-    integer :: physDesc(nbEcMax)
+    integer(kind=8), parameter :: iLigrMesh = 1
+    integer(kind=8), parameter :: nbEcMax = 10
+    integer(kind=8) :: physDesc(nbEcMax)
     character(len=24) :: liliName
     character(len=8) :: cmpName, mesh
     character(len=19) :: nume_equa, nume_equa_gene, fieldNode, numeEqul
     character(len=14) :: numeDof
-    integer :: iexi
+    integer(kind=8) :: iexi
     aster_logical :: lnume_equa_gene
     aster_logical :: lMatrDist
-    integer :: nodeNume, physNume, prnoLength
-    integer :: nbNodeToSelect
-    integer :: numeEqua, iNode, iCmp, dofNume, numeEquaL, numeCmp, iEc, nbNodeMesh
-    integer :: nb_ec, nbCmpToSelect, physNbCmp, nbCmpNode
-    integer, pointer :: cmpSelect(:) => null()
-    integer, pointer :: nodeSelect(:) => null()
-    integer, pointer :: prno(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: nugl(:) => null()
+    integer(kind=8) :: nodeNume, physNume, prnoLength
+    integer(kind=8) :: nbNodeToSelect
+    integer(kind=8) :: numeEqua, iNode, iCmp, dofNume, numeEquaL, numeCmp, iEc, nbNodeMesh
+    integer(kind=8) :: nb_ec, nbCmpToSelect, physNbCmp, nbCmpNode
+    integer(kind=8), pointer :: cmpSelect(:) => null()
+    integer(kind=8), pointer :: nodeSelect(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nugl(:) => null()
     character(len=8), pointer :: physCataName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

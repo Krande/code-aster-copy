@@ -22,8 +22,8 @@ interface
     subroutine apcpoi(sdcont_defi, model_ndim, i_zone, elem_name,&
                       zone_type  , tau1      , tau2)
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: model_ndim
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: model_ndim
+        integer(kind=8), intent(in) :: i_zone
         character(len=8), intent(in) :: elem_name
         character(len=4), intent(in) :: zone_type
         real(kind=8), intent(out) :: tau1(3)

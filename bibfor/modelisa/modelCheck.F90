@@ -49,14 +49,14 @@ subroutine modelCheck(model, lCheckJacobian, lCheckFSINorms, lCheckPlaneity)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_dim_geom, nb_dim_geom2, nb_dim_geom3
+    integer(kind=8) :: nb_dim_geom, nb_dim_geom2, nb_dim_geom3
     character(len=16) :: repk
-    integer :: i_disc_2d, i_disc_3d
+    integer(kind=8) :: i_disc_2d, i_disc_3d
     character(len=8) :: mesh
     aster_logical :: lAxis, lHHO
-    integer :: nbCell
+    integer(kind=8) :: nbCell
     character(len=19) :: modelLigrel
-    integer, pointer :: modelCells(:) => null()
+    integer(kind=8), pointer :: modelCells(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -19,6 +19,6 @@
 interface
     subroutine dflld2(sdlist, i_fail)
         character(len=8), intent(in) :: sdlist
-        integer, intent(in) :: i_fail
+        integer(kind=8), intent(in) :: i_fail
     end subroutine dflld2
 end interface

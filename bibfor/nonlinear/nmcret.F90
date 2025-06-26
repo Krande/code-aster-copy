@@ -29,7 +29,7 @@ subroutine nmcret(sderro, errorCodeType, errorCodeVale)
 !
     character(len=24), intent(in) :: sderro
     character(len=3), intent(in) :: errorCodeType
-    integer, intent(in) :: errorCodeVale
+    integer(kind=8), intent(in) :: errorCodeVale
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -71,9 +71,9 @@ subroutine nmcret(sderro, errorCodeType, errorCodeVale)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iEvent
+    integer(kind=8) :: iEvent
     character(len=24) :: eventECONJv, eventECOVJv, eventENOMJv
-    integer, pointer :: eventECOV(:) => null()
+    integer(kind=8), pointer :: eventECOV(:) => null()
     character(len=16), pointer :: eventENOM(:) => null()
     character(len=8), pointer :: eventECON(:) => null()
     character(len=9) :: eventName

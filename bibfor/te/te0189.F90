@@ -32,8 +32,8 @@ subroutine te0189(option, nomte)
 #include "asterfort/jevech.h"
 !
     character(len=16) :: option, nomte
-    integer :: idino, ino, nno, nnos, ndim, jgano, npg1
-    integer :: ipdeb, ipres, ipoids, ivf, idfde
+    integer(kind=8) :: idino, ino, nno, nnos, ndim, jgano, npg1
+    integer(kind=8) :: ipdeb, ipres, ipoids, ivf, idfde
 !
 !
 !-----------------------------------------------------------------------

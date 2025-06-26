@@ -27,7 +27,7 @@ subroutine pacoor(nomma, ima, nbno, coor)
 #include "asterfort/utmess.h"
 !
     character(len=8) :: nomma
-    integer :: ima, nbno
+    integer(kind=8) :: ima, nbno
     real(kind=8) :: coor(*)
 !     BUT: DONNER LA LISTE DES COORDONNEES DES NBNO 1ERS NOEUDS DE LA
 !          MAILLE IMA DU MAILLAGE NOMMA OU D'UN NOEUD SI NBNO = 0
@@ -49,8 +49,8 @@ subroutine pacoor(nomma, ima, nbno, coor)
     real(kind=8) :: x(3)
 ! --- DEBUT
 !-----------------------------------------------------------------------
-    integer :: i, icmp, icoor, idconn, iddesc, idino, idvale
-    integer :: ino, inoma, nbcmp, nbnomx
+    integer(kind=8) :: i, icmp, icoor, idconn, iddesc, idino, idvale
+    integer(kind=8) :: ino, inoma, nbcmp, nbnomx
 !-----------------------------------------------------------------------
     call jemarq()
     desc = nomma(1:8)//'.COORDO    .DESC'

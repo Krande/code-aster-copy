@@ -21,7 +21,7 @@
 interface
     subroutine InitTableCvg(list_func_acti, sdsuiv, ds_print)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=24), intent(in) :: sdsuiv
         type(NL_DS_Print), intent(inout) :: ds_print
     end subroutine InitTableCvg

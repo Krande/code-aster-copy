@@ -22,8 +22,8 @@ interface
     subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
         character(len=*) :: noresz
         character(len=*) :: nomsyz
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=*) :: tabord
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine rschor
 end interface

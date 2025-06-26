@@ -22,19 +22,19 @@ interface
     subroutine irmad1(ifi, versio, nbno, prno, nueq,&
                       nec, dg, ncmpmx, itype, nstat,&
                       chamno, nomcmp, nomsym, numnoe)
-        integer :: ifi
-        integer :: versio
-        integer :: nbno
-        integer :: prno(*)
-        integer :: nueq(*)
-        integer :: nec
-        integer :: dg(*)
-        integer :: ncmpmx
-        integer :: itype
-        integer :: nstat
+        integer(kind=8) :: ifi
+        integer(kind=8) :: versio
+        integer(kind=8) :: nbno
+        integer(kind=8) :: prno(*)
+        integer(kind=8) :: nueq(*)
+        integer(kind=8) :: nec
+        integer(kind=8) :: dg(*)
+        integer(kind=8) :: ncmpmx
+        integer(kind=8) :: itype
+        integer(kind=8) :: nstat
         character(len=*) :: chamno(*)
         character(len=*) :: nomcmp(*)
         character(len=*) :: nomsym
-        integer :: numnoe(*)
+        integer(kind=8) :: numnoe(*)
     end subroutine irmad1
 end interface

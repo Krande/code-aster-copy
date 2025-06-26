@@ -31,7 +31,7 @@ subroutine ef0587(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
 !
-    integer :: nbcoum, nbsecm, jnbspi
+    integer(kind=8) :: nbcoum, nbsecm, jnbspi
     real(kind=8) :: h, a, r1
     parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
@@ -42,16 +42,16 @@ subroutine ef0587(nomte)
     real(kind=8) :: fi, poids, r, omega
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta, l
     real(kind=8) :: cp(2, 2), cv(2, 2), co(4, 4), si(4, 4), tk(4), xpg(4)
-    integer :: nno, nnos, jgano, ndim, npg, nbcou, nbsec, lorien
-    integer :: ipoids, ivf, icoude, ic, kp, jin, jcoopg, jdfd2
-    integer :: i1, i2, ih, idfdk
-    integer :: igau, icou, isect, i, jout, ino
-    integer :: indice, k, ip, icoud2, mmt
-    integer :: kpgs
+    integer(kind=8) :: nno, nnos, jgano, ndim, npg, nbcou, nbsec, lorien
+    integer(kind=8) :: ipoids, ivf, icoude, ic, kp, jin, jcoopg, jdfd2
+    integer(kind=8) :: i1, i2, ih, idfdk
+    integer(kind=8) :: igau, icou, isect, i, jout, ino
+    integer(kind=8) :: indice, k, ip, icoud2, mmt
+    integer(kind=8) :: kpgs
 !
-    integer :: vali
+    integer(kind=8) :: vali
 !
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/

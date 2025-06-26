@@ -31,17 +31,17 @@ subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc, &
 #include "asterfort/somloc.h"
 #include "asterfort/assert.h"
 !
-    integer :: adcom0, iatyma, nvtot, nvoima, nscoma
-    integer :: touvoi(1:nvoima, 1:nscoma+2)
-    integer :: vgeloc(*)
-    integer, intent(in) :: dim
-    integer, intent(in) :: jconnex0
-    integer, intent(in) :: jconnexc
+    integer(kind=8) :: adcom0, iatyma, nvtot, nvoima, nscoma
+    integer(kind=8) :: touvoi(1:nvoima, 1:nscoma+2)
+    integer(kind=8) :: vgeloc(*)
+    integer(kind=8), intent(in) :: dim
+    integer(kind=8), intent(in) :: jconnex0
+    integer(kind=8), intent(in) :: jconnexc
 !
-    integer :: ptvois, mv, adcomv, nbnomv, nbsomv, nsco, is, iv, tyvoi
-    integer :: nusglo, nuslo0, nuslov
+    integer(kind=8) :: ptvois, mv, adcomv, nbnomv, nbsomv, nsco, is, iv, tyvoi
+    integer(kind=8) :: nusglo, nuslo0, nuslov
     character(len=8) :: typemv
-    integer, save :: tymas = 0, nbsomvs
+    integer(kind=8), save :: tymas = 0, nbsomvs
 !
 !
 !  IATYME  ADRESSE JEVEUX DES TYPES DE MAILLE

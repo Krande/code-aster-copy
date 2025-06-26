@@ -40,16 +40,16 @@ subroutine te0157(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom, jv_mate, jv_mass
-    integer :: npg, nno
-    integer :: i, j, k, ipg
+    integer(kind=8) :: jv_geom, jv_mate, jv_mass
+    integer(kind=8) :: npg, nno
+    integer(kind=8) :: i, j, k, ipg
     real(kind=8) :: xxi, yyi, xyi
     real(kind=8) :: poids, volume, rho
     real(kind=8) :: xg, yg, depi
     real(kind=8) :: r, x(9), y(9)
     real(kind=8) :: matine(6)
-    integer :: ipoids, ivf, idfde
-    integer :: j_mater
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: j_mater
     aster_logical :: l_axis
 !
 ! --------------------------------------------------------------------------------------------------

@@ -48,9 +48,9 @@ subroutine op0075()
     character(len=19) :: profno
     character(len=24) :: matgen, massgen, numgen, basemo
     aster_logical :: prsimp, l_err
-    integer :: nbord, i, iord, lpain(3), lpaout(3), ibid, ir1
-    integer :: j, j3refe, jrefn, naccab, nbcham
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8) :: nbord, i, iord, lpain(3), lpaout(3), ibid, ir1
+    integer(kind=8) :: j, j3refe, jrefn, naccab, nbcham
+    integer(kind=8), pointer :: ordr(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()

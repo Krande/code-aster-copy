@@ -21,7 +21,7 @@
 interface
     subroutine lislcm(lischa, ichar, motclc)
         character(len=19) :: lischa
-        integer :: ichar
-        integer :: motclc(2)
+        integer(kind=8) :: ichar
+        integer(kind=8) :: motclc(2)
     end subroutine lislcm
 end interface

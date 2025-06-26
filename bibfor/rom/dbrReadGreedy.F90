@@ -47,8 +47,8 @@ subroutine dbrReadGreedy(paraGreedy)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbModeMaxi, nocc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbModeMaxi, nocc
     character(len=16) :: stabFSI, orthoBase
     aster_logical :: lStabFSI, lOrthoBase
     real(kind=8) :: toleGreedy

@@ -66,7 +66,7 @@ subroutine vedimd(nomo, lischa, instan, vecele)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -79,12 +79,12 @@ subroutine vedimd(nomo, lischa, instan, vecele)
     character(len=19) :: chgeom, chtime
     character(len=19) :: carte
     character(len=8) :: parain, paraou, typech
-    integer :: iret
-    integer :: ichar, nbchar, genrec
+    integer(kind=8) :: iret
+    integer(kind=8) :: ichar, nbchar, genrec
     aster_logical :: ldual
     character(len=24) :: nomlis
-    integer :: jlisci, nbch, indxch
-    integer :: nbdual
+    integer(kind=8) :: jlisci, nbch, indxch
+    integer(kind=8) :: nbdual
 !
 ! ----------------------------------------------------------------------
 !

@@ -21,12 +21,12 @@ subroutine epseff(applic, nb1, depl, btild, sgmtd, &
     implicit none
 !
     character(len=6) :: applic
-    integer :: nb1
+    integer(kind=8) :: nb1
     real(kind=8) :: btild(5, *), depl(*), epsi(*), sgmtd(*), effinb(42)
     real(kind=8) :: wgt, effint(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, k, nddle
+    integer(kind=8) :: i, k, nddle
 !-----------------------------------------------------------------------
     nddle = 5*nb1+2
     if (applic .eq. 'DEFORM') then

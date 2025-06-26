@@ -20,10 +20,10 @@
 !
 interface
     subroutine ar_dlarfg(n, alpha, x, incx, tau)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: alpha
         real(kind=8) :: x(*)
-        integer :: incx
+        integer(kind=8) :: incx
         real(kind=8) :: tau
     end subroutine ar_dlarfg
 end interface

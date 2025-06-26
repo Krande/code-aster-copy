@@ -27,9 +27,9 @@ interface
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
         real(kind=8) :: sigf(6)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vind(*)
         real(kind=8) :: vinf(*)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine cjsela
 end interface

@@ -24,16 +24,16 @@ interface
     subroutine xajpin(ndim, list, long, ipt, cpt,&
                       newpt, longar, ainter, ia, in,&
                       al, ajout)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: list(*)
-        integer :: long
-        integer :: ipt
-        integer :: cpt
+        integer(kind=8) :: long
+        integer(kind=8) :: ipt
+        integer(kind=8) :: cpt
         real(kind=8) :: newpt(3)
         real(kind=8) :: longar
         real(kind=8) :: ainter(*)
-        integer :: ia
-        integer :: in
+        integer(kind=8) :: ia
+        integer(kind=8) :: in
         real(kind=8) :: al
         aster_logical :: ajout
     end subroutine xajpin

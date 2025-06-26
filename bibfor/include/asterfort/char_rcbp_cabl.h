@@ -25,8 +25,8 @@ interface
         character(len=24), intent(in) :: list_cabl
         character(len=24), intent(in) :: list_anc1
         character(len=24), intent(in) :: list_anc2
-        integer, intent(out) :: nb_cabl
-        integer, intent(out) :: nb_anc1
-        integer, intent(out) :: nb_anc2
+        integer(kind=8), intent(out) :: nb_cabl
+        integer(kind=8), intent(out) :: nb_anc1
+        integer(kind=8), intent(out) :: nb_anc2
     end subroutine char_rcbp_cabl
 end interface

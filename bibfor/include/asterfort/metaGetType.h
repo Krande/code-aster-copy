@@ -18,7 +18,7 @@
 !
 interface
     subroutine metaGetType(meta_type, nb_phasis)
-        integer, intent(out) :: meta_type
-        integer, intent(out) :: nb_phasis
+        integer(kind=8), intent(out) :: meta_type
+        integer(kind=8), intent(out) :: nb_phasis
     end subroutine metaGetType
 end interface

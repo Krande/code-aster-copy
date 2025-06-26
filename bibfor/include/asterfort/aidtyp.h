@@ -20,6 +20,6 @@
 !
 interface
     subroutine aidtyp(impr)
-        integer :: impr
+        integer(kind=8) :: impr
     end subroutine aidtyp
 end interface

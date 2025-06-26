@@ -23,12 +23,12 @@
 interface
     subroutine utimsd(unit, niveau, lattr, lcont, sch1,&
                       ipos, base, perm)
-        integer :: unit
-        integer :: niveau
+        integer(kind=8) :: unit
+        integer(kind=8) :: niveau
         aster_logical :: lattr
         aster_logical :: lcont
         character(len=*) :: sch1
-        integer :: ipos
+        integer(kind=8) :: ipos
         character(len=*) :: base
         character(len=3), optional, intent(in) :: perm
     end subroutine utimsd

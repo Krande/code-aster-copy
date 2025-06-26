@@ -21,15 +21,15 @@
 interface
     subroutine moinsr(j, n, idil, idiich, idsuiv,&
                       nosuiv, idip, noip, iilib, iimax)
-        integer :: j
-        integer :: n
-        integer :: idil
-        integer :: idiich
-        integer :: idsuiv
+        integer(kind=8) :: j
+        integer(kind=8) :: n
+        integer(kind=8) :: idil
+        integer(kind=8) :: idiich
+        integer(kind=8) :: idsuiv
         character(len=*) :: nosuiv
-        integer :: idip
+        integer(kind=8) :: idip
         character(len=*) :: noip
-        integer :: iilib
-        integer :: iimax
+        integer(kind=8) :: iilib
+        integer(kind=8) :: iimax
     end subroutine moinsr
 end interface

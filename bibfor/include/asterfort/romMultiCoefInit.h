@@ -21,7 +21,7 @@
 interface
     subroutine romMultiCoefInit(nb_vari_coef, ds_multicoef)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_vari_coef
+        integer(kind=8), intent(in) :: nb_vari_coef
         type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
     end subroutine romMultiCoefInit
 end interface

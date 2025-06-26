@@ -19,7 +19,7 @@
 interface
     subroutine lcjela(rela_comp, mod, nmat, mater, vin,&
                       dsde)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=16), intent(in) :: rela_comp
         character(len=8) :: mod
         real(kind=8) :: mater(nmat, 2)

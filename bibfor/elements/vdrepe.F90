@@ -54,8 +54,8 @@ subroutine vdrepe(nomtez, matevn, matevg)
 ! --- INITIALISATIONS :
 !     ---------------
 !-----------------------------------------------------------------------
-    integer :: i, idec, igau, ino, j, jcoqu, k
-    integer :: lzi, lzr, nb2, npgsr
+    integer(kind=8) :: i, idec, igau, ino, j, jcoqu, k
+    integer(kind=8) :: lzi, lzr, nb2, npgsr
     real(kind=8) :: alpha, beta, c
     real(kind=8) :: s
 !-----------------------------------------------------------------------

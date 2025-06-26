@@ -52,7 +52,7 @@ subroutine nmdpmf(compor, chmate)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, iret
+    integer(kind=8) :: ibid, iret
     aster_logical :: lcumu(2)
     aster_logical :: lcoc
     character(len=1) :: base

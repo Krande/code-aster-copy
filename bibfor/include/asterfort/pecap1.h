@@ -20,7 +20,7 @@
 !
 interface
     subroutine pecap1(chgeoz, tempez, ngi, lisgma, ct)
-        integer :: ngi
+        integer(kind=8) :: ngi
         character(len=*) :: chgeoz
         character(len=*) :: tempez
         character(len=*) :: lisgma(ngi)

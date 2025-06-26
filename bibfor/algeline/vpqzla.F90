@@ -123,9 +123,9 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 #include "blas/zggev.h"
 #include "blas/zggevx.h"
 !
-    integer :: qrn, iqrn, lqrn, qrar, qrai, icscal, ivscal, iiscal, qrba
-    integer :: qrvl, lvec, kqrn, lvalpr, nconv, kqrnr, neqact, ilscal, irscal
-    integer :: ddlexc(*), nfreq, lmasse, lraide, lamor
+    integer(kind=8) :: qrn, iqrn, lqrn, qrar, qrai, icscal, ivscal, iiscal, qrba
+    integer(kind=8) :: qrvl, lvec, kqrn, lvalpr, nconv, kqrnr, neqact, ilscal, irscal
+    integer(kind=8) :: ddlexc(*), nfreq, lmasse, lraide, lamor
     character(len=1) :: ktyp, kmsg
     character(len=16) :: typeqz, optiof
     character(len=19) :: numedd
@@ -137,12 +137,12 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
 !-----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret
-    integer :: ivalr
-    integer :: ivalm, ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
-    integer :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1
-    integer :: j2m1, iaux21, ics1
-    integer :: ldvl
+    integer(kind=8) :: i, j, decal, ideb, ifin, qrlwo, qrlwor, kqrn2, iauxh, vali(5), ifm, niv, iret
+    integer(kind=8) :: ivalr
+    integer(kind=8) :: ivalm, ihcol, ivp1, ivp2, ivala, j2, iauxh2, qrns2, lvec2, lvec3, lvec4
+    integer(kind=8) :: imult, typlin, iaux1, iaux2, iaux3, ivala1, ivalr1, ivalm1, lvecn, jm1, iauxh1, im1
+    integer(kind=8) :: j2m1, iaux21, ics1
+    integer(kind=8) :: ldvl
     integer(kind=4) :: qrinfo, ilo, ihi
     real(kind=8) :: abnrm, bbnrm, baux, rauxi, aaux, valr(4), raux, anorm, bnorm, prec2, vpinf
     real(kind=8) :: prec, vpmax, vpcour, alpha, prec3, run, rzero, rauxr, rauxm, cnorm, caux
@@ -153,7 +153,7 @@ subroutine vpqzla(typeqz, qrn, iqrn, lqrn, qrar, &
     character(len=1) :: kbal, ksens, valk
     character(len=24) :: nomrai, nommas, nomamo
     aster_logical :: lkr, ltest, lc, ldebug, lnsa, lnsr, lnsm, lqze
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     blas_int :: b_incx, b_incy, b_n
     blas_int :: b_lda, b_ldb, b_ldvl, b_ldvr, b_lwork
     blas_int :: b_itype

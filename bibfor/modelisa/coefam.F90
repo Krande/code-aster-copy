@@ -36,18 +36,18 @@ subroutine coefam(ipas, ires, x, xsi0, cd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: ipas, ires
+    integer(kind=8) :: ipas, ires
     real(kind=8) :: cd, xsi0
 !
-    integer :: nborcd, ncdmax, iret
-    integer :: jborne, jcoeff, jvired
+    integer(kind=8) :: nborcd, ncdmax, iret
+    integer(kind=8) :: jborne, jcoeff, jvired
     real(kind=8) :: zero, borncd(20), coefcd(20, 11)
     character(len=24) :: nom1, nom2, nom3
 !
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ipas1, ires1, j, k
+    integer(kind=8) :: i, ipas1, ires1, j, k
     real(kind=8) :: x
 !-----------------------------------------------------------------------
     call jemarq()

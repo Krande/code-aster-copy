@@ -20,7 +20,7 @@ subroutine fclose(unit)
 ! aslint: disable=
     implicit none
 #include "asterfort/utmess.h"
-    integer :: unit
+    integer(kind=8) :: unit
 !
 !     FERMETURE DE L'UNITE LOGIQUE fort.UNIT
 !     UTILE POUR APPEL DEPUIS PYTHON UNE FOIS LES BASES JEVEUX FERMEES
@@ -28,7 +28,7 @@ subroutine fclose(unit)
 !
 ! IN  : UNIT   : NUMERO D'UNITE LOGIQUE
 !     ------------------------------------------------------------------
-    integer :: ierr
+    integer(kind=8) :: ierr
     character(len=4) :: k4b
 !     ------------------------------------------------------------------
 !

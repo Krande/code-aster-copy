@@ -21,16 +21,16 @@
 interface 
     subroutine xstudo(ndime, ninter, npts, nptm, ainter,&
                   nbpi, ip1, ip2, pm1a,pm1b, pm2)
-        integer :: ndime  
-        integer :: ninter
-        integer :: npts
-        integer :: nptm
-        integer :: nbpi
-        integer :: ip1(4)
-        integer :: ip2(4)
-        integer :: pm1a(4)
-        integer :: pm1b(4)
-        integer :: pm2(4)
+        integer(kind=8) :: ndime  
+        integer(kind=8) :: ninter
+        integer(kind=8) :: npts
+        integer(kind=8) :: nptm
+        integer(kind=8) :: nbpi
+        integer(kind=8) :: ip1(4)
+        integer(kind=8) :: ip2(4)
+        integer(kind=8) :: pm1a(4)
+        integer(kind=8) :: pm1b(4)
+        integer(kind=8) :: pm2(4)
         real(kind=8) :: ainter(*)
     end subroutine xstudo
 end interface 

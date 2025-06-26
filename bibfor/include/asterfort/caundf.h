@@ -21,7 +21,7 @@
 interface
     subroutine caundf(code, opt, te)
         character(len=5) :: code
-        integer :: opt
-        integer :: te
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
     end subroutine caundf
 end interface

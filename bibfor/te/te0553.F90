@@ -51,23 +51,23 @@ subroutine te0553(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) ::  fami, poum
-    integer :: icodre(5), kpg
+    integer(kind=8) :: icodre(5), kpg
     real(kind=8) :: poids, nx, ny, valres(5), e, nu, lambda, mu
     real(kind=8) :: rhocp, rhocs, l0, usl0, depla(6), coef_amor
     real(kind=8) :: rho, taux, tauy, nux, nuy, scal, vnx, vny, vtx, vty
     real(kind=8) :: vituni(2, 2), vect(3, 2, 6), matr(6, 6), jac
-    integer :: nno, npg, ipoids, ivf, idfde, igeom, jvDisp
-    integer :: ldec, i, l, mater, ndim2
+    integer(kind=8) :: nno, npg, ipoids, ivf, idfde, igeom, jvDisp
+    integer(kind=8) :: ldec, i, l, mater, ndim2
     character(len=8) :: nompar(2)
-    integer :: imate, j, ll, ndim
+    integer(kind=8) :: imate, j, ll, ndim
     character(len=16), parameter :: nomres(5) = (/'E        ', 'NU       ', &
                                                   'RHO      ', &
                                                   'COEF_AMOR', 'LONG_CARA'/)
-    integer :: jvDispm, jvDispp, jvVect
-    integer :: nnos
+    integer(kind=8) :: jvDispm, jvDispp, jvVect
+    integer(kind=8) :: nnos
     aster_logical :: lDamp, lMatr, lVect
     real(kind=8) :: xygau(2)
-    integer :: idecpg, idecno
+    integer(kind=8) :: idecpg, idecno
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -29,7 +29,7 @@ subroutine romGreedyResiNormCalc(i_coef, nb_equa, ds_algoGreedy)
 #include "blas/ddot.h"
 #include "asterfort/jeveuo.h"
 !
-    integer, intent(in) :: i_coef, nb_equa
+    integer(kind=8), intent(in) :: i_coef, nb_equa
     type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
 !
 ! --------------------------------------------------------------------------------------------------

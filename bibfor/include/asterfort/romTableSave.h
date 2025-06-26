@@ -21,10 +21,10 @@ interface
                             numeStore_, timeCurr_, numeSnap_)
         use NonLin_Datastructure_type
         type(NL_DS_TableIO), intent(in) :: tablResu
-        integer, intent(in) :: nbMode
+        integer(kind=8), intent(in) :: nbMode
         real(kind=8), pointer :: v_gamma(:)
-        integer, optional, intent(in) :: numeStore_
+        integer(kind=8), optional, intent(in) :: numeStore_
         real(kind=8), optional, intent(in) :: timeCurr_
-        integer, optional, intent(in) :: numeSnap_
+        integer(kind=8), optional, intent(in) :: numeSnap_
     end subroutine romTableSave
 end interface

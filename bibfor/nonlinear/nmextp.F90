@@ -35,15 +35,15 @@ subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=16), intent(in) :: keyw_fact
-    integer, intent(in) :: i_keyw_fact
+    integer(kind=8), intent(in) :: i_keyw_fact
     character(len=19), intent(in) :: field
     character(len=24), intent(in) :: field_type
     character(len=4), intent(in) :: field_disc
     character(len=24), intent(in) :: field_s
     character(len=24), intent(in) :: list_poin
     character(len=24), intent(in) :: list_spoi
-    integer, intent(out) :: nb_poin
-    integer, intent(out) :: nb_spoi
+    integer(kind=8), intent(out) :: nb_poin
+    integer(kind=8), intent(out) :: nb_spoi
     character(len=8), intent(out) :: type_extr_elem
 !
 ! --------------------------------------------------------------------------------------------------
@@ -72,12 +72,12 @@ subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_poin, i_spoi
-    integer :: n1, n2, n3, iret
-    integer :: nb_poin_maxi, nb_spoi_maxi
-    integer, pointer :: cesd(:) => null()
-    integer, pointer :: v_list_poin(:) => null()
-    integer, pointer :: v_list_spoi(:) => null()
+    integer(kind=8) :: i_poin, i_spoi
+    integer(kind=8) :: n1, n2, n3, iret
+    integer(kind=8) :: nb_poin_maxi, nb_spoi_maxi
+    integer(kind=8), pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: v_list_poin(:) => null()
+    integer(kind=8), pointer :: v_list_spoi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

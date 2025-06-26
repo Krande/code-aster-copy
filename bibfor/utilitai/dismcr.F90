@@ -20,7 +20,7 @@ subroutine dismcr(questi, nomobz, repi, repkz, ierd)
 !
 !
     implicit none
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
 !
@@ -47,7 +47,7 @@ subroutine dismcr(questi, nomobz, repi, repkz, ierd)
 !
     character(len=32) :: repk
     character(len=8) :: nomob
-    integer :: k, ncarte, iexi, jadr
+    integer(kind=8) :: k, ncarte, iexi, jadr
     parameter(ncarte=12)
     character(len=11) :: cartes(ncarte)
     character(len=19) :: cart1

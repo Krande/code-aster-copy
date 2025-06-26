@@ -21,10 +21,10 @@
 interface
     subroutine ddllag(nume, iddl, neq, lagr1, lagr2, ideb)
         character(len=*), intent(in)  :: nume
-        integer, intent(in)           :: iddl
-        integer, intent(in)           :: neq
-        integer, intent(out)          :: lagr1
-        integer, intent(out)          :: lagr2
-        integer, intent(in), optional :: ideb
+        integer(kind=8), intent(in)           :: iddl
+        integer(kind=8), intent(in)           :: neq
+        integer(kind=8), intent(out)          :: lagr1
+        integer(kind=8), intent(out)          :: lagr2
+        integer(kind=8), intent(in), optional :: ideb
     end subroutine ddllag
 end interface

@@ -21,7 +21,7 @@ subroutine verigd_wrap(nomgdz, lcmp, ncmp, iret)
     implicit none
 #include "asterfort/verigd.h"
 !
-    integer :: ncmp, iret
+    integer(kind=8) :: ncmp, iret
     character(len=*) :: nomgdz
     character(len=8) :: lcmp(ncmp)
 ! ---------------------------------------------------------------------

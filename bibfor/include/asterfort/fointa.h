@@ -20,8 +20,8 @@
 !
 interface
     subroutine fointa(ipif, nbpu, nompu, valpu, resu)
-        integer :: ipif
-        integer :: nbpu
+        integer(kind=8) :: ipif
+        integer(kind=8) :: nbpu
         character(len=*) :: nompu(*)
         real(kind=8) :: valpu(*)
         real(kind=8) :: resu

@@ -59,17 +59,17 @@ subroutine op0152()
 #include "asterfort/wkvect.h"
 !
     aster_logical :: vrai
-    integer :: ldblo, hc, ibid
-    integer :: nbmo, nbmode, ndble, indice, tabad(5)
-    integer :: i, j, jdesc
-    integer :: iadirg, iblo, ierd
-    integer :: imade
-    integer :: iphi1, iphi2, iprsto, iret, itxsto
-    integer :: itysto, itzsto, ivalk, kterm
-    integer :: jsmdi, jsmde, jsmhc, n1bloc, n2bloc
-    integer :: nbid, nbloc, nterm
-    integer :: n1, n2, n3, n4, n5, n6, n7, n9, n10, n12, n13, n14
-    integer :: ifm, niv, tmod(1), nbLoad
+    integer(kind=8) :: ldblo, hc, ibid
+    integer(kind=8) :: nbmo, nbmode, ndble, indice, tabad(5)
+    integer(kind=8) :: i, j, jdesc
+    integer(kind=8) :: iadirg, iblo, ierd
+    integer(kind=8) :: imade
+    integer(kind=8) :: iphi1, iphi2, iprsto, iret, itxsto
+    integer(kind=8) :: itysto, itzsto, ivalk, kterm
+    integer(kind=8) :: jsmdi, jsmde, jsmhc, n1bloc, n2bloc
+    integer(kind=8) :: nbid, nbloc, nterm
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, n7, n9, n10, n12, n13, n14
+    integer(kind=8) :: ifm, niv, tmod(1), nbLoad
     real(kind=8) :: mij, cij, kij
     real(kind=8) :: bid, ebid
     character(len=2) :: model

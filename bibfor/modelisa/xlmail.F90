@@ -30,11 +30,11 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon, &
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: fiss
-    integer :: nmaen1, nmaen2, nmaen3, nmafon
-    integer :: jmaen1, jmaen2, jmaen3, jmafon
-    integer :: nfon
-    integer :: jfon, jnofaf, jbas, jtail, jfonmu
-    integer :: nbfond, ndim
+    integer(kind=8) :: nmaen1, nmaen2, nmaen3, nmafon
+    integer(kind=8) :: jmaen1, jmaen2, jmaen3, jmafon
+    integer(kind=8) :: nfon
+    integer(kind=8) :: jfon, jnofaf, jbas, jtail, jfonmu
+    integer(kind=8) :: nbfond, ndim
     aster_logical :: goinop
 !
 ! ----------------------------------------------------------------------
@@ -71,8 +71,8 @@ subroutine xlmail(fiss, nmaen1, nmaen2, nmaen3, nmafon, &
     character(len=24) :: xtailr, xnofaf
     character(len=24) :: xfonfg
 !
-    integer :: jma1, jma2, jma3, jma4, jfo, jfomu, jba, jta, jnf
-    integer :: i, k
+    integer(kind=8) :: jma1, jma2, jma3, jma4, jfo, jfomu, jba, jta, jnf
+    integer(kind=8) :: i, k
 !
 ! ----------------------------------------------------------------------
 !

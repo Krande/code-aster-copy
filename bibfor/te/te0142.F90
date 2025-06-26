@@ -33,17 +33,17 @@ subroutine te0142(option, nomte)
 !
     character(len=16) :: option, nomte
 !
-    integer, parameter :: sdim = 3
-    integer, parameter :: ncmp_el = 4
-    integer, parameter :: ncmp_th = 2
-    integer, parameter :: ncmptot = sdim+ncmp_el+ncmp_th
+    integer(kind=8), parameter :: sdim = 3
+    integer(kind=8), parameter :: ncmp_el = 4
+    integer(kind=8), parameter :: ncmp_th = 2
+    integer(kind=8), parameter :: ncmptot = sdim+ncmp_el+ncmp_th
 
-    integer :: igeom, i, j, nbpar, ipar
-    integer :: ndim, npg1, kpg, spt, iret
-    integer :: imate, ival, ivf, idecpg, idecno
-    integer :: mater, nnos, nno, indir(sdim)
+    integer(kind=8) :: igeom, i, j, nbpar, ipar
+    integer(kind=8) :: ndim, npg1, kpg, spt, iret
+    integer(kind=8) :: imate, ival, ivf, idecpg, idecno
+    integer(kind=8) :: mater, nnos, nno, indir(sdim)
     real(kind=8) :: valres_el(ncmp_el), valres_th(ncmp_th)
-    integer :: icodre_el(ncmp_el), icodre_th(ncmp_th), ndim2
+    integer(kind=8) :: icodre_el(ncmp_el), icodre_th(ncmp_th), ndim2
     character(len=8) :: fami, poum, novrc
     character(len=16) :: nomres_el(ncmp_el), nomres_th(ncmp_th)
     character(len=8) :: nompar(sdim), nompar0(sdim)

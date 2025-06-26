@@ -21,11 +21,11 @@
 interface
     subroutine mdgep2(neq, nbmode, bmodal, xgene, iddl,&
                       u)
-        integer :: neq
-        integer :: nbmode
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbmode
         real(kind=8) :: bmodal(neq, *)
         real(kind=8) :: xgene(*)
-        integer :: iddl
+        integer(kind=8) :: iddl
         real(kind=8) :: u
     end subroutine mdgep2
 end interface

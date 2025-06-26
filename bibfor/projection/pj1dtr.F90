@@ -36,7 +36,7 @@ subroutine pj1dtr(corrMeshTemp, corrMesh, cellListType, cellListCode)
 !
     character(len=16), intent(in) :: corrMesh, corrMeshTemp
     character(len=8), intent(in) :: cellListCode(MT_NTYMAX)
-    integer, intent(in) :: cellListType(MT_NTYMAX)
+    integer(kind=8), intent(in) :: cellListType(MT_NTYMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,18 +58,18 @@ subroutine pj1dtr(corrMeshTemp, corrMesh, cellListType, cellListCode)
     real(kind=8) :: ksi
     real(kind=8) :: x1
     real(kind=8) :: x(1)
-    integer :: i2cocf, i2coco
-    integer :: nbCell1, nbCell2, nbNode1, nbNode2
-    integer :: i2com1, i2conb, j2xxk1, i2conu
-    integer :: ideca1, ideca2, ilcnx1
-    integer :: ima1, ino, iNode2, kk, itypm, nbno, nno, itr
-    integer :: nuno, nutm
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: pjef_tr(:) => null()
+    integer(kind=8) :: i2cocf, i2coco
+    integer(kind=8) :: nbCell1, nbCell2, nbNode1, nbNode2
+    integer(kind=8) :: i2com1, i2conb, j2xxk1, i2conu
+    integer(kind=8) :: ideca1, ideca2, ilcnx1
+    integer(kind=8) :: ima1, ino, iNode2, kk, itypm, nbno, nno, itr
+    integer(kind=8) :: nuno, nutm
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: pjef_tr(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()
     character(len=24), pointer :: pjxx_k1(:) => null()
-    integer, pointer :: seg2(:) => null()
+    integer(kind=8), pointer :: seg2(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -31,8 +31,8 @@ subroutine nmdifi(keywf, list_inst, tole, nb_inst, nume_end)
     character(len=16), intent(in) :: keywf
     character(len=19), intent(in) :: list_inst
     real(kind=8), intent(in) :: tole
-    integer, intent(in) :: nb_inst
-    integer, intent(out) :: nume_end
+    integer(kind=8), intent(in) :: nb_inst
+    integer(kind=8), intent(out) :: nume_end
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine nmdifi(keywf, list_inst, tole, nb_inst, nume_end)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n1, n2
+    integer(kind=8) :: n1, n2
     real(kind=8) :: inst
     real(kind=8), pointer :: v_list_inst(:) => null()
 !

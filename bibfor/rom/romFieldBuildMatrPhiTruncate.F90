@@ -42,10 +42,10 @@ subroutine romFieldBuildMatrPhiTruncate(fieldBuild)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(ROM_DS_Empi) :: base
-    integer :: nbMode, nbEqua, nbEquaRID
-    integer :: iMode, iEqua, numeEqua
+    integer(kind=8) :: nbMode, nbEqua, nbEquaRID
+    integer(kind=8) :: iMode, iEqua, numeEqua
 !
 ! --------------------------------------------------------------------------------------------------
 !

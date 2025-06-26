@@ -25,11 +25,11 @@ interface
                       iu, iuc, im, a, sigm,&
                       vim, sigp, vip, matr, vect,&
                       codret)
-        integer :: lgpg
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)
@@ -38,16 +38,16 @@ interface
         real(kind=8) :: tang(*)
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: mat
+        integer(kind=8) :: mat
         character(len=16) :: comporKit(COMPOR_SIZE)
         real(kind=8) :: carcri(CARCRI_SIZE)
         real(kind=8) :: instam
         real(kind=8) :: instap
         real(kind=8) :: ddlm(nno1*(ndim+1)+nno2)
         real(kind=8) :: ddld(nno1*(ndim+1)+nno2)
-        integer :: iu(3, 3)
-        integer :: iuc(3)
-        integer :: im(3)
+        integer(kind=8) :: iu(3, 3)
+        integer(kind=8) :: iuc(3)
+        integer(kind=8) :: im(3)
         real(kind=8) :: a
         real(kind=8) :: sigm(3, npg)
         real(kind=8) :: vim(lgpg, npg)
@@ -55,6 +55,6 @@ interface
         real(kind=8) :: vip(lgpg, npg)
         real(kind=8) :: matr(*)
         real(kind=8) :: vect(nno1*(ndim+1)+nno2)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine cgfint
 end interface

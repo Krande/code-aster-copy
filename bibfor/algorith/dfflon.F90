@@ -30,7 +30,7 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff, &
 #include "asterfort/jexnom.h"
 #include "asterfort/char8_to_int.h"
     real(kind=8) :: geom(*), d
-    integer :: inoff, nbnoff
+    integer(kind=8) :: inoff, nbnoff
     character(len=8) :: nonoff(*), typfon
     character(len=24) :: nomnoe
 !
@@ -56,7 +56,7 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff, &
 !
 !
     real(kind=8) :: dij, dih
-    integer :: nunoi, nunoj, nunoh
+    integer(kind=8) :: nunoi, nunoj, nunoh
 !
 !-----------------------------------------------------------------------
 !

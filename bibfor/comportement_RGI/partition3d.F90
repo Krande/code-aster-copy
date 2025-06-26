@@ -34,7 +34,7 @@ subroutine partition3d(sige6, sige3, vsige33, vsige33t, siget6, &
 !   declaration des varibles locales
     real(kind=8) :: sige33(3, 3)
     real(kind=8) :: x33(3, 3), siget33(3, 3), sigec33(3, 3), sige33p(3, 3), sige6p(6)
-    integer i
+    integer(kind=8) i
 
     sige33(:, :) = 0.d0
     x33(:, :) = 0.d0

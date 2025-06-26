@@ -38,17 +38,17 @@ subroutine utpara(bas1, nomsd, typsd, nbordr)
 !
     character(len=*) :: nomsd, typsd
     character(len=1) :: bas1
-    integer :: nbordr
+    integer(kind=8) :: nbordr
     character(len=8) :: ch8, type, acces
     character(len=5) :: suffix
     character(len=19) :: noms2
-    integer :: nbpamx, nbpara
+    integer(kind=8) :: nbpamx, nbpara
     parameter(nbpamx=100)
     character(len=32) :: para, lipara(nbpamx)
     character(len=16) :: nopara
     character(len=8) :: liacce(nbpamx), litype(nbpamx)
-    integer :: i, jtava, ico, jpara, iundef, i1
-    integer :: nbr, nbi, nbc, nbk8, nbk16, nbk24, nbk32, nbk80, n1, n2
+    integer(kind=8) :: i, jtava, ico, jpara, iundef, i1
+    integer(kind=8) :: nbr, nbi, nbc, nbk8, nbk16, nbk24, nbk32, nbk80, n1, n2
     real(kind=8) :: rundef
 !     ------------------------------------------------------------------
 !

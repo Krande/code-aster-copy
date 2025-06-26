@@ -19,13 +19,13 @@
 subroutine vecma(mv, n, mp, m)
     implicit none
 #include "asterfort/assert.h"
-    integer :: n, m
+    integer(kind=8) :: n, m
     real(kind=8) :: mv(n), mp(m, m)
 !       PASSAGE DEMI-MATRICE COLONNE VECTEUR (N)  > MATRICE PLEINE (M*M)
 !       IN      MV = VECTEUR DEMI - MATRICE STOCKE COLONNE , LONGUEUR N
 !       OUT     MP = MATRICE PLEINE (M*M)
 !       ----------------------------------------------------------------
-    integer :: k, i, j
+    integer(kind=8) :: k, i, j
 ! ----------------------------------------------------------------------
 !
     ASSERT(n .ge. m*(m+1)/2)

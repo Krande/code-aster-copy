@@ -21,9 +21,9 @@
 interface
     subroutine dngets(ishift, which, kev, np, ritzr,&
                       ritzi, bounds, shiftr, shifti)
-        integer :: np
-        integer :: kev
-        integer :: ishift
+        integer(kind=8) :: np
+        integer(kind=8) :: kev
+        integer(kind=8) :: ishift
         character(len=2) :: which
         real(kind=8) :: ritzr(kev+np)
         real(kind=8) :: ritzi(kev+np)

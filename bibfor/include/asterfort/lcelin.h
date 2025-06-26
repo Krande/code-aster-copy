@@ -21,7 +21,7 @@
 interface
     subroutine lcelin(mod, nmat, materd, materf, deps,&
                       sigd, sigf)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)

@@ -21,8 +21,8 @@
 interface
     subroutine cfgcsg(resoco, neq, nbliai, tole, ninf)
         character(len=24) :: resoco
-        integer :: neq
-        integer :: nbliai
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
         real(kind=8) :: tole
         real(kind=8) :: ninf
     end subroutine cfgcsg

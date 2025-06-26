@@ -24,7 +24,7 @@ subroutine dfdm2d(nno, ipg, ipoids, idfde, coor, &
 #include "asterfort/assert.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: nno, ipg, ipoids, idfde
+    integer(kind=8), intent(in) :: nno, ipg, ipoids, idfde
     real(kind=8), intent(in) :: coor(*)
     real(kind=8), intent(out) :: jac
     real(kind=8), optional, intent(out) :: dfdx(*)
@@ -44,7 +44,7 @@ subroutine dfdm2d(nno, ipg, ipoids, idfde, coor, &
 !                     JAC           <--  PRODUIT DU JACOBIEN ET DU POIDS
 ! ......................................................................
 !
-    integer :: i, ii, k, iadzi, iazk24
+    integer(kind=8) :: i, ii, k, iadzi, iazk24
     character(len=8) :: nomail
     real(kind=8) :: poids, de, dk, dxde, dxdk, dyde, dydk
 !

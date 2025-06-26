@@ -21,15 +21,15 @@
 interface
     subroutine fetsco(nbmato, nblien, connec, idconn, nbpart,&
                       mapsd, edlo, velo, numver, ier)
-        integer :: nbmato
-        integer :: nblien
+        integer(kind=8) :: nbmato
+        integer(kind=8) :: nblien
         integer(kind=4) :: connec
         integer(kind=4) :: idconn
-        integer :: nbpart
+        integer(kind=8) :: nbpart
         integer(kind=4) :: mapsd
         integer(kind=4) :: edlo
         integer(kind=4) :: velo
-        integer :: numver
-        integer :: ier
+        integer(kind=8) :: numver
+        integer(kind=8) :: ier
     end subroutine fetsco
 end interface

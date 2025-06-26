@@ -36,8 +36,8 @@ subroutine rcevsp(csiex, kemixt, cstex, csmex, cinst, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ncmp, jsioe, jinst, nbinst, nbordr, jspo, jspe, ind, i1, i2, icmp
-    integer :: l1, l2, jstoe, jsmoe, jspto, jspte, jspmo, jspme
+    integer(kind=8) :: ncmp, jsioe, jinst, nbinst, nbordr, jspo, jspe, ind, i1, i2, icmp
+    integer(kind=8) :: l1, l2, jstoe, jsmoe, jspto, jspte, jspmo, jspme
     parameter(ncmp=6)
     real(kind=8) :: sp1o(ncmp), sp1e(ncmp), sp2o(ncmp), sp2e(ncmp), sp12o(ncmp)
     real(kind=8) :: sp12e(ncmp), tresca, spt1o(ncmp), spt1e(ncmp), spt2o(ncmp)

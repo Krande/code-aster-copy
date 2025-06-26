@@ -26,8 +26,8 @@ interface
                       pvp0  , pvpm  , pvp   ,&
                       vintm , vintp ,&
                       retcom)
-        integer, intent(in) :: nbvari
-        integer, intent(in) :: advico, vicpvp
+        integer(kind=8), intent(in) :: nbvari
+        integer(kind=8), intent(in) :: advico, vicpvp
         real(kind=8), intent(in) :: mamolv, rgaz, rho11, kh
         real(kind=8), intent(in) :: pvp1
         real(kind=8), intent(in) :: temp, p2
@@ -36,6 +36,6 @@ interface
         real(kind=8), intent(out) :: pvpm, pvp
         real(kind=8), intent(in) :: vintm(nbvari)
         real(kind=8), intent(out) :: vintp(nbvari)
-        integer, intent(out)  :: retcom
+        integer(kind=8), intent(out)  :: retcom
     end subroutine vipvp2
 end interface

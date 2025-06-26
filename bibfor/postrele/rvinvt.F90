@@ -53,7 +53,7 @@ subroutine rvinvt(tensor, vonm, tres, trac, detr)
 !
 !*********************************************************************
 !
-    integer :: i, nbvp
+    integer(kind=8) :: i, nbvp
     real(kind=8) :: t(6), equi(6), unsur3
 !
     vonm = 0.0d0

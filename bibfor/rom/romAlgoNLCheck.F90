@@ -54,8 +54,8 @@ subroutine romAlgoNLCheck(phenom, model_algoz, mesh_algoz, ds_algorom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iret, nbMode
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iret, nbMode
     character(len=8) :: mesh_base, model_base
     character(len=8) :: mesh_algo, model_algo
     character(len=24) :: fieldName

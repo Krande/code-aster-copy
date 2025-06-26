@@ -324,8 +324,8 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 #include "blas/zscal.h"
 #include "blas/ztrmm.h"
 #include "blas/zunm2r.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -338,7 +338,7 @@ subroutine zneupd(rvec, howmny, select, d, z, &
     character(len=1) :: bmat, howmny
     character(len=2) :: which
     aster_logical :: rvec
-    integer :: info, ldz, ldv, lworkl, n, ncv, nev
+    integer(kind=8) :: info, ldz, ldv, lworkl, n, ncv, nev
     complex(kind=8) :: sigma
     real(kind=8) :: tol
 !
@@ -346,7 +346,7 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: iparam(11), ipntr(14)
+    integer(kind=8) :: iparam(11), ipntr(14)
     aster_logical :: select(*)
     real(kind=8) :: rwork(*)
     complex(kind=8) :: d(*), resid(*), v(ldv, *), z(ldz, *), workd(3*n)
@@ -365,9 +365,9 @@ subroutine zneupd(rvec, howmny, select, d, z, &
 !
     character(len=6) :: type
     integer(kind=4) :: ierr4
-    integer :: bounds, ierr, ih, ihbds, iheig, nconv, invsub, iuptri, j, ldh
-    integer :: ldq, mode, msglvl, ritz, k, irz, ibd, outncv, np, numcnv, jj
-    integer :: ishift
+    integer(kind=8) :: bounds, ierr, ih, ihbds, iheig, nconv, invsub, iuptri, j, ldh
+    integer(kind=8) :: ldq, mode, msglvl, ritz, k, irz, ibd, outncv, np, numcnv, jj
+    integer(kind=8) :: ishift
     complex(kind=8) :: rnorm, temp, vl(1)
     real(kind=8) :: rtemp, eps23, eps
     aster_logical :: reord

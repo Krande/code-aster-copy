@@ -26,8 +26,8 @@ interface
         character(len=8)  :: charge
         character(len=19)  :: lisrel
         character(len=10) :: nom1,nom2
-        integer       :: ndim
-        integer       :: zocc
-        integer       :: nbma1,nbma2
+        integer(kind=8)       :: ndim
+        integer(kind=8)       :: zocc
+        integer(kind=8)       :: nbma1,nbma2
     end subroutine arlcpl
 end interface

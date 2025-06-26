@@ -21,6 +21,6 @@
 interface
     function ceil(x)
         real(kind=8) :: x
-        integer :: ceil
+        integer(kind=8) :: ceil
     end function ceil
 end interface

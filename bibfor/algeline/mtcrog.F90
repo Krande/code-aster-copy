@@ -25,7 +25,7 @@ subroutine mtcrog(a, b, nmax, n, nbsc, &
 #include "asterfort/mtcro2.h"
 #include "asterfort/mtcro3.h"
 #include "asterfort/utmess.h"
-    integer :: nmax, n, nbsc, ier
+    integer(kind=8) :: nmax, n, nbsc, ier
     real(kind=8) :: a(nmax, n), b(nmax, nbsc), c(nmax, nbsc), wks(nmax)
 !     RESOLUTION APPROCHEE D UN SYSTEME LINEAIRE AX = B PAR LA METHODE
 !     DE CROUT, POUR UNE MATRICE A QUELCONQUE DE DIMENSION N*N
@@ -48,7 +48,7 @@ subroutine mtcrog(a, b, nmax, n, nbsc, &
 !                                 1: PAS DE CONVERGENCE OU ERREUR)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: id, i, j, k, l, iapro
+    integer(kind=8) :: id, i, j, k, l, iapro
     real(kind=8) :: det, prec, x, y
 ! ----------------------------------------------------------------------
 !

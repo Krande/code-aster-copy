@@ -22,9 +22,9 @@
 !
 interface
     subroutine utimco(unit, obin, nivo, lattr, lcont)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: obin
-        integer :: nivo
+        integer(kind=8) :: nivo
         aster_logical :: lattr
         aster_logical :: lcont
     end subroutine utimco

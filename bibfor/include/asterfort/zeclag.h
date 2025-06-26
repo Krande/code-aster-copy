@@ -20,8 +20,8 @@
 !
 interface
     subroutine zeclag(vect, nbddl, ideeq)
-        integer :: nbddl
+        integer(kind=8) :: nbddl
         complex(kind=8) :: vect(nbddl)
-        integer :: ideeq(2, nbddl)
+        integer(kind=8) :: ideeq(2, nbddl)
     end subroutine zeclag
 end interface

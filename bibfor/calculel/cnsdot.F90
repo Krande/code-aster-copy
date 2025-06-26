@@ -27,7 +27,7 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
 #include "asterfort/jeveuo.h"
     character(len=*) :: cns1z, cns2z
     real(kind=8) :: pscal
-    integer :: ier
+    integer(kind=8) :: ier
 ! ---------------------------------------------------------------------
 ! BUT: CALCULER LE "PRODUIT SCALAIRE" DE 2 CHAM_NO_S
 ! ---------------------------------------------------------------------
@@ -46,9 +46,9 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer ::    jcnsl1
-    integer ::    jcnsl2
-    integer :: nbno, k, ino, ncmp, nbno1, nbno2, ncmp1, ncmp2
+    integer(kind=8) ::    jcnsl1
+    integer(kind=8) ::    jcnsl2
+    integer(kind=8) :: nbno, k, ino, ncmp, nbno1, nbno2, ncmp1, ncmp2
     character(len=8) :: ma1, nomgd1, ma2, nomgd2
     character(len=3) :: tsca1
     character(len=19) :: cns1, cns2
@@ -59,8 +59,8 @@ subroutine cnsdot(cns1z, cns2z, pscal, ier)
     character(len=8), pointer :: cnsc2(:) => null()
     real(kind=8), pointer :: cnsv1(:) => null()
     real(kind=8), pointer :: cnsv2(:) => null()
-    integer, pointer :: cnsd1(:) => null()
-    integer, pointer :: cnsd2(:) => null()
+    integer(kind=8), pointer :: cnsd1(:) => null()
+    integer(kind=8), pointer :: cnsd2(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

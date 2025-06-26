@@ -23,11 +23,11 @@ interface
                       nb_cont_node0, v_list_node, v_poin_node)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: nb_cont_zone
-        integer, intent(in) :: nb_cont_surf
-        integer, intent(in) :: nb_cont_node0
-        integer, intent(inout) :: nb_cont_node
-        integer, pointer :: v_poin_node(:)
-        integer, pointer :: v_list_node(:)
+        integer(kind=8), intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: nb_cont_surf
+        integer(kind=8), intent(in) :: nb_cont_node0
+        integer(kind=8), intent(inout) :: nb_cont_node
+        integer(kind=8), pointer :: v_poin_node(:)
+        integer(kind=8), pointer :: v_list_node(:)
     end subroutine cfleq8
 end interface

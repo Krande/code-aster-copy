@@ -75,23 +75,23 @@ subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl, &
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
     aster_logical :: lcal
-    integer :: imat(2), ninc, nd, nchoc, h, hf
+    integer(kind=8) :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: numdrv, xcdl, parcho, adime, xvect
     character(len=19) :: matdrv, solveu
     real(kind=8) :: vecplu(ninc)
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
-    integer :: ivect, ismct, ivat1, ivat2, ivinf, iiinf, ininf
-    integer :: ivei, itemp, idrvj, ninf, ndrdv, ind, i, j, ival1, ival2
-    integer :: ismhc, ismdi, iret, ibid, irefa, ndrva, nzmk, nind
+    integer(kind=8) :: ivect, ismct, ivat1, ivat2, ivinf, iiinf, ininf
+    integer(kind=8) :: ivei, itemp, idrvj, ninf, ndrdv, ind, i, j, ival1, ival2
+    integer(kind=8) :: ismhc, ismdi, iret, ibid, irefa, ndrva, nzmk, nind
     character(len=14) :: xei, xtemp, xdrvj, xiinf, xsmct, xvat1, xvat2, xvinf
     character(len=14) :: xninf, numedd, xtemp2
     character(len=8) :: kbid
     character(len=19) :: matk
     real(kind=8) :: eps, cle, res
-    integer :: neq, itep2
-    integer, pointer :: smde(:) => null()
+    integer(kind=8) :: neq, itep2
+    integer(kind=8), pointer :: smde(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()

@@ -44,10 +44,10 @@ contains
     subroutine metaInitZircGetPhases(jvPhaseIn, phase_tot)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: jvPhaseIn
+        integer(kind=8), intent(in) :: jvPhaseIn
         real(kind=8), intent(out) :: phase_tot
 ! ----- Local
-        integer :: iPhase
+        integer(kind=8) :: iPhase
 !   ------------------------------------------------------------------------------------------------
 !
         phase_tot = 0.d0
@@ -70,7 +70,7 @@ contains
     subroutine metaInitCheckTransitionTime(nbPhase, jvPhaseIn)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nbPhase, jvPhaseIn
+        integer(kind=8), intent(in) :: nbPhase, jvPhaseIn
 !   ------------------------------------------------------------------------------------------------
 !
         if (zr(jvPhaseIn-1+nbPhase+TIME_TRAN) .eq. r8vide() .or. &
@@ -91,11 +91,11 @@ contains
                                      jvTemp, jvPhaseIn, jvPhaseOut)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: nbPhase, nbNode, nbVari
-        integer, intent(in) :: nbNodeMaxi, nbVariZirc
-        integer, intent(in) :: jvTemp, jvPhaseIn, jvPhaseOut
+        integer(kind=8), intent(in) :: nbPhase, nbNode, nbVari
+        integer(kind=8), intent(in) :: nbNodeMaxi, nbVariZirc
+        integer(kind=8), intent(in) :: jvTemp, jvPhaseIn, jvPhaseOut
 ! ----- Local
-        integer :: iNode, iVari
+        integer(kind=8) :: iNode, iVari
         real(kind=8) :: metaZirc(nbNodeMaxi*nbVariZirc), temp0
         real(kind=8) :: zalpha, zbeta
 !   ------------------------------------------------------------------------------------------------

@@ -23,21 +23,21 @@ interface
                       nocmp, nbcmp, numel, nobj, nbel,&
                       cnsc, cnsl, cnsv, partie, jtype,&
                       cnsd)
-        integer :: nbcmp
-        integer :: ifi
-        integer :: nbordr
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: ifi
+        integer(kind=8) :: nbordr
         real(kind=8) :: coord(*)
-        integer :: connex(*)
-        integer :: point(*)
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: point(*)
         character(len=8) :: nocmp(nbcmp)
-        integer :: numel
+        integer(kind=8) :: numel
         character(len=*) :: nobj
-        integer :: nbel
-        integer :: cnsc(*)
-        integer :: cnsl(*)
-        integer :: cnsv(*)
+        integer(kind=8) :: nbel
+        integer(kind=8) :: cnsc(*)
+        integer(kind=8) :: cnsl(*)
+        integer(kind=8) :: cnsv(*)
         character(len=*) :: partie
-        integer :: jtype
-        integer :: cnsd(*)
+        integer(kind=8) :: jtype
+        integer(kind=8) :: cnsd(*)
     end subroutine irgnal
 end interface

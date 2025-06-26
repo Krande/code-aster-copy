@@ -23,14 +23,14 @@ subroutine pecag2(ndim, nsymx, nsymy, np, xyp, &
 #include "asterc/r8rddg.h"
 #include "asterfort/jacobi.h"
 #include "asterfort/orien2.h"
-    integer :: ndim, np
+    integer(kind=8) :: ndim, np
     real(kind=8) :: vale(*), valpar(*), xyp(2)
     aster_logical :: nsymx, nsymy
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "CARA_GEOM"
 !     ------------------------------------------------------------------
 !
-    integer :: i, nperm, nbvec, nitjac, itype, iordre
+    integer(kind=8) :: i, nperm, nbvec, nitjac, itype, iordre
     real(kind=8) :: ar(6), br(6), vecpro(3, 3), valpro(3), angl(3)
     real(kind=8) :: epsi, tol, toldyn, jac(3), dx, dy
     real(kind=8) :: v1(3), v2(3), v3(3)

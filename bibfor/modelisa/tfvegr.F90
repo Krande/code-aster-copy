@@ -38,12 +38,12 @@ subroutine tfvegr(nommcf, ocgril)
 #include "asterfort/wkvect.h"
 !
     character(len=16) :: nommcf
-    integer :: ocgril, ntypg
+    integer(kind=8) :: ocgril, ntypg
 !
 !    ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, igril, iveci, nbgtot, ntot2, ntypg2, ntypg3
-    integer :: ntypg4, ntypg5, ntypg6
+    integer(kind=8) :: ibid, igril, iveci, nbgtot, ntot2, ntypg2, ntypg3
+    integer(kind=8) :: ntypg4, ntypg5, ntypg6
 !-----------------------------------------------------------------------
     call jemarq()
 !

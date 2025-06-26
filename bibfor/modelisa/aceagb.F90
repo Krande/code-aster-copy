@@ -41,7 +41,7 @@ subroutine aceagb(nomu, noma, locamb, nbocc)
 #include "asterfort/utmess.h"
 
 !
-    integer, intent(in) :: nbocc
+    integer(kind=8), intent(in) :: nbocc
     aster_logical, intent(in) :: locamb
     character(len=8), intent(in) :: nomu, noma
 ! --------------------------------------------------------------------------------------------------
@@ -58,9 +58,9 @@ subroutine aceagb(nomu, noma, locamb, nbocc)
 ! --------------------------------------------------------------------------------------------------
     real(kind=8), parameter:: epsi = 1.d-6
 ! --------------------------------------------------------------------------------------------------
-    integer :: ioc, nbr_gma, ibid, n, iret, ima, numa, igr, nno, noe
-    integer :: mc_section, mc_angl_rep_1, mc_angl_rep_2, mc_excentrement, mc_vect_1, mc_vect_2
-    integer :: mc_orig, mc_axe_z, mc_section_fo, mc_excentrement_fo
+    integer(kind=8) :: ioc, nbr_gma, ibid, n, iret, ima, numa, igr, nno, noe
+  integer(kind=8) :: mc_section, mc_angl_rep_1, mc_angl_rep_2, mc_excentrement, mc_vect_1, mc_vect_2
+    integer(kind=8) :: mc_orig, mc_axe_z, mc_section_fo, mc_excentrement_fo
     real(kind=8) :: ang1(2), ang2(2), angrd(2), sl, ez, axex(3), axey(3), norm
     real(kind=8) :: vect_er(3), vect_et(3), vect_ez(3), orig(3)
     real(kind=8) :: vtg1(3), vtg2(3), vec_n(3), bary(3), coor(3, 4), proj(3), vec_x(3), vec_y(3)
@@ -69,8 +69,8 @@ subroutine aceagb(nomu, noma, locamb, nbocc)
     character(len=24) :: repere, k24bid
     aster_logical :: lcartf, tria, quad
     character(len=24), allocatable:: l_gma(:)
-    integer, pointer :: gma(:) => null()
-    integer, pointer :: l_nds(:) => null()
+    integer(kind=8), pointer :: gma(:) => null()
+    integer(kind=8), pointer :: l_nds(:) => null()
     real(kind=8), pointer :: val_cmp_r(:) => null()
     real(kind=8), pointer :: coor_all(:) => null()
     character(len=8), pointer :: nom_cmp_r(:) => null()

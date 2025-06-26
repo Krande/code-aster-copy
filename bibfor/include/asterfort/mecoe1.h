@@ -20,7 +20,7 @@
 !
 interface
     subroutine mecoe1(opt, te)
-        integer :: opt
-        integer :: te
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
     end subroutine mecoe1
 end interface

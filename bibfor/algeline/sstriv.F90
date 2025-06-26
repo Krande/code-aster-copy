@@ -19,7 +19,7 @@
 subroutine sstriv(rdiak, rdiam, lprod, ipos, neq)
     implicit none
 #include "jeveux.h"
-    integer :: neq, lprod(neq), ipos(neq)
+    integer(kind=8) :: neq, lprod(neq), ipos(neq)
     real(kind=8) :: rdiak(neq), rdiam(neq)
 !        TRI DES PLUS PETITS K/M
 !
@@ -32,7 +32,7 @@ subroutine sstriv(rdiak, rdiam, lprod, ipos, neq)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, icont, indic, itemp, ll
+    integer(kind=8) :: i, icont, indic, itemp, ll
 !-----------------------------------------------------------------------
     icont = 0
     do i = 1, neq

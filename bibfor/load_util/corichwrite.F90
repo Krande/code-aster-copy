@@ -23,7 +23,7 @@ subroutine corichwrite(fieldZ, ichin)
 #include "asterfort/corich.h"
 !
     character(len=*), intent(in) :: fieldZ
-    integer, intent(in) :: ichin
+    integer(kind=8), intent(in) :: ichin
 !
 ! --------------------------------------------------------------------------------------------------
 !

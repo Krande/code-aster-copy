@@ -23,6 +23,6 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_InOut), intent(in) :: ds_inout
         character(len=24), intent(in) :: field_type
-        integer, intent(out) :: i_field_obsv
+        integer(kind=8), intent(out) :: i_field_obsv
     end subroutine nmetob
 end interface

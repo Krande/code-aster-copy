@@ -57,24 +57,24 @@ subroutine mnline(imat, xcdl, parcho, adime, xvect, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: imat(2), ninc, nd, nchoc, h, hf
+    integer(kind=8) :: imat(2), ninc, nd, nchoc, h, hf
     character(len=14) :: xcdl, parcho, adime, xvect, xline
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: alpha, eta, jeu
-    integer :: neq, ivect, icdl, iline, ivect1, ivect2, j, i, k
-    integer :: nddl, iadim
-    integer :: neqs, ncmp, nddlx, nddly
+    integer(kind=8) :: neq, ivect, icdl, iline, ivect1, ivect2, j, i, k
+    integer(kind=8) :: nddl, iadim
+    integer(kind=8) :: neqs, ncmp, nddlx, nddly
     real(kind=8), pointer :: orig(:) => null()
     real(kind=8), pointer :: reg(:) => null()
     real(kind=8), pointer :: raid(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
-    integer, pointer :: vnddl(:) => null()
+    integer(kind=8), pointer :: vnddl(:) => null()
     character(len=8), pointer :: type(:) => null()
-    integer, pointer :: vneqs(:) => null()
-    integer, pointer :: vncmp(:) => null()
+    integer(kind=8), pointer :: vneqs(:) => null()
+    integer(kind=8), pointer :: vncmp(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()

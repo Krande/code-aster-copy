@@ -18,7 +18,7 @@
 
 interface
     subroutine rsadpa_zr_wrap(nomsd, nuordr, value, typesd)
-        integer, intent(in) :: nuordr
+        integer(kind=8), intent(in) :: nuordr
         character(len=*), intent(in) :: typesd
         character(len=8), intent(in) :: nomsd
         real(kind=8) :: value

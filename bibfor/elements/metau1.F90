@@ -53,10 +53,10 @@ subroutine metau1(l_meta)
     real(kind=8) :: epsth
     real(kind=8) :: dfdx(9), dfdy(9)
     real(kind=8) :: poids, r
-    integer :: nb_node, ispg, kp, npg, i_node, elas_id, k
-    integer :: meta_type, nb_phasis
-    integer :: ipoids, ivf, idfde
-    integer :: j_geom, j_mate, j_mater, j_vect
+    integer(kind=8) :: nb_node, ispg, kp, npg, i_node, elas_id, k
+    integer(kind=8) :: meta_type, nb_phasis
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: j_geom, j_mate, j_mater, j_vect
     character(len=16) :: elas_keyword
 !
 ! --------------------------------------------------------------------------------------------------

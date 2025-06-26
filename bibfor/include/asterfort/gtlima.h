@@ -22,6 +22,6 @@ interface
     subroutine gtlima(sdappa      , sdcont_defi, i_zone)
         character(len=19), intent(in) :: sdappa
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
     end subroutine gtlima
 end interface

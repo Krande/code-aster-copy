@@ -41,7 +41,7 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base, &
 #include "asterfort/nueq_chck.h"
 !
     character(len=*) :: chno1, numdd2, base, chno2, tcorr(*)
-    integer :: ncorr
+    integer(kind=8) :: ncorr
 !
 !-----------------------------------------------------------------------
 ! BUT:
@@ -143,16 +143,16 @@ subroutine chnucn(chno1, numdd2, ncorr, tcorr, base, &
     character(len=14) :: nu2
     character(len=19) :: cn1, cn2, pchno1, pchno2
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2, i_ligr_mesh
-    integer :: iaval2, ico1, ico2, ieq1
-    integer :: ieq2, ino, iprn1, iprn2
-    integer :: iret, ival1, ival2, j1, j2, nbno, ncmmx1
-    integer :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nval1
-    integer :: nval2
-    integer, pointer :: corr2(:) => null()
+    integer(kind=8) :: i, i1, i2, iacmp1, iacmp2, iadg1, iadg2, i_ligr_mesh
+    integer(kind=8) :: iaval2, ico1, ico2, ieq1
+    integer(kind=8) :: ieq2, ino, iprn1, iprn2
+    integer(kind=8) :: iret, ival1, ival2, j1, j2, nbno, ncmmx1
+    integer(kind=8) :: ncmmx2, ncmp1, ncmp2, nec1, nec2, nval1
+    integer(kind=8) :: nval2
+    integer(kind=8), pointer :: corr2(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: nueq1(:) => null()
-    integer, pointer :: nueq2(:) => null()
+    integer(kind=8), pointer :: nueq1(:) => null()
+    integer(kind=8), pointer :: nueq2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     base2 = base

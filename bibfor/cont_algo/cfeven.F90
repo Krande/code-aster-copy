@@ -51,14 +51,14 @@ subroutine cfeven(phase, ds_contact)
 !              'FIN' - A LA FIN DU PAS DE TEMPS
 ! In  ds_contact       : datastructure for contact management
 !
-    integer :: ifm, niv
-    integer :: nbliai, nbliac, ip
-    integer :: iliai, iliac
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbliai, nbliac, ip
+    integer(kind=8) :: iliai, iliac
     character(len=24) :: numlia, ctevco
-    integer :: jnumli, jctevc
+    integer(kind=8) :: jnumli, jctevc
     character(len=19) :: liac
-    integer :: jliac
-    integer :: zeven
+    integer(kind=8) :: jliac
+    integer(kind=8) :: zeven
     aster_logical :: lactif
     real(kind=8) :: etacin, etacfi
     aster_logical :: lexiv

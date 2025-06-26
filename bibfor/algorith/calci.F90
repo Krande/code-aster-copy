@@ -34,7 +34,7 @@ subroutine calci(phib24, phi1j, bj, cij1)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
-    integer :: imade, nphi1
+    integer(kind=8) :: imade, nphi1
     real(kind=8) :: cij1
     character(len=19) :: phib24, phi1j, bj
 !--------------------------------------------------------------------

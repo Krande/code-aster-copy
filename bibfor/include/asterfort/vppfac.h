@@ -21,12 +21,12 @@
 interface
     subroutine vppfac(lmasse, masgen, vect, neq, nbvect,&
                       mxvect, masmod, facpar)
-        integer :: mxvect
-        integer :: neq
-        integer :: lmasse
+        integer(kind=8) :: mxvect
+        integer(kind=8) :: neq
+        integer(kind=8) :: lmasse
         real(kind=8) :: masgen(*)
         real(kind=8) :: vect(neq, *)
-        integer :: nbvect
+        integer(kind=8) :: nbvect
         real(kind=8) :: masmod(mxvect, *)
         real(kind=8) :: facpar(mxvect, *)
     end subroutine vppfac

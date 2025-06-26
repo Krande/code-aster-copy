@@ -34,6 +34,6 @@ interface
         real(kind=8) :: alfaz
         real(kind=8) :: ey
         real(kind=8) :: ez
-        integer :: ist
+        integer(kind=8) :: ist
     end subroutine ptka01
 end interface

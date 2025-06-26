@@ -21,7 +21,7 @@
 interface
     subroutine tuforc(option, nomte, nbrddl, b, f,&
                       vin, vout, mat, pass, vtemp)
-        integer :: nbrddl
+        integer(kind=8) :: nbrddl
         character(len=*) :: option
         character(len=16) :: nomte
         real(kind=8) :: b(4, nbrddl)

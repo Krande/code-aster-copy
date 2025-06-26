@@ -35,7 +35,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     character(len=*) :: cumul
-    integer :: lmat, nbvect
+    integer(kind=8) :: lmat, nbvect
     real(kind=8) :: vect(*), xsol(*)
     aster_logical :: prepos
     aster_logical, optional :: lrom
@@ -59,7 +59,7 @@ subroutine mrmult(cumul, lmat, vect, xsol, nbvect, &
 !     ------------------------------------------------------------------
     character(len=3) :: kmpic, kmatd
     character(len=19) :: matas
-    integer :: neq, neql, jsmhc, jsmdi
+    integer(kind=8) :: neq, neql, jsmhc, jsmdi
     aster_logical :: lmatd, prepo2
     real(kind=8), pointer :: vectmp(:) => null()
     real(kind=8), pointer :: xtemp(:) => null()

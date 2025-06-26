@@ -23,14 +23,14 @@
 interface
     subroutine ar_ztrsen(select, n, t, ldt, q,&
                       ldq, w, m, info)
-        integer :: ldq
-        integer :: ldt
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldt
         aster_logical :: select(*)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: q(ldq, *)
         complex(kind=8) :: w(*)
-        integer :: m
-        integer :: info
+        integer(kind=8) :: m
+        integer(kind=8) :: info
     end subroutine ar_ztrsen
 end interface

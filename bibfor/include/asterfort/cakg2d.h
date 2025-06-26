@@ -36,8 +36,8 @@ interface
         character(len=8) :: fondf
         character(len=8) :: noeud
         real(kind=8) :: time
-        integer :: iord
-        integer :: nbprup
+        integer(kind=8) :: iord
+        integer(kind=8) :: nbprup
         character(len=16) :: noprup(*)
         aster_logical :: lmoda
         real(kind=8) :: puls

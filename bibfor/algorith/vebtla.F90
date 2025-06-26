@@ -61,7 +61,7 @@ subroutine vebtla(base, model_, mate, cara_elem, disp_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=2)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -70,9 +70,9 @@ subroutine vebtla(base, model_, mate, cara_elem, disp_, &
     character(len=16) :: option
     character(len=24) :: ligrch
     character(len=8) :: model
-    integer :: iret, load_nume, nb_load, i_load
+    integer(kind=8) :: iret, load_nume, nb_load, i_load
     character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
+    integer(kind=8), pointer :: v_load_info(:) => null()
     aster_logical :: load_empty
     character(len=19) :: disp, vect_elem, resu_elem
 !

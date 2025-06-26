@@ -55,12 +55,12 @@ subroutine dtmprep_noli_rede(sd_dtm_, sd_nl_, icomp)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, intent(in) :: icomp
+    integer(kind=8), intent(in) :: icomp
 !
 !   -0.2- Local variables
-    integer           :: i, j, ibid, iret, mxlevel
-    integer           :: gno, nbmode, icmp, inod, ino
-    integer           :: nuddl, neq, nbrede
+    integer(kind=8)           :: i, j, ibid, iret, mxlevel
+    integer(kind=8)           :: gno, nbmode, icmp, inod, ino
+    integer(kind=8)           :: nuddl, neq, nbrede
     character(len=8)  :: sd_dtm, sd_nl, sst1, noeu, grno
     character(len=8)  :: comp, mesh1, noecho(3), nume, fonc
     character(len=14) :: nume1

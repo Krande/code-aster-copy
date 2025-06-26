@@ -37,7 +37,7 @@ subroutine addGroupNode(mesh, nb_add)
 !
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_add
+    integer(kind=8), intent(in) :: nb_add
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ subroutine addGroupNode(mesh, nb_add)
 !
     character(len=24) :: grpnoe, gpptnn, grpnov
     character(len=24) :: group_name
-    integer :: iret, nb_group, nb_group_new, nb_enti, i_enti, i_group, jvg, jgg
+    integer(kind=8) :: iret, nb_group, nb_group_new, nb_enti, i_enti, i_group, jvg, jgg
 !
 ! --------------------------------------------------------------------------------------------------
 !

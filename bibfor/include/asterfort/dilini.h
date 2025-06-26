@@ -24,24 +24,24 @@ interface
                       dimcon, typmod, dimuel, nnom, nnos, ds_dil)
         use dil_type
         character(len=16) :: option
-        integer :: ivf
-        integer :: ivf2
-        integer :: idfde
-        integer :: idfde2
-        integer :: jgano
-        integer :: ndim
-        integer :: ipoids
-        integer :: ipoid2
-        integer :: npi
-        integer :: dimdef
-        integer :: nddls
-        integer :: nddlm
-        integer :: lgpg
-        integer :: dimcon
+        integer(kind=8) :: ivf
+        integer(kind=8) :: ivf2
+        integer(kind=8) :: idfde
+        integer(kind=8) :: idfde2
+        integer(kind=8) :: jgano
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ipoid2
+        integer(kind=8) :: npi
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: nddls
+        integer(kind=8) :: nddlm
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: dimcon
         character(len=8) :: typmod(2)
-        integer :: dimuel
-        integer :: nnom
-        integer :: nnos
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: nnom
+        integer(kind=8) :: nnos
         type(dil_modelisation) :: ds_dil
     end subroutine dilini
 end interface

@@ -24,9 +24,9 @@ interface
         character(len=8) :: resuin
         character(len=8) :: resuou
         character(len=19) :: lisord
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=16) :: typesd
-        integer :: codret
+        integer(kind=8) :: codret
         character(len=1), optional, intent(in) :: base
         aster_logical, optional :: tldist
     end subroutine calcop

@@ -22,7 +22,7 @@ interface
     subroutine calcdl(vp, i1e, sigeqe, nbmat, materf,&
                       parame, derive, sig3, vecp, eta,&
                       dg, se, detadg, dgdl, ddlde)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: vp(3)
         real(kind=8) :: i1e
         real(kind=8) :: sigeqe

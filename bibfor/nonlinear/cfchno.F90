@@ -43,8 +43,8 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
 !
     character(len=8) :: noma
     character(len=4) :: typenm
-    integer :: ndimg
-    integer :: posnoe, numenm
+    integer(kind=8) :: ndimg
+    integer(kind=8) :: posnoe, numenm
     type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1e(3), tau2e(3)
@@ -84,7 +84,7 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
 !
 !
 !
-    integer :: i, niverr
+    integer(kind=8) :: i, niverr
     character(len=24) :: valk(2)
     real(kind=8) :: noor
     real(kind=8) :: enorm(3), mnorm(3), norm(3)

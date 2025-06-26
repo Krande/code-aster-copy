@@ -20,12 +20,12 @@ interface
     subroutine lceigv(fami, kpg, ksp, ndim ,neps, &
                       imate, epsm, deps, vim, option,&
                       sig, vip, dsidep)
-        integer :: ndim
-        integer :: neps
+        integer(kind=8) :: ndim
+        integer(kind=8) :: neps
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
         real(kind=8) :: epsm(neps)
         real(kind=8) :: deps(neps)
         real(kind=8) :: vim(2)

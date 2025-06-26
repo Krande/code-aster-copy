@@ -30,7 +30,7 @@ subroutine surfc1(sdcont, unit_msg)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: unit_msg
+    integer(kind=8), intent(in) :: unit_msg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -45,11 +45,11 @@ subroutine surfc1(sdcont, unit_msg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_zone
-    integer :: i_zone
+    integer(kind=8) :: nb_cont_zone
+    integer(kind=8) :: i_zone
     character(len=24) :: sdcont_defi
     aster_logical :: l_veri, l_cont_gcp, l_gliss
-    integer :: stop_singular, nb_resol, gcp_maxi, gcp_precond, gcp_rech_line
+    integer(kind=8) :: stop_singular, nb_resol, gcp_maxi, gcp_precond, gcp_rech_line
     real(kind=8) :: tole_interp, gcp_resi, gcp_coef_resi, glis_alarm
     real(kind=8) :: coef_pena_cont, coef_pena_frot, coef_frot, coef_matr_frot
 !

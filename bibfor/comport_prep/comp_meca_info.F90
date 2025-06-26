@@ -42,7 +42,7 @@ subroutine comp_meca_info(prepMapCompor)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
-    integer :: nb_info_comp, nbFactorKeyword
+    integer(kind=8) :: nb_info_comp, nbFactorKeyword
     type(BehaviourPrep_Para) :: prepPara
 !
 ! --------------------------------------------------------------------------------------------------

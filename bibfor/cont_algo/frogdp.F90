@@ -92,19 +92,19 @@ subroutine frogdp(ds_measure, resoco, numedd, matass, resigr)
 !
 !
 !
-    integer :: ifm, niv
-    integer :: nmult
-    integer :: ieq
-    integer :: neq, nbliac, nbliai, ndim
-    integer :: lmat
-    integer :: lmaf1, iter
-    integer :: nesmax
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nmult
+    integer(kind=8) :: ieq
+    integer(kind=8) :: neq, nbliac, nbliai, ndim
+    integer(kind=8) :: lmat
+    integer(kind=8) :: lmaf1, iter
+    integer(kind=8) :: nesmax
     character(len=14) :: numef1, numef2, nutemp
     character(len=19) :: maf1, maf2, matemp, mact
     character(len=14) :: numecf
     character(len=19) :: matrcf, fro1, fro2
     character(len=19) :: atmu, afmu
-    integer :: jatmu, jafmu
+    integer(kind=8) :: jatmu, jafmu
     character(len=19) :: depl0
     real(kind=8), pointer :: vale(:) => null()
 !

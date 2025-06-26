@@ -22,7 +22,7 @@ interface
     subroutine apinfi(sdappa, questi_, i_poin, vali)
         character(len=19), intent(in) :: sdappa
         character(len=*), intent(in) :: questi_
-        integer, intent(in) :: i_poin
-        integer, intent(out) :: vali
+        integer(kind=8), intent(in) :: i_poin
+        integer(kind=8), intent(out) :: vali
     end subroutine apinfi
 end interface

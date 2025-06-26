@@ -22,7 +22,7 @@ interface
     subroutine gnomsd(nomres, noojb, k1, k2)
         character(len=*) :: nomres
         character(len=24) :: noojb
-        integer :: k1
-        integer :: k2
+        integer(kind=8) :: k1
+        integer(kind=8) :: k2
     end subroutine gnomsd
 end interface

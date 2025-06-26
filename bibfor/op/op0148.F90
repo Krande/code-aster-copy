@@ -48,14 +48,14 @@ subroutine op0148()
 #include "asterfort/char8_to_int.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, icham, icham1, icode, idep
-    integer :: idis, ifoi, ifor, ifreq, ifsic, ifsvk, im
-    integer :: imod1, imr, in, inoei, inoen, inumo, inuor
-    integer :: irefba, isip, isip1, isip2, ismf, itypfl
-    integer :: iv, ivale, ivale1, ivite, jnuor, nbfo1, nbm
-    integer :: nbmr, nbn, nbp, nbpf, nnn, nplace
-    integer :: npv, numod, i1, i3, il, ivitef, lnumi, lrefes
-    integer :: ioptch, nbmcl, nbcmp
+    integer(kind=8) :: i, ibid, icham, icham1, icode, idep
+    integer(kind=8) :: idis, ifoi, ifor, ifreq, ifsic, ifsvk, im
+    integer(kind=8) :: imod1, imr, in, inoei, inoen, inumo, inuor
+    integer(kind=8) :: irefba, isip, isip1, isip2, ismf, itypfl
+    integer(kind=8) :: iv, ivale, ivale1, ivite, jnuor, nbfo1, nbm
+    integer(kind=8) :: nbmr, nbn, nbp, nbpf, nnn, nplace
+    integer(kind=8) :: npv, numod, i1, i3, il, ivitef, lnumi, lrefes
+    integer(kind=8) :: ioptch, nbmcl, nbcmp
     aster_logical :: intmod, intphy
     character(len=8) :: nomu, table, nommai, nomcmp, cmp1, depla(3)
 ! character(len=8) :: veccmp(1)
@@ -67,7 +67,7 @@ subroutine op0148()
     character(len=24) :: chnumi, chfreq
     real(kind=8) :: epsi, val, vitef
 !
-    integer :: lfreq
+    integer(kind=8) :: lfreq
 !
     data depla/'DX      ', 'DY      ', 'DZ      '/
 !

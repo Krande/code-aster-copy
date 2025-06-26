@@ -26,7 +26,7 @@ subroutine foattr(motcle, iocc, nomfon)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=*) :: motcle, nomfon
 !     SURCHARGE LES ATTRIBUTS D'UN CONCEPT DE TYPE "FONCTION"
 !     ----------------------------------------------------------------
@@ -38,8 +38,8 @@ subroutine foattr(motcle, iocc, nomfon)
 !     ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: if, l1, l2, l3, l4, l5, l6
-    integer :: l7, l8, l9, lpro, nbfonc, nbprol
+    integer(kind=8) :: if, l1, l2, l3, l4, l5, l6
+    integer(kind=8) :: l7, l8, l9, lpro, nbfonc, nbprol
 !
 !-----------------------------------------------------------------------
     call jemarq()

@@ -30,9 +30,9 @@ subroutine me2mme_evol(modelZ, caraElemZ, materFieldZ, matecoZ, nharm, jvBase, &
 #include "LoadTypes_type.h"
 !
     character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, matecoZ
-    integer, intent(in) :: nharm
+    integer(kind=8), intent(in) :: nharm
     character(len=1), intent(in) :: jvBase
-    integer, intent(in) :: iLoad
+    integer(kind=8), intent(in) :: iLoad
     character(len=8), intent(in) :: loadName
     character(len=*), intent(in) :: ligrelCalcZ
     real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
@@ -47,11 +47,11 @@ subroutine me2mme_evol(modelZ, caraElemZ, materFieldZ, matecoZ, nharm, jvBase, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbout = 1
+    integer(kind=8), parameter :: nbout = 1
     character(len=8) :: lpain(LOAD_NEUM_NBMAXIN), lpaout(nbout)
     character(len=19) :: lchin(LOAD_NEUM_NBMAXIN), lchout(nbout)
     aster_logical, parameter :: applySuiv = ASTER_FALSE
-    integer :: nbFieldIn
+    integer(kind=8) :: nbFieldIn
     character(len=13) :: loadPreObject
     character(len=24) :: loadLigrel
     character(len=24) :: varcCurr

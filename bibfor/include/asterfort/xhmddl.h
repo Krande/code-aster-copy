@@ -24,22 +24,22 @@ interface
     subroutine xhmddl(ndim, nfh, ddls, nddl, nno, nnos,&
                       stano, matsym, option, nomte, mat,&
                       vect, ddlm, nfiss, jfisno, lcontx, contac)
-        integer :: ndim
-        integer :: nfh
-        integer :: ddls
-        integer :: nddl
-        integer :: nno
-        integer :: nnos
-        integer :: stano(*)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ddls
+        integer(kind=8) :: nddl
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnos
+        integer(kind=8) :: stano(*)
         aster_logical :: matsym
         character(len=16) :: option
         character(len=16) :: nomte
         real(kind=8) :: mat(*)
         real(kind=8) :: vect(*)
-        integer :: ddlm
-        integer :: nfiss
-        integer :: jfisno
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: jfisno
         aster_logical :: lcontx
-        integer :: contac
+        integer(kind=8) :: contac
     end subroutine xhmddl
 end interface 

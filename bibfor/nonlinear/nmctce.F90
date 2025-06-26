@@ -32,7 +32,7 @@ subroutine nmctce(mesh, ds_contact, sddyna, sddisc, nume_inst)
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddyna, sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine nmctce(mesh, ds_contact, sddyna, sddisc, nume_inst)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form
+    integer(kind=8) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !

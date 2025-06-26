@@ -26,10 +26,10 @@ interface
         character(len=*) :: nomsd
         character(len=*) :: titre
         character(len=*) :: nomgds
-        integer :: numor
+        integer(kind=8) :: numor
         character(len=*) :: fitype
-        integer :: nbcmp
-        integer :: ityp
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: ityp
         character(len=80) :: entete(10)
         aster_logical :: lcmp
     end subroutine ecrtes

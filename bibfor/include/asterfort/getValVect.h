@@ -42,7 +42,7 @@ interface
         real(kind=8), optional, intent(out) :: x15
         real(kind=8), optional, intent(out) :: x16
         real(kind=8), optional, intent(out) :: x17
-        integer, optional, intent(in) :: ind1
-        integer, optional, intent(in) :: vectInd(:)
+        integer(kind=8), optional, intent(in) :: ind1
+        integer(kind=8), optional, intent(in) :: vectInd(:)
     end subroutine getValVect
 end interface

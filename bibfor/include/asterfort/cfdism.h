@@ -26,7 +26,7 @@ interface
         type(NL_DS_Contact), intent(in) :: ds_contact
         aster_logical, intent(in) :: l_dist_beam
         aster_logical, intent(in) :: l_dist_shell
-        integer, intent(in) :: node_slav_indx
+        integer(kind=8), intent(in) :: node_slav_indx
         real(kind=8), intent(out) :: gap_structural
     end subroutine cfdism
 end interface

@@ -36,19 +36,19 @@ subroutine te0021(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option, elas_keyword
     real(kind=8) :: a(3, 3, 27, 27)
     real(kind=8) :: poids
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: jgano, nno, kp, i, j, imatuu, kpg, spt
-    integer :: elas_id
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: jgano, nno, kp, i, j, imatuu, kpg, spt
+    integer(kind=8) :: elas_id
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ijkl, ik, irota, k, l, ndim, nnos
-    integer :: npg2
+    integer(kind=8) :: ijkl, ik, irota, k, l, ndim, nnos
+    integer(kind=8) :: npg2
     real(kind=8) :: omega1, omega2, omega3, rho(1), wij
 !-----------------------------------------------------------------------
     call elrefe_info(fami='MASS', ndim=ndim, nno=nno, nnos=nnos, &

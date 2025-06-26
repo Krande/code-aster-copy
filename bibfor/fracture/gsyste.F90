@@ -42,8 +42,8 @@ subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
 #include "asterfort/jeveuo.h"
 #include "asterfort/mgauss.h"
 #include "asterfort/wkvect.h"
-    integer :: istok, nchthe, nnoff
-    integer :: i, j, k, iret
+    integer(kind=8) :: istok, nchthe, nnoff
+    integer(kind=8) :: i, j, k, iret
 !
     real(kind=8) :: gthi(nnoff), gi(nchthe), det
 !
@@ -53,7 +53,7 @@ subroutine gsyste(matr, nchthe, nnoff, gthi, gi)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadra1, kk
+    integer(kind=8) :: iadra1, kk
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(matr, 'L', istok)

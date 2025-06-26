@@ -29,9 +29,9 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
 #include "asterfort/lxlgut.h"
 #include "asterfort/deprecated_model.h"
 !
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=16), intent(in) :: phenom, modeli_in
-    integer, intent(out) :: idx_modelisa
+    integer(kind=8), intent(out) :: idx_modelisa
     character(len=16), intent(out) :: modeli
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine modelGetFEType(iocc, phenom, modeli_in, idx_modelisa, modeli)
 !
     character(len=16) :: formul
     character(len=19), parameter :: keywordfact = 'AFFE'
-    integer :: nbret
+    integer(kind=8) :: nbret
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -21,12 +21,12 @@
 interface
     subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
                       iopt, icod)
-        integer :: nbec
-        integer :: nbcmp
-        integer :: numgd
-        integer :: ioc
+        integer(kind=8) :: nbec
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: numgd
+        integer(kind=8) :: ioc
         character(len=*) :: motcle
-        integer :: iopt
-        integer :: icod(nbec)
+        integer(kind=8) :: iopt
+        integer(kind=8) :: icod(nbec)
     end subroutine defdda
 end interface

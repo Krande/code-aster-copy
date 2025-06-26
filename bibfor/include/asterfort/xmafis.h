@@ -23,9 +23,9 @@ interface
                       lisma)
         character(len=8) :: noma
         character(len=19) :: cnsln
-        integer :: nxmafi
+        integer(kind=8) :: nxmafi
         character(len=24) :: mafis
-        integer :: nmafis
+        integer(kind=8) :: nmafis
         character(len=24) :: lisma
     end subroutine xmafis
 end interface

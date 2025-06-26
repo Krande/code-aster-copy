@@ -20,7 +20,7 @@
 !
 interface
     subroutine ptenth(ul, xl, f, n, mat,  enerth)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: ul(12)
         real(kind=8) :: xl
         real(kind=8) :: f

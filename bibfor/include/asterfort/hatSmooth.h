@@ -19,8 +19,8 @@
 !
 interface
     subroutine hatSmooth(nno, nnos, v_basf, vector)
-        integer, intent(in) :: nno
-        integer, intent(in) :: nnos
+        integer(kind=8), intent(in) :: nno
+        integer(kind=8), intent(in) :: nnos
         real(kind=8), intent(in), pointer, dimension(:) :: v_basf
         real(kind=8), intent(inout), dimension(nno) :: vector
     end subroutine hatSmooth

@@ -40,8 +40,8 @@ subroutine op0028()
     character(len=16) :: k16bid
     character(len=16) :: list_method
     real(kind=8) :: dtmin
-    integer :: ifm, niv
-    integer:: nocc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8):: nocc
     character(len=8)::model
     character(len=8), pointer:: sdlistModel(:) => null()
 !

@@ -21,15 +21,15 @@
 interface
     subroutine analybar(x3d1, x3d2, x3d3, x3dp,&
                     xbar, excent, iproj, inoeu, icote)
-        integer :: nbsom
+        integer(kind=8) :: nbsom
         real(kind=8) :: x3d1(3)
         real(kind=8) :: x3d2(3)
         real(kind=8) :: x3d3(3)
         real(kind=8) :: x3dp(3)
         real(kind=8) :: xbar(3)
         real(kind=8) :: excent
-        integer :: iproj
-        integer :: inoeu
-        integer :: icote
+        integer(kind=8) :: iproj
+        integer(kind=8) :: inoeu
+        integer(kind=8) :: icote
     end subroutine analybar
 end interface

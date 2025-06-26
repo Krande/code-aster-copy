@@ -23,9 +23,9 @@ interface
                       vol      , mface     , dface,&
                       xface    , normfa    , kdiag,&
                       yss      , c         , d    )
-        integer, intent(in) :: maxfa
+        integer(kind=8), intent(in) :: maxfa
         real(kind=8), intent(in) :: parm_alpha
-        integer, intent(in) :: ndim, nno, nface
+        integer(kind=8), intent(in) :: ndim, nno, nface
         real(kind=8), intent(in) :: elem_coor(ndim, nno)
         real(kind=8), intent(in) :: vol
         real(kind=8), intent(in) :: mface(1:maxfa)

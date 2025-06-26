@@ -21,13 +21,13 @@ interface
     subroutine orilma(noma, ndim, listCellNume, nbmail, norien, &
                       ntrait, reorie, nbmavo, mailvo)
         character(len=8) :: noma
-        integer :: ndim
-        integer, pointer :: listCellNume(:)
-        integer :: nbmail
-        integer :: norien
-        integer :: ntrait
+        integer(kind=8) :: ndim
+        integer(kind=8), pointer :: listCellNume(:)
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: norien
+        integer(kind=8) :: ntrait
         aster_logical :: reorie
-        integer :: nbmavo
-        integer :: mailvo(*)
+        integer(kind=8) :: nbmavo
+        integer(kind=8) :: mailvo(*)
     end subroutine orilma
 end interface

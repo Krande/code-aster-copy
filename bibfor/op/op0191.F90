@@ -37,7 +37,7 @@ subroutine op0191()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n0
+    integer(kind=8) :: n0
     character(len=16) :: concep, nomcmd
     character(len=19) :: resuou, resuin
 !

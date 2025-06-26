@@ -47,17 +47,17 @@ subroutine asmchc(matas)
     character(len=8) :: kbid
     character(len=14) :: nu
     character(len=19) :: mat, nomsto
-    integer :: typmat, ielim, jelim, kdeb, kfin, nccva, ilig, jcol
-    integer :: jsmhc, jvalm, jvalm2, jccva, jccll, nelim
-    integer :: iret2, jnequ, ieq, k, deciel, nterm, neq, ier, imatd
-    integer :: nblocm, jccii, decjel, iremp, keta
+    integer(kind=8) :: typmat, ielim, jelim, kdeb, kfin, nccva, ilig, jcol
+    integer(kind=8) :: jsmhc, jvalm, jvalm2, jccva, jccll, nelim
+    integer(kind=8) :: iret2, jnequ, ieq, k, deciel, nterm, neq, ier, imatd
+    integer(kind=8) :: nblocm, jccii, decjel, iremp, keta
     aster_logical :: nonsym
-    integer, pointer :: elim(:) => null()
-    integer, pointer :: remplis(:) => null()
-    integer, pointer :: ccid(:) => null()
+    integer(kind=8), pointer :: elim(:) => null()
+    integer(kind=8), pointer :: remplis(:) => null()
+    integer(kind=8), pointer :: ccid(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: smdi(:) => null()
-    integer, pointer :: nulg(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: nulg(:) => null()
 !----------------------------------------------------------------------
     call jemarq()
     mat = matas

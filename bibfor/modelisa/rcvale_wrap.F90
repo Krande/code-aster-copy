@@ -22,11 +22,11 @@ subroutine rcvale_wrap(nommaz, phenom, nbpar, nompar, valpar, &
 !
 #include "asterfort/rcvale.h"
 !
-    integer, intent(in) :: nbpar, nbres
+    integer(kind=8), intent(in) :: nbpar, nbres
     character(len=*), intent(in) :: phenom
-    integer, intent(in) :: iarret
+    integer(kind=8), intent(in) :: iarret
     character(len=*), intent(in) :: nommaz
-    integer, intent(out) :: icodre(nbres)
+    integer(kind=8), intent(out) :: icodre(nbres)
     character(len=8), intent(in) :: nompar(nbpar)
     character(len=16), intent(in) :: nomres(nbres)
     real(kind=8), intent(in) :: valpar(nbpar)

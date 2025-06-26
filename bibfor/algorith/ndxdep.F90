@@ -38,7 +38,7 @@ subroutine ndxdep(numeDof, listFuncActi, numeTime, sddisc, &
 #include "asterfort/nmmajc.h"
 #include "asterfort/nmsolu.h"
 !
-    integer, intent(in) :: listFuncActi(*), numeTime
+    integer(kind=8), intent(in) :: listFuncActi(*), numeTime
     character(len=19), intent(in) :: sddisc, sdnume
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
@@ -74,7 +74,7 @@ subroutine ndxdep(numeDof, listFuncActi, numeTime, sddisc, &
     character(len=19) :: ddepla, deppr1
     character(len=19) :: dvitla, vitpr1
     character(len=19) :: daccla, accpr1
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! --------------------------------------------------------------------------------------------------
 !

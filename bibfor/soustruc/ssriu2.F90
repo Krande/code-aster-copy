@@ -60,7 +60,7 @@ subroutine ssriu2(nomu)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i, scdi, schc, iblo
+    integer(kind=8) :: i, scdi, schc, iblo
     character(len=8) :: promes
     aster_logical :: modif
 !
@@ -69,16 +69,16 @@ subroutine ssriu2(nomu)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iakpee, iaphi0, iaphie, iascbl, iascdi
-    integer :: iblold, iblph, ier, ii, iiblph, isingu, j
-    integer :: jualf, k, kk, lgblph
-    integer :: lmat, nbbloc, nblph, nddle, nddli, ndeci, nlblph
-    integer :: npvneg
-    integer, pointer :: scib(:) => null()
+    integer(kind=8) :: iakpee, iaphi0, iaphie, iascbl, iascdi
+    integer(kind=8) :: iblold, iblph, ier, ii, iiblph, isingu, j
+    integer(kind=8) :: jualf, k, kk, lgblph
+    integer(kind=8) :: lmat, nbbloc, nblph, nddle, nddli, ndeci, nlblph
+    integer(kind=8) :: npvneg
+    integer(kind=8), pointer :: scib(:) => null()
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: desm(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
     real(kind=8), pointer :: varm(:) => null()
-    integer, pointer :: vschc(:) => null()
+    integer(kind=8), pointer :: vschc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     nu = nomu

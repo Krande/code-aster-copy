@@ -22,9 +22,9 @@ interface
     subroutine utcmp1(nomgd, mcfac, iocc, nomcmp, ivari, nom_vari)
         character(len=8) :: nomgd
         character(len=*) :: mcfac
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=8) :: nomcmp
-        integer :: ivari
+        integer(kind=8) :: ivari
         character(len=16) :: nom_vari
     end subroutine utcmp1
 end interface

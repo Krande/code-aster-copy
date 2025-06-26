@@ -32,14 +32,14 @@ subroutine rcevo0(intitu, nbinti, lsn, lfatig, nbtran)
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/wkvect.h"
-    integer :: nbinti, nbtran
+    integer(kind=8) :: nbinti, nbtran
     aster_logical :: lsn, lfatig
     character(len=24) :: intitu
 !     OPERATEUR POST_RCCM, TYPE_RESU_MECA='EVOLUTION'
 !     DETERMINE LE NOMBRE DE SEGMENT A POST-TRAITER
 !
 !     ------------------------------------------------------------------
-    integer :: n1, jinti, nbint0, i, j, jint0, iocc, n2, n3
+    integer(kind=8) :: n1, jinti, nbint0, i, j, jint0, iocc, n2, n3
     aster_logical :: exist
     character(len=8) :: typ, table, tabfl0, tabpr0
     character(len=16) :: motclf

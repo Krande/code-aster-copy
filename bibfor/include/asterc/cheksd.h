@@ -22,6 +22,6 @@ interface
     subroutine cheksd(nomsd, typesd, iret)
         character(len=*) :: nomsd
         character(len=*) :: typesd
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine cheksd
 end interface

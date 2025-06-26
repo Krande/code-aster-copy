@@ -27,8 +27,8 @@ subroutine apinfi(sdappa, questi_, i_poin, vali)
 !
     character(len=19), intent(in) :: sdappa
     character(len=*), intent(in) :: questi_
-    integer, intent(in) :: i_poin
-    integer, intent(out) :: vali
+    integer(kind=8), intent(in) :: i_poin
+    integer(kind=8), intent(out) :: vali
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine apinfi(sdappa, questi_, i_poin, vali)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdappa_appa
-    integer, pointer :: v_sdappa_appa(:) => null()
+    integer(kind=8), pointer :: v_sdappa_appa(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

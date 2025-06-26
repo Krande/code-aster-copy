@@ -78,9 +78,9 @@ contains
         character(len=*), intent(in) :: listLoadZ
         aster_logical, intent(out) :: coefCste
 ! ----- Local
-        integer, pointer :: listLoadInfo(:) => null()
+        integer(kind=8), pointer :: listLoadInfo(:) => null()
         character(len=24) :: loadInfoJv
-        integer :: nbLoad, iLoad
+        integer(kind=8) :: nbLoad, iLoad
 !   ------------------------------------------------------------------------------------------------
 !
         coefCste = ASTER_TRUE
@@ -118,7 +118,7 @@ contains
 ! ----- Parameters
         character(len=*), intent(in) :: modelZ, matecoZ
         character(len=*), intent(in) :: varcCurrZ, tempPrevZ, tempIterZ
-        integer, intent(out) :: nbFieldInGene
+        integer(kind=8), intent(out) :: nbFieldInGene
         character(len=*), intent(out) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
 ! ----- Local
         character(len=24) :: chgeom
@@ -182,20 +182,20 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=4), intent(in) :: typeTher
-        integer, intent(in) :: iLoad, loadNume
+        integer(kind=8), intent(in) :: iLoad, loadNume
         character(len=*), intent(in) :: modelZ, timeMapZ, timeMoveZ
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(inout) :: resuElemZ
         character(len=*), intent(in) :: vectElemZ
 ! ----- Local
-        integer, parameter :: nbInputField = 0
+        integer(kind=8), parameter :: nbInputField = 0
         character(len=24), parameter :: inputLoadField(2) = &
                                         (/'                        ', &
                                           '                        '/)
-        integer :: indxNeutType
+        integer(kind=8) :: indxNeutType
 !   ------------------------------------------------------------------------------------------------
 !
         do indxNeutType = 1, LOAD_NEUT_NBTYPE
@@ -248,25 +248,25 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=4), intent(in) :: typeTher
-        integer, intent(in) :: indxNeutType, iLoad, loadNume
+        integer(kind=8), intent(in) :: indxNeutType, iLoad, loadNume
         character(len=*), intent(in) :: modelZ, timeMapZ, timeMoveZ
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbInputField
+        integer(kind=8), intent(in) :: nbInputField
         character(len=*), intent(in) :: inputLoadFieldZ(2)
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(inout) :: resuElemZ
         character(len=*), intent(in) :: vectElemZ
 ! ----- Local
-        integer, parameter ::  nbFieldOut = 1
+        integer(kind=8), parameter ::  nbFieldOut = 1
         character(len=8), parameter :: lpaout(nbFieldOut) = 'PVECTTR'
         character(len=24) :: lchout(nbFieldOut)
         aster_logical :: loadExist, loadIsFunc, vectCalc
         character(len=8) :: newnom
         character(len=16) :: loadRHSOption
         character(len=24) :: loadField(2), ligrelToUse
-        integer :: nbFieldIn
+        integer(kind=8) :: nbFieldIn
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(indxNeutType .ge. 1)
@@ -336,7 +336,7 @@ contains
     subroutine getRHSOption(indxNeutType, loadIsFunc, option)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         aster_logical, intent(in) :: loadIsFunc
         character(len=16), intent(out) :: option
 !   ------------------------------------------------------------------------------------------------
@@ -381,16 +381,16 @@ contains
                               nbFieldInGene, nbFieldIn, lpain, lchin)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         character(len=4), intent(in) :: typeTher
         character(len=*), intent(in) :: modelZ, loadOptionZ, timeMapZ, timeMoveZ
         character(len=*), intent(in) :: loadFieldZ(2)
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(in) :: nbFieldInGene
-        integer, intent(out) :: nbFieldIn
+        integer(kind=8), intent(in) :: nbFieldInGene
+        integer(kind=8), intent(out) :: nbFieldIn
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
 ! ----- Local
-        integer :: ier
+        integer(kind=8) :: ier
         aster_logical :: lXfem
 !   ------------------------------------------------------------------------------------------------
 !
@@ -471,14 +471,14 @@ contains
                                loadField)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType, loadNume
+        integer(kind=8), intent(in) :: indxNeutType, loadNume
         character(len=*), intent(in) :: loadPreObjectZ
-        integer, intent(in) :: nbInputField
+        integer(kind=8), intent(in) :: nbInputField
         character(len=*), intent(in) :: inputLoadFieldZ(2)
         aster_logical, intent(out) :: loadExist, loadIsFunc
         character(len=24), intent(out) :: loadField(2)
 ! ----- Local
-        integer :: iret
+        integer(kind=8) :: iret
 !   ------------------------------------------------------------------------------------------------
 !
         loadExist = ASTER_FALSE
@@ -552,12 +552,12 @@ contains
                               ligrelToUse)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         character(len=*), intent(in) :: modelZ, loadLigrelZ
         character(len=24), intent(out) :: ligrelToUse
 ! ----- Locals
         character(len=24) :: modelLigrel
-        integer :: iret
+        integer(kind=8) :: iret
         aster_logical :: lXfem
 !   ------------------------------------------------------------------------------------------------
 !
@@ -606,7 +606,7 @@ contains
         character(len=19), intent(in) :: inputLoadField
         aster_logical, intent(out):: exist
 ! ----- Local
-        integer :: ier
+        integer(kind=8) :: ier
         character(len=16) :: nameInEvol
         real(kind=8), parameter :: prec = 1.0d-10
         character(len=8), parameter :: crit = 'ABSOLU'
@@ -658,9 +658,9 @@ contains
         character(len=4), intent(in) :: typeTher
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: modelZ, timeMapZ, timeMoveZ
-        integer, intent(in) :: iLoad
+        integer(kind=8), intent(in) :: iLoad
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN)
         character(len=*), intent(inout) :: lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
@@ -671,13 +671,13 @@ contains
                                         (/'&&NTDEPR.OBJECT1        ', &
                                           '&&NTDEPR.OBJECT2        '/)
 ! ----- Loads in EVOl_CHAR: no function
-        integer, parameter :: loadNume = 1
-        integer :: ier, nbField, nbInputField
+        integer(kind=8), parameter :: loadNume = 1
+        integer(kind=8) :: ier, nbField, nbInputField
         character(len=8) :: evol_char
         character(len=16) :: type_sd
         character(len=24) :: loadObjectJv
         character(len=8), pointer :: loadObject(:) => null()
-        integer :: indxNeutType
+        integer(kind=8) :: indxNeutType
         aster_logical :: existFluxNorm, existCoefH, existTempExt, hasLoad
 !   ------------------------------------------------------------------------------------------------
 !
@@ -799,19 +799,19 @@ contains
         aster_logical, intent(in) :: l_stat
         real(kind=8), intent(in) :: theta
         character(len=*), intent(in) :: modelZ, timeMapZ
-        integer, intent(in) :: loadNume
+        integer(kind=8), intent(in) :: loadNume
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(inout) :: resuElemZ
         character(len=*), intent(in) :: vectElemZ
 ! ----- Local
-        integer, parameter :: nbInputField = 0
+        integer(kind=8), parameter :: nbInputField = 0
         character(len=24), parameter :: inputLoadField(2) = &
                                         (/'                        ', &
                                           '                        '/)
-        integer :: indxNeutType
+        integer(kind=8) :: indxNeutType
 !   ------------------------------------------------------------------------------------------------
 !
         do indxNeutType = 1, LOAD_NEUT_NBTYPE
@@ -861,25 +861,25 @@ contains
 ! ----- Parameters
         aster_logical, intent(in) :: l_stat
         real(kind=8), intent(in) :: theta
-        integer, intent(in) :: indxNeutType, loadNume
+        integer(kind=8), intent(in) :: indxNeutType, loadNume
         character(len=*), intent(in) :: modelZ, timeMapZ
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbInputField
+        integer(kind=8), intent(in) :: nbInputField
         character(len=*), intent(in) :: inputLoadFieldZ(2)
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(inout) :: resuElemZ
         character(len=*), intent(in) :: vectElemZ
 ! ----- Local
-        integer, parameter ::  nbFieldOut = 1
+        integer(kind=8), parameter ::  nbFieldOut = 1
         character(len=8), parameter :: lpaout(nbFieldOut) = 'PRESIDU'
         character(len=24) :: lchout(nbFieldOut)
         aster_logical :: loadExist, loadIsFunc, resiCalc
         character(len=8) :: newnom
         character(len=16) :: loadResiOption
         character(len=24) :: loadField(2), ligrelToUse
-        integer :: nbFieldIn
+        integer(kind=8) :: nbFieldIn
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(indxNeutType .ge. 1)
@@ -952,7 +952,7 @@ contains
     subroutine getResiOption(indxNeutType, loadIsFunc, option)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         aster_logical, intent(in) :: loadIsFunc
         character(len=16), intent(out) :: option
 !   ------------------------------------------------------------------------------------------------
@@ -990,12 +990,12 @@ contains
                               nbFieldInGene, nbFieldIn, lpain, lchin)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         character(len=*), intent(in) :: timeMapZ
         character(len=*), intent(in) :: loadFieldZ
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(in) :: nbFieldInGene
-        integer, intent(out) :: nbFieldIn
+        integer(kind=8), intent(in) :: nbFieldInGene
+        integer(kind=8), intent(out) :: nbFieldIn
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1057,7 +1057,7 @@ contains
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: modelZ, timeMapZ
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN)
         character(len=*), intent(inout) :: lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
@@ -1068,13 +1068,13 @@ contains
                                         (/'&&NTDEPR.OBJECT1        ', &
                                           '&&NTDEPR.OBJECT2        '/)
 ! ----- Loads in EVOl_CHAR: no function
-        integer, parameter :: loadNume = 1
-        integer :: ier, nbField, nbInputField
+        integer(kind=8), parameter :: loadNume = 1
+        integer(kind=8) :: ier, nbField, nbInputField
         character(len=8) :: evol_char
         character(len=16) :: type_sd
         character(len=24) :: loadObjectJv
         character(len=8), pointer :: loadObject(:) => null()
-        integer :: indxNeutType
+        integer(kind=8) :: indxNeutType
         aster_logical :: existFluxNorm, existCoefH, hasLoad
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1186,19 +1186,19 @@ contains
         aster_logical, intent(in) :: l_stat
         real(kind=8), intent(in) :: theta
         character(len=*), intent(in) :: modelZ, timeMapZ
-        integer, intent(in) :: loadNume
+        integer(kind=8), intent(in) :: loadNume
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(inout) :: resuElemZ
         character(len=*), intent(in) :: matrElemZ
 ! ----- Local
-        integer, parameter :: nbInputField = 0
+        integer(kind=8), parameter :: nbInputField = 0
         character(len=24), parameter :: inputLoadField(2) = &
                                         (/'                        ', &
                                           '                        '/)
-        integer :: indxNeutType
+        integer(kind=8) :: indxNeutType
 !   ------------------------------------------------------------------------------------------------
 !
         do indxNeutType = 1, LOAD_NEUT_NBTYPE
@@ -1248,25 +1248,25 @@ contains
 ! ----- Parameters
         aster_logical, intent(in) :: l_stat
         real(kind=8), intent(in) :: theta
-        integer, intent(in) :: indxNeutType, loadNume
+        integer(kind=8), intent(in) :: indxNeutType, loadNume
         character(len=*), intent(in) :: modelZ, timeMapZ
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbInputField
+        integer(kind=8), intent(in) :: nbInputField
         character(len=*), intent(in) :: inputLoadFieldZ(2)
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(inout) :: resuElemZ
         character(len=*), intent(in) :: matrElemZ
 ! ----- Local
-        integer, parameter ::  nbFieldOut = 1
+        integer(kind=8), parameter ::  nbFieldOut = 1
         character(len=8), parameter :: lpaout(nbFieldOut) = 'PMATTTR'
         character(len=24) :: lchout(nbFieldOut)
         aster_logical :: loadExist, loadIsFunc, matrCalc
         character(len=8) :: newnom
         character(len=16) :: loadMatrOption
         character(len=24) :: loadField(2), ligrelToUse
-        integer :: nbFieldIn
+        integer(kind=8) :: nbFieldIn
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(indxNeutType .ge. 1)
@@ -1340,7 +1340,7 @@ contains
     subroutine getMatrOption(indxNeutType, loadIsFunc, option)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         aster_logical, intent(in) :: loadIsFunc
         character(len=16), intent(out) :: option
 !   ------------------------------------------------------------------------------------------------
@@ -1378,12 +1378,12 @@ contains
                               nbFieldInGene, nbFieldIn, lpain, lchin)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         character(len=*), intent(in) :: timeMapZ
         character(len=*), intent(in) :: loadFieldZ
         aster_logical, intent(in) :: loadIsFunc
-        integer, intent(in) :: nbFieldInGene
-        integer, intent(out) :: nbFieldIn
+        integer(kind=8), intent(in) :: nbFieldInGene
+        integer(kind=8), intent(out) :: nbFieldIn
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN), lchin(LOAD_NEUT_NBMAXIN)
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1447,7 +1447,7 @@ contains
         real(kind=8), intent(in) :: time
         character(len=*), intent(in) :: modelZ, timeMapZ
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUT_NBMAXIN)
         character(len=*), intent(inout) :: lchin(LOAD_NEUT_NBMAXIN)
         character(len=1), intent(in) :: jvBase
@@ -1456,13 +1456,13 @@ contains
 ! ----- Local
         character(len=24), parameter :: inputLoadField = "&&NTDEPR.OBJECT1"
 ! ----- Loads in EVOl_CHAR: no function
-        integer, parameter :: loadNume = 1
-        integer :: ier, nbField, nbInputField
+        integer(kind=8), parameter :: loadNume = 1
+        integer(kind=8) :: ier, nbField, nbInputField
         character(len=8) :: evol_char
         character(len=16) :: type_sd
         character(len=24) :: loadObjectJv
         character(len=8), pointer :: loadObject(:) => null()
-        integer :: indxNeutType
+        integer(kind=8) :: indxNeutType
         aster_logical :: existFluxNorm, existCoefH, hasLoad
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1556,7 +1556,7 @@ contains
     subroutine getTherNeumField(indxNeutType, loadPreObjectZ, loadField)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=24), intent(out) :: loadField
 !   ------------------------------------------------------------------------------------------------
@@ -1586,14 +1586,14 @@ contains
                                loadField_, hasInputField_, inputLoadFieldZ_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeutType
+        integer(kind=8), intent(in) :: indxNeutType
         character(len=*), intent(in) :: loadPreObjectZ
         aster_logical, intent(out) :: loadExist
         character(len=24), optional, intent(out) :: loadField_
         aster_logical, optional, intent(in) :: hasInputField_
         character(len=*), optional, intent(in) :: inputLoadFieldZ_
 ! ----- Local
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=24) :: loadField, inputLoadField
         aster_logical :: hasInputField
 !   ------------------------------------------------------------------------------------------------

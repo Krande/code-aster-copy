@@ -57,14 +57,14 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
 #include "asterc/r8prem.h"
 #include "asterfort/mgauss.h"
 !
-    integer :: nbVloc, nbPara, iret, nbdecp
+    integer(kind=8) :: nbVloc, nbPara, iret, nbdecp
     real(kind=8) :: vpara(nbPara), tirela(6), raidTang(6), vloc(nbVloc), errmax
 !
 !   compteur du nombre d'itération
-    integer :: Ite, IteCrit, ii, jj
+    integer(kind=8) :: Ite, IteCrit, ii, jj
 !   nombre de critères à vérifier
-    integer :: nbDDL, nbDDLii
-    integer :: nbcomb, comppt, comptcombi
+    integer(kind=8) :: nbDDL, nbDDLii
+    integer(kind=8) :: nbcomb, comppt, comptcombi
 !
 !   fcp     : valeur réelle du coefficient de sécuirté à la capacité portante
 !   fslid   : idem pour le glissement
@@ -121,7 +121,7 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
 !       la matrice de raideur
     real(kind=8) :: etatCP, etatG, signeHHCP3(5), fssomme
 !
-    integer, allocatable :: combss(:, :), VectVrai(:), vectPass(:)
+    integer(kind=8), allocatable :: combss(:, :), VectVrai(:), vectPass(:)
 !   MatAinverser : la matrice à inverser pour obtenir les avancements
 !   fsInverse    : les deltas(finaux)
     real(kind=8), allocatable :: MatAinverser(:, :), fsInverse(:)
@@ -1020,7 +1020,7 @@ contains
 !   attention ici est égal à 0 pour a=0 contrairement à sign de fortran avec erreur
     function signe(a, error)
         real(kind=8) :: a, error
-        integer :: signe
+        integer(kind=8) :: signe
         if (a .LT. -error) then
             signe = -1
         else if (a .GT. error) then
@@ -1034,7 +1034,7 @@ contains
 !   attention ici est égal à 1 pour a=0 contrairement à sign de fortran avec erreur
     function signeExcl(a, error)
         real(kind=8) :: a, error
-        integer :: signeExcl
+        integer(kind=8) :: signeExcl
         if (a .LT. -error) then
             signeExcl = -1
         else if (a .GT. error) then
@@ -1046,8 +1046,8 @@ contains
 
 ! Fonction qui fait la liste des combinaisons
     function combinaisons(nbDDL, compt)
-        integer :: nbDDL, compt, jj, nbComb, comptloc, kk, ll, mm, nn
-        integer, allocatable :: combinaisons(:, :)
+        integer(kind=8) :: nbDDL, compt, jj, nbComb, comptloc, kk, ll, mm, nn
+        integer(kind=8), allocatable :: combinaisons(:, :)
         nbComb = 1
         do jj = 1, compt
             nbComb = nbComb*(nbDDL+1-jj)/jj

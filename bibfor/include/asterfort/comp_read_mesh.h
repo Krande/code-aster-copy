@@ -23,9 +23,9 @@ interface
                               list_elem_affe, l_affe_all , nb_elem_affe)
         character(len=8), intent(in) :: mesh
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=24), intent(in) :: list_elem_affe
         aster_logical, intent(out) :: l_affe_all
-        integer, intent(out):: nb_elem_affe
+        integer(kind=8), intent(out):: nb_elem_affe
     end subroutine comp_read_mesh
 end interface

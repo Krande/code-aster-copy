@@ -34,14 +34,14 @@ subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl, &
 !
 !
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=4), intent(in) :: val_type
     character(len=24), intent(in) :: keywordexcl
-    integer, intent(in) :: n_keyexcl
-    integer, intent(in) :: n_max_keyword
-    integer, intent(out) :: n_keyword
+    integer(kind=8), intent(in) :: n_keyexcl
+    integer(kind=8), intent(in) :: n_max_keyword
+    integer(kind=8), intent(out) :: n_keyword
     character(len=16), intent(out) :: keywordlist(n_max_keyword)
-    integer, intent(out) :: val_nb(n_max_keyword)
+    integer(kind=8), intent(out) :: val_nb(n_max_keyword)
     real(kind=8), intent(out) :: val_r(n_max_keyword)
     character(len=8), intent(out) :: val_f(n_max_keyword)
     complex(kind=8), intent(out) :: val_c(n_max_keyword)
@@ -71,9 +71,9 @@ subroutine char_read_keyw(keywordfact, iocc, val_type, n_keyexcl, keywordexcl, &
 !
     character(len=16) :: keywordread(300)
     character(len=16) :: k16_dummy(300), keyword, val_t_dummy
-    integer :: n, i_keyword, i_keyexcl
+    integer(kind=8) :: n, i_keyword, i_keyexcl
     aster_logical :: l_excl
-    integer :: j_kexcl
+    integer(kind=8) :: j_kexcl
 !
 ! --------------------------------------------------------------------------------------------------
 !

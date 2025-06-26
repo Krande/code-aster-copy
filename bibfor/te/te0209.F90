@@ -36,8 +36,8 @@ subroutine te0209(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: ivectt, i, l, li, ihechp, itemps, itemp
+    integer(kind=8) :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: ivectt, i, l, li, ihechp, itemps, itemp
     real(kind=8) :: poids, poids1, poids2, coefh
     real(kind=8) :: r1, r2, nx, ny, tpg, theta
     aster_logical :: laxi

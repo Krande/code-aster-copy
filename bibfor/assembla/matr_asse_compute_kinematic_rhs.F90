@@ -45,7 +45,7 @@ subroutine matr_asse_compute_kinematic_rhs(matasz, vcinez, vrhsz)
 
     character(len=19) :: matas, vcine, vrhs
     character(len=1) :: rouc
-    integer :: lmat, neq0, neq1, neq2
+    integer(kind=8) :: lmat, neq0, neq1, neq2
     real(kind=8), pointer :: cine(:) => null()
     real(kind=8), pointer :: rhs(:) => null()
     complex(kind=8) :: cbid

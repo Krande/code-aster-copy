@@ -29,7 +29,7 @@ subroutine dgendo1(em, ea, sya, b, syt, h, fcj, epsi_c, num, &
     real(kind=8), intent(out) :: gc, syc, alpha_c
 ! ----------------------------------------------------------------------
 ! PARAMETRES INTERMEDIAIRES
-    integer :: ns, ii
+    integer(kind=8) :: ns, ii
     real(kind=8) :: c0, c1, c2, c3, x(3)
     real(kind=8) :: na, dm, nyu, dd
 

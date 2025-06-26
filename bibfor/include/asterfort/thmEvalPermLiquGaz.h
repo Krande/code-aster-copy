@@ -23,7 +23,7 @@ interface
                                   krg_   , dkrg_dsatur_, dkrg_dp2_)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: satur, p2, temp
         real(kind=8), intent(out) :: krl, dkrl_dsatur
         real(kind=8), optional, intent(out) :: krg_, dkrg_dsatur_, dkrg_dp2_

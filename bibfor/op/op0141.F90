@@ -56,10 +56,10 @@ subroutine op0141()
 #include "blas/ddot.h"
 #include "blas/zcopy.h"
 !
-    integer :: n1, n2, n3, ibid, nbmod1, nbmod2, neq, idbas1
-    integer :: idbas2, idbas3, idvec3, i, j, nbpara, inom, ityp, ind, imatra
-    integer :: idvec1, idvec2, ifm, niv, neq1, llneq2, iret
-    integer :: iddl, indv, tmod(1), ieq
+    integer(kind=8) :: n1, n2, n3, ibid, nbmod1, nbmod2, neq, idbas1
+    integer(kind=8) :: idbas2, idbas3, idvec3, i, j, nbpara, inom, ityp, ind, imatra
+    integer(kind=8) :: idvec1, idvec2, ifm, niv, neq1, llneq2, iret
+    integer(kind=8) :: iddl, indv, tmod(1), ieq
     real(kind=8) :: rbid, pij, pii, pjj
     complex(kind=8) :: cbid, dcmplx, ztemp, dconjg
     character(len=1) :: typsca
@@ -69,8 +69,8 @@ subroutine op0141()
     character(len=19) :: matr, pronu1, pronu2, pronua
     character(len=24) :: chamol
     aster_logical :: c1, c2, zcmplx, ieri
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: nllneq1(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: nllneq1(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------

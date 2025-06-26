@@ -21,12 +21,12 @@
 interface
     subroutine trvocz(ndim, nbvmas, livmas, jrepmo,&
                       jcelds, jcelvs, trxmoy)
-        integer, intent(in) :: ndim
-        integer, intent(in) :: nbvmas
-        integer, intent(in) :: livmas(nbvmas)
-        integer, intent(in) :: jrepmo
-        integer, intent(in) :: jcelds
-        integer, intent(in) :: jcelvs
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: nbvmas
+        integer(kind=8), intent(in) :: livmas(nbvmas)
+        integer(kind=8), intent(in) :: jrepmo
+        integer(kind=8), intent(in) :: jcelds
+        integer(kind=8), intent(in) :: jcelvs
         real(kind=8), intent(out) :: trxmoy
     end subroutine trvocz
 end interface

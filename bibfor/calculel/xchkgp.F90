@@ -56,17 +56,17 @@ subroutine xchkgp(model)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbflmx
+    integer(kind=8) :: nbflmx
     parameter(nbflmx=20)
     character(len=8) :: lifapg(nbflmx)
-    integer :: linbpg(nbflmx)
+    integer(kind=8) :: linbpg(nbflmx)
 !
-    integer :: iopt, nute, igr, nbgrel
-    integer :: imolo, jmolo, nec, kfpg, kfam
-    integer :: igd, nblfpg, nbfam, nel, jliel, jfpgl, jcesdlon, jcesllon
-    integer :: ndime, irese, nspg, nse, npg, npgfam
-    integer :: ima, iadlon, iel
-    integer :: k, nuflpg, nufgpg, vali(2)
+    integer(kind=8) :: iopt, nute, igr, nbgrel
+    integer(kind=8) :: imolo, jmolo, nec, kfpg, kfam
+    integer(kind=8) :: igd, nblfpg, nbfam, nel, jliel, jfpgl, jcesdlon, jcesllon
+    integer(kind=8) :: ndime, irese, nspg, nse, npg, npgfam
+    integer(kind=8) :: ima, iadlon, iel
+    integer(kind=8) :: k, nuflpg, nufgpg, vali(2)
     character(len=8) :: nomgd, elrese(6), elrefe, ma, famil, noma, nomail, param
     character(len=8), pointer :: typma(:) => null()
     character(len=16) :: nofpg, nomte, valk(2), option, pheno
@@ -74,9 +74,9 @@ subroutine xchkgp(model)
     character(len=24) :: chlong
     character(len=32) :: noflpg
     character(len=32), pointer :: pnlocfpg(:) => null()
-    integer, pointer :: nolocfpg(:) => null()
-    integer, pointer :: tmfpg(:) => null()
-    integer, pointer :: cesvlon(:) => null()
+    integer(kind=8), pointer :: nolocfpg(:) => null()
+    integer(kind=8), pointer :: tmfpg(:) => null()
+    integer(kind=8), pointer :: cesvlon(:) => null()
 !
     data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
 !     ------------------------------------------------------------------

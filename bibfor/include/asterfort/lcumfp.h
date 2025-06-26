@@ -23,10 +23,10 @@ interface
                       imate, compor, tinstm, tinstp, epsm,&
                       deps, sigm, vim, option, rela_plas,&
                       sigp, vip, dsidep)
-        integer, intent(in) :: ndim
-        integer, intent(in) :: imate
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: imate
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         character(len=8), intent(in) :: typmod(*)
         character(len=16), intent(in) :: compor(*)
         character(len=16), intent(in) :: rela_plas

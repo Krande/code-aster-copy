@@ -121,34 +121,34 @@ subroutine vpsor1(ldynfa, nbeq, nbvect, nfreq, tolsor, &
 #include "asterfort/vpgskp.h"
 #include "asterfort/vpordo.h"
 !
-    integer :: ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq)
-    integer :: neqact, maxitr, ifm, niv, priram(8), nconv, vecddl(nbeq), nbddl
-    integer :: ddlsta(nbeq), nsta
+    integer(kind=8) :: ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq)
+    integer(kind=8) :: neqact, maxitr, ifm, niv, priram(8), nconv, vecddl(nbeq), nbddl
+    integer(kind=8) :: ddlsta(nbeq), nsta
     real(kind=8) :: tolsor, vect(nbeq, nbvect), resid(nbeq), workd(3*nbeq)
     real(kind=8) :: workl(lonwl), dsor(nfreq+1, 2), fshift, vaux(nbeq)
     real(kind=8) :: workv(3*nbvect), alpha, omecor, vstab(nbeq), csta
     aster_logical :: selec(nbvect), flage
     character(len=19) :: solveu
-    integer :: redem
+    integer(kind=8) :: redem
 !--------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
 !
 ! POUR LE FONCTIONNEMENT GLOBAL
-    integer :: i, j
+    integer(kind=8) :: i, j
     complex(kind=8) :: cbid
     real(kind=8) :: varaux, varaux1
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! POUR ARPACK
-    integer :: ido, info, ishfts, mode, iparam(11), ipntr(14), vali(5)
+    integer(kind=8) :: ido, info, ishfts, mode, iparam(11), ipntr(14), vali(5)
     real(kind=8) :: sigmar, sigmai, valr(2)
     aster_logical :: rvec
     character(len=1) :: bmat, kbid
     character(len=2) :: which
     character(len=19) :: k19bid, matass, chcine, criter
 !
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd

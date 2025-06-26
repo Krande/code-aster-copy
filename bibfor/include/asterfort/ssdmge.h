@@ -23,6 +23,6 @@ interface
         real(kind=8) :: geo1(*)
         real(kind=8) :: geo2(*)
         real(kind=8) :: para(*)
-        integer :: dimgeo
+        integer(kind=8) :: dimgeo
     end subroutine ssdmge
 end interface

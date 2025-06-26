@@ -20,6 +20,6 @@
 !
 interface
     subroutine caform(cont_form)
-        integer, intent(out) :: cont_form
+        integer(kind=8), intent(out) :: cont_form
     end subroutine caform
 end interface

@@ -44,7 +44,7 @@ subroutine nmevr0(sddisc)
 !
 !
 !
-    integer :: itesup, i_fail, nb_fail, action_type
+    integer(kind=8) :: itesup, i_fail, nb_fail, action_type
     real(kind=8) :: r8bid
     aster_logical :: lacti
 !

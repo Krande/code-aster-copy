@@ -33,8 +33,8 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec, &
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/wkvect.h"
-    integer :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx
-    integer :: ndim, numnoe(*), nbcmpt, nucmpu(*)
+    integer(kind=8) :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx
+    integer(kind=8) :: ndim, numnoe(*), nbcmpt, nucmpu(*)
     real(kind=8) :: borsup, borinf, coor(*), vale(*)
     character(len=*) :: nomcmp(*), nomnoe(*), formr
     aster_logical :: lcor, lsup, linf, lmax, lmin
@@ -70,17 +70,17 @@ subroutine ircnrl(ifi, nbno, prno, nueq, nec, &
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: rundf
-    integer :: impre
+    integer(kind=8) :: impre
     character(len=8) :: nomcor(3), forcmp
     character(len=10) :: format
     character(len=50) :: fmt, form1
 !
 !-----------------------------------------------------------------------
-    integer :: i, icm, icmp, icmp2, icomp2, icompt, id
-    integer :: iec, ieq, if, ilign, imax, imin, inec
-    integer :: inmax, inmin, inno, ino, ipos, ipres, irest
-    integer :: irval, iva, ival, ivmax, ivmin, lgr
-    integer :: ncmp
+    integer(kind=8) :: i, icm, icmp, icmp2, icomp2, icompt, id
+    integer(kind=8) :: iec, ieq, if, ilign, imax, imin, inec
+    integer(kind=8) :: inmax, inmin, inno, ino, ipos, ipres, irest
+    integer(kind=8) :: irval, iva, ival, ivmax, ivmin, lgr
+    integer(kind=8) :: ncmp
 !-----------------------------------------------------------------------
     call jemarq()
     rundf = r8vide()

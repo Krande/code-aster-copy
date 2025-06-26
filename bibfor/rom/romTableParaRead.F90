@@ -40,7 +40,7 @@ subroutine romTableParaRead(tablReduCoor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc
+    integer(kind=8) :: nocc
     aster_logical :: lTablFromUser
     character(len=8) :: tablUserName
 !

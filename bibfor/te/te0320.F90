@@ -52,12 +52,12 @@ subroutine te0320(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbVariSteel = 9, nbVariZirc = 5
+    integer(kind=8), parameter :: nbVariSteel = 9, nbVariZirc = 5
     character(len=16), pointer :: comporMeta(:) => null()
     character(len=16) :: metaType
     real(kind=8) :: ms0, phase_tot, phase_ucold
-    integer :: nbNode, nbPhase, nbVari
-    integer :: jvMater, jvTemp, jvPhaseIn, jvPhaseOut
+    integer(kind=8) :: nbNode, nbPhase, nbVari
+    integer(kind=8) :: jvMater, jvTemp, jvPhaseIn, jvPhaseOut
 !
 ! --------------------------------------------------------------------------------------------------
 !

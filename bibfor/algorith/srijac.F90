@@ -74,7 +74,7 @@ subroutine srijac(nmat, materf, timed, timef, &
     !!! Variables globales
     !!!
 
-    integer :: nr, nmat, nvi
+    integer(kind=8) :: nr, nmat, nvi
     real(kind=8) :: deps(6), drdy(nr, nr), yf(nr), yd(nr)
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: timed, timef, vind(nvi), vinf(nvi)
@@ -83,7 +83,7 @@ subroutine srijac(nmat, materf, timed, timef, &
     !!! Varibales locales
     !!!
 
-    integer :: i, j, varv, valv, valp, retcom, ndt, ndi
+    integer(kind=8) :: i, j, varv, valv, valp, retcom, ndt, ndi
 
     real(kind=8) :: sigft(6), depst(6)
     real(kind=8) :: devgii, vint(nvi), dt, devsig(6), i1

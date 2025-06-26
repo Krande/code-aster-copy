@@ -19,7 +19,7 @@
 interface
     subroutine getFluidPara(j_mater,&
                             rho_   , cele_r_, pesa_, alpha_, cele_i_, r_)
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), optional, intent(out) :: rho_, cele_r_, pesa_, alpha_, cele_i_, r_
     end subroutine getFluidPara
 end interface

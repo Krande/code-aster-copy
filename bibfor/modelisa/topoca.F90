@@ -76,17 +76,17 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
 ! ARGUMENTS
 ! ---------
     character(len=8) :: mailla
-    integer :: icabl, nbf0, nbnoca(*), sens
+    integer(kind=8) :: icabl, nbf0, nbnoca(*), sens
     character(len=19) :: numaca, tablca
     aster_logical :: quad
     aster_logical, optional :: evalz
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ibid, imail, ino, iret, isuiv, isuiv0(2), ivois, jcxma
-    integer :: jnumac, jnumad, jtyma
-    integer :: lonuti, nbchem, nbmail, nbno1, nbno2, nbsuiv, no1, no2, ntseg
-    integer :: numail, n1, nbse2, nbse3, no3, ntseg2
+    integer(kind=8) :: ibid, imail, ino, iret, isuiv, isuiv0(2), ivois, jcxma
+    integer(kind=8) :: jnumac, jnumad, jtyma
+    integer(kind=8) :: lonuti, nbchem, nbmail, nbno1, nbno2, nbsuiv, no1, no2, ntseg
+    integer(kind=8) :: numail, n1, nbse2, nbse3, no3, ntseg2
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     aster_logical :: ok1, ok2, eval
@@ -101,8 +101,8 @@ subroutine topoca(tablca, mailla, icabl, nbf0, nbnoca, &
     character(len=8), pointer :: nomnoe_ch1(:) => null()
     character(len=8), pointer :: nomnoe_ch2(:) => null()
     character(len=8), pointer :: nomnoe_def(:) => null()
-    integer, pointer :: numail_ch1(:) => null()
-    integer, pointer :: numail_ch2(:) => null()
+    integer(kind=8), pointer :: numail_ch1(:) => null()
+    integer(kind=8), pointer :: numail_ch2(:) => null()
     data param/'NUME_CABLE              ',&
      &                     'NOEUD_CABLE             ',&
      &                     'NOM_CABLE               ',&

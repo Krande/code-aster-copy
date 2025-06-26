@@ -42,7 +42,7 @@ subroutine op0134()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf, nbnova, lprol
+    integer(kind=8) :: ifm, niv, n1, nbvalp, nbvalf, lvalp, lvalf, nbnova, lprol
     aster_logical :: compl
     character(len=8) :: nopn, nopf
     character(len=16) :: nomcmd, typres

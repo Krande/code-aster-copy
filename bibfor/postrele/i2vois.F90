@@ -49,12 +49,12 @@ subroutine i2vois(conec, type, maille, n, v1, &
 !
 #include "asterf_types.h"
 #include "asterfort/i2extf.h"
-    integer :: n, v1(*), v2(*), maille(*)
+    integer(kind=8) :: n, v1(*), v2(*), maille(*)
     character(len=24) :: conec, type
 !
-    integer :: i, j, mi, mj
-    integer :: nig, njg
-    integer :: nid, njd
+    integer(kind=8) :: i, j, mi, mj
+    integer(kind=8) :: nig, njg
+    integer(kind=8) :: nid, njd
     aster_logical :: nonv1, nonv2
 !
 !-----------------------------------------------------------------------

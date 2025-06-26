@@ -62,15 +62,15 @@ subroutine op0184()
 #include "asterfort/wkvect.h"
 !
 !
-    integer :: nbv, nbmapl, ibid, ntout, nnume, np, iul
-    integer :: vali(2)
-    integer :: nbordr, jnume, n1, nlinst, jlist, nbinst, nis, nc, nfor
-    integer :: iret, nbtitr, ifsig, l, ipas, k, numpas, ino
-    integer :: ivar(6), iord, jpres, ima, nbnoas, jnoma, i, nnu
-    integer :: iadrno, imp, jdme, ntseg, imamin, jdco, jdno, no1, no2, nutyel
-    integer :: jcelv, idec, nbelgr, liel, iel, iadno, nno
-    integer :: jinst, nbtrou, lordr, ntpoi, itest, iad, imapl
-    integer :: nbordt, te, nbgr, igr, tord(1)
+    integer(kind=8) :: nbv, nbmapl, ibid, ntout, nnume, np, iul
+    integer(kind=8) :: vali(2)
+    integer(kind=8) :: nbordr, jnume, n1, nlinst, jlist, nbinst, nis, nc, nfor
+    integer(kind=8) :: iret, nbtitr, ifsig, l, ipas, k, numpas, ino
+    integer(kind=8) :: ivar(6), iord, jpres, ima, nbnoas, jnoma, i, nnu
+    integer(kind=8) :: iadrno, imp, jdme, ntseg, imamin, jdco, jdno, no1, no2, nutyel
+    integer(kind=8) :: jcelv, idec, nbelgr, liel, iel, iadno, nno
+    integer(kind=8) :: jinst, nbtrou, lordr, ntpoi, itest, iad, imapl
+    integer(kind=8) :: nbordt, te, nbgr, igr, tord(1)
     real(kind=8) :: rbid, pres, epsi, temps, tref, cm(3), a(3), b(3), la, lb, d2
     real(kind=8) :: d2min
     real(kind=8) :: valr
@@ -83,7 +83,7 @@ subroutine op0184()
     character(len=24) :: coorn, typma, coorp, mlgcnx, lchin(1), lchout(1)
     character(len=24) :: noliel, chgeom, option, connex
     character(len=80) :: k80b, k80bm, k80bid
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=80), pointer :: titr(:) => null()
 !     -----------------------------------------------------------------
 !

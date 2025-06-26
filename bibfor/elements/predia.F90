@@ -18,7 +18,7 @@
 !
 subroutine predia(a, b, diag, nno)
     implicit none
-    integer :: i, ic, j, nno
+    integer(kind=8) :: i, ic, j, nno
 !-----------------------------------------------------------------------
 !
 !    ESTIMATEUR ZZ (2-EME VERSION 92)

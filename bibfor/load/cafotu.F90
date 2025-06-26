@@ -34,7 +34,7 @@ subroutine cafotu(load, model, mapAlreadyCreated, mesh, geomDime, valeType, nbOc
     aster_logical, intent(in) :: mapAlreadyCreated
     character(len=8), intent(in) :: load, mesh, model
     character(len=4), intent(in) :: valeType
-    integer, intent(in) :: nbOcc, geomDime
+    integer(kind=8), intent(in) :: nbOcc, geomDime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,9 +55,9 @@ subroutine cafotu(load, model, mapAlreadyCreated, mesh, geomDime, valeType, nbOc
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FORCE_TUYAU'
-    integer :: jvalv, iocc, nbret
+    integer(kind=8) :: jvalv, iocc, nbret
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
     aster_logical :: createMap
 !
 ! --------------------------------------------------------------------------------------------------

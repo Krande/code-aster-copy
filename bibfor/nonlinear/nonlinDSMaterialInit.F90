@@ -63,7 +63,7 @@ subroutine nonlinDSMaterialInit(model, mater, mateco, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: vect_elem, vect_asse, varc_prev
 !
 ! --------------------------------------------------------------------------------------------------

@@ -27,11 +27,11 @@ function scalai(gd)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: gd
+    integer(kind=8) :: gd
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: typegd
+    integer(kind=8) :: typegd
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

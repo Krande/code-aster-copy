@@ -26,7 +26,7 @@ interface
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: disp_prev
         character(len=19), intent(in) :: sddisc
-        integer, intent(in)  :: nume_inst
+        integer(kind=8), intent(in)  :: nume_inst
         character(len=19), intent(in) :: incr_esti
         character(len=19), intent(in) :: disp_esti
     end subroutine nmprdc

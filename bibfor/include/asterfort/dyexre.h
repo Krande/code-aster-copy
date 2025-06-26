@@ -23,9 +23,9 @@ interface
                       j2nd)
         character(len=14) :: numddl
         real(kind=8) :: freq
-        integer :: nbexre
+        integer(kind=8) :: nbexre
         character(len=24) :: exreco
         character(len=24) :: exresu
-        integer :: j2nd
+        integer(kind=8) :: j2nd
     end subroutine dyexre
 end interface

@@ -28,7 +28,7 @@ subroutine gidoma(nbnoto)
 #include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbnoto
+    integer(kind=8) :: nbnoto
 !
 ! ----------------------------------------------------------------------
 !     BUT : CREER  L'OBJET &&GILIRE.NUMANEW
@@ -51,11 +51,11 @@ subroutine gidoma(nbnoto)
 !
 !     -- RECUPERATION DU NOMBRE DE MAILLES TOTAL (AVANT COMPACTAGE):
 !-----------------------------------------------------------------------
-    integer :: ianema, iawk1, iawk2, iawk3, ico, ilcnx2
-    integer :: ima, imaj, imak, ino, ipos, j, k
-    integer :: l, nbma, nbmato, nbnoj, nbnok, nuno1, nunoj
-    integer :: nunok
-    integer, pointer :: connex2(:) => null()
+    integer(kind=8) :: ianema, iawk1, iawk2, iawk3, ico, ilcnx2
+    integer(kind=8) :: ima, imaj, imak, ino, ipos, j, k
+    integer(kind=8) :: l, nbma, nbmato, nbnoj, nbnok, nuno1, nunoj
+    integer(kind=8) :: nunok
+    integer(kind=8), pointer :: connex2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jelira('&&GILIRE.CONNEX2', 'NMAXOC', nbmato)

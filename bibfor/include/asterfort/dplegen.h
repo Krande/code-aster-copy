@@ -20,7 +20,7 @@
 !
 interface
     subroutine dplegen(degre, s, l, dlegen)
-        integer, intent(in) :: degre
+        integer(kind=8), intent(in) :: degre
         real(kind=8), intent(in) :: s
         real(kind=8), intent(in) :: l
         real(kind=8), intent(out) :: dlegen

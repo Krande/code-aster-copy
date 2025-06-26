@@ -23,10 +23,10 @@ interface
                       ipoids, ipesa, igeom, ivectu, vff, dff, h, alpha, beta, preten)
         character(len=16) :: option
         character(len=4) :: fami
-        integer :: nddl, nno, ncomp
-        integer :: kpg
-        integer :: ipoids, igeom, jvSief, imate, ipesa
-        integer :: ivectu
+        integer(kind=8) :: nddl, nno, ncomp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ipoids, igeom, jvSief, imate, ipesa
+        integer(kind=8) :: ivectu
         real(kind=8) :: vff(nno), dff(2, nno), h, preten, alpha, beta
     end subroutine mbgchg
 end interface

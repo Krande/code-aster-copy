@@ -21,9 +21,9 @@
 interface
     subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
         character(len=*) :: tabin
-        integer :: nbpara
+        integer(kind=8) :: nbpara
         character(len=*) :: nopara
-        integer :: nblign
-        integer :: nume(*)
+        integer(kind=8) :: nblign
+        integer(kind=8) :: nume(*)
     end subroutine tbtr01
 end interface

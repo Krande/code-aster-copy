@@ -20,6 +20,6 @@
 !
 interface
     function lbisem()
-        integer :: lbisem
+        integer(kind=8) :: lbisem
     end function lbisem
 end interface

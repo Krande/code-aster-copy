@@ -25,13 +25,13 @@ interface
         character(len=2), intent(in) :: kdim
         character(len=8), intent(in) :: type
         real(kind=8), intent(in) :: coor(*)
-        integer, intent(in) :: lino1(*)
-        integer, intent(in) :: nbno1
-        integer, intent(in) :: lino2(*)
-        integer, intent(in) :: nbno2
-        integer, intent(in) :: lino3(*)
-        integer, intent(in) :: nbno3
-        integer, intent(out) :: ipos
-        integer, intent(out) :: indmai
+        integer(kind=8), intent(in) :: lino1(*)
+        integer(kind=8), intent(in) :: nbno1
+        integer(kind=8), intent(in) :: lino2(*)
+        integer(kind=8), intent(in) :: nbno2
+        integer(kind=8), intent(in) :: lino3(*)
+        integer(kind=8), intent(in) :: nbno3
+        integer(kind=8), intent(out) :: ipos
+        integer(kind=8), intent(out) :: indmai
     end subroutine oriem0
 end interface

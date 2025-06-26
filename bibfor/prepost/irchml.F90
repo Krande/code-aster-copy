@@ -57,15 +57,15 @@ subroutine irchml(fileUnit, &
 #include "asterfort/irsspt.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: fieldNameZ, fieldTypeZ
     character(len=4), intent(in) :: fieldSupport
-    integer, intent(in) :: cmpUserNb
+    integer(kind=8), intent(in) :: cmpUserNb
     character(len=8), pointer :: cmpUserName(:)
-    integer, intent(in) :: nodeUserNb
-    integer, pointer :: nodeUserNume(:)
-    integer, intent(in) :: cellUserNb
-    integer, pointer :: cellUserNume(:)
+    integer(kind=8), intent(in) :: nodeUserNb
+    integer(kind=8), pointer :: nodeUserNume(:)
+    integer(kind=8), intent(in) :: cellUserNb
+    integer(kind=8), pointer :: cellUserNume(:)
     aster_logical, optional, intent(in) :: lMeshCoor_
     aster_logical, optional, intent(in) :: lsup_, linf_, lmax_, lmin_
     real(kind=8), optional, intent(in) :: borsup_, borinf_
@@ -101,34 +101,34 @@ subroutine irchml(fileUnit, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=8) :: meshName, quantityName
     character(len=19) :: fieldName
     character(len=19), parameter :: fieldNameS = '&&IRCHML_CES'
     character(len=16) :: fieldType
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     character(len=24), pointer :: celk(:) => null()
     character(len=19) :: liliName
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: lielLen(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: lielLen(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     character(len=1) :: type
-    integer :: fieldScalar, quantityIndx, grelNb, iCell
+    integer(kind=8) :: fieldScalar, quantityIndx, grelNb, iCell
     character(len=24), parameter :: ncncin = '&&IRCHML.CONNECINVERSE'
-    integer :: jdrvlc, jcncin, nbtma, iadr
-    integer :: iNode, nodeNume, nodeNbElem, cellNumeFirst
-    integer :: meshNodeNb, meshCellNb, meshDime
-    integer :: cmpCataNb, cmpListNb, cmpVariNb
-    integer, pointer :: cmpListIndx(:) => null()
+    integer(kind=8) :: jdrvlc, jcncin, nbtma, iadr
+    integer(kind=8) :: iNode, nodeNume, nodeNbElem, cellNumeFirst
+    integer(kind=8) :: meshNodeNb, meshCellNb, meshDime
+    integer(kind=8) :: cmpCataNb, cmpListNb, cmpVariNb
+    integer(kind=8), pointer :: cmpListIndx(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
-    integer, pointer :: cmpVariIndx(:) => null()
+    integer(kind=8), pointer :: cmpVariIndx(:) => null()
     character(len=8), pointer :: meshCellName(:) => null()
     character(len=8), pointer :: meshNodeName(:) => null()
     real(kind=8), pointer :: meshCoor(:) => null()
-    integer, pointer :: cellSelectNume(:) => null()
-    integer :: cellSelectNb
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: connexLen(:) => null()
+    integer(kind=8), pointer :: cellSelectNume(:) => null()
+    integer(kind=8) :: cellSelectNb
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connexLen(:) => null()
     aster_logical :: lMeshCoor
     aster_logical :: lsup, linf, lmax, lmin
     real(kind=8) :: borsup, borinf

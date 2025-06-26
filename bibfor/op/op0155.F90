@@ -46,8 +46,8 @@ subroutine op0155()
 #include "asterfort/w155ce.h"
 #include "asterfort/w155ex.h"
 #include "asterfort/w155mx.h"
-    integer :: ifm, niv, n0, iret, jordr, nbordr, ie, nuordr
-    integer :: i, j, jnompa, iadin, iadou, nbac, nbpa, nbpara
+    integer(kind=8) :: ifm, niv, n0, iret, jordr, nbordr, ie, nuordr
+    integer(kind=8) :: i, j, jnompa, iadin, iadou, nbac, nbpa, nbpara
     character(len=16) :: crit, typesd, k16b, nopara
     character(len=8) :: resu, nomres
     character(len=3) :: type

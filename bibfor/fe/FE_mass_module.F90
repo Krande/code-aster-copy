@@ -70,7 +70,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: ipg
+        integer(kind=8) :: ipg
         real(kind=8), dimension(MAX_BS) :: BSEval
         real(kind=8) :: coeff
         blas_int :: b_incx, b_lda, b_n

@@ -23,21 +23,21 @@ interface
                       iw, vff2, vff3, ivf1, idff1,&
                       vu, vg, vp, igeom, mate,&
                       matr)
-        integer :: npg
-        integer :: nno3
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
-        integer :: iw
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno3
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
+        integer(kind=8) :: iw
         real(kind=8) :: vff2(nno2, npg)
         real(kind=8) :: vff3(nno3, npg)
-        integer :: ivf1
-        integer :: idff1
-        integer :: vu(3, 27)
-        integer :: vg(27)
-        integer :: vp(27)
-        integer :: igeom
-        integer :: mate
+        integer(kind=8) :: ivf1
+        integer(kind=8) :: idff1
+        integer(kind=8) :: vu(3, 27)
+        integer(kind=8) :: vg(27)
+        integer(kind=8) :: vp(27)
+        integer(kind=8) :: igeom
+        integer(kind=8) :: mate
         real(kind=8) :: matr(*)
     end subroutine nirmtd
 end interface

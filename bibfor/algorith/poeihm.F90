@@ -23,7 +23,7 @@ subroutine poeihm(nomte, option, modint, jgao, nno1, &
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/ppgan2.h"
-    integer :: jgao, ncmp, nvim
+    integer(kind=8) :: jgao, ncmp, nvim
     real(kind=8) :: vno(*), vpg(*)
     character(len=3) :: modint
     character(len=8) :: lielrf(10)
@@ -43,10 +43,10 @@ subroutine poeihm(nomte, option, modint, jgao, nno1, &
 ! =====================================================================
 ! OUT VNO : CHAMPS AUX NOEUDS DE L'ELEMENT
 ! =====================================================================
-    integer :: i, j, jgapg1, jgaso1, jgapg2, jgaso2
-    integer :: ndim, nno, npg, ndim2, nno2, nnos2, npg2, nno3, nnos3
-    integer :: nno1, nnos1
-    integer :: nvmax, npgmax, nnosma, dimmax, nnomax, ntrou
+    integer(kind=8) :: i, j, jgapg1, jgaso1, jgapg2, jgaso2
+    integer(kind=8) :: ndim, nno, npg, ndim2, nno2, nnos2, npg2, nno3, nnos3
+    integer(kind=8) :: nno1, nnos1
+    integer(kind=8) :: nvmax, npgmax, nnosma, dimmax, nnomax, ntrou
     parameter(nvmax=60)
     parameter(npgmax=8)
     parameter(nnosma=8)
@@ -59,7 +59,7 @@ subroutine poeihm(nomte, option, modint, jgao, nno1, &
     real(kind=8) :: sefpg1(nnomax*dimmax), sefso1(nnomax*dimmax)
     real(kind=8) :: sefpg2(nnomax*dimmax), sefso2(nnomax*dimmax)
     real(kind=8) :: vno1(nnomax*dimmax)
-    integer :: next(3), next2(3), nmil(2)
+    integer(kind=8) :: next(3), next2(3), nmil(2)
 !
     data next/1, 2, 5/
     data next2/4, 3, 7/

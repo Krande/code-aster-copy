@@ -20,8 +20,8 @@ subroutine xpente(pl, cnse, n, bis)
     implicit none
 !
 #include "jeveux.h"
-    integer :: pl, n(18), cnse(6, 10)
-    integer, intent(in), optional :: bis
+    integer(kind=8) :: pl, n(18), cnse(6, 10)
+    integer(kind=8), intent(in), optional :: bis
 ! person_in_charge: samuel.geniaut at edf.fr
 !
 !                      DÉCOUPER LE SOUS-PENTA EN SOUS-TETRAS

@@ -39,7 +39,7 @@ subroutine dtmclean(sd_dtm_)
     character(len=*), intent(in)  :: sd_dtm_
     character(len=8)                    :: sd_dtm, sd_nl
 
-    integer                             :: nbnli
+    integer(kind=8)                             :: nbnli
 
     call jemarq()
 

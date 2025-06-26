@@ -69,7 +69,7 @@ contains
     subroutine getAcouNeumField(indxNeuaType, loadPreObjectZ, loadField)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeuaType
+        integer(kind=8), intent(in) :: indxNeuaType
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=24), intent(out) :: loadField
 !   ------------------------------------------------------------------------------------------------
@@ -99,14 +99,14 @@ contains
                                loadField_, hasInputField_, inputLoadFieldZ_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeuaType
+        integer(kind=8), intent(in) :: indxNeuaType
         character(len=*), intent(in) :: loadPreObjectZ
         aster_logical, intent(out) :: loadExist
         character(len=24), optional, intent(out) :: loadField_
         aster_logical, optional, intent(in) :: hasInputField_
         character(len=*), optional, intent(in) :: inputLoadFieldZ_
 ! ----- Local
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=24) :: loadField, inputLoadField
         aster_logical :: hasInputField
 !   ------------------------------------------------------------------------------------------------

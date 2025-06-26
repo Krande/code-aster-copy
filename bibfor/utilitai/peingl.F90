@@ -63,7 +63,7 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nh, nbocc
+    integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara, motfaz
 !
 !      PEINGL  --  OPERATEUR POST_ELEM
@@ -180,10 +180,10 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
-    integer :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
-    integer :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
-    integer :: i, nbgrma_tot, deca, nbtot, nbMaiT
+    integer(kind=8) :: nbparr, nr, np, nc, iret, jord, nbordr, jins, iord, iainst, numord, nbin, nt, nm
+    integer(kind=8) :: ng, nbgrma, jgr, ig, nbma, jad, nbmail, jma, im, iocc, nume, nbout, numorm
+    integer(kind=8) :: ngdmax, ncmpmx, igd, idebgd, dg, ima, iconex, nbno, nec, ivari
+    integer(kind=8) :: i, nbgrma_tot, deca, nbtot, nbMaiT
     real(kind=8) :: work(5), indic1, volume, inst, valr(6), zero, prec
     real(kind=8) :: energy_tout, energy_ma
     complex(kind=8) :: c16b
@@ -196,13 +196,13 @@ subroutine peingl(resu, modele, mate, mateco, cara, nh, &
     character(len=24) :: vk24(2), nomgrm, chsig, lchin(14), lchout(2)
     character(len=24) :: mlggma, chsigm, chdepm, chbid
     aster_logical :: evol
-    integer, pointer :: ptma(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: ptma(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     character(len=16), pointer :: vale(:) => null()
     real(kind=8), pointer :: energy_grpma(:) => null()
-    integer, pointer :: v_allma(:) => null()
+    integer(kind=8), pointer :: v_allma(:) => null()
 !
-    integer :: nfiss
+    integer(kind=8) :: nfiss
     aster_logical :: lxfem
 !
     data typarr/'I', 'R', 'K24', 'K8', 'R', 'R', 'R', 'R', 'R'/

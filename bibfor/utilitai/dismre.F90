@@ -32,7 +32,7 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/zerosd.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 !
 !     --     DISMOI(RESUELEM)
@@ -46,12 +46,12 @@ subroutine dismre(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer ::  iret, gd, jnoli, l
+    integer(kind=8) ::  iret, gd, jnoli, l
     character(len=8) :: k8bid, nogd
     character(len=19) :: nomob
     character(len=24) :: questl, k24
     character(len=32) :: repk
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 ! DEB-------------------------------------------------------------------
 !
     call jemarq()

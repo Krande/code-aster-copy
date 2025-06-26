@@ -21,7 +21,7 @@
 interface
     subroutine srd2hs(nmat, materf, devsig, sii, rcos3t,&
                       d2hds2)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: devsig(6)
         real(kind=8) :: sii

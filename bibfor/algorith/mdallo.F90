@@ -39,23 +39,23 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
 !   Obligatory arguments
     character(len=8), intent(in) :: nomres
     character(len=4), intent(in) :: typcal
-    integer, intent(in) :: nbsauv
+    integer(kind=8), intent(in) :: nbsauv
 !   Optional arguments
     character(len=*), optional, intent(in) :: base
-    integer, optional, intent(in) :: nbmodes
+    integer(kind=8), optional, intent(in) :: nbmodes
     character(len=*), optional, intent(in) :: rigi, mass, amor
-    integer, optional, intent(out) :: jordr, jdisc
-    integer, optional, intent(in) :: nbsym
+    integer(kind=8), optional, intent(out) :: jordr, jdisc
+    integer(kind=8), optional, intent(in) :: nbsym
     character(len=4), optional, intent(in) :: nomsym(*)
-    integer, optional, intent(out) :: jdepl, jvite, jacce
+    integer(kind=8), optional, intent(out) :: jdepl, jvite, jacce
     character(len=*), optional, intent(in) :: method
     real(kind=8), optional, intent(in) :: dt
-    integer, optional, intent(out) :: jptem
-    integer, optional, intent(in) :: nbnli
+    integer(kind=8), optional, intent(out) :: jptem
+    integer(kind=8), optional, intent(in) :: nbnli
     character(len=*), optional, intent(in) :: sd_nl_
-    integer, optional, intent(out) :: jvint
+    integer(kind=8), optional, intent(out) :: jvint
     character(len=4), optional, intent(in) :: sauve
-    integer, optional, intent(in) :: sd_index
+    integer(kind=8), optional, intent(in) :: sd_index
     aster_logical, optional, intent(in) :: checkarg
 !
 !     ALLOCATION DES VECTEURS DE SORTIE POUR UN CALCUL TRANSITOIRE
@@ -78,8 +78,8 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
 ! IN  : CHECKARG : VERIFIER LA COHERENCE DANS LES ARGUMENTS OPTIONNELS D'ENTREE
 ! ----------------------------------------------------------------------
     aster_logical :: checkargs, entvid, saved
-    integer :: nbstoc, j1refe, inom, i, iret, jchmp, nbnoli, nbvint
-    integer :: jdesc, jinti, nbsym2, nbmode, jnltyp, jvindx, sd_ind
+    integer(kind=8) :: nbstoc, j1refe, inom, i, iret, jchmp, nbnoli, nbvint
+    integer(kind=8) :: jdesc, jinti, nbsym2, nbmode, jnltyp, jvindx, sd_ind
     real(kind=8) :: dt2
     character(len=3) :: typsau
     character(len=4) :: sauve2, nomsym2(3), bl3pt
@@ -89,7 +89,7 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes, &
     character(len=16) :: nomres16, method2
     character(len=24) :: matric(3)
 
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
 !-----------------------------------------------------------------------
 !   --- 0 - Obligatory arguments, validation of the input values
     ASSERT((typcal .eq. 'TRAN') .or. (typcal .eq. 'HARM'))

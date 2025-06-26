@@ -30,9 +30,9 @@ subroutine renfort3d(istep,nbrenf,numr,epstf33,vecr,&
                      ann,xn,bn,ngf,ipzero,&
                      epspmf33,epspmf,eps_nl,spre0,spref)
 
-        integer :: istep
-        integer :: nbrenf
-        integer :: numr
+        integer(kind=8) :: istep
+        integer(kind=8) :: nbrenf
+        integer(kind=8) :: numr
         real(kind=8) :: epstf33(3,3)
         real(kind=8) :: vecr(nbrenf,3)
         real(kind=8) :: epsr0
@@ -73,8 +73,8 @@ subroutine renfort3d(istep,nbrenf,numr,epstf33,vecr,&
         real(kind=8) :: ann(ngf,ngf+1)
         real(kind=8) :: xn(ngf)
         real(kind=8) :: bn(ngf)
-        integer :: ngf
-        integer :: ipzero(ngf)
+        integer(kind=8) :: ngf
+        integer(kind=8) :: ipzero(ngf)
         real(kind=8) :: epspmf33(3,3) 
         real(kind=8) :: epspmf
         real(kind=8) :: eps_nl

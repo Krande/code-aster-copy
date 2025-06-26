@@ -23,7 +23,7 @@
 interface
     subroutine cfgccj(resoco, nbliai, conjug)
         character(len=24) :: resoco
-        integer :: nbliai
+        integer(kind=8) :: nbliai
         aster_logical :: conjug
     end subroutine cfgccj
 end interface

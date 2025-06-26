@@ -23,6 +23,6 @@ interface
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: sderro
         type(NL_DS_Measure), intent(in) :: ds_measure
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
     end subroutine nmerro
 end interface

@@ -21,16 +21,16 @@
 interface
     subroutine ircael(jcesdi, jcesli, jcesvi, jcesci, nummai,&
                       nbqcou, nbtcou, nbrsec, nbrfib, nbrgrf, nugrfi)
-        integer :: jcesdi
-        integer :: jcesli
-        integer :: jcesvi
-        integer :: jcesci
-        integer :: nummai
-        integer :: nbqcou
-        integer :: nbtcou
-        integer :: nbrsec
-        integer :: nbrfib
-        integer :: nbrgrf
-        integer :: nugrfi(10)
+        integer(kind=8) :: jcesdi
+        integer(kind=8) :: jcesli
+        integer(kind=8) :: jcesvi
+        integer(kind=8) :: jcesci
+        integer(kind=8) :: nummai
+        integer(kind=8) :: nbqcou
+        integer(kind=8) :: nbtcou
+        integer(kind=8) :: nbrsec
+        integer(kind=8) :: nbrfib
+        integer(kind=8) :: nbrgrf
+        integer(kind=8) :: nugrfi(10)
     end subroutine ircael
 end interface

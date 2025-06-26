@@ -61,8 +61,8 @@ subroutine cgnoes(mofaz, iocc, nomaz, lisnoz, nbno)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer ::  idlino, ino, iocc, iret, nb
-    integer :: nbno, nbnoe, ndim, nprec, nrayon
+    integer(kind=8) ::  idlino, ino, iocc, iret, nb
+    integer(kind=8) :: nbno, nbnoe, ndim, nprec, nrayon
     real(kind=8) :: d2, dist, prec, rayon, zero
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------

@@ -22,9 +22,9 @@ interface
     subroutine pjxxu2(dim, moa, lima, nbma, klino, nbnoOut)
         character(len=2) :: dim
         character(len=8) :: moa
-        integer :: lima(*)
-        integer :: nbma
+        integer(kind=8) :: lima(*)
+        integer(kind=8) :: nbma
         character(len=16) :: klino
-        integer :: nbnoOut
+        integer(kind=8) :: nbnoOut
     end subroutine pjxxu2
 end interface

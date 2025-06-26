@@ -27,7 +27,7 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb, &
 #include "asterfort/assert.h"
 !
     character(len=16), intent(in) :: compor
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     real(kind=8), intent(out) :: a0(6, 6), c0(2, 2, 2)
     real(kind=8), intent(out) :: aa_t(6, 6, 2), ab(6, 2, 2), ac(2, 2, 2)
     real(kind=8), intent(out) :: ga_t(6, 6, 2), gb(6, 2, 2), gc(2, 2, 2)
@@ -59,7 +59,7 @@ subroutine dhrc_recup_mate(imate, compor, a0, c0, aa_t, ga_t, ab, gb, &
 !            (2): POUR LE GLISSEMENT
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, l, jadr, n1, icodre1
+    integer(kind=8) :: i, j, l, jadr, n1, icodre1
 ! ----------------------------------------------------------------------
 !
     if ((.not. (compor(1:4) .eq. 'DHRC'))) then

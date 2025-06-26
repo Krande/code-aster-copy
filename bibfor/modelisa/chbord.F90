@@ -27,8 +27,8 @@ subroutine chbord(nomo, nbCell, listCellNume, mabord, nbmapr, &
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 !
-    integer, pointer :: listCellNume(:)
-    integer :: nbCell, mabord(*), nbmapr, nbmabo
+    integer(kind=8), pointer :: listCellNume(:)
+    integer(kind=8) :: nbCell, mabord(*), nbmapr, nbmabo
     character(len=*) :: nomo
 !
 !      OPERATEURS :     AFFE_CHAR_MECA ET AFFE_CHAR_MECA_C
@@ -43,8 +43,8 @@ subroutine chbord(nomo, nbCell, listCellNume, mabord, nbmapr, &
 ! OUT : NBMABO : NOMBRE DE MAILLES "BORD"
 !
 !-----------------------------------------------------------------------
-    integer :: iret, nbgrel, igrel, ialiel, nel, itypel, iCell, ier, cellNume, iel
-    integer :: traite
+    integer(kind=8) :: iret, nbgrel, igrel, ialiel, nel, itypel, iCell, ier, cellNume, iel
+    integer(kind=8) :: traite
     character(len=8) :: modele, dmo, dma
     character(len=16) :: nomte
     character(len=19) :: nolig

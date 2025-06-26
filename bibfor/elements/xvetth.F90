@@ -70,8 +70,8 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps, &
 !-----------------------------------------------------------------------
 !
     character(len=8) :: elrefp
-    integer :: ndim, nnop, imate, itps, igeom, nfh, nfe, jpintt
-    integer :: lonch(10), cnset(4*32), heavt(36), heavn(27, 5)
+    integer(kind=8) :: ndim, nnop, imate, itps, igeom, nfh, nfe, jpintt
+    integer(kind=8) :: lonch(10), cnset(4*32), heavt(36), heavn(27, 5)
     real(kind=8) :: temper(nnop*(1+nfh+nfe)), lsn(nnop), lst(nnop)
     real(kind=8) :: basloc(*), vectt(*)
 !
@@ -89,9 +89,9 @@ subroutine xvetth(ndim, elrefp, nnop, imate, itps, &
     real(kind=8) :: jac, theta, dgdth(ndim), dffenr(nnop, 1+nfh+nfe, ndim)
     real(kind=8) :: pdscal
     real(kind=8) :: rhocp, dtem(ndim), r
-    integer :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
-    integer :: nbddl, hea_se
-    integer :: mxstac, icodre(2), spt, ipoids, idfde, idim, ipos, codret
+    integer(kind=8) :: ivf, kpg, nno, npg, j, iret, nse, ise, inp, in, ino, kddl
+    integer(kind=8) :: nbddl, hea_se
+    integer(kind=8) :: mxstac, icodre(2), spt, ipoids, idfde, idim, ipos, codret
 !
     parameter(mxstac=1000)
 !     NBRE MAX DE NOEUDS D'UN SOUS-ELEMENT (TRIA3,TETRA4,TRIA6 -> 6)

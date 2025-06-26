@@ -25,7 +25,7 @@ interface
         character(len=19) :: depmoi
         character(len=19) :: solalg(*)
         character(len=19) :: sddisc
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=19) :: incest
         character(len=19) :: depest
     end subroutine nmprex

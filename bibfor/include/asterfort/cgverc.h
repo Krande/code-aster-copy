@@ -21,6 +21,6 @@
 interface
     subroutine cgverc(resu, nexci)
         character(len=8) :: resu
-        integer :: nexci
+        integer(kind=8) :: nexci
     end subroutine cgverc
 end interface

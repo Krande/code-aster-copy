@@ -52,9 +52,9 @@ subroutine rrcRead(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=16), parameter :: keywFact = 'CHAM_GD'
-    integer :: iFieldBuild, nbFieldBuild, nbret
+    integer(kind=8) :: iFieldBuild, nbFieldBuild, nbret
     character(len=8)  :: modelDom, modelRom, mesh
     character(len=16) :: k16bid, resultType, operation
     character(len=24) :: grNodeInterf, fieldName

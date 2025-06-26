@@ -19,8 +19,8 @@
 interface
     function nbddlMaxMa(nume_ddlz, matr_assez, nbmat, v_name_mat) result(maxDDLMa)
         character(len=*), intent(in) :: nume_ddlz, matr_assez
-        integer, intent(in) :: nbmat
+        integer(kind=8), intent(in) :: nbmat
         character(len=*), intent(in) :: v_name_mat(nbmat)
-        integer :: maxDDLMa
+        integer(kind=8) :: maxDDLMa
     end function nbddlMaxMa
 end interface

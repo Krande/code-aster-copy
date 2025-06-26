@@ -28,7 +28,7 @@ interface
         character(len=8) :: noma
         character(len=8) :: maiaux
         aster_logical :: grille
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: meth
         character(len=8) :: nfonf
         character(len=8) :: nfong

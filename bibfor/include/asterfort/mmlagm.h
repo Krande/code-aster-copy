@@ -19,8 +19,8 @@
 interface
     subroutine mmlagm(nbdm  , ndim  , nnl, jdepde, ffl,&
                       dlagrc, dlagrf)
-        integer, intent(in) :: nbdm, ndim, nnl
-        integer, intent(in) :: jdepde
+        integer(kind=8), intent(in) :: nbdm, ndim, nnl
+        integer(kind=8), intent(in) :: jdepde
         real(kind=8), intent(in) :: ffl(9)
         real(kind=8), intent(out) :: dlagrc, dlagrf(2)
     end subroutine mmlagm

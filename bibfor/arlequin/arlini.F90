@@ -37,8 +37,8 @@ subroutine arlini(mail, base, dime, nbno, &
 !     ----------
     character(len=8) :: mail
     character(len=1) :: base
-    integer :: dime
-    integer :: nbma, nbno, nbnoma
+    integer(kind=8) :: dime
+    integer(kind=8) :: nbma, nbno, nbnoma
 
 ! ----------------------------------------------------------------------
 
@@ -55,11 +55,11 @@ subroutine arlini(mail, base, dime, nbno, &
 ! IN  NBNOMA : LONGUEUR DU VECTEUR CONNECTIVITE DES MAILLES
 
     character(len=24) :: maidim, cooval, coodsc
-    integer :: jdime, jcoor, jcods
+    integer(kind=8) :: jdime, jcoor, jcods
     character(len=24) :: typmai
-    integer :: jtypm
+    integer(kind=8) :: jtypm
     character(len=24) :: connex
-    integer :: ntgeo
+    integer(kind=8) :: ntgeo
 
 ! ----------------------------------------------------------------------
 

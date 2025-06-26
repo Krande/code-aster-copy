@@ -25,17 +25,17 @@ interface
                       nfiss, nfh, nfe, ddls, ddlm,&
                       fk, dkdgl, ff, dfdi, f, eps, grad, heavn)
         aster_logical, intent(in) :: axi
-        integer, intent(in) :: igeom
-        integer, intent(in) :: nnop
-        integer, intent(in) :: nnos
-        integer, intent(in) :: idepl
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: igeom
+        integer(kind=8), intent(in) :: nnop
+        integer(kind=8), intent(in) :: nnos
+        integer(kind=8), intent(in) :: idepl
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: he(nfiss)
-        integer, intent(in) :: nfiss
-        integer, intent(in) :: nfh
-        integer, intent(in) :: nfe
-        integer, intent(in) :: ddls
-        integer, intent(in) :: ddlm
+        integer(kind=8), intent(in) :: nfiss
+        integer(kind=8), intent(in) :: nfh
+        integer(kind=8), intent(in) :: nfe
+        integer(kind=8), intent(in) :: ddls
+        integer(kind=8), intent(in) :: ddlm
         real(kind=8), intent(in)::  fk(27,3,3)
         real(kind=8), intent(in)::  dkdgl(27,3,3,3)
         real(kind=8), intent(in) :: ff(nnop)
@@ -43,6 +43,6 @@ interface
         real(kind=8), intent(out) :: f(3, 3)
         real(kind=8), intent(out) :: eps(6)
         real(kind=8), intent(out) :: grad(ndim, ndim)
-        integer, intent(in) :: heavn(nnop, 5)
+        integer(kind=8), intent(in) :: heavn(nnop, 5)
     end subroutine xcinem
 end interface

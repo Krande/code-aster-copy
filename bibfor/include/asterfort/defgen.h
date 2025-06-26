@@ -26,7 +26,7 @@ interface
                       depl, eps, epsx3)
         aster_logical :: testl1
         aster_logical :: testl2
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: r
         real(kind=8) :: x3
         real(kind=8) :: sina

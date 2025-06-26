@@ -25,10 +25,10 @@ function lcqeqv(x, y)
 !       ----------------------------------------------------------------
     real(kind=8) :: epsi
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     parameter(epsi=1.d-9)
-    integer :: n, nd
+    integer(kind=8) :: n, nd
     real(kind=8) :: x(6), y(6)
     character(len=3) :: lcqeqv
     common/tdim/n, nd

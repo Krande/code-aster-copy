@@ -27,7 +27,7 @@ interface
         character(len=8) :: nomfon
         real(kind=8) :: valmin(*)
         real(kind=8) :: valmax(*)
-        integer :: ncyc
+        integer(kind=8) :: ncyc
         real(kind=8) :: dommag
     end subroutine fgdomg
 end interface

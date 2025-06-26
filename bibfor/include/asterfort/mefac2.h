@@ -20,8 +20,8 @@
 !
 interface
     function mefac2(n, m)
-        integer :: n
-        integer :: m
+        integer(kind=8) :: n
+        integer(kind=8) :: m
         real(kind=8) :: mefac2
     end function mefac2
 end interface

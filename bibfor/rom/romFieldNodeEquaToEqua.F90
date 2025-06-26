@@ -33,8 +33,8 @@ subroutine romFieldNodeEquaToEqua(fieldA, fieldB, nbNodeMesh, listNode, equaAToB
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Field), intent(in) :: fieldA, fieldB
-    integer, intent(in) :: nbNodeMesh
-    integer, pointer :: listNode(:), equaAToB(:)
+    integer(kind=8), intent(in) :: nbNodeMesh
+    integer(kind=8), pointer :: listNode(:), equaAToB(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,18 +60,18 @@ subroutine romFieldNodeEquaToEqua(fieldA, fieldB, nbNodeMesh, listNode, equaAToB
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, parameter :: iLigrMesh = 1
-    integer, parameter :: nbEcMax = 10
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: iLigrMesh = 1
+    integer(kind=8), parameter :: nbEcMax = 10
     character(len=24) :: fieldRefeA, fieldRefeB
     character(len=16) :: fieldSuppA, fieldSuppB
-    integer :: nb_ec, nbEquaA, nbEquaB
-    integer :: iEquaA, physNumeA, physNumeB, numeDofB
-    integer :: numeNode, numeCmp, numeEquaA, numeEquaB
+    integer(kind=8) :: nb_ec, nbEquaA, nbEquaB
+    integer(kind=8) :: iEquaA, physNumeA, physNumeB, numeDofB
+    integer(kind=8) :: numeNode, numeCmp, numeEquaA, numeEquaB
     character(len=19) :: profChnoA, profChnoB
-    integer, pointer :: deeqA(:) => null(), deeqB(:) => null()
-    integer, pointer :: nueqB(:) => null()
-    integer, pointer :: prnoB(:) => null()
+    integer(kind=8), pointer :: deeqA(:) => null(), deeqB(:) => null()
+    integer(kind=8), pointer :: nueqB(:) => null()
+    integer(kind=8), pointer :: prnoB(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

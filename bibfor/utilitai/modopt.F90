@@ -32,7 +32,7 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
 #include "asterfort/rschex.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbopt
+    integer(kind=8) :: nbopt
     character(len=8) :: resuco, modele
     character(len=24) :: lesopt
 !
@@ -50,10 +50,10 @@ subroutine modopt(resuco, modele, lesopt, nbopt)
 !    SI XXXX_ELNO ALORS XXXX_ELEM
 !
 ! ----------------------------------------------------------------------
-    integer :: j, jopt, jopt2
-    integer :: i, iret, irxfem, nbopt2
-    integer :: ierz1, ierz2, inoz1, inoz2, ierth, ierto, iertno
-    integer :: ierme, iermo, iermno, iqirel, iqiren
+    integer(kind=8) :: j, jopt, jopt2
+    integer(kind=8) :: i, iret, irxfem, nbopt2
+    integer(kind=8) :: ierz1, ierz2, inoz1, inoz2, ierth, ierto, iertno
+    integer(kind=8) :: ierme, iermo, iermno, iqirel, iqiren
     character(len=16) :: tysd
     character(len=24) :: lesop2
     aster_logical :: yathm, perman

@@ -36,7 +36,7 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns, &
 #include "asterfort/utmess.h"
 !
     character(len=4) :: lieu
-    integer :: iocc1, iocc2, ns, nbsscyc
+    integer(kind=8) :: iocc1, iocc2, ns, nbsscyc
     real(kind=8) :: sp(2), instsp(4), spmeca(2), spss(100)
     aster_logical :: ze200
 !
@@ -52,11 +52,11 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns, &
 ! OUT : SP     : SP1 et SP2
 ! OUT : INSTSP : INSTANTS DE SP1 et SP2
 !
-    integer :: jinfoi, nmecap, npresp, ntherp, jinfor, numcha, iret
-    integer :: jchara, jcharb, k, j, jtranp, jsigu, i0, i1, e0(2)
-    integer :: jtemp, i, l, nbinstp, nmecaq, npresq, ntherq, nbinstq
-    integer :: jtranq, instp(4), tmax, n1, tmin, ntrav, vtrav(1000)
-    integer :: ntrav2, vtrav2(1000), jspseis
+    integer(kind=8) :: jinfoi, nmecap, npresp, ntherp, jinfor, numcha, iret
+    integer(kind=8) :: jchara, jcharb, k, j, jtranp, jsigu, i0, i1, e0(2)
+    integer(kind=8) :: jtemp, i, l, nbinstp, nmecaq, npresq, ntherq, nbinstq
+    integer(kind=8) :: jtranq, instp(4), tmax, n1, tmin, ntrav, vtrav(1000)
+    integer(kind=8) :: ntrav2, vtrav2(1000), jspseis
     real(kind=8) :: presap, presbp, map(12), mbp(12), s2pp, sb(6)
     real(kind=8) :: tresca, sa(6), st(6), sc(6), tempa, tempb, A1p(12)
     real(kind=8) :: B1p(12), mij(12), trescamax, presaq, presbq, maq(12)

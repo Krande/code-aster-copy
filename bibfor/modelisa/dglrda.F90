@@ -49,12 +49,12 @@ subroutine dglrda()
 !
 !-----------------------------------------------------------------------
 !
-    integer :: na
+    integer(kind=8) :: na
     parameter(na=10)
-    integer :: nnap, nprec, nliner, ibid, ii, ilit, nlit, jlm, jmelk
-    integer :: jmelr, jmelc, lonobj, ifon0, longf, ifon1, lonuti
+    integer(kind=8) :: nnap, nprec, nliner, ibid, ii, ilit, nlit, jlm, jmelk
+    integer(kind=8) :: jmelr, jmelc, lonobj, ifon0, longf, ifon1, lonuti
     real(kind=8) :: eb, nub, ft, fc, gamma, num, em
-    integer :: niv, ifm
+    integer(kind=8) :: niv, ifm
     real(kind=8) :: qp1, qp2, prex, prey, nmin0
     real(kind=8), dimension(2, 3) :: cn, cm
     real(kind=8) :: ea(3*na), omx(3*na), omy(3*na), sy(3*na), nua(3*na)
@@ -66,14 +66,14 @@ subroutine dglrda()
     real(kind=8) :: minmp(2), alphat
     real(kind=8) :: nmax0, nmin(2), nmax(2), oml(na), r8b(1), par1, par2, elb(2)
     real(kind=8) :: mp1cst(2), mp2cst(2), omt, eat, bt1, bt2, pflua, pretr
-    integer :: icodr2(5), nalphat
+    integer(kind=8) :: icodr2(5), nalphat
     character(len=6) :: k6
     character(len=8) :: mater, fon(4), k8b
     character(len=16) :: nomres(5)
     character(len=8) :: fsncx, fsncy, fscxd, fscyd, fscxd2, fscyd2
     character(len=8) :: fincx, fincy, ficxd, ficyd, ficxd2, ficyd2
     character(len=16) :: type, nomcmd
-    integer :: impf, icst, icis
+    integer(kind=8) :: impf, icst, icis
 !
     call jemarq()
 !

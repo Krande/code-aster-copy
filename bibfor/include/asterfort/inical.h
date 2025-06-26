@@ -21,8 +21,8 @@
 interface
     subroutine inical(nbin, lpain, lchin, nbout, lpaout,&
                       lchout)
-        integer :: nbout
-        integer :: nbin
+        integer(kind=8) :: nbout
+        integer(kind=8) :: nbin
         character(len=8) :: lpain(nbin)
         character(len=19) :: lchin(nbin)
         character(len=8) :: lpaout(nbout)

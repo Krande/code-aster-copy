@@ -19,7 +19,7 @@
 interface
     subroutine nmchsv(fonact, veasse, sddyna, ds_system, ds_contact)
         use NonLin_Datastructure_type
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: veasse(*)
         character(len=19) :: sddyna
         type(NL_DS_System), intent(in) :: ds_system

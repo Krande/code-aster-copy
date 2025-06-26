@@ -80,14 +80,14 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
 !
 !
 !
-    integer :: k, te, tabno(27), iret1, jobj, numa, nch
-    integer :: igr, iel, ilmaco, illiel
-    integer :: dimgeo, ibid, ino, ino1, ino2
-    integer :: nbmail, nbnoeu, nbcoor, iadime, kse
-    integer :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
-    integer :: npg1, nbpi, iagese, nno2, nuse, nse1
-    integer :: ima, nbelgr, nupoin, npoini, iterm, ipoini
-    integer :: iret, ich, nch2
+    integer(kind=8) :: k, te, tabno(27), iret1, jobj, numa, nch
+    integer(kind=8) :: igr, iel, ilmaco, illiel
+    integer(kind=8) :: dimgeo, ibid, ino, ino1, ino2
+    integer(kind=8) :: nbmail, nbnoeu, nbcoor, iadime, kse
+    integer(kind=8) :: nbno2t, ianno2, iatypm, nuno2, nupoi2, cas
+    integer(kind=8) :: npg1, nbpi, iagese, nno2, nuse, nse1
+    integer(kind=8) :: ima, nbelgr, nupoin, npoini, iterm, ipoini
+    integer(kind=8) :: iret, ich, nch2
     character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, nompar
     character(len=8) :: tych
     character(len=16) :: nomte, lisch(nch)
@@ -99,7 +99,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
 ! ----------------------------------------------------------------------
 !     VARIABLES NECESSAIRES A L'APPEL DE ECLATY :
 !     ON COMPREND LE SENS DE CES VARIABLES EN REGARDANT ECLATY
-    integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
+    integer(kind=8) :: mxnbn2, mxnbpi, mxnbte, mxnbse
 !     MXNBN2 : MAX DU NOMBRE DE NOEUDS D'UN SOUS-ELEMENT (HEXA8)
     parameter(mxnbn2=8)
 !     MXNBPI : MAX DU NOMBRE DE POINT_I (HEXA A 27 POINTS DE GAUSS)
@@ -111,17 +111,17 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
 !     MXNBSE : MAX DU NOMBRE DE SOUS-ELEMENTS
     parameter(mxnbse=27)
 !
-    integer :: nbse, corsel(mxnbse)
-    integer :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
-    integer :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
+    integer(kind=8) :: nbse, corsel(mxnbse)
+    integer(kind=8) :: connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
+    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), tyma(mxnbse)
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
-    integer :: ico
-    integer :: opt, iadesc, iaoppa, nbin
-    integer, pointer :: connexse(:) => null()
+    integer(kind=8) :: ico
+    integer(kind=8) :: opt, iadesc, iaoppa, nbin
+    integer(kind=8), pointer :: connexse(:) => null()
     real(kind=8), pointer :: geopoini(:) => null()
-    integer, pointer :: liel(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: maco(:) => null()
+    integer(kind=8), pointer :: maco(:) => null()
 ! ----------------------------------------------------------------------
 !
 !     FONCTIONS FORMULES :

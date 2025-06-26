@@ -20,7 +20,7 @@ subroutine dffnor(ndim, baslo, inoff, vnor)
 !
     implicit none
 !
-    integer :: ndim, inoff
+    integer(kind=8) :: ndim, inoff
     real(kind=8) :: baslo(*), vnor(ndim)
 !
 !

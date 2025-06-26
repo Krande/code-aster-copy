@@ -23,10 +23,10 @@ interface
                       compor, instam, instap, crit, sigm,&
                       vim)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=1) :: poum
-        integer :: mate
+        integer(kind=8) :: mate
         character(len=16) :: compor
         real(kind=8) :: instam
         real(kind=8) :: instap

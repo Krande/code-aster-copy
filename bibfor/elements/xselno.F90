@@ -39,7 +39,7 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim, &
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: mxval
+    integer(kind=8) :: mxval
     parameter(mxval=32*10*6)
 !     EN 2D :
 !     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)-> en lineaire
@@ -48,11 +48,11 @@ subroutine xselno(nno, nnop, nbsig, nse, ndim, &
 !     MXVAL = 32 (NBSE MAX) * 4 (NBNOSE MAX) * 6 (NBCMP MAX)-> en lineaire
 !     MXVAL = 32 (NBSE MAX) * 10(NBNOSE MAX) * 6 (NBCMP MAX)-> en quadratique
 !
-    integer :: ndim, nnop, nno
-    integer :: nbsig, nbseco(27)
-    integer :: jcnset
-    integer :: jout2
-    integer :: i, j, nse, ise, in, ino, ic
+    integer(kind=8) :: ndim, nnop, nno
+    integer(kind=8) :: nbsig, nbseco(27)
+    integer(kind=8) :: jcnset
+    integer(kind=8) :: jout2
+    integer(kind=8) :: i, j, nse, ise, in, ino, ic
 !
     real(kind=8) :: tmp, somsig(27, 6)
 !

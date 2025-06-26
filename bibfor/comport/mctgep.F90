@@ -56,7 +56,7 @@ subroutine mctgep(deigy, dydx, eigx, eigy, vecx, direig, edge, apex)
 #include "asterf_types.h"
 !
 ! Declaration of integer type variables
-    integer :: i, j, ia, ib, ic, mcomp, mdim
+    integer(kind=8) :: i, j, ia, ib, ic, mcomp, mdim
 !
 !     aster_logical :: epflag
 !

@@ -21,7 +21,7 @@
 interface
     subroutine nmarcc(result, numarc, typchz, nomchz)
         character(len=8) :: result
-        integer :: numarc
+        integer(kind=8) :: numarc
         character(len=*) :: typchz
         character(len=*) :: nomchz
     end subroutine nmarcc

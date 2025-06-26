@@ -30,15 +30,15 @@ subroutine load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(out) :: nb_load
+    integer(kind=8), intent(out) :: nb_load
     aster_logical, intent(out) :: load_empty
     character(len=24), pointer :: v_load_name(:)
-    integer, pointer :: v_load_info(:)
+    integer(kind=8), pointer :: v_load_info(:)
     character(len=19), optional, intent(in) :: list_load_
     character(len=*), optional, intent(in) :: lload_name_
     character(len=*), optional, intent(in) :: lload_info_
     character(len=*), optional, target, intent(in) :: list_name_(*)
-    integer, optional, intent(in) :: list_nbload_
+    integer(kind=8), optional, intent(in) :: list_nbload_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ subroutine load_list_info(load_empty, nb_load, v_load_name, v_load_info, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: lload_name, lload_info, orig_list
 !
 ! --------------------------------------------------------------------------------------------------

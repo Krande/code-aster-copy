@@ -20,6 +20,6 @@
 !
 interface
     subroutine iniran(jump)
-        integer :: jump
+        integer(kind=8) :: jump
     end subroutine iniran
 end interface

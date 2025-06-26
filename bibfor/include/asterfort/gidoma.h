@@ -20,6 +20,6 @@
 !
 interface
     subroutine gidoma(nbnoto)
-        integer :: nbnoto
+        integer(kind=8) :: nbnoto
     end subroutine gidoma
 end interface

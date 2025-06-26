@@ -34,8 +34,8 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he, &
 #include "asterfort/xkamat.h"
 #include "asterfort/xnbddl.h"
 #include "asterfort/iimatu.h"
-    integer :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe, heavn(27, 5)
-    integer :: jstno, imate
+    integer(kind=8) :: ndim, igeom, nnop, npg, ddlh, ddlc, nfe, heavn(27, 5)
+    integer(kind=8) :: jstno, imate
     character(len=8) :: elrefp
     real(kind=8) :: basloc(9*nnop), he, coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(90), matuu(*)
@@ -72,11 +72,11 @@ subroutine xrige3(elrefp, ndim, coorse, igeom, he, &
 !
 !
 !
-    integer :: kpg, kk, n, i, m, j, j1, kkd, ij
-    integer :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
-    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se, nfiss
-    integer :: nnops
-    integer :: alp, ii, jj, k, nfh
+    integer(kind=8) :: kpg, kk, n, i, m, j, j1, kkd, ij
+    integer(kind=8) :: nno, nnos, npgbis, ddls, ddld, ddldn, cpt, ndimb
+    integer(kind=8) :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, hea_se, nfiss
+    integer(kind=8) :: nnops
+    integer(kind=8) :: alp, ii, jj, k, nfh
     real(kind=8) :: tmp1
     real(kind=8) :: xg(ndim), xe(ndim), ff(nnop), jac
     real(kind=8) :: dfdi(nnop, ndim), pff(1+ddlh+nfe*ndim**2, nnop, ndim)

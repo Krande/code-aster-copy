@@ -25,9 +25,9 @@ interface
         real(kind=8) :: x2
         real(kind=8) :: f1
         real(kind=8) :: f2
-        integer :: niter
+        integer(kind=8) :: niter
         real(kind=8) :: xmult
-        integer :: iret
+        integer(kind=8) :: iret
         interface
             function func(x)
                 real(kind=8) :: x

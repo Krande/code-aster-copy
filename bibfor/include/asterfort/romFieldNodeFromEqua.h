@@ -20,7 +20,7 @@ interface
     subroutine romFieldNodeFromEqua(field, nbNodeMesh, listNode)
         use Rom_Datastructure_type
         type(ROM_DS_Field), intent(in) :: field
-        integer, intent(in) :: nbNodeMesh
-        integer, pointer :: listNode(:)
+        integer(kind=8), intent(in) :: nbNodeMesh
+        integer(kind=8), pointer :: listNode(:)
     end subroutine romFieldNodeFromEqua
 end interface

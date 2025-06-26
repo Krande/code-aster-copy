@@ -30,9 +30,9 @@ subroutine thmGetPermeabilityTensor(ds_thm, ndim, angl_naut, j_mater, phi, endo,
 #include "asterfort/utmess.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: angl_naut(3)
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: phi, endo
     real(kind=8), intent(out) :: tperm(ndim, ndim)
 !
@@ -57,9 +57,9 @@ subroutine thmGetPermeabilityTensor(ds_thm, ndim, angl_naut, j_mater, phi, endo,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para = 4
-    integer :: aniso
-    integer :: icodre(nb_para)
+    integer(kind=8), parameter :: nb_para = 4
+    integer(kind=8) :: aniso
+    integer(kind=8) :: icodre(nb_para)
     real(kind=8) :: para_vale(nb_para)
     character(len=16), parameter :: para_name(nb_para) = (/'PERM_IN ', 'PERMIN_L', &
                                                            'PERMIN_N', 'PERMIN_T'/)

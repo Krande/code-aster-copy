@@ -18,7 +18,7 @@
 
 subroutine hbvaec(gamma, nbmat, materf, parame)
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: gamma, materf(nbmat, 2), parame(4)
 ! ======================================================================
 ! --- HOEK BROWN : CALCUL DES FONCTIONS DE LA VARIABLE D ECROUISSAGE ---

@@ -31,7 +31,7 @@ subroutine lcmhdd(necoul, necris, nbsys, nbcoef, coefh, &
 #include "asterfort/lcicma.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
-    integer :: nbcoef, nbsys, i, j, nn(12), idbg, nsg
+    integer(kind=8) :: nbcoef, nbsys, i, j, nn(12), idbg, nsg
     real(kind=8) :: coefh(6), hsr(nsg, nsg), hgm(12, 12)
     real(kind=8) :: a1(3, 3), a2(3, 3), a3(3, 3), a4(3, 3), a0(3, 3), a5(3, 3)
     real(kind=8) :: a6(3, 3)

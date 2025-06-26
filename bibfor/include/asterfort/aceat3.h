@@ -23,23 +23,23 @@ interface
                       elpar, nopar, ivr, nbzk,&
                       nozk, cozk, isens, coor, epsi,&
                       crit, nno, nmmt)
-        integer :: nno
-        integer :: nbzk
-        integer :: nbpart
-        integer :: nbtuy
+        integer(kind=8) :: nno
+        integer(kind=8) :: nbzk
+        integer(kind=8) :: nbpart
+        integer(kind=8) :: nbtuy
         character(len=8) :: noma
         character(len=8) :: nomu
-        integer :: nbmap(nbpart)
-        integer :: elpar(nbpart, nbtuy)
-        integer :: nopar(nbpart, nno, nbtuy)
-        integer :: ivr(*)
-        integer :: ifm
-        integer :: nozk(nbzk)
+        integer(kind=8) :: nbmap(nbpart)
+        integer(kind=8) :: elpar(nbpart, nbtuy)
+        integer(kind=8) :: nopar(nbpart, nno, nbtuy)
+        integer(kind=8) :: ivr(*)
+        integer(kind=8) :: ifm
+        integer(kind=8) :: nozk(nbzk)
         real(kind=8) :: cozk(3*nbzk)
-        integer :: isens(nbpart)
+        integer(kind=8) :: isens(nbpart)
         real(kind=8) :: coor(*)
         real(kind=8) :: epsi
         character(len=8) :: crit
-        integer :: nmmt(*)
+        integer(kind=8) :: nmmt(*)
     end subroutine aceat3
 end interface

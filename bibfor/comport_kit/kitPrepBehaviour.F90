@@ -25,7 +25,7 @@ subroutine kitPrepBehaviour(compor, nvi_tot, compor_creep, compor_plas)
 #include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(in) :: compor(*)
-    integer, intent(in) :: nvi_tot
+    integer(kind=8), intent(in) :: nvi_tot
     character(len=16), intent(out) :: compor_creep(:)
     character(len=16), intent(out) :: compor_plas(:)
 !
@@ -44,8 +44,8 @@ subroutine kitPrepBehaviour(compor, nvi_tot, compor_creep, compor_plas)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nume_plas, nume_flua
-    integer :: nvi_flua, nvi_plas
+    integer(kind=8) :: nume_plas, nume_flua
+    integer(kind=8) :: nvi_flua, nvi_plas
 !
 ! --------------------------------------------------------------------------------------------------
 !

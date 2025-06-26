@@ -24,7 +24,7 @@ interface
                        taujeu1  , taujeu2  ,&
                        dnepmait1, dnepmait2,&
                        djeut)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in):: kappa(2,2)
         real(kind=8), intent(in) :: tau1(3), tau2(3)
         real(kind=8), intent(in) :: taujeu1, taujeu2

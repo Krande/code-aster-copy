@@ -24,11 +24,11 @@ interface
     subroutine nuainr(method, np1, nx1, nc1, ic1,&
                       nuax1, nual1, nuav1, x2, dref,&
                       val2)
-        integer :: nx1
+        integer(kind=8) :: nx1
         character(len=*) :: method
-        integer :: np1
-        integer :: nc1
-        integer :: ic1
+        integer(kind=8) :: np1
+        integer(kind=8) :: nc1
+        integer(kind=8) :: ic1
         real(kind=8) :: nuax1(*)
         aster_logical :: nual1(*)
         real(kind=8) :: nuav1(*)

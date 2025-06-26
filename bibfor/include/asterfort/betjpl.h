@@ -22,7 +22,7 @@ interface
                       dsde)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: sig(6)

@@ -52,17 +52,17 @@ subroutine te0297(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: ndim, nno, nnop, npg, ier
-    integer :: nfh, nfe, ddlc, nse, ise, in, ino, ninter
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
-    integer :: ipres, ipref, itemps, jptint, jcface, jlongc, imate
-    integer :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, idecpg, icode
-    integer :: nface, cface(30, 6), ifa, singu, jpmilt, ipuls, iret, jtab(7)
-    integer :: irese, ddlm, jbasec, nptf, nfiss, jheavn, jstno
-    integer :: contac
+    integer(kind=8) :: ndim, nno, nnop, npg, ier
+    integer(kind=8) :: nfh, nfe, ddlc, nse, ise, in, ino, ninter
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jbaslo, igeom, idepl
+    integer(kind=8) :: ipres, ipref, itemps, jptint, jcface, jlongc, imate
+    integer(kind=8) :: ithet, i, j, compt, igthet, ibid, jlsn, jlst, idecpg, icode
+    integer(kind=8) :: nface, cface(30, 6), ifa, singu, jpmilt, ipuls, iret, jtab(7)
+    integer(kind=8) :: irese, ddlm, jbasec, nptf, nfiss, jheavn, jstno
+    integer(kind=8) :: contac
     real(kind=8) :: thet, valres(3), devres(3), presn(27), valpar(4)
     real(kind=8) :: pres, fno(81), coorse(81), puls
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     character(len=8) :: elrefp, elrese(6), fami(6), nompar(4), enr
     character(len=16) :: nomres(3)
 !

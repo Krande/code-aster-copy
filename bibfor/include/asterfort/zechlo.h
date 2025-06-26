@@ -20,7 +20,7 @@
 !
 interface
     subroutine zechlo(opt, te)
-        integer :: opt
-        integer :: te
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
     end subroutine zechlo
 end interface

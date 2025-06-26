@@ -57,21 +57,21 @@ subroutine te0012(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=16) :: phenom
     character(len=4) :: fami
     character(len=3) :: stopz
     real(kind=8) :: a(3, 3, 27, 27), matp(81, 81), matv(3321)
     real(kind=8) :: poids, rho(1)
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: nno, kp, i, j, k, imatuu, iacce, ivect
-    integer :: ijkl, ik, l, npg, nddl, nvec
-    integer :: n1, n2, i2, j2, k2
-    integer :: idiag, nnos, iret
-    integer :: idepl, ivite, iecin, ifreq
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: nno, kp, i, j, k, imatuu, iacce, ivect
+    integer(kind=8) :: ijkl, ik, l, npg, nddl, nvec
+    integer(kind=8) :: n1, n2, i2, j2, k2
+    integer(kind=8) :: idiag, nnos, iret
+    integer(kind=8) :: idepl, ivite, iecin, ifreq
     real(kind=8) :: trace, alfa, wgt, masvit(81), masdep(81)
     real(kind=8) :: vect1(81), vect2(81)
-    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5), idec
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), second(5), idec
     aster_logical, parameter :: l_vf = ASTER_FALSE
     type(THM_DS) :: ds_thm
     blas_int :: b_incx, b_incy, b_n

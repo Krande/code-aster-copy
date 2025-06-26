@@ -20,8 +20,8 @@
 !
 interface
     subroutine uttcp0(indi, para, nbv, temps)
-        integer :: nbv
-        integer :: indi
+        integer(kind=8) :: nbv
+        integer(kind=8) :: indi
         character(len=*) :: para
         real(kind=8) :: temps(nbv)
     end subroutine uttcp0

@@ -41,8 +41,8 @@ subroutine caracp(sdcont)
     character(len=1) :: jv_base
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_ndimco
-    integer :: j_sdcont_ndimco
-    integer :: zdime
+    integer(kind=8) :: j_sdcont_ndimco
+    integer(kind=8) :: zdime
 !
 ! --------------------------------------------------------------------------------------------------
 !

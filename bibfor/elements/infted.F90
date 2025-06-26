@@ -68,7 +68,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp, ndimen, itype)
 !
 !
     character(len=*) :: nomte
-    integer :: symetr, nbterm, nbnoeu, nbcomp, ndimen, itype
+    integer(kind=8) :: symetr, nbterm, nbnoeu, nbcomp, ndimen, itype
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
@@ -79,7 +79,7 @@ subroutine infted(nomte, symetr, nbterm, nbnoeu, nbcomp, ndimen, itype)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: kmess(5)
-    integer :: iadzi, iazk24, iret
+    integer(kind=8) :: iadzi, iazk24, iret
     real(kind=8) :: tvar
 !
 ! --------------------------------------------------------------------------------------------------

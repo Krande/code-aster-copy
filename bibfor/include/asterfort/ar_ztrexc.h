@@ -21,14 +21,14 @@
 interface
     subroutine ar_ztrexc(compq, n, t, ldt, q,&
                       ldq, ifst, ilst, info)
-        integer :: ldq
-        integer :: ldt
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldt
         character(len=1) :: compq
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: q(ldq, *)
-        integer :: ifst
-        integer :: ilst
-        integer :: info
+        integer(kind=8) :: ifst
+        integer(kind=8) :: ilst
+        integer(kind=8) :: info
     end subroutine ar_ztrexc
 end interface

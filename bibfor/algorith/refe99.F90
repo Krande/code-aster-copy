@@ -53,10 +53,10 @@ subroutine refe99(nomres)
 !
 !
 !
-    integer :: i, ioc1, ioc3, ioc4, ioc5, ier, ibid, ibmo, imint, inmax
-    integer :: ltmome, nbg, nbmome, ltnbmo, ltnbmax, nbli, nbmax, vali(2)
-    integer :: nbtot, nbold(1), nbmod1, nbmod2, nbmout, nbmodo(1)
-    integer :: nbmm, nbbm, nbmi, ioccmi, ioccbase
+    integer(kind=8) :: i, ioc1, ioc3, ioc4, ioc5, ier, ibid, ibmo, imint, inmax
+    integer(kind=8) :: ltmome, nbg, nbmome, ltnbmo, ltnbmax, nbli, nbmax, vali(2)
+    integer(kind=8) :: nbtot, nbold(1), nbmod1, nbmod2, nbmout, nbmodo(1)
+    integer(kind=8) :: nbmm, nbbm, nbmi, ioccmi, ioccbase
 !
     real(kind=8) :: rbid
     complex(kind=8) :: cbid

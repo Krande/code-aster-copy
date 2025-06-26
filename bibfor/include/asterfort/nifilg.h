@@ -26,24 +26,24 @@ interface
                       sigm, vim, sigp, vip,&
                       lMatr, lVect, lSigm, lVari,&
                       vect, matr, matsym, codret)
-        integer :: lgpg
-        integer :: npg
-        integer :: nnop
-        integer :: nnog
-        integer :: nnod
-        integer :: ndim
-        integer :: iw
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnog
+        integer(kind=8) :: nnod
+        integer(kind=8) :: ndim
+        integer(kind=8) :: iw
         real(kind=8) :: vffd(nnod, npg)
         real(kind=8) :: vffg(nnog, npg)
         real(kind=8) :: vffp(nnop, npg)
-        integer :: idffd
-        integer :: vu(3, 27)
-        integer :: vg(27)
-        integer :: vp(27)
+        integer(kind=8) :: idffd
+        integer(kind=8) :: vu(3, 27)
+        integer(kind=8) :: vg(27)
+        integer(kind=8) :: vp(27)
         real(kind=8) :: geomi(ndim, nnod)
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: mate
+        integer(kind=8) :: mate
         character(len=16) :: compor(*)
         real(kind=8) :: carcri(*)
         real(kind=8) :: instm
@@ -61,6 +61,6 @@ interface
         real(kind=8) :: matr(*)
         aster_logical :: matsym
         aster_logical, intent(in) :: lMatr, lVect, lSigm, lVari
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine nifilg
 end interface

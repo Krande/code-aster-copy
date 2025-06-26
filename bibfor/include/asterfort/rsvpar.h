@@ -21,11 +21,11 @@ interface
                       paraValeI_, paraValeR_, paraValeKZ_, &
                       ier_)
         character(len=*), intent(in) :: resultNameZ
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         character(len=*), intent(in) :: paraNameZ
-        integer, optional, intent(in) :: paraValeI_
+        integer(kind=8), optional, intent(in) :: paraValeI_
         real(kind=8), optional, intent(in) :: paraValeR_
         character(len=*), optional, intent(in) :: paraValeKZ_
-        integer, optional, intent(out) :: ier_
+        integer(kind=8), optional, intent(out) :: ier_
     end subroutine rsvpar
 end interface

@@ -23,12 +23,12 @@ interface
                       matrAsse)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer, intent(in) :: phaseType, listFuncActi(*)
+        integer(kind=8), intent(in) :: phaseType, listFuncActi(*)
         character(len=19), intent(in) :: listLoad
         character(len=24), intent(in) :: numeDof
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=19), intent(in) :: meelem(*), measse(*)
         character(len=19), intent(inout) :: matrAsse

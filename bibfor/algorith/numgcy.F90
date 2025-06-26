@@ -51,18 +51,18 @@ subroutine numgcy(nugene, modgen)
     character(len=14) :: nugene
     character(len=19) :: nume_equa_gene, stomor
     character(len=24) :: defli, fprofl, nomsst
-    integer :: ibid, i, i_ligr_link, nb_link, nb_sstr, i_ligr_sstr
+    integer(kind=8) :: ibid, i, i_ligr_link, nb_link, nb_sstr, i_ligr_sstr
     character(len=24) :: lili, prno, orig
-    integer, pointer :: prgene_orig(:) => null()
-    integer, pointer :: prgene_prno(:) => null()
+    integer(kind=8), pointer :: prgene_orig(:) => null()
+    integer(kind=8), pointer :: prgene_prno(:) => null()
 
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: icompl, icomps, ifimes, llprof, nblia
-    integer :: nblig, nbmod, nbsst, neq
-    integer, pointer :: mael_raid_desc(:) => null()
+    integer(kind=8) :: icompl, icomps, ifimes, llprof, nblia
+    integer(kind=8) :: nblig, nbmod, nbsst, neq
+    integer(kind=8), pointer :: mael_raid_desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     ifimes = iunifi('MESSAGE')

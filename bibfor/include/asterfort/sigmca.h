@@ -24,11 +24,11 @@ interface
     subroutine sigmca(tablca, icabl, nbnoca, numaca, quad, &
                       sigmcabl, prem)
         character(len=19) :: tablca
-        integer :: icabl
-        integer :: nbnoca(*)
+        integer(kind=8) :: icabl
+        integer(kind=8) :: nbnoca(*)
         character(len=19) :: numaca
         aster_logical :: quad
         character(len=19) :: sigmcabl
-        integer :: prem
+        integer(kind=8) :: prem
     end subroutine sigmca
 end interface

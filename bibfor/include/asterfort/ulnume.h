@@ -20,6 +20,6 @@
 !
 interface
     function ulnume()
-        integer :: ulnume
+        integer(kind=8) :: ulnume
     end function ulnume
 end interface

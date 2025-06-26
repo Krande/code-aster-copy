@@ -33,7 +33,7 @@ subroutine hujela(mod, mater, deps, sigd, sigf, iret)
 #include "asterfort/assert.h"
 #include "asterfort/hujci1.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, iret, i, j
+    integer(kind=8) :: ndt, ndi, iret, i, j
     real(kind=8) :: coef, e, nu, al, demu, i1, n, pref
     real(kind=8) :: deps(6), dsig(6), sigd(6), sigf(6)
     real(kind=8) :: hook(6, 6), mater(22, 2)

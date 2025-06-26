@@ -41,7 +41,7 @@ subroutine op0145()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, dim, mxval, igrno, nbno, jnomno, jgrno
+    integer(kind=8) :: ibid, dim, mxval, igrno, nbno, jnomno, jgrno
     character(len=1) :: typspe
     character(len=8) :: intspe, caelem, modele, nomzon, maillage
     character(len=16) :: concep, cmd, nommcf, mcfac(9)
@@ -50,10 +50,10 @@ subroutine op0145()
     character(len=24) :: vain, vare, vate, nnoe, chnumi
 !
 !-----------------------------------------------------------------------
-    integer :: iangl, ifo, ifonct, iinter, imc, imcf, imci
-    integer :: inat, inatur, inoeud, iocc, ispect
-    integer :: lfon, lnat, lnom, long, lvain, lvare
-    integer :: lvate, nbmcl
+    integer(kind=8) :: iangl, ifo, ifonct, iinter, imc, imcf, imci
+    integer(kind=8) :: inat, inatur, inoeud, iocc, ispect
+    integer(kind=8) :: lfon, lnat, lnom, long, lvain, lvare
+    integer(kind=8) :: lvate, nbmcl
 !-----------------------------------------------------------------------
     data mcfac/'SPEC_LONG_COR_1', 'SPEC_LONG_COR_2',&
      &            'SPEC_LONG_COR_3', 'SPEC_LONG_COR_4',&

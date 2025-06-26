@@ -25,11 +25,11 @@ interface
                      ifm, nno, jacob)
         aster_logical :: l2d
         real(kind=8) :: geom(*)
-        integer :: ipg
-        integer :: idfde
-        integer :: niv
-        integer :: ifm
-        integer :: nno
+        integer(kind=8) :: ipg
+        integer(kind=8) :: idfde
+        integer(kind=8) :: niv
+        integer(kind=8) :: ifm
+        integer(kind=8) :: nno
         real(kind=8) :: jacob
     end subroutine utjac
 end interface

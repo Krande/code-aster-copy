@@ -20,10 +20,10 @@
 !
 interface
     subroutine jjlirs(jadm, iclas, idos, ius, ist)
-        integer :: jadm
-        integer :: iclas
-        integer :: idos
-        integer :: ius
-        integer :: ist
+        integer(kind=8) :: jadm
+        integer(kind=8) :: iclas
+        integer(kind=8) :: idos
+        integer(kind=8) :: ius
+        integer(kind=8) :: ist
     end subroutine jjlirs
 end interface

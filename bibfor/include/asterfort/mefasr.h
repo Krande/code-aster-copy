@@ -22,18 +22,18 @@ interface
     subroutine mefasr(ndim, nbcyl, nbgrp, nbtron, numgrp,&
                       idir, igrp, xint, yint, rint,&
                       sgn, orig, beta, a, b)
-        integer :: nbtron
-        integer :: nbcyl
-        integer :: ndim(14)
-        integer :: nbgrp
-        integer :: numgrp(*)
-        integer :: idir
-        integer :: igrp
+        integer(kind=8) :: nbtron
+        integer(kind=8) :: nbcyl
+        integer(kind=8) :: ndim(14)
+        integer(kind=8) :: nbgrp
+        integer(kind=8) :: numgrp(*)
+        integer(kind=8) :: idir
+        integer(kind=8) :: igrp
         real(kind=8) :: xint(*)
         real(kind=8) :: yint(*)
         real(kind=8) :: rint(*)
-        integer :: sgn(*)
-        integer :: orig(*)
+        integer(kind=8) :: sgn(*)
+        integer(kind=8) :: orig(*)
         real(kind=8) :: beta(*)
         real(kind=8) :: a(2*nbtron*nbcyl, *)
         real(kind=8) :: b(*)

@@ -21,7 +21,7 @@
 interface
     subroutine gmatl3(nnoff, milieu, connex, abscur,&
                       vect)
-        integer           :: nnoff
+        integer(kind=8)           :: nnoff
         aster_logical     :: milieu
         aster_logical     :: connex
         character(len=24) :: abscur

@@ -24,7 +24,7 @@ subroutine titre(defTitle, lDefTitle)
 #include "asterfort/assert.h"
 #include "asterfort/titrea.h"
     character(len=80), optional, intent(in) :: defTitle
-    integer, optional, intent(in) :: lDefTitle
+    integer(kind=8), optional, intent(in) :: lDefTitle
 !
     character(len=8) :: nomcon, cbid
     character(len=24) :: nomobj

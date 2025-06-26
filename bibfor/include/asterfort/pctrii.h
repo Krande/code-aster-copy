@@ -20,7 +20,7 @@
 !
 interface
     subroutine pctrii(tab, ltab)
-        integer :: ltab
-        integer :: tab(ltab)
+        integer(kind=8) :: ltab
+        integer(kind=8) :: tab(ltab)
     end subroutine pctrii
 end interface

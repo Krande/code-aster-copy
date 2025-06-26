@@ -45,12 +45,12 @@ subroutine sepavp(ck, cm, cmat, ndim, alpha, &
 #include "asterfort/assert.h"
 #include "asterfort/nbval.h"
 #include "asterfort/utmess.h"
-    integer :: ndim, nbmod
+    integer(kind=8) :: ndim, nbmod
     complex(kind=8) :: ck(*), cm(*), cmat(*)
     real(kind=8) :: alpha(ndim+1), beta(ndim+1)
     real(kind=8) :: lambd1, lambd2, valr(2)
     real(kind=8) :: interv
-    integer :: i, n1, n2, nb, ct
+    integer(kind=8) :: i, n1, n2, nb, ct
     real(kind=8) :: a, b, c
     aster_logical :: sortie
 !

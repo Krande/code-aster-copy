@@ -37,9 +37,9 @@ subroutine trrapr(clef, tab, ntab, n, g, &
     implicit none
 !
 ! --- VARIABLES
-    integer :: n, ntab, g, d, m, clef(*)
+    integer(kind=8) :: n, ntab, g, d, m, clef(*)
     real(kind=8) :: tab(n, *)
-    integer :: pivot, gp, dp, i, tmpi
+    integer(kind=8) :: pivot, gp, dp, i, tmpi
     real(kind=8) :: tmpr
 !
 ! --- CHOIX DU PIVOT

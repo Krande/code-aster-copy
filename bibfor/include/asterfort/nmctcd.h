@@ -19,7 +19,7 @@
 interface
     subroutine nmctcd(list_func_acti, ds_contact, nume_dof)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(NL_DS_Contact), intent(in) :: ds_contact
         character(len=24), intent(in) :: nume_dof
     end subroutine nmctcd

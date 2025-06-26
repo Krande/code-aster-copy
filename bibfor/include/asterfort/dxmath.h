@@ -28,11 +28,11 @@ interface
         real(kind=8) :: dm(3, 3)
         real(kind=8) :: dmf(3, 3)
         real(kind=8) :: pgl(3, 3)
-        integer :: multic
-        integer :: indith
+        integer(kind=8) :: multic
+        integer(kind=8) :: indith
         real(kind=8) :: t2iu(4)
         real(kind=8) :: t2ui(4)
         real(kind=8) :: t1ve(9)
-        integer :: npg
+        integer(kind=8) :: npg
     end subroutine dxmath
 end interface

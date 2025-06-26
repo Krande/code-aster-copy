@@ -69,9 +69,9 @@ subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: igr, igrold, igrut, ilstma, ilstno, ima, leng1
-    integer :: leng2, nbgr, nbgrma, nbgrut, nbincr, nbtgrm
-    integer :: ngfind, nsfind
+    integer(kind=8) :: igr, igrold, igrut, ilstma, ilstno, ima, leng1
+    integer(kind=8) :: leng2, nbgr, nbgrma, nbgrut, nbincr, nbtgrm
+    integer(kind=8) :: ngfind, nsfind
 !-----------------------------------------------------------------------
     call jemarq()
 !

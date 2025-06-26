@@ -23,7 +23,7 @@ subroutine mdchdl(lnoue2, iliai, ddlcho, ier)
 #include "asterfort/utmess.h"
 #include "asterfort/nlget.h"
 
-    integer :: iliai, ddlcho(*), ier
+    integer(kind=8) :: iliai, ddlcho(*), ier
     aster_logical :: lnoue2
 !
 !     ROUTINE APPELEE PAR MDCHOC
@@ -36,7 +36,7 @@ subroutine mdchdl(lnoue2, iliai, ddlcho, ier)
 ! OUT : DDLCHO : TABLEAU DES NUMEROTATIONS DES NOEUDS DE CHOC
 ! OUT : IER    : NIVEAU D'ERREUR
 !     ------------------------------------------------------------------
-    integer :: nunoe, nuddl
+    integer(kind=8) :: nunoe, nuddl
     character(len=8) :: nume1, noeu1, nume2, noeu2, sd_nl
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------

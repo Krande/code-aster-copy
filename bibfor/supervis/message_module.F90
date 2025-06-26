@@ -38,14 +38,14 @@ contains
         type(Message), intent(out) :: msg
         character(len=*), intent(in) :: typ
         character(len=*), intent(in) :: idmess
-        integer, intent(in), optional :: num_except
-        integer, intent(in), optional :: nk
+        integer(kind=8), intent(in), optional :: num_except
+        integer(kind=8), intent(in), optional :: nk
         character(len=*), intent(in), optional, target :: valk(*)
         character(len=*), intent(in), optional :: sk
-        integer, intent(in), optional :: ni
-        integer, intent(in), optional, target :: vali(*)
-        integer, intent(in), optional :: si
-        integer, intent(in), optional :: nr
+        integer(kind=8), intent(in), optional :: ni
+        integer(kind=8), intent(in), optional, target :: vali(*)
+        integer(kind=8), intent(in), optional :: si
+        integer(kind=8), intent(in), optional :: nr
         real(kind=8), intent(in), optional, target :: valr(*)
         real(kind=8), intent(in), optional :: sr
 !

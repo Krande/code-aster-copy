@@ -33,8 +33,8 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: ino, numa, jlsnd, jlsnl, nbmano, voisin(3), jma, adrma
-    integer :: ndim, jconx2, nno
+    integer(kind=8) :: ino, numa, jlsnd, jlsnl, nbmano, voisin(3), jma, adrma
+    integer(kind=8) :: ndim, jconx2, nno
     character(len=8) :: typma, arete, noma
     character(len=19) :: ch2
     real(kind=8) :: lsno(3), lsn(4)
@@ -57,13 +57,13 @@ subroutine xdvois(typma, ino, noma, numa, jlsnd, jlsnl, jconx2, &
 ! OUT NNO    : NOMBRE DE NOEUDS SUR L'ARETE
 ! OUT VOISIN : NUMERO DES NOEUDS VOISINS
 !
-    integer :: nbar, ar(12, 3), i, iad, ima, numav, itypma
-    integer :: nuno2, ier, nbno, j
+    integer(kind=8) :: nbar, ar(12, 3), i, iad, ima, numav, itypma
+    integer(kind=8) :: nuno2, ier, nbno, j
     real(kind=8) :: lsn1, lsn2
     character(len=8) :: typmav
     aster_logical :: connec, miconf
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: nunotmp(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: nunotmp(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
 !
 ! ----------------------------------------------------------------------

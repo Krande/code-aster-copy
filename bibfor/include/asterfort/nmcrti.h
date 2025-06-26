@@ -19,7 +19,7 @@
 interface
     subroutine nmcrti(list_func_acti, resultName, ds_contact, ds_measure)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=8), intent(in) :: resultName
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_Measure), intent(inout) :: ds_measure

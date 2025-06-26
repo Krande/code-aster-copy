@@ -27,7 +27,7 @@ subroutine klg(nno, nbrddl, pgl, k)
 !                 PGL = MATRICE DE PASSAGE
 ! ENTREE-SORTIE : K   = MATRICE DE RIGIDITE
 !
-    integer :: i, j, l, nno, nbrddl, m
+    integer(kind=8) :: i, j, l, nno, nbrddl, m
 !JMP      PARAMETER          (NBRDDL=63)
     real(kind=8) :: k(nbrddl, nbrddl), p(nbrddl, nbrddl), pgl(3, 3)
     real(kind=8) :: ktemp(nbrddl, nbrddl)

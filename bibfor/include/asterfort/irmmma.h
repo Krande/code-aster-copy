@@ -23,11 +23,11 @@ interface
                       nomtyp, nnotyp, renumd, nbCellType, infmed,&
                       modnum, nuanom, nosdfu)
         med_idt :: fid
-        integer :: nbCell, nbtyp
-        integer :: connex(*), typma(*), point(*)
-        integer :: typgeo(*), nnotyp(*), nbCellType(MT_NTYMAX)
-        integer :: renumd(*), modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
-        integer :: infmed
+        integer(kind=8) :: nbCell, nbtyp
+        integer(kind=8) :: connex(*), typma(*), point(*)
+        integer(kind=8) :: typgeo(*), nnotyp(*), nbCellType(MT_NTYMAX)
+        integer(kind=8) :: renumd(*), modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+        integer(kind=8) :: infmed
         character(len=6) :: prefix
         character(len=8) :: nommai(*)
         character(len=8) :: nomtyp(*)

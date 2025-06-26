@@ -43,7 +43,7 @@ subroutine vpini0(compex, modes, typcon, solveu, eigsol, matpsc, matopa, veclag,
 !
 ! --- VARIABLES LOCALES
 !
-    integer           :: lenout
+    integer(kind=8)           :: lenout
     character(len=16) :: nomcmd
 !
 ! -----------------------

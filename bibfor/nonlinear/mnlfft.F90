@@ -52,11 +52,11 @@ subroutine mnlfft(n, x, y, h, nt, &
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 #include "blas/zdscal.h"
-    integer :: n, h, nt, ind
+    integer(kind=8) :: n, h, nt, ind
     real(kind=8) :: x(n*(2*h+1)), y(n*nt)
 !
-    integer :: k, iadd, j
-    integer :: ixf, iyf, ixft
+    integer(kind=8) :: k, iadd, j
+    integer(kind=8) :: ixf, iyf, ixft
     blas_int :: b_incx, b_n
 !
     call jemarq()

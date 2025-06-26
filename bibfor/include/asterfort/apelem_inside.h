@@ -25,12 +25,12 @@ interface
                              nb_poin_coor, poin_coor,&
                              nb_poin_inte, poin_inte)
         real(kind=8), intent(in) :: pair_tole
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         character(len=8), intent(in) :: elem_code
         real(kind=8), intent(in) :: elem_coor(elem_dime-1,4)
-        integer, intent(in) :: nb_poin_coor
+        integer(kind=8), intent(in) :: nb_poin_coor
         real(kind=8), intent(in) :: poin_coor(elem_dime-1,4)
-        integer, intent(inout) :: nb_poin_inte
+        integer(kind=8), intent(inout) :: nb_poin_inte
         real(kind=8), intent(inout) :: poin_inte(elem_dime-1,16)
     end subroutine apelem_inside
 end interface

@@ -28,7 +28,7 @@ subroutine liscn2(lisold, nbchar, ichar, typapp)
 !
     character(len=19) :: lisold
     character(len=16) :: typapp
-    integer :: ichar, nbchar
+    integer(kind=8) :: ichar, nbchar
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,8 +50,8 @@ subroutine liscn2(lisold, nbchar, ichar, typapp)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: infcha
-    integer :: jinfch
-    integer :: iinf1, iinf2, iinf3
+    integer(kind=8) :: jinfch
+    integer(kind=8) :: iinf1, iinf2, iinf3
 !
 ! ----------------------------------------------------------------------
 !

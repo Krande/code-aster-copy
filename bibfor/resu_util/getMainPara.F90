@@ -41,7 +41,7 @@ subroutine getMainPara(phenom, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=1), parameter :: jvBase = "V"
-    integer :: iret
+    integer(kind=8) :: iret
     type(ListLoad_Prep) :: listLoadPrep
     aster_logical :: lTher
 ! --------------------------------------------------------------------------------------------------

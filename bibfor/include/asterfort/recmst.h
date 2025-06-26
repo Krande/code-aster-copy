@@ -23,10 +23,10 @@ interface
                       nmost1, modsta)
         character(len=16) :: graexc
         character(len=16) :: grdmod
-        integer :: nnoeex
-        integer :: ilnoex
-        integer :: ilcpex
-        integer :: nmost1
+        integer(kind=8) :: nnoeex
+        integer(kind=8) :: ilnoex
+        integer(kind=8) :: ilcpex
+        integer(kind=8) :: nmost1
         character(len=8) :: modsta
     end subroutine recmst
 end interface

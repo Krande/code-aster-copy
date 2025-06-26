@@ -20,7 +20,7 @@
 !
 interface
     subroutine lglpma(n, a, b, c)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: a(6, 6)
         real(kind=8) :: b(6, 6)
         real(kind=8) :: c(6, 6)

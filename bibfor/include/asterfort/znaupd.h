@@ -23,24 +23,24 @@ interface
                       tol, resid, ncv, v, ldv,&
                       iparam, ipntr, workd, workl, lworkl,&
                       rwork, info, neqact, alpha)
-        integer :: lworkl
-        integer :: ldv
-        integer :: ncv
-        integer :: n
-        integer :: ido
+        integer(kind=8) :: lworkl
+        integer(kind=8) :: ldv
+        integer(kind=8) :: ncv
+        integer(kind=8) :: n
+        integer(kind=8) :: ido
         character(len=1) :: bmat
         character(len=2) :: which
-        integer :: nev
+        integer(kind=8) :: nev
         real(kind=8) :: tol
         complex(kind=8) :: resid(n)
         complex(kind=8) :: v(ldv, ncv)
-        integer :: iparam(11)
-        integer :: ipntr(14)
+        integer(kind=8) :: iparam(11)
+        integer(kind=8) :: ipntr(14)
         complex(kind=8) :: workd(3*n)
         complex(kind=8) :: workl(lworkl)
         real(kind=8) :: rwork(ncv)
-        integer :: info
-        integer :: neqact
+        integer(kind=8) :: info
+        integer(kind=8) :: neqact
         real(kind=8) :: alpha
     end subroutine znaupd
 end interface

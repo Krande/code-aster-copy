@@ -22,9 +22,9 @@
             subroutine jelstc(clas,souch,ipos,maxval,klst,nbval)
               character(len=*), intent(in) :: clas
               character(len=*), intent(in) :: souch
-              integer, intent(in) :: ipos
-              integer, intent(in) :: maxval
+              integer(kind=8), intent(in) :: ipos
+              integer(kind=8), intent(in) :: maxval
               character(len=*), intent(out) :: klst(*)
-              integer, intent(out) :: nbval
+              integer(kind=8), intent(out) :: nbval
             end subroutine jelstc
           end interface 

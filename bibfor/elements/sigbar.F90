@@ -37,9 +37,9 @@ subroutine sigbar(sigma, barsig)
 ! ......................................................................
 !
 #include "asterfort/r8inir.h"
-    integer :: i
+    integer(kind=8) :: i
 !
-    integer :: ii, jj
+    integer(kind=8) :: ii, jj
 !
     real(kind=8) :: sigma(3, 3)
 !

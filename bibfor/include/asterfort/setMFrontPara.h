@@ -20,6 +20,6 @@ interface
     subroutine setMFrontPara(prepCrit, iFactorKeyword)
         use BehaviourPrepare_type
         type(BehaviourPrep_Crit), pointer :: prepCrit(:)
-        integer, intent(in) :: iFactorKeyword
+        integer(kind=8), intent(in) :: iFactorKeyword
     end subroutine setMfrontPara
 end interface

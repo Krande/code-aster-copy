@@ -30,10 +30,10 @@ subroutine nmexti(node_name, field, nb_cmp, list_cmp, type_extr_cmp, &
 !
     character(len=8), intent(in) :: node_name
     character(len=19), intent(in) :: field
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=24), intent(in) :: list_cmp
     character(len=8), intent(in) :: type_extr_cmp
-    integer, intent(out) :: nb_vale
+    integer(kind=8), intent(out) :: nb_vale
     real(kind=8), intent(out) :: vale_resu(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,15 +54,15 @@ subroutine nmexti(node_name, field, nb_cmp, list_cmp, type_extr_cmp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_para_maxi
+    integer(kind=8) :: nb_para_maxi
     parameter(nb_para_maxi=20)
     character(len=8) :: v_cmp_name(nb_para_maxi)
     real(kind=8) :: v_cmp_vale(nb_para_maxi)
 !
-    integer :: nb_cmp_vale
-    integer :: i_cmp_vale, i_cmp
+    integer(kind=8) :: nb_cmp_vale
+    integer(kind=8) :: i_cmp_vale, i_cmp
     character(len=8) :: cmp_name
-    integer :: node_nume, dof_nume
+    integer(kind=8) :: node_nume, dof_nume
     real(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: v_list_cmp(:) => null()
 !

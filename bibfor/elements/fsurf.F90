@@ -32,7 +32,7 @@ subroutine fsurf(option, nomte, xi, nb1, vecl, &
     character(len=16) :: option, nomte
 !
 !
-    integer :: nb1
+    integer(kind=8) :: nb1
     real(kind=8) :: rnormc, f1, pr
     real(kind=8) :: xi(3, *), vectpt(9, 3, 3)
 !     REAL*8       VECTC(3),VECPTX(3,3)
@@ -45,8 +45,8 @@ subroutine fsurf(option, nomte, xi, nb1, vecl, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, ier, intsn, ip, itemps, j
-    integer :: jp, jpres, k, lzi, lzr, nb2, npgsn
+    integer(kind=8) :: i, i1, ier, intsn, ip, itemps, j
+    integer(kind=8) :: jp, jpres, k, lzi, lzr, nb2, npgsn
 !
 !-----------------------------------------------------------------------
     call jevete('&INEL.'//nomte(1:8)//'.DESI', ' ', lzi)

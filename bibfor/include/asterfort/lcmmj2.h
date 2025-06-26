@@ -24,20 +24,20 @@ interface
                       is, nbsys, nfs, nsg, hsr,&
                       vind, dy, dgsdts, dksdts, dgrdbs,&
                       dksdbr, iret)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         real(kind=8) :: taur
         real(kind=8) :: materf(nmat*2)
         character(len=24) :: cpmono(5*nmat+1)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
         real(kind=8) :: dt
-        integer :: nsfv
-        integer :: nsfa
-        integer :: ir
-        integer :: is
-        integer :: nbsys
-        integer :: nfs
+        integer(kind=8) :: nsfv
+        integer(kind=8) :: nsfa
+        integer(kind=8) :: ir
+        integer(kind=8) :: is
+        integer(kind=8) :: nbsys
+        integer(kind=8) :: nfs
         real(kind=8) :: hsr(nsg, nsg)
         real(kind=8) :: vind(*)
         real(kind=8) :: dy(*)
@@ -45,6 +45,6 @@ interface
         real(kind=8) :: dksdts
         real(kind=8) :: dgrdbs
         real(kind=8) :: dksdbr
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmj2
 end interface

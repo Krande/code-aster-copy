@@ -29,7 +29,7 @@ subroutine prodmt(matsym, tens4, mat)
     real(kind=8), intent(out) :: mat(3, 3)
     real(kind=8) :: matS(3, 3)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer :: i, j, k, l
+    integer(kind=8) :: i, j, k, l
 ! ----------------------------------------------------------------------
 !
     matS = 0.d0

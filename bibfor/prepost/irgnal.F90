@@ -31,8 +31,8 @@ subroutine irgnal(ifi, nbordr, coord, connex, point, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: numel, nbel, ifi, nbordr, nbcmp
-    integer :: connex(*), point(*), cnsc(*), cnsl(*), cnsv(*), cnsd(*), jtype
+    integer(kind=8) :: numel, nbel, ifi, nbordr, nbcmp
+    integer(kind=8) :: connex(*), point(*), cnsc(*), cnsl(*), cnsv(*), cnsd(*), jtype
     real(kind=8) :: coord(*)
     character(len=*) :: nobj, partie
     character(len=8) :: nocmp(nbcmp)
@@ -47,8 +47,8 @@ subroutine irgnal(ifi, nbordr, coord, connex, point, &
 !     REMPLACE IRGN.1 ET 2 (OU .=PSTQEYRH)
 !     ------------------------------------------------------------------
 !
-    integer :: iel, ima, ipoin, listno(99), j, jcnsc, jcnsl, jcnsv, jcnsd, ncmp
-    integer :: k, jel, ior, inoe, nbno, l, jno
+    integer(kind=8) :: iel, ima, ipoin, listno(99), j, jcnsc, jcnsl, jcnsv, jcnsd, ncmp
+    integer(kind=8) :: k, jel, ior, inoe, nbno, l, jno
     real(kind=8) :: val(nbcmp)
 !     ------------------------------------------------------------------
 !

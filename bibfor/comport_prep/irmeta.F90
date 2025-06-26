@@ -46,23 +46,23 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
 #include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
 !
-    integer, intent(in) :: ifi
+    integer(kind=8), intent(in) :: ifi
     character(len=64), intent(in) :: field_med
     character(len=19), intent(in) :: meta_elno
     character(len=8), intent(in) :: field_loca
     character(len=8), intent(in) :: model
-    integer, intent(in) :: nb_cmp_sele
+    integer(kind=8), intent(in) :: nb_cmp_sele
     character(len=*), intent(in) :: cmp_name_sele(*)
     character(len=*), intent(in) :: partie
-    integer, intent(in) :: numpt
+    integer(kind=8), intent(in) :: numpt
     real(kind=8), intent(in) :: instan
-    integer, intent(in) :: nume_store
-    integer, intent(in) :: nbmaec
-    integer, intent(in) :: limaec(*)
+    integer(kind=8), intent(in) :: nume_store
+    integer(kind=8), intent(in) :: nbmaec
+    integer(kind=8), intent(in) :: limaec(*)
     character(len=8), intent(in) :: result
     character(len=8), intent(in) :: cara_elem
     aster_logical, intent(in) :: lfichUniq
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,12 +94,12 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: mapZoneNume, i_elem, i_pt, i_vari, i_vari_redu, i_spt
-    integer :: nb_vari, nb_pt, nb_spt, nb_vari_zone
-    integer :: nb_vari_redu, mapNbZone, nb_elem, nbVariMaxi, nbCellMesh, nbCellInZone
-    integer :: ntVari, codret_dummy
-    integer :: posit, iret, affe_type, affe_indx, nume_elem, nbCmpDyna
-    integer :: jv_elno_cesd, jv_elno_cesl, jv_elnr_cesd, jv_elnr_cesl, jv_elno, jv_elnr
+    integer(kind=8) :: mapZoneNume, i_elem, i_pt, i_vari, i_vari_redu, i_spt
+    integer(kind=8) :: nb_vari, nb_pt, nb_spt, nb_vari_zone
+    integer(kind=8) :: nb_vari_redu, mapNbZone, nb_elem, nbVariMaxi, nbCellMesh, nbCellInZone
+    integer(kind=8) :: ntVari, codret_dummy
+    integer(kind=8) :: posit, iret, affe_type, affe_indx, nume_elem, nbCmpDyna
+    integer(kind=8) :: jv_elno_cesd, jv_elno_cesl, jv_elnr_cesd, jv_elnr_cesl, jv_elno, jv_elnr
     character(len=7) :: saux07
     character(len=8) :: saux08
     character(len=8), parameter :: base_name = '&&IRMETA'
@@ -109,7 +109,7 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     character(len=19), parameter :: meta_elnr_s = '&&IRMETA.VARIELGR_S'
     character(len=19) :: vari_link
     character(len=19), parameter :: vari_redu = '&&IRMETA.VARIREDU'
-    integer, pointer :: v_vari_link(:) => null()
+    integer(kind=8), pointer :: v_vari_link(:) => null()
     character(len=16), pointer :: v_vari_redu(:) => null()
     character(len=19), parameter :: label_med = '&&IRMETA.LABELMED'
     character(len=19), parameter :: label_vxx = '&&IRMETA.LABELVXX'
@@ -118,12 +118,12 @@ subroutine irmeta(ifi, field_med, meta_elno, field_loca, model, &
     character(len=64) :: nomres
     real(kind=8), pointer :: v_elnr_cesv(:) => null()
     real(kind=8), pointer :: v_elga_cesv(:) => null()
-    integer, pointer :: v_compor_desc(:) => null()
-    integer, pointer :: v_compor_lima(:) => null()
-    integer, pointer :: v_compor_lima_lc(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
+    integer(kind=8), pointer :: v_compor_lima(:) => null()
+    integer(kind=8), pointer :: v_compor_lima_lc(:) => null()
     character(len=19), parameter :: comporInfo = '&&IRMETA.INFO'
-    integer, pointer :: comporInfoInfo(:) => null()
-    integer, pointer :: comporInfoZone(:) => null()
+    integer(kind=8), pointer :: comporInfoInfo(:) => null()
+    integer(kind=8), pointer :: comporInfoZone(:) => null()
     character(len=16) :: field_type
 !
 ! --------------------------------------------------------------------------------------------------

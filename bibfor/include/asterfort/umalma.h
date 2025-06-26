@@ -21,8 +21,8 @@ interface
     subroutine umalma(mesh, list_grpma, nb_grpma, list_ma, nb_ma)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: list_grpma(*)
-        integer, intent(in) :: nb_grpma
-        integer, pointer :: list_ma(:)
-        integer, intent(out) :: nb_ma
+        integer(kind=8), intent(in) :: nb_grpma
+        integer(kind=8), pointer :: list_ma(:)
+        integer(kind=8), intent(out) :: nb_ma
     end subroutine umalma
 end interface

@@ -27,11 +27,11 @@ subroutine verdbl(deblig, cnl, ier, irteti)
 !       OUT     IER     =       0 > VRAI ( RETURN )
 !                       =       1 > FAUX ( RETURN 1 )
 !       ----------------------------------------------------------------
-    integer :: ier, deblig
+    integer(kind=8) :: ier, deblig
     character(len=14) :: cnl
 !
 !-----------------------------------------------------------------------
-    integer :: irteti
+    integer(kind=8) :: irteti
 !-----------------------------------------------------------------------
     irteti = 0
     if (deblig .eq. 0) then

@@ -21,10 +21,10 @@ subroutine nirela(irela, jp, gm, gp, am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2
 !
     implicit none
 #include "asterfort/assert.h"
-    integer, intent(in) :: irela
+    integer(kind=8), intent(in) :: irela
     real(kind=8), intent(in) :: jp, gm, gp
     real(kind=8), intent(out) :: am, ap, bp, boa, aa, bb, daa, dbb, dboa, d2boa
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !-----------------------------------------------------------------------
 !          CALCUL DES OPTIONS DE MECANIQUE NON LINEAIRE
 !           GRANDES DEFORMATIONS QUASI-INCOMPRESSIBLES

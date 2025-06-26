@@ -25,9 +25,9 @@ subroutine filtering(ltypr, k, lmnsy, jvale, jvale2, rfiltre, rmin, rmax, &
 #include "jeveux.h"
 !
     aster_logical, intent(in) :: ltypr, lmnsy
-    integer, intent(in) :: k, jvale, jvale2
+    integer(kind=8), intent(in) :: k, jvale, jvale2
     real(kind=8), intent(in) :: rfiltre, rmin, rmax
-    integer, intent(inout) :: nfilt1, nfilt2, nfilt3, nzloc
+    integer(kind=8), intent(inout) :: nfilt1, nfilt2, nfilt3, nzloc
     integer(kind=4), intent(inout) :: iok(*)
 !
 !---------------------------------------------------------------------------------------------------

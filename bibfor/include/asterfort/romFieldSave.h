@@ -23,11 +23,11 @@ interface
         use Rom_Datastructure_type
         character(len=*), intent(in) :: operation
         character(len=8), intent(in) :: resultName
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         type(ROM_DS_Field), intent(in) :: field
         real(kind=8), optional, pointer :: fieldValeC_(:)
-        integer, optional, intent(in) :: nbEquaR_
-        integer, optional, pointer :: equaCToR_(:)
+        integer(kind=8), optional, intent(in) :: nbEquaR_
+        integer(kind=8), optional, pointer :: equaCToR_(:)
         real(kind=8), optional, pointer :: fieldValeR_(:)
     end subroutine romFieldSave
 end interface

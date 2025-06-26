@@ -42,10 +42,10 @@ subroutine cajgr2(igrap, vr, cocaj1, cocaj2)
     character(len=8) :: typflu
     common/kop144/typflu
 !
-    integer :: igrap
+    integer(kind=8) :: igrap
     real(kind=8) :: vr, cocaj1, cocaj2
 !
-    integer :: ncamax, nbomax, unit, nbloc, iflag
+    integer(kind=8) :: ncamax, nbomax, unit, nbloc, iflag
     real(kind=8) :: coeca1(10, 20, 11), coeca2(10, 20, 11)
     real(kind=8) :: boca1(10, 20), boca2(10, 20), borne1(10, 20)
     real(kind=8) :: zero, coef1(10, 20, 11), coef2(10, 20, 11), borne2(10, 20)
@@ -56,8 +56,8 @@ subroutine cajgr2(igrap, vr, cocaj1, cocaj2)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iret, iunit, j, k, l, nb1
-    integer :: nb2, nbmax
+    integer(kind=8) :: i, iret, iunit, j, k, l, nb1
+    integer(kind=8) :: nb2, nbmax
     real(kind=8) :: vr2, vr3
 !-----------------------------------------------------------------------
     call jemarq()

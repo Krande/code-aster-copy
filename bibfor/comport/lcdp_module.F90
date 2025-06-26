@@ -23,7 +23,7 @@ module lcdp_module
     type dp_material
         real(kind=8) :: lambda, deuxmu, troismu, troisk, Eyoung
         real(kind=8) :: sy, h, kau, a, b0, troisa, syultm, bultm, kac
-        integer :: type_dp
+        integer(kind=8) :: type_dp
     end type dp_material
 
 end module lcdp_module

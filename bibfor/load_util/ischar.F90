@@ -33,7 +33,7 @@ function ischar(list_load, load_type_1, load_type_2, i_load_)
     character(len=19), intent(in) :: list_load
     character(len=4), intent(in) :: load_type_1
     character(len=4), intent(in) :: load_type_2
-    integer, optional, intent(in) :: i_load_
+    integer(kind=8), optional, intent(in) :: i_load_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -65,10 +65,10 @@ function ischar(list_load, load_type_1, load_type_2, i_load_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, i_load, nb_load
+    integer(kind=8) :: iret, i_load, nb_load
     aster_logical :: ischar_iload
     character(len=24) :: lload_name, lload_info
-    integer, pointer :: v_load_info(:) => null()
+    integer(kind=8), pointer :: v_load_info(:) => null()
     character(len=24), pointer :: v_load_name(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

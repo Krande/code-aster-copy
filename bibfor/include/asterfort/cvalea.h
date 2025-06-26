@@ -20,9 +20,9 @@
 !
 interface
     subroutine cvalea(ndim, cmod, ndimax, nbmod)
-        integer :: nbmod
-        integer :: ndimax
-        integer :: ndim
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: ndimax
+        integer(kind=8) :: ndim
         complex(kind=8) :: cmod(ndimax, nbmod)
     end subroutine cvalea
 end interface

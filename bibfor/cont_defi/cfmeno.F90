@@ -27,11 +27,11 @@ subroutine cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(in) :: nb_cont_node0
-    integer, intent(in) :: nb_cont_node
-    integer, pointer :: v_poin_node(:)
-    integer, pointer :: v_list_node(:)
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(in) :: nb_cont_node0
+    integer(kind=8), intent(in) :: nb_cont_node
+    integer(kind=8), pointer :: v_poin_node(:)
+    integer(kind=8), pointer :: v_list_node(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,11 +50,11 @@ subroutine cfmeno(sdcont_defi, nb_cont_surf, nb_cont_node0, v_list_node, v_poin_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_surf, i_node
+    integer(kind=8) :: i_surf, i_node
     character(len=24) :: sdcont_noeuco
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
     character(len=24) :: sdcont_psunoco
-    integer, pointer :: v_sdcont_psunoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_psunoco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

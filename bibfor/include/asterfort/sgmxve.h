@@ -20,7 +20,7 @@
 !
 interface
     function sgmxve(nbterm, vect)
-        integer :: nbterm
+        integer(kind=8) :: nbterm
         real(kind=8) :: vect(*)
         real(kind=8) :: sgmxve
     end function sgmxve

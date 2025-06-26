@@ -23,8 +23,8 @@ subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, nbordr, npoin(nbvec), jvalor
-    integer :: iflag(nbvec), jvalax, jvalpo
+    integer(kind=8) :: nbvec, nbordr, npoin(nbvec), jvalor
+    integer(kind=8) :: iflag(nbvec), jvalax, jvalpo
     real(kind=8) :: pseuil
 ! ----------------------------------------------------------------------
 ! BUT: EXTRAIRE LES PICS D'UNE FONCTION.
@@ -57,7 +57,7 @@ subroutine avpeak(jvalax, nbvec, nbordr, pseuil, iflag, &
 !
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: ivect, iordr, pass, sortie, ordmax, ordmin
+    integer(kind=8) :: ivect, iordr, pass, sortie, ordmax, ordmin
 !
     real(kind=8) :: vmin, vmax, valeur, epsilo
 !

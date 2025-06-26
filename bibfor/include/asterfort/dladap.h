@@ -33,8 +33,8 @@ interface
         real(kind=8) :: tinit
         aster_logical :: lcrea
         aster_logical :: lamort
-        integer :: neq
-        integer :: imat(*)
+        integer(kind=8) :: neq
+        integer(kind=8) :: imat(*)
         character(len=8) :: masse
         character(len=8) :: rigid
         character(len=8) :: amort
@@ -44,9 +44,9 @@ interface
         real(kind=8) :: fexte(*)
         real(kind=8) :: famor(*)
         real(kind=8) :: fliai(*)
-        integer :: nchar
-        integer :: nveca
-        integer :: liad(*)
+        integer(kind=8) :: nchar
+        integer(kind=8) :: nveca
+        integer(kind=8) :: liad(*)
         character(len=24) :: lifo(*)
         character(len=24) :: modele
         character(len=24) :: mate, mateco
@@ -55,8 +55,8 @@ interface
         character(len=24) :: infoch
         character(len=24) :: fomult
         character(len=24) :: numedd
-        integer :: nume
-        integer :: numrep
+        integer(kind=8) :: nume
+        integer(kind=8) :: numrep
         type(NL_DS_Energy), intent(inout) :: ds_energy
         character(len=19), intent(inout) :: sd_obsv
         character(len=*), intent(in) :: mesh

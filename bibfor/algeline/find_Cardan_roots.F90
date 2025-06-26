@@ -25,7 +25,7 @@ subroutine find_Cardan_roots(coef, roots, nbroot)
 !
     real(kind=8), intent(in) :: coef(4)
     real(kind=8), intent(out) :: roots(3)
-    integer, intent(out) :: nbroot
+    integer(kind=8), intent(out) :: nbroot
 !
 !
 !    RACINES REELLES POLYNOME DEGRE 3 : A*X**3 + B*X**2 + C*X + D = 0

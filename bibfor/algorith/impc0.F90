@@ -23,12 +23,12 @@ subroutine impc0(isor, ibl, nbc, tcm, tcmax, &
 !
 !
     implicit none
-    integer :: isor, nbc, nrebo, nbpt
+    integer(kind=8) :: isor, nbc, nrebo, nbpt
     real(kind=8) :: tcm, tcmax, tcmin, trebm, tct
     real(kind=8) :: t(*), dt, tacqui
 !
 !-----------------------------------------------------------------------
-    integer :: ibl, nrepc
+    integer(kind=8) :: ibl, nrepc
 !-----------------------------------------------------------------------
     dt = t(2)-t(1)
     tacqui = t(nbpt)-t(1)

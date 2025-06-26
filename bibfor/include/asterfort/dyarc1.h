@@ -22,10 +22,10 @@ interface
     subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
                       epsi, crit)
         real(kind=8) :: instc(*)
-        integer :: nbpas
+        integer(kind=8) :: nbpas
         real(kind=8) :: insta(*)
-        integer :: nbinst
-        integer :: arch(*)
+        integer(kind=8) :: nbinst
+        integer(kind=8) :: arch(*)
         real(kind=8) :: epsi
         character(len=8) :: crit
     end subroutine dyarc1

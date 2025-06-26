@@ -21,8 +21,8 @@
 interface
     subroutine lispcp(motfac, iexci, phase, npuis)
         character(len=16) :: motfac
-        integer :: iexci
+        integer(kind=8) :: iexci
         real(kind=8) :: phase
-        integer :: npuis
+        integer(kind=8) :: npuis
     end subroutine lispcp
 end interface

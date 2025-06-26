@@ -22,7 +22,7 @@ interface
     subroutine recyec(nmresz, mdcycz, numsec, typsdz)
         character(len=*) :: nmresz
         character(len=*) :: mdcycz
-        integer :: numsec
+        integer(kind=8) :: numsec
         character(len=*) :: typsdz
     end subroutine recyec
 end interface

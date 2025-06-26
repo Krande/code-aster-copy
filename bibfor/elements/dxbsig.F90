@@ -46,7 +46,7 @@ subroutine dxbsig(nomte, xyzl, pgl, sigma, bsigma, &
 !                         D'INTEGRATION DE L'ELEMENT
 !     OUT BSIGMA(1)     : FORCES INTERNES AUX NOEUDS DE L'ELEMENT
 !-----------------------------------------------------------------------
-    integer :: i, igau, j, lgligb, nbsig, nno, npg
+    integer(kind=8) :: i, igau, j, lgligb, nbsig, nno, npg
 !
     real(kind=8) :: bsivar, zero
 !-----------------------------------------------------------------------

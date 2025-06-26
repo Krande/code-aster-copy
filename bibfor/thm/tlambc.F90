@@ -29,7 +29,7 @@ subroutine tlambc(ds_thm, angl_naut, ndim, tlamct)
 !
     type(THM_DS), intent(in) :: ds_thm
     real(kind=8), intent(in) :: angl_naut(3)
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(out) :: tlamct(ndim, ndim)
 !
 ! --------------------------------------------------------------------------------------------------

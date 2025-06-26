@@ -33,7 +33,7 @@ subroutine stock(resu, chs, nocham, ligrel, tychas, &
 #include "asterfort/rsnoch.h"
 #include "asterfort/utmess.h"
 !
-    integer :: numord, numode
+    integer(kind=8) :: numord, numode
     real(kind=8) :: iouf, masgen, amrge
     character(len=*) :: resu, chs, nocham, ligrel, tychas
 !
@@ -52,8 +52,8 @@ subroutine stock(resu, chs, nocham, ligrel, tychas, &
 !
 !
 !
-    integer :: iret, jiouf, iad, nncp
-    integer :: vali(2), ibid, nivinf, ifm
+    integer(kind=8) :: iret, jiouf, iad, nncp
+    integer(kind=8) :: vali(2), ibid, nivinf, ifm
     real(kind=8) :: depi
     character(len=8) :: k8b, acce
     character(len=24) :: valk(2)

@@ -83,9 +83,9 @@ subroutine cncinv(mail, lima, nlima, base, nomz)
     character(len=24) :: nom
     character(len=8) :: mail
     character(len=1) :: base
-    integer :: lima(*), nlima, nno, nma, ima, nare
-    integer :: i, j, n, p0, p1, p2, p3, q1, q2, q3
-    integer, pointer :: indice(:) => null()
+    integer(kind=8) :: lima(*), nlima, nno, nma, ima, nare
+    integer(kind=8) :: i, j, n, p0, p1, p2, p3, q1, q2, q3
+    integer(kind=8), pointer :: indice(:) => null()
 !
 ! --- LECTURE DONNEES
 !

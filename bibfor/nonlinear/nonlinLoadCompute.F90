@@ -55,7 +55,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
     character(len=4), intent(in) :: mode
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: model, cara_elem, nume_dof
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -94,7 +94,7 @@ subroutine nonlinLoadCompute(mode, list_load, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: lload_name, lload_info, lload_func, lload_fcss
     character(len=24) :: vect_elem, vect_asse
     character(len=24) :: vect_alem

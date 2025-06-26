@@ -24,9 +24,9 @@ interface
         character(len=*) :: basz
         character(len=8) :: nomain
         character(len=8) :: nomaou
-        integer :: nbma
-        integer :: nummai(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: nummai(*)
         character(len=8) :: prefix
-        integer :: ndinit
+        integer(kind=8) :: ndinit
     end subroutine cmqutr
 end interface

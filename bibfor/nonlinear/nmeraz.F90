@@ -46,10 +46,10 @@ subroutine nmeraz(sderro, eventType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iEvent, iret
+    integer(kind=8) :: iEvent, iret
     character(len=16) :: eventLevel
     character(len=24) :: eventEACTJv, eventENIVJv
-    integer, pointer :: eventEACT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

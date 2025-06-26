@@ -26,13 +26,13 @@ interface
         character(len=24) :: nmabet
         character(len=8) :: mailla
         real(kind=8) :: x3dca(*)
-        integer :: noebe
-        integer :: numail
-        integer :: nbcnx
-        integer :: cxma(*)
+        integer(kind=8) :: noebe
+        integer(kind=8) :: numail
+        integer(kind=8) :: nbcnx
+        integer(kind=8) :: cxma(*)
         real(kind=8) :: xyzma(3, *)
-        integer :: itetra
+        integer(kind=8) :: itetra
         real(kind=8) :: xbar(*)
-        integer :: immer
+        integer(kind=8) :: immer
     end subroutine immeno
 end interface

@@ -21,9 +21,9 @@
 interface
     subroutine rc32fact(ze200, nb, lieu, ns, fuseism, futot, lefat, futotenv)
         aster_logical :: ze200
-        integer :: nb
+        integer(kind=8) :: nb
         character(len=4) :: lieu
-        integer :: ns
+        integer(kind=8) :: ns
         real(kind=8) :: fuseism
         real(kind=8) :: futot
         aster_logical :: lefat

@@ -23,7 +23,7 @@ subroutine nuelrf(elrefe, nujni)
 #include "asterfort/assert.h"
 !
     character(len=8), intent(in) :: elrefe
-    integer, intent(out) :: nujni
+    integer(kind=8), intent(out) :: nujni
 !
 ! --------------------------------------------------------------------------------------------------
 !

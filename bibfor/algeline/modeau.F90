@@ -78,22 +78,22 @@ subroutine modeau(melflu, noma, geom, fsvr, base, &
     real(kind=8) :: geom(9), fsvr(7)
     character(len=8) :: base
     real(kind=8) :: freqi(*)
-    integer :: nbm, nuor(nbm), vicoq(nbm)
+    integer(kind=8) :: nbm, nuor(nbm), vicoq(nbm)
     real(kind=8) :: torco(4, nbm), tcoef(10, nbm), amor(nbm), fact(nbm)
     real(kind=8) :: masg(nbm), amfr(nbm, 2), vecpr(nbm, nbm), maj(nbm)
 !
-    integer :: iddl(6)
+    integer(kind=8) :: iddl(6)
     real(kind=8) :: mcf0, mi, mk, ki
     character(len=8) :: k8b
     character(len=14) :: numddl
     character(len=24) :: matria, nomcha
 !
 !-----------------------------------------------------------------------
-    integer :: icalc, idec1, idec2, idpla, idple, ier
-    integer :: ifact, ifr, imat1, imat2, imata, imatm, imatz
-    integer :: imax, imod, ivale, ivapr
-    integer :: ivec, ivecw, iwrk2, jmod, k, kmod, lfacx
-    integer :: lmasg, nbm2, nbnoe, neq, nitqr, numod
+    integer(kind=8) :: icalc, idec1, idec2, idpla, idple, ier
+    integer(kind=8) :: ifact, ifr, imat1, imat2, imata, imatm, imatz
+    integer(kind=8) :: imax, imod, ivale, ivapr
+    integer(kind=8) :: ivec, ivecw, iwrk2, jmod, k, kmod, lfacx
+    integer(kind=8) :: lmasg, nbm2, nbnoe, neq, nitqr, numod
     real(kind=8) :: cf0, ck, fi, fim, fk, fre, omegai
     real(kind=8) :: pi, rmax, rtamp, s0, tole, u0
     blas_int :: b_incx, b_incy, b_n

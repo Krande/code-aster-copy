@@ -32,7 +32,7 @@ interface
         character(len=19) :: ligre2
         character(len=8) :: noca
         character(len=1) :: base
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine pjspma
 !
 end interface

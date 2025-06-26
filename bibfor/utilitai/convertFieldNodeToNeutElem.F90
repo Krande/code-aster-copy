@@ -38,7 +38,7 @@ subroutine convertFieldNodeToNeutElem(model, &
 !
     character(len=8), intent(in) :: model
     character(len=*), intent(in) :: ligrel, fieldNode, fieldElemNeut
-    integer, intent(out) :: nbCmpField
+    integer(kind=8), intent(out) :: nbCmpField
     character(len=8), pointer :: cmpNameNode(:), cmpNameNeut(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ subroutine convertFieldNodeToNeutElem(model, &
     character(len=4) :: ki
     character(len=8) :: paraName, physName
     character(len=8), pointer :: cnsc(:) => null()
-    integer :: iCmp, ibid, iret
+    integer(kind=8) :: iCmp, ibid, iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

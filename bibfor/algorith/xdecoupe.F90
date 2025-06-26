@@ -24,7 +24,7 @@ subroutine xdecoupe(elp, cnset, nse, nnose)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 
-    integer          :: cnset(:), nse, nnose
+    integer(kind=8)          :: cnset(:), nse, nnose
     character(len=8) :: elp
 
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -42,7 +42,7 @@ subroutine xdecoupe(elp, cnset, nse, nnose)
 !       NNOSE   : NOMBRE DE NOEUDS DU SOUS TETRA (SOUS TRIA)
 !     ------------------------------------------------------------------
 !
-    integer :: i, ino, ise, connec(144, 4), connec1(12, 6)
+    integer(kind=8) :: i, ino, ise, connec(144, 4), connec1(12, 6)
 ! ----------------------------------------------------------------------
 
     call jemarq()

@@ -21,6 +21,6 @@
 interface
     subroutine addGroupNode(mesh, nb_add)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_add
+        integer(kind=8), intent(in) :: nb_add
     end subroutine addGroupNode
 end interface

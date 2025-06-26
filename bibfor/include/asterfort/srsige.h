@@ -21,7 +21,7 @@
 interface
     subroutine srsige(nmat, materd, deps, sigd,&
                       sigf)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)

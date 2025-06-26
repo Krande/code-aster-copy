@@ -21,9 +21,9 @@
 interface
     subroutine strmov(src, isb, num, dest, idb)
         character(len=*) :: src
-        integer :: isb
-        integer :: num
-        integer :: dest(*)
-        integer :: idb
+        integer(kind=8) :: isb
+        integer(kind=8) :: num
+        integer(kind=8) :: dest(*)
+        integer(kind=8) :: idb
     end subroutine strmov
 end interface

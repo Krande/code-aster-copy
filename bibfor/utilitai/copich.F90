@@ -55,7 +55,7 @@ subroutine copich(base, ch1z, ch2z)
     character(len=16) :: concep, cmd
     character(len=19) :: prno, prno2, ch1, ch2, ligr, ligr2
     character(len=24) :: noojb
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

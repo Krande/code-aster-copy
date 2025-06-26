@@ -22,7 +22,7 @@ interface
     subroutine pcldlt(matf, mat, niremp, base)
         character(len=*) :: matf
         character(len=*) :: mat
-        integer :: niremp
+        integer(kind=8) :: niremp
         character(len=*) :: base
     end subroutine pcldlt
 end interface

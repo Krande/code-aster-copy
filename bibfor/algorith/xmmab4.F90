@@ -24,9 +24,9 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac, &
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/xcalc_saut.h"
-    integer :: ndim, nno, nnos
-    integer :: nfh, ddls, ddlm
-    integer :: singu
+    integer(kind=8) :: ndim, nno, nnos
+    integer(kind=8) :: nfh, ddls, ddlm
+    integer(kind=8) :: singu
     real(kind=8) :: mmat(216, 216), ptknp(3, 3)
     real(kind=8) :: ffp(27), jac
     real(kind=8) :: seuil, mu, coefbu
@@ -59,8 +59,8 @@ subroutine xmmab4(ndim, nno, nnos, ffp, jac, &
 !
 !
     real(kind=8) :: coefj, coefi
-    integer :: alpi, alpj
-    integer :: i, j, k, l, jn, in
+    integer(kind=8) :: alpi, alpj
+    integer(kind=8) :: i, j, k, l, jn, in
 !
 ! ----------------------------------------------------------------------
 !

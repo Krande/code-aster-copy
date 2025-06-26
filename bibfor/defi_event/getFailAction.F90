@@ -25,8 +25,8 @@ subroutine getFailAction(sddisc, failIndx, actionType)
 #include "asterfort/jeveuo.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: failIndx
-    integer, intent(out) :: actionType
+    integer(kind=8), intent(in) :: failIndx
+    integer(kind=8), intent(out) :: actionType
 !
 ! --------------------------------------------------------------------------------------------------
 !

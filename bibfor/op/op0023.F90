@@ -42,7 +42,7 @@ subroutine op0023()
 #include "asterfort/ulexis.h"
 #include "asterfort/ulopen.h"
     real(kind=8) :: tstnan, resnan
-    integer :: ific, nocc, n
+    integer(kind=8) :: ific, nocc, n
     character(len=8) :: repons
     character(len=16) :: nomfi
 !     ------------------------------------------------------------------

@@ -21,7 +21,7 @@
 interface
     subroutine xsautl(ndim, nd, tau1, tau2, saut, sautm, p, am, ad)
                            
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: nd(3)
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)

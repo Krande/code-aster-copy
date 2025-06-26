@@ -27,7 +27,7 @@ subroutine tbajva(table, nbpara, nompar, vi, livi, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: nbpara, vi, livi(*)
+    integer(kind=8) :: nbpara, vi, livi(*)
     real(kind=8) :: vr, livr(*)
     complex(kind=8) :: vc, livc(*)
     character(len=*) :: table, nompar, vk, livk(*)
@@ -49,12 +49,12 @@ subroutine tbajva(table, nbpara, nompar, vi, livi, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, nbcol
-    integer :: i, ki, kr, kc, kk
+    integer(kind=8) :: iret, nbcol
+    integer(kind=8) :: i, ki, kr, kc, kk
     character(len=19) :: nomtab
     character(len=24) :: type, nomcol
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

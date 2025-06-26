@@ -25,7 +25,7 @@ subroutine rsexc1(nomsd, nomsy, nume_store, chextr)
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: nomsd, nomsy
-    integer, intent(in) :: nume_store
+    integer(kind=8), intent(in) :: nume_store
     character(len=*), intent(out) :: chextr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine rsexc1(nomsd, nomsy, nume_store, chextr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icode
+    integer(kind=8) :: icode
     character(len=16) :: option
 !
 ! --------------------------------------------------------------------------------------------------

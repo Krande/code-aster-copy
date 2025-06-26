@@ -20,7 +20,7 @@ subroutine indice0(i, k, l)
 ! person_in_charge: etienne.grimal@edf.fr
 !=====================================================================
     implicit none
-    integer :: i, k, l
+    integer(kind=8) :: i, k, l
     if (i .le. 3) then
         k = i
         l = i

@@ -23,6 +23,6 @@ interface
         character(len=*) :: compor
         character(len=*) :: propri
         character(len=*) :: valeur
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lctest
 end interface

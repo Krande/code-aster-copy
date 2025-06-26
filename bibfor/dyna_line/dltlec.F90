@@ -56,15 +56,15 @@ subroutine dltlec(result, model, numeDOF, materField, mate, &
 !
     character(len=19), intent(out) :: listLoad, solveu
     character(len=24), intent(out) :: loadNameJv, loadInfoJv, loadFuncJv
-    integer, intent(out) :: nbVectAsse, nbLoad, nbWave
-    integer, intent(out) :: jvLoadWave, jvVectAsse, jvVectFunc
+    integer(kind=8), intent(out) :: nbVectAsse, nbLoad, nbWave
+    integer(kind=8), intent(out) :: jvLoadWave, jvVectAsse, jvVectFunc
     character(len=8), intent(out) :: result
     character(len=8), intent(out) :: masse, rigid, amort
     aster_logical, intent(out) :: lamort
-    integer, intent(out) :: jvMatr(3)
+    integer(kind=8), intent(out) :: jvMatr(3)
     character(len=24), intent(out) :: model, numeDOF, mate, caraElem, materField
     type(NL_DS_InOut), intent(out) :: ds_inout
-    integer, intent(out) :: nume, numrep, iinteg
+    integer(kind=8), intent(out) :: nume, numrep, iinteg
     real(kind=8), intent(out) :: t0
 !
 ! --------------------------------------------------------------------------------------------------
@@ -106,18 +106,18 @@ subroutine dltlec(result, model, numeDOF, materField, mate, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jvEner
+    integer(kind=8) :: jvEner
     character(len=1), parameter :: jvBase = "V"
     character(len=24) :: loadType
-    integer :: nbLoadKeyword, iLoadKeyword, n1, nbCine
-    integer :: iaux, ibid, nbRet
-    integer :: indic, iLoad
+    integer(kind=8) :: nbLoadKeyword, iLoadKeyword, n1, nbCine
+    integer(kind=8) :: iaux, ibid, nbRet
+    integer(kind=8) :: indic, iLoad
     real(kind=8) :: rval
     character(len=16) :: method, k16bid
     character(len=19) :: channo
 
     type(ListLoad_Prep) :: listLoadPrep
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     character(len=24), pointer :: listLoadName(:) => null(), listLoadFunc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

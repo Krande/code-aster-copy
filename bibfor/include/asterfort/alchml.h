@@ -26,7 +26,7 @@ interface
         character(len=*) :: nompar_
         character(len=*) :: base_
         character(len=*) :: cel_
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=*) :: dcel_
     end subroutine alchml
 end interface

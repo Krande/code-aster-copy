@@ -21,10 +21,10 @@
           interface 
             subroutine dfdm3d(nno,ipg,ipoids,idfde,coor,jac,dfdx,dfdy,  &
      &dfdz)
-              integer, intent(in) :: nno
-              integer, intent(in) :: ipg
-              integer, intent(in) :: ipoids
-              integer, intent(in) :: idfde
+              integer(kind=8), intent(in) :: nno
+              integer(kind=8), intent(in) :: ipg
+              integer(kind=8), intent(in) :: ipoids
+              integer(kind=8), intent(in) :: idfde
               real(kind=8), intent(in) :: coor(*)
               real(kind=8), intent(out) :: jac
               real(kind=8) ,optional, intent(out) :: dfdx(*)

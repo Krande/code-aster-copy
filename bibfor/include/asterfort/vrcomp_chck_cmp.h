@@ -27,7 +27,7 @@ interface
                                verbose,&
                                nbSpgDifferent, nbVariDifferent, l_modif_vari)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nbCell
+        integer(kind=8), intent(in) :: nbCell
         character(len=*), intent(in) :: comporCurrZ
         character(len=19), intent(in) :: comporCurr, comporPrev
         character(len=19), intent(in) :: variRedu

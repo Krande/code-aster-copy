@@ -23,7 +23,7 @@ interface
                                               japcoe, jjeux , jtacf , &
                                               njeux , ztacf )
         character(len=24) :: enat
-        integer :: nbliai
-        integer :: japptr, japcoe, jjeux, jtacf, njeux, ztacf
+        integer(kind=8) :: nbliai
+        integer(kind=8) :: japptr, japcoe, jjeux, jtacf, njeux, ztacf
     end subroutine compute_ineq_conditions_matrix
 end interface

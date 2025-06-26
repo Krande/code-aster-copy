@@ -24,28 +24,28 @@ interface
                       fisco, igeom, nfiss, ifiss, pinter,&
                       ninter, npts, ainter, nse, cnse,&
                       heav, nfisc, nsemax)
-        integer :: nfisc
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfisc
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elp
-        integer :: nnose
-        integer :: it
+        integer(kind=8) :: nnose
+        integer(kind=8) :: it
         real(kind=8) :: pintt(*)
-        integer :: cnset(*)
-        integer :: heavt(*)
-        integer :: ncomp
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: heavt(*)
+        integer(kind=8) :: ncomp
         real(kind=8) :: lsn(*)
-        integer :: fisco(*)
-        integer :: igeom
-        integer :: nfiss
-        integer :: ifiss
+        integer(kind=8) :: fisco(*)
+        integer(kind=8) :: igeom
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ifiss
         real(kind=8) :: pinter(*)
-        integer :: ninter
-        integer :: npts
+        integer(kind=8) :: ninter
+        integer(kind=8) :: npts
         real(kind=8) :: ainter(*)
-        integer :: nse
-        integer :: cnse(6, 10)
+        integer(kind=8) :: nse
+        integer(kind=8) :: cnse(6, 10)
         real(kind=8) :: heav(*)
-        integer :: nsemax
+        integer(kind=8) :: nsemax
     end subroutine xdecov
 end interface

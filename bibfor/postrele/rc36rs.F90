@@ -29,7 +29,7 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
 #include "asterfort/tbcrsd.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbma, listma(*)
+    integer(kind=8) :: nbma, listma(*)
     character(len=8) :: nomres, noma
     character(len=24) :: chindi, chresu
 !
@@ -39,16 +39,16 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, im, ima, decal, nbcmp, nbpt, ipt, ino, jconx1
-    integer :: jconx2, npara, nbcin, decin, icmp, iad
+    integer(kind=8) :: ibid, im, ima, decal, nbcmp, nbpt, ipt, ino, jconx1
+    integer(kind=8) :: jconx2, npara, nbcin, decin, icmp, iad
     parameter(npara=8)
     real(kind=8) :: valer(5), type
     complex(kind=8) :: c16b
     character(len=8) :: valek(3), typara(npara)
     character(len=16) :: nopara(npara)
     character(len=24) :: connex
-    integer, pointer :: cesd(:) => null()
-    integer, pointer :: cind(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cind(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: cinv(:) => null()
 !     ------------------------------------------------------------------

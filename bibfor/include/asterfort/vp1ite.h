@@ -23,22 +23,22 @@ interface
                       valp, neq, mxiter, tol, iter,&
                       x0, mx, err, iexcl, place,&
                       iquoti, solveu)
-        integer :: neq
-        integer :: lmasse
-        integer :: lraide
-        integer :: ldynam
+        integer(kind=8) :: neq
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lraide
+        integer(kind=8) :: ldynam
         real(kind=8) :: x(neq, 1)
-        integer :: imode
+        integer(kind=8) :: imode
         real(kind=8) :: valp
-        integer :: mxiter
+        integer(kind=8) :: mxiter
         real(kind=8) :: tol
-        integer :: iter
+        integer(kind=8) :: iter
         real(kind=8) :: x0(neq)
         real(kind=8) :: mx(neq, *)
         real(kind=8) :: err
-        integer :: iexcl(*)
-        integer :: place
-        integer :: iquoti
+        integer(kind=8) :: iexcl(*)
+        integer(kind=8) :: place
+        integer(kind=8) :: iquoti
         character(len=19) :: solveu
     end subroutine vp1ite
 end interface

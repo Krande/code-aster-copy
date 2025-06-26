@@ -28,7 +28,7 @@ subroutine pidefo(ndim, npg, kpg, compor, fm, &
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
-    integer :: ndim, kpg, npg
+    integer(kind=8) :: ndim, kpg, npg
     character(len=16) :: compor(*)
     real(kind=8) :: epsm(6), epsp(6), epsd(6)
     real(kind=8) :: fm(3, 3)
@@ -57,12 +57,12 @@ subroutine pidefo(ndim, npg, kpg, compor, fm, &
 !
 !
     aster_logical :: grand
-    integer :: ndimsi
-    integer :: indi(6), indj(6), prac(6)
+    integer(kind=8) :: ndimsi
+    integer(kind=8) :: indi(6), indj(6), prac(6)
     real(kind=8) :: ff
     real(kind=8) :: rac2
     real(kind=8) :: em(6), epsmno
-    integer :: ij, kl, i, j, k, l
+    integer(kind=8) :: ij, kl, i, j, k, l
     blas_int :: b_incx, b_incy, b_n
 !
     data indi/1, 2, 3, 2, 3, 3/

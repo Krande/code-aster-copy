@@ -20,8 +20,8 @@
 !
 interface
     subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
-        integer :: nbfonc
-        integer :: nbptot
+        integer(kind=8) :: nbfonc
+        integer(kind=8) :: nbptot
         real(kind=8) :: sigm(*)
         real(kind=8) :: rampmx
     end subroutine fmampc

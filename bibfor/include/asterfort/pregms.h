@@ -20,7 +20,7 @@
 !
 interface
     subroutine pregms(igmsh, imod)
-        integer :: igmsh
-        integer :: imod
+        integer(kind=8) :: igmsh
+        integer(kind=8) :: imod
     end subroutine pregms
 end interface

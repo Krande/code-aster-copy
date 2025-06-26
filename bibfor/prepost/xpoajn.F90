@@ -37,8 +37,8 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno, &
 !
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem
-    integer :: jdirno, nnn, inn, inntot, nbnoc, ino
-    integer :: nbnofi, inofi, iacoo2, nfiss, he(nfiss)
+    integer(kind=8) :: jdirno, nnn, inn, inntot, nbnoc, ino
+    integer(kind=8) :: nbnofi, inofi, iacoo2, nfiss, he(nfiss)
     real(kind=8) :: lsn(nfiss), co(3)
 !
 !            ON AJOUTE UN NOUVEAU NOEUD AU NOUVEAU MAILLAGE X-FEM
@@ -73,7 +73,7 @@ subroutine xpoajn(maxfem, ino, lsn, jdirno, prefno, &
 !
 !
     real(kind=8) :: crilsn, minlsn
-    integer :: j, ifiss, fiss
+    integer(kind=8) :: j, ifiss, fiss
     character(len=2) :: nm
     character(len=6) :: chn
     character(len=8) :: valk(2)

@@ -73,10 +73,10 @@ contains
         real(kind=8), intent(in) :: v, prec, array(:)
         character(len=8), intent(in) :: crit
         aster_logical, intent(in) :: mask(size(array))
-        integer, allocatable :: out(:)
+        integer(kind=8), allocatable :: out(:)
         !
         real(kind=8) :: bounds(2)
-        integer :: i
+        integer(kind=8) :: i
         !
         bounds = getBounds(v, prec, crit)
         out = pack([(i, i=1, size(array))], &
@@ -109,9 +109,9 @@ contains
         character(len=8), intent(in) :: crit
         aster_logical, optional, intent(in) :: umask(size(array))
         aster_logical :: mask(size(array))
-        integer :: out
+        integer(kind=8) :: out
         !
-        integer, allocatable :: candidates(:)
+        integer(kind=8), allocatable :: candidates(:)
         !
         if (.not. present(umask)) then
             mask = ASTER_TRUE
@@ -134,7 +134,7 @@ contains
         aster_logical, optional, intent(in) :: umask(size(array))
         aster_logical :: out, mask(size(array))
         !
-        integer :: i
+        integer(kind=8) :: i
         !
         if (.not. present(umask)) then
             mask = ASTER_TRUE

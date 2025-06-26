@@ -21,7 +21,7 @@
 interface
     subroutine cfcorn(newgeo, numno, coorno)
         character(len=19) :: newgeo
-        integer :: numno
+        integer(kind=8) :: numno
         real(kind=8) :: coorno(3)
     end subroutine cfcorn
 end interface

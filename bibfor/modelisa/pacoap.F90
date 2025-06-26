@@ -37,7 +37,7 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: lonlis
+    integer(kind=8) :: lonlis
     character(len=*) :: lisi1z, lisi2z, nomaz, liso1z, liso2z
     real(kind=8) :: centre(3), theta(3), t(3)
 !     BUT: TRIER 2 LISTES DE NOEUDS LISI1Z ET LISI2Z DE MANIERE A
@@ -66,10 +66,10 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta, &
 ! OUT  LISO2Z     K24 : NOM DE LA 2EME LISTE TRIEE
 !
 !
-    integer :: i1, i2, iageom, idlin1, idlin2
-    integer :: idlou1, idlou2, ier, iret
-    integer :: ino2, jmin, k
-    integer :: nuno1, nuno2
+    integer(kind=8) :: i1, i2, iageom, idlin1, idlin2
+    integer(kind=8) :: idlou1, idlou2, ier, iret
+    integer(kind=8) :: ino2, jmin, k
+    integer(kind=8) :: nuno1, nuno2
 !
     real(kind=8) :: dsquared, dmin
     real(kind=8) :: mrot(3, 3), x1(3), dx(3)
@@ -78,8 +78,8 @@ subroutine pacoap(lisi1z, lisi2z, lonlis, centre, theta, &
     character(len=8) :: nomno1, nomno2, nomo2
     character(len=24) :: lisin1, lisin2, lisou1, lisou2
     character(len=24) :: valk(5)
-    integer, pointer :: num_lisin1(:) => null()
-    integer, pointer :: num_lisin2(:) => null()
+    integer(kind=8), pointer :: num_lisin1(:) => null()
+    integer(kind=8), pointer :: num_lisin2(:) => null()
     character(len=8), pointer :: lisinv(:) => null()
 
 !

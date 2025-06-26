@@ -54,25 +54,25 @@ subroutine cfpoin(mesh, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, length
+    integer(kind=8) :: iret, length
     character(len=19) :: sdappa, newgeo
     character(len=24) :: sdappa_poin, sdappa_infp, sdappa_noms
     character(len=24) :: sdappa_tau1, sdappa_tau2, sdappa_proj
     character(len=24) :: sdappa_dist, sdappa_appa, sdappa_tgno, sdappa_tgel
     character(len=24) :: sdappa_mpia, sdappa_mpib, sdappa_mpic
     real(kind=8), pointer :: v_sdappa_poin(:) => null()
-    integer, pointer :: v_sdappa_infp(:) => null()
+    integer(kind=8), pointer :: v_sdappa_infp(:) => null()
     character(len=16), pointer :: v_sdappa_noms(:) => null()
     character(len=16), pointer :: valk(:) => null()
-    integer :: i_node_escl
-    integer :: i_poin, i_node_slav, i_zone
-    integer :: nb_poin, nb_node_slav
-    integer :: node_slav_indx(1), node_slav_nume(1)
-    integer :: jdecne
+    integer(kind=8) :: i_node_escl
+    integer(kind=8) :: i_poin, i_node_slav, i_zone
+    integer(kind=8) :: nb_poin, nb_node_slav
+    integer(kind=8) :: node_slav_indx(1), node_slav_nume(1)
+    integer(kind=8) :: jdecne
     real(kind=8) :: poin_coor(3)
     character(len=8) :: node_slav_name
     character(len=16) :: poin_name
-    integer :: nb_cont_zone
+    integer(kind=8) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !

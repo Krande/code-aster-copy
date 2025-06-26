@@ -22,8 +22,8 @@ interface
     subroutine jepreg(cunit, clas, numerg, cmess, info)
         character(len=*) :: cunit
         character(len=*) :: clas
-        integer :: numerg
+        integer(kind=8) :: numerg
         character(len=*) :: cmess
-        integer :: info
+        integer(kind=8) :: info
     end subroutine jepreg
 end interface

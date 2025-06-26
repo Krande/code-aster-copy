@@ -19,7 +19,7 @@
 interface
     subroutine getAdapEvent(sddisc, i_adap, event_type)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: i_adap
-        integer, intent(out) :: event_type
+        integer(kind=8), intent(in) :: i_adap
+        integer(kind=8), intent(out) :: event_type
     end subroutine getAdapEvent
 end interface

@@ -20,9 +20,9 @@
 !
 interface
     subroutine jni002(elrefa, nmaxob, liobj, nbobj)
-        integer :: nmaxob
+        integer(kind=8) :: nmaxob
         character(len=8) :: elrefa
         character(len=24) :: liobj(nmaxob)
-        integer :: nbobj
+        integer(kind=8) :: nbobj
     end subroutine jni002
 end interface

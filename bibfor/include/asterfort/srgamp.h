@@ -22,10 +22,10 @@ interface
     subroutine srgamp(val, varv, im, sm, ucrip,&
                       seuilp, vinm, nvi, nbmat, mater, de,&
                       deps, depsv, dgamv, depsp, dgamp, retcom)
-        integer :: nbmat
-        integer :: val
-        integer :: varv
-        integer :: nvi
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: val
+        integer(kind=8) :: varv
+        integer(kind=8) :: nvi
         real(kind=8) :: im
         real(kind=8) :: sm(6)
         real(kind=8) :: ucrip
@@ -38,6 +38,6 @@ interface
         real(kind=8) :: dgamv
         real(kind=8) :: depsp(6)
         real(kind=8) :: dgamp
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine srgamp
 end interface

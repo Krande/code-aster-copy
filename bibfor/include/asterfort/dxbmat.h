@@ -25,7 +25,7 @@ interface
         real(kind=8) :: cara(*)
         real(kind=8) :: xyzl(3, *)
         real(kind=8) :: pgl(3, *)
-        integer :: igau
+        integer(kind=8) :: igau
         real(kind=8) :: jacgau
         real(kind=8) :: bmat(8, *)
     end subroutine dxbmat

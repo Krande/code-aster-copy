@@ -34,7 +34,7 @@ subroutine varcCalcMeta(modelz, &
 #include "asterfort/jeveuo.h"
 !
     character(len=*), intent(in) :: modelz
-    integer, intent(in) :: nbin, nbout
+    integer(kind=8), intent(in) :: nbin, nbout
     character(len=8), intent(in) :: lpain(*), lpaout(*)
     character(len=19), intent(in) :: lchin(*)
     character(len=19), intent(inout) :: lchout(*)
@@ -64,7 +64,7 @@ subroutine varcCalcMeta(modelz, &
     character(len=8) :: newnom
     character(len=16) :: option
     character(len=19) :: resu_elem, ligrmo
-    integer :: nb_resu
+    integer(kind=8) :: nb_resu
     character(len=24), pointer :: p_relr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

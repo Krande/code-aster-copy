@@ -24,7 +24,7 @@ interface
         character(len=19), intent(in) :: matr_rigi, matr_mass
         aster_logical, intent(in) :: l_cplx
         real(kind=8), pointer :: l_damp_read(:)
-        integer, intent(in) :: nb_damp_read
+        integer(kind=8), intent(in) :: nb_damp_read
         character(len=19), intent(out)  :: matr_damp
     end subroutine dl_CreateDampMatrix
 end interface

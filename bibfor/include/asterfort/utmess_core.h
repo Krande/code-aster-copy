@@ -23,13 +23,13 @@ interface
                            vali, nr, valr, nexcep, fname)
         character(len=*), intent(in) :: typ
         character(len=*), intent(in) :: idmess
-        integer, intent(in) :: nk
+        integer(kind=8), intent(in) :: nk
         character(len=*), intent(in) :: valk(*)
-        integer, intent(in) :: ni
-        integer, intent(in) :: vali(*)
-        integer, intent(in) :: nr
+        integer(kind=8), intent(in) :: ni
+        integer(kind=8), intent(in) :: vali(*)
+        integer(kind=8), intent(in) :: nr
         real(kind=8), intent(in) :: valr(*)
-        integer, intent(in) :: nexcep
+        integer(kind=8), intent(in) :: nexcep
         character(len=*), intent(in) :: fname
     end subroutine utmess_core
 end interface

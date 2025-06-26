@@ -25,7 +25,7 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke, &
     character(len=8) :: nommat
     real(kind=8) :: sigmin(*), sigmax(*)
     real(kind=8) :: rcorr(*), dom(*), rke(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
     aster_logical :: lhaigh, lke
 !     CALCUL DU DOMMAGE ELEMENTAIRE PAR INTERPOLATION SUR
 !     UNE COURBE DE WOHLER DONNEE PAR 1/N = A (DSIGMA)**BETA
@@ -43,12 +43,12 @@ subroutine fgdoba(nommat, nbcycl, sigmin, sigmax, lke, &
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: delta, val(2), rbid
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=16) :: nomres(2)
     character(len=8) :: nompar
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbpar
+    integer(kind=8) :: i, nbpar
 !-----------------------------------------------------------------------
     rbid = 0.d0
     nompar = ' '

@@ -23,7 +23,7 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
 #include "asterfort/conare.h"
 #include "asterfort/xxmmvd.h"
     character(len=8) :: typma
-    integer :: ninter, jaint, lact(8), nlact
+    integer(kind=8) :: ninter, jaint, lact(8), nlact
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,9 +49,9 @@ subroutine xlacti(typma, ninter, jaint, lact, nlact)
 !
 !
 !
-    integer :: zxain
-    integer :: ino, ino1, ino2, iar, ar(12, 3), nbar
-    integer :: vit(8), nvit, nli
+    integer(kind=8) :: zxain
+    integer(kind=8) :: ino, ino1, ino2, iar, ar(12, 3), nbar
+    integer(kind=8) :: vit(8), nvit, nli
 !.......................................................................
 !
 ! --- INITIALISATIONS

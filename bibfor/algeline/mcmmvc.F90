@@ -32,7 +32,7 @@ subroutine mcmmvc(cumul, lmat, smdi, smhc, neq, &
 !
     character(len=*) :: cumul
     integer(kind=4) :: smhc(*)
-    integer :: smdi(*), neq, nbvect, lmat
+    integer(kind=8) :: smdi(*), neq, nbvect, lmat
     complex(kind=8) :: vect(neq, nbvect), xsol(neq, nbvect), vectmp(neq)
     aster_logical :: prepos
 !                   MULTIPLICATION MATRICE PAR N VECTEURS
@@ -47,10 +47,10 @@ subroutine mcmmvc(cumul, lmat, smdi, smhc, neq, &
     complex(kind=8) :: czero
     character(len=19) :: nom19
     character(len=24) :: valm
-    integer :: nbloc, jmat1, jmat2, jcol, i, j, kdeb, kfin, ki, jvec, k
+    integer(kind=8) :: nbloc, jmat1, jmat2, jcol, i, j, kdeb, kfin, ki, jvec, k
     aster_logical :: nonsym
-    integer :: keta, iexi, ieq
-    integer, pointer :: ccid(:) => null()
+    integer(kind=8) :: keta, iexi, ieq
+    integer(kind=8), pointer :: ccid(:) => null()
 !     ------------------------------------------------------------------
 !
 !

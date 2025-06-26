@@ -42,13 +42,13 @@ subroutine rcevfa(nommat, para, sm, cnoc, csno, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbordr, jsno, jsne, jspo, jspe, jfao, jfae, ind, jnoc, nbinst, i1
-    integer :: i2, jspto, jspte, jspmo, jspme
+    integer(kind=8) :: nbordr, jsno, jsne, jspo, jspe, jfao, jfae, ind, jnoc, nbinst, i1
+    integer(kind=8) :: i2, jspto, jspte, jspmo, jspme
     real(kind=8) :: sno, sne, spo, spe, keo, kee, salto, salte, nadmo(1), nadme(1)
     real(kind=8) :: kth, ketheo, kethee, spto, spte, spmo, spme, kemeco, kemece
     real(kind=8) :: nbid, saltmo, saltme, saltho, salthe, valr(2)
     character(len=8) :: k8b
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     aster_logical :: endur
 ! DEB ------------------------------------------------------------------
     call jemarq()

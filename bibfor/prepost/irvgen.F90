@@ -29,7 +29,7 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
 #include "asterfort/mgutdm.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
-    integer :: cmpg(*)
+    integer(kind=8) :: cmpg(*)
     character(len=*) :: genein
     aster_logical :: lhist
 !     IMPRESSION D'UN "VECT_ASSE_GENE"
@@ -45,12 +45,12 @@ subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
     aster_logical :: lbase
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ib, ifi, im, imode
-    integer :: ir, istru, j, jdesc, jfreq, jnume
-    integer :: jordr, jpara, jvale, nbcmpg, nbmode
+    integer(kind=8) :: i, iad, ib, ifi, im, imode
+    integer(kind=8) :: ir, istru, j, jdesc, jfreq, jnume
+    integer(kind=8) :: jordr, jpara, jvale, nbcmpg, nbmode
 !
     real(kind=8) :: ximag, xreal
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     character(len=24), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

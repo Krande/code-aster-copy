@@ -31,7 +31,7 @@ subroutine celver(celz, typver, arret, iret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: celz, typver, arret
-    integer :: iret
+    integer(kind=8) :: iret
 ! ------------------------------------------------------------------
 ! BUT : VERIFIER QUE LE CHAM_ELEM  CEL  A UNE CERTAINE PROPRIETE
 !       SINON ERREUR '<F>' (OU BIEN CODE_RETOUR:1)
@@ -57,10 +57,10 @@ subroutine celver(celz, typver, arret, iret)
     character(len=8) :: tsca, nomgd
     character(len=3) :: knan
     character(len=19) :: cel
-    integer :: kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
-    integer :: imolo, inan, nb1, k, jcelv
+    integer(kind=8) :: kk, mxspt, igr, ngrel, nel, iel, iprem, ncdyn, ncdyn1
+    integer(kind=8) :: imolo, inan, nb1, k, jcelv
     aster_logical :: lnan
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
 !
 !     ------------------------------------------------------------------
     call jemarq()

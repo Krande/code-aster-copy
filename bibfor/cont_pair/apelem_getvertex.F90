@@ -26,10 +26,10 @@ subroutine apelem_getvertex(elem_dime, elem_code, &
 #include "asterfort/assert.h"
 #include "asterfort/mmnewt.h"
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code
     real(kind=8), intent(out) :: para_coor(elem_dime-1, 4)
-    integer, intent(out) :: nb_vertex
+    integer(kind=8), intent(out) :: nb_vertex
     character(len=8), intent(out) :: para_code
     real(kind=8), intent(in) :: elem_coor(3, 9)
     real(kind=8), intent(in) :: proj_tole
@@ -51,11 +51,11 @@ subroutine apelem_getvertex(elem_dime, elem_code, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_reli
-    integer :: niverr
+    integer(kind=8) :: niverr
     real(kind=8) :: coor_pt(3)
     real(kind=8) :: ksi1, ksi2, tau1(3), tau2(3)
     character(len=8) :: elin_code
-    integer :: elin_nbnode
+    integer(kind=8) :: elin_nbnode
 
     if (elem_code .eq. 'SE2' .or. &
         elem_code .eq. 'SE3') then

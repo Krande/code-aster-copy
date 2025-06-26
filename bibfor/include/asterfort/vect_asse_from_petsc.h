@@ -28,6 +28,6 @@ interface
         character(len=19), intent(inout) :: vasse
         character(len=19), intent(in) :: numddl
         real(kind=8), intent(in) :: scaling
-        integer :: ilocal
+        integer(kind=8) :: ilocal
     end subroutine vect_asse_from_petsc
 end interface

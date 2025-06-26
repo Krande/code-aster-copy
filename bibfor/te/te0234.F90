@@ -41,9 +41,9 @@ subroutine te0234(option, nomte)
 !          -----------------------------------------------------------
 !
 !
-    integer :: nbres, jnbspi, nbsp, itab(7)
+    integer(kind=8) :: nbres, jnbspi, nbsp, itab(7)
 !
-    integer :: nbcou, npge, jvSief, jvDisp, ivectu, icou, inte, kpki, k1
+    integer(kind=8) :: nbcou, npge, jvSief, jvDisp, ivectu, icou, inte, kpki, k1
 !
     real(kind=8) :: cisail, zic, coef, rhos, rhot, epsx3, gsx3, sgmsx3
 !
@@ -52,15 +52,15 @@ subroutine te0234(option, nomte)
     parameter(nbres=2)
     character(len=8) :: elrefe
     character(len=16) :: nomres(nbres)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: dfdx(3), zero, un, deux
     real(kind=8) :: test, test2, eps, nu, h, cosa, sina, cour, r, tpg
     real(kind=8) :: jacp, kappa, correc
     real(kind=8) :: eps2d(4), sigtdi(5), sigmtd(5)
     real(kind=8) :: x3
-    integer :: nno, nnos, jgano, ndim, kp, npg, i, k, icaco, iret
-    integer :: ipoids, ivf, idfdk, igeom, imate
+    integer(kind=8) :: nno, nnos, jgano, ndim, kp, npg, i, k, icaco, iret
+    integer(kind=8) :: ipoids, ivf, idfdk, igeom, imate
     aster_logical :: testl1, testl2
     real(kind=8) :: zmin, hic
 !

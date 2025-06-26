@@ -25,7 +25,7 @@ interface
         aster_logical, intent(in) :: l_mfront_func, l_mfront_anis
         character(len=19), intent(in) :: noobrc_elas
         aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
-        integer, intent(in) :: mfront_nbvale
+        integer(kind=8), intent(in) :: mfront_nbvale
         character(len=16), intent(in) :: mfront_prop(16)
         real(kind=8), intent(in) :: mfront_valr(16)
         character(len=16), intent(in) :: mfront_valk(16)

@@ -32,7 +32,7 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp, &
 #include "asterfort/lxliis.h"
 #include "asterfort/utmess.h"
 !
-    integer :: iocc, dim, nbcmp, numcmp(*)
+    integer(kind=8) :: iocc, dim, nbcmp, numcmp(*)
     character(len=*) :: nomgd, mcfac, nomcmp(*)
 ! BUT :  SCRUTER LE MOT CLE MFAC/NOM_CMP ET RENDRE LA LISTE DES CMPS
 ! -----
@@ -48,7 +48,7 @@ subroutine utcmp2(nomgd, mcfac, iocc, dim, nomcmp, &
 !  NBCMP     OUT I  : NOMBRE DE CMPS TROUVEES
 !
 ! ----------------------------------------------------------------------
-    integer :: n2, i, nucmp, iret, jnocmp, lgncmp
+    integer(kind=8) :: n2, i, nucmp, iret, jnocmp, lgncmp
     character(len=8) :: k8b, nocmp
     character(len=16) :: nomcmd
 !     ------------------------------------------------------------------

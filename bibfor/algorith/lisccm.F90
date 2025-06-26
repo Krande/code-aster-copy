@@ -47,9 +47,9 @@ subroutine lisccm(nomcmd, codarr, lischa)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ichar, nbchar
-    integer :: nbauth, nbnaut, mclaut(2)
-    integer :: motclc(2)
+    integer(kind=8) :: ichar, nbchar
+    integer(kind=8) :: nbauth, nbnaut, mclaut(2)
+    integer(kind=8) :: motclc(2)
     character(len=24) :: valk(2)
     character(len=8) :: charge
 !

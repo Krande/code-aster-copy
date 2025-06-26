@@ -49,13 +49,13 @@ module HHO_basis_module
 !
     type HHO_basis_cell
         type(HHO_monomials) :: hhoMono
-        integer :: type = BASIS_ORTHO
-        integer :: ndim = 0
+        integer(kind=8) :: type = BASIS_ORTHO
+        integer(kind=8) :: ndim = 0
         real(kind=8) :: center(3) = 0.d0
         real(kind=8) :: scaling_factor(3) = 0.d0
         real(kind=8) :: rotmat(3, 3) = 0.d0
         real(kind=8) :: coeff_mono(MAX_CELL_COEF) = 0.d0
-        integer      :: coeff_shift(MSIZE_CELL_SCAL+1) = 0
+        integer(kind=8)      :: coeff_shift(MSIZE_CELL_SCAL+1) = 0
 
 ! ----- member function
     contains
@@ -75,13 +75,13 @@ module HHO_basis_module
 !
     type HHO_basis_face
         type(HHO_monomials) :: hhoMono
-        integer :: type = BASIS_ORTHO
-        integer :: ndim = 0
+        integer(kind=8) :: type = BASIS_ORTHO
+        integer(kind=8) :: ndim = 0
         real(kind=8) :: center(3) = 0.d0
         real(kind=8) :: scaling_factor(2) = 0.d0
         real(kind=8) :: rotmat(2, 3) = 0.d0
         real(kind=8) :: coeff_mono(MAX_FACE_COEF) = 0.d0
-        integer      :: coeff_shift(MSIZE_FACE_SCAL+1) = 0
+        integer(kind=8)      :: coeff_shift(MSIZE_FACE_SCAL+1) = 0
 ! ----- member function
     contains
         procedure, pass :: initialize => hhoBasisFaceInit
@@ -114,9 +114,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: min_order
-        integer, intent(in) :: max_order
-        integer, intent(in) :: maxAutorized
+        integer(kind=8), intent(in) :: min_order
+        integer(kind=8), intent(in) :: max_order
+        integer(kind=8), intent(in) :: maxAutorized
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -148,7 +148,7 @@ contains
     subroutine getMaxDegree(cell_degree, face_degree)
 !
         implicit none
-        integer, optional, intent(out) :: cell_degree, face_degree
+        integer(kind=8), optional, intent(out) :: cell_degree, face_degree
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -158,7 +158,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         character(len=16) :: formulation
-        integer :: cell_deg, face_deg
+        integer(kind=8) :: cell_deg, face_deg
 !
         call teattr('S', 'FORMULATION', formulation)
 !
@@ -224,7 +224,7 @@ contains
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         class(HHO_basis_cell), intent(out)  :: this
-        integer, optional, intent(in)       :: type
+        integer(kind=8), optional, intent(in)       :: type
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -236,8 +236,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, size_face
-        integer :: max_deg_cell, max_deg_face
+        integer(kind=8) :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, size_face
+        integer(kind=8) :: max_deg_cell, max_deg_face
         real(kind=8) :: axes(3, 3), length_box(3)
         type(HHO_matrix) :: basisOrthoIpg
         type(HHO_basis_cell) :: hhoBasisIner
@@ -326,7 +326,7 @@ contains
 !
         type(HHO_Face), intent(in)               :: hhoFace
         class(HHO_basis_face), intent(out)       :: this
-        integer, optional, intent(in)            :: type
+        integer(kind=8), optional, intent(in)            :: type
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -338,8 +338,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, nb_coeff
-        integer :: max_deg_cell, max_deg_face
+        integer(kind=8) :: idim, size_basis_scal, ipg, iret, jtab(1), ib, offset, nb_coeff
+        integer(kind=8) :: max_deg_cell, max_deg_face
         real(kind=8) :: axes(3, 2), length_box(2)
         type(HHO_matrix) :: basisOrthoIpg
         type(HHO_basis_face) :: hhoBasisIner
@@ -424,9 +424,9 @@ contains
         implicit none
 !
         class(HHO_basis_cell), intent(in)      :: this
-        integer, intent(in)                    :: min_order
-        integer, intent(in)                    :: max_order
-        integer                                :: size_basis
+        integer(kind=8), intent(in)                    :: min_order
+        integer(kind=8), intent(in)                    :: max_order
+        integer(kind=8)                                :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -438,7 +438,7 @@ contains
 !   Out size_basis          : size of the scalar basis
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: size_min, size_max
+        integer(kind=8) :: size_min, size_max
 !
         call this%BSRange(min_order, max_order, size_min, size_max)
         size_basis = size_max-size_min+1
@@ -454,9 +454,9 @@ contains
         implicit none
 !
         class(HHO_basis_face), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer                                 :: size_basis
+        integer(kind=8), intent(in)                     :: min_order
+        integer(kind=8), intent(in)                     :: max_order
+        integer(kind=8)                                 :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -468,7 +468,7 @@ contains
 !   Out size_basis          : size of the scalar basis
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: size_min, size_max
+        integer(kind=8) :: size_min, size_max
 !
         call this%BSRange(min_order, max_order, size_min, size_max)
         size_basis = size_max-size_min+1
@@ -484,10 +484,10 @@ contains
         implicit none
 !
         class(HHO_basis_cell), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        integer(kind=8), intent(in)                     :: min_order
+        integer(kind=8), intent(in)                     :: max_order
+        integer(kind=8), intent(out)                    :: ifrom
+        integer(kind=8), intent(out)                    :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -522,10 +522,10 @@ contains
         implicit none
 !
         class(HHO_basis_face), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        integer(kind=8), intent(in)                     :: min_order
+        integer(kind=8), intent(in)                     :: max_order
+        integer(kind=8), intent(out)                    :: ifrom
+        integer(kind=8), intent(out)                    :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -560,9 +560,9 @@ contains
         implicit none
 !
         class(HHO_basis_cell), intent(in)      :: this
-        integer, intent(in)                    :: min_order
-        integer, intent(in)                    :: max_order
-        integer                                :: size_basis
+        integer(kind=8), intent(in)                    :: min_order
+        integer(kind=8), intent(in)                    :: max_order
+        integer(kind=8)                                :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -574,7 +574,7 @@ contains
 !   Out size_basis          : size of the scalar basis
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: size_min, size_max
+        integer(kind=8) :: size_min, size_max
 !
         call this%BSRange(min_order, max_order, size_min, size_max)
         size_basis = this%hhoMono%ndim*(size_max-size_min+1)
@@ -590,9 +590,9 @@ contains
         implicit none
 !
         class(HHO_basis_face), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer                                 :: size_basis
+        integer(kind=8), intent(in)                     :: min_order
+        integer(kind=8), intent(in)                     :: max_order
+        integer(kind=8)                                 :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -604,7 +604,7 @@ contains
 !   Out size_basis          : size of the scalar basis
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: size_min, size_max
+        integer(kind=8) :: size_min, size_max
 !
         call this%BSRange(min_order, max_order, size_min, size_max)
         size_basis = (this%hhoMono%ndim+1)*(size_max-size_min+1)
@@ -620,10 +620,10 @@ contains
         implicit none
 !
         class(HHO_basis_cell), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        integer(kind=8), intent(in)                     :: min_order
+        integer(kind=8), intent(in)                     :: max_order
+        integer(kind=8), intent(out)                    :: ifrom
+        integer(kind=8), intent(out)                    :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -636,7 +636,7 @@ contains
 !   Out ito                 : last index of the monomials
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ndim
+        integer(kind=8) :: ndim
 !
         ndim = this%hhoMono%ndim
 !
@@ -662,10 +662,10 @@ contains
         implicit none
 !
         class(HHO_basis_face), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        integer(kind=8), intent(in)                     :: min_order
+        integer(kind=8), intent(in)                     :: max_order
+        integer(kind=8), intent(out)                    :: ifrom
+        integer(kind=8), intent(out)                    :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -678,7 +678,7 @@ contains
 !   Out ito                 : last index of the monomials
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ndim
+        integer(kind=8) :: ndim
 !
         ndim = this%hhoMono%ndim
 !
@@ -703,9 +703,9 @@ contains
         implicit none
 !
         class(HHO_basis_cell), intent(in)      :: this
-        integer, intent(in)                    :: min_order
-        integer, intent(in)                    :: max_order
-        integer                                :: size_basis
+        integer(kind=8), intent(in)                    :: min_order
+        integer(kind=8), intent(in)                    :: max_order
+        integer(kind=8)                                :: size_basis
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -717,7 +717,7 @@ contains
 !   Out size_basis          : size of the matrix basis
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: size_min, size_max, ndim2
+        integer(kind=8) :: size_min, size_max, ndim2
 !
         ndim2 = this%hhoMono%ndim*this%hhoMono%ndim
 !
@@ -735,10 +735,10 @@ contains
         implicit none
 !
         class(HHO_basis_cell), intent(in)       :: this
-        integer, intent(in)                     :: min_order
-        integer, intent(in)                     :: max_order
-        integer, intent(out)                    :: ifrom
-        integer, intent(out)                    :: ito
+        integer(kind=8), intent(in)                     :: min_order
+        integer(kind=8), intent(in)                     :: max_order
+        integer(kind=8), intent(out)                    :: ifrom
+        integer(kind=8), intent(out)                    :: ito
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -751,7 +751,7 @@ contains
 !   Out ito                 : last index of the monomials
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ndim, ndim2
+        integer(kind=8) :: ndim, ndim2
 !
         ndim = this%hhoMono%ndim
         ndim2 = ndim*ndim
@@ -778,8 +778,8 @@ contains
 !
         class(HHO_basis_cell), intent(inout)                    :: this
         real(kind=8), dimension(3), intent(in)                  :: point
-        integer, intent(in)                                     :: min_order
-        integer, intent(in)                                     :: max_order
+        integer(kind=8), intent(in)                                     :: min_order
+        integer(kind=8), intent(in)                                     :: max_order
         real(kind=8), dimension(MSIZE_CELL_SCAL), intent(out)   :: basisScalEval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -795,8 +795,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) :: peval
-        integer :: imono, ifrom, ito, icoeff
-        integer, dimension(3) :: power
+        integer(kind=8) :: imono, ifrom, ito, icoeff
+        integer(kind=8), dimension(3) :: power
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
@@ -867,8 +867,8 @@ contains
 !
         class(HHO_basis_cell), intent(inout)                    :: this
         real(kind=8), dimension(3), intent(in)                  :: point
-        integer, intent(in)                                     :: min_order
-        integer, intent(in)                                     :: max_order
+        integer(kind=8), intent(in)                                     :: min_order
+        integer(kind=8), intent(in)                                     :: max_order
         real(kind=8), dimension(3, MSIZE_CELL_SCAL), intent(out):: BSGradEval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -883,10 +883,10 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ifrom, ito, icoeff
+        integer(kind=8) :: ifrom, ito, icoeff
         real(kind=8), dimension(3) :: peval, func, dfunc, grad
-        integer :: ind, imono
-        integer, dimension(3) :: power
+        integer(kind=8) :: ind, imono
+        integer(kind=8), dimension(3) :: power
         real(kind=8) :: invrotmat(3, 3)
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: Grad_mono
 !
@@ -1055,8 +1055,8 @@ contains
 !
         class(HHO_basis_cell), intent(inout)                    :: this
         real(kind=8), dimension(3), intent(in)                  :: point
-        integer, intent(in)                                     :: min_order
-        integer, intent(in)                                     :: max_order
+        integer(kind=8), intent(in)                                     :: min_order
+        integer(kind=8), intent(in)                                     :: max_order
         real(kind=8), dimension(6, MSIZE_CELL_VEC), intent(out) :: BVSymGradEval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1074,7 +1074,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: size_basis_scal, ind, imono
+        integer(kind=8) :: size_basis_scal, ind, imono
         real(kind=8), parameter :: rac2sur2 = sqrt(2.d0)/2.d0
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSGradEval
 !
@@ -1146,8 +1146,8 @@ contains
 !
         class(HHO_basis_face), intent(inout)                    :: this
         real(kind=8), dimension(3), intent(in)                  :: point
-        integer, intent(in)                                     :: min_order
-        integer, intent(in)                                     :: max_order
+        integer(kind=8), intent(in)                                     :: min_order
+        integer(kind=8), intent(in)                                     :: max_order
         real(kind=8), dimension(MSIZE_FACE_SCAL), intent(out)   :: basisScalEval
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1163,8 +1163,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(2) :: peval
-        integer :: imono, ifrom, ito, icoeff
-        integer, dimension(2) :: power
+        integer(kind=8) :: imono, ifrom, ito, icoeff
+        integer(kind=8), dimension(2) :: power
 !
 ! ---- Check the order
         call check_order(min_order, max_order, this%hhoMono%maxOrder())
@@ -1293,9 +1293,9 @@ contains
 !
         type(HHO_Quadrature), intent(in)                    :: hhoQuad
         type(HHO_matrix), intent(inout)                     :: basisIpg
-        integer, intent(in)                                 :: nb_basis, ndim
+        integer(kind=8), intent(in)                                 :: nb_basis, ndim
         real(kind=8), intent(in)                            :: measure
-        integer, intent(out)                                :: coeff_shift(*)
+        integer(kind=8), intent(out)                                :: coeff_shift(*)
         real(kind=8), intent(out)                           :: coeff_mono(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1311,8 +1311,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: nb_ortho = 2
-        integer :: i, j, k, ipg, npg, i_ortho
+        integer(kind=8), parameter :: nb_ortho = 2
+        integer(kind=8) :: i, j, k, ipg, npg, i_ortho
         real(kind=8) :: rp(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL), rc(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         real(kind=8) :: ra(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
         real(kind=8) :: ri(MSIZE_CELL_SCAL)

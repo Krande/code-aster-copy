@@ -23,6 +23,6 @@ interface
         character(len=*) :: nomfcz
         character(len=*) :: nomclz
         character(len=*) :: nomrz
-        integer :: nbmax
+        integer(kind=8) :: nbmax
     end subroutine rcstoc_verif
 end interface

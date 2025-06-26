@@ -35,7 +35,7 @@ subroutine drfdrs(q, parame, h0, sigc, rgdev, &
 ! OUT : DFDS   : DF/DSIG = (1/A)*((1/(SIGC*H0))**(1/A))*G**((1-A)/A)*Q -
 ! ------------ :         - DU/DSIG  ------------------------------------
 ! ======================================================================
-    integer :: ii, ndt, ndi
+    integer(kind=8) :: ii, ndt, ndi
     real(kind=8) :: agamp, fact1, fact2, fact3, fact4, un
 ! ======================================================================
 ! --- INITIALISATION DE PARAMETRES -------------------------------------

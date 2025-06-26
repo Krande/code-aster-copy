@@ -21,9 +21,9 @@
 interface
     subroutine connec(nomte, nse, nnop2, c, typema_)
         character(len=16) :: nomte
-        integer :: nse
-        integer :: nnop2
-        integer :: c(6, 9)
+        integer(kind=8) :: nse
+        integer(kind=8) :: nnop2
+        integer(kind=8) :: c(6, 9)
         character(len=8), optional :: typema_
     end subroutine connec
 end interface

@@ -28,9 +28,9 @@ subroutine cacdsu(maxfa, parm_alpha, &
 !
 #include "asterfort/assert.h"
 !
-    integer, intent(in) :: maxfa
+    integer(kind=8), intent(in) :: maxfa
     real(kind=8), intent(in) :: parm_alpha
-    integer, intent(in) :: ndim, nno, nface
+    integer(kind=8), intent(in) :: ndim, nno, nface
     real(kind=8), intent(in) :: elem_coor(ndim, nno)
     real(kind=8), intent(in) :: vol
     real(kind=8), intent(in) :: mface(1:maxfa)
@@ -67,9 +67,9 @@ subroutine cacdsu(maxfa, parm_alpha, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxfa1 = 6, maxdi1 = 3
-    integer :: ifa, jfa, kfa
-    integer :: idim, jdim
+    integer(kind=8), parameter :: maxfa1 = 6, maxdi1 = 3
+    integer(kind=8) :: ifa, jfa, kfa
+    integer(kind=8) :: idim, jdim
     real(kind=8) :: dim, sqdim, beta
     real(kind=8) :: mcone(maxfa)
     real(kind=8) :: xg(maxdi1)

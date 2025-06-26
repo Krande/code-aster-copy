@@ -24,14 +24,14 @@ interface
     subroutine mmimp4(ifm, noma, nummae, iptm, indcoi,&
                       indcon, indfri, indfrn, lfrot, &
                       lgliss, jeu,  lambdc)
-        integer :: ifm
+        integer(kind=8) :: ifm
         character(len=8) :: noma
-        integer :: nummae
-        integer :: iptm
-        integer :: indcoi
-        integer :: indcon
-        integer :: indfri
-        integer :: indfrn
+        integer(kind=8) :: nummae
+        integer(kind=8) :: iptm
+        integer(kind=8) :: indcoi
+        integer(kind=8) :: indcon
+        integer(kind=8) :: indfri
+        integer(kind=8) :: indfrn
         aster_logical :: lfrot
         aster_logical :: lgliss
         real(kind=8) :: jeu

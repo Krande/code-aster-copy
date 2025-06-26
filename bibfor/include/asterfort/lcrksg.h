@@ -21,9 +21,9 @@
 interface
     subroutine lcrksg(rela_comp, nvi, vinf, fd, df,&
                       nmat, coefl, sigi)
-        integer :: nmat
+        integer(kind=8) :: nmat
         character(len=16) :: rela_comp
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: vinf(*)
         real(kind=8) :: fd(9)
         real(kind=8) :: df(9)

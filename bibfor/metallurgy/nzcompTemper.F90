@@ -34,7 +34,7 @@ subroutine nzcompTemper(metaPara, numeComp, &
 #include "asterfort/Metallurgy_type.h"
 !
     type(META_MaterialParameters), intent(in) :: metaPara
-    integer, intent(in) :: numeComp, nbVari, nbVariTemper, nbVariPrev
+    integer(kind=8), intent(in) :: numeComp, nbVari, nbVariTemper, nbVariPrev
     real(kind=8), intent(in) :: deltaTime12
     real(kind=8), intent(in) :: temp1, temp2
     aster_logical, intent(in) :: prevMetaIsTemper

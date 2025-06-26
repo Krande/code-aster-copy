@@ -21,9 +21,9 @@ subroutine calatm(neq, nbddl, mu, coef, ddl, &
 !
     implicit none
 !
-    integer :: neq
-    integer :: nbddl
-    integer :: ddl(nbddl)
+    integer(kind=8) :: neq
+    integer(kind=8) :: nbddl
+    integer(kind=8) :: ddl(nbddl)
     real(kind=8) :: mu
     real(kind=8) :: coef(nbddl)
     real(kind=8) :: atmu(neq)
@@ -45,7 +45,7 @@ subroutine calatm(neq, nbddl, mu, coef, ddl, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: j
+    integer(kind=8) :: j
 !
 ! ----------------------------------------------------------------------
 !

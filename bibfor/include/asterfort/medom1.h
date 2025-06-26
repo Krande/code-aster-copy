@@ -23,8 +23,8 @@ interface
         character(len=24) :: mater, mateco
         character(len=8) :: cara
         character(len=19) :: kcha
-        integer :: ncha
+        integer(kind=8) :: ncha
         character(len=8) :: result
-        integer :: nuord
+        integer(kind=8) :: nuord
     end subroutine medom1
 end interface

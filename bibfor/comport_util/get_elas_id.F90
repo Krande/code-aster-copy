@@ -24,8 +24,8 @@ subroutine get_elas_id(j_mater, elas_id, elas_keyword)
 #include "asterfort/utmess.h"
 !
 !
-    integer, intent(in) :: j_mater
-    integer, intent(out) :: elas_id
+    integer(kind=8), intent(in) :: j_mater
+    integer(kind=8), intent(out) :: elas_id
     character(len=*), optional, intent(out) :: elas_keyword
 !
 ! --------------------------------------------------------------------------------------------------

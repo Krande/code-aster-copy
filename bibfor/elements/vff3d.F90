@@ -18,7 +18,7 @@
 !
 subroutine vff3d(nno, poids, dfde, coor, jac)
     implicit none
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: poids, dfde(nno), coor(3*nno), jac
 ! ......................................................................
 !    - FONCTION REALISEE:  VALEUR DU POIDS D'INTEGRATION POUR UN SEGMENT
@@ -32,7 +32,7 @@ subroutine vff3d(nno, poids, dfde, coor, jac)
 ! ......................................................................
 !
     real(kind=8) :: dxds, dyds, dzds
-    integer :: i
+    integer(kind=8) :: i
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

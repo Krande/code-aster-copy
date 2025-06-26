@@ -37,8 +37,8 @@ subroutine xalg20(ndim, elrefp, it, nnose, cnset, &
 #include "asterfort/xxmmvd.h"
 !
     character(len=8) :: typma, elrefp
-    integer :: ndim, ndime, it, nnose, cnset(*), exit(2)
-    integer :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
+    integer(kind=8) :: ndim, ndime, it, nnose, cnset(*), exit(2)
+    integer(kind=8) :: ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: ainter(*), pmilie(*), lonref, lsnelp(*)
     real(kind=8) :: pinref(*), pintt(*), pmitt(*), geom(81)
     aster_logical :: jonc
@@ -69,13 +69,13 @@ subroutine xalg20(ndim, elrefp, it, nnose, cnset, &
     real(kind=8) :: milfi(3), milara(3), milarb(3)
     real(kind=8) :: milfa(3)
     real(kind=8) :: pmiref(6*ndime), ksia(ndime), ksib(ndime)
-    integer :: n(3)
-    integer :: i, ipm, k
-    integer :: noeua
-    integer :: j, r, ip, a1, a2, a3, ip1(4), ip2(4), nbpi
-    integer :: pm1a(4), pm1b(4), pm2(4)
-    integer :: nm, inm, ia, ib, im
-    integer :: zxain
+    integer(kind=8) :: n(3)
+    integer(kind=8) :: i, ipm, k
+    integer(kind=8) :: noeua
+    integer(kind=8) :: j, r, ip, a1, a2, a3, ip1(4), ip2(4), nbpi
+    integer(kind=8) :: pm1a(4), pm1b(4), pm2(4)
+    integer(kind=8) :: nm, inm, ia, ib, im
+    integer(kind=8) :: zxain
     aster_logical :: ispm3, ispm2, ajout
 !
 ! --------------------------------------------------------------------

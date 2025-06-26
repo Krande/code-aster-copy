@@ -57,13 +57,13 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/vectrn.h"
     character(len=16) :: nomte
-    integer :: ncmp, jnbspi
+    integer(kind=8) :: ncmp, jnbspi
     real(kind=8) :: pk2(ncmp, *), sigma(ncmp, *)
 ! -----  VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: i, icara, icou, idepl, igeom, ii
-    integer :: in, inte, intsn, iret, j, kpgs, lzi
-    integer :: lzr, nb1, nb2, nbcou, nbinco, npge, npgsn
+    integer(kind=8) :: i, icara, icou, idepl, igeom, ii
+    integer(kind=8) :: in, inte, intsn, iret, j, kpgs, lzi
+    integer(kind=8) :: lzr, nb1, nb2, nbcou, nbinco, npge, npgsn
 !
     character(len=16), pointer :: compor(:) => null()
     real(kind=8) :: cof11, cof21, cof31, detf, detfm1, detj, deux
@@ -71,7 +71,7 @@ subroutine pk2cau(nomte, ncmp, pk2, sigma)
 !-----------------------------------------------------------------------
     parameter(nbinco=51)
     parameter(npge=3)
-    integer :: maxpg
+    integer(kind=8) :: maxpg
     parameter(maxpg=27*50)
 !
 !

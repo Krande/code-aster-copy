@@ -27,7 +27,7 @@ interface
         real(kind=8) :: mb(12)
         real(kind=8) :: presa
         real(kind=8) :: presb
-        integer :: ns
+        integer(kind=8) :: ns
         real(kind=8) :: s2
     end subroutine rcZ2s0
 end interface

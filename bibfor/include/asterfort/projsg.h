@@ -27,7 +27,7 @@ interface
         real(kind=8) :: normal(*)
         real(kind=8) :: x3dp(*)
         real(kind=8) :: xbar(*)
-        integer :: iproj
+        integer(kind=8) :: iproj
         real(kind=8) :: excent
     end subroutine projsg
 end interface

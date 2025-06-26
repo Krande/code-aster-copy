@@ -21,9 +21,9 @@
 interface
     subroutine mtcro3(m, n, a, nmax, x,&
                       y)
-        integer :: nmax
-        integer :: m
-        integer :: n
+        integer(kind=8) :: nmax
+        integer(kind=8) :: m
+        integer(kind=8) :: n
         real(kind=8) :: a(nmax, *)
         real(kind=8) :: x(*)
         real(kind=8) :: y(*)

@@ -24,12 +24,12 @@ interface
                              nb_ecz     , gran_namez, prno_lengthz, l_coll_const)
         character(len=*), intent(in) :: nume_equaz
         character(len=1), intent(in) :: base
-        integer, intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: nb_equa
         character(len=*), optional, intent(in) :: meshz
         character(len=*), optional, intent(in) :: gran_namez
-        integer, optional, intent(in) :: nb_ecz
-        integer, optional, intent(in) :: nb_ligrz
-        integer, optional, intent(in) :: prno_lengthz
+        integer(kind=8), optional, intent(in) :: nb_ecz
+        integer(kind=8), optional, intent(in) :: nb_ligrz
+        integer(kind=8), optional, intent(in) :: prno_lengthz
         aster_logical, optional, intent(in) :: l_coll_const
     end subroutine profchno_crsd
 end interface

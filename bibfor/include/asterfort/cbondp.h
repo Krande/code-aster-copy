@@ -20,7 +20,7 @@ interface
     subroutine cbondp(load, mesh, ndim, valeType)
         character(len=8), intent(in)  :: load
         character(len=8), intent(in)  :: mesh
-        integer, intent(in)  :: ndim
+        integer(kind=8), intent(in)  :: ndim
         character(len=4), intent(in)  :: valeType
     end subroutine cbondp
 end interface

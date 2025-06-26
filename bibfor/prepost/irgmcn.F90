@@ -38,16 +38,16 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/wkvect.h"
-    integer :: ifi, nbordr, nbcmpi, versio
-    integer :: ordr(*), connx(*), point(*)
+    integer(kind=8) :: ifi, nbordr, nbcmpi, versio
+    integer(kind=8) :: ordr(*), connx(*), point(*)
     real(kind=8) :: coord(*), para(*)
     aster_logical :: lresu
     character(len=*) :: nomcon, chamsy, nomcmp(*), partie
 !     NBRE, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
-    integer :: neletr
+    integer(kind=8) :: neletr
     parameter(neletr=8)
-    integer :: tord(neletr)
-    integer :: nbel(*)
+    integer(kind=8) :: tord(neletr)
+    integer(kind=8) :: nbel(*)
     character(len=24) :: nobj(*)
     character(len=8) :: tycha
 !
@@ -73,16 +73,16 @@ subroutine irgmcn(chamsy, partie, ifi, nomcon, ordr, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: i, ine
-    integer :: ior, k, ncmp, iret, nbord2, ncmpu
-    integer :: jcnsk, jtype
+    integer(kind=8) :: i, ine
+    integer(kind=8) :: ior, k, ncmp, iret, nbord2, ncmpu
+    integer(kind=8) :: jcnsk, jtype
     aster_logical :: scal, vect, tens
     character(len=8) :: k8b, nocmp, tbcmp(3)
     character(len=19) :: noch19, champs
-    integer, pointer :: cnsc(:) => null()
-    integer, pointer :: cnsd(:) => null()
-    integer, pointer :: cnsl(:) => null()
-    integer, pointer :: cnsv(:) => null()
+    integer(kind=8), pointer :: cnsc(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsl(:) => null()
+    integer(kind=8), pointer :: cnsv(:) => null()
     character(len=8), pointer :: vnocmp(:) => null()
 !     ------------------------------------------------------------------
 !

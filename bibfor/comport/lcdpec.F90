@@ -71,9 +71,9 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: nmat, ndt, i, j, nbcomm(nmat, 3), nbsys, ifa, is, nbfsys, itmax
-    integer :: nuvi, iter, nvi, iret, ir, nr, nsfa, nsfv, ifl, nuecou, codret
-    integer :: nfs, nsg, ns, indtau, iei, is3, iv, iv3
+    integer(kind=8) :: nmat, ndt, i, j, nbcomm(nmat, 3), nbsys, ifa, is, nbfsys, itmax
+    integer(kind=8) :: nuvi, iter, nvi, iret, ir, nr, nsfa, nsfv, ifl, nuecou, codret
+    integer(kind=8) :: nfs, nsg, ns, indtau, iei, is3, iv, iv3
     real(kind=8) :: vind(*), vinf(*), dy(*), materf(nmat*2)
     real(kind=8) :: epseq, pgl(3, 3), mus(6), ng(3), dgamma, dp, dalpha
     real(kind=8) :: devi(6), toutms(nfs, nsg, 6), toler, hsr(nsg, nsg)
@@ -86,7 +86,7 @@ subroutine lcdpec(BEHinteg, vind, nbcomm, nmat, ndt, &
     character(len=16) :: nomfam, necoul
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     data iden/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/

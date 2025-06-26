@@ -25,7 +25,7 @@ interface
         character(len=*) :: mcfact
         character(len=*) :: mcgrno
         character(len=*) :: mcno
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: noml
     end subroutine palino
 end interface

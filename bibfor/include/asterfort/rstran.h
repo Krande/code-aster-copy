@@ -24,10 +24,10 @@ interface
         character(len=*) :: interp
         character(len=*) :: resu
         character(len=*) :: motcle
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: kdisc
         character(len=*) :: krang
-        integer :: nbdisc
-        integer :: ier
+        integer(kind=8) :: nbdisc
+        integer(kind=8) :: ier
     end subroutine rstran
 end interface

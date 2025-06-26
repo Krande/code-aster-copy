@@ -23,9 +23,9 @@
      &nteut)
               character(len=19), intent(in) :: ligr, partsd
               character(len=24), intent(in) :: ntliel
-              integer, intent(in) :: nbtype
+              integer(kind=8), intent(in) :: nbtype
               character(len=1), intent(in) :: clas
-              integer ,pointer :: teut(:)
-              integer ,pointer :: nteut(:)
+              integer(kind=8) ,pointer :: teut(:)
+              integer(kind=8) ,pointer :: nteut(:)
             end subroutine adalig_sd
           end interface

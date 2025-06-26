@@ -26,7 +26,7 @@ interface
         character(len=8)  :: typm
         character(len=24) :: fonoeu
         character(len=24) :: coorfond
-        integer           :: nbnoff
+        integer(kind=8)           :: nbnoff
         character(len=24) :: absfon
         character(len=19) :: basloc
         character(len=24) :: abscur

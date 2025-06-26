@@ -20,7 +20,7 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf, &
                   parame, derive, sig3, vecp, eta, &
                   dg, se, detadg, dgdl, ddlde)
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: ddlde(6), vecp(3, 3), materf(nbmat, 2), parame(4), derive(5)
     real(kind=8) :: vp(3), i1e, sigeqe, eta, se(6), dg, detadg, sig3, dgdl
 ! ======================================================================
@@ -43,7 +43,7 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf, &
     real(kind=8) :: dsdde(6, 6), un, deux, trois, k, dl, mu
     real(kind=8) :: da1de(6), da2de(6), da3de(6), da6de(6)
     real(kind=8) :: a2, a3, a4, c5, a6, aux1, aux2, aux3, denom, aux4
-    integer :: ii, ndt, ndi, jj
+    integer(kind=8) :: ii, ndt, ndi, jj
 ! =================================================================
     parameter(un=1.0d0)
     parameter(deux=2.0d0)

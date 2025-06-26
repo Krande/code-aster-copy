@@ -30,7 +30,7 @@ subroutine plegen(degre, s, l, legen)
 !
 #include "asterfort/assert.h"
 !
-    integer, intent(in) :: degre
+    integer(kind=8), intent(in) :: degre
     real(kind=8), intent(in) :: s, l
     real(kind=8), intent(out) :: legen
 !

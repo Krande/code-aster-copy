@@ -48,15 +48,15 @@ subroutine chcsur(chcinez, chamnosz, type, modelz, gran_name)
 ! IN   NOMGD   K*      : NOM DE LA GRANDEUR
 !-----------------------------------------------------------------------
 !
-    integer :: nb_affe_cine, i_affe_cine, i_cmp_chmx, nb_cmp_chmx, i_node, nb_node, nbec, i_cmp
-    integer :: jcnsd, jcnsv, jcnsl, iaprnm, jcnsc, i_cmp_mx
-    integer :: nb_cmp_mx
+ integer(kind=8) :: nb_affe_cine, i_affe_cine, i_cmp_chmx, nb_cmp_chmx, i_node, nb_node, nbec, i_cmp
+    integer(kind=8) :: jcnsd, jcnsv, jcnsl, iaprnm, jcnsc, i_cmp_mx
+    integer(kind=8) :: nb_cmp_mx
     character(len=8) :: model, cmp_name, nommai
     character(len=16) :: sdtyp
     character(len=19) :: chcine, chamnos
     character(len=24) :: cafci, cafcv
-    integer, pointer :: corres(:) => null()
-    integer, pointer :: afci(:) => null()
+    integer(kind=8), pointer :: corres(:) => null()
+    integer(kind=8), pointer :: afci(:) => null()
     real(kind=8), pointer :: afcv_r(:) => null()
     complex(kind=8), pointer :: afcv_c(:) => null()
     character(len=8), pointer :: afcv_f(:) => null()

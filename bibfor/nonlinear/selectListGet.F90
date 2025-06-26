@@ -28,7 +28,7 @@ subroutine selectListGet(selectList, nume_inst, inst, l_select)
 #include "asterfort/utacli.h"
 !
     type(NL_DS_SelectList), intent(in) :: selectList
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     real(kind=8), intent(in) :: inst
     aster_logical, intent(out) :: l_select
 !
@@ -48,7 +48,7 @@ subroutine selectListGet(selectList, nume_inst, inst, l_select)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: tolerance, precision
-    integer :: nb_value, freq_step, nb_found
+    integer(kind=8) :: nb_value, freq_step, nb_found
     aster_logical :: l_abso, l_by_freq
     real(kind=8) :: reste
 !

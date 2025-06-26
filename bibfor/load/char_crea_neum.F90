@@ -29,7 +29,7 @@ subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 !
     character(len=8), intent(in) :: load
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=8), intent(in) :: model
     character(len=4), intent(in) :: valeType
 !
@@ -49,14 +49,14 @@ subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: max_load_type
+    integer(kind=8) :: max_load_type
     parameter(max_load_type=7)
-    integer :: nbocc(max_load_type)
+    integer(kind=8) :: nbocc(max_load_type)
     character(len=4) valeType2
     character(len=5) :: param(max_load_type)
     character(len=16) :: keywordfact(max_load_type)
 !
-    integer :: i
+    integer(kind=8) :: i
     character(len=5) :: curr_para
     data keywordfact/'FORCE_CONTOUR', 'FORCE_INTERNE', 'FORCE_ARETE',&
      &                 'FORCE_FACE', 'FORCE_POUTRE', 'FORCE_COQUE',&

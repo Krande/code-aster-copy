@@ -38,7 +38,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 #include "asterfort/utmess.h"
 #include "asterfort/dismoi.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=19), intent(in) :: solver, sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -65,7 +65,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: reac_incr, reac_iter
+    integer(kind=8) :: reac_incr, reac_iter
     aster_logical :: l_cont, lallv, l_cont_cont, l_cont_disc, lpena, leltc, l_cont_lac, l_iden_rela
     aster_logical :: l_pilo, l_line_search, lmacr, l_unil, l_diri_undead
     aster_logical :: l_vibr_mode, l_buckling, lexpl, l_xfem, lmodim, l_mult_front
@@ -79,7 +79,7 @@ subroutine exfonc(listFuncActi, ds_algopara, solver, ds_contact, &
     character(len=16) :: reli_meth, matrix_pred, matrix_corr, partit
     character(len=3) :: mfdet
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

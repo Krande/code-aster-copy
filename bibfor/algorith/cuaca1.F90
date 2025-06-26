@@ -35,9 +35,9 @@ subroutine cuaca1(deficu, resocu, solveu, lmat, cncine, &
 !
     character(len=24) :: deficu, resocu
     character(len=19) :: solveu, cncine
-    integer :: lmat
-    integer :: nbliac
-    integer :: ajliai
+    integer(kind=8) :: lmat
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: ajliai
 !
 ! ----------------------------------------------------------------------
 !
@@ -64,15 +64,15 @@ subroutine cuaca1(deficu, resocu, solveu, lmat, cncine, &
 !
 !
 !
-    integer :: lg, il
-    integer :: lliac, jdecal, nbddl
-    integer :: neq, lgbloc, tampon
-    integer :: nbsm, npas
-    integer :: nrest, ipas, kk, iliac, npast
+    integer(kind=8) :: lg, il
+    integer(kind=8) :: lliac, jdecal, nbddl
+    integer(kind=8) :: neq, lgbloc, tampon
+    integer(kind=8) :: nbsm, npas
+    integer(kind=8) :: nrest, ipas, kk, iliac, npast
     character(len=19) :: liac, cm1a
-    integer :: jliac, jcm1a
+    integer(kind=8) :: jliac, jcm1a
     character(len=24) :: apddl, apcoef, poinoe, chsecm
-    integer :: japddl, japcoe, jpoi
+    integer(kind=8) :: japddl, japcoe, jpoi
 !
 ! ----------------------------------------------------------------------
 !

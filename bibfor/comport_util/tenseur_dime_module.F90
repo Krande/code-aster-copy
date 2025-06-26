@@ -41,11 +41,11 @@ contains
 
     function rs(nout, vin) result(vout)
         implicit none
-        integer, intent(in)                  :: nout
+        integer(kind=8), intent(in)                  :: nout
         real(kind=8), dimension(:), intent(in) :: vin
         real(kind=8), dimension(nout)         :: vout
 ! ---------------------------------------------------------------------
-        integer nin
+        integer(kind=8) nin
 ! ---------------------------------------------------------------------
         nin = size(vin)
         if (nin .le. nout) then
@@ -64,7 +64,7 @@ contains
     function kron(ndimsi) result(kr)
 
         implicit none
-        integer, intent(in)            ::ndimsi
+        integer(kind=8), intent(in)            ::ndimsi
         real(kind=8), dimension(ndimsi):: kr
 ! ---------------------------------------------------------------------
         ASSERT(ndimsi .eq. 4 .or. ndimsi .eq. 6)
@@ -79,7 +79,7 @@ contains
     function voigt(ndimsi) result(rac2)
 
         implicit none
-        integer, intent(in)            ::ndimsi
+        integer(kind=8), intent(in)            ::ndimsi
         real(kind=8), dimension(ndimsi):: rac2
 ! ---------------------------------------------------------------------
         ASSERT(ndimsi .eq. 4 .or. ndimsi .eq. 6)
@@ -93,10 +93,10 @@ contains
 
     function identity(n) result(idm)
         implicit none
-        integer, intent(in) :: n
+        integer(kind=8), intent(in) :: n
         real(kind=8), dimension(n, n) :: idm
 ! ---------------------------------------------------------------------
-        integer :: i
+        integer(kind=8) :: i
 ! ---------------------------------------------------------------------
         idm = 0.d0
         do i = 1, n
@@ -140,7 +140,7 @@ contains
         real(kind=8), dimension(:), intent(in) :: u, v
         real(kind=8), dimension(size(u), size(v)) :: w
 ! ---------------------------------------------------------------------
-        integer :: i, j
+        integer(kind=8) :: i, j
 ! ---------------------------------------------------------------------
         do i = 1, size(u)
             do j = 1, size(v)

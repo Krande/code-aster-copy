@@ -21,10 +21,10 @@
 interface
     subroutine dbgcal(optioz, ifm, nbin, lpaiz, lchiz,&
                       nbout, lpaouz, lchouz)
-        integer :: nbout
-        integer :: nbin
+        integer(kind=8) :: nbout
+        integer(kind=8) :: nbin
         character(len=*) :: optioz
-        integer :: ifm
+        integer(kind=8) :: ifm
         character(len=*) :: lpaiz(nbin)
         character(len=*) :: lchiz(nbin)
         character(len=*) :: lpaouz(nbout)

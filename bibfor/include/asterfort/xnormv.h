@@ -20,7 +20,7 @@
 !
 interface
     subroutine xnormv(dime, xx, norme)
-        integer ::  dime
+        integer(kind=8) ::  dime
         real(kind=8) :: xx(dime)
         real(kind=8) :: norme
     end subroutine xnormv

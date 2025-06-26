@@ -23,24 +23,24 @@ interface
                       nfh, ddlc, nfe, basloc, nnop,&
                       npg, imate, lsn, lst, matuu, heavn,&
                       jstno, nnops, ddlm)
-        integer :: nnop
-        integer :: nfe
-        integer :: ddlc
-        integer :: nfh
-        integer :: ndim
-        integer :: jstno
-        integer :: ddlm
-        integer :: nnops
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nfe
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ndim
+        integer(kind=8) :: jstno
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nnops
         character(len=8) :: elrefp
         real(kind=8) :: coorse(*)
-        integer :: igeom
+        integer(kind=8) :: igeom
         real(kind=8) :: he
         real(kind=8) :: basloc(9*nnop)
-        integer :: npg
-        integer :: imate
+        integer(kind=8) :: npg
+        integer(kind=8) :: imate
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: matuu(*)
-        integer :: heavn(27,5)
+        integer(kind=8) :: heavn(27,5)
     end subroutine xmase3
 end interface

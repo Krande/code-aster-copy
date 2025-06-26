@@ -31,7 +31,7 @@ subroutine delat(modgen, nbsst, nbmo)
 #include "asterfort/rsorac.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ibid, nbid, isst
+    integer(kind=8) :: ibid, nbid, isst
     character(len=8) :: k8bid
     character(len=8) :: modgen, macel
     complex(kind=8) :: cbid
@@ -39,8 +39,8 @@ subroutine delat(modgen, nbsst, nbmo)
 !---------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibamo, icompt, idelat, ij, imacl, jpara, nbmo
-    integer :: nbmodg(1), nbsst, nbtype
+    integer(kind=8) :: ibamo, icompt, idelat, ij, imacl, jpara, nbmo
+    integer(kind=8) :: nbmodg(1), nbsst, nbtype
     real(kind=8) :: bid, ebid
 !-----------------------------------------------------------------------
     call jemarq()

@@ -53,7 +53,7 @@ subroutine romFieldGetInfo(model, fieldName, fieldRefe, field, l_chck_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbEqua
+    integer(kind=8) :: nbEqua
     character(len=8) :: mesh
     character(len=4) :: fieldSupp
     aster_logical :: lLagr, l_chck, lConst

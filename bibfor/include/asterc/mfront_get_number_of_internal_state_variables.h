@@ -23,6 +23,6 @@ interface
         character(len=*) :: nomlib
         character(len=*) :: nomsub
         character(len=*) :: nommod
-        integer          :: nbvari
+        integer(kind=8)          :: nbvari
     end subroutine mfront_get_number_of_internal_state_variables
 end interface

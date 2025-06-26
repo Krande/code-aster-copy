@@ -24,11 +24,11 @@ interface
         character(len=14) :: xvect
         character(len=14) :: parcho
         character(len=14) :: adime
-        integer :: ninc
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
+        integer(kind=8) :: ninc
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
         real(kind=8) :: err
     end subroutine mnlbhf
 end interface 

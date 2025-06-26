@@ -36,7 +36,7 @@ subroutine gdt(teta, amat)
     real(kind=8) :: teta(3), eu(3), amat(3, 3), amat1(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: anor, anors2, coef, deux, epsil1, epsil2
     real(kind=8) :: prosca, un, zero
     blas_int :: b_incx, b_incy, b_n

@@ -23,8 +23,8 @@ interface
                       lichou)
         character(len=16) :: option
         character(len=8) :: resuou
-        integer :: numord
-        integer :: nbpaou
+        integer(kind=8) :: numord
+        integer(kind=8) :: nbpaou
         character(len=8) :: lipaou(*)
         character(len=24) :: lichou(*)
     end subroutine cclpco

@@ -83,14 +83,14 @@ subroutine presup(iunv, imod, lgrcou)
 ! --> DECLARATIONS DES VARIABLES
 !
     aster_logical :: larret
-    integer :: min, man, imod, imes, iunv, mxtyma, mxperm, mxperf
-    integer :: maxfa, i, nbtyma, ites, maxnod
+    integer(kind=8) :: min, man, imod, imes, iunv, mxtyma, mxperm, mxperf
+    integer(kind=8) :: maxfa, i, nbtyma, ites, maxnod
     parameter(mxtyma=99, maxnod=32, mxperm=maxnod*mxtyma)
     parameter(maxfa=6, mxperf=maxfa*mxtyma)
-    integer :: limail(mxtyma), nbmtot
-    integer :: datset, nbnode, nbmail(mxtyma), indic(mxtyma), permut(mxperm)
-    integer :: indicf(mxtyma), permuf(mxperf)
-    integer :: mint(mxtyma), mant(mxtyma), io
+    integer(kind=8) :: limail(mxtyma), nbmtot
+    integer(kind=8) :: datset, nbnode, nbmail(mxtyma), indic(mxtyma), permut(mxperm)
+    integer(kind=8) :: indicf(mxtyma), permuf(mxperf)
+    integer(kind=8) :: mint(mxtyma), mant(mxtyma), io
     character(len=4) :: ct(3)
     character(len=6) :: char, moins1
     character(len=8) :: nomail(mxtyma), rquoi

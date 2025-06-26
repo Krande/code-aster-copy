@@ -21,6 +21,6 @@
 interface
     subroutine lxdeli(tab, nbval)
         character(len=1) :: tab(*)
-        integer :: nbval
+        integer(kind=8) :: nbval
     end subroutine lxdeli
 end interface

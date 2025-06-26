@@ -40,7 +40,7 @@ subroutine xvarc_temp(affeType, dsName, funcExtrLeft, funcExtrRight, funcResult,
 #include "asterfort/xtmafi.h"
 !
     character(len=8), intent(in) :: affeType, dsName, funcResult
-    integer, intent(in) :: nbAffe
+    integer(kind=8), intent(in) :: nbAffe
     character(len=16), intent(in) :: funcExtrLeft, funcExtrRight
     character(len=19), intent(in) :: exteVariMap2
 !
@@ -69,13 +69,13 @@ subroutine xvarc_temp(affeType, dsName, funcExtrLeft, funcExtrRight, funcResult,
 !     "out"     : ecrire dans exteVariMap2 si les conditions sont reunies
 !
 ! ----------------------------------------------------------------------
-    integer :: iret, nfiss, nbmx, jmax, ndim
-    integer :: ibid, nbord, iord, icode_ini
+    integer(kind=8) :: iret, nfiss, nbmx, jmax, ndim
+    integer(kind=8) :: ibid, nbord, iord, icode_ini
     character(len=8) :: modein, modevo, noma
     character(len=19) :: chamel, resultName
     character(len=24) :: mesmai, lismai, ligrch
-    integer, pointer :: vordr(:) => null()
-    integer, pointer :: vcode(:) => null()
+    integer(kind=8), pointer :: vordr(:) => null()
+    integer(kind=8), pointer :: vcode(:) => null()
     character(len=8), pointer :: fiss(:) => null()
     character(len=8), pointer :: p_mod_ther(:) => null()
     character(len=16), pointer :: vale(:) => null()

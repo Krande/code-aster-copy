@@ -23,8 +23,8 @@ interface
                       vint, wk1, wk2, wk3,&
                       nbloc, offset, trepos, nbclas,&
                       noecho, intitu, nomres, nbvint)
-        integer :: nbobst
-        integer :: nbpt
+        integer(kind=8) :: nbobst
+        integer(kind=8) :: nbpt
         real(kind=8) :: temps(*)
         real(kind=8) :: fcho(*)
         real(kind=8) :: vgli(*)
@@ -32,13 +32,13 @@ interface
         real(kind=8) :: wk1(*)
         real(kind=8) :: wk2(*)
         real(kind=8) :: wk3(*)
-        integer :: nbloc
+        integer(kind=8) :: nbloc
         real(kind=8) :: offset
         real(kind=8) :: trepos
-        integer :: nbclas
+        integer(kind=8) :: nbclas
         character(len=8) :: noecho(*)
         character(len=24) :: intitu(*)
         character(len=*) :: nomres
-        integer :: nbvint       
+        integer(kind=8) :: nbvint       
     end subroutine statim
 end interface

@@ -26,16 +26,16 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: newgeo
         real(kind=8), intent(in) :: pair_tole
-        integer, intent(in) :: nb_elem_mast
-        integer, intent(in) :: list_elem_mast(nb_elem_mast)
-        integer, intent(in) :: nb_elem_slav
-        integer, intent(in) :: list_elem_slav(nb_elem_slav)
-        integer, pointer :: elem_slav_flag(:)
-        integer, intent(out) :: nb_mast_start
-        integer, intent(out) :: elem_mast_start(nb_elem_slav)
-        integer, intent(out) :: nb_slav_start
-        integer, intent(out) :: elem_slav_start(nb_elem_slav)
+        integer(kind=8), intent(in) :: nb_elem_mast
+        integer(kind=8), intent(in) :: list_elem_mast(nb_elem_mast)
+        integer(kind=8), intent(in) :: nb_elem_slav
+        integer(kind=8), intent(in) :: list_elem_slav(nb_elem_slav)
+        integer(kind=8), pointer :: elem_slav_flag(:)
+        integer(kind=8), intent(out) :: nb_mast_start
+        integer(kind=8), intent(out) :: elem_mast_start(nb_elem_slav)
+        integer(kind=8), intent(out) :: nb_slav_start
+        integer(kind=8), intent(out) :: elem_slav_start(nb_elem_slav)
         character(len=19), intent(in) :: sdappa
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
     end subroutine ap_infast
 end interface

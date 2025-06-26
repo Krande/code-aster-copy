@@ -22,14 +22,14 @@ interface
     subroutine srdgds(nmat, materf, para, vara, devsig,&
                       i1, val, ds2hds, vecn, dfds,&
                       bprimp, nvi, vint, dhds, tmp, dgds)
-        integer :: nvi
-        integer :: nmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: para(3)
         real(kind=8) :: vara(4)
         real(kind=8) :: devsig(6)
         real(kind=8) :: i1
-        integer :: val
+        integer(kind=8) :: val
         real(kind=8) :: ds2hds(6)
         real(kind=8) :: vecn(6)
         real(kind=8) :: dfds(6)

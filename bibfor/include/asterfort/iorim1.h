@@ -22,9 +22,9 @@
 !
 interface
     function iorim1(num1, num2, reorie)
-        integer :: num1(2)
-        integer :: num2(2)
+        integer(kind=8) :: num1(2)
+        integer(kind=8) :: num2(2)
         aster_logical :: reorie
-        integer :: iorim1
+        integer(kind=8) :: iorim1
     end function iorim1
 end interface

@@ -21,10 +21,10 @@
 interface
     subroutine calint(i, j, vect1, nbpts, vect2,&
                       long, tt)
-        integer :: long
-        integer :: nbpts
-        integer :: i
-        integer :: j
+        integer(kind=8) :: long
+        integer(kind=8) :: nbpts
+        integer(kind=8) :: i
+        integer(kind=8) :: j
         complex(kind=8) :: vect1(long)
         real(kind=8) :: vect2(nbpts)
         real(kind=8) :: tt

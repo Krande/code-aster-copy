@@ -61,7 +61,7 @@ subroutine nmequi(l_disp, l_pilo, l_macr, cnequi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(NL_DS_VectComb) :: ds_vectcomb
     aster_logical :: l_unil_pena
 !

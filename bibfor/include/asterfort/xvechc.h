@@ -22,8 +22,8 @@ interface
     subroutine xvechc(nnops, pla, ffc, pinf,&
                       pf, psup, jac, vect)
                            
-        integer :: nnops
-        integer :: pla(27)
+        integer(kind=8) :: nnops
+        integer(kind=8) :: pla(27)
         real(kind=8) :: ffc(16)
         real(kind=8) :: pinf
         real(kind=8) :: pf

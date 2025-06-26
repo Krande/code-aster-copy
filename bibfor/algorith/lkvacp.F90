@@ -19,7 +19,7 @@
 subroutine lkvacp(nbmat, mater, paraep, varpl)
 !
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: paraep(3), mater(nbmat, 2), varpl(4)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE------------------------
 ! ===============================================================

@@ -21,14 +21,14 @@
 interface
     subroutine lkicvg(nr, itmax, toler, iter, r,&
                       nvi, vinf, dy, irtet)
-        integer :: nvi
-        integer :: nr
-        integer :: itmax
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iter
+        integer(kind=8) :: iter
         real(kind=8) :: r(nr)
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: dy(nr)
-        integer :: irtet
+        integer(kind=8) :: irtet
     end subroutine lkicvg
 end interface

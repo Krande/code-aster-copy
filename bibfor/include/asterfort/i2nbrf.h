@@ -20,7 +20,7 @@
 !
 interface
     subroutine i2nbrf(nbn, nbc)
-        integer :: nbn
-        integer :: nbc
+        integer(kind=8) :: nbn
+        integer(kind=8) :: nbc
     end subroutine i2nbrf
 end interface

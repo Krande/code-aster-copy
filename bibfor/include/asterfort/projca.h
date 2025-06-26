@@ -25,13 +25,13 @@ interface
         character(len=19) :: tablca
         character(len=19) :: lirela
         character(len=24) :: nmabet
-        integer :: nbmabe
+        integer(kind=8) :: nbmabe
         character(len=8) :: mailla
         character(len=8) :: caelem
-        integer :: nbnobe
+        integer(kind=8) :: nbnobe
         character(len=19) :: nunobe
-        integer :: icabl
-        integer :: nbnoca(*)
+        integer(kind=8) :: icabl
+        integer(kind=8) :: nbnoca(*)
         character(len=19) :: xnoca
         character(len=19) :: ynoca
         character(len=19) :: znoca

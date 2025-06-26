@@ -27,10 +27,10 @@ subroutine xcalculfmm(nbno, jcalculs, jcopiels, jnodto, ndim, nodvois, &
 #include "asterfort/assert.h"
 #include "asterfort/xcalculgeo.h"
 
-    integer           :: jcalculs, jcopiels, jnodto
-    integer           :: jbl, jbeta, jlistp, jvp
-    integer           :: jvcn, jgrlr, jltno
-    integer           :: ndim, nbno, nodvois
+    integer(kind=8)           :: jcalculs, jcopiels, jnodto
+    integer(kind=8)           :: jbl, jbeta, jlistp, jvp
+    integer(kind=8)           :: jvcn, jgrlr, jltno
+    integer(kind=8)           :: ndim, nbno, nodvois
     real(kind=8)      :: deltat
     character(len=2)  :: levset
     character(len=3)  :: signls
@@ -74,10 +74,10 @@ subroutine xcalculfmm(nbno, jcalculs, jcopiels, jnodto, ndim, nodvois, &
 !
 !------------------------------------------------------------------------
 
-    integer :: search, jvcnd, i
+    integer(kind=8) :: search, jvcnd, i
     real(kind=8) :: phi(3), h(3), signe, newlsn, newlst
 ! variables utilisees pour recuperer le minimum
-    integer :: vmin(1), imin
+    integer(kind=8) :: vmin(1), imin
     real(kind=8) :: v(2)
 
    !! initialisation variables

@@ -22,7 +22,7 @@ subroutine inices(maxfa, valcen, valfac)
 !
 #include "asterc/r8maem.h"
 !
-    integer, intent(in) :: maxfa
+    integer(kind=8), intent(in) :: maxfa
     real(kind=8), intent(out) :: valcen(14, 6)
     real(kind=8), intent(out) :: valfac(maxfa, 14, 6)
 !
@@ -40,7 +40,7 @@ subroutine inices(maxfa, valcen, valfac)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !
 ! --------------------------------------------------------------------------------------------------
 !

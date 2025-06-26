@@ -67,17 +67,17 @@ subroutine vechms(nomo, mate, mateco, carele, varplu, lischa, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbin_maxi
+    integer(kind=8) :: nbin_maxi
     parameter(nbin_maxi=42)
     character(len=8) :: lpain(nbin_maxi)
     character(len=19) :: lchin(nbin_maxi)
 !
-    integer :: ichar, nbchar, lastin
+    integer(kind=8) :: ichar, nbchar, lastin
     character(len=8) :: nomch0
     character(len=24) :: nomlis
-    integer :: genrec, ier
+    integer(kind=8) :: genrec, ier
     aster_logical :: lneum, lxfem
-    integer :: nbch, nbneum
+    integer(kind=8) :: nbch, nbneum
 !
 ! ----------------------------------------------------------------------
 !

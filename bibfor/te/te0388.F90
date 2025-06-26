@@ -35,16 +35,16 @@ subroutine te0388(option, nomte)
 !     ENTREES  ---> OPTION : OPTION DE CALCUL
 !          ---> NOMTE  : NOM DU TYPE ELEMENT
 !.......................................................................
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, nnos, jgano
-    integer :: ndim, nno, ndi, ipg, npg1, imattt, ihechp
-    integer :: idec, jdec, kdec, ldec
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, nnos, jgano
+    integer(kind=8) :: ndim, nno, ndi, ipg, npg1, imattt, ihechp
+    integer(kind=8) :: idec, jdec, kdec, ldec
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac, h
     real(kind=8) :: mat(45)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ij, ino, itemps, j, jno, k1
-    integer :: k2, k3, k4
+    integer(kind=8) :: i, ij, ino, itemps, j, jno, k1
+    integer(kind=8) :: k2, k3, k4
 !-----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &

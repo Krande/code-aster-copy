@@ -21,7 +21,7 @@
 interface
     subroutine liscrs(lischa, nbchar, base)
         character(len=19) :: lischa
-        integer :: nbchar
+        integer(kind=8) :: nbchar
         character(len=1) :: base
     end subroutine liscrs
 end interface

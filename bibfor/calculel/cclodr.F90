@@ -27,7 +27,7 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
 !
-    integer :: nuoplo, nbordr, minord, maxord
+    integer(kind=8) :: nuoplo, nbordr, minord, maxord
     character(len=8) :: resuin, resuou, nobase
     character(len=19) :: lisord
     character(len=24) :: lacalc
@@ -55,9 +55,9 @@ subroutine cclodr(nuoplo, nbordr, lisord, nobase, minord, &
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: jlisop, jliori, jlidep, ierd, inddeb, indfin
-    integer :: iordr, curmax, curmin, iter, decal, numord, jlnoin
-    integer :: jordo2, jlisde, jordr, jacalc
+    integer(kind=8) :: jlisop, jliori, jlidep, ierd, inddeb, indfin
+    integer(kind=8) :: iordr, curmax, curmin, iter, decal, numord, jlnoin
+    integer(kind=8) :: jordo2, jlisde, jordr, jacalc
 !
     character(len=1) :: isodep
     character(len=16) :: option

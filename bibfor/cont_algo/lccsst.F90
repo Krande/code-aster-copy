@@ -46,13 +46,13 @@ subroutine lccsst(ds_contact, vect_asse_cont)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nt_patch, i_patch, indi_cont, nume_equa
-    integer :: jv_vect_vale
+    integer(kind=8) :: nt_patch, i_patch, indi_cont, nume_equa
+    integer(kind=8) :: jv_vect_vale
     real(kind=8) :: lagc
     character(len=24) :: sdcont_stat
-    integer, pointer :: v_sdcont_stat(:) => null()
+    integer(kind=8), pointer :: v_sdcont_stat(:) => null()
     character(len=24) :: sdcont_ddlc
-    integer, pointer :: v_sdcont_ddlc(:) => null()
+    integer(kind=8), pointer :: v_sdcont_ddlc(:) => null()
     character(len=24) :: sdcont_lagc
     real(kind=8), pointer :: v_sdcont_lagc(:) => null()
 !

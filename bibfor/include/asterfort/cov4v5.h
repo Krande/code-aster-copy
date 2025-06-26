@@ -20,7 +20,7 @@
 !
 interface
     subroutine cov4v5(coddes, codgra)
-        integer :: coddes
-        integer :: codgra
+        integer(kind=8) :: coddes
+        integer(kind=8) :: codgra
     end subroutine cov4v5
 end interface

@@ -23,11 +23,11 @@
 interface
     subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
                       rmima)
-        integer :: nbordr
-        integer :: nbvec
-        integer :: jrvecp
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jrvecp
         aster_logical :: lsig0
-        integer :: iflag(nbvec)
+        integer(kind=8) :: iflag(nbvec)
         real(kind=8) :: rmima(4*nbvec)
     end subroutine avenca
 end interface

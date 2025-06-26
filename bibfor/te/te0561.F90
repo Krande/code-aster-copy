@@ -47,12 +47,12 @@ subroutine te0561(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: typmod(2)
-    integer :: nnoQ, nnoL, npg
-    integer :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
-    integer :: jv_vfL, jv_dfdeL, nnos, jv_ganoQ, jv_ganoL
-    integer :: ivectu
-    integer :: jvDisp, jvSief
-    integer :: ndim
+    integer(kind=8) :: nnoQ, nnoL, npg
+    integer(kind=8) :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
+    integer(kind=8) :: jv_vfL, jv_dfdeL, nnos, jv_ganoQ, jv_ganoL
+    integer(kind=8) :: ivectu
+    integer(kind=8) :: jvDisp, jvSief
+    integer(kind=8) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !

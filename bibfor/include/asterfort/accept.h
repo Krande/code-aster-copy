@@ -21,10 +21,10 @@ interface
                       jc, dir, uc, uct,&
                       l, lt, val_spec)
         real(kind=8) :: f
-        integer :: nbm
+        integer(kind=8) :: nbm
         character(len=8) :: method
-        integer :: imode
-        integer :: jmode
+        integer(kind=8) :: imode
+        integer(kind=8) :: jmode
         real(kind=8) :: jc
         real(kind=8) :: dir(3, 3)
         real(kind=8) :: uc

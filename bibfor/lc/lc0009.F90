@@ -23,12 +23,12 @@ subroutine lc0009(fami, kpg, ksp, ndim, imate, &
                   nvi, dsidep, codret)
     implicit none
 #include "asterfort/lclbr1.h"
-    integer :: kpg, ksp, ndim, imate
-    integer :: codret
+    integer(kind=8) :: kpg, ksp, ndim, imate
+    integer(kind=8) :: codret
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
-    integer :: icomp, nvi
+    integer(kind=8) :: icomp, nvi
     real(kind=8) :: angmas(*)
     real(kind=8) :: crit(*), instam, instap
     real(kind=8) :: epsm(*), deps(*)

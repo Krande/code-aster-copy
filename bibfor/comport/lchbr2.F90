@@ -43,7 +43,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm, &
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 #include "asterfort/get_varc.h"
-    integer :: imate, iret
+    integer(kind=8) :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sigp(6), dsidep(6, 6)
     real(kind=8) :: sigm(6), dsidp1(6), dsidp2(6), epsm(6)
     real(kind=8) :: carcri(*), sipp, dspdp1, dspdp2
@@ -93,7 +93,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm, &
 !            TOLER    VALEUR TOLERANCE DE CONVERGENCE
 !            ITMAX    NB ITERATIONS MAX A CONVERGENCE
 ! ======================================================================
-    integer :: ndt, ndi, itmax, ii, iteri, iter, nr, nbmat
+    integer(kind=8) :: ndt, ndi, itmax, ii, iteri, iter, nr, nbmat
     real(kind=8) :: gm, gp, etam, etap, aux, sig3, mu, k, neuf
     real(kind=8) :: materf(16, 2), materd(16, 2)
     real(kind=8) :: deps(6), epsp(6), sige(6), se(6), sigeb(6)
@@ -105,7 +105,7 @@ subroutine lchbr2(typmod, option, imate, carcri, sigm, &
     character(len=3) :: matcst
     character(len=8) :: mod
     aster_logical :: resi, rigi
-    integer :: nvi
+    integer(kind=8) :: nvi
 ! ======================================================================
     parameter(un=1.0d0)
     parameter(deux=2.0d0)

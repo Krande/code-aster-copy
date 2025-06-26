@@ -26,8 +26,8 @@ subroutine usukwu(nbpt, fn, vg, para, w, &
     real(kind=8) :: fn(*), vg(*), para(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, if, ifn0, iret, n1, n2
-    integer :: nbpt
+    integer(kind=8) :: i, if, ifn0, iret, n1, n2
+    integer(kind=8) :: nbpt
     real(kind=8) :: de, fn1, fn2, fn3, fn4, fn5, fnm
     real(kind=8) :: sphi, spwi, un, vg0, vgm, w, xc
     real(kind=8) :: xfn, xi11, xi12, xi13, xi14, xi15, xi21

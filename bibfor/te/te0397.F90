@@ -38,8 +38,8 @@ subroutine te0397(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: nno, nnos, jgano, ndim, nddl, kp, npg, ipoids, ivf, idfdk, igeom
-    integer :: ivectu, k, i, l, ipres, ier, iadzi, iazk24, itemps
+    integer(kind=8) :: nno, nnos, jgano, ndim, nddl, kp, npg, ipoids, ivf, idfdk, igeom
+    integer(kind=8) :: ivectu, k, i, l, ipres, ier, iadzi, iazk24, itemps
     real(kind=8) :: valpar(4), poids, r, fx, fy, f3, nx, ny, cour, dfdx(3), pr
     character(len=8) :: nompar(4), nomail, elrefe
     character(len=24) :: valk

@@ -25,18 +25,18 @@ interface
                       geom, ang, wi, q)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer :: dimdef
-        integer :: dimuel
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
         aster_logical :: axi
-        integer :: iu(3, 18)
-        integer :: ip(2, 9)
-        integer :: ipf(2, 2, 9)
-        integer :: iq(2, 2, 9)
-        integer :: addep1
-        integer :: addlh1
+        integer(kind=8) :: iu(3, 18)
+        integer(kind=8) :: ip(2, 9)
+        integer(kind=8) :: ipf(2, 2, 9)
+        integer(kind=8) :: iq(2, 2, 9)
+        integer(kind=8) :: addep1
+        integer(kind=8) :: addlh1
         real(kind=8) :: vff1(nno1)
         real(kind=8) :: vff2(nno2)
         real(kind=8) :: dffr2(ndim-1, nno2)

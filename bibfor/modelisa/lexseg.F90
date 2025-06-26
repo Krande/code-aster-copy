@@ -34,10 +34,10 @@ function lexseg(connex, typmai, nbrma, n1, n2)
 #include "asterfort/i2extf.h"
     aster_logical :: lexseg
     character(len=24) :: connex, typmai
-    integer :: nbrma, n1, n2
+    integer(kind=8) :: nbrma, n1, n2
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: mi, nuextr, nuorig
+    integer(kind=8) :: mi, nuextr, nuorig
 !-----------------------------------------------------------------------
     lexseg = .false.
     do mi = 1, nbrma

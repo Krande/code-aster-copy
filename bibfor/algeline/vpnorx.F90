@@ -19,14 +19,14 @@
 subroutine vpnorx(nbmode, neq, exclus, vecp, resufk)
     implicit none
 #include "blas/dscal.h"
-    integer :: nbmode, neq, exclus(*)
+    integer(kind=8) :: nbmode, neq, exclus(*)
     real(kind=8) :: vecp(neq, *)
     character(len=*) :: resufk(*)
 !     NORMALISE A LA PLUS GRANDE DES VALEURS SUR UN DDL QUI N'EST PAS
 !     EXCLUS
 !     ------------------------------------------------------------------
 !
-    integer :: imode, ieq
+    integer(kind=8) :: imode, ieq
     real(kind=8) :: normx, invx, absnx, rexc, arexc
     character(len=24) :: k24b
     blas_int :: b_incx, b_n

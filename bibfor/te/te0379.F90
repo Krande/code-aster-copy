@@ -37,8 +37,8 @@ subroutine te0379(option, nomte)
 !
 !
 !
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, nbcmp
-    integer :: i, j, itab(3), ierr, ierrn, iret
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano, nbcmp
+    integer(kind=8) :: i, j, itab(3), ierr, ierrn, iret
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfde, jgano=jgano)

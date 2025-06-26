@@ -49,8 +49,8 @@ subroutine romMultiParaSystEvalType(ds_multipara, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_matr, nb_matr, i_vect, nb_vect
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_matr, nb_matr, i_vect, nb_vect
     character(len=1) :: matr_type, vect_type
     aster_logical :: l_coefm_cplx, l_coefv_cplx
 !

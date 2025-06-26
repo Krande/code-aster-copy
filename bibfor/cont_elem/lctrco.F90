@@ -23,8 +23,8 @@ subroutine lctrco(i_tria, tria_node, poin_inte, tria_coor)
 #include "asterfort/assert.h"
 !
 !
-    integer, intent(in) :: i_tria
-    integer, intent(in) :: tria_node(6, 3)
+    integer(kind=8), intent(in) :: i_tria
+    integer(kind=8), intent(in) :: tria_node(6, 3)
     real(kind=8), intent(in) :: poin_inte(2, 8)
     real(kind=8), intent(out) :: tria_coor(2, 3)
 !
@@ -43,7 +43,7 @@ subroutine lctrco(i_tria, tria_node, poin_inte, tria_coor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node
+    integer(kind=8) :: i_node
 !
 ! --------------------------------------------------------------------------------------------------
 !

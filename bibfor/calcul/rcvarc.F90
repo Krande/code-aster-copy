@@ -43,9 +43,9 @@ subroutine rcvarc(arret, varc_name_, poum, &
     character(len=*), intent(in) :: varc_name_
     character(len=*), intent(in) :: poum
     character(len=*), intent(in) :: famiZ
-    integer, intent(in) :: kpg, ksp
+    integer(kind=8), intent(in) :: kpg, ksp
     real(kind=8), intent(out) :: varc_vale
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -74,11 +74,11 @@ subroutine rcvarc(arret, varc_name_, poum, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: varc_name, fami
-    integer :: nb2vrc, k
-    integer :: varc_indx, ibid, nbsp, kpgvrc
-    integer :: iadzi, iazk24, kpgmat
-    integer, save :: iprem = 0
-    integer, save :: itabm(7), itabp(7), itabr(7)
+    integer(kind=8) :: nb2vrc, k
+    integer(kind=8) :: varc_indx, ibid, nbsp, kpgvrc
+    integer(kind=8) :: iadzi, iazk24, kpgmat
+    integer(kind=8), save :: iprem = 0
+    integer(kind=8), save :: itabm(7), itabp(7), itabr(7)
     character(len=24) :: valk(4)
     real(kind=8) :: valvrm, valvrp
     real(kind=8), save :: rundf

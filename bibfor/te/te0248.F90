@@ -61,14 +61,14 @@ subroutine te0248(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: neq, nbt, nvamax, imate, igeom, iorie, isect, iinstm
-    integer :: iinstp, ideplm, ideplp, icontm, ivarim
-    integer :: icarcr, imatuu, ivectu, icontp, nno, nc, ivarip, jcret
+    integer(kind=8) :: neq, nbt, nvamax, imate, igeom, iorie, isect, iinstm
+    integer(kind=8) :: iinstp, ideplm, ideplp, icontm, ivarim
+    integer(kind=8) :: icarcr, imatuu, ivectu, icontp, nno, nc, ivarip, jcret
     parameter(neq=6, nbt=21, nvamax=8)
     character(len=4) :: fami
 !
 !   constantes pour PINTO_MENEGOTTO
-    integer :: ncstpm, codret
+    integer(kind=8) :: ncstpm, codret
     parameter(ncstpm=13)
     real(kind=8) :: cstpm(ncstpm)
 !
@@ -81,7 +81,7 @@ subroutine te0248(option, nomte)
     real(kind=8) :: w(6), ang1(3), xd(3), matuu(21), vectu(6)
     real(kind=8) :: deplm(6), deplp(6)
     real(kind=8) :: angmas(3)
-    integer :: i
+    integer(kind=8) :: i
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: defo_comp, rela_comp, rela_cpla
     aster_logical :: lVect, lMatr, lVari, lSigm

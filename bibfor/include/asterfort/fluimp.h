@@ -23,14 +23,14 @@ interface
     subroutine fluimp(itypfl, nivpar, nivdef, melflu, typflu,&
                       nuor, freq, freqi, nbm, vite,&
                       npv, carac, calcul, amoc)
-        integer :: npv
-        integer :: nbm
-        integer :: itypfl
-        integer :: nivpar
-        integer :: nivdef
+        integer(kind=8) :: npv
+        integer(kind=8) :: nbm
+        integer(kind=8) :: itypfl
+        integer(kind=8) :: nivpar
+        integer(kind=8) :: nivdef
         character(len=19) :: melflu
         character(len=8) :: typflu
-        integer :: nuor(nbm)
+        integer(kind=8) :: nuor(nbm)
         real(kind=8) :: freq(2*nbm*npv)
         real(kind=8) :: freqi(*)
         real(kind=8) :: vite(npv)

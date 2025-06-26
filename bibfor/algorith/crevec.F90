@@ -32,8 +32,8 @@ subroutine crevec(nom, carac, dim, jadr)
 !
     character(len=*), intent(in) :: nom
     character(len=*), intent(in) :: carac
-    integer, intent(in)  :: dim
-    integer, intent(out) :: jadr
+    integer(kind=8), intent(in)  :: dim
+    integer(kind=8), intent(out) :: jadr
 !
     call jecreo(nom, carac)
     call jeecra(nom, 'LONMAX', ival=dim)

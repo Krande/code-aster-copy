@@ -32,9 +32,9 @@ subroutine dplvga(ds_thm, &
     implicit none
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: ndim, dimcon
+    integer(kind=8), intent(in) :: ndim, dimcon
     real(kind=8), intent(in) :: rho11, rho12, rgaz, kh
-    integer, intent(in) :: adcp11, adcp12
+    integer(kind=8), intent(in) :: adcp11, adcp12
     real(kind=8), intent(in) :: congem(dimcon), temp, pad
     real(kind=8), intent(out) :: dp11p1, dp11p2
     real(kind=8), intent(out) :: dp12p1, dp12p2

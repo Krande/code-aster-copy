@@ -27,7 +27,7 @@ subroutine selectCompN(chams0, nom_cham, type_cham, nbcmp, nom_cmp, ndim_type)
 !
     character(len=19), intent(in) :: chams0
     character(len=*), intent(in) :: nom_cham, type_cham
-    integer, intent(out) :: nbcmp, ndim_type
+    integer(kind=8), intent(out) :: nbcmp, ndim_type
     character(len=8), intent(out) :: nom_cmp(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ subroutine selectCompN(chams0, nom_cham, type_cham, nbcmp, nom_cmp, ndim_type)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcnsd, nbcmp0, icmp, icmp0, nbcmpD
+    integer(kind=8) :: jcnsd, nbcmp0, icmp, icmp0, nbcmpD
     character(len=8)    :: nomgd
     character(len=8), pointer  :: cnsk(:) => null()
     character(len=8), pointer  :: cnsc(:) => null()

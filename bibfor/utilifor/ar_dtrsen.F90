@@ -251,12 +251,12 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
 #include "blas/dlange.h"
 #include "blas/lsame.h"
     character(len=1) :: compq, job
-    integer :: info, ldq, ldt, liwork, lwork, m, n
+    integer(kind=8) :: info, ldq, ldt, liwork, lwork, m, n
     real(kind=8) :: s, sep, rbid(1)
 !     ..
 !     .. ARRAY ARGUMENTS ..
     aster_logical :: select(*)
-    integer :: iwork(*)
+    integer(kind=8) :: iwork(*)
     real(kind=8) :: q(ldq, *), t(ldt, *), wi(*), work(*), wr(*)
 !     .. PARAMETERS ..
     real(kind=8) :: zero, one
@@ -264,7 +264,7 @@ subroutine ar_dtrsen(job, compq, select, n, t, &
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: pair, swap, wantbh, wantq, wants, wantsp
-    integer :: ierr, k, kase, kk, ks, n1, n2, nn
+    integer(kind=8) :: ierr, k, kase, kk, ks, n1, n2, nn
     real(kind=8) :: est, rnorm, scale
     blas_int :: b_lda, b_ldb, b_m, b_n
 !     ..

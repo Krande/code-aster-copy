@@ -46,12 +46,12 @@ subroutine gicnx2()
     character(len=8) :: nomobj
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacnx2, ima, imat
-    integer :: ino, iret, lont, nbel, nbmato, nbno, nbobj
-    integer :: nbobj4
-    integer, pointer :: descobj(:) => null()
+    integer(kind=8) :: i, iacnx2, ima, imat
+    integer(kind=8) :: ino, iret, lont, nbel, nbmato, nbno, nbobj
+    integer(kind=8) :: nbobj4
+    integer(kind=8), pointer :: descobj(:) => null()
     character(len=8), pointer :: vnomobj(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeexin('&&GILIRE.NOMOBJ', iret)

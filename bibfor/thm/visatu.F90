@@ -20,10 +20,10 @@ subroutine visatu(nbvari, vintp, advico, vicsat, satur)
 !
     implicit none
 !
-    integer, intent(in) :: nbvari
+    integer(kind=8), intent(in) :: nbvari
     real(kind=8), intent(inout) :: vintp(nbvari)
-    integer, intent(in) :: advico
-    integer, intent(in) :: vicsat
+    integer(kind=8), intent(in) :: advico
+    integer(kind=8), intent(in) :: vicsat
     real(kind=8), intent(in) :: satur
 !
 ! --------------------------------------------------------------------------------------------------

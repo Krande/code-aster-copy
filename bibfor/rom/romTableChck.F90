@@ -34,8 +34,8 @@ subroutine romTableChck(tablReduCoor, lTablFromResu, nbModeIn, nbSnapIn_, nbStor
 !
     type(ROM_DS_TablReduCoor), intent(in) :: tablReduCoor
     aster_logical, intent(in) :: lTablFromResu
-    integer, intent(in) :: nbModeIn
-    integer, optional, intent(in) :: nbSnapIn_, nbStoreIn_
+    integer(kind=8), intent(in) :: nbModeIn
+    integer(kind=8), optional, intent(in) :: nbSnapIn_, nbStoreIn_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,13 +53,13 @@ subroutine romTableChck(tablReduCoor, lTablFromResu, nbModeIn, nbSnapIn_, nbStor
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbPara, tablNbLine, nbMode, nbSnap, nbStore
-    integer :: iPara, iLine
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbPara, tablNbLine, nbMode, nbSnap, nbStore
+    integer(kind=8) :: iPara, iLine
     character(len=24) :: tablName
     character(len=24), pointer :: paraName(:) => null()
     character(len=24), pointer :: paraType(:) => null()
-    integer, parameter :: nbParaRequired = 5
+    integer(kind=8), parameter :: nbParaRequired = 5
     character(len=24), parameter :: paraNameRequired(nbParaRequired) = (/ &
                                     'COOR_REDUIT', 'INST       ', &
                                     'NUME_MODE  ', 'NUME_ORDRE ', &
@@ -68,9 +68,9 @@ subroutine romTableChck(tablReduCoor, lTablFromResu, nbModeIn, nbSnapIn_, nbStor
                                    'R', 'R', &
                                    'I', 'I', &
                                    'I'/)
-    integer, pointer :: snapNume(:) => null()
-    integer, pointer :: storeNume(:) => null()
-    integer :: nbVale
+    integer(kind=8), pointer :: snapNume(:) => null()
+    integer(kind=8), pointer :: storeNume(:) => null()
+    integer(kind=8) :: nbVale
     aster_logical :: lTablFromUser, lTablExist
 !
 ! --------------------------------------------------------------------------------------------------

@@ -68,11 +68,11 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
 !
 !
 !
-    integer :: nbmod, lbid, i1, j1, k1, isst1, ibid, nbeq1, nl, nc
-    integer :: lmast, numlia, nbno, lnres, lmodet, sizeco, connec, lconnc, nbec
-    integer :: lprno, ipos1, lcphi, nbddl, lnoint, lindin, llino, lindno, lipos
-    integer :: ik, lddld, linlag, lintrf, linddl, nddlin, nbvect, ltramo, lmatmo
-    integer :: lclin, lwork, jwork, lphiex, lcpet, ifm, niv
+    integer(kind=8) :: nbmod, lbid, i1, j1, k1, isst1, ibid, nbeq1, nl, nc
+    integer(kind=8) :: lmast, numlia, nbno, lnres, lmodet, sizeco, connec, lconnc, nbec
+    integer(kind=8) :: lprno, ipos1, lcphi, nbddl, lnoint, lindin, llino, lindno, lipos
+    integer(kind=8) :: ik, lddld, linlag, lintrf, linddl, nddlin, nbvect, ltramo, lmatmo
+    integer(kind=8) :: lclin, lwork, jwork, lphiex, lcpet, ifm, niv
     integer(kind=4) :: info, rank
     real(kind=8) :: shift, swork(1), pi
     complex(kind=8) :: cbid
@@ -82,9 +82,9 @@ subroutine modexp(modgen, sst1, indin1, lino1, nbmod, &
     character(len=19) :: raide, masse, solveu, prno, ssami, raiint
     character(len=24) :: coint, noddli, matmod, vefreq, indin1, lino1, tramod
     character(len=24) :: modet
-    integer :: iret
-    integer, pointer :: vect_clefs(:) => null()
-    integer, pointer :: vect_num(:) => null()
+    integer(kind=8) :: iret
+    integer(kind=8), pointer :: vect_clefs(:) => null()
+    integer(kind=8), pointer :: vect_num(:) => null()
     blas_int :: b_lda, b_ldb, b_lwork, b_m, b_n, b_nrhs
     cbid = dcmplx(0.d0, 0.d0)
     pi = r8pi()

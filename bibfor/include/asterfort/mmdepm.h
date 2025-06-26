@@ -23,8 +23,8 @@ interface
                       ffe   , ffm   ,&
                       ddeple, ddeplm,&
                       deplme, deplmm)
-        integer, intent(in) :: nbdm, ndim, nne, nnm
-        integer, intent(in) :: jdepde, jdepm
+        integer(kind=8), intent(in) :: nbdm, ndim, nne, nnm
+        integer(kind=8), intent(in) :: jdepde, jdepm
         real(kind=8), intent(in) :: ffe(9), ffm(9)
         real(kind=8), intent(out) :: ddeple(3), deplme(3)
         real(kind=8), intent(out) :: ddeplm(3), deplmm(3)

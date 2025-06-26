@@ -52,9 +52,9 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     med_idt :: idfimd
-    integer :: nbcmfi, nbvato, numpt, numord
-    integer :: typent, typgeo
-    integer :: codret
+    integer(kind=8) :: nbcmfi, nbvato, numpt, numord
+    integer(kind=8) :: typent, typgeo
+    integer(kind=8) :: codret
 !
     character(len=*) :: nochmd, nomprf
     character(len=64) :: nomloc
@@ -65,18 +65,18 @@ subroutine lrcmle(idfimd, nochmd, nbcmfi, nbvato, numpt, &
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: edfuin
+    integer(kind=8) :: edfuin
     parameter(edfuin=0)
-    integer :: edall
+    integer(kind=8) :: edall
     parameter(edall=0)
-    integer :: edcomp
+    integer(kind=8) :: edcomp
     parameter(edcomp=2)
-    integer :: iterma
+    integer(kind=8) :: iterma
     parameter(iterma=1)
 !
-    integer :: ifm, nivinf
+    integer(kind=8) :: ifm, nivinf
 !
-    integer :: advale, iprof, nbprof, n, taipro, nip
+    integer(kind=8) :: advale, iprof, nbprof, n, taipro, nip
 !
     character(len=8) :: saux08
     character(len=64) :: nomamd

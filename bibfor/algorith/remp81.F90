@@ -47,8 +47,8 @@ subroutine remp81(nomres, lpar, basmod, nbmod)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ldres, ldref, lddes, nbmod, imod
-    integer ::  ntail, lpar, i, iad
+    integer(kind=8) :: ldres, ldref, lddes, nbmod, imod
+    integer(kind=8) ::  ntail, lpar, i, iad
 !-----------------------------------------------------------------------
     data blanc/'        '/
 !-----------------------------------------------------------------------

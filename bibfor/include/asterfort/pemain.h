@@ -25,8 +25,8 @@ interface
         character(len=*) :: modele
         character(len=*) :: mate, mateco
         character(len=*) :: cara
-        integer :: nh
-        integer :: nbocc
+        integer(kind=8) :: nh
+        integer(kind=8) :: nbocc
         character(len=*) :: deform
     end subroutine pemain
 end interface

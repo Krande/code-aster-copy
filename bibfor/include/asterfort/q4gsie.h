@@ -26,7 +26,7 @@ interface
         real(kind=8) :: xyzl(3, *)
         real(kind=8) :: pgl(3, *)
         real(kind=8) :: depl(*)
-        integer :: nbcou
+        integer(kind=8) :: nbcou
         real(kind=8) :: cdl(*)
     end subroutine q4gsie
 end interface

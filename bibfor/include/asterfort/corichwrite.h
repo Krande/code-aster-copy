@@ -19,6 +19,6 @@
 interface
     subroutine corichwrite(fieldZ, ichin)
         character(len=*), intent(in) :: fieldZ
-        integer, intent(in) :: ichin
+        integer(kind=8), intent(in) :: ichin
     end subroutine corichwrite
 end interface

@@ -21,15 +21,15 @@
 interface
     subroutine w155m3(numa, jce2d, jce2l, jce2v, isp,&
                       nucou, nusec, nufib, posic, posis)
-        integer :: numa
-        integer :: jce2d
-        integer :: jce2l
-        integer :: jce2v
-        integer :: isp
-        integer :: nucou
-        integer :: nusec
-        integer :: nufib
-        integer :: posic
-        integer :: posis
+        integer(kind=8) :: numa
+        integer(kind=8) :: jce2d
+        integer(kind=8) :: jce2l
+        integer(kind=8) :: jce2v
+        integer(kind=8) :: isp
+        integer(kind=8) :: nucou
+        integer(kind=8) :: nusec
+        integer(kind=8) :: nufib
+        integer(kind=8) :: posic
+        integer(kind=8) :: posis
     end subroutine w155m3
 end interface

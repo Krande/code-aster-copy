@@ -60,7 +60,7 @@ subroutine rvpost(mcf, iocc, dim, i1, i2, &
 #include "asterfort/tuesch.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iocc, i1, i2
+    integer(kind=8) :: iocc, i1, i2
     character(len=2) :: dim
     character(len=8) :: nresu
     character(len=16) :: ncheff
@@ -68,10 +68,10 @@ subroutine rvpost(mcf, iocc, dim, i1, i2, &
     character(len=24) :: xnomcp, nlsmac, nlsnac, xnovar
     character(len=*) :: mcf
 !
-    integer :: gd, i, idir, niv, iret, isd, jcmpcd, jcmpnc, jdir, jlsmac
-    integer :: jlsnac, jnomcp, jsdev, jsdli, jvec1, jvec2, n, n0, n1, n2, n3
-    integer :: nbcac, nbcpn, nbmac, nbnac, nboper, nbsd, nr, ifm, ibid
-    integer :: ny
+    integer(kind=8) :: gd, i, idir, niv, iret, isd, jcmpcd, jcmpnc, jdir, jlsmac
+    integer(kind=8) :: jlsnac, jnomcp, jsdev, jsdli, jvec1, jvec2, n, n0, n1, n2, n3
+    integer(kind=8) :: nbcac, nbcpn, nbmac, nbnac, nboper, nbsd, nr, ifm, ibid
+    integer(kind=8) :: ny
     real(kind=8) :: vecty(3)
     aster_logical :: tridim
     character(len=24) :: lscpnc, quant, sdlieu, sdeval, lscpcd

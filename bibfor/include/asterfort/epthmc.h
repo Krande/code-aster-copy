@@ -23,14 +23,14 @@ interface
                       shape_func, angl_naut, time , j_mater,&
                       option    , epsi_varc)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: nno
-        integer, intent(in) :: ndim
-        integer, intent(in) :: nbsig
-        integer, intent(in) :: npg
+        integer(kind=8), intent(in) :: nno
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: nbsig
+        integer(kind=8), intent(in) :: npg
         real(kind=8), intent(in) :: shape_func(1)
         real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), intent(in) :: time
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=16), intent(in) :: option
         real(kind=8), intent(out) :: epsi_varc(1)
     end subroutine epthmc

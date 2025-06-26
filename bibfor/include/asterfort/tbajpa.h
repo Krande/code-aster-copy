@@ -21,7 +21,7 @@
 interface
     subroutine tbajpa(nomta, nbpar, nompar, typpar)
         character(len=*) :: nomta
-        integer :: nbpar
+        integer(kind=8) :: nbpar
         character(len=*) :: nompar(*)
         character(len=*) :: typpar(*)
     end subroutine tbajpa

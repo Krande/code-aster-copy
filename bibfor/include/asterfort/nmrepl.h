@@ -31,8 +31,8 @@ interface
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: lischa
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        integer :: fonact(*)
-        integer :: iterat
+        integer(kind=8) :: fonact(*)
+        integer(kind=8) :: iterat
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19) :: sdpilo
         character(len=19) :: sdnume
@@ -48,8 +48,8 @@ interface
         type(NL_DS_Conv), intent(inout) :: ds_conv
         real(kind=8) :: eta
         real(kind=8) :: offset
-        integer :: ldccvg
-        integer :: pilcvg
+        integer(kind=8) :: ldccvg
+        integer(kind=8) :: pilcvg
         character(len=19) :: matass
     end subroutine nmrepl
 end interface

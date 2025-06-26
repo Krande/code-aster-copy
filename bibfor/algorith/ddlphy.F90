@@ -47,19 +47,19 @@ subroutine ddlphy(depplu, neq, vect, desc)
     real(kind=8) :: vect(*)
     character(len=19) :: depplu
     character(len=8) :: desc(*)
-    integer :: neq
+    integer(kind=8) :: neq
 !
 !
 ! DECLARATION VARIABLES LOCALES
 !
     character(len=8) :: nomgd, noma, exclus(200)
     character(len=19) :: prno
-    integer :: iaux, jnocmp, ncmpmx, jprno, nec
-    integer :: jdg, inueq, jaux, kaux
-    integer :: nbnot
-    integer :: nbexcl, ival, pos, ivect2
+    integer(kind=8) :: iaux, jnocmp, ncmpmx, jprno, nec
+    integer(kind=8) :: jdg, inueq, jaux, kaux
+    integer(kind=8) :: nbnot
+    integer(kind=8) :: nbexcl, ival, pos, ivect2
     aster_logical :: garder
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
 !
     call jemarq()
 !

@@ -19,7 +19,7 @@
 subroutine foec1f(iuni, nomf, vec, nbcoup, verif)
     implicit none
 #include "asterfort/fopro1.h"
-    integer :: iuni, nbcoup
+    integer(kind=8) :: iuni, nbcoup
     character(len=*) :: nomf, vec(*), verif
 !     ECRITURE DE NIVEAU 1 (IMPR=1) D'UNE FONCTION: ATTRIBUTS
 !     ------------------------------------------------------------------
@@ -34,7 +34,7 @@ subroutine foec1f(iuni, nomf, vec, nbcoup, verif)
     character(len=8) :: interp, prolgd, tprol(3), nompar, nomres
     character(len=19) :: nomfon
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     data tprol/'CONSTANT', 'LINEAIRE', 'EXCLU'/
 !

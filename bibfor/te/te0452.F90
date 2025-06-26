@@ -30,8 +30,8 @@ subroutine te0452(option, nomte)
 !     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
 !     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
 !     ------------------------------------------------------------------
-    integer :: itab1(7), itab2(7), iret, jin, jout, lgcata
-    integer :: nbpoin, nbcmp, jcara, ibid
+    integer(kind=8) :: itab1(7), itab2(7), iret, jin, jout, lgcata
+    integer(kind=8) :: nbpoin, nbcmp, jcara, ibid
     aster_logical :: lreel
     real(kind=8) :: excen
 !     ------------------------------------------------------------------

@@ -21,6 +21,6 @@
 interface
     subroutine uimpba(clas, iunmes)
         character(len=*) :: clas
-        integer :: iunmes
+        integer(kind=8) :: iunmes
     end subroutine uimpba
 end interface

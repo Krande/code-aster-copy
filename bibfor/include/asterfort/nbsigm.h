@@ -20,6 +20,6 @@
 !
 interface
     function nbsigm()
-        integer :: nbsigm
+        integer(kind=8) :: nbsigm
     end function nbsigm
 end interface

@@ -20,7 +20,7 @@
 !
 interface
     subroutine craglc(long, ligrch)
-        integer, intent(in) :: long
+        integer(kind=8), intent(in) :: long
         character(len=19), intent(in) :: ligrch
     end subroutine craglc
 end interface

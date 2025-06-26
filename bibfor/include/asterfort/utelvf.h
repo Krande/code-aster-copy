@@ -23,7 +23,7 @@ interface
         character(len=8) :: elrefa
         character(len=8) :: famil
         character(len=*) :: nomjv
-        integer :: npg
-        integer :: nno
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
     end subroutine utelvf
 end interface

@@ -31,8 +31,8 @@ interface
         character(len=8), intent(in) :: typmod(2)
         character(len=16), intent(in):: option, compor(COMPOR_SIZE)
         type(dil_modelisation) :: ds_dil
-        integer, intent(in)          :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
-        integer, intent(in)          :: mate, iw, idff, idffb
+        integer(kind=8), intent(in)          :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
+        integer(kind=8), intent(in)          :: mate, iw, idff, idffb
         real(kind=8), intent(in)     :: carcri(CARCRI_SIZE), instam, instap
         real(kind=8), intent(in)     :: geomi(ndim, nnos+nnom)
         real(kind=8), intent(in)     :: vff(nnos+nnom, npg), vffb(nnos, npg)
@@ -40,6 +40,6 @@ interface
         real(kind=8), intent(in)     :: siefm(dimdef*npg), vim(lgpg*npg)
         real(kind=8), intent(inout)  :: siefp(dimdef*npg), vip(lgpg*npg)
         real(kind=8), intent(inout)  :: fint(nddl), matr(nddl, nddl)
-        integer, intent(inout)         :: codret
+        integer(kind=8), intent(inout)         :: codret
     end subroutine dilele
 end interface

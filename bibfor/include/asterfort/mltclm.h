@@ -21,15 +21,15 @@
 interface
     subroutine mltclm(nb, n, p, front, adper,&
                       t1, ad, eps, ier, c)
-        integer :: nb
-        integer :: n
-        integer :: p
+        integer(kind=8) :: nb
+        integer(kind=8) :: n
+        integer(kind=8) :: p
         complex(kind=8) :: front(*)
-        integer :: adper(*)
+        integer(kind=8) :: adper(*)
         complex(kind=8) :: t1(*)
-        integer :: ad(*)
+        integer(kind=8) :: ad(*)
         real(kind=8) :: eps
-        integer :: ier
+        integer(kind=8) :: ier
         complex(kind=8) :: c(nb, nb, *)
     end subroutine mltclm
 end interface

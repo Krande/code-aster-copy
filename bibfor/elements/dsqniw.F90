@@ -84,7 +84,7 @@ subroutine dsqniw(qsi, eta, caraq4, dci, bcm, &
 !    WMESQ(8)       OUT   R       FONCTIONS DE FORME TELLES QUE
 !                                 W = WMESQ*UM (+ WSQ*UN)
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: bn(2, 12), dba(2, 12), db(2, 4), dbam(2, 8), dcm(2, 8)
     real(kind=8) :: n(12)
     real(kind=8) :: pqsi, mqsi, peta, meta, qsic, etac

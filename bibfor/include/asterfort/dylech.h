@@ -22,7 +22,7 @@ interface
     subroutine dylech(nomo, lischa, nbexre, exreco, exresu, calgen)
         character(len=8) :: nomo
         character(len=19) :: lischa
-        integer :: nbexre
+        integer(kind=8) :: nbexre
         character(len=24) :: exreco
         character(len=24) :: exresu
         aster_logical :: calgen

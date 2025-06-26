@@ -29,8 +29,8 @@ subroutine cfmajc(resoco, neq, nbliac)
 #include "blas/daxpy.h"
 !
     character(len=24) :: resoco
-    integer :: neq
-    integer :: nbliac
+    integer(kind=8) :: neq
+    integer(kind=8) :: nbliac
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,9 +47,9 @@ subroutine cfmajc(resoco, neq, nbliac)
 !
 !
 !
-    integer :: iliai, iliac
+    integer(kind=8) :: iliai, iliac
     character(len=19) :: mu, cm1a, liac
-    integer :: jmu, jcm1a, jliac
+    integer(kind=8) :: jmu, jcm1a, jliac
     character(len=19) :: ddelt
     real(kind=8), pointer :: vale(:) => null()
     blas_int :: b_incx, b_incy, b_n

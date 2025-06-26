@@ -54,8 +54,8 @@ subroutine te0144(option, nomte)
     character(len=*) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbres, npg, nno, nc, nnoc, ncc, jeffo, lmater, iret
-    integer :: iret1, itype, lorien, jdepl, i, j
+    integer(kind=8) :: nbres, npg, nno, nc, nnoc, ncc, jeffo, lmater, iret
+    integer(kind=8) :: iret1, itype, lorien, jdepl, i, j
 !
     real(kind=8) :: ul(12), ug(12), pgl(3, 3), klc(12, 12), klv(78)
     real(kind=8) :: fl(12), epsith
@@ -65,7 +65,7 @@ subroutine te0144(option, nomte)
 ! --------------------------------------------------------------------------------------------------
     parameter(nbres=2)
     real(kind=8) :: valres(nbres)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     character(len=16) :: nomres(nbres)
     data nomres/'E', 'NU'/
 ! --------------------------------------------------------------------------------------------------

@@ -20,10 +20,10 @@
 !
 interface
     subroutine arlcos(numa,connex,loncum,coord,dime,cnoeud)
-        integer :: numa
-        integer :: dime
-        integer :: connex(*)
-        integer :: loncum(*)
+        integer(kind=8) :: numa
+        integer(kind=8) :: dime
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: loncum(*)
         real(kind=8) :: coord(3,*)
         real(kind=8) :: cnoeud(dime,*)
     end subroutine arlcos

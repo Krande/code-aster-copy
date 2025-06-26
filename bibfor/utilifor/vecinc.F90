@@ -28,13 +28,13 @@ subroutine vecinc(n, s, x, inc)
 !     ET VECINC.
 !     ----------------------------------------------------------------
 !   Obligatory arguments
-    integer, intent(in)   :: n
+    integer(kind=8), intent(in)   :: n
     complex(kind=8), intent(in)   :: s
     complex(kind=8)               :: x(*)
 !   Optional argument
-    integer, optional, intent(in) :: inc
+    integer(kind=8), optional, intent(in) :: inc
 !   ------------------------------------------------------------------
-    integer :: i, inc2, ninc
+    integer(kind=8) :: i, inc2, ninc
 !   ------------------------------------------------------------------
     ASSERT(n .ge. 1)
     inc2 = 1

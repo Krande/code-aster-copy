@@ -27,7 +27,7 @@ subroutine nmmalu(nno, axi, r, vff, dfdi, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
     aster_logical :: axi
-    integer :: nno, lij(3, 3)
+    integer(kind=8) :: nno, lij(3, 3)
     real(kind=8) :: dfdi(nno, 4), vff(nno), r
     blas_int :: b_incx, b_incy, b_n
 !

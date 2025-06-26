@@ -34,7 +34,7 @@ subroutine nmimpt(nume_inst, sddisc, ds_print)
 #include "asterfort/utmess.h"
 #include "asterfort/jeexin.h"
 !
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     type(NL_DS_Print), intent(inout) :: ds_print
 !
@@ -53,7 +53,7 @@ subroutine nmimpt(nume_inst, sddisc, ds_print)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: curr_inst
-    integer :: lenivo, i_exist
+    integer(kind=8) :: lenivo, i_exist
     character(len=16) :: metlis
     character(len=24) :: sddisc_linf
 !

@@ -55,20 +55,20 @@ subroutine calcsp(casint, nomu, table, freq, masg, &
 !
     aster_logical :: casint
     character(len=8) :: nomu, table
-    integer :: nbm, nbmr, imod1, nuor(*), ivite
+    integer(kind=8) :: nbm, nbmr, imod1, nuor(*), ivite
     real(kind=8) :: freq(*), masg(*)
 !
 !-----------------------------------------------------------------------
-    integer :: ideb, ifonc, ihi, ihi1, ihr
-    integer :: ihr1, il, im, im1, im2, imb, imodf
-    integer :: ip, iv, lvale, nbpf
+    integer(kind=8) :: ideb, ifonc, ihi, ihi1, ihr
+    integer(kind=8) :: ihr1, il, im, im1, im2, imb, imodf
+    integer(kind=8) :: ip, iv, lvale, nbpf
 !
     real(kind=8) :: fr, fri, hhi, hhr, hii1, hii2, hir1
     real(kind=8) :: hir2, pi
 !-----------------------------------------------------------------------
-    integer :: ival(3), vali(2)
-    integer :: lnumi, lnumj, lfreq, i1, nbabs
-    integer :: lrnumi, lrnumj, lrfreq, mxval, mrxval, ipf
+    integer(kind=8) :: ival(3), vali(2)
+    integer(kind=8) :: lnumi, lnumj, lfreq, i1, nbabs
+    integer(kind=8) :: lrnumi, lrnumj, lrfreq, mxval, mrxval, ipf
     real(kind=8) :: mgi, ksi, hdenom
     character(len=24) :: chnumi, chnumj, chfreq, chvale
     character(len=24) :: crnumi, crnumj, crfreq, crvale

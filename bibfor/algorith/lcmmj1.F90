@@ -59,8 +59,8 @@ subroutine lcmmj1(taur, materf, cpmono, ifa, nmat, &
 #include "asterfort/lcmmjc.h"
 #include "asterfort/lcmmjf.h"
 #include "asterfort/lcmmji.h"
-    integer :: nmat, nuvr, nuvs, iexp, ir, nsfa, nsfv, itmax, nfs, nsg
-    integer :: nbcomm(nmat, 3), nuvi, ifa, nbsys, is, iret
+    integer(kind=8) :: nmat, nuvr, nuvs, iexp, ir, nsfa, nsfv, itmax, nfs, nsg
+    integer(kind=8) :: nbcomm(nmat, 3), nuvi, ifa, nbsys, is, iret
     real(kind=8) :: vind(*), dgdtau, dgrdrr
     real(kind=8) :: hsr(nsg, nsg), expbp(nsg), dp, dy(*)
     real(kind=8) :: materf(nmat*2), dt, dgamms, rr
@@ -70,7 +70,7 @@ subroutine lcmmj1(taur, materf, cpmono, ifa, nmat, &
     real(kind=8) :: dgsdts, dksdts, dgrdbs, dkrdbs
     character(len=24) :: cpmono(5*nmat+1)
     character(len=16) :: necoul, necris, necrci
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !     ----------------------------------------------------------------
     iret = 0

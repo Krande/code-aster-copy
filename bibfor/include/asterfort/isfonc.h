@@ -22,7 +22,7 @@
 !
 interface
     function isfonc(list_func_acti, func_name_z)
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=*), intent(in) :: func_name_z
         aster_logical :: isfonc
     end function isfonc

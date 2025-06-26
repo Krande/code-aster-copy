@@ -21,7 +21,7 @@
 interface
     subroutine cjsjid(mod, mater, epsd, deps, yd,&
                       yf, gd, r, signe, drdy)
-        integer, parameter :: nmod=16
+        integer(kind=8), parameter :: nmod=16
         character(len=8) :: mod
         real(kind=8) :: mater(14, 2)
         real(kind=8) :: epsd(6)

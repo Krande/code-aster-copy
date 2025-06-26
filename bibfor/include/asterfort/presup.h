@@ -22,8 +22,8 @@
 !
 interface
     subroutine presup(iunv, imod, lgrcou)
-        integer :: iunv
-        integer :: imod
+        integer(kind=8) :: iunv
+        integer(kind=8) :: imod
         aster_logical :: lgrcou
     end subroutine presup
 end interface

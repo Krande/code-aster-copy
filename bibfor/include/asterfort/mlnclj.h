@@ -22,17 +22,17 @@ interface
     subroutine mlnclj(nb, n, ll, m, it,&
                       p, frontl, frontu, frnl, frnu,&
                       adper, travl, travu, cl, cu)
-        integer :: p
-        integer :: nb
-        integer :: n
-        integer :: ll
-        integer :: m
-        integer :: it
+        integer(kind=8) :: p
+        integer(kind=8) :: nb
+        integer(kind=8) :: n
+        integer(kind=8) :: ll
+        integer(kind=8) :: m
+        integer(kind=8) :: it
         complex(kind=8) :: frontl(*)
         complex(kind=8) :: frontu(*)
         complex(kind=8) :: frnl(*)
         complex(kind=8) :: frnu(*)
-        integer :: adper(*)
+        integer(kind=8) :: adper(*)
         complex(kind=8) :: travl(p, nb, *)
         complex(kind=8) :: travu(p, nb, *)
         complex(kind=8) :: cl(nb, nb, *)

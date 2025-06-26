@@ -22,13 +22,13 @@ interface
                       subd_niveau , subd_pas     ,&
                       subd_auto   , subd_inst    , subd_duree)
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_fail
+        integer(kind=8), intent(in) :: i_fail
         real(kind=8), intent(in) :: dtmin
         character(len=16), intent(in) :: event_typek
         character(len=16), intent(out) :: subd_methode
         real(kind=8), intent(out) :: subd_pas_mini
-        integer, intent(out) :: subd_niveau
-        integer, intent(out) :: subd_pas
+        integer(kind=8), intent(out) :: subd_niveau
+        integer(kind=8), intent(out) :: subd_pas
         character(len=16), intent(out) :: subd_auto
         real(kind=8), intent(out) :: subd_inst
         real(kind=8), intent(out) :: subd_duree

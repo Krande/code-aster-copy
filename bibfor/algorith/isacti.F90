@@ -27,8 +27,8 @@ subroutine isacti(sddisc, action_type_in, i_action)
 #include "asterfort/getFailAction.h"
 !
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: action_type_in
-    integer, intent(out) :: i_action
+    integer(kind=8), intent(in) :: action_type_in
+    integer(kind=8), intent(out) :: i_action
 !
 ! ----------------------------------------------------------------------
 !
@@ -45,8 +45,8 @@ subroutine isacti(sddisc, action_type_in, i_action)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i_fail, nb_fail
-    integer :: action_type
+    integer(kind=8) :: i_fail, nb_fail
+    integer(kind=8) :: action_type
 !
 ! ----------------------------------------------------------------------
 !

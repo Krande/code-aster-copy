@@ -29,10 +29,10 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate, &
 ! aslint: disable=W1504,W0104
 !
     character(len=*) :: fami
-    integer :: kpg
-    integer :: ksp
-    integer :: ndim
-    integer :: imate
+    integer(kind=8) :: kpg
+    integer(kind=8) :: ksp
+    integer(kind=8) :: ndim
+    integer(kind=8) :: imate
     character(len=16) :: compor(*)
     real(kind=8) :: crit(*)
     real(kind=8) :: instam
@@ -45,11 +45,11 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate, &
     real(kind=8) :: sigp(6)
     real(kind=8) :: vip(*)
     character(len=8) :: typmod(*)
-    integer :: icomp
-    integer :: nvi
-    integer :: numlc
+    integer(kind=8) :: icomp
+    integer(kind=8) :: nvi
+    integer(kind=8) :: numlc
     real(kind=8) :: dsidep(6, 6)
-    integer :: codret
+    integer(kind=8) :: codret
 ! Declaration of integer type variables
 #include "asterf_types.h"
 #include "asterfort/lcrank.h"
@@ -57,7 +57,7 @@ subroutine lc0025(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvarc.h"
 !
-    integer :: iret, icode(3)
+    integer(kind=8) :: iret, icode(3)
 !
 ! Declaration of real type variables
     real(kind=8) :: tp, tm, tref, rprops(3), r0

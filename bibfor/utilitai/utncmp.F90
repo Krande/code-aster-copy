@@ -25,7 +25,7 @@ subroutine utncmp(cham19, ncmp, nomobj)
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
 !
-    integer :: ncmp
+    integer(kind=8) :: ncmp
     character(len=*) :: cham19, nomobj
 !
 !     RECUPERE LE NOMBRE ET LES NOMS DES COMPOSANTES D'UN CHAMP

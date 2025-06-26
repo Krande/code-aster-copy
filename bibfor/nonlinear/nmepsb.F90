@@ -27,7 +27,7 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi, &
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
     aster_logical :: axi
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
     real(kind=8) :: vff(nno), dfdi(nno, ndim), deplg(*)
     real(kind=8) :: epsb(6), geps(6, 3)
 !
@@ -44,7 +44,7 @@ subroutine nmepsb(ndim, nno, axi, vff, dfdi, &
 ! OUT GEPS    : GRADIENT DES DEFORMATIONS REGULARISEES GEPS(6,3)
 ! ----------------------------------------------------------------------
 !
-    integer :: kl, i, ndimsi, ndl
+    integer(kind=8) :: kl, i, ndimsi, ndl
     blas_int :: b_incx, b_incy, b_n
 ! ----------------------------------------------------------------------
 !

@@ -21,7 +21,7 @@ interface
                       hval_incr, hval_veasse, cndonn)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: sddyna, hval_incr(*), hval_veasse(*)
         type(NL_DS_System), intent(in) :: ds_system

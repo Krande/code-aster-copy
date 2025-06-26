@@ -64,8 +64,8 @@ subroutine exprli(basmdz, lintfz, nmintz, numint, famprz, &
 !
 !
 !
-    integer :: idec(30), llint4, nbcmpm, nbec, nbcmp, nbddl, ordo
-    integer :: ii, llact, iec, ldmap, numint, nbdef, nbnoe, icomp, i, j
+    integer(kind=8) :: idec(30), llint4, nbcmpm, nbec, nbcmp, nbddl, ordo
+    integer(kind=8) :: ii, llact, iec, ldmap, numint, nbdef, nbnoe, icomp, i, j
     parameter(nbcmpm=10)
     character(len=*) :: basmdz, nmintz, lintfz, famprz
     character(len=4) :: nliai

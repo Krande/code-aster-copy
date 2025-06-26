@@ -23,11 +23,11 @@ interface
                       nbbloq, nblagr, nbliai)
         character(len=*) :: choixz
         character(len=*) :: numez
-        integer :: neq
-        integer :: tabddl(*)
-        integer :: nbacti
-        integer :: nbbloq
-        integer :: nblagr
-        integer :: nbliai
+        integer(kind=8) :: neq
+        integer(kind=8) :: tabddl(*)
+        integer(kind=8) :: nbacti
+        integer(kind=8) :: nbbloq
+        integer(kind=8) :: nblagr
+        integer(kind=8) :: nbliai
     end subroutine typddl
 end interface

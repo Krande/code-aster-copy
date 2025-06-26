@@ -38,7 +38,7 @@ subroutine pmdrdy(dsidep, coef, cimpo, valimp, y, &
     real(kind=8) :: y(12), id(6, 6), sigp(6), dsidep(6, 6), cimpo(6, 12)
     real(kind=8) :: valimp(6)
     real(kind=8) :: r(12), drdy(12, 12), coef
-    integer :: i, j, idbg, ifm, niv
+    integer(kind=8) :: i, j, idbg, ifm, niv
 !
     idbg = 0
 !

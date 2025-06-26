@@ -25,13 +25,13 @@ interface
         character(len=24) :: modele
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=24) :: carele
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: sdcrit
         character(len=19) :: sddyna
         type(NL_DS_ErrorIndic), intent(in) :: ds_errorindic
         character(len=19) :: sdpilo
         character(len=24) :: listLoadResu
-        integer :: numarc
+        integer(kind=8) :: numarc
         real(kind=8) :: time_curr
     end subroutine nmarc0
 end interface

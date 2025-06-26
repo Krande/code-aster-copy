@@ -44,9 +44,9 @@ subroutine te0572(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim, nfh, nfe, igeom, nnop, jpintt, imate, itps, jstno
-    integer :: imattt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, nddlno
-    integer :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
+    integer(kind=8) :: ndim, nfh, nfe, igeom, nnop, jpintt, imate, itps, jstno
+    integer(kind=8) :: imattt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, nddlno
+    integer(kind=8) :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
     character(len=8) :: elrefp
 !
 ! ----------------------------------------------------------------------

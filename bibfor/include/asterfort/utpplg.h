@@ -20,7 +20,7 @@
 !
 interface
     subroutine utpplg(nn, nc, p, sl, sg)
-        integer, intent(in) :: nn, nc
+        integer(kind=8), intent(in) :: nn, nc
         real(kind=8), intent(in) :: p(3, 3), sl(*)
         real(kind=8), intent(out) :: sg(*)
     end subroutine utpplg

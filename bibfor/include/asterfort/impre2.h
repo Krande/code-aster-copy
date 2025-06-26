@@ -25,11 +25,11 @@ interface
         character(len=24) :: liddl
         character(len=24) :: linoeu
         character(len=24) :: libeta
-        integer :: indsur
-        integer :: ipntrl
-        integer :: nbterm
+        integer(kind=8) :: indsur
+        integer(kind=8) :: ipntrl
+        integer(kind=8) :: nbterm
         character(len=4) :: typcoe
         character(len=4) :: typval
-        integer :: irela
+        integer(kind=8) :: irela
     end subroutine impre2
 end interface

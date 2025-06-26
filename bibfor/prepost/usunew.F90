@@ -23,7 +23,7 @@ subroutine usunew(type, para, crit, epsi, x1, &
     real(kind=8) :: para(*)
     character(len=*) :: type, crit
 !-----------------------------------------------------------------------
-    integer :: i, iret, maxit
+    integer(kind=8) :: i, iret, maxit
     real(kind=8) :: da, dfr, dl, dx, dxold, epsi, fr
     real(kind=8) :: resu, temp, x1, x2, xh, xl, zero
 !

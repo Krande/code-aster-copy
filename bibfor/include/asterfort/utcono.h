@@ -23,10 +23,10 @@ interface
                       coor, iret)
         character(len=*) :: mcfac
         character(len=*) :: mocle(3)
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=8) :: nomail
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: coor(*)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine utcono
 end interface

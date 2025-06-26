@@ -24,7 +24,7 @@ interface
                     prevMetaIsTemper, &
                     metaPrev, metaCurr, metaCurrTemper)
         use Metallurgy_type
-        integer, intent(in) :: nbVari, nbVariTemper
+        integer(kind=8), intent(in) :: nbVari, nbVariTemper
         type(META_SteelParameters), intent(in) :: metaSteelPara
         real(kind=8), intent(in) :: deltaTime12, temp1, temp2
         aster_logical, intent(in) :: prevMetaIsTemper

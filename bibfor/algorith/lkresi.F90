@@ -52,13 +52,13 @@ subroutine lkresi(typmod, nmat, materf, timed, timef, &
 #include "asterfort/lkelas.h"
 #include "asterfort/lkvacp.h"
 #include "asterfort/lkvarp.h"
-    integer :: nmat, nr, nvi, ndi, ndt
+    integer(kind=8) :: nmat, nr, nvi, ndi, ndt
     real(kind=8) :: deps(6), vind(*), vinf(*)
     real(kind=8) :: r(nr), yd(nr), yf(nr), materf(nmat, 2)
     real(kind=8) :: timed, timef
     character(len=8) :: typmod
 !
-    integer :: i, retcom, val, varv
+    integer(kind=8) :: i, retcom, val, varv
     real(kind=8) :: zero, vint(7), devsig(6), i1, ucrip, seuilp
     real(kind=8) :: dt, seuilv, depsv(6), dgamv
     real(kind=8) :: dxiv, xivmax, xippic, seuivm, ucriv

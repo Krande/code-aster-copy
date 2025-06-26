@@ -28,7 +28,7 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
 #include "asterfort/elrfvf.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: npg, nno
+    integer(kind=8) :: npg, nno
     character(len=8) :: elrefa, famil
     character(len=*) :: nomjv
 !
@@ -42,9 +42,9 @@ subroutine utelvf(elrefa, famil, nomjv, npg, nno)
 !        NNO    : NOMBRE DE NOEUDS DU TYPE_MAILLE
 ! ----------------------------------------------------------------------
 !
-    integer, parameter :: nbpgmx = 27
-    integer :: nbpg(MT_NBFAMX), ndim, nnos, nbfpg
-    integer :: ifam, decal, ipg, ino, jvr
+    integer(kind=8), parameter :: nbpgmx = 27
+    integer(kind=8) :: nbpg(MT_NBFAMX), ndim, nnos, nbfpg
+    integer(kind=8) :: ifam, decal, ipg, ino, jvr
     real(kind=8) :: xpg(3*nbpgmx), poipg(nbpgmx), ff(MT_NNOMAX)
     character(len=8) :: nofpg(MT_NBFAMX)
 ! DEB ------------------------------------------------------------------

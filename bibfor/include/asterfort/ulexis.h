@@ -22,7 +22,7 @@
 !
 interface
     function ulexis(iul)
-        integer :: iul
+        integer(kind=8) :: iul
         aster_logical :: ulexis
     end function ulexis
 end interface

@@ -46,14 +46,14 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
 #include "asterfort/utmess.h"
 #include "asterfort/nbec.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=*), intent(in) :: title, dsName
-    integer, intent(in) :: storeIndx
+    integer(kind=8), intent(in) :: storeIndx
     character(len=*), optional, intent(in) :: fieldName_, fieldType_
-    integer, optional, intent(in) :: cmpUserNb_
+    integer(kind=8), optional, intent(in) :: cmpUserNb_
     character(len=8), optional, pointer :: cmpUserName_(:)
-    integer, optional, intent(in) :: nodeUserNb_
-    integer, optional, pointer :: nodeUserNume_(:)
+    integer(kind=8), optional, intent(in) :: nodeUserNb_
+    integer(kind=8), optional, pointer :: nodeUserNume_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -76,8 +76,8 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, titleLength
-    integer :: cmpCataNb, cmpListNb
+    integer(kind=8) :: iret, titleLength
+    integer(kind=8) :: cmpCataNb, cmpListNb
     character(len=8) :: meshName
     character(len=19) :: fieldName
     character(len=16) :: fieldType
@@ -85,19 +85,19 @@ subroutine resuPrintIdeasNode(fileUnit, dsName, &
     character(len=80), pointer :: meshTitle(:) => null()
     aster_logical :: lMeshIdeas
     character(len=1) :: type
-    integer :: fieldScalar, quantityIndx, nec, liliMesh, jvVale
-    integer :: meshDime, meshNodeNb
-    integer, pointer :: cmpListIndx(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: prno(:) => null()
+    integer(kind=8) :: fieldScalar, quantityIndx, nec, liliMesh, jvVale
+    integer(kind=8) :: meshDime, meshNodeNb
+    integer(kind=8), pointer :: cmpListIndx(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
-    integer :: nodeNb
+    integer(kind=8) :: nodeNb
     character(len=8), pointer :: nodeName(:) => null()
-    integer, pointer :: nodeNume(:) => null()
-    integer, pointer :: codeInte(:) => null()
-    integer :: cmpUserNb, nodeUserNb
+    integer(kind=8), pointer :: nodeNume(:) => null()
+    integer(kind=8), pointer :: codeInte(:) => null()
+    integer(kind=8) :: cmpUserNb, nodeUserNb
     character(len=8), pointer :: cmpUserName(:) => null()
-    integer, pointer :: nodeUserNume(:) => null()
+    integer(kind=8), pointer :: nodeUserNume(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

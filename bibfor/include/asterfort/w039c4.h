@@ -21,7 +21,7 @@
 interface
     subroutine w039c4(carte, ifi, form)
         character(len=*) :: carte
-        integer :: ifi
+        integer(kind=8) :: ifi
         character(len=*) :: form
     end subroutine w039c4
 end interface

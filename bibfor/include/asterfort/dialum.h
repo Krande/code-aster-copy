@@ -21,9 +21,9 @@
 interface
     subroutine dialum(nno, nddl, ldim, wgt, masco,&
                       masdi)
-        integer :: nno
-        integer :: nddl
-        integer :: ldim
+        integer(kind=8) :: nno
+        integer(kind=8) :: nddl
+        integer(kind=8) :: ldim
         real(kind=8) :: wgt
         real(kind=8) :: masco(*)
         real(kind=8) :: masdi(*)

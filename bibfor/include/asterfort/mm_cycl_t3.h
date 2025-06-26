@@ -24,6 +24,6 @@ interface
         real(kind=8), intent(in) :: pres_frot_prev(3)
         real(kind=8), intent(in) :: dist_frot_prev(3)
         real(kind=8), intent(in) :: coef_frot_prev
-        integer, intent(out) :: cycl_stat_curr
+        integer(kind=8), intent(out) :: cycl_stat_curr
     end subroutine mm_cycl_t3
 end interface

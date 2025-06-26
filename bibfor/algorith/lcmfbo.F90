@@ -44,7 +44,7 @@ subroutine lcmfbo(ep0, ep1, l0, l1, etamin, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: vide1, vide2
-    integer :: i, nsol, nsol1, nsol2, sgn(2), sgn1(2), sgn2(2), ptr
+    integer(kind=8) :: i, nsol, nsol1, nsol2, sgn(2), sgn1(2), sgn2(2), ptr
     real(kind=8) :: trep0, trep1, ts0(6), ts1(6), s0(3), s1(3), cb
     real(kind=8) :: s0s0, s0s1, s1s1, trs0, trs1, q0, q1, q2, sol(2), sol1(2), sol2(2)
     real(kind=8) :: am, ap, b

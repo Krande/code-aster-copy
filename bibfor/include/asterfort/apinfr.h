@@ -22,7 +22,7 @@ interface
     subroutine apinfr(sdappa, questi_, i_poin, valr)
         character(len=19), intent(in) :: sdappa
         character(len=*), intent(in) :: questi_
-        integer, intent(in) :: i_poin
+        integer(kind=8), intent(in) :: i_poin
         real(kind=8), intent(out) :: valr
     end subroutine apinfr
 end interface

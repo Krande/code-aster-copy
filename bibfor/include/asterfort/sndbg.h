@@ -20,9 +20,9 @@
 !
 interface
     subroutine sndbg(ifm, iclass, ival, rval, kval)
-        integer :: ifm
-        integer :: iclass
-        integer :: ival
+        integer(kind=8) :: ifm
+        integer(kind=8) :: iclass
+        integer(kind=8) :: ival
         real(kind=8) :: rval(*)
         character(len=*) :: kval
     end subroutine sndbg

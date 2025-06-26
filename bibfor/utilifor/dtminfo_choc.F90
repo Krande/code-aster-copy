@@ -28,11 +28,11 @@ subroutine dtminfo_choc(nlcase, nbnoli)
 #include "asterfort/codent.h"
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)   :: nlcase
-    integer, intent(in)   :: nbnoli
+    integer(kind=8), intent(in)   :: nlcase
+    integer(kind=8), intent(in)   :: nbnoli
 !
 !   -0.2- Local variables
-    integer                      :: input, ind, base, digit, decal
+    integer(kind=8)                      :: input, ind, base, digit, decal
     character(len=(13+4*nbnoli)) :: line, chaine
 
 !

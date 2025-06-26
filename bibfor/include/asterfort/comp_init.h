@@ -21,6 +21,6 @@ interface
         character(len=8) , intent(in) :: mesh
         character(len=19) , intent(in) :: compor
         character(len=1) , intent(in) :: base
-        integer, optional, intent(out) :: nbCmp_
+        integer(kind=8), optional, intent(out) :: nbCmp_
     end subroutine comp_init
 end interface

@@ -20,7 +20,7 @@
 !
 interface
     subroutine agligr(long, ligrch)
-        integer :: long
+        integer(kind=8) :: long
         character(len=19) :: ligrch
     end subroutine agligr
 end interface

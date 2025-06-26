@@ -21,11 +21,11 @@
 interface
     subroutine i2extf(m, f, conec, type, n1,&
                       n2)
-        integer :: m
-        integer :: f
+        integer(kind=8) :: m
+        integer(kind=8) :: f
         character(len=*) :: conec
         character(len=*) :: type
-        integer :: n1
-        integer :: n2
+        integer(kind=8) :: n1
+        integer(kind=8) :: n2
     end subroutine i2extf
 end interface

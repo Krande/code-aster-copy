@@ -81,15 +81,15 @@ subroutine te0031(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: npge = 3
-    integer :: ndim, nno, ind
-    integer :: multic, codret, jvDisp, jdepr
-    integer :: jvCompor, i1, i2, j, jvect, icarcr
-    integer :: k, jcret, jfreq, iacce
-    integer :: jgeom, jmatr, jener, i
-    integer :: ivect, nddl, nvec, iret, jvSief
-    integer :: nbcou, jnbspi, iret1, itab(7), nbsp
-    integer :: ibid, n1, n2, ni
+    integer(kind=8), parameter :: npge = 3
+    integer(kind=8) :: ndim, nno, ind
+    integer(kind=8) :: multic, codret, jvDisp, jdepr
+    integer(kind=8) :: jvCompor, i1, i2, j, jvect, icarcr
+    integer(kind=8) :: k, jcret, jfreq, iacce
+    integer(kind=8) :: jgeom, jmatr, jener, i
+    integer(kind=8) :: ivect, nddl, nvec, iret, jvSief
+    integer(kind=8) :: nbcou, jnbspi, iret1, itab(7), nbsp
+    integer(kind=8) :: ibid, n1, n2, ni
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24), effgt(32)
     real(kind=8) :: effref, momref
     real(kind=8) :: vecloc(24), ener(3), matp(24, 24), matv(300)

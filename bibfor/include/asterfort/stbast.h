@@ -22,8 +22,8 @@
 !
 interface
     subroutine stbast(nfie, nfis, lgrcou)
-        integer :: nfie
-        integer :: nfis
+        integer(kind=8) :: nfie
+        integer(kind=8) :: nfis
         aster_logical :: lgrcou
     end subroutine stbast
 end interface

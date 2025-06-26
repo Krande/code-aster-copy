@@ -20,10 +20,10 @@
 !
 interface
     subroutine rvgacc(iocc, typac, nival, nrval, nbval)
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=2) :: typac
         character(len=24) :: nival
         character(len=24) :: nrval
-        integer :: nbval
+        integer(kind=8) :: nbval
     end subroutine rvgacc
 end interface

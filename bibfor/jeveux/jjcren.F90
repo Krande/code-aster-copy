@@ -27,29 +27,29 @@ subroutine jjcren(nomlu, icre, iret)
 #include "asterfort/jxhcod.h"
 #include "asterfort/utmess.h"
     character(len=*) :: nomlu
-    integer :: icre, iret
+    integer(kind=8) :: icre, iret
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, icla, iclasi, in, iref, isg, j
-    integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
-    integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
-    integer :: jtype, lorep, lorepa, n, ne, nfic
+    integer(kind=8) :: i, icla, iclasi, in, iref, isg, j
+    integer(kind=8) :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
+    integer(kind=8) :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
+    integer(kind=8) :: jtype, lorep, lorepa, n, ne, nfic
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !     ------------------------------------------------------------------
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: nbcla
+    integer(kind=8) :: nbcla
     common/nficje/nbcla
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
@@ -57,7 +57,7 @@ subroutine jjcren(nomlu, icre, iret)
 !     ------------------------------------------------------------------
     character(len=32) :: clel, cle, d32, valk(3)
     aster_logical :: linser, rinser
-    integer :: iclain, idatin, iin
+    integer(kind=8) :: iclain, idatin, iin
     data d32/'$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$'/
 ! DEB ------------------------------------------------------------------
     if (icre .ne. 0) then

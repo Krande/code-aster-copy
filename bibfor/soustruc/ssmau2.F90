@@ -60,7 +60,7 @@ subroutine ssmau2(nomu, option)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i, scdi, schc, iblo
+    integer(kind=8) :: i, scdi, schc, iblo
     character(len=8) :: promes
     aster_logical :: mostru
 !
@@ -69,14 +69,14 @@ subroutine ssmau2(nomu, option)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iampee, iaphi0, iaphie, iascdi, iatmi0
-    integer :: iatmie, iblold, iblph, ii, iiblph, j
-    integer :: jblph, jjblph, jualf, k, kk
-    integer :: lgblph, lmat, nblph, nddle, nddli, nlblph
+    integer(kind=8) :: iampee, iaphi0, iaphie, iascdi, iatmi0
+    integer(kind=8) :: iatmie, iblold, iblph, ii, iiblph, j
+    integer(kind=8) :: jblph, jjblph, jualf, k, kk
+    integer(kind=8) :: lgblph, lmat, nblph, nddle, nddli, nlblph
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: desm(:) => null()
-    integer, pointer :: scib(:) => null()
-    integer, pointer :: vschc(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
+    integer(kind=8), pointer :: scib(:) => null()
+    integer(kind=8), pointer :: vschc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     optio2 = option

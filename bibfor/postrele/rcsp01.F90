@@ -24,7 +24,7 @@ subroutine rcsp01(nbm, adrm, ipt, sp3, sp4, &
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: nbm, adrm(*), ipt, nbth, iocs
+    integer(kind=8) :: nbm, adrm(*), ipt, nbth, iocs
     real(kind=8) :: sp3, sp4, sp5, alphaa, alphab, sp6
 !
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3600
@@ -32,13 +32,13 @@ subroutine rcsp01(nbm, adrm, ipt, sp3, sp4, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: iad, icmp, nbcmp, decal, jcesl, nbinst, i
-    integer :: jmoye, jmoy2, jther, vali(2)
+    integer(kind=8) :: iad, icmp, nbcmp, decal, jcesl, nbinst, i
+    integer(kind=8) :: jmoye, jmoy2, jther, vali(2)
     real(kind=8) :: tint, text, ta, tb, tab, dt1, dt2, term1, term2, dt1max
     real(kind=8) :: dt2max, tabmax
     character(len=24) :: chtemp
     character(len=24), pointer :: cham_ther(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
     character(len=24), pointer :: cesv(:) => null()
 !
 ! DEB ------------------------------------------------------------------

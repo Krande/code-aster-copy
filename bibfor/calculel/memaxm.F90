@@ -38,7 +38,7 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
 #include "jeveux.h"
     character(len=*) :: typmx
     character(len=*) :: champ, nocmp, lcmp(*)
-    integer :: nbcmp, nbmail, numail(*)
+    integer(kind=8) :: nbcmp, nbmail, numail(*)
     real(kind=8) :: vr(*)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
@@ -77,15 +77,15 @@ subroutine memaxm(typmx, champ, nocmp, nbcmp, lcmp, &
 !                 'MIN'/'MAX' EST ATTEINT
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: iret
-    integer :: longt
+    integer(kind=8) :: iret
+    integer(kind=8) :: longt
     character(len=8) :: kmpic, typ1, nomgd, tsca, tych, mesh
-    integer :: jcesd, jcesl, jcesv, nel, iel, nbpt, nbsspt, ncmp
-    integer :: ipt, isp, icmp, ncp, iicmp, iadr1
-    integer :: iadr2, iel1
+    integer(kind=8) :: jcesd, jcesl, jcesv, nel, iel, nbpt, nbsspt, ncmp
+    integer(kind=8) :: ipt, isp, icmp, ncp, iicmp, iadr1
+    integer(kind=8) :: iadr2, iel1
     real(kind=8) :: valr, vmima
     character(len=19) :: chams, cham19
-    integer :: tncomp(nbcmp)
+    integer(kind=8) :: tncomp(nbcmp)
     aster_logical :: copi, lmax, labs, lreel
     character(len=8), pointer :: cesc(:) => null()
     character(len=8), pointer :: cesk(:) => null()

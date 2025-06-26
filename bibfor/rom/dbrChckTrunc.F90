@@ -45,7 +45,7 @@ subroutine dbrChckTrunc(paraTrunc, lReuse)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: baseModel, modeModel
     character(len=8) :: baseMesh, modeMesh, baseInitName
     type(ROM_DS_Field) :: mode

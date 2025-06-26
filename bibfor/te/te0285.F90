@@ -42,8 +42,8 @@ subroutine te0285(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nno, kp, npg, i, j, k, lcastr
-    integer :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: nno, kp, npg, i, j, k, lcastr
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
     real(kind=8) :: rho, xg, yg, depi
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, x(9), y(9)
     real(kind=8) :: matine(6), xxi, xyi, yyi, volume

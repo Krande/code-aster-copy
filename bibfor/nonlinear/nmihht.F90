@@ -36,7 +36,7 @@ subroutine nmihht(model, nume_dof, ds_material, ds_constitutive, &
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: list_load
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddyna
     character(len=19), intent(in) :: sddisc

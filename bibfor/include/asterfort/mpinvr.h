@@ -23,9 +23,9 @@
 interface
     subroutine mpinvr(nbmesu, nbmode, nbabs, phi, rmesu,&
                       coef, xabs, lfonct, reta)
-        integer :: nbabs
-        integer :: nbmode
-        integer :: nbmesu
+        integer(kind=8) :: nbabs
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbmesu
         real(kind=8) :: phi(nbmesu, nbmode)
         real(kind=8) :: rmesu(nbmesu, nbabs)
         real(kind=8) :: coef(*)

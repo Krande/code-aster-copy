@@ -34,29 +34,29 @@ interface
                       lsup        , borsup      ,&
                       linf        , borinf      ,&
                       vale)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=4), intent(in) :: fieldSupport
-        integer, pointer :: celd(:)
+        integer(kind=8), pointer :: celd(:)
         character(len=8), intent(in) :: realFormat, cplxFormat
-        integer, intent(in) :: nodeListNb
-        integer, pointer :: nodeListNume(:)
-        integer, intent(in) :: cellListNb
-        integer, pointer :: cellListNume(:)
-        integer, intent(in) :: meshCellNb
+        integer(kind=8), intent(in) :: nodeListNb
+        integer(kind=8), pointer :: nodeListNume(:)
+        integer(kind=8), intent(in) :: cellListNb
+        integer(kind=8), pointer :: cellListNume(:)
+        integer(kind=8), intent(in) :: meshCellNb
         character(len=8), pointer :: meshCellName(:), meshNodeName(:)
         aster_logical, intent(in) :: lMeshCoor
-        integer, intent(in) :: meshDimeIn
+        integer(kind=8), intent(in) :: meshDimeIn
         real(kind=8), pointer :: meshCoor(:)
-        integer, intent(in) :: cmpCataNb
+        integer(kind=8), intent(in) :: cmpCataNb
         character(len=8), pointer :: cmpCataName(:)
-        integer, intent(in) :: cmpListNb
-        integer, pointer :: cmpListIndx(:)
-        integer, intent(in) :: cmpVariNb
-        integer, pointer :: cmpVariIndx(:)
-        integer, intent(in) :: grelNb
-        integer, pointer :: liel(:), lielLen(:)
+        integer(kind=8), intent(in) :: cmpListNb
+        integer(kind=8), pointer :: cmpListIndx(:)
+        integer(kind=8), intent(in) :: cmpVariNb
+        integer(kind=8), pointer :: cmpVariIndx(:)
+        integer(kind=8), intent(in) :: grelNb
+        integer(kind=8), pointer :: liel(:), lielLen(:)
         character(len=19), intent(in) :: liliName
-        integer, pointer :: connex(:), connexLen(:) 
+        integer(kind=8), pointer :: connex(:), connexLen(:) 
         aster_logical, intent(in) :: lsup, linf, lmax, lmin
         real(kind=8),  intent(in) :: borsup, borinf
         complex(kind=8), pointer  :: vale(:)

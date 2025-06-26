@@ -21,9 +21,9 @@
 interface
     subroutine prmono(champ, ioc, som, nbcmp, nocmp)
         character(len=*) :: champ
-        integer :: ioc
+        integer(kind=8) :: ioc
         real(kind=8) :: som(1)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=8) :: nocmp(1)
     end subroutine prmono
 end interface

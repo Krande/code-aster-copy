@@ -35,7 +35,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: iocc, nbno
+    integer(kind=8) :: iocc, nbno
     character(len=*) :: nomaz, lisnoz
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -50,8 +50,8 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
 !  NBNO          - OUT   -  I   - : LONGUEUR DE CETTE LISTE
 ! -------------------------------------------------------
 !
-    integer :: n1, k, nbnot, ino, ncmp
-    integer :: jlisno, jcn2v, jcn2l
+    integer(kind=8) :: n1, k, nbnot, ino, ncmp
+    integer(kind=8) :: jlisno, jcn2v, jcn2l
     character(len=3) :: tsca
     character(len=8) :: nocmp, noma, ma1, nomgd
     character(len=16) :: motfac
@@ -59,7 +59,7 @@ subroutine cgnoiv(iocc, nomaz, lisnoz, nbno)
     character(len=24) :: lisnoi, valk(5)
     real(kind=8) :: valr(2), vmin, vmax, v1
     character(len=8), pointer :: cnsk(:) => null()
-    integer, pointer :: lisno(:) => null()
+    integer(kind=8), pointer :: lisno(:) => null()
 !     -----------------------------------------------------------------
 !
     call jemarq()

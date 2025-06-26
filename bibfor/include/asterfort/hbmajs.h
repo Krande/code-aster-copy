@@ -21,7 +21,7 @@
 interface
     subroutine hbmajs(dg, nbmat, materf, se, i1e,&
                       sigeqe, etap, sigp)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: dg
         real(kind=8) :: materf(nbmat, 2)
         real(kind=8) :: se(6)

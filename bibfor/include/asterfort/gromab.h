@@ -25,7 +25,7 @@ interface
                       gromai)
         character(len=8) :: mailla
         character(len=24) :: nmabet
-        integer :: nbmabe
+        integer(kind=8) :: nbmabe
         aster_logical :: mail2d
         character(len=8) :: caelem
         character(len=24) :: gromai

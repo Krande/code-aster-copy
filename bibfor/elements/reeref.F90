@@ -26,8 +26,8 @@ subroutine reeref(elrefp, nnop, geom, xg, ndim, xe, ff, dfdi)
 #include "asterfort/invjax.h"
 #include "asterfort/reereg.h"
 !
-    integer, intent(in) :: ndim
-    integer, intent(in) :: nnop
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: nnop
     character(len=8), intent(in) :: elrefp
     real(kind=8), intent(in) :: geom(*)
     real(kind=8), intent(in) :: xg(ndim)
@@ -55,11 +55,11 @@ subroutine reeref(elrefp, nnop, geom, xg, ndim, xe, ff, dfdi)
 ! OUT FF     : FONCTIONS DE FORMES EN XE
 ! OUT DFDI   : DÉRIVÉES DES FONCTIONS DE FORMES EN XE
 !
-    integer :: nbnomx
+    integer(kind=8) :: nbnomx
     parameter(nbnomx=27)
 !
-    integer :: i, k, n
-    integer :: nno, nderiv, iret
+    integer(kind=8) :: i, k, n
+    integer(kind=8) :: nno, nderiv, iret
     real(kind=8) :: invjac(3, 3)
     real(kind=8) :: dff(3, nbnomx)
 !

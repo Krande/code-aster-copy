@@ -29,7 +29,7 @@ subroutine nmtima(ds_measure, timer_type_, vali)
 !
     type(NL_DS_Measure), intent(in) :: ds_measure
     character(len=*), intent(in) :: timer_type_
-    integer, intent(out) :: vali
+    integer(kind=8), intent(out) :: vali
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine nmtima(ds_measure, timer_type_, vali)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=9) :: timer_type
-    integer :: i_timer, timer_indx, nb_timer
+    integer(kind=8) :: i_timer, timer_indx, nb_timer
     type(NL_DS_Timer) :: timer
     real(kind=8) :: remaining_time, store_mean_time, iter_mean_time, step_mean_time
 !

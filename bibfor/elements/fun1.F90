@@ -19,7 +19,7 @@
 subroutine fun1(area, a1, a2, n)
     implicit none
 #include "asterc/r8prem.h"
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: area, a1, a2
 !         CALCUL DE L'AIRE OU DE LA CONSTANTE DE TORSION EQUIVALENTE
 !    D'UNE POUTRE DROITE A SECTION VARIABLE SOUS L'HYPOTHESE DE VARIA-
@@ -35,7 +35,7 @@ subroutine fun1(area, a1, a2, n)
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: xm1, xm2, x
-    integer i
+    integer(kind=8) i
     real(kind=8) iflt
 !
 !-----------------------------------------------------------------------

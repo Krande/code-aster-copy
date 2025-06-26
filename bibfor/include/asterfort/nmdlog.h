@@ -31,14 +31,14 @@ interface
                       type(FE_Cell), intent(in) :: FECell
 type(FE_Quadrature), intent(in) :: FEQuad
 type(FE_basis), intent(in) :: FEBasis
-        integer :: lgpg
-        integer, intent(in) :: ndim, nno, npg
+        integer(kind=8) :: lgpg
+        integer(kind=8), intent(in) :: ndim, nno, npg
         character(len=16) :: option
         character(len=8) :: typmod(*)
         character(len=16), intent(in) :: compor(*)
         character(len=16), intent(in) :: mult_comp
         real(kind=8), intent(in) :: carcri(*)
-        integer :: mate
+        integer(kind=8) :: mate
         real(kind=8) :: angmas(3)
         real(kind=8) :: instm
         real(kind=8) :: instp
@@ -51,6 +51,6 @@ type(FE_basis), intent(in) :: FEBasis
         real(kind=8) :: vip(lgpg, npg)
         real(kind=8) :: fint(ndim*nno)
         real(kind=8) :: matuu(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine nmdlog
 end interface

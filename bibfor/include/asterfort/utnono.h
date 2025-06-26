@@ -26,6 +26,6 @@ interface
         character(len=*) :: type
         character(len=24) :: nomgrp
         character(len=8) :: nomobj
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine utnono
 end interface

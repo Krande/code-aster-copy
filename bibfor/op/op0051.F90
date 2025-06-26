@@ -65,9 +65,9 @@ subroutine op0051()
     character(len=6) :: nompro
     parameter(nompro='OP0051')
 !
-    integer :: ifm, niv
-    integer :: ichef, iocc, iret, ivchf, jacc, jaccis, jaccr8, jchef, jtac
-    integer :: jvac, n1, nbacce, nbchef, nbpost, nbresu, nbvchf, iexi1, iexi2
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ichef, iocc, iret, ivchf, jacc, jaccis, jaccr8, jchef, jtac
+    integer(kind=8) :: jvac, n1, nbacce, nbchef, nbpost, nbresu, nbvchf, iexi1, iexi2
 !
     real(kind=8) :: epsi
 !

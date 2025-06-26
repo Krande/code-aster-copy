@@ -39,7 +39,7 @@ subroutine rc36si(noma, nbma, listma)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbma, listma(*)
+    integer(kind=8) :: nbma, listma(*)
     character(len=8) :: noma
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE_B3600
 !     RECUPERATION DES DONNEES DE "SITUATION"
@@ -49,18 +49,18 @@ subroutine rc36si(noma, nbma, listma)
 ! IN  : LISTMA : LISTE DES MAILLES D'ANALYSE
 !     ------------------------------------------------------------------
 !
-    integer :: n1, nbsitu, iocc, jmomea, jmomeb, ii, nocc, jreth, jnbocc
-    integer :: jnumgr, jpresa, jpresb, nbchar, jchar1, jnsitu, jcombi
-    integer :: jpassa, ig, numpas(2), nscy, nbgr, numgr, nbsigr, jnsg
-    integer :: nbth, jseigr, jchth, nume, nbm, nbp12, nbp23, nbp13, jsp12, jsp23
-    integer :: jsp13, nbsg1, nbsg2, nbsg3, jsigr, vali(3), nbgrt, numg1, numg2
-    integer :: jspas, ing, jnbvg, nbvg, ndim, numgs, nbseis
+    integer(kind=8) :: n1, nbsitu, iocc, jmomea, jmomeb, ii, nocc, jreth, jnbocc
+    integer(kind=8) :: jnumgr, jpresa, jpresb, nbchar, jchar1, jnsitu, jcombi
+    integer(kind=8) :: jpassa, ig, numpas(2), nscy, nbgr, numgr, nbsigr, jnsg
+    integer(kind=8) :: nbth, jseigr, jchth, nume, nbm, nbp12, nbp23, nbp13, jsp12, jsp23
+    integer(kind=8) :: jsp13, nbsg1, nbsg2, nbsg3, jsigr, vali(3), nbgrt, numg1, numg2
+    integer(kind=8) :: jspas, ing, jnbvg, nbvg, ndim, numgs, nbseis
     aster_logical :: yapass
     character(len=8) :: k8b, ouinon
     character(len=16) :: motcl1, motcl2
     character(len=24) :: chmome
-    integer, pointer :: char_meca(:) => null()
-    integer, pointer :: nume_group(:) => null()
+    integer(kind=8), pointer :: char_meca(:) => null()
+    integer(kind=8), pointer :: nume_group(:) => null()
 ! DEB ------------------------------------------------------------------
 !
     motcl1 = 'SITUATION'

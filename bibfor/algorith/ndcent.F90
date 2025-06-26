@@ -24,7 +24,7 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/reerel.h"
-    integer :: igeom, nnc, ndim, nfiss
+    integer(kind=8) :: igeom, nnc, ndim, nfiss
     real(kind=8) :: tx(3, 7), lsn(*), txlsn(28)
 !
 !       CALCUL DES COORDONNEES ET DE LA LSN DES NOEUDS MILIEUX
@@ -39,9 +39,9 @@ subroutine ndcent(igeom, ndim, lsn, nfiss, tx, txlsn, nnc)
 !       XLSN     : LSN AUX NOEUDS MILIEUX CENTRAUX
 !       NNC      : NOMBRE DE NOEUDS MILIEUX CENTRAUX
 !
-    integer :: nbnomx
+    integer(kind=8) :: nbnomx
     parameter(nbnomx=20)
-    integer :: i, j, nnop, ifiss
+    integer(kind=8) :: i, j, nnop, ifiss
     real(kind=8) :: ff(nbnomx), xlsn, xe(3)
     character(len=8) :: elp
 !

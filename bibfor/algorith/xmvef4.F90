@@ -22,8 +22,8 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12, &
     implicit none
 #include "jeveux.h"
 #include "blas/ddot.h"
-    integer :: ndim, nnol
-    integer :: pla(27), lact(8)
+    integer(kind=8) :: ndim, nnol
+    integer(kind=8) :: pla(27), lact(8)
     real(kind=8) :: vtmp(400), tau1(3), tau2(3)
     real(kind=8) :: ffc(8), jac, reac12(3)
 !
@@ -72,7 +72,7 @@ subroutine xmvef4(ndim, nnol, pla, ffc, reac12, &
 !
 !
 !
-    integer :: i, k, pli, nli
+    integer(kind=8) :: i, k, pli, nli
     real(kind=8) :: ffi, tt(3)
     blas_int :: b_incx, b_incy, b_n
 !

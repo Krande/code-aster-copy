@@ -42,7 +42,7 @@ subroutine b1tdb2(b1, b2, d, jacob, nbsig, &
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    integer :: nbinco, nbsig
+    integer(kind=8) :: nbinco, nbsig
     real(kind=8) :: b1(nbsig, nbinco)
     real(kind=8) :: b2(nbsig, nbinco)
     real(kind=8) :: d(nbsig, nbsig), jacob, btdb(nbinco, nbinco)
@@ -51,7 +51,7 @@ subroutine b1tdb2(b1, b2, d, jacob, nbsig, &
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, j1, j2
+    integer(kind=8) :: i, j, j1, j2
     real(kind=8) :: s, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

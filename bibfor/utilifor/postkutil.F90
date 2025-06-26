@@ -43,7 +43,7 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 #include "asterfort/utmess.h"
 #include "asterfort/xtmafi.h"
 #include "asterfort/char8_to_int.h"
-    integer, intent(in) :: imater
+    integer(kind=8), intent(in) :: imater
     character(len=*), intent(in) :: nomres
     character(len=*), intent(in) :: nomfis
     character(len=*), intent(out) :: repmat
@@ -77,12 +77,12 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbma, ier, nfiss, iret, ima, nutyel, iad, i
-    integer :: imodeli, ndim, jcesl, jcesd, nbcmp, icmp, vin_modeli(4)
-    integer :: ier1, nbnof, ino, inoeu
-    integer :: nmanoe, jmanoe, imanoe, itypma, ndime
-    integer :: cpt_ma_fon, cpt_ma_noe, imaf, j, ima1, ima2, cpt_dbl
-    integer :: nbma_tmp, nbma_fon
+    integer(kind=8) :: nbma, ier, nfiss, iret, ima, nutyel, iad, i
+    integer(kind=8) :: imodeli, ndim, jcesl, jcesd, nbcmp, icmp, vin_modeli(4)
+    integer(kind=8) :: ier1, nbnof, ino, inoeu
+    integer(kind=8) :: nmanoe, jmanoe, imanoe, itypma, ndime
+    integer(kind=8) :: cpt_ma_fon, cpt_ma_noe, imaf, j, ima1, ima2, cpt_dbl
+    integer(kind=8) :: nbma_tmp, nbma_fon
     character(len=8) :: nommod, nomchm, noma, vk8_typmod(4)
     character(len=8) :: vk8_mater(5)
     character(len=8) :: k8typmo, k8mater, k8noeu, k8typma
@@ -90,10 +90,10 @@ subroutine postkutil(imater, nomres, nomfis, repmat, repmod)
     character(len=19) :: chmat, cesmat, cnxinv
     character(len=24) :: mesmai, limafo
     aster_logical :: l_xfem, inco
-    integer, pointer :: vmatmp(:) => null()
-    integer, pointer :: vmafon(:) => null()
-    integer, pointer :: vtyele(:) => null()
-    integer, pointer :: vtypma(:) => null()
+    integer(kind=8), pointer :: vmatmp(:) => null()
+    integer(kind=8), pointer :: vmafon(:) => null()
+    integer(kind=8), pointer :: vtyele(:) => null()
+    integer(kind=8), pointer :: vtypma(:) => null()
     character(len=8), pointer :: vcesv(:) => null()
     character(len=8), pointer :: vcesk(:) => null()
     character(len=8), pointer :: v8fiss(:) => null()

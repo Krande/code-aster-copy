@@ -34,9 +34,9 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
 !
     character(len=8), intent(in) :: noma
     character(len=19), intent(in) :: cnslt
-    integer, intent(in) :: jconx1
-    integer, intent(in) :: jconx2
-    integer, intent(in) :: ima
+    integer(kind=8), intent(in) :: jconx1
+    integer(kind=8), intent(in) :: jconx2
+    integer(kind=8), intent(in) :: ima
 !
 ! person_in_charge: sam.cuvilliez at edf.fr
 !
@@ -75,15 +75,15 @@ subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
 !
 ! ---------------------------------------------------------------------
 !
-    integer :: mxval, nbret, ibid, nbar, ia, nbnos, nunoa, nunob, ino
-    integer :: i, nuno, na, nb
-    integer :: ar(12, 3)
+    integer(kind=8) :: mxval, nbret, ibid, nbar, ia, nbnos, nunoa, nunob, ino
+    integer(kind=8) :: i, nuno, na, nb
+    integer(kind=8) :: ar(12, 3)
     real(kind=8) :: norm_s, norm_p, pscal, r8pre, diffe, crit
     real(kind=8) :: vect1(3), vect2(3), v_seg(3), v_are(3), v_pro(3)
     character(len=8) :: k8typm
     character(len=16) :: geofi
     aster_logical :: l_crit
-    integer, pointer :: vi_tym(:) => null()
+    integer(kind=8), pointer :: vi_tym(:) => null()
     real(kind=8), pointer :: vr_lts(:) => null()
     real(kind=8), pointer :: vr_coo(:) => null()
     blas_int :: b_incx, b_incy, b_n

@@ -25,11 +25,11 @@ interface
         character(len=*) :: typcez
         character(len=*) :: maz
         character(len=*) :: nomgdz
-        integer :: ncmpg
+        integer(kind=8) :: ncmpg
         character(len=*) :: licmp(*)
-        integer :: npg(*)
-        integer :: nspt(*)
-        integer :: ncmp(*)
+        integer(kind=8) :: npg(*)
+        integer(kind=8) :: nspt(*)
+        integer(kind=8) :: ncmp(*)
         aster_logical, optional, intent(in) :: undf0_
     end subroutine cescre
 end interface

@@ -46,7 +46,7 @@ subroutine pjma1p(moa1, ma1p, cham1, corres)
 !
 !
     real(kind=8) :: shrink, lonmin
-    integer :: jcorre
+    integer(kind=8) :: jcorre
     character(len=16) :: corres, lisch(1)
     character(len=19) :: ligrel
 !

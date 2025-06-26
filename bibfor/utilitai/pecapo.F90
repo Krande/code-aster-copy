@@ -40,14 +40,14 @@ subroutine pecapo(resu, modele, cara, nh)
 #include "asterfort/tbnuli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nh
+    integer(kind=8) :: nh
     character(len=*) :: resu, modele, cara
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "CARA_POUTRE"
 !     ------------------------------------------------------------------
 !
-    integer :: nbtors, nbgauc, nbcisa, iret, nt, ibid, nopt, ntab, nct, ilign, ncty, nctz, ngm
-    integer :: ngi, ngri, idgrmi, nrt, nbrt
+    integer(kind=8) :: nbtors, nbgauc, nbcisa, iret, nt, ibid, nopt, ntab, nct, ilign, ncty, nctz, ngm
+    integer(kind=8) :: ngi, ngri, idgrmi, nrt, nbrt
     parameter(nbtors=1, nbgauc=1, nbcisa=8, nbrt=1)
     real(kind=8) :: valpar(nbcisa), ay, az, ey, ez, pcty, pctz, r8b, rt, jx, s, yg, zg, iy, iz
     real(kind=8) :: alpha, iomega
@@ -61,8 +61,8 @@ subroutine pecapo(resu, modele, cara, nh)
     real(kind=8) :: c1, c2, phi1, phi2, alphar, cos2, sin2, alpheq, ygeq, zgeq
     character(len=16) :: ll
     character(len=8) :: mater
-    integer :: icodre(1)
-    integer :: ilignm, n1
+    integer(kind=8) :: icodre(1)
+    integer(kind=8) :: ilignm, n1
 !     ------------------------------------------------------------------
     data ptors/'JX'/
     data prt/'RT'/

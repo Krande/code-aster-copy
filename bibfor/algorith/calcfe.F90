@@ -40,7 +40,7 @@ subroutine calcfe(nr, ndt, nvi, vind, df, &
     real(kind=8) :: fem(3, 3)
     real(kind=8) :: vind(*), id(3, 3), det, coef, dfp(3, 3), expo, fp(3, 3)
     real(kind=8) :: fpm(3, 3), dfpmax, dfpmin, det2
-    integer :: nr, ndt, iret, iopt, i, nvi
+    integer(kind=8) :: nr, ndt, iret, iopt, i, nvi
     blas_int :: b_incx, b_incy, b_n
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
 !     ----------------------------------------------------------------

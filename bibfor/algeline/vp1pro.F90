@@ -43,8 +43,8 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq, &
 #include "asterfort/vp1ite.h"
 #include "asterfort/vpstur.h"
 #include "asterfort/wkvect.h"
-    integer :: nbpari, nbparr, nbpark, nitv, iexcl(*), nbrssa, lraide, lmasse
-    integer :: ldynam, neq, nfreq, nfreqb, resufi(nfreqb, nbpari)
+    integer(kind=8) :: nbpari, nbparr, nbpark, nitv, iexcl(*), nbrssa, lraide, lmasse
+    integer(kind=8) :: ldynam, neq, nfreq, nfreqb, resufi(nfreqb, nbpari)
     real(kind=8) :: tolv, vec(neq, *), resufr(nfreqb, nbparr), fcorig
     character(len=*) :: optiom, resufk(nfreqb, nbpark)
     character(len=16) :: typres, optiof
@@ -52,8 +52,8 @@ subroutine vp1pro(optiom, lraide, lmasse, ldynam, neq, &
 !
 !
 ! VARIABLES LOCALES
-    integer :: idet, place, irperm, lmx, lx0, iquoti, iprec, ifreq, ier, imode
-    integer :: jfreq, iter, nbessa, i, iperm, j, kl, naux
+    integer(kind=8) :: idet, place, irperm, lmx, lx0, iquoti, iprec, ifreq, ier, imode
+    integer(kind=8) :: jfreq, iter, nbessa, i, iperm, j, kl, naux
     real(kind=8) :: det, err, eps, valeur, rperm
     character(len=24) :: kperm, cmulti, cvect0
 !     ------------------------------------------------------------------

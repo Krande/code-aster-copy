@@ -50,7 +50,7 @@ subroutine te0506(option, nomte)
 !
     character(len=16) :: option, nomte
     real(kind=8) :: alpha, dalpha, tpg
-    integer :: iflux, kp
+    integer(kind=8) :: iflux, kp
     character(len=8) :: coef
     real(kind=8) :: rhs(MAX_BS), valQP(MAX_QP)
     real(kind=8), pointer :: tempi(:) => null()

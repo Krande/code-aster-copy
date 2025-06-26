@@ -30,8 +30,8 @@ subroutine te0546(option, nomte)
 !          POUR TOUS LES ELEMENTS
 !.......................................................................
 !
-    integer :: itab1(8), itab2(8), iret, nbpg, nbcmp, nbsp
-    integer :: kpg, ksp, kcmp, jin, jout, ico, n1
+    integer(kind=8) :: itab1(8), itab2(8), iret, nbpg, nbcmp, nbsp
+    integer(kind=8) :: kpg, ksp, kcmp, jin, jout, ico, n1
 !.......................................................................
 !
 !

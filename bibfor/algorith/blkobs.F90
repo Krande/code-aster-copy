@@ -62,17 +62,17 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
 #include "asterfort/assert.h"
 #include "blas/dscal.h"
 !
-    integer, intent(in) :: obsdim(3)
+    integer(kind=8), intent(in) :: obsdim(3)
     character(len=24), intent(in) :: matobs(3)
     real(kind=8), intent(in) :: alpha
     character(len=24), intent(out) :: matprod(4)
     character(len=8) :: baseno, mnorme
     character(len=11) :: bl11
-    integer :: idesc, ivale, nvect, nvale, iobfil, iobcol, iobval, ii, jj
-    integer :: indval, inwfil, inwcol, inwval, ifile, ntnlmp, diff, kk
-    integer :: valdif(obsdim(3)), ifull, numcol, numfil, nstock, ictcol, linfil(obsdim(1)+1), il1
-    integer :: il2, posvec, taivec, nfil1, nfil2, tt, ismde, ismdi, ismhc, ivalm, aa, bb, icolst
-    integer :: idiff, istock, ifil
+    integer(kind=8) :: idesc, ivale, nvect, nvale, iobfil, iobcol, iobval, ii, jj
+    integer(kind=8) :: indval, inwfil, inwcol, inwval, ifile, ntnlmp, diff, kk
+    integer(kind=8) :: valdif(obsdim(3)), ifull, numcol, numfil, nstock, ictcol, linfil(obsdim(1)+1), il1
+    integer(kind=8) :: il2, posvec, taivec, nfil1, nfil2, tt, ismde, ismdi, ismhc, ivalm, aa, bb, icolst
+    integer(kind=8) :: idiff, istock, ifil
     logical :: isdiag
     blas_int :: b_n, b_lda, info
     real(kind=8) :: MATCHOL(obsdim(1), obsdim(1)), coeff_alpha

@@ -28,7 +28,7 @@ interface
         character(len=19), intent(in) :: solver
         character(len=24), intent(in) :: time
         real(kind=8) :: epsr
-        integer :: lonch
+        integer(kind=8) :: lonch
         character(len=24) :: matass
         character(len=19) :: maprec
         character(len=24) :: cnchci

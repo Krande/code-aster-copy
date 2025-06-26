@@ -20,6 +20,6 @@
 !
 interface
     subroutine asmpi_stop(imode)
-        integer :: imode
+        integer(kind=8) :: imode
     end subroutine asmpi_stop
 end interface

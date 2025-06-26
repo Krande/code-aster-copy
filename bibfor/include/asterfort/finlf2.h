@@ -20,7 +20,7 @@
 interface
     subroutine finlf2(ndim, delta, alpha, kn, kt,&
                       mu, Bn, Bt, m1, m2, cbar, d1, res)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: delta(ndim)
         real(kind=8) :: alpha
         real(kind=8) :: kn

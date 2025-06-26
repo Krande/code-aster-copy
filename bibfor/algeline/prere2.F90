@@ -27,7 +27,7 @@ subroutine prere2(solveu, base, iret, matpre, matass, &
 #include "asterfort/jemarq.h"
 #include "asterfort/prere1.h"
 !-----------------------------------------------------------------------
-    integer :: npvneg, istop, iret
+    integer(kind=8) :: npvneg, istop, iret
     character(len=1) :: base
     character(len=*) :: matass, matpre, solveu
 !-----------------------------------------------------------------------

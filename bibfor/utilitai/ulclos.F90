@@ -25,16 +25,16 @@ subroutine ulclos()
 !     ELLES SERONT FERMEES PAR APPEL PYTHON A ULOPEN(-6/-8)
 !
 !     ------------------------------------------------------------------
-    integer :: mxf
+    integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
-    integer :: first, unitfi(mxf), nbfile
+    integer(kind=8) :: first, unitfi(mxf), nbfile
     common/asgfi1/first, unitfi, nbfile
     common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !     ------------------------------------------------------------------
-    integer :: i, unit
+    integer(kind=8) :: i, unit
 !
     do i = 1, nbfile
         unit = unitfi(i)

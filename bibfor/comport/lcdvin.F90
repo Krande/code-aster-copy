@@ -47,7 +47,7 @@ subroutine lcdvin(fami, kpg, ksp, rela_comp, mod, &
 #include "asterfort/rkdcha.h"
 #include "asterfort/rkdhay.h"
 #include "asterfort/rkdvec.h"
-    integer :: kpg, ksp, imat, nmat, nvi, iret
+    integer(kind=8) :: kpg, ksp, imat, nmat, nvi, iret
     character(len=16) :: rela_comp
     character(len=8) :: mod
     character(len=*) :: fami

@@ -20,8 +20,8 @@
 !
 interface
     subroutine prmadl(ndj, deblis, liste)
-        integer :: ndj
-        integer :: deblis
-        integer :: liste(*)
+        integer(kind=8) :: ndj
+        integer(kind=8) :: deblis
+        integer(kind=8) :: liste(*)
     end subroutine prmadl
 end interface

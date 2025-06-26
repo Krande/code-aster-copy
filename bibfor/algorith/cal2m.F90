@@ -23,7 +23,7 @@ subroutine cal2m(chamno, phibar, modele, mate, mateco, nu, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/phi2el.h"
-    integer :: nr, nv
+    integer(kind=8) :: nr, nv
     character(len=*) :: chamno, phibar, modele, mate, mateco, nu, vecas2
 !
 !------- CALCUL DES VECTEURS ASSEMBLES DE FLUX FLUIDES

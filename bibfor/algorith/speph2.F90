@@ -25,14 +25,14 @@ subroutine speph2(movrep, napexc, nbmode, nbpf, intmod, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: napexc, nbmode, nbpf
+    integer(kind=8) :: napexc, nbmode, nbpf
     real(kind=8) :: specmr(nbpf, *), specmi(nbpf, *)
     aster_logical :: intmod
     character(len=8) :: table
     character(len=16) :: movrep
 !
-    integer :: ival(2), ideb1, ifin1, i, j, imi, imj, ideb, isj, ifon, if1
-    integer :: mxval, lnumi, lnumj, i1
+    integer(kind=8) :: ival(2), ideb1, ifin1, i, j, imi, imj, ideb, isj, ifon, if1
+    integer(kind=8) :: mxval, lnumi, lnumj, i1
 !
     character(len=24) :: chnumi, chnumj, chvale
 !

@@ -56,7 +56,7 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
     real(kind=8) :: instan, nharm
     character(len=*) :: fami
 ! -----  VARIABLES LOCALES
-    integer :: igau, nno
+    integer(kind=8) :: igau, nno
     real(kind=8) :: b(486), d(36), jacgau
     character(len=2) :: k2bid
 !.========================= DEBUT DU CODE EXECUTABLE ==================
@@ -64,8 +64,8 @@ subroutine sigmmc(fami, nno, ndim, nbsig, npg, &
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: idfde, ipoids, ivf, mater, nbinco, nbsig
-    integer :: ndim, ndim2, npg
+    integer(kind=8) :: idfde, ipoids, ivf, mater, nbinco, nbsig
+    integer(kind=8) :: ndim, ndim2, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     k2bid = '  '

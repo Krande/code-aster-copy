@@ -42,11 +42,11 @@ subroutine cfbord(sdcont, mesh)
 !
 
     character(len=24) :: defico, contma
-    integer ::  jmaco
-    integer :: ndimg, nmaco, vali(2)
-    integer :: ima, nummai, nutyp, ndimma
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: tmdim(:) => null()
+    integer(kind=8) ::  jmaco
+    integer(kind=8) :: ndimg, nmaco, vali(2)
+    integer(kind=8) :: ima, nummai, nutyp, ndimma
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

@@ -23,7 +23,7 @@ interface
         real(kind=8), intent(in) :: dist_cont
         real(kind=8), intent(in) :: pres_cont
         real(kind=8), intent(in) :: coef_cont
-        integer, intent(out) :: indi_cont_eval
-        integer, intent(in), optional :: cycling_type
+        integer(kind=8), intent(out) :: indi_cont_eval
+        integer(kind=8), intent(in), optional :: cycling_type
     end subroutine mmstac
 end interface

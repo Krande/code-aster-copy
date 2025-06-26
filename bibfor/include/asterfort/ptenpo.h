@@ -21,11 +21,11 @@
 interface
     subroutine ptenpo(n, x, mat, ep, itype,&
                       iform)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: x(*)
         real(kind=8) :: mat(n, n)
         real(kind=8) :: ep(*)
-        integer :: itype
-        integer :: iform
+        integer(kind=8) :: itype
+        integer(kind=8) :: iform
     end subroutine ptenpo
 end interface

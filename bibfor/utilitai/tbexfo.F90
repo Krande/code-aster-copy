@@ -39,15 +39,15 @@ subroutine tbexfo(nomta, parax, paray, nomfo, interp, &
 ! IN  : BASFON : BASE SUR LAQUELLE ON CREE LA FONCTION
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, nbval
-    integer :: iparx, ipary, lpro
-    integer :: i, iv, jvalex, jvaley, jvallx, jvally, kvale, nbfon
+    integer(kind=8) :: iret, nbpara, nblign, nbval
+    integer(kind=8) :: iparx, ipary, lpro
+    integer(kind=8) :: i, iv, jvalex, jvaley, jvallx, jvally, kvale, nbfon
     character(len=1) :: base
     character(len=4) :: typex, typey
     character(len=19) :: nomtab, nomfon
     character(len=24) :: nojvx, nojvlx, nojvy, nojvly, inpar, jnpar
     character(len=24) :: valk
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 !
 ! DEB------------------------------------------------------------------

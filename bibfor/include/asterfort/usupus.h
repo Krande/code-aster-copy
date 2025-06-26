@@ -23,6 +23,6 @@ interface
         real(kind=8) :: puusur
         character(len=19) :: kforn
         character(len=19) :: kvgli
-        integer :: nbpt
+        integer(kind=8) :: nbpt
     end subroutine usupus
 end interface

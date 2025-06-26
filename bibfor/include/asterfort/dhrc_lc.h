@@ -43,7 +43,7 @@ interface
         real(kind=8), intent(in) :: ga_c(6, 6, 2)
         real(kind=8), intent(in) :: cstseu(6)
         real(kind=8), intent(in) :: crit(*)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
         real(kind=8), intent(out) :: dsidep(6, 6)
         aster_logical, intent(in):: debug
     end subroutine dhrc_lc

@@ -41,7 +41,7 @@ subroutine merit2(modelZ, caraElemZ, &
     character(len=*), intent(in) :: loadNameZ
     character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: matrElem, resuElemPref
-    integer, intent(in) :: indxMatrElem
+    integer(kind=8), intent(in) :: indxMatrElem
     character(len=1), intent(in) :: jvBase
 ! ----------------------------------------------------------------------
 !
@@ -72,12 +72,12 @@ subroutine merit2(modelZ, caraElemZ, &
     character(len=8) :: lpain(4), lpaout(1), answer
     character(len=16) :: option
     character(len=24) :: ligrel(2), lchin(5), lchout(1), chgeom, chcara(18), ligrmo
-    integer :: iret, ilires, iNeutType
-    integer, parameter :: nbNeutType = 2
+    integer(kind=8) :: iret, ilires, iNeutType
+    integer(kind=8), parameter :: nbNeutType = 2
     character(len=6), parameter :: loadField(nbNeutType) = (/'.COEFH', '.HECHP'/)
     character(len=6), parameter :: loadOption(nbNeutType) = (/'_COEH_', '_PARO_'/)
     character(len=6), parameter :: paraName(nbNeutType) = (/'PCOEFH', 'PHECHP'/)
-    integer, parameter :: ligrelType(nbNeutType) = (/1, 2/)
+    integer(kind=8), parameter :: ligrelType(nbNeutType) = (/1, 2/)
 !
 !
 !     -- ON VERIFIE LA PRESENCE PARFOIS NECESSAIRE DE CARA_ELEM

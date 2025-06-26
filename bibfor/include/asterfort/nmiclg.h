@@ -22,11 +22,11 @@ interface
                       imate, epsm, deps, sigm, vim,&
                       sigp, vip, dsde, carcri, codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=16) :: option
         character(len=16) :: rela_comp
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: epsm
         real(kind=8) :: deps
         real(kind=8) :: sigm
@@ -35,6 +35,6 @@ interface
         real(kind=8) :: vip(*)
         real(kind=8) :: dsde
         real(kind=8) :: carcri(CARCRI_SIZE)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine nmiclg
 end interface

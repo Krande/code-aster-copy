@@ -21,7 +21,7 @@
 #include "asterf_types.h"
 interface
     subroutine asmpi_send_i(buf, count, dest, tag, comm)
-        integer, intent(inout) :: buf(*)
+        integer(kind=8), intent(inout) :: buf(*)
         mpi_int, intent(in) :: count
         mpi_int, intent(in) :: dest
         mpi_int, intent(in) :: tag

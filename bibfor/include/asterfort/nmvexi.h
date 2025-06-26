@@ -21,8 +21,8 @@
 interface
     subroutine nmvexi(sigi, grj2, dj2ds, nb, mate,&
                       nmat, xhi, dxhids)
-        integer :: nmat
-        integer :: nb
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nb
         real(kind=8) :: sigi(nb)
         real(kind=8) :: grj2
         real(kind=8) :: dj2ds(nb)

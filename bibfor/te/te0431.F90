@@ -60,21 +60,21 @@ subroutine te0431(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
-    integer, parameter :: ndimLdc = 2
-    integer :: codres(2)
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8), parameter :: ndimLdc = 2
+    integer(kind=8) :: codres(2)
     character(len=4) :: fami
     character(len=16) :: nomres(2)
-    integer :: nddl, nno, nnos, npg, ndim, i, j, j1, n, m, kpg, kk, kkd, lgpg
-    integer :: cod(9)
-    integer :: imatuu, ipoids, ivf, idfde, igeom, imate, icontm, ivarim
-    integer :: jgano, jtab(7), jcret, ideplm, ideplp, icarcr, iret
-    integer :: ivectu, icontp, ivarip, ivarix, icontx
+    integer(kind=8) :: nddl, nno, nnos, npg, ndim, i, j, j1, n, m, kpg, kk, kkd, lgpg
+    integer(kind=8) :: cod(9)
+    integer(kind=8) :: imatuu, ipoids, ivf, idfde, igeom, imate, icontm, ivarim
+    integer(kind=8) :: jgano, jtab(7), jcret, ideplm, ideplp, icarcr, iret
+    integer(kind=8) :: ivectu, icontp, ivarip, ivarix, icontx
     real(kind=8) :: dff(2, 8), b(6, 8), p(3, 6), jac
     real(kind=8) :: dir11(3), densit, pgl(3, 3), distn, vecn(3)
     real(kind=8) :: epsm, deps, sigm, sig, tmp, rig, valres(2)
     real(kind=8) :: angmas(3)
-    integer :: iinstm, iinstp
+    integer(kind=8) :: iinstm, iinstp
     aster_logical :: lexc, lNonLine, lLine
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=16) :: rela_cpla, rela_comp

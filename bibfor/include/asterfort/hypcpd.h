@@ -30,6 +30,6 @@ interface
         real(kind=8) :: c01
         real(kind=8) :: c20
         real(kind=8) :: dsidep(6, 6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine hypcpd
 end interface

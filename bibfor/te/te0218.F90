@@ -50,8 +50,8 @@ subroutine te0218(option, nomte)
 ! ---- GEOMETRIE ET INTEGRATION
 !      ------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idepl, idfde, iener, igeom, imate, ipoids
-    integer :: ivf, jgano, nbsig, ndim, nno, nnos, npg1
+    integer(kind=8) :: i, idepl, idfde, iener, igeom, imate, ipoids
+    integer(kind=8) :: ivf, jgano, nbsig, ndim, nno, nnos, npg1
 !
     real(kind=8) :: enthth, epot, undemi, zero
 !-----------------------------------------------------------------------

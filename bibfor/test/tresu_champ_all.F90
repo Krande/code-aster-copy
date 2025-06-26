@@ -46,9 +46,9 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt, &
     character(len=*), intent(in) :: chamgd
     character(len=8), intent(in) :: typtes
     character(len=*), intent(in) :: typres
-    integer, intent(in) :: nbref
+    integer(kind=8), intent(in) :: nbref
     character(len=16), intent(in) :: tbtxt(2)
-    integer, intent(in) :: refi(nbref)
+    integer(kind=8), intent(in) :: refi(nbref)
     real(kind=8), intent(in) :: refr(nbref)
     complex(kind=8), intent(in) :: refc(nbref)
     real(kind=8), intent(in) :: epsi
@@ -69,8 +69,8 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt, &
 ! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, jvale, neq, i, iret1, iret2, rank, jvale2, neq2
-    integer :: nbma, nbma_list
+    integer(kind=8) :: vali, jvale, neq, i, iret1, iret2, rank, jvale2, neq2
+    integer(kind=8) :: nbma, nbma_list
     real(kind=8) :: valr, ordgrd
     complex(kind=8) :: valc
     character(len=1) :: typrez
@@ -81,10 +81,10 @@ subroutine tresu_champ_all(chamgd, typtes, typres, nbref, tbtxt, &
     character(len=19) :: cham19, nume_equa, cnsin1, cnsinr
     aster_logical :: skip, l_parallel_mesh, cham_no
     mpi_int :: irank
-    integer, pointer :: v_noex(:) => null()
-    integer, pointer :: v_maex(:) => null()
-    integer, pointer :: v_list(:) => null()
-    integer, pointer :: v_deeq(:) => null()
+    integer(kind=8), pointer :: v_noex(:) => null()
+    integer(kind=8), pointer :: v_maex(:) => null()
+    integer(kind=8), pointer :: v_list(:) => null()
+    integer(kind=8), pointer :: v_deeq(:) => null()
 !     ------------------------------------------------------------------
     if (present(ignore)) then
         skip = ignore

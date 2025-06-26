@@ -52,19 +52,19 @@ subroutine te0333(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxcmel = 162
-    integer, parameter :: nbsgm = 6
+    integer(kind=8), parameter :: mxcmel = 162
+    integer(kind=8), parameter :: nbsgm = 6
     real(kind=8) :: epsi_meca(mxcmel), epsi_plas(mxcmel)
     real(kind=8) :: sigma(nbsgm)
     real(kind=8) :: epsi_creep(nbsgm)
-    integer :: i, ndim, nno, nbsig, idsig
-    integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, itemps, imate
-    integer :: idefp, nbvari, ivari, nvi, nvif, ibid, jtab(7), iret, ibid2
+    integer(kind=8) :: i, ndim, nno, nbsig, idsig
+    integer(kind=8) :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, itemps, imate
+    integer(kind=8) :: idefp, nbvari, ivari, nvi, nvif, ibid, jtab(7), iret, ibid2
     real(kind=8) :: c1, c2, trsig
     real(kind=8) :: angl_naut(3), nharm, e, nu, zero, un, tempg, time
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: mod3d
-    integer :: elas_id
+    integer(kind=8) :: elas_id
     character(len=16) :: optio2, kit_comp_1, kit_comp_2, rela_comp, elas_keyword
     aster_logical :: l_creep, l_temp
 !

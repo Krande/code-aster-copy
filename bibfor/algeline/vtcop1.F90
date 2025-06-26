@@ -39,7 +39,7 @@ subroutine vtcop1(fieldNodeInZ, fieldNodeOutZ, codret)
 #include "jeveux.h"
 !
     character(len=*), intent(in) :: fieldNodeInZ, fieldNodeOutZ
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,20 +56,20 @@ subroutine vtcop1(fieldNodeInZ, fieldNodeOutZ, codret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, ieq1, ieq2, nbEquaIn, jvValeIn, jvValeOut
-    integer :: nbEquaOut
-    integer :: nnomx, ncpmx, nuno2, nucp2, nuno1, nucp1
-    integer :: jcmpgd, ncmpmx, cmpLagr
+    integer(kind=8) :: iret, ieq1, ieq2, nbEquaIn, jvValeIn, jvValeOut
+    integer(kind=8) :: nbEquaOut
+    integer(kind=8) :: nnomx, ncpmx, nuno2, nucp2, nuno1, nucp1
+    integer(kind=8) :: jcmpgd, ncmpmx, cmpLagr
     character(len=1) :: scalTypeIn, scalTypeOut
     character(len=8) :: nomgd, meshIn, meshOut
     character(len=19) :: fieldNodeIn, fieldNodeOut, pfchno
-    integer, pointer :: trav1(:) => null()
+    integer(kind=8), pointer :: trav1(:) => null()
     aster_logical, pointer :: trav2(:) => null()
     character(len=24), pointer :: refeIn(:) => null()
     character(len=24), pointer :: refeOut(:) => null()
-    integer, pointer :: deeqIn(:) => null()
-    integer, pointer :: deeqOut(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeqIn(:) => null()
+    integer(kind=8), pointer :: deeqOut(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

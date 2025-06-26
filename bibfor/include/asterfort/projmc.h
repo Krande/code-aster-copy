@@ -26,7 +26,7 @@ interface
         character(len=8) :: basemo
         character(len=14) :: nugene
         character(len=14) :: nu
-        integer :: neq
-        integer :: nbmo
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbmo
     end subroutine projmc
 end interface

@@ -21,6 +21,6 @@
 interface
     subroutine juagrn(nom, long)
         character(len=*) :: nom
-        integer :: long
+        integer(kind=8) :: long
     end subroutine juagrn
 end interface

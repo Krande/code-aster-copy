@@ -87,14 +87,14 @@ subroutine assgen(nomres, option, nugene)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iblel, iblo, icomp, j, jrefa, iadesc
-    integer ::  ldblo, ldconl, llorl, llprof, llors
-    integer :: ltadbl, ltconl, ltinbl, ltnobl, ltnomb, ltnumb, nbblel
-    integer :: nblia, nbloc, nbprno, nbsst, nbterm, neq, ntbloc
-    integer :: ntprno, numblo, nusst, ntria, ntualf
+    integer(kind=8) :: i, ibid, iblel, iblo, icomp, j, jrefa, iadesc
+    integer(kind=8) ::  ldblo, ldconl, llorl, llprof, llors
+    integer(kind=8) :: ltadbl, ltconl, ltinbl, ltnobl, ltnomb, ltnumb, nbblel
+    integer(kind=8) :: nblia, nbloc, nbprno, nbsst, nbterm, neq, ntbloc
+    integer(kind=8) :: ntprno, numblo, nusst, ntria, ntualf
     real(kind=8) :: epsi, ssconl, ssmax, xcon, xmaxbl
     aster_logical :: lsym
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     data rigopt, ricopt, masopt, amoopt/'RIGI_GENE', 'RIGI_GENE_C',&

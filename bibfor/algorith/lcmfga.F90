@@ -21,9 +21,9 @@ subroutine lcmfga(mode, eps, gameps, dgamde, itemax, precvg, iret)
 #include "asterfort/lcmfdr.h"
 #include "asterfort/lcmfra.h"
 #include "asterfort/lcvalp.h"
-    integer, intent(in) :: mode, itemax
+    integer(kind=8), intent(in) :: mode, itemax
     real(kind=8), intent(in) :: eps(6), precvg
-    integer, intent(out):: iret
+    integer(kind=8), intent(out):: iret
     real(kind=8), intent(out):: gameps, dgamde(6)
 ! --------------------------------------------------------------------------------------------------
 !  CALCUL DE GAMMA(EPS) POUR LA LOI ENDO_SCALAIRE AVEC GRAD_VARI

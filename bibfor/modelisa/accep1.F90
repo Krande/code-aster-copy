@@ -48,10 +48,10 @@ subroutine accep1(modmec, ligrmo, nbm, dir, yang)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbm, i
-    integer :: iret, ngrel, ipg, n1
-    integer :: ncham, nn, nbelto, nbelgr, ntail, ialiel
-    integer :: igr, ima, ii, iel, ive, itab, imo
+    integer(kind=8) :: nbm, i
+    integer(kind=8) :: iret, ngrel, ipg, n1
+    integer(kind=8) :: ncham, nn, nbelto, nbelgr, ntail, ialiel
+    integer(kind=8) :: igr, ima, ii, iel, ive, itab, imo
     real(kind=8) :: dir(3, 3), v1, v2, v3, w1, w2, w3, ref1, ref2, ref3, refer
     real(kind=8) :: rayon, rayon2, haut, rap1, rap2
     character(len=7) :: incr, ielem, imode

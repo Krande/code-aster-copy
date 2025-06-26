@@ -24,6 +24,6 @@ interface
     subroutine nmtstm(carcri, jv_matr, l_matr_symm)
         real(kind=8), intent(in) :: carcri(*)
         aster_logical, intent(out) :: l_matr_symm
-        integer, intent(out) :: jv_matr
+        integer(kind=8), intent(out) :: jv_matr
     end subroutine nmtstm
 end interface

@@ -56,8 +56,8 @@ subroutine sigimc(fami, nno, ndim, nbsig, npg, &
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, igau, j, mater, nbsig, ndim
-    integer :: nno, npg
+    integer(kind=8) :: i, igau, j, mater, nbsig, ndim
+    integer(kind=8) :: nno, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     k2bid = '  '

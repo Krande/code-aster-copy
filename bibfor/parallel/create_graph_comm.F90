@@ -36,7 +36,7 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
 !
     character(len=*), intent(in) :: object
     character(len=*), intent(in) :: type
-    integer, intent(out) :: nb_comm
+    integer(kind=8), intent(out) :: nb_comm
     character(len=*), intent(in) :: comm, tag
 !
 !---------------------------------------------------------------------------------------------------
@@ -48,12 +48,12 @@ subroutine create_graph_comm(object, type, nb_comm, comm, tag)
     character(len=8) :: k8bid
     character(len=19) :: k19
     character(len=24) :: k24, pgid, gcom
-    integer :: iret
-    integer, pointer :: v_domdis(:) => null()
+    integer(kind=8) :: iret
+    integer(kind=8), pointer :: v_domdis(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
-    integer, pointer :: v_gcom(:) => null()
-    integer, pointer :: v_comm(:) => null()
-    integer, pointer :: v_tag(:) => null()
+    integer(kind=8), pointer :: v_gcom(:) => null()
+    integer(kind=8), pointer :: v_comm(:) => null()
+    integer(kind=8), pointer :: v_tag(:) => null()
     mpi_int :: mpicou
 !
     call jemarq()

@@ -23,7 +23,7 @@ interface
                       chamat, celem)
         character(len=8) :: modmec
         character(len=8) :: mtrmas
-        integer :: nbddl
+        integer(kind=8) :: nbddl
         character(len=8) :: numer
         character(len=8) :: mailla
         character(len=8) :: chamat

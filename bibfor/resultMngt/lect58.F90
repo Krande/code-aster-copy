@@ -60,14 +60,14 @@ subroutine lect58(fileUnit, &
 #include "asterfort/char8_to_int.h"
 #include "asterfort/ulopen.h"
 !
-    integer, intent(in) :: fileUnit
+    integer(kind=8), intent(in) :: fileUnit
     character(len=8), intent(in) :: resultName
     character(len=16), intent(in) :: resultType
     character(len=8), intent(in) :: meshAst
-    integer, intent(in) :: fieldNb
+    integer(kind=8), intent(in) :: fieldNb
     character(len=16), intent(in) :: fieldList(100)
     character(len=10), intent(in) :: storeAccess
-    integer, intent(in) :: storeIndxNb, storeTimeNb
+    integer(kind=8), intent(in) :: storeIndxNb, storeTimeNb
     character(len=19), intent(in) :: storeIndx, storeTime
     real(kind=8), intent(in) :: storeEpsi
     character(len=8), intent(in) :: storeCrit
@@ -105,14 +105,14 @@ subroutine lect58(fileUnit, &
     character(len=19) :: cns, nomch, prfchn
     character(len=24) :: vabs, vori, vcor, valmes, noojb
     character(len=80) :: ligne, repem1, rec(20)
-    integer :: nbabs, itype, idir, nbnmes, ichamp, nbmesu
-    integer :: vali, iField, icham0, ier
-    integer :: label, lcorr, ibid, lori
-    integer :: nbrec, nbabs1, inatur, inatu1, numefield
-    integer :: lvalc, lvalr, labs
-    integer :: irec, iret, ifres
-    integer :: nbocc, iocc, nbno2, iagno2, i, icmpm
-    integer :: fileIndx, jcnsv, jcnsl, imes, icmp, ino, ival, jabs, ncmp
+    integer(kind=8) :: nbabs, itype, idir, nbnmes, ichamp, nbmesu
+    integer(kind=8) :: vali, iField, icham0, ier
+    integer(kind=8) :: label, lcorr, ibid, lori
+    integer(kind=8) :: nbrec, nbabs1, inatur, inatu1, numefield
+    integer(kind=8) :: lvalc, lvalr, labs
+    integer(kind=8) :: irec, iret, ifres
+    integer(kind=8) :: nbocc, iocc, nbno2, iagno2, i, icmpm
+    integer(kind=8) :: fileIndx, jcnsv, jcnsl, imes, icmp, ino, ival, jabs, ncmp
     real(kind=8) :: amin, apas, rbid, fileTime, dir(3)
     complex(kind=8) :: cval, czero, cun
     aster_logical :: trouve, zcmplx, ficab, ficva, vucont, vudef, lcolle

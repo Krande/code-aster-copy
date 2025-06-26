@@ -21,6 +21,6 @@
 interface
     subroutine rsagsd(nomsd, ilong)
         character(len=*) :: nomsd
-        integer :: ilong
+        integer(kind=8) :: ilong
     end subroutine rsagsd
 end interface

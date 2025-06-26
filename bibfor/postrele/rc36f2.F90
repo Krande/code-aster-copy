@@ -20,14 +20,14 @@ subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk, &
                   isl, nk, nl, n0)
     implicit none
 #include "asterf_types.h"
-    integer :: nbsigr, nocc(*), i1a4, isk, isl, nk, nl, n0
+    integer(kind=8) :: nbsigr, nocc(*), i1a4, isk, isl, nk, nl, n0
     real(kind=8) :: saltij(*)
 !
 !     MISE A ZERO DES LIGNES ET COLONNES DANS SALT POUR LES
 !     SITUATION K ET L SI NOCC = 0
 !
 !     ------------------------------------------------------------------
-    integer :: k, l, i1
+    integer(kind=8) :: k, l, i1
     aster_logical :: colona, colonb, lignea, ligneb
 !     ------------------------------------------------------------------
 !

@@ -36,9 +36,9 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
 #include "asterfort/uteref.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbimpr
-    integer :: caimpi(10, nbimpr)
-    integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+    integer(kind=8) :: nbimpr
+    integer(kind=8) :: caimpi(10, nbimpr)
+    integer(kind=8) :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
     character(len=8) :: nomtyp(*)
     character(len=8) :: typech, sdcarm, carael
     character(len=16) :: tuyau, coque, grille, typmod2
@@ -48,7 +48,7 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
     character(len=64) :: nochmd
     aster_logical :: lfichUniq
     character(len=16) :: field_type
-    integer :: codret
+    integer(kind=8) :: codret
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -91,13 +91,13 @@ subroutine irmpga(nofimd, chanom, nochmd, typech, nomtyp, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMPGA'
-    integer :: ifm, niv, nbcouc, nbsect, nummai
-    integer :: iaux, jaux, kaux, laux
-    integer :: nbrepg, nbnoso, nbnoto, ndim
-    integer :: ntypef, tygeom, tymast
-    integer :: nbpg, nbsp
-    integer :: nrimpr, iret
-    integer, parameter :: lgmax = 1000
+    integer(kind=8) :: ifm, niv, nbcouc, nbsect, nummai
+    integer(kind=8) :: iaux, jaux, kaux, laux
+    integer(kind=8) :: nbrepg, nbnoso, nbnoto, ndim
+    integer(kind=8) :: ntypef, tygeom, tymast
+    integer(kind=8) :: nbpg, nbsp
+    integer(kind=8) :: nrimpr, iret
+    integer(kind=8), parameter :: lgmax = 1000
     real(kind=8) :: refcoo(3*lgmax), gscoo(3*lgmax), wg(lgmax)
     real(kind=8) :: raux1(3*lgmax), raux2(3*lgmax), raux3(lgmax)
     aster_logical :: okgr, okcq, oktu, okpf

@@ -40,10 +40,10 @@ subroutine te0280(option, nomte)
 ! VECTEURS DIMENSIONNES POUR  NNO = 9 , NPG = 9
 !.......................................................................
 !
-    integer :: ndim, nno, npg1, compt, iforf
-    integer :: ipoids, ivf, idfde, i, j, k, kp, iforc
-    integer :: idepl, ipres, ithet, igthet, igeom, ipref, itemps, icode
-    integer :: nnos, jgano
+    integer(kind=8) :: ndim, nno, npg1, compt, iforf
+    integer(kind=8) :: ipoids, ivf, idfde, i, j, k, kp, iforc
+    integer(kind=8) :: idepl, ipres, ithet, igthet, igeom, ipref, itemps, icode
+    integer(kind=8) :: nnos, jgano
 !
     real(kind=8) :: a1(3), a2(3), a3(3), i1(3), i2(3), epsi, dfdx(9), dfdy(9)
     real(kind=8) :: coor(18), depl(3), valpar(4)

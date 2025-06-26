@@ -21,8 +21,8 @@
 interface
     function typele(ligrez, igrel, icalc)
         character(len=*), intent(in) :: ligrez
-        integer, intent(in) :: igrel
-        integer, intent(in), optional :: icalc
-        integer :: typele
+        integer(kind=8), intent(in) :: igrel
+        integer(kind=8), intent(in), optional :: icalc
+        integer(kind=8) :: typele
     end function typele
 end interface

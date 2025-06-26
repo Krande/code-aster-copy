@@ -35,7 +35,7 @@ subroutine lceob3(intmax, tole, eps, bm, dm, &
     real(kind=8) :: lambda, mu, alpha, seuil, ecrob, ecrod
     real(kind=8) :: tole
 !
-    integer :: intmax, iret, bdim
+    integer(kind=8) :: intmax, iret, bdim
 !
     aster_logical :: elas, dbloq
 ! ----------------------------------------------------------------------
@@ -67,7 +67,7 @@ subroutine lceob3(intmax, tole, eps, bm, dm, &
 ! OUT IRET    : CODE RETOUR
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, compte, iret1
+    integer(kind=8) :: i, j, k, compte, iret1
 !
     real(kind=8) :: fb(6), db(6), fd, dd, fbm(6), resb(6)
     real(kind=8) :: rac2, un, deux

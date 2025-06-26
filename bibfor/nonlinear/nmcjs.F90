@@ -110,7 +110,7 @@ subroutine nmcjs(typmod, imat, crit, &
 #include "asterfort/iunifi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/get_varc.h"
-    integer :: imat, ndt, ndi, nvi, iret
+    integer(kind=8) :: imat, ndt, ndi, nvi, iret
 !
     real(kind=8) :: crit(*)
     real(kind=8) :: vind(*), vinf(*)
@@ -130,7 +130,7 @@ subroutine nmcjs(typmod, imat, crit, &
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typmod(*)
     character(len=16) :: opt
-    integer :: niter, i, ndec
+    integer(kind=8) :: niter, i, ndec
     real(kind=8) :: epscon
     real(kind=8) :: epsthe, epsthm
     real(kind=8) :: depsth(6), epsdth(6), alphaf, alpham
@@ -138,7 +138,7 @@ subroutine nmcjs(typmod, imat, crit, &
 !
     real(kind=8) :: i1d
 !
-    integer :: umess
+    integer(kind=8) :: umess
 !
 !       ----------------------------------------------------------------
     common/tdim/ndt, ndi

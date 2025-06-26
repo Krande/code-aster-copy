@@ -21,11 +21,11 @@
 interface
     subroutine ndxmat(fonact, lischa, numedd, sddyna, numins,&
                       meelem, measse, matass)
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: lischa
         character(len=24) :: numedd
         character(len=19) :: sddyna
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=19) :: meelem(*)
         character(len=19) :: measse(*)
         character(len=19) :: matass

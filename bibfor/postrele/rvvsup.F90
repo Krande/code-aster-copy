@@ -32,7 +32,7 @@ subroutine rvvsup()
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: n1, n2, n3, n4, iocc, nbpost
+    integer(kind=8) :: n1, n2, n3, n4, iocc, nbpost
     character(len=8) :: resu, nomres
     character(len=24) :: valk(4)
     character(len=16) :: nomcmd, concep, typres

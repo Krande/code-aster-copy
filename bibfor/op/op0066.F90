@@ -70,7 +70,7 @@ subroutine op0066()
     real(kind=8) ::  tps1(4), rtab(2), deuxpi, freq, omega, gamma, alpha, coef_gamma, m_omega2
     real(kind=8) ::  mycoef(2), cout_fon, cout_uv
     complex(kind=8) :: cbid
-    integer :: obsdim(3), nbfreq, ifreq, lfreq, iret, ibid, ivecterc, ii, ladpa, valei(8)
+    integer(kind=8) :: obsdim(3), nbfreq, ifreq, lfreq, iret, ibid, ivecterc, ii, ladpa, valei(8)
     aster_logical :: amor, eval
 !
 ! ----------------------------------------------------------------------

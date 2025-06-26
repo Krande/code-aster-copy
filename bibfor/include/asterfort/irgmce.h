@@ -27,22 +27,22 @@ interface
                       nomaou, nomain, versio, tycha)
         character(len=*) :: chamsy
         character(len=*) :: partie
-        integer :: ifi
+        integer(kind=8) :: ifi
         character(len=*) :: nomcon
-        integer :: ordr(*)
-        integer :: nbordr
+        integer(kind=8) :: ordr(*)
+        integer(kind=8) :: nbordr
         real(kind=8) :: coord(*)
-        integer :: connx(*)
-        integer :: point(*)
+        integer(kind=8) :: connx(*)
+        integer(kind=8) :: point(*)
         character(len=24) :: nobj(28)
-        integer :: nbel(28)
-        integer :: nbcmpi
+        integer(kind=8) :: nbel(28)
+        integer(kind=8) :: nbcmpi
         character(len=*) :: nomcmp(*)
         aster_logical :: lresu
         real(kind=8) :: para(*)
         character(len=8) :: nomaou
         character(len=8) :: nomain
-        integer :: versio
+        integer(kind=8) :: versio
         character(len=8) :: tycha
     end subroutine irgmce
 end interface

@@ -31,7 +31,7 @@ subroutine extrs3(resu, param, iordr, cel, itype, &
 #include "asterfort/lxliis.h"
 #include "asterfort/utmess.h"
 !
-    integer :: itype, iad, iordr
+    integer(kind=8) :: itype, iad, iordr
     character(len=1) :: cel
     character(len=*) :: resu, param, type
 !
@@ -48,8 +48,8 @@ subroutine extrs3(resu, param, iordr, cel, itype, &
 ! OUT : IAD    : ADRESSE JEVEUX DANS ZI,ZR,...
 !     ------------------------------------------------------------------
 !
-    integer :: ipara, iatava, ire1, ire2, idebu, imaxi, iloty
-    integer :: iaobj, len, lonuti
+    integer(kind=8) :: ipara, iatava, ire1, ire2, idebu, imaxi, iloty
+    integer(kind=8) :: iaobj, len, lonuti
     character(len=8) :: k8b, nomobj, k8debu, k8maxi
     character(len=24) :: valk(3)
     character(len=16) :: nopara

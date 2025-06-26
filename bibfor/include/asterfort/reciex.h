@@ -22,13 +22,13 @@ interface
     subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
                       nvasex, graexc, excmod, napexc)
         character(len=8) :: intexc
-        integer :: iderex
-        integer :: nindex
-        integer :: nnoeex
-        integer :: ncmpex
-        integer :: nvasex
+        integer(kind=8) :: iderex
+        integer(kind=8) :: nindex
+        integer(kind=8) :: nnoeex
+        integer(kind=8) :: ncmpex
+        integer(kind=8) :: nvasex
         character(len=16) :: graexc
         character(len=4) :: excmod
-        integer :: napexc
+        integer(kind=8) :: napexc
     end subroutine reciex
 end interface

@@ -23,7 +23,7 @@ interface
         use te0047_type
         !
         type(te0047_dscr), intent(in) :: DD
-        integer :: icodma
+        integer(kind=8) :: icodma
         real(kind=8) :: varim(*)
         real(kind=8) :: klv(78)
         real(kind=8) :: varip(*)

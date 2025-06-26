@@ -66,10 +66,10 @@ subroutine te0357(optioz, nomtez)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: lorien
-    integer :: iadzi, iazk24, ibid, infodi, codret, ii, jj
+    integer(kind=8) :: lorien
+    integer(kind=8) :: iadzi, iazk24, ibid, infodi, codret, ii, jj
     !
-    integer :: neq, ifono, jdc, irep
+    integer(kind=8) :: neq, ifono, jdc, irep
     real(kind=8) :: r8bid, klv(78), klc(12, 12), fl(12), dulth(12)
     !
     character(len=8) :: k8bid

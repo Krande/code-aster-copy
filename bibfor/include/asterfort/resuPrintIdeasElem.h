@@ -22,13 +22,13 @@ interface
                                   fieldType_ , fieldName_   ,&
                                   cmpUserNb_ , cmpUserName_ ,&
                                   cellUserNb_, cellUserNume_)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=*), intent(in) :: title, dsName
-        integer, intent(in) :: storeIndx
+        integer(kind=8), intent(in) :: storeIndx
         character(len=*), optional, intent(in) :: fieldName_, fieldType_
-        integer, optional, intent(in) :: cmpUserNb_
+        integer(kind=8), optional, intent(in) :: cmpUserNb_
         character(len=8), optional, pointer :: cmpUserName_(:)
-        integer, optional, intent(in) :: cellUserNb_
-        integer, optional, pointer :: cellUserNume_(:)
+        integer(kind=8), optional, intent(in) :: cellUserNb_
+        integer(kind=8), optional, pointer :: cellUserNume_(:)
     end subroutine resuPrintIdeasElem
 end interface

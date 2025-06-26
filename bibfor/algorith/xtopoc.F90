@@ -55,7 +55,7 @@ subroutine xtopoc(modele, decou)
 !
 !
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=7, nbin=15)
     character(len=8) :: lpaout(nbout), lpain(nbin), noma, licmp(2)
     character(len=8) :: nomfis, cpar
@@ -66,14 +66,14 @@ subroutine xtopoc(modele, decou)
     character(len=19) :: pint, cnset, nit, phe, aint, milt, stano
     aster_logical :: debug
     character(len=16) :: option
-    integer :: ifmdbg, nivdbg
-    integer :: jcesd, jcesl, iad, i, nbma, ima
-    integer :: jmofis, jnfiss, nfiss, ifiss, ityp
+    integer(kind=8) :: ifmdbg, nivdbg
+    integer(kind=8) :: jcesd, jcesl, iad, i, nbma, ima
+    integer(kind=8) :: jmofis, jnfiss, nfiss, ifiss, ityp
     character(len=16) :: typdis, memtyp
     character(len=19) :: typenr, chdec
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: nbsp(:) => null()
+    integer(kind=8), pointer :: nbsp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

@@ -65,7 +65,7 @@ subroutine op0099()
 ! --- PHASE DE VERIFICATION
 !
 !-----------------------------------------------------------------------
-    integer :: ifm, ioc1, ioc3, ioc4, ioc5, niv
+    integer(kind=8) :: ifm, ioc1, ioc3, ioc4, ioc5, niv
 !-----------------------------------------------------------------------
     call infmaj()
     call infniv(ifm, niv)

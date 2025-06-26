@@ -41,8 +41,8 @@ subroutine ssdmrc(mag)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iancnf, nnnoe
-    integer, pointer :: dime(:) => null()
+    integer(kind=8) :: i, iancnf, nnnoe
+    integer(kind=8), pointer :: dime(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(mag//'.DIME', 'L', vi=dime)

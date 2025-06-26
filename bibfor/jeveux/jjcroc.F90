@@ -23,7 +23,7 @@ subroutine jjcroc(knat, icre)
 #include "asterfort/jjcodn.h"
 #include "asterfort/jjprem.h"
 #include "asterfort/utmess.h"
-    integer :: icre
+    integer(kind=8) :: icre
     character(len=8) :: knat
 ! ----------------------------------------------------------------------
 ! INSERTION D'UN NOM DANS UN REPERTOIRE PRIVE
@@ -34,25 +34,25 @@ subroutine jjcroc(knat, icre)
 !              ICRE = 0 ON VERIFIE UNIQUEMENT L'EXISTENCE
 !              ICRE = 1 ON CREE LE NOM
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadmi, ibacol, ibnom, ibnum, ic, idoc
-    integer :: ixnom, ixnum, jcara, jdate, jdocu, jgenr, jhcod
-    integer :: jiadd, jiadm, jlong, jlono, jltyp, jluti, jmarq
-    integer :: jorig, jrnom, jtype, kadm, kitab, longno, ltypi
-    integer :: n, nhcod, nmax, nuti, nutiex
+    integer(kind=8) :: i, iadmi, ibacol, ibnom, ibnum, ic, idoc
+    integer(kind=8) :: ixnom, ixnum, jcara, jdate, jdocu, jgenr, jhcod
+    integer(kind=8) :: jiadd, jiadm, jlong, jlono, jltyp, jluti, jmarq
+    integer(kind=8) :: jorig, jrnom, jtype, kadm, kitab, longno, ltypi
+    integer(kind=8) :: n, nhcod, nmax, nuti, nutiex
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
-    integer :: numec
+    integer(kind=8) :: numec
     common/inumje/numec
     character(len=24) :: nomec
     common/knomje/nomec
@@ -60,17 +60,17 @@ subroutine jjcroc(knat, icre)
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 ! ----------------------------------------------------------------------
-    integer :: idnom, idnum
+    integer(kind=8) :: idnom, idnum
     parameter(idnom=5, idnum=10)
 ! ----------------------------------------------------------------------
-    integer :: ilorep, ideno, ilnom, ilmax, iluti, idehc
+    integer(kind=8) :: ilorep, ideno, ilnom, ilmax, iluti, idehc
     parameter(ilorep=1, ideno=2, ilnom=3, ilmax=4, iluti=5, idehc=6)
 ! ----------------------------------------------------------------------
     character(len=24) :: nom
-    integer :: jitab, irt
+    integer(kind=8) :: jitab, irt
 !
     character(len=8) :: nume, nome
     data nume, nome&

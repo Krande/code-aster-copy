@@ -28,9 +28,9 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
 #include "blas/ddot.h"
 #include "blas/dscal.h"
 !
-    integer :: imate, kpg, ksp, iret1, iret2, iret3, codret, icodre(4), iret
-    integer :: ndim
-    integer :: ndimsi
+    integer(kind=8) :: imate, kpg, ksp, iret1, iret2, iret3, codret, icodre(4), iret
+    integer(kind=8) :: ndim
+    integer(kind=8) :: ndimsi
     character(len=*) :: fami
     character(len=8) :: materi
     character(len=16) :: compor(*), nomres(4)

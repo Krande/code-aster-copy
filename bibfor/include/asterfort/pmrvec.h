@@ -21,8 +21,8 @@
 interface
     subroutine pmrvec(cumul, n, m, a, x,&
                       y)
-        integer :: m
-        integer :: n
+        integer(kind=8) :: m
+        integer(kind=8) :: n
         character(len=*) :: cumul
         real(kind=8) :: a(n, m)
         real(kind=8) :: x(m)

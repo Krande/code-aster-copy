@@ -22,12 +22,12 @@ interface
     subroutine dxmat2(pgl, icou, npg, ordi, epi,&
                       epais, dm, indith)
         real(kind=8) :: pgl(3, 3)
-        integer :: icou
-        integer :: npg
+        integer(kind=8) :: icou
+        integer(kind=8) :: npg
         real(kind=8) :: ordi
         real(kind=8) :: epi
         real(kind=8) :: epais
         real(kind=8) :: dm(3, 3)
-        integer :: indith
+        integer(kind=8) :: indith
     end subroutine dxmat2
 end interface

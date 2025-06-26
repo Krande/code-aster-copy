@@ -23,7 +23,7 @@ interface
         character(len=8), intent(in) :: main
         character(len=8), intent(in) :: maax
         character(len=24), intent(in) :: nmgrma
-        integer, pointer :: lima(:)
-        integer, intent(out) :: nbma
+        integer(kind=8), pointer :: lima(:)
+        integer(kind=8), intent(out) :: nbma
     end subroutine gtgrma
 end interface

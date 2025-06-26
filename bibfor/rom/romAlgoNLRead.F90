@@ -46,7 +46,7 @@ subroutine romAlgoNLRead(paraAlgo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: coef_pena
     character(len=8) :: baseName
     character(len=16) :: keywf, answer

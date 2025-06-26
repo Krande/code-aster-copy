@@ -32,7 +32,7 @@ subroutine fpouli(nx, l1, l2, norml1, norml2, &
     real(kind=8) :: nx, l1(3), l2(3)
     real(kind=8) :: norml1, norml2, coef1, coef2
     real(kind=8) :: vecter(*)
-    integer :: i, ivec
+    integer(kind=8) :: i, ivec
 !
 !
 !-----------------------------------------------------------------------

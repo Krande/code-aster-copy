@@ -33,15 +33,15 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
 !
 !
     character(len=*), intent(in) :: nume_ddlz
-    integer, intent(in) :: i_equa
+    integer(kind=8), intent(in) :: i_equa
     character(len=*), intent(out) :: type_equa
-    integer, optional, intent(out) :: nume_nodez
-    integer, optional, intent(out) :: nume_cmpz
-    integer, optional, intent(out) :: nume_subsz
-    integer, optional, intent(out) :: nume_linkz
-    integer, optional, intent(out) :: nume_cmp_lagrz
-    integer, optional, intent(out) :: nb_node_lagr
-    integer, optional, pointer :: list_node_lagr(:)
+    integer(kind=8), optional, intent(out) :: nume_nodez
+    integer(kind=8), optional, intent(out) :: nume_cmpz
+    integer(kind=8), optional, intent(out) :: nume_subsz
+    integer(kind=8), optional, intent(out) :: nume_linkz
+    integer(kind=8), optional, intent(out) :: nume_cmp_lagrz
+    integer(kind=8), optional, intent(out) :: nb_node_lagr
+    integer(kind=8), optional, pointer :: list_node_lagr(:)
     character(len=*), optional, intent(out) :: ligrelz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -70,17 +70,17 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: lili, nueq, orig, desc, deeq
-    integer :: nume_node, nume_cmp, nume_subs, nume_link, nume_cmp_lagr
+    integer(kind=8) :: nume_node, nume_cmp, nume_subs, nume_link, nume_cmp_lagr
     character(len=19) :: nume_equa, ligrel
     character(len=14) :: nume_ddl
-    integer :: iexi, isst
-    integer :: idx_gd
-    integer :: ino, icmp
+    integer(kind=8) :: iexi, isst
+    integer(kind=8) :: idx_gd
+    integer(kind=8) :: ino, icmp
     logical :: l_gene
-    integer, pointer :: p_nueq(:) => null()
-    integer, pointer :: p_desc(:) => null()
-    integer, pointer :: p_deeq(:) => null()
-    integer, pointer :: p_orig(:) => null()
+    integer(kind=8), pointer :: p_nueq(:) => null()
+    integer(kind=8), pointer :: p_desc(:) => null()
+    integer(kind=8), pointer :: p_deeq(:) => null()
+    integer(kind=8), pointer :: p_orig(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

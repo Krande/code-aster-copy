@@ -21,7 +21,7 @@ subroutine cgveth(typfis, ndim)
 #include "asterfort/utmess.h"
 !
     character(len=8) :: typfis
-    integer :: ndim
+    integer(kind=8) :: ndim
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !

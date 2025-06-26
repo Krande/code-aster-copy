@@ -27,7 +27,7 @@ subroutine porea4(nno, nc, geom, gamma, pgl, &
 #include "asterfort/normev.h"
 #include "blas/ddot.h"
 !
-    integer :: nno, nc
+    integer(kind=8) :: nno, nc
     real(kind=8) :: geom(3, nno), gamma
 !
     real(kind=8) :: pgl(3, 3), xl
@@ -47,7 +47,7 @@ subroutine porea4(nno, nc, geom, gamma, pgl, &
 !     ------------------------------------------------------------------
 !
 !     VARIABLES LOCALES
-    integer :: i, ideplm, ideplp, iret
+    integer(kind=8) :: i, ideplm, ideplp, iret
     real(kind=8) :: utg(14), xug(6), xd(3), alfa1, beta1, ang1(3)
     character(len=16) :: dispParaName
 !

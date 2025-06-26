@@ -23,10 +23,10 @@
 interface
     subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                       table, specmr, specmi)
-        integer :: nbpf
+        integer(kind=8) :: nbpf
         character(len=16) :: movrep
-        integer :: napexc
-        integer :: nbmode
+        integer(kind=8) :: napexc
+        integer(kind=8) :: nbmode
         aster_logical :: intmod
         character(len=8) :: table
         real(kind=8) :: specmr(nbpf, *)

@@ -39,17 +39,17 @@ subroutine copmat(mat_in, mat_out)
     real(kind=8), intent(out) :: mat_out(*)
 
     aster_logical :: lsym
-    integer :: neq, jsmhc, nbnonz, nvale, jvale
-    integer :: nlong, jval2, kterm, jcoll, iligl
-    integer :: i, j
+    integer(kind=8) :: neq, jsmhc, nbnonz, nvale, jvale
+    integer(kind=8) :: nlong, jval2, kterm, jcoll, iligl
+    integer(kind=8) :: i, j
 
     character(len=1)  :: ktyp
     character(len=14) :: nonu
     character(len=19) :: mat19
 
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer           :: smde(:) => null()
-    integer, pointer           :: smdi(:) => null()
+    integer(kind=8), pointer           :: smde(:) => null()
+    integer(kind=8), pointer           :: smdi(:) => null()
 !
 ! Column-major index storage
 #define m_out(i,j) mat_out((j-1)*neq+i)

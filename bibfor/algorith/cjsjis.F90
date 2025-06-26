@@ -42,7 +42,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf, &
 !
 #include "asterfort/lcicma.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nmod
+    integer(kind=8) :: ndt, ndi, nmod
     parameter(nmod=8)
 !
     real(kind=8) :: deps(6)
@@ -56,7 +56,7 @@ subroutine cjsjis(mod, mater, deps, yd, yf, &
     real(kind=8) :: dlqds(6), dlqdq, dlqdl
     real(kind=8) :: dfids(6), dfidq, dfidl
     real(kind=8) :: dsignl(6), dsigl(6), depse(6), qinit
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     real(kind=8) :: zero, un, d12, deux, trois, kron(6), iden6(6, 6)
 !

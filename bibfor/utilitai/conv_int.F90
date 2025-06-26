@@ -32,7 +32,7 @@ subroutine conv_int(sens, nb, vi_ast, vi_med)
     aster_int :: nb
     aster_int :: vi_ast(nb)
     med_int :: vi_med(nb)
-    integer :: i
+    integer(kind=8) :: i
 
     if (sens .eq. 'ast->med') then
         do i = 1, nb

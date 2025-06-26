@@ -22,10 +22,10 @@ interface
                                   nb_slice     , coor_slice,&
                                   node_to_slice)
         real(kind=8), intent(in) :: tole 
-        integer, intent(in) :: nb_node
+        integer(kind=8), intent(in) :: nb_node
         real(kind=8), intent(in) :: coor_node(nb_node)
-        integer, intent(in) :: nb_slice
+        integer(kind=8), intent(in) :: nb_slice
         real(kind=8), intent(in) :: coor_slice(nb_slice)
-        integer, intent(out) :: node_to_slice(nb_node)
+        integer(kind=8), intent(out) :: node_to_slice(nb_node)
     end subroutine romLineicIndexList
 end interface

@@ -69,20 +69,20 @@ subroutine te0512(option, nomte)
 !
 !
 !
-    integer :: mxcmel, nbpgmx, nbres, nbres2, mxcvar
+    integer(kind=8) :: mxcmel, nbpgmx, nbres, nbres2, mxcvar
     parameter(mxcmel=162)
     parameter(nbpgmx=27)
     parameter(nbres=2)
     parameter(nbres2=3)
     parameter(mxcvar=378)
 !
-    integer :: i, k
-    integer :: nno, nnos, npg, iret
-    integer :: nbsig, igau, indic, ndim
-    integer :: imate, iconpg
-    integer :: idtrgp, ivarmr, ivarpr, iendmg
-    integer :: iepsp, jgano, ipoids, ivf, idfde
-    integer :: ibid, jtab(7), nbvari
+    integer(kind=8) :: i, k
+    integer(kind=8) :: nno, nnos, npg, iret
+    integer(kind=8) :: nbsig, igau, indic, ndim
+    integer(kind=8) :: imate, iconpg
+    integer(kind=8) :: idtrgp, ivarmr, ivarpr, iendmg
+    integer(kind=8) :: iepsp, jgano, ipoids, ivf, idfde
+    integer(kind=8) :: ibid, jtab(7), nbvari
 !
 !
     real(kind=8) :: sigma(mxcmel), sigd(mxcmel)
@@ -102,7 +102,7 @@ subroutine te0512(option, nomte)
 !
     character(len=16), pointer :: compor(:) => null()
     character(len=4) :: fami
-    integer :: codres(nbres), codre2(nbres2)
+    integer(kind=8) :: codres(nbres), codre2(nbres2)
     character(len=16) :: nomres(nbres)
     character(len=16) :: nomre2(nbres2)
     character(len=16) :: pheno, phenom, pheno2, phenm2

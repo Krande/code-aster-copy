@@ -22,7 +22,7 @@ interface
     subroutine cfimp4(ds_contact, mesh, ifm)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: ifm
+        integer(kind=8), intent(in) :: ifm
         character(len=8), intent(in) :: mesh
     end subroutine cfimp4
 end interface

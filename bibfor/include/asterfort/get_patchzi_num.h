@@ -24,6 +24,6 @@ interface
     subroutine get_patchzi_num(mesh, nmgrma, num)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: nmgrma
-        integer, intent(out) :: num
+        integer(kind=8), intent(out) :: num
     end subroutine get_patchzi_num
 end interface

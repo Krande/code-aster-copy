@@ -60,23 +60,23 @@ subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ncmp = 60
-    integer, parameter :: nceld1 = 4
-    integer, parameter :: nceld2 = 4
-    integer, parameter :: nceld3 = 4
-    integer :: ztabf
-    integer :: i_cont_poin, i_zone, nt_cont_poin
-    integer :: vale_indx, decal
+    integer(kind=8), parameter :: ncmp = 60
+    integer(kind=8), parameter :: nceld1 = 4
+    integer(kind=8), parameter :: nceld2 = 4
+    integer(kind=8), parameter :: nceld3 = 4
+    integer(kind=8) :: ztabf
+    integer(kind=8) :: i_cont_poin, i_zone, nt_cont_poin
+    integer(kind=8) :: vale_indx, decal
     aster_logical :: l_dyna
-    integer :: dyna_form
+    integer(kind=8) :: dyna_form
     real(kind=8) :: coef_fric, glis_maxi
-    integer :: i_algo_cont, i_algo_fric, i_reso_fric, i_reso_geom
-    integer :: nt_liel, nb_grel, nb_liel, i_grel, i_liel
+    integer(kind=8) :: i_algo_cont, i_algo_fric, i_reso_fric, i_reso_geom
+    integer(kind=8) :: nt_liel, nb_grel, nb_liel, i_grel, i_liel
     character(len=24) :: chmlcf_celv
-    integer :: jv_chmlcf_celv
+    integer(kind=8) :: jv_chmlcf_celv
     character(len=24) :: chmlcf_celd
-    integer, pointer :: v_chmlcf_celd(:) => null()
-    integer, pointer :: v_ligrcf_liel(:) => null()
+    integer(kind=8), pointer :: v_chmlcf_celd(:) => null()
+    integer(kind=8), pointer :: v_ligrcf_liel(:) => null()
     character(len=24) :: sdcont_tabfin, sdcont_jsupco
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
     real(kind=8), pointer :: v_sdcont_jsupco(:) => null()

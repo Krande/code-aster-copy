@@ -42,7 +42,7 @@ subroutine lcmmcv(yd, dy, ddy, nr, itmax, &
 !                       =3 ITMAX ATTEINT REDECOUPAGE
 !       ----------------------------------------------------------------
 #include "asterc/r8prem.h"
-    integer :: itmax, iter, nr, irteti, ndt, ndi, i
+    integer(kind=8) :: itmax, iter, nr, irteti, ndt, ndi, i
     real(kind=8) :: toler, yd(nr), ddy(nr), dy(nr), r(nr), rini(nr), epstr(6)
 !       ----------------------------------------------------------------
     common/tdim/ndt, ndi

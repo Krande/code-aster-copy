@@ -27,7 +27,7 @@ subroutine matect(materd, materf, nmat, macst)
 !                   'NON' SINON
 !     ----------------------------------------------------------------
 #include "asterc/r8prem.h"
-    integer :: nmat, i
+    integer(kind=8) :: nmat, i
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), epsi
     character(len=3) :: macst
 !     ----------------------------------------------------------------

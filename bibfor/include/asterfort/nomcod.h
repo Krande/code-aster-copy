@@ -21,8 +21,8 @@
 interface
     subroutine nomcod(nom, num, ic, nc)
         character(len=*) :: nom
-        integer :: num
-        integer :: ic
-        integer :: nc
+        integer(kind=8) :: num
+        integer(kind=8) :: ic
+        integer(kind=8) :: nc
     end subroutine nomcod
 end interface

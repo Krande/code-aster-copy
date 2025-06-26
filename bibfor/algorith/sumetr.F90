@@ -31,7 +31,7 @@ subroutine sumetr(cova, metr, jac)
 ! OUT JAC     JACOBIEN DE LA METRIQUE
 !.......................................................................
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
     blas_int :: b_incx, b_incy, b_n
 !
 !

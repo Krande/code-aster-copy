@@ -22,7 +22,7 @@ subroutine dismrc(questi, nomobz, repi, repk, ierd)
 !
 #include "asterfort/jelira.h"
 #include "asterfort/jexnum.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, repk
     character(len=19) :: nomob
     character(len=*) :: nomobz

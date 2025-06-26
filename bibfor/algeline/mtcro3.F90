@@ -21,7 +21,7 @@ subroutine mtcro3(m, n, a, nmax, x, &
     implicit none
 #include "asterfort/utmess.h"
 !
-    integer :: nmax, m, n
+    integer(kind=8) :: nmax, m, n
     real(kind=8) :: a(nmax, *), x(*), y(*)
 !     ROUTINE UTILITAIRE POUR CALCULER Y = Y - A*X,
 !     OPERATEUR APPELANT : MTCROG
@@ -41,7 +41,7 @@ subroutine mtcro3(m, n, a, nmax, x, &
 ! ----------------------------------------------------------------------
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
     data zero/0.d0/
 ! ----------------------------------------------------------------------

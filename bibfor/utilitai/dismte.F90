@@ -35,7 +35,7 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnum.h"
 #include "asterfort/teattr.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
@@ -52,14 +52,14 @@ subroutine dismte(questi, nomobz, repi, repkz, ierd)
 ! ----------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: ibid
+    integer(kind=8) :: ibid
     character(len=8) :: nomtm
     character(len=16) :: nophen, nomodl
-    integer :: ite, nbphen, nbtm, ico, iphen, nbmodl, imodl, iamodl, ii
-    integer :: nbopt, iopt, ioptte, nrig, irig
+    integer(kind=8) :: ite, nbphen, nbtm, ico, iphen, nbmodl, imodl, iamodl, ii
+    integer(kind=8) :: nbopt, iopt, ioptte, nrig, irig
     parameter(nrig=5)
     character(len=16) :: optrig(nrig)
-    integer, pointer :: optte(:) => null()
+    integer(kind=8), pointer :: optte(:) => null()
     data optrig/'RIGI_ACOU', 'RIGI_THER', 'RIGI_MECA', 'RIGI_MECA_TANG',&
      &     'FULL_MECA'/
 !

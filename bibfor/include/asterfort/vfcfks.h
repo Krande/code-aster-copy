@@ -27,7 +27,7 @@ interface
                       xk    , xface, &
                       fks   , dfks1, dfks2)
         aster_logical, intent(in) :: l_matr
-        integer, intent(in) :: maxfa, nface, ndim
+        integer(kind=8), intent(in) :: maxfa, nface, ndim
         real(kind=8), intent(in) :: uk, dukp1, dukp2
         real(kind=8), intent(in) :: ufa(1:nface), dufa1(1:nface), dufa2(1:nface)
         real(kind=8), intent(in) :: c(1:maxfa, 1:nface), gravity(ndim)

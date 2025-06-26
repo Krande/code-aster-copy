@@ -44,10 +44,10 @@ subroutine nonlinDSPrintRead(ds_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=16) :: keywf, repk
     aster_logical :: l_csv, l_info_resi, l_info_time
-    integer :: noc, unit_csv, reac_print
+    integer(kind=8) :: noc, unit_csv, reac_print
 !
 ! --------------------------------------------------------------------------------------------------
 !

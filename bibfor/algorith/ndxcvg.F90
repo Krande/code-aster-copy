@@ -47,8 +47,8 @@ subroutine ndxcvg(sddisc, sderro, valinc)
 !
 !
 !
-    integer :: ifm, niv
-    integer :: ievdac, numins
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ievdac, numins
     aster_logical :: lerrne, lerrst
     aster_logical :: lsvimx, ldvres, linsta, lcritl, conver, lresmx
 !

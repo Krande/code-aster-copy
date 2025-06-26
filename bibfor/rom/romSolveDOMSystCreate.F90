@@ -57,9 +57,9 @@ subroutine romSolveDOMSystCreate(syst_matr_type, syst_2mbr_type, syst_type, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: syst_matr, syst_2mbr, vect_zero, syst_solu
-    integer :: syst_size
+    integer(kind=8) :: syst_size
 !
 ! --------------------------------------------------------------------------------------------------
 !

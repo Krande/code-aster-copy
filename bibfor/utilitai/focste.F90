@@ -42,8 +42,8 @@ subroutine focste(nomfon, nomres, rval, base)
 !     ------------------------------------------------------------------
     character(len=19) :: nomf
     character(len=24) :: chpro, chval
-    integer :: jpro, lval
-    integer :: iret
+    integer(kind=8) :: jpro, lval
+    integer(kind=8) :: iret
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !-----------------------------------------------------------------------

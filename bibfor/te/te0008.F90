@@ -49,11 +49,11 @@ subroutine te0008(option, nomte)
 !
     real(kind=8) :: sigref, sigtmp(6*MT_NNOMAX)
     real(kind=8) :: nharm, bsigm(3*MT_NNOMAX), geo(3*MT_NNOMAX), ftemp(3*MT_NNOMAX)
-    integer :: nbsig, ndim, nno, npg
-    integer :: ipoids, ivf, idfde
-    integer :: igeom, ivectu
-    integer :: jvDisp, jvSief, jvCompor
-    integer :: i, j, nbinco, iretCompor, iretDisp
+    integer(kind=8) :: nbsig, ndim, nno, npg
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: igeom, ivectu
+    integer(kind=8) :: jvDisp, jvSief, jvCompor
+    integer(kind=8) :: i, j, nbinco, iretCompor, iretDisp
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

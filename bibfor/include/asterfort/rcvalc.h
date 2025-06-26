@@ -21,12 +21,12 @@
 interface
     subroutine rcvalc(jmat, phenom, nbres, nomres, valres,&
                       icodre, iarret)
-        integer :: nbres
-        integer :: jmat
+        integer(kind=8) :: nbres
+        integer(kind=8) :: jmat
         character(len=*) :: phenom
         character(len=*) :: nomres(nbres)
         complex(kind=8) :: valres(nbres)
-        integer :: icodre(nbres)
-        integer :: iarret
+        integer(kind=8) :: icodre(nbres)
+        integer(kind=8) :: iarret
     end subroutine rcvalc
 end interface

@@ -49,17 +49,17 @@ subroutine te0334(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxcmel = 54
-    integer, parameter :: nbsgm = 4
+    integer(kind=8), parameter :: mxcmel = 54
+    integer(kind=8), parameter :: nbsgm = 4
     real(kind=8) :: epsi_meca(mxcmel), epsi_plas(mxcmel)
     real(kind=8) :: sigma(nbsgm)
     real(kind=8) :: epsi_creep(nbsgm)
-    integer :: i, ndim, nno, nbsig, idsig
-    integer :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, idefp, itemps
-    integer :: imate, nbvari, ivari, jtab(7), iret
+    integer(kind=8) :: i, ndim, nno, nbsig, idsig
+    integer(kind=8) :: npg, ipoids, ivf, idfde, igau, isig, igeom, idepl, idefp, itemps
+    integer(kind=8) :: imate, nbvari, ivari, jtab(7), iret
     real(kind=8) :: c1, c2, trsig
     real(kind=8) :: angl_naut(3), nharm, e, nu, zero, un, time
-    integer :: elas_id
+    integer(kind=8) :: elas_id
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: optio2, kit_comp_2, rela_comp, elas_keyword
     aster_logical :: l_creep

@@ -28,7 +28,7 @@ subroutine mmfonc(fepx, fmin, fmax)
     real(kind=8) :: fmin, fmax
 !     CHARACTER*32 JEXNUM,JEXNOM,JEXR8,JEXATR
 !
-    integer :: rl, jfon, i, nf0
+    integer(kind=8) :: rl, jfon, i, nf0
     real(kind=8) :: val
 !
     call jemarq()

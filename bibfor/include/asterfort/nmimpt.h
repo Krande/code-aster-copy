@@ -21,7 +21,7 @@
 interface
     subroutine nmimpt(nume_inst, sddisc, ds_print)
         use NonLin_Datastructure_type
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=19), intent(in) :: sddisc
         type(NL_DS_Print), intent(inout) :: ds_print
     end subroutine nmimpt

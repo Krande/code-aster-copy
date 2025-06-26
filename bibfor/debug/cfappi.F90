@@ -28,8 +28,8 @@ subroutine cfappi(noma, defico, nomnoe, typapp, posapp)
 #include "asterfort/utmess.h"
     character(len=8) :: noma
     character(len=24) :: defico
-    integer :: posapp
-    integer :: typapp
+    integer(kind=8) :: posapp
+    integer(kind=8) :: typapp
     character(len=8) :: nomnoe
 !
 ! ----------------------------------------------------------------------

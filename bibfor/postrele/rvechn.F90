@@ -64,18 +64,18 @@ subroutine rvechn(ssch19, sdlieu, sdeval)
     character(len=8) :: mailla
     character(len=4) :: docu
 !
-    integer :: aipadr, aipcmp, iocer, j, anmail, anuma, aipnco, aipnsp, aopnco
-    integer :: aopnbn, aovale, aopadr, aopcmp, aoerre, ainugd, aivale, aopnsp
-    integer :: arefe, adesc, nbcmp, i, anumnd, acmpgd, lpt, aopnb2
-    integer :: nbmpst, nbnpst, nbocer, n, m, adrin, adrou, nbm, numm
-    integer :: nbtcmp, sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
-    integer :: indi1, indi2, ier
-    integer :: vali, ilong, k, l, lnc, ncom, nspm
+    integer(kind=8) :: aipadr, aipcmp, iocer, j, anmail, anuma, aipnco, aipnsp, aopnco
+    integer(kind=8) :: aopnbn, aovale, aopadr, aopcmp, aoerre, ainugd, aivale, aopnsp
+    integer(kind=8) :: arefe, adesc, nbcmp, i, anumnd, acmpgd, lpt, aopnb2
+    integer(kind=8) :: nbmpst, nbnpst, nbocer, n, m, adrin, adrou, nbm, numm
+    integer(kind=8) :: nbtcmp, sdvacp, aindir, pt, nsp, nco, lmc, lcc, lsc, lms
+    integer(kind=8) :: indi1, indi2, ier
+    integer(kind=8) :: vali, ilong, k, l, lnc, ncom, nspm
 !
     aster_logical :: trouve, lnomnoe, lnommai
 !
     character(len=1) :: cbid
-    integer, pointer :: nund(:) => null()
+    integer(kind=8), pointer :: nund(:) => null()
     data cbid/' '/
 !
 !==================== CORPS DE LA ROUTINE =============================

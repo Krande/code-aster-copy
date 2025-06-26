@@ -58,8 +58,8 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
 #include "asterfort/nmrvai.h"
 #include "asterfort/utmess.h"
 !
-    integer :: fonact(*)
-    integer :: iterat, numins
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: iterat, numins
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
     real(kind=8) :: eta
     character(len=19) :: sdcrit, sddisc, sdnume
@@ -124,10 +124,10 @@ subroutine nmconv(noma, modele, ds_material, numedd, sdnume, fonact, &
     real(kind=8) :: vresi, vchar
     aster_logical :: lerror, itemax, dvdebo
     aster_logical :: cvnewt, cvresi
-    integer :: nbiter, itesup
-    integer :: ifm, niv
+    integer(kind=8) :: nbiter, itesup
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: line_sear_coef
-    integer :: line_sear_iter
+    integer(kind=8) :: line_sear_iter
 !
 ! --------------------------------------------------------------------------------------------------
 !

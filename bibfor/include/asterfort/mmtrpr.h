@@ -21,7 +21,7 @@
 interface
     subroutine mmtrpr(ndim, lpenaf, djeut, dlagrf, coefaf,&
                       tau1, tau2  , ladhe, rese  , nrese)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         aster_logical, intent(in):: lpenaf
         real(kind=8), intent(in) :: djeut(3), dlagrf(2), coefaf
         real(kind=8), intent(in) :: tau1(3), tau2(3)

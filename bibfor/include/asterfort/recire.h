@@ -22,11 +22,11 @@ interface
     subroutine recire(typopt, iderre, frexci, fremin, fremax,&
                       pas, nbptmd)
         character(len=4) :: typopt
-        integer :: iderre
+        integer(kind=8) :: iderre
         character(len=4) :: frexci
         real(kind=8) :: fremin
         real(kind=8) :: fremax
         real(kind=8) :: pas
-        integer :: nbptmd
+        integer(kind=8) :: nbptmd
     end subroutine recire
 end interface

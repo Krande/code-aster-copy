@@ -32,20 +32,20 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
 
     aster_logical, intent(in)     :: resi, rigi, elas
     type(dp_material), intent(in) :: m
-    integer, intent(in)           :: itemax
+    integer(kind=8), intent(in)           :: itemax
     real(kind=8), intent(in)      :: prec
     real(kind=8), intent(in)      :: eps(:)
     real(kind=8), intent(inout)   :: ep(:), ka
-    integer, intent(inout)        :: state
+    integer(kind=8), intent(inout)        :: state
     real(kind=8), intent(out)     :: s(:), deps_s(:, :)
-    integer                      :: iret
+    integer(kind=8)                      :: iret
     real(kind=8) :: vip(9)
 ! ----------------------------------------------------------------------
 !             LOI DRUCK_PRAG_N_A
 ! ----------------------------------------------------------------------
     real(kind=8), dimension(6), parameter:: kron = [1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0]
 ! ----------------------------------------------------------------------
-    integer     :: i, nrac
+    integer(kind=8)     :: i, nrac
     real(kind=8):: kr(size(eps)), id(size(eps), size(eps)), prodev(size(eps), size(eps))
     real(kind=8):: sel(size(eps)), selh, selq, seld(size(eps))
     real(kind=8):: kam, fm, kas, fs, bs, bk, rks, fu, lbd
@@ -56,7 +56,7 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
     real(kind=8):: deps_sh(size(eps)), deps_q(size(eps))
     real(kind=8):: dka_s(size(eps)), deps_ka(size(eps))
 
-    integer :: iter
+    integer(kind=8) :: iter
 ! ----------------------------------------------------------------------
 
 !   Initialisation

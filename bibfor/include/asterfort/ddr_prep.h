@@ -20,9 +20,9 @@ interface
     subroutine ddr_prep(cmdPara, v_equa_prim, v_equa_dual, v_node_rid, nbNodeRID)
         use Rom_Datastructure_type
         type(ROM_DS_ParaDDR), intent(in) :: cmdPara
-        integer, pointer :: v_equa_prim(:)
-        integer, pointer :: v_equa_dual(:)
-        integer, pointer :: v_node_rid(:)
-        integer, intent(out) :: nbNodeRID
+        integer(kind=8), pointer :: v_equa_prim(:)
+        integer(kind=8), pointer :: v_equa_dual(:)
+        integer(kind=8), pointer :: v_node_rid(:)
+        integer(kind=8), intent(out) :: nbNodeRID
     end subroutine ddr_prep
 end interface

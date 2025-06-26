@@ -31,7 +31,7 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nopout
+    integer(kind=8) :: nopout
     character(len=*) :: type
     character(len=8) :: nobase
     character(len=16) :: option
@@ -71,9 +71,9 @@ subroutine ccliop(type, option, nobase, noliop, nopout)
 !   NOPOUT  I    TAILLE DE LA LISTE OUT
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: opt, iaopds, iaoplo, iopdeb, iop, nparin, ipara, opt2
-    integer :: lopor1(100), lopor2(100), itmp, nopous, jlisop
-    integer :: jliori, jlidep, jlnoin, jlisde
+    integer(kind=8) :: opt, iaopds, iaoplo, iopdeb, iop, nparin, ipara, opt2
+    integer(kind=8) :: lopor1(100), lopor2(100), itmp, nopous, jlisop
+    integer(kind=8) :: jliori, jlidep, jlnoin, jlisde
 !
     aster_logical :: opajou
 !

@@ -65,27 +65,27 @@ subroutine te0378(option, nomte)
 !
 ! DECLARATION VARIABLES LOCALES
 !
-    integer :: ifm, niv
-    integer :: iadzi, iazk24
-    integer :: ibid, iaux, iret, itab(7)
-    integer :: igeom, jtime
-    integer :: ierr, ivois
-    integer :: imate
-    integer :: iadp
-    integer :: iadd
-    integer :: ifovrp, ifovfp
-    integer :: ifovrd, ifovfd
-    integer :: ipesp, irotp
-    integer :: ipesd, irotd
-    integer :: irefp1, irefp2
-    integer :: irefd1, irefd2
-    integer :: ndim
-    integer :: nno, nnos, npg, ipoids, ivf, idfde, jgano
-    integer :: nnof
-    integer :: nbcmp
-    integer :: ipg, in
-    integer :: nbf
-    integer :: tymvol, ndegre, ifa, tyv, noe(9, 6, 4)
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iadzi, iazk24
+    integer(kind=8) :: ibid, iaux, iret, itab(7)
+    integer(kind=8) :: igeom, jtime
+    integer(kind=8) :: ierr, ivois
+    integer(kind=8) :: imate
+    integer(kind=8) :: iadp
+    integer(kind=8) :: iadd
+    integer(kind=8) :: ifovrp, ifovfp
+    integer(kind=8) :: ifovrd, ifovfd
+    integer(kind=8) :: ipesp, irotp
+    integer(kind=8) :: ipesd, irotd
+    integer(kind=8) :: irefp1, irefp2
+    integer(kind=8) :: irefd1, irefd2
+    integer(kind=8) :: ndim
+    integer(kind=8) :: nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: nnof
+    integer(kind=8) :: nbcmp
+    integer(kind=8) :: ipg, in
+    integer(kind=8) :: nbf
+    integer(kind=8) :: tymvol, ndegre, ifa, tyv, noe(9, 6, 4)
 !
     real(kind=8) :: r8bid, r8bid3(2), r8bid4(2)
     real(kind=8) :: dfdx(9), dfdy(9), hk, poids
@@ -115,7 +115,7 @@ subroutine te0378(option, nomte)
     real(kind=8) :: hf, intpl, intmo, inst
     real(kind=8) :: terpl1, termo1, terpl2, termo2, terpl3, termo3
 !
-    integer :: icodre(2), kpg, spt
+    integer(kind=8) :: icodre(2), kpg, spt
     character(len=8) :: typmav, elrefe, fami, poum
     character(len=8) :: elreff, elrefb
     character(len=8) :: nompar(1)

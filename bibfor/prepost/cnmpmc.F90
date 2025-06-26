@@ -30,9 +30,9 @@ subroutine cnmpmc(main, nbma, lima, mpmc)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbma, lima(nbma), mpmc(nbma), inc1, inc2, aux, jlino
-    integer :: jlmat, ntrou, nbnoma, dima, macou, nocou
-    integer :: jlico3, nlico1, lico1, nlico2, lico2, inc3, var(1), jlico4
+    integer(kind=8) :: nbma, lima(nbma), mpmc(nbma), inc1, inc2, aux, jlino
+    integer(kind=8) :: jlmat, ntrou, nbnoma, dima, macou, nocou
+    integer(kind=8) :: jlico3, nlico1, lico1, nlico2, lico2, inc3, var(1), jlico4
     character(len=8) :: main
     character(len=24) :: lmat, conneo, lico3, lico4
 ! ----------------------------------------------------------------------

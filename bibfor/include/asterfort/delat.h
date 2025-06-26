@@ -21,7 +21,7 @@
 interface
     subroutine delat(modgen, nbsst, nbmo)
         character(len=8) :: modgen
-        integer :: nbsst
-        integer :: nbmo
+        integer(kind=8) :: nbsst
+        integer(kind=8) :: nbmo
     end subroutine delat
 end interface

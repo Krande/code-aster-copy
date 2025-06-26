@@ -32,7 +32,7 @@ subroutine nmarpr(result, sddisc, lreuse, numder, insder, &
 #include "asterfort/utmess.h"
     real(kind=8) :: insder
     aster_logical :: lreuse
-    integer :: numder, numarc
+    integer(kind=8) :: numder, numarc
     character(len=19) :: sddisc
     character(len=8) :: result
 !
@@ -58,7 +58,7 @@ subroutine nmarpr(result, sddisc, lreuse, numder, insder, &
 !
 !
     character(len=24) :: tpsdit
-    integer :: jtemps
+    integer(kind=8) :: jtemps
     real(kind=8) :: valr(2), inst2
 !
 ! ----------------------------------------------------------------------

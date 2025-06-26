@@ -21,8 +21,8 @@ interface
     subroutine nmcrls(sddisc, listInstJv, numeInit, numeEnd, &
                       nbInstNew, dtmin)
         character(len=19), intent(in) :: sddisc, listInstJv
-        integer, intent(in) :: numeInit, numeEnd
-        integer, intent(out) :: nbInstNew
+        integer(kind=8), intent(in) :: numeInit, numeEnd
+        integer(kind=8), intent(out) :: nbInstNew
         real(kind=8), intent(out) :: dtmin
     end subroutine nmcrls
 end interface

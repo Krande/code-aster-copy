@@ -31,10 +31,10 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini, &
 #include "asterfort/elraca.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: mxnbn2, mxnbpi, mxnbte, mxnbse
-    integer :: ndim, npg, connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
-    integer :: nterm1(mxnbpi), nbno2(mxnbse), npoini, tyma(mxnbse)
-    integer :: nbsel, corsel(mxnbse), iret
+    integer(kind=8) :: mxnbn2, mxnbpi, mxnbte, mxnbse
+    integer(kind=8) :: ndim, npg, connx(mxnbn2, mxnbse), nsomm1(mxnbpi, mxnbte)
+    integer(kind=8) :: nterm1(mxnbpi), nbno2(mxnbse), npoini, tyma(mxnbse)
+    integer(kind=8) :: nbsel, corsel(mxnbse), iret
     real(kind=8) :: csomm1(mxnbpi, mxnbte)
     character(len=8) :: elrefa, fapg
     character(len=16) :: nomte
@@ -87,7 +87,7 @@ subroutine eclaty(nomte, elrefa, fapg, npg, npoini, &
 !                    (1<= IPOINI <= NPOINI)
 !
 ! ---------------------------------------------------------------------
-    integer :: nbfpg, nbpg(MT_NBFAMX), nufpg
+    integer(kind=8) :: nbfpg, nbpg(MT_NBFAMX), nufpg
     character(len=8) :: famg(MT_NBFAMX)
 ! ---------------------------------------------------------------------
     call jemarq()

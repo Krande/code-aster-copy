@@ -32,7 +32,7 @@ interface
         character(len=19) :: grln
         character(len=19) :: grlt
         character(len=16) :: corres
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=19) :: ndomp
         character(len=19) :: edomg
     end subroutine xprpls

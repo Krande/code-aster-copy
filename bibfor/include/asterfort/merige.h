@@ -27,7 +27,7 @@ interface
         character(len=*) :: strx
         character(len=19) :: matel
         character(len=1) :: base
-        integer :: nh
+        integer(kind=8) :: nh
         character(len=*), optional, intent(in) :: deplr
         character(len=*), optional, intent(in) :: mateco
     end subroutine merige

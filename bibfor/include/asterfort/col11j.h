@@ -20,7 +20,7 @@
 !
 interface
     subroutine col11j(fronti, frn, n, t)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: fronti(*)
         real(kind=8) :: frn(*)
         real(kind=8) :: t(n)

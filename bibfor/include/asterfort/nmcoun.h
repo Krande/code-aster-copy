@@ -24,11 +24,11 @@ interface
                       resi_glob_rela, ds_measure    , ds_contact, ctccvg)
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: solver
         character(len=*), intent(in) :: nume_dof_
         character(len=19), intent(in) :: matr_asse
-        integer, intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: iter_newt
         real(kind=8), intent(in) :: time_curr
         character(len=19), intent(in) :: hval_incr(*)
         character(len=19), intent(in) :: hval_algo(*)
@@ -36,6 +36,6 @@ interface
         real(kind=8), intent(in) :: resi_glob_rela
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(inout) :: ds_contact 
-        integer, intent(out) :: ctccvg
+        integer(kind=8), intent(out) :: ctccvg
     end subroutine nmcoun
 end interface

@@ -21,11 +21,11 @@
 interface
     subroutine dtmforc_rede(nl_ind , sd_dtm_, sd_nl_, buffdtm, buffnl,&
                             depl  , fext)
-        integer               , intent(in)  :: nl_ind
+        integer(kind=8)               , intent(in)  :: nl_ind
         character(len=*)      , intent(in)  :: sd_dtm_
         character(len=*)      , intent(in)  :: sd_nl_
-        integer     , pointer  :: buffdtm  (:)
-        integer     , pointer  :: buffnl   (:)
+        integer(kind=8)     , pointer  :: buffdtm  (:)
+        integer(kind=8)     , pointer  :: buffnl   (:)
         real(kind=8), pointer  :: depl     (:)
         real(kind=8), pointer :: fext     (:)
     end subroutine dtmforc_rede

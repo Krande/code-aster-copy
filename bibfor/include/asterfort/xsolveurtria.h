@@ -22,7 +22,7 @@ interface
 
     subroutine xsolveurtria(coor_nod, x, y, z, D, indmax, solution )
     
-        integer                           ::  indmax    
+        integer(kind=8)                           ::  indmax    
         real(kind=8),dimension(3,3)       ::  coor_nod
         real(kind=8)                      ::  D(:)
         real(kind=8)                      ::  x(:)

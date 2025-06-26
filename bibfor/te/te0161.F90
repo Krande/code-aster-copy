@@ -55,19 +55,19 @@ subroutine te0161(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icodre(1), jj
-    integer :: nno, kp, i, ivectu, ipesa, nddl, npg, iyty, nordre, lsect
-    integer :: ipoids, ivf, igeom, imate, iforc
-    integer :: itemps, nbpar, idepla, ideplp, k, l, ic, neu, iret, neum1
+    integer(kind=8) :: icodre(1), jj
+    integer(kind=8) :: nno, kp, i, ivectu, ipesa, nddl, npg, iyty, nordre, lsect
+    integer(kind=8) :: ipoids, ivf, igeom, imate, iforc
+    integer(kind=8) :: itemps, nbpar, idepla, ideplp, k, l, ic, neu, iret, neum1
     aster_logical :: normal
     real(kind=8) :: r8min, r8bid, rho(1), a, coef
     real(kind=8) :: xss, xs2, xs4, c1, force(3), xuu(3), xvv(3), w2(3)
 !
-    integer :: ifcx, idfdk, jgano, ndim, nnos
+    integer(kind=8) :: ifcx, idfdk, jgano, ndim, nnos
     character(len=8), parameter :: nompav(1) = ['VITE']
     real(kind=8) :: valpav(1), viterela(3)
 !
-    integer :: ichamp
+    integer(kind=8) :: ichamp
     aster_logical :: okvent, fozero
     character(len=8) :: nompar(13)
     real(kind=8) :: valpar(13), fcx, vite2, xvp(3)

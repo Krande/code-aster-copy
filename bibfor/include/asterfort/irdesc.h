@@ -25,21 +25,21 @@ interface
                       dg, ncmpmx, vale, nomcmp, titr,&
                       nomnoe, nomsd, nomsym, ir, numnoe,&
                       lmasu)
-        integer :: ifi
-        integer :: nbno
-        integer :: prno(*)
-        integer :: nueq(*)
-        integer :: nec
-        integer :: dg(*)
-        integer :: ncmpmx
+        integer(kind=8) :: ifi
+        integer(kind=8) :: nbno
+        integer(kind=8) :: prno(*)
+        integer(kind=8) :: nueq(*)
+        integer(kind=8) :: nec
+        integer(kind=8) :: dg(*)
+        integer(kind=8) :: ncmpmx
         complex(kind=8) :: vale(*)
         character(len=*) :: nomcmp(*)
         character(len=*) :: titr
         character(len=*) :: nomnoe(*)
         character(len=*) :: nomsd
         character(len=*) :: nomsym
-        integer :: ir
-        integer :: numnoe(*)
+        integer(kind=8) :: ir
+        integer(kind=8) :: numnoe(*)
         aster_logical :: lmasu
     end subroutine irdesc
 end interface

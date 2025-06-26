@@ -33,7 +33,7 @@ interface
         use HHO_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=24) :: numedd
         character(len=24) :: numfix
         type(NL_DS_Material), intent(in) :: ds_material
@@ -43,7 +43,7 @@ interface
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         type(NL_DS_System), intent(in) :: ds_system
         type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(HHO_Field), intent(in) :: hhoField
         character(len=24) :: sderro
@@ -67,6 +67,6 @@ interface
         type(NL_DS_Contact), intent(inout) :: ds_contact
         type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
         real(kind=8) :: eta
-        integer :: nbiter
+        integer(kind=8) :: nbiter
     end subroutine nmnewt
 end interface

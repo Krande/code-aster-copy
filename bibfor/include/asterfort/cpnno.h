@@ -20,9 +20,9 @@
 !
 interface
     subroutine cpnno(main,numa,coor,inc,nbno,nomnoe)
-        integer :: nbno
-        integer :: inc
-        integer :: numa
+        integer(kind=8) :: nbno
+        integer(kind=8) :: inc
+        integer(kind=8) :: numa
         real(kind=8) :: coor(3, *)
         character(len=8) :: main
         character(len=24) :: nomnoe

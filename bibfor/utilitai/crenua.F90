@@ -30,9 +30,9 @@ subroutine crenua(nuagez, gran_name, nb_point, nb_dim, nb_cmp_max, &
 !
     character(len=*), intent(in) :: nuagez
     character(len=*), intent(in) :: gran_name
-    integer, intent(in) :: nb_point
-    integer, intent(in) :: nb_dim
-    integer, intent(in) :: nb_cmp_max
+    integer(kind=8), intent(in) :: nb_point
+    integer(kind=8), intent(in) :: nb_dim
+    integer(kind=8), intent(in) :: nb_cmp_max
     aster_logical, intent(in) :: l_crea_nual
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,10 +50,10 @@ subroutine crenua(nuagez, gran_name, nb_point, nb_dim, nb_cmp_max, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: length
+    integer(kind=8) :: length
     character(len=4) :: type_scal
     character(len=19) :: nuage
-    integer :: jnuai, jnual, jnuav, jnuax
+    integer(kind=8) :: jnuai, jnual, jnuav, jnuax
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -22,20 +22,20 @@ interface
     subroutine d1crit(zimat, nmnbn, nmplas, nmdpla, nmprox,&
                       cnbn, cplas, rpara, cief, cdeps,&
                       cdtg, cier, cdepsp, dc, bend)
-        integer :: zimat
+        integer(kind=8) :: zimat
         real(kind=8) :: nmnbn(6)
         real(kind=8) :: nmplas(2, 3)
         real(kind=8) :: nmdpla(2, 2)
-        integer :: nmprox(2)
+        integer(kind=8) :: nmprox(2)
         real(kind=8) :: cnbn(6)
         real(kind=8) :: cplas(2, 3)
         real(kind=8) :: rpara(3)
-        integer :: cief
+        integer(kind=8) :: cief
         real(kind=8) :: cdeps(6)
         real(kind=8) :: cdtg(6, 6)
-        integer :: cier
+        integer(kind=8) :: cier
         real(kind=8) :: cdepsp(6)
         real(kind=8) :: dc(6, 6)
-        integer :: bend
+        integer(kind=8) :: bend
     end subroutine d1crit
 end interface

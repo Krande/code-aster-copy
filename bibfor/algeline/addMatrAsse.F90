@@ -43,10 +43,10 @@ subroutine addMatrAsse(mat1, mat2, coeff1, coeff2, matres)
     real(kind=8), intent(in) :: coeff1, coeff2
 
 !
-    integer, parameter :: nbmatr = 2
+    integer(kind=8), parameter :: nbmatr = 2
     character(len=19), parameter :: nameMatr = "&MATRADD"
     character(len=19) :: listMatr(2), mat19
-    integer :: iocc, jrefe, jpomr, iret
+    integer(kind=8) :: iocc, jrefe, jpomr, iret
     aster_logical :: reuse
 ! ------------------------------------------------------------------
 !

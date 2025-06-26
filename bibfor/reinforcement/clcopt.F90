@@ -34,7 +34,7 @@ subroutine clcopt(nb, fcttab, atab, ax, ay)
 !
     implicit none
 !
-    integer :: nb
+    integer(kind=8) :: nb
     real(kind=8) :: fcttab(nb, 3)
     real(kind=8) :: atab(nb)
     real(kind=8) :: ax
@@ -45,7 +45,7 @@ subroutine clcopt(nb, fcttab, atab, ax, ay)
 !
 !       DIMENSIONNEMENT DES TABLEAUX DE POINTS DU POLYGONE
 !       BORDANT LE DOMAINE DE VALIDITE
-    integer :: plgnnb
+    integer(kind=8) :: plgnnb
 !
 !         ******   POLYGONE BORDANT LE DOMAINE DE VALIDITE  ******
 !           TABLEAUX DES POSITIONS (SURDIMENSIONNES)
@@ -53,28 +53,28 @@ subroutine clcopt(nb, fcttab, atab, ax, ay)
     real(kind=8) :: yp(nb*2)
 !
 !       ANGLES THETA
-    integer :: ap(nb*2)
+    integer(kind=8) :: ap(nb*2)
 !
 !       TABLEAU DE SUIVI DES INDICES
 !       (CONTIENT A CHAQUE INDICE LE SUIVANT)
 !          - DONNE LA SEQUENCE DES POINTS DU POLYGONE (CHAINE),
 !            TERMINEE PAR 0
 !          - FOURNIT LE NUMERO LIBRE SUIVANT QUAND CELUI-CI EST UTILISE
-    integer :: inext(nb*2)
+    integer(kind=8) :: inext(nb*2)
 !
 !       PREMIER INDICE LIBRE
 !       (L'INDICE LIBRE SUIVANT IFREE <- INEXT(IFREE))
-    integer :: ifree
+    integer(kind=8) :: ifree
 !
 !       INDICES DE SEGMENT COURANT
 !         I...1 = INDICE DE DEBUT DU SEGMENT
 !         I...2 = INDICE DE FIN DE SEGMENT
-    integer :: icur1, icur2
+    integer(kind=8) :: icur1, icur2
 !
 !       INDICES DE NOUVEAU SEGMENT
 !         I...1 = INDICE DE DEBUT DU SEGMENT
 !         I...2 = INDICE DE FIN DE SEGMENT
-    integer :: inew1, inew2
+    integer(kind=8) :: inew1, inew2
 !
 !       CARACTERISTIQUE DES SEGMENTS (CALCUL DE L'INTERSECTION)
     real(kind=8) :: phicur
@@ -84,7 +84,7 @@ subroutine clcopt(nb, fcttab, atab, ax, ay)
     real(kind=8) :: tmp0
     real(kind=8) :: tmp1
 !
-    integer :: i, ii, j
+    integer(kind=8) :: i, ii, j
 !
 !       INITIALISATION DES SUIVANTS
     plgnnb = nb*2

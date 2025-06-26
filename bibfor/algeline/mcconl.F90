@@ -26,7 +26,7 @@ subroutine mcconl(oper, lmat, neq2, typev, cvect, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: lmat, neq2, nvect
+    integer(kind=8) :: lmat, neq2, nvect
     character(len=1) :: typev
     character(len=4) :: oper
     complex(kind=8) :: cvect(*)
@@ -52,7 +52,7 @@ subroutine mcconl(oper, lmat, neq2, typev, cvect, &
 !
     character(len=1) :: ftype(2), type, typecn
     character(len=24) :: conl
-    integer :: ieq, ii, ind, iret, ive, jconl, neq, neqc
+    integer(kind=8) :: ieq, ii, ind, iret, ive, jconl, neq, neqc
     real(kind=8) :: realve, rimagv
 !     ------------------------------------------------------------------
     data ftype/'R', 'C'/

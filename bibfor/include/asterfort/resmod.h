@@ -21,8 +21,8 @@
 interface
     subroutine resmod(bmodal, nbmode, neq, numgen, mdgene,&
                       noecho, modsst)
-        integer :: neq
-        integer :: nbmode
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbmode
         real(kind=8) :: bmodal(neq, *)
         character(len=24) :: numgen
         character(len=24) :: mdgene

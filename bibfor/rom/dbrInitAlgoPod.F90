@@ -52,12 +52,12 @@ subroutine dbrInitAlgoPod(base, paraPod)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: model, mesh
     character(len=24) :: compor
     character(len=24), parameter :: listVariNume = '&&LIST_VARInNUME'
-    integer :: iCell, iCmp, nbCell, nbVari
-    integer, pointer :: listCell(:) => null()
+    integer(kind=8) :: iCell, iCmp, nbCell, nbVari
+    integer(kind=8), pointer :: listCell(:) => null()
     character(len=8), pointer :: variNume(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

@@ -28,7 +28,7 @@ subroutine ptgy01(sk, nl, xnu, rho, a, &
 !
     real(kind=8) :: sk(*)
     real(kind=8) :: xnu, rho, a, xl, xiy, xiz, ey, ez
-    integer :: nl, ist
+    integer(kind=8) :: nl, ist
 !    -------------------------------------------------------------------
 !    * CE SOUS PROGRAMME CALCULE LA MATRICE D'AMORITSSEMENT GYROSCOPIQUE
 !      DE L'ELEMENT DE POUTRE DROITE A SECTION CONSTANTE.
@@ -65,12 +65,12 @@ subroutine ptgy01(sk, nl, xnu, rho, a, &
 !
 !
 !
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     character(len=8) :: nomail
     real(kind=8) :: zero
     real(kind=8) :: phi, com
     real(kind=8) :: ip, alfinv
-    integer :: i, j, ipoint
+    integer(kind=8) :: i, j, ipoint
 !
     parameter(zero=0.d0)
 !

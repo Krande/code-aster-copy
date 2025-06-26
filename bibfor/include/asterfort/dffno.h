@@ -21,9 +21,9 @@
 interface
     subroutine dffno(elrefe, ndim, nno, nnos, dff)
         character(len=*) :: elrefe
-        integer :: ndim
-        integer :: nno
-        integer :: nnos
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnos
         real(kind=8) :: dff(*)
     end subroutine dffno
 end interface

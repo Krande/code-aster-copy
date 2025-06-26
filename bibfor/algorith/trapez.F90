@@ -26,12 +26,12 @@ subroutine trapez(x, y, npt, aire)
 ! ARGUMENTS
 ! ---------
     implicit none
-    integer :: npt
+    integer(kind=8) :: npt
     real(kind=8) :: x(*), y(*), aire
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: i
+    integer(kind=8) :: i
 !
 !
     aire = 0.0d0

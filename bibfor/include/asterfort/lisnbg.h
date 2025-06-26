@@ -22,6 +22,6 @@ interface
     function lisnbg(lischa, genchz)
         character(len=19) :: lischa
         character(len=*) :: genchz
-        integer :: lisnbg
+        integer(kind=8) :: lisnbg
     end function lisnbg
 end interface

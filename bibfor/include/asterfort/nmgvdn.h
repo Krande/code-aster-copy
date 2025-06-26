@@ -20,10 +20,10 @@
 !
 interface
     subroutine nmgvdn(ndim, nno1, nno2, iu, ia)
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
-        integer :: iu(ndim*nno1)
-        integer :: ia(nno2)
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
+        integer(kind=8) :: iu(ndim*nno1)
+        integer(kind=8) :: ia(nno2)
     end subroutine nmgvdn
 end interface

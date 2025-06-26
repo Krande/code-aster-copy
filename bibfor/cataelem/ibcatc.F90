@@ -22,7 +22,7 @@ subroutine ibcatc(type, iunit, ier)
 #include "asterfort/inccat.h"
 #include "asterfort/lccata.h"
     character(len=*) :: type
-    integer :: iunit, ier
+    integer(kind=8) :: iunit, ier
 ! MAIN DE LA LECTURE DES CATALOGUE
 !     -----------------------------------------------------------------
 !

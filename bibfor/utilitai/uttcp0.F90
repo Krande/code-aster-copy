@@ -22,7 +22,7 @@ subroutine uttcp0(indi, para, nbv, temps)
 #include "asterc/uttcsm.h"
 #include "asterc/uttrst.h"
 #include "asterfort/utmess.h"
-    integer :: indi, nbv
+    integer(kind=8) :: indi, nbv
     real(kind=8) :: temps(nbv)
     character(len=*) :: para
 ! ----------------------------------------------------------------------
@@ -49,11 +49,11 @@ subroutine uttcp0(indi, para, nbv, temps)
 !               TEMPS(6) TEMPS CPU SYSTEME TOTAL POUR L'INDICE INDI
 !               TEMPS(7) TEMPS ELAPSED POUR L'INDICE INDI
 ! ----------------------------------------------------------------------
-    integer :: nb1, nb2, nb
+    integer(kind=8) :: nb1, nb2, nb
     parameter(nb1=0, nb2=200, nb=nb2-nb1+1)
     real(kind=8) :: uscpui(nb1:nb2), sycpui(nb1:nb2), elapsi(nb1:nb2)
     real(kind=8) :: uscpu(nb1:nb2), sycpu(nb1:nb2), elaps(nb1:nb2)
-    integer :: nbappe(nb1:nb2), k, nbt
+    integer(kind=8) :: nbappe(nb1:nb2), k, nbt
     character(len=5) :: kpara, parini(nb1:nb2), valk(2)
 !
     real(kind=8) :: t(7), tcsm(3), tpres

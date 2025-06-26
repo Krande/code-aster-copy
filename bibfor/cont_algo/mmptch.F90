@@ -48,7 +48,7 @@ subroutine mmptch(ds_contact)
     character(len=19) :: sdappa
     character(len=24) :: sdappa_tgno, sdappa_tgel
     character(len=24) :: sdappa_mpib, sdappa_mpic
-    integer :: iret, length
+    integer(kind=8) :: iret, length
     character(len=16), pointer :: valk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

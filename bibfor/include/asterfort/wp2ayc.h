@@ -22,11 +22,11 @@ interface
     subroutine wp2ayc(lmatra, lmasse, lamor, sigma, lbloq,&
                       yh, yb, zh, zb, u1,&
                       u2, u3, n, solveu)
-        integer :: lmatra
-        integer :: lmasse
-        integer :: lamor
+        integer(kind=8) :: lmatra
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lamor
         complex(kind=8) :: sigma
-        integer :: lbloq(*)
+        integer(kind=8) :: lbloq(*)
         complex(kind=8) :: yh(*)
         complex(kind=8) :: yb(*)
         complex(kind=8) :: zh(*)
@@ -34,7 +34,7 @@ interface
         complex(kind=8) :: u1(*)
         complex(kind=8) :: u2(*)
         complex(kind=8) :: u3(*)
-        integer :: n
+        integer(kind=8) :: n
         character(len=19) :: solveu
     end subroutine wp2ayc
 end interface

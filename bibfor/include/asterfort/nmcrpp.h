@@ -21,7 +21,7 @@
 interface
     subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
         character(len=*) :: motfaz
-        integer :: iocc
+        integer(kind=8) :: iocc
         real(kind=8) :: prec
         character(len=8) :: criter
         real(kind=8) :: tole

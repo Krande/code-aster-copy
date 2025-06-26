@@ -30,7 +30,7 @@ interface
                       vectcm, vectfm)
         character(len=4), intent(in) :: phase
         aster_logical, intent(in) :: l_pena_cont, l_pena_fric, l_large_slip
-        integer, intent(in) :: ndim, nnm
+        integer(kind=8), intent(in) :: ndim, nnm
         real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
         real(kind=8), intent(in) :: wpg, ffm(9), dffm(2,9), jacobi, jeu
         real(kind=8), intent(in) :: coefac, coefaf, lambda, coefff

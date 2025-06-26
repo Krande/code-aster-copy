@@ -79,12 +79,12 @@ contains
         type(HHO_matrix), intent(in) :: gradrec
         character(len=*), intent(in) :: fami
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(*)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: carcri(*)
-        integer, intent(in) :: lgpg
-        integer, intent(in) :: ncomp
+        integer(kind=8), intent(in) :: lgpg
+        integer(kind=8), intent(in) :: ncomp
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: depl_prev(MSIZE_TDOFS_VEC)
@@ -97,7 +97,7 @@ contains
         real(kind=8), intent(inout) :: rhs(MSIZE_TDOFS_VEC)
         real(kind=8), intent(inout) :: sigp(ncomp, *)
         real(kind=8), intent(inout) :: vip(lgpg, *)
-        integer, intent(inout) :: codret
+        integer(kind=8), intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -130,7 +130,7 @@ contains
 !   Out codret      : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: ksp = 1
+        integer(kind=8), parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8) :: E_prev_coeff(MSIZE_CELL_MAT), E_incr_coeff(MSIZE_CELL_MAT)
@@ -138,8 +138,8 @@ contains
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), bT(MSIZE_CELL_MAT)
         type(HHO_matrix) :: AT, TMP
-        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
-        integer :: cod(27)
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        integer(kind=8) :: cod(27)
         aster_logical :: l_lhs, l_rhs
 ! --------------------------------------------------------------------------------------------------
 !
@@ -281,7 +281,7 @@ contains
         type(HHO_Quadrature), intent(in) :: hhoQuadCellRigi
         type(HHO_matrix), intent(in) :: gradrec
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: angmas(*)
@@ -309,7 +309,7 @@ contains
         real(kind=8) :: coorpg(3), weight
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         type(HHO_matrix) :: AT, TMP
-        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym, nb_sig
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -378,7 +378,7 @@ contains
         real(kind=8), intent(in) :: stress(6)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gbs_cmp
+        integer(kind=8), intent(in) :: gbs_cmp
         real(kind=8), intent(inout) :: bT(MSIZE_CELL_MAT)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -394,7 +394,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_stress(6)
-        integer :: i, deca
+        integer(kind=8) :: i, deca
 ! --------------------------------------------------------------------------------------------------
 !
         qp_stress = weight*stress
@@ -435,8 +435,8 @@ contains
         real(kind=8), intent(in) :: module_tang(6, 6)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gbs_sym
-        integer, intent(in) :: gbs_cmp
+        integer(kind=8), intent(in) :: gbs_sym
+        integer(kind=8), intent(in) :: gbs_cmp
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -453,7 +453,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Cgphi(6, MSIZE_CELL_MAT)
-        integer :: i, j, k, row
+        integer(kind=8) :: i, j, k, row
 ! --------------------------------------------------------------------------------------------------
 !
 ! --------- Eval (C : sgphi)_T
@@ -513,7 +513,7 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in) :: gbs_cmp
+        integer(kind=8), intent(in) :: gbs_cmp
         real(kind=8), intent(in) :: module_tang(6, 6)
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: weight
@@ -531,7 +531,7 @@ contains
 !   Out Agphi       : matrix of scalar product
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, col, k
+        integer(kind=8) :: i, col, k
         real(kind=8) :: qp_C(6, 6)
 ! --------------------------------------------------------------------------------------------------
 !
@@ -576,7 +576,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: mat(*)
         real(kind=8), intent(out) :: mat_sym(6)
 !
@@ -615,7 +615,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(out) :: mat(*)
         real(kind=8), intent(in) :: mat_sym(6)
 !
@@ -652,7 +652,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: nb_sig
+        integer(kind=8), intent(in) :: nb_sig
         real(kind=8), intent(in) :: dsidep(nb_sig, nb_sig)
         real(kind=8), intent(out) :: dsidep3D(6, 6)
 !
@@ -662,7 +662,7 @@ contains
 !   tranform a tensor from nb_sig to 6 and add symetric notation
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, j
+        integer(kind=8) :: i, j
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
 !
         select case (nb_sig)

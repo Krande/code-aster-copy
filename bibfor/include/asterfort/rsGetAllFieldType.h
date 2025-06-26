@@ -19,8 +19,8 @@
 interface
     subroutine rsGetAllFieldType(resultNameZ, nbField, listField, listStoreRefe)
         character(len=*), intent(in) :: resultNameZ
-        integer, intent(out) :: nbField
+        integer(kind=8), intent(out) :: nbField
         character(len=16), pointer :: listField(:)
-        integer, pointer :: listStoreRefe(:)
+        integer(kind=8), pointer :: listStoreRefe(:)
     end subroutine rsGetAllFieldType
 end interface

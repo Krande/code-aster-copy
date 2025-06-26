@@ -55,7 +55,7 @@ subroutine accep2(modmec, nbm, pgout, phiout, sphout)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iret, idm, ibid, nbm, inocha, isncha, nbchin, nbchou
+    integer(kind=8) :: iret, idm, ibid, nbm, inocha, isncha, nbchin, nbchou
     character(len=6) :: chaine
     character(len=8) :: moint, modmec
     parameter(nbchin=1, nbchou=1)

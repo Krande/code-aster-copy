@@ -33,12 +33,12 @@ subroutine infmaj()
 #include "asterc/getexm.h"
 #include "asterfort/getvis.h"
 #include "asterfort/iunifi.h"
-    integer :: nivuti, nivpgm, unite
+    integer(kind=8) :: nivuti, nivpgm, unite
     common/inf001/nivuti, nivpgm, unite
 !-----FIN DE INF001-----------------------------------------------------
 !
-    integer :: info, nbval
-    integer :: linfo
+    integer(kind=8) :: info, nbval
+    integer(kind=8) :: linfo
 !
     info = 1
 !

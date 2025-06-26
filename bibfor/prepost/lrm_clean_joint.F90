@@ -45,7 +45,7 @@ subroutine lrm_clean_joint(mesh, v_noex)
 #include "MeshTypes_type.h"
 !
     character(len=8) :: mesh
-    integer, intent(inout) :: v_noex(*)
+    integer(kind=8), intent(inout) :: v_noex(*)
 !
 !
 ! ---------------------------------------------------------------------------------------------
@@ -65,21 +65,21 @@ subroutine lrm_clean_joint(mesh, v_noex)
     character(len=8) :: k8bid
     character(len=19) :: comm_name, tag_name, joints
     character(len=24) :: name_join_e_old, send, name_join_r_old, recv, gcom, pgid
-    integer :: rang, domdis, nbproc, i_comm, nb_comm, domj_i, domdi2
-    integer :: nb_corr, ino, numno, deca
-    integer :: nb_node_e, nb_node_r
+    integer(kind=8) :: rang, domdis, nbproc, i_comm, nb_comm, domj_i, domdi2
+    integer(kind=8) :: nb_corr, ino, numno, deca
+    integer(kind=8) :: nb_node_e, nb_node_r
     mpi_int :: mpicou, count_send, count_recv, tag, id, mrank, msize
-    integer, pointer :: v_comm(:) => null()
-    integer, pointer :: v_tag(:) => null()
-    integer, pointer :: v_nojoe(:) => null()
-    integer, pointer :: v_nojor(:) => null()
-    integer, pointer :: v_domj(:) => null()
-    integer, pointer :: v_gcom(:) => null()
+    integer(kind=8), pointer :: v_comm(:) => null()
+    integer(kind=8), pointer :: v_tag(:) => null()
+    integer(kind=8), pointer :: v_nojoe(:) => null()
+    integer(kind=8), pointer :: v_nojor(:) => null()
+    integer(kind=8), pointer :: v_domj(:) => null()
+    integer(kind=8), pointer :: v_gcom(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
-    integer, pointer :: v_name_join_e_old(:) => null()
-    integer, pointer :: v_name_join_e_new(:) => null()
-    integer, pointer :: v_name_join_r_old(:) => null()
-    integer, pointer :: v_name_join_r_new(:) => null()
+    integer(kind=8), pointer :: v_name_join_e_old(:) => null()
+    integer(kind=8), pointer :: v_name_join_e_new(:) => null()
+    integer(kind=8), pointer :: v_name_join_r_old(:) => null()
+    integer(kind=8), pointer :: v_name_join_r_new(:) => null()
 !
     call asmpi_comm('GET', mpicou)
     call asmpi_info(rank=mrank, size=msize)

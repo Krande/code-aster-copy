@@ -25,7 +25,7 @@ subroutine cesexi(stop, jcesd, jcesl, ima, ipt, &
 #include "asterfort/codent.h"
 #include "asterfort/utmess.h"
     character(len=1) :: stop
-    integer :: jcesd, jcesl, ima, ipt, ispt, icmp, iad
+    integer(kind=8) :: jcesd, jcesl, ima, ipt, ispt, icmp, iad
 ! ------------------------------------------------------------------
 ! BUT : OBTENIR L'ADRESSE D'UNE CMP D'UN CHAM_ELEM_S
 ! ------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine cesexi(stop, jcesd, jcesl, ima, ipt, &
 !             AFFECTEE (I.E. ZL(JCESL-1+IAD)=.TRUE.)
     character(len=24) :: valk(4)
 !     ------------------------------------------------------------------
-    integer :: nbma, npt, nspt, ncmp, decal, iad1
+    integer(kind=8) :: nbma, npt, nspt, ncmp, decal, iad1
     character(len=8) :: k8mail, k8pt, k8spt, k8cmp
 !     ------------------------------------------------------------------
 !

@@ -24,24 +24,24 @@ interface
                       sigp, vect, matr, vim, vip,&
                       tm, tp, carcri, compor, typmod,&
                       lVect, lMatr, lSigm, codret)
-        integer :: lgpg
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: nddl
-        integer :: ndim
-        integer :: ipg
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: nddl
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ipg
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: vff2(nno2, npg)
-        integer :: idf2
+        integer(kind=8) :: idf2
         real(kind=8) :: dffr2(ndim-1, nno2, npg)
-        integer :: mate
+        integer(kind=8) :: mate
         real(kind=8) :: geom(ndim, nno2)
         real(kind=8) :: ddlm(nddl)
         real(kind=8) :: ddld(nddl)
-        integer :: iu(3, 16)
-        integer :: ip(8)
+        integer(kind=8) :: iu(3, 16)
+        integer(kind=8) :: ip(8)
         real(kind=8) :: sigm(2*ndim-1, npg)
         real(kind=8) :: sigp(2*ndim-1, npg)
         real(kind=8) :: vect(nddl)
@@ -55,6 +55,6 @@ interface
         real(kind=8), intent(in) :: carcri(*)
         character(len=16), intent(in) :: compor(*)
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine nmfihm
 end interface

@@ -27,6 +27,6 @@ interface
         real(kind=8) :: deldet(3)
         real(kind=8) :: theta1(3)
         real(kind=8) :: theta2(3)
-        integer :: iran(3)
+        integer(kind=8) :: iran(3)
     end subroutine ndgrot
 end interface

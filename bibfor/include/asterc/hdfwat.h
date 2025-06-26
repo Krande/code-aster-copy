@@ -20,10 +20,10 @@
 !
 interface
     function hdfwat(i, knom1, j, knom2)
-        integer :: j
+        integer(kind=8) :: j
         hid_t :: i
         character(len=*) :: knom1
         character(len=*) :: knom2(j)
-        integer :: hdfwat
+        integer(kind=8) :: hdfwat
     end function hdfwat
 end interface

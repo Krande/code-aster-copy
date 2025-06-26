@@ -21,7 +21,7 @@ subroutine nxdocn(parcri, parcrr)
 #include "asterc/getfac.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
-    integer :: parcri(3)
+    integer(kind=8) :: parcri(3)
     real(kind=8) :: parcrr(2)
 ! ----------------------------------------------------------------------
 !     SAISIE DES CRITERES DE CONVERGENCE
@@ -34,7 +34,7 @@ subroutine nxdocn(parcri, parcrr)
 !
 ! ----------------------------------------------------------------------
     character(len=16) :: nomcvg
-    integer :: n1, iocc
+    integer(kind=8) :: n1, iocc
 ! ----------------------------------------------------------------------
 ! --- RECUPERATION DES CRITERES DE CONVERGENCE
 !

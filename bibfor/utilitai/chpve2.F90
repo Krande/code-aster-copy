@@ -35,10 +35,10 @@ subroutine chpve2(nomch, nbtyp, tabtyp, ier)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: ier, nbtyp
+    integer(kind=8) :: ier, nbtyp
     character(len=*) :: tabtyp(nbtyp), nomch
 !
-    integer :: lc, i, j
+    integer(kind=8) :: lc, i, j
     character(len=19) :: noch
     character(len=4) :: loch, tych
     character(len=8) :: gdch, nomgd, blan8

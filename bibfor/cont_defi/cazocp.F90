@@ -46,11 +46,11 @@ subroutine cazocp(sdcont)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_defi
-    integer :: geom_nbiter, nb_resol, gcp_maxi, gcp_pre_maxi, cont_stat_elas
-    integer :: cont_mult, frot_maxi, geom_maxi
+    integer(kind=8) :: geom_nbiter, nb_resol, gcp_maxi, gcp_pre_maxi, cont_stat_elas
+    integer(kind=8) :: cont_mult, frot_maxi, geom_maxi
     character(len=16) :: gcp_rech_line, gcp_precond, reac_geom, cont_type, stop_singular, elim_edge
     character(len=16) :: algo_reso_cont, algo_reso_frot, algo_reso_geom
-    integer :: noc
+    integer(kind=8) :: noc
     real(kind=8) :: resi_abso, gcp_coef_resi
     real(kind=8) :: geom_resi, frot_resi, cont_resi
     aster_logical :: l_cont_gcp
@@ -59,7 +59,7 @@ subroutine cazocp(sdcont)
     character(len=24) :: sdcont_paracr
     real(kind=8), pointer :: v_sdcont_paracr(:) => null()
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

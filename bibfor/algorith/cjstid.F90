@@ -38,7 +38,7 @@ subroutine cjstid(mod, mater, nvi, eps, sig, &
 #include "asterfort/lcdevi.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, i, j, codret
+    integer(kind=8) :: ndt, ndi, nvi, i, j, codret
     real(kind=8) :: mater(14, 2), vin(*), sig(6), dsde(6, 6)
     real(kind=8) :: hook(6, 6), i1, s(6), sii, hts, siic, norm(6)
     real(kind=8) :: eps(6), epsv, beta, betapr

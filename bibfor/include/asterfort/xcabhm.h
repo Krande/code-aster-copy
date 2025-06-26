@@ -28,39 +28,39 @@ interface
                       he, heavn, yaenrh, adenhy, nfiss, nfh)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer :: dimenr
-        integer :: ndim
-        integer :: dimuel
-        integer :: nnops
-        integer :: nnop
-        integer :: nddls
-        integer :: nddlm
-        integer :: nnopm
-        integer :: kpi
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: ndim
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: nnops
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nddls
+        integer(kind=8) :: nddlm
+        integer(kind=8) :: nnopm
+        integer(kind=8) :: kpi
         real(kind=8) :: ff(nnop)
         real(kind=8) :: ff2(nnops)
         real(kind=8) :: dfdi(nnop, ndim)
         real(kind=8) :: dfdi2(nnops, ndim)
         real(kind=8) :: b(dimenr, dimuel)
-        integer :: nmec
-        integer :: addeme
-        integer :: addep1
-        integer :: np1
+        integer(kind=8) :: nmec
+        integer(kind=8) :: addeme
+        integer(kind=8) :: addep1
+        integer(kind=8) :: np1
         aster_logical :: axi
-        integer :: ivf
-        integer :: ipoids
-        integer :: idfde
-        integer :: heavn(nnop,5)
+        integer(kind=8) :: ivf
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: idfde
+        integer(kind=8) :: heavn(nnop,5)
         real(kind=8) :: poids
         real(kind=8) :: coorse(81)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: geom(ndim, nnop)
-        integer :: yaenrm
-        integer :: adenme
+        integer(kind=8) :: yaenrm
+        integer(kind=8) :: adenme
         real(kind=8) :: he(nfiss)
-        integer :: yaenrh
-        integer :: adenhy
-        integer :: nfiss
-        integer :: nfh
+        integer(kind=8) :: yaenrh
+        integer(kind=8) :: adenhy
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nfh
     end subroutine xcabhm
 end interface 

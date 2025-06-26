@@ -48,11 +48,11 @@ subroutine te0051(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     type(FE_Cell) :: FECell
-    integer :: jvGeom, jvCodret, jvIndicr, jvPara
-    integer :: nbNode, iNode
-    integer :: iadzi, iazk24
+    integer(kind=8) :: jvGeom, jvCodret, jvIndicr, jvPara
+    integer(kind=8) :: nbNode, iNode
+    integer(kind=8) :: iadzi, iazk24
     real(kind=8) :: nodeCoor(3, 4)
-    integer :: errorCode
+    integer(kind=8) :: errorCode
     real(kind=8) :: errorTole, distAbso, distRela
     aster_logical :: printError
     character(len=8) :: cellName

@@ -47,7 +47,7 @@ module THM_type
 ! ----- Type of FE: element where dof GONF and PRES exist
         aster_logical :: l_dof_2nd = ASTER_FALSE
 ! ----- Type of FE: number of phasis for each fluid
-        integer :: nb_phase(2) = 0
+        integer(kind=8) :: nb_phase(2) = 0
 ! ----- Flag for *JHMS elements
         aster_logical :: l_jhms = ASTER_FALSE
     end type THM_Element
@@ -69,23 +69,23 @@ module THM_type
 ! ----- Name of behaviour law for hydraulic
         character(len=16) :: rela_hydr = ' '
 ! ----- Index of behaviour law for coupling
-        integer :: nume_thmc = 0
+        integer(kind=8) :: nume_thmc = 0
 ! ----- Index of behaviour law for mechanic
-        integer :: nume_meca = 0
+        integer(kind=8) :: nume_meca = 0
 ! ----- Index of behaviour law for thermic
-        integer :: nume_ther = 0
+        integer(kind=8) :: nume_ther = 0
 ! ----- Index of behaviour law for hydraulic
-        integer :: nume_hydr = 0
+        integer(kind=8) :: nume_hydr = 0
 ! ----- Total number of internal variables
-        integer :: nb_vari = 0
+        integer(kind=8) :: nb_vari = 0
 ! ----- Number of internal variables for coupling
-        integer :: nb_vari_thmc = 0
+        integer(kind=8) :: nb_vari_thmc = 0
 ! ----- Number of internal variables for mechanic
-        integer :: nb_vari_meca = 0
+        integer(kind=8) :: nb_vari_meca = 0
 ! ----- Number of internal variables for thermic
-        integer :: nb_vari_ther = 0
+        integer(kind=8) :: nb_vari_ther = 0
 ! ----- Number of internal variables for hydraulic
-        integer :: nb_vari_hydr = 0
+        integer(kind=8) :: nb_vari_hydr = 0
 ! ----- advime: index of first internal variable for mechanic in internal variable vectors
 ! ----- advith: index of first internal variable for thermic in internal variable vectors
 ! ----- advihy: index of first internal variable for hydric in internal variable vectors
@@ -96,19 +96,19 @@ module THM_type
 ! ----- vicsat: index of internal state variable for saturation
 ! ----- vicpr1: index of internal state variable for saving capillary pressure (FV)
 ! ----- vicpr2: index of internal state variable for saving gaz pressure (FV)
-        integer :: advime = 0, advith = 0, advihy = 0, advico = 0
-        integer :: vihrho = 0, vicphi = 0, vicpvp = 0, vicsat = 0
-        integer :: vicpr1 = 0, vicpr2 = 0
+        integer(kind=8) :: advime = 0, advith = 0, advihy = 0, advico = 0
+        integer(kind=8) :: vihrho = 0, vicphi = 0, vicpvp = 0, vicsat = 0
+        integer(kind=8) :: vicpr1 = 0, vicpr2 = 0
 ! ----- Flag for thermic
         aster_logical :: l_temp = ASTER_FALSE
 ! ----- Flag for mechanic
         aster_logical :: l_meca = ASTER_FALSE
 ! ----- Total number of pressures (0, 1 or 2)
-        integer :: nb_pres = 0
+        integer(kind=8) :: nb_pres = 0
 ! ----- Number of phases by pressure
-        integer :: nb_phase(2) = 0
+        integer(kind=8) :: nb_phase(2) = 0
 ! ----- Type of saturation
-        integer :: satur_type = SATURATED
+        integer(kind=8) :: satur_type = SATURATED
 ! ----- Flag for Bishop stresses
         aster_logical :: l_stress_bishop = ASTER_TRUE
     end type THM_Behaviour
@@ -124,7 +124,7 @@ module THM_type
 
 ! - Biot parameters
     type THM_Biot
-        integer      :: type = BIOT_TYPE_ISOT
+        integer(kind=8)      :: type = BIOT_TYPE_ISOT
         real(kind=8) :: coef = 0.d0
         real(kind=8) :: l = 0.d0
         real(kind=8) :: n = 0.d0
@@ -133,7 +133,7 @@ module THM_type
 
 ! - Elasticity parameters
     type THM_Elas
-        integer :: id = 0
+        integer(kind=8) :: id = 0
         character(len=16) :: keyword = ' '
         real(kind=8) :: e = 0.d0, nu = 0.d0, g = 0.d0
         real(kind=8) :: e_l = 0.d0, e_t = 0.d0, e_n = 0.d0
@@ -146,7 +146,7 @@ module THM_type
     type THM_Ther
         real(kind=8) :: alpha = 0.d0
         real(kind=8) :: alpha_l = 0.d0, alpha_t = 0.d0, alpha_n = 0.d0
-        integer :: cond_type = -1
+        integer(kind=8) :: cond_type = -1
         real(kind=8) :: lambda = 0.d0
         real(kind=8) :: lambda_tl = 0.d0, lambda_tn = 0.d0, lambda_tt = 0.d0
         real(kind=8) :: dlambda = 0.d0

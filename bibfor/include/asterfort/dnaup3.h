@@ -26,19 +26,19 @@ interface
                       ipntr, workd, info, neqact, alpha,&
                       nsta, ddlsta, vstab, csta, ldynfa,&
                       ddlexc, redem)
-        integer :: ldq
-        integer :: ldh
-        integer :: ldv
-        integer :: np
-        integer :: nev
-        integer :: n
-        integer :: ido
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldh
+        integer(kind=8) :: ldv
+        integer(kind=8) :: np
+        integer(kind=8) :: nev
+        integer(kind=8) :: n
+        integer(kind=8) :: ido
         character(len=1) :: bmat
         character(len=2) :: which
         real(kind=8) :: tol
         real(kind=8) :: resid(n)
-        integer :: ishift
-        integer :: mxiter
+        integer(kind=8) :: ishift
+        integer(kind=8) :: mxiter
         real(kind=8) :: v(ldv, nev+np)
         real(kind=8) :: h(ldh, nev+np)
         real(kind=8) :: ritzr(nev+np)
@@ -46,17 +46,17 @@ interface
         real(kind=8) :: bounds(nev+np)
         real(kind=8) :: q(ldq, nev+np)
         real(kind=8) :: workl((nev+np)*(nev+np+3))
-        integer :: ipntr(13)
+        integer(kind=8) :: ipntr(13)
         real(kind=8) :: workd(3*n)
-        integer :: info
-        integer :: neqact
+        integer(kind=8) :: info
+        integer(kind=8) :: neqact
         real(kind=8) :: alpha
-        integer :: nsta
-        integer :: ddlsta(n)
+        integer(kind=8) :: nsta
+        integer(kind=8) :: ddlsta(n)
         real(kind=8) :: vstab(ldv)
         real(kind=8) :: csta
-        integer :: ldynfa
-        integer :: ddlexc(n)
-        integer :: redem
+        integer(kind=8) :: ldynfa
+        integer(kind=8) :: ddlexc(n)
+        integer(kind=8) :: redem
     end subroutine dnaup3
 end interface

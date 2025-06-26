@@ -55,7 +55,7 @@ subroutine betfpp(BEHinteg, &
     parameter(d13=.33333333333333d0)
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: nmat, nseuil
+    integer(kind=8) :: nmat, nseuil
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: pc, pt, dfcdlc, dftdlt, kuc, kut
 !
@@ -63,10 +63,10 @@ subroutine betfpp(BEHinteg, &
     real(kind=8) :: gc, gt, celas
     real(kind=8) :: e, ku, ke
     real(kind=8) :: lc0, epsi
-    integer :: typcom, typtra, iadzi, iazk24
+    integer(kind=8) :: typcom, typtra, iadzi, iazk24
     character(len=8) :: nomail
 !     ------------------------------------------------------------------
-    integer :: n, nd
+    integer(kind=8) :: n, nd
     common/tdim/n, nd
     data epsi/1.d-6/
 !     ------------------------------------------------------------------

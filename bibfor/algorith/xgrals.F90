@@ -46,7 +46,7 @@ subroutine xgrals(noma, ln, lt, grlt, grln)
 !              GRLT  :   GRADIENT DE LA LEVEL-SET TANGENTE
 !
 !
-    integer :: nchin, ier
+    integer(kind=8) :: nchin, ier
     character(len=8) :: lpain(2), lpaout(1)
     character(len=19) :: chgrlt, chgrln, chams, ligrel
     character(len=24) :: lchin(2), lchout(1)

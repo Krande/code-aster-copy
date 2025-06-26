@@ -53,7 +53,7 @@ subroutine mtdorc(factorKeyword, model, comporMeta)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbCmp
+    integer(kind=8) :: nbCmp
     character(len=8) :: mesh
     character(len=19), parameter :: comporMetaInfo = '&&MTDORC.INFO'
     type(META_PrepBehaviour) :: metaPrepBehaviour

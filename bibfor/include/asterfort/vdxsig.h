@@ -24,9 +24,9 @@ interface
         character(len=16) :: nomte
         character(len=*) :: option
         real(kind=8) :: xi(3, 9)
-        integer :: nb1
-        integer :: npgsr
-        integer :: nbcou
+        integer(kind=8) :: nb1
+        integer(kind=8) :: npgsr
+        integer(kind=8) :: nbcou
         real(kind=8) :: sigmpg(*)
         real(kind=8) :: effgt(8, 9)
     end subroutine vdxsig

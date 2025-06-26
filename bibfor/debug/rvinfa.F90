@@ -20,7 +20,7 @@ subroutine rvinfa(ifm, mcf, iocc, qnt, opt, &
                   opr, rep)
     implicit none
 #include "asterfort/getvr8.h"
-    integer :: ifm
+    integer(kind=8) :: ifm
     character(len=*) :: mcf, qnt, opt, opr, rep
 !     AFFICHAGE DES INFO SUR LA QUANTITE TRAITE
 !     ------------------------------------------------------------------
@@ -31,7 +31,7 @@ subroutine rvinfa(ifm, mcf, iocc, qnt, opt, &
 !     ------------------------------------------------------------------
 !
     character(len=80) :: mess
-    integer :: iocc, pt, n1
+    integer(kind=8) :: iocc, pt, n1
     real(kind=8) :: poin(3)
 !
     mess = ' '

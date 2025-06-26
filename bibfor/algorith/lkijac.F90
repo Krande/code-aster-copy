@@ -63,13 +63,13 @@ subroutine lkijac(mod, nmat, materf, timed, timef, &
 #include "asterfort/lkvacv.h"
 #include "asterfort/lkvarp.h"
 #include "asterfort/lkvarv.h"
-    integer :: nr, nmat, iret, nvi
+    integer(kind=8) :: nr, nmat, iret, nvi
     real(kind=8) :: deps(6), drdy(nr, nr), yf(nr), dy(nr), yd(nr)
     real(kind=8) :: materf(nmat, 2)
     real(kind=8) :: timed, timef, vind(nvi), vinf(nvi)
     character(len=8) :: mod
 !
-    integer :: i, j, varv, valv, valp, retcom, ndt, ndi
+    integer(kind=8) :: i, j, varv, valv, valp, retcom, ndt, ndi
     real(kind=8) :: sigft(6), depst(6), zero
     real(kind=8) :: devgii, vint(nvi), dt, devsig(6), i1
     real(kind=8) :: xivmax, xippic, dsdenl(6, 6), kk, mu

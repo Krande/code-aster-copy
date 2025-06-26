@@ -24,6 +24,6 @@ interface
         character(len=1), intent(in) :: base
         character(len=*), intent(in) :: gran_namez
         character(len=*), intent(in) :: meshz
-        integer, intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: nb_equa
     end subroutine crprno
 end interface

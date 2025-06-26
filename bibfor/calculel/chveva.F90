@@ -29,7 +29,7 @@ subroutine chveva(nbma, ligr1, ligr2, iret)
 #include "asterfort/liglma.h"
 #include "asterfort/wkvect.h"
     character(len=19) :: ligr1, ligr2
-    integer :: nbma, iret
+    integer(kind=8) :: nbma, iret
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,13 +47,13 @@ subroutine chveva(nbma, ligr1, ligr2, iret)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbma1, nbma2, numa, ima
-    integer :: ipres1, ipres2
+    integer(kind=8) :: nbma1, nbma2, numa, ima
+    integer(kind=8) :: ipres1, ipres2
     character(len=24) :: linum1, linum2
-    integer :: jligr1, jligr2
+    integer(kind=8) :: jligr1, jligr2
     character(len=24) :: linut1, linut2
     character(len=24) :: tbtrav
-    integer :: jtrav
+    integer(kind=8) :: jtrav
 !
 ! ----------------------------------------------------------------------
 !

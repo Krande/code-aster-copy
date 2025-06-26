@@ -19,8 +19,8 @@
 subroutine inslri(nbx, nbn, lister, listei, valr, &
                   vali)
     implicit none
-    integer :: nbx, nbn
-    integer :: listei(nbx), vali
+    integer(kind=8) :: nbx, nbn
+    integer(kind=8) :: listei(nbx), vali
     real(kind=8) :: lister(nbx), valr
 !
 !
@@ -41,7 +41,7 @@ subroutine inslri(nbx, nbn, lister, listei, valr, &
 !     LISTEI : liste actualisee des entiers
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, indx
+    integer(kind=8) :: ii, indx
 !
     if (nbn .eq. 0) then
         nbn = 1

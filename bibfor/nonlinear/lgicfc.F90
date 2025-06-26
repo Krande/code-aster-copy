@@ -30,7 +30,7 @@ subroutine lgicfc(refe, ndim, nno, nnob, npg, &
 #include "asterfort/nmbeps.h"
 #include "blas/dgemv.h"
     aster_logical :: refe, axi
-    integer :: ndim, nno, nnob, npg, nddl, idff, idffb, iw
+    integer(kind=8) :: ndim, nno, nnob, npg, nddl, idff, idffb, iw
     real(kind=8) :: geom(ndim, nno), ddl(nddl), vff(nno, npg), vffb(nnob, npg)
     real(kind=8) :: sief(3*ndim+4, npg)
     real(kind=8) :: fint(nddl)
@@ -57,9 +57,9 @@ subroutine lgicfc(refe, ndim, nno, nnob, npg, &
 ! ----------------------------------------------------------------------
     real(kind=8), parameter :: vrac2(6) = (/1.d0, 1.d0, 1.d0, sqrt(2.d0), sqrt(2.d0), sqrt(2.d0)/)
 ! ----------------------------------------------------------------------
-    integer :: g, n, i
-    integer :: nnu, nng, nnq, ndu, ndg, ndq, neu, neg, neq
-    integer :: xu(ndim, nno), xg(2, nnob), xq(2, nnob)
+    integer(kind=8) :: g, n, i
+    integer(kind=8) :: nnu, nng, nnq, ndu, ndg, ndq, neu, neg, neq
+    integer(kind=8) :: xu(ndim, nno), xg(2, nnob), xq(2, nnob)
     real(kind=8) :: depl(ndim, nno)
     real(kind=8) :: dffb(nnob, ndim)
     real(kind=8) :: r_ini, r_def, dff_ini(nno, ndim), dff_def(nno, ndim), poids_ini, poids_def

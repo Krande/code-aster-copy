@@ -30,10 +30,10 @@ subroutine get_value_mode_local(nmparz, listepara, valepara, iret, retpara_, nbp
     character(len=*), intent(in)   :: nmparz
     character(len=8), intent(in)   :: listepara(:)
     real(kind=8), intent(out)  :: valepara(:)
-    integer, intent(out)  :: iret
-    integer, optional, intent(out)  :: retpara_(:)
-    integer, optional, intent(in)   :: nbpara_
-    integer, optional, intent(out)  :: itab_
+    integer(kind=8), intent(out)  :: iret
+    integer(kind=8), optional, intent(out)  :: retpara_(:)
+    integer(kind=8), optional, intent(in)   :: nbpara_
+    integer(kind=8), optional, intent(out)  :: itab_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,10 +67,10 @@ subroutine get_value_mode_local(nmparz, listepara, valepara, iret, retpara_, nbp
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, ii1, ii2, kk, nbec, imodat, imodloc, nbscalmloc, itab
-    integer :: iparg, debugr, iachlo, ilchlo, lgcata, igd, nbin, inomcp
-    integer :: jceld, adiel, debgr2, decael, lonchl, itrou, nbcmp, iadgd
-    integer :: iposimloc, iposicarte
+    integer(kind=8) :: ii, ii1, ii2, kk, nbec, imodat, imodloc, nbscalmloc, itab
+    integer(kind=8) :: iparg, debugr, iachlo, ilchlo, lgcata, igd, nbin, inomcp
+    integer(kind=8) :: jceld, adiel, debgr2, decael, lonchl, itrou, nbcmp, iadgd
+    integer(kind=8) :: iposimloc, iposicarte
 !
     real(kind=8)        :: rundf
     character(len=8)    :: nompar
@@ -78,8 +78,8 @@ subroutine get_value_mode_local(nmparz, listepara, valepara, iret, retpara_, nbp
 !
     aster_logical       :: etendu, lretpara
 !
-    integer, parameter  :: maxentiercode = 5
-    integer             :: entiercode(maxentiercode)
+    integer(kind=8), parameter  :: maxentiercode = 5
+    integer(kind=8)             :: entiercode(maxentiercode)
 ! --------------------------------------------------------------------------------------------------
 !
 !   Le code ci-dessous est une copie des 1ères lignes de : "jevech"

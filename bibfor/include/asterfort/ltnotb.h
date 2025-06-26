@@ -23,6 +23,6 @@ interface
         character(len=*), intent(in) :: result
         character(len=*), intent(in) :: table_iden
         character(len=*), intent(out) :: table_name
-        integer, optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: iret_
     end subroutine ltnotb
 end interface

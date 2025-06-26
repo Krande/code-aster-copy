@@ -23,7 +23,7 @@
 interface
     subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
                       charg, oldfon)
-        integer :: ichar
+        integer(kind=8) :: ichar
         aster_logical :: fonc1
         character(len=19) :: char1
         aster_logical :: fonc2

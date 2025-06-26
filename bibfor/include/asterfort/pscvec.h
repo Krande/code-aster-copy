@@ -20,7 +20,7 @@
 !
 interface
     subroutine pscvec(n, s, x, y)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: s
         real(kind=8) :: x(n)
         real(kind=8) :: y(n)

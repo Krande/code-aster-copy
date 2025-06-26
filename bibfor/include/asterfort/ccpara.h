@@ -27,8 +27,8 @@ interface
         character(len=8) :: modele
         character(len=8) :: resuin
         character(len=8) :: resuou
-        integer :: numord
-        integer :: nordm1
+        integer(kind=8) :: numord
+        integer(kind=8) :: nordm1
         aster_logical :: exitim
         character(len=8) :: mater
         character(len=8) :: carael

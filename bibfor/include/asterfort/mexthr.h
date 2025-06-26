@@ -20,8 +20,8 @@
 !
 interface
     subroutine mexthr(n, a, lda)
-        integer :: lda
-        integer :: n
+        integer(kind=8) :: lda
+        integer(kind=8) :: n
         complex(kind=8) :: a(lda, *)
     end subroutine mexthr
 end interface

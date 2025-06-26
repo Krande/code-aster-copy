@@ -28,7 +28,7 @@ subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a, &
 !
 ! PARAMETRES SORTANTS
     real(kind=8) :: e0
-    integer :: cas
+    integer(kind=8) :: cas
 
 ! PARAMETRES D'ENTREE
 !     e_b   MODULE DU BETON MODIFIE
@@ -60,7 +60,7 @@ subroutine calc_axe_neutre(e_b, f_t, f_c, c, h, e_a, s_a, &
 
 ! PARAMETRES INTERNES
     real(kind=8) :: e_t, e_c, e_u, e_ta, a, b, s, d, f
-    integer :: action
+    integer(kind=8) :: action
 
 !     valeurs intermediaires
     e_t = f_t/e_b

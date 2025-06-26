@@ -25,11 +25,11 @@ interface
                           dist_frot_curr)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_cont_poin
-        integer, intent(in) :: indi_frot_prev
+        integer(kind=8), intent(in) :: i_cont_poin
+        integer(kind=8), intent(in) :: indi_frot_prev
         real(kind=8), intent(in) :: dist_frot_prev(3)
-        integer, intent(in) :: indi_cont_eval
-        integer, intent(in) :: indi_frot_eval
+        integer(kind=8), intent(in) :: indi_cont_eval
+        integer(kind=8), intent(in) :: indi_frot_eval
         real(kind=8), intent(in) :: dist_frot_curr(3)
     end subroutine mm_cycl_d3
 end interface

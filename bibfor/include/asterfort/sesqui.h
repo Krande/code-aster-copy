@@ -20,7 +20,7 @@
 !
 interface
     subroutine sesqui(mat, vect, ndim, normec)
-        integer :: ndim
+        integer(kind=8) :: ndim
         complex(kind=8) :: mat(*)
         complex(kind=8) :: vect(ndim)
         complex(kind=8) :: normec

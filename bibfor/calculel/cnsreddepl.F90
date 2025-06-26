@@ -34,11 +34,11 @@ subroutine cnsreddepl(cns1z)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: k, ncmp, ncmp1, j
+    integer(kind=8) :: k, ncmp, ncmp1, j
     character(len=19) :: cns1
     aster_logical :: l_cmp_present(6)
     character(len=8), pointer :: cnsc1(:) => null()
-    integer, pointer :: cnsd1(:) => null()
+    integer(kind=8), pointer :: cnsd1(:) => null()
     character(len=8) :: depl_cmp(6), compSelect(6)
     data depl_cmp/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/
 !     ------------------------------------------------------------------

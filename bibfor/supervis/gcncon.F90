@@ -37,8 +37,8 @@ subroutine gcncon(type, result)
 ! OUT RESULT : K8 : NOM UNIQUE = TYPE//NUMERO_UNIQUE
 !
 !     --- VARIABLES LOCALES --------------------------------------------
-    integer :: ipos
-    integer :: ier
+    integer(kind=8) :: ipos
+    integer(kind=8) :: ier
     character(len=24) :: numuni
     character(len=8) :: nomuni
 !     ------------------------------------------------------------------

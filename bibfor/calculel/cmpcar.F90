@@ -60,19 +60,19 @@ subroutine cmpcar(carte)
 !     -- RECUPERATION DES OBJETS JEVEUX DE LA CARTE:
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, i2lima, i3, i3desc, i3lima
-    integer :: i3noli, i3vale, i4, iad, iad1, iad2
-    integer :: iadgp, ianoma, iavale
-    integer :: iavalp, iavtra, ico, icompt, iedit
-    integer :: igd, ii, irtnu, isigne, j, k, n
-    integer :: n1, nb, nbedi3, nbedit, nbmato, nboc, ncmp
-    integer :: nec, num1, num2
+    integer(kind=8) :: i, i1, i2, i2lima, i3, i3desc, i3lima
+    integer(kind=8) :: i3noli, i3vale, i4, iad, iad1, iad2
+    integer(kind=8) :: iadgp, ianoma, iavale
+    integer(kind=8) :: iavalp, iavtra, ico, icompt, iedit
+    integer(kind=8) :: igd, ii, irtnu, isigne, j, k, n
+    integer(kind=8) :: n1, nb, nbedi3, nbedit, nbmato, nboc, ncmp
+    integer(kind=8) :: nec, num1, num2
     character(len=24), pointer :: noli(:) => null()
-    integer, pointer :: vret(:) => null()
-    integer, pointer :: lim2(:) => null()
-    integer, pointer :: numt(:) => null()
-    integer, pointer :: lipr(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: vret(:) => null()
+    integer(kind=8), pointer :: lim2(:) => null()
+    integer(kind=8), pointer :: numt(:) => null()
+    integer(kind=8), pointer :: lipr(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(carte//'.DESC', 'L', vi=desc)

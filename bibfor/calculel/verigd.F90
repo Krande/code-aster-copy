@@ -33,7 +33,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
 #include "asterfort/lxliis.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ncmp, iret
+    integer(kind=8) :: ncmp, iret
     character(len=*) :: nomgdz
     character(len=*) :: lcmp(ncmp)
 ! ---------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine verigd(nomgdz, lcmp, ncmp, iret)
 !----------------------------------------------------------------------
     character(len=24) :: valk(2)
 !     ------------------------------------------------------------------
-    integer :: gd, jcmpgd, ncmpmx, i1, k, ibid
+    integer(kind=8) :: gd, jcmpgd, ncmpmx, i1, k, ibid
     character(len=8) :: lcmp2(3000), nomgd
 ! DEB
     call jemarq()

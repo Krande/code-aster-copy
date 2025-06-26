@@ -19,10 +19,10 @@
 subroutine moyte2(fami, npg, poum, temp, iret)
     implicit none
 #include "asterfort/rcvarc.h"
-    integer :: npg, iret, iretm
+    integer(kind=8) :: npg, iret, iretm
     real(kind=8) :: temp
     character(len=*) :: fami, poum
-    integer :: kpg
+    integer(kind=8) :: kpg
     real(kind=8) :: tg, tgtot, tm, ti, ts
 !
     tgtot = 0.d0

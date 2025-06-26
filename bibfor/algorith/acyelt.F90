@@ -62,8 +62,8 @@ subroutine acyelt(nmcolz, nomobz, nob, cmat, ndim, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, ideb, iret, j, jdeb
-    integer :: llob, ndim, nob
+    integer(kind=8) :: i, iad, ibid, ideb, iret, j, jdeb
+    integer(kind=8) :: llob, ndim, nob
     real(kind=8) :: x
 !-----------------------------------------------------------------------
     call jemarq()

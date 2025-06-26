@@ -24,7 +24,7 @@ subroutine cjst(s, t)
 !       IN  S      :  MATRICE
 !       OUT T      :  T (SOUS FORME VECTORIELLE AVEC RAC2)
 !       ----------------------------------------------------------------
-    integer :: n, nd
+    integer(kind=8) :: n, nd
     real(kind=8) :: s(6), t(6), invrc2
     common/tdim/n, nd
 !

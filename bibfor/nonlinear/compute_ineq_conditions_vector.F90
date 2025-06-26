@@ -29,16 +29,16 @@ subroutine compute_ineq_conditions_vector(jsecmb, nbliai, neq, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jsecmb
+    integer(kind=8) :: jsecmb
     real(kind=8) :: jeuini, coefpn, lambdc
-    integer :: iliai, iliac
-    integer :: jmu
-    integer :: japcoe, japddl, japptr
-    integer :: jtacf
-    integer :: jjeux, njeux
-    integer :: ztacf
-    integer :: nbliai, neq
-    integer :: nbddl, jdecal
+    integer(kind=8) :: iliai, iliac
+    integer(kind=8) :: jmu
+    integer(kind=8) :: japcoe, japddl, japptr
+    integer(kind=8) :: jtacf
+    integer(kind=8) :: jjeux, njeux
+    integer(kind=8) :: ztacf
+    integer(kind=8) :: nbliai, neq
+    integer(kind=8) :: nbddl, jdecal
 !
 ! --- INITIALISATION DES MU
 !

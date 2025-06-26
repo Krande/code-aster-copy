@@ -24,7 +24,7 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor, &
 #include "asterfort/assert.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: nno, ipg, ipoids, idfde
+    integer(kind=8), intent(in) :: nno, ipg, ipoids, idfde
     real(kind=8), intent(in) :: coor(*)
     real(kind=8), intent(out) :: jac
     real(kind=8), optional, intent(out) :: dfdx(*)
@@ -47,7 +47,7 @@ subroutine dfdm3d(nno, ipg, ipoids, idfde, coor, &
 !                     JAC           <--  JACOBIEN AU POINT DE GAUSS
 ! ......................................................................
 !
-    integer :: i, j, ii, k, iadzi, iazk24
+    integer(kind=8) :: i, j, ii, k, iadzi, iazk24
     real(kind=8) :: poids, g(3, 3)
     real(kind=8) :: de, dn, dk, j11, j12, j13, j21, j22, j23, j31, j32, j33
     character(len=8) :: nomail

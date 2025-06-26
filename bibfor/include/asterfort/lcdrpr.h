@@ -25,7 +25,7 @@ interface
         character(len=*), intent(in) :: fami
         character(len=8) :: typmod(*)
         character(len=16) :: option
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: sigm(6)
         real(kind=8) :: depsm(6)
@@ -33,6 +33,6 @@ interface
         real(kind=8) :: vip(*)
         real(kind=8) :: sig(6)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcdrpr
 end interface

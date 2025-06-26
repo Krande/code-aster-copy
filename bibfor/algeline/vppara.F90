@@ -49,9 +49,9 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse, &
     character(len=1) :: ktyp
     character(len=16) :: typcon, typres
     character(len=*) :: resuk(*), nopara(*)
-    integer :: lraide, lmasse, lamor, mxresf, neq, nfreq, dlagr(*), dbloq(*)
-    integer :: resui(*)
-    integer :: nbpari, nbparr, nbpark, icom1, icom2, nfreqg
+    integer(kind=8) :: lraide, lmasse, lamor, mxresf, neq, nfreq, dlagr(*), dbloq(*)
+    integer(kind=8) :: resui(*)
+    integer(kind=8) :: nbpari, nbparr, nbpark, icom1, icom2, nfreqg
     real(kind=8) :: vectr(*), resur(*), omecor
     complex(kind=8) :: vectc(*)
     aster_logical :: lcomod
@@ -82,7 +82,7 @@ subroutine vppara(modes, typcon, knega, lraide, lmasse, &
 ! IN NFREQG    : IN   : NBRE TOTAL DE MODES
 !     ------------------------------------------------------------------
 !
-    integer :: ineg, iprec, iret, ilgcon, nrscr
+    integer(kind=8) :: ineg, iprec, iret, ilgcon, nrscr
     real(kind=8) :: rbid
     complex(kind=8) :: zbid
     aster_logical :: lns

@@ -32,8 +32,8 @@ subroutine dgffibres(nboccfib, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgr
 !
     implicit none
 !
-    integer :: nboccfib, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres1, maxfibre1, ncarfi1
-    integer           :: tousgroupesnbf(*)
+    integer(kind=8) :: nboccfib, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres1, maxfibre1, ncarfi1
+    integer(kind=8)           :: tousgroupesnbf(*)
     character(len=24) :: tousgroupesnom(*)
 !
 #include "jeveux.h"
@@ -45,10 +45,10 @@ subroutine dgffibres(nboccfib, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgr
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer           :: ioc, nbvfibre
+    integer(kind=8)           :: ioc, nbvfibre
     character(len=7)  :: k7bid
 !
-    integer           :: vali(3)
+    integer(kind=8)           :: vali(3)
     character(len=24) :: valk(3)
 !
     character(len=16) :: limcls(3), ltymcl(3)

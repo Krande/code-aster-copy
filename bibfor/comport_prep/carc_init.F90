@@ -50,8 +50,8 @@ subroutine carc_init(mesh, carcri, base)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8), parameter :: physQuantityName = 'CARCRI'
-    integer :: physQuantityNume
-    integer :: nbCmp, iCmp
+    integer(kind=8) :: physQuantityNume
+    integer(kind=8) :: nbCmp, iCmp
     real(kind=8), pointer :: carcriValv(:) => null()
     character(len=8), pointer :: cataNomcmp(:) => null()
     character(len=8), pointer :: carcriNcmp(:) => null()

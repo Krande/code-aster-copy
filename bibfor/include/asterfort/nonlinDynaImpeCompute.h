@@ -23,7 +23,7 @@ interface
                                      hval_incr,&
                                      hval_veelem, hval_veasse)
         use NonLin_Datastructure_type
-        integer, intent(in) :: phaseType
+        integer(kind=8), intent(in) :: phaseType
         character(len=19), intent(in) :: sddyna
         character(len=24), intent(in) :: model, nume_dof
         type(NL_DS_Measure), intent(inout) :: ds_measure

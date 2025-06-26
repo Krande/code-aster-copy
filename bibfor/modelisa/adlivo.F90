@@ -21,10 +21,10 @@ subroutine adlivo(mv, is, nvtot, nvoima, nscoma, &
     implicit none
 #include "asterf_types.h"
 #include "asterfort/utmess.h"
-    integer :: mv, is, nvtot
-    integer :: nvoima, nscoma
-    integer :: touvoi(1:nvoima, 1:nscoma+2)
-    integer :: iv, nsco, isco
+    integer(kind=8) :: mv, is, nvtot
+    integer(kind=8) :: nvoima, nscoma
+    integer(kind=8) :: touvoi(1:nvoima, 1:nscoma+2)
+    integer(kind=8) :: iv, nsco, isco
     aster_logical :: trma, trso
     character(len=8) :: nomail
 !

@@ -25,7 +25,7 @@ subroutine vppgec(lmasse, lamor, lraide, masseg, amorg, &
 #include "asterfort/jemarq.h"
 #include "asterfort/mcmult.h"
 #include "asterfort/wkvect.h"
-    integer :: lmasse, lamor, lraide, neq, nbvect, iddl(*)
+    integer(kind=8) :: lmasse, lamor, lraide, neq, nbvect, iddl(*)
     real(kind=8) :: masseg(*), amorg(*), raideg(*)
     complex(kind=8) :: vect(neq, *)
 !     CALCUL DES PARAMETRES MODAUX POUR DES VECTEURS COMPLEXES :
@@ -45,7 +45,7 @@ subroutine vppgec(lmasse, lamor, lraide, masseg, amorg, &
 !
     complex(kind=8) :: cval
     character(len=24) :: vecaux, vecau1
-    integer :: ieq, ivect, laux, laux1
+    integer(kind=8) :: ieq, ivect, laux, laux1
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

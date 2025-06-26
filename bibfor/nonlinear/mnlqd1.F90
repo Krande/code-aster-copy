@@ -47,20 +47,20 @@ subroutine mnlqd1(ind, imat, neq, ninc, nd, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: ind, imat(2), neq, ninc, nd, nchoc, h, hf
+    integer(kind=8) :: ind, imat(2), neq, ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, xcdl, adime, xvect, xtemp
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES VARIABLES LOCALES
 ! ----------------------------------------------------------------------
     real(kind=8) :: jeu, alpha, coef
-    integer :: iq1, itemp1, itemp2, itemp3, itemp4
-    integer :: j, i, nddl
-    integer :: icdl, iadim, itemp, k, ivec, nt, puismax
-    integer :: neqs, deb, hind, ddl, nddlx, nddly
+    integer(kind=8) :: iq1, itemp1, itemp2, itemp3, itemp4
+    integer(kind=8) :: j, i, nddl
+    integer(kind=8) :: icdl, iadim, itemp, k, ivec, nt, puismax
+    integer(kind=8) :: neqs, deb, hind, ddl, nddlx, nddly
     aster_logical :: stp
     character(len=8), pointer :: type(:) => null()
-    integer, pointer :: vnddl(:) => null()
-    integer, pointer :: vneqs(:) => null()
+    integer(kind=8), pointer :: vnddl(:) => null()
+    integer(kind=8), pointer :: vneqs(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
     real(kind=8), pointer :: raid(:) => null()

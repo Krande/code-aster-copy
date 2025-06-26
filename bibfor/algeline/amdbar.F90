@@ -374,8 +374,8 @@ subroutine amdbar(n, pe, iw, len, iwlen, &
 !       VARIABLES, AND THE EXTERNAL DEGREE OF ELEMENTS.
 !
 !       FOR ELEMENTS:
-    integer :: n, iwlen, pfree, ncmpa, iovflo, iw(iwlen), pe(n), degree(n)
-    integer :: nv(n), next(n), last(n), head(n), elen(n), w(n), len(n)
+    integer(kind=8) :: n, iwlen, pfree, ncmpa, iovflo, iw(iwlen), pe(n), degree(n)
+    integer(kind=8) :: nv(n), next(n), last(n), head(n), elen(n), w(n), len(n)
 !          IF W (E) = 0, THEN THE ELEMENT E IS ABSORBED
 !          IF W (E) .GE. WFLG, THEN W (E) - WFLG IS THE SIZE OF
 !               THE SET CARD(LE / LME), IN TERMS OF NONZEROS (THE
@@ -399,10 +399,10 @@ subroutine amdbar(n, pe, iw, len, iwlen, &
 ! LOCAL INTEGERS:
 !-----------------------------------------------------------------------
 !
-    integer :: deg, degme, dmax, e, elenme, eln, hash, hmod, i, ilast, inext, j
-    integer :: jlast, jnext, k, knt1, knt2, knt3, lenj, ln, maxmem, me, mem
-    integer :: mindeg, nel, newmem, nleft, nvi, nvj, nvpiv, slenme, wbig, we
-    integer :: wflg, wnvi, x
+    integer(kind=8) :: deg, degme, dmax, e, elenme, eln, hash, hmod, i, ilast, inext, j
+    integer(kind=8) :: jlast, jnext, k, knt1, knt2, knt3, lenj, ln, maxmem, me, mem
+    integer(kind=8) :: mindeg, nel, newmem, nleft, nvi, nvj, nvpiv, slenme, wbig, we
+    integer(kind=8) :: wflg, wnvi, x
 !
 ! DEG:          THE DEGREE OF A VARIABLE OR ELEMENT
 ! DEGME:        SIZE, CARD(LME), OF THE CURRENT ELEMENT,
@@ -449,7 +449,7 @@ subroutine amdbar(n, pe, iw, len, iwlen, &
 ! LOCAL POINTERS:
 !-----------------------------------------------------------------------
 !
-    integer :: p, p1, p2, p3, pdst, pend, pj, pme, pme1, pme2, pn, psrc
+    integer(kind=8) :: p, p1, p2, p3, pdst, pend, pj, pme, pme1, pme2, pn, psrc
 !
 !               ANY PARAMETER (PE (...) OR PFREE) OR LOCAL VARIABLE
 !               STARTING WITH "P" (FOR POINTER) IS AN INDEX INTO IW,

@@ -21,7 +21,7 @@
 interface
     subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd,&
                       valinc, solalg)
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: sddyna
         character(len=19) :: sdnume
         real(kind=8) :: deltat

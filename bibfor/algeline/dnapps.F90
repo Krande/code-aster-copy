@@ -187,8 +187,8 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 #include "blas/dlarf.h"
 #include "blas/dlaset.h"
 #include "blas/dscal.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -197,7 +197,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    integer :: kev, ldh, ldq, ldv, n, np
+    integer(kind=8) :: kev, ldh, ldq, ldv, n, np
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
@@ -217,7 +217,7 @@ subroutine dnapps(n, kev, np, shiftr, shifti, &
 !     | LOCAL SCALARS & ARRAYS |
 !     %------------------------%
 !
-    integer :: i, iend, ir, istart, j, jj, kplusp, msglvl, nr
+    integer(kind=8) :: i, iend, ir, istart, j, jj, kplusp, msglvl, nr
     aster_logical :: cconj, first
     real(kind=8) :: c, f, g, h11, h12, h21, h22, h32, r, s, sigmai, sigmar
     real(kind=8) :: smlnum, ulp, unfl, u(3), t, tau, tst1

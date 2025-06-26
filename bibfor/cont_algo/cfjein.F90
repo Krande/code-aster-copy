@@ -55,17 +55,17 @@ subroutine cfjein(mesh, ds_contact, disp_cumu_inst)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbddl, jdecal
-    integer :: iliai, ialarm
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbddl, jdecal
+    integer(kind=8) :: iliai, ialarm
     character(len=19) :: ddepl0
     character(len=24) :: jeuite, jeux
-    integer :: jjeuit, jjeux
+    integer(kind=8) :: jjeuit, jjeux
     character(len=24) :: apddl, apcoef, appoin
-    integer :: japddl, japcoe, japptr
+    integer(kind=8) :: japddl, japcoe, japptr
     character(len=24) :: apcofr
-    integer :: japcof
-    integer :: nbliai, neq, ndimg, nesmax
+    integer(kind=8) :: japcof
+    integer(kind=8) :: nbliai, neq, ndimg, nesmax
     aster_logical :: lgliss, lctfd, l_first_geom
     real(kind=8) :: aljeu
     real(kind=8) :: jeuold, jeuini, jexini, jeyini

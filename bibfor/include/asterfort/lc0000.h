@@ -27,9 +27,9 @@ interface
                       ndsde,       dsidep, icomp,    nvi_all, codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(inout) :: BEHinteg
-        integer :: imate, ndim, nvi_all, kpg, ksp
+        integer(kind=8) :: imate, ndim, nvi_all, kpg, ksp
         aster_logical, intent(in) :: l_epsi_varc
-        integer :: neps, nsig, ndsde
+        integer(kind=8) :: neps, nsig, ndsde
         real(kind=8) :: carcri(*), angmas(3)
         real(kind=8) :: instam, instap
         real(kind=8) :: epsm(neps), deps(neps)
@@ -41,8 +41,8 @@ interface
         character(len=16), intent(in) :: mult_comp
         character(len=8) :: typmod(*)
         character(len=*) :: fami
-        integer :: icomp
-        integer :: numlc
-        integer :: codret
+        integer(kind=8) :: icomp
+        integer(kind=8) :: numlc
+        integer(kind=8) :: codret
     end subroutine lc0000
 end interface

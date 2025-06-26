@@ -19,7 +19,7 @@
 subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr, &
                   nbsg1, nbsg2, nbsg3, saltij)
     implicit none
-    integer :: nbp12, nbp23, nbp13, nbsigr, nbsg1, nbsg2, nbsg3
+    integer(kind=8) :: nbp12, nbp23, nbp13, nbsigr, nbsg1, nbsg2, nbsg3
     real(kind=8) :: saltij(*)
     character(len=3) :: typass
 !
@@ -27,7 +27,7 @@ subroutine rc36f4(typass, nbp12, nbp23, nbp13, nbsigr, &
 !     ON MET LES TERMES CROISES DE SALT A ZERO
 !
 !     ------------------------------------------------------------------
-    integer :: i1, i2, isl
+    integer(kind=8) :: i1, i2, isl
 !     ------------------------------------------------------------------
 !
     if (typass .eq. '1_2') then

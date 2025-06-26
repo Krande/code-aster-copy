@@ -57,10 +57,10 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
     character(len=*), intent(in) :: questi
     character(len=*), intent(in) :: nomob
     character(len=*), intent(in) :: typeco
-    integer, intent(out), optional :: repi
+    integer(kind=8), intent(out), optional :: repi
     character(len=*), intent(out), optional :: repk
     character(len=*), intent(in), optional :: arret
-    integer, intent(out), optional :: ier
+    integer(kind=8), intent(out), optional :: ier
 !
 !     ------------------------------------------------------------------
 !     in:
@@ -80,7 +80,7 @@ subroutine dismoi(questi, nomob, typeco, repi, repk, &
     character(len=32) :: nomo1, repk1
     character(len=24) :: typec1, quest1
     character(len=1) :: arret2
-    integer :: repi1, ier1
+    integer(kind=8) :: repi1, ier1
 !
 ! DEB-------------------------------------------------------------------
 !

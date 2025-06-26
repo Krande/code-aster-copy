@@ -28,8 +28,8 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/rvinvt.h"
 !
-    integer :: tdisp, nbp, liste(nbp), nbt, nbordr, numini
-    integer :: tspaq
+    integer(kind=8) :: tdisp, nbp, liste(nbp), nbt, nbordr, numini
+    integer(kind=8) :: tspaq
     real(kind=8) :: vwork(tdisp)
     character(len=16) :: nomopt
     character(len=19) :: cxsr
@@ -66,11 +66,11 @@ subroutine vampli(vwork, tdisp, liste, nbt, nbordr, &
 !  - LA TAILLE DU SOUS-PAQUET EST EGALE A LA TAILLE DU <<PAQUET>> DE
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
-    integer :: nnoini, nbnop, nbnot, jcnrd, jcnrl
-    integer :: l, cnbno, kwork, somnow, ibidno, nunoe, inop
-    integer :: decal, i, j, adrsi, adrsj, k, icmp
-    integer :: jad, nmaini, nbmap, nbpgt, jcerd, jcerl
-    integer :: nbpg, nbpgp, sompgw, imap, ipg
+    integer(kind=8) :: nnoini, nbnop, nbnot, jcnrd, jcnrl
+    integer(kind=8) :: l, cnbno, kwork, somnow, ibidno, nunoe, inop
+    integer(kind=8) :: decal, i, j, adrsi, adrsj, k, icmp
+    integer(kind=8) :: jad, nmaini, nbmap, nbpgt, jcerd, jcerl
+    integer(kind=8) :: nbpg, nbpgp, sompgw, imap, ipg
 !
     real(kind=8) :: vresu(24)
     real(kind=8) :: vavmis, vatres, vmis, tres, trac, detr

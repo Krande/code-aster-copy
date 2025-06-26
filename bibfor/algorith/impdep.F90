@@ -22,12 +22,12 @@ subroutine impdep(isor, idep, ibl, dmoy, detyp, &
 !     IMPRESSION DES DEPLACEMENTS
 !
     implicit none
-    integer :: isor, idep
+    integer(kind=8) :: isor, idep
     real(kind=8) :: dmoy, detyp, drms, dmax, dmin
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibl
+    integer(kind=8) :: ibl
 !-----------------------------------------------------------------------
     if (idep .eq. 1) then
         if (ibl .eq. 1) then

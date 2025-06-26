@@ -27,7 +27,7 @@ subroutine cfconn(defico, jdecno, ino, posno)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
-    integer :: jdecno, ino, posno
+    integer(kind=8) :: jdecno, ino, posno
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,8 +47,8 @@ subroutine cfconn(defico, jdecno, ino, posno)
 !
 !
     character(len=24) :: nomaco
-    integer :: jnoma
-    integer :: numno
+    integer(kind=8) :: jnoma
+    integer(kind=8) :: numno
 !
 ! ----------------------------------------------------------------------
 !

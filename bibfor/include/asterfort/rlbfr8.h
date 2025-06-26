@@ -20,10 +20,10 @@
 !
 interface
     subroutine rlbfr8(nommat, neq, xsol, nbsm, typsym)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=*) :: nommat
         real(kind=8) :: xsol(neq, *)
-        integer :: nbsm
-        integer :: typsym
+        integer(kind=8) :: nbsm
+        integer(kind=8) :: typsym
     end subroutine rlbfr8
 end interface

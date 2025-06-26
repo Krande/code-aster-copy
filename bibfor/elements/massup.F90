@@ -52,10 +52,10 @@ subroutine massup(option, ndim, dlns, nno, nnos, &
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 !
-    integer :: i, j, k, l, kpg, ik, ijkl, dlns
-    integer :: ndim, nno, nnos, npg, mate, ipoids, idfde, imatuu
-    integer :: n1, n2, j2, k2, idiag
-    integer :: igeom, ivf, i2, idec, spt
+    integer(kind=8) :: i, j, k, l, kpg, ik, ijkl, dlns
+    integer(kind=8) :: ndim, nno, nnos, npg, mate, ipoids, idfde, imatuu
+    integer(kind=8) :: n1, n2, j2, k2, idiag
+    integer(kind=8) :: igeom, ivf, i2, idec, spt
 !
     real(kind=8) :: vff1(nno, npg), geom(ndim, nno), rho(1), r
     real(kind=8) :: a(ndim, ndim, nno, nno), matv(ndim*nno*(ndim*nno+1)/2)
@@ -63,7 +63,7 @@ subroutine massup(option, ndim, dlns, nno, nnos, &
     character(len=8) :: fami, poum
     character(len=16) :: phenom
     character(len=16) :: option
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
 !
 !
     idec = dlns-ndim

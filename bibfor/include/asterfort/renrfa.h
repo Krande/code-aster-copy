@@ -23,6 +23,6 @@ interface
         character(len=16) :: nomfor
         real(kind=8) :: valgrd
         real(kind=8) :: nrupt
-        integer :: icodre
+        integer(kind=8) :: icodre
     end subroutine renrfa
 end interface

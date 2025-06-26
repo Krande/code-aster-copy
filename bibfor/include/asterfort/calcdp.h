@@ -30,6 +30,6 @@ interface
         real(kind=8) :: epsi0
         real(kind=8) :: coefm
         real(kind=8) :: dp
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine calcdp
 end interface

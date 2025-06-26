@@ -45,12 +45,12 @@ module parameters_module
 !
 #include "asterf_types.h"
 !
-    integer, parameter :: ST_ER = 1
-    integer, parameter :: ST_OK = 0
-    integer, parameter :: ST_ER_PR0 = 4
-    integer, parameter :: ST_ER_OTH = 8
-    integer, parameter :: ST_UN_OTH = 16
-    integer, parameter :: ST_EXCEPT = 32
+    integer(kind=8), parameter :: ST_ER = 1
+    integer(kind=8), parameter :: ST_OK = 0
+    integer(kind=8), parameter :: ST_ER_PR0 = 4
+    integer(kind=8), parameter :: ST_ER_OTH = 8
+    integer(kind=8), parameter :: ST_UN_OTH = 16
+    integer(kind=8), parameter :: ST_EXCEPT = 32
 !
     mpi_int, parameter :: ST_TAG_CHK = to_mpi_int(123111)
     mpi_int, parameter :: ST_TAG_CNT = to_mpi_int(123222)

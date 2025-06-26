@@ -51,7 +51,7 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbocc, ibid, iexi
+    integer(kind=8) :: nbocc, ibid, iexi
     character(len=16) :: keywordfact
     character(len=19) :: elas_elem_s, elas_elem, ligrel
     aster_logical :: l_comp

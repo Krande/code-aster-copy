@@ -37,8 +37,8 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect, &
 #include "asterfort/vplcor.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ldynam, lmasse, ldynfa, neq, nbvect, nborto, ddlexc(*), ddllag(*)
-    integer :: nstoc
+    integer(kind=8) :: ldynam, lmasse, ldynfa, neq, nbvect, nborto, ddlexc(*), ddllag(*)
+    integer(kind=8) :: nstoc
     real(kind=8) :: prsudg, prorto, omeshi
     real(kind=8) :: alpha(*), beta(*), signes(*), vect(neq, *)
     character(len=19) :: solveu
@@ -83,13 +83,13 @@ subroutine vp2ini(ldynam, lmasse, ldynfa, neq, nbvect, &
     real(kind=8) :: valr(2)
     real(kind=8) :: dseed
     complex(kind=8) :: cbid
-    integer :: jsmdi
-    integer :: lx, lmx, lkx, irdiak, ivecd, isto, lkxsto, ieq
-    integer :: iaa, jj, lkx1, ivec, ivecp1, ivecm1, lkxp1, jvec
+    integer(kind=8) :: jsmdi
+    integer(kind=8) :: lx, lmx, lkx, irdiak, ivecd, isto, lkxsto, ieq
+    integer(kind=8) :: iaa, jj, lkx1, ivec, ivecp1, ivecm1, lkxp1, jvec
     character(len=1) :: kbid
     character(len=24) :: vale
     character(len=19) :: k19bid, matass, chcine, criter
-    integer :: iret
+    integer(kind=8) :: iret
 !     -----------------------------------------------------------------
     character(len=24), parameter :: work(4) = (&
         &/'&&VP2INI.VECTEUR_INITIAL', &

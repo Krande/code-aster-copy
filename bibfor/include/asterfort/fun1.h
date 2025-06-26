@@ -23,6 +23,6 @@ interface
         real(kind=8) :: area
         real(kind=8) :: a1
         real(kind=8) :: a2
-        integer :: n
+        integer(kind=8) :: n
     end subroutine fun1
 end interface

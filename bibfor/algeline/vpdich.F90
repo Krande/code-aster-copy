@@ -21,9 +21,9 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich, &
                   idet, nbpas, typres, nblagr, solveu)
     implicit none
 #include "asterfort/vpstur.h"
-    integer :: lraide, lmasse, ldynam
+    integer(kind=8) :: lraide, lmasse, ldynam
     real(kind=8) :: tol
-    integer :: mxfreq, nfreq, ieme(*), idet(*), nbpas(*), nblagr
+    integer(kind=8) :: mxfreq, nfreq, ieme(*), idet(*), nbpas(*), nblagr
     real(kind=8) :: valp(*), det(*)
     character(len=16) :: typres
     character(len=19) :: solveu
@@ -58,14 +58,14 @@ subroutine vpdich(lraide, lmasse, ldynam, tol, mxdich, &
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: dx, valpx
-    integer :: idx, ix
+    integer(kind=8) :: idx, ix
     real(kind=8) :: freq1, freq2
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iborn1, iborn2, ieme0, ieme1, ieme2, ieme3
-    integer :: iencor, ier, interv, ip, ipas, iplace, jdec
-    integer :: mxdich
+    integer(kind=8) :: i, iborn1, iborn2, ieme0, ieme1, ieme2, ieme3
+    integer(kind=8) :: iencor, ier, interv, ip, ipas, iplace, jdec
+    integer(kind=8) :: mxdich
 !-----------------------------------------------------------------------
     do i = 2, nfreq-1
 ! --- POUR OPTIMISER ON NE GARDE PAS LA FACTO (SI MUMPS)

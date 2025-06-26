@@ -22,8 +22,8 @@ interface
     subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
         character(len=8) :: sdmail
         character(len=8) :: nomma
-        integer :: lgrma(*)
-        integer :: nbgrma
-        integer :: codret
+        integer(kind=8) :: lgrma(*)
+        integer(kind=8) :: nbgrma
+        integer(kind=8) :: codret
     end subroutine ingrma
 end interface

@@ -22,12 +22,12 @@
             subroutine trasst(modgen,numsst,isst1,lisint,nbeq1,nbmod,   &
      &nbint,solveu)
               character(len=8) :: modgen
-              integer :: numsst
-              integer :: isst1
+              integer(kind=8) :: numsst
+              integer(kind=8) :: isst1
               character(len=24) :: lisint
-              integer :: nbeq1
-              integer :: nbmod
-              integer :: nbint
+              integer(kind=8) :: nbeq1
+              integer(kind=8) :: nbmod
+              integer(kind=8) :: nbint
               character(len=19) :: solveu
             end subroutine trasst
           end interface 

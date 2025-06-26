@@ -37,14 +37,14 @@ subroutine srlini(sigf, nr, yd, dy)
     !!! Variables globales
     !!!
 
-    integer :: nr
+    integer(kind=8) :: nr
     real(kind=8) :: sigf(6), yd(nr), dy(nr)
 
     !!!
     !!! Variables locales
     !!!
 
-    integer :: ndi, ndt, i
+    integer(kind=8) :: ndi, ndt, i
     common/tdim/ndt, ndi
 
     !!!

@@ -20,8 +20,8 @@
 !
 interface
     subroutine maskau(nbno, nbec, imask)
-        integer :: nbec
-        integer :: nbno
-        integer :: imask(nbno*nbec)
+        integer(kind=8) :: nbec
+        integer(kind=8) :: nbno
+        integer(kind=8) :: imask(nbno*nbec)
     end subroutine maskau
 end interface

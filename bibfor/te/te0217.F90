@@ -49,7 +49,7 @@ subroutine te0217(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icodre(1), kp, igrai, imate, ier, itemps
+    integer(kind=8) :: icodre(1), kp, igrai, imate, ier, itemps
     character(len=8) :: nompar(4), grxf, gryf, grzf
     character(len=8), parameter :: fami = "RIGI", poum = "+"
 !

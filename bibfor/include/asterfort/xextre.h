@@ -21,12 +21,12 @@
 interface
     subroutine xextre(iptbor, vectn, nbfacb, jbas, jborl,&
                       jdirol, jnvdir)
-        integer :: iptbor(2)
+        integer(kind=8) :: iptbor(2)
         real(kind=8) :: vectn(12)
-        integer :: nbfacb
-        integer :: jbas
-        integer :: jborl
-        integer :: jdirol
-        integer :: jnvdir
+        integer(kind=8) :: nbfacb
+        integer(kind=8) :: jbas
+        integer(kind=8) :: jborl
+        integer(kind=8) :: jdirol
+        integer(kind=8) :: jnvdir
     end subroutine xextre
 end interface

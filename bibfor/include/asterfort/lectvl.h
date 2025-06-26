@@ -25,15 +25,15 @@ interface
                       nbmesu, labs, amin, apas, lvalc,&
                       lvalr)
         aster_logical :: zcmplx
-        integer :: itype
-        integer :: nbabs
-        integer :: inatur
-        integer :: ideas
-        integer :: nbmesu
-        integer :: labs
+        integer(kind=8) :: itype
+        integer(kind=8) :: nbabs
+        integer(kind=8) :: inatur
+        integer(kind=8) :: ideas
+        integer(kind=8) :: nbmesu
+        integer(kind=8) :: labs
         real(kind=8) :: amin
         real(kind=8) :: apas
-        integer :: lvalc
-        integer :: lvalr
+        integer(kind=8) :: lvalc
+        integer(kind=8) :: lvalr
     end subroutine lectvl
 end interface

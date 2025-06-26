@@ -23,8 +23,8 @@ interface
                       ksi2, geom)
         character(len=8) :: noma
         character(len=19) :: newgeo
-        integer :: ndim
-        integer :: nummai
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nummai
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2
         real(kind=8) :: geom(3)

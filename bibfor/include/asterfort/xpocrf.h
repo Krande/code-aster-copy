@@ -22,7 +22,7 @@ interface
     subroutine xpocrf(modele, maxfem, mftot, nftot)
         character(len=8) :: modele
         character(len=8) :: maxfem
-        integer :: mftot
-        integer :: nftot
+        integer(kind=8) :: mftot
+        integer(kind=8) :: nftot
     end subroutine xpocrf
 end interface

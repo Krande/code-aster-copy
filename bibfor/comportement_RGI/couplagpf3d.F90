@@ -26,11 +26,11 @@ subroutine couplagpf3d(a, b, ngf, na, avean, &
 !   ************************************************************************
     implicit none
 
-    integer, intent(in) :: ngf, na, nc
+    integer(kind=8), intent(in) :: ngf, na, nc
     real(kind=8), intent(inout) :: a(ngf, ngf+1), b(ngf)
     real(kind=8), intent(in) :: avean, dgfa_ds(nc, 6), deltam, kmve66(6, 6)
 !
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !
     do i = 1, 6
         do j = 1, na

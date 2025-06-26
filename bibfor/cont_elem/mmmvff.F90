@@ -34,7 +34,7 @@ subroutine mmmvff(phase, l_pena_cont, l_pena_fric, &
 !
     character(len=4), intent(in) :: phase
     aster_logical, intent(in) :: l_pena_cont, l_pena_fric
-    integer, intent(in) :: ndim, nnl, nbcps
+    integer(kind=8), intent(in) :: ndim, nnl, nbcps
     real(kind=8), intent(in) :: ffl(9)
     real(kind=8), intent(in) :: wpg, jacobi, djeu(3), lambda
     real(kind=8), intent(in) :: coefaf, coefff
@@ -75,7 +75,7 @@ subroutine mmmvff(phase, l_pena_cont, l_pena_fric, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, k, l, ii, nbcpf
+    integer(kind=8) :: i, k, l, ii, nbcpf
     real(kind=8) :: tt(2)
     real(kind=8) :: nrese, inter(2)
     real(kind=8) :: dvitet(3)

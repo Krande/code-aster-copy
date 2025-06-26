@@ -71,12 +71,12 @@ subroutine te0337(option, nomte)
     real(kind=8) :: cosphi, sinphi, phi, cosmfi, sinmfi, phi0, ray
     real(kind=8) :: sigau, axgau, aygau, azgau, xgau, ygau, zgau
     real(kind=8) :: axxgau, ayygau, azzgau, axygau, axzgau, ayzgau
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, m
-    integer :: ndim, nno, ipg, npg1, inumod, nnos, jgano
-    integer :: idec, jdec, kdec, ldec
-    integer :: ino, jno, ii
-    integer :: i, j, isect, iorig, iorifi, iaxe
-    integer :: ivect1, ivect2, ivect3, ivect4, ivect5, ivect6
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, m
+    integer(kind=8) :: ndim, nno, ipg, npg1, inumod, nnos, jgano
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: ino, jno, ii
+    integer(kind=8) :: i, j, isect, iorig, iorifi, iaxe
+    integer(kind=8) :: ivect1, ivect2, ivect3, ivect4, ivect5, ivect6
     blas_int :: b_incx, b_incy, b_n
 !
 !

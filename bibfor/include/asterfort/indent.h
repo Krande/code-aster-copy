@@ -20,10 +20,10 @@
 !
 interface
     subroutine indent(i, ddls, ddlm, nnos, idec)
-        integer :: i
-        integer :: ddls
-        integer :: ddlm
-        integer :: nnos
-        integer :: idec
+        integer(kind=8) :: i
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nnos
+        integer(kind=8) :: idec
     end subroutine indent
 end interface

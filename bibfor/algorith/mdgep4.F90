@@ -21,7 +21,7 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon, &
     implicit none
 #include "asterfort/fointe.h"
 #include "asterfort/utmess.h"
-    integer :: neq
+    integer(kind=8) :: neq
     real(kind=8) :: psidel(neq, *), temps, rep
     character(len=8) :: nomfon(*)
 !    MULTI-APPUIS :
@@ -40,7 +40,7 @@ subroutine mdgep4(neq, nbexci, psidel, temps, nomfon, &
     real(kind=8) :: coef
 !
 !-----------------------------------------------------------------------
-    integer :: iddl, ier, iex, nbexci, cntr
+    integer(kind=8) :: iddl, ier, iex, nbexci, cntr
 !-----------------------------------------------------------------------
     blanc = '        '
     nompar = 'INST'

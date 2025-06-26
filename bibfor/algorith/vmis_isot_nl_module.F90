@@ -59,12 +59,12 @@ module vmis_isot_nl_module
 
     ! VMIS_ISOT_NL class
     type CONSTITUTIVE_LAW
-        integer       :: exception = 0
+        integer(kind=8)       :: exception = 0
         aster_logical :: elas, rigi, vari, pred, pilo
         aster_logical :: grvi = ASTER_FALSE
         aster_logical :: visc = ASTER_FALSE
         aster_logical :: luders = ASTER_FALSE
-        integer       :: ndimsi, itemax
+        integer(kind=8)       :: ndimsi, itemax
         real(kind=8)  :: cvuser
         real(kind=8)  :: phi = 0.d0
         real(kind=8)  :: telq
@@ -83,7 +83,7 @@ contains
 
         implicit none
 
-        integer, intent(in)          :: kpg, ksp, imate, itemax, ndimsi
+        integer(kind=8), intent(in)          :: kpg, ksp, imate, itemax, ndimsi
         real(kind=8), intent(in)    :: precvg
         character(len=16), intent(in):: option
         character(len=*), intent(in) :: fami
@@ -98,9 +98,9 @@ contains
 ! itemax    max number of iterations for the solver
 ! precvg    required accuracy (with respect to stress level))
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter   :: nbel = 2, nbec = 10
+        integer(kind=8), parameter   :: nbel = 2, nbec = 10
 ! --------------------------------------------------------------------------------------------------
-        integer             :: iok(nbel+nbec)
+        integer(kind=8)             :: iok(nbel+nbec)
         real(kind=8)        :: valel(nbel), valec(nbec)
         real(kind=8)        :: r8nan
         character(len=16)   :: nomel(nbel), nomec(nbec)
@@ -166,7 +166,7 @@ contains
 
         implicit none
 
-        integer, intent(in)          :: kpg, ksp, imate
+        integer(kind=8), intent(in)          :: kpg, ksp, imate
         real(kind=8), intent(in)     :: lag, apg
         character(len=*), intent(in) :: fami
         type(CONSTITUTIVE_LAW), intent(inout)      :: self
@@ -178,9 +178,9 @@ contains
 ! lag       Lagrangian value
 ! apg       nonlocal hardening variable
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter:: nb = 2
+        integer(kind=8), parameter:: nb = 2
 ! --------------------------------------------------------------------------------------------------
-        integer             :: iok(nb)
+        integer(kind=8)             :: iok(nb)
         real(kind=8)        :: vale(nb)
         character(len=16)   :: nom(nb)
 ! --------------------------------------------------------------------------------------------------
@@ -205,7 +205,7 @@ contains
 
         implicit none
 
-        integer, intent(in)                  :: kpg, ksp, imate
+        integer(kind=8), intent(in)                  :: kpg, ksp, imate
         real(kind=8), intent(in)             :: deltat
         character(len=*), intent(in)         :: fami
         type(CONSTITUTIVE_LAW), intent(inout):: self
@@ -216,9 +216,9 @@ contains
 ! imate     material pointer
 ! deltat    time increment (instap - instam)
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter:: nb = 2
+        integer(kind=8), parameter:: nb = 2
 ! --------------------------------------------------------------------------------------------------
-        integer             :: iok(nb)
+        integer(kind=8)             :: iok(nb)
         real(kind=8)        :: vale(nb)
         character(len=16)   :: nom(nb)
 ! --------------------------------------------------------------------------------------------------
@@ -257,7 +257,7 @@ contains
 ! deps_vi   derivee dka  / deps  (grad_vari)
 ! dphi_vi   derivee dka  / dphi  (grad_vari)
 ! --------------------------------------------------------------------------------------------------
-        integer         :: state
+        integer(kind=8)         :: state
         real(kind=8)    :: kam, ka, epm(self%ndimsi), ep(self%ndimsi), rac2(self%ndimsi)
         real(kind=8)    :: vdum1(self%ndimsi), vdum2(self%ndimsi), rdum
         type(MATERIAL)  :: realMat
@@ -338,7 +338,7 @@ contains
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in)             :: eps(:)
         real(kind=8), intent(in)             :: kam, epm(:)
-        integer, intent(out)                 :: state
+        integer(kind=8), intent(out)                 :: state
         real(kind=8), intent(out)            :: ka, ep(:)
         real(kind=8), intent(out)            :: t(:), deps_t(:, :)
         real(kind=8), intent(out)            :: dphi_t(:), deps_ka(:), dphi_ka
@@ -354,7 +354,7 @@ contains
 ! dphi_ka   derivee dka / dphi  (grad_vari)
 ! --------------------------------------------------------------------------------------------------
         aster_logical   :: visc
-        integer         :: ite, itev
+        integer(kind=8)         :: ite, itev
         real(kind=8)    :: kr(size(eps)), presig
         real(kind=8)    :: mve, dkas, rks, rvs, mvs, dka
         real(kind=8)    :: tel(size(eps)), telh, telq, teld(size(eps)), dep(size(eps))
@@ -588,7 +588,7 @@ contains
         implicit none
         type(CONSTITUTIVE_LAW), intent(inout):: self
         real(kind=8), intent(in) :: dka, vim(:), eps0(:), eps1(:)
-        integer, intent(out)     :: nsol, sgn(2)
+        integer(kind=8), intent(out)     :: nsol, sgn(2)
         real(kind=8), intent(out):: sol(2)
 ! ---------------------------------------------------------------------
 ! dka           target increment of hardening variable

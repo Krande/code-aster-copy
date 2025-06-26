@@ -33,10 +33,10 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
 #include "asterfort/as_deallocate.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: domdist(*), nbdom
+    integer(kind=8), intent(in) :: domdist(*), nbdom
     integer(kind=4), intent(in) :: pgid(*)
     mpi_int :: mpicou
-    integer, intent(out) :: comm(*), tag(*)
+    integer(kind=8), intent(out) :: comm(*), tag(*)
 !
 !---------------------------------------------------------------------------------------------------
 !
@@ -46,17 +46,17 @@ subroutine build_tree_comm(domdist, nbdom, pgid, mpicou, comm, tag)
 !
 #ifdef ASTER_HAVE_MPI
 !
-    integer :: rank, nbproc, nbdist_tot, i_proc, max_nbdom, nb_comm, nbdom_inf, domtmp(50)
-    integer :: dom1, dom2, i_dom, ind, nb_comm_loc, j_dom, valtmp
+    integer(kind=8) :: rank, nbproc, nbdist_tot, i_proc, max_nbdom, nb_comm, nbdom_inf, domtmp(50)
+    integer(kind=8) :: dom1, dom2, i_dom, ind, nb_comm_loc, j_dom, valtmp
     mpi_int :: mrank, msize, count_send, count_recv, mpicow, mpicom
     aster_logical :: find
-    integer, pointer :: v_nbdist(:) => null()
-    integer, pointer :: v_pgidinv(:) => null()
-    integer, pointer :: v_deca(:) => null()
-    integer, pointer :: v_dist(:) => null()
-    integer, pointer :: v_send(:) => null()
-    integer, pointer :: v_recv(:) => null()
-    integer, pointer :: v_rest(:) => null()
+    integer(kind=8), pointer :: v_nbdist(:) => null()
+    integer(kind=8), pointer :: v_pgidinv(:) => null()
+    integer(kind=8), pointer :: v_deca(:) => null()
+    integer(kind=8), pointer :: v_dist(:) => null()
+    integer(kind=8), pointer :: v_send(:) => null()
+    integer(kind=8), pointer :: v_recv(:) => null()
+    integer(kind=8), pointer :: v_rest(:) => null()
     aster_logical, pointer :: v_proc(:) => null()
 
 !

@@ -49,7 +49,7 @@ subroutine recu_cara_ma(mailla, carte, numa, cara, vale)
 #include "asterfort/rgcmpg.h"
     character(len=8) :: mailla, cara
     character(len=19) :: carte
-    integer :: numa
+    integer(kind=8) :: numa
     real(kind=8) :: vale
 
 !
@@ -57,11 +57,11 @@ subroutine recu_cara_ma(mailla, carte, numa, cara, vale)
 ! -----------------
     character(len=8) :: ngrand
     character(len=24) :: k24bid
-    integer :: igrand, iasmax, iasedi, nbcmp, inomcp, nbec, irep
-    integer :: iasbon, ii, icode, izone, ilnuma, nbmaza
-    integer :: irvep, jj
+    integer(kind=8) :: igrand, iasmax, iasedi, nbcmp, inomcp, nbec, irep
+    integer(kind=8) :: iasbon, ii, icode, izone, ilnuma, nbmaza
+    integer(kind=8) :: irvep, jj
     real(kind=8), pointer :: v_vale(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

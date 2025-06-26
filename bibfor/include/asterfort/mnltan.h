@@ -24,19 +24,19 @@ interface
     subroutine mnltan(lcal, imat, numdrv, matdrv, xcdl,&
                       parcho, adime, xvect, ninc, nd,&
                       nchoc, h, hf, xtang)
-        integer :: ninc
+        integer(kind=8) :: ninc
         aster_logical :: lcal
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=14) :: numdrv
         character(len=19) :: matdrv
         character(len=14) :: xcdl
         character(len=14) :: parcho
         character(len=14) :: adime
         character(len=14) :: xvect
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
         character(len=14) :: xtang
     end subroutine mnltan
 end interface 

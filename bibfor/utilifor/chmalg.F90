@@ -18,7 +18,7 @@
 !
 subroutine chmalg(mate, pgl, ni, nj)
     implicit none
-    integer :: ni, nj
+    integer(kind=8) :: ni, nj
     real(kind=8) :: mate(1), pgl(3, 3)
 ! .....................................................................C
 ! .....................................................................C
@@ -38,7 +38,7 @@ subroutine chmalg(mate, pgl, ni, nj)
 !        SORTIE :      MATE    -->  MATRICE ELEMENTAIRE GLOBALE        C
 ! .....................................................................C
 ! .....................................................................
-    integer :: i, j, k, ii
+    integer(kind=8) :: i, j, k, ii
     real(kind=8) :: mt(7, 7), matg(7, 7)
 ! .....................................................................
     if (nj .gt. 7) then

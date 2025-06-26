@@ -20,9 +20,9 @@
 !
 interface
     function nucalc(opt, te, memoir)
-        integer :: opt
-        integer :: te
-        integer :: memoir
-        integer :: nucalc
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
+        integer(kind=8) :: memoir
+        integer(kind=8) :: nucalc
     end function nucalc
 end interface

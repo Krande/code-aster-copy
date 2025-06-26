@@ -35,9 +35,9 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst, &
     character(len=24) :: sdlist
     character(len=*) :: motfaz
     character(len=1) :: base
-    integer :: iocc
+    integer(kind=8) :: iocc
     real(kind=8) :: dtmin
-    integer :: nbinst
+    integer(kind=8) :: nbinst
 !
 ! ----------------------------------------------------------------------
 !
@@ -60,9 +60,9 @@ subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst, &
 !
 !
 !
-    integer :: n2, n3, i, iret
+    integer(kind=8) :: n2, n3, i, iret
     character(len=19) :: list
-    integer :: jslist
+    integer(kind=8) :: jslist
     character(len=16) :: motfac
     real(kind=8), pointer :: vale(:) => null()
 !

@@ -55,8 +55,8 @@ subroutine vedith(model, loadNameJv, loadInfoJv, time, vect_elemz)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 3
-    integer, parameter :: nbout = 1
+    integer(kind=8), parameter :: nbin = 3
+    integer(kind=8), parameter :: nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=24) :: lchin(nbin), lchout(nbout)
 !
@@ -64,9 +64,9 @@ subroutine vedith(model, loadNameJv, loadInfoJv, time, vect_elemz)
     character(len=16) :: option
     character(len=19) :: vect_elem
     character(len=24) :: ligrch, chgeom, resu_elem
-    integer :: load_nume, nb_load, i_load
+    integer(kind=8) :: load_nume, nb_load, i_load
     character(len=24), pointer :: v_load_name(:) => null()
-    integer, pointer :: v_load_info(:) => null()
+    integer(kind=8), pointer :: v_load_info(:) => null()
     aster_logical :: load_empty
     character(len=1) :: base
 !

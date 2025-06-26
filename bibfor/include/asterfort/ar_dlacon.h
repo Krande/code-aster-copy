@@ -21,11 +21,11 @@
 interface
     subroutine ar_dlacon(n, v, x, isgn, est,&
                       kase)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: v(*)
         real(kind=8) :: x(*)
-        integer :: isgn(*)
+        integer(kind=8) :: isgn(*)
         real(kind=8) :: est
-        integer :: kase
+        integer(kind=8) :: kase
     end subroutine ar_dlacon
 end interface

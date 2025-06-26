@@ -27,7 +27,7 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dnrm2.h"
-    integer :: ndim, imate
+    integer(kind=8) :: ndim, imate
     real(kind=8) :: inst, deps(6), epsm(6), sigp(6), dsidep(6, 6)
     character(len=16) :: option
 ! -------------------------------------------------------------------
@@ -48,8 +48,8 @@ subroutine nmhoff(ndim, imate, inst, epsm, deps, &
 !
 ! --------------------------------------------------------------------
     aster_logical :: resi, rigi, elas, line
-    integer :: k, l, ndimsi
-    integer :: cod(1)
+    integer(kind=8) :: k, l, ndimsi
+    integer(kind=8) :: cod(1)
     real(kind=8) :: sy(1), m, am
     real(kind=8) :: eps(6), epsno
     real(kind=8) :: coef, rac23

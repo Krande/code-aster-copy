@@ -19,6 +19,6 @@
 interface
     subroutine irnbsp(chaine, nbsp)
         character(len=8), intent(in) :: chaine
-        integer, intent(out)         ::  nbsp
+        integer(kind=8), intent(out)         ::  nbsp
     end subroutine irnbsp
 end interface

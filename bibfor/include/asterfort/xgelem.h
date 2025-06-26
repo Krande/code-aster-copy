@@ -25,26 +25,26 @@ interface
                       ise, nfh, ddlc, ddlm, nfe,&
                       basloc, nnop, idepl, lsn, lst,&
                       igthet, fno, nfiss, jheavn, jstno, incr)
-        integer :: nfiss
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         real(kind=8) :: coorse(*)
-        integer :: igeom
-        integer :: jheavt
-        integer :: ise
-        integer :: nfh
-        integer :: ddlc
-        integer :: ddlm
-        integer :: nfe
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jheavt
+        integer(kind=8) :: ise
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nfe
         real(kind=8) :: basloc(3*ndim*nnop)
-        integer :: idepl
+        integer(kind=8) :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: igthet
+        integer(kind=8) :: igthet
         real(kind=8) :: fno(ndim*nnop)
-        integer :: jheavn
-        integer :: jstno
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: jstno
         aster_logical :: incr
     end subroutine xgelem
 end interface

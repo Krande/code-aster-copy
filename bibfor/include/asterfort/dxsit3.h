@@ -21,7 +21,7 @@
 interface
     subroutine dxsit3(nomte, mater, pgl, sigma)
         character(len=16) :: nomte
-        integer :: mater
+        integer(kind=8) :: mater
         real(kind=8) :: pgl(3, *)
         real(kind=8) :: sigma(*)
     end subroutine dxsit3

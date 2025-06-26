@@ -27,7 +27,7 @@ interface
         character(len=*) :: mate, mateco
         character(len=*) :: nu
         character(len=*) :: vecas2
-        integer :: nr
-        integer :: nv
+        integer(kind=8) :: nr
+        integer(kind=8) :: nv
     end subroutine cal2m
 end interface

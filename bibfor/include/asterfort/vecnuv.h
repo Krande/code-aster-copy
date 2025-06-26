@@ -22,14 +22,14 @@ interface
     subroutine vecnuv(ipre, ider, gamma, phinit, dphi,&
                       n, k, dim, vectn, vectu,&
                       vectv)
-        integer :: dim
-        integer :: ipre
-        integer :: ider
+        integer(kind=8) :: dim
+        integer(kind=8) :: ipre
+        integer(kind=8) :: ider
         real(kind=8) :: gamma
         real(kind=8) :: phinit
         real(kind=8) :: dphi
-        integer :: n
-        integer :: k
+        integer(kind=8) :: n
+        integer(kind=8) :: k
         real(kind=8) :: vectn(dim)
         real(kind=8) :: vectu(dim)
         real(kind=8) :: vectv(dim)

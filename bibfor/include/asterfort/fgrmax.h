@@ -20,7 +20,7 @@
 !
 interface
     subroutine fgrmax(ncyc, sigmin, sigmax, smin, smax)
-        integer :: ncyc
+        integer(kind=8) :: ncyc
         real(kind=8) :: sigmin(*)
         real(kind=8) :: sigmax(*)
         real(kind=8) :: smin(*)

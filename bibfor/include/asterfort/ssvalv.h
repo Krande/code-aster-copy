@@ -25,9 +25,9 @@ interface
         character(len=8) :: nomcas
         character(len=8) :: mo
         character(len=8) :: ma
-        integer :: isma
-        integer :: idresl
-        integer :: long
+        integer(kind=8) :: isma
+        integer(kind=8) :: idresl
+        integer(kind=8) :: long
         real(kind=8), optional :: instap
     end subroutine ssvalv
 end interface

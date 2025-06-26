@@ -24,13 +24,13 @@ subroutine ststat(istat)
     implicit none
 #include "asterf_debug.h"
 !     ARGUMENT IN
-    integer :: istat
+    integer(kind=8) :: istat
 !-----------------------------------------------------------------------
 !     FONCTION "SeT STATus" : ACTIVE LE DRAPEAU D'ETAT ISTAT.
 !
 !     LA VALEUR DU STATUT GLOBAL IGLBST EST STOCKE DANS LE COMMON CGLBST
 !-----------------------------------------------------------------------
-    integer :: iglbst
+    integer(kind=8) :: iglbst
     common/cglbst/iglbst
 !
     if (istat .eq. ST_OK) then

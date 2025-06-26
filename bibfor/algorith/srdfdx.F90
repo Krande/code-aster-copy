@@ -53,7 +53,7 @@ subroutine srdfdx(nbmat, mater, ucrip, invar, s, paraep, varpl, derpar, dfdxip)
     !!! Variables globales
     !!!
 
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), ucrip, s(6), paraep(3), varpl(4), derpar(3)
     real(kind=8) :: dfdxip, invar
 
@@ -63,7 +63,7 @@ subroutine srdfdx(nbmat, mater, ucrip, invar, s, paraep, varpl, derpar, dfdxip)
 
     real(kind=8) :: pref, sigc, rcos3t, r0c, rtheta, sii
     real(kind=8) :: dfdad, dfdsd, dfdmd, fact1, fact3, fact4, fact5
-    integer :: ndi, ndt
+    integer(kind=8) :: ndi, ndt
     common/tdim/ndt, ndi
 
     !!!

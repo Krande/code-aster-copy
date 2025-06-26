@@ -25,7 +25,7 @@ subroutine dfftan(ndim, baslo, inoff, vtan)
 #include "asterfort/dffnor.h"
 #include "asterfort/provec.h"
     real(kind=8) :: baslo(*), vtan(3)
-    integer :: ndim, inoff
+    integer(kind=8) :: ndim, inoff
 !
 !
 ! FONCTION REALISEE (OPERATEURS DEFI_FOND_FISS, CALC_G) :

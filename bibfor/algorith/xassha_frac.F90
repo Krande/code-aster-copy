@@ -58,13 +58,13 @@ subroutine xassha_frac(ds_thm, &
 ! ----------------------------------------------------------------------
 ! IO  ds_thm           : datastructure for THM
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: nddls, nnop, dimuel, i, ndim, nnops, lact(16)
-    integer :: nddlm, contac, jmate, ncompv, nvec, pla(27), incoca
-    integer :: nface, npgf, nbspg, isspg, nptf
-    integer :: ipgf, ifa, jcohes, algocr, jheavn, ncompn, nfiss
-    integer :: jptint, igeom, jbasec, nlact(2), cface(30, 6), jcoheo
-    integer :: ifiss, nfh, jheafa, ncomph, pos(16), ino
-    integer :: idepm, idepd, ibid
+    integer(kind=8) :: nddls, nnop, dimuel, i, ndim, nnops, lact(16)
+    integer(kind=8) :: nddlm, contac, jmate, ncompv, nvec, pla(27), incoca
+    integer(kind=8) :: nface, npgf, nbspg, isspg, nptf
+    integer(kind=8) :: ipgf, ifa, jcohes, algocr, jheavn, ncompn, nfiss
+    integer(kind=8) :: jptint, igeom, jbasec, nlact(2), cface(30, 6), jcoheo
+    integer(kind=8) :: ifiss, nfh, jheafa, ncomph, pos(16), ino
+    integer(kind=8) :: idepm, idepd, ibid
     real(kind=8) :: cohes(5), jac, lamb(3), am(3), ad(3), g(3)
     real(kind=8) :: ffp(27), ffpc(27), ffc(16), dfdic(nnops, 3)
     real(kind=8) :: dfbid(27, 3), wsaut(3), wsautm(3), sigma(6)

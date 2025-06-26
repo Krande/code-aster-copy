@@ -35,7 +35,7 @@ interface
         real(kind=8) :: alpha
         real(kind=8) :: k1
         real(kind=8) :: k2
-        integer :: bdim
+        integer(kind=8) :: bdim
         real(kind=8) :: dsidep(6, 6)
     end subroutine meobl1
 end interface

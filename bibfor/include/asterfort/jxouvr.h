@@ -20,8 +20,8 @@
 !
 interface
     subroutine jxouvr(iclas, idn, mode)
-        integer :: iclas
-        integer :: idn
-        integer, optional :: mode
+        integer(kind=8) :: iclas
+        integer(kind=8) :: idn
+        integer(kind=8), optional :: mode
     end subroutine jxouvr
 end interface

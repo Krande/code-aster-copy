@@ -21,6 +21,6 @@
 interface
     subroutine surfcp(sdcont, unit_msg)
         character(len=8), intent(in) :: sdcont
-        integer, intent(in) :: unit_msg
+        integer(kind=8), intent(in) :: unit_msg
     end subroutine surfcp
 end interface

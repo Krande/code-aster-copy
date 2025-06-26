@@ -22,7 +22,7 @@ interface
     subroutine mmnbnz(mesh, sdcont_defi, i_zone, nb_cont_poin)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: i_zone
-        integer, intent(out) :: nb_cont_poin
+        integer(kind=8), intent(in) :: i_zone
+        integer(kind=8), intent(out) :: nb_cont_poin
     end subroutine mmnbnz
 end interface

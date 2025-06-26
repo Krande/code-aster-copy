@@ -24,15 +24,15 @@ interface
     subroutine rbph01(trange, nbcham, typea, itresu, nfonct,&
                       basemo, typref, typbas, tousno, multap, i_cham)
         character(len=19) :: trange
-        integer :: nbcham
+        integer(kind=8) :: nbcham
         character(len=16) :: typea(*)
-        integer :: itresu(*)
-        integer :: nfonct
+        integer(kind=8) :: itresu(*)
+        integer(kind=8) :: nfonct
         character(len=8) :: basemo
         character(len=19) :: typref(*)
         character(len=16) :: typbas(*)
         aster_logical :: tousno
         aster_logical :: multap
-        integer, dimension(8), intent(out), optional :: i_cham
+        integer(kind=8), dimension(8), intent(out), optional :: i_cham
     end subroutine rbph01
 end interface

@@ -21,8 +21,8 @@
 interface
     subroutine cginit(nomte, iu, iuc, im)
         character(len=16) :: nomte
-        integer :: iu(3, 3)
-        integer :: iuc(3)
-        integer :: im(3)
+        integer(kind=8) :: iu(3, 3)
+        integer(kind=8) :: iuc(3)
+        integer(kind=8) :: im(3)
     end subroutine cginit
 end interface

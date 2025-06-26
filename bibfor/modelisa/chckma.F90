@@ -55,17 +55,17 @@ subroutine chckma(nomu, dtol)
 !
 ! ----- DECLARATIONS
 !
-    integer :: iaconx, ilconx, ima, nbnm, nbnm2, it, jcoor, ifm, niv
-    integer :: jdrvlc, jcncin, numail, imail
-    integer :: iadr, iadr0, nbm, nbm0, iadtyp, nb200
-    integer :: ja, jb, tabma(200), i, j, k1, k2, knso, kmdb, l
+    integer(kind=8) :: iaconx, ilconx, ima, nbnm, nbnm2, it, jcoor, ifm, niv
+    integer(kind=8) :: jdrvlc, jcncin, numail, imail
+    integer(kind=8) :: iadr, iadr0, nbm, nbm0, iadtyp, nb200
+    integer(kind=8) :: ja, jb, tabma(200), i, j, k1, k2, knso, kmdb, l
     character(len=8) :: noxa, noxb, tyma, mess_k8(3)
     character(len=24) :: ncncin
     real(kind=8) :: dm, dp, aplat, drap, mess_r(1)
     real(kind=8) :: xa, xb, ya, yb, za, zb
     character(len=24) :: cooval, connex, nsolo, mdoubl
-    integer :: nbmail, nbnoeu
-    integer :: insolo, imdoub, iatyma, nmdoub
+    integer(kind=8) :: nbmail, nbnoeu
+    integer(kind=8) :: insolo, imdoub, iatyma, nmdoub
     aster_logical :: indic, alarme, erreur
 !
     call jemarq()

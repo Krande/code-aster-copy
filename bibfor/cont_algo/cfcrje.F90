@@ -42,10 +42,10 @@ subroutine cfcrje(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nt_cont_poin
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nt_cont_poin
     character(len=24) :: sdcont_jeuite, sdcont_jeusav, sdcont_jeux
-    integer :: jv_sdcont_jeuite, jv_sdcont_jeusav, jv_sdcont_jeux
+    integer(kind=8) :: jv_sdcont_jeuite, jv_sdcont_jeusav, jv_sdcont_jeux
 !
 ! --------------------------------------------------------------------------------------------------
 !

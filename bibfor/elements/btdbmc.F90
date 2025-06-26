@@ -26,10 +26,10 @@ subroutine btdbmc(b, d, jacob, ndim, nno, &
 #include "asterfort/lteatt.h"
 !
 !
-    integer, intent(in) :: nbsig
-    integer, intent(in) :: ndim
-    integer, intent(in) :: nno
-    integer, intent(in) :: elas_type
+    integer(kind=8), intent(in) :: nbsig
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: nno
+    integer(kind=8), intent(in) :: elas_type
     real(kind=8), intent(in) :: b(nbsig, *)
     real(kind=8), intent(in) :: d(nbsig, *)
     real(kind=8), intent(in) :: jacob
@@ -57,7 +57,7 @@ subroutine btdbmc(b, d, jacob, ndim, nno, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i1, i2, l1, l2, nbinco
+    integer(kind=8) :: i1, i2, l1, l2, nbinco
     real(kind=8) :: d1, d2, d3, r11, r12, r13, r21
     real(kind=8) :: r22, r23, r31, r32, r33, rs13, rs23
     real(kind=8) :: rs33, s33, sr31, sr32, sr33

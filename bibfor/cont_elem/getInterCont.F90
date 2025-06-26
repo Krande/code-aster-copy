@@ -26,7 +26,7 @@ subroutine getInterCont(nbPoinInte, poinInteSlav)
 #include "asterfort/mesh_pairing_type.h"
 #include "jeveux.h"
 !
-    integer, intent(out) :: nbPoinInte
+    integer(kind=8), intent(out) :: nbPoinInte
     real(kind=8), intent(out) :: poinInteSlav(2, MAX_NB_INTE)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ subroutine getInterCont(nbPoinInte, poinInteSlav)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::  jcont, iPoinInte
+    integer(kind=8) ::  jcont, iPoinInte
 !
 ! --------------------------------------------------------------------------------------------------
 !

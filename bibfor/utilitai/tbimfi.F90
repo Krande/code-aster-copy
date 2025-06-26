@@ -32,21 +32,21 @@ subroutine tbimfi(nparfi, table, newtab, iret)
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbextb.h"
 #include "asterfort/wkvect.h"
-    integer :: nparfi, iret
+    integer(kind=8) :: nparfi, iret
     character(len=19) :: table, newtab
 !     OPERATEUR  IMPR_TABLE , TRAITEMENT DU MOT CLE FACTEUR "FILTRE"
 !     ------------------------------------------------------------------
 !
-    integer :: jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
-    integer :: l, l1, l2
-    integer :: l3, l4, irt
+    integer(kind=8) :: jtitr, ititr, ii, ir, ic, ik, ioc, lonmax, lonma1
+    integer(kind=8) :: l, l1, l2
+    integer(kind=8) :: l3, l4, irt
     character(len=80) :: montit
     character(len=8), pointer :: critere(:) => null()
     character(len=8), pointer :: crit_para(:) => null()
     character(len=24), pointer :: noms_para(:) => null()
     real(kind=8), pointer :: precision(:) => null()
     complex(kind=8), pointer :: vale_c(:) => null()
-    integer, pointer :: vale_i(:) => null()
+    integer(kind=8), pointer :: vale_i(:) => null()
     character(len=80), pointer :: vale_k(:) => null()
     real(kind=8), pointer :: vale_r(:) => null()
     character(len=80), pointer :: titr(:) => null()

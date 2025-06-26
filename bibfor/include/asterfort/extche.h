@@ -24,15 +24,15 @@ interface
                       nbnac, nnoeud)
         character(len=19) :: nchme2
         character(len=8) :: nmaile(*)
-        integer :: nummai(*)
+        integer(kind=8) :: nummai(*)
         character(len=8) :: ncmp(*)
-        integer :: nbm
-        integer :: nbc
+        integer(kind=8) :: nbm
+        integer(kind=8) :: nbc
         character(len=6) :: indic
         character(len=19) :: nssche
         character(len=*) :: mcf
-        integer :: iocc
-        integer :: nbnac
-        integer :: nnoeud(*)
+        integer(kind=8) :: iocc
+        integer(kind=8) :: nbnac
+        integer(kind=8) :: nnoeud(*)
     end subroutine extche
 end interface

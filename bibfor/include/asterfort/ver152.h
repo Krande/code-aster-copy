@@ -23,7 +23,7 @@ interface
         character(len=*) :: option
         character(len=*) :: moflui
         character(len=*) :: moint
-        integer :: n12
+        integer(kind=8) :: n12
         character(len=*) :: model
     end subroutine ver152
 end interface

@@ -23,9 +23,9 @@
 interface
     subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
         character(len=*) :: genein
-        integer :: ifi
-        integer :: nbcmpg
-        integer :: cmpg(*)
+        integer(kind=8) :: ifi
+        integer(kind=8) :: nbcmpg
+        integer(kind=8) :: cmpg(*)
         aster_logical :: lhist
     end subroutine irvgen
 end interface

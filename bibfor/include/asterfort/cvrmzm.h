@@ -20,9 +20,9 @@
 !
 interface
     subroutine cvrmzm(n, a, lda, b, ldb)
-        integer :: ldb
-        integer :: lda
-        integer :: n
+        integer(kind=8) :: ldb
+        integer(kind=8) :: lda
+        integer(kind=8) :: n
         real(kind=8) :: a(lda, *)
         complex(kind=8) :: b(ldb, *)
     end subroutine cvrmzm

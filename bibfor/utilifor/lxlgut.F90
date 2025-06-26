@@ -18,12 +18,12 @@
 !
 function lxlgut(chaine)
     implicit none
-    integer :: lxlgut
+    integer(kind=8) :: lxlgut
     character(len=*) :: chaine
 !     RENVOI LA LONGUEUR UTILE DE LA CHAINE
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, lg
+    integer(kind=8) :: i, lg
 !-----------------------------------------------------------------------
     lg = len(chaine)
     do i = lg, 1, -1

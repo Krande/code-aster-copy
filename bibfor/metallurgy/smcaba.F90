@@ -27,10 +27,10 @@ subroutine smcaba(x, nb_hist, trc, ftrc, ind, &
 #include "asterfort/smcosl.h"
 !
     real(kind=8), intent(in) :: x(5)
-    integer, intent(in) :: nb_hist
+    integer(kind=8), intent(in) :: nb_hist
     real(kind=8), intent(in) :: trc((3*nb_hist), 5)
     real(kind=8), intent(in) :: ftrc((3*nb_hist), 3)
-    integer, intent(in) :: ind(6)
+    integer(kind=8), intent(in) :: ind(6)
     real(kind=8), intent(inout) :: dz(4)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ subroutine smcaba(x, nb_hist, trc, ftrc, ind, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: zero = 0.d0
-    integer :: ifail, i, nz
+    integer(kind=8) :: ifail, i, nz
     real(kind=8) :: som, alemb(6), a(6, 6), b(6)
     real(kind=8) :: epsmac, work(96), s(6), u(6, 6), v(6, 6)
 !

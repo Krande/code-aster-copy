@@ -50,13 +50,13 @@ module fe_topo_module
 !
     type FE_Skin
 ! ----- Dimension topologique
-        integer                     :: ndim = 0
+        integer(kind=8)                     :: ndim = 0
 ! ----- Type maille
         character(len=8)            :: typema = ''
 ! ----- Type maille short
         character(len=8)            :: typemas = ''
 ! ----- Nombre de noeuds
-        integer                     :: nbnodes = 0
+        integer(kind=8)                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 9 noeuds pour quad)
         real(kind=8), dimension(3, 9):: coorno = 0.d0
 ! ----- member function
@@ -75,13 +75,13 @@ module fe_topo_module
 !
     type FE_Cell
 ! ----- Dimension topologique
-        integer                     :: ndim = 0
+        integer(kind=8)                     :: ndim = 0
 ! ----- Type maille
         character(len=8)            :: typema = ''
 ! ----- Type maille
         character(len=8)            :: typemas = ''
 ! ----- Nombre de noeuds
-        integer                     :: nbnodes = 0
+        integer(kind=8)                     :: nbnodes = 0
 ! ----- Coordonnees des noeuds   (max 27 noeuds pour hexa)
         real(kind=8), dimension(3, 27):: coorno = 0.d0
 ! ----- member function
@@ -114,7 +114,7 @@ contains
 ! In this              : a FE Face
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode
+        integer(kind=8) :: inode
 ! --------------------------------------------------------------------------------------------------
         write (6, *) "Informations on FE Face"
         write (6, *) "Type maille: ", this%typema
@@ -145,7 +145,7 @@ contains
 ! In this              : a FE Cell
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode
+        integer(kind=8) :: inode
 !
         write (6, *) "Informations on FE Cell"
         write (6, *) "Type maille: ", this%typema
@@ -179,7 +179,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer :: inode, idim, iret, jv_geom
+        integer(kind=8) :: inode, idim, iret, jv_geom
 ! --------------------------------------------------------------------------------------------------
 !
         call teattr('S', 'TYPMA', this%typemas, iret)
@@ -224,7 +224,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         aster_logical, parameter :: l_debug = ASTER_FALSE
-        integer :: inode, idim, iret, jv_geom
+        integer(kind=8) :: inode, idim, iret, jv_geom
 ! --------------------------------------------------------------------------------------------------
 !
         call teattr('S', 'TYPMA', this%typemas, iret)
@@ -271,7 +271,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: funcGeom(27)
-        integer :: i
+        integer(kind=8) :: i
 !
         funcGeom = this%func(pt)
         coor = 0.0
@@ -362,7 +362,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        integer :: i_node
+        integer(kind=8) :: i_node
 !
         bary = 0.d0
         do i_node = 1, this%nbnodes
@@ -424,7 +424,7 @@ contains
 ! Out FECell           : a FE cell
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode, idim
+        integer(kind=8) :: inode, idim
 ! --------------------------------------------------------------------------------------------------
 !
 !
@@ -460,7 +460,7 @@ contains
 ! Out FECell           : a FE cell
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: inode, idim
+        integer(kind=8) :: inode, idim
 ! --------------------------------------------------------------------------------------------------
 !
 !

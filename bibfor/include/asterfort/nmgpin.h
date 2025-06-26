@@ -22,9 +22,9 @@
 !
 interface
     subroutine nmgpin(ndim, nno, axi, vu)
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         aster_logical :: axi
-        integer :: vu(3, 27)
+        integer(kind=8) :: vu(3, 27)
     end subroutine nmgpin
 end interface

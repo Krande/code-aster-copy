@@ -34,7 +34,7 @@ subroutine vdxrep(nomte, epais, xi)
 #include "asterfort/vectan.h"
 #include "asterfort/vectgt.h"
     character(len=16) :: nomte
-    integer :: nb1, nb2, npgsr, i, j, k, ind, intsr, lzi, lzr
+    integer(kind=8) :: nb1, nb2, npgsr, i, j, k, ind, intsr, lzi, lzr
     real(kind=8) :: xi(3, 9)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectg(2, 3), vectt(3, 3)
     real(kind=8) :: epais, zero, vectpt(9, 2, 3)

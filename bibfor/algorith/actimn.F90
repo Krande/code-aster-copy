@@ -44,12 +44,12 @@ subroutine actimn(nbcmp, nbno, nbec, mcoddl, icodac)
 !-----------------------------------------------------------------------
 #include "asterfort/iscode.h"
 #include "asterfort/isgeco.h"
-    integer :: i, nbcmp, nbcpmx, nbec, nbecmx, nbno
+    integer(kind=8) :: i, nbcmp, nbcpmx, nbec, nbecmx, nbno
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     parameter(nbecmx=10)
-    integer :: mcoddl(nbno*nbec, 2), icodac(nbno*nbec)
-    integer :: idec(nbcpmx), itout(nbecmx), icoco(nbecmx), icici(nbecmx)
+    integer(kind=8) :: mcoddl(nbno*nbec, 2), icodac(nbno*nbec)
+    integer(kind=8) :: idec(nbcpmx), itout(nbecmx), icoco(nbecmx), icici(nbecmx)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

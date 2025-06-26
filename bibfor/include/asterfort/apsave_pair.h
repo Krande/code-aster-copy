@@ -30,20 +30,20 @@ interface
                            li_ptintma_zone, li_ptgausma_zone,&
                            nb_elem_slav   , nb_elem_mast    ,&
                            nb_next_alloc)
-        integer, intent(in) :: i_zone
-        integer, intent(in) :: elem_slav_nume
-        integer, intent(in) :: nb_pair
-        integer, intent(in) :: nb_elem_slav
-        integer, intent(in) :: nb_elem_mast
-        integer, intent(inout) :: nb_next_alloc
-        integer, intent(in) :: list_pair(:)
-        integer, intent(in) :: li_nbptsl(:)
+        integer(kind=8), intent(in) :: i_zone
+        integer(kind=8), intent(in) :: elem_slav_nume
+        integer(kind=8), intent(in) :: nb_pair
+        integer(kind=8), intent(in) :: nb_elem_slav
+        integer(kind=8), intent(in) :: nb_elem_mast
+        integer(kind=8), intent(inout) :: nb_next_alloc
+        integer(kind=8), intent(in) :: list_pair(:)
+        integer(kind=8), intent(in) :: li_nbptsl(:)
         real(kind=8), intent(in) :: li_ptintsl(:)
         real(kind=8), intent(in) :: li_ptintma(:)
         real(kind=8), intent(in) :: li_ptgausma(:)
-        integer, intent(inout) :: nb_pair_zone
-        integer, pointer :: list_pair_zone(:)
-        integer, pointer :: li_nbptsl_zone(:)
+        integer(kind=8), intent(inout) :: nb_pair_zone
+        integer(kind=8), pointer :: list_pair_zone(:)
+        integer(kind=8), pointer :: li_nbptsl_zone(:)
         real(kind=8), pointer :: li_ptintsl_zone(:)
         real(kind=8), pointer :: li_ptintma_zone(:)
         real(kind=8), pointer :: li_ptgausma_zone(:)

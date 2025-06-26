@@ -20,7 +20,7 @@
 !
 interface
     subroutine cfcrma(neqmat, noma, resoco)
-        integer :: neqmat
+        integer(kind=8) :: neqmat
         character(len=8) :: noma
         character(len=24) :: resoco
     end subroutine cfcrma

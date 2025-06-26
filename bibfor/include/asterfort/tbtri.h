@@ -20,10 +20,10 @@
 !
 interface
     subroutine tbtri(ndim, tabint, tabchi, tabchr, tabchk)
-        integer, intent(in) :: ndim
-        integer, intent(in), optional, target :: tabchi(*)
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in), optional, target :: tabchi(*)
         real(kind=8), intent(in), optional, target :: tabchr(*)
         character(len=*), intent(in), optional, target :: tabchk(*)
-        integer, intent(out), optional, target :: tabint(*)
+        integer(kind=8), intent(out), optional, target :: tabint(*)
     end subroutine tbtri
 end interface

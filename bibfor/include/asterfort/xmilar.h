@@ -23,14 +23,14 @@ interface
                     ia, ib, im, ip, ksia, ksib, milara, milarb,&
                     pintt, pmitt)
         character(len=8) :: elrefp
-        integer :: ndim
-        integer :: ndime
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ndime
         real(kind=8) :: geom(*)
         real(kind=8) :: pinref(*)
-        integer :: ia
-        integer :: ib
-        integer :: im
-        integer :: ip
+        integer(kind=8) :: ia
+        integer(kind=8) :: ib
+        integer(kind=8) :: im
+        integer(kind=8) :: ip
         real(kind=8) :: ksia(ndime)
         real(kind=8) :: ksib(ndime)
         real(kind=8) :: milara(3)

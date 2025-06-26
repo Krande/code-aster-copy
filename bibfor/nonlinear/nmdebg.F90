@@ -28,7 +28,7 @@ subroutine nmdebg(typobz, nomobz, ifm)
 #include "asterfort/utimsd.h"
 !
     character(len=*) :: nomobz, typobz
-    integer :: ifm
+    integer(kind=8) :: ifm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,8 +48,8 @@ subroutine nmdebg(typobz, nomobz, ifm)
     character(len=4) :: typobj
     character(len=3) :: type
     real(kind=8) :: sommr
-    integer :: resume, sommi, lonmax
-    integer :: iret, ibid
+    integer(kind=8) :: resume, sommi, lonmax
+    integer(kind=8) :: iret, ibid
 !
 ! --------------------------------------------------------------------------------------------------
 !

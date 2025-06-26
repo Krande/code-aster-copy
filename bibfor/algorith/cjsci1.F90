@@ -40,14 +40,14 @@ subroutine cjsci1(crit, mater, deps, sigd, i1f, &
 !                 IRET=1 => ECHEC
 ! ----------------------------------------------------------------------
 !
-    integer :: ndt, ndi, imax, iret
+    integer(kind=8) :: ndt, ndi, imax, iret
     parameter(imax=60)
     real(kind=8) :: mater(14, 2), crit(*), deps(6), sigd(6), i1d, i1f
     real(kind=8) :: trdeps, coef, pa, n, multi
     real(kind=8) :: x0, x1, x2, oldx2, y0, y1, y2
     real(kind=8) :: zero, un, deux, trois, qinit
     aster_logical :: tract
-    integer :: i
+    integer(kind=8) :: i
 !
     common/tdim/ndt, ndi
 !

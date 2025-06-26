@@ -25,7 +25,7 @@ interface
                       bjzz, bjxy, bjxz, bjyz, ider)
         character(len=6) :: alias
         character(len=6) :: type
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: xi
         real(kind=8) :: yi
         real(kind=8) :: zi
@@ -42,6 +42,6 @@ interface
         real(kind=8) :: bjxy(*)
         real(kind=8) :: bjxz(*)
         real(kind=8) :: bjyz(*)
-        integer :: ider
+        integer(kind=8) :: ider
     end subroutine clffch
 end interface

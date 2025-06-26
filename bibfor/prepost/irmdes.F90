@@ -40,7 +40,7 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
     med_idt :: idfimd
-    integer :: infmed, nbtitr
+    integer(kind=8) :: infmed, nbtitr
 !
     character(len=*) :: titre(*)
 !
@@ -49,8 +49,8 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: codret
-    integer :: iaux
+    integer(kind=8) :: codret
+    integer(kind=8) :: iaux
 !
     character(len=8) :: saux08
     character(len=8) :: cvers
@@ -58,7 +58,7 @@ subroutine irmdes(idfimd, titre, nbtitr, infmed)
     character(len=24) :: ladate
     character(len=200) :: descri
 !
-    integer :: ltit, ideb, it, iret
+    integer(kind=8) :: ltit, ideb, it, iret
 !
 !====
 ! 1. PREALABLES

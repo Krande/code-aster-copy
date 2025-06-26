@@ -55,43 +55,43 @@ subroutine xmolig(liel1, trav)
 !
 !
 !
-    integer :: ih8(14), ip6(14), ip5(14), it4(14)
-    integer :: ih20(6), ip15(6), ip13(6), it10(6)
-    integer :: icpq4(14), icpt3(14), idpq4(14), idpt3(14)
-    integer :: icpq8(6), icpt6(6), idpq8(6), idpt6(6)
-    integer :: if4(10), if3(10), ipf2(10)
-    integer :: if8(3), if6(3), ipf3(3)
-    integer :: ihyq8(17), ihyt6(17), ihymq8(4), ihymt6(4), ihysq8(4)
-    integer :: ihyst6(4), ihydq8(4), ihydt6(4), iphm(17)
-    integer :: ihe20(17), ihem20(1), ihed20(1), ihes20(1), ipe15(17)
-    integer :: ipem15(1), ipes15(1), iped15(1), ipy13(17), ipym13(1)
-    integer :: ipys13(1), ipyd13(1), ite10(17), ites10(1)
-    integer :: ited10(1), item10(1), ibhm(17), ichm(17)
+    integer(kind=8) :: ih8(14), ip6(14), ip5(14), it4(14)
+    integer(kind=8) :: ih20(6), ip15(6), ip13(6), it10(6)
+    integer(kind=8) :: icpq4(14), icpt3(14), idpq4(14), idpt3(14)
+    integer(kind=8) :: icpq8(6), icpt6(6), idpq8(6), idpt6(6)
+    integer(kind=8) :: if4(10), if3(10), ipf2(10)
+    integer(kind=8) :: if8(3), if6(3), ipf3(3)
+    integer(kind=8) :: ihyq8(17), ihyt6(17), ihymq8(4), ihymt6(4), ihysq8(4)
+    integer(kind=8) :: ihyst6(4), ihydq8(4), ihydt6(4), iphm(17)
+    integer(kind=8) :: ihe20(17), ihem20(1), ihed20(1), ihes20(1), ipe15(17)
+    integer(kind=8) :: ipem15(1), ipes15(1), iped15(1), ipy13(17), ipym13(1)
+    integer(kind=8) :: ipys13(1), ipyd13(1), ite10(17), ites10(1)
+    integer(kind=8) :: ited10(1), item10(1), ibhm(17), ichm(17)
 !
-    integer :: nh8(15), nh20(7), np6(15), np15(7), np5(15), np13(7)
-    integer :: nt4(15), nt10(7)
-    integer :: ncpq4(15), ncpq8(7), ncpt3(15), ncpt6(7), ndpq4(15)
-    integer :: ndpq8(7), ndpt3(15), ndpt6(7), nf4(11), nf8(7), nf3(11)
-    integer :: nf6(7), npf2(11), npf3(7)
-    integer :: nhyq8(17), nhyt6(17), nhymq8(7), nhymt6(7), nhysq8(7)
-    integer :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(17)
-    integer :: nhe20(17), nhem20(7), nhed20(7), nhes20(7), npe15(17)
-    integer :: npem15(7), npes15(7), nped15(7), npy13(17), npym13(7)
-    integer :: npys13(7), npyd13(7), nte10(17), ntem10(7), ntes10(7)
-    integer :: nted10(7), nbhm(17), nchm(17)
+    integer(kind=8) :: nh8(15), nh20(7), np6(15), np15(7), np5(15), np13(7)
+    integer(kind=8) :: nt4(15), nt10(7)
+    integer(kind=8) :: ncpq4(15), ncpq8(7), ncpt3(15), ncpt6(7), ndpq4(15)
+    integer(kind=8) :: ndpq8(7), ndpt3(15), ndpt6(7), nf4(11), nf8(7), nf3(11)
+    integer(kind=8) :: nf6(7), npf2(11), npf3(7)
+    integer(kind=8) :: nhyq8(17), nhyt6(17), nhymq8(7), nhymt6(7), nhysq8(7)
+    integer(kind=8) :: nhyst6(7), nhydq8(7), nhydt6(7), nphm(17)
+    integer(kind=8) :: nhe20(17), nhem20(7), nhed20(7), nhes20(7), npe15(17)
+    integer(kind=8) :: npem15(7), npes15(7), nped15(7), npy13(17), npym13(7)
+    integer(kind=8) :: npys13(7), npyd13(7), nte10(17), ntem10(7), ntes10(7)
+    integer(kind=8) :: nted10(7), nbhm(17), nchm(17)
 !
-    integer :: iaxt3(6), iaxq4(6), iaxq8(6), iaxt6(6), iax2(3), iax3(3)
-    integer :: naxt3(7), naxq4(7), naxq8(7), naxt6(7), nax2(7), nax3(7)
+    integer(kind=8) :: iaxt3(6), iaxq4(6), iaxq8(6), iaxt6(6), iax2(3), iax3(3)
+    integer(kind=8) :: naxt3(7), naxq4(7), naxq8(7), naxt6(7), nax2(7), nax3(7)
 !
-    integer :: ith8(3), itp6(3), itp5(3), itt4(3), itpq4(3), itpt3(3)
-    integer :: nth8(7), ntp6(7), ntp5(7), ntt4(7), ntpq4(7), ntpt3(7)
-    integer :: itaq4(3), itat3(3), itf4(3), itf3(3), itpf2(3), itax2(3)
-    integer :: ntaq4(7), ntat3(7), ntf4(7), ntf3(7), ntpf2(7), ntax2(7)
+    integer(kind=8) :: ith8(3), itp6(3), itp5(3), itt4(3), itpq4(3), itpt3(3)
+    integer(kind=8) :: nth8(7), ntp6(7), ntp5(7), ntt4(7), ntpq4(7), ntpt3(7)
+    integer(kind=8) :: itaq4(3), itat3(3), itf4(3), itf3(3), itpf2(3), itax2(3)
+    integer(kind=8) :: ntaq4(7), ntat3(7), ntf4(7), ntf3(7), ntpf2(7), ntax2(7)
 !
-    integer :: jtab, ngr1, igr1, j1, n1, nbelt, itypel, iel, ima, jj
-    integer :: nfiss, i
+    integer(kind=8) :: jtab, ngr1, igr1, j1, n1, nbelt, itypel, iel, ima, jj
+    integer(kind=8) :: nfiss, i
     character(len=16) :: notype
-    integer, pointer :: nbsp(:) => null()
+    integer(kind=8), pointer :: nbsp(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

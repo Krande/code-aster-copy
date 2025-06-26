@@ -69,14 +69,14 @@ subroutine malin1(motfaz, chargz, iocc, indmot, lisnoz, &
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, idim1, idim2, idimax, igr, ima
-    integer :: in1, indlis, indmot, indnoe, ino, iocc, jdes
-    integer :: jgro, jlist, lonlis, m, ier
-    integer :: n1, n2, nbma, nbmail, ng, ngr, nliai
-    integer :: nmai, numail
+    integer(kind=8) :: ibid, idim1, idim2, idimax, igr, ima
+    integer(kind=8) :: in1, indlis, indmot, indnoe, ino, iocc, jdes
+    integer(kind=8) :: jgro, jlist, lonlis, m, ier
+    integer(kind=8) :: n1, n2, nbma, nbmail, ng, ngr, nliai
+    integer(kind=8) :: nmai, numail
     character(len=24), pointer :: trav1(:) => null()
     character(len=8), pointer :: trav2(:) => null()
-    integer, pointer :: trav3(:) => null()
+    integer(kind=8), pointer :: trav3(:) => null()
     aster_logical :: lcolle, lcolle2
 !-----------------------------------------------------------------------
     call jemarq()

@@ -20,9 +20,9 @@
 !
 interface
     subroutine rc36f3(nbsigr, nocc, saltij, nupass)
-        integer :: nbsigr
-        integer :: nocc(*)
+        integer(kind=8) :: nbsigr
+        integer(kind=8) :: nocc(*)
         real(kind=8) :: saltij(*)
-        integer :: nupass
+        integer(kind=8) :: nupass
     end subroutine rc36f3
 end interface

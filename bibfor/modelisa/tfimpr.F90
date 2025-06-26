@@ -41,9 +41,9 @@ subroutine tfimpr(nom)
     character(len=60) :: txres3(6), txres4(6)
 !
 !-----------------------------------------------------------------------
-    integer :: iaxe, icoupl, ience, iequiv, ifm, imasse, ip
-    integer :: ir, itypfl, izon, lfsic, lfsvi, lfsvk
-    integer :: lfsvr, nzex
+    integer(kind=8) :: iaxe, icoupl, ience, iequiv, ifm, imasse, ip
+    integer(kind=8) :: ir, itypfl, izon, lfsic, lfsvi, lfsvk
+    integer(kind=8) :: lfsvr, nzex
 !-----------------------------------------------------------------------
     data nonoui/'NON', 'OUI'/
 !
@@ -109,12 +109,12 @@ subroutine tfimpr(nom)
     call jemarq()
 !
 90  format(3x, '***************************************************',&
-     &         '****')
+      &         '****')
 91  format(3x, '*', 53x, '*')
 92  format(3x, '*', 1x, 'DEFINITION DES CARACTERISTIQUES D UNE ',&
-     &         'CONFIGURATION', 1x, '*')
+      &         'CONFIGURATION', 1x, '*')
 93  format(3x, '*', 6x, 'POUR UNE ETUDE DYNAMIQUE SOUS ECOULEMENT',&
-     &         7x, '*')
+      &         7x, '*')
 94  format(3x, 'CONFIGURATION : ', a60)
 95  format(3x, 'PRISE EN COMPTE DU COUPLAGE : ', a3)
 !

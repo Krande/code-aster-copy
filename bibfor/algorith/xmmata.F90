@@ -43,9 +43,9 @@ subroutine xmmata(ds_thm, ndim, nnops, nnop, ddls, ddlm, saut, &
 ! ----------------------------------------------------------------------
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: k, i, j, ndim, jheavn, ncompn, nfiss, nnop
-    integer :: nnops, ddls, ddlm, in, pli, pla(27), plj, hea_fa(2)
-    integer :: ifiss, nfh, ifa, jheafa, ncomph, ifh, dec
+    integer(kind=8) :: k, i, j, ndim, jheavn, ncompn, nfiss, nnop
+    integer(kind=8) :: nnops, ddls, ddlm, in, pli, pla(27), plj, hea_fa(2)
+    integer(kind=8) :: ifiss, nfh, ifa, jheafa, ncomph, ifh, dec
     real(kind=8) :: dffi(3), ps, saut(3), nd(3), cliq, dffj(3)
     real(kind=8) :: ffi, ffc(16), dffc(16, 3), coefj
     real(kind=8) :: mmat(560, 560), rho11, mu, gradpf(3)

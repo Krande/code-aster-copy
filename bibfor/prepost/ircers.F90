@@ -51,9 +51,9 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), ncmpu
-    integer :: nucmp(*), nbnoma(*), typma(*), permut(maxnod, *), nbmat
-    integer :: nummai(*), nbcmp, ncmps(*)
+    integer(kind=8) :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), ncmpu
+    integer(kind=8) :: nucmp(*), nbnoma(*), typma(*), permut(maxnod, *), nbmat
+    integer(kind=8) :: nummai(*), nbcmp, ncmps(*)
     character(len=*) :: nomgd, nomcmp(*), nomel(*), loc, titr, nomsym, nomsd
     character(len=*) :: nocmpl(*)
     real(kind=8) :: vale(*)
@@ -90,36 +90,36 @@ subroutine ircers(ifi, ligrel, nbgrel, longr, ncmpmx, &
     character(len=8) :: nocmp, ktype
     character(len=24) :: nomst
     character(len=80) :: entete(10), titre, texte
-    integer :: nbchs, nbcmpt, entier, nbspt, nnoe, ilong, imodel
-    integer :: impre, iente, impel
+    integer(kind=8) :: nbchs, nbcmpt, entier, nbspt, nnoe, ilong, imodel
+    integer(kind=8) :: impre, iente, impel
     aster_logical :: afaire, lcmp, lnocen
 !
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, iachml, iad, iaec, iast, ibcmps, ic
-    integer :: ichs, icm, icmax0, icmp, icmpl, icms
-    integer :: icmsup, ico, icoef, icomax, icomm, icou, icp
-    integer :: ida, idebu, idern, iel, ielg, ier, ies
-    integer :: ifin, igre, igrel, ilig, imai
-    integer :: inoa, inos
-    integer :: ipg, ipoin1, ipoin2, ir, ires, irvg
-    integer :: irvn, is0, isp, ispt, isup
-    integer :: itseg2, itype, iutil, j, jj, jmax, jmod
-    integer :: jspt, jt, jtitr, k, l, ll
-    integer :: mode, nbcou, nbdats, nbelgr, nbpg, ncmpg
-    integer :: ncmpp, nec, ni, npcalc, nsca, nscal
-    integer, pointer :: cmp_grel(:) => null()
-    integer, pointer :: ipcmps(:) => null()
+    integer(kind=8) :: i, iachml, iad, iaec, iast, ibcmps, ic
+    integer(kind=8) :: ichs, icm, icmax0, icmp, icmpl, icms
+    integer(kind=8) :: icmsup, ico, icoef, icomax, icomm, icou, icp
+    integer(kind=8) :: ida, idebu, idern, iel, ielg, ier, ies
+    integer(kind=8) :: ifin, igre, igrel, ilig, imai
+    integer(kind=8) :: inoa, inos
+    integer(kind=8) :: ipg, ipoin1, ipoin2, ir, ires, irvg
+    integer(kind=8) :: irvn, is0, isp, ispt, isup
+    integer(kind=8) :: itseg2, itype, iutil, j, jj, jmax, jmod
+    integer(kind=8) :: jspt, jt, jtitr, k, l, ll
+    integer(kind=8) :: mode, nbcou, nbdats, nbelgr, nbpg, ncmpg
+    integer(kind=8) :: ncmpp, nec, ni, npcalc, nsca, nscal
+    integer(kind=8), pointer :: cmp_grel(:) => null()
+    integer(kind=8), pointer :: ipcmps(:) => null()
     aster_logical, pointer :: ltabl(:) => null()
-    integer, pointer :: nbcmps_grel(:) => null()
-    integer, pointer :: nbcmpt_grel(:) => null()
+    integer(kind=8), pointer :: nbcmps_grel(:) => null()
+    integer(kind=8), pointer :: nbcmpt_grel(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
     character(len=8), pointer :: nomgds(:) => null()
-    integer, pointer :: perm(:) => null()
-    integer, pointer :: pos(:) => null()
-    integer, pointer :: scmp_dats(:) => null()
-    integer, pointer :: snbcps(:) => null()
+    integer(kind=8), pointer :: perm(:) => null()
+    integer(kind=8), pointer :: pos(:) => null()
+    integer(kind=8), pointer :: scmp_dats(:) => null()
+    integer(kind=8), pointer :: snbcps(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

@@ -22,6 +22,6 @@ interface
     subroutine gverlc(resu, compor, iord0)
         character(len=8), intent(in) :: resu
         character(len=19), intent(in) :: compor
-        integer, intent(in) :: iord0
+        integer(kind=8), intent(in) :: iord0
     end subroutine gverlc
 end interface

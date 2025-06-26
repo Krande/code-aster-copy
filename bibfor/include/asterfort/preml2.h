@@ -27,45 +27,45 @@ interface
                       debfac, debfsn, seq, lmat, adpile,&
                       chaine, suiv, place, nbass, ncbloc,&
                       lgbloc, nbloc, lgind, nbsnd, ier)
-        integer :: n1
-        integer :: diag(0:n1)
-        integer :: col(*)
-        integer :: delg(*)
-        integer :: xadj1(n1+1)
-        integer :: adjnc1(*)
-        integer :: estim
-        integer :: adress(*)
-        integer :: parend(*)
-        integer :: fils(n1)
-        integer :: frere(n1)
-        integer :: anc(n1)
-        integer :: nouv(n1)
-        integer :: supnd(n1)
-        integer :: dhead(*)
-        integer :: qsize(*)
-        integer :: llist(*)
-        integer :: marker(*)
-        integer :: invsup(n1)
+        integer(kind=8) :: n1
+        integer(kind=8) :: diag(0:n1)
+        integer(kind=8) :: col(*)
+        integer(kind=8) :: delg(*)
+        integer(kind=8) :: xadj1(n1+1)
+        integer(kind=8) :: adjnc1(*)
+        integer(kind=8) :: estim
+        integer(kind=8) :: adress(*)
+        integer(kind=8) :: parend(*)
+        integer(kind=8) :: fils(n1)
+        integer(kind=8) :: frere(n1)
+        integer(kind=8) :: anc(n1)
+        integer(kind=8) :: nouv(n1)
+        integer(kind=8) :: supnd(n1)
+        integer(kind=8) :: dhead(*)
+        integer(kind=8) :: qsize(*)
+        integer(kind=8) :: llist(*)
+        integer(kind=8) :: marker(*)
+        integer(kind=8) :: invsup(n1)
         integer(kind=4) :: local(*)
         integer(kind=4) :: global(*)
-        integer :: lfront(n1)
-        integer :: nblign(n1)
-        integer :: decal(*)
-        integer :: lgsn(n1)
-        integer :: debfac(n1+1)
-        integer :: debfsn(n1)
-        integer :: seq(n1)
-        integer :: lmat
-        integer :: adpile(n1)
-        integer :: chaine(n1)
-        integer :: suiv(n1)
-        integer :: place(n1)
-        integer :: nbass(n1)
-        integer :: ncbloc(*)
-        integer :: lgbloc(*)
-        integer :: nbloc
-        integer :: lgind
-        integer :: nbsnd
-        integer :: ier
+        integer(kind=8) :: lfront(n1)
+        integer(kind=8) :: nblign(n1)
+        integer(kind=8) :: decal(*)
+        integer(kind=8) :: lgsn(n1)
+        integer(kind=8) :: debfac(n1+1)
+        integer(kind=8) :: debfsn(n1)
+        integer(kind=8) :: seq(n1)
+        integer(kind=8) :: lmat
+        integer(kind=8) :: adpile(n1)
+        integer(kind=8) :: chaine(n1)
+        integer(kind=8) :: suiv(n1)
+        integer(kind=8) :: place(n1)
+        integer(kind=8) :: nbass(n1)
+        integer(kind=8) :: ncbloc(*)
+        integer(kind=8) :: lgbloc(*)
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: lgind
+        integer(kind=8) :: nbsnd
+        integer(kind=8) :: ier
     end subroutine preml2
 end interface

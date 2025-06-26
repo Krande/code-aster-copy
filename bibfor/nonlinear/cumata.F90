@@ -28,7 +28,7 @@ subroutine cumata(deficu, resocu, neq, nbliai, nmult, numedz, &
 #include "asterfort/jeveuo.h"
     character(len=24) :: deficu, resocu
     character(len=*) :: numedz, numecz, matriz, matelz
-    integer :: neq, nbliai, nmult
+    integer(kind=8) :: neq, nbliai, nmult
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine cumata(deficu, resocu, neq, nbliai, nmult, numedz, &
 !
 !
     character(len=24) :: appoin, apddl
-    integer :: japptr, japddl
+    integer(kind=8) :: japptr, japddl
     character(len=14) :: numedd, numecf
     character(len=19) :: matrix
     character(len=24) :: matele

@@ -29,6 +29,6 @@ interface
         character(len=*), intent(in) :: chharm, chgeom, chmate, chcara(*), chtime
         character(len=*), intent(in) :: chvarc, chvref
         character(len=*), intent(in) :: chelemz, basez
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine compEnergyPotential
 end interface

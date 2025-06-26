@@ -21,7 +21,7 @@
 interface
     function mat_com(ndim,m)
       real(kind=8), intent(in) :: m(ndim,ndim)
-      integer,intent(in) :: ndim
+      integer(kind=8),intent(in) :: ndim
       real(kind=8) :: mat_com(ndim,ndim)
     end function mat_com
 end interface

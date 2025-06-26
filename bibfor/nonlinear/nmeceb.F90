@@ -56,8 +56,8 @@ subroutine nmeceb(sderro, loopName, loopState)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: eventCONVJv
-    integer, pointer :: eventCONV(:) => null()
-    integer :: convState
+    integer(kind=8), pointer :: eventCONV(:) => null()
+    integer(kind=8) :: convState
 !
 ! --------------------------------------------------------------------------------------------------
 !

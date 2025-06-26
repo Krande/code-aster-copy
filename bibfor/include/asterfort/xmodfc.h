@@ -21,10 +21,10 @@
 interface
     subroutine xmodfc(lact, nlact, nno, dfdic, dffc, ndim)
                            
-        integer :: lact(16)
-        integer :: nlact(2)
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: lact(16)
+        integer(kind=8) :: nlact(2)
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: dfdic(nno,3)
         real(kind=8) :: dffc(16,3)
     end subroutine xmodfc

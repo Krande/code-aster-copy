@@ -21,8 +21,8 @@
 interface
     subroutine nmdcrg(depart, iterat, vresi, xa0, xa1,&
                       xdet)
-        integer :: depart
-        integer :: iterat
+        integer(kind=8) :: depart
+        integer(kind=8) :: iterat
         real(kind=8) :: vresi(*)
         real(kind=8) :: xa0
         real(kind=8) :: xa1

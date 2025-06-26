@@ -26,7 +26,7 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd, &
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: nbmod, nbddr, nbdax, iord(nbddr), iorg(nbddr), iora(nbdax), neq
+    integer(kind=8) :: nbmod, nbddr, nbdax, iord(nbddr), iorg(nbddr), iora(nbdax), neq
     real(kind=8) :: beta
     complex(kind=8) :: cmode(nbmod+nbddr+nbdax), vecmod(neq)
     character(len=8) :: basmod
@@ -59,7 +59,7 @@ subroutine recbbn(basmod, nbmod, nbddr, nbdax, tetgd, &
 !
 !
 !
-    integer :: i, j, iad, llcham, lltgd
+    integer(kind=8) :: i, j, iad, llcham, lltgd
     real(kind=8) :: abeta, bbeta
     complex(kind=8) :: dephc, cfact, cmult
     character(len=24) :: chaval

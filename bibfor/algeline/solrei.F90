@@ -25,7 +25,7 @@ subroutine solrei(gamp, s, i1n, parame, nbmat, &
 #include "asterfort/calcq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbmat, codret
+    integer(kind=8) :: nbmat, codret
     real(kind=8) :: s(6), i1n, parame(5), mater(nbmat, 2), q(6), vecn(6), gamp
 ! --- BUT : CALCUL DE Q ET DE N ----------------------------------------
 ! ======================================================================
@@ -39,7 +39,7 @@ subroutine solrei(gamp, s, i1n, parame, nbmat, &
 ! OUT : Q      : DERIVEE Q = DG/DSIG -----------------------------------
 ! --- : VECN   : VECTEUR N POUR PROJECTION SUR LE DOMAINE --------------
 ! ======================================================================
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: zero, gamult, gamcjs, pref, epssig
     real(kind=8) :: b
 ! ======================================================================

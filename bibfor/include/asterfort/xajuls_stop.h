@@ -22,8 +22,8 @@ interface
     subroutine xajuls_stop(noma, cnslt, jconx1, jconx2, ima)
         character(len=8), intent(in) :: noma
         character(len=19), intent(in) :: cnslt
-        integer, intent(in) :: jconx1
-        integer, intent(in) :: jconx2
-        integer, intent(in) :: ima
+        integer(kind=8), intent(in) :: jconx1
+        integer(kind=8), intent(in) :: jconx2
+        integer(kind=8), intent(in) :: ima
     end subroutine xajuls_stop
 end interface

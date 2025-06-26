@@ -21,7 +21,7 @@
 interface
     function distfo(zimat, kfonc, xx, yy, normx,&
                     normy)
-        integer :: zimat
+        integer(kind=8) :: zimat
         character(len=8) :: kfonc
         real(kind=8) :: xx
         real(kind=8) :: yy

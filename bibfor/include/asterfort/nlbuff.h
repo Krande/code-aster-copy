@@ -21,7 +21,7 @@
 interface
     subroutine nlbuff(sd_nl, addrs, level)
         character(len=*) , intent(in)  :: sd_nl
-        integer, pointer :: addrs(:)
-        integer, optional, intent(in)  :: level
+        integer(kind=8), pointer :: addrs(:)
+        integer(kind=8), optional, intent(in)  :: level
     end subroutine nlbuff
 end interface

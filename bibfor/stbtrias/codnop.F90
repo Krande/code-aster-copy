@@ -70,10 +70,10 @@ subroutine codnop(nom1, nom2, ic, nc)
 !
 !  --> DECLARATION DES ARGUMENTS
     character(len=*) :: nom1, nom2
-    integer :: ic, nc
+    integer(kind=8) :: ic, nc
 !
 !  --> DECLARATION INDICE DE BOUCLE
-    integer :: i
+    integer(kind=8) :: i
 !
 !  ---------- FIN DECLARATIONS _________
 !

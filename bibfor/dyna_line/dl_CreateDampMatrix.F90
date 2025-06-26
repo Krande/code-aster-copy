@@ -34,7 +34,7 @@ subroutine dl_CreateDampMatrix(matr_rigi, matr_mass, l_cplx, &
 !
     character(len=19), intent(in) :: matr_rigi, matr_mass
     aster_logical, intent(in) :: l_cplx
-    integer, intent(in) :: nb_damp_read
+    integer(kind=8), intent(in) :: nb_damp_read
     real(kind=8), pointer :: l_damp_read(:)
     character(len=19), intent(out)  :: matr_damp
 !
@@ -56,12 +56,12 @@ subroutine dl_CreateDampMatrix(matr_rigi, matr_mass, l_cplx, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: typobj
-    integer, pointer :: v_matr_desc(:) => null()
-    integer :: nb_equa, nb_mode, nbmod2, nb_damp, idiff, i_mode, i2
-    integer :: ibloc, nbbloc, lgbloc, i_damp
+    integer(kind=8), pointer :: v_matr_desc(:) => null()
+    integer(kind=8) :: nb_equa, nb_mode, nbmod2, nb_damp, idiff, i_mode, i2
+    integer(kind=8) :: ibloc, nbbloc, lgbloc, i_damp
     real(kind=8), pointer :: l_coef(:) => null()
     character(len=24) :: rigi_vale, mass_vale, damp_vale
-    integer :: iatmat, iatmar, iatmam
+    integer(kind=8) :: iatmat, iatmar, iatmam
     real(kind=8) :: acrit
 !
 ! --------------------------------------------------------------------------------------------------

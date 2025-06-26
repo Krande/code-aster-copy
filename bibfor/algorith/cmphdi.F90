@@ -70,19 +70,19 @@ subroutine cmphdi(ck, cm, ndim, nbmod, niter, &
 #include "asterfort/trldc.h"
 #include "asterfort/utmess.h"
 #include "blas/zcopy.h"
-    integer :: ndim, nbmod, niter, ndimax
+    integer(kind=8) :: ndim, nbmod, niter, ndimax
     complex(kind=8) :: ck(*), cm(*)
     complex(kind=8) :: ceigen(nbmod), cmod(ndimax, nbmod), cmod0(ndim)
     complex(kind=8) :: cmat1(*), cmat2(ndim, ndim)
     complex(kind=8) :: cvect(ndim), cvect1(ndim), cvec0(ndim)
     real(kind=8) :: alpha(ndim+1), beta(ndim+1), interv
     real(kind=8) :: lambd1, lambd2, xcrit
-    integer :: i, j, ct, ipivo
-    integer :: vali(2)
+    integer(kind=8) :: i, j, ct, ipivo
+    integer(kind=8) :: vali(2)
     complex(kind=8) :: cshift
     real(kind=8) :: ecart, valr(3)
     aster_logical :: sortie
-    integer :: idiag, iretou, iv, ivdiag
+    integer(kind=8) :: idiag, iretou, iv, ivdiag
     character(len=6) :: valk
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

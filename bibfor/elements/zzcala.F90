@@ -32,7 +32,7 @@ subroutine zzcala(npg, nno, wi, x, y, &
 !     L'ELEMENT COURANT
 !
     real(kind=8) :: wi(1), x(1), y(1), a(9, 9), xx, yy, b(9)
-    integer :: i, ino, ipg, j, nno, npg
+    integer(kind=8) :: i, ino, ipg, j, nno, npg
     real(kind=8) :: xmax, xmin, ymax, ymin
 !-----------------------------------------------------------------------
     do ipg = 1, npg

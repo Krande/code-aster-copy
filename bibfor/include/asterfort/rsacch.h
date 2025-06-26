@@ -22,11 +22,11 @@ interface
     subroutine rsacch(nomsdz, numch, nomch, nbord, liord,&
                       nbcmp, liscmp)
         character(len=*) :: nomsdz
-        integer :: numch
+        integer(kind=8) :: numch
         character(len=16) :: nomch
-        integer :: nbord
-        integer :: liord(*)
-        integer :: nbcmp
+        integer(kind=8) :: nbord
+        integer(kind=8) :: liord(*)
+        integer(kind=8) :: nbcmp
         character(len=8) :: liscmp(*)
     end subroutine rsacch
 end interface

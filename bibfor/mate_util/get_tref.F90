@@ -36,7 +36,7 @@ subroutine get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
 !
 !
     character(len=8), intent(in) :: chmate
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     real(kind=8), intent(out) :: tref
     aster_logical, intent(out) :: l_tref_is_nan
     aster_logical, intent(out) :: l_empty
@@ -59,10 +59,10 @@ subroutine get_tref(chmate, imate, tref, l_tref_is_nan, l_empty)
 !
     character(len=24) :: ktref
     character(len=19) :: cartrf
-    integer :: nb_cmp, nbec, ngdmax
-    integer :: ec1, k, kk, iret
+    integer(kind=8) :: nb_cmp, nbec, ngdmax
+    integer(kind=8) :: ec1, k, kk, iret
     character(len=8) :: phys_name
-    integer, pointer :: v_chmate_desc(:) => null()
+    integer(kind=8), pointer :: v_chmate_desc(:) => null()
     character(len=8), pointer :: v_chmate_vale(:) => null()
     character(len=16), pointer :: v_vtrf(:) => null()
 !

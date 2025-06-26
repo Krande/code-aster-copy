@@ -25,8 +25,8 @@ interface
         real(kind=8), intent(in) :: inst
         character(len=*), intent(in) :: criter_
         real(kind=8), intent(in) :: prec
-        integer, intent(out) :: nume
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: nume
+        integer(kind=8), intent(out) :: iret
         character(len=*), optional, intent(in) :: vari_name_
     end subroutine rs_getnume
 end interface

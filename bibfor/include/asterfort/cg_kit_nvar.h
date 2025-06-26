@@ -19,6 +19,6 @@
 interface
     subroutine cg_kit_nvar(rela_comp_cg, nb_vari_cg, numeCompCG)
         character(len=16), intent(in) :: rela_comp_cg(2)
-        integer, intent(out) :: nb_vari_cg(2), numeCompCG(2)
+        integer(kind=8), intent(out) :: nb_vari_cg(2), numeCompCG(2)
     end subroutine cg_kit_nvar
 end interface

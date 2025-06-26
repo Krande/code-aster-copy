@@ -24,8 +24,8 @@ subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nfiss, ifiss, ima, nno, nbheav
-    integer :: jconx1, jconx2, jstnl(nfiss), jstnv(nfiss)
+    integer(kind=8) :: nfiss, ifiss, ima, nno, nbheav
+    integer(kind=8) :: jconx1, jconx2, jstnl(nfiss), jstnv(nfiss)
 ! ----------------------------------------------------------------------
 !
 ! --- ROUTINE XFEM
@@ -39,8 +39,8 @@ subroutine xtyhea(nfiss, ifiss, ima, nno, jconx1, &
 !
 !
 !
-    integer :: ino, stno(nno), ifis
-    integer :: nngl
+    integer(kind=8) :: ino, stno(nno), ifis
+    integer(kind=8) :: nngl
 !
 ! ----------------------------------------------------------------------
 !

@@ -26,7 +26,7 @@ subroutine romEvalCoefInit(nb_vari_para, vari_para, ds_evalcoef)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nb_vari_para
+    integer(kind=8), intent(in) :: nb_vari_para
     type(ROM_DS_VariPara), intent(in) :: vari_para(5)
     type(ROM_DS_EvalCoef), intent(inout) :: ds_evalcoef
 !
@@ -44,7 +44,7 @@ subroutine romEvalCoefInit(nb_vari_para, vari_para, ds_evalcoef)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_vari_para, i_eval_para
+    integer(kind=8) :: i_vari_para, i_eval_para
 !
 ! --------------------------------------------------------------------------------------------------
 !

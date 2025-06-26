@@ -20,10 +20,10 @@
 !
 interface
     subroutine monte1(te2, nout, lchout, lpaout, igr2)
-        integer :: te2
-        integer :: nout
+        integer(kind=8) :: te2
+        integer(kind=8) :: nout
         character(len=*) :: lchout(*)
         character(len=8) :: lpaout(*)
-        integer :: igr2
+        integer(kind=8) :: igr2
     end subroutine monte1
 end interface

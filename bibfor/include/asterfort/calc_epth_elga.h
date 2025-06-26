@@ -22,11 +22,11 @@ interface
     subroutine calc_epth_elga(fami   , ndim  , poum  , kpg      , ksp,&
                               j_mater, angl_naut, epsi_ther)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: angl_naut(3)
         real(kind=8), intent(out) :: epsi_ther(6)
     end subroutine calc_epth_elga

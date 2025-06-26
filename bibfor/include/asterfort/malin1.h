@@ -23,9 +23,9 @@ interface
                       lonlis)
         character(len=*) :: motfaz
         character(len=*) :: chargz
-        integer :: iocc
-        integer :: indmot
+        integer(kind=8) :: iocc
+        integer(kind=8) :: indmot
         character(len=*) :: lisnoz
-        integer :: lonlis
+        integer(kind=8) :: lonlis
     end subroutine malin1
 end interface

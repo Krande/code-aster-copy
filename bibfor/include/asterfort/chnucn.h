@@ -23,7 +23,7 @@ interface
                       chno2)
         character(len=*) :: chno1
         character(len=*) :: numdd2
-        integer :: ncorr
+        integer(kind=8) :: ncorr
         character(len=*) :: tcorr(*)
         character(len=*) :: base
         character(len=*) :: chno2

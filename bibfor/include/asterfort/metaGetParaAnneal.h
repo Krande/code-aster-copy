@@ -22,8 +22,8 @@ interface
                                  theta)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, j_mater
-        integer, intent(in) :: meta_type, nb_phase
+        integer(kind=8), intent(in) :: kpg, ksp, j_mater
+        integer(kind=8), intent(in) :: meta_type, nb_phase
         real(kind=8), intent(out) :: theta(*)
     end subroutine metaGetParaAnneal
 end interface

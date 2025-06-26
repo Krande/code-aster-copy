@@ -20,7 +20,7 @@
 !
 interface
     subroutine pmpbkb(skp, nbpout, yi, zi, sk)
-        integer :: nbpout
+        integer(kind=8) :: nbpout
         real(kind=8) :: skp(78,*)
         real(kind=8) :: yi(nbpout)
         real(kind=8) :: zi(nbpout)

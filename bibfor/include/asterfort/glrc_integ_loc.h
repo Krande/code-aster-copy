@@ -45,9 +45,9 @@ interface
         real(kind=8) :: dksi2
         real(kind=8) :: da1
         real(kind=8) :: da2
-        integer :: kdmax
+        integer(kind=8) :: kdmax
         real(kind=8) :: told
-        integer :: codret
+        integer(kind=8) :: codret
         real(kind=8) :: emp(2)
     end subroutine glrc_integ_loc
 end interface

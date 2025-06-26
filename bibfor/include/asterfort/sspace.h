@@ -23,21 +23,21 @@ interface
                       nfreq, lprod, itemax, nperm, tol,&
                       toldyn, vect, valpro, nitjac, nitbat,&
                       solveu)
-        integer :: nbvec
-        integer :: neq
-        integer :: lraid
-        integer :: lmatra
-        integer :: lmass
-        integer :: nfreq
-        integer :: lprod(neq)
-        integer :: itemax
-        integer :: nperm
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: neq
+        integer(kind=8) :: lraid
+        integer(kind=8) :: lmatra
+        integer(kind=8) :: lmass
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: lprod(neq)
+        integer(kind=8) :: itemax
+        integer(kind=8) :: nperm
         real(kind=8) :: tol
         real(kind=8) :: toldyn
         real(kind=8) :: vect(neq, nbvec)
         real(kind=8) :: valpro(nbvec)
-        integer :: nitjac
-        integer :: nitbat
+        integer(kind=8) :: nitjac
+        integer(kind=8) :: nitbat
         character(len=19) :: solveu
     end subroutine sspace
 end interface

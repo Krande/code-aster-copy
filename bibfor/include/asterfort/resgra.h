@@ -25,13 +25,13 @@ interface
         character(len=*) :: mat
         character(len=*) :: matf
         character(len=*) :: vcine
-        integer :: niter
+        integer(kind=8) :: niter
         real(kind=8) :: epsi
         character(len=19) :: criter
-        integer :: nsecm
+        integer(kind=8) :: nsecm
         real(kind=8) :: rsolu(*)
         character(len=19) :: solveu
-        integer :: istop
-        integer :: iret
+        integer(kind=8) :: istop
+        integer(kind=8) :: iret
     end subroutine resgra
 end interface

@@ -21,15 +21,15 @@
 interface
     subroutine cmtrf2(codcm1, codtrf, ncm1, lcm1, ntrf,&
                       ltrf, nbma, codint, lint, nint)
-        integer :: nbma
-        integer :: ntrf
-        integer :: ncm1
-        integer :: codcm1
-        integer :: codtrf
-        integer :: lcm1(ncm1)
-        integer :: ltrf(ntrf)
-        integer :: codint
-        integer :: lint(nbma)
-        integer :: nint
+        integer(kind=8) :: nbma
+        integer(kind=8) :: ntrf
+        integer(kind=8) :: ncm1
+        integer(kind=8) :: codcm1
+        integer(kind=8) :: codtrf
+        integer(kind=8) :: lcm1(ncm1)
+        integer(kind=8) :: ltrf(ntrf)
+        integer(kind=8) :: codint
+        integer(kind=8) :: lint(nbma)
+        integer(kind=8) :: nint
     end subroutine cmtrf2
 end interface

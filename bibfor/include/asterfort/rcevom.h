@@ -45,8 +45,8 @@ interface
         character(len=24) :: cspe
         character(len=24) :: cresu
         character(len=16) :: kinti
-        integer :: it
-        integer :: jt
+        integer(kind=8) :: it
+        integer(kind=8) :: jt
         aster_logical :: lrocht
         real(kind=8) :: symax
         character(len=24) :: cpres

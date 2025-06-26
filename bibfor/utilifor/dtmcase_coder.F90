@@ -29,11 +29,11 @@ subroutine dtmcase_coder(input_, koutput)
 #include "jeveux.h"
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)   :: input_
+    integer(kind=8), intent(in)   :: input_
     character(len=*), intent(out)  :: koutput
 !
 !   -0.2- Local variables
-    integer          :: input, length, base, ind, digit
+    integer(kind=8)          :: input, length, base, ind, digit
     character(len=1) :: charac(0:62)
 
     data charac/'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', &

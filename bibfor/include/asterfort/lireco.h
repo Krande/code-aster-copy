@@ -25,14 +25,14 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=8), intent(in) :: model
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
         character(len=24), intent(in) :: list_elem_slav
         character(len=24), intent(in) :: list_elem_mast
         character(len=24), intent(in) :: list_node_slav
         character(len=24), intent(in) :: list_node_mast
-        integer, intent(out) :: nb_elem_slav
-        integer, intent(out) :: nb_node_slav
-        integer, intent(out) :: nb_elem_mast
-        integer, intent(out) :: nb_node_mast
+        integer(kind=8), intent(out) :: nb_elem_slav
+        integer(kind=8), intent(out) :: nb_node_slav
+        integer(kind=8), intent(out) :: nb_elem_mast
+        integer(kind=8), intent(out) :: nb_node_mast
     end subroutine lireco
 end interface

@@ -22,6 +22,6 @@
             subroutine jeveut(nomlu,cel,jctab)
               character(len=*), intent(in) :: nomlu
               character(len=*), intent(in) :: cel
-              integer, intent(out) :: jctab
+              integer(kind=8), intent(out) :: jctab
             end subroutine jeveut
           end interface 

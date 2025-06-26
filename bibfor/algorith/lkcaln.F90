@@ -20,7 +20,7 @@ subroutine lkcaln(s, b, vecn, retcom)
 !
     implicit none
 #include "asterc/r8miem.h"
-    integer :: retcom
+    integer(kind=8) :: retcom
     real(kind=8) :: b, s(6), vecn(6)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
 ! =================================================================
@@ -30,7 +30,7 @@ subroutine lkcaln(s, b, vecn, retcom)
 ! --- : B      : PARAMETRE DU CALCUL DE LA NORMALE ----------------
 ! OUT : VECN   : N = (B*S/SII-I)/SQRT(B**2+3) ---------------------
 ! =================================================================
-    integer :: i, ndt, ndi
+    integer(kind=8) :: i, ndt, ndi
     real(kind=8) :: sii, racine, un, trois, kron(6), zero
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRE ---------------------------------

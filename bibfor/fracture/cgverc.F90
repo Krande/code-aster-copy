@@ -23,7 +23,7 @@ subroutine cgverc(resu, nexci)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nexci
+    integer(kind=8) :: nexci
     character(len=8) :: resu
 !
 ! person_in_charge: samuel.geniaut at edf.fr

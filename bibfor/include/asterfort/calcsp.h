@@ -28,10 +28,10 @@ interface
         character(len=8) :: table
         real(kind=8) :: freq(*)
         real(kind=8) :: masg(*)
-        integer :: nbm
-        integer :: nbmr
-        integer :: imod1
-        integer :: nuor(*)
-        integer :: ivite
+        integer(kind=8) :: nbm
+        integer(kind=8) :: nbmr
+        integer(kind=8) :: imod1
+        integer(kind=8) :: nuor(*)
+        integer(kind=8) :: ivite
     end subroutine calcsp
 end interface

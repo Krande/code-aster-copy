@@ -48,7 +48,7 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s, &
     type(ROM_DS_Empi), intent(in) :: base
     type(ROM_DS_ParaDBR_POD), intent(in) :: paraPod
     real(kind=8), pointer :: q(:), s(:), v(:)
-    integer, intent(out) :: nbModeOut, nbSnapOut
+    integer(kind=8), intent(out) :: nbModeOut, nbSnapOut
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,10 +69,10 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iAlgoIni, iAlgoEnd, iEqua, iSnap, iAlgoSnap, iAlgo, k, iMode, iCoorRedu
-    integer :: nbEqua, nbSing, nbModeMaxi, nbSnapResult
-    integer :: nbSnapPrev, nbModePrev
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iAlgoIni, iAlgoEnd, iEqua, iSnap, iAlgoSnap, iAlgo, k, iMode, iCoorRedu
+    integer(kind=8) :: nbEqua, nbSing, nbModeMaxi, nbSnapResult
+    integer(kind=8) :: nbSnapPrev, nbModePrev
     real(kind=8) :: toleIncr, toleSVD
     character(len=8) :: baseName
     real(kind=8) :: norm_q, norm_r
@@ -90,7 +90,7 @@ subroutine dbr_pod_incr(lReuse, base, paraPod, q, s, &
     real(kind=8), pointer :: v_gamma(:) => null()
     character(len=24) :: mode, fieldName
     character(len=4) :: fieldSupp
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8), pointer :: v_mode(:) => null()
     blas_int :: b_k, b_lda, b_ldb, b_ldc, b_m, b_n
     blas_int :: b_nrhs

@@ -20,6 +20,6 @@
 !
 interface
     subroutine jeimpm(unit)
-        integer :: unit
+        integer(kind=8) :: unit
     end subroutine jeimpm
 end interface

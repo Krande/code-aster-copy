@@ -22,7 +22,7 @@ subroutine xdivte(elp, cnset, nse, nnose, exit)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/xpente.h"
-    integer :: cnset(*), nse, nnose, exit(2)
+    integer(kind=8) :: cnset(*), nse, nnose, exit(2)
     character(len=8) :: elp
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -47,7 +47,7 @@ subroutine xdivte(elp, cnset, nse, nnose, exit)
 !       NNOSE   : NOMBRE DE NOEUDS DU SOUS TETRA (SOUS TRIA)
 !     ------------------------------------------------------------------
 !
-    integer :: ino, ise, connec(6, 10), i, n(18), bis, ter, qar, dec
+    integer(kind=8) :: ino, ise, connec(6, 10), i, n(18), bis, ter, qar, dec
 ! ----------------------------------------------------------------------
 !
     exit(1) = 0

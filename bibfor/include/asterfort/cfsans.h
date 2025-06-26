@@ -22,9 +22,9 @@ interface
     subroutine cfsans(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_enti, v_ncomp_zone)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: nt_ncomp_poin
+        integer(kind=8), intent(in) :: nt_ncomp_poin
         real(kind=8), pointer :: v_ncomp_jeux(:)
         character(len=16), pointer :: v_ncomp_enti(:)
-        integer, pointer :: v_ncomp_zone(:)
+        integer(kind=8), pointer :: v_ncomp_zone(:)
     end subroutine cfsans
 end interface

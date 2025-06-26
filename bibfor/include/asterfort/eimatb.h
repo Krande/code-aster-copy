@@ -24,7 +24,7 @@ interface
                   ang, b, wg, ni2ldc)
         character(len=16) :: nomte
         aster_logical, intent(in):: axi
-        integer, intent(in)      :: ndim, nno1, nno2, npg
+        integer(kind=8), intent(in)      :: ndim, nno1, nno2, npg
         real(kind=8), intent(in) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno2)
         real(kind=8), intent(in) :: wref(npg)
         real(kind=8), intent(in) :: dffr2(ndim-1, nno2, npg), ang(merge(1,3,ndim.eq.2),nno2)

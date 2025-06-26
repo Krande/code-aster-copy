@@ -20,8 +20,8 @@
 !
 interface
     subroutine gmeth2(nnoff, ndeg, gthi, gs, objcur, xl, gi, norfon)
-        integer           :: nnoff
-        integer           :: ndeg
+        integer(kind=8)           :: nnoff
+        integer(kind=8)           :: ndeg
         real(kind=8)      :: gthi(1)
         real(kind=8)      :: gs(1)
         character(len=24) :: objcur

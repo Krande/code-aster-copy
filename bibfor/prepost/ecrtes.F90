@@ -36,7 +36,7 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype, &
 #include "asterfort/rsexpa.h"
 #include "asterfort/rsnopa.h"
 #include "asterfort/utmess.h"
-    integer :: numor, ityp
+    integer(kind=8) :: numor, ityp
     character(len=*) :: nomsd, titre, nomgds
     character(len=*) :: fitype
     character(len=80) :: entete(10)
@@ -65,8 +65,8 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype, &
 !---------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: imode, itype, modtyp, anatyp, datcar, nutype
-    integer :: nbtitr
+    integer(kind=8) :: imode, itype, modtyp, anatyp, datcar, nutype
+    integer(kind=8) :: nbtitr
     real(kind=8) :: freq, masgen, amor1, amor2, rvide
     character(len=8) :: k8bid
     character(len=16) :: typinc
@@ -74,8 +74,8 @@ subroutine ecrtes(nomsd, titre, nomgds, numor, fitype, &
     character(len=80) :: stitr, stitrb
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, iret, istmax, itimax
-    integer :: jtitr, nbac, nbcmp, nbpa
+    integer(kind=8) :: i, iad, iret, istmax, itimax
+    integer(kind=8) :: jtitr, nbac, nbcmp, nbpa
     character(len=16), pointer :: nom_acc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

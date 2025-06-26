@@ -35,7 +35,7 @@ subroutine rc32cm()
 !     LECTURE DU MOT CLE FACTEUR "CHAR_MECA"
 !     ------------------------------------------------------------------
 !
-    integer :: nbchar, iocc, nume, n1, jchar, i, n2
+    integer(kind=8) :: nbchar, iocc, nume, n1, jchar, i, n2
     character(len=8) :: knumec
 !
 ! DEB ------------------------------------------------------------------

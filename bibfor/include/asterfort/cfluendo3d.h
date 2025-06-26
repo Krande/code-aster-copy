@@ -25,10 +25,10 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
                   sigp, vip, typmod,&
                   dsidep, codret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8) :: instam
@@ -42,6 +42,6 @@ subroutine cfluendo3d(fami, kpg, ksp, ndim, imate,&
         real(kind=8) :: vip(*)
         character(len=8) :: typmod(*)
         real(kind=8) :: dsidep(6, 6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine cfluendo3d
 end interface 

@@ -22,9 +22,9 @@ interface
     subroutine csmbr8(nommat, ccll, ccii, neq, vcine,&
                       vsmb)
         character(len=*) :: nommat
-        integer :: ccll(*)
-        integer :: ccii(*)
-        integer :: neq
+        integer(kind=8) :: ccll(*)
+        integer(kind=8) :: ccii(*)
+        integer(kind=8) :: neq
         real(kind=8) :: vcine(*)
         real(kind=8) :: vsmb(*)
     end subroutine csmbr8

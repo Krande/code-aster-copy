@@ -50,19 +50,19 @@ subroutine nmstat_vale(ds_measure, time_curr, sderro)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: vmpeak(1)
-    integer :: iret
-    integer :: nb_cols, nb_device
-    integer :: i_col, i_device
+    integer(kind=8) :: iret
+    integer(kind=8) :: nb_cols, nb_device
+    integer(kind=8) :: i_col, i_device
     type(NL_DS_Table) :: table
     type(NL_DS_Column) :: column
     type(NL_DS_Device) :: device
     aster_logical :: l_vale_inte, l_vale_real
-    integer :: count, iEvent, eventState
+    integer(kind=8) :: count, iEvent, eventState
     character(len=10) :: device_type
     real(kind=8) :: time
     character(len=16) :: col_name, eventName, state
     character(len=24) :: eventENOMJv, eventEACTJv
-    integer, pointer :: eventEACT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null()
     character(len=16), pointer :: eventENOM(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

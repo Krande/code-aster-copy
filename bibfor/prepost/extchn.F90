@@ -48,7 +48,7 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbn, nbc, numnd(*), iocc
+    integer(kind=8) :: nbn, nbc, numnd(*), iocc
     character(len=6) :: indic
     character(len=8) :: nnoeud(*), ncmp(*)
     character(len=19) :: nchmno, nsschn
@@ -147,38 +147,38 @@ subroutine extchn(nchmno, nnoeud, numnd, ncmp, nbn, &
 !   NOMS ET ADRESSES DES OJB ASSOCIES AUX CHAM_NO
 !   ---------------------------------------------
 !
-    integer :: avalch, anueq
+    integer(kind=8) :: avalch, anueq
     character(len=3) :: type
     character(len=24) :: nvalch, nnueq, nomvec
 !
 !   NOMS ET ADREESES DES OJB ASSOCIES AUX SOUS_CHAM_NO
 !   --------------------------------------------------
 !
-    integer :: apadr, apcmp, apval, anugd, aperr, anoma
+    integer(kind=8) :: apadr, apcmp, apval, anugd, aperr, anoma
     character(len=24) :: npadr, npcmp, npval, nnugd, nperr, nnoma
 !
 !   NOMS ET ADRESSES DES OJB ASSOCIES AUX NUMEEQUA
 !   ----------------------------------------------
 !
-    integer :: aprno
+    integer(kind=8) :: aprno
     character(len=24) :: nprno
     character(len=19) :: nprof
 !
 !   VARIABLES ASSOCIEES A LA GRANDEUR
 !   ---------------------------------
 !
-    integer :: gd, acmpgd, adesgd, nbtcmp, nbec
+    integer(kind=8) :: gd, acmpgd, adesgd, nbtcmp, nbec
 !
 !   VARIABLES ASSOCIEES AU MAILLAGE
 !   -------------------------------
 !
-    integer :: nbtnd
+    integer(kind=8) :: nbtnd
     character(len=8) :: nmaila
 !
 !   VARIABLES COMPLEMENTAIRES
 !   -------------------------
 !
-    integer :: anumcp, i, ind, n1, ibid
+    integer(kind=8) :: anumcp, i, ind, n1, ibid
     real(kind=8) :: angl(3), pgl(3, 3), orig(3), axez(3)
     real(kind=8) :: zero, xnormz, epsi
     aster_logical :: utili

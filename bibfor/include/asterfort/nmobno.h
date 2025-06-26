@@ -20,7 +20,7 @@
 !
 interface
     subroutine nmobno(sd_obsv, keyw_fact, nb_keyw_fact)
-        integer, intent(in) :: nb_keyw_fact
+        integer(kind=8), intent(in) :: nb_keyw_fact
         character(len=19), intent(in) :: sd_obsv
         character(len=16), intent(in) :: keyw_fact
     end subroutine nmobno

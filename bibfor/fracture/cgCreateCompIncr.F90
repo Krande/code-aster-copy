@@ -46,10 +46,10 @@ subroutine cgCreateCompIncr(compor, l_etat_init)
 ! IO compor    : name of <CARTE> COMPORTEMENT
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_vale, nb_zone, nb_cmp_max, i_zone
+    integer(kind=8) :: nb_vale, nb_zone, nb_cmp_max, i_zone
     character(len=16) :: rela_comp, defo_comp, rela_new
     character(len=19) :: compor_elas
-    integer, pointer :: v_compor_desc(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
     character(len=16), pointer :: v_compor_vale(:) => null()
 !
     call jemarq()

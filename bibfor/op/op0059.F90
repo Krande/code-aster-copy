@@ -36,7 +36,7 @@ subroutine op0059()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nboccp, nboccm, nbocci
+    integer(kind=8) :: nboccp, nboccm, nbocci
     character(len=8) :: sdcomp
     character(len=24) :: k24bid
 !

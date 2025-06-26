@@ -21,8 +21,8 @@
 interface
     subroutine mbrigi(fami, kpg, imate, rig)
         character(len=4) :: fami
-        integer :: kpg
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: imate
         real(kind=8) :: rig(3, 3)
     end subroutine mbrigi
 end interface

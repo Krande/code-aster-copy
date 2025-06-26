@@ -20,9 +20,9 @@
 !
 interface
     function modat2(iopt, ite, nompar)
-        integer :: iopt
-        integer :: ite
+        integer(kind=8) :: iopt
+        integer(kind=8) :: ite
         character(len=8) :: nompar
-        integer :: modat2
+        integer(kind=8) :: modat2
     end function modat2
 end interface

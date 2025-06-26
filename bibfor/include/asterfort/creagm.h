@@ -20,9 +20,9 @@
 !
           interface 
             subroutine creagm(nbmato,nbpart,ma,masd)
-              integer :: nbmato
-              integer :: nbpart
+              integer(kind=8) :: nbmato
+              integer(kind=8) :: nbpart
               character(len=8) :: ma
-              integer :: masd
+              integer(kind=8) :: masd
             end subroutine creagm
           end interface 

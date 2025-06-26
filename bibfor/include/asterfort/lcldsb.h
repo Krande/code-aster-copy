@@ -22,10 +22,10 @@ interface
                       option, sig,&
                       vip, dsidep)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: vim(*)

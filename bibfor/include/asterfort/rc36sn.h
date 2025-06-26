@@ -23,9 +23,9 @@ interface
                       mati, pi, mi, matj, pj,&
                       mj, mse, nbthp, nbthq, ioc1,&
                       ioc2, snij)
-        integer :: nbm
-        integer :: adrm(*)
-        integer :: ipt
+        integer(kind=8) :: nbm
+        integer(kind=8) :: adrm(*)
+        integer(kind=8) :: ipt
         real(kind=8) :: c(*)
         real(kind=8) :: cara(*)
         real(kind=8) :: mati(*)
@@ -35,10 +35,10 @@ interface
         real(kind=8) :: pj
         real(kind=8) :: mj(*)
         real(kind=8) :: mse(*)
-        integer :: nbthp
-        integer :: nbthq
-        integer :: ioc1
-        integer :: ioc2
+        integer(kind=8) :: nbthp
+        integer(kind=8) :: nbthq
+        integer(kind=8) :: ioc1
+        integer(kind=8) :: ioc2
         real(kind=8) :: snij
     end subroutine rc36sn
 end interface

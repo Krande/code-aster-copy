@@ -21,12 +21,12 @@
 interface
     subroutine xplmat(ddls, ddlc, ddlm,&
                       nnos, nnom, n, pl)
-        integer :: ddls
-        integer :: ddlc
-        integer :: ddlm
-        integer :: nnos
-        integer :: nnom
-        integer :: n
-        integer :: pl
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nnos
+        integer(kind=8) :: nnom
+        integer(kind=8) :: n
+        integer(kind=8) :: pl
     end subroutine xplmat
 end interface

@@ -22,7 +22,7 @@ subroutine utpnlg(nno, nnc, pgl, matl, mate)
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 !
-    integer :: nno, nnc
+    integer(kind=8) :: nno, nnc
     real(kind=8) :: mate(1), pgl(3, 3), matl(nno*nnc, nno*nnc)
 ! .....................................................................C
 ! .....................................................................C
@@ -36,7 +36,7 @@ subroutine utpnlg(nno, nnc, pgl, matl, mate)
 !        SORTIE :      MATE    -->  MATRICE ELEMENTAIRE GLOBALE        C
 ! .....................................................................C
 ! .....................................................................
-    integer :: i, j, k, ii, nj
+    integer(kind=8) :: i, j, k, ii, nj
     real(kind=8) :: mt(nno*nnc, nno*nnc), matg(nno*nnc, nno*nnc)
 ! .....................................................................
     ASSERT(nnc .eq. 3)

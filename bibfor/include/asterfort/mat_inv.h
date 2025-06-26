@@ -20,7 +20,7 @@
 !
 interface
     function mat_inv(ndim,m)
-      integer, intent(in) :: ndim
+      integer(kind=8), intent(in) :: ndim
       real(kind=8), intent(in) :: m(ndim,ndim)
       real(kind=8) :: mat_inv(ndim,ndim)
     end function mat_inv

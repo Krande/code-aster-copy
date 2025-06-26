@@ -39,13 +39,13 @@ subroutine op0015()
 #include "asterfort/resoud.h"
 #include "asterfort/titre.h"
 !
-    integer :: ifm, niv, nb, j1, mxiter, ier
+    integer(kind=8) :: ifm, niv, nb, j1, mxiter, ier
     character(len=8) :: xsol, secmbr, matr, vcine, matf, metres, kvari
     character(len=16) :: concep, nomcmd
     character(len=19) :: solve1, solve2
     complex(kind=8) :: cbid
     real(kind=8) :: eps
-    integer :: iret
+    integer(kind=8) :: iret
     cbid = dcmplx(0.d0, 0.d0)
 !     ------------------------------------------------------------------
     call jemarq()

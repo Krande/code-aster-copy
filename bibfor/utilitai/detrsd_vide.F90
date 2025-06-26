@@ -38,10 +38,10 @@ subroutine detrsd_vide(typesd, nomsd)
 !  Resultat:
 !     on detruit tous les objets jeveux correspondant a cette SD.
 ! ----------------------------------------------------------------------
-    integer ::  ngedit, iexi
+    integer(kind=8) ::  ngedit, iexi
     character(len=19) :: carte
     character(len=24) :: typ2sd
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 !
 ! -DEB------------------------------------------------------------------
 !

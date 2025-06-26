@@ -31,13 +31,13 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
     use cara_elem_info_type
     use cara_elem_carte_type
     implicit none
-    integer :: nbocc
+    integer(kind=8) :: nbocc
     type(cara_elem_info) :: infdonn
     character(len=24) :: grplmax(*)
-    integer :: lmax
+    integer(kind=8) :: lmax
     type(cara_elem_carte) :: infcarte(*)
-    integer :: nbdisc
-    integer :: zjdlm(*)
+    integer(kind=8) :: nbdisc
+    integer(kind=8) :: zjdlm(*)
 !
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
@@ -63,34 +63,34 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
 #include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: iocc, ii, jj, kk, iret, nbgrp, nb, ldgm, nm, nb_mail_grp, nb_noeu_grp, ifm, irep
-    integer :: ndim, appui, ltypmail, imail, ntopo, isym, iv
-    integer :: nfct, compte_maille, nb_noeud_uniq, ll, ncmp, nbsurchpoi1, nbsurchpoi2
-    integer :: ivr(4)
+    integer(kind=8) :: iocc, ii, jj, kk, iret, nbgrp, nb, ldgm, nm, nb_mail_grp, nb_noeu_grp, ifm, irep
+    integer(kind=8) :: ndim, appui, ltypmail, imail, ntopo, isym, iv
+    integer(kind=8) :: nfct, compte_maille, nb_noeud_uniq, ll, ncmp, nbsurchpoi1, nbsurchpoi2
+    integer(kind=8) :: ivr(4)
     real(kind=8) :: lamasse, valfongro, surfacetotale, zero(6)
     real(kind=8) :: eta, maillesurf(2), maillecdg(3)
     character(len=8) :: typm, fongro, discretm, discretk, nommaille
     character(len=24) :: magrma, connex
 
-    integer :: jdc(3), jdv(3), dimcar
-    integer :: jdcinf, jdvinf
+    integer(kind=8) :: jdc(3), jdv(3), dimcar
+    integer(kind=8) :: jdcinf, jdvinf
     character(len=19) :: cart(3), cartdi, masse_type
     logical :: repartition, ok
 !
-    integer :: nbnoeu, nbmail
+    integer(kind=8) :: nbnoeu, nbmail
     character(len=8) :: noma
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, pointer :: noeuds(:) => null()
+    integer(kind=8), pointer :: noeuds(:) => null()
     real(kind=8), pointer :: coord(:) => null()
 !
-    integer, pointer :: nummaisur(:) => null()
-    integer, pointer :: lstnumnoe(:) => null()
-    integer, pointer :: lstnummaipoi1(:) => null()
-    integer, pointer :: lstpoi1surch(:) => null()
+    integer(kind=8), pointer :: nummaisur(:) => null()
+    integer(kind=8), pointer :: lstnumnoe(:) => null()
+    integer(kind=8), pointer :: lstnummaipoi1(:) => null()
+    integer(kind=8), pointer :: lstpoi1surch(:) => null()
     real(kind=8), pointer :: lstcoenoe(:) => null()
 ! --------------------------------------------------------------------------------------------------
-    integer           :: vmessi(4)
+    integer(kind=8)           :: vmessi(4)
     character(len=24) :: vmessk(6)
 ! --------------------------------------------------------------------------------------------------
 !

@@ -54,8 +54,8 @@ subroutine eps1mc(nno, ndim, nbsig, npg, ipoids, &
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, idfde, igau, ipoids, ivf, j, nbinco
-    integer :: nbsig, ndim, nno, npg
+    integer(kind=8) :: i, idfde, igau, ipoids, ivf, j, nbinco
+    integer(kind=8) :: nbsig, ndim, nno, npg
     real(kind=8) :: s, undemi, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

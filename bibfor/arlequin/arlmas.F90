@@ -39,7 +39,7 @@ subroutine arlmas(nomte, e, xnu, rho, kanl, mlv)
     implicit none
 !
     character(len=12) nomte
-    integer :: kanl
+    integer(kind=8) :: kanl
     real(kind=8) :: e, rho, xnu, mlv(78)
 !
 #include "jeveux.h"
@@ -52,8 +52,8 @@ subroutine arlmas(nomte, e, xnu, rho, kanl, mlv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: itype, istruc, jcoor2, lx, jinfor
-    integer :: iadzi, iazk24
+    integer(kind=8) :: itype, istruc, jcoor2, lx, jinfor
+    integer(kind=8) :: iadzi, iazk24
     real(kind=8) ::  g, a, xiy, xiz, alfay, alfaz, ey, ez, xl
     real(kind=8) ::  a2, xiy2, xiz2, alfay2, alfaz2, xjx
     character(len=8) :: nomail

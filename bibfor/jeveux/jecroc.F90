@@ -25,14 +25,14 @@ subroutine jecroc(nomlu)
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomlu
 !     ------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
-    integer :: icre, iret, jctab, itab(1)
+    integer(kind=8) :: icre, iret, jctab, itab(1)
     character(len=8) :: nume
 !-----------------------------------------------------------------------
-    integer :: ibacol, l
+    integer(kind=8) :: ibacol, l
 !-----------------------------------------------------------------------
     data nume/'$$XNUM  '/
 ! DEB ------------------------------------------------------------------

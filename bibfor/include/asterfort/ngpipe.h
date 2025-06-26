@@ -25,7 +25,7 @@ interface
                       ddl1, tau, etamin, etamax, copilo)
         character(len=8) :: typmod(*)
         character(len=16) :: typilo, compor(*)
-        integer :: npg, neps, nddl, mat, lgpg
+        integer(kind=8) :: npg, neps, nddl, mat, lgpg
         real(kind=8) :: ddlm(nddl), ddld(nddl), ddl0(nddl), ddl1(nddl)
         real(kind=8) :: sigm(0:neps*npg-1), vim(lgpg, npg), tau
         real(kind=8) :: copilo(5, npg), etamin, etamax

@@ -43,7 +43,7 @@ subroutine srhtet(nbmat, mater, rcos3t, r0c, rtheta)
     !!! Variables globales
     !!!
 
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), rcos3t, r0c, rtheta
 
     !!!

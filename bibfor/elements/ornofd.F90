@@ -37,7 +37,7 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
 #include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
-    integer :: nbma
+    integer(kind=8) :: nbma
     character(len=24) :: mafour
     character(len=8) :: nomail, ndorig, ndextr
     character(len=24) :: noeord
@@ -62,14 +62,14 @@ subroutine ornofd(mafour, nomail, nbma, noeord, ndorig, &
 !
     real(kind=8) :: vecta(3), ps1, ps2
 !
-    integer :: iatyma, jtypm, jmail
-    integer :: im, nid, nig, njonc, n, i, k, nbno
-    integer :: jrdm, jnoe, ntemp
+    integer(kind=8) :: iatyma, jtypm, jmail
+    integer(kind=8) :: im, nid, nig, njonc, n, i, k, nbno
+    integer(kind=8) :: jrdm, jnoe, ntemp
     character(len=8) :: typm
     character(len=8) :: noeud
     character(len=24) :: conec, typp
-    integer, pointer :: mailles_triee(:) => null()
-    integer, pointer :: noeuds_extrem(:) => null()
+    integer(kind=8), pointer :: mailles_triee(:) => null()
+    integer(kind=8), pointer :: noeuds_extrem(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     blas_int :: b_incx, b_incy, b_n
 ! DEB-------------------------------------------------------------------

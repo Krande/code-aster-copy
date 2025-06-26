@@ -20,7 +20,7 @@ function lisnbg(lischa, genchz)
 !
 !
     implicit none
-    integer :: lisnbg
+    integer(kind=8) :: lisnbg
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/jedema.h"
@@ -45,8 +45,8 @@ function lisnbg(lischa, genchz)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ichar, nbchar
-    integer :: genrec
+    integer(kind=8) :: ichar, nbchar
+    integer(kind=8) :: genrec
     aster_logical :: lok
 !
 ! ----------------------------------------------------------------------

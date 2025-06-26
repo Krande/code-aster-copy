@@ -61,18 +61,18 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal, &
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_nl_
-    integer, intent(in) :: ip
-    integer, intent(in) :: lonvec
-    integer, optional, intent(in) :: iocc
+    integer(kind=8), intent(in) :: ip
+    integer(kind=8), intent(in) :: lonvec
+    integer(kind=8), optional, intent(in) :: iocc
     character(len=*), optional, intent(in) :: kscal
-    integer, optional, intent(in) :: iscal
+    integer(kind=8), optional, intent(in) :: iscal
     real(kind=8), optional, intent(in) :: rscal
     complex(kind=8), optional, intent(in) :: cscal
     character(len=*), optional, intent(in) :: kvect(lonvec)
-    integer, optional, intent(in) :: ivect(lonvec)
+    integer(kind=8), optional, intent(in) :: ivect(lonvec)
     real(kind=8), optional, intent(in) :: rvect(lonvec)
     complex(kind=8), optional, intent(in) :: cvect(lonvec)
-    integer, pointer, optional :: buffer(:)
+    integer(kind=8), pointer, optional :: buffer(:)
 !
 !   -0.2- Local variables
 !   --- For strings copying
@@ -83,8 +83,8 @@ subroutine nlsav(sd_nl_, ip, lonvec, iocc, kscal, &
 !
 !   --- For general usage
     aster_logical :: input_test
-    integer :: i, jvect, jscal, iret
-    integer :: dec, level, lvec, addr
+    integer(kind=8) :: i, jvect, jscal, iret
+    integer(kind=8) :: dec, level, lvec, addr
     character(len=6) :: k_iocc
     blas_int :: b_incx, b_incy, b_n
 !

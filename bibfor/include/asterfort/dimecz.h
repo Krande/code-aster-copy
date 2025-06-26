@@ -22,6 +22,6 @@ interface
     subroutine dimecz(sdcont, mesh, nb_cont_zone)
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: nb_cont_zone
     end subroutine dimecz
 end interface

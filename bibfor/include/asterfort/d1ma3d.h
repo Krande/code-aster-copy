@@ -21,11 +21,11 @@ interface
     subroutine d1ma3d(fami, mater, instan, poum, kpg,&
                       ksp, angl, d1)
         character(len=*) :: fami
-        integer :: mater
+        integer(kind=8) :: mater
         real(kind=8) :: instan
         character(len=*) :: poum
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         real(kind=8) :: angl(3)
         real(kind=8) :: d1(6, 6)
     end subroutine d1ma3d

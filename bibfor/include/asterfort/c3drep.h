@@ -26,7 +26,7 @@ interface
         real(kind=8) :: alpha
         real(kind=8) :: beta
         real(kind=8) :: coord(3, 9)
-        integer :: numnoe
+        integer(kind=8) :: numnoe
         real(kind=8) :: pgl(3, 3)
     end subroutine c3drep
 end interface

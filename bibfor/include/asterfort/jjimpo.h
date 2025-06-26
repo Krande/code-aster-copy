@@ -21,14 +21,14 @@
 interface
     subroutine jjimpo(unit, iadmi, ideci, idatoc, genri,&
                       typei, lt, lonoi, mess)
-        integer :: unit
-        integer :: iadmi
-        integer :: ideci
-        integer :: idatoc
+        integer(kind=8) :: unit
+        integer(kind=8) :: iadmi
+        integer(kind=8) :: ideci
+        integer(kind=8) :: idatoc
         character(len=*) :: genri
         character(len=*) :: typei
-        integer :: lt
-        integer :: lonoi
+        integer(kind=8) :: lt
+        integer(kind=8) :: lonoi
         character(len=*) :: mess
     end subroutine jjimpo
 end interface

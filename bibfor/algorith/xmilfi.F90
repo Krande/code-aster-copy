@@ -24,7 +24,7 @@ subroutine xmilfi(elp, n, ndime, nno, ptint, ndim, &
 #include "asterfort/assert.h"
 #include "asterfort/reerel.h"
 #include "asterfort/xnewto.h"
-    integer :: ndim, ndime, nno, jtabco, jtabls, ipp, ip, n(3)
+    integer(kind=8) :: ndim, ndime, nno, jtabco, jtabls, ipp, ip, n(3)
     character(len=8) :: elp
     real(kind=8) :: milfi(ndim), ptint(*)
 !
@@ -45,7 +45,7 @@ subroutine xmilfi(elp, n, ndime, nno, ptint, ndim, &
 !
     real(kind=8) :: ksi(ndim)
     real(kind=8) :: epsmax
-    integer :: itemax
+    integer(kind=8) :: itemax
     character(len=6) :: name
 !
 ! --------------------------------------------------------------------

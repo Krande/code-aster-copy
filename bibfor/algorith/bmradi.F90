@@ -62,18 +62,18 @@ subroutine bmradi(basmod, intf, nomint, numint, nbddl, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, inoe, iran(1), j, lldes
-    integer :: llnoe, nbcmp, nbcpmx, nbddl, nbdif, nbec
-    integer :: nbnoe, nbnot, neq, numint, nunoe
+    integer(kind=8) :: i, inoe, iran(1), j, lldes
+    integer(kind=8) :: llnoe, nbcmp, nbcpmx, nbddl, nbdif, nbec
+    integer(kind=8) :: nbnoe, nbnot, neq, numint, nunoe
 !-----------------------------------------------------------------------
     parameter(nbcpmx=300)
     character(len=8) :: basmod, nomint, intf
     character(len=19) :: numddl
     character(len=24) :: noeint
     character(len=24) :: valk(2)
-    integer :: ivddl(nbddl), idec(nbcpmx)
-    integer :: vali
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8) :: ivddl(nbddl), idec(nbcpmx)
+    integer(kind=8) :: vali
+    integer(kind=8), pointer :: deeq(:) => null()
 !
 !-----------------------------------------------------------------------
 !

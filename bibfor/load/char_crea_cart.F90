@@ -39,9 +39,9 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
     character(len=16), intent(in) :: loadType
     character(len=8), intent(in) :: load, mesh
     character(len=4), intent(in) :: valeType
-    integer, intent(out) :: nbMap
+    integer(kind=8), intent(out) :: nbMap
     character(len=19), intent(out) :: map(LOAD_MAP_NBMAX)
-    integer, intent(out) :: nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8), intent(out) :: nbCmp(LOAD_MAP_NBMAX)
     aster_logical, optional, intent(in) :: createMap_
     character(len=8), optional, intent(out) :: physQuantity_(LOAD_MAP_NBMAX)
     character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBCMPMAX)
@@ -70,7 +70,7 @@ subroutine char_crea_cart(phenom, loadType, load, mesh, valeType, &
     character(len=13) :: obje_pref
     character(len=8) :: physQuantity(LOAD_MAP_NBMAX)
     character(len=4) :: mapType(LOAD_MAP_NBMAX)
-    integer :: jvValv, iMap, i_cmp, iret
+    integer(kind=8) :: jvValv, iMap, i_cmp, iret
     aster_logical :: l_init(LOAD_MAP_NBMAX), createMap
     character(len=8), pointer :: ncmp(:) => null()
 !

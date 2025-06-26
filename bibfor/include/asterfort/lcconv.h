@@ -24,29 +24,29 @@ interface
                       typess, essai, icomp, nvi,&
                       vinf,&
                       iret)
-        integer :: nvi
-        integer :: nmat
-        integer :: nr
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nr
         character(len=16), intent(in) :: rela_comp
         real(kind=8) :: yd(*)
         real(kind=8) :: dy(*)
         real(kind=8) :: ddy(*)
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iter
-        integer :: intg
+        integer(kind=8) :: iter
+        integer(kind=8) :: intg
         real(kind=8) :: mater(nmat, 2)
         real(kind=8) :: r(*)
         real(kind=8) :: rini(*)
         real(kind=8) :: epstr(6)
-        integer :: typess
+        integer(kind=8) :: typess
         real(kind=8) :: essai
-        integer :: icomp
+        integer(kind=8) :: icomp
         real(kind=8) :: vinf(nvi)
         real(kind=8) :: vind1(nvi)
-        integer :: indi(7)
+        integer(kind=8) :: indi(7)
         aster_logical :: bnews(3)
         aster_logical :: mtrac
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcconv
 end interface

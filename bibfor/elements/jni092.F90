@@ -26,8 +26,8 @@ subroutine jni092(elrefe, nmaxob, liobj, nbobj)
     character(len=8) :: elrefe
 ! person_in_charge: jacques.pellet at edf.fr
 !
-    integer :: nno, npg
-    integer :: iyty, nmaxob, nbobj, lyty, iret
+    integer(kind=8) :: nno, npg
+    integer(kind=8) :: iyty, nmaxob, nbobj, lyty, iret
     real(kind=8) :: dff(2)
     character(len=24) :: yty, liobj(nmaxob)
 ! DEB -----------------------------------------------------------------

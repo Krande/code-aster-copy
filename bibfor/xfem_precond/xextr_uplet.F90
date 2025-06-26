@@ -31,10 +31,10 @@ function xextr_uplet(n, id)
 !-----------------------------------------------------------------------
 #include "jeveux.h"
 !-----------------------------------------------------------------------
-    integer :: n, id
-    integer :: xextr_uplet(n)
+    integer(kind=8) :: n, id
+    integer(kind=8) :: xextr_uplet(n)
 !-----------------------------------------------------------------------
-    integer :: base_codage, idigi, res, p
+    integer(kind=8) :: base_codage, idigi, res, p
     parameter(base_codage=4)
 !-----------------------------------------------------------------------
 !

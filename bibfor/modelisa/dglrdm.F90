@@ -93,13 +93,13 @@ subroutine dglrdm()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: na
+    integer(kind=8) :: na
     parameter(na=10)
-    integer :: nnap, ibid, ilit, jlm, jmelk
-    integer :: jmelr, jmelc, lonobj
-    integer :: iret, icisai
-    integer :: ibid1, ibid2
-    integer :: nimpr, impr, ifr, ipentetrac, nalphat, ipenteflex
+    integer(kind=8) :: nnap, ibid, ilit, jlm, jmelk
+    integer(kind=8) :: jmelr, jmelc, lonobj
+    integer(kind=8) :: iret, icisai
+    integer(kind=8) :: ibid1, ibid2
+    integer(kind=8) :: nimpr, impr, ifr, ipentetrac, nalphat, ipenteflex
 !
     real(kind=8) :: ea(3*na), sya(3*na), eb, nub, b, b1, a
     real(kind=8) :: h, np, emaxm, kapflex, alphat
@@ -111,7 +111,7 @@ subroutine dglrdm()
     real(kind=8) :: valres(6), r8b
     real(kind=8) :: epsi_c, fcj, ftj, alpha_c, epsi_els, epsi_lim
 !
-    integer :: icodr2(6)
+    integer(kind=8) :: icodr2(6)
     character(len=6) :: k6
     character(len=8) :: mater, k8b
     character(len=16) :: nomres(6)

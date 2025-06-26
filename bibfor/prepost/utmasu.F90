@@ -39,9 +39,9 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbCell, nbmavo, mailvo(*)
+    integer(kind=8) :: nbCell, nbmavo, mailvo(*)
     real(kind=8) :: coor(*)
-    integer, pointer :: listCellNume(:)
+    integer(kind=8), pointer :: listCellNume(:)
     character(len=2) :: kdim
     character(len=8) :: mail
     character(len=*) :: nomob1
@@ -86,15 +86,15 @@ subroutine utmasu(mail, kdim, nbCell, listCellNume, nomob1, &
 !
 !-----------------------------------------------------------------------
 !
-    integer :: p1, p2, p3, p4, jm3d, nbmat, im1, im2
-    integer :: iCell, cellNume, nnoe, ino, nbm, i, k, indi, nnoem, nnoe1
-    integer :: ifm, niv, ipos, cellTypeNume
-    integer :: lisnoe(27), indmai
+    integer(kind=8) :: p1, p2, p3, p4, jm3d, nbmat, im1, im2
+    integer(kind=8) :: iCell, cellNume, nnoe, ino, nbm, i, k, indi, nnoem, nnoe1
+    integer(kind=8) :: ifm, niv, ipos, cellTypeNume
+    integer(kind=8) :: lisnoe(27), indmai
     aster_logical :: first
     character(len=8) :: k8b, nomail, cellTypeName
     character(len=16) :: oper, k16b
     character(len=24) :: nomavo, valk(4)
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     call infniv(ifm, niv)

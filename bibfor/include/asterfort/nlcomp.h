@@ -22,7 +22,7 @@ interface
         tp, Kglo, dtp_, fluglo_)
         character(len=16), intent(in) :: phenom
         character(len=8), intent(in) :: fami
-        integer, intent(in) :: imate, ndim, kpg
+        integer(kind=8), intent(in) :: imate, ndim, kpg
         real(kind=8), intent(in) :: coorpg(3), time, tp
         real(kind=8), intent(out) :: Kglo(3, 3)
         real(kind=8), optional, intent(in) :: dtp_(3)

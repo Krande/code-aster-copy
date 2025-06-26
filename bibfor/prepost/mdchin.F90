@@ -57,9 +57,9 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo, &
 #include "asterfort/as_mficlo.h"
 #include "asterfort/mdchii.h"
 #include "asterfort/utmess.h"
-    integer :: nbtv
-    integer :: typent, typgeo
-    integer :: codret
+    integer(kind=8) :: nbtv
+    integer(kind=8) :: typent, typgeo
+    integer(kind=8) :: codret
 !
     character(len=19) :: prefix
     character(len=*) :: nochmd
@@ -69,7 +69,7 @@ subroutine mdchin(nofimd, idfimd, nochmd, typent, typgeo, &
 !
     character(len=8) :: saux08
 !
-    integer :: edlect
+    integer(kind=8) :: edlect
     parameter(edlect=0)
 !
     med_idt :: idfimd

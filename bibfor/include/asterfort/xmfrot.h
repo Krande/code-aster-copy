@@ -25,31 +25,31 @@ interface
                       ndim, nfh, nfiss, nno, nnol,&
                       nnos, nvit, pla, seuil,&
                       singu, fk, tau1, tau2)
-        integer :: algofr
+        integer(kind=8) :: algofr
         real(kind=8) :: coeffr
         real(kind=8) :: coeffp
-        integer :: ddlm
-        integer :: ddls
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: ddls
         real(kind=8) :: ffc(8)
         real(kind=8) :: ffp(27)
-        integer :: idepd
-        integer :: idepm
-        integer :: indco
+        integer(kind=8) :: idepd
+        integer(kind=8) :: idepm
+        integer(kind=8) :: indco
         real(kind=8) :: jac
-        integer :: lact(8)
+        integer(kind=8) :: lact(8)
         real(kind=8) :: mmat(216, 216)
         real(kind=8) :: mu
         real(kind=8) :: nd(3)
-        integer :: ndim
-        integer :: nfh
-        integer :: nfiss
-        integer :: nno
-        integer :: nnol
-        integer :: nnos
-        integer :: nvit
-        integer :: pla(27)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnol
+        integer(kind=8) :: nnos
+        integer(kind=8) :: nvit
+        integer(kind=8) :: pla(27)
         real(kind=8) :: seuil
-        integer :: singu
+        integer(kind=8) :: singu
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
         real(kind=8) :: fk(27,3,3)

@@ -48,9 +48,9 @@ subroutine comp_ther_read(list_vale)
 !
     character(len=16) :: keywordfact
     character(len=16) :: comp_code, rela_comp
-    integer :: iocc, nocc, idummy
-    integer :: nume_comp, nb_vari
-    integer :: j_lvali, j_lvalk
+    integer(kind=8) :: iocc, nocc, idummy
+    integer(kind=8) :: nume_comp, nb_vari
+    integer(kind=8) :: j_lvali, j_lvalk
 !
 ! --------------------------------------------------------------------------------------------------
 !

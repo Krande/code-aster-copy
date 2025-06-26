@@ -51,16 +51,16 @@ subroutine dis_choc_frot(DD, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: DD
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! person_in_charge: jean-luc.flejou at edf.fr
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip, fdnc
-    integer :: iretlc, ifono, icontm, icontp, iiter, iterat
+    integer(kind=8) :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip, fdnc
+    integer(kind=8) :: iretlc, ifono, icontm, icontp, iiter, iterat
 !
 !   Les variables internes
-    integer, parameter :: nbvari = 10
+    integer(kind=8), parameter :: nbvari = 10
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 !
     real(kind=8) :: dvl(12), dpe(12), dve(12), ulp(12), fl(12), force(3)
@@ -70,7 +70,7 @@ subroutine dis_choc_frot(DD, iret)
     character(len=8) :: k8bid
 !
     real(kind=8) :: valre1(1)
-    integer :: codre1(1)
+    integer(kind=8) :: codre1(1)
 !
     aster_logical :: okelem, IsSymetrique, IsCoulomb, IsDynamique, IsStatique, Prediction
     blas_int :: b_incx, b_incy, b_n

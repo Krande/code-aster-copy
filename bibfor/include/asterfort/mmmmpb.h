@@ -19,7 +19,7 @@
 interface
     subroutine mmmmpb(rese, nrese, ndim, matprb)
         real(kind=8), intent(in) :: rese(3), nrese
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(out) :: matprb(3, 3)
     end subroutine mmmmpb
 end interface

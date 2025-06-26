@@ -43,9 +43,9 @@ interface
         type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=19) :: solveu
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
-        integer :: fonact(*)
-        integer :: numins
-        integer :: iterat
+        integer(kind=8) :: fonact(*)
+        integer(kind=8) :: numins
+        integer(kind=8) :: iterat
         character(len=19) :: sddisc
         type(NL_DS_Print), intent(inout) :: ds_print
         type(NL_DS_Measure), intent(inout) :: ds_measure

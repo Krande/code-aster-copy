@@ -26,8 +26,8 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr, &
 #include "asterfort/anacri.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, nbordr, kwork
-    integer :: sommw, tdisp, tspaq, i, jvectr
+    integer(kind=8) :: nbvec, nbordr, kwork
+    integer(kind=8) :: sommw, tdisp, tspaq, i, jvectr
     real(kind=8) :: vectn(3*nbvec), vectu(3*nbvec), vectv(3*nbvec)
     real(kind=8) :: vwork(tdisp), fatsoc
     aster_logical :: fordef
@@ -77,7 +77,7 @@ subroutine propla(nbvec, vectn, vectu, vectv, nbordr, &
 ! REMARQUE : CETTE ROUTINE SERT POUR LE TRAITEMENT DES POINTS DE GAUSS
 !            ET DES NOEUDS.
 ! ----------------------------------------------------------------------
-    integer :: ivect, iordr, n, decal, adrs, decpro, paract(35)
+    integer(kind=8) :: ivect, iordr, n, decal, adrs, decpro, paract(35)
     aster_logical :: lbid, crsigm, crepst, crepse, crepsp
     character(len=16) :: typcha
     real(kind=8) :: nx, ny, nz, ux, uy, uz, vx, vy, vz

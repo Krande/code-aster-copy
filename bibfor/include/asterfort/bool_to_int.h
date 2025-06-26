@@ -23,7 +23,7 @@
 interface
     function bool_to_int(bool)
         implicit none
-        integer :: bool_to_int
+        integer(kind=8) :: bool_to_int
         aster_logical, intent(in) :: bool
     end function bool_to_int
 end interface

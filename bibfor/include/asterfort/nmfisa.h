@@ -24,7 +24,7 @@ interface
     subroutine nmfisa(axi, geom, kpg, poids, b)
         aster_logical :: axi
         real(kind=8) :: geom(2, 4)
-        integer :: kpg
+        integer(kind=8) :: kpg
         real(kind=8) :: poids
         real(kind=8) :: b(2, 8)
     end subroutine nmfisa

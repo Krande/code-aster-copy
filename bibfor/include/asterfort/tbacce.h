@@ -22,10 +22,10 @@ interface
     subroutine tbacce(nomta, numeli, para, mode, vi,&
                       vr, vc, vk)
         character(len=*) :: nomta
-        integer :: numeli
+        integer(kind=8) :: numeli
         character(len=*) :: para
         character(len=*) :: mode
-        integer :: vi
+        integer(kind=8) :: vi
         real(kind=8) :: vr
         complex(kind=8) :: vc
         character(len=*) :: vk

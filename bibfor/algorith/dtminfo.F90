@@ -39,12 +39,12 @@ subroutine dtminfo(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer               :: nbnli, nbchoc, nbants, nbdiscret, nbflam
-    integer               :: nbrede, nbrevi, nbpas, nbpas_min, nbpas_max
-    integer               :: substruct, fsicase, nbpheq, adapt, nltreat
-    integer               :: nbmode, append, nbsav_forc, iparch
-    integer               :: i, iret, iret1, iret2, nbfreq
-    integer               :: nbrfis, nbpal, etinit
+    integer(kind=8)               :: nbnli, nbchoc, nbants, nbdiscret, nbflam
+    integer(kind=8)               :: nbrede, nbrevi, nbpas, nbpas_min, nbpas_max
+    integer(kind=8)               :: substruct, fsicase, nbpheq, adapt, nltreat
+    integer(kind=8)               :: nbmode, append, nbsav_forc, iparch
+    integer(kind=8)               :: i, iret, iret1, iret2, nbfreq
+    integer(kind=8)               :: nbrfis, nbpal, etinit
     real(kind=8)          :: dt, dtmin, dtmax, deuxpi, epsi
     real(kind=8)          :: tinit, tfin, cdivi, toler, fsivgap
     real(kind=8)          :: fmin, fmax, freq, nbpas_max_r

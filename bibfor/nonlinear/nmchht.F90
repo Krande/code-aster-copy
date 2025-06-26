@@ -54,7 +54,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: list_load
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19), intent(in) :: sddyna, sddisc, sdnume
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*), hval_measse(*)
@@ -86,8 +86,8 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = CORR_NEWTON
-    integer, parameter:: zveass = 19, zveelm = 12
+    integer(kind=8), parameter :: phaseType = CORR_NEWTON
+    integer(kind=8), parameter:: zveass = 19, zveelm = 12
     character(len=19) :: hval_veelem(zveelm)
     character(len=19) :: hval_veasse(zveass)
     aster_logical :: l_didi, l_comp_mstp, l_macr
@@ -99,7 +99,7 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
     character(len=19) :: disp_prev
     character(len=19) :: varc_prev, varc_curr, time_prev, time_curr
     real(kind=8) :: time_init, time_prev_step
-    integer :: iter_newt, ldccvg, nmax
+    integer(kind=8) :: iter_newt, ldccvg, nmax
     character(len=4) :: mode
     type(NL_DS_System) :: ds_system
 !

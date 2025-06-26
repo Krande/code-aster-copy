@@ -24,7 +24,7 @@ interface
     subroutine calirg(mesh, nbno, list_node, tran,  cent, &
                       l_angl_naut, angl_naut, geom_defo, l_rota, matr_rota)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nbno
+        integer(kind=8), intent(in) :: nbno
         character(len=24), intent(in) :: list_node
         aster_logical, intent(in) :: l_angl_naut
         real(kind=8), intent(in) :: angl_naut(3)

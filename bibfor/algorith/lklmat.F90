@@ -24,7 +24,7 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd, &
 #include "asterfort/lklnvi.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, imat, nbmat
+    integer(kind=8) :: ndt, ndi, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
     character(len=3) :: matcst
     character(len=8) :: mod
@@ -56,12 +56,12 @@ subroutine lklmat(mod, imat, nbmat, tempd, materd, &
 ! --- : NVI    : NB DE VARIABLES INTERNES -------------------------
 ! --- : INDAL  : INDICATEUR SUR ALPHA
 ! =================================================================
-    integer :: ii, indal
+    integer(kind=8) :: ii, indal
     real(kind=8) :: e, nu, mu, k
     real(kind=8) :: zero, un, deux, trois
     real(kind=8) :: mu0v, xi0v, s0, a0, var1, var2
     real(kind=8) :: mpic, apic, sigmp1, sigc, me, ae, cohere
-    integer :: cerr(32)
+    integer(kind=8) :: cerr(32)
     character(len=16) :: nomc(32)
 ! =================================================================
 ! --- INITIALISATION DE PARAMETRES --------------------------------

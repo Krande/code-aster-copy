@@ -21,6 +21,6 @@
 interface
     subroutine pgpche(sd_pgp, iobs)
         character(len=8), intent(in):: sd_pgp
-        integer         , intent(in):: iobs
+        integer(kind=8)         , intent(in):: iobs
     end subroutine pgpche
 end interface

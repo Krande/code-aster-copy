@@ -24,17 +24,17 @@ interface
                   option, sig, dsidep, codret)
                   
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    integer, intent(in)          :: ndim
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: ndim
     character(len=8),intent(in)  :: typmod(*)
-    integer, intent(in)          :: imate
+    integer(kind=8), intent(in)          :: imate
     real(kind=8),intent(in)      :: crit(*)
     real(kind=8),intent(in)      :: eps(2*ndim)
     character(len=16), intent(in):: option
     real(kind=8),intent(out)     :: sig(6)
     real(kind=8),intent(out)     :: dsidep(6,6)
-    integer, intent(out)         :: codret
+    integer(kind=8), intent(out)         :: codret
     
     end subroutine hypela
 end interface

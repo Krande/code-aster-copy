@@ -24,15 +24,15 @@ interface
                       vint, ier, tinit, reprise, accgen,&
                       index)
         character(len=8) :: basemo
-        integer :: nbmode
-        integer :: nbnoli
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbnoli
         real(kind=8) :: depgen(*)
         real(kind=8) :: vitgen(*)
         real(kind=8), pointer :: vint(:)
-        integer :: ier
+        integer(kind=8) :: ier
         real(kind=8) :: tinit
         aster_logical, optional, intent(out) :: reprise
         real(kind=8), optional, intent(out) :: accgen(*)
-        integer, optional, intent(out) :: index
+        integer(kind=8), optional, intent(out) :: index
     end subroutine mdinit
 end interface

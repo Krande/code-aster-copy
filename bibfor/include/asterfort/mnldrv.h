@@ -24,9 +24,9 @@ interface
     subroutine mnldrv(lcal, imat, numdrv, matdrv, xcdl,&
                       parcho, adime, xvect, vecplu, ninc,&
                       nd, nchoc, h, hf)
-        integer :: ninc
+        integer(kind=8) :: ninc
         aster_logical :: lcal
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=14) :: numdrv
         character(len=19) :: matdrv
         character(len=14) :: xcdl
@@ -34,9 +34,9 @@ interface
         character(len=14) :: adime
         character(len=14) :: xvect
         real(kind=8) :: vecplu(ninc)
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
     end subroutine mnldrv
 end interface 

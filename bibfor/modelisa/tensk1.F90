@@ -62,12 +62,12 @@ subroutine tensk1(icabl, nbno, s, alpha, f0, &
 ! ARGUMENTS
 ! ---------
 #include "asterfort/ancrca.h"
-    integer :: icabl, nbno
+    integer(kind=8) :: icabl, nbno
     real(kind=8) :: s(*), alpha(*), f0, delta, ea, frco, frli, sa, f(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ino
+    integer(kind=8) :: ino
     real(kind=8) :: d
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

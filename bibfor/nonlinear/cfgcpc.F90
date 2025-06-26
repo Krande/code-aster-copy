@@ -31,9 +31,9 @@ subroutine cfgcpc(resoco, matass, solveu, neq, nbliai, &
 #include "blas/dcopy.h"
     character(len=24) :: resoco
     character(len=16) :: precon
-    integer :: neq, nbliai
+    integer(kind=8) :: neq, nbliai
     character(len=19) :: matass, solveu
-    integer :: premax
+    integer(kind=8) :: premax
     real(kind=8) :: tole, epsi
 !
 ! ----------------------------------------------------------------------
@@ -61,11 +61,11 @@ subroutine cfgcpc(resoco, matass, solveu, neq, nbliai, &
 !
 !
     character(len=19) :: sgradp, sgrprp
-    integer :: jsgrap, jsgprp
+    integer(kind=8) :: jsgrap, jsgprp
     character(len=24) :: apcoef, apddl, appoin
-    integer :: japcoe, japddl, japptr
+    integer(kind=8) :: japcoe, japddl, japptr
     character(len=19) :: mu, liac
-    integer :: jmu, jliac
+    integer(kind=8) :: jmu, jliac
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

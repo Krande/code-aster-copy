@@ -32,8 +32,8 @@ subroutine cfleqa(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(out) :: nt_node_middle
+    integer(kind=8), intent(in) :: nb_cont_zone
+    integer(kind=8), intent(out) :: nt_node_middle
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,16 +50,16 @@ subroutine cfleqa(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdecma, elem_nume, type_nume
-    integer :: i_surf_curr, i_zone, i_elem, i_surf
-    integer :: nb_surf, nb_elem, nb_node_middle
+    integer(kind=8) :: jdecma, elem_nume, type_nume
+    integer(kind=8) :: i_surf_curr, i_zone, i_elem, i_surf
+    integer(kind=8) :: nb_surf, nb_elem, nb_node_middle
     character(len=8) :: type_name
     aster_logical :: l_veri
-    integer, pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_pzoneco
-    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pzoneco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

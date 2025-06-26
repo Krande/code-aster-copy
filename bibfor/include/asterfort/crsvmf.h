@@ -23,8 +23,8 @@
      &kellag,kxfem)
               character(len=16) :: motfac
               character(len=19) :: solveu
-              integer :: istop
-              integer :: nprec
+              integer(kind=8) :: istop
+              integer(kind=8) :: nprec
               real(kind=8) :: epsmat
               character(len=3) :: mixpre
               character(len=3) :: kellag

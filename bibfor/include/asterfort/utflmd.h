@@ -23,10 +23,10 @@ interface
                       nbtrou, litrou)
         character(len=8), intent(in) :: mailla
         character(len=*), intent(in) :: limail
-        integer, intent(in) :: nbmail
-        integer, intent(in) :: dim
+        integer(kind=8), intent(in) :: nbmail
+        integer(kind=8), intent(in) :: dim
         character(len=*), intent(in) :: typmai
-        integer, intent(out) :: nbtrou
+        integer(kind=8), intent(out) :: nbtrou
         character(len=*), intent(out) :: litrou
     end subroutine utflmd
 end interface

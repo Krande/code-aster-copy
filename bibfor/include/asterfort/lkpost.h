@@ -20,8 +20,8 @@
 !
 interface
     subroutine lkpost(imate, sigf, nvi, vip)
-        integer :: nvi
-        integer :: imate
+        integer(kind=8) :: nvi
+        integer(kind=8) :: imate
         real(kind=8) :: sigf(6)
         real(kind=8) :: vip(nvi)
     end subroutine lkpost

@@ -19,7 +19,7 @@
 interface
     subroutine mmcaln(ndim, tau1  , tau2  ,&
                       norm, mprojn, mprojt)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: tau1(3), tau2(3)
         real(kind=8), intent(out) :: norm(3), mprojn(3, 3), mprojt(3, 3)
     end subroutine mmcaln

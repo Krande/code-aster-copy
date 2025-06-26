@@ -29,7 +29,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract, &
 #include "asterfort/utmess.h"
     character(len=3) :: impgrd
     character(len=16) :: nomcri, nomfor, typcha
-    integer :: paract(35)
+    integer(kind=8) :: paract(35)
     aster_logical :: fordef, crsigm, crepst, crepse, crepsp
 !
 ! ---------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine anacri(nomcri, nomfor, typcha, impgrd, paract, &
 ! CREPSP  LOGICAL : HISTOIRE DE DEFORMATION PLASTIQUE NECESSAIRE
 !
 !-----------------------------------------------------------------------
-    integer :: ip, id, nparma, nparm2, jprof, np, l
+    integer(kind=8) :: ip, id, nparma, nparm2, jprof, np, l
     character(len=2) :: nomty1(35), nomty2(30)
     character(len=8) :: nompa1(35), nompa2(30), nompf(35)
     character(len=24) :: chnom, cbid

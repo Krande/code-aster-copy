@@ -63,12 +63,12 @@ subroutine te0033(option, nomte)
 !     IN   K16   OPTION : NOM DE L'OPTION A CALCULER
 !     IN   K16   NOMTE  : NOM DU TYPE_ELEMENT
 !     ------------------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: iret, jcara, vali(2)
-    integer :: jdepg, jeffg, jgeom, jmate, jsigm
-    integer :: np, multic
-    integer :: jnbspi, nbcou, icou
-    integer :: icodre(1), kpg, spt
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: iret, jcara, vali(2)
+    integer(kind=8) :: jdepg, jeffg, jgeom, jmate, jsigm
+    integer(kind=8) :: np, multic
+    integer(kind=8) :: jnbspi, nbcou, icou
+    integer(kind=8) :: icodre(1), kpg, spt
 !
     real(kind=8) :: epi(1), epais, eptot, alpha, beta
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), r8bid, valr(2)

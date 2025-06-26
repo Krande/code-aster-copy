@@ -32,7 +32,7 @@ subroutine setValVect(vect, x1, x2, x3, x4, x5, &
     real(kind=8), optional, intent(in) :: x2, x3, x4, x5, x6, x7, x8
     real(kind=8), optional, intent(in) :: x9, x10, x11, x12, x13, x14
     real(kind=8), optional, intent(in) :: x15, x16, x17
-    integer, optional, intent(in) :: ind1, vectInd(:)
+    integer(kind=8), optional, intent(in) :: ind1, vectInd(:)
 !-----------------------------------------------------------------------
 !
     ASSERT(present(ind1) .or. present(vectInd))

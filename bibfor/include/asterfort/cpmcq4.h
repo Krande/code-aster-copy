@@ -20,10 +20,10 @@
 !
 interface
     subroutine cpmcq4(conloc, jmacsu, indno, indma, conneo)
-        integer, intent(in) :: indma
-        integer, intent(in) :: indno
-        integer, intent(in) :: jmacsu
-        integer, intent(in) :: conneo(*)
+        integer(kind=8), intent(in) :: indma
+        integer(kind=8), intent(in) :: indno
+        integer(kind=8), intent(in) :: jmacsu
+        integer(kind=8), intent(in) :: conneo(*)
         character(len=24), intent(in) :: conloc
     end subroutine cpmcq4
 end interface

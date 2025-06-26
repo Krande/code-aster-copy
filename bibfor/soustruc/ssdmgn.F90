@@ -59,22 +59,22 @@ subroutine ssdmgn(mag)
 !
     character(len=8) :: nomacr, nomail, kbid, mal, nosma, pref
     character(len=24) :: nomgnl, nomgng
-    integer :: indi(4)
+    integer(kind=8) :: indi(4)
     aster_logical :: unaun
 ! ----------------------------------------------------------------------
     character(len=24) :: valk(2)
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i1noe, iagnl, iagno, ialino
-    integer :: igno, ii, inol
-    integer :: iocc, iret, isma, kk, lgnl, lmail, longt
-    integer :: lont, lpref, n, n1, n2, n3, nbgno, lpr(1)
-    integer :: nbgno2, nbgnot, nbid, nbno, nbnoex, nbsma, nocc
-    integer :: nusma
-    integer, pointer :: work1(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8) :: i1, i1noe, iagnl, iagno, ialino
+    integer(kind=8) :: igno, ii, inol
+    integer(kind=8) :: iocc, iret, isma, kk, lgnl, lmail, longt
+    integer(kind=8) :: lont, lpref, n, n1, n2, n3, nbgno, lpr(1)
+    integer(kind=8) :: nbgno2, nbgnot, nbid, nbno, nbnoex, nbsma, nocc
+    integer(kind=8) :: nusma
+    integer(kind=8), pointer :: work1(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     character(len=8), pointer :: vnomacr(:) => null()
-    integer, pointer :: dime_2(:) => null()
+    integer(kind=8), pointer :: dime_2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(mag//'.DIME', 'L', vi=dime)

@@ -21,14 +21,14 @@
 interface
     subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp,&
                       fr, am, excl, omecor, ernorm)
-        integer :: lmasse
-        integer :: lraide
-        integer :: lamor
-        integer :: nbprop
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lamor
+        integer(kind=8) :: nbprop
         complex(kind=8) :: vecp(*)
         real(kind=8) :: fr(*)
         real(kind=8) :: am(*)
-        integer :: excl(*)
+        integer(kind=8) :: excl(*)
         real(kind=8) :: omecor
         real(kind=8) :: ernorm(*)
     end subroutine wpermo

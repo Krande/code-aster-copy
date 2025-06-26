@@ -36,11 +36,11 @@ subroutine tbSuppressAllLines(tabl_namez)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, pointer :: tbnp(:) => null()
-    integer, pointer :: flag(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: flag(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     character(len=19) :: tablName
-    integer :: nbLine, iPara, nbPara
+    integer(kind=8) :: nbLine, iPara, nbPara
     character(len=24) :: lineObje, lineFlag
 !
 ! --------------------------------------------------------------------------------------------------

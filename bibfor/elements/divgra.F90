@@ -35,8 +35,8 @@ subroutine divgra(e1, e2, dfde, dfdk, vibarn, &
     real(kind=8) :: divsig(9)
     real(kind=8) :: cova(3, 3), metr(2, 2), a(2, 2), jc, cnva(3, 3)
     real(kind=8) :: dvibar(2, 9), e1(3, 9), e2(3, 9)
-    integer :: i, j, itemp, ipg, kdec, idec, idir, jdir
-    integer :: ndim, nno, nnos, npg1, ipoids, ivf, idfdx, idfdy, jgano
+    integer(kind=8) :: i, j, itemp, ipg, kdec, idec, idir, jdir
+    integer(kind=8) :: ndim, nno, nnos, npg1, ipoids, ivf, idfdx, idfdy, jgano
 !-----------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &

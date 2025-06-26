@@ -20,8 +20,8 @@
 !
 interface
     subroutine mtcro1(n, a, nmax, x)
-        integer :: nmax
-        integer :: n
+        integer(kind=8) :: nmax
+        integer(kind=8) :: n
         real(kind=8) :: a(nmax, *)
         real(kind=8) :: x(*)
     end subroutine mtcro1

@@ -53,15 +53,15 @@ subroutine mmprel(sdcont, mesh, slavElemLigr)
     aster_logical :: lFricZone, l_veri
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=16) :: modeli
     character(len=16), parameter :: phenom = "MECANIQUE"
-    integer :: jdecme, iContZone
-    integer :: nbContZone, model_ndim, ntElemSlav
-    integer :: iCellSlav, cellSlavNume, nbCellSlav
+    integer(kind=8) :: jdecme, iContZone
+    integer(kind=8) :: nbContZone, model_ndim, ntElemSlav
+    integer(kind=8) :: iCellSlav, cellSlavNume, nbCellSlav
     aster_logical :: l_verif_all
     character(len=24), parameter :: listCellJv = '&&MMPREL.LISTE_MAILLES'
-    integer, pointer :: listCell(:) => null()
+    integer(kind=8), pointer :: listCell(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

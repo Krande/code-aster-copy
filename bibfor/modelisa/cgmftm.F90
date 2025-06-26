@@ -18,7 +18,7 @@
 
 subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
     implicit none
-    integer :: nbma, ierr
+    integer(kind=8) :: nbma, ierr
     character(len=*) :: nomaz, tymaz
 !       OPERATEUR: DEFI_GROUP/CREA_GROUP_MA
 !
@@ -61,7 +61,7 @@ subroutine cgmftm(tymaz, nomaz, lisma, nbma, ierr)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, dim, jlima, jlimaf, nbmaf
+    integer(kind=8) :: i, dim, jlima, jlimaf, nbmaf
     character(len=8) :: noma, tyma, typmai
     character(len=24) :: lisma, lismaf
 !

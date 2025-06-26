@@ -20,10 +20,10 @@ interface
     subroutine orvlse(noma, listCellNume, nbCell, norien, vect, &
                       noeud)
         character(len=8) :: noma
-        integer, pointer :: listCellNume(:)
-        integer :: nbCell
-        integer :: norien
+        integer(kind=8), pointer :: listCellNume(:)
+        integer(kind=8) :: nbCell
+        integer(kind=8) :: norien
         real(kind=8) :: vect(*)
-        integer :: noeud
+        integer(kind=8) :: noeud
     end subroutine orvlse
 end interface

@@ -45,18 +45,18 @@ subroutine dtmforc_rotf(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)  :: nl_ind
+    integer(kind=8), intent(in)  :: nl_ind
     character(len=*), intent(in)  :: sd_dtm_
     character(len=*), intent(in)  :: sd_nl_
-    integer, pointer  :: buffdtm(:)
-    integer, pointer  :: buffnl(:)
+    integer(kind=8), pointer  :: buffdtm(:)
+    integer(kind=8), pointer  :: buffnl(:)
     real(kind=8), intent(in)  :: time
     real(kind=8), pointer  :: depl(:)
     real(kind=8), pointer :: fext(:)
 !
 !   -0.2- Local variables
-    integer           :: i, ier, nbno, nbmode, start
-    integer           :: finish
+    integer(kind=8)           :: i, ier, nbno, nbmode, start
+    integer(kind=8)           :: finish
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
     real(kind=8)      :: cosg, depglo1(3), depglo2(3), drl(3), drg(3)
     real(kind=8)      :: origob(3), eps, ml(3), mg(3), angini
@@ -65,7 +65,7 @@ subroutine dtmforc_rotf(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     character(len=3)  :: vitvar
     character(len=8)  :: sd_dtm, sd_nl, fk, dfk, foncp
 !
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer :: sincos_angle_a(:) => null()
     real(kind=8), pointer :: sincos_angle_b(:) => null()
     real(kind=8), pointer :: dplmod1(:) => null()

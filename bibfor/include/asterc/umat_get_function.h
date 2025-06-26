@@ -22,6 +22,6 @@ interface
     subroutine umat_get_function(nomlib, nomsub, pfumat)
         character(len=*) :: nomlib
         character(len=*) :: nomsub
-        integer :: pfumat
+        integer(kind=8) :: pfumat
     end subroutine umat_get_function
 end interface

@@ -40,7 +40,7 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
     character(len=*), intent(in) :: model_
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: hval_algo(*)
     character(len=19), intent(in) :: hval_incr(*)
@@ -71,7 +71,7 @@ subroutine cfmxre(mesh, model_, ds_measure, ds_contact, nume_inst, &
     character(len=19) :: prno
     character(len=8) :: model
     character(len=19) :: cnsinr, cnsper, cnoinr
-    integer :: ibid
+    integer(kind=8) :: ibid
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -23,9 +23,9 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter, &
 #    include "jeveux.h"
 #    include "asterfort/assert.h"
 #    include "asterfort/xxmmvd.h"
-    integer :: ndime, ninter, npts, nptm
+    integer(kind=8) :: ndime, ninter, npts, nptm
     real(kind=8) :: ainter(*)
-    integer :: nbpi, ip1(4), ip2(4), pm1a(4), pm1b(4), pm2(4)
+    integer(kind=8) :: nbpi, ip1(4), ip2(4), pm1a(4), pm1b(4), pm2(4)
 !    BUT: CONSTRUIRE LES FACES DE DECOUPE DU TETRA DE DECOUPE DE REFERENCE
 !         CALCULE LES POINTS D INTERSECTION ET POINTS MILIEUX PRESENTS PAR FACE
 !
@@ -52,7 +52,7 @@ subroutine xstudo(ndime, ninter, npts, nptm, ainter, &
 !               AU LIEU D APPELER XNEWTO POUR RETROUVER LE CENTRE DU QUAD8
 !               L ORDRE PROPOSE ICI DEVIENT CORRELE AU SOUS DECOUPAGE XPENTE DANS XDECQV
 !
-    integer :: zxain
+    integer(kind=8) :: zxain
 
     zxain = xxmmvd('ZXAIN')
 

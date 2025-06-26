@@ -37,12 +37,12 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr, &
 #include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
 ! ----------------------------------------------------------------------
-    integer, intent(in) :: npara, iordr, itype
-    integer, intent(out), optional :: sjv, tjv(*)
+    integer(kind=8), intent(in) :: npara, iordr, itype
+    integer(kind=8), intent(out), optional :: sjv, tjv(*)
     character(len=1), intent(in) :: cel
     character(len=*), intent(in) :: nomsd, lpara(*)
     character(len=*), intent(out), optional :: styp, ttyp(*)
-    integer, intent(in), optional :: istop
+    integer(kind=8), intent(in), optional :: istop
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
 ! Recuperation des adresses jeveux des parametres d'une sd_resultat
@@ -70,8 +70,8 @@ subroutine rsadpa(nomsd, cel, npara, lpara, iordr, &
 ! remarque : cette routine ne fait pas jemarq/jedema pour ne pas
 !            invalider ljeveu
 !-----------------------------------------------------------------------
-    integer :: nbordr, nrang, jordr, i, ipara, irang, ifr, iundef
-    integer :: vali(2), ljeveu(npara), istop2
+    integer(kind=8) :: nbordr, nrang, jordr, i, ipara, irang, ifr, iundef
+    integer(kind=8) :: vali(2), ljeveu(npara), istop2
     real(kind=8) :: rundef
     complex(kind=8) :: cundef
     character(len=3) :: ctype(npara)

@@ -28,7 +28,7 @@ subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem, verbose)
 #include "asterfort/infmue.h"
 !
     character(len=*), intent(in) :: numeDofZ, jvListOfMatrZ
-    integer, intent(in) :: nbMatrElem
+    integer(kind=8), intent(in) :: nbMatrElem
     aster_logical, intent(in) :: verbose
 !
 ! --------------------------------------------------------------------------------------------------

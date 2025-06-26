@@ -40,7 +40,7 @@ subroutine cgComporNodes(result, nume_ordre, nb_point, fondNoeudNume, compValues
 #include "asterfort/rsexch.h"
 !
     character(len=8), intent(in) :: result
-    integer, intent(in) :: nume_ordre, nb_point, fondNoeudNume(*)
+    integer(kind=8), intent(in) :: nume_ordre, nb_point, fondNoeudNume(*)
     character(len=8), pointer :: compValues(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,13 +56,13 @@ subroutine cgComporNodes(result, nume_ordre, nb_point, fondNoeudNume, compValues
     character(len=8) :: model, mesh
     character(len=16) :: rela_comp
     character(len=19) :: ligrmo, compor
-    integer :: nb_vale, nb_zone, nb_cmp_max, iret
-    integer :: i_node, i_cell, nb_node_cell, node_nume, cell_nume
-    integer :: compor_node, compor_cell, zone_nume
-    integer, pointer :: comporPtma(:) => null()
-    integer, pointer :: v_coninv(:) => null()
-    integer, pointer :: v_coninv_longcum(:) => null()
-    integer, pointer :: v_compor_desc(:) => null()
+    integer(kind=8) :: nb_vale, nb_zone, nb_cmp_max, iret
+    integer(kind=8) :: i_node, i_cell, nb_node_cell, node_nume, cell_nume
+    integer(kind=8) :: compor_node, compor_cell, zone_nume
+    integer(kind=8), pointer :: comporPtma(:) => null()
+    integer(kind=8), pointer :: v_coninv(:) => null()
+    integer(kind=8), pointer :: v_coninv_longcum(:) => null()
+    integer(kind=8), pointer :: v_compor_desc(:) => null()
     character(len=16), pointer :: v_compor_vale(:) => null()
 !
     call jemarq()

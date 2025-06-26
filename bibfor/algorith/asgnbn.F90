@@ -54,14 +54,14 @@ subroutine asgnbn(ibla, nbloc, bloca, nbterm, inobl, iadbl, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
     character(len=24) :: nomblo
-    integer :: nbterm, inobl(nbterm), iadbl(nbterm), nbloc, ntria
+    integer(kind=8) :: nbterm, inobl(nbterm), iadbl(nbterm), nbloc, ntria
     real(kind=8) :: fact, bloca(*)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibla, llblo, numblo, iblo
+    integer(kind=8) :: i, ibla, llblo, numblo, iblo
 !-----------------------------------------------------------------------
     call jemarq()
     if (numblo .eq. 0) then

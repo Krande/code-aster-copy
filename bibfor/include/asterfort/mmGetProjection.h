@@ -23,7 +23,7 @@ interface
                               xpc        , ypc      , xpr      , ypr      , tau1      , tau2      ,&
                               xpc_prev_  , ypc_prev_, xpr_prev_, ypr_prev_, tau1_prev_, tau2_prev_,&
                               wpg_prev_)
-        integer, intent(in) :: i_reso_geom
+        integer(kind=8), intent(in) :: i_reso_geom
         real(kind=8), intent(out) :: wpg
         real(kind=8), intent(out) :: xpc, ypc, xpr, ypr
         real(kind=8), intent(out) :: tau1(3), tau2(3)

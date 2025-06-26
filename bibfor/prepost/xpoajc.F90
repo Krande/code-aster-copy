@@ -29,9 +29,9 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
-    integer :: nnm, inm, inmtot, nbmac, ise, ndime, npg
-    integer :: jcesd1, jcesd2, ima, ndim, iadc, jcesv1, jcesl2, jcesv2
-    integer :: jcvid1, jcvid2, jcviv1, jcvil2, jcviv2, idcalv, iadv
+    integer(kind=8) :: nnm, inm, inmtot, nbmac, ise, ndime, npg
+    integer(kind=8) :: jcesd1, jcesd2, ima, ndim, iadc, jcesv1, jcesl2, jcesv2
+    integer(kind=8) :: jcvid1, jcvid2, jcviv1, jcvil2, jcviv2, idcalv, iadv
 ! person_in_charge: samuel.geniaut at edf.fr
 !
 !   ON AJOUTE UN CHAMP DE CONTRAINTES AU NOUVEAU RESU X-FEM
@@ -56,9 +56,9 @@ subroutine xpoajc(nnm, inm, inmtot, nbmac, ise, &
 !
 !
 !
-    integer :: idecal
-    integer :: ncmp1, ncmp2, npg1, npg2, ipg, icmp, iad2
-    integer :: ncmv1, ncmv2, npgv2, ipt
+    integer(kind=8) :: idecal
+    integer(kind=8) :: ncmp1, ncmp2, npg1, npg2, ipg, icmp, iad2
+    integer(kind=8) :: ncmv1, ncmv2, npgv2, ipt
 !
     real(kind=8) :: val
 !

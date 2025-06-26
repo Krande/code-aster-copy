@@ -20,7 +20,7 @@ interface
     subroutine thmEvalFickSteam(j_mater,&
                                 satur  , pgaz  , psteam , temp,&
                                 fick   , dfickt, dfickpg)
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: satur, pgaz, psteam, temp
         real(kind=8), intent(out) :: fick, dfickt, dfickpg
     end subroutine thmEvalFickSteam

@@ -35,7 +35,7 @@ subroutine lspini(solveu)
 !
     character(len=8) :: precon
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
 !
 !------------------------------------------------------------------
     call jemarq()

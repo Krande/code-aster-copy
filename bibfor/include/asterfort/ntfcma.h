@@ -21,8 +21,8 @@
 interface
     subroutine ntfcma(compo, jmat, aniso, ifon)
         character(len=*) :: compo
-        integer :: jmat
+        integer(kind=8) :: jmat
         aster_logical :: aniso
-        integer :: ifon(6)
+        integer(kind=8) :: ifon(6)
     end subroutine ntfcma
 end interface

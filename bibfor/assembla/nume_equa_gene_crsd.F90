@@ -35,9 +35,9 @@ subroutine nume_equa_gene_crsd(nume_equa_genez, base, nb_equa, nb_sstr, nb_link,
 !
     character(len=*), intent(in) :: nume_equa_genez
     character(len=1), intent(in) :: base
-    integer, intent(in) :: nb_equa
-    integer, intent(in) :: nb_sstr
-    integer, intent(in) :: nb_link
+    integer(kind=8), intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: nb_sstr
+    integer(kind=8), intent(in) :: nb_link
     character(len=*), optional, intent(in) :: model_genez
     character(len=*), optional, intent(in) :: gran_namez
 !
@@ -60,15 +60,15 @@ subroutine nume_equa_gene_crsd(nume_equa_genez, base, nb_equa, nb_sstr, nb_link,
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: nume_equa_gene
-    integer :: i_equa, i_ligr_sstr, i_ligr_link, nb_ligr
+    integer(kind=8) :: i_equa, i_ligr_sstr, i_ligr_link, nb_ligr
     logical :: l_ligr_sstr, l_ligr_link
     character(len=24) :: model_gene, gran_name
-    integer, pointer :: prgene_nueq(:) => null()
-    integer, pointer :: prgene_deeq(:) => null()
-    integer, pointer :: prgene_delg(:) => null()
+    integer(kind=8), pointer :: prgene_nueq(:) => null()
+    integer(kind=8), pointer :: prgene_deeq(:) => null()
+    integer(kind=8), pointer :: prgene_delg(:) => null()
     character(len=24), pointer :: prgene_refn(:) => null()
-    integer, pointer :: prgene_desc(:) => null()
-    integer, pointer :: prgene_nequ(:) => null()
+    integer(kind=8), pointer :: prgene_desc(:) => null()
+    integer(kind=8), pointer :: prgene_nequ(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

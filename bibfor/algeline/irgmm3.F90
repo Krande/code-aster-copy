@@ -42,8 +42,8 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: nbmat, nummai(*)
-    integer :: versio
+    integer(kind=8) :: nbmat, nummai(*)
+    integer(kind=8) :: versio
     character(len=8) :: nomain, nomaou
     character(len=*) :: basz
 !
@@ -51,10 +51,10 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
 !     LE MAILLAGE "NOMAOU" NE POSSEDE QUE DES MAILLES DE TYPE
 !     POI1, SEG2, TRIA3, TETRA4
 !     ------------------------------------------------------------------
-    integer :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma
-    integer :: jtitr
-    integer :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol, jnbnun
-    integer :: idlima
+    integer(kind=8) :: i, ima, nbma, nbmail, ifm, niv, ino, ima2, imav, iatyma
+    integer(kind=8) :: jtitr
+    integer(kind=8) :: jtypm, jdime, jopt, jnpt, nbmac, jmail, im, jnumol, jnbnun
+    integer(kind=8) :: idlima
     aster_logical :: logic
     character(len=1) :: base
     character(len=8) :: k8b, nomg, typm, typm2
@@ -62,19 +62,19 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
     character(len=24) ::  titre, numold, nbnune
     character(len=24) :: typmav, connev, nodimv, coovav, coodsv
     character(len=24) :: valk(2)
-    integer :: ind, numel, nbcr, nbp
-    integer :: nbmmax
+    integer(kind=8) :: ind, numel, nbcr, nbp
+    integer(kind=8) :: nbmmax
     parameter(nbmmax=9999999)
 !     --- TABLEAU DE DECOUPAGE
-    integer :: ntyele, maxel, maxno
+    integer(kind=8) :: ntyele, maxel, maxno
     parameter(ntyele=28)
     parameter(maxel=48)
     parameter(maxno=8)
-    integer :: tdec(ntyele, maxel, maxno)
-    integer :: typd(ntyele, 3)
-    integer :: vali(3)
+    integer(kind=8) :: tdec(ntyele, maxel, maxno)
+    integer(kind=8) :: typd(ntyele, 3)
+    integer(kind=8) :: vali(3)
 !     NBRE, POINTEURS, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
-    integer :: nbel(ntyele), jel(ntyele), impr
+    integer(kind=8) :: nbel(ntyele), jel(ntyele), impr
     character(len=24) :: nobj(ntyele)
 !     ------------------------------------------------------------------
 !

@@ -30,7 +30,7 @@ subroutine antisy(axial, coef, amat)
     real(kind=8) :: axial(3), amat(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: coef, zero
 !-----------------------------------------------------------------------
     zero = 0.d0

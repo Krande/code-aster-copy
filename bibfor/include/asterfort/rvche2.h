@@ -23,11 +23,11 @@ interface
                       axez, nbnac, nnoeud)
         character(len=*) :: chelez
         character(len=*) :: nomjv
-        integer :: nbel
-        integer :: numail(*)
+        integer(kind=8) :: nbel
+        integer(kind=8) :: numail(*)
         real(kind=8) :: orig(3)
         real(kind=8) :: axez(3)
-        integer :: nbnac
-        integer :: nnoeud(*)
+        integer(kind=8) :: nbnac
+        integer(kind=8) :: nnoeud(*)
     end subroutine rvche2
 end interface

@@ -23,7 +23,7 @@ interface
                       dom)
         character(len=*) :: nommat
         character(len=*) :: nomnap
-        integer :: nbcycl
+        integer(kind=8) :: nbcycl
         real(kind=8) :: epsmin(*)
         real(kind=8) :: epsmax(*)
         real(kind=8) :: dom(*)

@@ -21,7 +21,7 @@
 interface
     subroutine caralv(sdcont, nb_cont_zone, cont_form)
         character(len=8), intent(in) :: sdcont
-        integer, intent(in) :: cont_form
-        integer, intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: cont_form
+        integer(kind=8), intent(in) :: nb_cont_zone
     end subroutine caralv
 end interface

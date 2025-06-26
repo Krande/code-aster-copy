@@ -22,8 +22,8 @@ interface
     subroutine nueqch(error, chamno, nume_node, cmp_name, nueq)
         character(len=19), intent(in) :: chamno
         character(len=1), intent(in) :: error
-        integer, intent(in) :: nume_node
+        integer(kind=8), intent(in) :: nume_node
         character(len=8), intent(in) :: cmp_name
-        integer, intent(inout) :: nueq
+        integer(kind=8), intent(inout) :: nueq
     end subroutine nueqch
 end interface

@@ -40,13 +40,13 @@ subroutine zbarch(rho, f, mem)
 !
     real(kind=8) :: rhoneg, rhopos
     real(kind=8) :: parmul, fneg, fpos
-    integer :: dimcpl, nbcpl
+    integer(kind=8) :: dimcpl, nbcpl
     aster_logical :: bpos, lopti
     common/zbpar/rhoneg, rhopos,&
      &               parmul, fneg, fpos,&
      &               dimcpl, nbcpl, bpos, lopti
 !
-    integer :: i
+    integer(kind=8) :: i
 !
 ! ----------------------------------------------------------------------
 !

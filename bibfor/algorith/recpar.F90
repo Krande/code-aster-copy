@@ -27,8 +27,8 @@ subroutine recpar(neq, dti, dtmax, vmin, vvar, &
     real(kind=8) :: valr(4)
     character(len=8) :: vvar
     character(len=24) :: valk
-    integer :: neq, nper, nrmax, i, n1, nv
-    integer :: vali(2)
+    integer(kind=8) :: neq, nper, nrmax, i, n1, nv
+    integer(kind=8) :: vali(2)
 !     RECUPERATION DES PARAMETRES D'ADAPTATION DU PAS
 !-----------------------------------------------------------------------
 ! IN  : NEQ    : NOMBRE D'EQUATION

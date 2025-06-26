@@ -39,8 +39,8 @@ subroutine ndexpl(modele, numedd, ds_material, carele, &
 #include "asterfort/ndxpre.h"
 #include "asterfort/ndxforc_step.h"
 !
-    integer :: numins
-    integer :: fonact(*)
+    integer(kind=8) :: numins
+    integer(kind=8) :: fonact(*)
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=24) :: sderro
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -59,7 +59,7 @@ subroutine ndexpl(modele, numedd, ds_material, carele, &
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=24) :: carele
-    integer :: nbiter
+    integer(kind=8) :: nbiter
 !
 ! --------------------------------------------------------------------------------------------------
 !

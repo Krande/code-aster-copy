@@ -24,7 +24,7 @@ subroutine ut3mlg(nno, nnc, pgl, matl, matg)
 !
 #include "asterfort/assert.h"
 !
-    integer      :: nno, nnc
+    integer(kind=8)      :: nno, nnc
     real(kind=8) :: matl(nno*nnc, nno*nnc), pgl(3, 3), matg(nno*nnc, nno*nnc)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine ut3mlg(nno, nnc, pgl, matl, matg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer         :: ii, jj
+    integer(kind=8)         :: ii, jj
     real(kind=8)    :: MatPassGL(nno*nnc, nno*nnc)
 ! --------------------------------------------------------------------------------------------------
 !

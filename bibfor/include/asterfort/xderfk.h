@@ -22,7 +22,7 @@ interface
     subroutine xderfk(kappa, mu, r, theta, ndim, dfkdpo)
         real(kind=8) :: kappa
         real(kind=8) :: mu
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: r
         real(kind=8) :: theta
         real(kind=8) :: dfkdpo(ndim,ndim,2)

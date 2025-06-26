@@ -36,7 +36,7 @@ subroutine gmeneu(imod, nbnode)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jjmmaa.h"
-    integer :: imod, nbnode
+    integer(kind=8) :: imod, nbnode
 ! -----  VARIABLES LOCALES
     character(len=1) :: prfnoe
     character(len=4) :: ct(3)
@@ -47,11 +47,11 @@ subroutine gmeneu(imod, nbnode)
 !
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !-----------------------------------------------------------------------
-    integer :: inode, node
+    integer(kind=8) :: inode, node
     real(kind=8) :: x, y, z
     real(kind=8), pointer :: coor(:) => null()
-    integer, pointer :: detr(:) => null()
-    integer, pointer :: info(:) => null()
+    integer(kind=8), pointer :: detr(:) => null()
+    integer(kind=8), pointer :: info(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

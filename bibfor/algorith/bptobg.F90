@@ -27,7 +27,7 @@ subroutine bptobg(m, n, p)
 ! IN  P       : MATRICE DE PASSAGE B->BP
 ! OUT N       : MATRICE M DANS B
 ! ----------------------------------------------------------------------
-    integer :: i, j, t(3, 3)
+    integer(kind=8) :: i, j, t(3, 3)
     real(kind=8) :: temp
     n(1) = 0.d0
     n(2) = 0.d0

@@ -46,11 +46,11 @@ subroutine te0434(option, nomte)
 !
     character(len=4) :: fami
     character(len=32) :: phenom
-    integer :: nddl, nno, nnos, npg, ndim, ncomp
-    integer :: n, kpg
-    integer :: ipoids, ivf, idfde, jgano, iret, icompo, itab(1), itemps
-    integer :: igeom, icacoq, imate, jvSief, ipesa, iepsin, ivectu
-    integer :: icodre1, icodre2
+    integer(kind=8) :: nddl, nno, nnos, npg, ndim, ncomp
+    integer(kind=8) :: n, kpg
+    integer(kind=8) :: ipoids, ivf, idfde, jgano, iret, icompo, itab(1), itemps
+    integer(kind=8) :: igeom, icacoq, imate, jvSief, ipesa, iepsin, ivectu
+    integer(kind=8) :: icodre1, icodre2
     real(kind=8) :: dff(2, 9), vff(9)
     real(kind=8) :: alpha, beta, h, preten
     aster_logical :: grav

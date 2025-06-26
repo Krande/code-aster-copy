@@ -30,7 +30,7 @@ subroutine juveca(nom, long)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: nom
-    integer :: long
+    integer(kind=8) :: long
 !     REDIMENSIONNEMENT D'UN OBJET SIMPLE JEVEUX DEJA EXISTANT
 !     ------------------------------------------------------------------
 ! IN  NOM  : K24 : NOM DE L'OBJET A REDIMENSIONNER
@@ -47,8 +47,8 @@ subroutine juveca(nom, long)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ldec, ll, lonma2, lonmax, lonuti
-    integer :: ltamp, ltyp
+    integer(kind=8) :: i, ldec, ll, lonma2, lonmax, lonuti
+    integer(kind=8) :: ltamp, ltyp
 !-----------------------------------------------------------------------
     call jemarq()
     call jeveuo(nom, 'L', ldec)

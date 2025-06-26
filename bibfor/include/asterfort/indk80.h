@@ -22,8 +22,8 @@ interface
     function indk80(lk80, k80z, rang, nbk80)
         character(len=*) :: lk80(*)
         character(len=*) :: k80z
-        integer :: rang
-        integer :: nbk80
-        integer :: indk80
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbk80
+        integer(kind=8) :: indk80
     end function indk80
 end interface

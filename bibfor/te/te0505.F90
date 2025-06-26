@@ -43,10 +43,10 @@ subroutine te0505(option, nomte)
     real(kind=8) :: xkpt, xkptt(9), dtpgdx(9), dtpgdy(9)
     real(kind=8) :: vect(50), res(50), dbpgdx(9), dbpgdy(9)
     real(kind=8) :: xr, xrr, xaux, rr, tpg0, xk1, xk0, pn, pnp1
-    integer :: kp, i, k, itemps, ivectt, ifon(6), igeom, imate
-    integer :: ivite, itemp, itempi, ilagrm, ilagrp, iveres
-    integer :: nbvf, jvalf, idim
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: kp, i, k, itemps, ivectt, ifon(6), igeom, imate
+    integer(kind=8) :: ivite, itemp, itempi, ilagrm, ilagrp, iveres
+    integer(kind=8) :: nbvf, jvalf, idim
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfde, jgano
     aster_logical :: aniso
 ! DEB ------------------------------------------------------------------
 !

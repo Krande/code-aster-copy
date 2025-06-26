@@ -46,45 +46,45 @@ subroutine jxcopy(clsinz, nominz, clsouz, nmoutz, nbext)
 ! IN  NMOUTZ : NOM DE LA BASE EN SORTIE
 ! OUT NBEXT  : NOMBRE D'"EXTENDS" UTILISES APRES RETASSAGE
 !     ------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     ------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadloc, iadyn, ici, ico, ierr, k
-    integer :: lbloc, n, nbext, nbloc, nrep, numext
+    integer(kind=8) :: iadloc, iadyn, ici, ico, ierr, k
+    integer(kind=8) :: lbloc, n, nbext, nbloc, nrep, numext
 !-----------------------------------------------------------------------
     parameter(n=5)
 !
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
-    integer :: idn, iext, nbenrg
+    integer(kind=8) :: idn, iext, nbenrg
     common/iextje/idn(n), iext(n), nbenrg(n)
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
     character(len=128) :: repglo, repvol
     common/banvje/repglo, repvol
-    integer :: lrepgl, lrepvo
+    integer(kind=8) :: lrepgl, lrepvo
     common/balvje/lrepgl, lrepvo
 !     ------------------------------------------------------------------
     character(len=1) :: kclas
     character(len=8) :: nomba1, nomba2
     character(len=512) :: noml1, noml2
-    integer :: itp(1), jitp, iaditp, lgbl1, lgbl2, info, iret
+    integer(kind=8) :: itp(1), jitp, iaditp, lgbl1, lgbl2, info, iret
 ! DEB ------------------------------------------------------------------
     nomin = nominz
     clasin = clsinz

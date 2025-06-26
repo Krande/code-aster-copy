@@ -27,7 +27,7 @@ subroutine dismns(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -42,7 +42,7 @@ subroutine dismns(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, gd
+    integer(kind=8) :: iret, gd
     character(len=8) :: nogd
     character(len=19) :: nomob
     character(len=24) :: questl

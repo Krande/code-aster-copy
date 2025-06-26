@@ -21,8 +21,8 @@ interface
                       nbCellSelect, cellSelect  ,&
                       nodeFlag)
         character(len=*), intent(in) :: meshNameZ
-        integer, intent(in) :: nbCellSelect
-        integer, pointer :: cellSelect(:)
+        integer(kind=8), intent(in) :: nbCellSelect
+        integer(kind=8), pointer :: cellSelect(:)
         aster_logical, pointer :: nodeFlag(:)
     end subroutine irmano
 end interface

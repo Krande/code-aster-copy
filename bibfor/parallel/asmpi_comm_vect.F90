@@ -67,13 +67,13 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi, &
 !
     character(len=*), intent(in) :: optmpi
     character(len=*), intent(in) :: typsca
-    integer, intent(in), optional :: nbval
-    integer, intent(in), optional :: bcrank
-    integer, intent(inout), optional :: vi(*)
+    integer(kind=8), intent(in), optional :: nbval
+    integer(kind=8), intent(in), optional :: bcrank
+    integer(kind=8), intent(inout), optional :: vi(*)
     integer(kind=4), intent(inout), optional :: vi4(*)
     real(kind=8), intent(inout), optional :: vr(*)
     complex(kind=8), intent(inout), optional :: vc(*)
-    integer, intent(inout), optional :: sci
+    integer(kind=8), intent(inout), optional :: sci
     integer(kind=4), intent(inout), optional :: sci4
     real(kind=8), intent(inout), optional :: scr
     complex(kind=8), intent(inout), optional :: scc
@@ -83,7 +83,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi, &
 #include "asterf_mpi.h"
 !
     character(len=1) :: typsc1
-    integer :: iret
+    integer(kind=8) :: iret
     mpi_int :: nbpro4, mpicou, proc
 ! ---------------------------------------------------------------------
     call jemarq()
@@ -149,7 +149,7 @@ subroutine asmpi_comm_vect(optmpi, typsca, nbval, bcrank, vi, &
 !
 #else
     character(len=1) :: kdummy
-    integer :: idummy
+    integer(kind=8) :: idummy
     integer(kind=4) :: i4dummy
     real(kind=8) :: rdummy
     complex(kind=8) :: cdummy

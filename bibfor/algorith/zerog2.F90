@@ -33,7 +33,7 @@ subroutine zerog2(x, y, z, i)
 ! VAR Z(I) VALEUR DE LA DERIVEE DE LA FONCTION EN X(I)
 ! ----------------------------------------------------------------------
 !
-    integer :: nrac, i
+    integer(kind=8) :: nrac, i
     real(kind=8) :: rac(2), a, b, c, x0, y0, z0, x1, y1
 !
 !    TEST DES PRE-CONDITIONS

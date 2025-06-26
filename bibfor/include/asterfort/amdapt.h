@@ -22,19 +22,19 @@ interface
     subroutine amdapt(neq, nbnd, nbsn, pe, nv,&
                       invp, parent, supnd, adress, lgind,&
                       fctnzs, fctops, llist, nnv)
-        integer :: neq
-        integer :: nbnd
-        integer :: nbsn
-        integer :: pe(neq+1)
-        integer :: nv(neq)
-        integer :: invp(neq)
-        integer :: parent(*)
-        integer :: supnd(neq)
-        integer :: adress(*)
-        integer :: lgind
-        integer :: fctnzs
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbnd
+        integer(kind=8) :: nbsn
+        integer(kind=8) :: pe(neq+1)
+        integer(kind=8) :: nv(neq)
+        integer(kind=8) :: invp(neq)
+        integer(kind=8) :: parent(*)
+        integer(kind=8) :: supnd(neq)
+        integer(kind=8) :: adress(*)
+        integer(kind=8) :: lgind
+        integer(kind=8) :: fctnzs
         real(kind=8) :: fctops
-        integer :: llist(neq)
-        integer :: nnv(neq)
+        integer(kind=8) :: llist(neq)
+        integer(kind=8) :: nnv(neq)
     end subroutine amdapt
 end interface

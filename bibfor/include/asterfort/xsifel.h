@@ -26,29 +26,29 @@ interface
                       puls, basloc, nnop,&
                       idepl, lsn, lst, idecpg, igthet,&
                       fno, nfiss, jheavn, jstno)
-        integer :: nfiss
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         real(kind=8) :: coorse(*)
-        integer :: igeom
-        integer :: jheavt
-        integer :: ise
-        integer :: nfh
-        integer :: ddlc
-        integer :: ddlm
-        integer :: nfe
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jheavt
+        integer(kind=8) :: ise
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nfe
         real(kind=8) :: rho
         real(kind=8) :: puls
         aster_logical :: lmoda
         real(kind=8) :: basloc(3*ndim*nnop)
-        integer :: idepl
+        integer(kind=8) :: idepl
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: idecpg
-        integer :: igthet
+        integer(kind=8) :: idecpg
+        integer(kind=8) :: igthet
         real(kind=8) :: fno(ndim*nnop)
-        integer :: jheavn
-        integer :: jstno
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: jstno
     end subroutine xsifel
 end interface

@@ -21,7 +21,7 @@
 interface
     subroutine lcvari(compor, nbvari, lvari)
         character(len=*) :: compor
-        integer :: nbvari
+        integer(kind=8) :: nbvari
         character(len=*) :: lvari(*)
     end subroutine lcvari
 end interface

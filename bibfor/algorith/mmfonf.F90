@@ -30,7 +30,7 @@ subroutine mmfonf(ndim, nno, alias, ksi1, ksi2, &
     real(kind=8) :: ff(9)
     real(kind=8) :: dff(2, 9)
     real(kind=8) :: ddff(3, 9)
-    integer :: nno, ndim
+    integer(kind=8) :: nno, ndim
 !
 ! ----------------------------------------------------------------------
 !

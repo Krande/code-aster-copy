@@ -48,10 +48,10 @@ subroutine load_unde_diri(listLoadZ)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbLoad, loadNumeDiri, iLoad, iLoadDiri, i
+    integer(kind=8) :: nbLoad, loadNumeDiri, iLoad, iLoadDiri, i
     character(len=8) :: loadName, load_name_loca
     character(len=24) :: loadInfoJv, loadNameJv
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     character(len=24), pointer :: listLoadName(:) => null()
     character(len=24), pointer :: noli(:) => null()
 !

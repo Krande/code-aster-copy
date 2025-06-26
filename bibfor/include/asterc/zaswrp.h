@@ -24,14 +24,14 @@ interface
                       varmoi, varref, epsm, deps, sigm,&
                       vim, nopt, angeul, sigp, vip,&
                       dsidep, codret)
-        integer :: numa
-        integer :: modele
-        integer :: nvar
-        integer :: ndef
-        integer :: nunit
+        integer(kind=8) :: numa
+        integer(kind=8) :: modele
+        integer(kind=8) :: nvar
+        integer(kind=8) :: ndef
+        integer(kind=8) :: nunit
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: nvarcm
+        integer(kind=8) :: nvarcm
         character(len=*) :: nomvar(*)
         real(kind=8) :: varplu(*)
         real(kind=8) :: varmoi(*)
@@ -40,11 +40,11 @@ interface
         real(kind=8) :: deps(*)
         real(kind=8) :: sigm(*)
         real(kind=8) :: vim(*)
-        integer :: nopt
+        integer(kind=8) :: nopt
         real(kind=8) :: angeul(*)
         real(kind=8) :: sigp(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsidep(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine zaswrp
 end interface

@@ -22,10 +22,10 @@ interface
     subroutine nmcrpa(motfaz, iocc, sdlist, base, nbinst,&
                       dtmin)
         character(len=*) :: motfaz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=24) :: sdlist
         character(len=1) :: base
-        integer :: nbinst
+        integer(kind=8) :: nbinst
         real(kind=8) :: dtmin
     end subroutine nmcrpa
 end interface

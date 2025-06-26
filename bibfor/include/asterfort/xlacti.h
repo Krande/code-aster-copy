@@ -21,9 +21,9 @@
 interface
     subroutine xlacti(typma, ninter, jaint, lact, nlact)
         character(len=8) :: typma
-        integer :: ninter
-        integer :: jaint
-        integer :: lact(8)
-        integer :: nlact
+        integer(kind=8) :: ninter
+        integer(kind=8) :: jaint
+        integer(kind=8) :: lact(8)
+        integer(kind=8) :: nlact
     end subroutine xlacti
 end interface

@@ -25,10 +25,10 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl, &
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 !
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), dimension(:), intent(in) :: x, axe_z, orig
     real(kind=8), dimension(:, :), intent(inout) :: pgcyl
-    integer, intent(inout), optional :: ipaxe
+    integer(kind=8), intent(inout), optional :: ipaxe
 !   ---------------------------------------------------------------------
 !         CALCUL DE LA MATRICE DE PASSAGE DU REPERE GLOBAL AU REPERE CYLINDRIQUE
 !         AU POINT X

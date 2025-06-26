@@ -22,21 +22,21 @@ interface
     subroutine xtelga(ndim, elrefp, nnop, igeom, tempno,&
                       lonch, cnset, jpintt, lsn, lst,&
                       heavn, basloc, heavt, nfh, nfe, temppg)
-        integer :: nfe
-        integer :: nfh
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfe
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
-        integer :: igeom
+        integer(kind=8) :: igeom
         real(kind=8) :: tempno(nnop*(1+nfh+nfe))
-        integer :: lonch(10)
-        integer :: cnset(128)
-        integer :: heavn(27,5)
-        integer :: jpintt
+        integer(kind=8) :: lonch(10)
+        integer(kind=8) :: cnset(128)
+        integer(kind=8) :: heavn(27,5)
+        integer(kind=8) :: jpintt
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
         real(kind=8) :: basloc(*)
-        integer :: heavt(36)
+        integer(kind=8) :: heavt(36)
         real(kind=8) :: temppg(*)
     end subroutine xtelga
 end interface

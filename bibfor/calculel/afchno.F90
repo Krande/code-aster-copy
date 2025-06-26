@@ -36,7 +36,7 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
 #include "asterfort/jexnum.h"
 #include "asterfort/pteequ.h"
 !
-    integer :: nbcpno(*), desc(*)
+    integer(kind=8) :: nbcpno(*), desc(*)
     real(kind=8), optional :: rval(*)
     complex(kind=8), optional :: cval(*)
     character(len=*), optional :: kval(*)
@@ -45,16 +45,16 @@ subroutine afchno(chamn, base, gran_name, mesh, nb_node, &
 !
 !
     character(len=19) :: chamno, nume_equa
-    integer :: ncmp, ncmpmx
+    integer(kind=8) :: ncmp, ncmpmx
 !
 !-----------------------------------------------------------------------
-    integer :: i1, ic, idec, iec, ii, inec
-    integer :: ino, jj, lnueq, nb_equa, lvale, nb_node
-    integer :: nec, nn, idx_gd
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8) :: i1, ic, idec, iec, ii, inec
+    integer(kind=8) :: ino, jj, lnueq, nb_equa, lvale, nb_node
+    integer(kind=8) :: nec, nn, idx_gd
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
-    integer, pointer :: prno(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
     aster_logical :: l_affe
 !-----------------------------------------------------------------------
     call jemarq()

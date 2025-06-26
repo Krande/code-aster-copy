@@ -31,7 +31,7 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri, &
 #include "asterfort/vtcreb.h"
 #include "asterfort/vecinc.h"
     character(len=19) :: lischa
-    integer :: neq, j2nd
+    integer(kind=8) :: neq, j2nd
     real(kind=8) :: freq
     character(len=14) :: numddl
     character(len=19) :: vediri, veneum, vevoch, vassec
@@ -58,8 +58,8 @@ subroutine dy2mbr(numddl, neq, lischa, freq, vediri, &
 !
 !
 !
-    integer :: ieq
-    integer :: j2nd1, j2nd2, j2nd3, j2nd4, j2nd5
+    integer(kind=8) :: ieq
+    integer(kind=8) :: j2nd1, j2nd2, j2nd3, j2nd4, j2nd5
     character(len=1) :: typres
     character(len=8) :: para
     character(len=19):: cndiri, cnneum, cnvoch, cnveac, cnvass

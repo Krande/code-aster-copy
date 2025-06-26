@@ -20,7 +20,7 @@
 !
 interface
     subroutine gmatc3(nnoff, milieu, connex, abscur, matr)
-        integer           :: nnoff
+        integer(kind=8)           :: nnoff
         aster_logical     :: milieu
         aster_logical     :: connex
         character(len=24) :: abscur

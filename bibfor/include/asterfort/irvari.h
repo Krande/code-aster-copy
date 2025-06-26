@@ -21,22 +21,22 @@ interface
                       nb_cmp_sele, cmp_name_sele, partie   , numpt     , instan   ,&
                       nume_store , nbmaec       , limaec   , result    , cara_elem,&
                       carael     , lfichUniq    , codret)
-        integer, intent(in) :: ifi
+        integer(kind=8), intent(in) :: ifi
         character(len=64), intent(in) :: field_med
         character(len=19), intent(in) :: vari_elga
         character(len=8), intent(in) :: field_loca
         character(len=8), intent(in) :: model
-        integer, intent(in) :: nb_cmp_sele
+        integer(kind=8), intent(in) :: nb_cmp_sele
         character(len=*), intent(in) :: cmp_name_sele(*)
         character(len=*), intent(in) :: partie
-        integer, intent(in) :: numpt
+        integer(kind=8), intent(in) :: numpt
         real(kind=8), intent(in) :: instan
-        integer, intent(in) :: nume_store
-        integer, intent(in) :: nbmaec
-        integer, intent(in) :: limaec(*)
+        integer(kind=8), intent(in) :: nume_store
+        integer(kind=8), intent(in) :: nbmaec
+        integer(kind=8), intent(in) :: limaec(*)
         character(len=8), intent(in) :: result
         character(len=8), intent(in) :: cara_elem, carael
         aster_logical, intent(in) :: lfichUniq
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine irvari
 end interface

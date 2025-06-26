@@ -22,12 +22,12 @@ interface
     subroutine cuacat(indic, nbliac, ajliai, spliai, lmat,&
                       indfac, deficu, resocu, solveu, cncine,&
                       xjvmax)
-        integer :: indic
-        integer :: nbliac
-        integer :: ajliai
-        integer :: spliai
-        integer :: lmat
-        integer :: indfac
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ajliai
+        integer(kind=8) :: spliai
+        integer(kind=8) :: lmat
+        integer(kind=8) :: indfac
         character(len=24) :: deficu
         character(len=24) :: resocu
         character(len=19) :: solveu

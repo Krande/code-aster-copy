@@ -23,8 +23,8 @@
 interface
     subroutine vpfopc(lmasse, lraide, fmin, sigma, matopa,&
                       raide, lqz, solveu)
-        integer :: lmasse
-        integer :: lraide
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lraide
         real(kind=8) :: fmin
         complex(kind=8) :: sigma
         character(len=*) :: matopa

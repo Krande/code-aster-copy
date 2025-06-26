@@ -164,10 +164,10 @@ subroutine te0146(option, nomte)
     real(kind=8) :: wmaxi, wmaxs, wmaxyi, wmaxys, wmaxzi, wmaxzs, sigelsqp, kt
     real(kind=8) :: phixi, phixs, phiyi, phiys, phizi, phizs
     real(kind=8) :: reinf, shear, stirrups, thiter, epiter, aphiter
-    integer :: ierr, ierrl, ierrt, jepais, jefge, jfer1, jfer2, itab(7), nno
-    integer :: typcmb, typco, ferrmin, typdiag, ferrsyme, epucisa, clacier, uc, um
-    integer :: ino, icmp, iret, k, meth2D, cond109, precs
-    integer :: iadzi, iazk24, compress, ferrcomp, typstru, nb
+    integer(kind=8) :: ierr, ierrl, ierrt, jepais, jefge, jfer1, jfer2, itab(7), nno
+    integer(kind=8) :: typcmb, typco, ferrmin, typdiag, ferrsyme, epucisa, clacier, uc, um
+    integer(kind=8) :: ino, icmp, iret, k, meth2D, cond109, precs
+    integer(kind=8) :: iadzi, iazk24, compress, ferrcomp, typstru, nb
 !
     call tecael(iadzi, iazk24, noms=0)
 !

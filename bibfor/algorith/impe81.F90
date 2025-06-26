@@ -60,12 +60,12 @@ subroutine impe81(nomres, impe, basemo)
 !
 !
 !
-    integer :: i, j, nbmode
-    integer :: ldblo, ldbloi, lddesa, lddesm, lddesr, ldrefa, ldrefm
-    integer :: ldrefr, ldresa, ldresm, ldresr, ldresi, ldrefi
-    integer :: nbdef, nbmodd, nbmods, nfr, nim, ntail
-    integer :: ntail1, ntail2, ntail3
-    integer :: nk, nc, nm, ldblok, ldbloc, ldblom, nma, nb
+    integer(kind=8) :: i, j, nbmode
+    integer(kind=8) :: ldblo, ldbloi, lddesa, lddesm, lddesr, ldrefa, ldrefm
+    integer(kind=8) :: ldrefr, ldresa, ldresm, ldresr, ldresi, ldrefi
+    integer(kind=8) :: nbdef, nbmodd, nbmods, nfr, nim, ntail
+    integer(kind=8) :: ntail1, ntail2, ntail3
+    integer(kind=8) :: nk, nc, nm, ldblok, ldbloc, ldblom, nma, nb
 !
     real(kind=8) :: partr, parti, partr0, parti0
     real(kind=8) :: amso, dpi, freq

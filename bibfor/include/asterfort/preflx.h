@@ -25,10 +25,10 @@ interface
         character(len=8) :: mailla
         character(len=8) :: chamat
         character(len=8) :: celem
-        integer :: npdsc3
-        integer :: iadsc3
-        integer :: nindex
-        integer :: ilnoex
+        integer(kind=8) :: npdsc3
+        integer(kind=8) :: iadsc3
+        integer(kind=8) :: nindex
+        integer(kind=8) :: ilnoex
         character(len=24) :: lifex2
     end subroutine preflx
 end interface

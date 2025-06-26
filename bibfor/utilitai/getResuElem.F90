@@ -44,7 +44,7 @@ function getResuElem(matr_elem_, vect_elem_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nb_resu
+    integer(kind=8) :: iret, nb_resu
     character(len=24) :: enti_elem
     character(len=19) :: resu_elem
     character(len=24), pointer :: v_resu_elem(:) => null()

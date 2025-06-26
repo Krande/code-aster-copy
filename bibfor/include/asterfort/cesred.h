@@ -21,10 +21,10 @@
 interface
     subroutine cesred(ces1z, nbma, lima, nbcmp, licmp,&
                       base, ces2z)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=*) :: ces1z
-        integer :: lima(nbma)
-        integer :: nbcmp
+        integer(kind=8) :: lima(nbma)
+        integer(kind=8) :: nbcmp
         character(len=*) :: licmp(*)
         character(len=*) :: base
         character(len=*) :: ces2z

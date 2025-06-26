@@ -34,7 +34,7 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
 !
     character(len=*) :: matas, lchci(*), nomnu
     character(len=1) :: base
-    integer :: nbchc
+    integer(kind=8) :: nbchc
 !-----------------------------------------------------------------------
 ! person_in_charge: jacques.pellet at edf.fr
 !  BUT : ON NOTE LES DDLS ELIMINES PAR LES CHARGES CINEMATIQUES
@@ -57,10 +57,10 @@ subroutine asschc(matas, nbchc, lchci, nomnu, cumul)
     character(len=8) :: gd
     character(len=14) :: nu
     character(len=19) :: mat, nomch
-    integer ::   neq, numgd, iddes, nec, jccid, idprno
-    integer :: nelim, jafci, nimp, imp, ino, iddl, ieq, ich, imatd
-    integer, pointer :: nugl(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8) ::   neq, numgd, iddes, nec, jccid, idprno
+    integer(kind=8) :: nelim, jafci, nimp, imp, ino, iddl, ieq, ich, imatd
+    integer(kind=8), pointer :: nugl(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
     character(len=24), pointer :: refa(:) => null()
 !----------------------------------------------------------------------
 !

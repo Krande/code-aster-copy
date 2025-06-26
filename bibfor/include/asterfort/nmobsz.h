@@ -38,8 +38,8 @@ interface
         real(kind=8), intent(in) :: valr
         character(len=8), optional, intent(in) :: node_namez
         character(len=8), optional, intent(in) :: elem_namez
-        integer, optional, intent(in) :: poin_numez
-        integer, optional, intent(in) :: glob_numez
-        integer, optional, intent(in) :: spoi_numez
+        integer(kind=8), optional, intent(in) :: poin_numez
+        integer(kind=8), optional, intent(in) :: glob_numez
+        integer(kind=8), optional, intent(in) :: spoi_numez
     end subroutine nmobsz
 end interface

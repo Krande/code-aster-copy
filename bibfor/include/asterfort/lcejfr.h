@@ -25,11 +25,11 @@ interface
                       vim, vip, typmod, instam, instap)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: mate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: mate
         character(len=16) :: option
         real(kind=8) :: epsm(6)
         real(kind=8) :: deps(6)

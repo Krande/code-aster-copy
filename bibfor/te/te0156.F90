@@ -43,8 +43,8 @@ subroutine te0156(option, nomte)
 !
 !
 !
-    integer :: ivectu, icontg, lorien, nno, nc, ino, i
-    integer :: jvCompor, jvDisp, jvGeom, iretc
+    integer(kind=8) :: ivectu, icontg, lorien, nno, nc, ino, i
+    integer(kind=8) :: jvCompor, jvDisp, jvGeom, iretc
     real(kind=8) :: fs(6), pgl(3, 3), vect(6), forref
     real(kind=8) :: w(6), ang1(3), xd(3)
     aster_logical :: reactu

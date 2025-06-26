@@ -33,7 +33,7 @@ subroutine cfpost(mesh, disp_iter, ds_contact, ctccvg)
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: disp_iter
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: ctccvg
+    integer(kind=8), intent(in) :: ctccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ subroutine cfpost(mesh, disp_iter, ds_contact, ctccvg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: sdcont_delc
     aster_logical :: l_pena_cont, l_gcp
 !

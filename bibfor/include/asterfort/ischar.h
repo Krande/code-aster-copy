@@ -25,7 +25,7 @@ interface
         character(len=19), intent(in) :: list_load
         character(len=4), intent(in) :: load_type_1
         character(len=4), intent(in) :: load_type_2
-        integer, optional, intent(in) :: i_load_
+        integer(kind=8), optional, intent(in) :: i_load_
         aster_logical :: ischar
     end function ischar
 end interface

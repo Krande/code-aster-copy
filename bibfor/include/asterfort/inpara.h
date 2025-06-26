@@ -20,10 +20,10 @@
 !
 interface
     function inpara(opt, te, statut, nopara)
-        integer :: opt
-        integer :: te
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
         character(len=3) :: statut
         character(len=8) :: nopara
-        integer :: inpara
+        integer(kind=8) :: inpara
     end function inpara
 end interface

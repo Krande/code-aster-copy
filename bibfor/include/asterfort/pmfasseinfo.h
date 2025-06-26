@@ -20,12 +20,12 @@
 !
 interface
     subroutine pmfasseinfo(tygrfi, nbfibr, nbcarm, cara, mxfiass,nbfiass,gxjxpou)
-        integer, intent(in) :: nbfibr
-        integer, intent(in) :: tygrfi
-        integer, intent(in) :: nbcarm
+        integer(kind=8), intent(in) :: nbfibr
+        integer(kind=8), intent(in) :: tygrfi
+        integer(kind=8), intent(in) :: nbcarm
         real(kind=8), intent(in) :: cara(nbcarm,nbfibr)
-        integer, intent(out) :: mxfiass
-        integer, pointer :: nbfiass(:)
+        integer(kind=8), intent(out) :: mxfiass
+        integer(kind=8), pointer :: nbfiass(:)
         real(kind=8), pointer :: gxjxpou(:)
     end subroutine pmfasseinfo
 end interface

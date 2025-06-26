@@ -33,22 +33,22 @@ subroutine cphe27(maout, inc, jcnnpa, conloc, &
 
 !
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: inc
-    integer, intent(in) :: jcnnpa
+    integer(kind=8), intent(in) :: inc
+    integer(kind=8), intent(in) :: jcnnpa
     character(len=24), intent(in) :: conloc
     character(len=24), intent(in) :: limane
-    integer, intent(in) :: jmacou
-    integer, intent(in) :: jmacsu
-    integer, intent(in) :: macou
-    integer, intent(in) :: macsu
-    integer, intent(out) :: ind
-    integer, intent(out) :: ind1
+    integer(kind=8), intent(in) :: jmacou
+    integer(kind=8), intent(in) :: jmacsu
+    integer(kind=8), intent(in) :: macou
+    integer(kind=8), intent(in) :: macsu
+    integer(kind=8), intent(out) :: ind
+    integer(kind=8), intent(out) :: ind1
 ! -------------------------------------------------------------------------------------------------
 !        CREATION DES NOUVEAUS NOUEDS ET NOUVELLE MAILLE CAS HEXA27/QUAD9
 ! -------------------------------------------------------------------------------------------------
 ! -------------------------------------------------------------------------------------------------
-    integer :: patch, ino
-    integer :: jlimane, jconloc
+    integer(kind=8) :: patch, ino
+    integer(kind=8) :: jlimane, jconloc
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
 !

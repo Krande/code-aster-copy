@@ -29,7 +29,7 @@ subroutine gilio2(nfic, iobj, nbele, niv)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nfic, iobj, nbele, niv
+    integer(kind=8) :: nfic, iobj, nbele, niv
 ! ----------------------------------------------------------------------
 !     BUT: LIRE LES N LIGNES REPRESENTANT UN OBJET (AU SENS GIBI).
 !                  (PROCEDURE SAUVER)
@@ -42,17 +42,17 @@ subroutine gilio2(nfic, iobj, nbele, niv)
 ! ----------------------------------------------------------------------
 !
 !     VARIABLES LOCALES:
-    integer :: itypel, iret
+    integer(kind=8) :: itypel, iret
     character(len=8) :: typmai
     character(len=5) :: k5bid
     character(len=16) :: k16obj
-    integer :: nbnum, vali(5)
+    integer(kind=8) :: nbnum, vali(5)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacnex, iacoul, iarefe, iasoob
-    integer :: icoj, j, nbfois, nbno, nbref, nbrest, nbsoob
-    integer, pointer :: descobj(:) => null()
+    integer(kind=8) :: i, iacnex, iacoul, iarefe, iasoob
+    integer(kind=8) :: icoj, j, nbfois, nbno, nbref, nbrest, nbsoob
+    integer(kind=8), pointer :: descobj(:) => null()
     character(len=8), pointer :: nomobj(:) => null()
 !
 !-----------------------------------------------------------------------

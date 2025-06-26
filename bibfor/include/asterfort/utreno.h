@@ -24,7 +24,7 @@ interface
     subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
         character(len=*) :: mcf
         character(len=*) :: mcs
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=8) :: ma
         character(len=8) :: noeud
         aster_logical, optional :: ok_noeud

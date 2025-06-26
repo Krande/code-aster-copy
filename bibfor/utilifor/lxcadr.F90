@@ -34,7 +34,7 @@ subroutine lxcadr(chaine)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ilong, ldec, long
+    integer(kind=8) :: ilong, ldec, long
 !-----------------------------------------------------------------------
     long = len(chaine)
     do ilong = 1, long

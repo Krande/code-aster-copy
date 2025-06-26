@@ -21,11 +21,11 @@ subroutine affori(typ, nomt, cara, val, jad, jin, &
                   lseuil, nbseuil, alphayz)
 !
     implicit none
-    integer :: nutyma, ntseg, jad, jin, jdno, jdco
+    integer(kind=8) :: nutyma, ntseg, jad, jin, jdno, jdco
     character(len=*) :: typ, nomt, cara
     real(kind=8) :: val(6)
     real(kind=8), intent(in), optional  :: lseuil
-    integer, intent(inout), optional    :: nbseuil
+    integer(kind=8), intent(inout), optional    :: nbseuil
     real(kind=8), intent(in), optional  :: alphayz(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine affori(typ, nomt, cara, val, jad, jin, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: no1, no2, ii
+    integer(kind=8) :: no1, no2, ii
     character(len=16) :: affcar, nom
     character(len=24) :: vmessk(2)
     real(kind=8) :: x1(3), x2(3), x3(3), angl(3), seglong, segseuil
@@ -264,7 +264,7 @@ subroutine affori(typ, nomt, cara, val, jad, jin, &
 contains
     subroutine messsurcharge(kk1, kk2, kk3, ii1, rr1, rr2)
         character(len=*) :: kk1, kk2, kk3
-        integer :: ii1
+        integer(kind=8) :: ii1
         real(kind=8) :: rr1, rr2
 !
 #include "asterfort/utmess.h"

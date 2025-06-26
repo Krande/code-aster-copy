@@ -19,7 +19,7 @@
 subroutine calcdq(proj, nub, nu, d, pqx, &
                   pqy, pqz, dq)
     implicit none
-    integer :: proj, i, ii
+    integer(kind=8) :: proj, i, ii
     real(kind=8) :: nu, nub, pqx(4), pqy(4), pqz(4), d(6, 6), dq(72)
     real(kind=8) :: dx(6), dy(6), dz(6)
 !.......................................................................

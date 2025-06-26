@@ -24,16 +24,16 @@ interface
                       inst, nx, ny, nz, sig11,&
                       sig22, sig33, sig12, sig13, sig23,&
                       chx, chy, chz)
-        integer :: noe(9, 6, 4)
-        integer :: ifa
-        integer :: tymvol
-        integer :: nnof
-        integer :: iref1
-        integer :: iref2
-        integer :: ivois
-        integer :: igeom
-        integer :: isig
-        integer :: nbcmp
+        integer(kind=8) :: noe(9, 6, 4)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: tymvol
+        integer(kind=8) :: nnof
+        integer(kind=8) :: iref1
+        integer(kind=8) :: iref2
+        integer(kind=8) :: ivois
+        integer(kind=8) :: igeom
+        integer(kind=8) :: isig
+        integer(kind=8) :: nbcmp
         real(kind=8) :: inst
         real(kind=8) :: nx(9)
         real(kind=8) :: ny(9)

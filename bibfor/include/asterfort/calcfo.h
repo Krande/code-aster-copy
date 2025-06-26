@@ -26,7 +26,7 @@ interface
         aster_logical :: compl
         character(len=19) :: nomfin
         character(len=19) :: nomfon
-        integer :: nbval
+        integer(kind=8) :: nbval
         real(kind=8) :: vale(*)
         character(len=24) :: nopara
     end subroutine calcfo

@@ -24,6 +24,6 @@ interface
         character(len=*) :: nominz
         character(len=*) :: clsouz
         character(len=*) :: nmoutz
-        integer :: nbext
+        integer(kind=8) :: nbext
     end subroutine jxcopy
 end interface

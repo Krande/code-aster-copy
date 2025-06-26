@@ -61,21 +61,21 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 !
     character(len=16) :: corres
     character(len=8) :: ma2p, moa2
-    integer :: ndim
+    integer(kind=8) :: ndim
 ! ----------------------------------------------------------------------
-    integer :: ntgeo, ipo, ipg, nuno2
-    integer ::  nbno2p, nno2, ino2p
-    integer :: k, j1, ipoi1, ipy5, ipy13
-    integer :: nbma, nbpt, nbcmp, nbmamo
-    integer :: ima, ipt, icmp, iad, iadime
-    integer ::  jdimt, jpo2, nbtrou, jlitr
-    integer :: jcesd, jcesl, iatypm
+    integer(kind=8) :: ntgeo, ipo, ipg, nuno2
+    integer(kind=8) ::  nbno2p, nno2, ino2p
+    integer(kind=8) :: k, j1, ipoi1, ipy5, ipy13
+    integer(kind=8) :: nbma, nbpt, nbcmp, nbmamo
+    integer(kind=8) :: ima, ipt, icmp, iad, iadime
+    integer(kind=8) ::  jdimt, jpo2, nbtrou, jlitr
+    integer(kind=8) :: jcesd, jcesl, iatypm
     character(len=8) :: nom, mail2
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc, limato, litrou
     real(kind=8) :: xmoy(3), rayo
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()

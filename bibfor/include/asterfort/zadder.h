@@ -22,11 +22,11 @@ interface
     subroutine zadder(uplo, n, alpha, x, incx,&
                       a, lda)
         character(len=*) :: uplo
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: alpha
         complex(kind=8) :: x(*)
-        integer :: incx
+        integer(kind=8) :: incx
         complex(kind=8) :: a(*)
-        integer :: lda
+        integer(kind=8) :: lda
     end subroutine zadder
 end interface

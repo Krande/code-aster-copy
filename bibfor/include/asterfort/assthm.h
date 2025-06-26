@@ -40,23 +40,23 @@ interface
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
         character(len=16), intent(in) :: option
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         aster_logical, intent(in) :: lMatr, lSigm, lVari, lMatrPred, lVect
         aster_logical, intent(in)  :: l_axi
         character(len=8), intent(in) :: typmod(2)
         character(len=3), intent(in) :: inte_type
         real(kind=8), intent(in)  :: angl_naut(3)
-        integer, intent(in) :: nbvari, ndim
-        integer, intent(in) :: nno, nnos
-        integer, intent(in) :: npg, npi
-        integer, intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-        integer, intent(in) :: dimuel, dimdef, dimcon
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5) 
+        integer(kind=8), intent(in) :: nbvari, ndim
+        integer(kind=8), intent(in) :: nno, nnos
+        integer(kind=8), intent(in) :: npg, npi
+        integer(kind=8), intent(in) :: nddls, nddlm, nddl_meca, nddl_p1, nddl_p2, nddl_2nd
+        integer(kind=8), intent(in) :: dimuel, dimdef, dimcon
+        integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5) 
         character(len=16), intent(in)  :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
-        integer, intent(in) :: jv_poids, jv_poids2
-        integer, intent(in) :: jv_func, jv_func2
-        integer, intent(in) :: jv_dfunc, jv_dfunc2
+        integer(kind=8), intent(in) :: jv_poids, jv_poids2
+        integer(kind=8), intent(in) :: jv_func, jv_func2
+        integer(kind=8), intent(in) :: jv_dfunc, jv_dfunc2
         real(kind=8), intent(in) :: elem_coor(ndim, nno)
         real(kind=8), intent(in) :: dispm(dimuel), dispp(dimuel)
         real(kind=8), intent(inout) :: congem(dimcon*npi)
@@ -66,6 +66,6 @@ interface
         real(kind=8), intent(in) :: time_prev, time_curr
         real(kind=8), intent(inout) :: matuu(dimuel*dimuel)
         real(kind=8), intent(inout) :: vectu(dimuel)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine assthm
 end interface

@@ -50,10 +50,10 @@ subroutine tabcor(model, mate, mateco, ma1, ma2, moint, &
 !
 !
 !---------------------------------------------------------------------
-    integer :: nbvale, nbrefe, ibid, nbno1
-    integer :: ino1, ino2, icor(2), itb1, itb2, ncmp2, nbno2, ichnul
-    integer :: nec2, iprn2
-    integer :: ndble, nbptr
+    integer(kind=8) :: nbvale, nbrefe, ibid, nbno1
+    integer(kind=8) :: ino1, ino2, icor(2), itb1, itb2, ncmp2, nbno2, ichnul
+    integer(kind=8) :: nec2, iprn2
+    integer(kind=8) :: ndble, nbptr
     real(kind=8) :: x1, y1, z1, x2, y2, z2
     real(kind=8) :: tailmi, dista2, tailm2
     character(len=2) :: model

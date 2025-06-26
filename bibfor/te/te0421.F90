@@ -39,7 +39,7 @@ subroutine te0421(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: jgano, nbpar, nbres, ndim, nnos
+    integer(kind=8) :: jgano, nbpar, nbres, ndim, nnos
     real(kind=8) :: e1, e2, e3
 !-----------------------------------------------------------------------
     parameter(nbres=10)
@@ -47,13 +47,13 @@ subroutine te0421(option, nomte)
     character(len=16) :: nomres(nbres)
     character(len=8) :: nompar, blan8
     character(len=4) :: fami
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     real(kind=8) :: valres(nbres), valpar, zero
     real(kind=8) :: dfdx(9), dfdy(9), poids, r, exx, eyy, exy, ezz
     real(kind=8) :: a11, a22, a33, a12, a13, a23, delta, c1
     real(kind=8) :: nu12, nu21, nu13, nu31, nu23, nu32, g12
-    integer :: nno, kp, k, npg, i, itemps, ivectu, iret
-    integer :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: nno, kp, k, npg, i, itemps, ivectu, iret
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
 !
 !
     data zero/0.d0/

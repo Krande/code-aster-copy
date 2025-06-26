@@ -19,7 +19,7 @@
 subroutine pmfpti(num, poids, vff, xl, xi, &
                   wi, b, g)
     implicit none
-    integer :: num
+    integer(kind=8) :: num
     real(kind=8) :: poids(*), vff(2, *), xl, xi, wi, b(4), g
 ! -----------------------------------------------------------
 ! ---  POSITION ET POIDS DES POINTS DE GAUSS + MATRICE B
@@ -33,7 +33,7 @@ subroutine pmfpti(num, poids, vff, xl, xi, &
 !           B MATRICE B (4 VALEURS DIFFERENTES NON NULLES)
 ! -----------------------------------------------------------
 
-    integer :: ino
+    integer(kind=8) :: ino
     real(kind=8) :: un, deux, quatre, six, douze
     parameter(un=1.d0, deux=2.d0, quatre=4.d0, six=6.d0, douze=12.d0)
     real(kind=8) :: xp(2)

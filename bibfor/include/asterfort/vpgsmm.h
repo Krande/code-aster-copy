@@ -21,15 +21,15 @@
 interface
     subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, lmatb, typeps, vaux, ddlexc,&
                       delta, dsor, omecor)
-        integer :: nbeq
-        integer :: nfreq
-        integer :: nconv
+        integer(kind=8) :: nbeq
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: nconv
         real(kind=8) :: vect(nbeq, nconv)
         real(kind=8) :: alpha
-        integer :: lmatb
-        integer :: typeps
+        integer(kind=8) :: lmatb
+        integer(kind=8) :: typeps
         real(kind=8) :: vaux(nbeq)
-        integer :: ddlexc(nbeq)
+        integer(kind=8) :: ddlexc(nbeq)
         real(kind=8) :: delta(nconv)
         real(kind=8) :: dsor(nfreq+1,2)
         real(kind=8) :: omecor

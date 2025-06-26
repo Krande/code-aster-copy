@@ -54,17 +54,17 @@ subroutine xfem_store_pc(matass, base, nonu, neq, deeq, &
     character(len=14) :: nonu
     character(len=1) :: base
     character(len=5) :: kstruct
-    integer :: neq, nbnoxfem, maxi_ddl, deca, nbnomax
-    integer :: ino_xfem(nbnomax), deeq(*)
-    integer :: ieq_loc(neq), neq_mloc(nbnoxfem), iglob_ddl(maxi_ddl*nbnoxfem)
+    integer(kind=8) :: neq, nbnoxfem, maxi_ddl, deca, nbnomax
+    integer(kind=8) :: ino_xfem(nbnomax), deeq(*)
+    integer(kind=8) :: ieq_loc(neq), neq_mloc(nbnoxfem), iglob_ddl(maxi_ddl*nbnoxfem)
     real(kind=8) :: tab_mloc(deca*nbnoxfem)
 !
 !-----------------------------------------------------------------------
     character(len=1) :: kbid
     character(len=14) :: nu_pc
     character(len=24), pointer :: refa_pc(:) => null()
-    integer :: cumul_ilig, jcoll, jvale_sup, jvale_inf, nunoj
-    integer :: ipos, decaj, jsmhc_pc, jsmdi_pc, jadr, iexi, nvale
+    integer(kind=8) :: cumul_ilig, jcoll, jvale_sup, jvale_inf, nunoj
+    integer(kind=8) :: ipos, decaj, jsmhc_pc, jsmdi_pc, jadr, iexi, nvale
 !-----------------------------------------------------------------------
 !
     call jemarq()

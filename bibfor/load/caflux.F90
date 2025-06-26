@@ -39,7 +39,7 @@ subroutine caflux(load, model, mesh, geomDime, valeType)
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
@@ -59,9 +59,9 @@ subroutine caflux(load, model, mesh, geomDime, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FLUX_REP'
-    integer :: ibid, nflux, jvalv1, jvalv2, iocc, n, n1, n2, n3
-    integer :: n4, n5, n6, n7, n8, n11, n12, ngr, ncmp, ncmp1, ncmps(2)
-    integer :: ncmp2, iret
+    integer(kind=8) :: ibid, nflux, jvalv1, jvalv2, iocc, n, n1, n2, n3
+    integer(kind=8) :: n4, n5, n6, n7, n8, n11, n12, ngr, ncmp, ncmp1, ncmps(2)
+    integer(kind=8) :: ncmp2, iret
     real(kind=8) :: r8b, aire, xlong
     complex(kind=8) :: c16b
     aster_logical :: icre1, icre2

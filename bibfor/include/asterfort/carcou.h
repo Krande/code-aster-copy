@@ -31,8 +31,8 @@ interface
         real(kind=8) :: pgl2(3, 3)
         real(kind=8) :: pgl3(3, 3)
         real(kind=8) :: pgl4(3, 3)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: omega
-        integer :: icoude
+        integer(kind=8) :: icoude
     end subroutine carcou
 end interface

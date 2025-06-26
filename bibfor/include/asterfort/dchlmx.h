@@ -20,11 +20,11 @@
 !
 interface
     subroutine dchlmx(iparg, nin, lpain, nout, lpaout, taille)
-        integer :: iparg
-        integer :: nin
+        integer(kind=8) :: iparg
+        integer(kind=8) :: nin
         character(len=8) :: lpain(*)
-        integer :: nout
+        integer(kind=8) :: nout
         character(len=8) :: lpaout(*)
-        integer :: taille
+        integer(kind=8) :: taille
     end subroutine dchlmx
 end interface

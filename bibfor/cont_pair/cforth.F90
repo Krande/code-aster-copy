@@ -25,9 +25,9 @@ subroutine cforth(ndimg, tau1, tau2, iret)
 #include "asterfort/mmmron.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmtann.h"
-    integer :: ndimg
+    integer(kind=8) :: ndimg
     real(kind=8) :: tau1(3), tau2(3)
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! ----------------------------------------------------------------------
 !

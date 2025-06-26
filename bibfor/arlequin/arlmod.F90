@@ -32,7 +32,7 @@ subroutine arlmod(nomo, mailar, modarl, tabcor)
 !     ----------
     character(len=8) :: mailar, modarl, nomo
     character(len=24) :: tabcor
-    integer :: iret
+    integer(kind=8) :: iret
 
 ! ----------------------------------------------------------------------
 

@@ -36,17 +36,17 @@ subroutine te0462(option, nomte)
 !     POUR LES ELEMENTS : DKT
 ! ----------------------------------------------------------------------
 !     NOMBRE MAX DE FAMILLE DANS MATER
-    integer :: nfpgmx
+    integer(kind=8) :: nfpgmx
 !     NOMBRE DE NIVEAUX PAR COUCHE
-    integer :: nbniv
+    integer(kind=8) :: nbniv
 !     DIMENSION
-    integer :: ndim
+    integer(kind=8) :: ndim
     parameter(nfpgmx=10, nbniv=3, ndim=3)
 !
-    integer :: ndim1, nno, nnos, npg, jgano, idfde, ipoids, ivf
-    integer :: igeom, jtab(7), icopg, inbf, icoq, iret, decpo, iad
-    integer :: nbsp, nbcou, nfpg, decfpg
-    integer :: ifpg, ig, icou, iniv, ino
+    integer(kind=8) :: ndim1, nno, nnos, npg, jgano, idfde, ipoids, ivf
+    integer(kind=8) :: igeom, jtab(7), icopg, inbf, icoq, iret, decpo, iad
+    integer(kind=8) :: nbsp, nbcou, nfpg, decfpg
+    integer(kind=8) :: ifpg, ig, icou, iniv, ino
     real(kind=8) :: pgl(3, 3), xx, yy, zz
     real(kind=8) :: epais, excen, gm1(3), gm2(3), epc, bas, hh
     aster_logical :: grille

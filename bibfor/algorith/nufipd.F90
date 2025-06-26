@@ -44,10 +44,10 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
 #include "asterfort/Behaviour_type.h"
 !
     aster_logical :: mini
-    integer :: ndim, nno1, nno2, npg, iw, idff1, lgpg
-    integer :: mate
-    integer :: vu(3, 27), vp(27)
-    integer :: codret
+    integer(kind=8) :: ndim, nno1, nno2, npg, iw, idff1, lgpg
+    integer(kind=8) :: mate
+    integer(kind=8) :: vu(3, 27), vp(27)
+    integer(kind=8) :: codret
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     real(kind=8) :: instm, instp
     real(kind=8) :: geomi(ndim, nno1), ddlm(*), ddld(*), angmas(*)
@@ -101,15 +101,15 @@ subroutine nufipd(ndim, nno1, nno2, npg, iw, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     character(len=4), parameter :: fami = "RIGI"
     aster_logical, parameter ::grand = ASTER_FALSE
     aster_logical :: axi
-    integer :: kpg, nddl
-    integer :: ia, na, sa, ib, nb, sb, ja, jb
-    integer :: os, kk
-    integer :: vuiana, vpsa
-    integer :: cod(npg)
+    integer(kind=8) :: kpg, nddl
+    integer(kind=8) :: ia, na, sa, ib, nb, sb, ja, jb
+    integer(kind=8) :: os, kk
+    integer(kind=8) :: vuiana, vpsa
+    integer(kind=8) :: cod(npg)
     character(len=16) :: rela_comp
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: deplm(3*27), depld(3*27)

@@ -25,11 +25,11 @@ subroutine cjsncn(roucjs, essmax, ndt, nvi, umess, &
     implicit none
 #include "asterfort/utmess.h"
     character(len=*) :: roucjs
-    integer :: essmax, ndt, nvi, umess
+    integer(kind=8) :: essmax, ndt, nvi, umess
     real(kind=8) :: relax(essmax), rotagd(essmax)
     real(kind=8) :: epsd(ndt), deps(ndt), sigd(ndt), vind(nvi)
 !
-    integer :: i
+    integer(kind=8) :: i
     write (umess, 3001)
 3001 format(&
     &       t3, ' ESSAI', t10, ' RELAX', t30, ' ROTAGD')

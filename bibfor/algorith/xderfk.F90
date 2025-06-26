@@ -24,7 +24,7 @@ subroutine xderfk(kappa, mu, r, theta, ndim, dfkdpo)
 !
 #include "asterc/r8depi.h"
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: r, theta, dfkdpo(ndim, ndim, 2), kappa, mu
 !
 !

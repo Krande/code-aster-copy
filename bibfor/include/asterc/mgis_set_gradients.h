@@ -21,8 +21,8 @@
 interface
     subroutine mgis_set_gradients(extern_addr, state, values, nbval)
         character(len=16), intent(in) :: extern_addr
-        integer, intent(in) :: state
+        integer(kind=8), intent(in) :: state
         real(kind=8), intent(in) :: values(*)
-        integer, intent(in) :: nbval
+        integer(kind=8), intent(in) :: nbval
     end subroutine mgis_set_gradients
 end interface

@@ -21,12 +21,12 @@
 interface
     subroutine elmddl(raide, option, neq, ddl, nddle,&
                       nbddl, vecddl)
-        integer :: nddle
-        integer :: neq
+        integer(kind=8) :: nddle
+        integer(kind=8) :: neq
         character(len=19) :: raide
         character(len=14) :: option
         character(len=8) :: ddl(nddle)
-        integer :: nbddl
-        integer :: vecddl(neq)
+        integer(kind=8) :: nbddl
+        integer(kind=8) :: vecddl(neq)
     end subroutine elmddl
 end interface

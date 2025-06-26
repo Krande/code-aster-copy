@@ -30,7 +30,7 @@ subroutine dismqu(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=32) :: repk
     character(len=19) :: nomob
@@ -52,8 +52,8 @@ subroutine dismqu(questi, nomobz, repi, repkz, ierd)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iagrel, igr, iret, ite, n1, nbgr, nbnon
-    integer :: nboui
+    integer(kind=8) :: iagrel, igr, iret, ite, n1, nbgr, nbnon
+    integer(kind=8) :: nboui
 !-----------------------------------------------------------------------
     call jemarq()
     nomob = nomobz

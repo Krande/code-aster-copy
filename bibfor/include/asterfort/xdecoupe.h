@@ -21,9 +21,9 @@
 interface
 
    subroutine xdecoupe(elp, cnset, nse, nnose)
-     integer          :: cnset(:)
-     integer          :: nse
-     integer          :: nnose
+     integer(kind=8)          :: cnset(:)
+     integer(kind=8)          :: nse
+     integer(kind=8)          :: nnose
      character(len=8) :: elp    
                   
    end subroutine

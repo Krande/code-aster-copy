@@ -34,35 +34,35 @@ subroutine lc0079(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
     type(Behaviour_Integ)        :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(*)
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap
-    integer, intent(in) :: neps
+    integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps)
     real(kind=8), intent(in) :: deps(neps)
-    integer, intent(in) :: nsig
+    integer(kind=8), intent(in) :: nsig
     real(kind=8), intent(in) :: sigm(nsig)
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8) :: sigp(nsig)
     real(kind=8) :: vip(nvi)
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: icomp
-    integer, intent(in) :: ndsde
+    integer(kind=8), intent(in) :: icomp
+    integer(kind=8), intent(in) :: ndsde
     real(kind=8)::dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), merge(neps, 6, nsig*neps .eq. ndsde))
-    integer, intent(out):: codret
+    integer(kind=8), intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
 !   RELATION ENDO_LOCA_TC
 ! --------------------------------------------------------------------------------------------------
     aster_logical         :: lMatr, lSigm, lVari
-    integer               :: ndimsi
+    integer(kind=8)               :: ndimsi
     real(kind=8)          :: eps(2*ndim), sig(2*ndim), dsde(2*ndim, 2*ndim), vi(nvi), deltat
     type(CONSTITUTIVE_LAW):: cl
 ! --------------------------------------------------------------------------------------------------

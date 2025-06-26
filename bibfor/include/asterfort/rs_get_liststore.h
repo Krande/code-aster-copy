@@ -21,7 +21,7 @@
 interface
     subroutine rs_get_liststore(result_, nb_store, v_list_store_)
         character(len=*), intent(in) :: result_
-        integer, intent(out) :: nb_store
-        integer, pointer, optional :: v_list_store_(:)
+        integer(kind=8), intent(out) :: nb_store
+        integer(kind=8), pointer, optional :: v_list_store_(:)
     end subroutine rs_get_liststore
 end interface

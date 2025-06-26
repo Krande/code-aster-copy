@@ -23,7 +23,7 @@ subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
 #include "asterc/r8prem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, vnormx(2)
+    integer(kind=8) :: nbvec, vnormx(2)
     real(kind=8) :: domtot(nbvec), cudomx
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LE MAX DES CUMULS DE DOMMAGE ET DETERMINER LE VECTEUR
@@ -38,7 +38,7 @@ subroutine avcdmx(nbvec, domtot, cudomx, vnormx, nbplan)
 !  CUDOMX   OUT  R  : VALEUR DU MAX DES CUMULS DE DOMMAGE.
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: ivect, nbplan
+    integer(kind=8) :: ivect, nbplan
     real(kind=8) :: prec
 !     ------------------------------------------------------------------
 !234567                                                              012

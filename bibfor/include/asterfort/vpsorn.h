@@ -27,12 +27,12 @@ interface
                       workv, ddlexc, ddllag, neqact, maxitr,&
                       ifm, niv, priram, alpha, omecor,&
                       nconv, flage, solveu)
-        integer :: lonwl
-        integer :: nfreq
-        integer :: nbvect
-        integer :: nbeq
-        integer :: lmasse
-        integer :: ldynfa
+        integer(kind=8) :: lonwl
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: nbeq
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: ldynfa
         real(kind=8) :: tolsor
         real(kind=8) :: vect(nbeq, nbvect)
         real(kind=8) :: resid(nbeq)
@@ -43,16 +43,16 @@ interface
         real(kind=8) :: fshift
         real(kind=8) :: vaux(nbeq)
         real(kind=8) :: workv(3*nbvect)
-        integer :: ddlexc(nbeq)
-        integer :: ddllag(nbeq)
-        integer :: neqact
-        integer :: maxitr
-        integer :: ifm
-        integer :: niv
-        integer :: priram(8)
+        integer(kind=8) :: ddlexc(nbeq)
+        integer(kind=8) :: ddllag(nbeq)
+        integer(kind=8) :: neqact
+        integer(kind=8) :: maxitr
+        integer(kind=8) :: ifm
+        integer(kind=8) :: niv
+        integer(kind=8) :: priram(8)
         real(kind=8) :: alpha
         real(kind=8) :: omecor
-        integer :: nconv
+        integer(kind=8) :: nconv
         aster_logical :: flage
         character(len=19) :: solveu
     end subroutine vpsorn

@@ -54,8 +54,8 @@ subroutine epsimc(option, xyz, nno, npg, ndim, &
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, idefi, ier, igau, itemps, nbsig, ndim
-    integer :: nno, npg
+    integer(kind=8) :: i, idefi, ier, igau, itemps, nbsig, ndim
+    integer(kind=8) :: nno, npg
     real(kind=8) :: deux, exx, exy, exz, eyy, eyz, ezz
     real(kind=8) :: xgau, ygau, zero, zgau
 !-----------------------------------------------------------------------

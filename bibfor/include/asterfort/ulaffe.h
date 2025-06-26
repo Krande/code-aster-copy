@@ -20,7 +20,7 @@
 !
 interface
     subroutine ulaffe(unit, fichie, name, acces, autor)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: fichie
         character(len=*) :: name
         character(len=*) :: acces

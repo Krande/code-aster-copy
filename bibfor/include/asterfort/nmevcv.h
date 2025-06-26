@@ -21,7 +21,7 @@
 interface
     subroutine nmevcv(sderro, fonact, nombcl)
         character(len=24) :: sderro
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=4) :: nombcl
     end subroutine nmevcv
 end interface

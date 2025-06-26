@@ -48,15 +48,15 @@ subroutine gchs2f(char1, char2, char3)
 !
 ! ======================================================================
 ! ----------------------------------------------------------------------
-    integer :: ncmp1, ncmp2, i, jval3, k, izo, jfpro
-    integer :: jfval, kk, iec, reste, code, jncmp1, jncmp2, j, nec, ior
+    integer(kind=8) :: ncmp1, ncmp2, i, jval3, k, izo, jfpro
+    integer(kind=8) :: jfval, kk, iec, reste, code, jncmp1, jncmp2, j, nec, ior
     real(kind=8) :: epsi
     character(len=8) :: nocmp1, nomfon
     character(len=19) :: nomf19
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: des1(:) => null()
-    integer, pointer :: des2(:) => null()
-    integer, pointer :: des3(:) => null()
+    integer(kind=8), pointer :: des1(:) => null()
+    integer(kind=8), pointer :: des2(:) => null()
+    integer(kind=8), pointer :: des3(:) => null()
 !
     call jemarq()
 !

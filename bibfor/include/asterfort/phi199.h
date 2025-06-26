@@ -26,9 +26,9 @@ interface
         character(len=8) :: ma
         character(len=14) :: nu
         character(len=14) :: num
-        integer :: nbmode
+        integer(kind=8) :: nbmode
         character(len=*) :: solvez
-        integer :: indice
-        integer :: tabad(*)
+        integer(kind=8) :: indice
+        integer(kind=8) :: tabad(*)
     end subroutine phi199
 end interface

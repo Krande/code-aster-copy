@@ -28,7 +28,7 @@ subroutine ntobsv(meshz, sd_obsv, nume_time, time)
 !
     character(len=*), intent(in) :: meshz
     character(len=19), intent(in) :: sd_obsv
-    integer, intent(in) :: nume_time
+    integer(kind=8), intent(in) :: nume_time
     real(kind=8), intent(in) :: time
 !
 ! --------------------------------------------------------------------------------------------------

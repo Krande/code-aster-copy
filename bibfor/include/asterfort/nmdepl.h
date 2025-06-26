@@ -28,8 +28,8 @@ interface
                       eta, ds_conv, ds_system, lerrit)
         use NonLin_Datastructure_type
         use NonLinearDyna_type
-        integer :: fonact(*)
-        integer :: iterat, numins
+        integer(kind=8) :: fonact(*)
+        integer(kind=8) :: iterat, numins
         real(kind=8) :: eta
         character(len=8) :: noma
         type(NL_DS_Conv), intent(inout) :: ds_conv

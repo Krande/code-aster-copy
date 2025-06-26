@@ -25,7 +25,7 @@ interface
         type(NL_DS_Contact), intent(inout) :: ds_contact
         character(len=4), intent(in) :: loop_type
         character(len=*), intent(in) :: operation_
-        integer, intent(out), optional :: loop_counter_
+        integer(kind=8), intent(out), optional :: loop_counter_
         aster_logical, intent(out), optional :: loop_state_
         character(len=16), intent(inout), optional :: loop_locus_
         real(kind=8), intent(inout), optional :: loop_vale_

@@ -24,7 +24,7 @@ function lcnrts(d)
 !                                           T  1/2
 !       OUT LCNRTS :  NORME DE    D = (3/2 D D)
 !       ----------------------------------------------------------------
-    integer :: n, nd
+    integer(kind=8) :: n, nd
     real(kind=8) :: d(6), lcnrts
     common/tdim/n, nd
 !

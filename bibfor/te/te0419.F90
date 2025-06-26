@@ -44,7 +44,7 @@ subroutine te0419(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
-    integer :: nb1, nb2, nddle, npge, npgsr, npgsn
+    integer(kind=8) :: nb1, nb2, nddle, npge, npgsr, npgsn
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), vecpt(9, 3, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
     real(kind=8) :: hsfm(3, 9), hss(2, 9), hsj1m(3, 9), hsj1s(2, 9)
@@ -54,8 +54,8 @@ subroutine te0419(option, nomte)
     real(kind=8) :: forthi(42), forcth(42), vecl(51)
     real(kind=8) :: young, nu, alpha
 !-----------------------------------------------------------------------
-    integer :: i, ib, indic, indith, inte, intsn, intsr
-    integer :: j, jcara, jgeom, jvecg, kwgt, lzi, lzr
+    integer(kind=8) :: i, ib, indic, indith, inte, intsn, intsr
+    integer(kind=8) :: j, jcara, jgeom, jvecg, kwgt, lzi, lzr
 !
     real(kind=8) :: epais, temper
 !-----------------------------------------------------------------------

@@ -46,11 +46,11 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbordr
+    integer(kind=8) :: nbordr
 !
     character(len=*) :: noresz, nomsyz, tabord
 !
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! 0.2. ==> COMMUNS
 !
@@ -59,15 +59,15 @@ subroutine rschor(noresz, nomsyz, nbordr, tabord, codret)
 !
 !
 !
-    integer :: iaux
-    integer :: adtabo, jtach
-    integer :: nbtono
+    integer(kind=8) :: iaux
+    integer(kind=8) :: adtabo, jtach
+    integer(kind=8) :: nbtono
 !
     character(len=16) :: nomsym
     character(len=19) :: noresu
     character(len=24) :: chextr
     character(len=24) :: valk(2)
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !
 !====
 ! 1. PREALABLE

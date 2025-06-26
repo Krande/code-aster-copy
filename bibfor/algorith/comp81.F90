@@ -70,12 +70,12 @@ subroutine comp81(nomres, basmod, raidf, noma)
 !
 !
 !
-    integer :: iarefm, iret, nbnoe, iaconx
-    integer :: nbmtot, nbmdef
-    integer :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie
-    integer :: iacon1, iadesm, ialica, ialich, iaprno, icas
-    integer :: igex, instdy, iocc, ldgn, ldgn0, lnocmp, igin
-    integer :: n1, nbndef, nbno, nbno2, nbnot, ncmpmx, nocc, nueq, nunot
+    integer(kind=8) :: iarefm, iret, nbnoe, iaconx
+    integer(kind=8) :: nbmtot, nbmdef
+    integer(kind=8) :: nbmdyn, nbndyn, i, j, k, inebid, nec, ie
+    integer(kind=8) :: iacon1, iadesm, ialica, ialich, iaprno, icas
+    integer(kind=8) :: igex, instdy, iocc, ldgn, ldgn0, lnocmp, igin
+    integer(kind=8) :: n1, nbndef, nbno, nbno2, nbnot, ncmpmx, nocc, nueq, nunot
 !
     real(kind=8) :: rbndyn, rbndef
 !
@@ -86,9 +86,9 @@ subroutine comp81(nomres, basmod, raidf, noma)
     character(len=19) :: nu
 !
     aster_logical :: lredu
-    integer, pointer :: idc_defo(:) => null()
+    integer(kind=8), pointer :: idc_defo(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: mael_mass_desc(:) => null()
+    integer(kind=8), pointer :: mael_mass_desc(:) => null()
 !
     data blanc/'        '/
 !

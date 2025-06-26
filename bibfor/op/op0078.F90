@@ -38,8 +38,8 @@ subroutine op0078()
 #include "asterfort/utmess.h"
     character(len=8) :: nomres, resin
     character(len=16) :: nomcmd, typres, champ(4)
-    integer :: i, j
-    integer :: ir, nbcham
+    integer(kind=8) :: i, j
+    integer(kind=8) :: ir, nbcham
 !
 !     -----------------------------------------------------------------
 !

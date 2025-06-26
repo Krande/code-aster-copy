@@ -44,7 +44,7 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar, &
     character(len=19) :: cnvass
     character(len=1) :: typres
     character(len=8) :: nompar
-    integer :: neq
+    integer(kind=8) :: neq
     real(kind=8) :: valpar, tval(1)
 !
 ! ----------------------------------------------------------------------
@@ -63,16 +63,16 @@ subroutine cnvesl(lischa, typres, neq, nompar, valpar, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ichar, nbchar
-    integer :: nbveas, nbveag, nbtot, iret, ieq
-    integer :: genrec
-    integer :: jvale
+    integer(kind=8) :: ichar, nbchar
+    integer(kind=8) :: nbveas, nbveag, nbtot, iret, ieq
+    integer(kind=8) :: genrec
+    integer(kind=8) :: jvale
     character(len=16) :: typfct
     character(len=8) :: nomfct, charge, typech
     real(kind=8) :: valre, valim
     complex(kind=8) :: calpha, calp
     real(kind=8) :: phase, omega
-    integer :: npuis
+    integer(kind=8) :: npuis
     aster_logical :: lveas, lveag
     character(len=24) :: chamno
     complex(kind=8), pointer :: resu(:) => null()

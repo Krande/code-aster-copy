@@ -20,7 +20,7 @@
 !
 interface
     subroutine vecink(n, s, x)
-        integer :: n
+        integer(kind=8) :: n
         character(len=*) :: s
         character(len=*) :: x(n)
     end subroutine vecink

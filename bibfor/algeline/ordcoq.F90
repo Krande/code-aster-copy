@@ -63,12 +63,12 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno, &
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: imod, nbm, icoq, nbno, numno(nbno), inomax, nbnoto, iaxe
+    integer(kind=8) :: imod, nbm, icoq, nbno, numno(nbno), inomax, nbnoto, iaxe
     real(kind=8) :: coordo(3, nbnoto), defm(2, nbnoto, nbm)
-    integer :: nunoe0
+    integer(kind=8) :: nunoe0
     real(kind=8) :: drmax, torco(4, nbm)
 !
-    integer :: pui
+    integer(kind=8) :: pui
     real(kind=8) :: modmax, module
     character(len=3) :: kmod
     character(len=8) :: nompar
@@ -76,10 +76,10 @@ subroutine ordcoq(imod, nbm, icoq, nbno, numno, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, idir1, idir2, idisc, idr, idr2, ier
-    integer :: ifftdr, ifm, iligne, imin, ino, inocr, ip
-    integer :: ipmax, iprol, itheta, jno, nbnocr, nbpt
-    integer :: nbpt2, numnoe, nunomx
+    integer(kind=8) :: i, idir1, idir2, idisc, idr, idr2, ier
+    integer(kind=8) :: ifftdr, ifm, iligne, imin, ino, inocr, ip
+    integer(kind=8) :: ipmax, iprol, itheta, jno, nbnocr, nbpt
+    integer(kind=8) :: nbpt2, numnoe, nunomx
     real(kind=8) :: alpha, an, beta, bn, crit, delta, dif
     real(kind=8) :: dif1, dif2, difz, dr, err, fonc, gamma
     real(kind=8) :: pas, pi, rap, rki, s11, s12

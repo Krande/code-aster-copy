@@ -37,14 +37,14 @@ subroutine te0233(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre(1), kpg, spt
+    integer(kind=8) :: icodre(1), kpg, spt
     real(kind=8) :: dfdx(3), nx, ny, poids, cour, rx
-    integer :: nno, kp, k, npg, i, ivectu, ipesa, icaco
-    integer :: ipoids, ivf, idfdk, igeom, imate
+    integer(kind=8) :: nno, kp, k, npg, i, ivectu, ipesa, icaco
+    integer(kind=8) :: ipoids, ivf, idfdk, igeom, imate
 !
 !
 !-----------------------------------------------------------------------
-    integer :: jgano, ndim, nnos
+    integer(kind=8) :: jgano, ndim, nnos
     real(kind=8) :: rho(1)
 !-----------------------------------------------------------------------
     call elref1(elrefe)

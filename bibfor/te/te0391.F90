@@ -42,14 +42,14 @@ subroutine te0391(option, nomte)
 !
 !
     character(len=8) :: elrefe, fami, poum
-    integer :: icodre(1), kpg, spt
+    integer(kind=8) :: icodre(1), kpg, spt
     real(kind=8) :: en(3, 2), enprim(3, 2), x00(3, 3), y0(3), rot0(3, 3), rho(1)
     real(kind=8) :: grani(4), mass(18, 18), zero
     real(kind=8) :: a, xiy, xiz, xjx, pjacob, ajacob
-    integer :: nno, nnos, jgano, ndim, npg, nord, ipoids, ivf, idfdk, kp, ne, ic
-    integer :: igeom, k0, imate, lorien, imatuu, imat, iacce, ivect, i, j, ico
+    integer(kind=8) :: nno, nnos, jgano, ndim, npg, nord, ipoids, ivf, idfdk, kp, ne, ic
+    integer(kind=8) :: igeom, k0, imate, lorien, imatuu, imat, iacce, ivect, i, j, ico
 ! ......................................................................
-    integer, parameter :: nb_cara = 4
+    integer(kind=8), parameter :: nb_cara = 4
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'JX1'/

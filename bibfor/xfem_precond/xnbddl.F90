@@ -28,8 +28,8 @@ subroutine xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
 !-----------------------------------------------------------------------
     implicit none
 !-----------------------------------------------------------------------
-    integer :: ndim, nfh, nfe, ddlc, ddld, ddls
-    integer, optional :: singu
+    integer(kind=8) :: ndim, nfh, nfe, ddlc, ddld, ddls
+    integer(kind=8), optional :: singu
 !-----------------------------------------------------------------------
 !
 !   NOMBRE DE DDL DE DEPLACEMENT À CHAQUE NOEUD SOMMET

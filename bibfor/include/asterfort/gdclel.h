@@ -22,10 +22,10 @@ interface
     subroutine gdclel(fami, kpg, ksp, poum, imate,&
                       young, nu)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=1) :: poum
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: young
         real(kind=8) :: nu
     end subroutine gdclel

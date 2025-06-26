@@ -43,7 +43,7 @@ subroutine simono()
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: lmat, neq
+    integer(kind=8) :: lmat, neq
     real(kind=8) :: xnorm, depl(6)
     character(len=8) :: tabcmp(6), masse
     character(len=14) :: nume
@@ -51,9 +51,9 @@ subroutine simono()
     character(len=19) :: resu
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, in, jvec, nbd
-    integer :: nbdir, nbv
-    integer, pointer :: ddl(:) => null()
+    integer(kind=8) :: i, in, jvec, nbd
+    integer(kind=8) :: nbdir, nbv
+    integer(kind=8), pointer :: ddl(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------
     data tabcmp/'DX', 'DY', 'DZ', 'DRX', 'DRY', 'DRZ'/

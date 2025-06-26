@@ -20,6 +20,6 @@
 !
 interface
     subroutine ibbase(ier)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine ibbase
 end interface

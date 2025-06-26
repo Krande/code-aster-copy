@@ -39,21 +39,21 @@ subroutine rvmima(nomres, iocc)
 #include "asterfort/tbexip.h"
 #include "asterfort/utmess.h"
 !
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=*) :: nomres
 !
 !     COMMANDE : POST_RELEVE, OPERATION='EXTREMA'
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbpano, nbpael
+    integer(kind=8) :: nbpano, nbpael
     parameter(nbpano=6, nbpael=7)
     character(len=16) :: nopano(nbpano), nopael(nbpael), nopara(200)
 !
-    integer :: ibid, n1, np, nc, iret
-    integer :: jordr, i100, nbordr, iord, vali(20), nbc, nbpar
-    integer :: ispmax, ispmin, isamax, isamin
-    integer :: iadr, iac, ii, ik, ir, jaces, nbacc
+    integer(kind=8) :: ibid, n1, np, nc, iret
+    integer(kind=8) :: jordr, i100, nbordr, iord, vali(20), nbc, nbpar
+    integer(kind=8) :: ispmax, ispmin, isamax, isamin
+    integer(kind=8) :: iadr, iac, ii, ik, ir, jaces, nbacc
     real(kind=8) :: prec, valr(200), valmax, valmin, vaamax, vaamin
     complex(kind=8) :: c16b
     character(len=3) :: typpar

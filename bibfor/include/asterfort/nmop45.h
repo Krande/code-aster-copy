@@ -27,6 +27,6 @@ interface
         character(len=8) , intent(in) :: modes
         character(len=8) , intent(in) :: modes2
         type(NL_DS_PostTimeStep), optional, intent(in) :: ds_posttimestep_
-        integer, optional, intent(out) :: nfreq_calibr_
+        integer(kind=8), optional, intent(out) :: nfreq_calibr_
     end subroutine nmop45
 end interface

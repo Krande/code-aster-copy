@@ -21,8 +21,8 @@
 interface
     subroutine cffpm1(resoco, nbliai, ndim, nesmax)
         character(len=24) :: resoco
-        integer :: nbliai
-        integer :: ndim
-        integer :: nesmax
+        integer(kind=8) :: nbliai
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nesmax
     end subroutine cffpm1
 end interface

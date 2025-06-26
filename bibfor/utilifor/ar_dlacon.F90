@@ -95,21 +95,21 @@ subroutine ar_dlacon(n, v, x, isgn, est, &
 #include "asterfort/ldasum.h"
 #include "blas/dcopy.h"
 #include "blas/idamax.h"
-    integer :: kase, n
+    integer(kind=8) :: kase, n
     real(kind=8) :: est
 !     ..
 !     .. ARRAY ARGUMENTS ..
-    integer :: isgn(*)
+    integer(kind=8) :: isgn(*)
     real(kind=8) :: v(*), x(*)
 !     ..
 !     .. PARAMETERS ..
-    integer :: itmax
+    integer(kind=8) :: itmax
     parameter(itmax=5)
     real(kind=8) :: zero, one, two
     parameter(zero=0.0d+0, one=1.0d+0, two=2.0d+0)
 !     ..
 !     .. LOCAL SCALARS ..
-    integer :: i, iter, j, jlast, jump
+    integer(kind=8) :: i, iter, j, jlast, jump
     real(kind=8) :: altsgn, estold, temp
     blas_int :: b_incx, b_incy, b_n
 !     ..

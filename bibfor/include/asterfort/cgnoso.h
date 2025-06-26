@@ -21,9 +21,9 @@
 interface
     subroutine cgnoso(mofaz, iocc, nomaz, lisnoz, nbno)
         character(len=*) :: mofaz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: nomaz
         character(len=*) :: lisnoz
-        integer :: nbno
+        integer(kind=8) :: nbno
     end subroutine cgnoso
 end interface

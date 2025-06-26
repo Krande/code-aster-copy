@@ -21,7 +21,7 @@
 interface
     subroutine cfmajc(resoco, neq, nbliac)
         character(len=24) :: resoco
-        integer :: neq
-        integer :: nbliac
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliac
     end subroutine cfmajc
 end interface

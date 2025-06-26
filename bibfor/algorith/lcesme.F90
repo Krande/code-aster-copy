@@ -42,14 +42,14 @@ subroutine lcesme(tns, eig, para, fct, prec, val, drv)
 ! val : value of the tensorial function
 ! drv : derivative of the tensorial function
 ! --------------------------------------------------------------------------------------------------
-    integer     :: nbeig, i, j, k
+    integer(kind=8)     :: nbeig, i, j, k
     real(kind=8):: x(3), f(3), d(3), g(3), s(3), c(6)
     real(kind=8):: tns2(6), p(3)
     real(kind=8), dimension(6, 6):: x2tx2, x2tx, x2t, xtx, xt
 ! --------------------------------------------------------------------------------------------------
     real(kind=8), dimension(6), parameter  :: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
     real(kind=8), dimension(6, 6)          :: id
-    integer, dimension(5), parameter       :: perm = (/1, 2, 3, 1, 2/)
+    integer(kind=8), dimension(5), parameter       :: perm = (/1, 2, 3, 1, 2/)
 ! --------------------------------------------------------------------------------------------------
 
     ASSERT(size(tns) .eq. 6)

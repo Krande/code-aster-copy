@@ -27,7 +27,7 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin, &
     character(len=*) :: nommat, nomfo1, nomnap
     real(kind=8) :: epsmin(*), epsmax(*)
     real(kind=8) :: dom(*)
-    integer :: nbcycl
+    integer(kind=8) :: nbcycl
 !     CALCUL DU DOMMAGE ELEMENTAIRE PAR TAHERI_MANSON_COFFIN
 !     ------------------------------------------------------------------
 ! IN  NOMMAT : K   : NOM DU MATERIAU
@@ -39,13 +39,13 @@ subroutine fgtaep(nommat, nomfo1, nomnap, nbcycl, epsmin, &
 ! OUT DOM    : R   : VALEURS DES DOMMAGES ELEMENTAIRES
 !     ------------------------------------------------------------------
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=16) :: nomres
     character(len=8) :: nompar, nomp(2)
     character(len=32) :: pheno
     real(kind=8) :: nrupt(1), delta, dsigm, depsi, epmax, valp(2)
 !-----------------------------------------------------------------------
-    integer :: i, ier, nbpar
+    integer(kind=8) :: i, ier, nbpar
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     data zero/1.d-13/

@@ -30,7 +30,7 @@ interface
         real(kind=8) :: cfrots
         real(kind=8) :: ktang
         real(kind=8) :: ctang
-        integer :: iadher
+        integer(kind=8) :: iadher
         real(kind=8) :: oldvt(2)
         real(kind=8) :: oldft(2)
         real(kind=8) :: oldxlo(3)

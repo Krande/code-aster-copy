@@ -50,8 +50,8 @@ subroutine rsmena(resu)
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: n1, n2, k, nbcon, ibid, nbordr, jcoche
-    integer :: i, nbnosy, jtach, j, iret, i1, tord(1)
+    integer(kind=8) :: n1, n2, k, nbcon, ibid, nbordr, jcoche
+    integer(kind=8) :: i, nbnosy, jtach, j, iret, i1, tord(1)
     character(len=8) :: kbid, tych, res8
     character(len=16) :: nomsym
     character(len=19) :: res19, noco19
@@ -60,7 +60,7 @@ subroutine rsmena(resu)
     complex(kind=8) :: c16b
     character(len=24), pointer :: rs24(:) => null()
     character(len=24), pointer :: lobj(:) => null()
-    integer, pointer :: nume_ordre(:) => null()
+    integer(kind=8), pointer :: nume_ordre(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
     res19 = resu

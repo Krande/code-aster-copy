@@ -41,7 +41,7 @@ subroutine btdbma(b, d, jacob, nbsig, nbinco, &
 !
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  ARGUMENTS
-    integer :: nbinco, nbsig
+    integer(kind=8) :: nbinco, nbsig
     real(kind=8) :: b(nbsig, nbinco), d(nbsig, nbsig), jacob
     real(kind=8) :: btdb(nbinco, nbinco)
 ! -----  VARIABLES LOCALES
@@ -49,7 +49,7 @@ subroutine btdbma(b, d, jacob, nbsig, nbinco, &
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, j1, j2
+    integer(kind=8) :: i, j, j1, j2
     real(kind=8) :: s, zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

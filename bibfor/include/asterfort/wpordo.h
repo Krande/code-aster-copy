@@ -21,9 +21,9 @@
 interface
     subroutine wpordo(type, shift, vpr, vpi, x,&
                       m, neq)
-        integer :: neq
-        integer :: m
-        integer :: type
+        integer(kind=8) :: neq
+        integer(kind=8) :: m
+        integer(kind=8) :: type
         complex(kind=8) :: shift
         real(kind=8) :: vpr(*)
         real(kind=8) :: vpi(*)

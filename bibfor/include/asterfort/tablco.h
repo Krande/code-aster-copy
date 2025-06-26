@@ -22,8 +22,8 @@ interface
     subroutine tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
         character(len=8), intent(in) :: sdcont
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_cont_surf
-        integer, intent(in) :: nb_cont_elem
-        integer, intent(in) :: nb_cont_node
+        integer(kind=8), intent(in) :: nb_cont_surf
+        integer(kind=8), intent(in) :: nb_cont_elem
+        integer(kind=8), intent(in) :: nb_cont_node
     end subroutine tablco
 end interface

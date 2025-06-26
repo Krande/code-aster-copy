@@ -25,7 +25,7 @@ interface
         character(len=8), intent(in) :: model
         character(len=24), intent(in) :: list_elem_affe
         aster_logical, intent(in) :: l_affe_all
-        integer, intent(in) :: nb_elem_affe
+        integer(kind=8), intent(in) :: nb_elem_affe
         aster_logical :: exicp
     end function exicp
 end interface

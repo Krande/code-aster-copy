@@ -22,9 +22,9 @@ interface
     subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab,&
                       prec, crit)
         character(len=16) :: motfac
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: nomjv
-        integer :: nbinst
+        integer(kind=8) :: nbinst
         character(len=*) :: nomtab
         real(kind=8) :: prec
         character(len=8) :: crit

@@ -30,12 +30,12 @@ subroutine dlidef()
 #include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: idebut, irest, iii, ipdt
-    integer :: vali(2)
+    integer(kind=8) :: idebut, irest, iii, ipdt
+    integer(kind=8) :: vali(2)
     character(len=8) :: resu
     character(len=16) :: nomcmd, concep
-    integer :: i, j, ndim, nbvale, nv, jval, jbor, nbocc, jnbp, n1, nbval
-    integer :: kval, ico, np, jpas, iocc
+    integer(kind=8) :: i, j, ndim, nbvale, nv, jval, jbor, nbocc, jnbp, n1, nbval
+    integer(kind=8) :: kval, ico, np, jpas, iocc
 !     ------------------------------------------------------------------
     call jemarq()
 !

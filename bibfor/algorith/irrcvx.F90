@@ -26,7 +26,7 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
     character(len=*) :: fami
-    integer :: kpg, ksp, nmat
+    integer(kind=8) :: kpg, ksp, nmat
     real(kind=8) :: mater(nmat, 2), sig(6), vin(*), seuil
 !
 ! CONVEXE ELASTO PLASTIQUE A T+DT POUR (SIGF , VIND) DONNES
@@ -44,7 +44,7 @@ subroutine irrcvx(fami, kpg, ksp, nmat, mater, &
 !
     real(kind=8) :: irrad, irraf, p, dev(6), k, n, p0
     real(kind=8) :: pk, penpe, kappa, r02, pe, spe
-    integer :: iret
+    integer(kind=8) :: iret
 !
     real(kind=8) :: valrm(2)
 !

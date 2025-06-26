@@ -34,12 +34,12 @@ subroutine verift(fami, kpg, ksp, poum, j_mater, &
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
     character(len=*), intent(in) :: poum
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=8), optional, intent(in) :: materi_
-    integer, optional, intent(out) :: iret_
+    integer(kind=8), optional, intent(out) :: iret_
     real(kind=8), optional, intent(out) :: epsth_
     real(kind=8), optional, intent(out) :: epsth_anis_(3)
     real(kind=8), optional, intent(out) :: epsth_meta_
@@ -74,7 +74,7 @@ subroutine verift(fami, kpg, ksp, poum, j_mater, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elem_name, materi
-    integer :: iret_temp_prev, iret_temp_curr, iret_temp, iret_temp_refe
+    integer(kind=8) :: iret_temp_prev, iret_temp_curr, iret_temp, iret_temp_refe
     real(kind=8) :: temp_prev, temp_refe, temp_curr
     real(kind=8) :: epsth, epsth_anis(3), epsth_meta
     real(kind=8) :: alpha_p(2)
@@ -83,8 +83,8 @@ subroutine verift(fami, kpg, ksp, poum, j_mater, &
     real(kind=8) :: alpha_l_c, alpha_t_c, alpha_n_c
     real(kind=8) :: zcold_p, zhot_p, zcold_c, zhot_c, epsth_meta_h, epsth_meta_c
     real(kind=8) :: z_h_r, deps_ch_tref
-    integer :: iadzi, iazk24
-    integer :: elas_id, iret_cmp, icompo, meta_type, nb_phasis
+    integer(kind=8) :: iadzi, iazk24
+    integer(kind=8) :: elas_id, iret_cmp, icompo, meta_type, nb_phasis
     character(len=16) :: elas_keyword, rela_comp
 !
 ! --------------------------------------------------------------------------------------------------

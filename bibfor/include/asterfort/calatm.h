@@ -21,11 +21,11 @@
 interface
     subroutine calatm(neq, nbddl, mu, coef, ddl,&
                       atmu)
-        integer :: nbddl
-        integer :: neq
+        integer(kind=8) :: nbddl
+        integer(kind=8) :: neq
         real(kind=8) :: mu
         real(kind=8) :: coef(nbddl)
-        integer :: ddl(nbddl)
+        integer(kind=8) :: ddl(nbddl)
         real(kind=8) :: atmu(neq)
     end subroutine calatm
 end interface

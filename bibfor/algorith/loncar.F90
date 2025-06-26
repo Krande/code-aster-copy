@@ -21,7 +21,7 @@ subroutine loncar(ndim, typma, coord, l)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: coord(*), l
     character(len=8) :: typma
 !
@@ -38,7 +38,7 @@ subroutine loncar(ndim, typma, coord, l)
 !       L      : LONGUEUR CARACTÉRISTIQUE
 !     ------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: ar(3), m(3)
 ! ----------------------------------------------------------------------
 !

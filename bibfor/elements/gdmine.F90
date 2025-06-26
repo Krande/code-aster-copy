@@ -67,7 +67,7 @@ subroutine gdmine(kp, nno, pjacob, en, grani, &
     real(kind=8) :: amat7(3, 3), vect1(3), vect2(3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, kp, nno
+    integer(kind=8) :: i, j, kp, nno
     real(kind=8) :: alfnmk, coef, delnmk, pas, pjacob, un, zero
 !
 !-----------------------------------------------------------------------

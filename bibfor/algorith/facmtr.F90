@@ -48,13 +48,13 @@ subroutine facmtr(matin, matout, ier)
     character(len=19) :: matin, matout, matpre, solveu
     character(len=24) :: valk
     aster_logical :: hplog
-    integer :: ibid
+    integer(kind=8) :: ibid
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ier, ire
+    integer(kind=8) :: ier, ire
 !-----------------------------------------------------------------------
     call jemarq()
     if (matin .eq. ' ') goto 9999

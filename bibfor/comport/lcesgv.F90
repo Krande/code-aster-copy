@@ -33,16 +33,16 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, &
 #include "asterc/r8prem.h"
     interface
         subroutine lccrma(mat, fami, kpg, ksp, poum)
-            integer, intent(in) :: mat, kpg, ksp
+            integer(kind=8), intent(in) :: mat, kpg, ksp
             character(len=1), intent(in) :: poum
             character(len=*), intent(in) :: fami
         end subroutine lccrma
 !
         subroutine lcesga(mode, eps, gameps, dgamde, itemax, &
                           precvg, iret)
-            integer, intent(in) :: mode, itemax
+            integer(kind=8), intent(in) :: mode, itemax
             real(kind=8), intent(in) :: eps(6), precvg
-            integer, intent(out) :: iret
+            integer(kind=8), intent(out) :: iret
             real(kind=8), intent(out) :: gameps, dgamde(6)
         end subroutine lcesga
     end interface
@@ -50,7 +50,7 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, &
     character(len=8) :: typmod(*)
     character(len=16) :: option
     character(len=*) :: fami
-    integer :: ndim, neps, mat, iret, kpg, ksp, itemax
+    integer(kind=8) :: ndim, neps, mat, iret, kpg, ksp, itemax
     real(kind=8) :: epsm(neps), deps(neps), vim(*), precvg
     real(kind=8) :: vip(*), sig(neps), dsidep(neps, neps)
 ! --------------------------------------------------------------------------------------------------
@@ -80,7 +80,7 @@ subroutine lcesgv(fami, kpg, ksp, ndim, neps, &
     real(kind=8), dimension(6), parameter :: kr = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: cplan, rigi, resi, elas
-    integer :: ndimsi, ij, kl, etat
+    integer(kind=8) :: ndimsi, ij, kl, etat
     real(kind=8) :: phi, lag, apg, grad(ndim)
     real(kind=8) :: coplan, cor33, vplan(6), eps(6), sigel(6), treps
     real(kind=8) :: sigma(6), a, drda, drdae, drdas, gel, gsat, ktg(6, 6, 4)

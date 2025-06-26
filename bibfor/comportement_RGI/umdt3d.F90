@@ -28,14 +28,14 @@ subroutine umdt3d(souplesse66, dt3, umdt66, a, b, &
 #include "asterfort/gauss3d.h"
 #include "asterfort/utmess.h"
 
-    integer i, j, k, l
+    integer(kind=8) i, j, k, l
 
     real(kind=8) :: souplesse66(6, 6)
     real(kind=8) :: souplesse66d(6, 6), raideur66d(6, 6)
     real(kind=8) :: dt3(3)
-    integer ngf
+    integer(kind=8) ngf
     real(kind=8) :: x(ngf), b(ngf), a(ngf, (ngf+1))
-    integer errg, ipzero(ngf)
+    integer(kind=8) errg, ipzero(ngf)
     real(kind=8) :: umdt66(6, 6)
     aster_logical ::  iso
     real(kind=8) :: dx

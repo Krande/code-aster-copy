@@ -56,24 +56,24 @@ subroutine asmaco(ma1, ma2, mag)
     character(len=19) :: coordo, nomt19
     character(len=24) :: para, valk(2), cgpm1, cgpm2, nogma, nogmab, nogno
     character(len=24) :: nognob
-    integer :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
-    integer :: nbngm1, nbngm2, nbngm, nno1, nno2, ianode, nnodif
-    integer :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv, j
-    integer :: iadime
-    integer :: iagma1, iagma2, iagmax
-    integer :: iacon1, iacon2, iaconx
-    integer :: iagno1, iagno2, iagnox
-    integer :: iatyp1, iatyp2, iatypx
-    integer :: nbgno, nbgn1, nbgn2, ii, jj, igeomr, iadesc, ibid
-    integer :: iatyma, iacoo1, iacoo2, iavale, iret, iret1, iret2
-    integer :: iamam1, iamam2, nbpar
-    integer :: ilgma, ilgm2, decal
+    integer(kind=8) :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
+    integer(kind=8) :: nbngm1, nbngm2, nbngm, nno1, nno2, ianode, nnodif
+    integer(kind=8) :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv, j
+    integer(kind=8) :: iadime
+    integer(kind=8) :: iagma1, iagma2, iagmax
+    integer(kind=8) :: iacon1, iacon2, iaconx
+    integer(kind=8) :: iagno1, iagno2, iagnox
+    integer(kind=8) :: iatyp1, iatyp2, iatypx
+    integer(kind=8) :: nbgno, nbgn1, nbgn2, ii, jj, igeomr, iadesc, ibid
+    integer(kind=8) :: iatyma, iacoo1, iacoo2, iavale, iret, iret1, iret2
+    integer(kind=8) :: iamam1, iamam2, nbpar
+    integer(kind=8) :: ilgma, ilgm2, decal
     aster_logical :: match, elim
     real(kind=8) :: prec1, prec2, prec, dist, x1, y1, z1, x2, y2, z2, r8b, armin
     real(kind=8) :: xi1, yi1, zi1
     complex(kind=8) :: c16b
-    integer, pointer :: dim1(:) => null()
-    integer, pointer :: dim2(:) => null()
+    integer(kind=8), pointer :: dim1(:) => null()
+    integer(kind=8), pointer :: dim2(:) => null()
 !
 !     ------------------------------------------------------------------
 !

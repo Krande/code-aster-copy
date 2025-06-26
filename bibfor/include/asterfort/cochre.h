@@ -21,8 +21,8 @@
 interface
     subroutine cochre(kchar, nbchar, nbchre, iocc)
         character(len=*) :: kchar(*)
-        integer :: nbchar
-        integer :: nbchre
-        integer :: iocc
+        integer(kind=8) :: nbchar
+        integer(kind=8) :: nbchre
+        integer(kind=8) :: iocc
     end subroutine cochre
 end interface

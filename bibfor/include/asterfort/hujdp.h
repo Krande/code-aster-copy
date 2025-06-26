@@ -27,7 +27,7 @@ interface
         real(kind=8) :: sigf(6)
         real(kind=8) :: mater(22, 2)
         real(kind=8) :: vin(*)
-        integer :: ndec
-        integer :: iret
+        integer(kind=8) :: ndec
+        integer(kind=8) :: iret
     end subroutine hujdp
 end interface

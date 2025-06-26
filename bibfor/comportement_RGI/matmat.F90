@@ -25,11 +25,11 @@ subroutine matmat(a, b, nl, nc1, nc2, &
 !  LE PREMIER INDICE EST DE LIGNE, LE DEUXIEME DE COLONNE
 !=====================================================================
     implicit none
-    integer :: nc1
-    integer :: nl
+    integer(kind=8) :: nc1
+    integer(kind=8) :: nl
     real(kind=8) :: a(nl, *)
     real(kind=8) :: b(nc1, *), xx
-    integer :: nc2, i, j, k
+    integer(kind=8) :: nc2, i, j, k
     real(kind=8) :: c(nl, *)
     do i = 1, nl
         do j = 1, nc2

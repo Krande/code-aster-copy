@@ -65,21 +65,21 @@ subroutine traint(resgen, modgen, numlia, sst1, sst2, &
     character(len=8) :: rest2, mraid
     character(len=19) :: nume91
     character(len=24) :: indin1, indin2
-    integer :: i1, ibid, nbsst, j1, k1, l1, imast1, nbeq, lmast, imast2
-    integer :: nbeq1, nbeq2, numlia, lefi1, lefi2, nbmod, lnusst, isst1
-    integer :: isst2, llint1, lobs2, lobs1, llint2, nbddl1, nbddl2, tach1
-    integer :: nc, tach2, lomeg, lmod1, lmod2, lbid, lag1, lag2
-    integer :: lesc, leff1, leff2, ideeq, nbddl, llint
-    integer :: lcopy1, lcopy2, unit, ldepma, ldepsl, nl
+    integer(kind=8) :: i1, ibid, nbsst, j1, k1, l1, imast1, nbeq, lmast, imast2
+    integer(kind=8) :: nbeq1, nbeq2, numlia, lefi1, lefi2, nbmod, lnusst, isst1
+    integer(kind=8) :: isst2, llint1, lobs2, lobs1, llint2, nbddl1, nbddl2, tach1
+    integer(kind=8) :: nc, tach2, lomeg, lmod1, lmod2, lbid, lag1, lag2
+    integer(kind=8) :: lesc, leff1, leff2, ideeq, nbddl, llint
+    integer(kind=8) :: lcopy1, lcopy2, unit, ldepma, ldepsl, nl
     real(kind=8) :: travm, travk, trvint
-    integer, pointer :: num_sst_maitre(:) => null()
+    integer(kind=8), pointer :: num_sst_maitre(:) => null()
     real(kind=8), pointer :: trav_interf(:) => null()
-    integer, pointer :: num_sst_esclave(:) => null()
+    integer(kind=8), pointer :: num_sst_esclave(:) => null()
     character(len=8), pointer :: nom_sst(:) => null()
-    integer, pointer :: lipr(:) => null()
-    integer, pointer :: matrice_mass(:) => null()
+    integer(kind=8), pointer :: lipr(:) => null()
+    integer(kind=8), pointer :: matrice_mass(:) => null()
     real(kind=8), pointer :: tr_mod_mast_pro(:) => null()
-    integer, pointer :: matrice_raid(:) => null()
+    integer(kind=8), pointer :: matrice_raid(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     call getvis(' ', 'UNITE', scal=unit, nbret=ibid)

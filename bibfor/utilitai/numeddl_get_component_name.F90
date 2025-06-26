@@ -31,7 +31,7 @@ subroutine numeddl_get_component_name(nume19, cmpid, cmpname)
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 !
-    integer :: cmpid
+    integer(kind=8) :: cmpid
     character(len=*) :: nume19
     character(len=8) :: cmpname
 !
@@ -46,7 +46,7 @@ subroutine numeddl_get_component_name(nume19, cmpid, cmpname)
 !     In    maxcmp      : max possible number of components (for safety purpose)
 !     -----------------------------------------------------------------------------
 !
-    integer :: nb_cmp_gd, vali(2), jcmp
+    integer(kind=8) :: nb_cmp_gd, vali(2), jcmp
     character(len=8) :: nomgd
     character(len=19) :: numeddl
     character(len=24), pointer :: refn(:) => null()

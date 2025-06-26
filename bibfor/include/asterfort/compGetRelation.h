@@ -19,7 +19,7 @@
 interface
     subroutine compGetRelation(factorKeyword, iFactorKeyword, rela_comp)
         character(len=16), intent(in) :: factorKeyword
-        integer, intent(in) :: iFactorKeyword
+        integer(kind=8), intent(in) :: iFactorKeyword
         character(len=16), intent(out) :: rela_comp
     end subroutine compGetRelation
 end interface

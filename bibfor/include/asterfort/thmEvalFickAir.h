@@ -20,7 +20,7 @@ interface
     subroutine thmEvalFickAir(j_mater,&
                               satur  , pair  , pliquid, temp,&
                               fick   , dfickt)
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: satur, pair , pliquid, temp
         real(kind=8), intent(out) :: fick, dfickt
     end subroutine thmEvalFickAir

@@ -21,13 +21,13 @@
 interface
     subroutine aveteq(nbordr, vwork, tdisp, kwork, sommw,&
                       tspaq, i, jveteq)
-        integer :: tdisp
-        integer :: nbordr
+        integer(kind=8) :: tdisp
+        integer(kind=8) :: nbordr
         real(kind=8) :: vwork(tdisp)
-        integer :: kwork
-        integer :: sommw
-        integer :: tspaq
-        integer :: i
-        integer :: jveteq
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sommw
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: i
+        integer(kind=8) :: jveteq
     end subroutine aveteq
 end interface

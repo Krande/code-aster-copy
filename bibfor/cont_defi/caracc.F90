@@ -26,7 +26,7 @@ subroutine caracc(sdcont, nb_cont_zone)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,9 +43,9 @@ subroutine caracc(sdcont, nb_cont_zone)
 !
     character(len=1) :: jv_base
     character(len=24) :: sdcont_defi
-    integer :: zcmcf, zexcl
+    integer(kind=8) :: zcmcf, zexcl
     character(len=24) :: sdcont_caracf, sdcont_exclfr
-    integer :: j_sdcont_caracf, j_sdcont_exclfr
+    integer(kind=8) :: j_sdcont_caracf, j_sdcont_exclfr
 !
 ! --------------------------------------------------------------------------------------------------
 !

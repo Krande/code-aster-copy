@@ -21,11 +21,11 @@
 interface
     subroutine ctetgd(basmod, numd, numg, nbsec, teta,&
                       nbtet)
-        integer :: nbtet
+        integer(kind=8) :: nbtet
         character(len=8) :: basmod
-        integer :: numd
-        integer :: numg
-        integer :: nbsec
+        integer(kind=8) :: numd
+        integer(kind=8) :: numg
+        integer(kind=8) :: nbsec
         real(kind=8) :: teta(nbtet, nbtet)
     end subroutine ctetgd
 end interface

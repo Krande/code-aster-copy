@@ -23,7 +23,7 @@
 interface
     subroutine nmgrib(nno, geom, dff, dir11, lexc,&
                       vecn, b, jac, p)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: geom(3, nno)
         real(kind=8) :: dff(2, nno)
         real(kind=8) :: dir11(3)

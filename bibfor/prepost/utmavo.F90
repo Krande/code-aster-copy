@@ -37,8 +37,8 @@ subroutine utmavo(mail, kdim, listCellNume, nbCell, base, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbCell, nbmavo, mailvo(*)
-    integer, pointer :: listCellNume(:)
+    integer(kind=8) :: nbCell, nbmavo, mailvo(*)
+    integer(kind=8), pointer :: listCellNume(:)
     character(len=1) :: base
     character(len=2) :: kdim
     character(len=8) :: mail
@@ -72,14 +72,14 @@ subroutine utmavo(mail, kdim, listCellNume, nbCell, base, &
 !     TYPE : XC V I ACCES(NUMEROTE) LONG(VARIABLE)
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, nare, cellNume, nbno, nbmat, ino, nuno, p2
-    integer :: iCell, j, k, jmail, nbman, adrvlc, acncin, ima, ii
-    integer :: adra, iad, jtr1(1000), nutyma, iexinv
+    integer(kind=8) :: ibid, nare, cellNume, nbno, nbmat, ino, nuno, p2
+    integer(kind=8) :: iCell, j, k, jmail, nbman, adrvlc, acncin, ima, ii
+    integer(kind=8) :: adra, iad, jtr1(1000), nutyma, iexinv
     character(len=8) :: type
     character(len=24) :: nom, ncninv
-    integer, pointer :: trav2(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: trav2(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

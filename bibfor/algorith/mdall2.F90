@@ -39,11 +39,11 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iinst, inord, iptem, jacce, jvite, jdepl, jpass
-    integer :: ibid, jinst, jordr, nbmode, nbo
+    integer(kind=8) :: iinst, inord, iptem, jacce, jvite, jdepl, jpass
+    integer(kind=8) :: ibid, jinst, jordr, nbmode, nbo
     real(kind=8) :: dtbid
     character(len=8) :: k8b
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     blanc8 = '        '
     blan16 = '                '

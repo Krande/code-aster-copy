@@ -68,7 +68,7 @@ subroutine sscgno(ma, nbgnin)
 !
     real(kind=8) :: vecori(3)
 !
-    integer :: nalar, nbma
+    integer(kind=8) :: nalar, nbma
     character(len=8) :: alarm, typm, ndorig, ndextr
     character(len=8) :: ma, nono, k8b, kpos, nom1
     character(len=16) :: concep, cmd, option, motcle, typmcl, motfac
@@ -78,20 +78,20 @@ subroutine sscgno(ma, nbgnin)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iagm1, iagm2, iagma, iagn2, iagno, ialii1
-    integer :: ialii2, idlino, ifm, ign, ign1
-    integer :: ign2, ii, iii, ili1, ili2, im1
-    integer :: ind1, ind2, ino, iocc, ireste, iret, jjj
-    integer :: jnoeu, jvale, kkk, maxcol, n, n1
-    integer :: n2, n3, n4, n5, n6, n6a, n6b
-    integer :: n7, n8, n9, nb, nbcol, nbgna2, nbgnaj
-    integer :: nbgnin, nbgrmn, nbid, nbis, nbk8, nbline, nbno
-    integer :: nbnot, nbocc, niv, ntrou, num, ier
+    integer(kind=8) :: i, iagm1, iagm2, iagma, iagn2, iagno, ialii1
+    integer(kind=8) :: ialii2, idlino, ifm, ign, ign1
+    integer(kind=8) :: ign2, ii, iii, ili1, ili2, im1
+    integer(kind=8) :: ind1, ind2, ino, iocc, ireste, iret, jjj
+    integer(kind=8) :: jnoeu, jvale, kkk, maxcol, n, n1
+    integer(kind=8) :: n2, n3, n4, n5, n6, n6a, n6b
+    integer(kind=8) :: n7, n8, n9, nb, nbcol, nbgna2, nbgnaj
+    integer(kind=8) :: nbgnin, nbgrmn, nbid, nbis, nbk8, nbline, nbno
+    integer(kind=8) :: nbnot, nbocc, niv, ntrou, num, ier
     aster_logical :: l_write
     aster_logical :: l_parallel_mesh, lcolle
     character(len=24), pointer :: lik8(:) => null()
     character(len=8), pointer :: l_noeud(:) => null()
-    integer, pointer :: noeud2(:) => null()
+    integer(kind=8), pointer :: noeud2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

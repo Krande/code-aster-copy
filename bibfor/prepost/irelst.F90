@@ -54,7 +54,7 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
     character(len=*) :: nofimd
     character(len=19) :: chanom
     character(len=64) :: nomamd, nochmd
-    integer :: nbimpr, caimpi(10, nbimpr)
+    integer(kind=8) :: nbimpr, caimpi(10, nbimpr)
     character(len=80) :: caimpk(3, nbimpr)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -77,17 +77,17 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
 ! --------------------------------------------------------------------------------------------------
 !
     med_idt :: idfimd
-    integer, parameter :: lgmax = 1000, edleaj = 1
-    integer, parameter :: edmail = 0, edcart = 0, edfuin = 0, ednoda = 0, edtyre = 6
+    integer(kind=8), parameter :: lgmax = 1000, edleaj = 1
+    integer(kind=8), parameter :: edmail = 0, edcart = 0, edfuin = 0, ednoda = 0, edtyre = 6
     !
-    integer :: inimpr, nbcouc, nbsect, nummai, ntypef, codret
-    integer :: nbnoso, nbnoto, nbrepg, ndim, nbelr, nbgamm, nbpg, nbtyp, nbsp
-    integer :: medcel, nbmssu, nbattc, prespr, ino, inimp2
-    integer :: tymaas, tymamd, connex(9)
-    integer :: imasup, jmasup, nbmasu, nbmsmx, nvtymd, edcar2, nbattv, dimest, nbnosu, tygems
+    integer(kind=8) :: inimpr, nbcouc, nbsect, nummai, ntypef, codret
+    integer(kind=8) :: nbnoso, nbnoto, nbrepg, ndim, nbelr, nbgamm, nbpg, nbtyp, nbsp
+    integer(kind=8) :: medcel, nbmssu, nbattc, prespr, ino, inimp2
+    integer(kind=8) :: tymaas, tymamd, connex(9)
+    integer(kind=8) :: imasup, jmasup, nbmasu, nbmsmx, nvtymd, edcar2, nbattv, dimest, nbnosu, tygems
     !
-    integer           :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX), renumd(MT_NTYMAX), modnum(MT_NTYMAX)
-    integer           :: nuanom(MT_NTYMAX, MT_NNOMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8)           :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX), renumd(MT_NTYMAX), modnum(MT_NTYMAX)
+    integer(kind=8)           :: nuanom(MT_NTYMAX, MT_NNOMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
     character(len=8)  :: lielrf(MT_NBFAMX)
     character(len=8)  :: nomtyp(MT_NTYMAX)
     !
@@ -104,7 +104,7 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
     character(len=200) :: desmed
     !
     aster_logical    :: newest, okgr, okcq, oktu, okpf
-    integer, pointer :: nv_type_med(:) => null()
+    integer(kind=8), pointer :: nv_type_med(:) => null()
     !
     character(len=16), parameter :: nocoor(3) = (/'X               ', &
                                                   'Y               ', &

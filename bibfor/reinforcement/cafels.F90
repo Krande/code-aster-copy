@@ -85,12 +85,12 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
     real(kind=8) :: scmaxi
     real(kind=8) :: scmaxs
     real(kind=8) :: ssmax
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     real(kind=8) :: dnsinf
     real(kind=8) :: dnssup
     real(kind=8) :: sigmsi
@@ -98,9 +98,9 @@ subroutine cafels(cequi, effm, effn, ht, bw, &
     real(kind=8) :: sigmci
     real(kind=8) :: sigmcs
     real(kind=8) :: alpha
-    integer :: pivot
-    integer :: etat
-    integer :: ierr
+    integer(kind=8) :: pivot
+    integer(kind=8) :: etat
+    integer(kind=8) :: ierr
 
 !-----------------------------------------------------------------------
 !!!!VARIABLES DE CALCUL

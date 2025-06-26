@@ -20,8 +20,8 @@
 !
 interface
     subroutine alchlo(nin, lpain, nout, lpaout)
-        integer :: nout
-        integer :: nin
+        integer(kind=8) :: nout
+        integer(kind=8) :: nin
         character(len=8) :: lpain(nin)
         character(len=8) :: lpaout(nout)
     end subroutine alchlo

@@ -25,8 +25,8 @@ interface
                       resi_glob_rela, inikry       , ds_contact_)
         use NonLin_Datastructure_type
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: iter_glob_maxi
-        integer, intent(in) :: iter_glob_elas
+        integer(kind=8), intent(in) :: iter_glob_maxi
+        integer(kind=8), intent(in) :: iter_glob_elas
         real(kind=8), intent(in) :: pas_mini_elas 
         real(kind=8), intent(in) :: inikry
         real(kind=8), intent(in) :: resi_glob_maxi

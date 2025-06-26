@@ -62,14 +62,14 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         aster_logical, intent(in) :: line
-        integer, intent(in) :: numeHarm
+        integer(kind=8), intent(in) :: numeHarm
         character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, matecoZ
         character(len=*), intent(in) :: chtimeZ, varcRefeZ, varcZ
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(in) :: vectElemZ
         aster_logical, optional, intent(in) :: lCumul_
 ! ----- Locals
-        integer, parameter :: nbFieldIn = 18, nbFieldOut = 1
+        integer(kind=8), parameter :: nbFieldIn = 18, nbFieldOut = 1
         character(len=8) :: lpain(nbFieldIn), lpaout(nbFieldOut)
         character(len=24) :: lchin(nbFieldIn), lchout(nbFieldOut)
         character(len=8) :: newnom

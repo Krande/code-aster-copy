@@ -22,7 +22,7 @@ subroutine diares(n, nevec, a, lda, tau, &
 #include "asterfort/zaddrc.h"
 #include "asterfort/zmulmv.h"
 #include "asterfort/zmult.h"
-    integer :: n, nevec, lda, ldevec
+    integer(kind=8) :: n, nevec, lda, ldevec
     complex(kind=8) :: a(lda, *), tau(*), evec(ldevec, *), work(*)
 !      REDUCTION D'UNE MATRICE HERMITIENNE EN UNE MATRICE TRIDIAGONALE
 !          SYMETRIQUE (METHODE DE HOUSEHOLDER).
@@ -40,7 +40,7 @@ subroutine diares(n, nevec, a, lda, tau, &
 ! IN  :LDEVEC: DIMENSION DE LA MATRICE EVEC.
 ! OUT : WORK : VECTEUR COMPLEXE (ZONE DE TRAVAIL).
 !-----------------------------------------------------------------------
-    integer :: j, nr
+    integer(kind=8) :: j, nr
     real(kind=8) :: delta
 !
 !-----------------------------------------------------------------------

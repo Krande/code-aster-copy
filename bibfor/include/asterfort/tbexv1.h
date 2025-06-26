@@ -25,7 +25,7 @@ interface
         character(len=*) :: para
         character(len=*) :: nomobj
         character(len=*) :: basobj
-        integer :: nbval
+        integer(kind=8) :: nbval
         character(len=*) :: typval
     end subroutine tbexv1
 end interface

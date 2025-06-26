@@ -26,13 +26,13 @@ subroutine focrrs(nomfon, resu, base, nomcha, maille, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsutn2.h"
-    integer, intent(in) :: npoint, nusp, ivari
+    integer(kind=8), intent(in) :: npoint, nusp, ivari
     character(len=1), intent(in) :: base
     character(len=8), intent(in) :: maille, noeud, cmp
     character(len=16), intent(in) :: nomcha
     character(len=16), intent(in) :: nomvari
     character(len=19), intent(in) :: nomfon, resu
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
 !     RECUPERATION D'UNE FONCTION DANS UNE STRUCTURE "RESULTAT"
 !     ------------------------------------------------------------------
 ! VAR : NOMFON : NOM DE LA FONCTION
@@ -48,7 +48,7 @@ subroutine focrrs(nomfon, resu, base, nomcha, maille, &
 ! IN  : NOMVARI: NOM DE LA CMP (POUR VARI_R)
 ! OUT : IER    : CODE RETOUR, = 0 : OK
 !     ------------------------------------------------------------------
-    integer :: nbordr, lordr
+    integer(kind=8) :: nbordr, lordr
     character(len=8) :: interp
     character(len=19) :: knume
 !     ------------------------------------------------------------------

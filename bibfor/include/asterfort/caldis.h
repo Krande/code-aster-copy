@@ -26,13 +26,13 @@ interface
         real(kind=8) :: fremin
         real(kind=8) :: pas
         character(len=4) :: frexci
-        integer :: nbptmd
-        integer :: nbmode
-        integer :: lismod(*)
+        integer(kind=8) :: nbptmd
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: lismod(*)
         real(kind=8) :: fremod(*)
         real(kind=8) :: amomod(*)
-        integer :: nindex
-        integer :: npdsc3
+        integer(kind=8) :: nindex
+        integer(kind=8) :: npdsc3
         real(kind=8) :: frefin
     end subroutine caldis
 end interface

@@ -23,7 +23,7 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(in) :: multPara
         type(ROM_DS_Empi), intent(inout) :: base
-        integer, intent(in) :: numeMode
+        integer(kind=8), intent(in) :: numeMode
         character(len=19), intent(in) :: modeName
     end subroutine romMultiParaModeSave
 end interface

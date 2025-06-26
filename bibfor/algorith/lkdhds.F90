@@ -24,7 +24,7 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds, &
 #include "asterfort/cjst.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhlod.h"
-    integer :: nbmat, retcom
+    integer(kind=8) :: nbmat, retcom
     real(kind=8) :: mater(nbmat, 2), invar, s(6), dhds(6)
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
 ! =================================================================
@@ -39,7 +39,7 @@ subroutine lkdhds(nbmat, mater, invar, s, dhds, &
 ! OUT : DHDS: dh(theta)/ds ----------------------------------------
 !     : RETCOM : CODE RETOUR POUR REDECOUPAGE ---------------------
 ! =================================================================
-    integer :: ndt, ndi, ii
+    integer(kind=8) :: ndt, ndi, ii
     real(kind=8) :: gamcjs, pref
     real(kind=8) :: t(6)
     real(kind=8) :: sii, rcos3t, rhlode, h5

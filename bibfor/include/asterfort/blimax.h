@@ -20,9 +20,9 @@
 !
 interface
     function blimax(n, dx, incx)
-        integer :: n
-        integer :: dx(1)
-        integer :: incx
-        integer :: blimax
+        integer(kind=8) :: n
+        integer(kind=8) :: dx(1)
+        integer(kind=8) :: incx
+        integer(kind=8) :: blimax
     end function blimax
 end interface

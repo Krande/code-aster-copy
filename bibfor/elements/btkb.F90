@@ -20,12 +20,12 @@ subroutine btkb(ndimc, ndimx, nddle, wmatc, btild, &
                 wmatcb, ktildi)
     implicit none
 !
-    integer :: ndimc, ndimx, nddle
+    integer(kind=8) :: ndimc, ndimx, nddle
 !
     real(kind=8) :: wmatc(ndimc, ndimc), wmatcb(ndimc, ndimx)
     real(kind=8) :: btild(ndimc, ndimx)
     real(kind=8) :: ktildi(ndimx, ndimx)
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
 !
     do i = 1, ndimc

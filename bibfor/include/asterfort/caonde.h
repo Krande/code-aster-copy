@@ -20,6 +20,6 @@ interface
     subroutine caonde(load, mesh, valeType, nbOcc)
         character(len=8), intent(in) :: load, mesh
         character(len=4), intent(in) :: valeType
-        integer, intent(in) :: nbOcc
+        integer(kind=8), intent(in) :: nbOcc
     end subroutine caonde
 end interface

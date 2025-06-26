@@ -29,9 +29,9 @@ subroutine thmSelectMatrix(ds_thm, &
 #include "asterfort/assert.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: ndim, dimdef
+    integer(kind=8), intent(in) :: ndim, dimdef
     character(len=3), intent(in) :: inte_type
-    integer, intent(in) :: addeme, addete, addep1, addep2, adde2nd
+    integer(kind=8), intent(in) :: addeme, addete, addep1, addep2, adde2nd
     real(kind=8), intent(out) :: a(2), as(2)
     real(kind=8), intent(out) :: c(dimdef), cs(dimdef)
 !
@@ -61,7 +61,7 @@ subroutine thmSelectMatrix(ds_thm, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -26,7 +26,7 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=*) :: mcf, champ, nomvec
 ! IN  IOCC   : INDICE DE L' OCCURENCE
 ! IN  CHAMP  : NOM DU CHAMP A TRAITER
@@ -38,7 +38,7 @@ subroutine rvrecu(mcf, iocc, champ, nomvec)
     character(len=24) :: vecteu
 !
     real(kind=8) :: a, b
-    integer :: i, kval, n1, neq
+    integer(kind=8) :: i, kval, n1, neq
     complex(kind=8), pointer :: vale(:) => null()
 !
 !==================== CORPS DE LA ROUTINE =============================

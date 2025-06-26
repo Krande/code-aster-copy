@@ -21,13 +21,13 @@
 interface
     subroutine mgauss(cara, a, b, dim, nordre,&
                       nb, det, iret)
-        integer :: nb
-        integer :: dim
+        integer(kind=8) :: nb
+        integer(kind=8) :: dim
         character(len=*) :: cara
         real(kind=8) :: a(dim, dim)
         real(kind=8) :: b(dim, nb)
-        integer :: nordre
+        integer(kind=8) :: nordre
         real(kind=8) :: det
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine mgauss
 end interface

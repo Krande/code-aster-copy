@@ -36,8 +36,8 @@ subroutine dbg_base()
 #include "asterfort/wkvect.h"
 !
     aster_logical :: exist
-    integer, parameter :: n = 5
-    integer :: lfic, mfic
+    integer(kind=8), parameter :: n = 5
+    integer(kind=8) :: lfic, mfic
     common/fenvje/lfic(n), mfic
 !
     character(len=2) :: dn2
@@ -46,8 +46,8 @@ subroutine dbg_base()
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
 !
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &               kitlec(n), kitecr(n), kiadm(n),&
      &               iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -56,9 +56,9 @@ subroutine dbg_base()
     character(len=4) :: dbname, valk(2)
     character(len=16) :: answer
     character(len=19) :: objname
-    integer :: dbsize, recsize, recint
-    integer :: nbrec, objint, nbobj, ic, i, total, perc
-    integer :: jadr, vali(10), more
+    integer(kind=8) :: dbsize, recsize, recint
+    integer(kind=8) :: nbrec, objint, nbobj, ic, i, total, perc
+    integer(kind=8) :: jadr, vali(10), more
 !
     answer = ' '
     call getvtx('DEBUG', 'VERI_BASE', iocc=1, scal=answer)

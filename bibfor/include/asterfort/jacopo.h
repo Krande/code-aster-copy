@@ -20,9 +20,9 @@
 !
 interface
     subroutine jacopo(long, tpscaz, iad1, iad2)
-        integer :: long
+        integer(kind=8) :: long
         character(len=*) :: tpscaz
-        integer :: iad1
-        integer :: iad2
+        integer(kind=8) :: iad1
+        integer(kind=8) :: iad2
     end subroutine jacopo
 end interface

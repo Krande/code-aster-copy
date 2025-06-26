@@ -26,17 +26,17 @@ interface
                       ipgn, nomcri, nomfor, fordef, fatsoc,&
                       proaxe, pseuil, method, ncycl, jvmin,&
                       jvmax, jomin, jomax)
-        integer :: tdisp
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: tdisp
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         real(kind=8) :: vectn(3*nbvec)
         real(kind=8) :: vectu(3*nbvec)
         real(kind=8) :: vectv(3*nbvec)
-        integer :: kwork
-        integer :: sommw
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sommw
         real(kind=8) :: vwork(tdisp)
-        integer :: tspaq
-        integer :: ipgn
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: ipgn
         character(len=16) :: nomcri
         character(len=16) :: nomfor
         aster_logical :: fordef
@@ -44,10 +44,10 @@ interface
         character(len=16) :: proaxe
         real(kind=8) :: pseuil
         character(len=8) :: method
-        integer :: ncycl(nbvec)
-        integer :: jvmin
-        integer :: jvmax
-        integer :: jomin
-        integer :: jomax
+        integer(kind=8) :: ncycl(nbvec)
+        integer(kind=8) :: jvmin
+        integer(kind=8) :: jvmax
+        integer(kind=8) :: jomin
+        integer(kind=8) :: jomax
     end subroutine avcipr
 end interface

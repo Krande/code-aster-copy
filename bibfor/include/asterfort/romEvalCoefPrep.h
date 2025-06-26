@@ -21,7 +21,7 @@
 interface
     subroutine romEvalCoefPrep(i_coef_list, ds_multipara)
         use Rom_Datastructure_type
-        integer, intent(in) :: i_coef_list
+        integer(kind=8), intent(in) :: i_coef_list
         type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
     end subroutine romEvalCoefPrep
 end interface

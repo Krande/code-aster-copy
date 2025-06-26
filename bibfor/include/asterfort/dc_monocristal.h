@@ -20,7 +20,7 @@
 !
 interface
     subroutine dc_monocristal(nboccm, sdcomp)
-        integer, intent(out) :: nboccm
+        integer(kind=8), intent(out) :: nboccm
         character(len=8), intent(in) :: sdcomp
     end subroutine dc_monocristal
 end interface

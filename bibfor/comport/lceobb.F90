@@ -34,7 +34,7 @@ subroutine lceobb(intmax, toler, epsm, deps, bm, &
     real(kind=8) :: bm(6), dm, b(6), d, mult
     real(kind=8) :: lambda, mu, alpha, rk, rk1, rk2, ecrob, ecrod
     real(kind=8) :: toler
-    integer :: intmax, iret
+    integer(kind=8) :: intmax, iret
     aster_logical :: elas, dbloq
 !
 ! ----------------------------------------------------------------------
@@ -68,8 +68,8 @@ subroutine lceobb(intmax, toler, epsm, deps, bm, &
 ! ----------------------------------------------------------------------
 !
     aster_logical :: reinit, tot1, tot2, tot3
-    integer :: i, j, k, l
-    integer :: bdim, compte, t(3, 3)
+    integer(kind=8) :: i, j, k, l
+    integer(kind=8) :: bdim, compte, t(3, 3)
 !
     real(kind=8) :: tolb, un, deux
     real(kind=8) :: valbm(3), vecbm(3, 3), valbr(3), vecbr(3, 3)

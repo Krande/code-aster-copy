@@ -65,7 +65,7 @@ function nmchcr(dp)
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 #include "blas/dscal.h"
-    integer :: ndimsi, nbvar, visc, memo, i, idelta
+    integer(kind=8) :: ndimsi, nbvar, visc, memo, i, idelta
     real(kind=8) :: nmchcr, dp, critme, dq, dksi(6), gq
     real(kind=8) :: epspp(6), mat(18), pm, sigedv(6), alfam(6), deuxmu
     real(kind=8) :: epspm(6), f, alfa2m(6), dt, rm, rp, qm, q, ksim(6), ksi(6)

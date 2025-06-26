@@ -42,7 +42,7 @@ subroutine nmcrld(sddisc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_fail, i_fail_save
+    integer(kind=8) :: nb_fail, i_fail_save
     character(len=24) :: sddisc_eevenr
     real(kind=8), pointer :: v_sddisc_eevenr(:) => null()
     character(len=24) :: sddisc_eevenk

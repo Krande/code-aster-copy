@@ -25,6 +25,6 @@ interface
         character(len=8), intent(in) :: nomu
         character(len=8), intent(in) :: noma
         aster_logical, intent(in) :: locamb
-        integer, intent(in) :: nbocc
+        integer(kind=8), intent(in) :: nbocc
     end subroutine aceagb
 end interface

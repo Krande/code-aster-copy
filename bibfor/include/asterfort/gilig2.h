@@ -20,8 +20,8 @@
 !
 interface
     subroutine gilig2(nfic, nbnono, niv)
-        integer :: nfic
-        integer :: nbnono
-        integer :: niv
+        integer(kind=8) :: nfic
+        integer(kind=8) :: nbnono
+        integer(kind=8) :: niv
     end subroutine gilig2
 end interface

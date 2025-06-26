@@ -20,7 +20,7 @@ function proten(u, v) result(w)
     implicit none
     real(kind=8), dimension(:), intent(in) :: u, v
     real(kind=8), dimension(size(u), size(v)) :: w
-    integer :: i, j
+    integer(kind=8) :: i, j
     do i = 1, size(u)
         do j = 1, size(v)
             w(i, j) = u(i)*v(j)

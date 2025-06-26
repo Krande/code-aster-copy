@@ -20,7 +20,7 @@
 !
 interface
     subroutine jeprat(unit, nomlu, cidatr, mess)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: nomlu
         character(len=*) :: cidatr
         character(len=*) :: mess

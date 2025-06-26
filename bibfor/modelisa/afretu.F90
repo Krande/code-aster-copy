@@ -34,14 +34,14 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: lonlis, iprno(*), idec, nbcoef
+    integer(kind=8) :: lonlis, iprno(*), idec, nbcoef
     real(kind=8) :: coef(nbcoef)
     character(len=8) :: klisno(lonlis), noepou, noma, nomddl(nbcoef)
     character(len=24) :: vale1
     character(len=19) :: lisrel
 !     RACCORD (COQUE OU 3D)_TUYAU : UNE RELATION LINEAIRE
 !
-    integer :: ino, ival, idch1, nbterm, i, nbec
+    integer(kind=8) :: ino, ival, idch1, nbterm, i, nbec
 
     character(len=8) :: betaf
     character(len=16) :: motfac
@@ -49,7 +49,7 @@ subroutine afretu(iprno, lonlis, klisno, noepou, noma, &
     complex(kind=8) :: betac
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()

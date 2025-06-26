@@ -34,14 +34,14 @@ subroutine te0210(option, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=3)
     character(len=16) :: option, nomte
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, poids1, poids2, r, r1, r2, z, hechp
     real(kind=8) :: nx, ny, tpg, theta, z1, z2
-    integer :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: ivectt, i, l, li, ihechp, itemp, icode, itemps
+    integer(kind=8) :: nno, nnos, jgano, ndim, kp, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: ivectt, i, l, li, ihechp, itemp, icode, itemps
     aster_logical :: laxi
 !----------------------------------------------------------------------
 ! CORPS DU PROGRAMME

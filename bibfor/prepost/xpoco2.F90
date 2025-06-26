@@ -40,7 +40,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma, &
     character(len=8) :: malini, resuco
     character(len=19) :: cns1, cns2, ces1, ces2, cesvi1, cesvi2
     character(len=19) :: comps1, comps2
-    integer :: nbno, dirno(nbno), nbma, dirma(nbma)
+    integer(kind=8) :: nbno, dirno(nbno), nbma, dirma(nbma)
 !
 !   COPIE DES DEPLACMENTS DES NOEUDS DU MAILLAGE MA1
 !   CONTENUS DANS LES TABLEAUX D'INDIRECTION DIRMA ET DIRNO
@@ -62,18 +62,18 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma, &
 !
 !
 !
-    integer :: i, j, ndim, nbcmp, jcnsv2, jcnsl2
-    integer :: jcesd1, jcesl1, jcesd2, jcesl2, iad1, iad2
-    integer :: jcvid1, jcvil1, jcvid2, jcvil2
-    integer :: ima, npg1, ncmp1, npg2, ncmp2, ipg, icmp, ima2, npgv1, npgv2
-    integer :: ncmv1, ncmv2, ndimc, idecv2, idecl2
+    integer(kind=8) :: i, j, ndim, nbcmp, jcnsv2, jcnsl2
+    integer(kind=8) :: jcesd1, jcesl1, jcesd2, jcesl2, iad1, iad2
+    integer(kind=8) :: jcvid1, jcvil1, jcvid2, jcvil2
+    integer(kind=8) :: ima, npg1, ncmp1, npg2, ncmp2, ipg, icmp, ima2, npgv1, npgv2
+    integer(kind=8) :: ncmv1, ncmv2, ndimc, idecv2, idecl2
     aster_logical :: lmeca, pre1
     character(len=16) :: tysd
-    integer :: iviex, iret
+    integer(kind=8) :: iviex, iret
 !
-    integer :: jresd1, jresl1, iadr1
-    integer :: jresd2, jresl2, iadr2
-    integer :: jcnsl1, nbcmp2
+    integer(kind=8) :: jresd1, jresl1, iadr1
+    integer(kind=8) :: jresd2, jresl2, iadr2
+    integer(kind=8) :: jcnsl1, nbcmp2
 !   ON INDIQUE EN DUR LE NOMBRE DE COMPOSANTE A VERIFIER EN HM-XFEM
 !   A CAUSE DES DDLS DE PRESSION
     parameter(nbcmp2=52)
@@ -86,7 +86,7 @@ subroutine xpoco2(malini, dirno, nbno, dirma, nbma, &
     real(kind=8), pointer :: cviv2(:) => null()
     character(len=16), pointer :: resv1(:) => null()
     character(len=16), pointer :: resv2(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
 !
 !
     call jemarq()

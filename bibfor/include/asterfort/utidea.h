@@ -21,7 +21,7 @@
 interface
     subroutine utidea(nom, itype, versio)
         character(len=*) :: nom
-        integer :: itype
-        integer :: versio
+        integer(kind=8) :: itype
+        integer(kind=8) :: versio
     end subroutine utidea
 end interface

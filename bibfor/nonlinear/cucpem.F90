@@ -28,7 +28,7 @@ subroutine cucpem(deficu, resocu, nbliai)
 #include "asterfort/jeveuo.h"
 #include "blas/daxpy.h"
     character(len=24) :: deficu, resocu
-    integer :: nbliai
+    integer(kind=8) :: nbliai
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,11 +47,11 @@ subroutine cucpem(deficu, resocu, nbliai)
 !
 !
     character(len=24) :: apcoef, appoin
-    integer :: japcoe, japptr
+    integer(kind=8) :: japcoe, japptr
     character(len=24) :: coefpe
-    integer :: jcoef_pena
+    integer(kind=8) :: jcoef_pena
     character(len=24) :: jeux
-    integer :: jjeux
+    integer(kind=8) :: jjeux
     character(len=24) :: enat
 !
 ! ----------------------------------------------------------------------

@@ -32,7 +32,7 @@ subroutine agcart(ngdmxn, chinz)
 #include "asterfort/juveca.h"
 #include "asterfort/nbec.h"
 #include "asterfort/wkvect.h"
-    integer :: ngdmxn
+    integer(kind=8) :: ngdmxn
     character(len=19) :: chin
     character(len=*) :: chinz
 ! --------------------------------------------------------------------
@@ -56,8 +56,8 @@ subroutine agcart(ngdmxn, chinz)
 ! --------------------------------------------------------------------
     character(len=1) :: base
     character(len=24) :: descav
-    integer :: jdesca, jdesc, nec, iec, ngdmxa, nedit, ied, ideca, idec
-    integer ::  ncmp, igd
+    integer(kind=8) :: jdesca, jdesc, nec, iec, ngdmxa, nedit, ied, ideca, idec
+    integer(kind=8) ::  ncmp, igd
 ! ----------------------------------------------------------------------
     call jemarq()
     chin = chinz

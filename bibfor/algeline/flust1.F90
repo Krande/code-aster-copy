@@ -77,11 +77,11 @@ subroutine flust1(melflu, typflu, base, nuor, amor, &
 !
     character(len=19) :: melflu
     character(len=8) :: typflu, base
-    integer :: nuor(*)
+    integer(kind=8) :: nuor(*)
     real(kind=8) :: amor(*), amoc(*), freq(*), masg(*), fact(*)
     real(kind=8) :: vite(*)
     real(kind=8) :: carac(2)
-    integer :: nbm, npv, nivpar, nivdef, n1
+    integer(kind=8) :: nbm, npv, nivpar, nivdef, n1
     aster_logical :: calcul(2)
 !
 ! VARIABLES LOCALES
@@ -91,7 +91,7 @@ subroutine flust1(melflu, typflu, base, nuor, amor, &
     character(len=19) :: masse
     character(len=24) :: fsic, fsvk, nomnoe
     character(len=24) :: vale
-    integer :: lzone
+    integer(kind=8) :: lzone
 !
 ! FONCTIONS EXTERNES
 ! ------------------
@@ -100,11 +100,11 @@ subroutine flust1(melflu, typflu, base, nuor, amor, &
 ! DATA
 ! ----
 !-----------------------------------------------------------------------
-    integer :: iamfr, icoupl, ieq, ier, ifreqi, ifsic
-    integer :: ifsvk, im, imod, ind, indic, ior
-    integer :: iret, iv, ivale, kmasg, labsc, laux1
-    integer :: laux2, lddl, ldefm, lfact, lires, lmasg, lmasse
-    integer :: lnoe, lprofv, lrho, lvale, neq, nt
+    integer(kind=8) :: iamfr, icoupl, ieq, ier, ifreqi, ifsic
+    integer(kind=8) :: ifsvk, im, imod, ind, indic, ior
+    integer(kind=8) :: iret, iv, ivale, kmasg, labsc, laux1
+    integer(kind=8) :: laux2, lddl, ldefm, lfact, lires, lmasg, lmasse
+    integer(kind=8) :: lnoe, lprofv, lrho, lvale, neq, nt
     real(kind=8) :: pi, rval1
 !-----------------------------------------------------------------------
     data vale/'                   .VALE'/

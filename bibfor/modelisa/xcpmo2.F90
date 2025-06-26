@@ -74,11 +74,11 @@ subroutine xcpmo2(modx1, modx2)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, icopy, ncopy, ima, icode, iopt, jcelk2
-    integer :: jcelv2, jcelk1,  jcelv1, nbel2, iel2, iel1
-    integer :: lgel2, lgel1, debgr2, debgr1, igr2, igr1, advel2, advel1
-    integer :: imolo2, imolo1, amolo2, amolo1, nbgr2, aliel2
-    integer :: lgcat2, nute2
+    integer(kind=8) :: iret, icopy, ncopy, ima, icode, iopt, jcelk2
+    integer(kind=8) :: jcelv2, jcelk1,  jcelv1, nbel2, iel2, iel1
+    integer(kind=8) :: lgel2, lgel1, debgr2, debgr1, igr2, igr1, advel2, advel1
+    integer(kind=8) :: imolo2, imolo1, amolo2, amolo1, nbgr2, aliel2
+    integer(kind=8) :: lgcat2, nute2
 !
     character(len=4) :: k4typ2
     character(len=8) :: para, k8blan
@@ -86,7 +86,7 @@ subroutine xcpmo2(modx1, modx2)
     character(len=19) :: ligr1, ligr2, chele1, chele2
     character(len=24) :: nomol1, nomol2
 !
-    integer :: ntopos, ntopof, noptri, ntopon
+    integer(kind=8) :: ntopos, ntopof, noptri, ntopon
     parameter (ntopos = 6)
     parameter (ntopof = 6)
     parameter (noptri = 4)
@@ -99,7 +99,7 @@ subroutine xcpmo2(modx1, modx2)
 !   noptri : nbre de cham_el** a allouer avec option == FULL_MECA
 !   ntopon : nbre de cham_el** a allouer avec option == TOPONO
 !
-    integer :: nma3d, nma2d, nma1d, nenrch
+    integer(kind=8) :: nma3d, nma2d, nma1d, nenrch
     parameter ( nma3d  = 4 )
     parameter ( nma2d  = 2 )
     parameter ( nma1d  = 1 )
@@ -109,15 +109,15 @@ subroutine xcpmo2(modx1, modx2)
 !   nma1d : SEG2 -> 1
 !   nenrch : XH, XT, XHT
 !
-    integer :: nel3dmex, nelplmex, nelaxmex, nelemex
+    integer(kind=8) :: nel3dmex, nelplmex, nelaxmex, nelemex
     parameter ( nel3dmex = (  nma3d+nma2d)*nenrch )
     parameter ( nelplmex = (2*nma2d+nma1d)*nenrch )
     parameter ( nelaxmex = (  nma2d+nma1d)*nenrch )
     parameter ( nelemex  = nel3dmex+nelplmex+nelaxmex )
     character(len=16) :: elemex(nelemex)
-    integer, pointer :: repe(:) => null()
-    integer, pointer :: celd1(:) => null()
-    integer, pointer :: celd2(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
+    integer(kind=8), pointer :: celd1(:) => null()
+    integer(kind=8), pointer :: celd2(:) => null()
 !
 !   elements mecaniques X-FEM
 !   -------------------------------------------------------------------

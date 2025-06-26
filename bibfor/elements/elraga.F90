@@ -27,7 +27,7 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 #include "asterfort/elraca.h"
 !
     character(len=*), intent(in) :: elrefz, fapz
-    integer, intent(out) :: nbpg, ndim
+    integer(kind=8), intent(out) :: nbpg, ndim
     real(kind=8), intent(out) :: coopg(*), poipg(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,8 +48,8 @@ subroutine elraga(elrefz, fapz, ndim, nbpg, coopg, poipg)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elrefa, fapg, nofpg(MT_NBFAMX)
-    integer :: i, npar, npi, ix, iy, iz, npx, npyz
-    integer :: nno, nnos, nbfpg, nbpg1(MT_NBFAMX), iNode, ifam
+    integer(kind=8) :: i, npar, npi, ix, iy, iz, npx, npyz
+    integer(kind=8) :: nno, nnos, nbfpg, nbpg1(MT_NBFAMX), iNode, ifam
     real(kind=8) :: xpg(MT_NBPGMX), ypg(MT_NBPGMX), zpg(MT_NBPGMX), hpg(MT_NBPGMX)
     real(kind=8) :: h(8), a(8)
     real(kind=8) :: aty(7), ht(7), atz(7)

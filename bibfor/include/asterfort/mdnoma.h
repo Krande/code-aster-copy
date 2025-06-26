@@ -21,8 +21,8 @@
 interface
     subroutine mdnoma(nomamd, lnomam, nomast, codret)
         character(len=64) :: nomamd
-        integer :: lnomam
+        integer(kind=8) :: lnomam
         character(len=8) :: nomast
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine mdnoma
 end interface

@@ -32,7 +32,7 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ifr, nparim
+    integer(kind=8) :: ifr, nparim
     character(len=*) :: table, formar, lipaim(*)
 ! ----------------------------------------------------------------------
 !      IMPRESSION DE LA TABLE AU FORMAT "TABLEAU"
@@ -44,11 +44,11 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
 ! IN  : FORMAR : FORMAT D'IMPRESSION DES REELS
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, ipar, jvale, jlogq, ideb, ifin
-    integer :: itc, itl, lgt, jcol, jlig, ifinc, il, ic
-    integer :: lgl, vi(2), vali, iret, i1, i2, i3, i4, itc1, itc2
-    integer :: ilon, id, if, ir, nbpara, npara, icf
-    integer :: nblign
+    integer(kind=8) :: i, j, k, ipar, jvale, jlogq, ideb, ifin
+    integer(kind=8) :: itc, itl, lgt, jcol, jlig, ifinc, il, ic
+    integer(kind=8) :: lgl, vi(2), vali, iret, i1, i2, i3, i4, itc1, itc2
+    integer(kind=8) :: ilon, id, if, ir, nbpara, npara, icf
+    integer(kind=8) :: nblign
     real(kind=8) :: vr(2), valr, prec(2)
     complex(kind=8) :: vc(2), valc
     aster_logical :: erreur
@@ -61,8 +61,8 @@ subroutine tbimta(table, ifr, nparim, lipaim, formar)
     character(len=24) :: valkk(4)
     character(len=80) :: vk(2), valk
     character(len=2000) :: chaine, chainc
-    integer, pointer :: nom_para(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: nom_para(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 !     ------------------------------------------------------------------
 !

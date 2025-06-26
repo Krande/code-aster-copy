@@ -21,10 +21,10 @@
 interface
     subroutine lcptga(elem_dime, tria_coor , gauss_family,&
                       nb_gauss , gauss_coor, gauss_weight)
-        integer, intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: elem_dime
         real(kind=8), intent(in) :: tria_coor(2,3)
         character(len=8) :: gauss_family
-        integer, intent(out) :: nb_gauss
+        integer(kind=8), intent(out) :: nb_gauss
         real(kind=8), intent(out) :: gauss_coor(2,12)
         real(kind=8), intent(out) :: gauss_weight(12)
     end subroutine lcptga

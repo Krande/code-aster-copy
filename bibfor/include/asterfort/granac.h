@@ -23,9 +23,9 @@ interface
                       compo, irrap, irram, tm, tp,&
                       depsgr)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: icdmat
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: icdmat
         character(len=8) :: materi
         character(len=16) :: compo
         real(kind=8) :: irrap

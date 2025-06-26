@@ -23,26 +23,26 @@ interface
                       adsk, cplxFormatZ, tymast, modnum, nuanom,&
                       fieldSupport, val, profas, ideb, ifin,&
                       codret)
-        integer :: nbsp
-        integer :: nbpg
-        integer :: nvalec
-        integer :: ncmprf
-        integer :: ncmpve
-        integer :: numcmp(ncmprf)
-        integer :: adsv
-        integer :: adsd
-        integer :: adsl
-        integer :: adsk
-        integer :: tymast
-        integer :: modnum(MT_NTYMAX)
-        integer :: nuanom(MT_NTYMAX, *)
+        integer(kind=8) :: nbsp
+        integer(kind=8) :: nbpg
+        integer(kind=8) :: nvalec
+        integer(kind=8) :: ncmprf
+        integer(kind=8) :: ncmpve
+        integer(kind=8) :: numcmp(ncmprf)
+        integer(kind=8) :: adsv
+        integer(kind=8) :: adsd
+        integer(kind=8) :: adsl
+        integer(kind=8) :: adsk
+        integer(kind=8) :: tymast
+        integer(kind=8) :: modnum(MT_NTYMAX)
+        integer(kind=8) :: nuanom(MT_NTYMAX, *)
         character(len=8), intent(in) :: fieldSupport
         character(len=*), intent(in) :: cplxFormatZ
         character(len=24), intent(in) :: indcmp
         real(kind=8) :: val(ncmpve, nbsp, nbpg, nvalec)
-        integer :: profas(*)
-        integer :: ideb
-        integer :: ifin
-        integer :: codret
+        integer(kind=8) :: profas(*)
+        integer(kind=8) :: ideb
+        integer(kind=8) :: ifin
+        integer(kind=8) :: codret
     end subroutine ircmva
 end interface

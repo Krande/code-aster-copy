@@ -23,12 +23,12 @@ interface
                       nmprox, deps, newnbn, newpla, newdpl,&
                       newddp, newzfg, despit, ddisit, dc1,&
                       dc2, dtg, normm, normn)
-        integer :: ipara(4)
+        integer(kind=8) :: ipara(4)
         real(kind=8) :: nmnbn(*)
         real(kind=8) :: nmplas(2, *)
         real(kind=8) :: nmdpla(2, *)
         real(kind=8) :: nmddpl(2, *)
-        integer :: nmprox(*)
+        integer(kind=8) :: nmprox(*)
         real(kind=8) :: deps(*)
         real(kind=8) :: newnbn(*)
         real(kind=8) :: newpla(2, *)

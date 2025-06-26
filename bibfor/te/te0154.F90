@@ -54,15 +54,15 @@ subroutine te0154(option, nomte)
 !
     real(kind=8) :: pgl(3, 3), klc(6, 6), enerth
     real(kind=8) :: ugr(6), ulr(12), flr(6)
-    integer :: codres(1)
+    integer(kind=8) :: codres(1)
     character(len=3) :: stopz
     character(len=4) :: fami
     character(len=16) :: ch16
     aster_logical :: lteimp
     real(kind=8) :: aire, epsth, e(1), r8bid, rho(1), xfl1, xfl4, xl, xmas, xrig
-    integer :: ii, iif, itype, j, jdepl, jeffo, jende, jfreq, jdefo, kanl
-    integer :: lmater, lorien, lsect, iret, nc, nno
-    integer :: jvite
+    integer(kind=8) :: ii, iif, itype, j, jdepl, jeffo, jende, jfreq, jdefo, kanl
+    integer(kind=8) :: lmater, lorien, lsect, iret, nc, nno
+    integer(kind=8) :: jvite
 !     ------------------------------------------------------------------
 !
     r8bid = 0.d0
