@@ -19,8 +19,8 @@
 
 # person_in_charge: mathieu.courtois@edf.fr
 
-from typing import Dict, Tuple, Union
 from enum import Enum
+from typing import Dict, Tuple, Union
 
 from ..Language.Syntax import tr
 
@@ -75,7 +75,11 @@ class NomChamIntoGenerator:
             "EFGE_ELGA": (("lin", "nonlin", "dyna"), tr("Efforts généralisés aux points de Gauss")),
             "EFGE_ELNO": (
                 ("lin", "nonlin", "dyna"),
-                tr("Efforts généralisés aux noeuds par élément"),
+                tr("Efforts généralisés aux noeuds par élément, dans le repère local"),
+            ),
+            "EGRU_ELNO": (
+                ("lin", "nonlin", "dyna"),
+                tr("Efforts généralisés aux noeuds par élément, dans le repère utilisateur"),
             ),
             "EFGE_NOEU": (("lin", "nonlin", "dyna"), tr("Efforts généralisés aux noeuds")),
             "SIEF_ELGA": (("lin",), tr("Contraintes et efforts aux points de Gauss")),
