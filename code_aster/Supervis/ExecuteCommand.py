@@ -668,6 +668,7 @@ class ExecuteMacro(ExecuteCommand):
     # class attributes
     _last_cleanup = 0
     _last_cleanup_date = time.time()
+    _check_freq = False
 
     _sdprods = _result_names = _add_results = None
 
@@ -717,7 +718,10 @@ class ExecuteMacro(ExecuteCommand):
         a lot of objects or if there is a risk to recreate an object with the
         same name (example: NonLinearOperator).
         """
-        if time.time() - ExecuteMacro._last_cleanup_date < 1.0:
+        # extract 'max_check' once (suppose to optimize performance if it is small)
+        if ExecuteMacro._last_cleanup == 0:
+            ExecuteMacro._check_freq = ExecutionParameter().get_option("max_check") < 5
+        if ExecuteMacro._check_freq and time.time() - ExecuteMacro._last_cleanup_date < 1.0:
             return
         if ExecuteCommand.level > 1:
             if self._counter < ExecuteMacro._last_cleanup + 250:
