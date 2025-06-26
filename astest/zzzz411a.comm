@@ -84,7 +84,7 @@ lin1 = CALC_CHAMP(
 
 lin1 = CALC_CHAMP(
     reuse=lin1,
-    PARALLELISME_TEMPS="NON",
+    PARALLELISME_TEMPS="OUI",
     MODELE=model1,
     CHAM_MATER=chmat,
     RESULTAT=lin1,
