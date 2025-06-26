@@ -656,7 +656,7 @@ contains
         real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: coeff, normal(3)
-        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, cbs_comp, fbs_comp, gbs_sym
+     integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, cbs_comp, fbs_comp, gbs_sym
         integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
         integer(kind=8) :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m

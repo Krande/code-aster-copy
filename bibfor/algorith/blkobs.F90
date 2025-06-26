@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,7 +71,7 @@ subroutine blkobs(matobs, obsdim, alpha, matprod)
     integer(kind=8) :: idesc, ivale, nvect, nvale, iobfil, iobcol, iobval, ii, jj
     integer(kind=8) :: indval, inwfil, inwcol, inwval, ifile, ntnlmp, diff, kk
     integer(kind=8) :: valdif(obsdim(3)), ifull, numcol, numfil, nstock, ictcol, linfil(obsdim(1)+1), il1
-    integer(kind=8) :: il2, posvec, taivec, nfil1, nfil2, tt, ismde, ismdi, ismhc, ivalm, aa, bb, icolst
+integer(kind=8) :: il2, posvec, taivec, nfil1, nfil2, tt, ismde, ismdi, ismhc, ivalm, aa, bb, icolst
     integer(kind=8) :: idiff, istock, ifil
     logical :: isdiag
     blas_int :: b_n, b_lda, info

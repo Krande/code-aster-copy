@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine rvtamo(t, nomcmp, nbcp, nbco, nbsp, &
 ! IN  : NBCO   : NOMBRE DE COUCHES
 ! IN  : NBSP   : NOMBRE DE SOUS-POINTS
 !     ------------------------------------------------------------------
-    integer(kind=8) :: nbpar, ilign, i, l, m, icp, isp, jacc, ik, ir, ii, valei(10), n1, adracc, adrval
+ integer(kind=8) :: nbpar, ilign, i, l, m, icp, isp, jacc, ik, ir, ii, valei(10), n1, adracc, adrval
     integer(kind=8) :: i10, i20, i30, ico, nbacc, nbpr, jaces, iac, iadr, nbvari, jvari, nbcmp2
     integer(kind=8) :: iord(1)
     real(kind=8) :: prec, valer(12)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine irelst(nofimd, chanom, nochmd, typech, nomaas, &
     integer(kind=8) :: nbnoso, nbnoto, nbrepg, ndim, nbelr, nbgamm, nbpg, nbtyp, nbsp
     integer(kind=8) :: medcel, nbmssu, nbattc, prespr, ino, inimp2
     integer(kind=8) :: tymaas, tymamd, connex(9)
-    integer(kind=8) :: imasup, jmasup, nbmasu, nbmsmx, nvtymd, edcar2, nbattv, dimest, nbnosu, tygems
+   integer(kind=8) :: imasup, jmasup, nbmasu, nbmsmx, nvtymd, edcar2, nbattv, dimest, nbnosu, tygems
     !
     integer(kind=8)           :: nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX), renumd(MT_NTYMAX), modnum(MT_NTYMAX)
     integer(kind=8)           :: nuanom(MT_NTYMAX, MT_NNOMAX), numnoa(MT_NTYMAX, MT_NNOMAX)

@@ -165,8 +165,8 @@ contains
         integer(kind=8), pointer :: v_connex(:) => null()
         integer(kind=8), pointer :: v_cata_tmdim(:) => null()
         integer(kind=8), pointer :: v_coninv_longcum(:) => null()
-        integer(kind=8) :: i_load, nb_load, ibid, elem_nume, node_nume, nb_node_elem, i_elem, i_elem_affe
-        integer(kind=8) :: i_affe_cine, nb_affe_cine, node_nume_loc, i_node, nb_node, nume_cmp, dim_cmp
+   integer(kind=8) :: i_load, nb_load, ibid, elem_nume, node_nume, nb_node_elem, i_elem, i_elem_affe
+     integer(kind=8) :: i_affe_cine, nb_affe_cine, node_nume_loc, i_node, nb_node, nume_cmp, dim_cmp
         character(len=24) :: lload_name, lload_info
         integer(kind=8), pointer :: v_load_info(:) => null()
         character(len=24), pointer :: v_load_name(:) => null()

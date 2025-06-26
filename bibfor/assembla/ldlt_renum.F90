@@ -82,7 +82,7 @@ subroutine ldlt_renum(numeDof1Z, numeDof2Z_, perm_, permJvBase_)
     character(len=14) :: numeDof1, numeDof2, numeDofTrav
     character(len=8) :: nogd
     character(len=1) :: jvBase
-    integer(kind=8) :: nbLigr, k, neq2, ncmp1, ncmp2, nbno1, nbno2, iad1, iad2, icmp, ieq1, ieq2, nbec
+  integer(kind=8) :: nbLigr, k, neq2, ncmp1, ncmp2, nbno1, nbno2, iad1, iad2, icmp, ieq1, ieq2, nbec
     integer(kind=8) :: nec1, nec2, n1, n2, ino, neq, iexi, ifm, niv
     character(len=24), pointer :: listLigr(:) => null()
     character(len=24), pointer :: refn(:) => null()

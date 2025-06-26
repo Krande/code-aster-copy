@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -220,10 +220,10 @@ subroutine assesu(ds_thm, &
 ! FM1ADS(MAXFA+1,NFACE) DERIVEE DE FMADS / P_K PUIS P_1,SIGMA
 ! FM2ADS(MAXFA+1,NFACE) DERIVEE DE FMADS / P_K PUIS P_2,SIGMA
     integer(kind=8), parameter :: con = 1, dconp1 = 2, dconp2 = 3, diffu = 4, ddifp1 = 5, ddifp2 = 6
-    integer(kind=8), parameter :: mob = 7, dmobp1 = 8, dmobp2 = 9, masse = 10, dmasp1 = 11, dmasp2 = 12
+ integer(kind=8), parameter :: mob = 7, dmobp1 = 8, dmobp2 = 9, masse = 10, dmasp1 = 11, dmasp2 = 12
     integer(kind=8), parameter :: wliq = 1, wvap = 2, airdis = 3, airsec = 4, eau = 1, air = 2, densit = 14
     integer(kind=8), parameter :: vkint = 13, kxx = 1, kyy = 2, kzz = 3, kxy = 4, kyz = 5, kzx = 6
-    integer(kind=8), parameter :: rhoga = 1, rholq = 2, rhoga1 = 3, rhoga2 = 4, rholq1 = 5, rholq2 = 6
+  integer(kind=8), parameter :: rhoga = 1, rholq = 2, rhoga1 = 3, rhoga2 = 4, rholq1 = 5, rholq2 = 6
     integer(kind=8) :: addeme, addep1, addep2, addete, adcome, adcp11, adcp12, adcp21
     integer(kind=8) :: adcp22, adcote
     integer(kind=8) :: ipg, retcom, fa, i, j

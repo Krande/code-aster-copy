@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -135,10 +135,11 @@ subroutine afddli(model, geomDime, gran_cmp_nb, gran_cmp_name, node_nume, node_n
 !           ACTUELLEMENT EN XFEM ON NE PEUT IMPOSER DES RELATIONS
 !           SUR LES DDLS QU'EN MECA ET EN HM
                 if (cmp_name(i_cmp) (1:1) .eq. 'D' .or. cmp_name(i_cmp) .eq. 'PRE1') then
-                 call xddlim(model, cmp_name(i_cmp) (1:8), node_name, node_nume, vale_real(i_cmp), &
-                                vale_cplx(i_cmp), vale_func(i_cmp), vale_type, cmp_count(i_cmp), &
-                                list_rela, geomDime, rbid, jnoxfv, ch_xfem_stat, &
-                                ch_xfem_lnno, ch_xfem_ltno, connex_inv, mesh, ch_xfem_heav)
+                    call xddlim(model, cmp_name(i_cmp) (1:8), node_name, node_nume, &
+                                vale_real(i_cmp), vale_cplx(i_cmp), vale_func(i_cmp), &
+                                vale_type, cmp_count(i_cmp), list_rela, geomDime, rbid, &
+                                jnoxfv, ch_xfem_stat, ch_xfem_lnno, ch_xfem_ltno, &
+                                connex_inv, mesh, ch_xfem_heav)
                     cycle
                 end if
             end if

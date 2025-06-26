@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,8 @@ subroutine chcsur(chcinez, chamnosz, type, modelz, gran_name)
 ! IN   NOMGD   K*      : NOM DE LA GRANDEUR
 !-----------------------------------------------------------------------
 !
- integer(kind=8) :: nb_affe_cine, i_affe_cine, i_cmp_chmx, nb_cmp_chmx, i_node, nb_node, nbec, i_cmp
+    integer(kind=8) :: nb_affe_cine, i_affe_cine, i_cmp_chmx, nb_cmp_chmx
+    integer(kind=8) ::  i_node, nb_node, nbec, i_cmp
     integer(kind=8) :: jcnsd, jcnsv, jcnsl, iaprnm, jcnsc, i_cmp_mx
     integer(kind=8) :: nb_cmp_mx
     character(len=8) :: model, cmp_name, nommai

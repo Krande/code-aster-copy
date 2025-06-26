@@ -63,7 +63,7 @@ subroutine ace_masse_repartie(nbocc, infdonn, grplmax, lmax, infcarte, nbdisc, z
 #include "asterfort/int_to_char8.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer(kind=8) :: iocc, ii, jj, kk, iret, nbgrp, nb, ldgm, nm, nb_mail_grp, nb_noeu_grp, ifm, irep
+ integer(kind=8) :: iocc, ii, jj, kk, iret, nbgrp, nb, ldgm, nm, nb_mail_grp, nb_noeu_grp, ifm, irep
     integer(kind=8) :: ndim, appui, ltypmail, imail, ntopo, isym, iv
     integer(kind=8) :: nfct, compte_maille, nb_noeud_uniq, ll, ncmp, nbsurchpoi1, nbsurchpoi2
     integer(kind=8) :: ivr(4)

@@ -118,7 +118,8 @@ subroutine op0167()
     integer(kind=8) :: iocc, nbOcc
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
     character(len=24), parameter :: jvNodeNume = '&&OP0167.LISTNODE'
-   integer(kind=8) :: nbCellIn, nbCellOut, nbCell, nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
+    integer(kind=8) :: nbCellIn, nbCellOut, nbCell
+    integer(kind=8) :: nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
     integer(kind=8) :: nbNodeInCellOut, nbNodeInCellIn, iCount, hugeValue, nbCellOut2
     integer(kind=8) :: nbGrCellFromCreaCell, nbGrCellFromCreaPoi1, nbGrCellIn, nbGrCellOut
     integer(kind=8) :: nbGrNodeIn, nbGrNodeOut
@@ -156,7 +157,8 @@ subroutine op0167()
     integer(kind=8), pointer :: nodeInGrIn(:) => null(), nodeInGrOut(:) => null()
     integer(kind=8), pointer :: meshDimeIn(:) => null(), meshDimeOut(:) => null()
     integer(kind=8), pointer :: meshTypmailIn(:) => null(), meshTypmailOut(:) => null()
-    integer(kind=8), pointer :: nodeOwner(:) => null(), cellOwner(:) => null(), globalCellId(:) => null()
+    integer(kind=8), pointer :: nodeOwner(:) => null(), cellOwner(:) => null()
+    integer(kind=8), pointer ::  globalCellId(:) => null()
     integer(kind=8), pointer :: nbCellPerProc(:) => null(), cellOwnerIn(:) => null()
     integer(kind=8), pointer :: globalCellIdIn(:) => null()
     real(kind=8), pointer :: meshValeIn(:) => null(), meshValeOut(:) => null()

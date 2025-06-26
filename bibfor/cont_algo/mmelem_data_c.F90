@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,14 +108,14 @@ subroutine mmelem_data_c(l_axi_, model_ndim_, &
 ! - Number of nodes for contact/friction element
 !
     integer(kind=8), parameter, dimension(nb_cont_geom) :: nb_node = (/ &
-                                                   4, 6, 5, 5, 6, &
-                                                   9, 9, 12, 8, 12, &
-                                                   12, 16, 7, 7, 10, &
-                                                   10, 14, 14, 15, 15, &
-                                                   11, 11, 17, 17, 13, &
-                                                   13, 12, 12, 18, 4, &
-                                                   5, 8, 6, 10, 11, &
-                                                   6, 9, 7, 11, 12/)
+                                                           4, 6, 5, 5, 6, &
+                                                           9, 9, 12, 8, 12, &
+                                                           12, 16, 7, 7, 10, &
+                                                           10, 14, 14, 15, 15, &
+                                                           11, 11, 17, 17, 13, &
+                                                           13, 12, 12, 18, 4, &
+                                                           5, 8, 6, 10, 11, &
+                                                           6, 9, 7, 11, 12/)
 !
 ! - Name of FE type of contact element
 !

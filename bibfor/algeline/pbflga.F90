@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -96,9 +96,9 @@ subroutine pbflga(umoy, hmoy, rmoy, long, cf0, &
     ln = tcoef(1+itab, imod)
     gamma(1) = pbflkz(2, 0.d0, long, ln, kcalcu)/rmoy
 gamma(2) = -1.d0*u*pbflkz(1, 0.d0, long, ln, kcalcu)-pbflkz(3, 0.d0, long, ln, kcalcu)/(rhof*umoy) &
-                       &+dcmplx(w)
+                           &+dcmplx(w)
 gamma(3) = -1.d0*v*pbflkz(1, long, long, ln, kcalcu)-pbflkz(3, long, long, ln, kcalcu)/(rhof*umoy) &
-                       &+dcmplx(x)
+                           &+dcmplx(x)
     do i = 1, 3
         reeli = dble(lambda(i))
         if (reeli .gt. 0.d0) then

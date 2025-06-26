@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -104,8 +104,8 @@ function spect3(x, a, b, func, tol, &
     do i = n2, n1
         index = index+1
         y = coeff(index)*dy
-        w(i) = func(x,ym+y,xlc,vitn,rhoe,defm,nbp,im,jm) + func(x,ym-y,xlc, vitn,rhoe,defm,nbp,im&
-               &, jm)
+        w(i) = func(x, ym+y, xlc, vitn, rhoe, defm, nbp, im, jm)+ &
+               func(x, ym-y, xlc, vitn, rhoe, defm, nbp, im, jm)
         index = index+1
         som = som+coeff(index)*w(i)
     end do

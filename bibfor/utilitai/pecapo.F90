@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine pecapo(resu, modele, cara, nh)
 !     TRAITEMENT DU MOT CLE-FACTEUR "CARA_POUTRE"
 !     ------------------------------------------------------------------
 !
-    integer(kind=8) :: nbtors, nbgauc, nbcisa, iret, nt, ibid, nopt, ntab, nct, ilign, ncty, nctz, ngm
+  integer(kind=8) :: nbtors, nbgauc, nbcisa, iret, nt, ibid, nopt, ntab, nct, ilign, ncty, nctz, ngm
     integer(kind=8) :: ngi, ngri, idgrmi, nrt, nbrt
     parameter(nbtors=1, nbgauc=1, nbcisa=8, nbrt=1)
     real(kind=8) :: valpar(nbcisa), ay, az, ey, ez, pcty, pctz, r8b, rt, jx, s, yg, zg, iy, iz

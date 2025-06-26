@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,12 @@ module ExternalStateVariable_type
                                                                           "NEUT_R  ", "NEUT_R  ", &
                                                                           "DEPL_R  "/)
     integer(kind=8), parameter :: listNbCmp(EXTEVARI_NB_MAXI) = (/7, 3, &
-                                                          1, 1, &
-                                                          1, 1, &
-                                                          6, 9, &
-                                                          5, 1, &
-                                                          1, 1, &
-                                                          1/)
+                                                                  1, 1, &
+                                                                  1, 1, &
+                                                                  6, 9, &
+                                                                  5, 1, &
+                                                                  1, 1, &
+                                                                  1/)
 ! ==================================================================================================
 !
 ! Derivated types

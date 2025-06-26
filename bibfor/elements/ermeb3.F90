@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -312,9 +312,9 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1, &
         write (6, 1001)
 1000    format(i3, 6x, (6(1x, 1pe12.5)))
 1001    format('INO        SIXX         SIYY         SIZZ         SIXY',&
-     &           '         SIXZ         SIYZ')
+        &           '         SIXZ         SIYZ')
 1002    format('INO        CHX          CHY          CHZ          NX  ',&
-     &           '         NY           NZ')
+        &           '         NY           NZ')
         do 110, in = 1, nnof
             ino = noe(in, ifa, tymvol)
             write (6, 1000) ino, sig11(in), sig22(in), sig33(in), sig12(in) &

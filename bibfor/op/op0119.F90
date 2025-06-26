@@ -73,13 +73,15 @@ subroutine op0119()
     real(kind=8) :: pi4
 !
     integer(kind=8) :: nbvfibre, maxfibre1, maxfibre2, nbfibres1, nbfibres2
- integer(kind=8) :: iret, ifm, niv, nboccsec, nboccfib, nboccasf, ii, nbmagr, iidepnoeud, nbocctype1
+    integer(kind=8) :: iret, ifm, niv, nboccsec, nboccfib, nboccasf, ii
+    integer(kind=8) :: nbmagr, iidepnoeud, nbocctype1
     integer(kind=8) :: nbmaills, nttri3, ntseg2, ntqua4, ntpoi1, correni(4), ncarma
     integer(kind=8) :: numno, nbfibreass, jj, ng, iptrng
     integer(kind=8) :: ulnbnoeuds, ulnbmailles, maxmailgrp
     integer(kind=8) :: iinbnoeuds, iinbmailles
     integer(kind=8) :: nbv, jdtm, nummai, nutyma
-  integer(kind=8) :: nbgf, jpofig, ioc, ido, jdo, ipos, in, nno, no, jcf, jdno, jdco, jnbfig, jtyfig
+    integer(kind=8) :: nbgf, jpofig, ioc, ido, jdo, ipos, in, nno, no, jcf
+    integer(kind=8) :: jdno, jdco, jnbfig, jtyfig
     integer(kind=8) :: ibid, ipointeur, iinbgf, jmafig, jmaill, jsdfig
 !
     real(kind=8) :: x(4), y(4), centre(2), axep(2), surf, angle, xx, yy, cc, ss

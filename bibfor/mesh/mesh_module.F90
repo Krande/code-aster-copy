@@ -198,7 +198,7 @@ contains
 ! - Parameters
         character(len=*), intent(in) :: meshz
         integer(kind=8), intent(in) :: modelDime
-        integer(kind=8), intent(in) :: nbSkinCell, cellSkinNume(nbSkinCell), cellSuppNume(nbSkinCell)
+       integer(kind=8), intent(in) :: nbSkinCell, cellSkinNume(nbSkinCell), cellSuppNume(nbSkinCell)
         integer(kind=8), intent(in) :: cellSkinNbNode(nbSkinCell), cellSkinNodeIndx(nbSkinCell)
         aster_logical, intent(out) :: lMisoriented
 ! - Local

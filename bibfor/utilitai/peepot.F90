@@ -76,7 +76,7 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
 !     ------------------------------------------------------------------
 !
     integer(kind=8) :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
-    integer(kind=8) :: ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
+  integer(kind=8) :: ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
     integer(kind=8) :: iocc, jma, icheml, ier, nbMaiT
     parameter(nbpaep=2, nbparr=6, nbpard=4)
     real(kind=8) :: prec, varpep(nbpaep), inst, valer(3), rundf

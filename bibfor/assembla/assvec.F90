@@ -109,7 +109,7 @@ subroutine assvec(jvBase, vectAsseZ, &
     integer(kind=8) :: liliNume, liliNume2, ligrelNume, jvVectElem
     integer(kind=8) :: iResuElem, iret, jec, jvale, iNodeMode
     integer(kind=8) :: lgncmp, mode, nbNode, nbNode2, meshNbCell
-    integer(kind=8) :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem, nbEqua, nbDof
+   integer(kind=8) :: nbResuElem, nbSuperElement, nbCmp, nbCmpMode, nbDofMode, nbElem, nbEqua, nbDof
     integer(kind=8) :: meshNbNode, nmxcmp, nbNodeMode, nugd, elemNume, iexi
     integer(kind=8) :: icodla(nbecmx), icodge(nbecmx), lshift
     integer(kind=8) :: admodl, lcmodl, ifm, niv, rang, nbproc

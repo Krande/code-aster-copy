@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -108,13 +108,13 @@ subroutine tfimpr(nom)
 !
     call jemarq()
 !
-90  format(3x, '***************************************************',&
-      &         '****')
+90  format(3x, '***************************************************', &
+           '****')
 91  format(3x, '*', 53x, '*')
-92  format(3x, '*', 1x, 'DEFINITION DES CARACTERISTIQUES D UNE ',&
-      &         'CONFIGURATION', 1x, '*')
-93  format(3x, '*', 6x, 'POUR UNE ETUDE DYNAMIQUE SOUS ECOULEMENT',&
-      &         7x, '*')
+92  format(3x, '*', 1x, 'DEFINITION DES CARACTERISTIQUES D UNE ', &
+           'CONFIGURATION', 1x, '*')
+93  format(3x, '*', 6x, 'POUR UNE ETUDE DYNAMIQUE SOUS ECOULEMENT', &
+           7x, '*')
 94  format(3x, 'CONFIGURATION : ', a60)
 95  format(3x, 'PRISE EN COMPTE DU COUPLAGE : ', a3)
 !

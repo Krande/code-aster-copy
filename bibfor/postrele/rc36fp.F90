@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -206,7 +206,7 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij, &
 1010 format(1p, 9x, 'NB_OCCUR ', '|', 40(i9, 1x, i9, '|'))
 1012 format(1p, 9x, 'SITUATION', '|', 40(i7, '_A', 1x, i7, '_B|'))
 1040 format(1p, a15, e12.5, ', LIGNE:', i4, a2, ', COLONNE:', i4, a2,&
-    &       ', PASSAGE: ', a3, ', SITUATION DE PASSAGE: ', i4)
+   &       ', PASSAGE: ', a3, ', SITUATION DE PASSAGE: ', i4)
 1042 format(1p, a15, e12.5, ', LIGNE:', i4, a2, ', COLONNE:', i4, a2)
 1030 format(1p, a15, i12)
 1020 format(1p, a15, e12.5)

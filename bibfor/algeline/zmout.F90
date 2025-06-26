@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -274,9 +274,9 @@ subroutine zmout(lout, m, n, a, lda, &
 !            DISPLAY 13 SIGNIFICANT DIGIT
 !
 9971 format(1x, ' ROW', i4, ':', 1x, 1p, 2('(', d20.13, ',', d20.13,&
-   &        ')  '))
+  &        ')  '))
 9961 format(1x, ' ROW', i4, ':', 1x, 1p, 1('(', d20.13, ',', d20.13,&
-   &        ')  '))
+  &        ')  '))
 !
 !
 !

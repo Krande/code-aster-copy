@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,12 +31,7 @@ subroutine dgfassefibres(nboccasf, iinbgf, tousgroupesnom, tousgroupesnbf, maxma
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
-!
-    integer(kind=8) :: nboccasf, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres2, maxfibre2, ncarfi2
-    integer(kind=8) :: nbocctype1
-    integer(kind=8)           :: tousgroupesnbf(*)
-    character(len=24) :: tousgroupesnom(*)
-!
+    !
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
@@ -44,6 +39,12 @@ subroutine dgfassefibres(nboccasf, iinbgf, tousgroupesnom, tousgroupesnbf, maxma
 #include "asterfort/getvtx.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
+    !
+    integer(kind=8) :: nboccasf, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles
+    integer(kind=8) :: nbfibres2, maxfibre2, ncarfi2
+    integer(kind=8) :: nbocctype1
+    integer(kind=8) :: tousgroupesnbf(*)
+    character(len=24) :: tousgroupesnom(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !

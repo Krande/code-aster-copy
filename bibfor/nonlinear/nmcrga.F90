@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,19 +74,19 @@ subroutine nmcrga(sderro)
                                                               'XXX'/)
 ! - Return code (value)
     integer(kind=8), parameter :: eventReturnValue(ZEVEN) = (/1, 2, 3, &
-                                                      4, 99, &
-                                                      1, 2, 1, &
-                                                      2, 1, 2, &
-                                                      99, 99, 99, &
-                                                      99, &
-                                                      99, 99, 99, &
-                                                      99, 99, 99, &
-                                                      99, 99, 99, &
-                                                      99, 99, 99, &
-                                                      99, 99, 99, &
-                                                      99, 99, 99, &
-                                                      1, 99, 99, &
-                                                      99/)
+                                                              4, 99, &
+                                                              1, 2, 1, &
+                                                              2, 1, 2, &
+                                                              99, 99, 99, &
+                                                              99, &
+                                                              99, 99, 99, &
+                                                              99, 99, 99, &
+                                                              99, 99, 99, &
+                                                              99, 99, 99, &
+                                                              99, 99, 99, &
+                                                              99, 99, 99, &
+                                                              1, 99, 99, &
+                                                              99/)
 !
 ! --- TYPE ET NIVEAU DE DECLENCHEMENT POSSIBLES DE L'EVENEMENT
 ! TROIS TYPES
@@ -151,7 +151,7 @@ subroutine nmcrga(sderro)
     integer(kind=8) :: iEvent
     character(len=24) :: eventECONJv, eventECOVJv, eventENIVJv, eventEFCTJv, eventEMSGJv
     character(len=24) :: eventCONVJv, eventEEVTJv, eventENOMJv, eventEACTJv
-    integer(kind=8), pointer :: eventEACT(:) => null(), eventECOV(:) => null(), eventCONV(:) => null()
+  integer(kind=8), pointer :: eventEACT(:) => null(), eventECOV(:) => null(), eventCONV(:) => null()
     integer(kind=8), pointer :: eventEEVT(:) => null()
     character(len=16), pointer :: eventENOM(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()

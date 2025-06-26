@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -119,7 +119,7 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
         write (ifm, 201) 'DEBUT DE '//nompro
         write (ifm, 202) nomfpg
 202     format(/, 'ECRITURE D''UNE LOCALISATION DES POINTS DE GAUSS',&
-     &       /, '==> NOM DE LA FAMILLE D''ELEMENT FINI ASSOCIEE : ', a)
+         &       /, '==> NOM DE LA FAMILLE D''ELEMENT FINI ASSOCIEE : ', a)
     end if
 201 format(/, 4x, 10('='), a, 10('='),/)
 !
@@ -201,10 +201,10 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
             write (ifm, 205) iaux, saux64, typgel, nbrepl
         end if
 205     format(&
-        & /, 2x, '. CARACTERISTIQUES DE LA LOCALISATION NUMERO', i4, ' : ',&
-        & /, 2x, '... NOM    : ', a,&
-        & /, 2x, '... TYPGEO :', i4,&
-        & /, 2x, '... NBREPG :', i4)
+            & /, 2x, '. CARACTERISTIQUES DE LA LOCALISATION NUMERO', i4, ' : ',&
+            & /, 2x, '... NOM    : ', a,&
+            & /, 2x, '... TYPGEO :', i4,&
+            & /, 2x, '... NBREPG :', i4)
 !
 ! 2.2.2. ==> ON REPERE SI LA LOCALISATION EST BATIE SUR LA MEME
 !            FAMILLE D'ELEMENT FINI ASTER.
@@ -456,11 +456,11 @@ subroutine irmpg1(nofimd, nomfpg, nbnoto, nbrepg, nbsp, &
 !
         write (ifm, 219) typgeo, nbnoto, nbrepg, nolopg
 219     format(&
-        &/, 'TYPE DE MAILLES MED :', i4,&
-        &/, 'NOMBRE DE NOEUDS          :', i4&
-        &/, 'NOMBRE DE POINTS DE GAUSS :', i4,&
-        &/, 'ECRITURE D''UNE NOUVELLE LOCALISATION DES POINTS DE GAUSS, ',&
-        &  'NOMMEE : ', /, a,/)
+            &/, 'TYPE DE MAILLES MED :', i4,&
+            &/, 'NOMBRE DE NOEUDS          :', i4&
+            &/, 'NOMBRE DE POINTS DE GAUSS :', i4,&
+            &/, 'ECRITURE D''UNE NOUVELLE LOCALISATION DES POINTS DE GAUSS, ',&
+            &  'NOMMEE : ', /, a,/)
 !
     end if
 !

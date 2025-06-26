@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -134,11 +134,11 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     integer(kind=8), pointer :: repe(:) => null()
 !
     integer(kind=8), parameter :: MED_GEOMETRY_TYPE(nbCellType) = &
-                          (/1, 102, 103, 104, &
-                            203, 204, 206, 207, &
-                            208, 209, 304, 305, &
-                            306, 308, 310, 313, &
-                            315, 320, 327/)
+                                  (/1, 102, 103, 104, &
+                                    203, 204, 206, 207, &
+                                    208, 209, 304, 305, &
+                                    306, 308, 310, 313, &
+                                    315, 320, 327/)
     character(len=8), parameter :: AsterAllCellType(nbCellType) = &
                                    (/'POI1    ', 'SEG2    ', 'SEG3    ', 'SEG4    ', &
                                      'TRIA3   ', 'QUAD4   ', 'TRIA6   ', 'TRIA7   ', &

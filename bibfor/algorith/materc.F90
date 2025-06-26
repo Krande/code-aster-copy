@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -84,7 +84,7 @@ subroutine materc(matmas, matrig, matamo, numnu, amor, &
     character(len=19) :: lifreq, nume_equa
     integer(kind=8) :: n1, lfreq, iproj, nbnexp, inn, inp, nnopr, nec1, nec2
     integer(kind=8) :: idec(6), itach, tach1, iprnom, iprnoc, lprno, ipjnb
-    integer(kind=8) :: ipjnu, ltest, nbddl, ieq, ihh, ipjcf, nbnonu, jj, inddl, icode(6), lnueqm, lnueqc
+integer(kind=8) :: ipjnu, ltest, nbddl, ieq, ihh, ipjcf, nbnonu, jj, inddl, icode(6), lnueqm, lnueqc
     integer(kind=8) :: iobfil, iobcol, iobval, ifreq, lh, cc, dd
     blas_int :: b_incx, b_incy, b_n
 !

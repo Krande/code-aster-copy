@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -264,8 +264,9 @@ subroutine spect1(casint, nomu, spectr, ispect, base, &
                 jmb = jm-imodi+1
                 imb = im-imodi+1
                 kk = (jmb*(jmb-1))/2+imb
-              zr(ilc2+kk-1) = zr(ilc2+kk-1)+spect2(x1, x2, xlc, zr(ivitn), zr(irhoe), zr(idefm), sp&
-                                    &ect4, tol, ier, r1, err, nbp, im, jm)
+                zr(ilc2+kk-1) = zr(ilc2+kk-1)+ &
+                spect2(x1, x2, xlc, zr(ivitn), zr(irhoe), zr(idefm), sp&
+                                              &ect4, tol, ier, r1, err, nbp, im, jm)
 !
                 if (ier .ne. 0) then
                     vali(1) = nuor(jm)

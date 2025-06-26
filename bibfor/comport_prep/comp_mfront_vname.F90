@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine comp_mfront_vname(extern_addr, nbVariMeca, infoVari)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, leng, variTypeMGIS, lenTronca
+  integer(kind=8) :: nbVariMGIS, iVariType, iVari, iCmp, variSizeMGIS, leng, variTypeMGIS, lenTronca
     integer(kind=8) :: lenMaxi
     character(len=16) :: variName, variNameMGIS
     character(len=80), pointer :: variNameList(:) => null()

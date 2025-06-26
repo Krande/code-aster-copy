@@ -73,22 +73,22 @@ module cara_elem_parameter_module
 !
     integer(kind=8), parameter :: ACE_NB_GRMA_MA = 4
     integer(kind=8), parameter :: MCLEF_GRP_MA(ACE_NB_GRMA_MA*ACE_NB_MCLEF) = [ &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_GR_PO1, ACE_GR_SE2, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_PO1, ACE_GR_SE2, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_GR_PO1, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
-                          ACE_GR_MAI, ACE_GR_PO1, ACE_NOTHING, ACE_NOTHING]
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_GR_PO1, ACE_GR_SE2, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_PO1, ACE_GR_SE2, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_GR_PO1, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_MAILLE, ACE_NOTHING, ACE_NOTHING, &
+                                  ACE_GR_MAI, ACE_GR_PO1, ACE_NOTHING, ACE_NOTHING]
 !
 ! --------------------------------------------------------------------------------------------------
 ! Toutes les cartes créées par AFFE_CARA_ELEM
@@ -325,7 +325,7 @@ module cara_elem_parameter_module
 !
 ! --------------------------------------------------------------------------------------------------
     integer(kind=8), parameter :: ACE_NB_TYPE_ELEM = ACE_NB_POUTRE+ACE_NB_DISCRET+ACE_NB_COQUE+ &
-                          ACE_NB_CABLE+ACE_NB_BARRE+ACE_NB_MASSIF+ &
-                          ACE_NB_GRILLE+ACE_NB_MEMBRANE+ACE_NB_THHMM
+                                  ACE_NB_CABLE+ACE_NB_BARRE+ACE_NB_MASSIF+ &
+                                  ACE_NB_GRILLE+ACE_NB_MEMBRANE+ACE_NB_THHMM
 
 end module

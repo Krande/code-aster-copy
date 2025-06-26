@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,9 +97,9 @@ subroutine impre2(licoef, liddl, linoeu, libeta, indsur, &
 20  format(2x, 1pe12.5, ' * ', 2x, a6, '(', a8, ')', '+')
 90  format(2x, 1pe12.5, ' * ', 2x, a6, '(', a8, ')')
 40  format(2x, '(', 1pe12.5, ',', 1pe12.5, ')', ' * ',&
-     &       2x, a6, '(', a8, ')', '+')
+      &       2x, a6, '(', a8, ')', '+')
 95  format(2x, '(', 1pe12.5, ',', 1pe12.5, ')', ' * ',&
-     &       2x, a6, '(', a8, ')')
+      &       2x, a6, '(', a8, ')')
 50  format(2x, '=', 1pe12.5)
 60  format(2x, '=', a19)
 70  format(2x, '=', '(', 1pe12.5, ',', 1pe12.5, ')')

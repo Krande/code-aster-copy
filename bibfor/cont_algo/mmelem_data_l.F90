@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -110,15 +110,15 @@ subroutine mmelem_data_l(l_axi_, &
 ! - Number of nodes for contact/friction element
 !
     integer(kind=8), parameter, dimension(nb_cont_solv) :: nb_node = (/ &
-                                                   6, 12, 8, 8, 16, &
-                                                   16, 9, 9, 12, 12, &
-                                                   12, 12, 7, 7, 7, &
-                                                   10, 10, 10, 14, 14, &
-                                                   14, 11, 11, 11, 13, &
-                                                   13, 13, 12, 18, 17, &
-                                                   17, 17, 15, 12, 15, &
-                                                   4, 4, 4, 6, 5, &
-                                                   5, 5, 5/)
+                                                           6, 12, 8, 8, 16, &
+                                                           16, 9, 9, 12, 12, &
+                                                           12, 12, 7, 7, 7, &
+                                                           10, 10, 10, 14, 14, &
+                                                           14, 11, 11, 11, 13, &
+                                                           13, 13, 12, 18, 17, &
+                                                           17, 17, 15, 12, 15, &
+                                                           4, 4, 4, 6, 5, &
+                                                           5, 5, 5/)
 !
 ! - Type of contact element (geometry -> finite element)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -994,9 +994,9 @@ contains
         real(kind=8), intent(out) :: normMast(3), normSlav(3)
 ! - Local
         character(len=8) :: mesh
-        integer(kind=8), pointer :: connex(:) => null(), cellNbNode(:) => null(), typmail(:) => null()
+      integer(kind=8), pointer :: connex(:) => null(), cellNbNode(:) => null(), typmail(:) => null()
         integer(kind=8), parameter :: normNorm = 1
-        integer(kind=8) :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode, cellMastNume, cellSlavNume
+    integer(kind=8) :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode, cellMastNume, cellSlavNume
         aster_logical :: mastHasPOI1, slavHasPOI1
         real(kind=8) :: normCell(3), cellCoor(27)
 !   ------------------------------------------------------------------------------------------------

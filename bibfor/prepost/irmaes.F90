@@ -69,7 +69,7 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad, iadzr, iadep, iadex, iadr1
+   integer(kind=8) :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad, iadzr, iadep, iadex, iadr1
     integer(kind=8) :: ima, nbsect, nbcouc, nbsp, nummai, nbmail, jpoin, ibid
     integer(kind=8) :: jcnxma(MT_NTYMAX), jepama(MT_NTYMAX), joripmf(MT_NTYMAX)
     integer(kind=8) :: jr1eptu(MT_NTYMAX), jorituy(MT_NTYMAX), nmatyp(MT_NTYMAX)

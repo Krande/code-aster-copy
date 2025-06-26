@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -205,8 +205,8 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
 !
 1001 format((i7, ' - ', 10(i12, 1x)))
 1002 format(i8, 1x, 'ID COLLECTION:', i8, ' ID OBJET:', i8, ' LONGUEUR:',&
-    &       i8, a, a, i6)
+   &       i8, a, a, i6)
 1003 format(i8, 1x, 'ID COLLECTION:', i8, ' ID OBJET:', i8, ' LONGUEUR:',&
-    &       i8, a, a, a, i8)
+   &       i8, a, a, a, i8)
 ! FIN -----------------------------------------------------------------
 end subroutine

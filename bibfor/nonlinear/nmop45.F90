@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine nmop45(eigsol, l_hpp, mod45, modes, modes2, ds_posttimestep_, nfreq_c
     integer(kind=8) :: nbpari, nbparr, nbpark
     parameter(nbpari=8, nbparr=16, nbpark=3)
 !
-    integer(kind=8)           :: iret, ibid, npivot, neqact, mxresf, nblagr, nbddl, nbddl2, un, lresur
+  integer(kind=8)           :: iret, ibid, npivot, neqact, mxresf, nblagr, nbddl, nbddl2, un, lresur
     integer(kind=8)           :: nconv, neq, lraide, eddl, eddl2, jstab, iauxr
     integer(kind=8)           :: nsta, nddle, nfreq_calibr
     real(kind=8)      :: omemin, omemax, omeshi, vpinf, vpmax, r8bid, csta

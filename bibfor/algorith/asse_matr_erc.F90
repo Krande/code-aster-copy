@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine asse_matr_erc(nom_matr_erc, nom_nume_erc, dynam1, dynam2, matprod)
     character(len=14), intent(in) :: nom_nume_erc
     character(len=19), intent(in) :: dynam1, dynam2, nom_matr_erc
     character(len=24), intent(in) :: matprod(4)
-    integer(kind=8) :: i_mprod_smde, i_mprod_smhc, i_mprod_smdi, i_mprod_valm, i_nume_smde, i_nume_smdi
+ integer(kind=8) :: i_mprod_smde, i_mprod_smhc, i_mprod_smdi, i_mprod_valm, i_nume_smde, i_nume_smdi
     integer(kind=8) :: i_nume_smhc, mrefa, i_dynam1_valm, i_dynam2_valm, i_materc_valm, neq_tot, neq_bloc
     integer(kind=8) :: nonzero_tot, nzfirstblk, tt, ll, jj, kk, cumul_non_zero, non_zero_impe
     integer(kind=8) :: non_zero_matprod, hors_diag_impe, hd_matpro, nz_colncour

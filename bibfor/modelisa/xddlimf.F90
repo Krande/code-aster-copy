@@ -78,7 +78,8 @@ subroutine xddlimf(modele, ino, cnxinv, jnoxfv, motcle, &
     parameter(nbxcmp=60, nbnomax=20)
     integer(kind=8) :: ier, nbno, jconx2, nbmano, jma, adrma, numa, voisin(3), dimens(nbxcmp)
     integer(kind=8) :: itypma, ibid, nbnoma, nno, i, jlsnd, jlsnl, hea_pt, heavm(135), jheavnl
-  integer(kind=8) :: iad, ima, j, nuno, nuno2, iadrco, icode, numac, nbnomac, nterm, ncompn, jheavnd
+    integer(kind=8) :: iad, ima, j, nuno, nuno2, iadrco, icode, numac, nbnomac
+    integer(kind=8) :: nterm, ncompn, jheavnd
     real(kind=8) :: lsno(3), lsn2, coor(4*ndim), param(1), alpha(1), geom(nbnomax*ndim)
     real(kind=8) :: ff(nbnomax), eps, ptm(ndim), ptp(ndim), xe(3)
     real(kind=8) :: valpar(ndim), deplm, deplp, deplun, deplde, depltr, coef(nbxcmp)

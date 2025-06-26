@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -421,7 +421,8 @@ subroutine op0032()
 !
 !     --- PREPARATION FOR THE COMPUTATION OF THE DYNAMIC MATRIX ---
 !     --- IN GEP ONLY DYNAM, IN QEP DYNAM            ---
-if ((typmet(1:5) .eq. 'STURM') .or. ((typmet(1:3) .eq. 'APM') .and. (typcha(1:4) .eq. 'LDLT'))) then
+    if ((typmet(1:5) .eq. 'STURM') &
+        .or. ((typmet(1:3) .eq. 'APM') .and. (typcha(1:4) .eq. 'LDLT'))) then
         dynam = '&&OP0032.MATR_DYNAM'
         if (typmet(1:5) .eq. 'STURM') then
 !     --- IF STURM TEST, DYNAM'TYPE IS THE SAME AS RAIDE'S ONE: ---
@@ -751,7 +752,8 @@ if ((typmet(1:5) .eq. 'STURM') .or. ((typmet(1:3) .eq. 'APM') .and. (typcha(1:4)
 !-----------------------------------------------------------------------
 !
 !   --- DESTRUCTION OF THE DYNAMIC MATRIX
-   if ((typmet(1:5) .eq. 'STURM') .or. ((typmet(1:3) .eq. 'APM') .and. (typcha(1:4) .eq. 'LDLT'))) &
+    if ((typmet(1:5) .eq. 'STURM') &
+        .or. ((typmet(1:3) .eq. 'APM') .and. (typcha(1:4) .eq. 'LDLT'))) &
         call detrsd('MATR_ASSE', dynam)
 !
 !     ------------------------------------------------------------------
@@ -869,12 +871,12 @@ if ((typmet(1:5) .eq. 'STURM') .or. ((typmet(1:3) .eq. 'APM') .and. (typcha(1:4)
 !-------------------------- FORTRAN PRINT FORMAT -----------------------
 !-----------------------------------------------------------------------
 4000 format('(METHODE APM) POUR LES 3 NIVEAUX DE DISCRETISATION ',&
-   &       'SUIVANTS', /,&
-   &       ' --- ', i5, ' --- ', i5, ' --- ', i5, ' ---', /,&
-   &       ' NOMBRE DE VALEURS PROPRES DETECTEES ', /,&
-   &       ' --- ', i5, ' --- ', i5, ' --- ', i5, ' ---')
+&       'SUIVANTS', /,&
+&       ' --- ', i5, ' --- ', i5, ' --- ', i5, ' ---', /,&
+&       ' NOMBRE DE VALEURS PROPRES DETECTEES ', /,&
+&       ' --- ', i5, ' --- ', i5, ' --- ', i5, ' ---')
 4010 format('(METHODE APM) CONVERGENCE DE L''HEURISTIQUE ')
 4020 format('(METHODE APM) ATTENTION CALCUL DE TEST POUR IMPRIMER LA',&
-   &       ' COURBE DES NOMBRES DE TOURS ')
+&       ' COURBE DES NOMBRES DE TOURS ')
 !
 end subroutine

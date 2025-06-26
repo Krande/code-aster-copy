@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -182,7 +182,7 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav, &
         write (6, 1001)
 1000    format(i3, 6x, (6(1x, 1pe12.5)))
 1001    format(11x, 'SIXX         SIYY         SIZZ         SIXY',&
-     &           '         SIXZ         SIYZ')
+        &           '         SIXZ         SIYZ')
         do 110, in = 1, nnof
             ino = noe(in, ifa, tymvol)
             ncher = zi(jad-1+ino)

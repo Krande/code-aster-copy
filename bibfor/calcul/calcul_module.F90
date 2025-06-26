@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ module calcul_module
 !             la convention est ecrite dans extra1
 
 !======================================================================
-    integer(kind=8) :: ca_iaoptt_, ca_lgco_, ca_iaopmo_, ca_ilopmo_, ca_iaopno_, ca_ilopno_, ca_iaopds_
+ integer(kind=8) :: ca_iaoptt_, ca_lgco_, ca_iaopmo_, ca_ilopmo_, ca_iaopno_, ca_ilopno_, ca_iaopds_
     integer(kind=8) :: ca_iaoppa_, ca_npario_, ca_nparin_, ca_iamloc_, ca_ilmloc_, ca_iadsgd_
 !     ca_iaoptt_ : adresse de l'objet du catalogue : '&CATA.TE.OPTTE'
 !     ca_lgco_   : longueur d'une colonne de '&CATA.TE.OPTTE'
@@ -277,7 +277,7 @@ module calcul_module
 !======================================================================
     integer(kind=8) :: ca_nfpgmx_
     parameter(ca_nfpgmx_=10)
-    integer(kind=8) :: ca_nfpg_, ca_jfpgl_, ca_decala_(ca_nfpgmx_), ca_km_, ca_kp_, ca_kr_, ca_iredec_
+  integer(kind=8) :: ca_nfpg_, ca_jfpgl_, ca_decala_(ca_nfpgmx_), ca_km_, ca_kp_, ca_kr_, ca_iredec_
 !     ca_nfpg_   : nombre de familles de la famille liste "mater"
 !     ca_jfpgl_  : adresse dans zk8 de la liste des noms des familles
 !     ca_decala_ : tableau des decalage des numeros des pg :

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -369,17 +369,17 @@ subroutine mefeig(ndim, nbmod, matm, matr, mata, &
 ! --- FORMATS
 !
 6000 format(1x, '***************************************************',&
-   &       '*****************')
+  &       '*****************')
 6001 format(1x, '*              *                         *          ',&
-   &       '               *')
+  &       '               *')
 6002 format(1x, '*    NUMERO    *   NORME RELATIVE DE LA  *   NORME '&
-   &       , 'RELATIVE DE LA  *')
+  &       , 'RELATIVE DE LA  *')
 6003 format(1x, '*  DE VECTEUR  *     PARTIE REELLE       *    PARTIE'&
-   &       , ' IMAGINAIRE    *')
+  &       , ' IMAGINAIRE    *')
 6005 format(1p, 1x, '*   MAX :    ', '  * ', 5x, d13.6, 4x, '  *  '&
-   &       , 4x, d13.6, 5x, ' *')
+  &       , 4x, d13.6, 5x, ' *')
 6006 format(1p, 1x, '*   MIN :    ', '  * ', 5x, d13.6, 4x, '  *  '&
-   &       , 4x, d13.6, 5x, ' *')
+  &       , 4x, d13.6, 5x, ' *')
 !
 !
 !

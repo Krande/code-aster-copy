@@ -51,7 +51,7 @@ subroutine pj3dco(typeSelect, &
 !
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
-    integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+ integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
     character(len=*), intent(in) :: geom1, geom2
     character(len=16), intent(in)  :: corrMesh
     aster_logical, intent(in) :: l_dmax

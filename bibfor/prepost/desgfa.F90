@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -116,37 +116,37 @@ subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf, &
                         write (ifm, 10009)
 !
 10001                   format(&
-                     &//, 50('*'),&
-                     &/, '*   FAMILLE : ', a32, 3x, '*',&
-                     &/, '*   NUMERO  : ', i8, 27x, '*')
+                                       &//, 50('*'),&
+                                       &/, '*   FAMILLE : ', a32, 3x, '*',&
+                                       &/, '*   NUMERO  : ', i8, 27x, '*')
 10011                   format(&
-                     &//, 50('*'),&
-                     &/, '*   FAMILLE : ', a32, 3x, '*',&
-                     &/, '*', 13x, a32, 3x, '*',&
-                     &/, '*   NUMERO  : ', i8, 27x, '*')
+                                       &//, 50('*'),&
+                                       &/, '*   FAMILLE : ', a32, 3x, '*',&
+                                       &/, '*', 13x, a32, 3x, '*',&
+                                       &/, '*   NUMERO  : ', i8, 27x, '*')
 10002                   format(&
-                     &  '*', 3x, 'NOMBRE DE ', a7, ' : ', i7, 18x, '*')
+                                       &  '*', 3x, 'NOMBRE DE ', a7, ' : ', i7, 18x, '*')
 !
 10003                   format(&
-                     &  50('*'),&
-                     &/, '*', 3x, 'AUCUN ATTRIBUT N''A ETE DEFINI.', 15x, '*')
+                                       &  50('*'),&
+                                       &/, '*', 3x, 'AUCUN ATTRIBUT N''A ETE DEFINI.', 15x, '*')
 10004                   format(&
-                     &  50('*'),&
-                     &/, '*', 3x, 'ATTRIBUT(S) CORRESPONDANT(S) A CES ', a7, ' : *')
+                                       &  50('*'),&
+                                     &/, '*', 3x, 'ATTRIBUT(S) CORRESPONDANT(S) A CES ', a7, ' : *')
 10005                   format(&
-                     &  '*', 10x, i8, 30x, '*')
+                                       &  '*', 10x, i8, 30x, '*')
 !
 10006                   format(&
-                     &  50('*'),&
-                     &/, '*', 3x, 'AUCUN GROUPE N''A ETE DEFINI.', 17x, '*')
+                                       &  50('*'),&
+                                       &/, '*', 3x, 'AUCUN GROUPE N''A ETE DEFINI.', 17x, '*')
 10007                   format(&
-                     &  50('*'),&
-                     &/, '*', 3x, 'GROUPE(S) CORRESPONDANT(S) A CES ', a7, ' :   *')
+                                       &  50('*'),&
+                                     &/, '*', 3x, 'GROUPE(S) CORRESPONDANT(S) A CES ', a7, ' :   *')
 10008                   format(&
-                     &  '*', 10x, a8, 30x, '*')
+                                       &  '*', 10x, a8, 30x, '*')
 !
 10009                   format(&
-                     &  50('*'),/)
+                                       &  50('*'),/)
 !
 !====
 ! 2. MAUVAIS TYPE D'ENTITES

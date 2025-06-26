@@ -78,7 +78,7 @@ subroutine disjvp(for_discret, iret)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: imat, ivarim, jdc, irep, jtp, jtm, idepen, imatsym, ifono, iretlc, icontp, ivarip
+integer(kind=8) :: imat, ivarim, jdc, irep, jtp, jtm, idepen, imatsym, ifono, iretlc, icontp, ivarip
     integer(kind=8) :: iadzi, iazk24, igeom
     integer(kind=8) :: icarcr
     integer(kind=8) :: icontm, ii

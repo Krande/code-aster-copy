@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ module DynaGene_module
 #include "asterfort/jelibe.h"
 
     integer(kind=8), parameter :: nb_field = 7
-    integer(kind=8), parameter :: ordr = 1, disc = 2, ptem = 3, depl = 4, vite = 5, acce = 6, vint = 7
+  integer(kind=8), parameter :: ordr = 1, disc = 2, ptem = 3, depl = 4, vite = 5, acce = 6, vint = 7
     character(len=8), parameter :: field_names(nb_field) = (/'   .ORDR', '   .DISC', '   .PTEM', \
     '   .DEPL', '   .VITE', '   .ACCE', '.NL.VINT'/)
 

@@ -96,7 +96,7 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: list_pair(nb_elem_mast), li_nb_pt_inte_sl(nb_elem_mast), nbpatch_t, iret, vali(2)
+integer(kind=8) :: list_pair(nb_elem_mast), li_nb_pt_inte_sl(nb_elem_mast), nbpatch_t, iret, vali(2)
     real(kind=8) :: li_pt_inte_sl(nb_elem_mast*16), li_pt_inte_ma(nb_elem_mast*16)
     real(kind=8) :: li_pt_gaus_ma(nb_elem_mast*72)
     integer(kind=8) :: elem_slav_nbnode, cellSlavNume, elem_slav_dime, cellSlavIndx

@@ -56,7 +56,7 @@ subroutine pemain(resu, modele, mate, mateco, cara, nh, &
 !     ------------------------------------------------------------------
 !
     integer(kind=8) :: mxvale, nbparr, ibid, iret, iocc, nt, ng, nr, nm, nbgrma, jgr, ig, nbma, jad
-    integer(kind=8) :: nbmail, jma, im, nume, nb, ifm, niv, mxval1, nbpar1, mxval2, nbpar2, iorig, nre
+  integer(kind=8) :: nbmail, jma, im, nume, nb, ifm, niv, mxval1, nbpar1, mxval2, nbpar2, iorig, nre
     integer(kind=8) :: icage, nbtot, nbMaiT
     parameter(mxval1=16, nbpar1=18)
     parameter(mxval2=25, nbpar2=27)

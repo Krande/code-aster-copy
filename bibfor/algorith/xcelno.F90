@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     character(len=19) :: ces_hno, ces_fno, ces_stno
     aster_logical :: lfno, limpr
     aster_logical, pointer :: is_nfh_no(:) => null()
-    integer(kind=8), pointer :: list_sd_no(:) => null(), count_sd_no(:) => null(), connex(:) => null()
+  integer(kind=8), pointer :: list_sd_no(:) => null(), count_sd_no(:) => null(), connex(:) => null()
     integer(kind=8), pointer :: tmp_fno(:) => null(), nfh_ref(:) => null()
     integer(kind=8) :: nfissmax
     parameter(nfissmax=4)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ subroutine erhms2(ino, nbs, theta, jac, &
     real(kind=8) :: intme1(3), intme2(3), inthyd(3)
     real(kind=8) :: ta1
 !
-    integer(kind=8) :: iarepe, jceldp, jcelvp, jceldm, jcelvm, imav, igrel, iel, iavalp, iavalm, iconx1
+ integer(kind=8) :: iarepe, jceldp, jcelvp, jceldm, jcelvm, imav, igrel, iel, iavalp, iavalm, iconx1
     integer(kind=8) :: iconx2, admavp, admavm, adinov, adjnov, admnov
     integer(kind=8) :: jad, jadv, ncher
     integer(kind=8) :: nbnv, i, jno, mno, inov, jnov, mnov
