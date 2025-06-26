@@ -134,6 +134,7 @@ subroutine ccfnrn(option, resuin, resuou, lisord, nbordr, &
 !
     call infniv(ifm, niv)
     blanc8 = '        '
+    sigmaPrev = ' '
 ! SI PARALLELISME EN TEMPS: INITIALISATION CONTEXTE
     call pcptcc(1, ldist, dbg_ob, dbgv_ob, lcpu, &
                 ltest, rang, nbproc, mpicou, nbordr, &
