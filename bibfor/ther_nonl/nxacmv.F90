@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 ! aslint: disable=W1504
 !
 subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
-                  solver, l_stat, time, tpsthe, temp_iter, &
+                  solver, l_stat, timeMap, timeParaIn, temp_iter, &
                   vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
                   cn2mbr_tran, matass, maprec, cndiri, cncine, &
                   mediri, compor, ds_algorom_)
@@ -37,6 +37,7 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
 #include "asterfort/assert.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
@@ -58,10 +59,10 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=19), intent(in) :: list_load
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: solver
-    character(len=24), intent(in) :: time
+    character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: varc_curr
     aster_logical, intent(in) :: l_stat
-    real(kind=8), intent(in) :: tpsthe(6)
+    real(kind=8), intent(in) :: timeParaIn(6)
     character(len=24), intent(in) :: temp_iter
     character(len=24), intent(in) :: vhydr
     character(len=24), intent(in) :: dry_prev
@@ -94,7 +95,7 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     integer :: ibid, ierr, iret
     integer :: jtn, i_vect
     character(len=2) :: codret
-    real(kind=8) :: time_curr
+    real(kind=8) :: timeCurr
     character(len=8), parameter :: nomcmp(6) = (/'INST    ', 'DELTAT  ', &
                                                  'THETA   ', 'KHI     ', &
                                                  'R       ', 'RHO     '/)
@@ -111,7 +112,7 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     character(len=24) :: cnchtp
     character(len=24) :: cnchnl
     character(len=24) :: cntnti
-
+    real(kind=8) :: timePara(6)
     character(len=24) :: lload_name, lload_info, lload_func
     character(len=24), pointer :: v_resu_elem(:) => null()
     integer, parameter :: nb_max = 9
@@ -140,38 +141,40 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
     vatntp = '&&NTACMV.VATNTP'
     vatnti = '&&NTACMV.VATNTI'
     vachtn = '&&NTACMV.VACHTN'
-    time_curr = tpsthe(1)
+    timeCurr = timeParaIn(1)
     lload_name = list_load(1:19)//'.LCHA'
     lload_info = list_load(1:19)//'.INFC'
     lload_func = list_load(1:19)//'.FCHA'
 !
 ! - Construct command variables fields
 !
-    call vrcins(model, mate, cara_elem, tpsthe(1), varc_curr, &
+    call vrcins(model, mate, cara_elem, timeCurr, varc_curr, &
                 codret)
-!
-! - Update <CARTE> for time
-!
-    call mecact('V', time, 'MODELE', ligrmo, 'INST_R', &
-                ncmp=6, lnomcmp=nomcmp, vr=tpsthe)
+! - Create <CARTE> for time
+    timePara = timeParaIn
+    if (l_stat) then
+        timePara(3) = -1
+    end if
+    call mecact('V', timeMap, 'MODELE', ligrmo, 'INST_R', &
+                ncmp=6, lnomcmp=nomcmp, vr=timePara)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_THER)
 !
-    call vedith(model, lload_name, lload_info, time, vediri)
+    call vedith(model, lload_name, lload_info, timeMap, vediri)
     call asasve(vediri, nume_dof, 'R', vadiri)
-    call ascova('D', vadiri, lload_func, 'INST', tpsthe(1), &
+    call ascova('D', vadiri, lload_func, 'INST', timeCurr, &
                 'R', cndiri)
 !
 ! - Compute Dirichlet loads (AFFE_CHAR_CINE)
 !
     cncine = ' '
-    call ascavc(lload_name, lload_info, lload_func, nume_dof, tpsthe(1), &
+    call ascavc(lload_name, lload_info, lload_func, nume_dof, timeCurr, &
                 cncine)
 !
 ! - Compute CHAR_THER_EVOLNI
 !
     if (.not. l_stat) then
-        call vetnth_nonl(model, cara_elem, mate, mateco, time, compor, &
+        call vetnth_nonl(model, cara_elem, mate, mateco, timeMap, compor, &
                          temp_iter, varc_curr, &
                          vetntp, vetnti, 'V', &
                          dry_prev, dry_curr, vhydr)
@@ -186,10 +189,10 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 ! - Compute Neumann loads (second member) - Linear part
 !
     call vechth('STAT', model, lload_name, lload_info, cara_elem, &
-                mate, mateco, time_curr, time, temp_iter, vechtp, &
+                mate, mateco, timeCurr, timeMap, temp_iter, vechtp, &
                 varc_curr_=varc_curr)
     call asasve(vechtp, nume_dof, 'R', vachtp)
-    call ascova('D', vachtp, lload_func, 'INST', tpsthe(1), &
+    call ascova('D', vachtp, lload_func, 'INST', timeCurr, &
                 'R', cnchtp)
     if (l_stat) then
         call jedetr(vechtp)
@@ -197,10 +200,10 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
 !
 ! - Compute Neumann loads (second member) - Nonlinear part
 !
-    call vechnl(model, lload_name, lload_info, time, &
+    call vechnl(model, lload_name, lload_info, timeMap, &
                 temp_iter, vechtn, 'V')
     call asasve(vechtn, nume_dof, 'R', vachtn)
-    call ascova('D', vachtn, ' ', 'INST', tpsthe(1), &
+    call ascova('D', vachtn, ' ', 'INST', timeCurr, &
                 'R', cnchnl)
     if (l_stat) then
         call jedetr(vechtn)
@@ -237,11 +240,16 @@ subroutine nxacmv(model, mate, mateco, cara_elem, list_load, nume_dof, &
             call vtaxpy(vect_coef(i_vect), vect_name(i_vect), cn2mbr_tran)
         end do
     end if
+! - New <CARTE> for time
+    timePara = timeParaIn
+    call detrsd("CARTE", timeMap)
+    call mecact('V', timeMap, 'MODELE', ligrmo, 'INST_R', &
+                ncmp=6, lnomcmp=nomcmp, vr=timePara)
 !
 ! - Tangent matrix (non-linear) - Volumic and surfacic terms
 !
     call merxth(model, lload_name, lload_info, cara_elem, mate, mateco, &
-                tpsthe, time, temp_iter, compor, varc_curr, &
+                timePara, timeMap, temp_iter, compor, varc_curr, &
                 merigi, 'V', l_stat, &
                 dry_prev, dry_curr)
     nb_matr = 0
