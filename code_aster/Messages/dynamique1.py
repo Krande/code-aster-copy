@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,16 @@ ACCELERATION_MPI='NON'."""
         Il n'a pas été possible d'équilibrer les bandes de fréquence à la tolérance souhaitée."""
     ),
     4: _(
-        """Convergence de l'algorithme d'équilibrage de bandes de fréquence atteinte. 
+        """Convergence de l'algorithme d'équilibrage de bandes de fréquence atteinte.
     Erreur relative maximale :%(r1)12.5e. Nombre d'itérations : %(i1)i"""
     ),
     5: _(
-        """L'algorithme d'équilibrage de bandes de fréquence ne prend en entrée que 
+        """L'algorithme d'équilibrage de bandes de fréquence ne prend en entrée que
     des matrices symétriques réelles."""
+    ),
+    6: _(
+        """
+L'incrément de temps est négatif du fait de la reprise du calcul. Cette valeur est incorrecte physiquement, il faut changer votre discrétisation temporelle.
+"""
     ),
 }
