@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,13 +18,14 @@
 #include "MeshTypes_type.h"
 !
 interface
-    subroutine elraca(elrefz   ,&
-                      nbfpg_   , fapg_    , nbpg_,&
-                      ndim_    , nno_     , nnos_,&
+    subroutine elraca(elrefz, &
+                      nbfpg_, fapg_, nbpg_, &
+                      ndim_, nno_, nnos_, &
                       nodeCoor_, cellVolu_)
-        character(len=*), intent(in)            :: elrefz
-        integer(kind=8), optional, intent(out)          :: ndim_, nno_, nnos_, nbfpg_, nbpg_(MT_NBFAMX)
-        real(kind=8), optional, intent(out)     :: nodeCoor_(3*MT_NNOMAX), cellVolu_
+        character(len=*), intent(in) :: elrefz
+        integer(kind=8), optional, intent(out) :: ndim_, nno_, nnos_
+        integer(kind=8), optional, intent(out) :: nbfpg_, nbpg_(MT_NBFAMX)
+        real(kind=8), optional, intent(out) :: nodeCoor_(3*MT_NNOMAX), cellVolu_
         character(len=8), optional, intent(out) :: fapg_(MT_NBFAMX)
     end subroutine elraca
 end interface
