@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -27,5 +27,10 @@ On doit être soit en élasticité, soit utiliser un comportement de type DIS_CO
     2: _(
         """On ne peut pas utiliser ACCELERATION_MPI en parallélisme distribué : on force
 ACCELERATION_MPI='NON'."""
+    ),
+    6: _(
+        """
+L'incrément de temps est négatif du fait de la reprise du calcul. Cette valeur est incorrecte physiquement, il faut changer votre discrétisation temporelle.
+"""
     ),
 }

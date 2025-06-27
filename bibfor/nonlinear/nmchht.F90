@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
                   list_load, nume_dof, list_func_acti, ds_measure, &
@@ -23,31 +22,29 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
                   hval_incr, hval_algo, hval_measse, ds_inout)
 !
     use NonLin_Datastructure_type
-    use HHO_type
-!
     implicit none
 !
-#include "asterf_types.h"
-#include "asterfort/NonLinear_type.h"
 #include "asterc/r8prem.h"
+#include "asterf_types.h"
 #include "asterfort/assert.h"
+#include "asterfort/copisd.h"
 #include "asterfort/diinst.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/mecact.h"
+#include "asterfort/nd_mstp_time.h"
 #include "asterfort/ndynkk.h"
-#include "asterfort/nonlinIntForce.h"
-#include "asterfort/nmchex.h"
-#include "asterfort/copisd.h"
-#include "asterfort/nmvcex.h"
-#include "asterfort/utmess.h"
 #include "asterfort/nmcha0.h"
 #include "asterfort/nmchai.h"
+#include "asterfort/nmchex.h"
+#include "asterfort/nmdidi.h"
+#include "asterfort/nmvcex.h"
 #include "asterfort/nmvcle.h"
-#include "asterfort/nd_mstp_time.h"
-#include "asterfort/nonlinSubStruCompute.h"
+#include "asterfort/NonLinear_type.h"
+#include "asterfort/nonlinIntForce.h"
 #include "asterfort/nonlinLoadCompute.h"
 #include "asterfort/nonlinLoadDynaCompute.h"
-#include "asterfort/nmdidi.h"
+#include "asterfort/nonlinSubStruCompute.h"
+#include "asterfort/utmess.h"
 !
     character(len=24), intent(in) :: model
     type(NL_DS_Material), intent(in) :: ds_material
@@ -111,30 +108,30 @@ subroutine nmchht(model, ds_material, cara_elem, ds_constitutive, &
     ASSERT(nmax .eq. zveelm)
     call nmchai('VEASSE', 'LONMAX', nmax)
     ASSERT(nmax .eq. zveass)
-!
+
 ! - Active functionnalities
-!
     l_didi = isfonc(list_func_acti, 'DIDI')
     l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
-!
+
 ! - Initial time
-!
     time_init = diinst(sddisc, 0)
-!
+
 ! - Get previous time
-!
     call nd_mstp_time(ds_inout, list_func_acti, time_prev_step, l_comp_mstp)
-!
+
 ! - Protection
-!
     if (abs(time_prev_step-time_init) .le. r8prem()) then
         l_comp_mstp = ASTER_FALSE
         call utmess('A', 'DYNAMIQUE_52')
     end if
-!
+
 ! - Computation
-!
     if (l_comp_mstp) then
+! ----- Check Delta_time
+        if (time_init-time_prev_step .lt. 0.d0) then
+            call utmess('F', 'DYNAMIQUE1_6')
+        end if
+
 ! ----- Create <CARTE> for time
         call nmchex(hval_incr, 'VALINC', 'COMMOI', varc_prev)
         call nmchex(hval_incr, 'VALINC', 'COMPLU', varc_curr)
