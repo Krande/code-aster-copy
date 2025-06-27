@@ -422,7 +422,8 @@ subroutine znaupd(ido, bmat, n, which, nev, &
 #include "asterfort/utmess.h"
 #include "asterfort/znaup2.h"
 #include "asterfort/zvout.h"
-   integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2
+    integer(kind=8) :: mnaitr, mneigh, mnapps, mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -459,7 +460,8 @@ subroutine znaupd(ido, bmat, n, which, nev, &
 !     | LOCAL SCALARS |
 !     %---------------%
 !
- integer(kind=8) :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq, mode, msglvl, mxiter, nb, nev0, next
+    integer(kind=8) :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq
+    integer(kind=8) :: mode, msglvl, mxiter, nb, nev0, next
     integer(kind=8) :: np, ritz, j
     save bounds, ih, iq, ishift, iw,&
      &           ldh, ldq, mode, msglvl, mxiter, nb,&

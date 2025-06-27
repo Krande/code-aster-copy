@@ -153,24 +153,14 @@ subroutine mefint(nbz, nbgrp, nbmod, nbnoe, nbddl, &
 ! ---       INTERPOLATION DES DEFORMEES MODALES
 ! ---       DEBUT BES BOUCLES SUR LES MODES
             do nm = 1, nbmod
-                phix(j, i, nm) = defm( &
-                                 nbddl*(nno1-1)+irot(1), &
-                                 nm)+( &
-                                 defm( &
-                                 nbddl*(nno2-1)+irot(1), nm)-defm(nbddl*(nno1-1)+irot(1), &
-                                                           nm))*(z(j)-zint(ind1, i))/(zint(ind2, i &
-                                                                                    )-zint(ind1, i &
-                                                                                                 ) &
-                                                                                             )
-                phiy(j, i, nm) = defm( &
-                                 nbddl*(nno1-1)+irot(2), &
-                                 nm)+( &
-                                 defm( &
-                                 nbddl*(nno2-1)+irot(2), nm)-defm(nbddl*(nno1-1)+irot(2), &
-                                                           nm))*(z(j)-zint(ind1, i))/(zint(ind2, i &
-                                                                                    )-zint(ind1, i &
-                                                                                                 ) &
-                                                                                             )
+                phix(j, i, nm) = defm(nbddl*(nno1-1)+irot(1), nm)+ &
+                                 (defm(nbddl*(nno2-1)+irot(1), nm)- &
+                                  defm(nbddl*(nno1-1)+irot(1), nm))* &
+                                 (z(j)-zint(ind1, i))/(zint(ind2, i)-zint(ind1, i))
+                phiy(j, i, nm) = defm(nbddl*(nno1-1)+irot(2), nm)+ &
+                                 (defm(nbddl*(nno2-1)+irot(2), nm)- &
+                                  defm(nbddl*(nno1-1)+irot(2), nm))* &
+                                 (z(j)-zint(ind1, i))/(zint(ind2, i)-zint(ind1, i))
 !
 !
 ! ---       FIN BES BOUCLES SUR LES MODES

@@ -49,15 +49,13 @@ subroutine vectan(nb1, nb2, xi, xr, vecta, &
 !     CONSTRUCTION DU VECTEUR N AUX NB2 NOEUDS I
 !     (STOCKE DANS VECTN)
 !
-        vectn(i, 1) = vecta(i, 1, 2)*vecta(i, 2, 3)-vecta(i, 1, 3)*vecta(i, 2, &
-                                                                         2)
-        vectn(i, 2) = vecta(i, 1, 3)*vecta(i, 2, 1)-vecta(i, 1, 1)*vecta(i, 2, &
-                                                                         3)
-        vectn(i, 3) = vecta(i, 1, 1)*vecta(i, 2, 2)-vecta(i, 1, 2)*vecta(i, 2, &
-                                                                         1)
+        vectn(i, 1) = vecta(i, 1, 2)*vecta(i, 2, 3)-vecta(i, 1, 3)*vecta(i, 2, 2)
+        vectn(i, 2) = vecta(i, 1, 3)*vecta(i, 2, 1)-vecta(i, 1, 1)*vecta(i, 2, 3)
+        vectn(i, 3) = vecta(i, 1, 1)*vecta(i, 2, 2)-vecta(i, 1, 2)*vecta(i, 2, 1)
 !
-        rnorm = sqrt(vectn(i, 1)*vectn(i, 1)+vectn(i, 2)*vectn(i, 2) &
-                     +vectn(i, 3)*vectn(i, 3))
+        rnorm = sqrt(vectn(i, 1)*vectn(i, 1)+ &
+                     vectn(i, 2)*vectn(i, 2)+ &
+                     vectn(i, 3)*vectn(i, 3))
         vectn(i, 1) = vectn(i, 1)/rnorm
         vectn(i, 2) = vectn(i, 2)/rnorm
         vectn(i, 3) = vectn(i, 3)/rnorm
@@ -65,8 +63,9 @@ subroutine vectan(nb1, nb2, xi, xr, vecta, &
 !     CONSTRUCTION DES VECTEURS TA AUX NOEUDS I
 !     (STOCKE DANS VECTPT)
 !
-        rnorm = sqrt(vecta(i, 1, 1)*vecta(i, 1, 1)+vecta(i, 1, 2)*vecta(i, 1, &
-                                                                   2)+vecta(i, 1, 3)*vecta(i, 1, 3))
+        rnorm = sqrt(vecta(i, 1, 1)*vecta(i, 1, 1)+ &
+                     vecta(i, 1, 2)*vecta(i, 1, 2)+ &
+                     vecta(i, 1, 3)*vecta(i, 1, 3))
         do k = 1, 3
             vectpt(i, 1, k) = vecta(i, 1, k)/rnorm
         end do

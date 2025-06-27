@@ -507,7 +507,8 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
                     if (allocated(combss)) then
                         deallocate (combss)
                     end if
-                allocate (MatAinverser(comppt+2, comppt+2), fsInverse(comppt+2), vectPass(comppt+2))
+                    allocate (MatAinverser(comppt+2, comppt+2), fsInverse(comppt+2), &
+                              vectPass(comppt+2))
                     ! on parcours toutes les combinaisons
                     combss = combinaisons(nbDDL-2, comppt)
                     nbcomb = ubound(combss, 1)
@@ -555,7 +556,8 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
                             !   + regarder le cas des inversions iréalistes fs trop gros
                             NoConvCrit = .false.
                             do ii = 1, 2+comppt
-                                NoConvCrit = NoConvCrit .or. (fsInverse(ii) .LE. (-r8prem())) .or. &
+                                NoConvCrit = NoConvCrit .or. &
+                                             (fsInverse(ii) .LE. (-r8prem())) .or. &
                                              (abs(fsInverse(ii)) .GT. fssomme)
                             end do
                         end if
@@ -615,7 +617,8 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
                     if (allocated(combss)) then
                         deallocate (combss)
                     end if
-                allocate (MatAinverser(comppt+1, comppt+1), fsInverse(comppt+1), vectPass(comppt+1))
+                    allocate (MatAinverser(comppt+1, comppt+1), fsInverse(comppt+1), &
+                              vectPass(comppt+1))
                     ! on parcours toutes les combinaisons
                     combss = combinaisons(nbDDL-1, comppt)
                     nbcomb = ubound(combss, 1)
@@ -694,7 +697,8 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
                     if (allocated(combss)) then
                         deallocate (combss)
                     end if
-                allocate (MatAinverser(comppt+1, comppt+1), fsInverse(comppt+1), vectPass(comppt+1))
+                    allocate (MatAinverser(comppt+1, comppt+1), &
+                              fsInverse(comppt+1), vectPass(comppt+1))
                     ! on parcours toutes les combinaisons
                     combss = combinaisons(nbDDL-1, comppt)
                     nbcomb = ubound(combss, 1)
@@ -820,20 +824,28 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
             fsitenow(4) = sHslIte*((Fite(1)-Qslite(1))**2+(Fite(2)-Qslite(2))**2)**0.5+ &
                           Fite(3)*tan(phi)-Cinter*Lx*Ly*(1.0-2.0*abs(Fite(5))/(Lx*Fite(3)))* &
                           (1.0+2.0*sMxslIte*abs(Fite(4))/(Ly*Fite(3)))
-            fsitenow(5) = -Fite(3)-(Velas+QCPIte(3))*(1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
-                                                         (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
+            fsitenow(5) = -Fite(3)- &
+                          (Velas+QCPIte(3))* &
+                          (1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
+                                        (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
                           (1.0+2.0*sMxCPIte*abs(Fite(4)-QCPIte(4))/(Ly*Fite(3)))* &
                           (1.0+2.0*sMyCPIte*abs(Fite(5)-QCPIte(5))/(Lx*Fite(3)))
-            fsitenow(6) = -Fite(3)-(Velas+QCPIte(3))*(1.0-sHCPIte*((Fite(1)-QCPIte(1))**2+ &
-                                                         (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
+            fsitenow(6) = -Fite(3)- &
+                          (Velas+QCPIte(3))* &
+                          (1.0-sHCPIte*((Fite(1)-QCPIte(1))**2+ &
+                                        (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
                           (1.0+2.0*sMxCPIte*abs(Fite(4)-QCPIte(4))/(Ly*Fite(3)))* &
                           (1.0+2.0*sMyCPIte*abs(Fite(5)-QCPIte(5))/(Lx*Fite(3)))
-            fsitenow(7) = -Fite(3)-(Velas+QCPIte(3))*(1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
-                                                         (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
+            fsitenow(7) = -Fite(3)- &
+                          (Velas+QCPIte(3))* &
+                          (1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
+                                        (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
                           (1.0-2.0*sMxCPIte*abs(Fite(4)-QCPIte(4))/(Ly*Fite(3)))* &
                           (1.0+2.0*sMyCPIte*abs(Fite(5)-QCPIte(5))/(Lx*Fite(3)))
-            fsitenow(8) = -Fite(3)-(Velas+QCPIte(3))*(1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
-                                                         (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
+            fsitenow(8) = -Fite(3)- &
+                          (Velas+QCPIte(3))* &
+                          (1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
+                                        (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
                           (1.0+2.0*sMxCPIte*abs(Fite(4)-QCPIte(4))/(Ly*Fite(3)))* &
                           (1.0-2.0*sMyCPIte*abs(Fite(5)-QCPIte(5))/(Lx*Fite(3)))
             do ii = 1, 8

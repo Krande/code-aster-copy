@@ -91,8 +91,10 @@ subroutine dis_contact_frot(for_discret, iret)
 ! --------------------------------------------------------------------------------------------------
 !   Pour l'intégration de la loi de comportement
     real(kind=8) :: temps0, temps1, dtemps
-!   Paramètres de la loi :     Kn       Kt       mu       cn       ct       jeu,      ky,    kz
-    integer(kind=8), parameter :: ikn = 1, ikt = 2, imu = 3, icn = 4, ict = 5, ijeu = 6, iky = 7, ikz = 8
+!   Paramètres de la loi :        Kn       Kt       mu       cn
+    integer(kind=8), parameter :: ikn = 1, ikt = 2, imu = 3, icn = 4
+!   Paramètres de la loi :        ct       jeu,      ky,    kz
+    integer(kind=8), parameter :: ict = 5, ijeu = 6, iky = 7, ikz = 8
     integer(kind=8), parameter :: nbpara = 8
     real(kind=8) :: ldcpar(nbpara)
     integer(kind=8) :: ldcpai(2)

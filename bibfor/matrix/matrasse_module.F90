@@ -58,10 +58,13 @@ contains
         character(len=14) :: nonu
         integer(kind=8), dimension(:), pointer :: delg => null()
         integer(kind=8) :: nbeq, iret
+        aster_logical :: test_dof
         !
         call jemarq()
         !
-ASSERT((type_dof == physical_dof) .or. (type_dof == lagrange1_dof) .or. (type_dof == lagrange2_dof))
+        test_dof = (type_dof == physical_dof) .or. (type_dof == lagrange1_dof) &
+                   .or. (type_dof == lagrange2_dof)
+        ASSERT(test_dof)
         !
         ! La matrice existe-t-elle ?
         call jeexin(matass//'.REFA', iret)
@@ -101,11 +104,14 @@ ASSERT((type_dof == physical_dof) .or. (type_dof == lagrange1_dof) .or. (type_do
         integer(kind=8), dimension(:), pointer :: delg => null()
         integer(kind=8) :: nbeq, nlag1, nlag2, nphys, ndof, iret
         integer(kind=8) :: i
+        aster_logical :: test_dof
         mpi_int :: mpicomm
         !
         call jemarq()
         !
-ASSERT((type_dof == physical_dof) .or. (type_dof == lagrange1_dof) .or. (type_dof == lagrange2_dof))
+        test_dof = (type_dof == physical_dof) .or. (type_dof == lagrange1_dof) &
+                   .or. (type_dof == lagrange2_dof)
+        ASSERT(test_dof)
         !
         idof => null()
         ! Communicateur MPI

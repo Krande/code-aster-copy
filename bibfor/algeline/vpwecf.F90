@@ -326,8 +326,8 @@ subroutine vpwecf(option, typres, nfreq, mxfreq, resufi, &
         end do
         write (ifm, 7777)
 !
-    elseif (resufk(nfreq, 2) .eq. 'INVERSE_C' .and. (option(1:6) &
-                                                 .eq. 'AJUSTE' .or. option(1:6) .eq. 'SEPARE')) then
+    elseif (resufk(nfreq, 2) .eq. 'INVERSE_C' &
+            .and. (option(1:6) .eq. 'AJUSTE' .or. option(1:6) .eq. 'SEPARE')) then
         if (typres .eq. 'DYNAMIQUE') then
             call utmess('I', 'ALGELINE6_86')
         else

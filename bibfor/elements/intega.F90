@@ -64,11 +64,11 @@ subroutine intega(npgf, jac, poidsf, vectx, vecty, &
 !
     do 10, ipgf = 1, npgf
 !
-        inte = inte+((vectx(ipgf)-mat11(ipgf)*nx(ipgf)-mat12(ipgf)*ny( &
-                      ipgf)-mat13(ipgf)*nz(ipgf))**2+(vecty(ipgf)-mat12(ipgf)*nx( &
-                                       ipgf)-mat22(ipgf)*ny(ipgf)-mat23(ipgf)*nz(ipgf))**2+(vectz( &
-                                      ipgf)-mat13(ipgf)*nx(ipgf)-mat23(ipgf)*ny(ipgf)-mat33(ipgf)* &
-                                                                nz(ipgf))**2)*poidsf(ipgf)*jac(ipgf)
+        inte = inte+( &
+               (vectx(ipgf)-mat11(ipgf)*nx(ipgf)-mat12(ipgf)*ny(ipgf)-mat13(ipgf)*nz(ipgf))**2+ &
+               (vecty(ipgf)-mat12(ipgf)*nx(ipgf)-mat22(ipgf)*ny(ipgf)-mat23(ipgf)*nz(ipgf))**2+ &
+               (vectz(ipgf)-mat13(ipgf)*nx(ipgf)-mat23(ipgf)*ny(ipgf)-mat33(ipgf)*nz(ipgf))**2 &
+               )*poidsf(ipgf)*jac(ipgf)
 !
 10  end do
 !

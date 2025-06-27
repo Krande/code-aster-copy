@@ -181,8 +181,8 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav, &
         write (6, *) 'TYPE MAILLE VOLUMIQUE COURANTE :', tymvol
         write (6, 1001)
 1000    format(i3, 6x, (6(1x, 1pe12.5)))
-1001    format(11x, 'SIXX         SIYY         SIZZ         SIXY',&
-        &           '         SIXZ         SIYZ')
+1001    format(11x, 'SIXX         SIYY         SIZZ         SIXY', &
+               '         SIXZ         SIYZ')
         do 110, in = 1, nnof
             ino = noe(in, ifa, tymvol)
             ncher = zi(jad-1+ino)

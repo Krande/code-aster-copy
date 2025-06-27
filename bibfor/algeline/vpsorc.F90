@@ -110,7 +110,8 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq, &
 #include "asterfort/znaupd.h"
 #include "asterfort/zneupd.h"
 !
-   integer(kind=8) :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl, ddlexc(nbeq), ddllag(nbeq), neqact
+    integer(kind=8) :: lmasse, ldynfa, nbeq, nbvect, nfreq, lonwl
+    integer(kind=8) :: ddlexc(nbeq), ddllag(nbeq), neqact
     integer(kind=8) :: maxitr, ifm, niv, priram(8), nconv
     real(kind=8) :: tolsor, alpha, rwork(*)
     complex(kind=8) :: vect(nbeq, *), resid(*), workd(*), workl(*), dsor(*), vaux(*), workv(*)
@@ -132,7 +133,8 @@ subroutine vpsorc(lmasse, ldynfa, nbeq, nbvect, nfreq, &
     character(len=2) :: which
     character(len=19) :: k19bid, matass, chcine, criter
 !
-   integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr
+    integer(kind=8) :: mneigh, mnapps, mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd

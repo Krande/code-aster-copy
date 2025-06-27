@@ -349,10 +349,14 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
             dfdF(ii+4, 1) = (tirela(1)-vloc(13))*valH*valint/HCP/tirela(3)
             dfdF(ii+4, 2) = (tirela(2)-vloc(14))*valH*valint/HCP/tirela(3)
         end if
-        dfdF(ii+4, 3) = -1.0+(Velas+vloc(15))*2.0*valMx*abs(tirela(4)-vloc(16))/(Ly*tirela(3)**2)* &
-                  (1.0+valH*HCP/tirela(3))**3*(1.0+2.0*valMy*abs(tirela(5)-vloc(17))/(Lx*tirela(3)))
-        dfdF(ii+4, 3) = dfdF(ii+4, 3)+(Velas+vloc(15))*2.0*valMy* &
-                        abs(tirela(5)-vloc(17))/(Lx*tirela(3)**2)*(1.0+valH*HCP/tirela(3))**3* &
+        dfdF(ii+4, 3) = -1.0+ &
+                        (Velas+vloc(15))*2.0*valMx* &
+                        abs(tirela(4)-vloc(16))/(Ly*tirela(3)**2)* &
+                        (1.0+valH*HCP/tirela(3))**3* &
+                        (1.0+2.0*valMy*abs(tirela(5)-vloc(17))/(Lx*tirela(3)))
+        dfdF(ii+4, 3) = dfdF(ii+4, 3)+ &
+                        (Velas+vloc(15))*2.0*valMy*abs(tirela(5)-vloc(17))/(Lx*tirela(3)**2)* &
+                        (1.0+valH*HCP/tirela(3))**3* &
                         (1.0+2.0*valMx*abs(tirela(4)-vloc(16))/(Ly*tirela(3)))
         dfdF(ii+4, 3) = dfdF(ii+4, 3)+(Velas+vloc(15))*3.0*valH*HCP/(tirela(3)**2)* &
                         (1.0+valH*HCP/tirela(3))**2* &
@@ -410,7 +414,8 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
             jj = assoddl(nbDDLjj)
             if ((ii .le. 4) .and. (jj .le. 4)) then
                 MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))- &
-                               dfdQsl(ii, 1)*Hslid(1)*dfdF(jj, 1)-dfdQsl(ii, 2)*Hslid(2)*dfdF(jj, 2)
+                                                 dfdQsl(ii, 1)*Hslid(1)*dfdF(jj, 1)- &
+                                                 dfdQsl(ii, 2)*Hslid(2)*dfdF(jj, 2)
             else if ((ii .ge. 5) .and. (jj .ge. 5)) then
                 if (dfdF(ii, 3) .gt. r8prem()) then
                     signeHHCP3(3) = +1.0
@@ -418,7 +423,8 @@ subroutine difondmat(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, errmax,
                     signeHHCP3(3) = -1.0
                 end if
                 MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))- &
-                                              sum(dfdQCP(ii-4, :)*HHCP(:)*signeHHCP3(:)*dfdF(jj, :))
+                                                 sum(dfdQCP(ii-4, :)*HHCP(:)* &
+                                                     signeHHCP3(:)*dfdF(jj, :))
             else
                 MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))
             end if

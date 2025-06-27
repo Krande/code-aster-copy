@@ -114,7 +114,8 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq, &
 #include "asterfort/wkvect.h"
 #include "asterfort/wp2ay1.h"
     character(len=1) :: appr
- integer(kind=8) :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*), ddllag(*), neqact, maxitr
+    integer(kind=8) :: lmasse, lmatra, nbeq, nbvect, nfreq, lonwl, ddlexc(*)
+    integer(kind=8) :: ddllag(*), neqact, maxitr
     integer(kind=8) :: ifm, niv, priram(8), nconv, lamor
     real(kind=8) :: tolsor, resid(*), workd(*), workl(*), vaux(*), vaur(2*nbeq, *), vpr(*), vpi(*)
     real(kind=8) :: workv(*), alpha, dsor(nfreq+1, *)
@@ -136,7 +137,8 @@ subroutine wpsorn(appr, lmasse, lamor, lmatra, nbeq, &
     character(len=1) :: bmat
     character(len=2) :: which
 !
-   integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr
+    integer(kind=8) :: mneigh, mnapps, mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd

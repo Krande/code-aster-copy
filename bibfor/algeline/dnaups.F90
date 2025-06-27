@@ -445,7 +445,8 @@ subroutine dnaups(ido, bmat, n, which, nev, &
 #include "asterfort/dvout.h"
 #include "asterfort/ivout.h"
 #include "asterfort/utmess.h"
-   integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr
+    integer(kind=8) ::  mneigh, mnapps, mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -483,7 +484,8 @@ subroutine dnaups(ido, bmat, n, which, nev, &
 !     | LOCAL SCALARS |
 !     %---------------%
 !
- integer(kind=8) :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq, mode, msglvl, mxiter, nb, nev0, next
+    integer(kind=8) :: bounds, ierr, ih, iq, ishift, iw, ldh, ldq, mode
+    integer(kind=8) ::  msglvl, mxiter, nb, nev0, next
     integer(kind=8) :: np, ritzi, ritzr, j
 ! DUE TO CRS512 INTEGER LEVEC
     save bounds, ih, iq, ishift, iw, ldh, ldq,&

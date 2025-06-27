@@ -994,9 +994,11 @@ contains
         real(kind=8), intent(out) :: normMast(3), normSlav(3)
 ! - Local
         character(len=8) :: mesh
-      integer(kind=8), pointer :: connex(:) => null(), cellNbNode(:) => null(), typmail(:) => null()
+        integer(kind=8), pointer :: connex(:) => null()
+        integer(kind=8), pointer ::cellNbNode(:) => null(), typmail(:) => null()
         integer(kind=8), parameter :: normNorm = 1
-    integer(kind=8) :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode, cellMastNume, cellSlavNume
+        integer(kind=8) :: cellTypeNume, iCellMast, iCellSlav, iNode, nbNode
+        integer(kind=8) :: cellMastNume, cellSlavNume
         aster_logical :: mastHasPOI1, slavHasPOI1
         real(kind=8) :: normCell(3), cellCoor(27)
 !   ------------------------------------------------------------------------------------------------

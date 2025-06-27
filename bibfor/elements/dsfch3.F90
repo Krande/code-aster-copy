@@ -202,29 +202,29 @@ subroutine dsfch3(nno, nnf, poids, dpdef, dpdnf, &
 !
     do i = 1, nnf
 !
-       dsdxxf(i) = t1(1, 1)*dpdef(i)+t1(1, 2)*dpdnf(i)+t1(1, 3)*dpdkf(i)+t2(1, 1)*dsdeef(i)+t2(1, 2&
-              &)*dsdnnf(i)+t2(1, 3)*dsdkkf(i)+t2(1, 4)*dsdenf(i)+t2(1, 5)*dsdnkf(i)+t2(1, 6)*&
-              &dsdekf(i)
+        dsdxxf(i) = t1(1, 1)*dpdef(i)+t1(1, 2)*dpdnf(i)+t1(1, 3)* &
+                    dpdkf(i)+t2(1, 1)*dsdeef(i)+t2(1, 2)*dsdnnf(i)+t2(1, 3)* &
+                    dsdkkf(i)+t2(1, 4)*dsdenf(i)+t2(1, 5)*dsdnkf(i)+t2(1, 6)*dsdekf(i)
 !
-       dsdyyf(i) = t1(2, 1)*dpdef(i)+t1(2, 2)*dpdnf(i)+t1(2, 3)*dpdkf(i)+t2(2, 1)*dsdeef(i)+t2(2, 2&
-              &)*dsdnnf(i)+t2(2, 3)*dsdkkf(i)+t2(2, 4)*dsdenf(i)+t2(2, 5)*dsdnkf(i)+t2(2, 6)*&
-              &dsdekf(i)
+        dsdyyf(i) = t1(2, 1)*dpdef(i)+t1(2, 2)*dpdnf(i)+t1(2, 3)* &
+                    dpdkf(i)+t2(2, 1)*dsdeef(i)+t2(2, 2)*dsdnnf(i)+t2(2, 3)* &
+                    dsdkkf(i)+t2(2, 4)*dsdenf(i)+t2(2, 5)*dsdnkf(i)+t2(2, 6)*dsdekf(i)
 !
-       dsdzzf(i) = t1(3, 1)*dpdef(i)+t1(3, 2)*dpdnf(i)+t1(3, 3)*dpdkf(i)+t2(3, 1)*dsdeef(i)+t2(3, 2&
-              &)*dsdnnf(i)+t2(3, 3)*dsdkkf(i)+t2(3, 4)*dsdenf(i)+t2(3, 5)*dsdnkf(i)+t2(3, 6)*&
-              &dsdekf(i)
+        dsdzzf(i) = t1(3, 1)*dpdef(i)+t1(3, 2)*dpdnf(i)+t1(3, 3)* &
+                    dpdkf(i)+t2(3, 1)*dsdeef(i)+t2(3, 2)*dsdnnf(i)+t2(3, 3)* &
+                    dsdkkf(i)+t2(3, 4)*dsdenf(i)+t2(3, 5)*dsdnkf(i)+t2(3, 6)*dsdekf(i)
 !
-       dsdxyf(i) = t1(4, 1)*dpdef(i)+t1(4, 2)*dpdnf(i)+t1(4, 3)*dpdkf(i)+t2(4, 1)*dsdeef(i)+t2(4, 2&
-              &)*dsdnnf(i)+t2(4, 3)*dsdkkf(i)+t2(4, 4)*dsdenf(i)+t2(4, 5)*dsdnkf(i)+t2(4, 6)*&
-              &dsdekf(i)
+        dsdxyf(i) = t1(4, 1)*dpdef(i)+t1(4, 2)*dpdnf(i)+t1(4, 3)* &
+                    dpdkf(i)+t2(4, 1)*dsdeef(i)+t2(4, 2)*dsdnnf(i)+t2(4, 3)* &
+                    dsdkkf(i)+t2(4, 4)*dsdenf(i)+t2(4, 5)*dsdnkf(i)+t2(4, 6)*dsdekf(i)
 !
-       dsdyzf(i) = t1(5, 1)*dpdef(i)+t1(5, 2)*dpdnf(i)+t1(5, 3)*dpdkf(i)+t2(5, 1)*dsdeef(i)+t2(5, 2&
-              &)*dsdnnf(i)+t2(5, 3)*dsdkkf(i)+t2(5, 4)*dsdenf(i)+t2(5, 5)*dsdnkf(i)+t2(5, 6)*&
-              &dsdekf(i)
+        dsdyzf(i) = t1(5, 1)*dpdef(i)+t1(5, 2)*dpdnf(i)+t1(5, 3)* &
+                    dpdkf(i)+t2(5, 1)*dsdeef(i)+t2(5, 2)*dsdnnf(i)+t2(5, 3)* &
+                    dsdkkf(i)+t2(5, 4)*dsdenf(i)+t2(5, 5)*dsdnkf(i)+t2(5, 6)*dsdekf(i)
 !
-       dsdxzf(i) = t1(6, 1)*dpdef(i)+t1(6, 2)*dpdnf(i)+t1(6, 3)*dpdkf(i)+t2(6, 1)*dsdeef(i)+t2(6, 2&
-              &)*dsdnnf(i)+t2(6, 3)*dsdkkf(i)+t2(6, 4)*dsdenf(i)+t2(6, 5)*dsdnkf(i)+t2(6, 6)*&
-              &dsdekf(i)
+        dsdxzf(i) = t1(6, 1)*dpdef(i)+t1(6, 2)*dpdnf(i)+t1(6, 3)* &
+                    dpdkf(i)+t2(6, 1)*dsdeef(i)+t2(6, 2)*dsdnnf(i)+t2(6, 3)* &
+                    dsdkkf(i)+t2(6, 4)*dsdenf(i)+t2(6, 5)*dsdnkf(i)+t2(6, 6)*dsdekf(i)
 !
     end do
 !

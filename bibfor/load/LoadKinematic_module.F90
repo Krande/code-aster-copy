@@ -1212,7 +1212,8 @@ contains
                                                 1, 3, &
                                                 2, 1/), (/2, 3/))
         aster_logical :: lCoque3d
-      integer(kind=8) :: iNodeMast, iNodeMastDisp, iNodeMastRota, iLink, iDime, iTerm, shiftNodeMast
+        integer(kind=8) :: iNodeMast, iNodeMastDisp, iNodeMastRota
+        integer(kind=8) :: iLink, iDime, iTerm, shiftNodeMast
         integer(kind=8) :: nbLink, nodeSlavNume, nodeMastNume, cellMastNume
         character(len=8) :: nodeSlavName, nodeMastName, dofName
         character(len=8) :: mesh, elrefa

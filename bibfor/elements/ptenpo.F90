@@ -136,7 +136,10 @@ subroutine ptenpo(n, x, mat, ep, itype, iform)
         nn = n/2
         do i = 2, nn
             do j = 1, i-1
-        if (mat(i, j) .ne. zero .or. mat(i, j+nn) .ne. zero .or. mat(i+nn, j+nn) .ne. zero) goto 900
+            if (mat(i, j) .ne. zero .or. mat(i, j+nn) .ne. zero &
+                .or. mat(i+nn, j+nn) .ne. zero) then
+                goto 900
+            end if
             end do
         end do
         do i = 1, nn

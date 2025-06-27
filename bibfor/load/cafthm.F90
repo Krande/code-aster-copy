@@ -153,7 +153,9 @@ subroutine cafthm(load, mesh, model, valeType)
                 if ((n2 .ne. 0) .and. (n3 .ne. 0)) call utmess('F', 'XFEM_48')
             end if
 !           LES FLUX DE FLUIDE DANS LES FRACTURES NE SONT AUTORISES QU'EN HM_XFEM
-      if ((valeType .eq. 'FONC') .and. (nfiss .eq. 0) .and. (n4 .ne. 0)) call utmess('F', 'XFEM_28')
+            if ((valeType .eq. 'FONC') .and. (nfiss .eq. 0) .and. (n4 .ne. 0)) then
+                call utmess('F', 'XFEM_28')
+            end if
             call reliem(model, mesh, 'NU_MAILLE', keywordFact, iocc, &
                         2, motcle, typmcl, mesmai, nbma)
             if (nbma .ne. 0) then

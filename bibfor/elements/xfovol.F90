@@ -218,8 +218,9 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he, &
             do j = 1, ddlh
                 pos = pos+1
                 ig = j-nfh*int((j-1)/nfh)
-                zr(ivectu-1+pos) = zr(ivectu-1+pos)+ &
-                           xcalc_heav(heavn(ino, ig), hea_se, heavn(ino, 5))*forvol(j)*poids*ff(ino)
+                zr(ivectu-1+pos) = &
+                    zr(ivectu-1+pos)+ &
+                    xcalc_heav(heavn(ino, ig), hea_se, heavn(ino, 5))*forvol(j)*poids*ff(ino)
 !
             end do
 !

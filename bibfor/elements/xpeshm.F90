@@ -178,13 +178,15 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls, &
                     if (yaenrm .eq. 1) then
                         do ifh = 1, nfh
                             if (ino .le. nnops) then
-                                zr(ivectu+ienr+1+(ndim+1)*ifh) = zr(ivectu+ienr+1+(ndim+1)*ifh) &
-                                              +xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))* &
-                                                                 poids*zr(ipesa+2)*ff(ino)
+                                zr(ivectu+ienr+1+(ndim+1)*ifh) = &
+                                    zr(ivectu+ienr+1+(ndim+1)*ifh)+ &
+                                    xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))* &
+                                    poids*zr(ipesa+2)*ff(ino)
                             else
-                                zr(ivectu+ienr+1+ndim*ifh) = zr(ivectu+ienr+1+ndim*ifh) &
-                                              +xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))* &
-                                                             poids*zr(ipesa+2)*ff(ino)
+                                zr(ivectu+ienr+1+ndim*ifh) = &
+                                    zr(ivectu+ienr+1+ndim*ifh) &
+                                    +xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))* &
+                                    poids*zr(ipesa+2)*ff(ino)
                             end if
                         end do
                     end if
@@ -209,25 +211,35 @@ subroutine xpeshm(nno, nnop, nnops, ndim, nddls, &
                     if (yaenrm .eq. 1) then
                         do ifh = 1, nfh
                             if (ino .le. nnops) then
-                                zr(ivectu+ienr+(ndim+1)*ifh) = zr(ivectu+ienr+(ndim+1)*ifh) &
-                       +xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids*zr(ipesa+1)*ff(ino)
-                                zr(ivectu+ienr+1+(ndim+1)*ifh) = zr(ivectu+ienr+1+(ndim+1)*ifh) &
-                       +xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids*zr(ipesa+2)*ff(ino)
+                                zr(ivectu+ienr+(ndim+1)*ifh) = &
+                                    zr(ivectu+ienr+(ndim+1)*ifh)+ &
+                                    xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids* &
+                                    zr(ipesa+1)*ff(ino)
+                                zr(ivectu+ienr+1+(ndim+1)*ifh) = &
+                                    zr(ivectu+ienr+1+(ndim+1)*ifh)+ &
+                                    xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids* &
+                                    zr(ipesa+2)*ff(ino)
                                 if (ndim .eq. 3) then
-                                  zr(ivectu+ienr+2+(ndim+1)*ifh) = zr(ivectu+ienr+2+(ndim+1)*ifh)+ &
-                                         xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids* &
-                                                                     zr(ipesa+3)*ff(ino)
+                                    zr(ivectu+ienr+2+(ndim+1)*ifh) = &
+                                        zr(ivectu+ienr+2+(ndim+1)*ifh)+ &
+                                        xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids* &
+                                        zr(ipesa+3)*ff(ino)
                                 end if
                             else
-                                zr(ivectu+ienr+ndim*ifh) = zr(ivectu+ienr+ndim*ifh) &
-                       +xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids*zr(ipesa+1)*ff(ino)
+                                zr(ivectu+ienr+ndim*ifh) = &
+                                    zr(ivectu+ienr+ndim*ifh)+ &
+                                    xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids* &
+                                    zr(ipesa+1)*ff(ino)
 !
-                                zr(ivectu+ienr+ndim*ifh+1) = zr(ivectu+ienr+ndim*ifh+1) &
-                       +xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids*zr(ipesa+2)*ff(ino)
+                                zr(ivectu+ienr+ndim*ifh+1) = &
+                                    zr(ivectu+ienr+ndim*ifh+1)+ &
+                                    xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids* &
+                                    zr(ipesa+2)*ff(ino)
                                 if (ndim .eq. 3) then
-                                    zr(ivectu+ienr+ndim*ifh+2) = zr(ivectu+ienr+ndim*ifh+2)+ &
-                                         xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids* &
-                                                                 zr(ipesa+3)*ff(ino)
+                                    zr(ivectu+ienr+ndim*ifh+2) = &
+                                        zr(ivectu+ienr+ndim*ifh+2)+ &
+                                        xcalc_heav(heavn(ino, ifh), hea_se, heavn(ino, 5))*poids* &
+                                        zr(ipesa+3)*ff(ino)
                                 end if
                             end if
                         end do

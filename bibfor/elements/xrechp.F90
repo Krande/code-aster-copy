@@ -258,19 +258,17 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps, &
                                     if (ilev .eq. 1) then
                                         r8tmp = ( &
                                                 xcalc_heav( &
-                                                heavn(jnp, 1), hea_fa(1), &
-                                                heavn(jnp, 5))-xcalc_heav(heavn(jnp, 1), &
-                                                                         hea_fa(2), heavn(jnp, 5)) &
-                                                )*ff(jnp &
-                                                     )
+                                                heavn(jnp, 1), hea_fa(1), heavn(jnp, 5))- &
+                                                xcalc_heav(heavn(jnp, 1), hea_fa(2), &
+                                                           heavn(jnp, 5)) &
+                                                )*ff(jnp)
                                     else if (ilev .eq. 2) then
                                         r8tmp = ( &
                                                 xcalc_heav( &
-                                                heavn(jnp, 1), hea_fa(2), &
-                                                heavn(jnp, 5))-xcalc_heav(heavn(jnp, 1), &
-                                                                         hea_fa(1), heavn(jnp, 5)) &
-                                                )*ff(jnp &
-                                                     )
+                                                heavn(jnp, 1), hea_fa(2), heavn(jnp, 5))- &
+                                                xcalc_heav(heavn(jnp, 1), hea_fa(1), &
+                                                           heavn(jnp, 5)) &
+                                                )*ff(jnp)
                                     end if
                                     ind2 = ind1+nbddl*(jnp-1)+lddl
                                     zr(imattt-1+ind2) = zr(imattt-1+ind2)+theta*hechp*jac*ffe&

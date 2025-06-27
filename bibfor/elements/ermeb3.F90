@@ -311,10 +311,10 @@ subroutine ermeb3(noe, ifa, tymvol, nnof, iref1, &
         write (6, *) 'TYPE MAILLE VOLUMIQUE COURANTE :', tymvol
         write (6, 1001)
 1000    format(i3, 6x, (6(1x, 1pe12.5)))
-1001    format('INO        SIXX         SIYY         SIZZ         SIXY',&
-        &           '         SIXZ         SIYZ')
-1002    format('INO        CHX          CHY          CHZ          NX  ',&
-        &           '         NY           NZ')
+1001    format('INO        SIXX         SIYY         SIZZ         SIXY', &
+               '         SIXZ         SIYZ')
+1002    format('INO        CHX          CHY          CHZ          NX  ', &
+               '         NY           NZ')
         do 110, in = 1, nnof
             ino = noe(in, ifa, tymvol)
             write (6, 1000) ino, sig11(in), sig22(in), sig33(in), sig12(in) &

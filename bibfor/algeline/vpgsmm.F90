@@ -58,7 +58,8 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, &
 !
 !-----------------------------------------------------------------------
 ! DECLARATION VARIABLES LOCALES
-  integer(kind=8) :: ireor1, ireor2, i, j, k, compt1, compt2, compt3, iauxi, iauxj, nconvl, ifm, niv
+    integer(kind=8) :: ireor1, ireor2, i, j, k, compt1, compt2, compt3
+    integer(kind=8) :: iauxi, iauxj, nconvl, ifm, niv
     real(kind=8) :: seuilr, seuilp, auxri, auxri1
     aster_logical :: ltest, lcheck
 !
@@ -166,8 +167,9 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, &
 !
     compt3 = nconv
     iauxj = 1
-   if ((lcheck) .or. (niv .ge. 2)) write (ifm, *) '<vpgsmm> m-reorthogonalisation partielle sur ', &
-        compt1, ' paquets'
+    if ((lcheck) .or. (niv .ge. 2)) then
+        write (ifm, *) '<vpgsmm> m-reorthogonalisation partielle sur ', compt1, ' paquets'
+    end if
     do i = 1, compt1
         iauxi = zi(ireor2+i-1)
         nconvl = zi(ireor2+nconv+i-1)
@@ -179,8 +181,9 @@ subroutine vpgsmm(nbeq, nfreq, nconv, vect, alpha, &
             ASSERT(.false.)
         end if
 !
-     if ((lcheck) .or. (niv .ge. 2)) write (ifm, *) '<vpgsmm> paquet modes multiples n', i, iauxi, &
-            nconvl
+        if ((lcheck) .or. (niv .ge. 2)) then
+            write (ifm, *) '<vpgsmm> paquet modes multiples n', i, iauxi, nconvl
+        end if
         call vpgskp(nbeq, nconvl, vect(1, iauxi), alpha, lmatb, &
                     typeps, vaux, ddlexc, delta)
 !

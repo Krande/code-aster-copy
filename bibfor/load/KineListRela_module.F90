@@ -163,11 +163,13 @@ contains
 ! ----- Print linear relation (for debug)
             if (present(epsiDebg_)) then
                 call imprel(titleZ, nbTerm, &
-                           kineListRela%coefMultReal, kineListRela%dofName, kineListRela%nodeName, &
+                            kineListRela%coefMultReal, kineListRela%dofName, &
+                            kineListRela%nodeName, &
                             realZero, kineListRela%coefMultTole)
             else
                 call imprel(titleZ, nbTerm, &
-                           kineListRela%coefMultReal, kineListRela%dofName, kineListRela%nodeName, &
+                            kineListRela%coefMultReal, kineListRela%dofName, &
+                            kineListRela%nodeName, &
                             realZero)
             end if
 
