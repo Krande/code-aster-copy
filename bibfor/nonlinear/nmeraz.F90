@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,10 +46,10 @@ subroutine nmeraz(sderro, eventType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iEvent, iret
+    integer(kind=8) :: iEvent, iret
     character(len=16) :: eventLevel
     character(len=24) :: eventEACTJv, eventENIVJv
-    integer, pointer :: eventEACT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

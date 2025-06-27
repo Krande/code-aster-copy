@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine apcoma(mesh, newgeo, elem_nume, elem_nbnode, elem_coor)
 !
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
-    integer, intent(in) :: elem_nume
-    integer, intent(in) :: elem_nbnode
+    integer(kind=8), intent(in) :: elem_nume
+    integer(kind=8), intent(in) :: elem_nbnode
     real(kind=8), intent(out) :: elem_coor(27)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,10 +48,10 @@ subroutine apcoma(mesh, newgeo, elem_nume, elem_nbnode, elem_coor)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbnmax = 9
-    integer :: node_nume(nbnmax), i_node
+    integer(kind=8), parameter :: nbnmax = 9
+    integer(kind=8) :: node_nume(nbnmax), i_node
     real(kind=8), pointer :: v_newgeo_vale(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

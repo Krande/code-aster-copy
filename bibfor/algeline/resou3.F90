@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,13 +37,13 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm, &
 !-----------------------------------------------------------------------
 !
     character(len=*) :: matass, matpre, solveu, chcine
-    integer :: nsecm
+    integer(kind=8) :: nsecm
     character(len=*) :: chsecm, chsolu, base
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
     character(len=*) :: criter
     aster_logical :: prepos
-    integer :: istop, iret
+    integer(kind=8) :: istop, iret
 !
 !-----------------------------------------------------------------------
 ! BUT : RESOUDRE UN SYSTEME LINEAIRE D'EQUATIONS AVEC PRECONDITIONNEUR XFEM
@@ -94,7 +94,7 @@ subroutine resou3(matass, matpre, solveu, chcine, nsecm, &
 ! ----------------------------------------------------------------------
     character(len=24) :: kxfem
     character(len=19) :: matas1, solve1, secm19, solu19, chtrav
-    integer ::  jsecm, jsolu, jtrav
+    integer(kind=8) ::  jsecm, jsolu, jtrav
 ! ----------------------------------------------------------------------
 !
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ contains
         real(kind=8), intent(in)          :: x
         real(kind=8), intent(in)          :: f
         real(kind=8), intent(in)          :: df
-        integer, intent(in)               :: ite
+        integer(kind=8), intent(in)               :: ite
         type(newton_state)               :: mem
         real(kind=8), intent(in), optional :: xmin
         real(kind=8), intent(in), optional :: xmax

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,9 +54,9 @@ subroutine brbagl(zimat, nmnbn, nmplas, nmdpla, nmddpl, &
     aster_logical :: bbok
 !
 !      INTEGER NEWPRO(2)
-    integer :: nmief, newief, nmprox(2), zimat
-    integer :: ncrit, ncrnew, nbb, ier, i, j, ipara(4)
-    integer :: nbbmax
+    integer(kind=8) :: nmief, newief, nmprox(2), zimat
+    integer(kind=8) :: ncrit, ncrnew, nbb, ier, i, j, ipara(4)
+    integer(kind=8) :: nbbmax
 !
     real(kind=8) :: nmnbn(6), newnbn(6)
     real(kind=8) :: nmplas(2, 3), newpla(2, 3)

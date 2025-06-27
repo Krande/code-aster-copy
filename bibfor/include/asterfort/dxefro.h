@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine dxefro(ne, t2iu, edgle, edglc)
-        integer, intent(in) :: ne
+        integer(kind=8), intent(in) :: ne
         real(kind=8), intent(in) :: t2iu(2, 2)
         real(kind=8), intent(in) :: edgle(*)
         real(kind=8), intent(out) :: edglc(*)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine scaldf(nbfonc, nbp, nbmr, disc, vale,&
                       defm, b)
-        integer :: nbmr
-        integer :: nbp
-        integer :: nbfonc
+        integer(kind=8) :: nbmr
+        integer(kind=8) :: nbp
+        integer(kind=8) :: nbfonc
         real(kind=8) :: disc(nbp)
         real(kind=8) :: vale(nbp, nbfonc)
         real(kind=8) :: defm(nbp, nbmr)

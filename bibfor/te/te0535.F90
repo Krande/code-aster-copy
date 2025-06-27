@@ -76,18 +76,18 @@ subroutine te0535(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nno, nc, nd, nk
+    integer(kind=8) :: nno, nc, nd, nk
     parameter(nno=2, nc=6, nd=nc*nno, nk=nd*(nd+1)/2)
 !
-    integer :: igeom, imate, iorien, iret
-    integer :: icarcr, icontm, ideplm, ideplp, imatuu
-    integer :: ivectu, icontp, ivarim, ivarip, i
-    integer :: jmodfb, jsigfb, jacf, nbvalc
-    integer :: jtab(7), ivarmp, istrxp, istrxm
-    integer :: kp, jcret, codret, codrep
-    integer :: iposcp, iposig, ipomod, iinstp, iinstm
-    integer :: icomax, ico, isdcom, ncomp
-    integer :: npg, nnoel, ipoids, ivf
+    integer(kind=8) :: igeom, imate, iorien, iret
+    integer(kind=8) :: icarcr, icontm, ideplm, ideplp, imatuu
+    integer(kind=8) :: ivectu, icontp, ivarim, ivarip, i
+    integer(kind=8) :: jmodfb, jsigfb, jacf, nbvalc
+    integer(kind=8) :: jtab(7), ivarmp, istrxp, istrxm
+    integer(kind=8) :: kp, jcret, codret, codrep
+    integer(kind=8) :: iposcp, iposig, ipomod, iinstp, iinstm
+    integer(kind=8) :: icomax, ico, isdcom, ncomp
+    integer(kind=8) :: npg, nnoel, ipoids, ivf
 !
     real(kind=8) :: e, nu, g, xl, xjx, gxjx, epsm
     real(kind=8) :: pgl(3, 3), fl(nd), klv(nk), sk(nk), rgeom(nk)
@@ -114,13 +114,13 @@ subroutine te0535(option, nomte)
 !
     real(kind=8), allocatable :: vfv(:, :), matsecp(:, :), vvp(:, :), skp(:, :)
 
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 
-    integer :: nbasspou, maxfipoutre
-    integer, pointer :: nbfipoutre(:) => null()
+    integer(kind=8) :: nbasspou, maxfipoutre
+    integer(kind=8), pointer :: nbfipoutre(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 3
+    integer(kind=8), parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'EY1', 'EZ1', 'JX1'/)
 !

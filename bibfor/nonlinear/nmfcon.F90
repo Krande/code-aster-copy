@@ -27,7 +27,7 @@ subroutine nmfcon(modele, numedd, ds_material, fonact, ds_contact, &
 #include "asterfort/isfonc.h"
 #include "asterfort/nmfocc.h"
 !
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     character(len=24) :: modele, numedd
     character(len=19) :: solalg(*), valinc(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                            ds_conv)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: sderro
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         real(kind=8), intent(in) :: load_norm
         real(kind=8), intent(in) :: load_mini
         real(kind=8), intent(in) :: last_resi_conv

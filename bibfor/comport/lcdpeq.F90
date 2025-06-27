@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,9 +47,9 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: nvi, nmat, nbcomm(nmat, 3), nbphas, i, iphas, indfv, nuvi, ifa
-    integer :: ifl, is, nbfsys, nbsys, nsfv, indpha, indcp, numirr, ns, indtau
-    integer :: iei, is3, iv3, iv, irr2
+    integer(kind=8) :: nvi, nmat, nbcomm(nmat, 3), nbphas, i, iphas, indfv, nuvi, ifa
+    integer(kind=8) :: ifl, is, nbfsys, nbsys, nsfv, indpha, indcp, numirr, ns, indtau
+    integer(kind=8) :: iei, is3, iv3, iv, irr2
     real(kind=8) :: vind(nvi), vinf(nvi), dvin(nvi), sig(6), granb(6)
     real(kind=8) :: epseq, fv, sigg(6), mus(6), ng(3), lg(3), pgl(3, 3)
     real(kind=8) :: id(3, 3), f(3, 3), fpm(3, 3), fp(3, 3), fe(3, 3), detp
@@ -58,7 +58,7 @@ subroutine lcdpeq(vind, vinf, rela_comp, nbcomm, cpmono, &
     real(kind=8) :: rhosat, phisat, dz, roloop(12), fivoid(12), sdp
     character(len=16) :: rela_comp, loca, necoul, nomfam
     character(len=24) :: cpmono(5*nmat+1)
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     data id/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/

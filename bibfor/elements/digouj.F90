@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine digouj(option, rela_comp, nno, nbt, neq, &
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
-    integer :: nbt, neq, icodma, nc
+    integer(kind=8) :: nbt, neq, icodma, nc
     real(kind=8) :: dul(neq), sim(neq), sip(neq), varim(*)
     real(kind=8) :: pgl(3, 3), klv(nbt), varip(*), fono(neq), klc(neq, neq)
     character(len=16) :: option, rela_comp, nomte
@@ -60,7 +60,7 @@ subroutine digouj(option, rela_comp, nno, nbt, neq, &
 !       FONI   : FORCES NODALES
 !       SIP    : EFFORTS INTERNES
 !
-    integer :: i, nno, jprolp, jvalep, nbvalp, lgpg, jtab(7)
+    integer(kind=8) :: i, nno, jprolp, jvalep, nbvalp, lgpg, jtab(7)
     real(kind=8) :: seuil
     real(kind=8) :: dfl(6), fl(6)
     real(kind=8) :: nu, para_vale, valpap
@@ -69,7 +69,7 @@ subroutine digouj(option, rela_comp, nno, nbt, neq, &
     aster_logical :: plasti
 !
 !-----------------------------------------------------------------------
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8) :: a, airerp, coef, deps, dp, dsidep, dut
     real(kind=8) :: e, rp, rprim, sieleq, sigdv, sigel, sigeps
     real(kind=8) :: sigy

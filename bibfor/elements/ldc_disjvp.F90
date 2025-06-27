@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     implicit none
 #include "asterf_types.h"
     real(kind=8)     :: ppr(*)
-    integer          :: ppi(*)
+    integer(kind=8)          :: ppi(*)
     character(len=*) :: ppc(*)
     real(kind=8)     :: yy0(*)
     real(kind=8)     :: dy0(*)
@@ -55,10 +55,10 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
     real(kind=8) :: factp, factm, fact, dm1, dm2, dd1, dd2, eps
 !
 !   système d'équations :
-    integer :: imoment, itheta, ithetap, idp, idm, ixm, idiss
+    integer(kind=8) :: imoment, itheta, ithetap, idp, idm, ixm, idiss
     parameter(imoment=1, itheta=2, ithetap=3, idp=4, idm=5, ixm=6, idiss=7)
 !   paramètres du modèle : KE, KP, KDP, KDM, RDP, RDM, MYP, MYM
-    integer :: ike, ikp, ikdp, ikdm, irdp, irdm, imyp, imym
+    integer(kind=8) :: ike, ikp, ikdp, ikdm, irdp, irdm, imyp, imym
     parameter(ike=1, ikp=2, ikdp=3, ikdm=4, irdp=5, irdm=6, imyp=7, imym=8)
 !
     decoup = ASTER_FALSE

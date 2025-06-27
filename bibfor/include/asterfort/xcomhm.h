@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,20 +28,20 @@ interface
                       angl_naut, yaenrh, adenhy, nfh)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: dimenr
-        integer :: nbvari
-        integer :: dimcon
-        integer :: dimdef
-        integer :: ndim
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: nbvari
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: ndim
         character(len=16) :: option
-        integer :: j_mater
+        integer(kind=8) :: j_mater
         real(kind=8) :: time_curr
-        integer :: addeme
-        integer :: adcome
-        integer :: addep1
-        integer :: adcp11
-        integer :: addep2
-        integer :: addete
+        integer(kind=8) :: addeme
+        integer(kind=8) :: adcome
+        integer(kind=8) :: addep1
+        integer(kind=8) :: adcp11
+        integer(kind=8) :: addep2
+        integer(kind=8) :: addete
         real(kind=8) :: defgem(1:dimdef)
         real(kind=8) :: defgep(1:dimdef)
         real(kind=8) :: congem(1:dimcon)
@@ -50,13 +50,13 @@ interface
         real(kind=8) :: vintp(1:nbvari)
         real(kind=8) :: dsde(1:dimcon, 1:dimenr)
         real(kind=8) :: gravity(3)
-        integer :: retcom
-        integer :: kpi
-        integer :: npg
-        integer :: idecpg
+        integer(kind=8) :: retcom
+        integer(kind=8) :: kpi
+        integer(kind=8) :: npg
+        integer(kind=8) :: idecpg
         real(kind=8) :: angl_naut(3)
-        integer :: yaenrh
-        integer :: adenhy
-        integer :: nfh
+        integer(kind=8) :: yaenrh
+        integer(kind=8) :: adenhy
+        integer(kind=8) :: nfh
     end subroutine xcomhm
 end interface 

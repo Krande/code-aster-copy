@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,24 +25,24 @@ interface
                       dg, ncmpmx, vale, nomcmp, titr,&
                       nomnoe, nomsd, nomsym, ir, numnoe,&
                       lmasu, nbcmp, ncmps, nocmpl)
-        integer :: ifi
-        integer :: nbno
-        integer :: prno(*)
-        integer :: nueq(*)
-        integer :: nec
-        integer :: dg(*)
-        integer :: ncmpmx
+        integer(kind=8) :: ifi
+        integer(kind=8) :: nbno
+        integer(kind=8) :: prno(*)
+        integer(kind=8) :: nueq(*)
+        integer(kind=8) :: nec
+        integer(kind=8) :: dg(*)
+        integer(kind=8) :: ncmpmx
         real(kind=8) :: vale(*)
         character(len=*) :: nomcmp(*)
         character(len=*) :: titr
         character(len=*) :: nomnoe(*)
         character(len=*) :: nomsd
         character(len=*) :: nomsym
-        integer :: ir
-        integer :: numnoe(*)
+        integer(kind=8) :: ir
+        integer(kind=8) :: numnoe(*)
         aster_logical :: lmasu
-        integer :: nbcmp
-        integer :: ncmps(*)
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: ncmps(*)
         character(len=*) :: nocmpl(*)
     end subroutine irdesr
 end interface

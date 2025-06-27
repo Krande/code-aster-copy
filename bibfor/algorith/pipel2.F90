@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine pipel2(mat, sup, sud, mup, mud, &
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/zerop2.h"
-    integer :: mat
+    integer(kind=8) :: mat
     real(kind=8) :: sup(3), sud(3), mup(3), mud(3), tau, vim, copilo(5)
 !
 ! ----------------------------------------------------------------------
@@ -43,11 +43,11 @@ subroutine pipel2(mat, sup, sud, mup, mud, &
 !                FEL = COPILO(3) + COPILO(4)*ETA
 !                COPILO(5) <> R8VIDE => PAS DE SOLUTION
 ! ----------------------------------------------------------------------
-    integer :: nrac, i
+    integer(kind=8) :: nrac, i
     real(kind=8) :: sc, gc, dc, h, r, val(3)
     real(kind=8) :: tt2, tp(3), td(3), tpn, tdn, c0, c1, c2, n0, n1, n2, rac(4)
     real(kind=8) :: eta, pente, tpa
-    integer :: cod(3), kpg, spt
+    integer(kind=8) :: cod(3), kpg, spt
     character(len=8) :: fami, poum
     character(len=16) :: nom(3)
 !

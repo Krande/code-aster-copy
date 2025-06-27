@@ -50,10 +50,10 @@ subroutine te0518(option, nomte)
     character(len=8) :: typmod(2)
     character(len=16) :: typilo
     aster_logical :: axi
-    integer :: nnoQ, nnoL, npg, ndim, nddl, neps, lgpg, jtab(7)
-    integer :: iret, nnos, jv_ganoQ, jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL, jv_ganoL
-    integer :: igeom, imate, itype, icontm, ivarim, icopil, iborne, ictau
-    integer :: iddlm, iddld, iddl0, iddl1
+    integer(kind=8) :: nnoQ, nnoL, npg, ndim, nddl, neps, lgpg, jtab(7)
+    integer(kind=8) :: iret, nnos, jv_ganoQ, jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL, jv_ganoL
+    integer(kind=8) :: igeom, imate, itype, icontm, ivarim, icopil, iborne, ictau
+    integer(kind=8) :: iddlm, iddld, iddl0, iddl1
     character(len=16), pointer :: compor(:) => null()
     real(kind=8), allocatable:: b(:, :, :), w(:, :), ni2ldc(:, :)
     real(kind=8) :: etamin, etamax

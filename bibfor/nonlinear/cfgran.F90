@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine cfgran(resoco, nbliac, kkliai, kkliac)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: resoco
-    integer :: nbliac, kkliai, kkliac
+    integer(kind=8) :: nbliac, kkliai, kkliac
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,8 +47,8 @@ subroutine cfgran(resoco, nbliac, kkliai, kkliac)
 !
     real(kind=8) :: rminmu, valmu
     character(len=19) :: liac, mu
-    integer :: jliac, jmu
-    integer :: iliac, index
+    integer(kind=8) :: jliac, jmu
+    integer(kind=8) :: iliac, index
 !
 ! ----------------------------------------------------------------------
 !

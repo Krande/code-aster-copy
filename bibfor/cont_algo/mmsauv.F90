@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ subroutine mmsauv(ds_contact, izone, iptc, nummam, ksipr1, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer :: iptc, izone
-    integer :: nummam, nummae, numnoe
+    integer(kind=8) :: iptc, izone
+    integer(kind=8) :: nummam, nummae, numnoe
     real(kind=8) :: ksipr1, ksipr2
     real(kind=8) :: ksipc1, ksipc2
     real(kind=8) :: tau1(3), tau2(3)
@@ -69,9 +69,9 @@ subroutine mmsauv(ds_contact, izone, iptc, nummam, ksipr1, &
 !
 !
 !
-    integer :: ztabf
+    integer(kind=8) :: ztabf
     character(len=24) :: tabfin
-    integer :: jtabf
+    integer(kind=8) :: jtabf
 !
 ! ----------------------------------------------------------------------
 !

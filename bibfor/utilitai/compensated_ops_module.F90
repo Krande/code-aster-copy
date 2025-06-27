@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -94,7 +94,7 @@ contains
         implicit none
         real(kind=8), intent(in) :: vt(:)
         real(kind=8) :: si, x, y, t
-        integer :: i
+        integer(kind=8) :: i
 
         t = vt(1)
         si = 0.d0
@@ -112,7 +112,7 @@ contains
         real(kind=8), intent(in) :: vx(:)
         real(kind=8), intent(in) :: vy(size(vx))
         real(kind=8) :: p, s, h, r, q, pp, t
-        integer i
+        integer(kind=8) i
 
         call twoproduct(vx(1), vy(1), p, s)
         do i = 2, size(vx)
@@ -130,7 +130,7 @@ contains
         real(kind=8), intent(in) :: vx(:)
         real(kind=8), intent(in) :: vy(size(vx))
         real(kind=8) :: p, s, h, r, q, pp, t
-        integer i
+        integer(kind=8) i
 
         call twoproductFMA(vx(1), vy(1), p, s)
         do i = 2, size(vx)
@@ -147,7 +147,7 @@ contains
         implicit none
         real(kind=8), dimension(:, :), intent(in) :: A, B
         real(kind=8), dimension(size(A, 1), size(B, 2)) :: C
-        integer :: i, j
+        integer(kind=8) :: i, j
 
         do i = 1, size(A, 1)
             do j = 1, size(B, 2)

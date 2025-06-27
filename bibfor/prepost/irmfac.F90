@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
 #include "asterfort/irdebg.h"
 #include "asterfort/isParallelMesh.h"
 !
-    integer, intent(in) :: keywfIocc, fileUnit, fileVersion
+    integer(kind=8), intent(in) :: keywfIocc, fileUnit, fileVersion
     character(len=8), intent(in) :: fileFormat, modelIn
     aster_logical :: lfichUniq
 !
@@ -66,8 +66,8 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywf = 'RESU'
-    integer :: meshMEDInfo
-    integer :: ier, iret, nbOcc
+    integer(kind=8) :: meshMEDInfo
+    integer(kind=8) :: ier, iret, nbOcc
     real(kind=8) :: borsup, borinf
     character(len=1) :: paraFormat
     character(len=8) :: cplxFormat
@@ -76,14 +76,14 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
     character(len=19) :: dsName, resultName, fieldName, answer
     character(len=16) :: realFormat, resultType
     character(len=80) :: title
-    integer :: fieldListNb, storeListNb, paraListNb, cmpListNb, nodeListNb, cellListNb
+    integer(kind=8) :: fieldListNb, storeListNb, paraListNb, cmpListNb, nodeListNb, cellListNb
     character(len=16), pointer :: fieldListType(:) => null()
     character(len=80), pointer :: fieldMedListType(:) => null()
-    integer, pointer :: storeListIndx(:) => null()
+    integer(kind=8), pointer :: storeListIndx(:) => null()
     character(len=16), pointer :: paraListName(:) => null()
     character(len=8), pointer :: cmpListName(:) => null()
-    integer, pointer :: nodeListNume(:) => null()
-    integer, pointer :: cellListNume(:) => null()
+    integer(kind=8), pointer :: nodeListNume(:) => null()
+    integer(kind=8), pointer :: cellListNume(:) => null()
     aster_logical :: lResu, lMeshCoor, lmax, lmin, linf, lsup, lVariName
     aster_logical :: lModel, lField, lMesh, lFirstOcc
 !

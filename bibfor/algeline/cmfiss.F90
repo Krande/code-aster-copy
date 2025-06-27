@@ -57,10 +57,10 @@ subroutine cmfiss(main, gno1, gno2, nomgma, noma, &
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iret, nb1, nb2, nbmajo, tyqua4, ma
-    integer :: n1, n2, n3, n4
-    integer :: inoma, iconne, ityma, igpma, ingma, jcon, jgno1, jgno2
-    integer :: lgma, lgpref, mainit
+    integer(kind=8) :: iret, nb1, nb2, nbmajo, tyqua4, ma
+    integer(kind=8) :: n1, n2, n3, n4
+    integer(kind=8) :: inoma, iconne, ityma, igpma, ingma, jcon, jgno1, jgno2
+    integer(kind=8) :: lgma, lgpref, mainit
     character(len=8) :: prefix
     character(len=80) :: knume
 ! ----------------------------------------------------------------------

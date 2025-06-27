@@ -42,23 +42,23 @@ subroutine assma3(lmasym, lmesym, tt, igr, iel, &
     aster_logical :: lmasym, lmesym
     character(len=2) :: tt
     real(kind=8) :: c1
-    integer :: iel, admodl, rang, iconx1, iconx2, jadli, jadne
-    integer :: i1, i2, iad1, iad11, iad2, iad21
-    integer :: igr, ilima, ilinu, nbterm
-    integer :: jnueq, jnulo1, jposd1, jprn1, jprn2
-    integer :: jresl, jsmdi, jsmhc, jtmp2, jvalm(2), lgtmp2
-    integer :: lcmodl, k1, k2, n2, n3
-    integer :: mode, n1, nbvel, ncmp, nddl1, nddl2
-    integer :: nec, nmxcmp, nnoe, numa, nk2, decael
-    integer :: ti1(*), ti2(*), nbeltb, v_crco(*)
+    integer(kind=8) :: iel, admodl, rang, iconx1, iconx2, jadli, jadne
+    integer(kind=8) :: i1, i2, iad1, iad11, iad2, iad21
+    integer(kind=8) :: igr, ilima, ilinu, nbterm
+    integer(kind=8) :: jnueq, jnulo1, jposd1, jprn1, jprn2
+    integer(kind=8) :: jresl, jsmdi, jsmhc, jtmp2, jvalm(2), lgtmp2
+    integer(kind=8) :: lcmodl, k1, k2, n2, n3
+    integer(kind=8) :: mode, n1, nbvel, ncmp, nddl1, nddl2
+    integer(kind=8) :: nec, nmxcmp, nnoe, numa, nk2, decael
+    integer(kind=8) :: ti1(*), ti2(*), nbeltb, v_crco(*)
     aster_logical :: ldist, ldgrel, lcontact_par
-    integer, pointer :: numsd(:)
+    integer(kind=8), pointer :: numsd(:)
 !
-    integer :: nbi1
+    integer(kind=8) :: nbi1
 !-----------------------------------------------------------------------
 !     FONCTIONS FORMULES :
 !-----------------------------------------------------------------------
-    integer :: ellagr
+    integer(kind=8) :: ellagr
 !
 #define zzconx(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)
 #define zzliel(ili,igrel,j) zi(zi(jadli+3*(ili-1)+1)-1+ \

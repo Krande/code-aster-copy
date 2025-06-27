@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf, &
                   parame, derive, sig3, vecp, eta, &
                   dg, se, detadg, dgdl, ddlde)
     implicit none
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: ddlde(6), vecp(3, 3), materf(nbmat, 2), parame(4), derive(5)
     real(kind=8) :: vp(3), i1e, sigeqe, eta, se(6), dg, detadg, sig3, dgdl
 ! ======================================================================
@@ -43,7 +43,7 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf, &
     real(kind=8) :: dsdde(6, 6), un, deux, trois, k, dl, mu
     real(kind=8) :: da1de(6), da2de(6), da3de(6), da6de(6)
     real(kind=8) :: a2, a3, a4, c5, a6, aux1, aux2, aux3, denom, aux4
-    integer :: ii, ndt, ndi, jj
+    integer(kind=8) :: ii, ndt, ndi, jj
 ! =================================================================
     parameter(un=1.0d0)
     parameter(deux=2.0d0)
@@ -69,15 +69,15 @@ subroutine calcdl(vp, i1e, sigeqe, nbmat, materf, &
     do ii = 1, ndi
         do jj = 1, ndi
            dsdde(ii, jj) = deux*mu*vecp(ii, jj)*vecp(ii, jj)-deux*mu*(vecp(1, ii)**2+vecp(2, ii)**2&
-                            &+vecp(3, ii)**2)/trois
+                             &+vecp(3, ii)**2)/trois
         end do
       dsdde(ii, 4) = deux*mu*vecp(ii, 1)*vecp(ii, 2)-deux*mu*(vecp(1, 1)*vecp(1, 2)+vecp(2, 1)*vecp&
-                        &(2, 2)+vecp(3, 1)*vecp(3, 2))/trois
+                          &(2, 2)+vecp(3, 1)*vecp(3, 2))/trois
         if (ndt .eq. 6) then
           dsdde(ii, 5) = deux*mu*vecp(ii, 1)*vecp(ii, 3)-deux*mu*(vecp(1, 1)*vecp(1, 3)+vecp(2, 1)*&
-                            &vecp(2, 3)+vecp(3, 1)*vecp(3, 3))/trois
+                              &vecp(2, 3)+vecp(3, 1)*vecp(3, 3))/trois
           dsdde(ii, 6) = deux*mu*vecp(ii, 2)*vecp(ii, 3)-deux*mu*(vecp(1, 3)*vecp(1, 2)+vecp(2, 3)*&
-                            &vecp(2, 2)+vecp(3, 3)*vecp(3, 2))/trois
+                              &vecp(2, 2)+vecp(3, 3)*vecp(3, 2))/trois
         end if
     end do
     do jj = 1, ndi

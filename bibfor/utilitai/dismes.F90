@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -43,12 +43,12 @@ subroutine dismes(questi, nomobz, repi, repkz, ierd)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, gd
+    integer(kind=8) :: iret, gd
     character(len=8) :: nogd
     character(len=19) :: nomob
     character(len=24) :: questl
     character(len=32) :: repk
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
     character(len=8), pointer :: cesk(:) => null()
 ! DEB-------------------------------------------------------------------
 !

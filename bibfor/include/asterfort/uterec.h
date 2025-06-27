@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,21 +27,21 @@ interface
                       xn, yn, zn, valhp, valhm,&
                       valtp, valtm, ityp, itemp, itemm,&
                       noe)
-        integer :: ndim
-        integer :: iflup
-        integer :: iflum
-        integer :: ino
-        integer :: mno
-        integer :: jno
-        integer :: nsomm
+        integer(kind=8) :: ndim
+        integer(kind=8) :: iflup
+        integer(kind=8) :: iflum
+        integer(kind=8) :: ino
+        integer(kind=8) :: mno
+        integer(kind=8) :: jno
+        integer(kind=8) :: nsomm
         real(kind=8) :: jac(9)
         real(kind=8) :: term22
         real(kind=8) :: aux
         aster_logical :: ltheta
         real(kind=8) :: valthe
         real(kind=8) :: valunt
-        integer :: niv
-        integer :: ifm
+        integer(kind=8) :: niv
+        integer(kind=8) :: ifm
         real(kind=8) :: xn(9)
         real(kind=8) :: yn(9)
         real(kind=8) :: zn(9)
@@ -49,9 +49,9 @@ interface
         real(kind=8) :: valhm(9)
         real(kind=8) :: valtp(9)
         real(kind=8) :: valtm(9)
-        integer :: ityp
-        integer :: itemp
-        integer :: itemm
-        integer :: noe(9, 6, 3)
+        integer(kind=8) :: ityp
+        integer(kind=8) :: itemp
+        integer(kind=8) :: itemm
+        integer(kind=8) :: noe(9, 6, 3)
     end subroutine uterec
 end interface

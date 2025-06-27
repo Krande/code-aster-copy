@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,21 +18,21 @@
 !
 subroutine ulimpr(impr)
     implicit none
-    integer :: impr
+    integer(kind=8) :: impr
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !
 !     IMPRESSION DES TABLES DECRIVANT LES UNITES LOGIQUE OUVERTES
 !
-    integer :: mxf
+    integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
-    integer :: first, unitfi(mxf), nbfile
+    integer(kind=8) :: first, unitfi(mxf), nbfile
     common/asgfi1/first, unitfi, nbfile
     common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
-    integer :: i
+    integer(kind=8) :: i
     character(len=8) :: ktyp, kacc, keta
 !
     write (impr, 999) 'LA TABLE A CONTENU JUSQU''A ', nbfile,&

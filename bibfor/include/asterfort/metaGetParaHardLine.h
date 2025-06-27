@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
                                    young    , coef     , h)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer, intent(in) :: j_mater
-        integer, intent(in) :: meta_type
-        integer, intent(in) :: nb_phasis
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: j_mater
+        integer(kind=8), intent(in) :: meta_type
+        integer(kind=8), intent(in) :: nb_phasis
         real(kind=8), intent(in) :: young
         real(kind=8), intent(in) :: coef
         real(kind=8), intent(out) :: h(*)

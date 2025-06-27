@@ -38,7 +38,7 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
 #include "asterfort/as_allocate.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: iocc, nbgraj
+    integer(kind=8) :: iocc, nbgraj
     character(len=*) :: mofaz, nomaz
     aster_logical :: l_write
 !
@@ -64,16 +64,16 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
 !
 ! --------- VARIABLES LOCALES ---------------------------
     character(len=8) :: cabl_prec
-    integer :: nbrela, irela, ibid, lgpref, lennom, iad2, j, iret
-    integer :: nb_coef, adr, i_coef, nbno_liai, nbno_max, nuno
+    integer(kind=8) :: nbrela, irela, ibid, lgpref, lennom, iad2, j, iret
+    integer(kind=8) :: nb_coef, adr, i_coef, nbno_liai, nbno_max, nuno
     character(len=8) :: noma, prefix, nom_ddl
     character(len=16) :: motfac
     character(len=19) :: list_rela
     character(len=24) :: grpno, nomgno
 !
-    integer, pointer :: rlnr(:) => null()
-    integer, pointer :: v_nb_coef(:) => null()
-    integer, pointer :: pointeur(:) => null()
+    integer(kind=8), pointer :: rlnr(:) => null()
+    integer(kind=8), pointer :: v_nb_coef(:) => null()
+    integer(kind=8), pointer :: pointeur(:) => null()
     character(len=8), pointer :: v_nomnoe(:) => null()
     character(len=8), pointer :: v_ddl(:) => null()
     character(len=8), pointer :: listno(:) => null()

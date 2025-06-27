@@ -25,7 +25,7 @@ interface
         character(len=*), intent(in) :: loadNameZ
         character(len=24), intent(in) :: timeMap
         character(len=19), intent(in) :: matrElem, resuElemPref
-        integer, intent(in) :: indxMatrElem
+        integer(kind=8), intent(in) :: indxMatrElem
         character(len=1), intent(in)  :: jvBase
     end subroutine merit1
 end interface

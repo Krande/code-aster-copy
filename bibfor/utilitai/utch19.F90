@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utchdl.h"
 #include "asterfort/utmess.h"
-    integer :: nupo, ivari, ier, nusp, vali
+    integer(kind=8) :: nupo, ivari, ier, nusp, vali
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=*) :: cham19, nomma, nomail, nonoeu, nocmp, typres
@@ -54,7 +54,7 @@ subroutine utch19(cham19, nomma, nomail, nonoeu, nupo, &
 ! OUT : IER    : CODE RETOUR.
 ! ----------------------------------------------------------------------
 !
-    integer :: icmp, jcelv
+    integer(kind=8) :: icmp, jcelv
     real(kind=8) :: r1, r2
     character(len=1) :: typrez
     character(len=4) :: type, kmpic

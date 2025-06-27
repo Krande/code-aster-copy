@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine get_varc(fami, kpg, ksp, poum, &
 !
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
     character(len=*), intent(in) :: poum
     real(kind=8), intent(out) :: temp_prev
     real(kind=8), intent(out) :: temp_curr
@@ -62,8 +62,8 @@ subroutine get_varc(fami, kpg, ksp, poum, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: elem_name
-    integer :: iret_temp_prev, iret_temp_curr, iret_temp_refe
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iret_temp_prev, iret_temp_curr, iret_temp_refe
+    integer(kind=8) :: iadzi, iazk24
     aster_logical :: l_temp
 !
 ! --------------------------------------------------------------------------------------------------

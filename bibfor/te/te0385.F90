@@ -48,8 +48,8 @@ subroutine te0385(nomopt, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: itemps, imate
-    integer ::  ifon(6), kp
+    integer(kind=8) :: itemps, imate
+    integer(kind=8) ::  ifon(6), kp
     real(kind=8) :: deltat, err, tpgm, tpgp
     real(kind=8), pointer :: hydrgm(:) => null(), hydrgp(:) => null()
     real(kind=8), pointer :: tempm(:) => null()

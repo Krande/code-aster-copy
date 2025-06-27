@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
     subroutine nume_equa_crsd(nume_equaz, base, nb_equa, meshz, gran_namez, l_coll_constz)
         character(len=*), intent(in) :: nume_equaz
         character(len=1), intent(in) :: base
-        integer, intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: nb_equa
         character(len=*), intent(in) :: meshz
         character(len=*),  intent(in) :: gran_namez
         aster_logical, optional, intent(in) :: l_coll_constz

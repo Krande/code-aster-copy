@@ -36,7 +36,7 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 #include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cns1z, correz, basez, cns2z
-    integer :: iret
+    integer(kind=8) :: iret
 ! ------------------------------------------------------------------
 ! BUT : PROJETER UN CHAM_NO_S  SUR UN AUTRE MAILLAGE
 ! ------------------------------------------------------------------
@@ -66,21 +66,21 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
     character(len=8) :: ma1, ma2, nomgd, nomcmp, nomno2
     character(len=16) :: corres
     character(len=19) :: cns1, cns2
-    integer :: jcns1l, jcns1v
-    integer :: jcns2c, jcns2l, jcns2v, jcns2k
-    integer :: nbno1, ncmp, gd, nbno2
-    integer :: idecal, ino2, icmp, ico1, ico2, ino1, nuno1, kalarm
+    integer(kind=8) :: jcns1l, jcns1v
+    integer(kind=8) :: jcns2c, jcns2l, jcns2v, jcns2k
+    integer(kind=8) :: nbno1, ncmp, gd, nbno2
+    integer(kind=8) :: idecal, ino2, icmp, ico1, ico2, ino1, nuno1, kalarm
     real(kind=8) :: v1, v2, coef1, coetot, vrmoy
     complex(kind=8) :: v1c, v2c, vcmoy
     aster_logical :: lexact
-    integer, pointer :: pjef_nu(:) => null()
+    integer(kind=8), pointer :: pjef_nu(:) => null()
     character(len=8), pointer :: cns1k(:) => null()
-    integer, pointer :: pjef_nb(:) => null()
+    integer(kind=8), pointer :: pjef_nb(:) => null()
     character(len=8), pointer :: cns1c(:) => null()
     character(len=24), pointer :: pjxx_k1(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()
-    integer, pointer :: cns1d(:) => null()
-    integer, pointer :: cns2d(:) => null()
+    integer(kind=8), pointer :: cns1d(:) => null()
+    integer(kind=8), pointer :: cns2d(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

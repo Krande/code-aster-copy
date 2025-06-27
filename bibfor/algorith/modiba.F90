@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: numvit, itypfl, imasse
-    integer :: nbnuor, nuor(*), nbmfl, numo(*)
+    integer(kind=8) :: numvit, itypfl, imasse
+    integer(kind=8) :: nbnuor, nuor(*), nbmfl, numo(*)
     character(len=8) :: nomres, basemo
     character(len=19) :: basefl
     aster_logical :: newres
@@ -73,12 +73,12 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
 ! IN  : NBMFL  : NOMBRE DE MODES PERTURBES PAR LE COUPLAGE
 !
 !
-    integer :: iddl(6), neq, nbmode, j, i
-    integer :: lmod, iret, ivit, numod, imas
-    integer :: ifac, ifre, ieq, k, icm, iprec
-    integer :: lmat(2), lddl, lvali, lvalr, lvalk
-    integer :: npari, nparr, npark
-    integer :: nbpari, nbparr, nbpark, nbpara
+    integer(kind=8) :: iddl(6), neq, nbmode, j, i
+    integer(kind=8) :: lmod, iret, ivit, numod, imas
+    integer(kind=8) :: ifac, ifre, ieq, k, icm, iprec
+    integer(kind=8) :: lmat(2), lddl, lvali, lvalr, lvalk
+    integer(kind=8) :: npari, nparr, npark
+    integer(kind=8) :: nbpari, nbparr, nbpark, nbpara
     parameter(nbpari=1, nbparr=15, nbpark=1, nbpara=17)
     real(kind=8) :: frequ, amort, omeg2, masg, rigg
     real(kind=8) :: factx, facty, factz, depi, xmastr(3)
@@ -91,7 +91,7 @@ subroutine modiba(nomres, basemo, basefl, numvit, newres, &
     aster_logical :: lnorm
     real(kind=8), pointer :: coef_mode(:) => null()
     real(kind=8), pointer :: fact(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     real(kind=8), pointer :: vmasg(:) => null()
     real(kind=8), pointer :: freq(:) => null()
     real(kind=8), pointer :: vale(:) => null()

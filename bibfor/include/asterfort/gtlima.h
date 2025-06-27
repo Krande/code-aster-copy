@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine gtlima(sdappa      , sdcont_defi, i_zone)
         character(len=19), intent(in) :: sdappa
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
     end subroutine gtlima
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,10 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat, &
 #include "asterfort/Behaviour_type.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imat
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imat
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
@@ -57,7 +57,7 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat, &
     real(kind=8), intent(out) :: sigp(*)
     real(kind=8), intent(out) :: vip(25)
     real(kind=8), intent(out) :: dsidep(6, 6)
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -91,8 +91,8 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_phase, meta_type
-    integer :: ndimsi, i, j, k, l, mode
+    integer(kind=8) :: nb_phase, meta_type
+    integer(kind=8) :: ndimsi, i, j, k, l, mode
     real(kind=8) :: phase(5), phasm(5), zalpha, deltaz(5)
     real(kind=8) :: dt, coef_hard
     real(kind=8) :: epsth, e, deuxmu, deumum, troisk

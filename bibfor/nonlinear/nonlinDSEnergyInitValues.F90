@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine nonlinDSEnergyInitValues(ds_energy, stin_evol, ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_para, iret, nb_line, i, ibid
+    integer(kind=8) :: nb_para, iret, nb_line, i, ibid
     real(kind=8) :: rbid, valr, precision, init_time
     complex(kind=8) :: cbid
     character(len=8) :: k8b, ctype, criterion

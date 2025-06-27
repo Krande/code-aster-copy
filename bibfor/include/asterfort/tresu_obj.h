@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         character(len=24), intent(in) :: nomobj
         character(len=*), intent(in) :: type
         character(len=16), intent(in) :: tbtxt(2)
-        integer, intent(in) :: refi
+        integer(kind=8), intent(in) :: refi
         real(kind=8), intent(in) :: refr
         real(kind=8), intent(in) :: epsi
         character(len=*), intent(in) :: crit

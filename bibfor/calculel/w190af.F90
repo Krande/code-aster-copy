@@ -44,10 +44,10 @@ subroutine w190af(modele, chmar1)
 ! BUT : CREER LE CHAMP DE DONNEES POUR CALC_FERRAILLAGE
 !
 !-------------------------------------------------------------------------------------------------
-    integer :: gd, nocc, ncmpmx, nbtou
-    integer :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
-    integer :: n16, n17, n18, n20
-    integer ::   jmail, iocc, nbmail
+    integer(kind=8) :: gd, nocc, ncmpmx, nbtou
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, n7, n8, n9, n10, n11, n12, n13, n14, n15
+    integer(kind=8) :: n16, n17, n18, n20
+    integer(kind=8) ::   jmail, iocc, nbmail
     real(kind=8) :: valrcb, valrco, valruc
     character(len=8) :: k8b, typmcl(2), noma, typcb, clacier
     character(len=8) :: typdiag, typstru, unitc

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine inical(nbin, lpain, lchin, nbout, lpaout,&
                       lchout)
-        integer :: nbout
-        integer :: nbin
+        integer(kind=8) :: nbout
+        integer(kind=8) :: nbin
         character(len=8) :: lpain(nbin)
         character(len=19) :: lchin(nbin)
         character(len=8) :: lpaout(nbout)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         character(len=*) :: nomfon
         real(kind=8) :: pseuil
         real(kind=8) :: coemul
-        integer :: nbpoin
+        integer(kind=8) :: nbpoin
         real(kind=8) :: valpoi(*)
     end subroutine fgpeak
 end interface

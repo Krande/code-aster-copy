@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       numedd, inchac, ds_energy)
         use NonLin_Datastructure_type
         aster_logical :: lcrea
-        integer :: nume
+        integer(kind=8) :: nume
         character(len=8), intent(in) :: result
         type(NL_DS_Energy), intent(out) :: ds_energy
         real(kind=8) :: depini(*)
@@ -32,8 +32,8 @@ interface
         real(kind=8) :: fexini(*)
         real(kind=8) :: famini(*)
         real(kind=8) :: fliini(*)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=24) :: numedd
-        integer :: inchac
+        integer(kind=8) :: inchac
     end subroutine dltini
 end interface

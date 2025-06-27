@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine cormgi(basez, ligrez)
 !**********************************************************************
 !
     character(len=8) :: nmaila
-    integer :: i, j, pt, nbmail, nbgrel, iret
-    integer :: jrepe, jgrel, nbmgre
+    integer(kind=8) :: i, j, pt, nbmail, nbgrel, iret
+    integer(kind=8) :: jrepe, jgrel, nbmgre
     aster_logical :: exima
 !
 !

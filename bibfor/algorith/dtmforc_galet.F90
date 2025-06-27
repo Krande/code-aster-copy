@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,11 +51,11 @@ subroutine dtmforc_galet(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 ! --------------------------------------------------------------------------------------------------
 !
 !   Input/output arguments
-    integer, intent(in) :: nl_ind
+    integer(kind=8), intent(in) :: nl_ind
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffnl(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffnl(:)
     real(kind=8), intent(in) :: time
     real(kind=8), intent(in) :: step
     real(kind=8), pointer :: depl(:)
@@ -64,15 +64,15 @@ subroutine dtmforc_galet(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 ! --------------------------------------------------------------------------------------------------
 !   Local variables
     aster_logical :: multi_support
-    integer :: i, iex, nbexci, ier, nbno
-    integer :: ino, start, finish
+    integer(kind=8) :: i, iex, nbexci, ier, nbno
+    integer(kind=8) :: ino, start, finish
     real(kind=8) :: sina, cosa, sinb, cosb, sing, dist1, dist2, xforc, xlong
     real(kind=8) :: cosg, depglo(3), deploc(6)
     real(kind=8) :: flocal(3), fgloba(3)
     character(len=8) :: sd_dtm, sd_nl, monmot, obst_typ, nomfon
     character(len=19) :: nomres
 !
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer :: origob(:) => null()
     real(kind=8), pointer :: coedep(:) => null()
     real(kind=8), pointer :: coevit(:) => null()
@@ -91,7 +91,7 @@ subroutine dtmforc_galet(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
     character(len=8), pointer :: nofdep(:) => null()
     character(len=8), pointer :: nofvit(:) => null()
 !
-    integer :: par_coorno(2)
+    integer(kind=8) :: par_coorno(2)
     data par_coorno/_COOR_NO1, _COOR_NO2/
 !
 ! --------------------------------------------------------------------------------------------------

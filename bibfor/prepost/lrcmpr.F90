@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,8 +44,8 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     med_idt :: idfimd
-    integer :: lgproa
-    integer :: codret
+    integer(kind=8) :: lgproa
+    integer(kind=8) :: codret
 !
     character(len=*) :: nomprf
     character(len=*) :: ntproa
@@ -58,11 +58,11 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
     character(len=8) :: saux08
     parameter(nompro='LRCMPR')
 !
-    integer :: ifm, nivinf
+    integer(kind=8) :: ifm, nivinf
 !
-    integer :: adproa, adprom
-    integer :: lgprom
-    integer :: iaux
+    integer(kind=8) :: adproa, adprom
+    integer(kind=8) :: lgprom
+    integer(kind=8) :: iaux
 !
     character(len=24) :: ntprom
 !
@@ -97,7 +97,7 @@ subroutine lrcmpr(idfimd, nomprf, ntproa, lgproa, codret)
         write (ifm, 4101) nomprf, lgprom
     end if
 4101 format('. LECTURE DU PROFIL : ', a,&
-    &     /, '... LONGUEUR : ', i8)
+   &     /, '... LONGUEUR : ', i8)
 !
 !====
 ! 3. LECTURE DES VALEURS DU PROFIL MED

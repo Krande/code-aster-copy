@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine acevpo(nbocc, nlm, nlg, ier)
-        integer :: nbocc
-        integer :: nlm
-        integer :: nlg
-        integer :: ier
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: nlm
+        integer(kind=8) :: nlg
+        integer(kind=8) :: ier
     end subroutine acevpo
 end interface

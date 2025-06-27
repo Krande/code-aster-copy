@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass, &
 #include "asterfort/utmess.h"
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
-    integer :: nnoe
+    integer(kind=8) :: nnoe
     real(kind=8) :: xyzg1(3, *), rho, epais, mass, cdg(*), inerti(*)
 !     CALCULE LE CDG ET LA MASSE D'UNE MAILLE TRIA ET QUAD
 !
@@ -41,9 +41,9 @@ subroutine dxiner(nnoe, xyzg1, rho, epais, mass, &
 ! --- INITIALISATIONS :
 !     ---------------
 !-----------------------------------------------------------------------
-    integer :: i, idec, idfdx, idfdy, ino, ipg, ipoids
-    integer :: ivf, j, jdec, jgano, jno, k, kdec
-    integer :: ldec, ndim, nno, nnos, npg1
+    integer(kind=8) :: i, idec, idfdx, idfdy, ino, ipg, ipoids
+    integer(kind=8) :: ivf, j, jdec, jgano, jno, k, kdec
+    integer(kind=8) :: ldec, ndim, nno, nnos, npg1
     real(kind=8) :: aire, axg, axggau, axl, axlgau, axx, axxgau
     real(kind=8) :: axy, axygau, ayg, ayggau, ayl, aylgau, ayy
     real(kind=8) :: ayygau, azg, azggau, douze, roep, s1

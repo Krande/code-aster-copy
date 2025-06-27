@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,11 @@ subroutine te0401(optioz, nomtz)
 !     CALCUL DES OPTIONS DES ELEMENTS DE COQUE : COQUE_3D
 !     ----------------------------------------------------------------
 !
-    integer :: nb1, nb2, nddlet
-    integer :: lzr
-    integer :: jgeom, jener
-    integer :: i, j, kompt
-    integer :: iu, imatuu
+    integer(kind=8) :: nb1, nb2, nddlet
+    integer(kind=8) :: lzr
+    integer(kind=8) :: jgeom, jener
+    integer(kind=8) :: i, j, kompt
+    integer(kind=8) :: iu, imatuu
     real(kind=8) :: matloc(51, 51), plg(9, 3, 3)
     real(kind=8) :: vrs(1326)
     real(kind=8) :: bsigth(51), enerth

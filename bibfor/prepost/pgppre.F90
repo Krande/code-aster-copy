@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,9 +58,9 @@ subroutine pgppre(sd_pgp)
 !   -0.2- Local variables
     aster_logical     :: found
     real(kind=8)      :: dir(9)
-    integer           :: nbobs, iobs, nbcmp, nbsupp, ivsup
-    integer           :: icomp, icmp, nbmcl, iret, jcomp
-    integer           :: nbcmp1, nord, icorrst, multap, nfonct, vali(2)
+    integer(kind=8)           :: nbobs, iobs, nbcmp, nbsupp, ivsup
+    integer(kind=8)           :: icomp, icmp, nbmcl, iret, jcomp
+    integer(kind=8)           :: nbcmp1, nord, icorrst, multap, nfonct, vali(2)
     character(len=3)  :: prsimp, corrst, kmultapp
     character(len=4)  :: typch, typsc
     character(len=8)  :: nomres, resin, base, base0

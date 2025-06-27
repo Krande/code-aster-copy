@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine fcesnd(nomte, ind, xi1, xi2, xi3,&
                       char, vf)
         character(len=8) :: nomte
-        integer :: ind
+        integer(kind=8) :: ind
         real(kind=8) :: xi1
         real(kind=8) :: xi2
         real(kind=8) :: xi3

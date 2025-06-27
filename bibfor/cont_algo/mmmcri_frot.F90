@@ -57,14 +57,14 @@ subroutine mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cmp_lagc = 1
+    integer(kind=8), parameter :: nb_cmp_lagc = 1
     character(len=8), parameter :: list_cmp_lagc(nb_cmp_lagc) = (/'LAGS_C'/)
     real(kind=8) :: frot_diff_maxi, disp_curr_maxi
     real(kind=8) :: loop_fric_vale, alpha, frot_epsi_maxi
     character(len=24) :: frot_diff
     character(len=16) :: loop_fric_node
     character(len=8) :: node_name
-    integer :: frot_diff_node, disp_curr_node
+    integer(kind=8) :: frot_diff_node, disp_curr_node
     aster_logical :: loop_fric_conv
 !
 ! --------------------------------------------------------------------------------------------------

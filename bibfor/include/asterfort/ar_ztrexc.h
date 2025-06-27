@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine ar_ztrexc(compq, n, t, ldt, q,&
                       ldq, ifst, ilst, info)
-        integer :: ldq
-        integer :: ldt
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldt
         character(len=1) :: compq
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: q(ldq, *)
-        integer :: ifst
-        integer :: ilst
-        integer :: info
+        integer(kind=8) :: ifst
+        integer(kind=8) :: ilst
+        integer(kind=8) :: info
     end subroutine ar_ztrexc
 end interface

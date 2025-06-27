@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,16 +45,16 @@ subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit, &
 ! In nfonn => nombre de points nouveau front
 ! In sifval => nombre de points ancien front
 !
-    integer :: actpoi
+    integer(kind=8) :: actpoi
     real(kind=8) :: b(3), beta1, ci(3), cosb
     real(kind=8) :: dir(3)
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: poitot, poiav, poids
-    integer :: ipt, j, jbasc, jbeta, jffis, jfon, jvit
+    integer(kind=8) :: ipt, j, jbasc, jbeta, jffis, jfon, jvit
     real(kind=8) :: loncar, m(3), mi(3), mtast, pi
-    integer :: ndim, nfonn
+    integer(kind=8) :: ndim, nfonn
     real(kind=8) :: n(3), t(3)
-    integer :: sifval, nbptfo, ibid
+    integer(kind=8) :: sifval, nbptfo, ibid
     real(kind=8) :: sinb, tast(3), vecv(3)
     real(kind=8) :: vitn, vnor, vpnt, linf, lprop, lcalc
     aster_logical :: linter

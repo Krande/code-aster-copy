@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,9 +47,9 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail, &
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/irmhpc.h"
 !
-    integer :: connex(*), typma(*), point(*)
-    integer :: ifi, ndim, nbnoeu, nbmail, nbgrno, nbgrma
-    integer :: infmed, nbtitr
+    integer(kind=8) :: connex(*), typma(*), point(*)
+    integer(kind=8) :: ifi, ndim, nbnoeu, nbmail, nbgrno, nbgrma
+    integer(kind=8) :: infmed, nbtitr
     character(len=80) :: titre(*)
     character(len=8) :: nommai(*), nomnoe(*), nomast
     character(len=24) :: nomgno(*), nomgma(*)
@@ -87,15 +87,15 @@ subroutine irmhdf(ifi, ndim, nbnoeu, coordo, nbmail, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMHDF'
-    integer, parameter :: edlect = 0, edleaj = 1, edcrea = 3, ednstr = 0, edcart = 0
-    integer :: edmode, codret
-    integer :: nbtyp
+    integer(kind=8), parameter :: edlect = 0, edleaj = 1, edcrea = 3, ednstr = 0, edcart = 0
+    integer(kind=8) :: edmode, codret
+    integer(kind=8) :: nbtyp
     med_idt :: fid, ifimed
-    integer :: nmatyp(MT_NTYMAX), nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
-    integer :: renumd(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
-    integer :: iaux, jaux, nuanom(MT_NTYMAX, MT_NNOMAX)
-    integer :: lnomam
-    integer :: ifm, niv
+    integer(kind=8) :: nmatyp(MT_NTYMAX), nnotyp(MT_NTYMAX), typgeo(MT_NTYMAX)
+    integer(kind=8) :: renumd(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: iaux, jaux, nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: lnomam
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: start_time, end_time
     character(len=1) :: saux01
     character(len=6) :: saux06

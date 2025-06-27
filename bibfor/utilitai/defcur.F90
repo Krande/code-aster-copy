@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv, &
 #include "asterfort/vefcur.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ptch, pnoe, nb, nv
+    integer(kind=8) :: ptch, pnoe, nb, nv
     real(kind=8) :: vecr1(nb), vecr2(nv)
     character(len=2) :: prolgd
     character(len=8) :: nommai, interp, veck1(nb)
@@ -59,12 +59,12 @@ subroutine defcur(vecr1, veck1, nb, vecr2, nv, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iach, iacnex, iagm, iav1, iav2, iexi
-    integer :: ii, im, ima1, ima2, ind, ing, ino
-    integer :: iseg2, isens, itym, itypm, jgcnx, ji, jj
-    integer :: jp, kk, kseg, labs, lnoe, lvali, mi
-    integer :: nbchm, nbnoma, nbpoi1, nbrma, nbrma1, nbrma2
-    integer :: nbrse1, nbrse2, nbrseg, nbseg2, nm, numno
+    integer(kind=8) :: i, iach, iacnex, iagm, iav1, iav2, iexi
+    integer(kind=8) :: ii, im, ima1, ima2, ind, ing, ino
+    integer(kind=8) :: iseg2, isens, itym, itypm, jgcnx, ji, jj
+    integer(kind=8) :: jp, kk, kseg, labs, lnoe, lvali, mi
+    integer(kind=8) :: nbchm, nbnoma, nbpoi1, nbrma, nbrma1, nbrma2
+    integer(kind=8) :: nbrse1, nbrse2, nbrseg, nbseg2, nm, numno
 !
 !-----------------------------------------------------------------------
     call jemarq()

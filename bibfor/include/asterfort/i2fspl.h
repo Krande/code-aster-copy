@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@
 !
 interface
     subroutine i2fspl(tvois2, tplace, n, existe, adrdbt)
-        integer :: tvois2(*)
+        integer(kind=8) :: tvois2(*)
         aster_logical :: tplace(*)
-        integer :: n
+        integer(kind=8) :: n
         aster_logical :: existe
-        integer :: adrdbt
+        integer(kind=8) :: adrdbt
     end subroutine i2fspl
 end interface

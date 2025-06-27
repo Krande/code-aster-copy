@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ interface
     subroutine ornorm(mesh, listCellNume, nbCell, reorie, norien, nconex, &
                       onlySkin1D_)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nbCell
-        integer, pointer :: listCellNume(:)
+        integer(kind=8), intent(in) :: nbCell
+        integer(kind=8), pointer :: listCellNume(:)
         aster_logical, intent(in) :: reorie
-        integer, intent(out) :: norien, nconex
+        integer(kind=8), intent(out) :: norien, nconex
         aster_logical, intent(in), optional :: onlySkin1D_
     end subroutine ornorm
 end interface

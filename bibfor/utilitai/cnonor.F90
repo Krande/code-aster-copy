@@ -46,9 +46,9 @@ subroutine cnonor(nomo, gran, base, cno)
     character(len=8) :: nomo, gran, cno
 ! BUT :     COMMANDE : CREA_CHAMP/OPERATION:'NORMALE'
 ! ----------------------------------------------------------------------
-    integer :: nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
-    integer :: ndim, nbno, nbnoeu, idim, nn, nbma, nbcomp, nbtyp, lonval, icomp
-    integer :: ic, iec, iand, jlma, jnno, jval, jnbca, jdesc
+    integer(kind=8) :: nec, iacmp, iav, i, iret, ii, ino, jj, ncmpmx, numgd
+    integer(kind=8) :: ndim, nbno, nbnoeu, idim, nn, nbma, nbcomp, nbtyp, lonval, icomp
+    integer(kind=8) :: ic, iec, iand, jlma, jnno, jval, jnbca, jdesc
     real(kind=8) :: valr(3)
     character(len=2) :: typval
     character(len=8) :: k8b, resu, noma, typmcl(4), nocmp(3), listyp(11)
@@ -56,7 +56,7 @@ subroutine cnonor(nomo, gran, base, cno)
     character(len=24) :: nomnoe, mesmai
     character(len=24) :: valk(2)
     real(kind=8), pointer :: normale(:) => null()
-    integer, pointer :: ln(:) => null()
+    integer(kind=8), pointer :: ln(:) => null()
     aster_logical :: l_error
     character(len=8) :: elem_error
 ! ----------------------------------------------------------------------

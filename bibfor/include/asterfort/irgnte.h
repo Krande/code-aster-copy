@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine irgnte(ifi, nbordr, coord, connex, point,&
                       njvmai, nbmai, cnsv, partie, jtype,&
                       cnsd)
-        integer :: ifi
-        integer :: nbordr
+        integer(kind=8) :: ifi
+        integer(kind=8) :: nbordr
         real(kind=8) :: coord(*)
-        integer :: connex(*)
-        integer :: point(*)
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: point(*)
         character(len=*) :: njvmai
-        integer :: nbmai
-        integer :: cnsv(*)
+        integer(kind=8) :: nbmai
+        integer(kind=8) :: cnsv(*)
         character(len=*) :: partie
-        integer :: jtype
-        integer :: cnsd(*)
+        integer(kind=8) :: jtype
+        integer(kind=8) :: cnsd(*)
     end subroutine irgnte
 end interface

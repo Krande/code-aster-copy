@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ use calcG_type
         type(CalcG_Study), intent(in) :: cgStudy
         type(CalcG_stat), intent(inout) :: cgStat
         character(len=19), intent(in) :: chsdeg, chslag
-        integer, intent(in) :: jcesd, jcesl, i_theta
+        integer(kind=8), intent(in) :: jcesd, jcesl, i_theta
         real(kind=8), pointer :: v_basf(:)
         real(kind=8), pointer :: v_absc(:)
-        integer, pointer  :: v_cesv(:)
+        integer(kind=8), pointer  :: v_cesv(:)
         character(len=24), intent(inout) :: lchin(*)
         character(len=8), intent(inout) :: lpain(*)
-        integer, intent(inout) :: nchin
+        integer(kind=8), intent(inout) :: nchin
     end subroutine cgDiscrField
 end interface

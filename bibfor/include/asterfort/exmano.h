@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine exmano(noma, numnoe, numano, nbmano)
         character(len=8) :: noma
-        integer :: numnoe
-        integer :: numano(*)
-        integer :: nbmano
+        integer(kind=8) :: numnoe
+        integer(kind=8) :: numano(*)
+        integer(kind=8) :: nbmano
     end subroutine exmano
 end interface

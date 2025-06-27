@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine intimp(iuni, vect1, vect2, nmatr, nfcod)
-        integer :: iuni
+        integer(kind=8) :: iuni
         real(kind=8) :: vect1(*)
         character(len=24) :: vect2(*)
-        integer :: nmatr
-        integer :: nfcod
+        integer(kind=8) :: nmatr
+        integer(kind=8) :: nfcod
     end subroutine intimp
 end interface

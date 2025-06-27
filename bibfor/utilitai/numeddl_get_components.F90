@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: ncmp, maxcmp, nodeid
+    integer(kind=8) :: ncmp, maxcmp, nodeid
     character(len=*) :: nume19, allorone
     character(len=8) :: stringarray(maxcmp)
 !
@@ -48,11 +48,11 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
 !     In    maxcmp      : max possible number of components (for safety purpose)
 !     -----------------------------------------------------------------------------
 !
-    integer :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
-    integer ::  iad, nnoe, idescr
+    integer(kind=8) :: jprno, gd, nec, tabec(10), j, ino, iec, icmp, ncmpmx
+    integer(kind=8) ::  iad, nnoe, idescr
     character(len=8) :: noma, exilag
     character(len=19) :: numeddl, prno
-    integer, pointer :: vicmp(:) => null()
+    integer(kind=8), pointer :: vicmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

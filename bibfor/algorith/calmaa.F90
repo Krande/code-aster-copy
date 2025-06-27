@@ -60,7 +60,7 @@ subroutine calmaa(modelInterfaceZ, dir, &
     character(len=16) :: option
     character(len=24) :: matrElem, resuElem, modelLigrel
     character(len=24) :: lchout(1)
-    integer, parameter :: nbMatrElem = 1
+    integer(kind=8), parameter :: nbMatrElem = 1
     character(len=24), pointer :: listMatrElem(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,20 +24,20 @@ interface
                       comp, nbcomm, cpmono, pgl, nfs,&
                       nsg, toutms, timed, timef, vind,&
                       sigd, epstr)
-        integer :: nsg
-        integer :: nfs
-        integer :: nr
-        integer :: nmat
-        integer :: typess
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
+        integer(kind=8) :: typess
         real(kind=8) :: essai
         character(len=8) :: mod
         real(kind=8) :: materf(nmat, 2)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: yd(nr)
         real(kind=8) :: deps(6)
         real(kind=8) :: dy(nr)
         character(len=16) :: comp(*)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)

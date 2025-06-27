@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine effi(nomte, sigmtd, vf, dfds, jacp, &
 !     CALCULS DES EFFORTS INTERIEURS
 !
 !-----------------------------------------------------------------------
-    integer :: i, k
+    integer(kind=8) :: i, k
 !-----------------------------------------------------------------------
     if (nomte .eq. 'MECXSE3') then
 !

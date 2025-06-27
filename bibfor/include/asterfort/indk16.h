@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     function indk16(lk16, k16z, rang, nbk16)
         character(len=*) :: lk16(*)
         character(len=*) :: k16z
-        integer :: rang
-        integer :: nbk16
-        integer :: indk16
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbk16
+        integer(kind=8) :: indk16
     end function indk16
 end interface

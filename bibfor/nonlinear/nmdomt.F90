@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,10 +52,10 @@ subroutine nmdomt(ds_algopara, ds_algorom_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: reac_incr, reac_iter, reac_iter_elas
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: reac_incr, reac_iter, reac_iter_elas
     real(kind=8) :: pas_mini_elas
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=16) :: keywf, algo_meth, matrix_pred, matrix_corr, answer
     character(len=8) :: result_prev_disp
 !

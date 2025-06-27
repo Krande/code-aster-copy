@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir, &
 !
     character(len=19) :: covir, bavir, vitvir, angvir, numvir
     character(len=24) :: nvit, nbeta
-    integer :: numfon, nbptff
+    integer(kind=8) :: numfon, nbptff
     real(kind=8) :: radimp, radtor, damax
     aster_logical :: locdom
 !
@@ -76,17 +76,17 @@ subroutine xprvir(fiss, covir, bavir, vitvir, angvir, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: i, j, jcoor, nbno, ifm, niv, jvit, jbeta, cfv, bfv
-    integer :: vfv, afv, cfvpr, bfvpr, vfvpr, afvpr, nfv, npoin, nfvpr
+    integer(kind=8) :: i, j, jcoor, nbno, ifm, niv, jvit, jbeta, cfv, bfv
+    integer(kind=8) :: vfv, afv, cfvpr, bfvpr, vfvpr, afvpr, nfv, npoin, nfvpr
     real(kind=8) :: v1, v2, ai, aj, ak, al, da1, da2, a1, a2
-    integer :: k
+    integer(kind=8) :: k
 !
     real(kind=8) :: pi(3), pj(3), pk(3), pl(3), pij(3), pkl(3), p1(3), p2(3), vi
     real(kind=8) :: vj, vk, vl, dv1, dv2, normij, normkl, normj1, normk2, normjk
 !
 !     MULTIPLE CRACK FRONTS
     real(kind=8), pointer :: basefond(:) => null()
-    integer, pointer :: fondmult(:) => null()
+    integer(kind=8), pointer :: fondmult(:) => null()
     real(kind=8), pointer :: fondfiss(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT

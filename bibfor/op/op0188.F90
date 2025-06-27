@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,10 +49,10 @@ subroutine op0188()
 ! CALCUL D'UN INDICATEUR BINAIRE (APPELEE PAR RAFF_XFEM)
 !
 !
-    integer :: ibid, iret, i, j, ino, nuno, numa, nbnozo
-    integer ::   ncmp, jmafon, nmafon, jma, nbma, nbno, nbmali
-    integer ::   jnoeu, nbmac, jadr, adrvlc, acncin
-    integer :: idlima, nbmazo
+    integer(kind=8) :: ibid, iret, i, j, ino, nuno, numa, nbnozo
+    integer(kind=8) ::   ncmp, jmafon, nmafon, jma, nbma, nbno, nbmali
+    integer(kind=8) ::   jnoeu, nbmac, jadr, adrvlc, acncin
+    integer(kind=8) :: idlima, nbmazo
     real(kind=8) :: rayon, dist
     character(len=8) :: fiss, ma, chout
     character(len=16) :: typdis, k16bid

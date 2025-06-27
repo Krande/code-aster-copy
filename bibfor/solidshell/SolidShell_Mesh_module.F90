@@ -55,18 +55,18 @@ contains
                                         cellVoluNume)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, pointer :: typmail(:)
-        integer, pointer :: cnxinvLoncum(:), cnxinvCell(:)
-        integer, pointer :: cellSkinNode(:)
-        integer, intent(in) :: voluCellType
-        integer, intent(out) :: cellVoluNume
+        integer(kind=8), pointer :: typmail(:)
+        integer(kind=8), pointer :: cnxinvLoncum(:), cnxinvCell(:)
+        integer(kind=8), pointer :: cellSkinNode(:)
+        integer(kind=8), intent(in) :: voluCellType
+        integer(kind=8), intent(out) :: cellVoluNume
 ! - Local
-        integer :: nbVoluLinkedToSurf, iVoluLinked
-        integer :: nbCellLinkedToNode, iCellLinked, cellLinkedNume
-        integer :: iNodeSkin, nodeSkinCurr
-        integer :: cellLinkedType
-        integer, parameter :: nbMaxConnected = 15
-        integer :: voluLinkedToNode(nbMaxConnected, 2)
+        integer(kind=8) :: nbVoluLinkedToSurf, iVoluLinked
+        integer(kind=8) :: nbCellLinkedToNode, iCellLinked, cellLinkedNume
+        integer(kind=8) :: iNodeSkin, nodeSkinCurr
+        integer(kind=8) :: cellLinkedType
+        integer(kind=8), parameter :: nbMaxConnected = 15
+        integer(kind=8) :: voluLinkedToNode(nbMaxConnected, 2)
         aster_logical :: lVoluFind
 !   ------------------------------------------------------------------------------------------------
 !
@@ -122,22 +122,22 @@ contains
     subroutine orieHexa9(iOcc, mesh)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in) :: iOcc
+        integer(kind=8), intent(in) :: iOcc
         character(len=8), intent(in) :: mesh
 ! - Local
         character(len=16), parameter :: keywfact = 'COQUE_SOLIDE'
-        integer :: iCellSkin
-        integer :: cellVoluNume, cellSkinNume
-        integer :: nbCellSkin, cellSkinType
-        integer :: iExist, iDUmmy
+        integer(kind=8) :: iCellSkin
+        integer(kind=8) :: cellVoluNume, cellSkinNume
+        integer(kind=8) :: nbCellSkin, cellSkinType
+        integer(kind=8) :: iExist, iDUmmy
         character(len=16) :: suffix, answer
         character(len=19), parameter :: cnxinv = '&&ORIHEXA9.INV'
         character(len=24), parameter :: jvCellSkin = '&&ORIHEXA9.SURF'
-        integer :: fp(24), iter, aux
-        integer, pointer :: typmail(:) => null()
-        integer, pointer :: surfCell(:) => null()
-        integer, pointer :: cellVoluNode(:) => null(), cellSkinNode(:) => null()
-        integer, pointer :: cnxinvLoncum(:) => null(), cnxinvCell(:) => null()
+        integer(kind=8) :: fp(24), iter, aux
+        integer(kind=8), pointer :: typmail(:) => null()
+        integer(kind=8), pointer :: surfCell(:) => null()
+        integer(kind=8), pointer :: cellVoluNode(:) => null(), cellSkinNode(:) => null()
+        integer(kind=8), pointer :: cnxinvLoncum(:) => null(), cnxinvCell(:) => null()
         aster_logical :: lCellSkin1, lCellSkin2, lHexaInMesh, lPentaInMesh
 !   ------------------------------------------------------------------------------------------------
 !
@@ -250,9 +250,9 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
         aster_logical :: isThisQuad
-        integer, intent(in), dimension(:) :: quadToTest, quadRefe
+        integer(kind=8), intent(in), dimension(:) :: quadToTest, quadRefe
 ! - Local
-        integer :: ii, jj, nbNodeFound
+        integer(kind=8) :: ii, jj, nbNodeFound
 ! --------------------------------------------------------------------------------------------------
 !
         isThisQuad = ASTER_FALSE
@@ -295,23 +295,23 @@ contains
         character(len=8), intent(in) :: mesh
         real(kind=8), intent(in) :: valeR
         character(len=8), intent(in) :: valeK
-        integer, intent(in)          :: nbCellSkin
-        integer, pointer             :: cellSkin(:)
-        integer, pointer             :: valeCell(:)
+        integer(kind=8), intent(in)          :: nbCellSkin
+        integer(kind=8), pointer             :: cellSkin(:)
+        integer(kind=8), pointer             :: valeCell(:)
         real(kind=8), pointer        :: valeFaceR(:)
         character(len=8), pointer    :: valeFaceK(:)
 ! - Local
-        integer :: iCellSkin, iCellVolu
-        integer :: cellSkinNume, cellVoluNume, cellSkinType
+        integer(kind=8) :: iCellSkin, iCellVolu
+        integer(kind=8) :: cellSkinNume, cellVoluNume, cellSkinType
         character(len=8) :: cellSkinName
-        integer :: voluSkinNodeInf(4), voluSkinNodeSup(4)
-        integer, pointer :: cellSkinNode(:) => null(), meshTypmail(:) => null()
-        integer, pointer :: cellVoluNode(:) => null()
+        integer(kind=8) :: voluSkinNodeInf(4), voluSkinNodeSup(4)
+        integer(kind=8), pointer :: cellSkinNode(:) => null(), meshTypmail(:) => null()
+        integer(kind=8), pointer :: cellVoluNode(:) => null()
         aster_logical :: lVoluSkinInf, lVoluSkinSup
         character(len=19), parameter :: cnxinv = '&&ORIHEXA9.INV'
-        integer :: iExist, iDummy
+        integer(kind=8) :: iExist, iDummy
 
-        integer, pointer :: cnxinvLoncum(:) => null(), cnxinvCell(:) => null()
+        integer(kind=8), pointer :: cnxinvLoncum(:) => null(), cnxinvCell(:) => null()
 !   ------------------------------------------------------------------------------------------------
 !
         call jeveuo(mesh//'.TYPMAIL', 'L', vi=meshTypmail)

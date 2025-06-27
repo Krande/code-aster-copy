@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine nmtaac(type, ndimsi, mat, sigel, vim,&
                       epm, dp, sp, xi, sigp,&
                       vip)
-        integer :: ndimsi
-        integer :: type
+        integer(kind=8) :: ndimsi
+        integer(kind=8) :: type
         real(kind=8) :: mat(14)
         real(kind=8) :: sigel(ndimsi)
         real(kind=8) :: vim(9)

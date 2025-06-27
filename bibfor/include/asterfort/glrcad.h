@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       c1, c2, nbackn, deps, depsp,&
                       df, ddiss, dsidep, normm, normn,&
                       crit, codret)
-        integer :: zimat
+        integer(kind=8) :: zimat
         real(kind=8) :: mp1(*)
         real(kind=8) :: mp2(*)
         real(kind=8) :: delas(6, 6)
@@ -45,6 +45,6 @@ interface
         real(kind=8) :: normm
         real(kind=8) :: normn
         real(kind=8) :: crit(*)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine glrcad
 end interface

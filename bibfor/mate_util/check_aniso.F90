@@ -1,5 +1,5 @@
 !    -----------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,9 +51,9 @@ subroutine check_aniso(propname, objname)
     character(len=19) :: noobrc
     real(kind=8) :: dorth(6, 6)
     real(kind=8) :: nu12, nu21, nu13, nu31, nu23, nu32
-    integer :: iel, ien, iet, igln, iglt, igtn
-    integer :: inuln, inult, inutn
-    integer ::  nbr, ndim
+    integer(kind=8) :: iel, ien, iet, igln, iglt, igtn
+    integer(kind=8) :: inuln, inult, inutn
+    integer(kind=8) ::  nbr, ndim
     real(kind=8) :: c1, delta, deux, e1, e2, e3, g12
     real(kind=8) :: g13, g23, un, undemi, zero
     real(kind=8), pointer :: valr(:) => null()

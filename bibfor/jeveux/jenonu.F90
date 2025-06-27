@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,24 +27,24 @@ subroutine jenonu(nomlu, numo)
 #include "asterfort/jxveuo.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomlu
-    integer, intent(out) :: numo
+    integer(kind=8), intent(out) :: numo
 !     ==================================================================
 !-----------------------------------------------------------------------
-    integer :: iadmex, iadmi, ibacol, ipgcex, jcara, jctab, jdate
-    integer :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
-    integer :: jmarq, n
+    integer(kind=8) :: iadmex, iadmi, ibacol, ipgcex, jcara, jctab, jdate
+    integer(kind=8) :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
+    integer(kind=8) :: jmarq, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
     character(len=32) :: noml32
-    integer :: icre, iret, itab(1)
+    integer(kind=8) :: icre, iret, itab(1)
 !     ------------------------------------------------------------------
     numo = 0
     ipgcex = ipgc

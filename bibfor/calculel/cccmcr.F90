@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1, &
 #include "asterfort/teattr.h"
 #include "asterfort/typele.h"
 !
-    integer :: jcesdd, numma, jrepe, jconx2, jconx1, jcoord
-    integer :: ialpha, ibeta, iepais, jalpha, adcar1(3), adcar2(3)
-    integer :: jbeta, jgamma, codret, ino
+    integer(kind=8) :: jcesdd, numma, jrepe, jconx2, jconx1, jcoord
+    integer(kind=8) :: ialpha, ibeta, iepais, jalpha, adcar1(3), adcar2(3)
+    integer(kind=8) :: jbeta, jgamma, codret, ino
     real(kind=8) :: pgl(3, 3)
     character(len=16) :: modeli
     character(len=19) :: ligrmo
@@ -58,9 +58,9 @@ subroutine cccmcr(jcesdd, numma, jrepe, jconx2, jconx1, &
 !     1,2 OU 3 EN CAS DE PROBLEME
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: nbpt1, igrel, te, nbnol, posin, ino1, ino2, idir
-    integer :: iad, inos, nuno, jcesd, jcesl, jcesv, jcesdc, jceslc
-    integer :: jcesvc, iret
+    integer(kind=8) :: nbpt1, igrel, te, nbnol, posin, ino1, ino2, idir
+    integer(kind=8) :: iad, inos, nuno, jcesd, jcesl, jcesv, jcesdc, jceslc
+    integer(kind=8) :: jcesvc, iret
 !
     real(kind=8) :: coordc(3, 10), alpha, beta, gamma, epais
 !

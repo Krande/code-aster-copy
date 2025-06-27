@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine x195cb(tychr, nomgd, chou)
 
     character(len=8) :: chou
     character(len=4) :: tychr, tych1
-    integer :: ib, nbocc, iocc, k, jvale1, jvale2, n1, n2
+    integer(kind=8) :: ib, nbocc, iocc, k, jvale1, jvale2, n1, n2
     real(kind=8) :: coefr
     character(len=8) :: nomgd, nomgd1, ma1, ma2
     character(len=3) :: tsca

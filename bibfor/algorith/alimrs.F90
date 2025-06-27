@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
 !
 !---------------------------------------------------------------------
     aster_logical :: test
-    integer :: nbvale, nbrefe
-    integer :: ino1, nocmp, icor(2), ichnul, ndble, i_ligr_mesh
+    integer(kind=8) :: nbvale, nbrefe
+    integer(kind=8) :: ino1, nocmp, icor(2), ichnul, ndble, i_ligr_mesh
     real(kind=8) :: tailmi
     character(len=8) :: gd1, gd2, ma1, ma2
     character(len=14) :: nume_ddl
@@ -70,13 +70,13 @@ subroutine alimrs(mate, mateco, ma1, ma2, moint, ndble, &
 ! TESTS PRELIMINAIRES : NUMERO DE COMPOSANTE A TRAITER
 !
 !-----------------------------------------------------------------------
-    integer :: iadg1, ieq1, ieq2, igeom1
-    integer :: igeom2, iprn1, iprn2, ival1, ival2
-    integer :: nbno1, ncmp2, nec1, nec2
+    integer(kind=8) :: iadg1, ieq1, ieq2, igeom1
+    integer(kind=8) :: igeom2, iprn1, iprn2, ival1, ival2
+    integer(kind=8) :: nbno1, ncmp2, nec1, nec2
     real(kind=8), pointer :: val1(:) => null()
     real(kind=8), pointer :: val2(:) => null()
-    integer, pointer :: nueq1(:) => null()
-    integer, pointer :: nueq2(:) => null()
+    integer(kind=8), pointer :: nueq1(:) => null()
+    integer(kind=8), pointer :: nueq2(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()

@@ -30,43 +30,43 @@ interface
         aster_logical :: lmasym
         aster_logical :: lmesym
         character(len=2) :: tt
-        integer :: igr
-        integer :: iel
+        integer(kind=8) :: igr
+        integer(kind=8) :: iel
         real(kind=8) :: c1
-        integer :: rang
-        integer :: jnueq
-        integer, pointer :: numsd(:)
-        integer :: jresl
-        integer :: nbvel
-        integer :: nnoe
+        integer(kind=8) :: rang
+        integer(kind=8) :: jnueq
+        integer(kind=8), pointer :: numsd(:)
+        integer(kind=8) :: jresl
+        integer(kind=8) :: nbvel
+        integer(kind=8) :: nnoe
         aster_logical :: ldist
         aster_logical :: ldgrel
-        integer :: ilima
-        integer :: jadli
-        integer :: jadne
-        integer :: jprn1
-        integer :: jprn2
-        integer :: jnulo1
-        integer :: jposd1
-        integer :: admodl
-        integer :: lcmodl
-        integer :: mode
-        integer :: nec
-        integer :: nmxcmp
-        integer :: ncmp
-        integer :: jsmhc
-        integer :: jsmdi
-        integer :: iconx1
-        integer :: iconx2
-        integer :: jtmp2
-        integer :: lgtmp2
-        integer :: jvalm(2)
-        integer :: ilinu
-        integer :: ellagr
-        integer :: nbeltb
-        integer :: ti1(*)
-        integer :: ti2(*)
-        integer :: v_crco(*)
+        integer(kind=8) :: ilima
+        integer(kind=8) :: jadli
+        integer(kind=8) :: jadne
+        integer(kind=8) :: jprn1
+        integer(kind=8) :: jprn2
+        integer(kind=8) :: jnulo1
+        integer(kind=8) :: jposd1
+        integer(kind=8) :: admodl
+        integer(kind=8) :: lcmodl
+        integer(kind=8) :: mode
+        integer(kind=8) :: nec
+        integer(kind=8) :: nmxcmp
+        integer(kind=8) :: ncmp
+        integer(kind=8) :: jsmhc
+        integer(kind=8) :: jsmdi
+        integer(kind=8) :: iconx1
+        integer(kind=8) :: iconx2
+        integer(kind=8) :: jtmp2
+        integer(kind=8) :: lgtmp2
+        integer(kind=8) :: jvalm(2)
+        integer(kind=8) :: ilinu
+        integer(kind=8) :: ellagr
+        integer(kind=8) :: nbeltb
+        integer(kind=8) :: ti1(*)
+        integer(kind=8) :: ti2(*)
+        integer(kind=8) :: v_crco(*)
         aster_logical :: lcontact_par
     end subroutine assma3
 end interface

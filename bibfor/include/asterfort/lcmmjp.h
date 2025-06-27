@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,24 +25,24 @@ interface
                       itmax, toler, vinf, vind, dsde,&
                       drdy, option, iret)
         common/tdim/ ndt,ndi
-        integer :: ndt
-        integer :: ndi
-        integer :: nr
-        integer :: nsg
-        integer :: nfs
-        integer :: nmat
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nmat
         character(len=8) :: mod
         real(kind=8) :: mater(*)
         real(kind=8) :: timed
         real(kind=8) :: timef
         character(len=16) :: comp(*)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
         real(kind=8) :: hsr(nsg, nsg)
-        integer :: nvi
-        integer :: itmax
+        integer(kind=8) :: nvi
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
         real(kind=8) :: sigd(6)        
         real(kind=8) :: vinf(*)
@@ -50,6 +50,6 @@ interface
         real(kind=8) :: dsde(6, *)
         real(kind=8) :: drdy(nr, nr)
         character(len=16) :: option
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmjp
 end interface

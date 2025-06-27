@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
         character(len=8) :: mailla
-        integer :: nbgrmx
+        integer(kind=8) :: nbgrmx
         character(len=24) :: nomrac
-        integer :: nbgrma
+        integer(kind=8) :: nbgrma
         character(len=24) :: nomcyl(*)
     end subroutine mefrac
 end interface

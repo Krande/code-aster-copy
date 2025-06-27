@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ function nltype(inttyp)
 #include "nldef.h"
 #include "asterfort/assert.h"
 !
-    integer :: inttyp
+    integer(kind=8) :: inttyp
     character(len=16) :: nltype
     character(len=16) :: nltypes(_NL_NB_TYPES)
 

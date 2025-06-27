@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ndim, nnoem, nelem, itype(nelem)
+    integer(kind=8) :: ndim, nnoem, nelem, itype(nelem)
     real(kind=8) :: xy(3, nnoem)
     character(len=8) :: nomail
 !
@@ -81,22 +81,22 @@ subroutine singum(nomail, ndim, nnoem, nelem, itype, &
 !
 !
 !
-    integer :: jconn2, jcinv1, jcinv2
-    integer :: jdime, jmesu, jconn, jcinv, adress
-    integer :: inno, inel, jel, nuef, nuno, i
-    integer :: ifac, isur, ia
-    integer :: nfac, nsur, nbpt, nbar
-    integer :: nsommx, nelcom, nbre, nbef(nnoem)
-    integer :: ordre
-    integer :: n1, n2, n3, n4, n5, n6, n7, n8
-    integer :: pt1(24), pt2(24), nm(12)
-    integer :: nomili(nnoem)
+    integer(kind=8) :: jconn2, jcinv1, jcinv2
+    integer(kind=8) :: jdime, jmesu, jconn, jcinv, adress
+    integer(kind=8) :: inno, inel, jel, nuef, nuno, i
+    integer(kind=8) :: ifac, isur, ia
+    integer(kind=8) :: nfac, nsur, nbpt, nbar
+    integer(kind=8) :: nsommx, nelcom, nbre, nbef(nnoem)
+    integer(kind=8) :: ordre
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, n7, n8
+    integer(kind=8) :: pt1(24), pt2(24), nm(12)
+    integer(kind=8) :: nomili(nnoem)
     character(len=8) :: typema(nelem), typma2
     character(len=24) :: cinv
     character(len=24) :: chdime, chmesu, chconn, chcinv
     real(kind=8) :: aire, volume
     aster_logical :: test, complet
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
     call jemarq()
 !

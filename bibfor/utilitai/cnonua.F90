@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
 #include "asterfort/nueq_chck.h"
 !
 !
-    integer, intent(in) :: nb_dim
+    integer(kind=8), intent(in) :: nb_dim
     character(len=*), intent(in) :: chnoz
     character(len=*), intent(in) :: list_nodez
     character(len=*), intent(in) :: nuagez
@@ -60,21 +60,21 @@ subroutine cnonua(nb_dim, chnoz, list_nodez, nuagez)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idx_gd, ncmpmx, nb_ec
-    integer :: nb_point, kcoor, kvale, itype
-    integer :: nb_cmp_max, i_ec, ianueq, iaprno, nume_pt, ncmp, icompt
-    integer :: i_cmp, i_pt, i_dim, i_cmp_mx
-    integer :: jnuav, ival, k, ieq, i_ligr_mesh
+    integer(kind=8) :: idx_gd, ncmpmx, nb_ec
+    integer(kind=8) :: nb_point, kcoor, kvale, itype
+    integer(kind=8) :: nb_cmp_max, i_ec, ianueq, iaprno, nume_pt, ncmp, icompt
+    integer(kind=8) :: i_cmp, i_pt, i_dim, i_cmp_mx
+    integer(kind=8) :: jnuav, ival, k, ieq, i_ligr_mesh
     character(len=4) :: type_scal
     character(len=8) :: mesh, gran_name
     character(len=19) :: chno, list_node, nuage, numeequa
     aster_logical :: l_crea_nual, prem
-    integer, pointer :: ent_cod(:) => null()
-    integer, pointer :: cmp_name(:) => null()
-    integer, pointer :: p_nuai(:) => null()
+    integer(kind=8), pointer :: ent_cod(:) => null()
+    integer(kind=8), pointer :: cmp_name(:) => null()
+    integer(kind=8), pointer :: p_nuai(:) => null()
     real(kind=8), pointer :: p_nuax(:) => null()
     aster_logical, pointer :: p_nual(:) => null()
-    integer, pointer :: p_list_node(:) => null()
+    integer(kind=8), pointer :: p_list_node(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

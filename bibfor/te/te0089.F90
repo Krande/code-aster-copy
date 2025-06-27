@@ -53,15 +53,15 @@ subroutine te0089(option, nomte)
     real(kind=8) :: nx, ny, norm(2), ul(9)
     real(kind=8) :: poids, celer
     character(len=16), pointer :: compor(:) => null()
-    integer :: jv_geom, jv_mate, jv_matr
-    integer :: jvVect, jvDisp, jv_codret, jvDispm, jvDispp
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim
-    integer :: ij, i
-    integer :: n1, n2
-    integer :: ino1, ino2, ipg, ind1, ind2, jdim
-    integer :: ldec
-    integer :: j_mater, iret, codret
+    integer(kind=8) :: jv_geom, jv_mate, jv_matr
+    integer(kind=8) :: jvVect, jvDisp, jv_codret, jvDispm, jvDispp
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg, ndim
+    integer(kind=8) :: ij, i
+    integer(kind=8) :: n1, n2
+    integer(kind=8) :: ino1, ino2, ipg, ind1, ind2, jdim
+    integer(kind=8) :: ldec
+    integer(kind=8) :: j_mater, iret, codret
     character(len=16) :: FEForm, rela_comp
     aster_logical :: l_axis
     real(kind=8) :: r

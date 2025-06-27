@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine nzfpri(deuxmu, trans, rprim, seuil, &
     implicit none
 !
     real(kind=8), intent(in) :: deuxmu, trans, rprim, seuil
-    integer, intent(in) :: nb_phase
+    integer(kind=8), intent(in) :: nb_phase
     real(kind=8), intent(in) :: phase(nb_phase), zalpha
     real(kind=8), intent(in) :: fmel, eta(nb_phase), unsurn(nb_phase), dt, dp
     real(kind=8), intent(out) :: fplas, fp(nb_phase), fd(nb_phase), fprim, fdevi
@@ -60,7 +60,7 @@ subroutine nzfpri(deuxmu, trans, rprim, seuil, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_phase
+    integer(kind=8) :: i_phase
     real(kind=8) :: spetra, r0, fz(5)
 !
 ! --------------------------------------------------------------------------------------------------

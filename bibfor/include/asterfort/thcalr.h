@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ interface
         character(len=19) :: lload_name
         character(len=8) :: resuco
         character(len=8) :: resuc1
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         character(len=8) :: modele
         character(len=24) :: mate
         character(len=8) :: cara
-        integer :: nb_load
+        integer(kind=8) :: nb_load
     end subroutine thcalr
 end interface

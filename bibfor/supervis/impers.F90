@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine impers()
 ! ----------------------------------------------------------------------
 !
 #include "asterfort/iunifi.h"
-    integer :: iunerr
+    integer(kind=8) :: iunerr
 !
     iunerr = iunifi('ERREUR')
     if (iunerr .gt. 0) write (iunerr, *) '<S> ERREUR UTILISATEUR RECUPEREE PAR LE SUPERVISEUR'

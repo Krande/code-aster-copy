@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine maskcb(nbcmp, nbno, nbec, mcoddl, imask,&
                       numord, nbdef)
-        integer :: nbec
-        integer :: nbno
-        integer :: nbcmp
-        integer :: mcoddl(nbno*nbec, 2)
-        integer :: imask(nbno*nbec)
-        integer :: numord(nbno)
-        integer :: nbdef
+        integer(kind=8) :: nbec
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: mcoddl(nbno*nbec, 2)
+        integer(kind=8) :: imask(nbno*nbec)
+        integer(kind=8) :: numord(nbno)
+        integer(kind=8) :: nbdef
     end subroutine maskcb
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg, &
 !  IN   : ZMIN   : COTE MIN DU FAISCEAU DE TUBES
 !  IN   : ZMAX   : COTE MAX DU FAISCEAU DE TUBES
 !-----------------------------------------------------------------------
-    integer :: ntypg, nbgtot, itypg(nbgtot)
+    integer(kind=8) :: ntypg, nbgtot, itypg(nbgtot)
     real(kind=8) :: zg(nbgtot), hg(ntypg), zmin, zmax
 !
     character(len=3) :: k3ig, k3jg
@@ -43,7 +43,7 @@ subroutine mefgri(ntypg, nbgtot, zg, hg, itypg, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ig, jg
+    integer(kind=8) :: ig, jg
     real(kind=8) :: z1, z1ig, z1jg, z2, z2ig, z2jg
 !-----------------------------------------------------------------------
     do ig = 1, nbgtot

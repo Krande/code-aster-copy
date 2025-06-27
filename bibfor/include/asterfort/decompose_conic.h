@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine decompose_conic(m0, nline, line1, line2, indic)
         real(kind=8), intent(in) :: m0(3,3)
-        integer, intent(out) :: nline
+        integer(kind=8), intent(out) :: nline
         real(kind=8), intent(out) :: line1(3)
         real(kind=8), intent(out) :: line2(3)
         real(kind=8), intent(out), optional :: indic

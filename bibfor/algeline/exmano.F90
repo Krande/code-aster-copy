@@ -40,14 +40,14 @@ subroutine exmano(noma, numnoe, numano, nbmano)
 #include "asterfort/jexnum.h"
 !
     character(len=8) :: noma
-    integer :: numnoe, numano(*), nbmano
+    integer(kind=8) :: numnoe, numano(*), nbmano
 !
     character(len=24) :: mlgtma, mlgcnx
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: jdno, jdtm, nbmail, no1, no2, ntseg, numail
-    integer :: nutyma
+    integer(kind=8) :: jdno, jdtm, nbmail, no1, no2, ntseg, numail
+    integer(kind=8) :: nutyma
 !-----------------------------------------------------------------------
     call jemarq()
 !

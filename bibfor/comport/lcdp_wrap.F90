@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine lcdp_wrap(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/assert.h"
 #include "blas/ddot.h"
 !
-    integer :: imate, ndim, kpg, ksp, codret, neps
+    integer(kind=8) :: imate, ndim, kpg, ksp, codret, neps
     real(kind=8) :: instam, instap
     real(kind=8) :: crit(*)
     real(kind=8) :: epsm(neps), deps(neps)
@@ -45,7 +45,7 @@ subroutine lcdp_wrap(fami, kpg, ksp, ndim, imate, &
 ! ----------------------------------------------------------------------
     type(dp_material) :: mat
     aster_logical :: elas, rigi, resi
-    integer :: itemax, ndimsi, state
+    integer(kind=8) :: itemax, ndimsi, state
     real(kind=8) :: prec
     real(kind=8) :: ka
     real(kind=8) :: eps(2*ndim), ep(2*ndim), sig(2*ndim)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine lcmmjv(mult_comp, nmat, cpmono, nbfsys, irota, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/r8inir.h"
 #include "blas/dcopy.h"
-    integer :: nmat, icompi, irota, itbint, icompo, nbfsys, i, j, nsg
-    integer :: icompr, nbsyst, nbtbsy, ifa, nbsysi, idecal
+    integer(kind=8) :: nmat, icompi, irota, itbint, icompo, nbfsys, i, j, nsg
+    integer(kind=8) :: icompr, nbsyst, nbtbsy, ifa, nbsysi, idecal
     real(kind=8) :: hsr(nsg, nsg), tbsysg
     character(len=16) :: mult_comp
     character(len=16) :: compk, compi, compr

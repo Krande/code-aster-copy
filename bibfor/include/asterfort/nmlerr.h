@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,6 @@ interface
         character(len=1) :: action
         character(len=*) :: infz
         real(kind=8) :: valr
-        integer :: vali
+        integer(kind=8) :: vali
     end subroutine nmlerr
 end interface

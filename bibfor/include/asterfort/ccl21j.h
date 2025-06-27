@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine ccl21j(fronti, frontj, frn, j, l,&
                       n, n1, t1, t2)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: fronti(*)
         complex(kind=8) :: frontj(*)
         complex(kind=8) :: frn(*)
-        integer :: j
-        integer :: l
-        integer :: n1
+        integer(kind=8) :: j
+        integer(kind=8) :: l
+        integer(kind=8) :: n1
         complex(kind=8) :: t1(n)
         complex(kind=8) :: t2(n)
     end subroutine ccl21j

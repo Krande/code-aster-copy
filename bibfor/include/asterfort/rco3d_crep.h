@@ -24,8 +24,7 @@ interface
         character(len=8)  :: noma
         character(len=8)  :: cara_elem
         character(len=24) :: lismaco
-        integer           :: nbmaco
+        integer(kind=8)           :: nbmaco
         real(kind=8), pointer ::  v_epai(:)
     end subroutine rco3d_crep
 end interface
-

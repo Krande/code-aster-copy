@@ -34,7 +34,7 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 #include "asterfort/utmess.h"
 !
     character(len=8) :: modele, maxfem
-    integer :: mftot, nftot
+    integer(kind=8) :: mftot, nftot
 !
 !
 !     BUT : GENERER UN MAILLAGE DESTINE UNIQUEMENT AU POST-TRAITEMENT
@@ -48,20 +48,20 @@ subroutine xpocrf(modele, maxfem, mftot, nftot)
 !       MAXFEM : MAILLAGE FISSURE
 !     =================================================================
 !     ------------------------------------------------------------------
-    integer :: ifiss, ifon, ifon1, ifon2, ino, j, ima
-    integer :: nfiss, nfond, nfon, ntseg2, ntpoi1
-    integer :: icompt, ncompt, nufon, iagma, iagno
-    integer :: ntail, ndim, nbmax
-    integer :: ibid, nnntot, iret, jconx, igr
-    integer :: jva00, jva0, jva1, jva2, jva3
-    integer ::  jnom
+    integer(kind=8) :: ifiss, ifon, ifon1, ifon2, ino, j, ima
+    integer(kind=8) :: nfiss, nfond, nfon, ntseg2, ntpoi1
+    integer(kind=8) :: icompt, ncompt, nufon, iagma, iagno
+    integer(kind=8) :: ntail, ndim, nbmax
+    integer(kind=8) :: ibid, nnntot, iret, jconx, igr
+    integer(kind=8) :: jva00, jva0, jva1, jva2, jva3
+    integer(kind=8) ::  jnom
     character(len=2) :: chn1, chn2
     character(len=6) :: chn
     character(len=8) :: fiss, mo
     character(len=19) :: nomtab, coord2
     character(len=24) :: nom, nogno, nogma
-    integer, pointer :: fondmult(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: fondmult(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
 !

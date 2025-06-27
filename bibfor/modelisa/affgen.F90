@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ntel(*)
+    integer(kind=8) :: ntel(*)
     character(len=19) :: napcis, foncis
     character(len=24) :: tmp, nom
 !       AFFECTATION DES CARACTÉRISTIQUES GÉNÉRALES CALCULÉES
@@ -46,8 +46,8 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
     real(kind=8) :: valpay(2), valpaz(2), valpaf
     character(len=24) :: nompa(2), nompaf
 !-----------------------------------------------------------------------
-    integer :: i, ier, igen, igen2, igeoc, igeor, isec
-    integer :: jdge, nel
+    integer(kind=8) :: i, ier, igen, igen2, igeoc, igeor, isec
+    integer(kind=8) :: jdge, nel
     real(kind=8) :: aireint, ay, az
 !-----------------------------------------------------------------------
     data eps/1.d-3/
@@ -56,9 +56,10 @@ subroutine affgen(tmp, nom, nel, ntel, napcis, foncis)
     call jemarq()
     pi = r8pi()
 !
-if (.not. (nel .eq. ntel(1) .or. nel .eq. ntel(2) .or. nel .eq. ntel(3) .or. nel .eq. ntel(4) .or. &
-         nel .eq. ntel(5) .or. nel .eq. ntel(11) .or. nel .eq. ntel(12) .or. nel .eq. ntel(8) .or. &
-          nel .eq. ntel(9) .or. nel .eq. ntel(10) .or. nel .eq. ntel(6) .or. nel .eq. ntel(7) .or. &
+    if (.not. (nel .eq. ntel(1) .or. nel .eq. ntel(2) .or. nel .eq. ntel(3) .or. &
+               nel .eq. ntel(4) .or. nel .eq. ntel(5) .or. nel .eq. ntel(11) .or. &
+               nel .eq. ntel(12) .or. nel .eq. ntel(8) .or. nel .eq. ntel(9) .or. &
+               nel .eq. ntel(10) .or. nel .eq. ntel(6) .or. nel .eq. ntel(7) .or. &
                nel .eq. ntel(13))) then
         call utmess('F', 'MODELISA_86')
     end if

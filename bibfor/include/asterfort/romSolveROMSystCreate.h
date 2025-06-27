@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         character(len=1), intent(in) :: syst_matr_type
         character(len=1), intent(in) :: syst_2mbr_type
         character(len=1), intent(in) :: syst_type
-        integer, intent(in) :: nb_mode
+        integer(kind=8), intent(in) :: nb_mode
         type(ROM_DS_Solve), intent(inout) :: ds_solve
     end subroutine romSolveROMSystCreate
 end interface

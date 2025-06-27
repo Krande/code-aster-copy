@@ -51,17 +51,17 @@ subroutine te0322(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, nno1, nno2, npg, nddl, ntrou
-    integer :: iw, ivf1, ivf2, idf2
-    integer :: igeom, imater, icarcr, iddlm, iddld
-    integer :: icontm, icontp, ivect, imatr, iu(3, 16), ip(8)
-    integer :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
-    integer :: lgpg
+    integer(kind=8) :: ndim, nno1, nno2, npg, nddl, ntrou
+    integer(kind=8) :: iw, ivf1, ivf2, idf2
+    integer(kind=8) :: igeom, imater, icarcr, iddlm, iddld
+    integer(kind=8) :: icontm, icontp, ivect, imatr, iu(3, 16), ip(8)
+    integer(kind=8) :: ivarim, ivarip, jtab(7), iret, iinstm, iinstp
+    integer(kind=8) :: lgpg
     character(len=16), pointer :: compor(:) => null()
     character(len=8) :: typmod(2), lielrf(10)
     aster_logical :: lVect, lMatr, lVari, lSigm
-    integer :: codret
-    integer :: jv_codret
+    integer(kind=8) :: codret
+    integer(kind=8) :: jv_codret
 !
 ! --------------------------------------------------------------------------------------------------
 !

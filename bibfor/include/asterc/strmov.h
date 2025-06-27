@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine strmov(src, isb, num, dest, idb)
         character(len=*) :: src
-        integer :: isb
-        integer :: num
-        integer :: dest(*)
-        integer :: idb
+        integer(kind=8) :: isb
+        integer(kind=8) :: num
+        integer(kind=8) :: dest(*)
+        integer(kind=8) :: idb
     end subroutine strmov
 end interface

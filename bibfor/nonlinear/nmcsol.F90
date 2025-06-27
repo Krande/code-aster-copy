@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,10 +48,10 @@ subroutine nmcsol(lischa, sddyna, lviss)
 !
     character(len=8) :: cnfsol
     character(len=24) :: charge, infcha
-    integer :: jalich, jinfch
-    integer :: nchar, ichar, nfsol
+    integer(kind=8) :: jalich, jinfch
+    integer(kind=8) :: nchar, ichar, nfsol
     character(len=24) :: nchsol
-    integer :: jchsol
+    integer(kind=8) :: jchsol
     character(len=15) :: sdexso
     character(len=19) :: sdexsz
 !

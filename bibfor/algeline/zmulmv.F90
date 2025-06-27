@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine zmulmv(trans, m, n, alpha, a, &
 #include "blas/zaxpy.h"
 #include "blas/zdotc.h"
 #include "blas/zdotu.h"
-    integer :: m, n, lda, incx, incy
+    integer(kind=8) :: m, n, lda, incx, incy
     complex(kind=8) :: alpha, beta, x(*), y(*)
     character(len=*) :: trans
 !  CALCUL DU PRODUIT D'UNE MATRICE PAR UN VECTEUR (OPTION 'N' 'T' 'C').
@@ -50,9 +50,9 @@ subroutine zmulmv(trans, m, n, alpha, a, &
 ! OUT : INCY : DEPLACEMENT ENTRE LES ELEMENTS DE Y.
 !-----------------------------------------------------------------------
 !                                  SPECIFICATIONS FOR LOCAL VARIABLES
-    integer :: i, ix, iy, ky, lenx, leny
+    integer(kind=8) :: i, ix, iy, ky, lenx, leny
     complex(kind=8) :: a(*)
-    integer :: kx
+    integer(kind=8) :: kx
     blas_int :: b_incx, b_incy, b_n
 !
     if (m .eq. 0 .or. n .eq. 0 .or. alpha .eq. (0.0d0, 0.0d0) .and. beta .eq. (1.0d0, 0.0d0)) &

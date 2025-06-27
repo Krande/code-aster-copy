@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine cffpm2(resoco, resigr, nbliai, nbliac, ndim)
         character(len=24) :: resoco
         real(kind=8) :: resigr
-        integer :: nbliai
-        integer :: nbliac
-        integer :: ndim
+        integer(kind=8) :: nbliai
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ndim
     end subroutine cffpm2
 end interface

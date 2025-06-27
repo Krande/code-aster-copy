@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine ini002(nomte, nmax, itabl, k24tab, nval)
         character(len=16), intent(in) :: nomte
-        integer, intent(in) :: nmax
-        integer, optional, intent(out):: itabl(nmax)
+        integer(kind=8), intent(in) :: nmax
+        integer(kind=8), optional, intent(out):: itabl(nmax)
         character(len=24), optional, intent(inout) :: k24tab(nmax)
-        integer, optional, intent(out):: nval
+        integer(kind=8), optional, intent(out):: nval
     end subroutine ini002
 end interface

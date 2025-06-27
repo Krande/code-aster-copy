@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,9 +71,9 @@ subroutine dtmprep_noli(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer          :: nbchoc, nbnli, iret, i, nbmode
-    integer          :: nbvint, j, nlcase, nbcomp, icomp
-    integer          :: nltype_i, ivchoc
+    integer(kind=8)          :: nbchoc, nbnli, iret, i, nbmode
+    integer(kind=8)          :: nbvint, j, nlcase, nbcomp, icomp
+    integer(kind=8)          :: nltype_i, ivchoc
     character(len=7) :: casek7
     character(len=8) :: sd_dtm, monmot, sd_nl
     character(len=16):: nltreat_k, nltype_k

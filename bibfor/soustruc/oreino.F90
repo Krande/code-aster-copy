@@ -30,7 +30,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next, &
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: lnoeud(*), nbno, nori, next, ier, iera
+    integer(kind=8) :: lnoeud(*), nbno, nori, next, ier, iera
     real(kind=8) :: coor(*), prec
     character(len=8) :: noma
     character(len=*) :: crit
@@ -49,7 +49,7 @@ subroutine oreino(noma, lnoeud, nbno, nori, next, &
 !     IN  : PREC  : PRECISION
 !     IN  : IER   : CODE RETOUR,  = 0  OK
 !-----------------------------------------------------------------------
-    integer :: i, j, k, n, inoe, inod
+    integer(kind=8) :: i, j, k, n, inoe, inod
     real(kind=8) :: xa, ya, za, xb, yb, zb, xab, yab, zab, ab2, xm, ym, zm, xam
     real(kind=8) :: yam, zam, c, c2, xv, yv, zv, v2, r8b, ecart, valr
     character(len=8) :: nomn

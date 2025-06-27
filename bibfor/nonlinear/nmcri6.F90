@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ function nmcri6(dp)
     common/rconm6/mutrbe, tauteq
     real(kind=8) :: mutrbe, tauteq
 !
-    integer :: jprol, jvale, nbval
+    integer(kind=8) :: jprol, jvale, nbval
     real(kind=8) :: pm, young, nu, mu, unk, troisk, cother, sigy
     real(kind=8) :: sigm0, epsi0, dt, coefm, rpm, pente, apui, npui
     common/lcpim/&

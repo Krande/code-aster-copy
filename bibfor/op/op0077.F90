@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -72,14 +72,14 @@ subroutine op0077()
     character(len=16) :: concep, nomcmd, typres, typrep, champ(4)
     character(len=19) :: nume_equa
     character(len=24) :: matgen, numgen, vbl24(1)
-    integer :: ioc1, nbord, i, iord, lpaout(3)
+    integer(kind=8) :: ioc1, nbord, i, iord, lpaout(3)
 !
 !     -----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, ir, ir1, iret, isk, j
-    integer :: j2refe, j3refe, jrefn, jrefnb, lmacr, lmodge
-    integer ::  n1, n2, nbcham, numsec, neq, neq2
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8) :: ibid, ir, ir1, iret, isk, j
+    integer(kind=8) :: j2refe, j3refe, jrefn, jrefnb, lmacr, lmodge
+    integer(kind=8) ::  n1, n2, nbcham, numsec, neq, neq2
+    integer(kind=8), pointer :: ordr(:) => null()
     character(len=3) :: typesca
     character(len=8), pointer :: refm(:) => null()
     character(len=16) :: depl

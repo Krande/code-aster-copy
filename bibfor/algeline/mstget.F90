@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
 !
     character(len=*), intent(in) :: keywordfactz
     character(len=*), intent(in) :: matrix
-    integer, intent(in) :: nbocc
-    integer, intent(inout) :: ddlsta(*)
+    integer(kind=8), intent(in) :: nbocc
+    integer(kind=8), intent(inout) :: ddlsta(*)
 
 !     ------------------------------------------------------------------
 !     OPERATEUR : MODE_STATIQUE
@@ -58,7 +58,7 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
 !                DDLSTA(I) = 1  MODE STATIQUE POUR LE DDL I
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: neq
+    integer(kind=8) :: neq
     character(len=8) :: mesh
     character(len=14) :: nume_ddl
     character(len=16) :: keywordfact
@@ -66,14 +66,14 @@ subroutine mstget(matrix, keywordfactz, nbocc, ddlsta)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iocc, ic, ieq
-    integer :: iii, imode, ind, jcmp
-    integer :: jind1, jind2, lacb, lact, lblo, lcmp
-    integer :: llag, na, nac, nba
-    integer :: nbb, nbl, nbliai, ncmp, nd, nt
-    integer :: nb_node, nsc, ntc
-    integer, pointer :: list_equa(:) => null()
-    integer, pointer :: p_list_node(:) => null()
+    integer(kind=8) :: iocc, ic, ieq
+    integer(kind=8) :: iii, imode, ind, jcmp
+    integer(kind=8) :: jind1, jind2, lacb, lact, lblo, lcmp
+    integer(kind=8) :: llag, na, nac, nba
+    integer(kind=8) :: nbb, nbl, nbliai, ncmp, nd, nt
+    integer(kind=8) :: nb_node, nsc, ntc
+    integer(kind=8), pointer :: list_equa(:) => null()
+    integer(kind=8), pointer :: p_list_node(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

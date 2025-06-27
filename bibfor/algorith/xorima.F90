@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2, &
 !
     character(len=8) :: noma
     character(len=19) :: sens
-    integer :: nbmaf, jdlima, jconx1, jconx2, jcoor
+    integer(kind=8) :: nbmaf, jdlima, jconx1, jconx2, jcoor
 !
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
@@ -79,12 +79,12 @@ subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2, &
 !
 !
     real(kind=8) :: a(3), b(3), c(3), ab(3), ac(3), vn(3), vnref(3), ps, norme
-    integer :: jsens, nlayer, layer, i, j, nmaabs, nbnoma, inoma, jelno, nbelno
-    integer :: elj, numelm, nmaass
+    integer(kind=8) :: jsens, nlayer, layer, i, j, nmaabs, nbnoma, inoma, jelno, nbelno
+    integer(kind=8) :: elj, numelm, nmaass
     character(len=19) :: cnxinv
 !
 !-----------------------------------------------------------------------
-    integer :: nuno
+    integer(kind=8) :: nuno
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@ interface
     subroutine nmdcco(sddisc, i_event_acti, typdec, nbrpas, deltac,&
                       ratio , optdec      , retdec, ldcext, subdur)
         character(len=19) :: sddisc
-        integer :: i_event_acti
+        integer(kind=8) :: i_event_acti
         character(len=4) :: typdec
-        integer :: nbrpas
+        integer(kind=8) :: nbrpas
         real(kind=8) :: deltac
         real(kind=8) :: ratio
         character(len=16) :: optdec
-        integer :: retdec
+        integer(kind=8) :: retdec
         aster_logical :: ldcext
         real(kind=8) :: subdur
     end subroutine nmdcco

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat,&
                       factol, factou, typsym)
-        integer :: lonmat
-        integer :: nbloc
-        integer :: lgbloc(*)
-        integer :: adinit(lonmat)
+        integer(kind=8) :: lonmat
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: lgbloc(*)
+        integer(kind=8) :: adinit(lonmat)
         character(len=*) :: nommat
         character(len=24) :: factol
         character(len=24) :: factou
-        integer :: typsym
+        integer(kind=8) :: typsym
     end subroutine mltasa
 end interface

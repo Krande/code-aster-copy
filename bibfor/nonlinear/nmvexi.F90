@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine nmvexi(sigi, grj2, dj2ds, nb, mate, &
 #include "asterc/r8gaem.h"
 #include "asterfort/calcj0.h"
 #include "asterfort/r8inir.h"
-    integer :: nb, nmat
+    integer(kind=8) :: nb, nmat
 !
     real(kind=8) :: mate(nmat, 2), sigi(nb)
     real(kind=8) :: xhi, dxhids(nb), grj2, dj2ds(nb)
@@ -44,7 +44,7 @@ subroutine nmvexi(sigi, grj2, dj2ds, nb, mate, &
 !                         VISCOPLASTIQUE
 !          DXHIDS(NB)   : DERIVEE DE XHI/SIGI
 !-----------------------------------------------------------------------
-    integer :: itens, ivec
+    integer(kind=8) :: itens, ivec
     real(kind=8) :: trsig, kron(6), tole, dj0ds(6), dj1ds(6)
     real(kind=8) :: grj0, grj1, valp(3)
     real(kind=8) :: sedvp1, sedvp2, zero

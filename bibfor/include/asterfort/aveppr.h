@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine aveppr(nbordr, vwork, tdisp, kwork, sommw,&
                       tspaq, i, jveppr, jvsipn)
-        integer :: tdisp
-        integer :: nbordr
+        integer(kind=8) :: tdisp
+        integer(kind=8) :: nbordr
         real(kind=8) :: vwork(tdisp)
-        integer :: kwork
-        integer :: sommw
-        integer :: tspaq
-        integer :: i
-        integer :: jveppr
-        integer :: jvsipn
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sommw
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: i
+        integer(kind=8) :: jveppr
+        integer(kind=8) :: jvsipn
     end subroutine aveppr
 end interface

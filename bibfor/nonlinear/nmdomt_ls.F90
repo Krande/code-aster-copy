@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,11 +46,11 @@ subroutine nmdomt_ls(ds_algopara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iter_line_maxi
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iter_line_maxi
     real(kind=8) :: resi_line_rela
     real(kind=8) :: reli_rho_mini, reli_rho_maxi, reli_rho_excl
-    integer :: nocc
+    integer(kind=8) :: nocc
     character(len=16) :: reli_meth, keywf
 !
 ! --------------------------------------------------------------------------------------------------

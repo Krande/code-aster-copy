@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw, &
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
     character(len=8) :: typmod(*)
-    integer :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mat
+    integer(kind=8) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw, mat
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg)
     real(kind=8) :: geom(ndim, nno1)
     real(kind=8) :: sigm(2*ndim+1, npg), vect(*), ddl(*)
@@ -55,13 +55,13 @@ subroutine nmfogn(ndim, nno1, nno2, npg, iw, &
 ! MEM DFDI2   :
 ! ---------------------------------------------------------------------
 !
-    integer :: k2(1)
+    integer(kind=8) :: k2(1)
     character(len=8) :: fami, poum
     character(len=16) :: nom(1)
 !
     aster_logical :: grand, axi, nax
-    integer :: nddl, ndimsi, g, n, i, kl, kk
-    integer :: iu(3*27), ia(8), kpg, spt
+    integer(kind=8) :: nddl, ndimsi, g, n, i, kl, kk
+    integer(kind=8) :: iu(3*27), ia(8), kpg, spt
     real(kind=8) :: rac2, c, val(1)
     real(kind=8) :: dfdi1(27, 3)
     real(kind=8) :: av, ag(3), bp

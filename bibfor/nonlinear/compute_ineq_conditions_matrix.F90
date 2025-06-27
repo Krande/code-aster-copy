@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,18 +32,18 @@ subroutine compute_ineq_conditions_matrix(enat, nbliai, japptr, japcoe, jjeux, &
 #include "asterfort/r8inir.h"
 #include "blas/daxpy.h"
     character(len=24) :: enat
-    integer :: nbliai
-    integer :: japptr, japcoe, jjeux, jtacf, njeux, ztacf
+    integer(kind=8) :: nbliai
+    integer(kind=8) :: japptr, japcoe, jjeux, jtacf, njeux, ztacf
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ndlmax
+    integer(kind=8) :: ndlmax
     parameter(ndlmax=30)
     real(kind=8) :: jeuini
     real(kind=8) :: coefpn, xmu
-    integer :: iliai
-    integer :: jenat
-    integer :: nbddl, jdecal
+    integer(kind=8) :: iliai
+    integer(kind=8) :: jenat
+    integer(kind=8) :: nbddl, jdecal
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

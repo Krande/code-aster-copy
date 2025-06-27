@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine matr_asse_set_values(matasz, dim, idx, jdx, values)
 #include "asterfort/as_allocate.h"
 
     character(len=*) :: matasz
-    integer :: idx(*), jdx(*), dim
+    integer(kind=8) :: idx(*), jdx(*), dim
     real(kind=8) :: values(*)
 !-----------------------------------------------------------------------
 ! Goal : replace and set the values of an assembly matrix.
@@ -59,20 +59,20 @@ subroutine matr_asse_set_values(matasz, dim, idx, jdx, values)
     character(len=19) :: matass, kstoc
     character(len=1) :: bas1
     character(len=3) :: tysca
-    integer :: i, k, n1, ier, neq, nterms, ierr, n_smdi
+    integer(kind=8) :: i, k, n1, ier, neq, nterms, ierr, n_smdi
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: smde(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     integer(kind=4), pointer :: smhc(:) => null()
     real(kind=8), pointer :: valm1(:) => null()
     real(kind=8), pointer :: valm2(:) => null()
-    integer, pointer :: idx_new(:) => null()
-    integer, pointer :: jdx_new(:) => null()
-    integer, pointer :: sum_ij(:) => null()
+    integer(kind=8), pointer :: idx_new(:) => null()
+    integer(kind=8), pointer :: jdx_new(:) => null()
+    integer(kind=8), pointer :: sum_ij(:) => null()
     real(kind=8), pointer :: v_up(:) => null()
     real(kind=8), pointer :: v_low(:) => null()
-    integer, dimension(:), pointer :: pv => null()
-    integer, dimension(:), allocatable, target :: ibuffer
+    integer(kind=8), dimension(:), pointer :: pv => null()
+    integer(kind=8), dimension(:), allocatable, target :: ibuffer
     !-------------------------------------------------------------------
     call jemarq()
     matass = matasz

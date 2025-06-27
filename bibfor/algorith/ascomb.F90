@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,17 +64,17 @@ subroutine ascomb(lischa, vecelz, typres, nompar, valpar, &
 !
 !
 !
-    integer :: nbchar
-    integer :: iret, ichar
-    integer :: jcoef, jtype
+    integer(kind=8) :: nbchar
+    integer(kind=8) :: iret, ichar
+    integer(kind=8) :: jcoef, jtype
     character(len=24) :: vachar
-    integer :: ivec, ivecc, nbvec, jvacha
+    integer(kind=8) :: ivec, ivecc, nbvec, jvacha
     character(len=8) :: nomfct
     character(len=24) :: chamno
     real(kind=8) :: valres, valre, valim
     complex(kind=8) :: calpha
     real(kind=8) :: phase, omega, dgrd
-    integer :: npuis
+    integer(kind=8) :: npuis
     character(len=19) :: vecele
     character(len=16) :: typfct
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine irrnvi(model, ndt, ndi, nr, nvi)
 !              IL FAUT AJOUTER UN TERME POUR LES C_PLAN
 !     NVI   :  NB DE VARIABLES INTERNES
 ! ----------------------------------------------------------------
-    integer :: ndt, ndi, nr, nvi, nvint
+    integer(kind=8) :: ndt, ndi, nr, nvi, nvint
     character(len=8) :: model
 !
 ! --- NB DE COMPOSANTES / VARIABLES INTERNES / CATALOGUE MATERIAU

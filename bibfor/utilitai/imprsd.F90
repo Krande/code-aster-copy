@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 #include "asterfort/as_allocate.h"
 !
     character(len=*) :: typesd, nomsd, titre
-    integer :: ific
+    integer(kind=8) :: ific
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !  BUT : IMPRIMER UNE STRUCTURE DE DONNEE DONT ON CONNAIT LE TYPE
@@ -53,13 +53,13 @@ subroutine imprsd(typesd, nomsd, ific, titre)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i1, i2, i3, i4, i5, i6, ib
-    integer ::    k, npara
+    integer(kind=8) :: i1, i2, i3, i4, i5, i6, ib
+    integer(kind=8) ::    k, npara
     character(len=16) :: typ2sd
     character(len=19) :: ch, chs, matr
     character(len=17) :: table
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=16), pointer :: lipara(:) => null()
 !
 ! -DEB------------------------------------------------------------------

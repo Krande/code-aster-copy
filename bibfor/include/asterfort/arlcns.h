@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine arlcns(nummai,connex,loncum,nbno,cxno)
-        integer :: nbno
-        integer :: nummai
-        integer :: connex(*)
-        integer :: loncum(*)
-        integer :: cxno(nbno)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nummai
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: loncum(*)
+        integer(kind=8) :: cxno(nbno)
     end subroutine arlcns
 end interface

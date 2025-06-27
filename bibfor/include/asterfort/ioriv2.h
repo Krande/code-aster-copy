@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 !
 interface
     function ioriv2(num, n, noeud, vect, coor)
-        integer :: n
-        integer :: num(n)
-        integer :: noeud
+        integer(kind=8) :: n
+        integer(kind=8) :: num(n)
+        integer(kind=8) :: noeud
         real(kind=8) :: vect(3)
         real(kind=8) :: coor(3, *)
-        integer :: ioriv2
+        integer(kind=8) :: ioriv2
     end function ioriv2
 end interface

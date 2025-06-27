@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,14 +30,14 @@ interface
         character(len=16), intent(in) :: refer
         character(len=16), intent(in) :: legend
         aster_logical, intent(in) :: llab
-        integer, intent(in) :: nbref
+        integer(kind=8), intent(in) :: nbref
         character(len=*), intent(in) :: rela
         real(kind=8), intent(in) :: tole
         character(len=*), intent(in), optional :: ssigne
         real(kind=8), intent(in), optional :: refr(nbref)
         real(kind=8), intent(in), optional :: valr
-        integer, intent(in), optional :: refi(nbref)
-        integer, intent(in), optional :: vali
+        integer(kind=8), intent(in), optional :: refi(nbref)
+        integer(kind=8), intent(in), optional :: vali
         complex(kind=8), intent(in), optional :: refc(nbref)
         complex(kind=8), intent(in), optional :: valc
         aster_logical, intent(in), optional :: ignore

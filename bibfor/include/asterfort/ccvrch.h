@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine ccvrch(resuin, numor0, lforc_noda)
         character(len=8) :: resuin
-        integer :: numor0
+        integer(kind=8) :: numor0
         aster_logical :: lforc_noda
     end subroutine ccvrch
 end interface

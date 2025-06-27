@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine xtailm(ndim, vecdir, numa, typma, jcoor,&
                       jconx1, jconx2, ipt, jtail)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: vecdir(ndim)
-        integer :: numa
+        integer(kind=8) :: numa
         character(len=8) :: typma
-        integer :: jcoor
-        integer :: jconx1
-        integer :: jconx2
-        integer :: ipt
-        integer :: jtail
+        integer(kind=8) :: jcoor
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: ipt
+        integer(kind=8) :: jtail
     end subroutine xtailm
 end interface

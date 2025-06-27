@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine defContactCreateObjects(sdcont)
 !
     character(len=1) :: jv_base
     character(len=24) :: sdcont_paraci, sdcont_paracr
-    integer :: j_sdcont_paracr, j_sdcont_paraci
-    integer :: zparr, zpari
+    integer(kind=8) :: j_sdcont_paracr, j_sdcont_paraci
+    integer(kind=8) :: zparr, zpari
 !
 ! --------------------------------------------------------------------------------------------------
 !

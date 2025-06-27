@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 interface
     subroutine nmmaba(icodma, rela_comp, e, dsde, sigy,&
                       ncstpm, cstpm)
-        integer :: ncstpm
-        integer :: icodma
+        integer(kind=8) :: ncstpm
+        integer(kind=8) :: icodma
         character(len=16) :: rela_comp
         real(kind=8) :: e
         real(kind=8) :: dsde

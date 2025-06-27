@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine klgcou(nno, nbrddl, pgl1, pgl2, pgl3, &
 !                 PGLI = MATRICES DE PASSAGE NOEUD I
 ! ENTREE-SORTIE : K   = MATRICE DE RIGIDITE
 !
-    integer :: i, j, l, nno, nbrddl, m
+    integer(kind=8) :: i, j, l, nno, nbrddl, m
 !JMP      PARAMETER          (NBRDDL=63)
     real(kind=8) :: k(nbrddl, nbrddl), p(nbrddl, nbrddl)
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), pgl4(3, 3)

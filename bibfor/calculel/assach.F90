@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,15 +45,15 @@ subroutine assach(preel2, pimag2, base2, chout2, parout)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: i, ier, gdr, gdi, gdcpx, jncmpr, jncmpc
-    integer :: nmax1, nmax2, nbvalr, nbvali, iret
-    integer ::    nbvalc
+    integer(kind=8) :: i, ier, gdr, gdi, gdcpx, jncmpr, jncmpc
+    integer(kind=8) :: nmax1, nmax2, nbvalr, nbvali, iret
+    integer(kind=8) ::    nbvalc
 !
     character(len=8) :: nomgdr, nomgdi, nomcpx, kmpicr, kmpici
     character(len=24) :: ligrel, option, param
     character(len=24) :: valk(2)
-    integer, pointer :: celdi(:) => null()
-    integer, pointer :: celdr(:) => null()
+    integer(kind=8), pointer :: celdi(:) => null()
+    integer(kind=8), pointer :: celdr(:) => null()
     character(len=24), pointer :: celk(:) => null()
     character(len=24), pointer :: celkr(:) => null()
     real(kind=8), pointer :: vali(:) => null()

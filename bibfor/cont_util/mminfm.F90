@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ subroutine mminfm(posmae, defico, questz, irep)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
-    integer :: posmae
+    integer(kind=8) :: posmae
     character(len=*) :: questz
-    integer :: irep
+    integer(kind=8) :: irep
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,11 +50,11 @@ subroutine mminfm(posmae, defico, questz, irep)
 !
 !
 !
-    integer :: zmaes, ztypm
+    integer(kind=8) :: zmaes, ztypm
     character(len=24) :: maescl, typema
-    integer :: jmaesc, jtypma
+    integer(kind=8) :: jmaesc, jtypma
     character(len=24) :: questi
-    integer :: indmae, posma2
+    integer(kind=8) :: indmae, posma2
 !
 ! ----------------------------------------------------------------------
 !

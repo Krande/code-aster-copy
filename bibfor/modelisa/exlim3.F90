@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,14 +53,14 @@ subroutine exlim3(motfaz, base, modelz, ligrel)
 !             - LE NOM DU LIGREL EST OBTENU PAR GNOMSD
 !     -----------------------------------------------------------------
 !
-    integer :: n1, nbma, nocc, nbmat, iocc
-    integer :: k, numa, jlima
+    integer(kind=8) :: n1, nbma, nocc, nbmat, iocc
+    integer(kind=8) :: k, numa, jlima
     character(len=8) :: modele, noma, k8bid
     character(len=16) :: motfac, motcle(2), typmcl(2)
     character(len=19) :: ligrmo
     character(len=24) :: noojb
-    integer, pointer :: lima1(:) => null()
-    integer, pointer :: vnuma(:) => null()
+    integer(kind=8), pointer :: lima1(:) => null()
+    integer(kind=8), pointer :: vnuma(:) => null()
 !     -----------------------------------------------------------------
 !
     motfac = motfaz

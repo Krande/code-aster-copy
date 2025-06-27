@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine lceibt(ndimsi, eps, epsf, dep, invn,&
                       cn, dsidep)
-        integer :: ndimsi
+        integer(kind=8) :: ndimsi
         real(kind=8) :: eps(6)
         real(kind=8) :: epsf(6)
         real(kind=8) :: dep(6, 12)

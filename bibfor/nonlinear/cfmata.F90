@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine cfmata(resoco, neq, nbliai, nmult, numedz, &
 #include "asterfort/jeveuo.h"
     character(len=24) :: resoco
     character(len=*) :: numedz, numecz, matriz, matelz
-    integer :: neq, nbliai, nmult
+    integer(kind=8) :: neq, nbliai, nmult
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,7 +53,7 @@ subroutine cfmata(resoco, neq, nbliai, nmult, numedz, &
 !
 !
     character(len=24) :: appoin, apddl
-    integer :: japptr, japddl
+    integer(kind=8) :: japptr, japddl
     character(len=14) :: numedd, numecf
     character(len=19) :: matrix
     character(len=24) :: matele

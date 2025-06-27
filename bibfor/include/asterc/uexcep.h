@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine uexcep(nexc, idmess, nk, valk, ni,&
                       vali, nr, valr)
-        integer :: nexc
+        integer(kind=8) :: nexc
         character(len=*) :: idmess
-        integer :: nk
+        integer(kind=8) :: nk
         character(len=*) :: valk(*)
-        integer :: ni
-        integer :: vali(*)
-        integer :: nr
+        integer(kind=8) :: ni
+        integer(kind=8) :: vali(*)
+        integer(kind=8) :: nr
         real(kind=8) :: valr(*)
     end subroutine uexcep
 end interface

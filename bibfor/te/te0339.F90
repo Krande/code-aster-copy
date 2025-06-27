@@ -49,10 +49,10 @@ subroutine te0339(option, nomte)
     real(kind=8) :: sig(6), triax, volu, rsr0, numema, depseq
     real(kind=8) :: poids, dvpg, sigm, sigeq, lrsr0m, lrsr0p
     real(kind=8) :: cong(6), varigp, varigm, crois, vk
-    integer :: jgano, nno, npg, i, kp, iritra, ndim, iret
-    integer :: issopt, ima, iadzi, iazk24, nbvari, ipopp
-    integer :: ipoids, ivf, idfde, nnos
-    integer :: igeom, icong, ivarpg, ivarmg, isdrmr, isdrpr, jtab(7)
+    integer(kind=8) :: jgano, nno, npg, i, kp, iritra, ndim, iret
+    integer(kind=8) :: issopt, ima, iadzi, iazk24, nbvari, ipopp
+    integer(kind=8) :: ipoids, ivf, idfde, nnos
+    integer(kind=8) :: igeom, icong, ivarpg, ivarmg, isdrmr, isdrpr, jtab(7)
 !
 !======================== CORPS DU PROGRAMME ===========================
 !

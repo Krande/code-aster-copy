@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine utdtab(raz, na, nb, mb, md,&
                       a, b, d, xab, dtab)
-        integer :: md
-        integer :: mb
-        integer :: nb
-        integer :: na
+        integer(kind=8) :: md
+        integer(kind=8) :: mb
+        integer(kind=8) :: nb
+        integer(kind=8) :: na
         character(len=*) :: raz
         real(kind=8) :: a(na, nb)
         real(kind=8) :: b(nb, mb)

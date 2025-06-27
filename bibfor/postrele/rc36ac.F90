@@ -41,7 +41,7 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbma, listma(*)
+    integer(kind=8) :: nbma, listma(*)
     character(len=8) :: noma
     character(len=24) :: ncncin, chindi, chcara, chresu
 !
@@ -88,37 +88,37 @@ subroutine rc36ac(noma, ncncin, chindi, chcara, nbma, &
 ! OUT : CHRESU : CHAM_ELEM RESULTAT
 !     ------------------------------------------------------------------
 !
-    integer :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi
-    integer :: i1, nbth1, jth1, nbth2, nbcrs
-    integer :: nbcin, nbcca, jcesl
-    integer :: im, ima, nbpt, decrs, decin, decca, ipt, ino
-    integer :: adrm, nbm, icmp, jconx1, jconx2, jfact, jpassa, npass
-    integer :: ifm, niv, iocs, iad, ioc2, jcinl, jccal, nbp12, nbp23
-    integer :: nbp13
+    integer(kind=8) :: ig, nbgr, nbsigr, jnsg, is1, ioc1, nocc, numgr, jcombi
+    integer(kind=8) :: i1, nbth1, jth1, nbth2, nbcrs
+    integer(kind=8) :: nbcin, nbcca, jcesl
+    integer(kind=8) :: im, ima, nbpt, decrs, decin, decca, ipt, ino
+    integer(kind=8) :: adrm, nbm, icmp, jconx1, jconx2, jfact, jpassa, npass
+    integer(kind=8) :: ifm, niv, iocs, iad, ioc2, jcinl, jccal, nbp12, nbp23
+    integer(kind=8) :: nbp13
     real(kind=8) :: ppi, ppj, snmax, samax, utot, saltij, ug, nadm(1), mpi(3)
     real(kind=8) :: mpj(3), sm, sn, sp, c(3), k(3), cara(3), matpi(14)
     real(kind=8) :: matpj(14), mse(3), snb, sab, smm, vale(2)
     aster_logical :: seisme, endur
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: k8b, nommat, noeud, valk(7), kbid
     character(len=24) :: momepi, momepj, connex, matepi, matepj
     real(kind=8) :: typeke, spmeca, spther
-    integer, pointer :: situ_numero(:) => null()
+    integer(kind=8), pointer :: situ_numero(:) => null()
     character(len=24), pointer :: materiau(:) => null()
-    integer, pointer :: situ_nb_occur(:) => null()
+    integer(kind=8), pointer :: situ_nb_occur(:) => null()
     real(kind=8), pointer :: situ_pres_a(:) => null()
     character(len=24), pointer :: situ_moment_b(:) => null()
     character(len=24), pointer :: situ_moment_a(:) => null()
-    integer, pointer :: ccad(:) => null()
-    integer, pointer :: cesd(:) => null()
-    integer, pointer :: cind(:) => null()
+    integer(kind=8), pointer :: ccad(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cind(:) => null()
     real(kind=8), pointer :: situ_pres_b(:) => null()
-    integer, pointer :: situ_seisme(:) => null()
+    integer(kind=8), pointer :: situ_seisme(:) => null()
     real(kind=8), pointer :: ccav(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: cinv(:) => null()
     character(len=8), pointer :: nom_materiau(:) => null()
-    integer, pointer :: situ_nume_group(:) => null()
+    integer(kind=8), pointer :: situ_nume_group(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
 !

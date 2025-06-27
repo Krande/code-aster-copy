@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine focstc(nomfon, nomres, rval, ival, base)
 !     ------------------------------------------------------------------
     character(len=19) :: nomf
     character(len=24) :: chpro, chval
-    integer :: jpro, lval
-    integer :: iret
+    integer(kind=8) :: jpro, lval
+    integer(kind=8) :: iret
 !
 !     --- CREATION ET REMPLISSAGE DE L'OBJET NOMFON.PROL ---
 !-----------------------------------------------------------------------

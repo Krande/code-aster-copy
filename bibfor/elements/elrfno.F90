@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
 #include "asterfort/assert.h"
 !
     character(len=*), intent(in)        :: elrefz
-    integer, optional, intent(out)      :: nno, ndim, nnos
+    integer(kind=8), optional, intent(out)      :: nno, ndim, nnos
     real(kind=8), optional, intent(out) :: nodeCoor(3, MT_NNOMAX), cellVolu
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine elrfno(elrefz, nno, nnos, ndim, nodeCoor, cellVolu)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nnos_, ndim_, nno_
+    integer(kind=8) :: nnos_, ndim_, nno_
     real(kind=8), parameter :: untiers = 1.d0/3.d0
     real(kind=8) :: cellVolu_
 !

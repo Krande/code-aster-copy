@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,14 +69,14 @@ subroutine gefact(duree, nominf)
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: l, n1, nbpoin, nbpini, iret, ier
-    integer :: dim, long, dim2, dim3, dim4
-    integer :: nnn, nbmr, nbpt1, nbpt2, longh
-    integer :: nbfc, nbval, nbval1, indice
-    integer :: i, ii, jj, j, k, kf, lval2, lvalc, ipas
-    integer :: iinf, isup, ls, lr, ld, lu, lv, lw, ix, iy
-    integer :: lval, lval1, lchdes, inuor, lnuor, jnuor
-    integer :: vali
+    integer(kind=8) :: l, n1, nbpoin, nbpini, iret, ier
+    integer(kind=8) :: dim, long, dim2, dim3, dim4
+    integer(kind=8) :: nnn, nbmr, nbpt1, nbpt2, longh
+    integer(kind=8) :: nbfc, nbval, nbval1, indice
+    integer(kind=8) :: i, ii, jj, j, k, kf, lval2, lvalc, ipas
+    integer(kind=8) :: iinf, isup, ls, lr, ld, lu, lv, lw, ix, iy
+    integer(kind=8) :: lval, lval1, lchdes, inuor, lnuor, jnuor
+    integer(kind=8) :: vali
 !
     real(kind=8) :: prec, r8b, epsi
     real(kind=8) :: freqi, freqf, freq, frinit, fmax, fmin
@@ -93,7 +93,7 @@ subroutine gefact(duree, nominf)
     character(len=24) :: chvale, chdesc, chnuor, nomobj
     character(len=24) :: chnumi, chnumj, chfreq, chval, chrefe
     aster_logical :: lfreqf, lfreqi, lnbpn, linter, lprem, diag
-    integer :: i1, lnumi, lnumj, lfreq, nbfreq, lrefe
+    integer(kind=8) :: i1, lnumi, lnumj, lfreq, nbfreq, lrefe
 !
 !     ----------------------------------------------------------------
 !     --- INITIALISATION  ---

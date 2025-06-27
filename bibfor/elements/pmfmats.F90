@@ -44,9 +44,9 @@ subroutine pmfmats(nomats)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: isdcom, nbgfmx
+    integer(kind=8) :: isdcom, nbgfmx
     character(len=16), pointer :: compor(:) => null()
-    integer, pointer :: cpri(:) => null()
+    integer(kind=8), pointer :: cpri(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
     if (.not. lteatt('TYPMOD2', 'PMF')) then

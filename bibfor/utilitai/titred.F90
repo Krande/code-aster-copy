@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: niv, nomcon, nomcha
-    integer :: nbtitr
+    integer(kind=8) :: nbtitr
 !     GENERATION D'UN TITRE OU D'UN SOUS-TITRE PAR DEFAUT
 !     ------------------------------------------------------------------
 ! IN  NIV    : K1  : NIVEAU  'T': TITRE, 'S': SOUS-TITRE
@@ -38,12 +38,12 @@ subroutine titred(niv, nomcon, nomcha, nbtitr)
     character(len=8) :: typesd
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ichoix, ierd, ldon, llon, mxdef
-    integer :: mxlig
+    integer(kind=8) :: i, ichoix, ierd, ldon, llon, mxdef
+    integer(kind=8) :: mxlig
 !-----------------------------------------------------------------------
     parameter(mxdef=9, mxlig=8)
     character(len=72) :: defaut(mxlig, mxdef)
-    integer :: londef(mxlig, mxdef), nblig(mxdef)
+    integer(kind=8) :: londef(mxlig, mxdef), nblig(mxdef)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------

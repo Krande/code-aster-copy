@@ -22,7 +22,7 @@ interface
         character(len=9), intent(in) :: option
         character(len=2), intent(in) :: modelDime
         character(len=8), intent(in) :: modelInterface
-        integer, intent(in) :: ivalk, nbMode
+        integer(kind=8), intent(in) :: ivalk, nbMode
         character(len=14), intent(out) :: numeDof
         character(len=19), intent(out) :: matrAsseX, matrAsseY, matrAsseZ
     end subroutine mat152

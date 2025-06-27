@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine lobs(sd_obsv, nume_time, time, l_obsv)
 #include "asterfort/nmcrpo.h"
 !
     character(len=19), intent(in) :: sd_obsv
-    integer, intent(in) :: nume_time
+    integer(kind=8), intent(in) :: nume_time
     real(kind=8), intent(in) :: time
     aster_logical, intent(out) :: l_obsv
 !
@@ -46,12 +46,12 @@ subroutine lobs(sd_obsv, nume_time, time, l_obsv)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=14) :: sdextr_obsv
-    integer :: i_keyw_fact, nb_keyw_fact
+    integer(kind=8) :: i_keyw_fact, nb_keyw_fact
     character(len=2) :: chaine
     character(len=19) :: list_inst_obsv
     aster_logical :: l_select, l_obse_init
     character(len=24) :: extr_info, extr_flag
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
     aster_logical, pointer :: v_extr_flag(:) => null()
     character(len=24) :: obsv_init
     character(len=8), pointer :: v_obsv_init(:) => null()

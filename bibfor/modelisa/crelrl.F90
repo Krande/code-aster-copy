@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine crelrl(typcoz, typvaz, basez, lisrez)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: idbeta, idcoef, iddl, idnbre, idnoeu, idpoin, idsurc
-    integer :: idterm, idtyco, idtyva, iret, lvecrl, nbrela
+    integer(kind=8) :: idbeta, idcoef, iddl, idnbre, idnoeu, idpoin, idsurc
+    integer(kind=8) :: idterm, idtyco, idtyva, iret, lvecrl, nbrela
 !
 !-----------------------------------------------------------------------
     parameter(lvecrl=10000)

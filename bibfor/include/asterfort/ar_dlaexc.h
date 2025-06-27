@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,16 +24,16 @@ interface
     subroutine ar_dlaexc(wantq, n, t, ldt, q,&
                       ldq, j1, n1, n2, work,&
                       info)
-        integer :: ldq
-        integer :: ldt
+        integer(kind=8) :: ldq
+        integer(kind=8) :: ldt
         aster_logical :: wantq
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: t(ldt, *)
         real(kind=8) :: q(ldq, *)
-        integer :: j1
-        integer :: n1
-        integer :: n2
+        integer(kind=8) :: j1
+        integer(kind=8) :: n1
+        integer(kind=8) :: n2
         real(kind=8) :: work(*)
-        integer :: info
+        integer(kind=8) :: info
     end subroutine ar_dlaexc
 end interface

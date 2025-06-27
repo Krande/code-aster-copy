@@ -51,8 +51,8 @@ subroutine chvepg(chel1, chel2)
 !
     character(len=24) :: valk(3)
     character(len=8) :: noma, nommai
-    integer :: nbma, ima
-    integer :: iret1, iret2, ibid
+    integer(kind=8) :: nbma, ima
+    integer(kind=8) :: iret1, iret2, ibid
     character(len=16) :: fpg1, fpg2
     character(len=16), pointer :: fapg1(:) => null()
     character(len=16), pointer :: fapg2(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine tutemp(option, nomte, nbrddl, f, b, &
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 ! ......................................................................
 !
-    integer :: nbrddl, nbsecm, nbcoum
+    integer(kind=8) :: nbrddl, nbsecm, nbcoum
     parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: h, a, l, valpar, beta, r, r1
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
@@ -52,18 +52,18 @@ subroutine tutemp(option, nomte, nbrddl, f, b, &
     real(kind=8) :: c(2, 2), coe1, pgl4(3, 3)
     real(kind=8) :: poids, rayon, theta, sinfi, xpg(4)
     real(kind=8) :: vtemp(nbrddl), pass(nbrddl, nbrddl)
-    integer :: codres(3)
+    integer(kind=8) :: codres(3)
     character(len=8) :: nompar
     character(len=16) :: nomte, nomres(3)
     character(len=32) :: phenom
-    integer :: nno, npg, nbcou, nbsec, m, lorien, icoude, i
-    integer :: ipoids, ivf, icou, nbpar
-    integer :: igeom, jout, imate, j
-    integer :: igau, isect, icoud2, mmt, nspg
-    integer :: jnbspi, iret, iret2
-    integer :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
+    integer(kind=8) :: nno, npg, nbcou, nbsec, m, lorien, icoude, i
+    integer(kind=8) :: ipoids, ivf, icou, nbpar
+    integer(kind=8) :: igeom, jout, imate, j
+    integer(kind=8) :: igau, isect, icoud2, mmt, nspg
+    integer(kind=8) :: jnbspi, iret, iret2
+    integer(kind=8) :: ndim, nnos, jcoopg, idfdk, jdfd2, jgano
 !
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8), parameter :: noms_cara1(nb_cara1) = (/'R1 ', 'EP1'/)
 !-----------------------------------------------------------------------

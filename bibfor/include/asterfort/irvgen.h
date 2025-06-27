@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@
 interface
     subroutine irvgen(genein, ifi, nbcmpg, cmpg, lhist)
         character(len=*) :: genein
-        integer :: ifi
-        integer :: nbcmpg
-        integer :: cmpg(*)
+        integer(kind=8) :: ifi
+        integer(kind=8) :: nbcmpg
+        integer(kind=8) :: cmpg(*)
         aster_logical :: lhist
     end subroutine irvgen
 end interface

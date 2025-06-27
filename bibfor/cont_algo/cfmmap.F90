@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,9 +50,9 @@ subroutine cfmmap(mesh, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: sdappa
-    integer :: ifm, niv
-    integer :: nb_cont_zone, nt_poin, model_ndim, nt_elem_node, nb_cont_elem, nb_cont_node
-    integer :: nb_node_mesh, nb_cont_poin
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_cont_zone, nt_poin, model_ndim, nt_elem_node, nb_cont_elem, nb_cont_node
+    integer(kind=8) :: nb_node_mesh, nb_cont_poin
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------

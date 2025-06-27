@@ -21,10 +21,10 @@ interface
                       list_func_acti, ds_measure, ds_print, ds_algorom)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
-        integer, intent(inout) :: loop_exte
+        integer(kind=8), intent(inout) :: loop_exte
         character(len=24), intent(in) :: model
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        integer, intent(in):: list_func_acti(*)
+        integer(kind=8), intent(in):: list_func_acti(*)
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Print), intent(inout) :: ds_print
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom

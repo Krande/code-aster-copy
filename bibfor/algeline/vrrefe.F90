@@ -32,7 +32,7 @@ subroutine vrrefe(dsName1Z, dsName2Z, ier)
 #include "asterfort/assert.h"
 !
     character(len=*), intent(in) :: dsName1Z, dsName2Z
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,11 +55,11 @@ subroutine vrrefe(dsName1Z, dsName2Z, ier)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: ok
-    integer :: ival1, ival2
+    integer(kind=8) :: ival1, ival2
     character(len=19) :: dsName1, dsName2
     character(len=24) :: refe1, refe2
     aster_logical :: isMatrAsse, isFieldNode, isFieldElem, lgene
-    integer :: irefe1, irefe2, iret
+    integer(kind=8) :: irefe1, irefe2, iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

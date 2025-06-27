@@ -39,8 +39,8 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 !
-    integer :: fonact(*)
-    integer :: iterat
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: iterat
     real(kind=8) :: rho, offset, eta(2)
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
     character(len=24) :: modele, numedd, carele
@@ -51,8 +51,8 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
     character(len=19) :: veelem(*), veasse(*)
     character(len=19) :: solalg(*), valinc(*)
     character(len=24) :: typsel
-    integer :: licite(2)
-    integer :: ldccvg, pilcvg
+    integer(kind=8) :: licite(2)
+    integer(kind=8) :: ldccvg, pilcvg
     real(kind=8) :: etaf, criter
     type(NL_DS_System), intent(in) :: ds_system
 !
@@ -109,7 +109,7 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ldccv(2), indic, sel
+    integer(kind=8) :: ldccv(2), indic, sel
     real(kind=8) :: f(2)
     character(len=19) :: depold, depdel, deppr1, deppr2
     character(len=24) :: typpil

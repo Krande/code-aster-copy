@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine trlds(a, nmax, nordre, ierr)
-        integer :: nordre
-        integer :: nmax
+        integer(kind=8) :: nordre
+        integer(kind=8) :: nmax
         real(kind=8) :: a(nmax, nordre)
-        integer :: ierr
+        integer(kind=8) :: ierr
     end subroutine trlds
 end interface

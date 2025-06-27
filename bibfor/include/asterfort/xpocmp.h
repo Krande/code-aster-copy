@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,18 +24,18 @@ interface
     subroutine xpocmp(elrefp, cns1, ima, n, jconx1,&
                       jconx2, ndim, nfh, nfe, ddlc,&
                       nbcmp, cmp, lmeca, pre1)
-        integer :: nbcmp
-        integer :: n
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: n
         character(len=8) :: elrefp
         character(len=19) :: cns1
-        integer :: ima
-        integer :: jconx1
-        integer :: jconx2
-        integer :: ndim
-        integer :: nfh
-        integer :: nfe
-        integer :: ddlc
-        integer :: cmp(*)
+        integer(kind=8) :: ima
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nfe
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: cmp(*)
         aster_logical :: lmeca
         aster_logical :: pre1
     end subroutine xpocmp

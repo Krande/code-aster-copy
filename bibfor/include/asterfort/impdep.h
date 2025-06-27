@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine impdep(isor, idep, ibl, dmoy, detyp,&
                       drms, dmax, dmin)
-        integer :: isor
-        integer :: idep
-        integer :: ibl
+        integer(kind=8) :: isor
+        integer(kind=8) :: idep
+        integer(kind=8) :: ibl
         real(kind=8) :: dmoy
         real(kind=8) :: detyp
         real(kind=8) :: drms

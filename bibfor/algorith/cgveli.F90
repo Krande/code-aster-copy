@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine cgveli(typfis, typdis, ndim, lnoff, liss, &
 #include "asterfort/getvtx.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
-    integer :: lnoff, ndeg, ndim
+    integer(kind=8) :: lnoff, ndeg, ndim
     character(len=8) :: typfis
     character(len=16) :: typdis
     character(len=24) :: liss
@@ -47,7 +47,7 @@ subroutine cgveli(typfis, typdis, ndim, lnoff, liss, &
 !              (-1 DANS LES CAS OU DEGRE N'A PAS DE SENS)
 ! ======================================================================
 !
-    integer :: ier
+    integer(kind=8) :: ier
     character(len=24) :: lissg, lissth
 !
 !     ----------------------------------------------------------

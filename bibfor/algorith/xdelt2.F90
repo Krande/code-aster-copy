@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine xdelt2(elp, n, ndime, ksi, &
 #include "asterfort/elrfvf.h"
 #include "asterfort/matinv.h"
 #include "asterfort/provec.h"
-    integer :: ndime, ndim, ipp, ip, n(3)
+    integer(kind=8) :: ndime, ndim, ipp, ip, n(3)
     real(kind=8) :: ksi(ndim), delta(ndime), ptint(*), tabco(*), tabls(*)
     character(len=8) :: elp
 !                 CALCUL DE LA QUANTITE A MINIMISER POUR LE CALCUL
@@ -51,9 +51,9 @@ subroutine xdelt2(elp, n, ndime, ksi, &
 !       DELTA   : QUANTITE A MINIMISER
 !     ----------------------------------------------------------------
 !
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: refcoo(3, MT_NNOMAX), ff(MT_NNOMAX), dff(3, MT_NNOMAX)
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: p(ndim), m(ndim), nor(ndim)
     real(kind=8) :: pint1(ndim), pint2(ndim)
     real(kind=8) :: r(ndime), det, dx

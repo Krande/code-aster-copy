@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine pacouf(x, fvect, vecr1, vecr2, typflu, &
     real(kind=8) :: xsi0
     real(kind=8) :: amor(*), vgap, fvect(2), x(2), masg(*), mi
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
-    integer :: veci1(*)
+    integer(kind=8) :: veci1(*)
 !
     complex(kind=8) :: fonct, z, xkf
     aster_logical :: zrigi
@@ -41,7 +41,7 @@ subroutine pacouf(x, fvect, vecr1, vecr2, typflu, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: indic, nbm, nmode
+    integer(kind=8) :: indic, nbm, nmode
     real(kind=8) :: pulsc, xcf, xcs, xks, xmf, xms
 !-----------------------------------------------------------------------
     call jemarq()

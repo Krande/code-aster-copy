@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,16 +33,16 @@ interface
 !                    
     character(len=19) , intent(in)    :: eigsol
 !!
-    integer, optional           , intent(out)   :: itemax_
-    integer, optional           , intent(out)   :: maxitr_
-    integer, optional           , intent(out)   :: nbborn_
-    integer, optional           , intent(out)   :: nitv_
-    integer, optional           , intent(out)   :: nborto_
-    integer, optional           , intent(out)   :: nbvec2_
-    integer, optional           , intent(out)   :: nbvect_
-    integer, optional           , intent(out)   :: nbrss_
-    integer, optional           , intent(out)   :: nfreq_
-    integer, optional           , intent(out)   :: nperm_
+    integer(kind=8), optional           , intent(out)   :: itemax_
+    integer(kind=8), optional           , intent(out)   :: maxitr_
+    integer(kind=8), optional           , intent(out)   :: nbborn_
+    integer(kind=8), optional           , intent(out)   :: nitv_
+    integer(kind=8), optional           , intent(out)   :: nborto_
+    integer(kind=8), optional           , intent(out)   :: nbvec2_
+    integer(kind=8), optional           , intent(out)   :: nbvect_
+    integer(kind=8), optional           , intent(out)   :: nbrss_
+    integer(kind=8), optional           , intent(out)   :: nfreq_
+    integer(kind=8), optional           , intent(out)   :: nperm_
 !
     real(kind=8), optional      , intent(out)   :: alpha_
     real(kind=8), optional      , intent(out)   :: omecor_

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,12 +28,12 @@ subroutine matrRotLGTher(aniso, ndim, coorpg, matr)
 #include "asterc/r8dgrd.h"
 #include "asterfort/rcangm.h"
 !
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: coorpg(3)
     aster_logical, intent(in) :: aniso
     real(kind=8), intent(out) :: matr(3, 3)
 !
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: alpha, angl(3), p(3, 3)
 !
     matr = 0.d0

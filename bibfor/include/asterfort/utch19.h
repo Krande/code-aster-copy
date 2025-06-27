@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ interface
         character(len=*) :: nomma
         character(len=*) :: nomail
         character(len=*) :: nonoeu
-        integer :: nupo
-        integer :: nusp
-        integer :: ivari
+        integer(kind=8) :: nupo
+        integer(kind=8) :: nusp
+        integer(kind=8) :: ivari
         character(len=*) :: nocmp
         character(len=*) :: typres
         real(kind=8) :: valr
         complex(kind=8) :: valc
-        integer :: vali
-        integer :: ier
+        integer(kind=8) :: vali
+        integer(kind=8) :: ier
     end subroutine utch19
 end interface

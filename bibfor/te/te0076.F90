@@ -47,8 +47,8 @@ subroutine te0076(option, nomte)
     type(FE_basis) :: FEBasis
 !
     character(len=8), parameter :: famiR = "RIGI"
-    integer :: icamas, kp, imate, itemps
-    integer :: icodre(1)
+    integer(kind=8) :: icamas, kp, imate, itemps
+    integer(kind=8) :: icodre(1)
     character(len=32) :: phenom
     real(kind=8) ::   time
     real(kind=8) :: rigi(MAX_BS, MAX_BS)

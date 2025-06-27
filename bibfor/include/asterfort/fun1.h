@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,6 @@ interface
         real(kind=8) :: area
         real(kind=8) :: a1
         real(kind=8) :: a2
-        integer :: n
+        integer(kind=8) :: n
     end subroutine fun1
 end interface

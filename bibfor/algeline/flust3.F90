@@ -45,7 +45,7 @@ subroutine flust3(melflu, typflu, base, nuor, amor, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbm, npv, nivpar, nivdef, nuor(*)
+    integer(kind=8) :: nbm, npv, nivpar, nivdef, nuor(*)
     real(kind=8) :: amor(*), freq(*), masg(*), vite(*), fact(*)
     character(len=8) :: typflu, base
     character(len=19) :: melflu
@@ -84,20 +84,20 @@ subroutine flust3(melflu, typflu, base, nuor, amor, &
     character(len=24) :: matria, nomrac
     character(len=24) :: grpno
     real(kind=8) :: som(9), ru, alpha, coorpe(3), don(5), carac(2)
-    integer :: irot(3), iddl(6), ndim(14)
+    integer(kind=8) :: irot(3), iddl(6), ndim(14)
     aster_logical :: calcul(2)
 !-----------------------------------------------------------------------
-    integer :: i, iadmag, iadnog, iaxe, icdg, icency
-    integer :: icpg, idefm, iencei, iepaig, iequiv, ifpart, ifreqi
-    integer :: ifscr, ifsgm, ifsgr, ifsvi, ifsvk, ifsvr, igreq
-    integer :: ikn, ilargg, ilongg, im, imataa, imatma
-    integer :: imatra, inbmag, inbneq, inbnog, inomcy, inomeq, inum
-    integer :: ior, iphix, iphiy, ireq, irint
-    integer :: irugg, ixint, iyint, iz, izg, izint, j
-    integer :: jtypg, lfacx, lmasg, lrigg, n, n1
-    integer :: nbcyl, nbddl, nbfin, nbgrma, nbgrmx, nbgrp, nbgtot
-    integer :: nbnoe, nbtot, nbtron, nbz, ncoor, ndir, neq
-    integer :: nima, nima2, nn, nt, ntypg, numno1, numno2
+    integer(kind=8) :: i, iadmag, iadnog, iaxe, icdg, icency
+    integer(kind=8) :: icpg, idefm, iencei, iepaig, iequiv, ifpart, ifreqi
+    integer(kind=8) :: ifscr, ifsgm, ifsgr, ifsvi, ifsvk, ifsvr, igreq
+    integer(kind=8) :: ikn, ilargg, ilongg, im, imataa, imatma
+    integer(kind=8) :: imatra, inbmag, inbneq, inbnog, inomcy, inomeq, inum
+    integer(kind=8) :: ior, iphix, iphiy, ireq, irint
+    integer(kind=8) :: irugg, ixint, iyint, iz, izg, izint, j
+    integer(kind=8) :: jtypg, lfacx, lmasg, lrigg, n, n1
+    integer(kind=8) :: nbcyl, nbddl, nbfin, nbgrma, nbgrmx, nbgrp, nbgtot
+    integer(kind=8) :: nbnoe, nbtot, nbtron, nbz, ncoor, ndir, neq
+    integer(kind=8) :: nima, nima2, nn, nt, ntypg, numno1, numno2
 !
     real(kind=8) :: ang, epsit, g, pi, x1
     real(kind=8) :: x2, y1, y2, z1, z2, zmax, zmin

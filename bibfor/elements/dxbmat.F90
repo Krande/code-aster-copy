@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine dxbmat(nomte, cara, xyzl, pgl, igau, &
 #include "asterfort/q4gb.h"
 #include "asterfort/t3gb.h"
 #include "asterfort/utmess.h"
-    integer :: igau
+    integer(kind=8) :: igau
     real(kind=8) :: xyzl(3, *), pgl(3, *), bmat(8, *), jacgau, cara(*)
     character(len=16) :: nomte
 ! --- CALCUL DE LA MATRICE (B) RELIANT LES DEFORMATIONS DU PREMIER

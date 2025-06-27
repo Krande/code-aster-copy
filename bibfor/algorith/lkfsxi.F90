@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,12 +41,12 @@ subroutine lkfsxi(nmat, materf, i1, devsig, dshds, &
 #include "asterf_types.h"
 #include "asterfort/cos3t.h"
 #include "asterfort/lkhtet.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: i1, devsig(6), dshds(6), dfdsdx(6), materf(nmat, 2)
     real(kind=8) :: para(3), xi, vara(4), dpardx(3)
     aster_logical :: plas
 !
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: damdx, sigc, h0c, agx, sii, htheta, bgx, dgx, amx, un
     real(kind=8) :: vident(6), zero, terexp, dagdx, dbgdx, ddgdx
     real(kind=8) :: kx, six, dkdx, deux, trois, apic, a0, xams

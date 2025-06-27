@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine nmpilr(list_func_acti, nume_dof, matass, hval_veasse, ds_contact, cnfint,&
                       eta           , residu  )
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: matass, hval_veasse(*), cnfint
         type(NL_DS_Contact), intent(in) :: ds_contact

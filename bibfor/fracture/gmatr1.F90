@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine gmatr1(nnoff, ndeg, abscur, xl, matr)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 
-    integer           :: nnoff, ndeg
+    integer(kind=8)           :: nnoff, ndeg
     real(kind=8)      :: xl
     character(len=24) :: abscur, matr
 
@@ -51,11 +51,11 @@ subroutine gmatr1(nnoff, ndeg, abscur, xl, matr)
 !
 ! ......................................................................
 
-    integer, parameter :: npg = 14, nbnomx = 3
-    integer            :: nseg, iadpol, i, j
-    integer            :: ipg, js, iseg, jstmp, istok
-    integer            :: ino, nno
-    integer            :: conn(3)
+    integer(kind=8), parameter :: npg = 14, nbnomx = 3
+    integer(kind=8)            :: nseg, iadpol, i, j
+    integer(kind=8)            :: ipg, js, iseg, jstmp, istok
+    integer(kind=8)            :: ino, nno
+    integer(kind=8)            :: conn(3)
     real(kind=8)       :: xpg(npg), wpg(npg)
     real(kind=8)       :: a(ndeg+1, ndeg+1)
     real(kind=8)       :: g1, g2, jac

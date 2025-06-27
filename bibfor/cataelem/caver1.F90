@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine caver1()
 #include "asterfort/kndoub.h"
 #include "asterfort/utmess.h"
 !
-    integer :: opt, te
+    integer(kind=8) :: opt, te
     aster_logical :: error
     character(len=8) :: para, typmai
     character(len=16) :: nomopt, nomte
@@ -52,14 +52,14 @@ subroutine caver1()
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadesc, iamolo, iaopmo, iaopno, iapara
-    integer :: icode, ier, igd, igdop, imolo, ioptte, ipara
-    integer :: iret, itrou, jnbno, jnocm1, jnocm2, k
-    integer :: kk, lgco, n1, n2, nbgd, nbin, nbinte
-    integer :: nbno, nbopt, nbout, nboute, nbpt1, nbpt2, nbte
-    integer :: nbvol, nucalc
-    integer, pointer :: nbligcol(:) => null()
-    integer, pointer :: optte(:) => null()
+    integer(kind=8) :: iadesc, iamolo, iaopmo, iaopno, iapara
+    integer(kind=8) :: icode, ier, igd, igdop, imolo, ioptte, ipara
+    integer(kind=8) :: iret, itrou, jnbno, jnocm1, jnocm2, k
+    integer(kind=8) :: kk, lgco, n1, n2, nbgd, nbin, nbinte
+    integer(kind=8) :: nbno, nbopt, nbout, nboute, nbpt1, nbpt2, nbte
+    integer(kind=8) :: nbvol, nucalc
+    integer(kind=8), pointer :: nbligcol(:) => null()
+    integer(kind=8), pointer :: optte(:) => null()
     character(len=8), pointer :: typema(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

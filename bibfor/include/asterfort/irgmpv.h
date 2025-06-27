@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,17 +24,17 @@ interface
     subroutine irgmpv(ifi, lresu, nomcon, chamsy, nbordr,&
                       para, nocmp, nbel, scal, vect,&
                       tens, versio)
-        integer :: ifi
+        integer(kind=8) :: ifi
         aster_logical :: lresu
         character(len=*) :: nomcon
         character(len=*) :: chamsy
-        integer :: nbordr
+        integer(kind=8) :: nbordr
         real(kind=8) :: para(*)
         character(len=8) :: nocmp
-        integer :: nbel(*)
+        integer(kind=8) :: nbel(*)
         aster_logical :: scal
         aster_logical :: vect
         aster_logical :: tens
-        integer :: versio
+        integer(kind=8) :: versio
     end subroutine irgmpv
 end interface

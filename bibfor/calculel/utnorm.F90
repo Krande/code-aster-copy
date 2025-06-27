@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,14 +62,14 @@ subroutine utnorm(igeom, nsomm, naret, ino, poinc1, &
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
-    integer :: igeom, nsomm, naret, ino, jno, mno, ifm, niv
+    integer(kind=8) :: igeom, nsomm, naret, ino, jno, mno, ifm, niv
     real(kind=8) :: zrino2, zrino1, zrjno2, zrjno1, x3, y3, xn(9), yn(9), jac(9)
     real(kind=8) :: hf, poinc1, poinc2, jacob
     aster_logical :: laxi
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: x(3), y(3), aux, ovfl, jacob1
 !
 ! INIT

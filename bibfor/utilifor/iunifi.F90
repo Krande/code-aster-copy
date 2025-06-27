@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 function iunifi(name)
     implicit none
-    integer :: iunifi
+    integer(kind=8) :: iunifi
 #include "asterfort/ulinit.h"
     character(len=*) :: name
 !
@@ -39,23 +39,23 @@ function iunifi(name)
 !     ------------------------------------------------------------------
 ! person_in_charge: j-pierre.lefebvre at edf.fr
 !
-    integer :: mxf
+    integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
-    integer :: first, unitfi(mxf), nbfile
+    integer(kind=8) :: first, unitfi(mxf), nbfile
     common/asgfi1/first, unitfi, nbfile
     common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     character(len=16) :: name16
-    integer :: i
+    integer(kind=8) :: i
 !     ------------------------------------------------------------------
 !     CONSERVER LA COHERENCE AVEC IBIMPR
-    integer :: mximpr
+    integer(kind=8) :: mximpr
     parameter(mximpr=3)
     character(len=16) :: nompr(mximpr)
-    integer :: unitpr(mximpr)
+    integer(kind=8) :: unitpr(mximpr)
     data nompr/'MESSAGE', 'RESULTAT', 'ERREUR'/
     data unitpr/6, 6, 6/
 !     ------------------------------------------------------------------

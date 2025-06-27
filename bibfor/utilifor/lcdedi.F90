@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,7 +62,7 @@ subroutine lcdedi(fami, kpg, ksp, nmat, materd, &
 !               EPSDM   DEFORMATION MECANIQUE A T
 !       ----------------------------------------------------------------
     aster_logical, optional, intent(in) :: l_epsi_varc_
-    integer :: kpg, ksp, ndt, ndi, nmat, k, iret
+    integer(kind=8) :: kpg, ksp, ndt, ndi, nmat, k, iret
     character(len=*) :: fami
     real(kind=8) :: td, tf, tr, tempd, tempf, tref
     real(kind=8) :: epsdt(6), depst(6)

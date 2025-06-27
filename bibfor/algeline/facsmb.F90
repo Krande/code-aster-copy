@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,14 +28,14 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent, &
 #include "asterfort/infniv.h"
 #include "asterfort/inschn.h"
 #include "asterfort/mltalc.h"
-    integer :: nbnd, nbsn, lgind, nbnd1
-    integer :: supnd(nbsn+1), invsup(nbnd), parent(nbsn)
-    integer :: xadj(nbnd+1), adjncy(*)
-    integer :: anc(nbnd), nouv(nbnd), fils(nbsn), frere(nbsn), delg(nbnd)
+    integer(kind=8) :: nbnd, nbsn, lgind, nbnd1
+    integer(kind=8) :: supnd(nbsn+1), invsup(nbnd), parent(nbsn)
+    integer(kind=8) :: xadj(nbnd+1), adjncy(*)
+    integer(kind=8) :: anc(nbnd), nouv(nbnd), fils(nbsn), frere(nbsn), delg(nbnd)
     integer(kind=4) :: global(lgind), local(lgind)
-    integer :: adress(nbsn+1), debfsn(nbsn+1)
-    integer :: lfront(nbsn), nblign(nbsn), lgsn(nbsn), debfac(nbnd+1), ier
-    integer :: debut
+    integer(kind=8) :: adress(nbsn+1), debfsn(nbsn+1)
+    integer(kind=8) :: lfront(nbsn), nblign(nbsn), lgsn(nbsn), debfac(nbnd+1), ier
+    integer(kind=8) :: debut
 !
 !================================================================
 !     FACTORISATION SYMBOLIQUE POUR LA MULTIFRONTALE
@@ -71,10 +71,10 @@ subroutine facsmb(nbnd, nbsn, supnd, invsup, parent, &
 !---------------------------------------------------------------
 !     SOUS-PROGRAMME APPELLE : INSCHN
 !==================================================================
-    integer :: chaine(nbnd), place(nbnd), nbass(nbsn)
-    integer :: i, k, j, nd, p, sni, andi, sn, suiv, cour
-    integer :: ind, ndk, ndi, dli
-    integer :: ifm, niv, long, decal
+    integer(kind=8) :: chaine(nbnd), place(nbnd), nbass(nbsn)
+    integer(kind=8) :: i, k, j, nd, p, sni, andi, sn, suiv, cour
+    integer(kind=8) :: ind, ndk, ndi, dli
+    integer(kind=8) :: ifm, niv, long, decal
 !
 !-----------------------------------------------------------------------
     call infniv(ifm, niv)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
     subroutine romAlgoMGS(nb_mode, nb_equa, syst_type, field_iden, base,&
                           vr_mode_in, vr_mode_out,&   
                           vc_mode_in, vc_mode_out)
-        integer, intent(in) :: nb_mode, nb_equa
+        integer(kind=8), intent(in) :: nb_mode, nb_equa
         character(len=1), intent(in) :: syst_type
         character(len=8), intent(in) :: base
         character(len=24), intent(in) :: field_iden

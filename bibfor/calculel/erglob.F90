@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine erglob(cheler, yathm, perman, option, iord, &
 #include "asterfort/nbgrel.h"
 #include "asterfort/utmess.h"
 !
-    integer :: iord
+    integer(kind=8) :: iord
     character(len=*) :: resuco
     character(len=19) :: resuc1
     character(len=*) :: cheler, option
@@ -66,7 +66,7 @@ subroutine erglob(cheler, yathm, perman, option, iord, &
 !
 !
 !
-    integer :: ibid, longt, long2, mode, j, iavale, icoef, nbgr, jceld
+    integer(kind=8) :: ibid, longt, long2, mode, j, iavale, icoef, nbgr, jceld
     character(len=4) :: docu
     character(len=19) :: chele2, ligrel
     aster_logical :: first

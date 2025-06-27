@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini, &
 #include "asterfort/rcpare.h"
 #include "asterfort/rnomat.h"
 #include "asterfort/utmess.h"
-    integer :: jrwork, jnbpg, nbpgt, nbordr, nmaini, numpaq, nbmap
-    integer :: tspaq, ordini
+    integer(kind=8) :: jrwork, jnbpg, nbpgt, nbordr, nmaini, numpaq, nbmap
+    integer(kind=8) :: tspaq, ordini
     character(len=16) :: nomcri, nommet, nomfor, forvie, forcri, grdvie
     character(len=19) :: cesr
 ! ---------------------------------------------------------------------
@@ -76,13 +76,13 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini, &
 !    MAILLES DIVISEE PAR LE NOMBRE DE NUMERO D'ORDRE (NBORDR).
 !-----------------------------------------------------------------------
 !
-    integer :: kwork, jcerd, jcerl, jad
-    integer :: iret, imap, icesd, icesl, icesv, ibid
-    integer :: ipg
-    integer :: nbpg, sompgw, nbpgp, l
-    integer :: icmp
+    integer(kind=8) :: kwork, jcerd, jcerl, jad
+    integer(kind=8) :: iret, imap, icesd, icesl, icesv, ibid
+    integer(kind=8) :: ipg
+    integer(kind=8) :: nbpg, sompgw, nbpgp, l
+    integer(kind=8) :: icmp
     real(kind=8) :: vala, valb, coefpa, vresu2(24), valpar(35)
-    integer :: icodwo
+    integer(kind=8) :: icodwo
     character(len=8) :: chmat1, nommat
     character(len=10) :: optio
     character(len=19) :: chmat, cesmat

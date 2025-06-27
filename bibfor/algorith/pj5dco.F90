@@ -52,20 +52,20 @@ subroutine pj5dco(mo1, mo2, corres)
 
 ! ----------------------------------------------------------------------
 
-    integer :: nbmail, nbdim, nno1, nno2, nbno
-    integer :: llin1, llin2, inode, nbtr, lno1, lno2, lco1, lco2, idecal
-    integer :: out1, out2, jcoo1, jcoo2, ilcnx1, numnoe
-    integer :: i, nbmano, ima, imail, ino, j2xxk1, i2conb, i2conu, i2cocf
+    integer(kind=8) :: nbmail, nbdim, nno1, nno2, nbno
+    integer(kind=8) :: llin1, llin2, inode, nbtr, lno1, lno2, lco1, lco2, idecal
+    integer(kind=8) :: out1, out2, jcoo1, jcoo2, ilcnx1, numnoe
+    integer(kind=8) :: i, nbmano, ima, imail, ino, j2xxk1, i2conb, i2conu, i2cocf
     parameter(nbmail=10)
     parameter(nbdim=3)
-    integer :: numano(nbmail), nunoe(nbmail)
+    integer(kind=8) :: numano(nbmail), nunoe(nbmail)
     real(kind=8) :: a(nbdim), b(nbdim), m(nbdim), un, deux
     real(kind=8) :: dpmin, l1, l2, xabs, dp, am(nbdim), bm(nbdim), a1, a2, dist
     character(len=8) :: m1, m2
     character(len=16) :: lisin1, lisin2, lisou1, lisou2
     character(len=16) :: noeud1, noeud2, cobar1, cobar2
     character(len=24) :: coormo, coorme
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 
 ! DEB ------------------------------------------------------------------
     call jemarq()

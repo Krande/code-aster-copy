@@ -46,8 +46,8 @@ module HHO_quadrature_module
 ! --------------------------------------------------------------------------------------------------
 !
     type HHO_Quadrature
-        integer                             :: order = 0
-        integer                             :: nbQuadPoints = 0
+        integer(kind=8)                             :: order = 0
+        integer(kind=8)                             :: nbQuadPoints = 0
         real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights = 0.d0
         real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
@@ -90,8 +90,8 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: order
-        integer, intent(in) :: maxAutorized
+        integer(kind=8), intent(in) :: order
+        integer(kind=8), intent(in) :: maxAutorized
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -142,10 +142,10 @@ contains
 !
         real(kind=8) :: meas_2
         real(kind=8), dimension(3) :: v1
-        integer, parameter :: max_order = 15
-        integer, parameter :: max_pg = 8
+        integer(kind=8), parameter :: max_order = 15
+        integer(kind=8), parameter :: max_pg = 8
         character(len=8), dimension(0:max_order) ::rules
-        integer :: dimp, nbpg, ipg
+        integer(kind=8) :: dimp, nbpg, ipg
         real(kind=8), dimension(max_pg) :: xpg, poidpg
 !
 ! ----- check order of integration
@@ -183,7 +183,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, 4), intent(in)        :: coorno
-        integer, intent(in)                             :: ndim
+        integer(kind=8), intent(in)                             :: ndim
         class(HHO_quadrature), intent(inout)            :: this
 !
 ! --------------------------------------------------------------------------------------------------
@@ -197,10 +197,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorpgglo
-        integer, parameter :: max_order = 15
-        integer, parameter :: max_pg = 64
+        integer(kind=8), parameter :: max_order = 15
+        integer(kind=8), parameter :: max_pg = 64
         character(len=8), dimension(0:max_order) ::rules
-        integer :: dimp, nbpg, ipg
+        integer(kind=8) :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, jaco
 !
 ! ----- check order of integration
@@ -251,10 +251,10 @@ contains
 !
         real(kind=8) :: jaco
         real(kind=8), dimension(3) :: coorac
-        integer, parameter :: max_order = 15
-        integer, parameter :: max_pg = 512
+        integer(kind=8), parameter :: max_order = 15
+        integer(kind=8), parameter :: max_pg = 512
         character(len=8), dimension(0:max_order) :: rules
-        integer :: dimp, nbpg, ipg
+        integer(kind=8) :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z
 !
 ! ----- check order of integration
@@ -308,10 +308,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorac
-        integer, parameter :: max_order = 14
-        integer, parameter :: max_pg = 42
+        integer(kind=8), parameter :: max_order = 14
+        integer(kind=8), parameter :: max_pg = 42
         character(len=8), dimension(0:max_order) ::rules
-        integer :: dimp, nbpg, ipg, ino
+        integer(kind=8) :: dimp, nbpg, ipg, ino
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
 !
 ! ----- check order of integration
@@ -353,7 +353,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in)                             :: typema, nbnode, ndim
+        integer(kind=8), intent(in)                             :: typema, nbnode, ndim
         real(kind=8), dimension(3, 4), intent(in)       :: coorno
         aster_logical, intent(in)                       :: param
         class(HHO_quadrature), intent(inout)            :: this
@@ -369,12 +369,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorac
-        integer, parameter :: max_order = 14
-        integer, parameter :: max_pg = 42
+        integer(kind=8), parameter :: max_order = 14
+        integer(kind=8), parameter :: max_pg = 42
         character(len=8), dimension(0:max_order) :: rules
         character(len=8) :: typma_s
-        integer :: dimp, nbpg, ipg, ino, iret
-        integer :: itri, n_simp, ind_simp(6, 4)
+        integer(kind=8) :: dimp, nbpg, ipg, ino, iret
+        integer(kind=8) :: itri, n_simp, ind_simp(6, 4)
         real(kind=8) :: coor_tri(3, 3), xe(3)
         real(kind=8) :: coorpg(max_pg*2), poidpg(max_pg), x, y, basis(8), jaco
 !
@@ -448,10 +448,10 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorac
-        integer, parameter :: max_order = 14
-        integer, parameter :: max_pg = 204
+        integer(kind=8), parameter :: max_order = 14
+        integer(kind=8), parameter :: max_pg = 204
         character(len=8), dimension(0:max_order) :: rules
-        integer :: dimp, nbpg, ipg
+        integer(kind=8) :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z, jaco
 !
 ! ----- check order of integration
@@ -490,7 +490,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in)                             :: typema, nbnode
+        integer(kind=8), intent(in)                             :: typema, nbnode
         real(kind=8), dimension(3, 8), intent(in)       :: coorno
         aster_logical, intent(in)                       :: param
         class(HHO_quadrature), intent(inout)            :: this
@@ -505,12 +505,12 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8), dimension(3) ::  coorac
-        integer, parameter :: max_order = 14
-        integer, parameter :: max_pg = 204
+        integer(kind=8), parameter :: max_order = 14
+        integer(kind=8), parameter :: max_pg = 204
         character(len=8), dimension(0:max_order) :: rules
         character(len=8) :: typma_s
-        integer :: dimp, nbpg, ipg, ino, iret
-        integer :: itet, n_simp, ind_simp(6, 4)
+        integer(kind=8) :: dimp, nbpg, ipg, ino, iret
+        integer(kind=8) :: itet, n_simp, ind_simp(6, 4)
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z, jaco
         real(kind=8) :: coor_tet(3, 4), xe(3)
 !
@@ -580,10 +580,10 @@ contains
 !
         real(kind=8) :: jaco, x, y, z
         real(kind=8), dimension(3) :: coorac
-        integer, parameter :: max_order = 7
-        integer, parameter :: max_pg = 31
+        integer(kind=8), parameter :: max_order = 7
+        integer(kind=8), parameter :: max_pg = 31
         character(len=8), dimension(0:max_order) :: rules
-        integer :: dimp, nbpg, ipg
+        integer(kind=8) :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg)
 !
 ! ----- check order of integration
@@ -634,10 +634,10 @@ contains
 !
         real(kind=8) :: jaco
         real(kind=8), dimension(3) :: coorac
-        integer, parameter :: max_order = 6
-        integer, parameter :: max_pg = 29
+        integer(kind=8), parameter :: max_order = 6
+        integer(kind=8), parameter :: max_pg = 29
         character(len=8), dimension(0:max_order) :: rules
-        integer :: dimp, nbpg, ipg
+        integer(kind=8) :: dimp, nbpg, ipg
         real(kind=8) :: coorpg(max_pg*3), poidpg(max_pg), x, y, z
 !
 ! ----- check order of integration
@@ -675,7 +675,7 @@ contains
         implicit none
 !
         type(HHO_cell), intent(in)            :: hhoCell
-        integer, intent(in)                   :: order
+        integer(kind=8), intent(in)                   :: order
         aster_logical, intent(in), optional   :: axis, split, param
         class(HHO_quadrature), intent(out)    :: this
 !
@@ -690,7 +690,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ipg
+        integer(kind=8) :: ipg
         real(kind=8) :: start, end
         aster_logical :: split_simpl, param_
 !
@@ -766,7 +766,7 @@ contains
         implicit none
 !
         type(HHO_face), intent(in)          :: hhoFace
-        integer, intent(in)                 :: order
+        integer(kind=8), intent(in)                 :: order
         aster_logical, intent(in), optional :: axis, split, param
         class(HHO_quadrature), intent(out)  :: this
 !
@@ -781,7 +781,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ipg
+        integer(kind=8) :: ipg
         real(kind=8) :: start, end
         aster_logical :: split_simpl, param_
 !
@@ -848,9 +848,9 @@ contains
 !
         implicit none
 !
-        integer, intent(in)  :: typema
-        integer, intent(in)           :: npg
-        integer, intent(out)          :: order
+        integer(kind=8), intent(in)  :: typema
+        integer(kind=8), intent(in)           :: npg
+        integer(kind=8), intent(out)          :: order
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -991,7 +991,7 @@ contains
         implicit none
 !
         type(HHO_cell), intent(in)          :: hhoCell
-        integer, intent(in)                 :: npg
+        integer(kind=8), intent(in)                 :: npg
         aster_logical, intent(in), optional :: axis
         class(HHO_quadrature), intent(out)  :: this
 !
@@ -1005,7 +1005,7 @@ contains
 !   Out this    : hho quadrature
 !
 ! --------------------------------------------------------------------------------------------------
-        integer :: order, ipg
+        integer(kind=8) :: order, ipg
         aster_logical :: laxis
         real(kind=8) :: start, end
 !
@@ -1045,7 +1045,7 @@ contains
         implicit none
 !
         type(HHO_Face), intent(in)          :: hhoFace
-        integer, intent(in)                 :: npg
+        integer(kind=8), intent(in)                 :: npg
         aster_logical, intent(in), optional :: axis
         class(HHO_quadrature), intent(out)  :: this
 !
@@ -1060,7 +1060,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: order
+        integer(kind=8) :: order
         aster_logical :: laxis
         real(kind=8) :: start, end
 !
@@ -1101,7 +1101,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ipg
+        integer(kind=8) :: ipg
 !
         write (6, *) "QUADRATURE INFORMATIONS"
         write (6, *) "number of qp: ", this%nbQuadPoints

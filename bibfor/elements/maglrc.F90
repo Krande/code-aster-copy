@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,13 +26,13 @@ subroutine maglrc(zimat, matr, delas, ecr)
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 !
-    integer :: i, jcoqu, icacoq, zimat
+    integer(kind=8) :: i, jcoqu, icacoq, zimat
 !
     real(kind=8) :: matr(*), delas(6, 6), r8b
     real(kind=8) :: valres(15), vglob(3), epais
     real(kind=8) :: ecr(*), alph, beta, vel
 !
-    integer :: codres(15)
+    integer(kind=8) :: codres(15)
     character(len=16) :: nomres(15)
     character(len=32) :: phenom
 !

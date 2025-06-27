@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       listma, chelem)
         character(len=8) :: noma
         character(len=8) :: nomgd
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=16) :: nocmp(*)
-        integer :: nbma
-        integer :: listma(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: listma(*)
         character(len=24) :: chelem
     end subroutine rc36zz
 end interface

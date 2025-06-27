@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine gilig0(nfic, nboblu, nbobno, nbobo, niv)
-        integer :: nfic
-        integer :: nboblu
-        integer :: nbobno
-        integer :: nbobo
-        integer :: niv
+        integer(kind=8) :: nfic
+        integer(kind=8) :: nboblu
+        integer(kind=8) :: nbobno
+        integer(kind=8) :: nbobo
+        integer(kind=8) :: niv
     end subroutine gilig0
 end interface

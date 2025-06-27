@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ interface
         character(len=8) :: mod
         real(kind=8) :: crit(*)
         real(kind=8) :: mater(14, 2)
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: epsd(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: sigd(6)
@@ -38,7 +38,7 @@ interface
         aster_logical :: noconv
         aster_logical :: aredec
         aster_logical :: stopnc
-        integer :: niter
+        integer(kind=8) :: niter
         real(kind=8) :: epscon
         aster_logical :: trac
     end subroutine cjsmde

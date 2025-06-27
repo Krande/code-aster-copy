@@ -87,12 +87,12 @@ contains
         type(HHO_matrix), intent(in) :: gradrec
         character(len=*), intent(in) :: fami
         character(len=8), intent(in) :: typmod(2)
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-        integer, intent(in) :: lgpg
-        integer, intent(in) :: ncomp
+        integer(kind=8), intent(in) :: lgpg
+        integer(kind=8), intent(in) :: ncomp
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: depl_prev(MSIZE_TDOFS_VEC)
@@ -106,7 +106,7 @@ contains
         real(kind=8), intent(inout) :: rhs(MSIZE_TDOFS_VEC)
         real(kind=8), intent(inout) :: sig_curr(ncomp, *)
         real(kind=8), intent(inout) :: vi_curr(lgpg, *)
-        integer, intent(inout) :: codret
+        integer(kind=8), intent(inout) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -140,7 +140,7 @@ contains
 !   Out codret      : info on integration of the LDC
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: ksp = 1
+        integer(kind=8), parameter :: ksp = 1
         type(HHO_basis_cell) :: hhoBasisCell
         type(Behaviour_Integ) :: BEHinteg
         real(kind=8), dimension(MSIZE_CELL_MAT) :: bT, G_prev_coeff, G_curr_coeff
@@ -149,8 +149,8 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         type(HHO_matrix) :: AT, TMP
         real(kind=8) :: jac_prev, jac_curr, coorpg(3), weight
-        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
-        integer :: cod(27), nbsig
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, ipg, gbs_cmp, gbs_sym
+        integer(kind=8) :: cod(27), nbsig
         aster_logical :: l_gdeflog, l_green_lagr, l_lhs, l_rhs
 !
 ! --------------------------------------------------------------------------------------------------
@@ -341,7 +341,7 @@ contains
         real(kind=8), intent(in) :: stress(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gbs
+        integer(kind=8), intent(in) :: gbs
         real(kind=8), intent(inout) :: bT(MSIZE_CELL_MAT)
 !
 ! ------------------------------------------------------------------------------------------
@@ -357,7 +357,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_stress(3, 3)
-        integer :: i, j, gbs_cmp, deca
+        integer(kind=8) :: i, j, gbs_cmp, deca
 ! --------------------------------------------------------------------------------------------------
 !
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
@@ -386,7 +386,7 @@ contains
         real(kind=8), intent(in) :: module_tang(3, 3, 3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gbs
+        integer(kind=8), intent(in) :: gbs
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -402,7 +402,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Agphi(MSIZE_CELL_MAT, 9)
-        integer :: deca, i, j, k, gbs_cmp, col
+        integer(kind=8) :: deca, i, j, k, gbs_cmp, col
 ! --------------------------------------------------------------------------------------------------
 !
         gbs_cmp = gbs/(hhoCell%ndim*hhoCell%ndim)
@@ -434,10 +434,10 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: A(3, 3, 3, 3)
-        integer, intent(in) :: row
-        integer, intent(in) :: col
+        integer(kind=8), intent(in) :: row
+        integer(kind=8), intent(in) :: col
         real(kind=8) :: transfo_A(9)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -450,7 +450,7 @@ contains
 !   Out transfo_A   : vector extracted
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, j, ind
+        integer(kind=8) :: i, j, ind
 ! --------------------------------------------------------------------------------------------------
 !
         transfo_A = 0.d0
@@ -473,8 +473,8 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: ndim
-        integer :: nbsigm_cmp
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8) :: nbsigm_cmp
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -504,7 +504,7 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in) :: gbs
+        integer(kind=8), intent(in) :: gbs
         real(kind=8), intent(in) :: module_tang(3, 3, 3, 3)
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: weight
@@ -525,7 +525,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_module_tang(3, 3, 3, 3), qp_mod_vec(9)
-        integer :: i, j, row, col, gbs_cmp, dim2
+        integer(kind=8) :: i, j, row, col, gbs_cmp, dim2
         blas_int :: b_lda, b_m, b_n
         blas_int, parameter :: b_one = 1
 ! --------------------------------------------------------------------------------------------------
@@ -561,7 +561,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: G(3, 3)
         real(kind=8), intent(out) :: F(3, 3)
 !
@@ -574,7 +574,7 @@ contains
 !   In F            : gradient of the deformation
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idim
+        integer(kind=8) :: idim
 ! --------------------------------------------------------------------------------------------------
 !
         F = G
@@ -600,7 +600,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: F(3, 3)
         real(kind=8), intent(out), optional :: GLvec(6)
 !
@@ -614,7 +614,7 @@ contains
 !   In GLvec        : Green-Lagrange using Voigt Notation (XX, YY, ZZ, XY*rac2, XZ*rac2, YZ*rac2)
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, j, k
+        integer(kind=8) :: i, j, k
         real(kind=8) :: GL_(3, 3)
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
 ! --------------------------------------------------------------------------------------------------
@@ -706,15 +706,15 @@ contains
         implicit none
 !
         type(Behaviour_Integ), intent(inout) :: BEHinteg
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         character(len=*), intent(in) :: fami
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(*)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: carcri(*)
-        integer, intent(in) :: lgpg
-        integer, intent(in) :: ipg
+        integer(kind=8), intent(in) :: lgpg
+        integer(kind=8), intent(in) :: ipg
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         real(kind=8), intent(in) :: angmas(*)
@@ -728,7 +728,7 @@ contains
         real(kind=8), intent(out) :: vi_curr_pg(lgpg)
         real(kind=8), intent(out) :: PK1_curr(3, 3)
         real(kind=8), intent(out) :: module_tang(3, 3, 3, 3)
-        integer, intent(out) :: cod
+        integer(kind=8), intent(out) :: cod
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -847,15 +847,15 @@ contains
         implicit none
 !
         type(Behaviour_Integ), intent(inout) :: BEHinteg
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         character(len=*), intent(in) :: fami
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(*)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: carcri(*)
-        integer, intent(in) :: lgpg
-        integer, intent(in) :: ipg
+        integer(kind=8), intent(in) :: lgpg
+        integer(kind=8), intent(in) :: ipg
         real(kind=8), intent(in) :: time_prev
         real(kind=8), intent(in) :: time_curr
         character(len=16), intent(in) :: mult_comp
@@ -867,7 +867,7 @@ contains
         real(kind=8), intent(out) :: vi_curr_pg(lgpg)
         real(kind=8), intent(out) :: PK1_curr(3, 3)
         real(kind=8), intent(out) :: module_tang(3, 3, 3, 3)
-        integer, intent(out) :: cod
+        integer(kind=8), intent(out) :: cod
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics

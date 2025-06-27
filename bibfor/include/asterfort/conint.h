@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
         character(len=14) :: nume
         character(len=19) :: raide
         character(len=24) :: coint
-        integer :: connec
+        integer(kind=8) :: connec
         character(len=24) :: noddli
-        integer :: nnoint
+        integer(kind=8) :: nnoint
         character(len=14) :: nume_gene
         character(len=19) :: raiint
         character(len=19) :: ssami

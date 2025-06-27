@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz,&
                       licmp, cnocmp, basez, prof, cnoz)
-        integer :: ncmpz
-        integer :: nbnoz
+        integer(kind=8) :: ncmpz
+        integer(kind=8) :: nbnoz
         character(len=*) :: maz
         character(len=*) :: nomgdz
-        integer :: linoe(nbnoz)
+        integer(kind=8) :: linoe(nbnoz)
         character(len=*) :: licmp(ncmpz)
-        integer :: cnocmp(nbnoz*ncmpz)
+        integer(kind=8) :: cnocmp(nbnoz*ncmpz)
         character(len=*) :: basez
         character(len=*) :: prof
         character(len=*) :: cnoz

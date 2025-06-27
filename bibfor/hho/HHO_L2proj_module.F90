@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: FuncValuesQP(MAX_QP_FACE)
-        integer, intent(in) :: degree
+        integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_FACE_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -123,7 +123,7 @@ contains
         type(HHO_Face), intent(in) :: hhoFace
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: FuncValuesQP(3, MAX_QP_FACE)
-        integer, intent(in) :: degree
+        integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_FACE_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -188,7 +188,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: FuncValuesQP(MAX_QP_CELL)
-        integer, intent(in) :: degree
+        integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_CELL_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -251,7 +251,7 @@ contains
         type(HHO_Cell), intent(in) :: hhoCell
         type(HHO_Quadrature), intent(in) :: hhoQuad
         real(kind=8), intent(in) :: FuncValuesQP(3, MAX_QP_CELL)
-        integer, intent(in) :: degree
+        integer(kind=8), intent(in) :: degree
         real(kind=8), intent(out) :: coeff_L2Proj(MSIZE_CELL_VEC)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -330,12 +330,12 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: maxpara = 4
+        integer(kind=8), parameter :: maxpara = 4
         real(kind=8) :: valpar(maxpara)
         character(len=8) :: nompar(maxpara)
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
-        integer :: cbs, fbs, total_dofs, iFace, ind, nbpara
+        integer(kind=8) :: cbs, fbs, total_dofs, iFace, ind, nbpara
         real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
         aster_logical :: with_faces
 ! --------------------------------------------------------------------------------------------------
@@ -431,12 +431,12 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: maxpara = 4
+        integer(kind=8), parameter :: maxpara = 4
         real(kind=8) :: valpar(maxpara)
         character(len=8) :: nompar(maxpara)
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
-        integer :: cbs, fbs, total_dofs, iFace, ind, nbpara, idim
+        integer(kind=8) :: cbs, fbs, total_dofs, iFace, ind, nbpara, idim
         real(kind=8) :: FuncValuesCellQP(3, MAX_QP_CELL), FuncValuesFaceQP(3, MAX_QP_FACE)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
         aster_logical :: with_faces
@@ -544,7 +544,7 @@ contains
 !
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
-        integer :: cbs, fbs, total_dofs, iFace, ind, ino
+        integer(kind=8) :: cbs, fbs, total_dofs, iFace, ind, ino
         real(kind=8) :: FuncValuesCellQP(MAX_QP_CELL), FuncValuesFaceQP(MAX_QP_FACE)
         real(kind=8) :: FieldValuesNodes(27)
         real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)

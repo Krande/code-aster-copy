@@ -53,26 +53,26 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, ndim
+    integer(kind=8), intent(in) :: kpg, ksp, ndim
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam, instap
-    integer, intent(in) :: neps
+    integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps), deps(neps)
-    integer, intent(in) :: nsig
+    integer(kind=8), intent(in) :: nsig
     real(kind=8), intent(in) :: sigm(nsig)
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8), intent(out) :: sigp(nsig)
     real(kind=8), intent(out) :: vip(nvi)
-    integer, intent(in) :: ndsidep_loc
+    integer(kind=8), intent(in) :: ndsidep_loc
     real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsidep_loc), &
                                         merge(neps, 6, nsig*neps .eq. ndsidep_loc))
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -110,9 +110,9 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lMatr, lSigm, lVari
-    integer :: i, j
-    integer :: nstran, nforc, nstatv, nmatr
-    integer, parameter :: s0 = 0, s1 = 1
+    integer(kind=8) :: i, j
+    integer(kind=8) :: nstran, nforc, nstatv, nmatr
+    integer(kind=8), parameter :: s0 = 0, s1 = 1
     real(kind=8) :: dstran(neps), stran(neps)
     real(kind=8) :: dsidepMGIS(merge(nsig, 6, nsig*neps .eq. ndsidep_loc)* &
                                merge(neps, 6, nsig*neps .eq. ndsidep_loc))
@@ -123,9 +123,9 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8) :: dsidep_loc(merge(nsig, 6, nsig*neps .eq. ndsidep_loc), &
                                merge(neps, 6, nsig*neps .eq. ndsidep_loc))
     real(kind=8) :: props(MGIS_MAX_PROPS)
-    integer :: nprops, retcode
+    integer(kind=8) :: nprops, retcode
     aster_logical :: dbg
-    integer :: cod(1)
+    integer(kind=8) :: cod(1)
     real(kind=8) :: val(1)
 !
 ! --------------------------------------------------------------------------------------------------

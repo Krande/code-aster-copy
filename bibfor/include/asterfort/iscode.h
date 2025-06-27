@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 !
 interface
     subroutine iscode(idec, icod, ndim)
-        integer :: ndim
-        integer :: idec(ndim)
-        integer :: icod(*)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: idec(ndim)
+        integer(kind=8) :: icod(*)
     end subroutine iscode
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, &
 #include "asterfort/xelrex.h"
 #include "asterfort/xnewto.h"
 #include "asterfort/xnormv.h"
-    integer :: ndim, ndime, nno, nn(4), exit(2)
-    integer, intent(in), optional :: num(8)
+    integer(kind=8) :: ndim, ndime, nno, nn(4), exit(2)
+    integer(kind=8), intent(in), optional :: num(8)
     character(len=8) :: elrefp
     real(kind=8) :: lsn(*), geom(*), pinref(*), pmiref(*)
     real(kind=8) :: cenfi(ndim), cenref(ndime)
@@ -59,8 +59,8 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, &
     real(kind=8) :: epsmax, rbid, crit, maxi, x(81), dekker(4*ndime)
     real(kind=8) :: dff(3, 27), gradls(ndime)
     real(kind=8) :: ptxx(2*ndime), ksi(ndime), tole, xmi(ndime)
-    integer :: ibid, itemax, i, n(3), j
-    integer :: pi1, pi2, pi3, pi4, m12, m13, m24, m34
+    integer(kind=8) :: ibid, itemax, i, n(3), j
+    integer(kind=8) :: pi1, pi2, pi3, pi4, m12, m13, m24, m34
     character(len=6) :: name
     character(len=3) :: edge
     aster_logical :: courbe

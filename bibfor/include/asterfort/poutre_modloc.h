@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                              arret, retour)
         character(len=*), intent(in) :: modloc
         character(len=*), intent(in) :: lnomv(nbnomv)
-        integer, intent(in) :: nbnomv
+        integer(kind=8), intent(in) :: nbnomv
         real(kind=8), intent(out), optional :: lvaleur(nbnomv)
         real(kind=8), intent(out), optional :: valeur
         character(len=*), intent(in), optional :: arret
-        integer, intent(out), optional :: retour
+        integer(kind=8), intent(out), optional :: retour
     end subroutine poutre_modloc
 end interface

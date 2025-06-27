@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,13 +64,13 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
 #include "asterc/r8prem.h"
 #include "asterfort/mgauss.h"
 !
-    integer :: nbVloc, nbPara, iret, nbdecp
+    integer(kind=8) :: nbVloc, nbPara, iret, nbdecp
     real(kind=8) :: vpara(nbPara), tirela(6), raidTang(6), vloc(nbVloc), errmax
     logical :: calculNormal, calculPetitH
 !   compteur du nombre d'itération
-    integer :: Ite, IteCrit, ii, jj, compt(3)
+    integer(kind=8) :: Ite, IteCrit, ii, jj, compt(3)
 !   nombre de critères à vérifier et compteurs
-    integer :: nbDDL, nbDDLii, nbDDLjj
+    integer(kind=8) :: nbDDL, nbDDLii, nbDDLjj
 !
 !   fcpH : valeur réelle du coefficient de sécurité à la capacité portante sur H seulement
 !   fCPMx : idem pour Mx
@@ -216,17 +216,22 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
     ! force horizontale pour le CP
     HCP = ((tirela(1)-vloc(13))**2+(tirela(2)-vloc(14))**2)**0.5
     ! calcul des critères linéarisés de CP
-    fCPH = (1.0-(factor/((1.0-2.0*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15))))* &
-          (1.0-2.0*abs(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15))))))**(1.0/3.0))*tirela(3)+HCP
+    fCPH = (1.0-(factor/((1.0-2.0*abs(tirela(4)-vloc(16))/ &
+                          (factor*Ly*(Velas+vloc(15))))* &
+                         (1.0-2.0*abs(tirela(5)-vloc(17))/ &
+                          (factor*Lx*(Velas+vloc(15))))))**(1.0/3.0))*tirela(3)+HCP
     fCPMx = (1.0-factor/((1.0-HCP/(factor*(Velas+vloc(15))))**3* &
-                    (1.0-2.0*abs(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15))))))*Ly*tirela(3)+ &
+                         (1.0-2.0*abs(tirela(5)-vloc(17))/ &
+                          (factor*Lx*(Velas+vloc(15))))))*Ly*tirela(3)+ &
             2.0*abs(tirela(4)-vloc(16))
     fCPMy = (1.0-factor/((1.0-HCP/(factor*(Velas+vloc(15))))**3* &
-                    (1.0-2.0*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15))))))*Lx*tirela(3)+ &
+                         (1.0-2.0*abs(tirela(4)-vloc(16))/ &
+                          (factor*Ly*(Velas+vloc(15))))))*Lx*tirela(3)+ &
             2.0*abs(tirela(5)-vloc(17))
     ! on regarde en plus si on est en traction pure
-    TracPure = ((abs(((tirela(1)-vloc(13))**2+(tirela(2)-vloc(14))**2)**0.5) .LE. error) .AND. &
-              (abs(tirela(4)-vloc(16)) .LE. error*Ly) .AND. (abs(tirela(5)-vloc(17)) .LE. error*Lx))
+    TracPure = ((abs(((tirela(1)-vloc(13))**2+(tirela(2)-vloc(14))**2)**0.5) .LE. error) &
+                .AND. (abs(tirela(4)-vloc(16)) .LE. error*Ly) &
+                .AND. (abs(tirela(5)-vloc(17)) .LE. error*Lx))
     !
     if ((fCPH .LT. r8prem()) .AND. (fCPMx .LT. r8prem()) .AND. &
         (fCPMy .LT. r8prem()) .AND. (fslid .LT. r8prem())) then
@@ -474,18 +479,21 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                     !   distinguer le cas Fz nul
                     ! calcul de dfdF(5:8,3:5)
                     dfdF(ii+4, 3) = 1.0-(factor/((1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
-                             (factor*Ly*(Velas+QCPIte(3))))*(1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
-                                                         (factor*Lx*(Velas+QCPIte(3))))))**(1.0/3.0)
-                    dfdF(ii+4, 4) = -2.0*Fite(3)*valMxPabs/(3.0*Lx*(Velas+QCPIte(3))* &
-                                                            (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
-                                                        (factor*Lx*(Velas+QCPIte(3))))**(1.0/3.0)* &
-                                                            (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
-                                        (factor*Ly*(Velas+QCPIte(3))))**(4.0/3.0)*factor**(2.0/3.0))
-                    dfdF(ii+4, 5) = -2.0*Fite(3)*valMyPabs/(3.0*Ly*(Velas+QCPIte(3))* &
-                                                            (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
-                                                        (factor*Lx*(Velas+QCPIte(3))))**(4.0/3.0)* &
-                                                            (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
-                                        (factor*Ly*(Velas+QCPIte(3))))**(1.0/3.0)*factor**(2.0/3.0))
+                                                  (factor*Ly*(Velas+QCPIte(3))))* &
+                                                 (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
+                                                  (factor*Lx*(Velas+QCPIte(3))))))**(1.0/3.0)
+                    dfdF(ii+4, 4) = -2.0*Fite(3)*valMxPabs/ &
+                                    (3.0*Lx*(Velas+QCPIte(3))* &
+                                     (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
+                                      (factor*Lx*(Velas+QCPIte(3))))**(1.0/3.0)* &
+                                     (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
+                                      (factor*Ly*(Velas+QCPIte(3))))**(4.0/3.0)*factor**(2.0/3.0))
+                    dfdF(ii+4, 5) = -2.0*Fite(3)*valMyPabs/ &
+                                    (3.0*Ly*(Velas+QCPIte(3))* &
+                                     (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
+                                      (factor*Lx*(Velas+QCPIte(3))))**(4.0/3.0)* &
+                                     (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
+                                      (factor*Ly*(Velas+QCPIte(3))))**(1.0/3.0)*factor**(2.0/3.0))
                     ! calcul des dérivées du critère en CP linéarisé en H par rapport aux
                     !   écrouissages qui ne sont que l'opposé des dérivées par rapport aux
                     !   forces (car écrouissage cinématique)
@@ -493,18 +501,22 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                     ! sauf dfdQCP(5:8,3) qui est un écrouissage isotrope
                     dfdQCP(ii, 3) = -2.0*Fite(3)*(valMx*abs(Fite(4)-QCPIte(4))*Ly* &
                                                   (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
-                                   (factor*Lx*(Velas+QCPite(3))))+valMy*abs(Fite(5)-QCPIte(5))*Lx* &
-                               (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/(factor*Ly*(Velas+QCPite(3)))))
+                                                   (factor*Lx*(Velas+QCPite(3))))+ &
+                                                  valMy*abs(Fite(5)-QCPIte(5))*Lx* &
+                                                  (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
+                                                   (factor*Ly*(Velas+QCPite(3)))))
                     dfdQCP(ii, 3) = dfdQCP(ii, 3)/(3.0*Ly*Lx*(Velas+QCPite(3))**2* &
                                                    (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
                                                     (factor*Lx*(Velas+QCPite(3))))**(4.0/3.0)* &
                                                    (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
-                                        (factor*Ly*(Velas+QCPite(3))))**(4.0/3.0)*factor**(2.0/3.0))
+                                                    (factor*Ly*(Velas+QCPite(3))))**(4.0/3.0)* &
+                                                   factor**(2.0/3.0))
                     ! calcul du critère linéarisé en H du CP
                     fsite(ii+4) = (1.0-(factor/((1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
                                                  (factor*Lx*(Velas+QCPite(3))))* &
                                                 (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
-                                       (factor*Ly*(Velas+QCPite(3))))))**(1.0/3.0))*Fite(3)+HCP*valH
+                                                 (factor*Ly*(Velas+QCPite(3))))))**(1.0/3.0))* &
+                                  Fite(3)+HCP*valH
                     fsini(ii+4) = fsite(ii+4)
                     ! on introduit dans le calcul du critère la correction en fonction de
                     !   l'itération pour calcul avant l'inversion
@@ -523,13 +535,15 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                     fsite(5) = (1.0-(factor/((1.0-2.0*abs(Fite(5)-QCPIte(5))/ &
                                               (factor*Lx*(Velas+QCPite(3))))* &
                                              (1.0-2.0*abs(Fite(4)-QCPIte(4))/ &
-                                            (factor*Ly*(Velas+QCPite(3))))))**(1.0/3.0))*Fite(3)+HCP
+                                              (factor*Ly*(Velas+QCPite(3))))))**(1.0/3.0)) &
+                               *Fite(3)+HCP
                 end if
                 ! même chose mais critère CP linéarisé en MX
                 if (calculMx) then
                     valint = -3.0*Ly*Fite(3)/((Velas+QCPite(3))* &
                                               (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**4* &
-                               (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/(factor*Lx*(Velas+QCPite(3)))))
+                                              (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
+                                               (factor*Lx*(Velas+QCPite(3)))))
                     if (HCP .LT. error) then
                         dfdF(ii+8, 1) = sHCPIni(1)*valint*valH
                         dfdF(ii+8, 2) = sHCPIni(2)*valint*valH
@@ -538,24 +552,30 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                         dfdF(ii+8, 2) = (Fite(2)-QCPIte(2))/HCP*valH*valint
                     end if
                     dfdF(ii+8, 3) = 1.0-factor/((1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**3* &
-                               (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/(factor*Lx*(Velas+QCPIte(3)))))
+                                                (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
+                                                 (factor*Lx*(Velas+QCPIte(3)))))
                     dfdF(ii+8, 4) = 2.0*valMxPabs
-                    dfdF(ii+8, 5) = -2.0*Ly*Fite(3)*valMyPabs/(Lx*(Velas+QCPIte(3))* &
-                                                     (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**3* &
-                               (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/(factor*Lx*(Velas+QCPite(3)))))
+                    dfdF(ii+8, 5) = -2.0*Ly*Fite(3)*valMyPabs/ &
+                                    (Lx*(Velas+QCPIte(3))* &
+                                     (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**3* &
+                                     (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
+                                      (factor*Lx*(Velas+QCPite(3)))))
                     dfdQCP(ii+4, :) = -dfdF(ii+8, :)
                     dfdQCP(ii+4, 3) = 2.0*valMy*abs(Fite(5)-QCPIte(5))*Ly*Fite(3)/ &
                                       (Lx*(Velas+QCPITe(3))**2* &
                                        (1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
                                         (factor*Lx*(Velas+QCPIte(3))))**2* &
                                        (1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**3)
-                    dfdQCP(ii+4, 3) = dfdQCP(ii+4, 3)+3.0*valH*HCP*Fite(3)/((Velas+QCPITe(3))**2* &
-                                (1.0-2.0*valMy*(Fite(5)-QCPIte(5))/(factor*Lx*(Velas+QCPIte(3))))* &
-                                                       (1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**4)
+                    dfdQCP(ii+4, 3) = dfdQCP(ii+4, 3)+ &
+                                      3.0*valH*HCP*Fite(3)/( &
+                                      (Velas+QCPITe(3))**2* &
+                                      (1.0-2.0*valMy*(Fite(5)-QCPIte(5))/ &
+                                       (factor*Lx*(Velas+QCPIte(3))))* &
+                                      (1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**4)
                     fsite(ii+8) = (1.0-factor/((1.0-2.0*valMy*abs(Fite(5)-QCPIte(5))/ &
                                                 (factor*Lx*(Velas+QCPite(3))))* &
-                                        (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**3))*Ly*Fite(3)+ &
-                                  2.0*valMx*abs(Fite(4)-QCPIte(4))
+                                               (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**3))* &
+                                  Ly*Fite(3)+2.0*valMx*abs(Fite(4)-QCPIte(4))
                     fsini(ii+8) = fsite(ii+8)
                     do jj = 1, 5
                         fsini(ii+8) = fsini(ii+8)+(tirela(jj)-Fite(jj))*dfdF(ii+8, jj)+ &
@@ -573,9 +593,10 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                 end if
                 !  même chose mais critère CP linéarisé en MY
                 if (calculMy) then
-                    valint = -3.0*Ly*Fite(3)/((Velas+QCPite(3))* &
-                                              (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**4* &
-                               (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/(factor*Ly*(Velas+QCPite(3)))))
+                    valint = -3.0*Ly*Fite(3)/( &
+                             (Velas+QCPite(3))* &
+                             (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**4* &
+                             (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/(factor*Ly*(Velas+QCPite(3)))))
                     if (HCP .LT. error) then
                         dfdF(ii+12, 1) = sHCPIni(1)*valint*valH
                         dfdF(ii+12, 2) = sHCPIni(2)*valint*valH
@@ -583,24 +604,31 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                         dfdF(ii+12, 1) = (Fite(1)-QCPIte(1))/HCP*valH*valint
                         dfdF(ii+12, 2) = (Fite(2)-QCPIte(2))/HCP*valH*valint
                     end if
-                    dfdF(ii+12, 3) = 1.0-factor/((1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**3* &
-                               (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/(factor*Ly*(Velas+QCPIte(3)))))
+                    dfdF(ii+12, 3) = 1.0-factor/( &
+                                     (1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**3* &
+                                     (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
+                                      (factor*Ly*(Velas+QCPIte(3)))))
                     dfdF(ii+12, 5) = 2.0*valMyPabs
-                    dfdF(ii+12, 4) = -2.0*Lx*Fite(3)*valMxPabs/(Ly*(Velas+QCPIte(3))* &
-                                                     (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**3* &
-                               (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/(factor*Ly*(Velas+QCPite(3)))))
+                    dfdF(ii+12, 4) = -2.0*Lx*Fite(3)*valMxPabs/( &
+                                     Ly*(Velas+QCPIte(3))* &
+                                     (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**3* &
+                                     (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
+                                      (factor*Ly*(Velas+QCPite(3)))))
                     dfdQCP(ii+8, :) = -dfdF(ii+12, :)
                     dfdQCP(ii+8, 3) = 2.0*valMx*abs(Fite(4)-QCPIte(4))*Lx*Fite(3)/ &
                                       (Ly*(Velas+QCPITe(3))**2* &
                                        (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
                                         (factor*Ly*(Velas+QCPIte(3))))**2* &
                                        (1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**3)
-                    dfdQCP(ii+8, 3) = dfdQCP(ii+8, 3)+3.0*valH*HCP*Fite(3)/((Velas+QCPITe(3))**2* &
-                             (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/(factor*Ly*(Velas+QCPIte(3))))* &
-                                                       (1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**4)
+                    dfdQCP(ii+8, 3) = dfdQCP(ii+8, 3)+3.0*valH*HCP*Fite(3)/( &
+                                      (Velas+QCPITe(3))**2* &
+                                      (1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
+                                       (factor*Ly*(Velas+QCPIte(3))))* &
+                                      (1.0-valH*HCP/(factor*(Velas+QCPIte(3))))**4)
                     fsite(ii+12) = (1.0-factor/((1.0-2.0*valMx*abs(Fite(4)-QCPIte(4))/ &
                                                  (factor*Ly*(Velas+QCPite(3))))* &
-                                        (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**3))*Lx*Fite(3)+ &
+                                                (1.0-valH*HCP/(factor*(Velas+QCPite(3))))**3)) &
+                                   *Lx*Fite(3)+ &
                                    2.0*valMy*abs(Fite(5)-QCPIte(5))
                     fsini(ii+12) = fsite(ii+12)
                     do jj = 1, 5
@@ -612,9 +640,11 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                     fsite(ii+12) = 0.0
                     fsini(ii+12) = 0.0
                     dfdQCP(ii+8, :) = 0.0
-                    fsite(13) = (1.0-factor/((1.0-2.0*abs(Fite(4)-QCPIte(4))/ &
-                                              (factor*Ly*(Velas+QCPite(3))))* &
-                                             (1.0-HCP/(factor*(Velas+QCPite(3))))**3))*Lx*Fite(3)+ &
+                    fsite(13) = (1.0-factor/( &
+                                 (1.0-2.0*abs(Fite(4)-QCPIte(4))/ &
+                                  (factor*Ly*(Velas+QCPite(3))))* &
+                                 (1.0-HCP/(factor*(Velas+QCPite(3))))**3))* &
+                                Lx*Fite(3)+ &
                                 2.0*abs(Fite(5)-QCPIte(5))
                 end if
             end do
@@ -627,8 +657,10 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                 ! si la cohésion est non nulle alors pas de double critère possible
                 if (abs(Cinter*Lx*Ly) .LT. error) then
                     do ii = 2, 4
-                        LogiInt = (abs(abs(sum(dfdF(ii, :)*dfdF(1, :))**2/ &
-                                         (sum(dfdF(ii, :)**2)*sum(dfdF(1, :)**2)))-1.0) .LT. errmax)
+                        LogiInt = (abs( &
+                                   abs(sum(dfdF(ii, :)*dfdF(1, :))**2/ &
+                                       (sum(dfdF(ii, :)**2)*sum(dfdF(1, :)**2))) &
+                                   -1.0) .LT. errmax)
                         ! on regarde si il y a une différence entre les dérivées du critère en
                         !   glissement, si non, on ne considère pas le critère
                         !   (glissement avec H, Mx ou My de signe opposé)
@@ -769,8 +801,9 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                                     end if
                                     fsInverse(nbDDLii) = fsini(4*(ii-1)+compt(nbDDLii))
                                     do nbDDLjj = 1, 3
-                                        MatAinverser(nbDDLii, nbDDLjj) = MatAinvTot(4*(ii-1)+ &
-                                                            compt(nbDDLii), 4*(ii-1)+compt(nbDDLjj))
+                                        MatAinverser(nbDDLii, nbDDLjj) = &
+                                            MatAinvTot(4*(ii-1)+compt(nbDDLii), &
+                                                       4*(ii-1)+compt(nbDDLjj))
                                     end do
                                 end do
                                 ! inversion du sous-sytèmes
@@ -810,8 +843,9 @@ subroutine difoncalcpetit(tirela, raidTang, vloc, vpara, nbVloc, &
                                     end if
                                     fsInverse(nbDDLii) = fsini(4*(ii-1)+compt(nbDDLii))
                                     do nbDDLjj = 1, 2
-                                        MatAinverser(nbDDLii, nbDDLjj) = MatAinvTot(4*(ii-1)+ &
-                                                            compt(nbDDLii), 4*(ii-1)+compt(nbDDLjj))
+                                        MatAinverser(nbDDLii, nbDDLjj) = &
+                                            MatAinvTot(4*(ii-1)+compt(nbDDLii), &
+                                                       4*(ii-1)+compt(nbDDLjj))
                                     end do
                                 end do
                                 call mgauss('NCVP', MatAinverser, fsInverse, 2, 2, 1, det, iret)
@@ -1238,7 +1272,7 @@ contains
 !   attention ici est égal à 0 pour a=0 contrairement à sign de fortran avec erreur
     function signe(a, error)
         real(kind=8) :: a, error
-        integer :: signe
+        integer(kind=8) :: signe
         if (a .LT. -error) then
             signe = -1
         else if (a .GT. error) then
@@ -1252,7 +1286,7 @@ contains
 !   attention ici est égal à 1 pour a=0 contrairement à sign de fortran avec erreur
     function signeExcl(a, error)
         real(kind=8) :: a, error
-        integer :: signeExcl
+        integer(kind=8) :: signeExcl
         if (a .LT. -error) then
             signeExcl = -1
         else if (a .GT. error) then

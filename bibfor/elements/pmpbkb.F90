@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine pmpbkb(skp, nbpout, yi, zi, sk)
 !   OUT
 !       sk(78)       : matrice de rigidite
 
-    integer :: ip(12), i, nbpout
+    integer(kind=8) :: ip(12), i, nbpout
     real(kind=8) :: sk(78), skp(78, *), yi(nbpout), zi(nbpout)
 
     data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/

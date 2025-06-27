@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine xhmco3(ino, ndim, dsidep, pla, p, &
 #include "jeveux.h"
 #include "asterfort/promat.h"
 #include "asterfort/transp.h"
-    integer :: ino, ndim, pla(27)
+    integer(kind=8) :: ino, ndim, pla(27)
     real(kind=8) :: mmat(560, 560), dsidep(6, 6)
     real(kind=8) :: jac, ffc(16), raug
     real(kind=8) :: p(3, 3)
@@ -51,7 +51,7 @@ subroutine xhmco3(ino, ndim, dsidep, pla, p, &
 !
 !
 !
-    integer :: i, j, k, l, pli
+    integer(kind=8) :: i, j, k, l, pli
     real(kind=8) :: dside2(3, 3), ptr(3, 3), temp(3, 3), au(3, 3), ffi
 !
 ! ----------------------------------------------------------------------

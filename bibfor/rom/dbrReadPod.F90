@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,13 +51,13 @@ subroutine dbrReadPod(operation, paraPod)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nocc
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nocc
     real(kind=8) :: toleSVD, toleIncr
     character(len=16) :: fieldName
     character(len=8)  :: lineicAxis, lineicSect, baseType
     character(len=8)  :: resultDomName
-    integer :: nbModeMaxi, nbCmpToFilter, nbVariToFilter
+    integer(kind=8) :: nbModeMaxi, nbCmpToFilter, nbVariToFilter
     type(ROM_DS_Result) :: resultDom
 !
 ! --------------------------------------------------------------------------------------------------

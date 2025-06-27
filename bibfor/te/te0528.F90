@@ -50,14 +50,14 @@ subroutine te0528(option, nomte)
 !          NOMTE  : NOM DU TYPE ELEMENT
 ! ----------------------------------------------------------------------
 !
-    integer :: jgano, mxcmel, nbsgm, i, ndim, nno, nbsig, nnos, npg, ipoids, ivf
-    integer :: idfde, igau, isig, igeom, idef, nbvari, ivari, jtab(7)
-    integer :: iret, imate, itemps
+    integer(kind=8) :: jgano, mxcmel, nbsgm, i, ndim, nno, nbsig, nnos, npg, ipoids, ivf
+    integer(kind=8) :: idfde, igau, isig, igeom, idef, nbvari, ivari, jtab(7)
+    integer(kind=8) :: iret, imate, itemps
     parameter(mxcmel=162)
     parameter(nbsgm=6)
     real(kind=8) :: epsfl(mxcmel), epstmp(nbsgm)
     real(kind=8) :: valpar, nu(1)
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) ::  nompar
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: nomres, compo1, compo2, valk(2)

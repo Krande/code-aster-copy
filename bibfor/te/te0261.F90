@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine te0261(option, nomte)
     character(len=16) :: nomte, option
     character(len=8) :: enr, typmod(2), elrefp
     character(len=16) :: compor(4)
-    integer :: ndim, nfh, nno, nnos, npg1, ipoids, ivf, idfde, jgano
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt, jheavn
-    integer :: igeom, idepl, imate, icont
-    integer :: ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss
+    integer(kind=8) :: ndim, nfh, nno, nnos, npg1, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt, jheavn
+    integer(kind=8) :: igeom, idepl, imate, icont
+    integer(kind=8) :: ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss
 !
 !
 ! ---- CARACTERISTIQUES DU TYPE D'ELEMENT :

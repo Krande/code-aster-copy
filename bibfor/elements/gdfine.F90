@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine gdfine(kp, nno, pjacob, en, grani, &
     real(kind=8) :: v3(3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k, kp, ne, nno
+    integer(kind=8) :: i, j, k, kp, ne, nno
     real(kind=8) :: coef, pjacob, un
 !-----------------------------------------------------------------------
     un = 1.d0

@@ -27,26 +27,26 @@ interface
                       svect, ncont, contp, scont, nvari,&
                       varip, svari, matuu, smatr, matsym,&
                       epsilo, epsilp, epsilg, varia, iret)
-        integer :: nddl
+        integer(kind=8) :: nddl
         character(len=16) :: option
         real(kind=8) :: carcri(*)
         character(len=16) :: compor(*)
-        integer :: nno1
-        integer :: nno2
-        integer :: nno3
+        integer(kind=8) :: nno1
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno3
         real(kind=8) :: geom(*)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: deplp(*)
         real(kind=8) :: sdepl(*)
-        integer :: vu(3, 27)
-        integer :: vg(27)
-        integer :: vp(27)
+        integer(kind=8) :: vu(3, 27)
+        integer(kind=8) :: vg(27)
+        integer(kind=8) :: vp(27)
         real(kind=8) :: vectu(*)
         real(kind=8) :: svect(*)
-        integer :: ncont
+        integer(kind=8) :: ncont
         real(kind=8) :: contp(*)
         real(kind=8) :: scont(*)
-        integer :: nvari
+        integer(kind=8) :: nvari
         real(kind=8) :: varip(*)
         real(kind=8) :: svari(*)
         real(kind=8) :: matuu(*)
@@ -56,6 +56,6 @@ interface
         real(kind=8) :: epsilo
         real(kind=8) :: epsilp
         real(kind=8) :: epsilg
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine tgverm
 end interface

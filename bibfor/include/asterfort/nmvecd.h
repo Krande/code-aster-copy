@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
                       dsgde, dsgdb, dsgdp, drbde, drpde,&
                       rb, rp, drbdb, drbdp, drpdb,&
                       drpdp, etatf, ier)
-        integer :: nb
-        integer :: np
-        integer :: nmat
-        integer :: imate
+        integer(kind=8) :: nb
+        integer(kind=8) :: np
+        integer(kind=8) :: nmat
+        integer(kind=8) :: imate
         real(kind=8) :: mate(nmat, 2)
         character(len=3) :: matcst
         character(len=16) :: loi
@@ -52,6 +52,6 @@ interface
         real(kind=8) :: drpdb(np, nb)
         real(kind=8) :: drpdp(np, np)
         character(len=7) :: etatf(3)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine nmvecd
 end interface

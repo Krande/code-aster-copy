@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,12 @@ subroutine dvcrob(mesh, modele, ds_inout, materi, sd_obsv)
 ! ancienne routine : nmcrob
 ! supprimer ce qui ne concerne pas champs DEPL, VITE, ACCE
 
-    integer :: nb_obsv, nb_keyw_fact, numrep
+    integer(kind=8) :: nb_obsv, nb_keyw_fact, numrep
     character(len=8) :: result
     character(len=14) :: sdextr_obsv
     character(len=16) :: keyw_fact
     character(len=24) :: extr_info
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
 
     nb_obsv = 0
     sd_obsv = '&&NMCROB.OBSV'

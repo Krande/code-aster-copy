@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
         implicit none
         character(len=8), intent(in) :: noma
         character(len=24), intent(in) :: nomgrma
-        integer, intent(in) :: listma(*)
-        integer, intent(in) :: nbma
-        integer, intent(in) :: ncarac
+        integer(kind=8), intent(in) :: listma(*)
+        integer(kind=8), intent(in) :: nbma
+        integer(kind=8), intent(in) :: ncarac
         character(len=8), intent(in) :: cara(*)
         real(kind=8), intent(in) :: vale(*)
         character(len=8), intent(out) :: caram(4)

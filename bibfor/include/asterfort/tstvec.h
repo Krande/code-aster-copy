@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine tstvec(perm, iad, nlong, type, sommi,&
                       sommr, nbign)
         character(len=*) :: perm
-        integer :: iad
-        integer :: nlong
+        integer(kind=8) :: iad
+        integer(kind=8) :: nlong
         character(len=3) :: type
-        integer :: sommi
+        integer(kind=8) :: sommi
         real(kind=8) :: sommr
-        integer :: nbign
+        integer(kind=8) :: nbign
     end subroutine tstvec
 end interface

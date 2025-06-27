@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface 
     subroutine xhmini(nomte, nfh, ddld, ddlm, ddlp, nfiss, ddlc, contac)
         character(len=16) :: nomte
-        integer :: nfh
-        integer :: ddld
-        integer :: ddlm
-        integer :: ddlp
-        integer :: nfiss
-        integer :: ddlc
-        integer :: contac
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ddld
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: ddlp
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: contac
     end subroutine xhmini
 end interface 

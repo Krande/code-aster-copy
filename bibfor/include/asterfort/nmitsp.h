@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         use NonLin_Datastructure_type
         type(NL_DS_Print), intent(in) :: ds_print
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: iterat
-        integer, intent(out) :: retsup
+        integer(kind=8), intent(in) :: iterat
+        integer(kind=8), intent(out) :: retsup
     end subroutine nmitsp
 end interface

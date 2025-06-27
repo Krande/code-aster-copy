@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine vplcor(ldynam, neq, nbvect, nborto, prorto,&
                       signes, vect, ivecp, pkx, plx)
-        integer :: nbvect
-        integer :: neq
-        integer :: ldynam
-        integer :: nborto
+        integer(kind=8) :: nbvect
+        integer(kind=8) :: neq
+        integer(kind=8) :: ldynam
+        integer(kind=8) :: nborto
         real(kind=8) :: prorto
         real(kind=8) :: signes(nbvect)
         real(kind=8) :: vect(neq, nbvect)
-        integer :: ivecp
+        integer(kind=8) :: ivecp
         real(kind=8) :: pkx(neq, nbvect)
         real(kind=8) :: plx(neq)
     end subroutine vplcor

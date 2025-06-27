@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm, &
 #include "asterfort/vectan.h"
 #include "blas/dscal.h"
     character(len=16) :: nomte
-    integer :: nb1, nb2, nddle, npge, npgsr, npgsn, itab(8)
+    integer(kind=8) :: nb1, nb2, nddle, npge, npgsr, npgsn, itab(8)
     real(kind=8) :: xi(3, 9)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
@@ -49,8 +49,8 @@ subroutine vdxrig(nomte, xi, rig, nb1, indm, &
     real(kind=8) :: ctor, epais, kappa
     real(kind=8) :: ktildi(42, 42)
 !-----------------------------------------------------------------------
-    integer :: i, indf, indm, inte, intsn, intsr, iret
-    integer :: j, jcara, jcrf, kwgt, lzi, lzr, nddlet
+    integer(kind=8) :: i, indf, indm, inte, intsn, intsr, iret
+    integer(kind=8) :: j, jcara, jcrf, kwgt, lzi, lzr, nddlet
 !
     real(kind=8) :: coef
 !-----------------------------------------------------------------------

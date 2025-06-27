@@ -33,13 +33,13 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
 #include "asterfort/utmess.h"
 #include "asterfort/jeveuo.h"
 !
-    integer :: ncmpve, ncmprf, nvalec, nbpg, nbsp
-    integer :: numcmp(ncmprf)
-    integer :: adsv, adsd, adsl, adsk
-    integer :: tymast, codret
-    integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
-    integer :: profas(*)
-    integer :: ideb, ifin
+    integer(kind=8) :: ncmpve, ncmprf, nvalec, nbpg, nbsp
+    integer(kind=8) :: numcmp(ncmprf)
+    integer(kind=8) :: adsv, adsd, adsl, adsk
+    integer(kind=8) :: tymast, codret
+    integer(kind=8) :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+    integer(kind=8) :: profas(*)
+    integer(kind=8) :: ideb, ifin
     real(kind=8) :: val(ncmpve, nbsp, nbpg, nvalec)
     character(len=8), intent(in) :: fieldSupport
     character(len=*), intent(in) :: cplxFormatZ
@@ -81,10 +81,10 @@ subroutine ircmva(numcmp, indcmp, ncmpve, ncmprf, nvalec, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: gd, valk(2), typcha, cplxFormat
-    integer :: iaux, jaux, kaux, fieldScalar
-    integer :: adsvxx, adslxx
-    integer :: ino, ima, nrcmp, nrcmpr, nrpg, nrsp
-    integer :: ifm, niv, jindcm, poscmp, cntcmp
+    integer(kind=8) :: iaux, jaux, kaux, fieldScalar
+    integer(kind=8) :: adsvxx, adslxx
+    integer(kind=8) :: ino, ima, nrcmp, nrcmpr, nrpg, nrsp
+    integer(kind=8) :: ifm, niv, jindcm, poscmp, cntcmp
     aster_logical :: logaux, lprolz
     real(kind=8) :: end, start
 !

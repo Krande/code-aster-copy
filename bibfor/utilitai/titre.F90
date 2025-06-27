@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine titre(defTitle, lDefTitle)
 #include "asterfort/assert.h"
 #include "asterfort/titrea.h"
     character(len=80), optional, intent(in) :: defTitle
-    integer, optional, intent(in) :: lDefTitle
+    integer(kind=8), optional, intent(in) :: lDefTitle
 !
     character(len=8) :: nomcon, cbid
     character(len=24) :: nomobj

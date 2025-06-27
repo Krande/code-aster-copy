@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine liscn2(lisold, nbchar, ichar, typapp)
         character(len=19) :: lisold
         character(len=16) :: typapp
-        integer :: ichar, nbchar
+        integer(kind=8) :: ichar, nbchar
     end subroutine liscn2
 end interface

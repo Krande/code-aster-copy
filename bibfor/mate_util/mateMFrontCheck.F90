@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine mateMFrontCheck(l_mfront_func, l_mfront_anis, &
     aster_logical, intent(in) :: l_mfront_func, l_mfront_anis
     character(len=19), intent(in) :: noobrc_elas
     aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
-    integer, intent(in) :: mfront_nbvale
+    integer(kind=8), intent(in) :: mfront_nbvale
     character(len=16), intent(in) :: mfront_prop(16)
     real(kind=8), intent(in) :: mfront_valr(16)
     character(len=16), intent(in) :: mfront_valk(16)
@@ -61,9 +61,9 @@ subroutine mateMFrontCheck(l_mfront_func, l_mfront_anis, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_mfront, i_prop_r, i_prop_k
-    integer :: nb_prop, indexE
-    integer :: nb_prop_r, nb_prop_c, nb_prop_k2, nb_prop_k
+    integer(kind=8) :: i_mfront, i_prop_r, i_prop_k
+    integer(kind=8) :: nb_prop, indexE
+    integer(kind=8) :: nb_prop_r, nb_prop_c, nb_prop_k2, nb_prop_k
     character(len=16) :: mf_prop_name, valk(4)
     character(len=16) :: mf_prop_valk, as_prop_valk, prop_name, prop_name_mf
     real(kind=8) :: mf_prop_valr, as_prop_valr, test, valr(2)

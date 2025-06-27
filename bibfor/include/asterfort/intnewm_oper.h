@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine intnewm_oper(nbequ, par, mgen, kgen, agen, &
                             ktilda, ftild1, ftild2, ftild3)
-        integer     , intent(in)  :: nbequ
+        integer(kind=8)     , intent(in)  :: nbequ
         real(kind=8)              :: par(:)
         real(kind=8), pointer  :: mgen(:)
         real(kind=8), pointer  :: kgen(:)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu, &
 #include "asterfort/rsutrg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc, nbordr
+    integer(kind=8) :: iocc, nbordr
     character(len=16) :: nopara
     character(len=*) :: resu, motcle, objveu
 !     RECUPERATION DES NUMEROS D'ORDRE DANS UNE STRUCTURE DE DONNEES
@@ -46,13 +46,13 @@ subroutine rsutn1(resu, nopara, motcle, iocc, objveu, &
 ! OUT : OBJVEU : NOM JEVEUX DU VECTEUR ZI POUR ECRIRE LA LISTE DES NUME
 ! OUT : NBORDR : NOMBRE DE NUMERO D'ORDRE VALIDE POUR LE NOPARA
 !     ------------------------------------------------------------------
-    integer :: iret, ii, iordr, lordr, jordr, np, nc, irang, nbacc, nbpar
-    integer :: nbtord
+    integer(kind=8) :: iret, ii, iordr, lordr, jordr, np, nc, irang, nbacc, nbpar
+    integer(kind=8) :: nbtord
     real(kind=8) :: prec
     character(len=8) :: k8b, crit
     character(len=24) :: knume
     character(len=24) :: valk(2)
-    integer :: nrang
+    integer(kind=8) :: nrang
     character(len=16), pointer :: acces(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()

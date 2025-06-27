@@ -60,18 +60,18 @@ subroutine verif_bord(modele, ligrel)
     character(len=8) :: modele_, noma
     character(len=19) :: ligrel_, ligrmo
     character(len=24) :: valk(4)
-    integer :: nbmamo, nbmalg, numa, kma, nbmat
-    integer :: iconx1, iconx2, nno, nuno, kno, nbnot
+    integer(kind=8) :: nbmamo, nbmalg, numa, kma, nbmat
+    integer(kind=8) :: iconx1, iconx2, nno, nuno, kno, nbnot
 
     character(len=24), parameter :: linumamo = '&&VERIF_BORD.NUMAMO'
     character(len=24), parameter :: linutemo = '&&VERIF_BORD.NUTEMO'
     character(len=24), parameter :: linumalg = '&&VERIF_BORD.NUMALG'
     character(len=24), parameter :: linutelg = '&&VERIF_BORD.NUTELG'
 
-    integer, pointer :: numamo(:) => null()
-    integer, pointer :: numalg(:) => null()
-    integer, pointer :: eximalg(:) => null()
-    integer, pointer :: exinolg(:) => null()
+    integer(kind=8), pointer :: numamo(:) => null()
+    integer(kind=8), pointer :: numalg(:) => null()
+    integer(kind=8), pointer :: eximalg(:) => null()
+    integer(kind=8), pointer :: exinolg(:) => null()
 
 #define nbno(imail) zi(iconx2+imail) - zi(iconx2+imail-1)
 #define connex(imail,j) zi(iconx1-1+zi(iconx2+imail-1)+j-1)

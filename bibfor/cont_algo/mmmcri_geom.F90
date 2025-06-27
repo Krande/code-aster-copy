@@ -60,14 +60,14 @@ subroutine mmmcri_geom(mesh, disp_prev, loop_geom_disp, disp_curr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cmp_disp = 3
+    integer(kind=8), parameter :: nb_cmp_disp = 3
     character(len=8), parameter :: list_cmp_disp(nb_cmp_disp) = (/'DX', 'DY', 'DZ'/)
     real(kind=8) :: geom_dif1_maxi, geom_dif2_maxi, geom_mini
     real(kind=8) :: loop_geom_vale, alpha, geom_maxi, geom_epsi_maxi
     character(len=24) :: geom_diff_1, geom_diff_2
     character(len=16) :: loop_geom_node
     character(len=8) :: node_name
-    integer :: geom_dif1_node, geom_dif2_node
+    integer(kind=8) :: geom_dif1_node, geom_dif2_node
     aster_logical :: loop_geom_conv
 !
 ! --------------------------------------------------------------------------------------------------

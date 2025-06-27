@@ -45,10 +45,10 @@ subroutine chrpan(modele, carte, option, chelem)
 ! OUT : CHELEM : CHAM ELEM AVEC ANGLES EVENTUELLEMENT VARIABLES
 !     ------------------------------------------------------------------
 !
-    integer :: ibid, ioc, n1, n2, na, nvec, iret, nrep, nbma, nbmail, jmail
-    integer :: ialpha, ibeta, iad1, iad2, ima, numma, ncmax, icesl
-    integer :: iaxe(3), io(3), iad(3), ii
-    integer :: icesd, nncp
+    integer(kind=8) :: ibid, ioc, n1, n2, na, nvec, iret, nrep, nbma, nbmail, jmail
+    integer(kind=8) :: ialpha, ibeta, iad1, iad2, ima, numma, ncmax, icesl
+    integer(kind=8) :: iaxe(3), io(3), iad(3), ii
+    integer(kind=8) :: icesd, nncp
     real(kind=8) :: ang(2), vect(3), axez(3), orig(3)
     aster_logical :: ltout
     character(len=8) :: k8b, noma, motcls(2), typmcl(2)

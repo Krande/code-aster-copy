@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara, &
 #include "asterfort/cgajpa.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-    integer :: nbpara, nxpara, ndim
+    integer(kind=8) :: nbpara, nxpara, ndim
     aster_logical :: lmoda
     character(len=*) :: litypa(nxpara), linopa(nxpara)
     character(len=8) :: table, typfis
@@ -56,7 +56,7 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara, &
 !     litypa : TYPES DES PARAMETRES
 ! ----------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     aster_logical :: debug
 !

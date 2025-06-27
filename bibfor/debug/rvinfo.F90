@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine rvinfo(ifm, iocc, i1, i2, c, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-    integer :: ifm, iocc, i1, i2
+    integer(kind=8) :: ifm, iocc, i1, i2
     character(len=1) :: c
     character(len=16) :: sdchef
 !     AFFICHAGE INFO SUR LE POST COURRANT
@@ -37,7 +37,7 @@ subroutine rvinfo(ifm, iocc, i1, i2, c, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: adrval, vali, adracc
+    integer(kind=8) :: adrval, vali, adracc
     real(kind=8) :: valr
     character(len=8) :: acces
     character(len=24) :: nomval, nomacc

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ function critnu(zimat, nmnbn, deps, dtg, normm)
 #include "asterfort/gplass.h"
 #include "asterfort/mppffn.h"
 #include "asterfort/utmess.h"
-    integer :: critnu, zimat, nmprif, j
+    integer(kind=8) :: critnu, zimat, nmprif, j
 !
     real(kind=8) :: nmnbn(6), nprnbn(6), nmprpl(2, 3), nmprzf, nmprzg
     real(kind=8) :: deps(6), dtg(6, 6), f1elas, f2elas, g1elas, g2elas, normm

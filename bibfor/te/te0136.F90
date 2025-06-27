@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,9 +41,9 @@ subroutine te0136(option, nomte)
     character(len=8) :: elrefe, alias8
     real(kind=8) :: poids, r, nx, ny, tpg
     real(kind=8) :: coorse(18), vectt(9), hech, sigma, epsil, tz0
-    integer :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
-    integer :: iveres, i, j, l, li, iech, iray, itemp
-    integer :: nnop2, c(6, 9), ise, nse, ibid
+    integer(kind=8) :: nno, nnos, ndim, kp, npg, ipoids, ivf, idfde, jgano, igeom
+    integer(kind=8) :: iveres, i, j, l, li, iech, iray, itemp
+    integer(kind=8) :: nnop2, c(6, 9), ise, nse, ibid
     aster_logical :: laxi
 !
 !     -----------------------------------------------------------------

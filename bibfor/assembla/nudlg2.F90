@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,15 +52,15 @@ subroutine nudlg2(nu)
 !                               DANS CE CAS .DLG2(IEQ2)=IEQ1
 ! ----------------------------------------------------------------------
 !
-    integer :: neq, ili, nbligr, iexi, jprno, jdlg2
-    integer :: ima, nn, n1, n2, n3, n4
-    integer ::  j2nema, nbma
-    integer :: ieq2, ieq3, nueq2, nueq3, nec
+    integer(kind=8) :: neq, ili, nbligr, iexi, jprno, jdlg2
+    integer(kind=8) :: ima, nn, n1, n2, n3, n4
+    integer(kind=8) ::  j2nema, nbma
+    integer(kind=8) :: ieq2, ieq3, nueq2, nueq3, nec
     character(len=19) :: ligr19
     character(len=14) :: nu14
     character(len=8) :: nogd
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: nema(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nema(:) => null()
 !
 !     -- ZZNSUP : NOMBRE DE NOEUDS DE LA MAILLE TARDIVE
 #define zznsup(ili,ima) zi(j2nema+ima) - zi(j2nema+ima-1) - 1

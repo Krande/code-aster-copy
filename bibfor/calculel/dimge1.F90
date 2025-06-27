@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 function dimge1(ige1, ige2)
     implicit none
-    integer :: dimge1
+    integer(kind=8) :: dimge1
 #include "asterfort/assert.h"
-    integer :: ige1, ige2
+    integer(kind=8) :: ige1, ige2
 !     -- SERT AU CALCUL DE DIM_GEOM D'UN LIGREL
 !    IN:
 !       IGE1 : VALEUR DE DIM_GEOM (/1/2/3/120/023/103/123)
@@ -29,7 +29,7 @@ function dimge1(ige1, ige2)
 !       DIMGE1   : "CUMUL" DE IGE1 ET IGE2
 !
 ! ----------------------------------------------------------------------
-    integer :: i1(3), i2(3), i3(3), k
+    integer(kind=8) :: i1(3), i2(3), i3(3), k
 ! DEB ------------------------------------------------------------------
 !
 !     -- SI IGE1 (OU IGE2) = 0, C'EST FACILE :

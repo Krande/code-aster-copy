@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine nmdcax(sddisc, insref, numins, durdec, deltac)
         character(len=19) :: sddisc
         real(kind=8) :: insref
-        integer :: numins
+        integer(kind=8) :: numins
         real(kind=8) :: durdec
         real(kind=8) :: deltac
     end subroutine nmdcax

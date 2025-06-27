@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
         character(len=*) :: basz
         character(len=8) :: nomain
         character(len=8) :: nomaou
-        integer :: nbma
-        integer :: nummai(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: nummai(*)
         character(len=8) :: prefix
-        integer :: ndinit
+        integer(kind=8) :: ndinit
     end subroutine cmqutr
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine arlmas(nomte,e,xnu,rho,kanl,mlv)
         character(len=12) :: nomte
-        integer :: kanl
+        integer(kind=8) :: kanl
         real(kind=8) :: rho
         real(kind=8) :: xnu
         real(kind=8) :: e

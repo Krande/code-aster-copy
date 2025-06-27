@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         character(len=19) :: phi
         character(len=19) :: sphi
         real(kind=8) :: freq
-        integer :: iff
+        integer(kind=8) :: iff
         character(len=8) :: nomres
     end subroutine evalis
 end interface

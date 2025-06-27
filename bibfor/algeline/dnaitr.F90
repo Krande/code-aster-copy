@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -249,12 +249,12 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 #include "blas/dlascl.h"
 #include "blas/dnrm2.h"
 #include "blas/dscal.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    integer :: nopx, nbx, nrorth, nitref, nrstrt
+    integer(kind=8) :: nopx, nbx, nrorth, nitref, nrstrt
     common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
@@ -263,14 +263,14 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !     %------------------%
 !
     character(len=1) :: bmat
-    integer :: ido, info, k, ldh, ldv, n, np
+    integer(kind=8) :: ido, info, k, ldh, ldv, n, np
     real(kind=8) :: rnorm, alpha
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: ipntr(3)
+    integer(kind=8) :: ipntr(3)
     real(kind=8) :: h(ldh, k+np), resid(n), v(ldv, k+np), workd(3*n)
 !
 !     %------------%
@@ -286,7 +286,7 @@ subroutine dnaitr(ido, bmat, n, k, np, &
 !
     aster_logical :: first, orth1, orth2, rstart, step3, step4
     integer(kind=4) :: infol4
-    integer :: ierr, i, ipj, irj, ivj, iter, itry, j, msglvl, jj
+    integer(kind=8) :: ierr, i, ipj, irj, ivj, iter, itry, j, msglvl, jj
     real(kind=8) :: betaj, temp1, rnorm1, smlnum, tst1, ulp, unfl, wnorm
 ! DUE TO CRS512      REAL*8 OVFL
 ! DUE TO CRS512      SAVE FIRST, ORTH1, ORTH2, RSTART, STEP3, STEP4,

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine stktit(ifl, icl, iv, rv, cv,&
                       cnl, mcl, nbm, nlt, tit,&
                       irteti)
-        integer :: nbm
-        integer :: ifl
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: nbm
+        integer(kind=8) :: ifl
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         real(kind=8) :: rv
         character(len=*) :: cv
         character(len=14) :: cnl
         character(len=8) :: mcl(nbm)
-        integer :: nlt
+        integer(kind=8) :: nlt
         character(len=24) :: tit
-        integer :: irteti
+        integer(kind=8) :: irteti
     end subroutine stktit
 end interface

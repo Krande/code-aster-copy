@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 interface
     subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
         character(len=16), intent(out) :: compor(COMPOR_SIZE)
-        integer, intent(out) :: nbVari
+        integer(kind=8), intent(out) :: nbVari
         character(len=16), intent(out) :: type_comp, mult_comp
     end subroutine pmdocc
 end interface

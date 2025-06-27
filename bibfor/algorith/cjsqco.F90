@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine cjsqco(gamma, sig, x, pref, epssig, &
 #include "asterfort/hlode.h"
 #include "asterfort/lcdete.h"
 #include "asterfort/lcdevi.h"
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: gamma, pref, epssig
     real(kind=8) :: sig(6), x(6), s(6), q(6)
     real(kind=8) :: i1, sii, siirel, cos3ts, qii, qiirel, cos3tq

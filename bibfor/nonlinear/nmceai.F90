@@ -28,7 +28,7 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: indic
+    integer(kind=8) :: indic
     character(len=24) :: numedd
     character(len=19) :: sdpilo, depdel, depold, deppr1, deppr2
     real(kind=8) :: eta, rho, f
@@ -56,8 +56,8 @@ subroutine nmceai(numedd, depdel, deppr1, deppr2, depold, &
 !
     real(kind=8) :: sca, nodup, coef
     real(kind=8) :: norm_depold
-    integer :: jdu1
-    integer :: neq, i
+    integer(kind=8) :: jdu1
+    integer(kind=8) :: neq, i
     character(len=19) :: selpil
     real(kind=8), pointer :: depde(:) => null()
     real(kind=8), pointer :: depol(:) => null()

@@ -37,7 +37,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/dcopy.h"
-    integer :: lmatm, iddl(*), neq, nbmode
+    integer(kind=8) :: lmatm, iddl(*), neq, nbmode
     real(kind=8) :: coef(*), zrmod(neq, *)
     character(len=*) :: motcle, nume, matfac, matpre, solveu
     complex(kind=8) :: cbid
@@ -71,7 +71,7 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 !-----------------------------------------------------------------------
 !
 !   Right-hand side are passed by batches of ICNTL(27) to MUMPS
-    integer :: icmpl27
+    integer(kind=8) :: icmpl27
     real(kind=8) :: un, zero
     character(len=8) :: nomcmp(3)
     character(len=19) :: numeq
@@ -79,13 +79,13 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ib, ic, ie, ila1, ila2, im, imod, in, ila1o, nblag, jlag
-    integer :: in2, ind, jddr, iret, nbatch, n_last_batch, batch_size, iaux
-    integer :: coef_sparse, nzrhs_max, js1, js2, js3
-    integer, pointer :: position_ddl(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8) :: ib, ic, ie, ila1, ila2, im, imod, in, ila1o, nblag, jlag
+    integer(kind=8) :: in2, ind, jddr, iret, nbatch, n_last_batch, batch_size, iaux
+    integer(kind=8) :: coef_sparse, nzrhs_max, js1, js2, js3
+    integer(kind=8), pointer :: position_ddl(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     aster_logical :: lverbose, lrhs_sparse
 !
     cbid = dcmplx(0.d0, 0.d0)

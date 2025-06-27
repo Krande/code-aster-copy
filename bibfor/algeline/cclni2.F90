@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@ subroutine cclni2(col1, col2, n, d1, d2, &
 ! person_in_charge: olivier.boiteau at edf.fr
 !     VERSION COMPLEXE DE COLNI2
     implicit none
-    integer :: n, ier
+    integer(kind=8) :: n, ier
     complex(kind=8) :: col1(n), col2(n), d1, d2, coef1, t1(n), t2(n)
     real(kind=8) :: eps
 !
-    integer :: i
+    integer(kind=8) :: i
     if (abs(d1) .le. eps .or. abs(d2) .le. eps) then
         ier = 1
     else

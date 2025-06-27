@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine dtmdetect(sd_dtm_, sd_int_, buffdtm, buffint, reinteg)
         character(len=*), intent(in)  :: sd_dtm_
         character(len=*), intent(in)  :: sd_int_
-        integer, pointer              :: buffdtm(:)
-        integer, pointer              :: buffint(:)
-        integer          , intent(out):: reinteg
+        integer(kind=8), pointer              :: buffdtm(:)
+        integer(kind=8), pointer              :: buffint(:)
+        integer(kind=8)          , intent(out):: reinteg
     end subroutine dtmdetect
 end interface

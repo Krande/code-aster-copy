@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,9 @@ subroutine iner81(nomres, classe, basmod, nommat)
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 !-----------------------------------------------------------------------
-    integer :: i, ia, iad, idbase, ieq
-    integer :: ier, if, ldref, ldres, lmat, ltvec1
-    integer :: ltvec2, ltvec3, mxddl, nbdef, neq
+    integer(kind=8) :: i, ia, iad, idbase, ieq
+    integer(kind=8) :: ier, if, ldref, ldres, lmat, ltvec1
+    integer(kind=8) :: ltvec2, ltvec3, mxddl, nbdef, neq
 !-----------------------------------------------------------------------
     parameter(mxddl=6)
     character(len=8), parameter :: nomddl(mxddl) = ['DX      ', 'DY      ', 'DZ      ', &
@@ -63,7 +63,7 @@ subroutine iner81(nomres, classe, basmod, nommat)
     character(len=24) :: nomres
     character(len=24) :: valk
     complex(kind=8) :: cbid
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine hfmss(ind, vectt, hsfm, hss)
     implicit none
-    integer :: ind
+    integer(kind=8) :: ind
     real(kind=8) :: vectt(3, 3)
     real(kind=8) :: hfm(3, 6), hs(2, 6), hsfm(3, 9), hss(2, 9)
 !

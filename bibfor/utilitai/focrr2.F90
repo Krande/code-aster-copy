@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,14 +77,14 @@ subroutine focrr2(nomfon, resu, base, nomcha, maille, &
     real(kind=8) :: dimag
     real(kind=8) :: valr(2)
     complex(kind=8) :: valc1, valc2
-    integer :: npoinz, nuspz
-    integer :: i, i1, i2, iacces, iatach, iatava
-    integer :: ibid, iddl1, iddl2, ier, ierd, ierr1
-    integer :: ierr2, ii, inoeud, iordr, ip1, ip2, iposit
-    integer :: iret, ivari, jinst, jlir8, l1, l2, lfon
-    integer :: lg1, lg2, lpro, lval1, lvar
-    integer :: n1, n2, n3, n4, nbinst, nbordr, npoint
-    integer :: nusp, vali1, vali2
+    integer(kind=8) :: npoinz, nuspz
+    integer(kind=8) :: i, i1, i2, iacces, iatach, iatava
+    integer(kind=8) :: ibid, iddl1, iddl2, ier, ierd, ierr1
+    integer(kind=8) :: ierr2, ii, inoeud, iordr, ip1, ip2, iposit
+    integer(kind=8) :: iret, ivari, jinst, jlir8, l1, l2, lfon
+    integer(kind=8) :: lg1, lg2, lpro, lval1, lvar
+    integer(kind=8) :: n1, n2, n3, n4, nbinst, nbordr, npoint
+    integer(kind=8) :: nusp, vali1, vali2
     real(kind=8) :: r1, r2, rbase, rval, valr1, valr2
     aster_logical, pointer :: lexi(:) => null()
     real(kind=8), pointer :: nlval2(:) => null()

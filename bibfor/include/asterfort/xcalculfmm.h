@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@ interface
 subroutine xcalculfmm(nbno, jcalculs, jcopiels, jnodto, ndim, nodvois, &
                       jltno, jvcn, jgrlr, jbl, jbeta, jlistp , jvp, vale, &
                       deltat, levset, signls)
-        integer           :: nbno                     
-        integer           :: jcalculs
-        integer           :: jcopiels
-        integer           :: jnodto
-        integer           :: ndim
-        integer           :: nodvois 
-        integer           :: jltno
-        integer           :: jvcn
-        integer           :: jgrlr
-        integer           :: jbl
-        integer           :: jbeta
-        integer           :: jlistp
-        integer           :: jvp
+        integer(kind=8)           :: nbno                     
+        integer(kind=8)           :: jcalculs
+        integer(kind=8)           :: jcopiels
+        integer(kind=8)           :: jnodto
+        integer(kind=8)           :: ndim
+        integer(kind=8)           :: nodvois 
+        integer(kind=8)           :: jltno
+        integer(kind=8)           :: jvcn
+        integer(kind=8)           :: jgrlr
+        integer(kind=8)           :: jbl
+        integer(kind=8)           :: jbeta
+        integer(kind=8)           :: jlistp
+        integer(kind=8)           :: jvp
         real(kind=8)      :: vale(:)                                       
         real(kind=8)      :: deltat
         character(len=2)  :: levset

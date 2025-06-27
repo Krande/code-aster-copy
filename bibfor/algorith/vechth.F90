@@ -73,13 +73,13 @@ subroutine vechth(typeTher, &
 !
     character(len=8) :: lpain(LOAD_NEUT_NBMAXIN)
     character(len=24) :: lchin(LOAD_NEUT_NBMAXIN)
-    integer :: nbLoad, iLoad, loadNume, nbFieldInGene
+    integer(kind=8) :: nbLoad, iLoad, loadNume, nbFieldInGene
     character(len=8) :: loadName
     aster_logical :: noLoadInList
     character(len=1) :: jvBase
     character(len=24) :: vectElem, resuElem
     character(len=24), pointer :: listLoadName(:) => null()
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     character(len=24) :: timeMap, tempPrev, timeMove, tempIter, varcCurr
     character(len=13) :: loadPreObject
     character(len=24) :: loadLigrel

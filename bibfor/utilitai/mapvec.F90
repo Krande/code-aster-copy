@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ subroutine mapvec(mp, m, mv, n)
 !       IN      MP = MATRICE PLEINE (M*M)
 !       OUT     MV = VECTEUR MATRICE STOCKE COLONNE , LONGUEUR N
 !       ----------------------------------------------------------------
-    integer :: m, n
+    integer(kind=8) :: m, n
     real(kind=8) :: mv(n), mp(m, m)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     k = 0
     do i = 1, m

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine te0122(option, nomte)
 ! IN  NOMTE  : NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: jgano, npg, nnos, nno, ndim, ndime, ipoids, ivf, idfde
-    integer :: ichg, ichn, jtab(7), ncmp, ibid, i, j, in, ig, ntrou
+    integer(kind=8) :: jgano, npg, nnos, nno, ndim, ndime, ipoids, ivf, idfde
+    integer(kind=8) :: ichg, ichn, jtab(7), ncmp, ibid, i, j, in, ig, ntrou
     aster_logical :: quadra, jhm, interf, jlin2d, jlin3d, jquad
     character(len=8) :: lielrf(10)
 !     ------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,13 +44,13 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
 #include "asterfort/rsinchpre.h"
 
 !
-    integer, intent(in) :: istop
+    integer(kind=8), intent(in) :: istop
     real(kind=8), intent(in) :: rval
     character(len=*), intent(in) :: nomsd, nomch, acces, chextr, proldr, prolga
     character(len=*), intent(in) :: base
     real(kind=8), intent(in) :: prec
     character(len=8), intent(in) :: crit
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
 
 !      INTERPOLATION D'UN CHAMP_19 A PARTIR D'1 SD RESULTAT-COMPOSE
 ! ----------------------------------------------------------------------
@@ -83,7 +83,7 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
 ! ----------------------------------------------------------------------
     real(kind=8) :: r1, r2, rbase
     real(kind=8) :: valr
-    integer :: l1, l2
+    integer(kind=8) :: l1, l2
     character(len=1) :: stp, base2
     character(len=19) :: ch1, ch2
     character(len=8) :: prold2, prolg2
@@ -94,9 +94,9 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iaobj, iatach
-    integer :: iadesc, ier1, ier2
-    integer :: ip1, ip2, iposit, nbordr, nbvalid
+    integer(kind=8) :: i, i1, i2, iaobj, iatach
+    integer(kind=8) :: iadesc, ier1, ier2
+    integer(kind=8) :: ip1, ip2, iposit, nbordr, nbvalid
     aster_logical, pointer :: lexi(:) => null()
 
 !-----------------------------------------------------------------------

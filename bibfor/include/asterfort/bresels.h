@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,12 +42,12 @@ interface
         real(kind=8) :: scmaxzi
         real(kind=8) :: scmaxzs
         real(kind=8) :: ssmax
-        integer :: ferrcomp
-        integer :: precs
-        integer :: ferrsyme
+        integer(kind=8) :: ferrcomp
+        integer(kind=8) :: precs
+        integer(kind=8) :: ferrsyme
         real(kind=8) :: slsyme
-        integer :: uc
-        integer :: um
+        integer(kind=8) :: uc
+        integer(kind=8) :: um
         real(kind=8) :: dnsyi
         real(kind=8) :: dnsys
         real(kind=8) :: dnszi
@@ -62,10 +62,10 @@ interface
         real(kind=8) :: sigmczs
         real(kind=8) :: alphay
         real(kind=8) :: alphaz
-        integer :: pivoty
-        integer :: pivotz
-        integer :: etaty
-        integer :: etatz
-        integer :: ierr
+        integer(kind=8) :: pivoty
+        integer(kind=8) :: pivotz
+        integer(kind=8) :: etaty
+        integer(kind=8) :: etatz
+        integer(kind=8) :: ierr
     end subroutine bresels
 end interface

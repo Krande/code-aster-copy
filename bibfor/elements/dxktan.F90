@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine dxktan(delas, mp1, mp2, nbackn, ncrit, &
 #include "asterfort/lcprte.h"
 #include "asterfort/pmavec.h"
 #include "blas/dcopy.h"
-    integer :: ncrit, i, j, n, nd
+    integer(kind=8) :: ncrit, i, j, n, nd
 !
     real(kind=8) :: mp1(3), mp2(3), nbackn(6)
     real(kind=8) :: dfpla1(6)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
     subroutine caladj(col, diag, xadj, adjncy, n,&
                       nnz, deb, tab, suiv, lmat,&
                       ladjn, nrl)
-        integer :: lmat
-        integer :: n
-        integer :: col(lmat)
-        integer :: diag(0:n)
-        integer :: xadj(n+1)
-        integer :: adjncy(*)
-        integer :: nnz(n)
-        integer :: deb(n)
-        integer :: tab(*)
-        integer :: suiv(*)
-        integer :: ladjn
-        integer :: nrl
+        integer(kind=8) :: lmat
+        integer(kind=8) :: n
+        integer(kind=8) :: col(lmat)
+        integer(kind=8) :: diag(0:n)
+        integer(kind=8) :: xadj(n+1)
+        integer(kind=8) :: adjncy(*)
+        integer(kind=8) :: nnz(n)
+        integer(kind=8) :: deb(n)
+        integer(kind=8) :: tab(*)
+        integer(kind=8) :: suiv(*)
+        integer(kind=8) :: ladjn
+        integer(kind=8) :: nrl
     end subroutine caladj
 end interface

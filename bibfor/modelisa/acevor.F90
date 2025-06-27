@@ -20,7 +20,7 @@ subroutine acevor(nbocc, nlg, ier)
 !
 !
     implicit none
-    integer :: nbocc, nlg, ier
+    integer(kind=8) :: nbocc, nlg, ier
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -37,7 +37,7 @@ subroutine acevor(nbocc, nlg, ier)
 !
 #include "asterfort/getvtx.h"
 ! --------------------------------------------------------------------------------------------------
-    integer :: ng, ioc
+    integer(kind=8) :: ng, ioc
 ! --------------------------------------------------------------------------------------------------
 !
     nlg = 0

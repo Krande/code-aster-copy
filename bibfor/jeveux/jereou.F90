@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine jereou(clas, pcent)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: n
+    integer(kind=8) :: n
 !-----------------------------------------------------------------------
     parameter(n=5)
 !
@@ -45,22 +45,22 @@ subroutine jereou(clas, pcent)
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
     character(len=8) :: nombas
     common/kbasje/nombas(n)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! DEB ------------------------------------------------------------------
     character(len=1) :: klas
     character(len=8) :: kstin, kstou, nom, nomb
-    integer :: ic, nrep, lbloc, nbloc, info, vali(3), iret
+    integer(kind=8) :: ic, nrep, lbloc, nbloc, info, vali(3), iret
     real(kind=8) :: valr(2)
 !
     klas = clas

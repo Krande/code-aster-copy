@@ -33,7 +33,7 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir, &
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
 !
-    integer :: na, ndim
+    integer(kind=8) :: na, ndim
     real(kind=8) :: vecdir(3), hmax
     character(len=8) :: noma
     character(len=19) :: cnxinv
@@ -53,13 +53,13 @@ subroutine fonno7(noma, cnxinv, ndim, na, vecdir, &
 !       HMAX  : TAILLE MAXIMALE DES MAILLES
 !
 !
-    integer :: adra, ar(12, 3)
-    integer :: iatyma, iar, ima, ino1, ino2, ityp
-    integer :: jcncin, jconx2, jdrvlc, k
-    integer :: nbar, nbmaca, ndime, nno, nno1, nno2, numac
+    integer(kind=8) :: adra, ar(12, 3)
+    integer(kind=8) :: iatyma, iar, ima, ino1, ino2, ityp
+    integer(kind=8) :: jcncin, jconx2, jdrvlc, k
+    integer(kind=8) :: nbar, nbmaca, ndime, nno, nno1, nno2, numac
     real(kind=8) :: coor(3), vect(3), p, cos70, cosinu, normv
     character(len=8) :: type
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !     -----------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine jjlihd(idts, nbval, lonoi, genri, typei, &
 #include "asterfort/jjlidy.h"
 #include "asterfort/utmess.h"
     hid_t :: idts
-    integer :: nbval, lonoi, ltypi, ic, ido, idc, iadmi, jmarq(2)
+    integer(kind=8) :: nbval, lonoi, ltypi, ic, ido, idc, iadmi, jmarq(2)
     character(len=*) :: genri, typei
 ! ----------------------------------------------------------------------
 ! RELIT UN SEGMENT DE VALEURS DANS UN FICHIER HDF EN FONCTION DU TYPE
@@ -56,19 +56,19 @@ subroutine jjlihd(idts, nbval, lonoi, genri, typei, &
 ! ----------------------------------------------------------------------
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
     character(len=1) :: typeb
-    integer :: iconv, iadyn, kdyn
-    integer :: iret, jadr, kitab, nbv, ir, lon, kadm, k, lv, ltypb
-    integer :: izr(1), izc(1), izl(1), izk8(1), izk16(1)
-    integer :: izk24(1), izk32(1), izk80(1), izi4(1)
+    integer(kind=8) :: iconv, iadyn, kdyn
+    integer(kind=8) :: iret, jadr, kitab, nbv, ir, lon, kadm, k, lv, ltypb
+    integer(kind=8) :: izr(1), izc(1), izl(1), izk8(1), izk16(1)
+    integer(kind=8) :: izk24(1), izk32(1), izk80(1), izi4(1)
     equivalence(izr, zr), (izc, zc), (izl, zl), (izk8, zk8), (izk16, zk16),&
      &               (izk24, zk24), (izk32, zk32), (izk80, zk80), (izi4, zi4)
 ! DEB ------------------------------------------------------------------

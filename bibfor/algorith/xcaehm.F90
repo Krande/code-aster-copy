@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,15 +37,15 @@ subroutine xcaehm(ds_thm, nomte, l_axi, type_elem, inte_type, &
 #include "asterfort/xitghm.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: nfh
-    integer :: mecani(5), press1(7), press2(7), tempe(5), dimuel
-    integer :: nno, nnos, nnom
-    integer :: dimdef, dimcon, nmec, np1, np2
-    integer :: npg, npi, nddls, nddlm, ipoids, ivf, idfde
+    integer(kind=8) :: nfh
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), dimuel
+    integer(kind=8) :: nno, nnos, nnom
+    integer(kind=8) :: dimdef, dimcon, nmec, np1, np2
+    integer(kind=8) :: npg, npi, nddls, nddlm, ipoids, ivf, idfde
     character(len=16) :: nomte
     character(len=3), intent(out) :: inte_type
     aster_logical, intent(out) :: l_axi
-    integer, intent(out) :: ndim
+    integer(kind=8), intent(out) :: ndim
     character(len=8), intent(out) :: type_elem(2)
 
 ! ======================================================================
@@ -86,9 +86,9 @@ subroutine xcaehm(ds_thm, nomte, l_axi, type_elem, inte_type, &
 
 !
 ! DECLARATION POUR XFEM
-    integer :: ddld, ddlm, ddlp, dimenr, ddlc
-    integer :: enrmec(3), enrhyd(3), nenr
-    integer :: nnop, nnops, nnopm
+    integer(kind=8) :: ddld, ddlm, ddlp, dimenr, ddlc
+    integer(kind=8) :: enrmec(3), enrhyd(3), nenr
+    integer(kind=8) :: nnop, nnops, nnopm
     aster_logical :: l_vf
 !
 ! --- INITIALISATIONS --------------------------------------------------

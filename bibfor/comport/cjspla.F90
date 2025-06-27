@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,8 +51,8 @@ subroutine cjspla(mod, crit, mater, seuili, seuild, &
 #include "asterfort/cjsmis.h"
 #include "asterfort/cjssmd.h"
 #include "asterfort/cjssmi.h"
-    integer :: ndt, ndi, nvi, niter, ndec, iret
-    integer :: nvimax
+    integer(kind=8) :: ndt, ndi, nvi, niter, ndec, iret
+    integer(kind=8) :: nvimax
     parameter(nvimax=16)
     real(kind=8) :: epsd(6), deps(6)
     real(kind=8) :: sigd(6), sigf(6), predic(6)
@@ -68,8 +68,8 @@ subroutine cjspla(mod, crit, mater, seuili, seuild, &
 !
     character(len=8) :: mod
     parameter(zero=0.d0)
-    integer :: idec
-    integer :: i, niter0
+    integer(kind=8) :: idec
+    integer(kind=8) :: i, niter0
 !
     common/tdim/ndt, ndi
 !

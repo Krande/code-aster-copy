@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,11 +29,11 @@ subroutine nmext0(field_disc, nb_elem, nb_node, nb_poin, nb_spoi, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=4), intent(in) :: field_disc
-    integer, intent(in) :: nb_node
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: nb_poin
-    integer, intent(in) :: nb_spoi
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_elem
+    integer(kind=8), intent(in) :: nb_poin
+    integer(kind=8), intent(in) :: nb_spoi
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=8), intent(in) :: type_extr_elem
     character(len=8), intent(in) :: type_extr
     character(len=19), intent(in) :: work_poin
@@ -63,7 +63,7 @@ subroutine nmext0(field_disc, nb_elem, nb_node, nb_poin, nb_spoi, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: node_init_vale, elem_init_vale
-    integer :: ino, i_elem, i_cmp, i_poin, i_spoi
+    integer(kind=8) :: ino, i_elem, i_cmp, i_poin, i_spoi
     real(kind=8), pointer :: v_work_elem(:) => null()
     real(kind=8), pointer :: v_work_poin(:) => null()
     real(kind=8), pointer :: v_work_node(:) => null()

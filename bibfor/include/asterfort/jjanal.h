@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine jjanal(condlu, nval, nvalo, lval, cval)
         character(len=*) :: condlu
-        integer :: nval
-        integer :: nvalo
-        integer :: lval(*)
+        integer(kind=8) :: nval
+        integer(kind=8) :: nvalo
+        integer(kind=8) :: lval(*)
         character(len=*) :: cval(*)
     end subroutine jjanal
 end interface

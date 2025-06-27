@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine cfsuex(sdcont_defi, v_list_excl, nb_excl, nb_cont_zone)
         character(len=24), intent(in) :: sdcont_defi
-        integer, pointer :: v_list_excl(:)
-        integer, intent(in) :: nb_excl
-        integer, intent(in) :: nb_cont_zone
+        integer(kind=8), pointer :: v_list_excl(:)
+        integer(kind=8), intent(in) :: nb_excl
+        integer(kind=8), intent(in) :: nb_cont_zone
     end subroutine cfsuex
 end interface

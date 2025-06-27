@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ function meiden(scal, ncmp, i1, i3, nec, &
 #include "asterfort/assert.h"
     aster_logical :: meiden
     character(len=4) :: scal
-    integer :: ncmp, i1, i3, nec, i2, i4
+    integer(kind=8) :: ncmp, i1, i3, nec, i2, i4
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !        SCAL : R, I , C, K8, K16, K24
@@ -51,7 +51,7 @@ function meiden(scal, ncmp, i1, i3, nec, &
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iec
+    integer(kind=8) :: i, iec
 !-----------------------------------------------------------------------
     meiden = .false.
 !

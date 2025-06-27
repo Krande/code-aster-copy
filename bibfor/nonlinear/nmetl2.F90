@@ -31,7 +31,7 @@ subroutine nmetl2(model, i_field, ds_inout)
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 !
-    integer, intent(in) :: i_field
+    integer(kind=8), intent(in) :: i_field
     character(len=8), intent(in) :: model
     type(NL_DS_InOut), intent(inout) :: ds_inout
 !
@@ -49,7 +49,7 @@ subroutine nmetl2(model, i_field, ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     aster_logical :: l_field_read
     character(len=24) :: field_read, field_read_cv, field_algo
     character(len=24) :: fieldType

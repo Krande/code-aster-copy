@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) BLAS
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine zlscal(n, za, zx, incx)
     implicit none
 !
     complex(kind=8) :: za, zx(*)
-    integer :: i, incx, ix, n
+    integer(kind=8) :: i, incx, ix, n
 !
     if (n .le. 0 .or. incx .le. 0) goto 999
     if (incx .eq. 1) goto 20

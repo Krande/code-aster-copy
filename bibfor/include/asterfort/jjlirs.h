@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine jjlirs(jadm, iclas, idos, ius, ist)
-        integer :: jadm
-        integer :: iclas
-        integer :: idos
-        integer :: ius
-        integer :: ist
+        integer(kind=8) :: jadm
+        integer(kind=8) :: iclas
+        integer(kind=8) :: idos
+        integer(kind=8) :: ius
+        integer(kind=8) :: ist
     end subroutine jjlirs
 end interface

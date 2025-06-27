@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,6 @@ interface
         character(len=19) :: sddyna
         character(len=8) :: result
         aster_logical :: evonol
-        integer :: nume
+        integer(kind=8) :: nume
     end subroutine ndloam
 end interface

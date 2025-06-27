@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,10 +27,10 @@ subroutine hypcpc(c11, c22, c33, c12, k, &
     real(kind=8) :: c11, c22, c33, c12
     real(kind=8) :: k
     real(kind=8) :: c10, c01, c20
-    integer :: nitmax
+    integer(kind=8) :: nitmax
     real(kind=8) :: epsi
     real(kind=8) :: sig(6)
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! ----------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ subroutine hypcpc(c11, c22, c33, c12, k, &
     real(kind=8) :: t17, t20, t15, t24, t61
     real(kind=8) :: t19, t38, t7, t37, t58, t9, t41, t46
     real(kind=8) :: sn, dc33, dsn, test
-    integer :: iter, facmul
+    integer(kind=8) :: iter, facmul
 !
 !-----------------------------------------------------------------------
 !

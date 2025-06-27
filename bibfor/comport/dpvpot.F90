@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,15 +26,15 @@ subroutine dpvpot(mod, vim, vip, nbmat, mater, &
 #include "asterfort/lcopli.h"
 #include "asterfort/lcprte.h"
 #include "asterfort/trace.h"
-    integer :: ndt, ndi
-    integer :: nbmat
+    integer(kind=8) :: ndt, ndi
+    integer(kind=8) :: nbmat
     real(kind=8) :: dt, dp, plas
     real(kind=8) :: mater(nbmat, 2), vim(4), vip(4), sig(6), dsidep(6, 6)
     character(len=8) :: mod
 ! --- BUT   OPERATEUR TANGENT COHERENT POUR LA LOI --------------------
 ! --- VISC_DRUC_PRAG --------------------------------------------------
 ! =====================================================================
-    integer :: ii, jj
+    integer(kind=8) :: ii, jj
     real(kind=8) :: zero, un, deux, trois, neuf, unstr
     real(kind=8) :: troisk, deuxmu, k, mu
     real(kind=8) :: pref, a, n

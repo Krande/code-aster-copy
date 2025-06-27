@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine cavite(phenom, load, mesh, valeType, nbOcc)
     character(len=16), intent(in) :: phenom
     character(len=8), intent(in) :: load, mesh
     character(len=4), intent(in) :: valeType
-    integer, intent(in) :: nbOcc
+    integer(kind=8), intent(in) :: nbOcc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,15 +58,15 @@ subroutine cavite(phenom, load, mesh, valeType, nbOcc)
 !
     character(len=16), parameter :: keywFact = 'VITE_FACE'
     character(len=24), parameter :: listCell = '&&CAVITE.LIST_CELL'
-    integer :: nbCell, jvCell
-    integer :: iocc, nbRet, nbVal
+    integer(kind=8) :: nbCell, jvCell
+    integer(kind=8) :: iocc, nbRet, nbVal
     character(len=16) :: keyword
     complex(kind=8) :: speedCplx
     real(kind=8) :: speedReal, speedDirectionReal(3)
     character(len=8) :: speedFunc, speedDirectionFunc(3)
-    integer :: jvValv
+    integer(kind=8) :: jvValv
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

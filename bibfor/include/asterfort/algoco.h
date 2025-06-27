@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,6 @@ interface
         character(len=19) :: solveu
         character(len=19) :: matass
         character(len=8) :: noma
-        integer :: ctccvg
+        integer(kind=8) :: ctccvg
     end subroutine algoco
 end interface

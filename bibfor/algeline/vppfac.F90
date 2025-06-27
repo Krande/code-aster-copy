@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 #include "blas/ddot.h"
 #include "asterfort/gettco.h"
 !
-    integer :: lmasse, neq, nbvect, mxvect
+    integer(kind=8) :: lmasse, neq, nbvect, mxvect
     real(kind=8) :: masgen(*), vect(neq, *)
     real(kind=8) :: masmod(mxvect, *), facpar(mxvect, *)
 !     CALCUL DES PARAMETRES MODAUX :
@@ -50,7 +50,7 @@ subroutine vppfac(lmasse, masgen, vect, neq, nbvect, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, iadpar(1), l1, ibid
+    integer(kind=8) :: lddl, laux1, laux2, iddl, ia, ieq, ivect, mxddl, iadpar(1), l1, ibid
     parameter(mxddl=6)
     character(len=8) :: nomddl(mxddl), basemo, k8b
     character(len=14) :: nume

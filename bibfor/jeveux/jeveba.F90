@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,35 +33,35 @@ subroutine jeveba(nomlu, base)
 !
 !
 !   ==================================================================
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: ibacol, iblono, inat, inatb, ixdeso, ixiadd, ixlono
-    integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
-    integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
-    integer :: jtype, lonoi, ltypi, n
+    integer(kind=8) :: ibacol, iblono, inat, inatb, ixdeso, ixiadd, ixlono
+    integer(kind=8) :: jcara, jdate, jdocu, jgenr, jhcod, jiadd, jiadm
+    integer(kind=8) :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
+    integer(kind=8) :: jtype, lonoi, ltypi, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
-    integer :: numatr
+    integer(kind=8) :: numatr
     common/idatje/numatr
 !     ------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
-    integer :: izr, izc, izl, izk8, izk16, izk24, izk32, izk80
+    integer(kind=8) :: izr, izc, izl, izk8, izk16, izk24, izk32, izk80
     equivalence(izr, zr), (izc, zc), (izl, zl), (izk8, zk8), (izk16, zk16),&
      &               (izk24, zk24), (izk32, zk32), (izk80, zk80)
 ! ----------------------------------------------------------------------
     character(len=32) :: noml32
-    integer :: icre, iret
+    integer(kind=8) :: icre, iret
 !
 !   ==================================================================
 

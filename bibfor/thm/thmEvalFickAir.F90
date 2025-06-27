@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine thmEvalFickAir(j_mater, &
 #include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 !
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: satur, pair, pliquid, temp
     real(kind=8), intent(out) :: fick, dfickt
 !
@@ -50,16 +50,16 @@ subroutine thmEvalFickAir(j_mater, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: ficka_t, ficka_pa, ficka_pl, ficka_s, dficka_dt
-    integer, parameter :: nb_para = 4
+    integer(kind=8), parameter :: nb_para = 4
     real(kind=8) :: para_vale(nb_para)
     character(len=4), parameter :: para_name(nb_para) = (/'TEMP', 'PAD ', &
                                                           'PLIQ', 'SAT '/)
-    integer, parameter :: nb_resu = 5
+    integer(kind=8), parameter :: nb_resu = 5
     real(kind=8) :: resu_vale(nb_resu)
     character(len=16), parameter :: resu_name(nb_resu) = (/'FICKA_T ', 'FICKA_PA', &
                                                            'FICKA_PL', 'FICKA_S ', &
                                                            'D_FA_T  '/)
-    integer :: icodre(nb_resu)
+    integer(kind=8) :: icodre(nb_resu)
 
 !
 ! --------------------------------------------------------------------------------------------------

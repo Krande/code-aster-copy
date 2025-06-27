@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 subroutine rc36f3(nbsigr, nocc, saltij, nupass)
     implicit none
 #include "asterf_types.h"
-    integer :: nbsigr, nocc(*), nupass
+    integer(kind=8) :: nbsigr, nocc(*), nupass
     real(kind=8) :: saltij(*)
 !
 !     MISE A ZERO DES LIGNES ET COLONNES DANS SALT POUR LA
 !       SITUATION DE PASSAGE SI NOCC = 0
 !
 !     ------------------------------------------------------------------
-    integer :: k, l, i1
+    integer(kind=8) :: k, l, i1
     aster_logical :: colona, colonb, lignea, ligneb
 !     ------------------------------------------------------------------
 !

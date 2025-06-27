@@ -61,14 +61,14 @@ subroutine te0239(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ndimLdc = 2
+    integer(kind=8), parameter :: ndimLdc = 2
     character(len=4), parameter :: fami = "RIGI"
-    integer :: nbcou, npge, icontm, ideplm, ivectu, icou, inte, icontp
-    integer :: kpki, k1, k2, kompt, ivarim, ivarip, iinstm, iinstp, lgpg, ideplp
-    integer :: icarcr, nbvari, jcret, codret
+    integer(kind=8) :: nbcou, npge, icontm, ideplm, ivectu, icou, inte, icontp
+    integer(kind=8) :: kpki, k1, k2, kompt, ivarim, ivarip, iinstm, iinstp, lgpg, ideplp
+    integer(kind=8) :: icarcr, nbvari, jcret, codret
     real(kind=8) :: cisail, zic, coef, rhos, rhot, epsx3, gsx3, sgmsx3
     real(kind=8) :: zmin, hic, depsx3
-    integer :: itab(8), jnbspi
+    integer(kind=8) :: itab(8), jnbspi
     character(len=8) :: nompar, elrefe
     real(kind=8) :: tempm
     real(kind=8) :: dfdx(3), zero, un, deux
@@ -79,16 +79,16 @@ subroutine te0239(option, nomte)
     real(kind=8) :: dtild(5, 5), dtildi(5, 5), dsidep(6, 6)
     real(kind=8) :: rtangi(9, 9), rtange(9, 9), sigm2d(4), sigp2d(4)
     real(kind=8) :: angmas(3)
-    integer :: nno, kp, npg, i, j, k, imatuu, icaco, ndimv
-    integer :: ivarix
-    integer :: ipoids, ivf, idfdk, igeom, imate
-    integer :: nbpar, cod, iret, ksp
+    integer(kind=8) :: nno, kp, npg, i, j, k, imatuu, icaco, ndimv
+    integer(kind=8) :: ivarix
+    integer(kind=8) :: ipoids, ivf, idfdk, igeom, imate
+    integer(kind=8) :: nbpar, cod, iret, ksp
     aster_logical :: testl1, testl2
     type(Behaviour_Integ) :: BEHinteg
-    integer, parameter :: nbres = 2
+    integer(kind=8), parameter :: nbres = 2
     character(len=16), pointer :: compor(:) => null()
     character(len=16), parameter :: nomres(nbres) = (/'E ', 'NU'/)
-    integer :: valret(nbres)
+    integer(kind=8) :: valret(nbres)
     real(kind=8) :: valres(nbres)
     parameter(npge=3)
     data zero, un, deux/0.d0, 1.d0, 2.d0/

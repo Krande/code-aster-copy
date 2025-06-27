@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
                       neps, epsdt, depst, sigd, nvi, vind,&
                       opt, angmas, sigf, vinf, dsde,&
                       iret, mult_comp_)
-        integer :: neps
+        integer(kind=8) :: neps
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imat
+        integer(kind=8) :: imat
         character(len=16) :: comp(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: timed
@@ -36,14 +36,14 @@ interface
         real(kind=8) :: epsdt(neps)
         real(kind=8) :: depst(neps)
         real(kind=8) :: sigd(6)
-        integer, intent(in):: nvi
+        integer(kind=8), intent(in):: nvi
         real(kind=8) :: vind(*)
         character(len=16) :: opt
         real(kind=8) :: angmas(*)
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
         real(kind=8) :: dsde(6, *)
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=16), optional, intent(in) :: mult_comp_
     end subroutine nmvprk
 end interface

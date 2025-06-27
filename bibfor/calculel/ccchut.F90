@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
     character(len=8), intent(in) :: sdresu_in
     character(len=8), intent(in) :: sdresu_out
     character(len=19), intent(in) :: list_ordr
-    integer, intent(in) :: nb_ordr
+    integer(kind=8), intent(in) :: nb_ordr
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,9 +57,9 @@ subroutine ccchut(sdresu_in, sdresu_out, list_ordr, nb_ordr)
 !
     character(len=16) :: keywordfact
     character(len=19) :: lform
-    integer :: ioc, nuti, ibid
-    integer :: nb_form, nb_crit, nb_norm
-    integer :: jform, nume_field_out
+    integer(kind=8) :: ioc, nuti, ibid
+    integer(kind=8) :: nb_form, nb_crit, nb_norm
+    integer(kind=8) :: jform, nume_field_out
     character(len=16) :: field_type, crit, norm, type_comp, kmpi
 !
 ! --------------------------------------------------------------------------------------------------

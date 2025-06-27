@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,10 +37,10 @@ subroutine nmdeco(sddisc, numeInst, iterat, i_event_acti, retdec)
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 !
-    integer :: i_event_acti
-    integer :: numeInst, iterat
+    integer(kind=8) :: i_event_acti
+    integer(kind=8) :: numeInst, iterat
     character(len=19), intent(in) :: sddisc
-    integer :: retdec
+    integer(kind=8) :: retdec
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,12 +63,12 @@ subroutine nmdeco(sddisc, numeInst, iterat, i_event_acti, retdec)
 !
     character(len=16) :: submet, metlis
     real(kind=8) :: dtmin, durdec
-    integer :: nbrpas
+    integer(kind=8) :: nbrpas
     real(kind=8) :: deltat, instam, instap
     real(kind=8) :: insref, deltac
     character(len=24) :: nomlis
     aster_logical :: ldcext
-    integer :: retdex
+    integer(kind=8) :: retdex
 !
 ! --------------------------------------------------------------------------------------------------
 !

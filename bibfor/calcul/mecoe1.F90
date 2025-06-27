@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,16 +31,16 @@ subroutine mecoe1(opt, te)
 #include "asterfort/nbpara.h"
 #include "asterfort/nopara.h"
 
-    integer :: opt, te
+    integer(kind=8) :: opt, te
 !-----------------------------------------------------------------------
 ! but : initialisation de '&&CALCUL.IA_CHLO2'
 ! entrees:
 !      opt : option
 !      te  : type d'element
 !-----------------------------------------------------------------------
-    integer :: icode
-    integer :: iparg, m2, modloc, nbpoin, nbscal, npara
-    integer :: ipar
+    integer(kind=8) :: icode
+    integer(kind=8) :: iparg, m2, modloc, nbpoin, nbscal, npara
+    integer(kind=8) :: ipar
     character(len=8) :: nompar
 !-----------------------------------------------------------------------
 

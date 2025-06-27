@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb, &
 #include "asterfort/lcejex.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: ndim, ipgf, imate
+    integer(kind=8) :: ndim, ipgf, imate
     real(kind=8) :: wsaut(3), lamb(3), am(3), dsidep(6, 6)
     real(kind=8) :: tau1(3), tau2(3), nd(3), wsautm(3)
     real(kind=8) :: alpha(5), p(3, 3), rho11, rho11m
@@ -73,7 +73,7 @@ subroutine xhmsa6(ds_thm, ndim, ipgf, imate, lamb, &
 !
 !
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: vim(9), vip(9)
     real(kind=8) :: dsid2d(6, 6), dam(3)
     real(kind=8) :: sigma(6), cliq, varbio

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,15 +19,15 @@
 subroutine pcfalu(n, inc, ipc, inx, ipx, &
                   index, imp)
     implicit none
-    integer :: n
-    integer :: inc(n), index(*)
+    integer(kind=8) :: n
+    integer(kind=8) :: inc(n), index(*)
     integer(kind=4) :: ipc(*), ipx(*)
-    integer :: inx(0:n)
+    integer(kind=8) :: inx(0:n)
 !-----------------------------------------------------------------------
 ! FONCTION  INC;IPC ------------>INX;IPX
 !           SYMETRIQUE           PLEINE FORMAT LU
 !-----------------------------------------------------------------------
-    integer :: i, ii, ii1, ii2, imp, j, kkk
+    integer(kind=8) :: i, ii, ii1, ii2, imp, j, kkk
 !-----------------------------------------------------------------------
 !
 !

@@ -37,10 +37,10 @@ contains
 #include "asterfort/jedetr.h"
 
 !Variables principales
-        integer :: N_INF
-        integer :: N_SUP
-        integer :: N_TOT
-        integer :: ITER
+        integer(kind=8) :: N_INF
+        integer(kind=8) :: N_SUP
+        integer(kind=8) :: N_TOT
+        integer(kind=8) :: ITER
         logical :: MONO
         character(20) :: p(15)
         real(kind=8), pointer :: nSX_INF(:)
@@ -59,8 +59,8 @@ contains
         real(kind=8), pointer :: AngleSUP(:)
 
 !Variables intermediaires de calcul
-        integer :: N1, N2, indx1, indx2, indx3, COUNT_SOL, i, j, k, iBIS, N_Theta_ADD
-        integer :: COUNT_Q, INDICE, Q
+        integer(kind=8) :: N1, N2, indx1, indx2, indx3, COUNT_SOL, i, j, k, iBIS, N_Theta_ADD
+        integer(kind=8) :: COUNT_Q, INDICE, Q
         logical :: COND_nSX_INF, COND_nSY_INF, COND_nSX_SUP, COND_nSY_SUP, COND_insert
         real(kind=8) :: Theta_INTER_nSX_INF, Theta_INTER_nSX_SUP
         real(kind=8) :: Theta_INTER_nSY_INF, Theta_INTER_nSY_SUP
@@ -496,8 +496,8 @@ contains
 #include "asterfort/jeveuo.h"
 
 !Variables principales
-        integer :: N_INF
-        integer :: N_SUP
+        integer(kind=8) :: N_INF
+        integer(kind=8) :: N_SUP
         logical :: MONO
         real(kind=8), pointer :: nSX_INF(:)
         real(kind=8), pointer :: nSY_INF(:)
@@ -513,11 +513,11 @@ contains
         real(kind=8), pointer :: AngleINF(:)
         real(kind=8), pointer :: AngleSUP(:)
         real(kind=8) :: fyd
-        integer :: ferrcomp
-        integer :: ferrsyme
+        integer(kind=8) :: ferrcomp
+        integer(kind=8) :: ferrsyme
         real(kind=8) :: slsyme
         real(kind=8) :: vect(20)
-        integer :: ierr
+        integer(kind=8) :: ierr
 
 !VECT =
 !1:dnsxi,2:dnsxs,3:dnsyi,4:dnsys,&
@@ -532,7 +532,7 @@ contains
         real(kind=8) :: snsxi, snsxs, snsyi, snsys
         real(kind=8) :: ncmaxi, ncmini, ncmaxs, ncmins
         real(kind=8) :: t_inf, t_sup, theta_inf, theta_sup
-        integer :: COUNT_SOL, indx, i, j, INDICEi, INDICEj, indx_INDICE
+        integer(kind=8) :: COUNT_SOL, indx, i, j, INDICEi, INDICEj, indx_INDICE
         logical :: cond_found
         real(kind=8) :: CalcX, CalcY, nS_TOT_opt, a12, a13
 
@@ -747,14 +747,14 @@ contains
 #include "asterfort/mgauss.h"
 
 !Variables principales
-        integer :: ITER
+        integer(kind=8) :: ITER
         real(kind=8) :: yINF
         real(kind=8) :: ySUP
         real(kind=8) :: ht
         real(kind=8) :: effrts(6)
         real(kind=8) :: fcd
         real(kind=8) :: fcd1
-        integer :: cond109
+        integer(kind=8) :: cond109
         real(kind=8) :: AngleSUP
         real(kind=8) :: tINF
         real(kind=8) :: tSUP
@@ -778,7 +778,7 @@ contains
         real(kind=8) :: ncX_INF, ncY_INF, ncXY_INF, alpha, fcd2
         real(kind=8) ::nC_SUP, mC_SUP, theta_sup, pi
         real(kind=8) :: Ds(4, 4), SOL(4), det, denum
-        integer :: iret
+        integer(kind=8) :: iret
 
         Nxx = effrts(1)
         Nyy = effrts(2)

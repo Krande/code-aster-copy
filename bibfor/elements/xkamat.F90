@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,17 +32,17 @@ subroutine xkamat(imate, ndim, axi, ka, mu, famiz)
 #include "asterfort/rcvarc.h"
 #include "asterfort/rcvad2.h"
 !
-    integer :: imate, ndim
+    integer(kind=8) :: imate, ndim
     real(kind=8) :: ka, mu
     aster_logical :: axi
     character(len=*), optional  :: famiz
 !
 !    - FONCTION REALISEE : LECTURE DE PARAMETRES 'ELASTIQUES' AU PG
 !
-    integer :: nbpamx, ipar
+    integer(kind=8) :: nbpamx, ipar
     parameter(nbpamx=10)
     real(kind=8) :: e, nu, valres(2), valpar(nbpamx), valvrc, devres(2)
-    integer :: icodre(2), iarret, ier, nbpar
+    integer(kind=8) :: icodre(2), iarret, ier, nbpar
     character(len=4)  :: fami
     character(len=16) :: novrc
     character(len=16) :: nomres(2), nompar(nbpamx)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ subroutine metaGetParaHardLine(poum, fami, kpg, ksp, j_mater, &
 !
     character(len=1), intent(in) :: poum
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp
-    integer, intent(in) :: j_mater
-    integer, intent(in) :: meta_type
-    integer, intent(in) :: nb_phasis
+    integer(kind=8), intent(in) :: kpg, ksp
+    integer(kind=8), intent(in) :: j_mater
+    integer(kind=8), intent(in) :: meta_type
+    integer(kind=8), intent(in) :: nb_phasis
     real(kind=8), intent(in) :: young
     real(kind=8), intent(in) :: coef
     real(kind=8), intent(out) :: h(*)
@@ -57,11 +57,11 @@ subroutine metaGetParaHardLine(poum, fami, kpg, ksp, j_mater, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_resu_max = 5
+    integer(kind=8), parameter :: nb_resu_max = 5
     real(kind=8) :: resu_vale(nb_resu_max)
-    integer :: codret(nb_resu_max)
+    integer(kind=8) :: codret(nb_resu_max)
     character(len=16) :: resu_name(nb_resu_max)
-    integer :: nb_resu, i_resu
+    integer(kind=8) :: nb_resu, i_resu
 !
 ! --------------------------------------------------------------------------------------------------
 !

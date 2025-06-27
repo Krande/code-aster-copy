@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
                       ivectu, imatuu)
         aster_logical, intent(in) :: lVect, lMatr
         character(len=4) :: fami
-        integer :: nno, ncomp, kpg
-        integer :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
-        integer :: imatuu
+        integer(kind=8) :: nno, ncomp, kpg
+        integer(kind=8) :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
+        integer(kind=8) :: imatuu
         real(kind=8) :: dff(2, nno), alpha, beta, h, preten
     end subroutine mbgnlr
 end interface

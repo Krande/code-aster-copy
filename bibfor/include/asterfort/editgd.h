@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
 subroutine editgd(ncmp,nedit,dg,ncmpmx,ctype,&
                  jnocmp,jncmp,jvalv,jvale)
-    integer, intent(in) :: ncmp
-    integer, intent(in) :: nedit
-    integer, intent(inout) :: dg(*)
-    integer, intent(in) :: ncmpmx
+    integer(kind=8), intent(in) :: ncmp
+    integer(kind=8), intent(in) :: nedit
+    integer(kind=8), intent(inout) :: dg(*)
+    integer(kind=8), intent(in) :: ncmpmx
     character(len=8), intent(in) :: ctype
-    integer, intent(in) :: jnocmp
-    integer, intent(in) :: jncmp
-    integer, intent(in) :: jvalv
-    integer, intent(in) :: jvale
+    integer(kind=8), intent(in) :: jnocmp
+    integer(kind=8), intent(in) :: jncmp
+    integer(kind=8), intent(in) :: jvalv
+    integer(kind=8), intent(in) :: jvale
 end subroutine editgd
 end interface

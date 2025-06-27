@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,12 +50,12 @@ subroutine thmCompSiefElno(ds_thm)
 !
     character(len=16) :: option
     character(len=8) :: elrefe, elref2
-    integer :: jv_sigm, jv_sigmelno, nvim, jv_gano
-    integer :: dimdep, dimdef, dimcon
+    integer(kind=8) :: jv_sigm, jv_sigmelno, nvim, jv_gano
+    integer(kind=8) :: dimdep, dimdef, dimcon
     aster_logical :: l_axi, l_vf
     character(len=3) :: inte_type
-    integer :: ndim
-    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8) :: ndim
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !

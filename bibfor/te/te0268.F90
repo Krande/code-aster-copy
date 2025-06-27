@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,13 +34,13 @@ subroutine te0268(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: icode, icoefh, jgano, nbres, ndim, nnos
+    integer(kind=8) :: icode, icoefh, jgano, nbres, ndim, nnos
 !-----------------------------------------------------------------------
     parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres), poids, r, z, coefh, nx, ny, theta
-    integer :: nno, kp, npg, ipoids, ivf, idfde, igeom
-    integer :: itemps, imattt, k, i, j, ij, li, lj
+    integer(kind=8) :: nno, kp, npg, ipoids, ivf, idfde, igeom
+    integer(kind=8) :: itemps, imattt, k, i, j, ij, li, lj
 !
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine mateMFrontAddProperties(mate, v_mate_read, &
 !
     character(len=8), intent(in) :: mate
     character(len=32), pointer :: v_mate_read(:)
-    integer, intent(in) :: i_mate_mfront, i_mate_elas, i_mate_add
+    integer(kind=8), intent(in) :: i_mate_mfront, i_mate_elas, i_mate_add
     aster_logical, intent(in) :: l_elas, l_elas_func, l_elas_istr, l_elas_orth
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ subroutine mateMFrontAddProperties(mate, v_mate_read, &
     character(len=6) :: nom
     character(len=32) :: nomrc_mfront
     character(len=19) :: noobrc_elas
-    integer :: mfront_nbvale
+    integer(kind=8) :: mfront_nbvale
     real(kind=8) :: mfront_valr(16)
     character(len=16) :: mfront_valk(16), mfront_prop(16)
     aster_logical :: l_mfront_func, l_mfront_anis, l_new_elas

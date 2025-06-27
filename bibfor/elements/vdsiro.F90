@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,11 +66,11 @@ subroutine vdsiro(np, nbsp, matev, sens, goun, &
     real(kind=8) :: matev(2, 2, 1), tens1(1), tens2(1)
     character(len=2) :: sens
     character(len=1) :: goun
-    integer :: np, nbsp
+    integer(kind=8) :: np, nbsp
 ! -----  VARIABLES LOCALES
     real(kind=8) :: workel(4), worklo(4), xab(2, 2)
     real(kind=8) :: tampon(2), mattmp(2, 2)
-    integer :: i, kpt, ksp, kpt2
+    integer(kind=8) :: i, kpt, ksp, kpt2
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
     ASSERT(sens .eq. 'IU' .or. sens .eq. 'UI')

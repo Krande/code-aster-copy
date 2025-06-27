@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nmsuiy(ds_print, vale_r, i_dof_monitor)
 !
     type(NL_DS_Print), intent(inout) :: ds_print
     real(kind=8), intent(in) :: vale_r
-    integer, intent(inout) :: i_dof_monitor
+    integer(kind=8), intent(inout) :: i_dof_monitor
 !
 ! --------------------------------------------------------------------------------------------------
 !

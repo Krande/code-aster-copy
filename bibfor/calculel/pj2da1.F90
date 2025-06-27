@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine pj2da1(ino2, geom2, i, geom1, tria3, &
     implicit none
 #include "asterf_types.h"
     real(kind=8) :: cobar2(3), geom1(*), geom2(*)
-    integer :: i, tria3(*), ino2
+    integer(kind=8) :: i, tria3(*), ino2
     aster_logical :: ok
 
 !     BUT :

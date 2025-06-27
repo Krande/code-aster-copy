@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine dikfin(nbt, dnsdu, dnsdt, dmsdt, dnsdu2, &
 ! ----------------------------------------------------------------------
     implicit none
 #include "asterfort/r8inir.h"
-    integer :: nbt
+    integer(kind=8) :: nbt
     real(kind=8) :: dnsdu, dnsdt, dmsdt, dnsdu2, dnsdt2, dmsdt2, ky, kz, krx
     real(kind=8) :: krz
     real(kind=8) :: klv(nbt), klv2(nbt)

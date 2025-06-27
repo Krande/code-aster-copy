@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,12 +36,12 @@ subroutine te0345(option, nomte)
 ! ......................................................................
 !
     character(len=8) :: lielrf(10)
-    integer :: nno1, nno2, npg
-    integer :: iw, ivf1, idf1, igeom, imate
-    integer :: npgn, iwn, ivf1n, idf1n, jgnn
-    integer :: ivf2, idf2, nnos, jgn
-    integer :: ivectu, codret, ndim, ntrou
-    integer :: iu(3, 3), iuc(3), im(3), isect, ipesa
+    integer(kind=8) :: nno1, nno2, npg
+    integer(kind=8) :: iw, ivf1, idf1, igeom, imate
+    integer(kind=8) :: npgn, iwn, ivf1n, idf1n, jgnn
+    integer(kind=8) :: ivf2, idf2, nnos, jgn
+    integer(kind=8) :: ivectu, codret, ndim, ntrou
+    integer(kind=8) :: iu(3, 3), iuc(3), im(3), isect, ipesa
     real(kind=8) :: tang(3, 3), a
 !
 !

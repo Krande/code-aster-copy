@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine te0000(numc, opt, te)
-        integer :: numc
-        integer :: opt
-        integer :: te
+        integer(kind=8) :: numc
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
     end subroutine te0000
 end interface

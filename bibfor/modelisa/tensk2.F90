@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,12 +67,12 @@ subroutine tensk2(icabl, nbno, s, alpha, f0, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: icabl, nbno
+    integer(kind=8) :: icabl, nbno
     real(kind=8) :: s(*), alpha(*), f0, delta, ea, frco, frli, sa, f(*)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: ino
+    integer(kind=8) :: ino
     real(kind=8) :: alphal, d1, d2, df, long, wcr
     real(kind=8), pointer :: absc2(:) => null()
     real(kind=8), pointer :: alpha2(:) => null()

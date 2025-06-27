@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     character(len=8) :: noma, fiss
     character(len=19) :: nbeta, ngamma
 !
@@ -48,8 +48,8 @@ subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
 !        FISS    : STRUCTURE DE DONNEE FISSURE NON PROPAGEE AVEC BASES LOCALES TOURNEES
 !        NBETA   : TABLEAU D'ANGLES DE BRANCHEMENT MIS A ZERO
 !
-    integer :: i
-    integer :: jbeta, jgamma, nbptff, jbasef, jfonf
+    integer(kind=8) :: i
+    integer(kind=8) :: jbeta, jgamma, nbptff, jbasef, jfonf
     real(kind=8) :: n(3), t(3), n1(3), b2(3), t2(3), n2(3), bast(3), tast(3)
     real(kind=8) :: n2d(2), t2d(2), n2d1(2), t2d1(2)
     real(kind=8) :: cbeta, sbeta, cgamma, sgamma, mn2, mt2

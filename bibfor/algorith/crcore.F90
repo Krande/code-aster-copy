@@ -63,16 +63,16 @@ subroutine crcore()
 #include "asterfort/as_allocate.h"
 #include "blas/daxpy.h"
 !
-    integer :: ibid, ier, icompt, iret, numini, numfin
-    integer :: n1, nis, nbinst, nbval, nume, j
-    integer :: iad, jinst, jchin, jchout, iddl, icmp, aprno
-    integer :: nbv(1), jrefe
-    integer :: jcpt, nbr, ivmx, k, iocc, nboini, inoe, ncmp, nbr0
-    integer :: tnum(1)
-    integer :: nbordr1, nbordr2, numei, neq, nbnoeu, gd, nec, iec
-    integer :: ngn, nbno, ino, in, nbd, jchi1, ldgn, jdist
-    integer :: nfx, nfy, nfz, jncmp, tabec(10), ncmpmx, iad2, ncmp0, j2
-    integer :: nfrx, nfry, nfrz
+    integer(kind=8) :: ibid, ier, icompt, iret, numini, numfin
+    integer(kind=8) :: n1, nis, nbinst, nbval, nume, j
+    integer(kind=8) :: iad, jinst, jchin, jchout, iddl, icmp, aprno
+    integer(kind=8) :: nbv(1), jrefe
+    integer(kind=8) :: jcpt, nbr, ivmx, k, iocc, nboini, inoe, ncmp, nbr0
+    integer(kind=8) :: tnum(1)
+    integer(kind=8) :: nbordr1, nbordr2, numei, neq, nbnoeu, gd, nec, iec
+    integer(kind=8) :: ngn, nbno, ino, in, nbd, jchi1, ldgn, jdist
+    integer(kind=8) :: nfx, nfy, nfz, jncmp, tabec(10), ncmpmx, iad2, ncmp0, j2
+    integer(kind=8) :: nfrx, nfry, nfrz
 !
     real(kind=8) :: rbid, tps, prec, coefr
     real(kind=8) :: dist, dire(3), coorre(3), vs, delay, dt, tp2
@@ -97,7 +97,7 @@ subroutine crcore()
     character(len=24), pointer :: refn(:) => null()
     real(kind=8), pointer :: val(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: vicmp(:) => null()
+    integer(kind=8), pointer :: vicmp(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     data linst, listr8, lcpt, ldist/'&&CRCORE_LINST', '&&CRCORE_LISR8',&

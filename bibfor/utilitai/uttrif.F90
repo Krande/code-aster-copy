@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine uttrif(vale, nb, typfon)
     implicit none
 #include "asterc/getres.h"
 #include "asterfort/utmess.h"
-    integer :: nb
+    integer(kind=8) :: nb
     real(kind=8) :: vale(*)
     character(len=*) :: typfon
 !     TRI DES FONCTIONS PAR ABSCISSES CROISSANTES
@@ -35,7 +35,7 @@ subroutine uttrif(vale, nb, typfon)
 ! IN     : NB     : NBRE DE POINTS DE LA FONCTION
 ! IN     : TYPFON : TYPE DE LA FONCTION A REORDONNER
 ! ----------------------------------------------------------------------
-    integer :: j, l, incrs, is9
+    integer(kind=8) :: j, l, incrs, is9
     real(kind=8) :: xt
     character(len=16) :: nomcmd, k16b1, k16b2
 !

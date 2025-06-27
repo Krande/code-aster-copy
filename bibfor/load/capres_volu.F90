@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine capres_volu(load, mesh, valeType, nbOccPresRep)
 !
     character(len=4), intent(in) :: valeType
     character(len=8), intent(in) :: load, mesh
-    integer, intent(in) :: nbOccPresRep
+    integer(kind=8), intent(in) :: nbOccPresRep
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,22 +59,22 @@ subroutine capres_volu(load, mesh, valeType, nbOccPresRep)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywFact = 'PRES_REP'
-    integer, parameter :: nbCmp = 2
+    integer(kind=8), parameter :: nbCmp = 2
     character(len=8), parameter :: cmpName(nbCmp) = (/'PINF', 'PSUP'/)
     character(len=8), pointer :: mapCmpName(:) => null()
     real(kind=8), pointer :: mapCmpValeR(:) => null()
     character(len=8), pointer :: mapCmpValeK(:) => null()
     real(kind=8) :: presUserR
     character(len=8) :: presUserK
-    integer, pointer :: meshTypmail(:) => null()
+    integer(kind=8), pointer :: meshTypmail(:) => null()
     character(len=19) :: carte
     character(len=24), parameter :: cellSkinJv = '&&LIST_ELEM'
-    integer, pointer :: cellSkin(:) => null()
-    integer, pointer :: presCell(:) => null()
+    integer(kind=8), pointer :: cellSkin(:) => null()
+    integer(kind=8), pointer :: presCell(:) => null()
     real(kind=8), pointer :: presFaceR(:) => null()
     character(len=8), pointer :: presFaceK(:) => null()
-    integer :: nbCellSkin, nbCrack, nbCellHexa9, nbCellMesh
-    integer :: iocc, iCell, iCellSkin, cellVoluNume
+    integer(kind=8) :: nbCellSkin, nbCrack, nbCellHexa9, nbCellMesh
+    integer(kind=8) :: iocc, iCell, iCellSkin, cellVoluNume
 !
 ! --------------------------------------------------------------------------------------------------
 !

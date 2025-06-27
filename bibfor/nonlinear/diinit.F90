@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine diinit(mesh_, model_, ds_inout, mate, mateco, cara_elem, &
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=19), intent(in) :: solver
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine copnor(noma, ds_contact, posmai, ksi1, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer :: posmai
+    integer(kind=8) :: posmai
     real(kind=8) :: tau1(3), tau2(3)
     character(len=8) :: noma
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -71,11 +71,11 @@ subroutine copnor(noma, ds_contact, posmai, ksi1, &
 !
     real(kind=8), parameter :: zero = 0.d0
     character(len=24) :: nomaco
-    integer :: jnoma
+    integer(kind=8) :: jnoma
     character(len=19) :: sdappa
-    integer :: jdecno, posno, nummai
-    integer :: ino, idim, iret
-    integer :: ndim, nno
+    integer(kind=8) :: jdecno, posno, nummai
+    integer(kind=8) :: ino, idim, iret
+    integer(kind=8) :: ndim, nno
     real(kind=8) :: vecta1(27), vecta2(27), vecnor(27)
     real(kind=8) :: norm(3), noor
     character(len=8) :: alias

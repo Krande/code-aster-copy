@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
           interface 
             subroutine matr_asse_set_values(matasz, dim, idx, jdx, values)
               character(len=*) :: matasz
-              integer :: dim, idx(*), jdx(*)
+              integer(kind=8) :: dim, idx(*), jdx(*)
               real(kind=8) :: values(*)
             end subroutine matr_asse_set_values
           end interface 

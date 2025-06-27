@@ -56,8 +56,8 @@ subroutine sscgma(ma, nbgmp, nbgmin)
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: ma
-    integer, intent(in)          :: nbgmp
-    integer, intent(in)          :: nbgmin
+    integer(kind=8), intent(in)          :: nbgmp
+    integer(kind=8), intent(in)          :: nbgmin
 
 !     BUT: TRAITER LE MOT CLEF CREA_GROUP_MA
 !          DE L'OPERATEUR: DEFI_GROUP
@@ -73,19 +73,19 @@ subroutine sscgma(ma, nbgmp, nbgmin)
     character(len=24) :: lisma, nogma, nogma2
     character(len=24) :: valk(2)
     character(len=132) :: card
-    integer :: i, iagm1, iagm2, ialii1, ialii2, iret
-    integer :: idlima, ier, ierr, ifm, igm, igm1
-    integer :: igm2, ii, iii, ili1, ili2, im1
-    integer :: ima, ind1, ind2, iocc, ireste, jjj
-    integer :: jlisma, jmail, kkk, maxcol, n, n1
-    integer :: n2, n3, n4, n5, n6, n6a, n6b
-    integer :: n7, n8, nalar, nb, nbcol
-    integer :: nbgnaj, nbgrmn, nbid, nbis, nbk8, nbline, nbma
-    integer :: nbmat, niv, ntrou, ntyp, num
+    integer(kind=8) :: i, iagm1, iagm2, ialii1, ialii2, iret
+    integer(kind=8) :: idlima, ier, ierr, ifm, igm, igm1
+    integer(kind=8) :: igm2, ii, iii, ili1, ili2, im1
+    integer(kind=8) :: ima, ind1, ind2, iocc, ireste, jjj
+    integer(kind=8) :: jlisma, jmail, kkk, maxcol, n, n1
+    integer(kind=8) :: n2, n3, n4, n5, n6, n6a, n6b
+    integer(kind=8) :: n7, n8, nalar, nb, nbcol
+    integer(kind=8) :: nbgnaj, nbgrmn, nbid, nbis, nbk8, nbline, nbma
+    integer(kind=8) :: nbmat, niv, ntrou, ntyp, num
     aster_logical :: l_parallel_mesh, l_added_grpma, lcolle
     character(len=24), pointer :: lik8(:) => null()
     character(len=8), pointer :: l_maille(:) => null()
-    integer, pointer :: maille2(:) => null()
+    integer(kind=8), pointer :: maille2(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

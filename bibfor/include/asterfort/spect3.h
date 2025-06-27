@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     function spect3(x, a, b, func, tol,&
                     coeff, xlc, vitn, defm, rhoe,&
                     nbp, im, jm)
-        integer :: nbp
+        integer(kind=8) :: nbp
         real(kind=8) :: x
         real(kind=8) :: a
         real(kind=8) :: b
@@ -32,21 +32,21 @@ interface
         real(kind=8) :: vitn(nbp, *)
         real(kind=8) :: defm(nbp, *)
         real(kind=8) :: rhoe(nbp, *)
-        integer :: im
-        integer :: jm
+        integer(kind=8) :: im
+        integer(kind=8) :: jm
         real(kind=8) :: spect3
         interface
             function func(xx, y, xlc, vitn, rhoe,&
                           defm, nbp, im, jm)
-                integer :: nbp
+                integer(kind=8) :: nbp
                 real(kind=8) :: xx
                 real(kind=8) :: y
                 real(kind=8) :: xlc
                 real(kind=8) :: vitn(nbp, *)
                 real(kind=8) :: rhoe(nbp, *)
                 real(kind=8) :: defm(nbp, *)
-                integer :: im
-                integer :: jm
+                integer(kind=8) :: im
+                integer(kind=8) :: jm
                 real(kind=8) :: func
             end function func
         end interface

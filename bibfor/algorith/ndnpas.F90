@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
 #include "asterfort/nmdebg.h"
 #include "blas/dcopy.h"
 !
-    integer :: numins
+    integer(kind=8) :: numins
     character(len=24) :: numedd
     character(len=19) :: sddyna, sddisc
     character(len=19) :: solalg(*), valinc(*)
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
 !
 ! ----------------------------------------------------------------------
 !
@@ -82,15 +82,15 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
     aster_logical :: lnewma
     real(kind=8) :: coerig, coeamo, coemas
     real(kind=8) :: coeext, coeint, coeequ, coeex2, coeam0
-    integer :: imode
-    integer :: neq, nbmodp
+    integer(kind=8) :: imode
+    integer(kind=8) :: neq, nbmodp
     real(kind=8) :: coefd(3), coefv(3), coefa(3)
     real(kind=8) :: coedep, coevit, coeacc
     real(kind=8) :: coerma, coeram, coerri
     real(kind=8) :: coiner
     character(len=19) :: depgem, vitgem, accgem, depgep, vitgep, accgep
-    integer :: jdepgm, jvitgm, jaccgm, jdepgp, jvitgp, jaccgp
-    integer :: ifm, niv
+    integer(kind=8) :: jdepgm, jvitgm, jaccgm, jdepgp, jvitgp, jaccgp
+    integer(kind=8) :: ifm, niv
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

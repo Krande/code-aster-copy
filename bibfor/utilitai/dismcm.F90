@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=6) :: k6
@@ -57,12 +57,12 @@ subroutine dismcm(questi, nomobz, repi, repkz, ierd)
     character(len=24) :: quest2, nomobj(100)
     character(len=19) :: nomcar2
     aster_logical :: trouve
-    integer :: nbmax, izone, i
+    integer(kind=8) :: nbmax, izone, i
 !-----------------------------------------------------------------------
-    integer :: ianorc, iaobj, iaprol, iavale, iavalk, if, ii
-    integer :: iii, imax, irc, iret, jdesc, lonobj, n
-    integer :: n1, nbrc, nbzone, nc, nf, nmat, nr
-    integer :: n2, nbvarc, nedit, kvarc, kedit
+    integer(kind=8) :: ianorc, iaobj, iaprol, iavale, iavalk, if, ii
+    integer(kind=8) :: iii, imax, irc, iret, jdesc, lonobj, n
+    integer(kind=8) :: n1, nbrc, nbzone, nc, nf, nmat, nr
+    integer(kind=8) :: n2, nbvarc, nedit, kvarc, kedit
     character(len=8), pointer :: cvrcvarc(:) => null()
     character(len=16), pointer :: vale(:) => null()
 !

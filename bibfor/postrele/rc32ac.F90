@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,9 +40,9 @@ subroutine rc32ac(lfat, lefat)
 !                           CALCUL DES GRANDEURS
 !
 !     ------------------------------------------------------------------
-    integer :: nb, ndim, jresu, iocc, im, jmax, ns, jresus, n1, i, jcombi
-    integer :: iocc1, iocc2, jresucomb, jresucombs, jvalin, nbsscyc, nbid
-    integer :: kk, jsnseis, jspseis, jinfo, numsit1, numsit2
+    integer(kind=8) :: nb, ndim, jresu, iocc, im, jmax, ns, jresus, n1, i, jcombi
+    integer(kind=8) :: iocc1, iocc2, jresucomb, jresucombs, jvalin, nbsscyc, nbid
+    integer(kind=8) :: kk, jsnseis, jspseis, jinfo, numsit1, numsit2
     real(kind=8) :: pm, pb, pmpb, pmmax, pbmax, pmpbmax, pms, pbs, pmpbs
     real(kind=8) :: snmax, sn, sns, instsn(4), instsns(4), snet, snets
     real(kind=8) :: snetmax, sigmoypres, siprmoymax, snthmax, snther, sbid

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ subroutine cuacat(indic, nbliac, ajliai, spliai, lmat, &
     implicit none
 #include "asterfort/cuaca1.h"
 #include "asterfort/cuaca2.h"
-    integer :: indic
-    integer :: nbliac
-    integer :: ajliai
-    integer :: spliai
-    integer :: indfac
-    integer :: lmat
+    integer(kind=8) :: indic
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: ajliai
+    integer(kind=8) :: spliai
+    integer(kind=8) :: indfac
+    integer(kind=8) :: lmat
     real(kind=8) :: xjvmax
     character(len=24) :: deficu, resocu
     character(len=19) :: solveu, cncine

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1, &
     real(kind=8) :: theta2(3), theta1(3), deldet(3)
     character(len=19) :: sddyna
     character(len=19) :: solalg(*), valinc(*)
-    integer :: iran(3)
+    integer(kind=8) :: iran(3)
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,7 +62,7 @@ subroutine ndgrot(sddyna, valinc, solalg, deldet, theta1, &
 !
     character(len=19) :: depmoi, depplu, vitplu, accplu
     character(len=19) :: depkm1, vitkm1, acckm1, romk, romkm1
-    integer :: ic
+    integer(kind=8) :: ic
     real(kind=8) :: quapro(4), quarot(4), delqua(4)
     real(kind=8) :: qim(3), qikm1(3), qik(3), omkm1(3), ompkm1(3), delrot(3)
     real(kind=8) :: vect1(3), vect2(3), vect3(3), vect4(3), rotm(3, 3)

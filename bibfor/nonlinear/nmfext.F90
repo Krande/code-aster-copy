@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine nmfext(eta, listFuncActi, veasse, cnfext, &
 #include "asterfort/utmess.h"
 !
     real(kind=8), intent(in) :: eta
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=19) :: veasse(*)
     type(NL_DS_Contact), optional, intent(in) :: ds_contact_
     character(len=19), intent(in) :: cnfext
@@ -70,12 +70,12 @@ subroutine nmfext(eta, listFuncActi, veasse, cnfext, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: cnffdo, cnffpi, cnfvdo, cnvady, sddyna
     aster_logical :: lctcd, lunil, l_unil_pena
     real(kind=8) :: coeequ
     aster_logical :: ldyna, lallv, l_pilo
-    integer :: ifdo, n
+    integer(kind=8) :: ifdo, n
     type(NLDYNA_DAMPING) :: nlDynaDamping
     character(len=19) :: vect(20)
     real(kind=8) :: coef(20)

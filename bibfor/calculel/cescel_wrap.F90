@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ subroutine cescel_wrap(cesz, ligrez, optini, nompaz, prolz, &
     character(len=*)    :: optini
     character(len=*)    :: nompaz
     character(len=*)    :: prolz
-    integer             :: nncp
+    integer(kind=8)             :: nncp
     character(len=*)    :: basez
     character(len=*)    :: celz
     character(len=1)    :: kstop
-    integer             :: iret
+    integer(kind=8)             :: iret
 !
     call cescel(cesz, ligrez, optini, nompaz, prolz, &
                 nncp, basez, celz, kstop, iret)

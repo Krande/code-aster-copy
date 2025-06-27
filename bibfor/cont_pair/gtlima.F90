@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine gtlima(sdappa, sdcont_defi, i_zone)
 !
     character(len=19), intent(in) :: sdappa
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -47,14 +47,14 @@ subroutine gtlima(sdappa, sdcont_defi, i_zone)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: knuzo
-    integer :: jcmmal, jcmesl
-    integer :: i_elem, i_surf_mast, i_surf_slav
-    integer :: nb_elem_mast, nb_elem_slav
+    integer(kind=8) :: jcmmal, jcmesl
+    integer(kind=8) :: i_elem, i_surf_mast, i_surf_slav
+    integer(kind=8) :: nb_elem_mast, nb_elem_slav
     character(len=24) :: sdappa_mast, sdappa_slav
     character(len=24) :: sdcont_mailco
-    integer, pointer  :: v_sdcont_mailco(:) => null()
-    integer, pointer  :: v_list_mast(:) => null()
-    integer, pointer  :: v_list_slav(:) => null()
+    integer(kind=8), pointer  :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer  :: v_list_mast(:) => null()
+    integer(kind=8), pointer  :: v_list_slav(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

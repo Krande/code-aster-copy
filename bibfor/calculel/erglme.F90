@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine erglme(jceld, iavale, option, iord, ligrel, &
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 !
-    integer :: jceld, iavale, iord, longt, nbgr
+    integer(kind=8) :: jceld, iavale, iord, longt, nbgr
     character(len=*) :: resuco
     character(len=19) :: resuc1, ligrel
     character(len=*) :: option
@@ -69,12 +69,12 @@ subroutine erglme(jceld, iavale, option, iord, ligrel, &
 !
 !
 !
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     parameter(nbpar=5)
 !
-    integer :: ifi, nel
-    integer :: mode, k, j, iret, iad, idecgr
-    integer :: ladpa
+    integer(kind=8) :: ifi, nel
+    integer(kind=8) :: mode, k, j, iret, iad, idecgr
+    integer(kind=8) :: ladpa
 !
     real(kind=8) :: err0, nors
     real(kind=8) :: listr(3), nu0, nuvo, nusa, nuno, termvo, termsa, termno

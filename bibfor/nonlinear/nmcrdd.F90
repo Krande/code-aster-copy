@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine nmcrdd(meshz, modelz, ds_inout, cara_elemz, ds_material, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_dof_monitor, nb_keyw_fact
+    integer(kind=8) :: nb_dof_monitor, nb_keyw_fact
     character(len=16) :: keyw_fact
     character(len=14) :: sdextr_suiv
 !

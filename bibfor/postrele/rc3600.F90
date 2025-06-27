@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine rc3600()
 #include "asterfort/rc36zz.h"
 #include "asterfort/reliem.h"
 #include "asterfort/wkvect.h"
-    integer :: n1, nbtou, nbma, jma, ima, nbcmp, nbmat, ibid, ifm, niv
+    integer(kind=8) :: n1, nbtou, nbma, jma, ima, nbcmp, nbmat, ibid, ifm, niv
     character(len=8) :: k8b, nomres, noma, carael, modele, nommat, motcls(2)
     character(len=8) :: typmcs(2), nomgd
     character(len=16) :: nomcmd, concep, motclf, nocmp(5)

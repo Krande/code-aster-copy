@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine cffpm2(resoco, resigr, nbliai, nbliac, ndim)
 !
     character(len=24) :: resoco
     real(kind=8) :: resigr
-    integer :: nbliai, nbliac, ndim
+    integer(kind=8) :: nbliai, nbliac, ndim
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,24 +53,24 @@ subroutine cffpm2(resoco, resigr, nbliai, nbliac, ndim)
 !
 !
 !
-    integer :: ndlmax
+    integer(kind=8) :: ndlmax
     parameter(ndlmax=30)
-    integer :: jdecal, nbddl
+    integer(kind=8) :: jdecal, nbddl
     real(kind=8) :: jeuini, glis
     real(kind=8) :: coefpt, coefff, coefte, beta
     real(kind=8) :: lambdc, lambdf
-    integer :: iliac, iliai, iliai2
+    integer(kind=8) :: iliac, iliai, iliai2
     character(len=19) :: mu, liac, afmu
-    integer :: jmu, jliac, jafmu
+    integer(kind=8) :: jmu, jliac, jafmu
     character(len=24) :: appoin, apddl
-    integer :: japptr, japddl
+    integer(kind=8) :: japptr, japddl
     character(len=24) :: jeux
-    integer :: jjeux
+    integer(kind=8) :: jjeux
     character(len=24) :: tacfin
-    integer :: jtacf
-    integer :: ztacf
+    integer(kind=8) :: jtacf
+    integer(kind=8) :: ztacf
     character(len=19) :: fro2
-    integer :: jfro2
+    integer(kind=8) :: jfro2
 !
 ! ----------------------------------------------------------------------
 !

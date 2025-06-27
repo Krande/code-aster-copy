@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ subroutine mmnsta(ndim, leltf, &
 #include "jeveux.h"
 #include "asterfort/mmtrpr.h"
 !
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     aster_logical, intent(in) :: leltf
     aster_logical, intent(in) :: lpenaf
-    integer, intent(in) :: indco
+    integer(kind=8), intent(in) :: indco
     real(kind=8), intent(in) :: coefaf, lambda
     real(kind=8), intent(in) :: djeut(3), dlagrf(2)
     real(kind=8), intent(in)  :: tau1(3), tau2(3)

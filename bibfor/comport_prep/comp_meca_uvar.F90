@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine comp_meca_uvar(compor_info, vari_link_base, vari_redu, nb_vari_redu, 
     character(len=19), intent(in) :: compor_info
     character(len=8), intent(in) :: vari_link_base
     character(len=19), intent(in) :: vari_redu
-    integer, intent(out) :: nb_vari_redu
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: nb_vari_redu
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -59,16 +59,16 @@ subroutine comp_meca_uvar(compor_info, vari_link_base, vari_redu, nb_vari_redu, 
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, pointer :: v_info(:) => null()
-    integer, pointer :: v_zone(:) => null()
-    integer, pointer :: v_vari_link(:) => null()
+    integer(kind=8), pointer :: v_info(:) => null()
+    integer(kind=8), pointer :: v_zone(:) => null()
+    integer(kind=8), pointer :: v_vari_link(:) => null()
     character(len=16), pointer :: v_vari_redu(:) => null()
     character(len=16) :: vari_name
     character(len=8) :: saux08
     character(len=19) :: vari_link
     character(len=16), pointer :: v_vari(:) => null()
-    integer :: nb_zone, nb_vari, nt_vari, nb_elem_zone, nb_elem_mesh
-    integer :: i_zone, i_vari, i_vari_redu
+    integer(kind=8) :: nb_zone, nb_vari, nt_vari, nb_elem_zone, nb_elem_mesh
+    integer(kind=8) :: i_zone, i_vari, i_vari_redu
 !
 ! --------------------------------------------------------------------------------------------------
 !

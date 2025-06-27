@@ -33,7 +33,7 @@ subroutine crnulg(numddl)
 !
 #ifdef ASTER_HAVE_MPI
 !
-    integer :: rang, nbproc
+    integer(kind=8) :: rang, nbproc
     mpi_int :: mrank, msize
 !
 !----------------------------------------------------------------------

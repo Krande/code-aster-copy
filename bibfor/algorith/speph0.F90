@@ -54,12 +54,12 @@ subroutine speph0(nomu, table)
 !   PHYSIQUE  OPERATEUR REST_SPEC_PHYS
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, nbmod1, nbtrou, lnumor, nbmode, ilmode, im, imod1, iad
-    integer :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn
-    integer :: nbmail, i, inoeud, iddl, nupo, ivari, napex1, jvnomai
-    integer :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
-    integer :: isip, icham, tmod(1), nbmcl, ncmp
-    integer :: i1, lnumi, lnumj, mxval, lfreq, lrefes, lfreqs, nbno, nbgrno, nbgrma
+    integer(kind=8) :: ibid, nbmod1, nbtrou, lnumor, nbmode, ilmode, im, imod1, iad
+    integer(kind=8) :: napexc, ilnoex, ncmpex, iret, ilcpex, idim1, idim0, nbn
+    integer(kind=8) :: nbmail, i, inoeud, iddl, nupo, ivari, napex1, jvnomai
+    integer(kind=8) :: nbmr, idim, imr, numod, in, nbpf, nbfo1, if1, ifor, ifoi, icham1
+    integer(kind=8) :: isip, icham, tmod(1), nbmcl, ncmp
+    integer(kind=8) :: i1, lnumi, lnumj, mxval, lfreq, lrefes, lfreqs, nbno, nbgrno, nbgrma
     real(kind=8) :: r8b, bande(2), freq1, epsi
     complex(kind=8) :: c16b
     aster_logical :: intmod, intphy, intdon
@@ -77,7 +77,7 @@ subroutine speph0(nomu, table)
     character(len=8), pointer :: nocmp_rep(:) => null()
     character(len=8), pointer :: noeud_rep(:) => null()
     character(len=24), pointer :: group_noeud(:) => null()
-    integer, pointer :: nume_ddl(:) => null()
+    integer(kind=8), pointer :: nume_ddl(:) => null()
     character(len=16), pointer :: refe(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

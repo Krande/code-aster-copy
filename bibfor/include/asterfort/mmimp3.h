@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
-        integer :: ifm
+        integer(kind=8) :: ifm
         character(len=8) :: noma
-        integer :: iptc
-        integer :: jvalv
-        integer :: jtabf
+        integer(kind=8) :: iptc
+        integer(kind=8) :: jvalv
+        integer(kind=8) :: jtabf
     end subroutine mmimp3
 end interface

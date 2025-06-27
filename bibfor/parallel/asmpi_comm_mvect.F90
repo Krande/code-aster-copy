@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,13 +79,13 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, bcrank, &
 !
     character(len=*), intent(in) :: optmpi
     character(len=*), intent(in) :: typsca
-    integer, intent(in), optional :: nbval
-    integer, intent(in), optional :: bcrank
-    integer, intent(inout), optional :: vi(*)
+    integer(kind=8), intent(in), optional :: nbval
+    integer(kind=8), intent(in), optional :: bcrank
+    integer(kind=8), intent(inout), optional :: vi(*)
     integer(kind=4), intent(inout), optional :: vi4(*)
     real(kind=8), intent(inout), optional :: vr(*)
     complex(kind=8), intent(inout), optional :: vc(*)
-    integer, intent(inout), optional :: sci
+    integer(kind=8), intent(inout), optional :: sci
     integer(kind=4), intent(inout), optional :: sci4
     real(kind=8), intent(inout), optional :: scr
     complex(kind=8), intent(inout), optional :: scc
@@ -95,12 +95,12 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, bcrank, &
 #include "asterf_mpi.h"
 !
     character(len=1) :: typsc1
-    integer, parameter :: tpetit = 1000
-    integer :: vi2(tpetit), wki(1)
+    integer(kind=8), parameter :: tpetit = 1000
+    integer(kind=8) :: vi2(tpetit), wki(1)
     integer(kind=4) :: vi42(tpetit), wki4(1)
     real(kind=8) :: vr2(tpetit), wkr(1)
     complex(kind=8) :: vc2(tpetit), wkc(1)
-    integer :: k, nbv, jtrav
+    integer(kind=8) :: k, nbv, jtrav
     mpi_int :: lr8, lint, nbv4, lopmpi, nbpro4, mpicou, lc8, bcrank4, proc
     mpi_int, parameter :: pr0 = 0
     aster_logical :: scal
@@ -392,7 +392,7 @@ subroutine asmpi_comm_mvect(optmpi, typsca, nbval, bcrank, &
 !
 #else
     character(len=1) :: kdummy
-    integer :: idummy
+    integer(kind=8) :: idummy
     integer(kind=4) :: i4dummy
     real(kind=8) :: rdummy
     complex(kind=8) :: cdummy

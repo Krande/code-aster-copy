@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                               nc, dgfa_ds, deltam, kmve66)
         real(kind=8), intent(inout) :: a(ngf,ngf+1)
         real(kind=8), intent(inout) :: b(ngf)
-        integer, intent(in) :: ngf
-        integer, intent(in) :: na
-        integer, intent(in) :: nc
+        integer(kind=8), intent(in) :: ngf
+        integer(kind=8), intent(in) :: na
+        integer(kind=8), intent(in) :: nc
         real(kind=8), intent(in) :: avean
         real(kind=8), intent(in) :: dgfa_ds(nc, 6)
         real(kind=8), intent(in) :: deltam

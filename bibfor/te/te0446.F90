@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,13 +47,13 @@ subroutine te0446(option, nomte)
 !
 !        OPTIONS     FORC_NODA
 !
-    integer :: nnos, ipoids, ivf, idfdx, jgano
-    integer :: jtab(7), jvDisp
-    integer :: icompo, i, i1, i2, j, k, ivectu, ipg, npg
-    integer :: jvSief, iretc
-    integer :: nno, igeom
-    integer :: ndim, iret, ind
-    integer :: jcara
+    integer(kind=8) :: nnos, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: jtab(7), jvDisp
+    integer(kind=8) :: icompo, i, i1, i2, j, k, ivectu, ipg, npg
+    integer(kind=8) :: jvSief, iretc
+    integer(kind=8) :: nno, igeom
+    integer(kind=8) :: ndim, iret, ind
+    integer(kind=8) :: jcara
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), bsigma(24)
     real(kind=8) :: effgt(32), effort(32)
     real(kind=8) :: effref, momref

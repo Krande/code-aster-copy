@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine pcfalu(n, inc, ipc, inx, ipx,&
                       index, imp)
-        integer :: n
-        integer :: inc(n)
+        integer(kind=8) :: n
+        integer(kind=8) :: inc(n)
         integer(kind=4) :: ipc(*)
-        integer :: inx(0:n)
+        integer(kind=8) :: inx(0:n)
         integer(kind=4) :: ipx(*)
-        integer :: index(*)
-        integer :: imp
+        integer(kind=8) :: index(*)
+        integer(kind=8) :: imp
     end subroutine pcfalu
 end interface

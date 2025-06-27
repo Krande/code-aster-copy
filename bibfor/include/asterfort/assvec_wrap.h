@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
                            numeDofZ, vectScalType)
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(in) :: vectAsseZ
-        integer, intent(in) :: nbVectElem
+        integer(kind=8), intent(in) :: nbVectElem
         character(len=*), intent(in) :: listVectElem(nbVectElem)
         real(kind=8), intent(in) :: coefVectElem(nbVectElem)
         character(len=*), intent(in) :: numeDofZ
-        integer, intent(in) :: vectScalType
+        integer(kind=8), intent(in) :: vectScalType
     end subroutine assvec_wrap
 end interface

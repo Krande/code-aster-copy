@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine hydracomp3d(we0, we0s, epse06, souplesse66, sig06, &
 !   tables de dimension fixe pour resolution des sytemes lineaires
     implicit none
 #include "asterf_types.h"
-    integer i, j
+    integer(kind=8) i, j
 
 !   declaration des variables externes
     real(kind=8) :: we0, we0s, epse06(6), souplesse66(6, 6), sig06(6), deps6r(6)

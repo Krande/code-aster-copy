@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,16 +24,16 @@ interface
                   defam, defap, varim, varimp,contm, &
                   defm, ddefp, epsm, modf,sigf, &
                   varip, codret)
-        integer :: nbvalc
-        integer :: nf
-        integer :: kpg
-        integer :: debsp
+        integer(kind=8) :: nbvalc
+        integer(kind=8) :: nf
+        integer(kind=8) :: kpg
+        integer(kind=8) :: debsp
         character(len=16) :: option
         character(len=24) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: icdmat
+        integer(kind=8) :: icdmat
         real(kind=8) :: defam(*)
         real(kind=8) :: defap(*)
         real(kind=8) :: varim(nbvalc*nf)
@@ -45,6 +45,6 @@ interface
         real(kind=8) :: modf(nf)
         real(kind=8) :: sigf(nf)
         real(kind=8) :: varip(nbvalc*nf)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine pmfcom
 end interface

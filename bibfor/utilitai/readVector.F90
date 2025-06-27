@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ subroutine readVector(name, nb_value, vect, offset)
 !
 !
     character(len=*), intent(in) :: name
-    integer, intent(in) :: nb_value
+    integer(kind=8), intent(in) :: nb_value
     real(kind=8), intent(out) :: vect(*)
-    integer, intent(in), optional :: offset
+    integer(kind=8), intent(in), optional :: offset
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine readVector(name, nb_value, vect, offset)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_vect_in, offset_
+    integer(kind=8) :: jv_vect_in, offset_
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

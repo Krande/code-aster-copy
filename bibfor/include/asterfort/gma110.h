@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine gma110(nbgr, exclu, nbgrut, mailla, nomsst,&
                       nbtgrm, nomres, nbincr, tabsgr, tabsst,&
                       tabgma, tabnom)
-        integer :: nbgr
+        integer(kind=8) :: nbgr
         character(len=8) :: exclu
-        integer :: nbgrut
+        integer(kind=8) :: nbgrut
         character(len=8) :: mailla
         character(len=8) :: nomsst
-        integer :: nbtgrm
+        integer(kind=8) :: nbtgrm
         character(len=8) :: nomres
-        integer :: nbincr
+        integer(kind=8) :: nbincr
         character(len=24) :: tabsgr(*)
         character(len=8) :: tabsst(*)
         character(len=24) :: tabgma(*)

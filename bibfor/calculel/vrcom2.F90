@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,13 +52,13 @@ subroutine vrcom2(compop, varmoi, ligrep, from_lire_resu)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: iad1, iad2, nbma, nbpg2, nbsp1, nbsp2, nbcm2, ipg, isp, icm
-    integer :: nbcm1
-    integer :: ima, iret
-    integer :: iadp, jcoppl, jcoppd, jcoppv
-    integer :: action
-    integer :: jcev1d, jcev1l
-    integer :: jcev2d, jcev2l, nncp, ibid
+    integer(kind=8) :: iad1, iad2, nbma, nbpg2, nbsp1, nbsp2, nbcm2, ipg, isp, icm
+    integer(kind=8) :: nbcm1
+    integer(kind=8) :: ima, iret
+    integer(kind=8) :: iadp, jcoppl, jcoppd, jcoppv
+    integer(kind=8) :: action
+    integer(kind=8) :: jcev1d, jcev1l
+    integer(kind=8) :: jcev2d, jcev2l, nncp, ibid
     character(len=19) :: cesv1, cesv2, coto, copp
     character(len=19) :: varplu
     character(len=1) :: base

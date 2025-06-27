@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine utflm2(mailla, tabmai, nbma, dim, typmai,&
                       nbtrou, tatrou)
         character(len=8), intent(in) :: mailla
-        integer, intent(in) :: nbma
-        integer, intent(in) :: tabmai(nbma)
-        integer, intent(in) :: dim
+        integer(kind=8), intent(in) :: nbma
+        integer(kind=8), intent(in) :: tabmai(nbma)
+        integer(kind=8), intent(in) :: dim
         character(len=*), intent(in) :: typmai
-        integer, intent(out) :: nbtrou
-        integer, intent(out) :: tatrou(nbma)
+        integer(kind=8), intent(out) :: nbtrou
+        integer(kind=8), intent(out) :: tatrou(nbma)
     end subroutine utflm2
 end interface

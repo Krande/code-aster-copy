@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                              nume_cmp_lagrz, nume_subsz, nume_linkz, nb_node_lagr, list_node_lagr,&
                              ligrelz)
         character(len=*), intent(in) :: nume_ddlz
-        integer, intent(in) :: i_equa
+        integer(kind=8), intent(in) :: i_equa
         character(len=*), intent(out) :: type_equa
-        integer, optional, intent(out) :: nume_nodez
-        integer, optional, intent(out) :: nume_cmpz
-        integer, optional, intent(out) :: nume_subsz
-        integer, optional, intent(out) :: nume_linkz
-        integer, optional, intent(out) :: nume_cmp_lagrz
-        integer, optional, intent(out) :: nb_node_lagr
-        integer, optional, pointer :: list_node_lagr(:)
+        integer(kind=8), optional, intent(out) :: nume_nodez
+        integer(kind=8), optional, intent(out) :: nume_cmpz
+        integer(kind=8), optional, intent(out) :: nume_subsz
+        integer(kind=8), optional, intent(out) :: nume_linkz
+        integer(kind=8), optional, intent(out) :: nume_cmp_lagrz
+        integer(kind=8), optional, intent(out) :: nb_node_lagr
+        integer(kind=8), optional, pointer :: list_node_lagr(:)
         character(len=*), optional, intent(out) :: ligrelz
     end subroutine get_equa_info
 end interface

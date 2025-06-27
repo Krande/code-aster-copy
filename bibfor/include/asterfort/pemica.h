@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine pemica(champ, long, vr, nbmail, nummai,&
                       orig, iorig, icage)
         character(len=*) :: champ
-        integer :: long
+        integer(kind=8) :: long
         real(kind=8) :: vr(*)
-        integer :: nbmail
-        integer :: nummai(*)
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: nummai(*)
         real(kind=8) :: orig(3)
-        integer :: iorig
-        integer :: icage
+        integer(kind=8) :: iorig
+        integer(kind=8) :: icage
     end subroutine pemica
 end interface

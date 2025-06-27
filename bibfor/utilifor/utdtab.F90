@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine utdtab(raz, na, nb, mb, md, &
                   a, b, d, xab, dtab)
     implicit none
 #include "asterfort/r8inir.h"
-    integer :: na, mb, md, nb
+    integer(kind=8) :: na, mb, md, nb
     character(len=*) :: raz
     real(kind=8) :: a(na, nb), b(nb, mb), d(na, md), xab(na, mb)
     real(kind=8) :: dtab(md, mb)
@@ -42,7 +42,7 @@ subroutine utdtab(raz, na, nb, mb, md, &
     character(len=4) :: raz2
 ! --DEB
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     raz2 = raz
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/asmpi_comm_vect.h"
 !
-    integer :: nbcmp, nuord, iocc, nbma, list_ma(*)
+    integer(kind=8) :: nbcmp, nuord, iocc, nbma, list_ma(*)
     character(len=8) :: nomcmp(nbcmp), nomcp2(nbcmp), modele, lieu
     character(len=19) :: chpost, resu, cespoi, ligrel
     character(len=24) :: nomcha
@@ -84,10 +84,10 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
 !     IN  IOCC    : NUMERO DE L'OCCURENCE DE INTEGRALE
 !     ------------------------------------------------------------------
 !
-    integer :: iret, i, jcesl, jcesd, jpoil, jpoid
-    integer :: nucmp, jcmpgd, ncmpm, iad, jintr, jintk
-    integer :: ipt, nbsp, nbpt, icmp, ima, nbpara, nume_ma
-    integer :: ico, ind1, ind2, ifm, niv, ier, type_cell, nbnott(3)
+    integer(kind=8) :: iret, i, jcesl, jcesd, jpoil, jpoid
+    integer(kind=8) :: nucmp, jcmpgd, ncmpm, iad, jintr, jintk
+    integer(kind=8) :: ipt, nbsp, nbpt, icmp, ima, nbpara, nume_ma
+    integer(kind=8) :: ico, ind1, ind2, ifm, niv, ier, type_cell, nbnott(3)
     real(kind=8) :: vol, val, inst, volpt, rang, nbproc
     complex(kind=8) :: cbid
     character(len=8) :: noma, k8b, nomgd, nomva, type_inte
@@ -99,10 +99,10 @@ subroutine peecal(tych, resu, nomcha, lieu, nomlie, list_ma, nbma, &
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     real(kind=8), pointer :: poiv(:) => null()
-    integer, pointer :: repe(:) => null()
-    integer, pointer :: v_model_elem(:) => null()
-    integer, pointer :: v_type_cell(:) => null()
-    integer, pointer :: v_maex(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
+    integer(kind=8), pointer :: v_model_elem(:) => null()
+    integer(kind=8), pointer :: v_type_cell(:) => null()
+    integer(kind=8), pointer :: v_maex(:) => null()
     mpi_int :: mrank, mnbproc
 ! -------------------------------------------------------------------------
     call jemarq()

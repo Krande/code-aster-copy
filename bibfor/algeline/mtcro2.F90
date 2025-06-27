@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine mtcro2(n, a, nmax, x)
     implicit none
 #include "asterfort/utmess.h"
 !
-    integer :: nmax, n
+    integer(kind=8) :: nmax, n
     real(kind=8) :: a(nmax, *), x(*)
 !     ROUTINE UTILITAIRE POUR RESOUDRE UNE DES EQUATIONS DU SYSTEME
 !     A*X = B
@@ -42,7 +42,7 @@ subroutine mtcro2(n, a, nmax, x)
 ! ----------------------------------------------------------------------
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
     data zero/0.d0/
 ! ----------------------------------------------------------------------

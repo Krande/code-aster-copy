@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ interface
                       zrjno2, zrjno1, x3, y3, hf,&
                       xn, yn, jac, laxi, jacob,&
                       ifm, niv)
-        integer :: igeom
-        integer :: nsomm
-        integer :: naret
-        integer :: ino
+        integer(kind=8) :: igeom
+        integer(kind=8) :: nsomm
+        integer(kind=8) :: naret
+        integer(kind=8) :: ino
         real(kind=8) :: poinc1
         real(kind=8) :: poinc2
-        integer :: jno
-        integer :: mno
+        integer(kind=8) :: jno
+        integer(kind=8) :: mno
         real(kind=8) :: zrino2
         real(kind=8) :: zrino1
         real(kind=8) :: zrjno2
@@ -46,7 +46,7 @@ interface
         real(kind=8) :: jac(9)
         aster_logical :: laxi
         real(kind=8) :: jacob
-        integer :: ifm
-        integer :: niv
+        integer(kind=8) :: ifm
+        integer(kind=8) :: niv
     end subroutine utnorm
 end interface

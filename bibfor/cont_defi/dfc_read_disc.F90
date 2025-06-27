@@ -37,7 +37,7 @@ subroutine dfc_read_disc(sdcont, zoneKeyword, mesh, model, model_ndim, &
 !
     character(len=8), intent(in) :: sdcont, mesh, model
     character(len=16), intent(in) :: zoneKeyword
-    integer, intent(in) :: model_ndim, nb_cont_zone
+    integer(kind=8), intent(in) :: model_ndim, nb_cont_zone
     aster_logical, intent(out) :: lLineRela
     character(len=19), intent(out) :: listRela
 !
@@ -63,7 +63,7 @@ subroutine dfc_read_disc(sdcont, zoneKeyword, mesh, model, model_ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_surf, nb_cont_elem, nb_cont_node
+    integer(kind=8) :: nb_cont_surf, nb_cont_elem, nb_cont_node
     aster_logical :: l_elim_coq3d, l_node_q8
 !
 ! --------------------------------------------------------------------------------------------------

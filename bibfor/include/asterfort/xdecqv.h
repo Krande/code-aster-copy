@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,30 +24,30 @@ interface
                       heav, nsemax, pinter, pmilie, pintt, pmitt, cut,&
                       ncomp, nfisc, nfiss, ifiss, elp, fisco,&
                       lonref, txlsn, tx)
-        integer :: nnose
-        integer :: it
-        integer :: cnset(*)
+        integer(kind=8) :: nnose
+        integer(kind=8) :: it
+        integer(kind=8) :: cnset(*)
         real(kind=8) :: lsn(*)
-        integer :: igeom
-        integer :: ninter
-        integer :: npts
-        integer :: ndim
+        integer(kind=8) :: igeom
+        integer(kind=8) :: ninter
+        integer(kind=8) :: npts
+        integer(kind=8) :: ndim
         real(kind=8) :: ainter(*)
         real(kind=8) :: pinter(*)
         real(kind=8) :: pmilie(*)
         real(kind=8) :: pintt(*)
         real(kind=8) :: pmitt(*)
-        integer :: nse
-        integer :: cnse(6, 10)
+        integer(kind=8) :: nse
+        integer(kind=8) :: cnse(6, 10)
         real(kind=8) :: heav(*)
-        integer :: nsemax
+        integer(kind=8) :: nsemax
         aster_logical :: cut
-        integer :: heavt(*)
-        integer :: ncomp
-        integer :: nfisc
-        integer :: nfiss
-        integer :: ifiss
-        integer :: fisco(*)
+        integer(kind=8) :: heavt(*)
+        integer(kind=8) :: ncomp
+        integer(kind=8) :: nfisc
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: fisco(*)
         character(len=8) :: elp
         real(kind=8) :: lonref
         real(kind=8) :: txlsn(28)

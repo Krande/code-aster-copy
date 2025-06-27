@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ subroutine te0166(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     real(kind=8) :: rho(1), a, w(9), l1(3), l2(3), l10(3), l20(3)
     real(kind=8) :: norml1, norml2, norl10, norl20, l0, norm1p, norm2p
     real(kind=8) :: poids(3)
     character(len=8) :: fami, poum
-    integer :: i, neu, neum1, kc, ic, ivectu, ipesa, kpg, spt
-    integer :: igeom, imate, lsect, idepla, ideplp, iret
+    integer(kind=8) :: i, neu, neum1, kc, ic, ivectu, ipesa, kpg, spt
+    integer(kind=8) :: igeom, imate, lsect, idepla, ideplp, iret
 !
 !
 !-----------------------------------------------------------------------

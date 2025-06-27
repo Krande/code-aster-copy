@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ function ucritp(nbmat, mater, parame, rgdev, invar1)
 !
     implicit none
 #include "asterfort/hlode.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), parame(5), rgdev, invar1, ucritp
 ! --- BUT : CALCUL DU CRITERE PLASTIQUE --------------------------------
 ! ======================================================================

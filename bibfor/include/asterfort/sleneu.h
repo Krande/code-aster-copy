@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
     subroutine sleneu(iunv, nbnode, ama, bma, cma,&
                       ami, bmi, cmi, mix, man,&
                       ites, datset)
-        integer :: iunv
-        integer :: nbnode
+        integer(kind=8) :: iunv
+        integer(kind=8) :: nbnode
         real(kind=8) :: ama
         real(kind=8) :: bma
         real(kind=8) :: cma
         real(kind=8) :: ami
         real(kind=8) :: bmi
         real(kind=8) :: cmi
-        integer :: mix
-        integer :: man
-        integer :: ites
-        integer :: datset
+        integer(kind=8) :: mix
+        integer(kind=8) :: man
+        integer(kind=8) :: ites
+        integer(kind=8) :: datset
     end subroutine sleneu
 end interface

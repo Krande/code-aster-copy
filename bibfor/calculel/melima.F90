@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine melima(chin, ma, icode, ient, lima, &
 #include "asterfort/jexnum.h"
     character(len=8) :: ma
     character(len=19) :: chin
-    integer :: icode, ient, lima, nb
+    integer(kind=8) :: icode, ient, lima, nb
 ! ----------------------------------------------------------------------
 !     ENTREES:
 !     CHIN : NOM D'1 CARTE

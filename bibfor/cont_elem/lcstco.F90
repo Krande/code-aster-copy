@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,13 +32,13 @@ subroutine lcstco(l_upda_jaco, l_norm_smooth, i_reso_geom, &
 !
     aster_logical, intent(out) :: l_upda_jaco
     aster_logical, intent(out) :: l_norm_smooth
-    integer, intent(out) :: i_reso_geom
+    integer(kind=8), intent(out) :: i_reso_geom
     real(kind=8), intent(out) :: lagrc_curr
     real(kind=8), intent(out) :: gap_curr
-    integer, intent(out) :: indi_cont
+    integer(kind=8), intent(out) :: indi_cont
     real(kind=8), intent(out) :: gapi
-    integer, intent(out) :: nmcp
-    integer, intent(out) :: nb_poin_inte
+    integer(kind=8), intent(out) :: nmcp
+    integer(kind=8), intent(out) :: nb_poin_inte
     real(kind=8), intent(out) :: poin_inte_sl(16)
     real(kind=8), intent(out) :: poin_inte_ma(16)
 !
@@ -67,7 +67,7 @@ subroutine lcstco(l_upda_jaco, l_norm_smooth, i_reso_geom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jpcf
+    integer(kind=8) :: jpcf
 
 ! --------------------------------------------------------------------------------------------------
 !

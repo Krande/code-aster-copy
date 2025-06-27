@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine rfnoch()
 #include "asterfort/titre.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
-    integer :: ifm, niv
-    integer :: n, nc, ng, int, ind, nsst, iret
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: n, nc, ng, int, ind, nsst, iret
     character(len=8) :: k8b, noma, sst, basemo, noeud
     character(len=24) :: valk(2), nogno, intitu
     character(len=16) :: parax, paray, nomcmd, typcon

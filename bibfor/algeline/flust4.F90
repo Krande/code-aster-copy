@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ subroutine flust4(melflu, typflu, base, noma, nuor, &
 #include "asterfort/rslipa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbm, npv, nivpar, nivdef, nuor(*)
+    integer(kind=8) :: nbm, npv, nivpar, nivdef, nuor(*)
     real(kind=8) :: amor(*), freq(*), masg(*), vite(*), fact(*)
     character(len=8) :: typflu, base, noma
     character(len=19) :: melflu
@@ -81,11 +81,11 @@ subroutine flust4(melflu, typflu, base, noma, nuor, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iamfr, iaxe, icoef, icomp, ier, ifr, ifreqi
-    integer :: igeom, iicoq, im, imaj, imasse, imod, ior
-    integer :: iorco, iv, ivabs, ivcpr, iwork, jmod
-    integer :: kec, lfact, lfsgm, lfsvi, lfsvk, lfsvr, lmasg
-    integer :: lwork, n1, nt, numod
+    integer(kind=8) :: iamfr, iaxe, icoef, icomp, ier, ifr, ifreqi
+    integer(kind=8) :: igeom, iicoq, im, imaj, imasse, imod, ior
+    integer(kind=8) :: iorco, iv, ivabs, ivcpr, iwork, jmod
+    integer(kind=8) :: kec, lfact, lfsgm, lfsvi, lfsvk, lfsvr, lmasg
+    integer(kind=8) :: lwork, n1, nt, numod
     real(kind=8) :: cf0, fi, hmoy, pi, s0
     real(kind=8) :: u0
 !-----------------------------------------------------------------------

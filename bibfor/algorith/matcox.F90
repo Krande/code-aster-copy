@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine matcox(ndim, pp, ddt1, ddt2, ddt3, &
     real(kind=8) :: p(3, 3), mmat(216, 216)
     real(kind=8) :: jac, ffp(27)
     real(kind=8) :: fk(27, 3, 3)
-    integer :: ndim, ddlh, ddls, nno, singu
+    integer(kind=8) :: ndim, ddlh, ddls, nno, singu
 !.......................................................................
 !
 !         CALCUL DES MATRICES DE CONTACT FROTTEMENT
@@ -41,7 +41,7 @@ subroutine matcox(ndim, pp, ddt1, ddt2, ddt3, &
 !.......................................................................
     real(kind=8) :: ddt11(3, 3), ddt21(3, 3), ddt31(3, 3), ddt41(3, 3)
     real(kind=8) :: ddt111(3, 3), ddt211(3, 3), ddt311(3, 3), ddt411(3, 3)
-    integer :: i, j, k, l, alpi, alpj
+    integer(kind=8) :: i, j, k, l, alpi, alpj
 !
 !.......................................................................
 !

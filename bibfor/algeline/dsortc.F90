@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ subroutine dsortc(which, apply, n, xreal, ximag, &
 #include "blas/dlapy2.h"
     character(len=2) :: which
     aster_logical :: apply
-    integer :: n
+    integer(kind=8) :: n
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
@@ -100,7 +100,7 @@ subroutine dsortc(which, apply, n, xreal, ximag, &
 !     %---------------%
 !     | LOCAL SCALARS |
 !     %---------------%C
-    integer :: i, igap, j
+    integer(kind=8) :: i, igap, j
     real(kind=8) :: temp, temp1, temp2
 !
 !     %--------------------%

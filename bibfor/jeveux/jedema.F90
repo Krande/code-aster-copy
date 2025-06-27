@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,33 +26,33 @@ subroutine jedema()
 #include "jeveux_private.h"
 #include "asterfort/jjlide.h"
 #include "asterfort/utmess.h"
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: jcara, jdate, jdocu, jgenr, jhcod, jiadd
-    integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
-    integer :: jrnom, jtype, n
+    integer(kind=8) :: jcara, jdate, jdocu, jgenr, jhcod, jiadd
+    integer(kind=8) :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
+    integer(kind=8) :: jrnom, jtype, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
 ! ----------------------------------------------------------------------
-    integer :: k, iadmi, ideb, ifin, idos, idco, ic, is
+    integer(kind=8) :: k, iadmi, ideb, ifin, idos, idco, ic, is
     character(len=8) :: ksuf
     character(len=24) :: d24
     data d24/'$$$$$$$$$$$$$$$$$$$$$$$$'/

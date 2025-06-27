@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine mlmatc(ni, nk, nj, a, b, &
                   c)
     implicit none
-    integer :: ni, nk, nj
+    integer(kind=8) :: ni, nk, nj
     complex(kind=8) :: a(ni, *), b(nk, *), c(ni, *)
 !     CALCUL COMPLEXE MATRICIEL C = A * B
 !     MATRICE ORDONNEES PAR COLONNES DESCENDANTES
@@ -29,7 +29,7 @@ subroutine mlmatc(ni, nk, nj, a, b, &
 !     : C  : MATRICE C(NI,NJ)
 !     : NI , NJ ,NK : DIMENSIONS DES MATRICES
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     complex(kind=8) :: xcres
 !
     do i = 1, ni

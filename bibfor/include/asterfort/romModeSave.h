@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
                            nbSnap_)
         use Rom_Datastructure_type
         character(len=8), intent(in) :: resultName
-        integer, intent(in) :: numeMode
+        integer(kind=8), intent(in) :: numeMode
         type(ROM_DS_Field), intent(in) :: mode
         character(len=24), intent(in) :: fieldIden
         real(kind=8), optional, pointer :: modeValeR_(:)
         complex(kind=8), optional, pointer :: modeValeC_(:)
         real(kind=8), optional, intent(in) :: modeSing_
-        integer, optional, intent(in) :: numeSlice_, nbSnap_
+        integer(kind=8), optional, intent(in) :: numeSlice_, nbSnap_
     end subroutine romModeSave
 end interface

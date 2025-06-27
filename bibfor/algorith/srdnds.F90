@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine srdnds(nmat, materf, i1, devsig, bprimp, nvi, vint, val, para, tmp, d
     !!! Variables globales
     !!!
 
-    integer :: nmat, nvi, val
+    integer(kind=8) :: nmat, nvi, val
     real(kind=8) :: materf(nmat, 2), dndsig(6, 6), devsig(6), i1
     real(kind=8) :: bprimp, vint(nvi), para(3), tmp
 
@@ -54,7 +54,7 @@ subroutine srdnds(nmat, materf, i1, devsig, bprimp, nvi, vint, val, para, tmp, d
     !!! Variables locales
     !!!
 
-    integer :: ndt, ndi, i, j
+    integer(kind=8) :: ndt, ndi, i, j
 
     real(kind=8) :: dsdsig(6, 6), di1dsi(6), sii
     real(kind=8) :: dbetds(6), dbetdi, mident(6, 6)

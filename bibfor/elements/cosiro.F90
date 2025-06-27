@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,9 +62,9 @@ subroutine cosiro(nomte, param, loue, sens, goun, &
     character(len=16) :: nomte
     character(len=2) :: sens
     character(len=1) :: loue, goun, sour
-    integer :: jtens, npgt, jgeom, jcara
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: itab(7), iret, nbpt, nbsp
+    integer(kind=8) :: jtens, npgt, jgeom, jcara
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: itab(7), iret, nbpt, nbsp
     parameter(npgt=10)
     real(kind=8) :: matevn(2, 2, npgt), matevg(2, 2, npgt)
     real(kind=8) :: t2iu(4), t2ui(4), pgl(3, 3), epais, alpha, beta

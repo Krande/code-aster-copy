@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
-    integer :: nexci, nexcir, neq, nbmode
-    integer :: idescf(*), inumor(*), iadvec(*)
+    integer(kind=8) :: nexci, nexcir, neq, nbmode
+    integer(kind=8) :: idescf(*), inumor(*), iadvec(*)
     real(kind=8) :: coefm(*), riggen(nbmode)
     character(len=8) :: nomfon(2*nexci)
     character(len=8) :: fondep(2*nexci), fonvit(2*nexci)
@@ -73,7 +73,7 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
 !
 !
 !
-    integer :: i, ier, ninst, jprol, nexcit
+    integer(kind=8) :: i, ier, ninst, jprol, nexcit
     real(kind=8) :: alpha
     real(kind=8) :: coef
     character(len=2) :: ires
@@ -84,15 +84,15 @@ subroutine mdrecf(nexci, nexcir, idescf, nomfon, coefm, &
     character(len=19) :: veasge, fonct, facce, tmpcha
     character(len=19) :: chamn2, chamno, nofk19, resu
     character(len=24) :: deeq, typeba, mesh
-    integer :: jpsdel, npsdel, iipsdl
+    integer(kind=8) :: jpsdel, npsdel, iipsdl
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iddeeq, ieq, ii, iinst
-    integer ::  inum, iret, jdepl, jmod, jdesc
-    integer :: jvale, l1, lprol, m1, n1, n2, n3
-    integer :: n4, n5, na, nbv, nf, nm
+    integer(kind=8) :: iddeeq, ieq, ii, iinst
+    integer(kind=8) ::  inum, iret, jdepl, jmod, jdesc
+    integer(kind=8) :: jvale, l1, lprol, m1, n1, n2, n3
+    integer(kind=8) :: n4, n5, na, nbv, nf, nm
     real(kind=8), pointer :: modco(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: base(:) => null()
     real(kind=8), pointer :: mod(:) => null()

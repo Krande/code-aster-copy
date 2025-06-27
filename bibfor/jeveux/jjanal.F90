@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ subroutine jjanal(condlu, nval, nvalo, lval, cval)
     implicit none
 #include "asterfort/utmess.h"
     character(len=*) :: condlu, cval(*)
-    integer :: nval, nvalo, lval(*)
+    integer(kind=8) :: nval, nvalo, lval(*)
 !
-    integer :: long, i, j, nbsc
+    integer(kind=8) :: long, i, j, nbsc
 !
     do i = 1, nval
         cval(i) = ' '

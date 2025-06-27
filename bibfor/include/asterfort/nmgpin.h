@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 !
 interface
     subroutine nmgpin(ndim, nno, axi, vu)
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         aster_logical :: axi
-        integer :: vu(3, 27)
+        integer(kind=8) :: vu(3, 27)
     end subroutine nmgpin
 end interface

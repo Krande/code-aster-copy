@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine cpnoq(main, numa, coor, ind, nomnoe)
 #include "asterfort/jedema.h"
 #include "asterfort/reerel.h"
 !
-    integer :: ind, numa
+    integer(kind=8) :: ind, numa
     real(kind=8) :: coor(3, *)
     character(len=8) :: main
     character(len=24) :: nomnoe
@@ -53,8 +53,8 @@ subroutine cpnoq(main, numa, coor, ind, nomnoe)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: lino(6), jtab, lgnd, iret
-    integer :: inc1, inc2, aux
+    integer(kind=8) :: lino(6), jtab, lgnd, iret
+    integer(kind=8) :: inc1, inc2, aux
     real(kind=8) ::xe(3), xp(3), tabar(6*3)
 !
     character(len=8) :: nomnd, eletyp

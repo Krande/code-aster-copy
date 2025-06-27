@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,6 @@ interface
         character(len=8) :: intf
         character(len=19) :: raid
         character(len=19) :: raildl
-        integer :: inord
+        integer(kind=8) :: inord
     end subroutine camoco
 end interface

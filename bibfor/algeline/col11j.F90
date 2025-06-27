@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 subroutine col11j(fronti, frn, n, t)
 ! person_in_charge: olivier.boiteau at edf.fr
     implicit none
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: fronti(*), t(n), frn(*)
 !
-    integer :: i, j, ic1, id1, jd1, l
+    integer(kind=8) :: i, j, ic1, id1, jd1, l
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     ic1 = 2

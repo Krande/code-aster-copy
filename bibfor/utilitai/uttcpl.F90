@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
     implicit none
 #include "asterfort/assert.h"
-    integer :: dim, nbmesu
+    integer(kind=8) :: dim, nbmesu
     character(len=1) :: prpal(dim)
     character(len=24) :: nomc(dim)
     character(len=80) :: noml(dim)
@@ -34,12 +34,12 @@ subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
 !  OUT PRPAL(IMES) :  'P' : MESURE PRICIPALE
 !                     'S' : MESURE SECONDAIRE
 ! ----------------------------------------------------------------------
-    integer :: nbmax, k, i1, i2
+    integer(kind=8) :: nbmax, k, i1, i2
     parameter(nbmax=30)
     character(len=80) :: d1(nbmax)
 !
 !     -- COMMONS POUR MESURE DE TEMPS :
-    integer :: mtpniv, mtpsta, indmax
+    integer(kind=8) :: mtpniv, mtpsta, indmax
     parameter(indmax=5)
     character(len=80) :: snolon(indmax)
     real(kind=8) :: valmes(indmax*7), valmei(indmax*7)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
+    integer(kind=8) :: nbvec, nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vectn(3*nbvec)
     real(kind=8) :: vwork(tdisp)
 !    real(kind=8) ::vsign(nbvec*nbordr)
-    integer :: jvsign
+    integer(kind=8) :: jvsign
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA CONTRAINTE NORMALE POUR TOUS LES VECTEURS NORMAUX
 !      A TOUS LES NUMEROS D'ORDRE.
@@ -58,7 +58,7 @@ subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp, &
 !                     NORMALE, POUR TOUS LES NUMEROS D'ORDRE
 !                     DE CHAQUE VECTEUR NORMAL.
 ! ----------------------------------------------------------------------
-    integer :: n, decal, ivect, iordr, adrs
+    integer(kind=8) :: n, decal, ivect, iordr, adrs
     real(kind=8) :: nx, ny, nz
     real(kind=8) :: sixx, siyy, sizz, sixy, sixz, siyz, fx, fy, fz, norm
 !     ------------------------------------------------------------------

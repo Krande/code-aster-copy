@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine rrssm2(neq, smhcr, smhci, smdir, smdii,&
                       idlexc, coef, valmi, valmr)
-        integer :: neq
+        integer(kind=8) :: neq
         integer(kind=4) :: smhcr(*)
         integer(kind=4) :: smhci(*)
-        integer :: smdir(*)
-        integer :: smdii(*)
-        integer :: idlexc(*)
+        integer(kind=8) :: smdir(*)
+        integer(kind=8) :: smdii(*)
+        integer(kind=8) :: idlexc(*)
         real(kind=8) :: coef
         real(kind=8) :: valmi(*)
         real(kind=8) :: valmr(*)

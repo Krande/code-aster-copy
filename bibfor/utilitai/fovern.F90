@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: nbfonc, ier
+    integer(kind=8) :: nbfonc, ier
     character(len=*) :: vecnom(nbfonc), vecpro(*)
 !     VERIFICATION DE L'HOMOGENEITE DES PARAMETRES DES FONCTIONS
 !     COMPOSANT UNE NAPPE
@@ -42,8 +42,8 @@ subroutine fovern(vecnom, nbfonc, vecpro, ier)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: i, jprof, nbpf
-    integer :: vali
+    integer(kind=8) :: i, jprof, nbpf
+    integer(kind=8) :: vali
     character(len=24) :: chnom
     character(len=24) :: valk(3)
     character(len=16) :: prolgd, interp, typfon, nompf(10)

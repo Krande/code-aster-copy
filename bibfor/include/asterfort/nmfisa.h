@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
     subroutine nmfisa(axi, geom, kpg, poids, b)
         aster_logical :: axi
         real(kind=8) :: geom(2, 4)
-        integer :: kpg
+        integer(kind=8) :: kpg
         real(kind=8) :: poids
         real(kind=8) :: b(2, 8)
     end subroutine nmfisa

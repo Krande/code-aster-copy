@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine slecor(iunv, datset)
-        integer :: iunv
-        integer :: datset
+        integer(kind=8) :: iunv
+        integer(kind=8) :: datset
     end subroutine slecor
 end interface

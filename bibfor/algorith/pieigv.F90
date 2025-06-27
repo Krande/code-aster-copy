@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm, &
 #include "asterfort/zerod2.h"
 #include "blas/ddot.h"
     character(len=8) :: typmod(2)
-    integer :: neps, imate
+    integer(kind=8) :: neps, imate
     real(kind=8) :: epsm(neps), epspc(neps), epsdc(neps), etamin, etamax, tau
     real(kind=8) :: vim(2)
     real(kind=8) :: copilo(2, 2)
@@ -56,8 +56,8 @@ subroutine pieigv(neps, tau, imate, vim, epsm, &
 ! ----------------------------------------------------------------------
 !
     aster_logical :: cplan
-    integer :: ndim, ndimsi, k, iter, nitmax
-    integer :: ifm, niv
+    integer(kind=8) :: ndim, ndimsi, k, iter, nitmax
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: trepsd, coplan, sigeld(6)
     real(kind=8) :: phim, phip, phid
     real(kind=8) :: tr(6), vecp(3, 3), rac2
@@ -69,7 +69,7 @@ subroutine pieigv(neps, tau, imate, vim, epsm, &
     real(kind=8) :: crit1, crit2
     real(kind=8) :: critp1, critp2
     real(kind=8) :: epsvp
-    integer :: icodre(3), kpg, spt
+    integer(kind=8) :: icodre(3), kpg, spt
     character(len=16) :: nomres(3)
     character(len=8) :: fami, poum
     real(kind=8) :: valres(3)

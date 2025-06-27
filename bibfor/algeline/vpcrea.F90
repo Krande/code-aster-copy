@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,14 +26,14 @@ subroutine vpcrea(icond, modes, masse, amor, raide, &
 #include "asterfort/jemarq.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/utmess.h"
-    integer :: icond, ier
+    integer(kind=8) :: icond, ier
     character(len=*) :: modes, masse, amor, raide, nume
 !     CREATION OU VERIFICATION DE COHERENCE DES MODES
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
 !
-    integer :: iret, imat(3), i4, i
+    integer(kind=8) :: iret, imat(3), i4, i
     character(len=14) :: nume2, numat(3)
     character(len=19) :: numddl, numtmp, nomat(3)
     character(len=24) :: valk(4), matric(3), raide2, masse2, amor2

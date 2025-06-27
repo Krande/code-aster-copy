@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris, &
     implicit none
 #include "asterfort/lcmmdc.h"
 #include "asterfort/utmess.h"
-    integer :: ifa, nmat, nbcomm(nmat, 3), nbsys, is, iexp, nfs, nsg, nsfv
+    integer(kind=8) :: ifa, nmat, nbcomm(nmat, 3), nbsys, is, iexp, nfs, nsg, nsfv
     real(kind=8) :: coeft(nmat), dy(*), vind(*), hsr(nsg, nsg), sq, expbp(*)
     character(len=16) :: necris
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     common/polycr/irr, decirr, nbsyst, decal, gdef
 ! person_in_charge: jean-michel.proix at edf.fr
 !  COMPORTEMENT MONOCRISTALLIN : ECROUISSAGE ISOTROPE
@@ -51,7 +51,7 @@ subroutine lcmmfi(coeft, ifa, nmat, nbcomm, necris, &
     real(kind=8) :: p, r0, q, b, rp, b1, b2, q1, q2
     real(kind=8) :: pr, mu, ceff, alpham(12), alphas(12), r8b
     real(kind=8) :: alloop, alpvid, filoop, rhovid
-    integer :: iei, ir, nueiso
+    integer(kind=8) :: iei, ir, nueiso
 !     ----------------------------------------------------------------
 !
     iei = nbcomm(ifa, 3)

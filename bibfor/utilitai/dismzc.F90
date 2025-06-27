@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi, nomobz, repkz
 !     --     DISMOI( 'Z_CST', MODELE, ... )
 !    IN:
@@ -49,15 +49,15 @@ subroutine dismzc(questi, nomobz, repi, repkz, ierd)
     character(len=19) :: nolig
     character(len=24) :: nema
     character(len=32) :: repk
-    integer :: idnema, ier
-    integer :: ii, ilmaco, ima, ino, iocc, itypm
-    integer :: jima, jnbno, nbma, nbnoma, nbnot, nbpt, numail
-    integer :: nunoel, nunota, nutioc
+    integer(kind=8) :: idnema, ier
+    integer(kind=8) :: ii, ilmaco, ima, ino, iocc, itypm
+    integer(kind=8) :: jima, jnbno, nbma, nbnoma, nbnot, nbpt, numail
+    integer(kind=8) :: nunoel, nunota, nutioc
     real(kind=8) :: z1
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     character(len=8), pointer :: typema(:) => null()
-    integer, pointer :: nbno(:) => null()
+    integer(kind=8), pointer :: nbno(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 ! -----  FONCTIONS FORMULES

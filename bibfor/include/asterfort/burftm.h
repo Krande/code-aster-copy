@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine burftm(cmp, ndim, vim, epsfm)
         character(len=*) :: cmp
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: vim(33)
         real(kind=8) :: epsfm(6)
     end subroutine burftm

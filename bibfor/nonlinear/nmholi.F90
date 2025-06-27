@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids, &
 #include "asterfort/rcvalb.h"
 #include "blas/dnrm2.h"
     aster_logical :: axi
-    integer :: ndim, nno, npg, imate, ipoids, ivf, idfde
+    integer(kind=8) :: ndim, nno, npg, imate, ipoids, ivf, idfde
     real(kind=8) :: geom(ndim, nno), depl(ndim, nno), inst, chlim(3)
 !
 ! --------------------------------------------------------------------
@@ -52,12 +52,12 @@ subroutine nmholi(ndim, axi, nno, npg, ipoids, &
 !             3 - MAX( SIEQ/SY )
 ! -------------------------------------------------------------------
 !
-    integer :: kpg, ndimsi, spt
+    integer(kind=8) :: kpg, ndimsi, spt
     character(len=8) :: fami, poum
     real(kind=8) :: eps(6), poids, epsno, sy, m, am, epsh
     real(kind=8) :: dfdi(27, 3), fbid(3, 3), r
     real(kind=8) :: rac23, val(1)
-    integer :: cod(1)
+    integer(kind=8) :: cod(1)
     blas_int :: b_incx, b_n
 ! ------------------------------------------------------------------
 !

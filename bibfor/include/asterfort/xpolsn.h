@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,20 +23,20 @@ interface
                       ima, iad, igeom, nfiss, ndime,&
                       ndim, jconx1, jconx2, fisco, co,&
                       lsn, lst)
-        integer :: nfiss
-        integer :: n
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: n
         character(len=8) :: elrefp
-        integer :: ino
-        integer :: jlsn
-        integer :: jlst
-        integer :: ima
-        integer :: iad
-        integer :: igeom
-        integer :: ndime
-        integer :: ndim
-        integer :: jconx1
-        integer :: jconx2
-        integer :: fisco(*)
+        integer(kind=8) :: ino
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jlst
+        integer(kind=8) :: ima
+        integer(kind=8) :: iad
+        integer(kind=8) :: igeom
+        integer(kind=8) :: ndime
+        integer(kind=8) :: ndim
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: fisco(*)
         real(kind=8) :: co(3)
         real(kind=8) :: lsn(nfiss)
         real(kind=8) :: lst(nfiss)

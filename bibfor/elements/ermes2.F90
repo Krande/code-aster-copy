@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine ermes2(ino, typema, typmav, iref1, ivois, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/indiis.h"
-    integer :: ino, iref1, ivois, isig, nbcmp
+    integer(kind=8) :: ino, iref1, ivois, isig, nbcmp
     real(kind=8) :: dsg11(3), dsg22(3), dsg12(3)
     character(len=8) :: typema, typmav
 !  ERREUR EN MECANIQUE - TERME DE SAUT - DIMENSION 2
@@ -62,9 +62,9 @@ subroutine ermes2(ino, typema, typmav, iref1, ivois, &
 !
 !
 !
-    integer :: iarepe, jceld, jcelv, imav, igrel, iel, iaval, iconx1, iconx2
-    integer :: jad, jadv, ncher
-    integer :: nbs, nbna, nbsv, nbnv, i, jno, mno, inov, jnov, mnov
+    integer(kind=8) :: iarepe, jceld, jcelv, imav, igrel, iel, iaval, iconx1, iconx2
+    integer(kind=8) :: jad, jadv, ncher
+    integer(kind=8) :: nbs, nbna, nbsv, nbnv, i, jno, mno, inov, jnov, mnov
 !
     real(kind=8) :: sig11(3), sig22(3), sig12(3), sigv11(3), sigv22(3)
     real(kind=8) :: sigv12(3)

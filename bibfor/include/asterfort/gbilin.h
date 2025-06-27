@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ interface
                   c2, c3, cs, th, coef,&
                   rho, puls, axi, g)
         character(len=*) :: fami
-        integer :: kp
-        integer :: imate
+        integer(kind=8) :: kp
+        integer(kind=8) :: imate
         real(kind=8) :: dudm(3, 4)
         real(kind=8) :: dvdm(3, 4)
         real(kind=8) :: dtdm(3, 4)

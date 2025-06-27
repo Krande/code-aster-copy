@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine nmextc(ds_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=16), intent(in) :: keyw_fact
-    integer, intent(in) :: i_keyw_fact
+    integer(kind=8), intent(in) :: i_keyw_fact
     character(len=24), intent(out) :: field_type
     aster_logical, intent(out) :: l_extr
 !
@@ -51,7 +51,7 @@ subroutine nmextc(ds_inout, keyw_fact, i_keyw_fact, field_type, l_extr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nchp, n1, i_field
+    integer(kind=8) :: nchp, n1, i_field
 !
 ! --------------------------------------------------------------------------------------------------
 !

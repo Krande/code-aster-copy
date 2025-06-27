@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,26 +28,26 @@ interface
                       lsup, borsup, linf, borinf, lmax,&
                       lmin, lcor, ndim, coor, nolili,&
                       formr, ncmpv, nucmp)
-        integer :: ifi
-        integer :: nbel
-        integer :: ligrel(*)
-        integer :: nbgrel
-        integer :: longr(*)
-        integer :: ncmpmx
+        integer(kind=8) :: ifi
+        integer(kind=8) :: nbel
+        integer(kind=8) :: ligrel(*)
+        integer(kind=8) :: nbgrel
+        integer(kind=8) :: longr(*)
+        integer(kind=8) :: ncmpmx
         real(kind=8) :: vale(*)
         character(len=*) :: nomcmp(*)
         character(len=*) :: nomel(*)
         character(len=*) :: loc
-        integer :: celd(*)
-        integer :: connex(*)
-        integer :: point(*)
+        integer(kind=8) :: celd(*)
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: point(*)
         character(len=*) :: nomnos(*)
-        integer :: nbcmpt
-        integer :: nucmpu(*)
-        integer :: nbnot
-        integer :: numnoe(*)
-        integer :: nbmat
-        integer :: nummai(*)
+        integer(kind=8) :: nbcmpt
+        integer(kind=8) :: nucmpu(*)
+        integer(kind=8) :: nbnot
+        integer(kind=8) :: numnoe(*)
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nummai(*)
         aster_logical :: lsup
         real(kind=8) :: borsup
         aster_logical :: linf
@@ -55,11 +55,11 @@ interface
         aster_logical :: lmax
         aster_logical :: lmin
         aster_logical :: lcor
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: coor(*)
         character(len=19) :: nolili
         character(len=*) :: formr
-        integer :: ncmpv
-        integer :: nucmp(*)
+        integer(kind=8) :: ncmpv
+        integer(kind=8) :: nucmp(*)
     end subroutine ircerl
 end interface

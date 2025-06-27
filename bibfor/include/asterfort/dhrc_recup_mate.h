@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine dhrc_recup_mate(imate, compor, a0, c0,&
                      aa_t, ga_t, ab, gb, ac,&
                      gc, aa_c, ga_c, cstseu)
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor
         real(kind=8), intent(out) :: a0(6, 6)
         real(kind=8), intent(out) :: c0(2, 2, 2)

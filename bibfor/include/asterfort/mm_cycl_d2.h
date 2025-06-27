@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,9 @@ interface
                           alpha_frot_matr,alpha_frot_vect)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_cont_poin
-        integer, intent(in) :: indi_cont_eval
-        integer, intent(in) :: indi_frot_eval
+        integer(kind=8), intent(in) :: i_cont_poin
+        integer(kind=8), intent(in) :: indi_cont_eval
+        integer(kind=8), intent(in) :: indi_frot_eval
         real(kind=8), intent(in)  :: pres_frot_curr(3),pres_frot_prev(3)
         real(kind=8), intent(in)  :: dist_frot_curr(3),dist_frot_prev(3)
         real(kind=8), intent(in)  :: coef_frot_prev

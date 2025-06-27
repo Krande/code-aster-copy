@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine lc0017(fami, kpg, ksp, ndim, imate, &
 ! aslint: disable=W1504,W0104
     implicit none
 #include "asterfort/nmhoff.h"
-    integer :: imate, ndim, kpg, ksp, codret, icomp, nvi
+    integer(kind=8) :: imate, ndim, kpg, ksp, codret, icomp, nvi
     real(kind=8) :: crit(*), angmas(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: epsm(6), deps(6)

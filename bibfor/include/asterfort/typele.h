@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     function typele(ligrez, igrel, icalc)
         character(len=*), intent(in) :: ligrez
-        integer, intent(in) :: igrel
-        integer, intent(in), optional :: icalc
-        integer :: typele
+        integer(kind=8), intent(in) :: igrel
+        integer(kind=8), intent(in), optional :: icalc
+        integer(kind=8) :: typele
     end function typele
 end interface

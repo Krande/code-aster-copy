@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,14 +27,14 @@ subroutine wp1dft(lmat, imode, zeropo, z, detnor, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: lmat, imode, idet
+    integer(kind=8) :: lmat, imode, idet
     complex(kind=8) :: zeropo(*), z, detnor
     real(kind=8) :: det
     real(kind=8) :: un, zero, dist
     character(len=24) :: nomdia
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iret, isturm, ldiag, neq
+    integer(kind=8) :: i, iret, isturm, ldiag, neq
 !-----------------------------------------------------------------------
     data nomdia/'                   .DIGS'/
 !

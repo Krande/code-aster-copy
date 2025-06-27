@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,15 +25,15 @@ interface
                       nmaini, nbmap, numpaq, tspaq, nomcri,&
                       nomfor, grdvie, forvie, fordef, proaxe,&
                       cesr)
-        integer :: nbmap
-        integer :: tdisp
+        integer(kind=8) :: nbmap
+        integer(kind=8) :: tdisp
         real(kind=8) :: vwork(tdisp)
-        integer :: vnbpg(nbmap)
-        integer :: nbpgt
-        integer :: nbordr
-        integer :: nmaini
-        integer :: numpaq
-        integer :: tspaq
+        integer(kind=8) :: vnbpg(nbmap)
+        integer(kind=8) :: nbpgt
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nmaini
+        integer(kind=8) :: numpaq
+        integer(kind=8) :: tspaq
         character(len=16) :: nomcri
         character(len=16) :: nomfor
         character(len=16) :: grdvie

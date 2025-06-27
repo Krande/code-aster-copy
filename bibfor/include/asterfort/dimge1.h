@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     function dimge1(ige1, ige2)
-        integer :: ige1
-        integer :: ige2
-        integer :: dimge1
+        integer(kind=8) :: ige1
+        integer(kind=8) :: ige2
+        integer(kind=8) :: dimge1
     end function dimge1
 end interface

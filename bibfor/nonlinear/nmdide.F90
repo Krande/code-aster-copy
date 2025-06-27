@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine nmdide(l_reuse, result, nume_last, inst_last)
 !
     character(len=8), intent(in) :: result
     aster_logical, intent(in) :: l_reuse
-    integer, intent(out) :: nume_last
+    integer(kind=8), intent(out) :: nume_last
     real(kind=8), intent(out) :: inst_last
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,12 +37,12 @@ subroutine aidtyp(impr)
 !
     character(len=16) :: nophen, note, noop, nomodl
     character(len=80) :: ligne
-    integer :: impr, nbtm, nbphen, nbte, nbop
-    integer :: iop, iphen, nbmodl, imodl, iamodl, itm, ite, ioptte
-    integer :: iaopmo, nucalc
-    integer, pointer :: optte(:) => null()
-    integer, pointer :: vnbop(:) => null()
-    integer, pointer :: vnbte(:) => null()
+    integer(kind=8) :: impr, nbtm, nbphen, nbte, nbop
+    integer(kind=8) :: iop, iphen, nbmodl, imodl, iamodl, itm, ite, ioptte
+    integer(kind=8) :: iaopmo, nucalc
+    integer(kind=8), pointer :: optte(:) => null()
+    integer(kind=8), pointer :: vnbop(:) => null()
+    integer(kind=8), pointer :: vnbte(:) => null()
     character(len=16), pointer :: nop2(:) => null()
     character(len=80), pointer :: not2(:) => null()
 !

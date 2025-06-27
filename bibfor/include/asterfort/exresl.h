@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine exresl(modatt, iparg, chin)
-        integer :: modatt
-        integer :: iparg
+        integer(kind=8) :: modatt
+        integer(kind=8) :: iparg
         character(len=19) :: chin
     end subroutine exresl
 end interface

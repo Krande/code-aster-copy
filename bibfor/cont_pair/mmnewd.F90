@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,18 +31,18 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: type_elem
-    integer, intent(in) :: nb_node
-    integer, intent(in) :: nb_dim
+    integer(kind=8), intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_dim
     real(kind=8), intent(in) :: elem_coor(27)
     real(kind=8), intent(in) :: pt_coor(3)
-    integer, intent(in) :: iter_maxi
+    integer(kind=8), intent(in) :: iter_maxi
     real(kind=8), intent(in) :: tole_maxi
     real(kind=8), intent(in) :: proj_dire(3)
     real(kind=8), intent(out) :: ksi1
     real(kind=8), intent(out) :: ksi2
     real(kind=8), intent(out) :: tang_1(3)
     real(kind=8), intent(out) :: tang_2(3)
-    integer, intent(out) :: error
+    integer(kind=8), intent(out) :: error
     real(kind=8), optional, intent(out) :: dist_
     real(kind=8), optional, intent(in) :: ksi1_init, ksi2_init
 !
@@ -76,7 +76,7 @@ subroutine mmnewd(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
     parameter(zero=0.d0)
     aster_logical, parameter :: debug = ASTER_FALSE
 !
-    integer :: ino, idim, iter
+    integer(kind=8) :: ino, idim, iter
     real(kind=8) :: ff(9), dff(2, 9)
     real(kind=8) :: vect_posi(3)
     real(kind=8) :: matrix(3, 3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                              model_genez, gran_namez)
         character(len=*), intent(in) :: nume_equa_genez
         character(len=1), intent(in) :: base
-        integer, intent(in) :: nb_equa
-        integer, intent(in) :: nb_sstr
-        integer, intent(in) :: nb_link
+        integer(kind=8), intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: nb_sstr
+        integer(kind=8), intent(in) :: nb_link
         character(len=*), optional, intent(in) :: model_genez
         character(len=*), optional, intent(in) :: gran_namez
     end subroutine nume_equa_gene_crsd

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine ordonn(nomfon, iret)
 #include "asterfort/uttrif.h"
 !
     character(len=19) :: nomfon
-    integer :: iret
+    integer(kind=8) :: iret
 ! person_in_charge: mathieu.courtois at edf.fr
 ! ----------------------------------------------------------------------
 !     1. DECLENCHE UNE ERREUR <F> SI LES ABSCISSES NE SONT PAS MONOTONES
@@ -46,9 +46,9 @@ subroutine ordonn(nomfon, iret)
 ! IN     : IRET   : SI 1, ON S'ARRETE EN <F> SI ABSC. NON MONOTONES
 !                   SI 0, ON FORCE LE TRI
 ! ----------------------------------------------------------------------
-    integer :: ival
-    integer :: nbpara
-    integer :: nbval, nbpts, ier, i
+    integer(kind=8) :: ival
+    integer(kind=8) :: nbpara
+    integer(kind=8) :: nbval, nbpts, ier, i
     aster_logical :: isnap, inv
     character(len=1) :: codmes
     character(len=16) :: typfon

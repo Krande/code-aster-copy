@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine libint(imped, nume91, nbint, lisint, nbeq1)
         character(len=19) :: imped
         character(len=19) :: nume91
-        integer :: nbint
+        integer(kind=8) :: nbint
         character(len=24) :: lisint
-        integer :: nbeq1
+        integer(kind=8) :: nbeq1
     end subroutine libint
 end interface

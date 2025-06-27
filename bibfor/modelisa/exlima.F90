@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
     character(len=*) :: motfaz, base, modelz, ligrel
-    integer :: iocc
+    integer(kind=8) :: iocc
 ! but  :  scruter les mots cle tout/group_ma/maille pour creer
 !         un ligrel "reduit" a partir du ligrel du modele modelz
 !
@@ -48,7 +48,7 @@ subroutine exlima(motfaz, iocc, base, modelz, ligrel)
 !             - le nom du ligrel est obtenu par gnomsd
 !  -----------------------------------------------------------------
 !
-    integer :: n1, jma, nbma
+    integer(kind=8) :: n1, jma, nbma
     character(len=8) :: modele, noma
     character(len=16) :: motfac, motcle(2), typmcl(2), oper, k16b
     character(len=19) :: ligrmo

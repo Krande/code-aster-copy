@@ -57,17 +57,17 @@ subroutine te0560(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: matsym
-    integer :: nb_DOF
-    integer :: nnoQ, npg, imatuu, lgpg, lgpg1, ndim
-    integer :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
-    integer :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
-    integer :: icontm, ivarim
-    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
-    integer :: ivectu, icontp, ivarip, nnos, jv_ganoQ
-    integer :: ivarix, iret
-    integer :: jtab(7), jcret, codret
+    integer(kind=8) :: nb_DOF
+    integer(kind=8) :: nnoQ, npg, imatuu, lgpg, lgpg1, ndim
+    integer(kind=8) :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
+    integer(kind=8) :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
+    integer(kind=8) :: icontm, ivarim
+    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icarcr
+    integer(kind=8) :: ivectu, icontp, ivarip, nnos, jv_ganoQ
+    integer(kind=8) :: ivarix, iret
+    integer(kind=8) :: jtab(7), jcret, codret
     real(kind=8) :: angmas(3)
-    integer :: icodr1(1)
+    integer(kind=8) :: icodr1(1)
     character(len=8) :: typmod(2)
     character(len=4) :: fami
     character(len=16) :: elasKeyword, defo_comp

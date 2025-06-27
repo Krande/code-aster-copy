@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine invjax(stop, nno, ndim, nderiv, dff,&
                       coor, invjac, ipb, ndim_coor_)
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         character(len=1) :: stop
-        integer :: nderiv
+        integer(kind=8) :: nderiv
         real(kind=8) :: dff(3, nno)
         real(kind=8) :: coor(ndim*nno)
         real(kind=8) :: invjac(3, 3)
-        integer :: ipb
-        integer, optional, intent(in) :: ndim_coor_
+        integer(kind=8) :: ipb
+        integer(kind=8), optional, intent(in) :: ndim_coor_
     end subroutine invjax
 end interface

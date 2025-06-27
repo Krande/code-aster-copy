@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         real(kind=8) :: alpha
         real(kind=8) :: beta
         real(kind=8) :: coord(3, 9)
-        integer :: numnoe
+        integer(kind=8) :: numnoe
         real(kind=8) :: pgl(3, 3)
     end subroutine c3drep
 end interface

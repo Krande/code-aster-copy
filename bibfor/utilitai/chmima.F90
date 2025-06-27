@@ -45,7 +45,7 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
 #include "asterfort/idensd.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbordr
+    integer(kind=8) :: nbordr
     character(len=*) :: nomsd, nomsy, typmax, nocham, typcha
     character(len=8), optional :: typresu
     character(len=*), optional :: mcfz
@@ -69,10 +69,10 @@ subroutine chmima(nomsd, nomsy, typcha, typmax, nocham, typresu, &
     character(len=19) :: mcf
     character(len=5) :: sufv, sufsl
 !-----------------------------------------------------------------------
-    integer :: i, iad, in, inoe, inumer, iocc
-    integer :: iret, ivale, j, jddlx, jddly, jddlz, jdlrx
-    integer :: jdlry, jdlrz, jordr, jvpnt, n2, nbnoe, nc
-    integer :: neq, np, nvale, neq2, icsl
+    integer(kind=8) :: i, iad, in, inoe, inumer, iocc
+    integer(kind=8) :: iret, ivale, j, jddlx, jddly, jddlz, jdlrx
+    integer(kind=8) :: jdlry, jdlrz, jordr, jvpnt, n2, nbnoe, nc
+    integer(kind=8) :: neq, np, nvale, neq2, icsl
     real(kind=8) :: epsi, rs1, x, y, z
     logical :: verif
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,10 +42,10 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
 #include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !
-    integer :: ndim, nnod, nnop, nnog, npg, iw, idffd, lgpg
-    integer :: mate
-    integer :: vu(3, 27), vp(27), vpi(3, 27)
-    integer :: codret
+    integer(kind=8) :: ndim, nnod, nnop, nnog, npg, iw, idffd, lgpg
+    integer(kind=8) :: mate
+    integer(kind=8) :: vu(3, 27), vp(27), vpi(3, 27)
+    integer(kind=8) :: codret
     real(kind=8) :: vffd(nnod, npg), vffp(nnop, npg), vffg(nnog, npg)
     real(kind=8) :: instm, instp
     real(kind=8) :: geomi(ndim, nnod), ddlm(*), ddld(*), angmas(*)
@@ -102,15 +102,15 @@ subroutine nofipd(ndim, nnod, nnop, nnog, npg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     character(len=4), parameter :: fami = "RIGI"
     aster_logical, parameter :: mini = ASTER_FALSE, grand = ASTER_FALSE
     aster_logical :: axi
-    integer :: kpg, nddl
-    integer :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
-    integer :: os, kk
-    integer :: vuiana, vpiana, vpsa
-    integer :: cod(npg)
+    integer(kind=8) :: kpg, nddl
+    integer(kind=8) :: ia, na, ra, sa, ib, nb, rb, sb, ja, jb
+    integer(kind=8) :: os, kk
+    integer(kind=8) :: vuiana, vpiana, vpsa
+    integer(kind=8) :: cod(npg)
     character(len=16) :: rela_comp
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
     real(kind=8) :: deplm(3*27), depld(3*27)

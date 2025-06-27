@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,6 @@ subroutine copy_field_with_numbering(fieldin, fieldout, mesh, nume_equa, base,&
          character(len=19), intent(in) :: nume_equa
          character(len=1), intent(in) :: base
          character(len=1), optional, intent(in) :: typc
-         integer, optional, intent(in) :: nequa
+         integer(kind=8), optional, intent(in) :: nequa
     end subroutine copy_field_with_numbering
 end interface

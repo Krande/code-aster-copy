@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine gmeth2(nnoff, ndeg, gthi, gs, objcur, xl, gi, norfon)
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 
-    integer           :: nnoff, ndeg
+    integer(kind=8)           :: nnoff, ndeg
     real(kind=8)      :: gthi(1), gs(1), gi(1), xl
     character(len=24) :: objcur, norfon
 
@@ -50,7 +50,7 @@ subroutine gmeth2(nnoff, ndeg, gthi, gs, objcur, xl, gi, norfon)
 !      GI      --> VALEUR DE GI
 !......................................................................
 
-    integer           :: iadrt3, i, j
+    integer(kind=8)           :: iadrt3, i, j
     real(kind=8)      :: som
     character(len=24) :: matr
 

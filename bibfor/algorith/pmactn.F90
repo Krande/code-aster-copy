@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,10 +33,10 @@ subroutine pmactn(sddisc, ds_conv, iterat, numins, itemax, &
     character(len=19) :: sddisc
     character(len=24) :: sderro
     type(NL_DS_Conv), intent(in) :: ds_conv
-    integer :: liccvg(5)
+    integer(kind=8) :: liccvg(5)
     aster_logical :: itemax
-    integer :: action, actite
-    integer :: iterat, numins
+    integer(kind=8) :: action, actite
+    integer(kind=8) :: iterat, numins
 !
 ! ----------------------------------------------------------------------
 !
@@ -66,8 +66,8 @@ subroutine pmactn(sddisc, ds_conv, iterat, numins, itemax, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: retact, ievdac
-    integer :: ldccvg, faccvg
+    integer(kind=8) :: retact, ievdac
+    integer(kind=8) :: ldccvg, faccvg
     character(len=19) :: solveu
 !
 ! ----------------------------------------------------------------------

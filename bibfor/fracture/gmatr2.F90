@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine gmatr2(nnoff, ndeg, abscur, xl, matr, norfon)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 
-    integer           :: nnoff, ndeg
+    integer(kind=8)           :: nnoff, ndeg
     real(kind=8)      :: xl
     character(len=24) :: abscur
     character(len=24) :: matr, norfon
@@ -52,10 +52,10 @@ subroutine gmatr2(nnoff, ndeg, abscur, xl, matr, norfon)
 !   MATR     --> MATRICE DU SYTEME A RESOUDRE
 ! ......................................................................
 
-    integer, parameter :: npg = 14, nbnomx = 3, ndegmx = 7
-    integer            :: nseg, iseg, ipg, i, j, ij, jtabm
-    integer            :: jstmp, imatr, js, iadpol
-    integer            :: ino, nno, conn(3)
+    integer(kind=8), parameter :: npg = 14, nbnomx = 3, ndegmx = 7
+    integer(kind=8)            :: nseg, iseg, ipg, i, j, ij, jtabm
+    integer(kind=8)            :: jstmp, imatr, js, iadpol
+    integer(kind=8)            :: ino, nno, conn(3)
     real(kind=8)       :: ff(nbnomx), dff(3, nbnomx)
     real(kind=8)       :: ksi(1), mele(nbnomx, ndegmx)
     real(kind=8)       :: xpg(npg), wpg(npg), jac

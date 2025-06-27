@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,18 +37,18 @@ subroutine ccchuc_chamno(field_in_s, field_out_s, nb_node, list_node, nb_cmp, ty
 !
     character(len=19), intent(in) :: field_in_s
     character(len=19), intent(in) :: field_out_s
-    integer, intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_node
     character(len=24), intent(in) :: list_node
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=16), intent(in) :: type_comp
     character(len=16), intent(in) :: crit
-    integer, intent(in) :: nb_form
+    integer(kind=8), intent(in) :: nb_form
     character(len=8), intent(in) :: name_form(nb_form)
     character(len=8), intent(in) :: name_gd
-    integer, intent(in) :: nb_cmp_resu
+    integer(kind=8), intent(in) :: nb_cmp_resu
     character(len=24), intent(in) :: work_out_val
-    integer, intent(out) :: ichk
-    integer, intent(out) :: nb_node_out
+    integer(kind=8), intent(out) :: ichk
+    integer(kind=8), intent(out) :: nb_node_out
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,12 +75,12 @@ subroutine ccchuc_chamno(field_in_s, field_out_s, nb_node, list_node, nb_cmp, ty
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ino, icmp, nb_val_in, i_list_node, iel
-    integer :: j_resu, ichk_node
+    integer(kind=8) :: ino, icmp, nb_val_in, i_list_node, iel
+    integer(kind=8) :: j_resu, ichk_node
     character(len=19) :: work_val, work_cmp
-    integer :: j_val, j_cmp, j_nodein
-    integer ::   jchsl
-    integer :: jchrl
+    integer(kind=8) :: j_val, j_cmp, j_nodein
+    integer(kind=8) ::   jchsl
+    integer(kind=8) :: jchrl
     character(len=8), pointer :: cnsc(:) => null()
     real(kind=8), pointer :: chrv(:) => null()
     real(kind=8), pointer :: chsv(:) => null()

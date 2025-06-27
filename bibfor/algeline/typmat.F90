@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ function typmat(nbmat, tlimat)
 #include "asterfort/redetr.h"
 #include "asterfort/isParallelMesh.h"
     character(len=*) :: tlimat(*)
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     character(len=1) :: typmat
 !-----------------------------------------------------------------------
 !
@@ -46,8 +46,8 @@ function typmat(nbmat, tlimat)
 !----------------------------------------------------------------------
     character(len=8) :: sym, zero, mesh
     character(len=19) :: matel
-    integer :: i, itymat
-    integer :: iexi
+    integer(kind=8) :: i, itymat
+    integer(kind=8) :: iexi
     aster_logical :: l_pmesh
 !----------------------------------------------------------------------
 !     ITYMAT =  0 -> SYMETRIQUE

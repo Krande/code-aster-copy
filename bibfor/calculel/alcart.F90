@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,13 +62,13 @@ subroutine alcart(base, chinz, maz, nomgdz)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: nec, jdesc, gd, ncmpmx, ngdmx, nmamx
+    integer(kind=8) :: nec, jdesc, gd, ncmpmx, ngdmx, nmamx
     character(len=8) :: scal
     character(len=1) :: bas2
-    integer :: noma, jbid
+    integer(kind=8) :: noma, jbid
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: j1
+    integer(kind=8) :: j1
 !-----------------------------------------------------------------------
     call jemarq()
 !     NGDMX ET NMAMX : SERVENT A DIMENSIONNER LES OBJETS

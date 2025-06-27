@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,13 +34,13 @@ subroutine inttrbdf2_oper(nbequ, par, mgen, kgen, cgen, &
 #include "asterfort/trlds.h"
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)           :: nbequ
+    integer(kind=8), intent(in)           :: nbequ
     real(kind=8)                       :: par(:)
     real(kind=8), pointer  :: mgen(:), kgen(:), cgen(:)
     real(kind=8), pointer :: ktilda(:), ftild1(:), ftild2(:)
 !
 !   -0.2- Local variables
-    integer           :: i, j, iret
+    integer(kind=8)           :: i, j, iret
 
 !   --------------------------------------------------------------------------
 #define a(k) par(k)

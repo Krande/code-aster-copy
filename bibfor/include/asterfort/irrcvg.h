@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine irrcvg(dy, ddy, nr, nmat, mater,&
                       itmax, toler, iter, r, rini,&
                       irteti)
-        integer :: nmat
-        integer :: nr
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nr
         real(kind=8) :: dy(nr)
         real(kind=8) :: ddy(nr)
         real(kind=8) :: mater(nmat, 2)
-        integer :: itmax
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
-        integer :: iter
+        integer(kind=8) :: iter
         real(kind=8) :: r(nr)
         real(kind=8) :: rini(nr)
-        integer :: irteti
+        integer(kind=8) :: irteti
     end subroutine irrcvg
 end interface

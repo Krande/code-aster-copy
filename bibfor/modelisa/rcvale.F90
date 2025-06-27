@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,11 +31,11 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar, &
 #include "asterfort/rccome.h"
 #include "asterfort/rcvals.h"
 #include "asterfort/utmess.h"
-    integer, intent(in) :: nbpar, nbres
+    integer(kind=8), intent(in) :: nbpar, nbres
     character(len=*), intent(in) :: phenom
-    integer, intent(in) :: iarret
+    integer(kind=8), intent(in) :: iarret
     character(len=*), intent(in) :: nommaz
-    integer, intent(out) :: icodre(nbres)
+    integer(kind=8), intent(out) :: icodre(nbres)
     character(len=8), intent(in) :: nompar(nbpar)
     character(len=*), intent(in) :: nomres(nbres)
     real(kind=8), intent(in) :: valpar(nbpar)
@@ -74,13 +74,13 @@ subroutine rcvale(nommaz, phenom, nbpar, nompar, valpar, &
 !
 !
 !
-    integer :: nbmx, nbresp, ires, ier, nbr, nbc, nbk, iret
-    integer :: nbobj, nbf, ir, ik
+    integer(kind=8) :: nbmx, nbresp, ires, ier, nbr, nbc, nbk, iret
+    integer(kind=8) :: nbobj, nbf, ir, ik
     parameter(nbmx=30)
-    integer :: nbfp
+    integer(kind=8) :: nbfp
     real(kind=8) :: valrep(nbmx)
     aster_logical :: change
-    integer :: icodr2(nbmx)
+    integer(kind=8) :: icodr2(nbmx)
     character(len=2) :: kstop
     character(len=32) :: nomphe, phen, phepre
     character(len=8) :: matpre

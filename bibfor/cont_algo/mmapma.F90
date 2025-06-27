@@ -45,11 +45,11 @@ subroutine mmapma(mesh, ds_contact, model_ndim, i_zone, &
     character(len=8) :: aliase
     type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8) :: ksipr1, ksipr2
-    integer :: model_ndim
-    integer :: posmae, node_mast_nume
-    integer :: elem_mast_indx, elem_mast_nume, nnomae
-    integer :: i_zone, iptm, iptc
-    integer :: typint
+    integer(kind=8) :: model_ndim
+    integer(kind=8) :: posmae, node_mast_nume
+    integer(kind=8) :: elem_mast_indx, elem_mast_nume, nnomae
+    integer(kind=8) :: i_zone, iptm, iptc
+    integer(kind=8) :: typint
     real(kind=8) :: tau1m(3), tau2m(3), norm(3)
     character(len=8) :: nommam
     aster_logical :: lexfro
@@ -92,7 +92,7 @@ subroutine mmapma(mesh, ds_contact, model_ndim, i_zone, &
     real(kind=8) :: noor
     real(kind=8) :: ksipc1, ksipc2, wpc
     real(kind=8) :: tau1(3), tau2(3)
-    integer :: node_slav_indx, node_slav_nume
+    integer(kind=8) :: node_slav_indx, node_slav_nume
 !
 ! ----------------------------------------------------------------------
 !

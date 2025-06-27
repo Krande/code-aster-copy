@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
         real(kind=8), intent(in) :: laug_cont
         real(kind=8), intent(in) :: pres_near
-        integer, intent(out) :: zone_cont
+        integer(kind=8), intent(out) :: zone_cont
     end subroutine mm_cycl_zonc
 end interface

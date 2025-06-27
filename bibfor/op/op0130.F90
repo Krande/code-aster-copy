@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,14 +42,14 @@ subroutine op0130()
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/titre.h"
-    integer :: nbbloc, nbclas, i, nbind, nbno, jnomno
+    integer(kind=8) :: nbbloc, nbclas, i, nbind, nbno, jnomno
     real(kind=8) :: tdebut, tfin, offset, trepos
     character(len=8) :: base, modele, maillage
     character(len=8) :: trange, noeu, cmp, nomres
     character(len=16) :: nomcmd, concep, koptio, motcle(2), typmcl(2)
     character(len=24) :: nomno
     aster_logical :: loptio
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 !   ------------------------------------------------------------------
     data motcle/'NOEUD', 'GROUP_NO'/
     data typmcl/'NOEUD', 'GROUP_NO'/

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine coefam(ipas, ires, x, xsi0, cd)
-        integer :: ipas
-        integer :: ires
+        integer(kind=8) :: ipas
+        integer(kind=8) :: ires
         real(kind=8) :: x
         real(kind=8) :: xsi0
         real(kind=8) :: cd

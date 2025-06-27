@@ -36,7 +36,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 #include "asterfort/wkvect.h"
 !
     character(len=*), intent(in) :: baseZ, resultNameZ, resultTypeZ
-    integer, intent(in) :: nbStore
+    integer(kind=8), intent(in) :: nbStore
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,8 +53,8 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iField, iNova, iret, jvDummy
-    integer :: nbField, nbNova
+    integer(kind=8) :: iField, iNova, iret, jvDummy
+    integer(kind=8) :: nbField, nbNova
     character(len=1) :: base
     character(len=16) :: resultType
     character(len=19) :: resultName
@@ -65,7 +65,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For thermic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldTher = 25
+    integer(kind=8), parameter :: nbFieldTher = 25
     character(len=16), parameter :: fieldTher(nbFieldTher) = (/ &
                                     'TEMP            ', &
                                     'FLUX_ELGA       ', 'FLUX_ELNO       ', 'FLUX_NOEU       ', &
@@ -81,7 +81,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For external state variables
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldVarc = 8
+    integer(kind=8), parameter :: nbFieldVarc = 8
     character(len=16), parameter :: fieldVarc(nbFieldVarc) = (/ &
                                     'IRRA            ', 'TEMP            ', 'HYDR_ELNO       ', &
                                     'HYDR_NOEU       ', 'EPSA_ELNO       ', 'META_ELNO       ', &
@@ -90,7 +90,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For acoustic (transient)
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldAcou = 5
+    integer(kind=8), parameter :: nbFieldAcou = 5
     character(len=16), parameter :: fieldAcou(nbFieldAcou) = (/ &
                                     'PRES            ', 'PRAC_ELNO       ', 'PRAC_NOEU       ', &
                                     'INTE_ELNO       ', 'INTE_NOEU       '/)
@@ -98,14 +98,14 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For acoustic (modal)
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldMoac = 1
+    integer(kind=8), parameter :: nbFieldMoac = 1
     character(len=16), parameter :: fieldMoac(nbFieldMoac) = (/ &
                                     'PRES            '/)
 
 !     ------------------------------------------------------------------
 !                      For reduced mode
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldRom = 6
+    integer(kind=8), parameter :: nbFieldRom = 6
     character(len=16), parameter :: fieldRom(nbFieldRom) = (/ &
                                     'TEMP            ', &
                                     'DEPL            ', &
@@ -117,7 +117,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For mechanic
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldMeca = 132
+    integer(kind=8), parameter :: nbFieldMeca = 132
     character(len=16), parameter :: fieldMeca(nbFieldMeca) = (/ &
                                     'DEPL            ', 'VITE            ', 'ACCE            ', &
                                     'DEPL_ABSOLU     ', 'VITE_ABSOLU     ', 'ACCE_ABSOLU     ', &
@@ -173,7 +173,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For loads (EVOl_CHAR)
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldChar = 10
+    integer(kind=8), parameter :: nbFieldChar = 10
     character(len=16), parameter :: fieldChar(nbFieldChar) = (/ &
                                     'FORC_NODA       ', 'PRES            ', &
                                     'FVOL_3D         ', 'FVOL_2D         ', &
@@ -184,7 +184,7 @@ subroutine rscrsd(baseZ, resultNameZ, resultTypeZ, nbStore)
 !     ------------------------------------------------------------------
 !                      For keyword UTIL in CALC_CHAMP
 !     ------------------------------------------------------------------
-    integer, parameter :: nbFieldUtil = 40
+    integer(kind=8), parameter :: nbFieldUtil = 40
     character(len=16), parameter :: fieldUtil(nbFieldUtil) = (/ &
                                     'UT01_ELGA       ', 'UT01_ELNO       ', &
                                     'UT01_ELEM       ', 'UT01_NOEU       ', &

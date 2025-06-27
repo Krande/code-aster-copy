@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,6 +28,6 @@ interface
         real(kind=8), intent(in) :: sfld
         real(kind=8), intent(in) :: sig0(:)
         real(kind=8), intent(inout) :: dsw6(6)
-        integer, intent(in) :: nstrs
+        integer(kind=8), intent(in) :: nstrs
     end subroutine fludes3d
 end interface

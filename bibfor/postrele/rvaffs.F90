@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy, &
 #include "asterfort/rvinfa.h"
 #include "asterfort/rvtaso.h"
 !
-    integer :: iocc, i1, isd
+    integer(kind=8) :: iocc, i1, isd
     character(len=16) :: ncheff
     character(len=19) :: sdeval, nomtab
     character(len=24) :: sdlieu, sdmoy
@@ -49,8 +49,8 @@ subroutine rvaffs(mcf, iocc, sdlieu, sdeval, sdmoy, &
 ! IN  PREC   : R : PRECISION DU TEST
 ! IN  CRIT   : K8: CRITERE   DU TEST
 !     ------------------------------------------------------------------
-    integer :: anocp, nbcp, ioc, aabsc, nbpt, nboc, asdmo, niv
-    integer :: i, ifm, anomnd, nbco, nbsp, k
+    integer(kind=8) :: anocp, nbcp, ioc, aabsc, nbpt, nboc, asdmo, niv
+    integer(kind=8) :: i, ifm, anomnd, nbco, nbsp, k
     real(kind=8) :: s1, s2
     character(len=4) :: docul
     character(len=16) :: oper

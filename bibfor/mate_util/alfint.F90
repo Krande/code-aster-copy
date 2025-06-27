@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,11 +38,11 @@ subroutine alfint(chmatz, imate, mate_namz, tdef, para_namz, &
 #include "asterfort/get_tref.h"
 !
     character(len=*), intent(in) :: chmatz
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     character(len=*), intent(in) :: mate_namz
     real(kind=8), intent(in) :: tdef
     character(len=*), intent(in) :: para_namz
-    integer, intent(in) :: mate_nume
+    integer(kind=8), intent(in) :: mate_nume
     real(kind=8), intent(in) :: prec
     character(len=19), intent(inout) :: func_name
     aster_logical, intent(in) :: l_ther
@@ -67,12 +67,12 @@ subroutine alfint(chmatz, imate, mate_namz, tdef, para_namz, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_thm, l_tref_is_nan, l_empty
-    integer :: icodre(1), codret
+    integer(kind=8) :: icodre(1), codret
     character(len=8) :: chmate, mate_name, valk(2)
     character(len=32) :: phenom
     character(len=16) :: typres, para_name
     character(len=19) :: chwork
-    integer :: i, nbpts, jv_nomrc
+    integer(kind=8) :: i, nbpts, jv_nomrc
     real(kind=8) :: undemi, tref, alfref(1), alphai, ti, tim1, tip1
     real(kind=8) :: alfim1, alfip1, dalref
     character(len=24), pointer :: v_prol(:) => null()

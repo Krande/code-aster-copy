@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb, &
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: na, nb, ndim, nbmac
+    integer(kind=8) :: na, nb, ndim, nbmac
     character(len=8) :: noma
     character(len=19) :: macofo, cnxinv
 !
@@ -48,8 +48,8 @@ subroutine fonno1(noma, cnxinv, ndim, na, nb, &
 !       NBMAC  : NOMBRE DE MAILLES REMPLIES DANS MACOFO
 !
 !
-    integer :: jdrvlc, iatyma, jmaco, iamase, jcncin, ityp
-    integer :: nbmaca, adra, comp1, ima, numac, ino1, ndime, nn
+    integer(kind=8) :: jdrvlc, iatyma, jmaco, iamase, jcncin, ityp
+    integer(kind=8) :: nbmaca, adra, comp1, ima, numac, ino1, ndime, nn
     character(len=8) :: type
 !     -----------------------------------------------------------------
 !

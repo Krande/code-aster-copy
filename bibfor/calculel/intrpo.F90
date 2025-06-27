@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ subroutine intrpo(r, s, t, nno, vh)
 ! ......................................................................
 !
     real(kind=8) :: vh(50), hr(3), hs(3), ht(3)
-    integer :: n27(27)
+    integer(kind=8) :: n27(27)
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, ih, j, k, nno
+    integer(kind=8) :: i, i1, ih, j, k, nno
     real(kind=8) :: de, hu, r, rm, rp, s, sm
     real(kind=8) :: sp, t, tm, tp, uh, un
 !-----------------------------------------------------------------------

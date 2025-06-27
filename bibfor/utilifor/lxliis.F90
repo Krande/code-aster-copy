@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine lxliis(chaine, ival, ier)
     implicit none
 #include "asterfort/lxscan.h"
     character(len=*) :: chaine
-    integer :: ival, ier
+    integer(kind=8) :: ival, ier
 !    -------------------------------------------------------------------
 !  DOCUMENTATION "LX"
 !        ---------------------------------------------------------------
@@ -71,7 +71,7 @@ subroutine lxliis(chaine, ival, ier)
     real(kind=8) :: rval
 !
 !-----------------------------------------------------------------------
-    integer :: iclass, icol
+    integer(kind=8) :: iclass, icol
 !-----------------------------------------------------------------------
     ier = 0
     icol = 1

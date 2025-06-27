@@ -104,11 +104,12 @@ DataStructure::~DataStructure() {
     bool mainDs = _name.find( "." ) == std::string::npos && _name[0] != '&';
     std::string nameWithoutBlanks = strip( _name );
     // empty name or no memory manager : skip silently
-    if ( nameWithoutBlanks == "" || get_sh_jeveux_status() != 1 )
+    if ( nameWithoutBlanks == "" || get_sh_jeveux_status() != 1 ) {
         return;
-        // Allow to see when the datastructure is really deleted.
-        // In case of embraced datastructures, '_tco' is deallocated the first time
-        // (no type)
+    }
+    // Allow to see when the datastructure is really deleted.
+    // In case of embraced datastructures, '_tco' is deallocated the first time
+    // (no type)
 #ifdef ASTER_DEBUG_CXX_OBJECTS
     if ( mainDs && this->getType() != "not_found" ) {
         // Too low-level to call UTMESS.

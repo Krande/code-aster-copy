@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,13 +30,13 @@ subroutine mefsm1(vale, matgen, base, nomnum, nomsto, &
 #include "asterfort/ualfva.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmode, nbloc, nterm
+    integer(kind=8) :: nbmode, nbloc, nterm
     real(kind=8) :: vale(*)
     character(len=19) :: matgen
     character(len=1) :: base
     character(len=19) :: nomnum, nomsto
 !
-    integer :: i, j, iblo, iadesc, iaconl, jrefa, ldblo
+    integer(kind=8) :: i, j, iblo, iadesc, iaconl, jrefa, ldblo
     character(len=19) :: matrge
 ! DEB------------------------------------------------------------------
 !

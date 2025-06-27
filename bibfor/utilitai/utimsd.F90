@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1, &
 #include "asterfort/utmess.h"
 #include "asterfort/uttr24.h"
     character(len=*) :: sch1, base
-    integer :: ipos, niveau, unit
+    integer(kind=8) :: ipos, niveau, unit
     aster_logical :: lattr, lcont
     character(len=3), optional, intent(in) :: perm
 ! ----------------------------------------------------------------------
@@ -74,7 +74,7 @@ subroutine utimsd(unit, niveau, lattr, lcont, sch1, &
     character(len=24) :: ob1, chain2
     character(len=40) :: lb
     character(len=1) :: xous, bas2
-    integer :: long, nbval, nbobj, i
+    integer(kind=8) :: long, nbval, nbobj, i
     aster_logical :: tout
     character(len=8) :: kbid
     character(len=24), pointer :: liste(:) => null()

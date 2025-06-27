@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,8 +66,8 @@ subroutine comp_meca_chck(model, mesh, chmate, &
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=24), parameter :: cellAffe = '&&COMPMECASAVE.LIST'
     aster_logical :: lAllCellAffe
-    integer :: nbCellAffe
-    integer :: iFactorKeyword, nbFactorKeyword, exteDefo, lctestIret
+    integer(kind=8) :: nbCellAffe
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword, exteDefo, lctestIret
     character(len=16) :: defoComp, relaComp, typeCpla, typeComp, reguVisc, postIncr
     character(len=16) :: relaCompPY, defoCompPY
     character(len=19) :: partit, answer

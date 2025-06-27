@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine porigi(nomte, e, xnu, xl, klv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: istruc, itype
+    integer(kind=8) :: istruc, itype
     real(kind=8) :: a, a2, alfay, alfay2, alfaz, alfaz2
     real(kind=8) :: ey, ez, g
     real(kind=8) :: xfly, xflz, xiy, xiy2, xiz, xiz2
@@ -61,13 +61,13 @@ subroutine porigi(nomte, e, xnu, xl, klv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 18
+    integer(kind=8), parameter :: nb_cara = 18
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'EY1', 'EZ1', 'JX1', 'JG1', &
         'A2', 'IY2', 'IZ2', 'AY2', 'AZ2', 'EY2', 'EZ2', 'JX2', 'TVAR'/
 !
-    integer             :: retp(2), iret
+    integer(kind=8)             :: retp(2), iret
     real(kind=8)        :: valr(2)
     character(len=8)    :: valp(2)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine interf(mater, kfonc1, kfonc2, normf, x0, &
     character(len=8) :: mater, k8b
     real(kind=8) :: normf, x0
     real(kind=8) :: xrac
-    integer :: ier1, ier2, iter, itermx
+    integer(kind=8) :: ier1, ier2, iter, itermx
     real(kind=8) :: fx1(1), fx2(1), fx, dfx1, dfx2, dfx, tole, err
     character(len=32) :: phenom
-    integer :: icodr2(1)
+    integer(kind=8) :: icodr2(1)
 !
     phenom = 'GLRC_DAMAGE'
     iter = 0

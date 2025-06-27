@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
     implicit none
 !
-    integer :: iocc1, iocc2
+    integer(kind=8) :: iocc1, iocc2
     real(kind=8) :: ke_pond, fen
     character(len=4) :: lieu
 !     OPERATEUR POST_RCCM, TRAITEMENT DE FATIGUE B3200, ZE200
@@ -53,11 +53,11 @@ subroutine rc32env2(iocc1, iocc2, ke_pond, lieu, fen)
 !
     character(len=16) :: motclf, motclf2, motclf3, motclf4, valek(2)
     character(len=16) :: motclf5, val
-    integer :: nbther, nbpres, nbmeca, situ(2), ncmp
-    integer :: n1, n2, n3, nume1, nume2, nume3, ither, ipres, imeca
-    integer :: numether, numepres, numemeca, n4, nbinst, jinst, nbabsc, jabsc
-    integer :: i, j, m, ibid, iret, ndim, jcont, nbinst2, jdepsi, itrouve
-    integer :: jj, jfen, n5(14), jtemp, n6, n7, jtempy, nbtempy, ii
+    integer(kind=8) :: nbther, nbpres, nbmeca, situ(2), ncmp
+    integer(kind=8) :: n1, n2, n3, nume1, nume2, nume3, ither, ipres, imeca
+    integer(kind=8) :: numether, numepres, numemeca, n4, nbinst, jinst, nbabsc, jabsc
+    integer(kind=8) :: i, j, m, ibid, iret, ndim, jcont, nbinst2, jdepsi, itrouve
+    integer(kind=8) :: jj, jfen, n5(14), jtemp, n6, n7, jtempy, nbtempy, ii
     parameter(ncmp=6)
     character(len=8) :: nocmp(ncmp), crit(2), table1, table2, table3
     character(len=8) :: tableok, k8b, table4, table5

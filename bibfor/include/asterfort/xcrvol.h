@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,26 +25,26 @@ interface
                       igeom, elrefp, inoloc, nbnoma, jcesd3,&
                       jcesl3, jcesv3, numa2, iheav, nfiss, vhea,&
                       jcesd8, jcesl8, jcesv8, lfiss, vtot)
-        integer :: nbnoma
-        integer :: ndim
-        integer :: nse
-        integer :: jcnse
-        integer :: nnose
-        integer :: jpint
-        integer :: igeom
+        integer(kind=8) :: nbnoma
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nse
+        integer(kind=8) :: jcnse
+        integer(kind=8) :: nnose
+        integer(kind=8) :: jpint
+        integer(kind=8) :: igeom
         character(len=8) :: elrefp
-        integer :: inoloc
-        integer :: jcesd3
-        integer :: jcesl3
-        integer :: jcesv3
-        integer :: numa2
+        integer(kind=8) :: inoloc
+        integer(kind=8) :: jcesd3
+        integer(kind=8) :: jcesl3
+        integer(kind=8) :: jcesv3
+        integer(kind=8) :: numa2
         aster_logical :: lfiss
-        integer :: iheav
-        integer :: nfiss
+        integer(kind=8) :: iheav
+        integer(kind=8) :: nfiss
         real(kind=8) :: vhea
-        integer :: jcesd8
-        integer :: jcesl8
-        integer :: jcesv8
+        integer(kind=8) :: jcesd8
+        integer(kind=8) :: jcesl8
+        integer(kind=8) :: jcesv8
         real(kind=8) :: vtot
     end subroutine xcrvol
 end interface

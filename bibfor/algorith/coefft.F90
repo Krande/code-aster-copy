@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine coefft(cothe, coeff, dcothe, dcoeff, x, &
 !C          COEL   :  COEFFICIENTS  ELASTIQUES ELASTIQUE A T+DT
 !       ---------------------------------------------------------------
 #include "asterfort/r8inir.h"
-    integer :: nmat, i, ncoe, ncoel
+    integer(kind=8) :: nmat, i, ncoe, ncoel
     real(kind=8) :: cothe(nmat), dcothe(nmat), coel(nmat)
     real(kind=8) :: hsdt, dtime, x
     real(kind=8) :: coeff(nmat), dcoeff(nmat), coeft(nmat)

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2005 UCBL LYON1 - T. BARANGER     WWW.CODE-ASTER.ORG
-! Copyright (C) 2007 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine hypmat(fami, kpg, ksp, poum, imate, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
     character(len=*) :: fami, poum
-    integer :: kpg, ksp, imate
+    integer(kind=8) :: kpg, ksp, imate
     real(kind=8) :: c10, c01, c20
     real(kind=8) :: k
 !
@@ -55,10 +55,10 @@ subroutine hypmat(fami, kpg, ksp, poum, imate, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=3)
     character(len=16) :: nomres(nbres)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     real(kind=8) :: valres(nbres)
     real(kind=8) :: nu
     real(kind=8) :: denom

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,21 +32,21 @@ subroutine mltdca(nbloc, lgbloc, ncbloc, decal, seq, &
 #include "asterfort/sspmvc.h"
 #include "blas/zgemv.h"
 !
-    integer :: nbsn, nbnd, nbloc, lgbloc(nbsn), ncbloc(nbnd), decal(nbsn)
+    integer(kind=8) :: nbsn, nbnd, nbloc, lgbloc(nbsn), ncbloc(nbnd), decal(nbsn)
     integer(kind=4) :: global(*)
-    integer :: seq(nbsn), supnd(nbsn+1), lgsn(nbsn)
-    integer :: adress(nbsn+1), invp(nbnd), perm(nbnd), ad(nbnd)
-    integer :: typsym
+    integer(kind=8) :: seq(nbsn), supnd(nbsn+1), lgsn(nbsn)
+    integer(kind=8) :: adress(nbsn+1), invp(nbnd), perm(nbnd), ad(nbnd)
+    integer(kind=8) :: typsym
     complex(kind=8) :: sm(nbnd), x(nbnd), trav(nbnd)
     character(len=24) :: factol, factou, factor
-    integer :: il, k0
-    integer :: ib, nc, isnd, long, l, i, ndj
+    integer(kind=8) :: il, k0
+    integer(kind=8) :: ib, nc, isnd, long, l, i, ndj
 !
-    integer :: seuin, seuik
+    integer(kind=8) :: seuin, seuik
     parameter(seuin=1500, seuik=300)
-    integer :: lda, nn, kk
-    integer :: deb1, incx, incy
-    integer :: sni, k, j, deb, fin, adfac, ndk, gj, debndk, ifac
+    integer(kind=8) :: lda, nn, kk
+    integer(kind=8) :: deb1, incx, incy
+    integer(kind=8) :: sni, k, j, deb, fin, adfac, ndk, gj, debndk, ifac
     complex(kind=8) :: s, alpha, beta
     character(len=1) :: tra
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n

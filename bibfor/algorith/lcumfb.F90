@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine lcumfb(sigi, nstrs, vari, nvari, cmat, &
                   nmat, tdt, hini, hfin, afd, &
                   bfd, cfd)
     implicit none
-    integer :: nstrs, nvari, nmat
+    integer(kind=8) :: nstrs, nvari, nmat
     real(kind=8) :: sigi(6), vari(nvari), cmat(nmat)
     real(kind=8) :: tdt, hini, hfin, afd(6), bfd(6, 6), cfd(6, 6)
 !_______________________________________________________________________
@@ -36,7 +36,7 @@ subroutine lcumfb(sigi, nstrs, vari, nvari, cmat, &
 !    => EQUATION (3.3-1)
 !_______________________________________________________________________
 !
-    integer :: i, j, ides
+    integer(kind=8) :: i, j, ides
     real(kind=8) :: a, b, c, efde(6)
     real(kind=8) :: vdes, dh, defdef
 !

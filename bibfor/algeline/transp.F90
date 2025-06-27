@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ subroutine transp(a, nlamax, dimal, dimac, b, &
 ! ------------------------------------------------------------------
     implicit none
 #include "asterfort/utmess.h"
-    integer :: dimal, dimac, nlamax, nlbmax
+    integer(kind=8) :: dimal, dimac, nlamax, nlbmax
     real(kind=8) :: a(nlamax, *), b(nlbmax, *)
 !-----------------------------------------------------------------------
-    integer :: icol, ilig
+    integer(kind=8) :: icol, ilig
 !-----------------------------------------------------------------------
     if (dimac .gt. nlbmax) then
         call utmess('F', 'ALGELINE3_51')

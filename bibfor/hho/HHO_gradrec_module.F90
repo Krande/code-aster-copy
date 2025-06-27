@@ -90,8 +90,8 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: CGradN
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSCGradEval
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL), normal(3)
-        integer :: ipg, dimStiffMat, ifromMG, itoMG, ifromBG, itoBG, dimMG
-        integer :: cbs, fbs, total_dofs, iface, fromFace, toFace, cell_offset
+        integer(kind=8) :: ipg, dimStiffMat, ifromMG, itoMG, ifromBG, itoBG, dimMG
+        integer(kind=8) :: cbs, fbs, total_dofs, iface, fromFace, toFace, cell_offset
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
         blas_int, parameter :: b_one = to_blas_int(1)
         real(kind=8) :: start, end
@@ -239,9 +239,9 @@ contains
 ! ----- Local variables
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_matrix) :: lhs_scal
-        integer :: gradrec_scal_row, cbs_comp, fbs_comp, faces_dofs, cbs, fbs, gbs, gbs_sym
-        integer :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
-        integer :: total_dofs, iFace, jbeginVec, jendVec
+        integer(kind=8) :: gradrec_scal_row, cbs_comp, fbs_comp, faces_dofs, cbs, fbs, gbs, gbs_sym
+        integer(kind=8) :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
+        integer(kind=8) :: total_dofs, iFace, jbeginVec, jendVec
         real(kind=8) :: start, end
 !
         DEBUG_TIMER(start)
@@ -335,10 +335,10 @@ contains
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: BSCEval, BSGEval, VecGrad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: BSFEval
         real(kind=8) :: normal(3)
-        integer :: cbs, fbs, total_dofs, gbs, dimMassMat
-        integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat
+        integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
-        integer :: iface, fromFace, toFace, cell_offset
+        integer(kind=8) :: iface, fromFace, toFace, cell_offset
         real(kind=8) :: start, end
         blas_int, parameter :: b_one = 1
 !
@@ -523,10 +523,10 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 ! ----- Local variables
-        integer :: cbs_comp, fbs_comp, faces_dofs, cbs, fbs
-        integer :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
-        integer :: total_dofs, gbs, gbs_comp, gbs_sym, iFace, jbeginVec, jendVec
-        integer :: faces_dofs_comp, total_dofs_comp
+        integer(kind=8) :: cbs_comp, fbs_comp, faces_dofs, cbs, fbs
+        integer(kind=8) :: idim, ibeginGrad, iendGrad, jbeginCell, jendCell, jbeginFace, jendFace
+        integer(kind=8) :: total_dofs, gbs, gbs_comp, gbs_sym, iFace, jbeginVec, jendVec
+        integer(kind=8) :: faces_dofs_comp, total_dofs_comp
 !
 ! -- number of dofs
         call hhoMecaNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, &
@@ -656,9 +656,9 @@ contains
         real(kind=8) :: BSGEval(MSIZE_CELL_SCAL)
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
         real(kind=8) :: coeff, normal(3)
-        integer :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, cbs_comp, fbs_comp, gbs_sym
-        integer :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
-        integer :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
+     integer(kind=8) :: cbs, fbs, total_dofs, gbs, dimMassMat, nbdimMat, cbs_comp, fbs_comp, gbs_sym
+        integer(kind=8) :: ipg, ibeginBG, iendBG, ibeginSOL, iendSOL, idim, j, iface
+        integer(kind=8) :: jbegCell, jendCell, jbegFace, jendFace, faces_dofs
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, b_m
         real(kind=8) :: start, end
         blas_int, parameter :: b_one = 1
@@ -1035,11 +1035,11 @@ contains
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), BSFEval(MSIZE_FACE_SCAL)
         type(HHO_matrix) :: WORK
         blas_int, dimension(MSIZE_CELL_VEC+3) :: IPIV
-        integer :: ipg, dimStiffMat, ifromBG, itoBG, dimMG, nblag, dimMGLag, idir, idir2
-        integer :: cbs, fbs, total_dofs, iface, i, cbs_comp, fbs_comp, dimMG_cmp, ind_MG
-        integer :: jbeginCell, jendCell, jbeginFace, jendFace, idim, j, dimStiffMat_cmp
-        integer :: row_deb_MG, row_fin_MG, col_deb_MG, col_fin_MG, col_deb_BG, col_fin_BG
-        integer :: row_deb_ST, row_fin_ST, col_deb_ST, col_fin_ST, faces_dof
+        integer(kind=8) :: ipg, dimStiffMat, ifromBG, itoBG, dimMG, nblag, dimMGLag, idir, idir2
+        integer(kind=8) :: cbs, fbs, total_dofs, iface, i, cbs_comp, fbs_comp, dimMG_cmp, ind_MG
+        integer(kind=8) :: jbeginCell, jendCell, jbeginFace, jendFace, idim, j, dimStiffMat_cmp
+        integer(kind=8) :: row_deb_MG, row_fin_MG, col_deb_MG, col_fin_MG, col_deb_BG, col_fin_BG
+        integer(kind=8) :: row_deb_ST, row_fin_ST, col_deb_ST, col_fin_ST, faces_dof
         blas_int :: b_n, b_nhrs, b_lda, b_ldb, info, LWORK, b_m
         real(kind=8) :: qp_dphi_ss, normal(3)
         real(kind=8) :: start, end

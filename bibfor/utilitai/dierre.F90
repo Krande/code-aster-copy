@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine dierre(sddisc, sdcrit, iterat)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmlere.h"
-    integer :: iterat
+    integer(kind=8) :: iterat
     character(len=19) :: sddisc, sdcrit
 !
 ! ----------------------------------------------------------------------
@@ -47,7 +47,7 @@ subroutine dierre(sddisc, sdcrit, iterat)
 !
 !
     character(len=24) :: critcr
-    integer :: jcrr
+    integer(kind=8) :: jcrr
     real(kind=8) :: vrela(1), vmaxi(1), vchar(1)
 !
 ! ----------------------------------------------------------------------

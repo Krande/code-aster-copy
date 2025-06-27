@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function cudisd(resocu, questz)
     implicit none
-    integer :: cudisd
+    integer(kind=8) :: cudisd
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -45,7 +45,7 @@ function cudisd(resocu, questz)
 !
     character(len=24) :: questi
     character(len=24) :: coco
-    integer :: jcoco
+    integer(kind=8) :: jcoco
 !
 ! ----------------------------------------------------------------------
 !

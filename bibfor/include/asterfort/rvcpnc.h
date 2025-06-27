@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,18 +23,18 @@ interface
                       nbcpc, nlscpc, nomojb, repere, option,&
                       quant, codir, dir, iret)
         character(len=*) :: mcf
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=19) :: nch19
-        integer :: gd
+        integer(kind=8) :: gd
         character(len=4) :: typegd
-        integer :: nbcpc
+        integer(kind=8) :: nbcpc
         character(len=24) :: nlscpc
         character(len=24) :: nomojb
         character(len=8) :: repere
         character(len=16) :: option
         character(len=24) :: quant
-        integer :: codir
+        integer(kind=8) :: codir
         real(kind=8) :: dir(*)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rvcpnc
 end interface

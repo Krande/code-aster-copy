@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,11 +31,7 @@ subroutine dgfsections(nboccsec, iinbgf, tousgroupesnom, tousgroupesnbf, maxmail
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
     implicit none
-!
-    integer :: nboccsec, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres1
-    integer           :: tousgroupesnbf(*)
-    character(len=24) :: tousgroupesnom(*)
-!
+    !
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/codent.h"
@@ -48,11 +44,16 @@ subroutine dgfsections(nboccsec, iinbgf, tousgroupesnom, tousgroupesnbf, maxmail
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
+    !
+    integer(kind=8) :: nboccsec, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres1
+    integer(kind=8) :: tousgroupesnbf(*)
+    character(len=24) :: tousgroupesnom(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer           :: ioc, nbv, jdtm, jmaill, nbmagr, jdo, nbmaills, nbnoeuds, nummai, nutyma
-    integer           :: nttri3, ntqua4, ntseg2, ntpoi1
+    integer(kind=8) :: ioc, nbv, jdtm, jmaill, nbmagr, jdo, nbmaills
+    integer(kind=8) :: nbnoeuds, nummai, nutyma
+    integer(kind=8) :: nttri3, ntqua4, ntseg2, ntpoi1
     character(len=7)  :: k7bid
     character(len=8)  :: nomas, ktyma
     character(len=24) :: mlgtms

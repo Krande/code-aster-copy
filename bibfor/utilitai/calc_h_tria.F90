@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,13 +30,13 @@ subroutine calc_h_tria(ino, x3d1, x3d2, x3d3, h)
 #include "asterfort/normev.h"
 ! ARGUMENTS
 ! ---------
-    integer :: ino
+    integer(kind=8) :: ino
     real(kind=8) :: x3d1(3), x3d2(3), x3d3(3), h
 !
 ! VARIABLES LOCALES
 ! -----------------
     real(kind=8) :: x3d(3, 3), vect_jk(3), norme_jk, proj, vect_ji(3)
-    integer :: jno, kno
+    integer(kind=8) :: jno, kno
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

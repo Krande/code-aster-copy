@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine cgtabl(table_container, nb_obje, obje_name, obje_sdname, nb_cham_theta)
         character(len=8), intent(in)  :: table_container
-        integer, intent(in)           :: nb_obje, nb_cham_theta
+        integer(kind=8), intent(in)           :: nb_obje, nb_cham_theta
         character(len=16), intent(in) :: obje_name(nb_obje)
         character(len=24), intent(in) :: obje_sdname(nb_obje)
     end subroutine cgtabl

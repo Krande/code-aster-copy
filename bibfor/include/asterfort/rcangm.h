@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine rcangm(ndim, coor, angl_naut)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: coor(3)
         real(kind=8) :: angl_naut(3)
     end subroutine rcangm

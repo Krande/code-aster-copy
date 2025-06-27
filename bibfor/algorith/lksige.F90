@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,13 +31,13 @@ subroutine lksige(mod, nmat, materd, deps, sigd, &
 !       --------------------------------------------------------------
 #include "asterfort/lcdevi.h"
 #include "asterfort/lkelas.h"
-    integer :: nmat, ndt, ndi
+    integer(kind=8) :: nmat, ndt, ndi
     real(kind=8) :: materd(nmat, 2)
     real(kind=8) :: sigd(6), sigf(6)
     real(kind=8) :: deps(6)
     character(len=8) :: mod
 ! --- VARIABLES LOCALES
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: dsde(6, 6), kk, mu, depsv
     real(kind=8) :: deux, trois, un, zero, kron(6)
     real(kind=8) :: i1ml, iel, devsig(6), depsd(6)

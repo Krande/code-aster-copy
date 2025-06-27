@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,11 @@ subroutine clas99(nomres)
 ! --- RECUPERATION DES CONCEPTS AMONT
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ii, inor, lrang
-    integer :: ltmome, ltnbmo, nbid, nbnmaxmode, nbmod, nbmodo(1), nbmoma
-    integer :: nbmome, nbmout, nbsdd, nmaxmode
+    integer(kind=8) :: i, ibid, ii, inor, lrang
+    integer(kind=8) :: ltmome, ltnbmo, nbid, nbnmaxmode, nbmod, nbmodo(1), nbmoma
+    integer(kind=8) :: nbmome, nbmout, nbsdd, nmaxmode
     real(kind=8) :: bid, ebid
-    integer, pointer :: idc_desc(:) => null()
+    integer(kind=8), pointer :: idc_desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,18 +68,18 @@ subroutine xvechp(ndim, elrefp, nnop, igeom, itemp, &
 !
     character(len=4) :: fonree
     character(len=8) :: elrefp
-    integer :: ndim, nnop, igeom, itemp, itps, ihechp, jptint, jcface
-    integer :: jlonch, jlst, jbasec, nfh, nfe, ivectt, heavn(27, 5)
+    integer(kind=8) :: ndim, nnop, igeom, itemp, itps, ihechp, jptint, jcface
+    integer(kind=8) :: jlonch, jlst, jbasec, nfh, nfe, ivectt, heavn(27, 5)
 !
 !-----------------------------------------------------------------------
 !
     character(len=8) :: fpg, elc, elrefc, nompar(4)
     aster_logical :: axi
-    integer :: nbddl, zxain
-    integer :: cface(30, 6), ninter, nface, nptf
-    integer :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
-    integer :: ipgf, ilev, inp, jnp, kddl, lddl, ier
-    integer :: mxstac, ipos, hea_fa(2)
+    integer(kind=8) :: nbddl, zxain
+    integer(kind=8) :: cface(30, 6), ninter, nface, nptf
+    integer(kind=8) :: i, j, ifa, nnof, npgf, ipoidf, ivff, idfdef
+    integer(kind=8) :: ipgf, ilev, inp, jnp, kddl, lddl, ier
+    integer(kind=8) :: mxstac, ipos, hea_fa(2)
 !
     parameter(mxstac=1000)
 !

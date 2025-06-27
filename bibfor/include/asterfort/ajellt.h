@@ -20,8 +20,8 @@ interface
     subroutine ajellt(ligretZ, meshZ, nbCell, listCell, &
                       phenomZ, modelisaZ)
         character(len=*), intent(in) :: ligretZ, meshZ
-        integer, intent(in) :: nbCell
-        integer, intent(in) :: listCell(nbCell)
+        integer(kind=8), intent(in) :: nbCell
+        integer(kind=8), intent(in) :: listCell(nbCell)
         character(len=*), intent(in) :: phenomZ, modelisaZ
     end subroutine ajellt
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,13 +56,13 @@ subroutine hasBehaviourFeature(model, caraElem, compor, feature, lFlag)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: modelLigrel, cmpName
     character(len=16) :: valueName
     character(len=19), parameter :: comporS = '&&NMCPQU.COTO'
     character(len=19), parameter :: comporR = '&&NMCPQU.COPM'
-    integer :: nbCell, iCell
-    integer :: jdecal, jcesd, jcesl
+    integer(kind=8) :: nbCell, iCell
+    integer(kind=8) :: jdecal, jcesd, jcesl
     character(len=16), pointer :: cesv(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

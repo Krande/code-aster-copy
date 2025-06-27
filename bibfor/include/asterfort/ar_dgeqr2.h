@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine ar_dgeqr2(m, n, a, lda, tau,&
                       work, info)
-        integer :: lda
-        integer :: m
-        integer :: n
+        integer(kind=8) :: lda
+        integer(kind=8) :: m
+        integer(kind=8) :: n
         real(kind=8) :: a(lda, *)
         real(kind=8) :: tau(*)
         real(kind=8) :: work(*)
-        integer :: info
+        integer(kind=8) :: info
     end subroutine ar_dgeqr2
 end interface

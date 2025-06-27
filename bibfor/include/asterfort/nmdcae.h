@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine nmdcae(sddisc, iterat, typdec, nbrpas, ratio,&
                       optdec, retdec)
         character(len=19) :: sddisc
-        integer :: iterat
+        integer(kind=8) :: iterat
         character(len=4) :: typdec
-        integer :: nbrpas
+        integer(kind=8) :: nbrpas
         real(kind=8) :: ratio
         character(len=16) :: optdec
-        integer :: retdec
+        integer(kind=8) :: retdec
     end subroutine nmdcae
 end interface

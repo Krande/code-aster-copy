@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
         character(len=*), intent(in) :: modelz
         character(len=*), intent(in) :: sdextrz
         type(NL_DS_InOut), intent(in) :: ds_inout
-        integer, intent(in) :: nb_keyw_fact
+        integer(kind=8), intent(in) :: nb_keyw_fact
         character(len=16), intent(in) :: keyw_fact
-        integer, intent(out) :: nb_extr  
+        integer(kind=8), intent(out) :: nb_extr  
         character(len=*), optional, intent(in) :: cara_elemz
         type(NL_DS_Material), optional, intent(in) :: ds_material
         type(NL_DS_Constitutive), optional, intent(in) :: ds_constitutive

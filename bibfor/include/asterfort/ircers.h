@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,32 +27,32 @@ interface
                       typma, nomsd, nomsym, ir, nbmat,&
                       nummai, lmasu, ncmpu, nucmp, nbcmp,&
                       ncmps, nocmpl)
-        integer :: maxnod
-        integer :: ifi
-        integer :: ligrel(*)
-        integer :: nbgrel
-        integer :: longr(*)
-        integer :: ncmpmx
+        integer(kind=8) :: maxnod
+        integer(kind=8) :: ifi
+        integer(kind=8) :: ligrel(*)
+        integer(kind=8) :: nbgrel
+        integer(kind=8) :: longr(*)
+        integer(kind=8) :: ncmpmx
         real(kind=8) :: vale(*)
         character(len=*) :: nomgd
         character(len=*) :: nomcmp(*)
         character(len=*) :: titr
         character(len=*) :: nomel(*)
         character(len=*) :: loc
-        integer :: celd(*)
-        integer :: nbnoma(*)
-        integer :: permut(maxnod, *)
-        integer :: typma(*)
+        integer(kind=8) :: celd(*)
+        integer(kind=8) :: nbnoma(*)
+        integer(kind=8) :: permut(maxnod, *)
+        integer(kind=8) :: typma(*)
         character(len=*) :: nomsd
         character(len=*) :: nomsym
-        integer :: ir
-        integer :: nbmat
-        integer :: nummai(*)
+        integer(kind=8) :: ir
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nummai(*)
         aster_logical :: lmasu
-        integer :: ncmpu
-        integer :: nucmp(*)
-        integer :: nbcmp
-        integer :: ncmps(*)
+        integer(kind=8) :: ncmpu
+        integer(kind=8) :: nucmp(*)
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: ncmps(*)
         character(len=*) :: nocmpl(*)
     end subroutine ircers
 end interface

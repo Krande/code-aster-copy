@@ -54,13 +54,13 @@ subroutine dichoc_endo_pena(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! -------------------------------------------------------------------------------
 !
-    integer :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip
-    integer :: iretlc, ifono, imatsym
-    integer :: icontp, iadzi, iazk24
+    integer(kind=8) :: jdc, irep, imat, ivarim, ii, ivitp, idepen, iviten, neq, igeom, ivarip
+    integer(kind=8) :: iretlc, ifono, imatsym
+    integer(kind=8) :: icontp, iadzi, iazk24
 !
     real(kind=8) :: dvl(for_discret%nno*for_discret%nc), dpe(for_discret%nno*for_discret%nc)
     real(kind=8) :: dve(for_discret%nno*for_discret%nc)
@@ -72,18 +72,18 @@ subroutine dichoc_endo_pena(for_discret, iret)
 !
     aster_logical :: resi
 ! -------------------------------------------------------------------------------
-    integer, parameter :: nbres = 3
+    integer(kind=8), parameter :: nbres = 3
     real(kind=8) :: valres(nbres)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     character(len=8) :: nomres(nbres)
-    integer :: nbpar
+    integer(kind=8) :: nbpar
     real(kind=8) :: valpar
     character(len=8) :: nompar
-    integer :: tecro2
+    integer(kind=8) :: tecro2
 !
 ! -------------------------------------------------------------------------------
 !   Variables internes
-    integer, parameter :: nbvari = 3
+    integer(kind=8), parameter :: nbvari = 3
     real(kind=8) :: varmo(nbvari), varpl(nbvari)
 ! -------------------------------------------------------------------------------
     real(kind=8) :: xl(6), xd(3), rignor, amornor_in, amornor_out, deplace, ld, seuil, seuil2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ subroutine vdxsig(nomte, option, xi, nb1, npgsr, &
 ! ======================================================================
     character(len=16) :: nomte
     character(len=*) :: option
-    integer :: nb1, nb2, npge, npgsr, npgsn
-    integer :: nbcou, jcou, imoy, iret, iret1, iret2, iret3
+    integer(kind=8) :: nb1, nb2, npge, npgsr, npgsn
+    integer(kind=8) :: nbcou, jcou, imoy, iret, iret1, iret2, iret3
 !-----------------------------------------------------------------------
-    integer :: i, icou, indith, inte, intsn, intsr, j
-    integer :: jcara, jdepg, k, k1, kpgs, kwgt, lzi
-    integer :: lzr
+    integer(kind=8) :: i, icou, indith, inte, intsn, intsr, j
+    integer(kind=8) :: jcara, jdepg, k, k1, kpgs, kwgt, lzi
+    integer(kind=8) :: lzr
     real(kind=8) :: tref
 !-----------------------------------------------------------------------
 

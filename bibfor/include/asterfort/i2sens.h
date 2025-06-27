@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine i2sens(chemin, nbrma2, limail, nbrma, connex,&
                       typmai, abscis)
-        integer :: nbrma
-        integer :: nbrma2
-        integer :: chemin(nbrma2)
-        integer :: limail(nbrma)
+        integer(kind=8) :: nbrma
+        integer(kind=8) :: nbrma2
+        integer(kind=8) :: chemin(nbrma2)
+        integer(kind=8) :: limail(nbrma)
         real(kind=8) :: abscis(2)
         character(len=*) :: connex
         character(len=*) :: typmai

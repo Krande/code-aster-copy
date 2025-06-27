@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
                       fabord)
         character(len=8) :: noma
         character(len=19) :: cnxinv
-        integer :: nunoa
-        integer :: nunob
-        integer :: nunoc
+        integer(kind=8) :: nunoa
+        integer(kind=8) :: nunob
+        integer(kind=8) :: nunoc
         aster_logical :: fabord
     end subroutine xfabor
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         character(len=19), intent(in) :: list_load
         character(len=4), intent(in) :: load_type_1
         character(len=4), intent(in) :: load_type_2
-        integer, optional, intent(in) :: i_load_
+        integer(kind=8), optional, intent(in) :: i_load_
         aster_logical :: ischar
     end function ischar
 end interface

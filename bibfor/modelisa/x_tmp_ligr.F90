@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
     character(len=8), intent(in) :: mesh
     character(len=19), intent(inout) :: ligrel
     character(len=19), optional, intent(in) :: list_cells
-    integer, optional, intent(in) :: n_list_cells
+    integer(kind=8), optional, intent(in) :: n_list_cells
 !
 ! person_in_charge: sam.cuvilliez at edf.fr
 ! ----------------------------------------------------------------------
@@ -74,18 +74,18 @@ subroutine x_tmp_ligr(mesh, ligrel, list_cells, n_list_cells)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nu_ma, nu_typ_ma, dim_ma, nu_typ_el1, nu_typ_el2
-    integer :: i, nbma, ndim, nmaprin, idx_modeli, nb_grel, lont_liel
-    integer :: ncells, nume_grel, long_grel, idx_in_grel
-    integer, pointer :: p_ligrel_nbno(:) => null()
-    integer, pointer :: lmatout(:) => null()
-    integer, pointer :: lmatmp(:) => null()
-    integer, pointer :: lmaprin(:) => null()
-    integer, pointer :: p_cata_typ_el(:) => null()
-    integer, pointer :: p_mesh_type_geom(:) => null()
-    integer, pointer :: p_dim_topo(:) => null()
-    integer, pointer :: p_liel(:) => null()
-    integer, pointer :: p_list_cells(:) => null()
+    integer(kind=8) :: nu_ma, nu_typ_ma, dim_ma, nu_typ_el1, nu_typ_el2
+    integer(kind=8) :: i, nbma, ndim, nmaprin, idx_modeli, nb_grel, lont_liel
+    integer(kind=8) :: ncells, nume_grel, long_grel, idx_in_grel
+    integer(kind=8), pointer :: p_ligrel_nbno(:) => null()
+    integer(kind=8), pointer :: lmatout(:) => null()
+    integer(kind=8), pointer :: lmatmp(:) => null()
+    integer(kind=8), pointer :: lmaprin(:) => null()
+    integer(kind=8), pointer :: p_cata_typ_el(:) => null()
+    integer(kind=8), pointer :: p_mesh_type_geom(:) => null()
+    integer(kind=8), pointer :: p_dim_topo(:) => null()
+    integer(kind=8), pointer :: p_liel(:) => null()
+    integer(kind=8), pointer :: p_list_cells(:) => null()
     character(len=8), pointer :: p_ligrel_lgrf(:) => null()
     character(len=16) :: phenom, modeli(3)
     character(len=24) :: liel, lgrf, nbno

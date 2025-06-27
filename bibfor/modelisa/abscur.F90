@@ -62,20 +62,20 @@ subroutine abscur(ma)
     character(len=24) :: cooval, coodsc, grpnoe
     character(len=24) :: gpptnn, grpmai, gpptnm, connex, titre, typmai, adapma
     character(len=16) :: motcle(3), typmcl(3)
-    integer :: adrm, iseg1, iseg2, isegprev, jtmp, kseg, nbextr, nbnot
-    integer :: iab1, iab2, iadr2, numa2, nuno1, nuno2
-    integer :: icoo1, icoo2, icoo3, icoo4, icor2, kma, nunosuiv, vuorig
-    integer :: jpoi, jseg, ino
-    integer :: ipoi1, iseg, itypm, jcoor
-    integer :: mi, n, n1, n2, nunorig
-    integer :: nbpoi1, nbma, nbseg, nbno
-    integer :: jmesma, jmesno, numa, iexi, nbnoseg
+    integer(kind=8) :: adrm, iseg1, iseg2, isegprev, jtmp, kseg, nbextr, nbnot
+    integer(kind=8) :: iab1, iab2, iadr2, numa2, nuno1, nuno2
+    integer(kind=8) :: icoo1, icoo2, icoo3, icoo4, icor2, kma, nunosuiv, vuorig
+    integer(kind=8) :: jpoi, jseg, ino
+    integer(kind=8) :: ipoi1, iseg, itypm, jcoor
+    integer(kind=8) :: mi, n, n1, n2, nunorig
+    integer(kind=8) :: nbpoi1, nbma, nbseg, nbno
+    integer(kind=8) :: jmesma, jmesno, numa, iexi, nbnoseg
     real(kind=8) :: s, stot
     real(kind=8) :: s13, s32, s34, s42, abscurv(4), coor(3, 4)
     aster_logical, parameter :: dbg = .false.
-    integer, pointer :: icoseg(:) => null()
-    integer, pointer :: nu2seg(:) => null()
-    integer, pointer :: segordo(:) => null()
+    integer(kind=8), pointer :: icoseg(:) => null()
+    integer(kind=8), pointer :: nu2seg(:) => null()
+    integer(kind=8), pointer :: segordo(:) => null()
     real(kind=8), pointer :: valv(:) => null()
     character(len=8), pointer :: ncmp(:) => null()
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine num2k8(nomgd, tglok8, tlock8, nblk8, tind)
     implicit none
-    integer :: nblk8, tind(*)
+    integer(kind=8) :: nblk8, tind(*)
     character(len=8) :: nomgd, tglok8(*), tlock8(*)
 !     COPIE DE NUMEK8
 !     TIND(I) <-- INDICE DANS LE TABLEAU TGLOK8 DE L' ELEMEMT
@@ -28,7 +28,7 @@ subroutine num2k8(nomgd, tglok8, tlock8, nblk8, tind)
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
     if (nomgd(1:6) .eq. 'SIEF_R') then
         do i = 1, nblk8, 1

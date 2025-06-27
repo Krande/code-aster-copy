@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,6 @@ interface
     subroutine capres_volu(load, mesh, valeType, nbOccPresRep)
         character(len=8), intent(in)  :: load, mesh
         character(len=4), intent(in)  :: valeType
-        integer, intent(in)           :: nbOccPresRep
+        integer(kind=8), intent(in)           :: nbOccPresRep
     end subroutine capres_volu
 end interface

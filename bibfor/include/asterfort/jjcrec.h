@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine jjcrec(icl, ida, genri, typei, nb,&
                       iadmi)
-        integer :: icl
-        integer :: ida
+        integer(kind=8) :: icl
+        integer(kind=8) :: ida
         character(len=*) :: genri
         character(len=*) :: typei
-        integer :: nb
-        integer :: iadmi
+        integer(kind=8) :: nb
+        integer(kind=8) :: iadmi
     end subroutine jjcrec
 end interface

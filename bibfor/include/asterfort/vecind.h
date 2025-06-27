@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine vecind(mat, lvec, nbl, nbc, force,&
                       nindep)
         character(len=19) :: mat
-        integer :: lvec
-        integer :: nbl
-        integer :: nbc
-        integer :: force
-        integer :: nindep
+        integer(kind=8) :: lvec
+        integer(kind=8) :: nbl
+        integer(kind=8) :: nbc
+        integer(kind=8) :: force
+        integer(kind=8) :: nindep
     end subroutine vecind
 end interface

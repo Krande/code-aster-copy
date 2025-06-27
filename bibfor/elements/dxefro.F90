@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine dxefro(ne, t2iu, edgle, edglc)
     implicit none
 #include "asterfort/utbtab.h"
 #include "asterfort/pmavec.h"
-    integer, intent(in) :: ne
+    integer(kind=8), intent(in) :: ne
     real(kind=8), intent(in) :: t2iu(2, 2)
     real(kind=8), intent(in) :: edgle(*)
     real(kind=8), intent(out) :: edglc(*)
@@ -41,7 +41,7 @@ subroutine dxefro(ne, t2iu, edgle, edglc)
     real(kind=8) :: nle(2, 2), mle(2, 2), qle(2)
     real(kind=8) :: nlc(2, 2), mlc(2, 2), qlc(2)
     real(kind=8) ::t2ui(2, 2), xab(2, 2)
-    integer :: i
+    integer(kind=8) :: i
 !
 !   Transposée de t2iu pour changement de repère des efforts tranchants
     t2ui(1, 1) = t2iu(1, 1)

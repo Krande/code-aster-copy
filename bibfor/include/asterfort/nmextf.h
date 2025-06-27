@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine nmextf(keyw_fact, i_keyw_fact, type_extr_cmp)
         character(len=16), intent(in) :: keyw_fact
-        integer, intent(in) :: i_keyw_fact
+        integer(kind=8), intent(in) :: i_keyw_fact
         character(len=8), intent(out) :: type_extr_cmp
     end subroutine nmextf
 end interface

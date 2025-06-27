@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine hbrjpl(mod, nbmat, materf, sigp, vip,&
                       vim, vp, vecp, dsidep)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         character(len=8) :: mod(*)
         real(kind=8) :: materf(nbmat, 2)
         real(kind=8) :: sigp(6)

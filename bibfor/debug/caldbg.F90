@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine caldbg(inout, ncham, lcham, lparam)
 #include "asterfort/jemarq.h"
 #include "asterfort/uttr24.h"
 !
-    integer :: ncham
+    integer(kind=8) :: ncham
     character(len=*) :: inout
     character(len=19) :: lcham(*)
     character(len=8) :: lparam(*)
@@ -45,9 +45,9 @@ subroutine caldbg(inout, ncham, lcham, lparam)
     character(len=19) :: champ
     character(len=24) :: ojb
     character(len=4) :: inou2
-    integer :: i, iret, j
+    integer(kind=8) :: i, iret, j
     character(len=24), pointer :: fieldParam(:) => null()
-    integer, pointer :: fieldIndir(:) => null()
+    integer(kind=8), pointer :: fieldIndir(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

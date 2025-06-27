@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbmode, nbamor
+    integer(kind=8) :: nbmode, nbamor
     real(kind=8) :: bande(2)
     character(len=8) :: modmec, tymmec
     character(len=16) :: grdmod
@@ -50,8 +50,8 @@ subroutine recmod(modmec, nbmode, nbamor, bande, tymmec, &
 ! OUT : GRDMOD : TYPE DE GRANDEUR A RECUPERER DANS LES MODES DYN ET STA
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, nbtrou, nbmod1(1), lnumor, ilmode, iad, imod1, im, iret
-    integer :: iadrmg, ilamod, ilamor, na1
+    integer(kind=8) :: ibid, nbtrou, nbmod1(1), lnumor, ilmode, iad, imod1, im, iret
+    integer(kind=8) :: iadrmg, ilamod, ilamor, na1
     real(kind=8) :: rbid, freq1, amunif
     complex(kind=8) :: c16b
     character(len=8) :: k8b

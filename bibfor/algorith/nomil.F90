@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine nomil(typma, nm, nbar)
 #include "jeveux.h"
 #include "asterfort/utmess.h"
     character(len=8), intent(in):: typma
-    integer, intent(out) :: nm(12), nbar
+    integer(kind=8), intent(out) :: nm(12), nbar
 !
 !-----------------------------------------------------------------------
 !     BUT: RETOURNE UN TABLEAU DONNANT LE NUMÉRO LOCAL D'UN NOEUD
@@ -40,7 +40,7 @@ subroutine nomil(typma, nm, nbar)
 !
 ! --- VARIABLES
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     nbar = 0
     do i = 1, 12

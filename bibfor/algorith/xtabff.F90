@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
-    integer :: ndim, nbfond, nfon
+    integer(kind=8) :: ndim, nbfond, nfon
     character(len=8) :: fiss
     character(len=16) :: operation
 !
@@ -57,15 +57,15 @@ subroutine xtabff(nbfond, nfon, ndim, fiss, operation)
 !
 !
 !
-    integer :: ifm, niv, i
-    integer :: npara, nfonl, nfondl, vali(2)
+    integer(kind=8) :: ifm, niv, i
+    integer(kind=8) :: npara, nfonl, nfondl, vali(2)
     real(kind=8) :: vale(4), r8bid
     character(len=1) :: typar2(3), typar3(6)
     character(len=8) :: k8bid
     character(len=12) :: nopar2(3), nopar3(6)
     character(len=19) :: tabcoo, tabnb
     complex(kind=8) :: c16b
-    integer, pointer :: fondmult(:) => null()
+    integer(kind=8), pointer :: fondmult(:) => null()
     real(kind=8), pointer :: fondfiss(:) => null()
     data nopar2/'NUME_FOND', 'COOR_X', 'COOR_Y'/
     data typar2/'I', 'R', 'R'/

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine zmult(n, za, zx, incx)
     implicit none
-    integer :: n, incx
+    integer(kind=8) :: n, incx
     complex(kind=8) :: za, zx(*)
 !    CALCUL DE Y = A*X POUR DES VECTEURS COMPLEXES
 !-----------------------------------------------------------------------
@@ -30,7 +30,7 @@ subroutine zmult(n, za, zx, incx)
 !              X(I) EST DEFINI PAR ZX(1+(I-1)*INCX). INCX DOIT ETRE
 !              PLUS GRAND QUE ZERO.
 !-----------------------------------------------------------------------
-    integer :: i, ix
+    integer(kind=8) :: i, ix
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

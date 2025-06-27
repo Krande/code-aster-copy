@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine nmerro(sderro, ds_measure, nume_inst)
 !
     character(len=24), intent(in) :: sderro
     type(NL_DS_Measure), intent(in) :: ds_measure
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,14 +49,14 @@ subroutine nmerro(sderro, ds_measure, nume_inst)
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: rtab(2)
-    integer :: itab(2)
+    integer(kind=8) :: itab(2)
     aster_logical :: echldc, echeq1, echeq2, echco1, echco2, echpil
     aster_logical :: mtcpui, mtcpup, itemax
     aster_logical :: echpfg, echpff, echpfc
     aster_logical :: errres, err_appa
     real(kind=8) :: remain_time, iter_mean_time, step_mean_time
     character(len=16) :: valk(2)
-    integer :: failType, actionType
+    integer(kind=8) :: failType, actionType
 !
 ! --------------------------------------------------------------------------------------------------
 !

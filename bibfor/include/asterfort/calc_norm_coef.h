@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,15 @@ interface
                               chcalc      , nb_cmp_act)
         character(len=8), intent(in) :: name_gd
         character(len=8), intent(in) :: model
-        integer, intent(in) :: nb_cmp_max
-        integer, intent(in) :: nb_cmp_in
+        integer(kind=8), intent(in) :: nb_cmp_max
+        integer(kind=8), intent(in) :: nb_cmp_in
         character(len=16) , intent(in) :: norm
         character(len=4) , intent(in) :: calc_elem
-        integer, intent(in) :: nb_coef_user
+        integer(kind=8), intent(in) :: nb_coef_user
         real(kind=8), intent(in) :: coef_user(*)
         character(len=24), intent(in) :: list_cmp
         character(len=19), intent(in) :: chcoef
         character(len=19), intent(in) :: chcalc
-        integer, intent(out) :: nb_cmp_act
+        integer(kind=8), intent(out) :: nb_cmp_act
     end subroutine calc_norm_coef
 end interface

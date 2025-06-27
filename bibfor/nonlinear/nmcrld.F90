@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine nmcrld(sddisc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_fail, i_fail_save
+    integer(kind=8) :: nb_fail, i_fail_save
     character(len=24) :: sddisc_eevenr
     real(kind=8), pointer :: v_sddisc_eevenr(:) => null()
     character(len=24) :: sddisc_eevenk

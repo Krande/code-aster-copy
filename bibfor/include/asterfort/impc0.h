@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine impc0(isor, ibl, nbc, tcm, tcmax,&
                      tcmin, nrebo, trebm, tct, t,&
                      nbpt)
-        integer :: isor
-        integer :: ibl
-        integer :: nbc
+        integer(kind=8) :: isor
+        integer(kind=8) :: ibl
+        integer(kind=8) :: nbc
         real(kind=8) :: tcm
         real(kind=8) :: tcmax
         real(kind=8) :: tcmin
-        integer :: nrebo
+        integer(kind=8) :: nrebo
         real(kind=8) :: trebm
         real(kind=8) :: tct
         real(kind=8) :: t(*)
-        integer :: nbpt
+        integer(kind=8) :: nbpt
     end subroutine impc0
 end interface

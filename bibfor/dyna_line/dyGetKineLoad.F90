@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
     character(len=*), intent(in) :: matrRigiz, matrMassz, matrDampz, listLoadz
     aster_logical, intent(in) :: lDamp
     character(len=24), intent(out) :: kineLoad
-    integer, optional, intent(in) :: integScheme_
+    integer(kind=8), optional, intent(in) :: integScheme_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,9 +57,9 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
     character(len=8) :: matrRigiMesh, matrMassMesh, matrDampMesh, kineLoadMesh
     aster_logical :: lKineLoadInRigi, lKineLoadInMass, lKineLoadInDamp, lKineLoad, lTransient
     aster_logical :: l_parallel_matrix, lKineLoadGlobal
-    integer :: matrRigiNbEqua, matrMassNbEqua, matrDampNbEqua
-    integer :: iLoad, nbLoad, iLoadKine, genrec
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8) :: matrRigiNbEqua, matrMassNbEqua, matrDampNbEqua
+    integer(kind=8) :: iLoad, nbLoad, iLoadKine, genrec
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     character(len=24), pointer :: vlistLoadName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

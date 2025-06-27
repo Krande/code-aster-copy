@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine zjma(metaSteelPara, &
 #include "asterfort/assert.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: nbVari, nbVariTemper, nbVariPrev
+    integer(kind=8), intent(in) :: nbVari, nbVariTemper, nbVariPrev
     type(META_SteelParameters), intent(in) :: metaSteelPara
     real(kind=8), intent(in) :: deltaTime12, temp1, temp2
     aster_logical, intent(in) :: prevMetaIsTemper
@@ -54,7 +54,7 @@ subroutine zjma(metaSteelPara, &
 !
     real(kind=8) :: tempPgPrev
     real(kind=8) :: deltaTemp
-    integer :: cyclTherPrev, cyclTherCurr
+    integer(kind=8) :: cyclTherPrev, cyclTherCurr
     real(kind=8) :: ZTildeMartPrev, ZTildeBainPrev
     real(kind=8) :: ZTildeMartCurr, ZTildeBainCurr
     real(kind=8) :: tau_0_bain, tau_0_mart

@@ -3,7 +3,7 @@
  * @brief Implementation de TableContainer
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -213,7 +213,7 @@ bool TableContainer::build() {
     Table::build();
 
     VectorString parameters = getParameters();
-    for ( std::string parameter : {"NOM_SD", "NOM_OBJET", "TYPE_OBJET"} ) {
+    for ( std::string parameter : { "NOM_SD", "NOM_OBJET", "TYPE_OBJET" } ) {
         if ( std::find( parameters.begin(), parameters.end(), parameter ) == parameters.end() )
             throw std::runtime_error( "missing parameter " + parameter + " in TableContainer" );
     }

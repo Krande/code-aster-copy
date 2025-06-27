@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,24 +66,24 @@ subroutine slegro(iunv, imod, datset)
     character(len=13) :: chlige, chlign
     character(len=80) :: chfogn, cval
     character(len=80) :: chfogm
-    integer :: entcod(4), nument(4), numgro, nbenti, nblign
-    integer :: nbnode, nbmail, nbnod8, nbmai8, iunv, imod
-    integer :: nblit, nblie, nblif
-    integer :: imi, ima
-    integer :: nbmodu, nbtest, datset
-    integer :: nbrlig
+    integer(kind=8) :: entcod(4), nument(4), numgro, nbenti, nblign
+    integer(kind=8) :: nbnode, nbmail, nbnod8, nbmai8, iunv, imod
+    integer(kind=8) :: nblit, nblie, nblif
+    integer(kind=8) :: imi, ima
+    integer(kind=8) :: nbmodu, nbtest, datset
+    integer(kind=8) :: nbrlig
     real(kind=8) :: rval
     aster_logical :: lwrit
 !
 !  --> DECLARATION INDICES DE BOUCLES
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !  ------------ FIN DECLARATION -------------
 !
 !  -->N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
 !-----------------------------------------------------------------------
-    integer :: iclass, icol, ilong, ind, ival, jgrm, jgrn
+    integer(kind=8) :: iclass, icol, ilong, ind, ival, jgrm, jgrn
 !-----------------------------------------------------------------------
     call jemarq()
 !

@@ -50,7 +50,7 @@ subroutine chflch(rigthe, vec2nd, listLoad)
 !   ------------------------------------------------------------------------------------
 !   *** Definition of local variables
 !   ------------------------------------------------------------------------------------
-    integer :: neq, jnchtp, j2nd, nbEqua, iEqua, jndirp
+    integer(kind=8) :: neq, jnchtp, j2nd, nbEqua, iEqua, jndirp
     real(kind=8) :: timeCurr
     character(len=8) :: numedd, model
     character(len=24) :: vechtp, cncine

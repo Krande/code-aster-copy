@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     function dvolu1(numele, coord, norm, volt)
-        integer :: numele
+        integer(kind=8) :: numele
         real(kind=8) :: coord(3, 12)
-        integer :: norm(2, 4)
+        integer(kind=8) :: norm(2, 4)
         real(kind=8) :: volt(*)
         real(kind=8) :: dvolu1
     end function dvolu1

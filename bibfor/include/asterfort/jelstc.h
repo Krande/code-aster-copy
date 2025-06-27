@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
             subroutine jelstc(clas,souch,ipos,maxval,klst,nbval)
               character(len=*), intent(in) :: clas
               character(len=*), intent(in) :: souch
-              integer, intent(in) :: ipos
-              integer, intent(in) :: maxval
+              integer(kind=8), intent(in) :: ipos
+              integer(kind=8), intent(in) :: maxval
               character(len=*), intent(out) :: klst(*)
-              integer, intent(out) :: nbval
+              integer(kind=8), intent(out) :: nbval
             end subroutine jelstc
           end interface 

@@ -30,12 +30,12 @@ subroutine cavini(ndim, nno, geom, vim, npg, &
 #include "asterfort/casurf.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: ndim, nno, npg, lgpg, imate, zz, zzz, zzzz, nono, nitert, ntirmx
+    integer(kind=8) :: ndim, nno, npg, lgpg, imate, zz, zzz, zzzz, nono, nitert, ntirmx
     real(kind=8) :: geom(1:ndim, 1:nno)
     real(kind=8) :: vim(1:lgpg, 1:npg), gr, pi
     real(kind=8) :: lc(1), mm, echp, ki, epai, ct1, ct2, randd, surff
-    integer :: icodre(5)
-    integer :: k2(1), kpg, spt
+    integer(kind=8) :: icodre(5)
+    integer(kind=8) :: k2(1), kpg, spt
     character(len=16) :: nomres(5)
     character(len=8) :: fami, poum
     real(kind=8) :: valres(5), sa, sp, sc

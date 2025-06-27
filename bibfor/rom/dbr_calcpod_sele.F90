@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,11 +27,11 @@ subroutine dbr_calcpod_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: nb_mode_maxi
+    integer(kind=8), intent(in) :: nb_mode_maxi
     real(kind=8), intent(in) :: tole_svd
     real(kind=8), pointer :: s(:)
-    integer, intent(in) :: nb_sing
-    integer, intent(out) :: nb_mode
+    integer(kind=8), intent(in) :: nb_sing
+    integer(kind=8), intent(out) :: nb_mode
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,9 +49,9 @@ subroutine dbr_calcpod_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: vale_mini, vale_maxi, vale_tole, valr(2)
-    integer :: i_sing, vali(2)
+    integer(kind=8) :: i_sing, vali(2)
 !
 ! --------------------------------------------------------------------------------------------------
 !

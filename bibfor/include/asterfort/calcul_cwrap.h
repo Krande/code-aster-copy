@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ interface
     subroutine calcul_cwrap(stop, option_, ligrel_, nin, lchin,&
                         lpain, nou, lchou, lpaou, base,&
                         mpic)
-        integer, intent(in) :: nou
-        integer, intent(in) :: nin
+        integer(kind=8), intent(in) :: nou
+        integer(kind=8), intent(in) :: nin
         character(len=1), intent(in) :: stop
         character(len=*), intent(in) :: option_
         character(len=*), intent(in) :: ligrel_

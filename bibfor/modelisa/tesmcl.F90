@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,12 +31,12 @@ subroutine tesmcl(icl, iv, cv, mtcl, irteti)
 !       OUT     (RETURN 1)      FAUX    MOT # MOT CLE RECHERCHE
 !               (RETURN )       VRAI    MOT = MOT CLE RECHERCHE
 !       ----------------------------------------------------------------
-    integer :: iv
+    integer(kind=8) :: iv
     character(len=*) :: cv
     character(len=8) :: mtcl, mcl
 !
 !-----------------------------------------------------------------------
-    integer :: icl, irteti
+    integer(kind=8) :: icl, irteti
 !-----------------------------------------------------------------------
     irteti = 0
     if (icl .eq. 3 .and. iv .le. 8 .and. iv .ne. 0) then

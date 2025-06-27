@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine cfmata(resoco, neq, nbliai, nmult, numedz,&
                       matelz, numecz, matriz)
         character(len=24) :: resoco
-        integer :: neq
-        integer :: nbliai
-        integer :: nmult
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
+        integer(kind=8) :: nmult
         character(len=*) :: numedz
         character(len=*) :: matelz
         character(len=*) :: numecz

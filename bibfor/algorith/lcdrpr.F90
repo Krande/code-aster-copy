@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine lcdrpr(fami, typmod, option, imate, compor, sigm, &
 !
 !
     character(len=*), intent(in) :: fami
-    integer :: imate, iret
+    integer(kind=8) :: imate, iret
     real(kind=8) :: depsm(6), vim(*), vip(*), sig(6), dsidep(6, 6)
     real(kind=8) :: sigm(6)
     character(len=8) :: typmod(*)
@@ -56,7 +56,7 @@ subroutine lcdrpr(fami, typmod, option, imate, compor, sigm, &
 ! OUT DSIDEP  MATRICE TANGENTE
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! ======================================================================
-    integer :: nbmat, typedp, ndt, ndi, nvi
+    integer(kind=8) :: nbmat, typedp, ndt, ndi, nvi
     real(kind=8) :: td, tf, tr
     parameter(nbmat=5)
     real(kind=8) :: materf(nbmat, 2), deps(6)

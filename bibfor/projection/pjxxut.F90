@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine pjxxut(projDime, typeSelect, &
     character(len=2), intent(in) :: projDime
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
-    integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+ integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
     character(len=8), intent(out) :: mesh1, mesh2
-    integer, intent(out) :: nbCellType, cellListNume(MT_NTYMAX)
+    integer(kind=8), intent(out) :: nbCellType, cellListNume(MT_NTYMAX)
     character(len=8), intent(out) :: cellListCode(MT_NTYMAX)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -101,12 +101,12 @@ subroutine pjxxut(projDime, typeSelect, &
 !
     character(len=8) :: model1, model2
     character(len=8) :: cellTypeName(MT_NTYMAX)
-    integer :: nbCellModel, nbNode, nbNode1, nbNode2, nbCell1, nbCell2, nbNodeCount
-    integer :: iCell1, iCellType, iNode, iCellModel, iCellSelect1, iNode2, iNodeSelect2
-    integer :: nodeNume
-    integer :: iad, ilcnx1, iexi
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: listCell1(:) => null(), listNode1(:) => null(), listNode2(:) => null()
+    integer(kind=8) :: nbCellModel, nbNode, nbNode1, nbNode2, nbCell1, nbCell2, nbNodeCount
+    integer(kind=8) :: iCell1, iCellType, iNode, iCellModel, iCellSelect1, iNode2, iNodeSelect2
+    integer(kind=8) :: nodeNume
+    integer(kind=8) :: iad, ilcnx1, iexi
+    integer(kind=8), pointer :: connex(:) => null()
+  integer(kind=8), pointer :: listCell1(:) => null(), listNode1(:) => null(), listNode2(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

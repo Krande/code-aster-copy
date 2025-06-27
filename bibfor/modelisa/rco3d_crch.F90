@@ -42,7 +42,7 @@ subroutine rco3d_crch(ligrel, noma, chmlrac, lismaco, &
     character(len=8), intent(in) :: noma
     character(len=24), intent(in) :: lismaco
     real(kind=8), intent(in) :: crig
-    integer, intent(in) :: nbmaco
+    integer(kind=8), intent(in) :: nbmaco
     real(kind=8), pointer ::  v_epai(:)
 
 ! -------------------------------------------------------
@@ -66,22 +66,22 @@ subroutine rco3d_crch(ligrel, noma, chmlrac, lismaco, &
 !                                   ASSOCIÉES AUX MAILLES DE LISMACO.
 ! -------------------------------------------------------
 
-    integer, parameter :: nceld1 = 4
-    integer, parameter :: nceld2 = 4
-    integer, parameter :: nceld3 = 4
-    integer :: p2
+    integer(kind=8), parameter :: nceld1 = 4
+    integer(kind=8), parameter :: nceld2 = 4
+    integer(kind=8), parameter :: nceld3 = 4
+    integer(kind=8) :: p2
     real(kind=8) :: epais
     character(len=24)  :: chmlrac_celv
-    integer :: jv_chmlrac_celv, nb_grel, i_grel
-    integer :: decal, i_liel, nb_liel, vale_indx
-    integer :: idx, j, k, l
+    integer(kind=8) :: jv_chmlrac_celv, nb_grel, i_grel
+    integer(kind=8) :: decal, i_liel, nb_liel, vale_indx
+    integer(kind=8) :: idx, j, k, l
     character(len=24) :: chmlrac_celd
-    integer, pointer :: v_lmaco(:) => null()
-    integer, pointer :: v_chmlrac_celd(:) => null()
-    integer, pointer :: v_ligrel_liel(:) => null()
-    integer, pointer :: v_list_no_pair(:) => null()
-    integer :: num_pair
-    integer :: idconnco, nbnoco
+    integer(kind=8), pointer :: v_lmaco(:) => null()
+    integer(kind=8), pointer :: v_chmlrac_celd(:) => null()
+    integer(kind=8), pointer :: v_ligrel_liel(:) => null()
+    integer(kind=8), pointer :: v_list_no_pair(:) => null()
+    integer(kind=8) :: num_pair
+    integer(kind=8) :: idconnco, nbnoco
 
     ! retrieve some informations
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,14 +31,14 @@ interface
                       tabwk0, tabwk1, archiv, nbtyar, typear,&
                       numrep, ds_energy)
         use NonLin_Datastructure_type
-        integer :: nbtyar
-        integer :: neq
+        integer(kind=8) :: nbtyar
+        integer(kind=8) :: neq
         character(len=8) :: result
         character(len=19) :: force1
-        integer :: istoc
-        integer :: iarchi
+        integer(kind=8) :: istoc
+        integer(kind=8) :: iarchi
         aster_logical :: lamort
-        integer :: imat(3)
+        integer(kind=8) :: imat(3)
         character(len=8) :: masse
         character(len=8) :: rigid
         character(len=8) :: amort
@@ -52,9 +52,9 @@ interface
         real(kind=8) :: fexte(*)
         real(kind=8) :: famor(*)
         real(kind=8) :: fliai(*)
-        integer :: nchar
-        integer :: nveca
-        integer :: liad(*)
+        integer(kind=8) :: nchar
+        integer(kind=8) :: nveca
+        integer(kind=8) :: liad(*)
         character(len=24) :: lifo(*)
         character(len=24) :: modele
         aster_logical :: ener
@@ -68,9 +68,9 @@ interface
         real(kind=8) :: temps
         real(kind=8) :: tabwk0(neq)
         real(kind=8) :: tabwk1(neq)
-        integer :: archiv
+        integer(kind=8) :: archiv
         character(len=16) :: typear(nbtyar)
-        integer :: numrep
+        integer(kind=8) :: numrep
         type(NL_DS_Energy), intent(inout) :: ds_energy
     end subroutine dldif0
 end interface

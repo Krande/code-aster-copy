@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine cjssmd(mater, sig, vin, seuild)
 #include "asterfort/jemarq.h"
 #include "asterfort/lcdevi.h"
 #include "asterfort/trace.h"
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: mater(14, 2), sig(6), vin(*), seuild, rcos3t, htq
     real(kind=8) :: r, x(6), i1, dev(6), q(6), qii, gamma, pa, qinit
     real(kind=8) :: pref, epssig

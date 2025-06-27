@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,11 +69,11 @@ subroutine inclis(nomres, ssta, sstb, intfa, intfb, &
 !
     character(len=8) :: nomres, matprj, ssta, sstb, intfa, intfb, nomg
     character(len=24) :: fmlia, toto, fpliao, fplibo, fplian, fplibn
-    integer :: iada(3), iadb(3), numlis, zit(3), nbec, nbnoea, nbnoeb
-    integer :: nbcmpm, k, m1, n1, m2, n2, llplia, llplib, icompa, icompb, ldmat
-    integer :: ldmat2, iadoa, iadob
+    integer(kind=8) :: iada(3), iadb(3), numlis, zit(3), nbec, nbnoea, nbnoeb
+    integer(kind=8) :: nbcmpm, k, m1, n1, m2, n2, llplia, llplib, icompa, icompb, ldmat
+    integer(kind=8) :: ldmat2, iadoa, iadob
     parameter(nbcmpm=10)
-    integer :: idecoa(nbcmpm), idecob(nbcmpm), itemcm
+    integer(kind=8) :: idecoa(nbcmpm), idecob(nbcmpm), itemcm
     real(kind=8) :: rbid, un, moins1
 !
 !-----------------------------------------------------------------------

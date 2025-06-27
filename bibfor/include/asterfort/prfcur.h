@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine prfcur(vec1, nbn, vec2, nbp, interp,&
                       prolgd)
-        integer :: nbp
-        integer :: nbn
-        integer :: vec1(nbn)
+        integer(kind=8) :: nbp
+        integer(kind=8) :: nbn
+        integer(kind=8) :: vec1(nbn)
         real(kind=8) :: vec2(nbp)
         character(len=8) :: interp
         character(len=2) :: prolgd

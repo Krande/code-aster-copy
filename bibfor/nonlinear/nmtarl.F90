@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim, &
     implicit none
 #include "asterfort/nmtacr.h"
 #include "asterfort/zeroco.h"
-    integer :: mode, ndimsi
+    integer(kind=8) :: mode, ndimsi
     real(kind=8) :: mat(*), sigel(*), vim(*), epm(*), dp, sp, xi
     real(kind=8) :: dirdp, dirsp, dirxi, min
     real(kind=8) :: rho, ener
@@ -49,7 +49,7 @@ subroutine nmtarl(mode, ndimsi, mat, sigel, vim, &
 !
 !
 !
-    integer :: niter, itelin
+    integer(kind=8) :: niter, itelin
     real(kind=8) :: f, g, fds, gds, fdp, gdp, fdx, gdx, dpmax, sig(6)
     real(kind=8) :: tang(6, 6)
     real(kind=8) :: x(4), y(4), energ(4)

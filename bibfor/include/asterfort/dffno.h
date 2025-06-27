@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine dffno(elrefe, ndim, nno, nnos, dff)
         character(len=*) :: elrefe
-        integer :: ndim
-        integer :: nno
-        integer :: nnos
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnos
         real(kind=8) :: dff(*)
     end subroutine dffno
 end interface

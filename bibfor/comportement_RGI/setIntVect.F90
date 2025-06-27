@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ subroutine setIntVect(vect, x1, x2, x3, x4, x5, &
 !-----------------------------------------------------------------------
     implicit none
 #include "asterfort/assert.h"
-    integer, intent(inout) :: vect(*)
-    integer, intent(in) :: x1
-    integer, optional, intent(in) :: x2, x3, x4, x5, x6, x7, x8
-    integer, optional, intent(in) :: x9, x10, x11, x12, x13, x14
-    integer, optional, intent(in) :: x15, x16, x17
+    integer(kind=8), intent(inout) :: vect(*)
+    integer(kind=8), intent(in) :: x1
+    integer(kind=8), optional, intent(in) :: x2, x3, x4, x5, x6, x7, x8
+    integer(kind=8), optional, intent(in) :: x9, x10, x11, x12, x13, x14
+    integer(kind=8), optional, intent(in) :: x15, x16, x17
 !-----------------------------------------------------------------------
 !
     vect(1) = x1

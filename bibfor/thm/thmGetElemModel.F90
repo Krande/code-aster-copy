@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
 !
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical, optional, intent(out) :: l_axi_, l_vf_
-    integer, optional, intent(out) :: ndim_
+    integer(kind=8), optional, intent(out) :: ndim_
     character(len=8), optional, intent(out) :: type_elem_(2)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_axi, l_vf
-    integer :: ndim
+    integer(kind=8) :: ndim
     character(len=8) :: type_elem(2)
 !
 ! --------------------------------------------------------------------------------------------------

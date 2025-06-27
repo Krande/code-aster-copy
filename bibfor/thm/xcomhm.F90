@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,16 +48,16 @@ subroutine xcomhm(ds_thm, &
 #include "asterfort/tebiot.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: retcom, kpi, npg, nfh
-    integer :: ndim, dimdef, dimcon, nbvari, j_mater
-    integer :: addeme, addep1, addep2, addete
-    integer :: adcome, adcp11
+    integer(kind=8) :: retcom, kpi, npg, nfh
+    integer(kind=8) :: ndim, dimdef, dimcon, nbvari, j_mater
+    integer(kind=8) :: addeme, addep1, addep2, addete
+    integer(kind=8) :: adcome, adcp11
     real(kind=8) :: defgem(1:dimdef), defgep(1:dimdef), congep(1:dimcon)
     real(kind=8) :: congem(1:dimcon), vintm(1:nbvari), vintp(1:nbvari)
     real(kind=8) :: time_curr
     character(len=16) :: option
-    integer :: dimenr
-    integer :: yaenrh, adenhy
+    integer(kind=8) :: dimenr
+    integer(kind=8) :: yaenrh, adenhy
     real(kind=8) :: dsde(1:dimcon, 1:dimenr)
     real(kind=8) :: gravity(3)
     real(kind=8) :: angl_naut(3)

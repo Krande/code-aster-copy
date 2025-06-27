@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ subroutine smcosl(x, nb_hist, trc, ind, &
     implicit none
 !
     real(kind=8), intent(in) :: x(5)
-    integer, intent(in) :: nb_hist
+    integer(kind=8), intent(in) :: nb_hist
     real(kind=8), intent(in) :: trc((3*nb_hist), 5)
-    integer, intent(in) :: ind(6)
+    integer(kind=8), intent(in) :: ind(6)
     real(kind=8), intent(out) :: a(6, 6), b(6)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine smcosl(x, nb_hist, trc, ind, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: zero = 0.d0, un = 1.d0
-    integer :: j, i
+    integer(kind=8) :: j, i
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine ptfop1(itype, nc, coef1, coef2, xl, qq, fe)
-        integer :: itype, nc
+        integer(kind=8) :: itype, nc
         real(kind=8) :: coef1
         real(kind=8) :: coef2
         real(kind=8) :: xl

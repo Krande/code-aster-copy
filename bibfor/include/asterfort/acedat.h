@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine acedat(motfac, in, npara, sec, exp,&
                       tab, car)
         character(len=*) :: motfac
-        integer :: in
-        integer :: npara(*)
+        integer(kind=8) :: in
+        integer(kind=8) :: npara(*)
         character(len=*) :: sec(*)
         character(len=*) :: exp(*)
         character(len=*) :: tab(*)

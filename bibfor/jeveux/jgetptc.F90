@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ subroutine jgetptc(jad, pteur_c, vl, vi, vi4, &
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-    integer :: jad
+    integer(kind=8) :: jad
     type(c_ptr) :: pteur_c
 !
     aster_logical, optional, target :: vl(*)
-    integer, optional, target :: vi(*)
+    integer(kind=8), optional, target :: vi(*)
     integer(kind=4), optional, target :: vi4(*)
     real(kind=8), optional, target :: vr(*)
     complex(kind=8), optional, target :: vc(*)

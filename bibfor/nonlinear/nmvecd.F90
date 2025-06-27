@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi, &
 #include "asterfort/nmvekx.h"
 #include "asterfort/nmvexi.h"
 #include "asterfort/r8inir.h"
-    integer :: imate, nmat, np, nb, ier
+    integer(kind=8) :: imate, nmat, np, nb, ier
     real(kind=8) :: mate(nmat, 2), hook(6, 6)
     real(kind=8) :: p(np), beta(nb), ep(*), rm, dm
     real(kind=8) :: dsgde(nb, nb), dsgdb(nb, nb)
@@ -84,7 +84,7 @@ subroutine nmvecd(imate, mate, nmat, matcst, loi, &
 !
 ! INFO P(1)=RPOINT,  P(2)=DPOINT
 !-----------------------------------------------------------------------
-    integer :: k, j, i
+    integer(kind=8) :: k, j, i
     real(kind=8) :: dammax, epsi
     parameter(dammax=0.99d0)
 !

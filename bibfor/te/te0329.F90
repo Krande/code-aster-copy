@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,15 +39,15 @@ subroutine te0329(option, nomte)
     real(kind=8) :: nx(9), ny(9), nz(9), norm(3, 9), acc(3, 9)
     real(kind=8) :: flufn(9), acloc(3, 8)
     real(kind=8) :: x(3, 9)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ipg, npg1, npg4
-    integer :: idec, jdec, kdec, ldec
-    integer :: nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom
+    integer(kind=8) :: ndim, nno, ipg, npg1, npg4
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) :: nnos, jgano
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacce, iadzi, iazk24, idim, iharm, ino
-    integer :: ivectu, ivetel, j, jno, k
+    integer(kind=8) :: i, iacce, iadzi, iazk24, idim, iharm, ino
+    integer(kind=8) :: ivectu, ivetel, j, jno, k
 !-----------------------------------------------------------------------
     if (lteatt('DIM_TOPO_MODELI', '3')) then
 !   ----------------------------------------

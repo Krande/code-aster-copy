@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@ subroutine pteequ(nume_equa, base, neq, igds, nb_cmp_field, &
 !
 !
     character(len=19), intent(in) :: nume_equa
-    integer, intent(in) :: neq
-    integer, intent(in) :: igds
-    integer, intent(in) :: nb_cmp_field
-    integer, pointer :: field_to_cata(:)
+    integer(kind=8), intent(in) :: neq
+    integer(kind=8), intent(in) :: igds
+    integer(kind=8), intent(in) :: nb_cmp_field
+    integer(kind=8), pointer :: field_to_cata(:)
     character(len=1), intent(in) :: base
 !
 ! --------------------------------------------------------------------------------------------------
@@ -76,11 +76,11 @@ subroutine pteequ(nume_equa, base, neq, igds, nb_cmp_field, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp_fieldmx, nec, nb_ligr, l, jprno, i_cmp_field
-    integer :: nb_node, i_node, iddl, iadg, i_cmp_cata, i_equa
+    integer(kind=8) :: nb_cmp_fieldmx, nec, nb_ligr, l, jprno, i_cmp_field
+    integer(kind=8) :: nb_node, i_node, iddl, iadg, i_cmp_cata, i_equa
     character(len=24) :: prno, nueq, deeq
-    integer, pointer :: p_nueq(:) => null()
-    integer, pointer :: p_deeq(:) => null()
+    integer(kind=8), pointer :: p_nueq(:) => null()
+    integer(kind=8), pointer :: p_deeq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

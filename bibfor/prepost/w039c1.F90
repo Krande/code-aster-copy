@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
     character(len=19) :: ligrel
     character(len=*) :: carte, titre, form
-    integer :: ifi
+    integer(kind=8) :: ifi
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -54,16 +54,16 @@ subroutine w039c1(carte, ifi, form, ligrel, titre)
 !
 !
 !
-    integer :: iret, ima, nbma, izone, nuzone
-    integer ::  jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi, nbCmpDyna
-    integer :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit, kzone, kcmp
+    integer(kind=8) :: iret, ima, nbma, izone, nuzone
+    integer(kind=8) ::  jcesd, jcesl, iad, dec1, dec2, ifm, ifr, nncp, iexi, nbCmpDyna
+    integer(kind=8) :: jdesc, jvale, ngedit, nugd, ncmpmx, kgedit, kzone, kcmp
     character(len=19) :: cart1, cel2, ces2
     character(len=64) :: nommed
     character(len=8) :: kbid, ma, tsca, nomgd, modele, typech, sdcarm
     character(len=16) :: field_type
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: ptma(:) => null()
-    integer, pointer :: zones(:) => null()
+    integer(kind=8), pointer :: ptma(:) => null()
+    integer(kind=8), pointer :: zones(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

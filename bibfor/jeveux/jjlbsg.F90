@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,42 +38,42 @@ subroutine jjlbsg(ic, id, ioc, ibacol, iadmi, &
 #include "jeveux_private.h"
 #include "asterc/hpdeallc.h"
 #include "asterfort/jxecro.h"
-    integer :: ic, id, ioc, ibacol, iadmi, iadyn, ltot
+    integer(kind=8) :: ic, id, ioc, ibacol, iadmi, iadyn, ltot
 !     ------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: ibiadd, ibiadm, iblono, ixdeso, ixiadd
-    integer :: ixiadm, ixlono, jcara, jdate, jhcod, jiacce, jiadd
-    integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, lonoi
-    integer :: lsv, n, nbacce
+    integer(kind=8) :: ibiadd, ibiadm, iblono, ixdeso, ixiadd
+    integer(kind=8) :: ixiadm, ixlono, jcara, jdate, jhcod, jiacce, jiadd
+    integer(kind=8) :: jiadm, jlong, jlono, jltyp, jluti, jmarq, lonoi
+    integer(kind=8) :: lsv, n, nbacce
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
     common/jiacce/jiacce(n), nbacce(2*n)
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
-    integer :: icdyn, mxltot
+    integer(kind=8) :: icdyn, mxltot
     common/xdynje/icdyn, mxltot
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
-    integer :: isstat
+    integer(kind=8) :: isstat
     common/iconje/isstat
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
-    integer :: iddeso, idiadd, idiadm, idlono
+    integer(kind=8) :: iddeso, idiadd, idiadm, idlono
     parameter(iddeso=1, idiadd=2, idiadm=3,&
      &               idlono=8)
 ! ----------------------------------------------------------------------
-    integer :: idm, isd, isf, il, ltypi, lgs, iaddi(2), nbioav(2)
+    integer(kind=8) :: idm, isd, isf, il, ltypi, lgs, iaddi(2), nbioav(2)
 !
     nbioav(1) = nbacce(2*ic-1)
     nbioav(2) = nbacce(2*ic)

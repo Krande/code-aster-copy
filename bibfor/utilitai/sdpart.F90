@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,12 +33,12 @@ subroutine sdpart(nbsd, nbsdp0, sdloc)
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
 ! DECLARATION PARAMETRES D'APPELS
-    integer :: nbsd, sdloc(nbsd), nbsdp0
+    integer(kind=8) :: nbsd, sdloc(nbsd), nbsdp0
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: nbproc, rang, i
-    integer :: nbsdpp, sdrest, npdeb, nsddeb, nsdfin
-    integer :: iproc, iproc1, decal
+    integer(kind=8) :: nbproc, rang, i
+    integer(kind=8) :: nbsdpp, sdrest, npdeb, nsddeb, nsdfin
+    integer(kind=8) :: iproc, iproc1, decal
     mpi_int :: mrank, msize
 !----------------------------------------------------------------------
 !

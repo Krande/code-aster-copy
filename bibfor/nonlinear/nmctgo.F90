@@ -63,11 +63,11 @@ subroutine nmctgo(mesh, sderro, hval_incr, ds_print, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_cont_cont, l_cont_disc, l_cont_lac
     aster_logical :: l_geom_sans, l_geom_manu, l_geom_auto
-    integer :: nb_iter_geom, iter_geom_maxi
-    integer :: loop_geom_count
+    integer(kind=8) :: nb_iter_geom, iter_geom_maxi
+    integer(kind=8) :: loop_geom_count
     character(len=19) :: disp_curr, loop_geom_disp, disp_prev
     character(len=16) :: loop_geom_node
     real(kind=8) :: loop_geom_vale

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine nmchat(matel, mat, nbvar, memo, visc, &
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "blas/ddot.h"
-    integer :: memo, visc, nbvar, idelta
+    integer(kind=8) :: memo, visc, nbvar, idelta
     real(kind=8) :: mat(*), matel(*), sigmdv(6), dsidep(6, 6), plast, dp, pm
     real(kind=8) :: rpvp
     real(kind=8) :: depsdv(6), vim(*), dt, qp, n1, n2, delta1, delta2, dn1, dn2
@@ -50,7 +50,7 @@ subroutine nmchat(matel, mat, nbvar, memo, visc, &
     real(kind=8) :: h1a1, h1a2, h2a1, h2a2, gq0, gqmax, mumem, qm, gqp, drp, h2s
     real(kind=8) :: rpm
     aster_logical :: plasti
-    integer :: ndimsi, i, j, l
+    integer(kind=8) :: ndimsi, i, j, l
     blas_int :: b_incx, b_incy, b_n
 !
     rac2 = sqrt(2.d0)

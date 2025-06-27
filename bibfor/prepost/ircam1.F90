@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,14 +45,14 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbimpr
-    integer :: caimpi(10, nbimpr)
-    integer :: numpt, numord
-    integer :: adsd, adsv, adsl, adsk
-    integer :: existc, ncmprf
-    integer :: ncmpve
-    integer :: typent, tygeom
-    integer :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
+    integer(kind=8) :: nbimpr
+    integer(kind=8) :: caimpi(10, nbimpr)
+    integer(kind=8) :: numpt, numord
+    integer(kind=8) :: adsd, adsv, adsl, adsk
+    integer(kind=8) :: existc, ncmprf
+    integer(kind=8) :: ncmpve
+    integer(kind=8) :: typent, tygeom
+    integer(kind=8) :: modnum(MT_NTYMAX), nuanom(MT_NTYMAX, *)
     character(len=8) :: typech
     character(len=8) :: nomtyp(*)
     character(len=24) :: ntlcmp, ntncmp, ntucmp, ntproa, indcmp
@@ -63,7 +63,7 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
     real(kind=8) :: instan
     aster_logical :: lfichUniq
     character(len=8) :: nosdfu
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,26 +115,26 @@ subroutine ircam1(nofimd, nochmd, existc, ncmprf, numpt, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRCAM1'
-    integer :: edleaj
-    integer, parameter :: ednoeu = 3
-    integer, parameter :: edmail = 0
-    integer, parameter :: ednoma = 4
-    integer, parameter :: typnoe = 0
-    integer, parameter :: ednopg = 1
-    integer, parameter :: edelst = 5
+    integer(kind=8) :: edleaj
+    integer(kind=8), parameter :: ednoeu = 3
+    integer(kind=8), parameter :: edmail = 0
+    integer(kind=8), parameter :: ednoma = 4
+    integer(kind=8), parameter :: typnoe = 0
+    integer(kind=8), parameter :: ednopg = 1
+    integer(kind=8), parameter :: edelst = 5
     character(len=8) :: saux08
     character(len=24) :: ntvale
     character(len=64) :: nomprf, nolopg, nomam2
-    integer :: nbrepg, nbpt, iret
-    integer :: ifm, niv
-    integer :: nbenty, nvalec, nbpg, nbsp, nbco, nbse, nbfi
-    integer :: tymast
-    integer :: advale
-    integer :: adproa, adnucm
-    integer :: nrimpr, codre2, retsav
-    integer :: ideb, ifin
+    integer(kind=8) :: nbrepg, nbpt, iret
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbenty, nvalec, nbpg, nbsp, nbco, nbse, nbfi
+    integer(kind=8) :: tymast
+    integer(kind=8) :: advale
+    integer(kind=8) :: adproa, adnucm
+    integer(kind=8) :: nrimpr, codre2, retsav
+    integer(kind=8) :: ideb, ifin
     med_idt :: idfimd
-    integer :: iaux
+    integer(kind=8) :: iaux
     aster_logical :: ficexi, lnvalec
     character(len=16), pointer :: cname(:) => null()
     character(len=16), pointer :: cunit(:) => null()

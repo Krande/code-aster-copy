@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine tbexve(nomta, para, nomobj, basobj_, nbval_, &
 !
     character(len=*) :: nomta, para, nomobj
     character(len=*), optional, intent(in) :: basobj_
-    integer, optional, intent(out) :: nbval_
+    integer(kind=8), optional, intent(out) :: nbval_
     character(len=*), optional, intent(out) :: typval_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,14 +51,14 @@ subroutine tbexve(nomta, para, nomobj, basobj_, nbval_, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbpara, nblign, ipar
-    integer :: i, iv, jvale, jvall, kvale, nbval
+    integer(kind=8) :: iret, nbpara, nblign, ipar
+    integer(kind=8) :: i, iv, jvale, jvall, kvale, nbval
     character(len=1) :: base
     character(len=4) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
     character(len=24) :: valk
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

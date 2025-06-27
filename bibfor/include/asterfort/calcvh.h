@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine calcvh(nbmat, materf, eta, vp, sigeqe,&
                       vh, vg)
-        integer :: nbmat
+        integer(kind=8) :: nbmat
         real(kind=8) :: materf(nbmat, 2)
         real(kind=8) :: eta
         real(kind=8) :: vp(3)

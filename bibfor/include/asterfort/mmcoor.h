@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine mmcoor(alias, nno, ndim, coorma, ksi1,&
                       ksi2, coorpt)
         character(len=8) :: alias
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: coorma(27)
         real(kind=8) :: ksi1
         real(kind=8) :: ksi2

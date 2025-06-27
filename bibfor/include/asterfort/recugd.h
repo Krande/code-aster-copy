@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine recugd(caelem, nomcmp, valres, nbgd, iassef,&
                       iassmx)
-        integer :: iassef
-        integer :: nbgd
+        integer(kind=8) :: iassef
+        integer(kind=8) :: nbgd
         character(len=19) :: caelem
         character(len=8) :: nomcmp(nbgd)
         real(kind=8) :: valres(nbgd*iassef)
-        integer :: iassmx
+        integer(kind=8) :: iassmx
     end subroutine recugd
 end interface

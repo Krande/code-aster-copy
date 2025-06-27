@@ -56,23 +56,23 @@ subroutine resvoi(moz, maz, chvoiz)
     character(len=24) :: typmai, connex, coninv, valk(1), nomma
     character(len=8) :: ma, typema, mo
     character(len=19) :: ligrmo, chvois
-    integer :: ibid, nbvois
-    integer :: ibidt(1), vali(2)
-    integer :: nbno, nbma, nbs, nbf, tymvol
-    integer :: ima, ino, ino1, ino2, ino3, ino4, kma, jma
-    integer :: iamav1, iamav2, iamav3, iamav4, iavale
-    integer :: ifa, ima1, ima2, ima3, ima4
-    integer :: igrel, iel, igrelv, ielv
-    integer :: iaval1, iaval2, jad, iad, iadv
-    integer :: nbmav1, nbmav2, nbmav3, nbmav4
-    integer :: numav1, numav2, numav3, numav4, typ, som(4, 6, 4), iatyma
+    integer(kind=8) :: ibid, nbvois
+    integer(kind=8) :: ibidt(1), vali(2)
+    integer(kind=8) :: nbno, nbma, nbs, nbf, tymvol
+    integer(kind=8) :: ima, ino, ino1, ino2, ino3, ino4, kma, jma
+    integer(kind=8) :: iamav1, iamav2, iamav3, iamav4, iavale
+    integer(kind=8) :: ifa, ima1, ima2, ima3, ima4
+    integer(kind=8) :: igrel, iel, igrelv, ielv
+    integer(kind=8) :: iaval1, iaval2, jad, iad, iadv
+    integer(kind=8) :: nbmav1, nbmav2, nbmav3, nbmav4
+    integer(kind=8) :: numav1, numav2, numav3, numav4, typ, som(4, 6, 4), iatyma
 !
 !
     aster_logical :: troisd
 !
-    integer :: debugr
-    integer, pointer :: repe(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8) :: debugr
+    integer(kind=8), pointer :: repe(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
 !
 !   INITIALISATION DES NUMEROS DE SOMMETS DES FACES D'ELEMENTS 3D
 !     SOM (IN,IFA,TYMVOL) : IN     : NUMERO DU SOMMET DANS LA FACE

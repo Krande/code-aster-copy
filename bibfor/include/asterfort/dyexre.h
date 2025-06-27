@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       j2nd)
         character(len=14) :: numddl
         real(kind=8) :: freq
-        integer :: nbexre
+        integer(kind=8) :: nbexre
         character(len=24) :: exreco
         character(len=24) :: exresu
-        integer :: j2nd
+        integer(kind=8) :: j2nd
     end subroutine dyexre
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine criteo(epsp, epsd, eta, ba, d, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: k, i, j, l, t(3, 3)
+    integer(kind=8) :: k, i, j, l, t(3, 3)
     real(kind=8) :: epsa(6), eps(6), epsdr(6), b(6)
     real(kind=8) :: fb(6), fbr(6), fbm(6), fd, rec(6)
     real(kind=8) :: cc(6), vecc(3, 3), valcc(3), ccp(6), cpe(6), valb(3)

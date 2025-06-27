@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine impvoi(texte, nbma, iaddvo, iadvoi)
         character(len=*) :: texte
-        integer :: nbma
-        integer :: iaddvo
-        integer :: iadvoi
+        integer(kind=8) :: nbma
+        integer(kind=8) :: iaddvo
+        integer(kind=8) :: iadvoi
     end subroutine impvoi
 end interface

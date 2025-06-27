@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine xstama(noma, nbma, nmafis, jmafis, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma, jmafis
-    integer :: ncouch, stano(*), jmafon, jmaen1, jmaen2, jmaen3
+    integer(kind=8) :: nmafis, nmafon, nmaen1, nmaen2, nmaen3, nbma, jmafis
+    integer(kind=8) :: ncouch, stano(*), jmafon, jmaen1, jmaen2, jmaen3
     character(len=8) :: noma
     character(len=16) :: typdis
     character(len=19) :: cnslt, cnsln
@@ -83,17 +83,17 @@ subroutine xstama(noma, nbma, nmafis, jmafis, &
 !
 !
 !
-    integer :: jma, jconx2
-    integer :: ima, itypma, j, idim, ndim
-    integer :: nuno, ifm, niv
-    integer :: nbnoe, ino, nabs, jdlino, nbnoma
+    integer(kind=8) :: jma, jconx2
+    integer(kind=8) :: ima, itypma, j, idim, ndim
+    integer(kind=8) :: nuno, ifm, niv
+    integer(kind=8) :: nbnoe, ino, nabs, jdlino, nbnoma
     real(kind=8) :: hff, diam, lsn, lst, rayon
     character(len=8) :: typma
     character(len=19) :: mai
     real(kind=8), pointer :: macoord(:) => null()
     real(kind=8), pointer :: lnsv(:) => null()
     real(kind=8), pointer :: ltsv(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
 !

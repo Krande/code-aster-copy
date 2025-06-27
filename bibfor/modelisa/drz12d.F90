@@ -40,9 +40,9 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node, &
     character(len=8), intent(in) :: noma
     character(len=19), intent(in) :: ligrmo
     character(len=4), intent(in) :: type_vale
-    integer, intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_node
     character(len=24), intent(in) :: list_node
-    integer, intent(in) :: cmp_index_drz
+    integer(kind=8), intent(in) :: cmp_index_drz
     character(len=19), intent(in) :: lisrel
     character(len=8), intent(out) :: nom_noeuds(:)
 !
@@ -66,11 +66,11 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_no
-    integer ::   jprnm
-    integer :: nbec
-    integer :: jlino, numnoe_m, numnoe_a
-    integer :: nb_maxi, nb_term, ier
+    integer(kind=8) :: i_no
+    integer(kind=8) ::   jprnm
+    integer(kind=8) :: nbec
+    integer(kind=8) :: jlino, numnoe_m, numnoe_a
+    integer(kind=8) :: nb_maxi, nb_term, ier
     real(kind=8) :: un, x, y
     real(kind=8) :: vale_real
     complex(kind=8) :: vale_cplx
@@ -79,7 +79,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node, &
     character(len=8) :: nomg, nomnoe_m, nomnoe_a
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()

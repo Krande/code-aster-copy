@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 subroutine xnormv(dime, xx, norme)
     implicit none
 #include "blas/ddot.h"
-    integer :: dime
+    integer(kind=8) :: dime
     real(kind=8) :: xx(dime)
     real(kind=8) :: norme
 !     BUT : NORME UN VECTEUR DE R3 ET RETOURNE SA NORME INITIALE
 !     RQUE : SI LA NORME EST NULLE, LE VECTEUR XX N'EST PAS NORME
 ! ======================================================================
 !
-    integer :: j
+    integer(kind=8) :: j
     blas_int :: b_incx, b_incy, b_n
 ! ======================================================================
     b_n = to_blas_int(dime)

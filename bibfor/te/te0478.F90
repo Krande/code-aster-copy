@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,18 +46,18 @@ subroutine te0478(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndim, nno, nnos, npg, jgano, icopg, icosu, idfde, ipoids, ivf, igeom
-    integer :: tab(2), iret, ndim1
-    integer :: inbf, jacf, iorien, nbsp, nbcou, nbsec, nbptcou, nbptsec
-    integer :: isec, icou, isp, icoq, ig, ifi, kk, ii, jadr
+    integer(kind=8) :: ndim, nno, nnos, npg, jgano, icopg, icosu, idfde, ipoids, ivf, igeom
+    integer(kind=8) :: tab(2), iret, ndim1
+    integer(kind=8) :: inbf, jacf, iorien, nbsp, nbcou, nbsec, nbptcou, nbptsec
+    integer(kind=8) :: isec, icou, isp, icoq, ig, ifi, kk, ii, jadr
     real(kind=8) :: copg(4, 4), copg2(3, 4), pgl(3, 3), gm1(3), gm2(3), airesp
     real(kind=8) :: epcou, alpha, rayon, ep, yy, zz, hh, rr, rayonsp, wspicou, wspisec
     real(kind=8) :: dfdx(3), cour, jacp, cosa, sina, spoid
 !
     logical :: gauss_support
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/

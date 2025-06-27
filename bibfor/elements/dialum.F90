@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine dialum(nno, nddl, ldim, wgt, masco, &
                   masdi)
     implicit none
     real(kind=8) :: masco(*), masdi(*)
-    integer :: nno, nddl, ldim
+    integer(kind=8) :: nno, nddl, ldim
 !     ------------------------------------------------------------------
 !     PASSAGE D'UNE MATRICE MASSE CONSISTANTE A UNE MATRICE MASSE
 !     DIAGONALE SUIVANT LA SPECIAL LUMPING TECHNIQUE
@@ -33,12 +33,12 @@ subroutine dialum(nno, nddl, ldim, wgt, masco, &
 !     OUT MASDI : MATRICE DE MASSE DIAGONALE
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, k
+    integer(kind=8) :: i, k
     real(kind=8) :: wgt, xnul
 !-----------------------------------------------------------------------
     parameter(xnul=1.d-5)
-    integer :: idec, idiag, ndim, ip, itab(300)
-    integer :: idirx, idiry, idirz, idirrx, idirry, idirrz
+    integer(kind=8) :: idec, idiag, ndim, ip, itab(300)
+    integer(kind=8) :: idirx, idiry, idirz, idirrx, idirry, idirrz
     real(kind=8) :: sommex, sommey, sommez, xinf
     real(kind=8) :: alfax, alfay, alfaz
 !

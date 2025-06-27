@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         character(len=*) :: nompar_
         character(len=*) :: base_
         character(len=*) :: cel_
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=*) :: dcel_
     end subroutine alchml
 end interface

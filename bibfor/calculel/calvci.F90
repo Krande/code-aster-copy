@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
     character(len=*) :: nomci, lchci(*), nume_ddlz
     character(len=1) :: base
     real(kind=8) :: vpara
-    integer :: nbchci
+    integer(kind=8) :: nbchci
     aster_logical, intent(in) :: l_hho
     type(HHO_Field), intent(in), optional :: hhoField_
     character(len=8), intent(in), optional :: nom_para
@@ -85,11 +85,11 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
 !----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !----------------------------------------------------------------------
-    integer :: iddes, nec, ivvale, jprno, ichcin
-    integer :: jafcv, nb_affe_cine, i_affe_cine, i_node, i_cmp, i_eq, ier
-    integer :: neq, numgd, jdlci, i_nueq, ierr
-    integer :: jcn1l, i_cmp_gran, i_cmp_gran1, jnocmp
-    integer :: nbcmp1, i_ligr_mesh, vali(1)
+    integer(kind=8) :: iddes, nec, ivvale, jprno, ichcin
+    integer(kind=8) :: jafcv, nb_affe_cine, i_affe_cine, i_node, i_cmp, i_eq, ier
+    integer(kind=8) :: neq, numgd, jdlci, i_nueq, ierr
+    integer(kind=8) :: jcn1l, i_cmp_gran, i_cmp_gran1, jnocmp
+    integer(kind=8) :: nbcmp1, i_ligr_mesh, vali(1)
     character(len=1) :: typval
     character(len=4) :: phen
     aster_logical :: fonc
@@ -100,16 +100,16 @@ subroutine calvci(nomci, nume_ddlz, nbchci, lchci, vpara, &
     character(len=19) :: vcine, charci, cnoimp, cnsimp, nume_equa
     character(len=24) :: vvale, valk(4)
     character(len=24), parameter :: cesVale = '&&HHOMECA_VALS'
-    integer, pointer :: afci(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: afci(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     character(len=8), pointer :: afck(:) => null()
-    integer, pointer :: p_nueq(:) => null()
+    integer(kind=8), pointer :: p_nueq(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     character(len=8), pointer :: typegd(:) => null()
-    integer :: jv_cesd, jv_cesl, jv_cesv
+    integer(kind=8) :: jv_cesd, jv_cesl, jv_cesv
     real(kind=8), parameter :: prec = 1.0d-10
     character(len=8), parameter :: crit = 'ABSOLU'
 

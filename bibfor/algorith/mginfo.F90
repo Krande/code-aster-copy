@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_, occ_)
 #include "asterfort/jelira.h"
 !
     character(len=*), intent(in) :: modeMecaZ
-    integer, optional, intent(out) :: nbmode_, nbEqua_
+    integer(kind=8), optional, intent(out) :: nbmode_, nbEqua_
     character(len=14), optional, intent(out) :: numeDof_
-    integer, optional, intent(in) :: occ_
+    integer(kind=8), optional, intent(in) :: occ_
 !
 !
 ! ----------------------------------------------------------------------
@@ -46,7 +46,7 @@ subroutine mginfo(modeMecaZ, numeDof_, nbmode_, nbEqua_, occ_)
     character(len=24) :: matrix
     character(len=4) :: indik4
     character(len=8) :: indik8, modeMeca
-    integer :: nbmode, nbEqua, occ, ier, ier2
+    integer(kind=8) :: nbmode, nbEqua, occ, ier, ier2
     character(len=14) :: numeDof
 !
 ! ----------------------------------------------------------------------

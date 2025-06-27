@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,19 +20,19 @@ subroutine jjmzat(iclas, idat)
     implicit none
 !     ==================================================================
 #include "jeveux_private.h"
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: iadmar, iclas, idat, jcara, jdate, jdocu, jgenr
-    integer :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
-    integer :: jmarq, jorig, jrnom, jtype, n
+    integer(kind=8) :: iadmar, iclas, idat, jcara, jdate, jdocu, jgenr
+    integer(kind=8) :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
+    integer(kind=8) :: jmarq, jorig, jrnom, jtype, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 ! DEB ------------------------------------------------------------------
     ltyp(jltyp(iclas)+idat) = 0

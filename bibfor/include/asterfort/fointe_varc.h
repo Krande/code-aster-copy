@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
                            resu     , ier)
         character(len=*), intent(in) :: codmes
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
         character(len=*), intent(in) :: poum
         character(len=*), intent(in) :: func_name
-        integer, intent(in) :: nb_para_user
+        integer(kind=8), intent(in) :: nb_para_user
         character(len=*), intent(in) :: para_name_user(*)
         real(kind=8), intent(in) :: para_vale_user(*)
         real(kind=8), intent(out) :: resu
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine fointe_varc
 end interface

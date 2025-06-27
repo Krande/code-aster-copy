@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,22 +24,22 @@ subroutine jeimpm(unit)
 #include "asterfort/assert.h"
 #include "asterfort/jxveri.h"
 #include "asterfort/utmess.h"
-    integer :: unit
+    integer(kind=8) :: unit
 ! ----------------------------------------------------------------------
 ! IMPRIME LA SEGMENTATION DE LA MEMOIRE
 !
 ! IN  UNIT  : NUMERO D'UNITE LOGIQUE ASSOCIE AU FICHIER D'IMPRESSION
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadm, ibmarq
-    integer :: ic, idco, idm, il, im, isd, isf
-    integer :: ixiadm, ixmarq, j, jcara, jdate, jdocu, jgenr
-    integer :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
-    integer :: jmarq, jorig, jrnom, jtype, n, ncla1, ncla2
-    integer :: nmax
+    integer(kind=8) :: iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadm, ibmarq
+    integer(kind=8) :: ic, idco, idm, il, im, isd, isf
+    integer(kind=8) :: ixiadm, ixmarq, j, jcara, jdate, jdocu, jgenr
+    integer(kind=8) :: jhcod, jiadd, jiadm, jlong, jlono, jltyp, jluti
+    integer(kind=8) :: jmarq, jorig, jrnom, jtype, n, ncla1, ncla2
+    integer(kind=8) :: nmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -51,23 +51,23 @@ subroutine jeimpm(unit)
      &                 dn2(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
-    integer :: isstat
+    integer(kind=8) :: isstat
     common/iconje/isstat
     character(len=4) :: kstat
     common/kstaje/kstat
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
-    integer :: ivnmax, idiadm, idmarq
+    integer(kind=8) :: ivnmax, idiadm, idmarq
     parameter(ivnmax=0, idiadm=3,&
      &               idmarq=4)
 ! ----------------------------------------------------------------------
     character(len=32) :: nom32, valk(2)
     character(len=8) :: nom8
     character(len=1) :: cla, cgenr
-    integer :: k
+    integer(kind=8) :: k
     real(kind=8) :: vusta, vudyn, vxsta, vxdyn
     aster_logical :: dbg
 ! DEB ------------------------------------------------------------------

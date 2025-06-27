@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
                              noLoads)
         character(len=4), intent(in) :: phenom
         character(len=*), intent(in) :: resultZ
-        integer, intent(in) :: numeStore
+        integer(kind=8), intent(in) :: numeStore
         character(len=*), intent(in) :: listLoadZ
         character(len=24), intent(out) :: mateco
         character(len=8), intent(out) :: model, materField, caraElem

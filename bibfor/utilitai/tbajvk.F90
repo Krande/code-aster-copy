@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine tbajvk(table, nbpara, nompar, vk, livk)
     implicit none
 #include "asterfort/tbajva.h"
-    integer :: nbpara
+    integer(kind=8) :: nbpara
     character(len=*) :: table, nompar, vk, livk(*)
 !
 !     BUT:
@@ -27,7 +27,7 @@ subroutine tbajvk(table, nbpara, nompar, vk, livk)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: vi, livi(1)
+    integer(kind=8) :: vi, livi(1)
 !
     real(kind=8) :: vr, livr(1)
 !

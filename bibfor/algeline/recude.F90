@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine recude(caelem, phie, ep)
     character(len=19) :: carte
     character(len=24) :: carad
 !-----------------------------------------------------------------------
-    integer :: ia, iassef, iassmx, icard, ivalre, lr1, nbgd
+    integer(kind=8) :: ia, iassef, iassmx, icard, ivalre, lr1, nbgd
 !
     real(kind=8) :: phie2
 !-----------------------------------------------------------------------

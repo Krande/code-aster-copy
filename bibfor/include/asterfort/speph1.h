@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
     subroutine speph1(intphy, intmod, nomu, cham, specmr,&
                       specmi, nnoe, nomcmp, nbmode, nbn,&
                       nbpf)
-        integer :: nbpf
-        integer :: nbn
+        integer(kind=8) :: nbpf
+        integer(kind=8) :: nbn
         aster_logical :: intphy
         aster_logical :: intmod
         character(len=8) :: nomu
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: specmi(nbpf, *)
         character(len=8) :: nnoe(*)
         character(len=8) :: nomcmp(*)
-        integer :: nbmode
+        integer(kind=8) :: nbmode
     end subroutine speph1
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine singue(cherrs, chenes, nomail, ndim, nnoem,&
                       nelem, xy, prec, ligrmo, chelem,&
                       types)
-        integer :: nelem
-        integer :: nnoem
+        integer(kind=8) :: nelem
+        integer(kind=8) :: nnoem
         character(len=19) :: cherrs
         character(len=19) :: chenes
         character(len=8) :: nomail
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: xy(3, nnoem)
         real(kind=8) :: prec
         character(len=24) :: ligrmo

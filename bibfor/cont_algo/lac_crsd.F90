@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine lac_crsd(nume_dof, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nt_patch, jv_dummy, nt_elem_slav, vali(2)
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nt_patch, jv_dummy, nt_elem_slav, vali(2)
     character(len=24) :: sdcont_stat, sdcont_lagc, sdcont_zeta, sdcont_zgpi
     character(len=24) :: sdcont_znmc, sdcont_zpoi, sdcont_zcoe
 !

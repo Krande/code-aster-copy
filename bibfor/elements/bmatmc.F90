@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,11 +52,11 @@ subroutine bmatmc(igau, nbsig, xyz, ipoids, ivf, &
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer, intent(in) :: nbsig, igau, ipoids, ivf, idfde, nno
+    integer(kind=8), intent(in) :: nbsig, igau, ipoids, ivf, idfde, nno
     real(kind=8), intent(in) :: nharm, xyz(1)
     real(kind=8), intent(out) :: jacob, b(nbsig, 81)
 !
-    integer :: i, j, k, idecno
+    integer(kind=8) :: i, j, k, idecno
     real(kind=8) :: dfdx(27), dfdy(27), dfdz(27), b3j(9), nharay, rayon
 !-----------------------------------------------------------------------
     b(:, :) = 0.d0

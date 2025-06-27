@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       instam, instap)
             use Behaviour_type
             type(Behaviour_Integ), intent(in) :: BEHinteg
-            integer, intent(in) :: imate, ndim, kpg, ksp
+            integer(kind=8), intent(in) :: imate, ndim, kpg, ksp
             real(kind=8), intent(in) :: epsm(ndim), deps(ndim), sigm(6), vim(*)
             real(kind=8), intent(in) :: instam, instap
             character(len=8), intent(in) :: typmod(*)

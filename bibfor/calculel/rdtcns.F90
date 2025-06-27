@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,15 +44,15 @@ subroutine rdtcns(ma2, corrn, cns1, base, cns2)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: nbno1, nbno2, jcorrn
-    integer ::   jcn1v, jcn1l
-    integer ::  jcn2v, jcn2l, jcn2c
-    integer :: ncmp, icmp
-    integer :: ino2, ino1
+    integer(kind=8) :: nbno1, nbno2, jcorrn
+    integer(kind=8) ::   jcn1v, jcn1l
+    integer(kind=8) ::  jcn2v, jcn2l, jcn2c
+    integer(kind=8) :: ncmp, icmp
+    integer(kind=8) :: ino2, ino1
     character(len=8) :: nomgd
     character(len=3) :: tsca
-    integer, pointer :: cn1d(:) => null()
-    integer, pointer :: cn2d(:) => null()
+    integer(kind=8), pointer :: cn1d(:) => null()
+    integer(kind=8), pointer :: cn2d(:) => null()
     character(len=8), pointer :: cn1c(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
 !     ------------------------------------------------------------------

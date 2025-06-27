@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine nmassx(listFuncActi, &
 #include "asterfort/nonlinDSVectCombAddAny.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19), intent(in) :: hval_veasse(*)
@@ -66,7 +66,7 @@ subroutine nmassx(listFuncActi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19), parameter :: cnffdo = '&&CNCHAR.FFDO', cndfdo = '&&CNCHAR.DFDO'
     character(len=19), parameter :: cnfvdo = '&&CNCHAR.FVDO', cnvady = '&&CNCHAR.FVDY'
     aster_logical :: lSuperElement

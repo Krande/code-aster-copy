@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 !
 interface
     subroutine initia(neq, lgrot, indro, chamro, chamin)
-        integer :: neq
+        integer(kind=8) :: neq
         aster_logical :: lgrot
-        integer :: indro(*)
+        integer(kind=8) :: indro(*)
         real(kind=8) :: chamro(*)
         real(kind=8) :: chamin(*)
     end subroutine initia

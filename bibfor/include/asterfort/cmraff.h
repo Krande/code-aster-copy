@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,6 @@
 interface
     subroutine cmraff(mesh_in, mesh_out, level, info)
         character(len=8), intent(in) :: mesh_in, mesh_out
-        integer, intent(in) :: level, info
+        integer(kind=8), intent(in) :: level, info
     end subroutine cmraff
 end interface

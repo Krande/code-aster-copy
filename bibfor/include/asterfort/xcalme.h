@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ interface
                       dsde, deps, angl_naut)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer :: dimcon
-        integer :: dimenr
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimenr
         character(len=16) :: option
-        integer :: ndim
-        integer :: addeme
-        integer :: adcome
+        integer(kind=8) :: ndim
+        integer(kind=8) :: addeme
+        integer(kind=8) :: adcome
         real(kind=8) :: congep(dimcon)
         real(kind=8) :: dsde(dimcon, dimenr)
         real(kind=8) :: deps(6)

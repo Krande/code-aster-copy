@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine impcom(inoda, nomddl, chaine)
 !
     implicit none
     character(len=8) :: nomddl
-    integer :: inoda
+    integer(kind=8) :: inoda
     character(len=16) :: chaine
 !
 ! ----------------------------------------------------------------------
@@ -44,8 +44,8 @@ subroutine impcom(inoda, nomddl, chaine)
 ! ----------------------------------------------------------------------
 !
     character(len=8) :: chnod
-    integer :: i, k
-    integer :: nchain
+    integer(kind=8) :: i, k
+    integer(kind=8) :: nchain
     parameter(nchain=7)
 !
 ! ----------------------------------------------------------------------

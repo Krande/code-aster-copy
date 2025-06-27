@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine extmod_sorted(basemo, numddl, nume, nbnumo, dmode, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
-    integer :: nbddl, nbnumo, nbnoe, nume(nbnumo), iddl(nbddl)
+    integer(kind=8) :: nbddl, nbnumo, nbnoe, nume(nbnumo), iddl(nbddl)
     real(kind=8) :: dmode(nbddl*nbnoe*nbnumo)
     character(len=8) :: basemo
     character(len=14) :: numddl
@@ -46,8 +46,8 @@ subroutine extmod_sorted(basemo, numddl, nume, nbnumo, dmode, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: iadmod, ideeq, inumo, iret
-    integer :: k, nbeq, iinod, iiddl, ieq, im
+    integer(kind=8) :: iadmod, ideeq, inumo, iret
+    integer(kind=8) :: k, nbeq, iinod, iiddl, ieq, im
 !-----------------------------------------------------------------------
     call jemarq()
     deeq = numddl//'.NUME.DEEQ'

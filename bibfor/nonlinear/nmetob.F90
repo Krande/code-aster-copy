@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nmetob(ds_inout, field_type, i_field_obsv)
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
     character(len=24), intent(in) :: field_type
-    integer, intent(out) :: i_field_obsv
+    integer(kind=8), intent(out) :: i_field_obsv
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,7 +43,7 @@ subroutine nmetob(ds_inout, field_type, i_field_obsv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_field, i_field
+    integer(kind=8) :: nb_field, i_field
     character(len=24) :: obsv_keyw
 !
 ! --------------------------------------------------------------------------------------------------

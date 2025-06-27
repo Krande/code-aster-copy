@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,14 +34,14 @@ subroutine te0327(option, nomte)
     real(kind=8) :: nx(9), ny(9), nz(9), norm(3, 9), acc(3, 9)
     real(kind=8) :: flufn(9), acloc(3, 8), cova(3, 3), cnva(3, 3)
     real(kind=8) :: a(2, 2), metr(2, 2), e1(3, 9), e2(3, 9), jc
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, imattt
-    integer :: ndim, nno, ipg, npg1
-    integer :: idec, jdec, kdec, ldec, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, imattt
+    integer(kind=8) :: ndim, nno, ipg, npg1
+    integer(kind=8) :: idec, jdec, kdec, ldec, nnos, jgano
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacce, idim, idir, ii, ij, ino
-    integer :: j, jdir, jj, jno, k
+    integer(kind=8) :: i, iacce, idim, idir, ii, ij, ino
+    integer(kind=8) :: j, jdir, jj, jno, k
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &
                      jpoids=ipoids, jvf=ivf, jdfde=idfdx, jgano=jgano)

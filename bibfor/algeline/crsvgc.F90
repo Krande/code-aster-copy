@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine crsvgc(motfac, solveu, kellag)
 !
 !
 !
-    integer :: ibid, nmaxit, niremp, reacpr, pcpiv, redmpi
+    integer(kind=8) :: ibid, nmaxit, niremp, reacpr, pcpiv, redmpi
     real(kind=8) :: resire, blreps
     character(len=8) :: precon
     character(len=19) :: solvbd
@@ -49,7 +49,7 @@ subroutine crsvgc(motfac, solveu, kellag)
     character(len=8) :: renum
     real(kind=8), pointer :: slvr(:) => null()
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
 !
 !------------------------------------------------------------------
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine comptv(nbpt, fn, offset, t, nbchoc, &
     real(kind=8) :: fn(*), t(*)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ichoc, idebur, idebut, idech, ifin, ifinr
-    integer :: irebo, nbchoc, nbpt, nbrebo
+    integer(kind=8) :: i, ichoc, idebur, idebut, idech, ifin, ifinr
+    integer(kind=8) :: irebo, nbchoc, nbpt, nbrebo
     real(kind=8) :: offset, tchmax, tchmin, tchoc, tchocm, tchoct, trebo
     real(kind=8) :: trebom, trebot, zero
 !-----------------------------------------------------------------------

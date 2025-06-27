@@ -76,11 +76,11 @@ contains
         type(SSH_MATE_PARA), intent(in) :: matePara
         type(SSH_BEHA_PARA), intent(inout) :: behaPara
 ! - Local
-        integer :: nbIntePoint, nbVari
-        integer :: jtab(7), iret
-        integer :: jvGeom, jvMater
-        integer :: jvMatr, jvVect, jvSigmP, jvVariP, jvVariX, jvCodret
-        integer :: jvTimeM, jvTimeP, jvSigmM, jvVariM, jvDispM, jvDispIncr
+        integer(kind=8) :: nbIntePoint, nbVari
+        integer(kind=8) :: jtab(7), iret
+        integer(kind=8) :: jvGeom, jvMater
+        integer(kind=8) :: jvMatr, jvVect, jvSigmP, jvVariP, jvVariX, jvCodret
+        integer(kind=8) :: jvTimeM, jvTimeP, jvSigmM, jvVariM, jvDispM, jvDispIncr
         blas_int :: b_incx, b_incy, b_n
 !   ------------------------------------------------------------------------------------------------
 !
@@ -185,22 +185,22 @@ contains
         type(SSH_CELL_GEOM), intent(in) :: cellGeom
         type(SSH_MATE_PARA), intent(in) :: matePara
         type(SSH_BEHA_PARA), intent(inout) :: behaPara
-        integer, intent(in) :: nbIntePoint, nbVari
+        integer(kind=8), intent(in) :: nbIntePoint, nbVari
         real(kind=8), intent(in) :: timePrev, timeCurr
         real(kind=8), intent(in) :: dispPrev(SSH_NBDOF_HEXA), dispIncr(SSH_NBDOF_HEXA)
         real(kind=8), intent(in) :: sigm(SSH_SIZE_TENS, nbIntePoint), vim(nbVari, nbIntePoint)
         real(kind=8), intent(out) :: sigp(SSH_SIZE_TENS, nbIntePoint), vip(nbVari, nbIntePoint)
         real(kind=8), intent(out) :: matr(*), vect(SSH_NBDOF_HEXA)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
 ! - Local
         type(SSH_GEOM_HEXA) :: geomHexa
-        integer, parameter :: ksp = 1
+        integer(kind=8), parameter :: ksp = 1
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
-        integer :: cod(nbIntePoint), kpg, iTens, nbDof, nbDofGeom
-        integer :: jvCoor, jvWeight
+        integer(kind=8) :: cod(nbIntePoint), kpg, iTens, nbDof, nbDofGeom
+        integer(kind=8) :: jvCoor, jvWeight
         type(SSH_KINE_HEXA) :: kineHexa
         type(SSH_STAB_HEXA) :: stabHexa
-        integer :: i, j, ij
+        integer(kind=8) :: i, j, ij
         real(kind=8) :: zeta, poids, jacob
         real(kind=8) :: UeffKpg, Ueff
         real(kind=8) :: dispCurr(SSH_NBDOF_HEXA)
@@ -418,22 +418,22 @@ contains
         type(SSH_CELL_GEOM), intent(in) :: cellGeom
         type(SSH_MATE_PARA), intent(in) :: matePara
         type(SSH_BEHA_PARA), intent(inout) :: behaPara
-        integer, intent(in) :: nbIntePoint, nbVari
+        integer(kind=8), intent(in) :: nbIntePoint, nbVari
         real(kind=8), intent(in) :: timePrev, timeCurr
         real(kind=8), intent(in) :: dispPrev(SSH_NBDOF_HEXA), dispIncr(SSH_NBDOF_HEXA)
         real(kind=8), intent(in) :: sigm(SSH_SIZE_TENS, nbIntePoint), vim(nbVari, nbIntePoint)
         real(kind=8), intent(out) :: sigp(SSH_SIZE_TENS, nbIntePoint), vip(nbVari, nbIntePoint)
         real(kind=8), intent(out) :: matr(*), vect(SSH_NBDOF_HEXA)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
 ! ----- Local
         type(SSH_GEOM_HEXA) :: geomHexa
-        integer, parameter :: ksp = 1
-        integer :: cod(nbIntePoint), kpg, iTens, nbDof, nbDofGeom
-        integer :: jvCoor, jvWeight
+        integer(kind=8), parameter :: ksp = 1
+        integer(kind=8) :: cod(nbIntePoint), kpg, iTens, nbDof, nbDofGeom
+        integer(kind=8) :: jvCoor, jvWeight
         aster_logical :: lVect, lMatr, lSigm, lVari, lMatrPred
         type(SSH_KINE_HEXA) :: kineHexa
         type(SSH_STAB_HEXA) :: stabHexa
-        integer :: i, j, ij
+        integer(kind=8) :: i, j, ij
         real(kind=8) :: zeta, poids, jacob
         real(kind=8) :: UeffKpg, Ueff
         real(kind=8) :: dispCurr(SSH_NBDOF_HEXA)
@@ -686,7 +686,7 @@ contains
         real(kind=8), intent(out) :: dsidep(SSH_SIZE_TENS, SSH_SIZE_TENS), pk2(SSH_SIZE_TENS)
 ! - Local
         real(kind=8), parameter :: rac2 = sqrt(2.d0)
-        integer :: i, j
+        integer(kind=8) :: i, j
         type(SSH_EPSL_HEXA) :: epsl
         real(kind=8) :: pSyme(6, 6), pSymeT(6, 6)
         real(kind=8) :: tWork(6)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,16 +27,16 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, &
 #include "asterfort/utmess.h"
     interface
         subroutine lccrma(mat, fami, kpg, ksp, poum)
-            integer, intent(in) :: mat, kpg, ksp
+            integer(kind=8), intent(in) :: mat, kpg, ksp
             character(len=1), intent(in) :: poum
             character(len=*), intent(in) :: fami
         end subroutine lccrma
 !
         subroutine lcesga(mode, eps, gameps, dgamde, itemax, &
                           precvg, iret)
-            integer, intent(in) :: mode, itemax
+            integer(kind=8), intent(in) :: mode, itemax
             real(kind=8), intent(in) :: eps(6), precvg
-            integer, intent(out) :: iret
+            integer(kind=8), intent(out) :: iret
             real(kind=8), intent(out) :: gameps, dgamde(6)
         end subroutine lcesga
 !
@@ -49,7 +49,7 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, &
     end interface
 !
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: neps, mat
+    integer(kind=8), intent(in) :: neps, mat
     real(kind=8), intent(in) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax, vim(3)
     real(kind=8), intent(out) :: copilo(2, *)
 ! --------------------------------------------------------------------------------------------------
@@ -72,11 +72,11 @@ subroutine piesgv(neps, tau, mat, lccrma, vim, &
 !  ITEMAX: NOMBRE MAX D'ITERATIONS POUR LA METHODE DE NEWTON
 !  ERRA  : ERREUR TOLEREE SUR A DANS LA LDC (CRIT CVG)
 !  RED   : REDUCTION DE L'ERREUR POUR EN FAIRE UN CRITERE DE PRECISION
-    integer, parameter :: itemax = 100
+    integer(kind=8), parameter :: itemax = 100
     real(kind=8), parameter :: red = 1.d-2, erra = 1.d-6
 ! ----------------------------------------------------------------------
     aster_logical :: cplan, croiss, gauche, droite, vide
-    integer :: ndim, ndimsi, i, n
+    integer(kind=8) :: ndim, ndimsi, i, n
     real(kind=8) :: coplan
     real(kind=8) :: etam, etap, etal, precvg, l0, l1, etm, etp
     real(kind=8) :: gm, dgm, gp, dgp, gl, dgl

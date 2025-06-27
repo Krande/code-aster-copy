@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta, &
 #include "asterfort/preres.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nk, lraide, lmasse, ldynam, lamor, ifapm, ind
+    integer(kind=8) :: nk, lraide, lmasse, ldynam, lamor, ifapm, ind
     aster_logical :: lc
     real(kind=8) :: theta
     complex(kind=8) :: lambda
@@ -68,7 +68,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta, &
 !     ------------------------------------------------------------------
 ! person_in_charge: olivier.boiteau at edf.fr
 !
-    integer :: j, nkm1, nbcmb, ibid, iret, jmatc, lmatsh
+    integer(kind=8) :: j, nkm1, nbcmb, ibid, iret, jmatc, lmatsh
     real(kind=8) :: rauxx, rauxy, rauxm, prec, prec1, pi, coef(6), valr(2), rmin
     real(kind=8) :: rayon, r8bid, rindc
     complex(kind=8) :: caux2
@@ -76,7 +76,7 @@ subroutine apchar(typcha, k24rc, nk, lambda, theta, &
     character(len=8) :: nomddl
     character(len=19) :: matpre
     character(len=24) :: nmat(3), nmatsh, metres
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !
 !     ------------------------------------------------------------------

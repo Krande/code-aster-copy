@@ -29,7 +29,7 @@ subroutine cmbqbq(main, maout, degree, info)
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 !
-    integer, intent(in) :: degree, info
+    integer(kind=8), intent(in) :: degree, info
     character(len=8), intent(in) :: main, maout
 ! ----------------------------------------------------------------------
 !         TRANSFORMATION DES MAILLES
@@ -45,8 +45,8 @@ subroutine cmbqbq(main, maout, degree, info)
 !
     type(Mmesh) :: mesh_conv
     character(len=8) :: conv_type(2)
-    integer :: nbma, ima, nbno
-    integer, pointer :: listCells(:) => null()
+    integer(kind=8) :: nbma, ima, nbno
+    integer(kind=8), pointer :: listCells(:) => null()
 !
     call jemarq()
 !

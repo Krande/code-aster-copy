@@ -33,8 +33,8 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
 #include "asterfort/utmess.h"
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
-    integer :: nbordr, kwork
-    integer :: sompgw, jrwork, tspaq, ipg
+    integer(kind=8) :: nbordr, kwork
+    integer(kind=8) :: sompgw, jrwork, tspaq, ipg
     character(len=16) :: nommet, forcri
     character(len=8) :: nompar(35)
     real(kind=8) :: respc(24), vnmax(6), vanocr(23)
@@ -69,13 +69,13 @@ subroutine acgrpc(nbordr, kwork, sompgw, jrwork, tspaq, &
 !   VRSESU      OUT   TABLEAU DES RESULTATS (GRANDEURS ET DOMMAGE).
 !                     POUR L'INSTANT, LA DIMENSION DE VRESU EST 24
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, n
-    integer :: nbvec, dim, jvpg2
-    integer :: jvecn2, jvecu2, jvecv2
-    integer :: ideb, ngam
-    integer :: tneces, tdisp(1), jvecno, jnorm2
-    integer :: tab2(18), jvectn, jvectu, jvectv
-    integer :: vali(2), tnecno, jnorma
+    integer(kind=8) :: i, j, k, n
+    integer(kind=8) :: nbvec, dim, jvpg2
+    integer(kind=8) :: jvecn2, jvecu2, jvecv2
+    integer(kind=8) :: ideb, ngam
+    integer(kind=8) :: tneces, tdisp(1), jvecno, jnorm2
+    integer(kind=8) :: tab2(18), jvectn, jvectu, jvectv
+    integer(kind=8) :: vali(2), tnecno, jnorma
 !
     real(kind=8) :: dgam, dphi, tab1(18)
     real(kind=8) :: epsilo, gamma, pi

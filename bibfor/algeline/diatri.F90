@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine diatri(n, d, e, vector, evec, &
 #include "blas/dscal.h"
 #include "blas/dswap.h"
 #include "blas/idamax.h"
-    integer :: n, ldevec
+    integer(kind=8) :: n, ldevec
     real(kind=8) :: d(*), e(*), evec(ldevec, *)
     aster_logical :: vector
 !   CALCUL DES VALEURS PROPRES ET VECTEURS PROPRES (OPTION => "VECTOR")
@@ -53,7 +53,7 @@ subroutine diatri(n, d, e, vector, evec, &
 !              EST STOCKE DANS LA J-TH CLONNE.
 ! IN  :LDEVEC: DIMENSION EXACTE DE EVEC.
 !-----------------------------------------------------------------------
-    integer :: i, iter, j, k, l, m
+    integer(kind=8) :: i, iter, j, k, l, m
     real(kind=8) :: b, c, f, g, p, r, s, scale, tiny, tol
     blas_int :: b_incx, b_incy, b_n
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine dpmata(mod, mater, alpha, dp, dpdeno, &
 ! =====================================================================
 ! --- MISE A JOUR DES CONTRAINTES -------------------------------------
 ! =====================================================================
-    integer :: ii, jj, ndt, ndi
+    integer(kind=8) :: ii, jj, ndt, ndi
     real(kind=8) :: un, deux, trois, young, nu, troisk, deuxmu, dsede(6, 6)
     real(kind=8) :: bidon(6, 6), pmat1(6, 6), pmat2(6, 6), pmat3(6, 6), param1
     real(kind=8) :: pmat4(6, 6), vunite(6), vect1(6), vect2(6), vect3(6)

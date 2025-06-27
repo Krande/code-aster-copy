@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine nmdcen(sddisc, numins, nbini, nbins)
         character(len=19) :: sddisc
-        integer :: numins
-        integer :: nbini
-        integer :: nbins
+        integer(kind=8) :: numins
+        integer(kind=8) :: nbini
+        integer(kind=8) :: nbins
     end subroutine nmdcen
 end interface

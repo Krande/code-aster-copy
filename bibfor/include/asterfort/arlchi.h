@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
                       typmai,nbchel,chames,jma1,jma2, &
                       tabcor,proj)
         aster_logical :: proj
-        integer :: iocc
-        integer :: nbchel
-        integer :: jma1
-        integer :: jma2
+        integer(kind=8) :: iocc
+        integer(kind=8) :: nbchel
+        integer(kind=8) :: jma1
+        integer(kind=8) :: jma2
         character(len=8) :: mailar
         character(len=8) :: mail
         character(len=8) :: nomo

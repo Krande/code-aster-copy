@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,9 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
 #include "asterfort/lcopli.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-    integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), icp, ndim, iret, ifl
-    integer :: indfa, nuecou
-    integer :: nbphas, ifa, indpha, iphas, nbsys, nsfv, nbfsys
+    integer(kind=8) :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), icp, ndim, iret, ifl
+    integer(kind=8) :: indfa, nuecou
+    integer(kind=8) :: nbphas, ifa, indpha, iphas, nbsys, nsfv, nbfsys
     real(kind=8) :: materf(nmat, 2), vind(*), vinf(*), id(3, 3), sigd(*)
     real(kind=8) :: sigf(*)
     real(kind=8) :: dsde(6, 6), maxdom, endoc, fp(3, 3)
@@ -52,7 +52,7 @@ subroutine lcrkin(ndim, opt, rela_comp, materf, nbcomm, &
     character(len=24) :: cpmono(5*nmat+1)
     character(len=8) :: mod
     common/tdim/ndt, ndi
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
     parameter(maxdom=0.99d0)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine thmGetParaCoupling(ds_thm, j_mater, temp)
 #include "asterfort/rcvala.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: temp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,47 +44,47 @@ subroutine thmGetParaCoupling(ds_thm, j_mater, temp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para_l1 = 4
+    integer(kind=8), parameter :: nb_para_l1 = 4
     real(kind=8) :: para_vale_l1(nb_para_l1)
-    integer :: icodre_l1(nb_para_l1)
+    integer(kind=8) :: icodre_l1(nb_para_l1)
     character(len=16), parameter :: para_name_l1(nb_para_l1) = (/'RHO        ', 'UN_SUR_K   ', &
                                                                  'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_l2 = 6
+    integer(kind=8), parameter :: nb_para_l2 = 6
     real(kind=8) :: para_vale_l2(nb_para_l2)
-    integer :: icodre_l2(nb_para_l2)
+    integer(kind=8) :: icodre_l2(nb_para_l2)
     character(len=16), parameter :: para_name_l2(nb_para_l2) = (/'RHO        ', 'UN_SUR_K   ', &
                                                                  'ALPHA      ', 'CP         ', &
                                                                  'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_g1 = 3
+    integer(kind=8), parameter :: nb_para_g1 = 3
     real(kind=8) :: para_vale_g1(nb_para_g1)
-    integer :: icodre_g1(nb_para_g1)
+    integer(kind=8) :: icodre_g1(nb_para_g1)
     character(len=16), parameter :: para_name_g1(nb_para_g1) = (/'MASS_MOL   ', &
                                                                  'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_g2 = 4
+    integer(kind=8), parameter :: nb_para_g2 = 4
     real(kind=8) :: para_vale_g2(nb_para_g2)
-    integer :: icodre_g2(nb_para_g2)
+    integer(kind=8) :: icodre_g2(nb_para_g2)
     character(len=16), parameter :: para_name_g2(nb_para_g2) = (/'MASS_MOL   ', 'CP         ', &
                                                                  'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_s = 4
+    integer(kind=8), parameter :: nb_para_s = 4
     real(kind=8) :: para_vale_s(nb_para_s)
-    integer :: icodre_s(nb_para_s)
+    integer(kind=8) :: icodre_s(nb_para_s)
     character(len=16), parameter :: para_name_s(nb_para_s) = (/'MASS_MOL   ', 'CP         ', &
                                                                'VISC       ', 'D_VISC_TEMP'/)
-    integer, parameter :: nb_para_ad = 2
+    integer(kind=8), parameter :: nb_para_ad = 2
     real(kind=8) :: para_vale_ad(nb_para_ad)
-    integer :: icodre_ad(nb_para_ad)
+    integer(kind=8) :: icodre_ad(nb_para_ad)
     character(len=16), parameter :: para_name_ad(nb_para_ad) = (/'COEF_HENRY ', 'CP         '/)
-    integer, parameter :: nb_para_s1 = 1
+    integer(kind=8), parameter :: nb_para_s1 = 1
     real(kind=8) :: para_vale_s1(nb_para_s1)
-    integer :: icodre_s1(nb_para_s1)
+    integer(kind=8) :: icodre_s1(nb_para_s1)
     character(len=16), parameter :: para_name_s1(nb_para_s1) = (/'RHO        '/)
-    integer, parameter :: nb_para_s2 = 2
+    integer(kind=8), parameter :: nb_para_s2 = 2
     real(kind=8) :: para_vale_s2(nb_para_s2)
-    integer :: icodre_s2(nb_para_s2)
+    integer(kind=8) :: icodre_s2(nb_para_s2)
     character(len=16), parameter :: para_name_s2(nb_para_s2) = (/'RHO        ', 'R_GAZ      '/)
-    integer, parameter :: nb_para_s3 = 1
+    integer(kind=8), parameter :: nb_para_s3 = 1
     real(kind=8) :: para_vale_s3(nb_para_s3)
-    integer :: icodre_s3(nb_para_s3)
+    integer(kind=8) :: icodre_s3(nb_para_s3)
     character(len=16), parameter :: para_name_s3(nb_para_s3) = (/'CP         '/)
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine vpini0(compex, modes, typcon, solveu, eigsol, matpsc, matopa, veclag,
 !
 ! --- VARIABLES LOCALES
 !
-    integer           :: lenout
+    integer(kind=8)           :: lenout
     character(len=16) :: nomcmd
 !
 ! -----------------------

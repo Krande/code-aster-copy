@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine cusign(jcmpg, icmp, sign)
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: jcmpg
-    integer :: icmp
+    integer(kind=8) :: jcmpg
+    integer(kind=8) :: icmp
     real(kind=8) :: sign
 !
 ! ----------------------------------------------------------------------

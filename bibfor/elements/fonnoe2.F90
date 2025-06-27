@@ -52,8 +52,8 @@ subroutine fonnoe2(resu, noma, nomobj, nbnoff, typmp)
 !-----------------------------------------------------------------------
 !
 !
-    integer :: jnoe1, jadr
-    integer :: jjj, nbnoff
+    integer(kind=8) :: jnoe1, jadr
+    integer(kind=8) :: jjj, nbnoff
     character(len=8) :: noeud, typmp
     character(len=24) :: obtrav
 !

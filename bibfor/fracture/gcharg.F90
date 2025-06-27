@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d, &
 #include "asterfort/mepres.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iord
+    integer(kind=8) :: iord
     character(len=8) :: modele
     character(len=19) :: lischa
     character(len=19) :: chvolu, ch1d2d, ch2d3d, chpres
@@ -82,28 +82,28 @@ subroutine gcharg(modele, lischa, chvolu, ch1d2d, ch2d3d, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: znbenc
+    integer(kind=8) :: znbenc
     parameter(znbenc=60)
-    integer :: tabaut(znbenc)
+    integer(kind=8) :: tabaut(znbenc)
 !
     character(len=24) :: k24bid
     character(len=24) :: oldfon, cepsi, epselno, modelLigrel
-    integer :: jfonci
-    integer :: ichar, nbchar, ig, iret, inga, occur, ier, i
+    integer(kind=8) :: jfonci
+    integer(kind=8) :: ichar, nbchar, ig, iret, inga, occur, ier, i
     character(len=8) :: charge, typech, nomfct, newfct, ng
     character(len=6) :: nomobj
     character(len=16) :: typfct, motcle, nomcmd, phenom
     character(len=13) :: prefob
-    integer :: motclc(2)
+    integer(kind=8) :: motclc(2)
     aster_logical :: lfchar, lfmult, lformu, lccomb, lpchar
-    integer :: nbauth, nbnaut, mclaut(2), iposit
-    integer :: iprec, ibid, itypob(2), ibid2(2)
+    integer(kind=8) :: nbauth, nbnaut, mclaut(2), iposit
+    integer(kind=8) :: iprec, ibid, itypob(2), ibid2(2)
     character(len=19) :: carteo, cartei
     aster_logical :: lvolu, l1d2d, l2d3d, lpres
     aster_logical :: lepsi, lpesa, lrota
     aster_logical :: lfvolu, lf1d2d, lf2d3d, lfpres
     aster_logical :: lfepsi, lfpesa, lfrota
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     character(len=8), pointer :: p_vale_epsi(:) => null()
     character(len=8) :: list_option(NB_MAX_OPT)
 !

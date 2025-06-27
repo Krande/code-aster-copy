@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine chpeva(chou)
 #include "asterfort/utmess.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: n1, ib, npara, k, nncp, ibid
+    integer(kind=8) :: n1, ib, npara, k, nncp, ibid
     character(len=4) :: typ1, typ2, knum
     character(len=8) :: chou, nomgd
     character(len=19) :: ligrel, chs1, chs2, chins, chin

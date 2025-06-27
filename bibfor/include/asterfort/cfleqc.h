@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       v_poin_node, v_indi_node, nb_node_elim)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: nb_cont_zone
-        integer, intent(in) :: nb_cont_surf
-        integer, intent(in) :: nb_cont_node
-        integer, pointer :: v_poin_node(:)
-        integer, pointer :: v_indi_node(:)
-        integer, intent(out) :: nb_node_elim
+        integer(kind=8), intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: nb_cont_surf
+        integer(kind=8), intent(in) :: nb_cont_node
+        integer(kind=8), pointer :: v_poin_node(:)
+        integer(kind=8), pointer :: v_indi_node(:)
+        integer(kind=8), intent(out) :: nb_node_elim
     end subroutine cfleqc
 end interface

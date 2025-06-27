@@ -85,32 +85,32 @@ subroutine tremno(ncmp, nssche, nomsd)
 !   --------------------------------------------------
 !
     character(len=24) :: npnbn, npadr, npcmp, nvale, nnoma, nnugd
-    integer :: apnbn, apadr, apcmp, avale, anoma, anugd
+    integer(kind=8) :: apnbn, apadr, apcmp, avale, anoma, anugd
 !
 !   NOMS ET ADRESSES DES OJB ASSOCIES A LA SD
 !   -----------------------------------------
 !
     character(len=24) :: nvacp, nnund, nnuma, nnucp, nnocp
-    integer :: avacp, anund, anuma, anucp, anocp
-    integer :: ptm, ptv, tco, tsp, nbco, nbsp, lngm, lngv, ico, isp
+    integer(kind=8) :: avacp, anund, anuma, anucp, anocp
+    integer(kind=8) :: ptm, ptv, tco, tsp, nbco, nbsp, lngm, lngv, ico, isp
 !
 !   ADRESSE DE NUMERO DE CMP CONCERNEES PAR L' EXTRACTION
 !   -----------------------------------------------------
 !
-    integer :: libre, nbnm, nbtcmp, numcp, gd, aconec, acmpgd
+    integer(kind=8) :: libre, nbnm, nbtcmp, numcp, gd, aconec, acmpgd
 !
 !   DIVERS
 !   ------
 !
-    integer :: i, m, n, in, im, nbtnd, nbtmai, adrm, nbn, nbm, ndloc, nbcpac
-    integer :: iconec, lconec, icncin, lcncin
-    integer :: vali
+    integer(kind=8) :: i, m, n, in, im, nbtnd, nbtmai, adrm, nbn, nbm, ndloc, nbcpac
+    integer(kind=8) :: iconec, lconec, icncin, lcncin
+    integer(kind=8) :: vali
     character(len=24) :: nconec, ncncin
     character(len=8) :: tk8(1), nmaila
     aster_logical :: trouve
-    integer, pointer :: entier(:) => null()
-    integer, pointer :: pnco(:) => null()
-    integer, pointer :: pnsp(:) => null()
+    integer(kind=8), pointer :: entier(:) => null()
+    integer(kind=8), pointer :: pnco(:) => null()
+    integer(kind=8), pointer :: pnsp(:) => null()
 !
 !================= FIN DES DECLARATIONS ============================
 !

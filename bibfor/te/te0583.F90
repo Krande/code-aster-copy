@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine te0583(option, nomte)
 !     OPTIONS :'CHAR_MECA_PESA_R' 'CHAR_MECA_FR1D1D''CHAR_MECA_PRES_R'
 !              'CHAR_MECA_PRES_F'
 ! ......................................................................
-    integer :: nbrddm
+    integer(kind=8) :: nbrddm
     parameter(nbrddm=156)
     real(kind=8) :: h, a, l, presno(4), prespg(4), rint, r1
     real(kind=8) :: vpesan(6), fpesan(6), pesan, f(nbrddm)
@@ -53,21 +53,21 @@ subroutine te0583(option, nomte)
     real(kind=8) :: hk, poids, rayon, theta, tk(4), ck, sk
     real(kind=8) :: cosfi, sinfi, te, pgl4(3, 3), fpesa4(6), xpg(4)
     real(kind=8) :: r8b, rext, sec, rho(1), r, time, valpar(5)
-    integer :: codres(1), kpg, spt
+    integer(kind=8) :: codres(1), kpg, spt
     character(len=8) :: nompar(5), fami, poum
     character(len=16) :: phenom
-    integer :: nbcou, nbsec, m, lorien, icoude
-    integer :: ipoids, ivf, i, icou, ibloc, ino, nbpar, icompx, niter, iter
-    integer :: igeom, lmater, jpesa, jout, lforc, iret
-    integer :: igau, isect, ipres, k, ivect, nbrddl, indic0
-    integer :: indic1, indic2, indic3, indic4, indic5, j
-    integer :: jnbspi, nbsecm, nbcoum, itemps, ier, labsc, itab(2)
-    integer :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano, npg
+    integer(kind=8) :: nbcou, nbsec, m, lorien, icoude
+    integer(kind=8) :: ipoids, ivf, i, icou, ibloc, ino, nbpar, icompx, niter, iter
+    integer(kind=8) :: igeom, lmater, jpesa, jout, lforc, iret
+    integer(kind=8) :: igau, isect, ipres, k, ivect, nbrddl, indic0
+    integer(kind=8) :: indic1, indic2, indic3, indic4, indic5, j
+    integer(kind=8) :: jnbspi, nbsecm, nbcoum, itemps, ier, labsc, itab(2)
+    integer(kind=8) :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano, npg
     parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1), abscn(4)
     aster_logical :: normal, global
 !-----------------------------------------------------------------------
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8), parameter :: noms_cara1(nb_cara1) = ['R1 ', 'EP1']
 !----------------------------------------------------------------------

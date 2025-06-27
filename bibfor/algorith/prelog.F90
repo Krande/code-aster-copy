@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,14 +27,14 @@ subroutine prelog(ndim, lgpg, vim, gn, lamb, &
 #include "asterfort/lcdetf.h"
 #include "asterc/r8prem.h"
 !
-    integer, intent(in) :: ndim, lgpg
+    integer(kind=8), intent(in) :: ndim, lgpg
     real(kind=8), intent(in) :: vim(lgpg)
     real(kind=8), intent(in) :: fPrev(3, 3), fCurr(3, 3)
     real(kind=8), intent(out) :: epslPrev(6), epslIncr(6)
     real(kind=8), intent(out) :: tlogPrev(6)
     real(kind=8), intent(out) :: gn(3, 3), lamb(3), logl(3)
     aster_logical, intent(in) :: lCorr
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine ndxdec(ds_print, sddisc, sderro, numins)
     type(NL_DS_Print), intent(in) :: ds_print
     character(len=19), intent(in) :: sddisc
     character(len=24), intent(in) :: sderro
-    integer, intent(in) :: numins
+    integer(kind=8), intent(in) :: numins
 !
 ! ----------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine ndxdec(ds_print, sddisc, sderro, numins)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iterat, retact, ievdac, actnew
+    integer(kind=8) :: iterat, retact, ievdac, actnew
     character(len=4) :: etnewt
 !
 ! ----------------------------------------------------------------------

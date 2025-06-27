@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine jjlide(nomap, nomlu, itype)
 #include "asterfort/jjlidy.h"
 #include "asterfort/jxecro.h"
     character(len=*) :: nomap, nomlu
-    integer :: itype
+    integer(kind=8) :: itype
 ! ----------------------------------------------------------------------
 ! LIBERATION D'UN OBJET JEVEUX
 !
@@ -36,58 +36,58 @@ subroutine jjlide(nomap, nomlu, itype)
 ! IN  ITYPE  : TYPE D'OBJET: 1, 2 OU 3
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: iadit, iadmar, iady1, iady2, iasig, ibacol, ibiadd
-    integer :: ibiadm, iblono, ibmarq, ic, icre, idco, idos
-    integer :: idyni, ijit, ikit, is, itrold, ix, ixdeso
-    integer :: ixiadd, ixiadm, ixlono, ixmarq, jcara, jdate, jdocu
-    integer :: jgenr, jhcod, jiadd, jiadm, jit, jlong, jlono
-    integer :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
-    integer :: kit, kk, ldynol, lonoi, marqi, n, nadm
-    integer :: nalloc, nldo, nmax, nnn
+    integer(kind=8) :: iadit, iadmar, iady1, iady2, iasig, ibacol, ibiadd
+    integer(kind=8) :: ibiadm, iblono, ibmarq, ic, icre, idco, idos
+    integer(kind=8) :: idyni, ijit, ikit, is, itrold, ix, ixdeso
+    integer(kind=8) :: ixiadd, ixiadm, ixlono, ixmarq, jcara, jdate, jdocu
+    integer(kind=8) :: jgenr, jhcod, jiadd, jiadm, jit, jlong, jlono
+    integer(kind=8) :: jltyp, jluti, jmarq, jorig, jrnom, jtype, k
+    integer(kind=8) :: kit, kk, ldynol, lonoi, marqi, n, nadm
+    integer(kind=8) :: nalloc, nldo, nmax, nnn
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 ! ----------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: datei
+    integer(kind=8) :: datei
     common/iheuje/datei
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
-    integer :: idinit, idxaxd, itrech, itiad, itcol, lmots, idfr
+    integer(kind=8) :: idinit, idxaxd, itrech, itiad, itcol, lmots, idfr
     common/ixadje/idinit(2), idxaxd(2), itrech, itiad, itcol, lmots, idfr
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
 ! ----------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlono, idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlono, idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
      &               idmarq=4,&
      &               idlono=8, idnum=10)
 ! ----------------------------------------------------------------------
-    integer :: iiadm, iiadd, iidos, iidco, idate, iorig, ilono, iltyp, iimar
-    integer :: isauv, nparm
+    integer(kind=8) :: iiadm, iiadd, iidos, iidco, idate, iorig, ilono, iltyp, iimar
+    integer(kind=8) :: isauv, nparm
     parameter(iiadm=0, iiadd=1, iidos=2, iidco=3, idate=4,&
      &                 iorig=5, ilono=6, iltyp=7, iimar=8, isauv=9,&
      &                 nparm=10)
 ! ----------------------------------------------------------------------
-    integer :: ista1, ista2, ipgcl
+    integer(kind=8) :: ista1, ista2, ipgcl
     character(len=4) :: fonc
     character(len=32) :: noml32
-    integer :: iadmi, iaddi(2), nld, it(nparm), kt(nparm)
+    integer(kind=8) :: iadmi, iaddi(2), nld, it(nparm), kt(nparm)
     aster_logical :: lsauv, ldate, lmarq, llibp, ltout, lattr, lxu, lad
 ! DEB ------------------------------------------------------------------
     do k = 1, nparm

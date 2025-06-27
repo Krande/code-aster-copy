@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: nelem, nbr(nelem)
+    integer(kind=8) :: nelem, nbr(nelem)
     real(kind=8) :: alpha(nelem), re(nelem), he(nelem)
     character(len=8) :: nomail
     character(len=24) :: ligrmo, chelem
@@ -63,9 +63,9 @@ subroutine ssingu(nomail, nelem, nbr, ligrmo, alpha, &
 !
 !
 !
-    integer :: jcesd, jcesl, iad1, iad2, iad3
-    integer :: nbcmp, ncmp1, ncmp2, ncmp3
-    integer :: icmp, inel, nncp, ibid
+    integer(kind=8) :: jcesd, jcesl, iad1, iad2, iad3
+    integer(kind=8) :: nbcmp, ncmp1, ncmp2, ncmp3
+    integer(kind=8) :: icmp, inel, nncp, ibid
     character(len=8) :: nompaz, licmp(3)
     character(len=16) :: opti
     character(len=19) :: chsing

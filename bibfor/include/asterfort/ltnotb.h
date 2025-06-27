@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,6 @@ interface
         character(len=*), intent(in) :: result
         character(len=*), intent(in) :: table_iden
         character(len=*), intent(out) :: table_name
-        integer, optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: iret_
     end subroutine ltnotb
 end interface

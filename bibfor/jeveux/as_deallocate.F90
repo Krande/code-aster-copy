@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, &
 #include "asterfort/assert.h"
 !
     aster_logical, optional, pointer :: vl(:)
-    integer, optional, pointer :: vi(:)
+    integer(kind=8), optional, pointer :: vi(:)
     integer(kind=4), optional, pointer :: vi4(:)
     real(kind=8), optional, pointer :: vr(:)
     complex(kind=8), optional, pointer :: vc(:)
@@ -55,7 +55,7 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, &
 ! INOUT vk16    : vecteur de k16
 ! ...
 ! ----------------------------------------------------------------------
-    integer :: ierr, lonty, lsic, lonvec
+    integer(kind=8) :: ierr, lonty, lsic, lonvec
     character(len=4) :: typv
 !
 ! -------------------------------------------------------------------

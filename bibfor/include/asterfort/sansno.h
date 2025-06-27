@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         character(len=24), intent(in) :: sans
         character(len=24), intent(in) :: psans
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nb_keyw
+        integer(kind=8), intent(in) :: nb_keyw
         character(len=16), intent(in) :: keyw_type(nb_keyw)
         character(len=16), intent(in) :: keyw_name(nb_keyw)
     end subroutine sansno

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/assert.h"
-    integer :: nno, nbtuy, eltuy(nbtuy), notuy(nno*nbtuy), nbpart, noex1(nbpart)
-    integer :: noex2(nbpart), nbmap(nbpart), elpar(nbpart, nbtuy)
-    integer :: nopar(nbpart, nno, nbtuy)
+    integer(kind=8) :: nno, nbtuy, eltuy(nbtuy), notuy(nno*nbtuy), nbpart, noex1(nbpart)
+    integer(kind=8) :: noex2(nbpart), nbmap(nbpart), elpar(nbpart, nbtuy)
+    integer(kind=8) :: nopar(nbpart, nno, nbtuy)
 !     AFFE_CARA_ELEM
 !     AFFECTATION DES CARACTERISTIQUES POUR LES TUYAUX
 ! ----------------------------------------------------------------------
@@ -33,9 +33,9 @@ subroutine aceat2(nbtuy, eltuy, notuy, nbpart, noex1, &
 !     STOCKAGE DES NUMEROS DE NOEUDS EXTREMITES
 !
 !-----------------------------------------------------------------------
-    integer :: iext1, iext2, im1, ima, ipa, jma, kp
-    integer :: nbe, nbext1, nbext2, nex1, ni1, ni2, ni3
-    integer :: ni4, nj1, nj2, nj3, nj4
+    integer(kind=8) :: iext1, iext2, im1, ima, ipa, jma, kp
+    integer(kind=8) :: nbe, nbext1, nbext2, nex1, ni1, ni2, ni3
+    integer(kind=8) :: ni4, nj1, nj2, nj3, nj4
 !-----------------------------------------------------------------------
     nbext1 = 0
     nbext2 = 0

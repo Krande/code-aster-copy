@@ -54,8 +54,8 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
     character(len=4) :: docu, scal
     character(len=24) :: valk(2)
     character(len=8) :: nomsd
-    integer :: i, jvale, jvale1, jvale2, ier
-    integer :: lon1
+    integer(kind=8) :: i, jvale, jvale1, jvale2, ier
+    integer(kind=8) :: lon1
     aster_logical :: iden
 !-----------------------------------------------------------------------
     call jemarq()

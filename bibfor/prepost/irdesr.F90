@@ -37,8 +37,8 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec, &
 #include "asterfort/lxliis.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx
-    integer :: ir, numnoe(*), ncmps(*), nbcmp
+    integer(kind=8) :: ifi, nbno, prno(*), nueq(*), nec, dg(*), ncmpmx
+    integer(kind=8) :: ir, numnoe(*), ncmps(*), nbcmp
     real(kind=8) :: vale(*)
     character(len=*) :: nomcmp(*), nocmpl(*)
     character(len=*) :: titr, nomnoe(*), nomsd, nomsym
@@ -71,22 +71,22 @@ subroutine irdesr(ifi, nbno, prno, nueq, nec, &
     character(len=8) :: nocmp, nomgs
     character(len=24) :: nomst
     character(len=80) :: entete(10), titre, texte
-    integer :: nbchs, nbcmpt
-    integer :: impre, iente, iutil
+    integer(kind=8) :: nbchs, nbcmpt
+    integer(kind=8) :: impre, iente, iutil
     aster_logical :: afaire, lcmp
 !
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, ic, ichs, icmp, icms
-    integer :: icmsup, icompt, icp, ida, idebu, iec, ier
-    integer :: ifin, ilig, indats, inno, ino
-    integer :: ires, irval, ival, j, jadm
-    integer :: jj, jl, jmax, jpos, jtitr, k, l
-    integer :: ll, nbdats, ncmp, ni
-    integer, pointer :: ipcmps(:) => null()
+    integer(kind=8) :: i, ic, ichs, icmp, icms
+    integer(kind=8) :: icmsup, icompt, icp, ida, idebu, iec, ier
+    integer(kind=8) :: ifin, ilig, indats, inno, ino
+    integer(kind=8) :: ires, irval, ival, j, jadm
+    integer(kind=8) :: jj, jl, jmax, jpos, jtitr, k, l
+    integer(kind=8) :: ll, nbdats, ncmp, ni
+    integer(kind=8), pointer :: ipcmps(:) => null()
     aster_logical, pointer :: ltabl(:) => null()
-    integer, pointer :: nbcmps(:) => null()
+    integer(kind=8), pointer :: nbcmps(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
     character(len=8), pointer :: nomgds(:) => null()
 !-----------------------------------------------------------------------

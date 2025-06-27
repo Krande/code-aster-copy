@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       nbbloq, nblagr, nbliai)
         character(len=*) :: choixz
         character(len=*) :: numez
-        integer :: neq
-        integer :: tabddl(*)
-        integer :: nbacti
-        integer :: nbbloq
-        integer :: nblagr
-        integer :: nbliai
+        integer(kind=8) :: neq
+        integer(kind=8) :: tabddl(*)
+        integer(kind=8) :: nbacti
+        integer(kind=8) :: nbbloq
+        integer(kind=8) :: nblagr
+        integer(kind=8) :: nbliai
     end subroutine typddl
 end interface

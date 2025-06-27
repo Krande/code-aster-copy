@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,29 +24,29 @@ interface
                       ancsn, p, q, lbd1, lbd2,&
                       rl, rl1, rl2, nrl, invp,&
                       perm, lgind, ddlmoy, nbsnd)
-        integer :: n1
-        integer :: diag(0:*)
-        integer :: col(*)
-        integer :: parent(*)
-        integer :: parend(*)
-        integer :: anc(n1)
-        integer :: nouv(n1)
-        integer :: supnd(n1)
-        integer :: supnd2(n1)
-        integer :: nouvsn(0:n1)
-        integer :: ancsn(*)
-        integer :: p(*)
-        integer :: q(*)
-        integer :: lbd1(n1)
-        integer :: lbd2(n1)
-        integer :: rl(4, *)
-        integer :: rl1(*)
-        integer :: rl2(*)
-        integer :: nrl
-        integer :: invp(n1)
-        integer :: perm(n1)
-        integer :: lgind
-        integer :: ddlmoy
-        integer :: nbsnd
+        integer(kind=8) :: n1
+        integer(kind=8) :: diag(0:*)
+        integer(kind=8) :: col(*)
+        integer(kind=8) :: parent(*)
+        integer(kind=8) :: parend(*)
+        integer(kind=8) :: anc(n1)
+        integer(kind=8) :: nouv(n1)
+        integer(kind=8) :: supnd(n1)
+        integer(kind=8) :: supnd2(n1)
+        integer(kind=8) :: nouvsn(0:n1)
+        integer(kind=8) :: ancsn(*)
+        integer(kind=8) :: p(*)
+        integer(kind=8) :: q(*)
+        integer(kind=8) :: lbd1(n1)
+        integer(kind=8) :: lbd2(n1)
+        integer(kind=8) :: rl(4, *)
+        integer(kind=8) :: rl1(*)
+        integer(kind=8) :: rl2(*)
+        integer(kind=8) :: nrl
+        integer(kind=8) :: invp(n1)
+        integer(kind=8) :: perm(n1)
+        integer(kind=8) :: lgind
+        integer(kind=8) :: ddlmoy
+        integer(kind=8) :: nbsnd
     end subroutine premlc
 end interface

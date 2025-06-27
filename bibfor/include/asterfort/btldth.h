@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
                       temper, forthi)
         character(len=4) :: fami
         real(kind=8) :: xi3
-        integer :: nb1
-        integer :: kpg
+        integer(kind=8) :: nb1
+        integer(kind=8) :: kpg
         real(kind=8) :: btild(5, 42)
         real(kind=8) :: wgt
-        integer :: indic
+        integer(kind=8) :: indic
         real(kind=8) :: young
         real(kind=8) :: nu
         real(kind=8) :: alpha

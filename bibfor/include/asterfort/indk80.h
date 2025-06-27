@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     function indk80(lk80, k80z, rang, nbk80)
         character(len=*) :: lk80(*)
         character(len=*) :: k80z
-        integer :: rang
-        integer :: nbk80
-        integer :: indk80
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbk80
+        integer(kind=8) :: indk80
     end function indk80
 end interface

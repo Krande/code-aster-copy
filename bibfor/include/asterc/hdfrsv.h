@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     function hdfrsv(i, j, itab, iconv)
         hid_t :: i
-        integer :: j
+        integer(kind=8) :: j
         character(len=*) :: itab(*)
-        integer :: iconv
-        integer :: hdfrsv
+        integer(kind=8) :: iconv
+        integer(kind=8) :: hdfrsv
     end function hdfrsv
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ subroutine caladj(col, diag, xadj, adjncy, n, &
 !             NNZ(1:N)
 ! ATTENTION : XADJ SERT DE TAB DE TRAVAIL DANS LA 1ERE PARTIE (DO 1 )
 !-----------
-    integer :: lmat, n, col(lmat), diag(0:n), adjncy(*)
-    integer :: xadj(n+1), nnz(n), suiv(*), tab(*)
-    integer :: nrl
-    integer :: deb(n)
+    integer(kind=8) :: lmat, n, col(lmat), diag(0:n), adjncy(*)
+    integer(kind=8) :: xadj(n+1), nnz(n), suiv(*), tab(*)
+    integer(kind=8) :: nrl
+    integer(kind=8) :: deb(n)
 !--------------------------------------------------------------
 !     VAR. LOCALES
-    integer :: i, j, k, ii, it, ladjn, iad
-    integer :: vali(2)
+    integer(kind=8) :: i, j, k, ii, it, ladjn, iad
+    integer(kind=8) :: vali(2)
     if (nrl .eq. 0) then
 !     PAS DE RELATION LINEAIRE ENTRE PLUSIEURS DDL
         do j = 1, n

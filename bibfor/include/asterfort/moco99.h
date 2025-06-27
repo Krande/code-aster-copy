@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@
 interface
     subroutine moco99(nomres, resul, nbmod, lrang, iorne,&
                       seul)
-        integer :: nbmod
+        integer(kind=8) :: nbmod
         character(len=8) :: nomres
         character(len=8) :: resul
-        integer :: lrang(nbmod)
-        integer :: iorne
+        integer(kind=8) :: lrang(nbmod)
+        integer(kind=8) :: iorne
         aster_logical :: seul
     end subroutine moco99
 end interface

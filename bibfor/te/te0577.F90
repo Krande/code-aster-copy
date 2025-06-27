@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine te0577(option, nomte)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: ndim, nfh, nfe, itemp, igeom, nnop, jpintt, imate, itps
-    integer :: jstno
-    integer :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, ivectt, nddlno
-    integer :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
+    integer(kind=8) :: ndim, nfh, nfe, itemp, igeom, nnop, jpintt, imate, itps
+    integer(kind=8) :: jstno
+    integer(kind=8) :: jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, ivectt, nddlno
+    integer(kind=8) :: heavn(27, 5), ino, ig, jheavn, ncompn, jtab(7), iret
     character(len=8) :: elrefp
 !
 ! ----------------------------------------------------------------------

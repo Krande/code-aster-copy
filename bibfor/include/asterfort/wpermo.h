@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine wpermo(lmasse, lraide, lamor, nbprop, vecp,&
                       fr, am, excl, omecor, ernorm)
-        integer :: lmasse
-        integer :: lraide
-        integer :: lamor
-        integer :: nbprop
+        integer(kind=8) :: lmasse
+        integer(kind=8) :: lraide
+        integer(kind=8) :: lamor
+        integer(kind=8) :: nbprop
         complex(kind=8) :: vecp(*)
         real(kind=8) :: fr(*)
         real(kind=8) :: am(*)
-        integer :: excl(*)
+        integer(kind=8) :: excl(*)
         real(kind=8) :: omecor
         real(kind=8) :: ernorm(*)
     end subroutine wpermo

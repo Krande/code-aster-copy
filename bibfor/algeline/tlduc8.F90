@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,13 +90,13 @@ subroutine tlduc8(nommat, hcol, adia, ablo, npivot, &
 !
 !
 !  ------------------------------------------------------------------
-    integer :: hcol(*), adia(*), ablo(*)
-    integer :: npivot, neq, nbbloc, ildeb, ilfin
-    integer :: ldiag, ibloc, il1, il2, iaa, il
-    integer :: iaas, iaai, kl1, imini, iequa, i, jblmin, jbloc, jl1, jl2
-    integer :: iabs, iabi, ilong, iadiai, idei, iadias, ides, idl, jnmini
-    integer :: jequa, jlong, jadias, jdes, jadiai, jdei, jdl, ibcl1
-    integer :: lm, icai, icas, icbi, icbs, icd
+    integer(kind=8) :: hcol(*), adia(*), ablo(*)
+    integer(kind=8) :: npivot, neq, nbbloc, ildeb, ilfin
+    integer(kind=8) :: ldiag, ibloc, il1, il2, iaa, il
+    integer(kind=8) :: iaas, iaai, kl1, imini, iequa, i, jblmin, jbloc, jl1, jl2
+    integer(kind=8) :: iabs, iabi, ilong, iadiai, idei, iadias, ides, idl, jnmini
+    integer(kind=8) :: jequa, jlong, jadias, jdes, jadiai, jdei, jdl, ibcl1
+    integer(kind=8) :: lm, icai, icas, icbi, icbs, icd
 !
     real(kind=8) :: eps
     complex(kind=8) :: c8vali, c8vals

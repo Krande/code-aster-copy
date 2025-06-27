@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine decompose_conic(m0, nline, line1, line2, indic)
 #include "asterfort/num_rank_mat33.h"
 !
     real(kind=8), intent(in) :: m0(3, 3)
-    integer, intent(out) :: nline
+    integer(kind=8), intent(out) :: nline
     real(kind=8), intent(out) :: line1(3)
     real(kind=8), intent(out) :: line2(3)
     real(kind=8), intent(out), optional :: indic
@@ -43,7 +43,7 @@ subroutine decompose_conic(m0, nline, line1, line2, indic)
 !
     real(kind=8) :: prec, mat_b(3, 3), matrice(3, 3)
     real(kind=8) :: max_di, b, p(3), Mp(3, 3), test, val_max, condit
-    integer :: rank_m0, imax, jmax, i, j
+    integer(kind=8) :: rank_m0, imax, jmax, i, j
 !
 !     Initialisations
     line1 = (/0.d0, 0.d0, 0.d0/)

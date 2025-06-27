@@ -47,7 +47,7 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !
     character(len=8)  :: noma, resu, typfon
     character(len=19) :: basnof
-    integer           :: nbnoff
+    integer(kind=8)           :: nbnoff
 ! FONCTION REALISEE (OPERATEUR DEFI_FOND_FISS) :
 !
 !      REMPLISSAGE DES OBJETS .SUPNORM.NOEU ET .INFNORM.NOEU
@@ -61,13 +61,13 @@ subroutine fonnof2(resu, noma, typfon, nbnoff, basnof)
 !        BASNOF     : BASE LOCALE EN FOND DE FISSURE
 !-----------------------------------------------------------------------
 !
-    integer :: nbma, jlima, im, n1, nbnoe, iret, jsup, jnols, inols
-    integer :: idlino, nbnols, jcoors, in, nbnoft, inoff, ifm, niv, jnofo
-    integer :: nuno, jints, nbtrls, iera, inols2, inoli2
-    integer :: numfin, isym, inoli, jinf, jnoli, nbnoli, jcoori, jinti
-    integer :: nbtrli, ino, inos, nbs, numun, jts, jti, nbi, inoi
-    integer :: jnofos, irlev, ndim
-    integer :: ninfsup_norm, ninfsup_norm2
+    integer(kind=8) :: nbma, jlima, im, n1, nbnoe, iret, jsup, jnols, inols
+    integer(kind=8) :: idlino, nbnols, jcoors, in, nbnoft, inoff, ifm, niv, jnofo
+    integer(kind=8) :: nuno, jints, nbtrls, iera, inols2, inoli2
+    integer(kind=8) :: numfin, isym, inoli, jinf, jnoli, nbnoli, jcoori, jinti
+    integer(kind=8) :: nbtrli, ino, inos, nbs, numun, jts, jti, nbi, inoi
+    integer(kind=8) :: jnofos, irlev, ndim
+    integer(kind=8) :: ninfsup_norm, ninfsup_norm2
     real(kind=8) :: x0(3), x1, x2, y1, y2, z1, z2, d, vplan(3), dmin
     real(kind=8) :: dmax, prec, preco, ps, vectan(3), precn
     character(len=6) :: nompro

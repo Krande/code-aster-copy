@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,12 +42,12 @@ subroutine thmMecaSpecial(ds_thm, option, lMatr, meca, &
     type(THM_DS), intent(in) :: ds_thm
     character(len=16), intent(in) :: option, meca
     aster_logical, intent(in) :: lMatr
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: p1, dp1, p2, dp2, satur, tbiot(6), nl
     character(len=8), intent(in) :: typmod(2)
     real(kind=8), intent(in) :: carcri(*)
-    integer, intent(in) :: ndim, dimdef, dimcon
-    integer, intent(in) :: addeme, adcome, addep1, addep2
+    integer(kind=8), intent(in) :: ndim, dimdef, dimcon
+    integer(kind=8), intent(in) :: addeme, adcome, addep1, addep2
     real(kind=8), intent(in) :: vintm(*)
     real(kind=8), intent(in) :: defgem(dimdef), deps(6), congem(dimcon)
     real(kind=8), intent(inout) :: congep(dimcon)
@@ -55,7 +55,7 @@ subroutine thmMecaSpecial(ds_thm, option, lMatr, meca, &
     real(kind=8), intent(in) :: time_prev, time_curr
     real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
     real(kind=8), intent(out) :: ther_meca(6)
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -99,7 +99,7 @@ subroutine thmMecaSpecial(ds_thm, option, lMatr, meca, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: alpha0, young, nu
     aster_logical :: l_dspdp2
     real(kind=8) :: dsdeme(6, 6), dsidp1(6), dsidp2(6), dspdp1, dspdp2

@@ -37,12 +37,12 @@ subroutine cflecq(mesh, model, sdcont_defi, nb_cont_surf, nb_cont_node0, &
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(in) :: nb_cont_node0
-    integer, pointer :: v_poin_node(:)
-    integer, pointer :: v_list_node(:)
-    integer, intent(out) :: nb_cont_node
-    integer, intent(out) :: nb_node_coq3d
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(in) :: nb_cont_node0
+    integer(kind=8), pointer :: v_poin_node(:)
+    integer(kind=8), pointer :: v_list_node(:)
+    integer(kind=8), intent(out) :: nb_cont_node
+    integer(kind=8), intent(out) :: nb_node_coq3d
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -64,19 +64,19 @@ subroutine cflecq(mesh, model, sdcont_defi, nb_cont_surf, nb_cont_node0, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdecno, jdecma
-    integer :: i_surf, nume_node_2, i_node, k, i_elem, type_nume, node_middle_nume
-    integer :: nb_elem, nb_node
-    integer :: elem_nume, node_nume
+    integer(kind=8) :: jdecno, jdecma
+    integer(kind=8) :: i_surf, nume_node_2, i_node, k, i_elem, type_nume, node_middle_nume
+    integer(kind=8) :: nb_elem, nb_node
+    integer(kind=8) :: elem_nume, node_nume
     character(len=8) :: type_name, elem_name, node_name
     aster_logical :: l_coq3d
-    integer, pointer :: v_mesh_typmail(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
-    integer, pointer :: v_node_indx(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_node_indx(:) => null()
     character(len=24) :: sdcont_noeuco
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

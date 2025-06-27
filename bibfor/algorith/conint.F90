@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,25 +67,25 @@ subroutine conint(nume, raide, coint, connec, &
 !
 !
 !-- VARIABLES EN ENTREES / SORTIE
-    integer :: connec, nnoint
+    integer(kind=8) :: connec, nnoint
     character(len=14) :: nume, nume_gene
     character(len=24) :: coint, noddli
     character(len=19) :: raide
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: ibid, i1, j1, k1, l1, m1, n1, lraide, lsmdi, lsmhc, neq
-    integer :: lprno, lnddli, ipos1, ipos2, noeu, nbec, icon1, icon2, noeuco
-    integer :: numno, lconnc
-    integer :: neqddl, nozero, no1, no2, indeq, ismhc, indddl, neqd2
-    integer :: nbvois, iret, nbvmax, lraint, lmaint
+    integer(kind=8) :: ibid, i1, j1, k1, l1, m1, n1, lraide, lsmdi, lsmhc, neq
+    integer(kind=8) :: lprno, lnddli, ipos1, ipos2, noeu, nbec, icon1, icon2, noeuco
+    integer(kind=8) :: numno, lconnc
+    integer(kind=8) :: neqddl, nozero, no1, no2, indeq, ismhc, indddl, neqd2
+    integer(kind=8) :: nbvois, iret, nbvmax, lraint, lmaint
     real(kind=8) :: rayon, dist, mindis, maxdis, kr(12, 12), mr(12, 12)
     real(kind=8) :: direc(3), ptref(3), temp, long, vtest(3), r8bid
     character(len=8) :: nomma, k8bid
     character(len=19) :: nume_equa_gene, nume_equa, raiint, ssami, solveu
     character(len=24) :: repsst, nommcl
-    integer, pointer :: ipos_ddl_interf(:) => null()
+    integer(kind=8), pointer :: ipos_ddl_interf(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: ind_noeud(:) => null()
+    integer(kind=8), pointer :: ind_noeud(:) => null()
 !
 !-----------C
 !--       --C

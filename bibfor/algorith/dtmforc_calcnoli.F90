@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,11 +50,11 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
 
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)  :: nbmode, nlacc, nlcase, idx_start, idx_end
+    integer(kind=8), intent(in)  :: nbmode, nlacc, nlcase, idx_start, idx_end
     character(len=*), intent(in)  :: sd_dtm_
     character(len=*), intent(in)  :: sd_nl_
-    integer, pointer  :: buffdtm(:)
-    integer, pointer  :: buffnl(:)
+    integer(kind=8), pointer  :: buffdtm(:)
+    integer(kind=8), pointer  :: buffnl(:)
     real(kind=8), intent(in)  :: time
     real(kind=8), pointer  :: depl(:)
     real(kind=8), pointer  :: vite(:)
@@ -62,8 +62,8 @@ subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl, &
     real(kind=8), intent(in)  :: dt
 !
 !   -0.2- Local variables
-    integer           :: i, par_coorno(2)
-    integer           ::  nl_ind, nl_type
+    integer(kind=8)           :: i, par_coorno(2)
+    integer(kind=8)           ::  nl_ind, nl_type
     real(kind=8)      ::  eps
     character(len=8)  :: sd_dtm, sd_nl
 !

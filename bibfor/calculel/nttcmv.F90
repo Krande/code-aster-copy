@@ -66,8 +66,8 @@ subroutine nttcmv(model, mateco, caraElem, listLoad, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, k, iret, ierr, nbmat, jmet
-    integer :: j2nd, lonch
+    integer(kind=8) :: ibid, k, iret, ierr, nbmat, jmet
+    integer(kind=8) :: j2nd, lonch
     character(len=1) :: typres
     character(len=8) :: nomcmp(6)
     character(len=19) :: merigi

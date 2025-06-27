@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
 #include "asterfort/utmess.h"
     aster_logical, intent(in) :: lrgm
     character(len=16), intent(in) :: compor
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     real(kind=8), intent(in) :: ep
     real(kind=8), optional, intent(out) :: lambda, deuxmu, deumuf, lamf
     real(kind=8), optional, intent(out) :: gt, gc, gf, seuil, alpha, alfmc
@@ -60,7 +60,7 @@ subroutine glrc_recup_mate(imate, compor, lrgm, ep, lambda, &
 !       EPSILIM : DEFORMATION A RUPTURE DES ACIERS
 ! ----------------------------------------------------------------------
 !
-    integer :: icodre(16)
+    integer(kind=8) :: icodre(16)
     real(kind=8) :: valres(16), e, nu, ef
     real(kind=8) :: nyt, nyc, myf, nuf, delas(6, 6)
     real(kind=8) :: lambda_int, deuxmu_int, deumuf_int, lamf_int

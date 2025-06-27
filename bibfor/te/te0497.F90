@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,25 +65,25 @@ subroutine te0497(option, nomte)
 !                      STATIONNAIRE .
 !----------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: ibid, iaux, iret, itab(7)
-    integer :: igeom
-    integer :: ierr, ivois
-    integer :: ierrm, imate, ifovr, ifovf
-    integer :: ipes, irot, iref1, iref2, ndim
-    integer :: nno, nnos, npg, jv_poids, jv_func, jv_dfunc, jv_gano
-    integer :: jv_poids2, jv_func2, jv_dfunc2
-    integer :: nbcmp, ipg, ifa, tyv, nbs, kpg, spt
-    integer :: isienp, isienm, ideplp, ideplm, jkp, nbna
-    integer :: iagd, iatyma, typ, iacmp
-    integer :: iade2, iava2, iaptm2, igd2, ncmpm2
-    integer :: iade3, iava3, iaptm3, igd3, ncmpm3
-    integer :: igrdca, dimdep, dimdef, dimcon
-    integer :: nddl_meca, npi, nddl_p1, nddl_p2, nddl_2nd, nddls, nddlm
-    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5), dimuel
-    integer :: adsip, addeme, adcome, addete
-    integer :: addep1, adcp11
-    integer :: addep2, adde2nd, ii, noe(9, 6, 4)
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ibid, iaux, iret, itab(7)
+    integer(kind=8) :: igeom
+    integer(kind=8) :: ierr, ivois
+    integer(kind=8) :: ierrm, imate, ifovr, ifovf
+    integer(kind=8) :: ipes, irot, iref1, iref2, ndim
+    integer(kind=8) :: nno, nnos, npg, jv_poids, jv_func, jv_dfunc, jv_gano
+    integer(kind=8) :: jv_poids2, jv_func2, jv_dfunc2
+    integer(kind=8) :: nbcmp, ipg, ifa, tyv, nbs, kpg, spt
+    integer(kind=8) :: isienp, isienm, ideplp, ideplm, jkp, nbna
+    integer(kind=8) :: iagd, iatyma, typ, iacmp
+    integer(kind=8) :: iade2, iava2, iaptm2, igd2, ncmpm2
+    integer(kind=8) :: iade3, iava3, iaptm3, igd3, ncmpm3
+    integer(kind=8) :: igrdca, dimdep, dimdef, dimcon
+    integer(kind=8) :: nddl_meca, npi, nddl_p1, nddl_p2, nddl_2nd, nddls, nddlm
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), second(5), dimuel
+    integer(kind=8) :: adsip, addeme, adcome, addete
+    integer(kind=8) :: addep1, adcp11
+    integer(kind=8) :: addep2, adde2nd, ii, noe(9, 6, 4)
 !
     real(kind=8) :: ovfl
     real(kind=8) :: r8bid3(2)
@@ -109,17 +109,17 @@ subroutine te0497(option, nomte)
     character(len=8) :: typema, typmav
     character(len=8) :: type_elem(2), fami, poum
 !
-    integer :: nbre1, nbre2, nbre3, nbre4
+    integer(kind=8) :: nbre1, nbre2, nbre3, nbre4
     parameter(nbre1=2, nbre2=2, nbre3=1, nbre4=2)
 !
-    integer :: nbr11, nbr12, nbr13, nbre5, nbre6
+    integer(kind=8) :: nbr11, nbr12, nbr13, nbre5, nbre6
     parameter(nbr11=1, nbr12=3, nbr13=4, nbre5=4, nbre6=5)
 !
     real(kind=8) :: valre1(nbre1), valre2(nbre2), valre3(nbre3), valre4(nbre4), valr11(nbr11)
     real(kind=8) :: valr12(nbr12), valre5(nbre5), valr13(nbr13), valre6(nbre6)
 !
-    integer :: codme1(nbre1), codme2(nbre2), codme3(nbre3), codme4(nbre4), codm11(nbr11)
-    integer :: codm12(nbr12), codm13(nbr13), codme5(nbre5), codme6(nbre6)
+    integer(kind=8) :: codme1(nbre1), codme2(nbre2), codme3(nbre3), codme4(nbre4), codm11(nbr11)
+    integer(kind=8) :: codm12(nbr12), codm13(nbr13), codme5(nbre5), codme6(nbre6)
 !
     character(len=16) :: nomre1(nbre1), nomre2(nbre2), nomre3(nbre3), nomre4(nbre4), nomr11(nbr11)
     character(len=16) :: nomr12(nbr12), nomr13(nbr13), nomre5(nbre5), nomre6(nbre6)

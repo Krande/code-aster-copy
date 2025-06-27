@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       nb_vale  , vale_resu)
         character(len=8), intent(in) :: node_name
         character(len=19), intent(in) :: field
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=24), intent(in) :: list_cmp
         character(len=8), intent(in) :: type_extr_cmp
         real(kind=8), intent(out) :: vale_resu(*)
-        integer, intent(out) :: nb_vale
+        integer(kind=8), intent(out) :: nb_vale
     end subroutine nmexti
 end interface

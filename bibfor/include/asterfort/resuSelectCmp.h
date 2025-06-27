@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@ interface
                              cmpUserNb   , cmpUserName,&
                              cmpCataNb   , cmpCataName,&
                              cmpNb       , cmpIndx)
-        integer, intent(in) :: quantityIndx
-        integer, intent(in) :: cmpUserNb
+        integer(kind=8), intent(in) :: quantityIndx
+        integer(kind=8), intent(in) :: cmpUserNb
         character(len=8), pointer :: cmpUserName(:)
-        integer, intent(out) :: cmpCataNb
+        integer(kind=8), intent(out) :: cmpCataNb
         character(len=8), pointer :: cmpCataName(:)
-        integer, intent(out) :: cmpNb
-        integer, pointer :: cmpIndx(:)
+        integer(kind=8), intent(out) :: cmpNb
+        integer(kind=8), pointer :: cmpIndx(:)
     end subroutine resuSelectCmp
 end interface

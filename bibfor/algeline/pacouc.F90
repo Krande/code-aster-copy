@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=8) :: typflu
-    integer :: nbno, indic, nbpv, veci1(*), ier, jtrav1, jtrav2
+    integer(kind=8) :: nbno, indic, nbpv, veci1(*), ier, jtrav1, jtrav2
     real(kind=8) :: vecr1(*), vecr2(*), vite(*), vecr3(*), masg(*), freq(*)
     real(kind=8) :: amor(*), w(*), vecr4(*), vecr5(*)
     character(len=24) :: nom1, nom2
@@ -43,16 +43,16 @@ subroutine pacouc(typflu, vecr1, vecr2, vite, vecr3, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, itypfl, j, jcompt, jextr
-    integer :: k, k1, k10, k11, k12, k2
-    integer :: k3, k4, k5, k6, k7, k8, k9
-    integer :: l1, l2, l3, nb, nt
-    integer :: nzone
+    integer(kind=8) :: i, i1, i2, itypfl, j, jcompt, jextr
+    integer(kind=8) :: k, k1, k10, k11, k12, k2
+    integer(kind=8) :: k3, k4, k5, k6, k7, k8, k9
+    integer(kind=8) :: l1, l2, l3, nb, nt
+    integer(kind=8) :: nzone
     real(kind=8) :: bmax, bmin, delta, hmoy, pi, pulsam
     real(kind=8) :: visc
-    integer, pointer :: fsic(:) => null()
+    integer(kind=8), pointer :: fsic(:) => null()
     real(kind=8), pointer :: fsvr(:) => null()
-    integer, pointer :: tempo(:) => null()
+    integer(kind=8), pointer :: tempo(:) => null()
     character(len=3) :: stperr
 !-----------------------------------------------------------------------
     call jemarq()

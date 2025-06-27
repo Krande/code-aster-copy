@@ -34,8 +34,8 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq, &
 #include "asterfort/vecnuv.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbordr, kwork
-    integer :: sompgw, jrwork, tspaq, ipg
+    integer(kind=8) :: nbordr, kwork
+    integer(kind=8) :: sompgw, jrwork, tspaq, ipg
     character(len=16) :: nommet
     real(kind=8) :: vrespc(24)
 !
@@ -66,12 +66,12 @@ subroutine acmata(nbordr, kwork, sompgw, jrwork, tspaq, &
 !   vrespc      OUT   TABLEAU DES RESULTATS (GRANDEURS ET DOMMAGE).
 !                     POUR L'INSTANT, LA DIMENSION DE VRESU EST 24
 ! ----------------------------------------------------------------------
-    integer :: i, j, k, n
-    integer :: nbvec, dim, mnmax(2), jvpg1, jvpg2
-    integer :: jvecn2, jvecu2, jvecv2, jvecn1, jvecu1, jvecv1
-    integer :: adrs, decal, tab2(18), vali(2), ideb, ngam, jresun
-    integer :: tneces, tdisp(1), jvecno, tnecno, jnorma, dectau
-    integer :: jdtaum, jvectn, jvectu, jvectv
+    integer(kind=8) :: i, j, k, n
+    integer(kind=8) :: nbvec, dim, mnmax(2), jvpg1, jvpg2
+    integer(kind=8) :: jvecn2, jvecu2, jvecv2, jvecn1, jvecu1, jvecv1
+    integer(kind=8) :: adrs, decal, tab2(18), vali(2), ideb, ngam, jresun
+    integer(kind=8) :: tneces, tdisp(1), jvecno, tnecno, jnorma, dectau
+    integer(kind=8) :: jdtaum, jvectn, jvectu, jvectv
 !
     real(kind=8) :: dgam, pi, dphi, tab1(18)
     real(kind=8) :: epsilo, gamma

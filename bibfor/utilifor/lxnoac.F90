@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ subroutine lxnoac(chin, chout)
 !     OUT : CHOUT = CHAINE AVEC UNIQUEMENT DES CARACTERES LICITES
 ! ----------------------------------------------------------------------
 !
-    integer :: mxchar
+    integer(kind=8) :: mxchar
     parameter(mxchar=255)
     character(len=1) :: class(0:mxchar)
     character(len=255) :: keep
-    integer :: i, long, long2
+    integer(kind=8) :: i, long, long2
 !
-    integer :: first
+    integer(kind=8) :: first
     save class, first
 !
 !     ------------------------------------------------------------------

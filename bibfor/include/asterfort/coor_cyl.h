@@ -23,8 +23,8 @@ interface
     subroutine coor_cyl(ndim, nnop, basloc, geom, ff,&
                         p_g, invp_g, rg, tg, l_not_zero,&
                         lcourb, pfond)
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         real(kind=8) :: ff(*)
         real(kind=8) :: basloc(*)
         real(kind=8) :: geom(*)

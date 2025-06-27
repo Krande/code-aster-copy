@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,8 +57,8 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
 #include "asterfort/plasti3d.h"
 #include "asterfort/tirViscoElas.h"
 !   declaration des variables externes
-    integer, intent(in) :: nstrs, nvari, nbelas3d, nmatbe2, ndim, mfr
-    integer, intent(out) :: ierr1
+    integer(kind=8), intent(in) :: nstrs, nvari, nbelas3d, nmatbe2, ndim, mfr
+    integer(kind=8), intent(out) :: ierr1
     real(kind=8), intent(in) :: xmat(:)
     real(kind=8) :: var0(:), varf(:), epstf(6), sig0(6), sigf(:), deps(:)
     real(kind=8) :: dt, teta1, teta2, sech, matdech(6, 6)
@@ -66,7 +66,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
 !   variable logique pour activer le fluage, l endo, le traitement local
     aster_logical, intent(in) :: end3d, fl3d, local
 !    nombre maximal de sous-itération de fluage
-    integer, intent(in) :: iteflumax
+    integer(kind=8), intent(in) :: iteflumax
 ! ----------------------------------------------------------------------
     aster_logical :: is_ba, inputL(5)
     real(kind=8) :: beta, beta00, bg0, biotw, biotw00, ccmin0, dim3
@@ -81,15 +81,15 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
     real(kind=8) :: tauk00, tauk1, taum00, teta, treps, trepspg, gfr, epeqpc, errgf
     real(kind=8) :: vrgi00, vrgi1, vrgi2, vw, vw1, vw2, we0s
     real(kind=8) :: xflu, young00, xnsat, xnsat00, outputVR6(6, 11)
-    integer :: i, j, npas1, nt, ifour, iplalim, inputI(4), outputI(3), k
+    integer(kind=8) :: i, j, npas1, nt, ifour, iplalim, inputI(4), outputI(3), k
 !
-    integer :: ngf
+    integer(kind=8) :: ngf
     parameter(ngf=65)
 !   tableau pour la resolution des systemes lineaires
     real(kind=8) :: X(ngf)
     real(kind=8) :: B(ngf)
     real(kind=8) :: A(ngf, ngf+1)
-    integer :: ipzero(ngf)
+    integer(kind=8) :: ipzero(ngf)
 !   donnes pour test fluage3d
     real(kind=8) :: epse06(6), epsk06(6), epsm06(6), sig06(6), phi0, we0, taum1
     real(kind=8) :: epse16(6), epsk16(6), epsm16(6), sig16(6)
@@ -114,7 +114,7 @@ subroutine fluendo3d(xmat, sig0, sigf, deps, nstrs, &
     real(kind=8) :: sigf6(6), deps6r(6)
 !   ipla : compteur de sous iteration plastique
 !   err1 : code d erreur des sous programmes
-    integer :: ipla, err1
+    integer(kind=8) :: ipla, err1
 !   hydratation actuelle et seuil
     real(kind=8) :: hydr, hyds
 !   deplacements imposes reduits

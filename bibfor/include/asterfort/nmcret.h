@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,6 @@ interface
     subroutine nmcret(sderro, errorCodeType, errorCodeVale)
         character(len=24), intent(in) :: sderro
         character(len=3), intent(in) :: errorCodeType
-        integer, intent(in) :: errorCodeVale
+        integer(kind=8), intent(in) :: errorCodeVale
     end subroutine nmcret
 end interface

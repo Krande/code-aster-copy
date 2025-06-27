@@ -41,7 +41,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
 #include "asterfort/char8_to_int.h"
 #include "blas/ddot.h"
 !
-    integer :: nbgr, nbno, nbnoeu, tabnoe(nbnoeu)
+    integer(kind=8) :: nbgr, nbno, nbnoeu, tabnoe(nbnoeu)
     character(len=8) :: noma
     character(len=24) :: ligrma(nbgr)
     real(kind=8) :: rignoe(6*nbnoeu)
@@ -54,10 +54,10 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
     aster_logical :: lfonc
 !
 !-----------------------------------------------------------------------
-    integer :: i, ifr, ii
-    integer :: ij, im, in, inoe, iret
-    integer :: ldgm, ldgn, ldnm, nb, nbma, ncf
-    integer :: ncg, nfg, ngn, nm, nn, nno, noemax
+    integer(kind=8) :: i, ifr, ii
+    integer(kind=8) :: ij, im, in, inoe, iret
+    integer(kind=8) :: ldgm, ldgn, ldnm, nb, nbma, ncf
+    integer(kind=8) :: ncg, nfg, ngn, nm, nn, nno, noemax
 !
     real(kind=8) :: coef, dist, hc, r1, r2, r3
     real(kind=8) :: r4, r5, r6, rig4, rig45, rig46, rig5
@@ -66,7 +66,7 @@ subroutine raire2(noma, rigi, nbgr, ligrma, nbnoeu, &
     real(kind=8), pointer :: coegro(:) => null()
     real(kind=8), pointer :: coeno(:) => null()
     character(len=8), pointer :: fongro(:) => null()
-    integer, pointer :: parno(:) => null()
+    integer(kind=8), pointer :: parno(:) => null()
     real(kind=8), pointer :: surmai(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     blas_int :: b_incx, b_incy, b_n

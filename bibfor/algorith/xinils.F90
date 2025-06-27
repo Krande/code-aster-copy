@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,24 +76,24 @@ subroutine xinils(noma, maiaux, grille, ndim, meth, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: jconx1, jconx2, jdlima, jdlise
-    integer :: nbma, nbsef
-    integer :: jcnl, jctl, nbmagr, jcong1, jcong2, nbnoc
-    integer :: jcoorc
+    integer(kind=8) :: jconx1, jconx2, jdlima, jdlise
+    integer(kind=8) :: nbma, nbsef
+    integer(kind=8) :: jcnl, jctl, nbmagr, jcong1, jcong2, nbnoc
+    integer(kind=8) :: jcoorc
     real(kind=8) :: xln, xlt
-    integer :: ndim, dimno
-    integer :: ibid, clsm, me4
-    integer :: nbno, nbnogr, ino, jcoor, jcoorg, nbmaf
-    integer :: jltsv, jltsl, jlnsv, jlnsl
+    integer(kind=8) :: ndim, dimno
+    integer(kind=8) :: ibid, clsm, me4
+    integer(kind=8) :: nbno, nbnogr, ino, jcoor, jcoorg, nbmaf
+    integer(kind=8) :: jltsv, jltsl, jlnsv, jlnsl
     real(kind=8) :: valpu(3)
     character(len=8) :: fiss, nompu(3), nchamn, nchamt
     character(len=16) :: k16bid, typdis
     character(len=19) :: chslsn, chslst
     character(len=24) :: lisma, lisse
     aster_logical :: callst
-    integer :: ifm, niv
-    integer, pointer :: cnd(:) => null()
-    integer, pointer :: ctd(:) => null()
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), pointer :: cnd(:) => null()
+    integer(kind=8), pointer :: ctd(:) => null()
     real(kind=8), pointer :: cnv(:) => null()
     real(kind=8), pointer :: ctv(:) => null()
 !

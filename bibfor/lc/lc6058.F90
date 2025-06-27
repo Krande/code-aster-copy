@@ -52,26 +52,26 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, ndim
+    integer(kind=8), intent(in) :: kpg, ksp, ndim
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam, instap
-    integer, intent(in) :: neps
+    integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps), deps(neps)
-    integer, intent(in) :: nsig
+    integer(kind=8), intent(in) :: nsig
     real(kind=8), intent(in) :: sigm(nsig)
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8), intent(out) :: sigp(nsig)
     real(kind=8), intent(out) :: vip(nvi)
-    integer, intent(in) :: ndsde
+    integer(kind=8), intent(in) :: ndsde
     real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                                         merge(neps, 6, nsig*neps .eq. ndsde))
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -109,9 +109,9 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lMatr, lSigm, lVari
-    integer :: i, j
-    integer :: nstran, nforc, nstatv, nmatr
-    integer, parameter :: s0 = 0, s1 = 1
+    integer(kind=8) :: i, j
+    integer(kind=8) :: nstran, nforc, nstatv, nmatr
+    integer(kind=8), parameter :: s0 = 0, s1 = 1
     real(kind=8) :: dstran(2*ndim+1), stran(2*ndim+1), dsidepMGIS((2*ndim)*(2*ndim+2)+1)
     real(kind=8) :: dtime, pnewdt, rdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
@@ -120,9 +120,9 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8) :: dsig_ddeto(2*ndim, 2*ndim), dsig_ddphi(2*ndim), da_ddeto(2*ndim), da_ddphi
     real(kind=8) :: apg, lag, grad(ndim)
     real(kind=8) :: props(MGIS_MAX_PROPS)
-    integer :: nprops, retcode
+    integer(kind=8) :: nprops, retcode
     aster_logical :: dbg
-    integer :: cod(2)
+    integer(kind=8) :: cod(2)
     real(kind=8) :: val(2)
 !
 ! --------------------------------------------------------------------------------------------------

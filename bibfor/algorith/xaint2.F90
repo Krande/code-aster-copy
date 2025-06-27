@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,24 +85,24 @@ subroutine xaint2(noma, modele)
     character(len=6) :: nompro
     parameter(nompro='XAINT2')
     character(len=2) :: ch2
-    integer :: jcesd(5), jcesl(5), jcesv(5), iad, iret
-    integer :: itypma, nncp, ibid, ier
-    integer :: jnbsp2
-    integer :: jconx2, ndime, ndim
-    integer :: nuno(2), nuno2(2), ino(2), ino2, ima, ima2
-    integer :: nfis, ifis
-    integer :: i, j, k, nfiss, ifiss, nfis2, ifis2, ifis3
+    integer(kind=8) :: jcesd(5), jcesl(5), jcesv(5), iad, iret
+    integer(kind=8) :: itypma, nncp, ibid, ier
+    integer(kind=8) :: jnbsp2
+    integer(kind=8) :: jconx2, ndime, ndim
+    integer(kind=8) :: nuno(2), nuno2(2), ino(2), ino2, ima, ima2
+    integer(kind=8) :: nfis, ifis
+    integer(kind=8) :: i, j, k, nfiss, ifiss, nfis2, ifis2, ifis3
     aster_logical :: elim(2), verif
-    integer :: igrp, nbma, nmaenr, jg
-    integer :: nface, ninter, inter, zxain, ia, ifh, nfh, nmasup, jmasup
-    integer :: heav, he, ar(12, 3), nbar, nno2, nngl, inte2, ninte2
-    integer, pointer :: nbsp(:) => null()
-    integer, pointer :: xfem_cont(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8) :: igrp, nbma, nmaenr, jg
+    integer(kind=8) :: nface, ninter, inter, zxain, ia, ifh, nfh, nmasup, jmasup
+    integer(kind=8) :: heav, he, ar(12, 3), nbar, nno2, nngl, inte2, ninte2
+    integer(kind=8), pointer :: nbsp(:) => null()
+    integer(kind=8), pointer :: xfem_cont(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     character(len=8), pointer :: fiss(:) => null()
-    integer, pointer :: tmdim(:) => null()
-    integer, pointer :: vnfis(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: vnfis(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 !
 ! ----------------------------------------------------------------------

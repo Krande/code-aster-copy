@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,16 +59,16 @@ subroutine echmat(matz, ldist, lmhpc, rmin, rmax)
 ! ---------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
-    integer :: jcol, nlong, jvalm1, jcolg
+    integer(kind=8) :: nsmhc, jdelgg, jdelgl, jsmhc, ng, nz, n, imatd
+    integer(kind=8) :: jcol, nlong, jvalm1, jcolg
     character(len=1) :: ktyp, base1
     character(len=14) :: nonu
     character(len=19) :: mat19
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     real(kind=8), pointer :: rdiag(:) => null()
     complex(kind=8), pointer :: zdiag(:) => null()
-    integer, pointer :: nlgp(:) => null()
+    integer(kind=8), pointer :: nlgp(:) => null()
 !=================================================================
     call jemarq()
 !

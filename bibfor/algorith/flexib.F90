@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,7 +64,7 @@ subroutine flexib(basmod, nbmod, flex, nl, nc, &
 #include "blas/dcopy.h"
 !
 !
-    integer :: nl, nc
+    integer(kind=8) :: nl, nc
     real(kind=8) :: flex(nl, nc)
     character(len=6) :: pgc
     character(len=8) :: basmod, typint, intf, kbid, k8bid
@@ -74,13 +74,13 @@ subroutine flexib(basmod, nbmod, flex, nl, nc, &
 !
 !----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, iord, iran, j
-    integer :: jj, k, kk, ldkge, ldmge, llcham, lldes
-    integer :: llnoc, llnol, ltextc, ltextl, ltorc
-    integer :: ltvec, nbmod, nbnoc, nbnol, nbnot, neq
-    integer :: numc, numl
+    integer(kind=8) :: i, ibid, iord, iran, j
+    integer(kind=8) :: jj, k, kk, ldkge, ldmge, llcham, lldes
+    integer(kind=8) :: llnoc, llnol, ltextc, ltextl, ltorc
+    integer(kind=8) :: ltvec, nbmod, nbnoc, nbnol, nbnot, neq
+    integer(kind=8) :: numc, numl
     real(kind=8) :: toto, xkgen, xx
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     character(len=8), pointer :: idc_type(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

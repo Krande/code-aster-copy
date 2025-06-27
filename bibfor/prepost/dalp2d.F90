@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -81,17 +81,17 @@ subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc, &
 !
 #include "asterfort/dfort2.h"
 #include "asterfort/dzonfg.h"
-    integer :: nelem, nnoem, degre, nsommx, nelcom
-    integer :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
-    integer :: nalpha
+    integer(kind=8) :: nelem, nnoem, degre, nsommx, nelcom
+    integer(kind=8) :: icnc(nsommx+2, nelem), numeli(nelcom+2, nnoem)
+    integer(kind=8) :: nalpha
     real(kind=8) :: xy(3, nnoem), erreur(nelem), energi(nelem), aire(nelem)
     real(kind=8) :: alpha(nelem)
 !
 ! DECLARATION LOCALE
 !
-    integer :: inno, inel, nuef
-    integer :: tbnozo(1000), nbnozo(3), tbelzo(1000), nbelzo(3)
-    integer :: nbnoe
+    integer(kind=8) :: inno, inel, nuef
+    integer(kind=8) :: tbnozo(1000), nbnozo(3), tbelzo(1000), nbelzo(3)
+    integer(kind=8) :: nbnoe
     real(kind=8) :: factpm, factp
     parameter(factpm=2.0d+0, factp=3.0d+0)
     real(kind=8) :: precmo, precre, prec1, prec2, prec3, airtot

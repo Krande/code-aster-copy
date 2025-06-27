@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine rc32sa(typz, sn, sp, spmeca, &
 !     ------------------------------------------------------------------
 !
     character(len=8) :: mater, typeke, kbid
-    integer :: n1, jvale, icodre(1)
+    integer(kind=8) :: n1, jvale, icodre(1)
     real(kind=8) :: e, ec, sm, m, n, para(3), nadm(1), kethe1, spther(2)
     real(kind=8) :: salth, saltm, valr(2)
     aster_logical :: endur

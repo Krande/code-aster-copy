@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,12 +44,12 @@ subroutine cjsmat(mod, imat, tempf, materf, ndt, &
 #include "asterfort/cjsnvi.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nvi, imat
+    integer(kind=8) :: ndt, ndi, nvi, imat
     real(kind=8) :: materf(14, 2), tempf
     character(len=8) :: mod
     character(len=16) :: nomc(17)
     character(len=4) :: nivcjs
-    integer :: cerr(17)
+    integer(kind=8) :: cerr(17)
 !       ----------------------------------------------------------------
 !
 ! -     NB DE COMPOSANTES / VARIABLES INTERNES -------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ subroutine lctria(nb_inte_poin, nb_tria, tria_node)
 #include "asterfort/assert.h"
 !
 !
-    integer, intent(in) :: nb_inte_poin
-    integer, intent(out) :: nb_tria
-    integer, intent(out) :: tria_node(6, 3)
+    integer(kind=8), intent(in) :: nb_inte_poin
+    integer(kind=8), intent(out) :: nb_tria
+    integer(kind=8), intent(out) :: tria_node(6, 3)
 !
 ! --------------------------------------------------------------------------------------------------
 !

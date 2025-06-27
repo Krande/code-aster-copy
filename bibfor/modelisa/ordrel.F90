@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc, &
 #include "asterfort/ordre1.h"
 !
 !
-    integer, intent(in) :: nbterm
-    integer, intent(in) :: nddla
+    integer(kind=8), intent(in) :: nbterm
+    integer(kind=8), intent(in) :: nddla
     character(len=8), intent(in)  :: nomcmp(nddla)
-    integer, intent(inout) :: numnoe(nbterm)
-    integer, intent(inout) :: nbocno(nbterm)
+    integer(kind=8), intent(inout) :: numnoe(nbterm)
+    integer(kind=8), intent(inout) :: nbocno(nbterm)
     real(kind=8), intent(inout) :: coef(nbterm)
     complex(kind=8), intent(inout) :: coefc(nbterm)
     character(len=8), intent(inout) :: nomnoe(nbterm)
@@ -74,7 +74,7 @@ subroutine ordrel(numnoe, nomnoe, ddl, coef, coefc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, ind, j, k
+    integer(kind=8) :: i, ind, j, k
 !
 ! --------------------------------------------------------------------------------------------------
 !

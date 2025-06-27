@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine smcomo(coef, fmod, temp_curr, nb_hist,&
                       ftrc, trc)
         real(kind=8), intent(in) :: coef(*), fmod(*), temp_curr
-        integer, intent(in) :: nb_hist
+        integer(kind=8), intent(in) :: nb_hist
         real(kind=8), intent(out) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
     end subroutine smcomo
 end interface

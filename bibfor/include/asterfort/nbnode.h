@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine nbnode(noma, motfac, nzocu, nopono, nnocu)
         character(len=8) :: noma
         character(len=16) :: motfac
-        integer :: nzocu
+        integer(kind=8) :: nzocu
         character(len=24) :: nopono
-        integer :: nnocu
+        integer(kind=8) :: nnocu
     end subroutine nbnode
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus, &
     real(kind=8) :: ml(3)
     real(kind=8) :: sqrt2, sqrt3, q(3, 3), ngr(3), mgr(3), tbsys(30, 6), norn
     real(kind=8) :: norm
-    integer :: nbsys, nusys, k, i, j, ir
+    integer(kind=8) :: nbsys, nusys, k, i, j, ir
     blas_int :: b_incx, b_incy, b_n
 !     ----------------------------------------------------------------
 !

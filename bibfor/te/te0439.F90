@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,12 +40,12 @@ subroutine te0439(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: codres(2)
+    integer(kind=8) :: codres(2)
     character(len=4) :: fami
-    integer :: nno, npg, i, imatuu, ndim, nnos, jgano, iret_cmp
-    integer :: ipoids, ivf, idfde, igeom, imate, icacoq, icompo
-    integer :: kpg, n, j, kkd, k
-    integer :: kk, nddl, l
+    integer(kind=8) :: nno, npg, i, imatuu, ndim, nnos, jgano, iret_cmp
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate, icacoq, icompo
+    integer(kind=8) :: kpg, n, j, kkd, k
+    integer(kind=8) :: kk, nddl, l
     real(kind=8) :: dff(2, 9)
     real(kind=8) :: vff(9), b(3, 3, 9), jac, rho(1)
     real(kind=8) :: alpha, beta, h

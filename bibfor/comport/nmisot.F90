@@ -43,7 +43,7 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/zerofr.h"
 !
     aster_logical, intent(in) :: l_epsi_varc
-    integer :: ndim, imate, kpg, ksp, iret
+    integer(kind=8) :: ndim, imate, kpg, ksp, iret
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: compor, option
@@ -91,17 +91,17 @@ subroutine nmisot(fami, kpg, ksp, ndim, typmod, &
     real(kind=8) :: depsdv(6), sigmdv(6), sigpdv(6), sigdv(6)
     real(kind=8) :: em, num, troikm, deumum, sigmp(6), sigel(6), a
     real(kind=8) :: sechm, sechp, sref, tp, defam(6), defap(6)
-    integer :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
-    integer :: imate2, jprolp, jvalep, nbvalp, k, l, niter, ibid
-    integer :: iret2, iret3, iret4, iret5
-    integer :: icodre(3)
+    integer(kind=8) :: ndimsi, jprolm, jvalem, nbvalm, jprol2, jvale2, nbval2
+    integer(kind=8) :: imate2, jprolp, jvalep, nbvalp, k, l, niter, ibid
+    integer(kind=8) :: iret2, iret3, iret4, iret5
+    integer(kind=8) :: icodre(3)
     character(len=16) :: nomres(3)
     character(len=8) :: nompar(3), para_type
     character(len=32) :: phenom
     real(kind=8) :: valpam(3), valpap(3), para_vale, valrm(2)
     real(kind=8) :: bendom, bendop, kdessm, kdessp, xm(6), xp(6)
 !-----------------------------------------------------------------------
-    integer :: lgpg
+    integer(kind=8) :: lgpg
     real(kind=8) :: alfafa, coco, dp0, precr, rprim0, tm
     real(kind=8) :: unsurn, xap
 !-----------------------------------------------------------------------

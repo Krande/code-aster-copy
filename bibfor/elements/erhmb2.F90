@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -98,12 +98,12 @@ subroutine erhmb2(ino, nbs, ndim, theta, &
 #include "asterfort/fointe.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
-    integer :: ino, nbs, ndim
+    integer(kind=8) :: ino, nbs, ndim
     real(kind=8) :: jac(3), nx(3), ny(3), tx(3), ty(3)
-    integer :: nbcmp, ivois, iagd
-    integer :: adsip
+    integer(kind=8) :: nbcmp, ivois, iagd
+    integer(kind=8) :: adsip
     real(kind=8) :: theta, sielnp(140), sielnm(140), instpm(2)
-    integer :: tbref2(12), iade2, iava2, ncmpm2, iaptm2, iade3, iava3, ncmpm3, iaptm3
+    integer(kind=8) :: tbref2(12), iade2, iava2, ncmpm2, iaptm2, iade3, iava3, ncmpm3, iaptm3
     real(kind=8) :: tm2h1b(3)
     real(kind=8) :: geom(ndim, *)
 !
@@ -111,11 +111,11 @@ subroutine erhmb2(ino, nbs, ndim, theta, &
 ! DECLARATION VARIABLES LOCALES
 !
     aster_logical :: flagm, flagh
-    integer :: imav, ient2, numgd2, ient3, numgd3
-    integer :: jno, mno
-    integer :: idec1, idec2, idec3
-    integer :: ier1, ier2, ier3, ier4, ier5, ier6
-    integer :: ier11, ier21, ier31, ier41, ier51, ier61
+    integer(kind=8) :: imav, ient2, numgd2, ient3, numgd3
+    integer(kind=8) :: jno, mno
+    integer(kind=8) :: idec1, idec2, idec3
+    integer(kind=8) :: ier1, ier2, ier3, ier4, ier5, ier6
+    integer(kind=8) :: ier11, ier21, ier31, ier41, ier51, ier61
     real(kind=8) :: valpar(3), prp(3), prm(3), cip(3), cim(3), fluxhp(3), fluxhm(3), inte1, inte2
     real(kind=8) :: inte3, inted1, inted2, inted3, sig11(3), sig22(3), sig12(3), fh11x(3)
     real(kind=8) :: fh11y(3)

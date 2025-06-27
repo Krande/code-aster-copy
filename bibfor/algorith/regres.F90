@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,18 +50,18 @@ subroutine regres(nomres, mailsk, result, pfchn2)
 !
     character(len=19) :: pfchn1, pfchn2
     character(len=19) :: chexin, chexou, chamno
-    integer :: i, iadnew, iadold, ieq, igd
-    integer :: iold, iord, iret, j, k, ldeeq
-    integer :: lnunew, lprnew, lprold
-    integer :: lvnew, nbord, ncmp, nddl, ndeeq
-    integer :: ndi, nec, nnodes
+    integer(kind=8) :: i, iadnew, iadold, ieq, igd
+    integer(kind=8) :: iold, iord, iret, j, k, ldeeq
+    integer(kind=8) :: lnunew, lprnew, lprold
+    integer(kind=8) :: lvnew, nbord, ncmp, nddl, ndeeq
+    integer(kind=8) :: ndi, nec, nnodes
     character(len=24) :: nequ
     character(len=24), pointer :: refe(:) => null()
-    integer, pointer :: corres(:) => null()
-    integer, pointer :: nueq(:) => null()
-    integer, pointer :: p_nequ(:) => null()
+    integer(kind=8), pointer :: corres(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: p_nequ(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

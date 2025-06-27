@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci, &
 #include "asterfort/lcine2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zeroco.h"
-    integer :: nmat, ifa, nbcomm(nmat, 3), iret, itmax
+    integer(kind=8) :: nmat, ifa, nbcomm(nmat, 3), iret, itmax
     real(kind=8) :: coeft(nmat), dgamma, dalpha, toler
     character(len=16) :: necrci
 ! ======================================================================
@@ -46,7 +46,7 @@ subroutine lcmmfc(coeft, ifa, nmat, nbcomm, necrci, &
 !     ----------------------------------------------------------------
     real(kind=8) :: d, gm, pm, c, cc, alpham, absdga, x(4), y(4)
     real(kind=8) :: f0, x1, fmax
-    integer :: iec, iter, nuecin
+    integer(kind=8) :: iec, iter, nuecin
 !     ----------------------------------------------------------------
 !
 !     DANS VIS : 1 = ALPHA, 2=GAMMA, 3=P

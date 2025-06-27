@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine intenc(nbna, jac, vectx, vecty, mat11, &
                   mat22, mat12, nx, ny, inte)
     implicit none
-    integer :: nbna
+    integer(kind=8) :: nbna
     real(kind=8) :: jac(3), vectx(3), vecty(3), mat11(3), mat22(3), mat12(3)
     real(kind=8) :: nx(3), ny(3), inte
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,15 +31,15 @@ subroutine jedetv()
 #include "asterfort/jjmzat.h"
 #include "asterfort/jxlibd.h"
 #include "asterfort/utmess.h"
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: iadmar, iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadd
-    integer :: ibiadm, iblono, ibmarq, iret, ixdeso, ixiadd
-    integer :: ixiadm, ixlono, ixmarq, jcara, jdate, jdocu, jgenr
-    integer :: jhcod, jiacce, jiadd, jiadm, jido, jindir, jlong
-    integer :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
-    integer :: k, lonoi, n, nbacce, nmax
+    integer(kind=8) :: iadmar, iadmi, iadmoc, iadyn, iadyoc, ibacol, ibiadd
+    integer(kind=8) :: ibiadm, iblono, ibmarq, iret, ixdeso, ixiadd
+    integer(kind=8) :: ixiadm, ixlono, ixmarq, jcara, jdate, jdocu, jgenr
+    integer(kind=8) :: jhcod, jiacce, jiadd, jiadm, jido, jindir, jlong
+    integer(kind=8) :: jlono, jltyp, jluti, jmarq, jorig, jrnom, jtype
+    integer(kind=8) :: k, lonoi, n, nbacce, nmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -51,33 +51,33 @@ subroutine jedetv()
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n),&
      &                 dn2(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
     character(len=24) :: nomco
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: nivo
+    integer(kind=8) :: nivo
     common/jvnivo/nivo
     common/jindir/jindir(n)
     common/jiacce/jiacce(n), nbacce(2*n)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 !     ------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlono, idnum
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idiadm, idmarq, idlono, idnum
     parameter(ivnmax=0, iddeso=1, idiadd=2, idiadm=3,&
      &               idmarq=4,&
      &               idlono=8, idnum=10)
 !     ------------------------------------------------------------------
-    integer :: lidbas
+    integer(kind=8) :: lidbas
     parameter(lidbas=20)
-    integer :: ic, id(idnum), ido, iaddi(2)
+    integer(kind=8) :: ic, id(idnum), ido, iaddi(2)
     real(kind=8) :: valr(3)
     character(len=1) :: cgenr
     character(len=32) :: crnom, nom32

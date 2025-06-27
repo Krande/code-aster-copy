@@ -3,7 +3,7 @@
  * @brief Fichier entete de la classe MedProfile
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -58,5 +58,5 @@ std::pair< int, int > splitEntitySet( int nbElemT, int rank, int nbProcs ) {
     if ( rank == nbProcs - 1 ) {
         nbElemL = nbElemL - ( end - nbElemT );
     }
-    return {nbElemL, start};
+    return { nbElemL, start };
 };

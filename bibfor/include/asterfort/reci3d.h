@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
         character(len=19) :: lirela
         character(len=8) :: mailla
         character(len=8) :: nnoeca
-        integer :: noebe
-        integer :: nbcnx
-        integer :: cxma(*)
-        integer :: itetra
+        integer(kind=8) :: noebe
+        integer(kind=8) :: nbcnx
+        integer(kind=8) :: cxma(*)
+        integer(kind=8) :: itetra
         real(kind=8) :: xbar(*)
-        integer :: immer
+        integer(kind=8) :: immer
     end subroutine reci3d
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine op0187()
 #include "asterfort/xpomac.h"
 #include "asterfort/xpomax.h"
 #include "asterfort/xposep.h"
-    integer :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv
-    integer :: nbgma2, jnivgr, nftot, mftot, nfcomf, ngfon
+    integer(kind=8) :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv
+    integer(kind=8) :: nbgma2, jnivgr, nftot, mftot, nfcomf, ngfon
     character(len=2) :: prefno(4)
     character(len=8) :: maxfem, mo, malini, k8b, nomres
     character(len=16) :: k16b

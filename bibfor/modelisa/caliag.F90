@@ -69,15 +69,15 @@ subroutine caliag(fonrez, chargz, phenom)
 ! IN  : CHARGE : NOM UTILISATEUR DU RESULTAT DE CHARGE
 !-----------------------------------------------------------------------
 !
-    integer :: i, j, k, iret, iocc, ifm, niv, nmocl, ier
-    integer :: vali(2)
+    integer(kind=8) :: i, j, k, iret, iocc, ifm, niv, nmocl, ier
+    integer(kind=8) :: vali(2)
 !-----------------------------------------------------------------------
-    integer :: icmpz, idco1, idco2, idconi, idconr, iddl1
-    integer :: iddl2, idg1, idg2, idim, idmax
-    integer :: iec, iexcm1, iexcm2, imult1
-    integer :: imult2, ino1, ino2, inom, jprnm
-    integer :: lonli1, lonli2, nb, nbcmp, nbec, nbno, nbterm
-    integer :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
+    integer(kind=8) :: icmpz, idco1, idco2, idconi, idconr, iddl1
+    integer(kind=8) :: iddl2, idg1, idg2, idim, idmax
+    integer(kind=8) :: iec, iexcm1, iexcm2, imult1
+    integer(kind=8) :: imult2, ino1, ino2, inom, jprnm
+    integer(kind=8) :: lonli1, lonli2, nb, nbcmp, nbec, nbno, nbterm
+    integer(kind=8) :: nddl1, nddl2, nddla, nliag, nmult1, nmult2
 !-----------------------------------------------------------------------
     parameter(nmocl=300)
     real(kind=8) :: beta
@@ -93,9 +93,9 @@ subroutine caliag(fonrez, chargz, phenom)
     character(len=24) :: lisin2
     real(kind=8), pointer :: coef(:) => null()
     complex(kind=8), pointer :: coemuc(:) => null()
-    integer, pointer :: dim(:) => null()
+    integer(kind=8), pointer :: dim(:) => null()
     real(kind=8), pointer :: direct(:) => null()
-    integer, pointer :: nbnor(:) => null()
+    integer(kind=8), pointer :: nbnor(:) => null()
     character(len=8), pointer :: nomddl(:) => null()
     character(len=8), pointer :: nomnoe(:) => null()
     character(len=8), pointer :: lgrf(:) => null()

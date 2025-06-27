@@ -34,7 +34,7 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
 #include "asterfort/nmtime.h"
 !
     character(len=*), intent(in) :: modelz
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: list_load
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Contact), intent(inout) :: ds_contact
@@ -59,7 +59,7 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=2), parameter :: base = "VG"
     aster_logical :: l_cont, l_cont_cont, l_cont_elem
 !

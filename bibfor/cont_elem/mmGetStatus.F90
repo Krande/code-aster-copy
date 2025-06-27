@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,9 @@ subroutine mmGetStatus(indco, &
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 !
-    integer, intent(out) :: indco
+    integer(kind=8), intent(out) :: indco
     aster_logical, optional, intent(out) :: l_prev_cont_, l_prev_fric_
-    integer, optional, intent(out) :: indco_prev_, indadhe_prev_, indadhe2_prev_
+    integer(kind=8), optional, intent(out) :: indco_prev_, indadhe_prev_, indadhe2_prev_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,9 +48,9 @@ subroutine mmGetStatus(indco, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jpcf
+    integer(kind=8) :: jpcf
     aster_logical :: l_prev_cont, l_prev_fric
-    integer :: indco_prev, indadhe_prev, indadhe2_prev
+    integer(kind=8) :: indco_prev, indadhe_prev, indadhe2_prev
 !
 ! --------------------------------------------------------------------------------------------------
 !

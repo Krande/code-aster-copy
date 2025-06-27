@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
                       c1, c2, c3, c4, c5,&
                       d0, v0, a0, f1, f2,&
                       f)
-        integer :: masse
-        integer :: amort
+        integer(kind=8) :: masse
+        integer(kind=8) :: amort
         aster_logical :: lamort
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: c0
         real(kind=8) :: c1
         real(kind=8) :: c2

@@ -19,7 +19,7 @@
 !
 interface
     function int_to_char8(to_convert, lcolle, nommai, typent)
-        integer, intent(in) :: to_convert
+        integer(kind=8), intent(in) :: to_convert
         aster_logical, optional, intent(in) :: lcolle
         character(len=8), optional, intent(in) :: nommai
         character(len=*), optional, intent(in) :: typent

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,12 +47,12 @@ subroutine romAlgoNLCorrEFMatrixModify(nume_dof, matr_asse, ds_algorom)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_equa
-    integer :: nb_equa_init, nb_equa
+    integer(kind=8) :: i_equa
+    integer(kind=8) :: nb_equa_init, nb_equa
     character(len=8) :: kmatd
-    integer :: jv_sxdi
+    integer(kind=8) :: jv_sxdi
     real(kind=8) :: vale_pena
-    integer, pointer :: v_int(:) => null()
+    integer(kind=8), pointer :: v_int(:) => null()
     real(kind=8), pointer :: v_valm(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

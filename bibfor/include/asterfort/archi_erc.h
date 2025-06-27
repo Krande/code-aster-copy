@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine archi_erc(result,ifreq,matmas,obsdim,vecterc,freq,eval,cout_fon,cout_uv)
 #include "asterf_types.h"
            character(len=8),intent(in) :: result,matmas
-           integer,intent(in) :: ifreq,obsdim(3)
+           integer(kind=8),intent(in) :: ifreq,obsdim(3)
            real(kind=8),intent(in) :: vecterc(*),freq,cout_fon,cout_uv
            aster_logical,intent(in) :: eval
     end subroutine archi_erc

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ module as_med_module
     private
 !
 ! default version to be used for output for backward compatibility
-    integer, parameter :: bkwd_vers(3) = (/3, 3, 1/)
+    integer(kind=8), parameter :: bkwd_vers(3) = (/3, 3, 1/)
 !
 #include "asterc/asmpi_comm.h"
 #include "asterc/getexm.h"
@@ -55,11 +55,11 @@ contains
         aster_logical, optional, intent(in) :: parallel
 !
 #if (ASTER_MED_VERSION_MAJOR == 4 && ASTER_MED_VERSION_MINOR == 0)
-        integer, parameter :: med_acc_rdwr = 1
+        integer(kind=8), parameter :: med_acc_rdwr = 1
 #endif
-        integer, parameter :: med_acc_creat = 3
+        integer(kind=8), parameter :: med_acc_creat = 3
         character(len=8) :: tvers
-        integer :: mode, nbret, vers(3), comm_w
+        integer(kind=8) :: mode, nbret, vers(3), comm_w
         aster_logical :: mpi
         mpi_int :: world
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine impvem(ifi)
 #include "asterc/rmaxem.h"
 #include "asterc/rminem.h"
 #include "asterc/rmirem.h"
-    integer :: ifi
+    integer(kind=8) :: ifi
 ! ----------------------------------------------------------------------
 !
 !     ECRITURE DES RESULTATS DES FONCTIONS ENVIMA
@@ -59,7 +59,7 @@ subroutine impvem(ifi)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, ntest
+    integer(kind=8) :: i, ntest
 !-----------------------------------------------------------------------
     parameter(ntest=32)
     character(len=38) :: label(ntest)

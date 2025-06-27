@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine isacti(sddisc, action_type_in, i_action)
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: action_type_in
-        integer, intent(out) :: i_action
+        integer(kind=8), intent(in) :: action_type_in
+        integer(kind=8), intent(out) :: i_action
     end subroutine isacti
 end interface

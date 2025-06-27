@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
                       l_renumber)
         use NonLin_Datastructure_type
         character(len=*), intent(in) :: modelz
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=19), intent(in) :: list_load
         type(NL_DS_Measure), intent(inout) :: ds_measure
         type(NL_DS_Contact), intent(inout) :: ds_contact

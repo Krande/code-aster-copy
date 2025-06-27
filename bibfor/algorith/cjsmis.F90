@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,11 +49,11 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd, &
 #include "asterfort/cjsncv.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/mgauss.h"
-    integer :: ndt, ndi, nr, nmod, niter, nvi, iret
-    integer :: nitimp
+    integer(kind=8) :: ndt, ndi, nr, nmod, niter, nvi, iret
+    integer(kind=8) :: nitimp
     parameter(nmod=8)
     parameter(nitimp=100)
-    integer :: iter
+    integer(kind=8) :: iter
     aster_logical :: noconv, aredec, stopnc
 !
 !
@@ -65,9 +65,9 @@ subroutine cjsmis(mod, crit, mater, nvi, epsd, &
     real(kind=8) :: ddy(nmod), dy(nmod), yd(nmod), yf(nmod)
 !
     real(kind=8) :: err, err1, err2
-    integer :: umess
+    integer(kind=8) :: umess
     real(kind=8) :: erimp(nitimp, 3)
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     character(len=8) :: mod
 !

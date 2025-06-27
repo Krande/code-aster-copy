@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine mexthr(n, a, lda)
     implicit none
 #include "asterc/r8prem.h"
-    integer :: n, lda
+    integer(kind=8) :: n, lda
     complex(kind=8) :: a(lda, *)
 ! IN  : N    : DIMENSION DE LA MATRICE.
 !     : LDA  : DIMENSION DE A.
@@ -28,7 +28,7 @@ subroutine mexthr(n, a, lda)
 !        OUT   PARTIE TRIANGULAIRE INFERIEURE DE LA MATRICE A DEFINIE
 !              COMME UNE MATRICE COMPLEXE HERMITIENNE.
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: eps
 !
 !-----------------------------------------------------------------------

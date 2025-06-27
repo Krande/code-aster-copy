@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine op0049()
     character(len=16) :: k16nom
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, n1, nbobj, ndim, nfias, nfigi
+    integer(kind=8) :: ibid, n1, nbobj, ndim, nfias, nfigi
 !-----------------------------------------------------------------------
     call infmaj()
     call getvis(' ', 'UNITE_GIBI', scal=nfigi, nbret=n1)

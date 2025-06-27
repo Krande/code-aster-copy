@@ -112,21 +112,21 @@ module SolidShell_type
 ! - Name of family for integration scheme
         character(len=4) :: inteFami = ' '
 ! - Number of integration points
-        integer          :: nbIntePoint = 0
+        integer(kind=8)          :: nbIntePoint = 0
 ! - JEVEUX adress to weight of integrations points
-        integer          :: jvWeight = 0
+        integer(kind=8)          :: jvWeight = 0
 ! - JEVEUX adress to coordinates of integration points
-        integer          :: jvCoor = 0
+        integer(kind=8)          :: jvCoor = 0
 ! - JEVEUX adress to shape functions at integration points
-        integer          :: jvShape = 0
+        integer(kind=8)          :: jvShape = 0
 ! - JEVEUX adress to derivative of shape functions at integration points
-        integer          :: jvDShape = 0
+        integer(kind=8)          :: jvDShape = 0
     end type SSH_ELEM_INTE
 
 ! Type to define properties of material
     type SSH_MATE_PARA
 ! - JEVEUX adress to coded material
-        integer         :: jvMater = 0
+        integer(kind=8)         :: jvMater = 0
 ! - Local basis for non-isotropic material properties
         real(kind=8)    :: mateBase(7) = 0.d0
 ! - Elasticity matrix at center of element
@@ -138,15 +138,15 @@ module SolidShell_type
 ! - Properties of integration scheme
         type(SSH_ELEM_INTE) :: elemInte
 ! - Type of cell
-        integer             :: cellType = SSH_CELL_UNDEF
+        integer(kind=8)             :: cellType = SSH_CELL_UNDEF
 ! - Number of total DOF for the finite element
-        integer             :: nbDof = 0
+        integer(kind=8)             :: nbDof = 0
 ! - Number of displacement DOF for the finite element
-        integer             :: nbDofGeom = 0
+        integer(kind=8)             :: nbDofGeom = 0
 ! - Number of total nodes for the finite element
-        integer             :: nbNode = 0
+        integer(kind=8)             :: nbNode = 0
 ! - Number of displacement nodes for the finite element
-        integer             :: nbNodeGeom = 0
+        integer(kind=8)             :: nbNodeGeom = 0
     end type SSH_ELEM_PROP
 
 ! Type to define geometric properties of cell
@@ -154,7 +154,7 @@ module SolidShell_type
 ! - Center of cell in covariant (parametric) frame
         real(kind=8)        :: cellCenterCova(3) = 0.d0
 ! - JEVEUX adress to initial coordinates of cell
-        integer             :: jvGeom = 0
+        integer(kind=8)             :: jvGeom = 0
 ! - Initial coordinates of finite element
         real(kind=8)        :: geomInit(SSH_NBDOFG_MAX) = 0.d0
         real(kind=8)        :: geomInitX(SSH_NBNODEG_MAX) = 0.d0

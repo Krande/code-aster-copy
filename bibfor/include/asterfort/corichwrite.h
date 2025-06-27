@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,6 @@
 interface
     subroutine corichwrite(fieldZ, ichin)
         character(len=*), intent(in) :: fieldZ
-        integer, intent(in) :: ichin
+        integer(kind=8), intent(in) :: ichin
     end subroutine corichwrite
 end interface

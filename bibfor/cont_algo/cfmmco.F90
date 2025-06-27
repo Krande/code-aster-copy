@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine cfmmco(ds_contact, i_zone, coef_type_, action, valr)
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=*), intent(in) :: coef_type_
     character(len=1), intent(in) :: action
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
     real(kind=8), intent(inout) :: valr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,11 +53,11 @@ subroutine cfmmco(ds_contact, i_zone, coef_type_, action, valr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ztaco
+    integer(kind=8) :: ztaco
     character(len=24) :: sdcont_tabcof
     real(kind=8), pointer :: v_sdcont_tabcof(:) => null()
     character(len=24) :: coef_type
-    integer :: nb_cont_zone
+    integer(kind=8) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -59,8 +59,8 @@ subroutine te0487(nomopt, nomte)
     type(HHO_Cell) :: hhoCell
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer :: cbs, fbs, total_dofs, npg, deca, gbs, cell_offset
-    integer :: ipg, icodre(3), jtemps, jmate
+    integer(kind=8) :: cbs, fbs, total_dofs, npg, deca, gbs, cell_offset
+    integer(kind=8) :: ipg, icodre(3), jtemps, jmate
     character(len=8), parameter :: fami = 'RIGI'
     character(len=32) :: phenom
     type(HHO_matrix) :: gradrec

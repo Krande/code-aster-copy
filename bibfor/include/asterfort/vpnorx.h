@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine vpnorx(nbmode, neq, exclus, vecp, resufk)
-        integer :: neq
-        integer :: nbmode
-        integer :: exclus(*)
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: exclus(*)
         real(kind=8) :: vecp(neq, *)
         character(len=*) :: resufk(*)
     end subroutine vpnorx

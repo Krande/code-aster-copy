@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nno
-    integer, intent(in) :: npg, kpg
-    integer, intent(in) :: igeom, ideplm, ideplp, imatun, i_pres
+    integer(kind=8), intent(in) :: nno
+    integer(kind=8), intent(in) :: npg, kpg
+    integer(kind=8), intent(in) :: igeom, ideplm, ideplp, imatun, i_pres
     real(kind=8), intent(in) :: poidsg
     real(kind=8), intent(in) :: vff(nno, npg)
     real(kind=8), intent(in) :: dff(2, nno)
@@ -59,7 +59,7 @@ subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n, i, j, k, a, b, p, q
+    integer(kind=8) :: n, i, j, k, a, b, p, q
     real(kind=8) :: geom(3, 9)
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, cnva(3, 2)
     real(kind=8) :: acv(2, 2)

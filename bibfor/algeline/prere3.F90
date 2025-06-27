@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,11 +63,11 @@ subroutine prere3(solveu, base, iret, matpre, matass, &
 #include "asterfort/prere2.h"
 #include "asterfort/xfem_precond.h"
 !
-    integer :: npvneg, istop, iret
+    integer(kind=8) :: npvneg, istop, iret
     character(len=1) :: base
     character(len=*) :: matass, matpre, solveu
 !----------------------------------------------------------------------
-    integer :: islvk
+    integer(kind=8) :: islvk
     character(len=19) :: matas1, solvez
     character(len=24) :: metres, kprecond
 !

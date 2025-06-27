@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine verif_loi_mater(mater)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: cc, kk, nbcrme, iret, nbr, nbc, nbk2, nbk
-    integer             :: jprol, jvale, nbvale
+    integer(kind=8)             :: cc, kk, nbcrme, iret, nbr, nbc, nbk2, nbk
+    integer(kind=8)             :: jprol, jvale, nbvale
     real(kind=8)        :: dx, fx, dfx, raidex
     logical             :: OkFct
     character(len=19)   :: nomfon
@@ -57,7 +57,7 @@ subroutine verif_loi_mater(mater)
     character(len=16), pointer  :: matk(:) => null()
     character(len=32), pointer  :: vnomrc(:) => null()
 !
-    integer :: iecro, ifx, ifyz, tecro
+    integer(kind=8) :: iecro, ifx, ifyz, tecro
 !
     real(kind=8) :: precis
     parameter(precis=1.0e-08)

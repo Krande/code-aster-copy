@@ -49,7 +49,7 @@ subroutine ntcrch(model, nume_dof, vhydr_, hydr_init_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: hydric, hydris, ligrmo
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: vtemp
 !
 ! --------------------------------------------------------------------------------------------------

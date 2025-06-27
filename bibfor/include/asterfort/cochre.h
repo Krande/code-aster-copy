@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine cochre(kchar, nbchar, nbchre, iocc)
         character(len=*) :: kchar(*)
-        integer :: nbchar
-        integer :: nbchre
-        integer :: iocc
+        integer(kind=8) :: nbchar
+        integer(kind=8) :: nbchre
+        integer(kind=8) :: iocc
     end subroutine cochre
 end interface

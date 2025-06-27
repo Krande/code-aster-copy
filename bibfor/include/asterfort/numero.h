@@ -23,7 +23,7 @@ interface
                       idenRelaZ_, modelZ_)
         character(len=*), intent(inout) :: numeDofZ
         character(len=2), intent(in) :: base
-        integer, intent(in) :: nbLigr
+        integer(kind=8), intent(in) :: nbLigr
         character(len=24), pointer :: listLigr(:)
         character(len=*), optional, intent(in) :: numeDofOldZ_, modeLocZ_, idenRelaZ_, modelZ_
     end subroutine numero

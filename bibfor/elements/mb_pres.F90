@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine mb_pres()
 !
     character(len=32) :: phenom
     character(len=8) :: param
-    integer :: k
-    integer :: imate, icodre, itab(8), iret, jad, nbv, ier
+    integer(kind=8) :: k
+    integer(kind=8) :: imate, icodre, itab(8), iret, jad, nbv, ier
     real(kind=8) :: pr
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 interface
     subroutine visatu(nbvari, vintp, advico, vicsat, satur)
-        integer, intent(in) :: nbvari
+        integer(kind=8), intent(in) :: nbvari
         real(kind=8), intent(inout) :: vintp(nbvari)
-        integer, intent(in) :: advico
-        integer, intent(in) :: vicsat
+        integer(kind=8), intent(in) :: advico
+        integer(kind=8), intent(in) :: vicsat
         real(kind=8), intent(in) :: satur
     end subroutine visatu
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr, &
 #include "asterfort/pbflui.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: umoy, geom(9), cf0, mcf0, fsvr(7)
-    integer :: imod, jmod, nbm, vicoq(nbm)
+    integer(kind=8) :: imod, jmod, nbm, vicoq(nbm)
     real(kind=8) :: torco(4, nbm), tcoef(10, nbm), s1, s2
     complex(kind=8) :: bij
 !
@@ -65,8 +65,8 @@ subroutine bijmoc(umoy, geom, cf0, mcf0, fsvr, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: icoq, iligne, iysol, iysol1, iysol2, jcoq, jligne
-    integer :: k1i, k1j, k2i, k2j, ki, kj
+    integer(kind=8) :: icoq, iligne, iysol, iysol1, iysol2, jcoq, jligne
+    integer(kind=8) :: k1i, k1j, k2i, k2j, ki, kj
     real(kind=8) :: hmoy, r1, r2, rhof, rk1i, rk1j, rk2i
     real(kind=8) :: rk2j, rki, rkj, rmoy, thet1i, thet1j, thet2i
     real(kind=8) :: thet2j, thetai, thetaj

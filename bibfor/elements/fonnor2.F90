@@ -63,12 +63,12 @@ subroutine fonnor2(resu, noma, cnxinv, typm, basnof)
 !        BASNOF     : BASE LOCALE EN FOND DE FISSURE
 !-----------------------------------------------------------------------
 !
-    integer :: j, jnoe1, jbasno, jbasse, jtail, k
-    integer :: jborl, jdirol, jnvdir, jnor
-    integer :: i, ina, inb, iseg, iret, nbnose, nbnoff, inc, inor
-    integer :: na, nb, nret, ndim, nbnoel, nseg, nbmax, nbmac, inoext
-    integer :: indic(4), noe(4, 4), indr(2), tablev(2), inoseg, nblev
-    integer, pointer :: connex(:) => null()
+    integer(kind=8) :: j, jnoe1, jbasno, jbasse, jtail, k
+    integer(kind=8) :: jborl, jdirol, jnvdir, jnor
+    integer(kind=8) :: i, ina, inb, iseg, iret, nbnose, nbnoff, inc, inor
+    integer(kind=8) :: na, nb, nret, ndim, nbnoel, nseg, nbmax, nbmac, inoext
+    integer(kind=8) :: indic(4), noe(4, 4), indr(2), tablev(2), inoseg, nblev
+    integer(kind=8), pointer :: connex(:) => null()
     real(kind=8) :: vdir(2, 3), vnor(2, 3), norme, vecdir(3), hmax, hmaxpr
     real(kind=8) :: vect(3), sens, dist, disttemp
     real(kind=8), pointer :: geom(:) => null()

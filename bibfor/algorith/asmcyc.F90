@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,12 +61,12 @@ subroutine asmcyc(cmass, ndim, soumat, beta, ni, &
 #include "asterfort/acyel4.h"
 #include "asterfort/acyelt.h"
 !-----------------------------------------------------------------------
-    integer :: i, ia, id, na, nbliax, ndim, ni
-    integer :: nj
+    integer(kind=8) :: i, ia, id, na, nbliax, ndim, ni
+    integer(kind=8) :: nj
     real(kind=8) :: beta
     character(len=24) :: soumat
     complex(kind=8) :: cmass(*)
-    integer :: libid(*), liax(nbliax)
+    integer(kind=8) :: libid(*), liax(nbliax)
     aster_logical :: axok, vrai, faux
 !-----------------------------------------------------------------------
     data vrai, faux/.true._1, .false./

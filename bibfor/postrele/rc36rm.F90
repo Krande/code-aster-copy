@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,9 @@ subroutine rc36rm()
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: n1, iocc, iret, jord, jnume, nbordr, jcham, nbresu
+    integer(kind=8) :: n1, iocc, iret, jord, jnume, nbordr, jcham, nbresu
     real(kind=8) :: prec
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
     character(len=8) :: k8b, resu, crit
     character(len=16) :: motclf, nomsym
     character(len=24) :: knum, nomcha, chams0

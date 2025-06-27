@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,7 +68,7 @@ contains
 !
         implicit none
 !
-        integer :: dofsMapping(54)
+        integer(kind=8) :: dofsMapping(54)
         type(ContactGeom), intent(in) :: geom
 !
 ! --------------------------------------------------------------------------------------------------
@@ -77,7 +77,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_node, i_elem, nb_dofs_slav, nb_dofs_volu
+        integer(kind=8) :: i_node, i_elem, nb_dofs_slav, nb_dofs_volu
 !
         dofsMapping = 0
 !
@@ -110,7 +110,7 @@ contains
         implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        integer, intent(in) :: dofsMap(54)
+        integer(kind=8), intent(in) :: dofsMap(54)
         real(kind=8), intent(in) :: vect(MAX_LAGA_DOFS), coeff
         real(kind=8), intent(inout) :: new_vect(MAX_NITS_DOFS)
 !
@@ -120,7 +120,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_dof, nb_dofs
+        integer(kind=8) :: i_dof, nb_dofs
 !
         nb_dofs = (geom%nb_node_slav+geom%nb_node_mast)*geom%elem_dime
 !
@@ -139,7 +139,7 @@ contains
         implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        integer, intent(in) :: dofsMap(54)
+        integer(kind=8), intent(in) :: dofsMap(54)
         real(kind=8), intent(in) :: matr(MAX_LAGA_DOFS, MAX_LAGA_DOFS), coeff
         real(kind=8), intent(inout) :: new_matr(MAX_NITS_DOFS, MAX_NITS_DOFS)
 !
@@ -149,7 +149,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i_dof, nb_dofs, j_dof, i_glo, j_glo
+        integer(kind=8) :: i_dof, nb_dofs, j_dof, i_glo, j_glo
 !
         nb_dofs = (geom%nb_node_slav+geom%nb_node_mast)*geom%elem_dime
 !
@@ -183,7 +183,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 !
-        integer :: n, i, j
+        integer(kind=8) :: n, i, j
         real(kind=8) :: dfunc_dx(3, 27)
 !
         call gradFuncDispVolu(geom, dshape_func_vo, dfunc_dx)
@@ -243,7 +243,7 @@ contains
 !
         real(kind=8) :: coor_qp_vo(3), mu, lambda
         real(kind=8) :: dshape_func_vo(3, 27), grad(3, 3), eps(3, 3)
-        integer :: i_node, iret
+        integer(kind=8) :: i_node, iret
 !
         call lameCoeff(nits%E, nits%nu, mu, lambda)
 !
@@ -277,7 +277,7 @@ contains
         implicit none
 !
         type(ContactNitsche), intent(in) :: nits
-        integer, intent(in) :: nb_node_slav
+        integer(kind=8), intent(in) :: nb_node_slav
         real(kind=8), intent(in) :: shape_func_sl(9)
         real(kind=8) :: evalStress(3, 3)
 !
@@ -287,7 +287,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i, j
+        integer(kind=8) :: i, j
 !
         evalStress = 0.d0
 !
@@ -316,7 +316,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: jcont
+        integer(kind=8) :: jcont
 !
         call jevech('PCONFR', 'L', jcont)
 !
@@ -334,7 +334,7 @@ contains
         implicit none
 !
         type(ContactGeom), intent(in) :: geom
-        integer, intent(out) :: total_dofs, face_dofs, slav_dofs
+        integer(kind=8), intent(out) :: total_dofs, face_dofs, slav_dofs
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -393,8 +393,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: dNs_sn(MAX_LAGA_DOFS)
-        integer :: total_dofs, face_dofs, slav_dofs, i_dof
-        integer :: dofsMap(54), slav_face_dofs
+        integer(kind=8) :: total_dofs, face_dofs, slav_dofs, i_dof
+        integer(kind=8) :: dofsMap(54), slav_face_dofs
         blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
         dStress_nn_du = 0.d0

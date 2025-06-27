@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
                       hval_incr     , hval_algo)
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: model, cara_elem
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19), intent(in) :: sddyna, sdnume, sddisc
         type(NL_DS_Print), intent(inout) :: ds_print
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
     end subroutine ndxnpa

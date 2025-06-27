@@ -50,17 +50,17 @@ subroutine difondabb(for_discret, iret)
 #include "asterfort/Behaviour_type.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, jdc, irep, neq, ii, ifono, icontp, icontm, icarcr
-    integer :: iadzi, iazk24
+    integer(kind=8) :: imat, jdc, irep, neq, ii, ifono, icontp, icontm, icarcr
+    integer(kind=8) :: iadzi, iazk24
 !   paramètres des fonctions bizarres
-    integer :: nbpar, kpg, spt, icodma, nbrePara, nbVarloc, nbdecp
+    integer(kind=8) :: nbpar, kpg, spt, icodma, nbrePara, nbVarloc, nbdecp
 !
     parameter(nbrePara=18, nbVarloc=21)
-    integer :: codre1(nbrePara)
+    integer(kind=8) :: codre1(nbrePara)
 !
     real(kind=8) :: r8bid, klv(78), fl(12), valre1(nbrePara), dulMat(4)
     real(kind=8) :: valpar, valvarloc(nbVarloc), fzzz, mxxx, myyy, rNLx, rNLy

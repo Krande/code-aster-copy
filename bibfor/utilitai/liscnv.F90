@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,15 +54,15 @@ subroutine liscnv(phenoz, base, lisold, lisnew)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: charge, infcha, fomult
-    integer :: jalich, jinfch, jalifc
-    integer :: ichar, nbchar
+    integer(kind=8) :: jalich, jinfch, jalifc
+    integer(kind=8) :: ichar, nbchar
     character(len=8) :: nomcha
     character(len=16) :: typapp, typfct
-    integer :: genrec(2), motclc(2)
+    integer(kind=8) :: genrec(2), motclc(2)
     character(len=8) :: typech, nomfct, k8bid
     character(len=13) :: prefob
     real(kind=8) :: phase
-    integer :: npuis, ibid(2)
+    integer(kind=8) :: npuis, ibid(2)
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,9 +42,9 @@ subroutine te0292(option, nomte)
 !
 !
 !
-    integer :: nno, kp, npg1, i, k, nnos, jgano, ndim, mater
-    integer :: ipoids, ivf, idfde, igeom, imate, isiefp, isiefd
-    integer :: isigp, isigd, ierr, niv, nbcmp
+    integer(kind=8) :: nno, kp, npg1, i, k, nnos, jgano, ndim, mater
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate, isiefp, isiefd
+    integer(kind=8) :: isigp, isigd, ierr, niv, nbcmp
 !
     real(kind=8) :: dfdx(9), dfdy(9), dfdz(9), poids, valres(2)
     real(kind=8) :: sigp11, sigp22, sigp33, sigp12, sigp13, sigp23
@@ -52,7 +52,7 @@ subroutine te0292(option, nomte)
     real(kind=8) :: r
     real(kind=8) :: e, nu, nor, norsig, nu0, eest, he
 !
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=4) :: fami
     character(len=16) :: nomres(2)
 !

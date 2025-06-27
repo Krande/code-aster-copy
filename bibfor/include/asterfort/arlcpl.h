@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ interface
         character(len=8)  :: charge
         character(len=19)  :: lisrel
         character(len=10) :: nom1,nom2
-        integer       :: ndim
-        integer       :: zocc
-        integer       :: nbma1,nbma2
+        integer(kind=8)       :: ndim
+        integer(kind=8)       :: zocc
+        integer(kind=8)       :: nbma1,nbma2
     end subroutine arlcpl
 end interface

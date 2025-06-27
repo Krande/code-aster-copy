@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,19 +23,19 @@ interface
                       kwork, sompgw, jrwork, tspaq, ipg, &
                       nommet,jvecno, jnorma, forcri,nompar,&
                       vanocr, respc,vnmax)
-        integer :: nbvec
-        integer :: jvectn
-        integer :: jvectu
-        integer :: jvectv 
-        integer :: nbordr
-        integer :: kwork
-        integer :: sompgw
-        integer :: jrwork
-        integer :: tspaq
-        integer :: ipg
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jvectn
+        integer(kind=8) :: jvectu
+        integer(kind=8) :: jvectv 
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sompgw
+        integer(kind=8) :: jrwork
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: ipg
         character(len=16) :: nommet
-        integer :: jvecno
-        integer :: jnorma
+        integer(kind=8) :: jvecno
+        integer(kind=8) :: jnorma
         character(len=16) :: forcri
         character(len=8) ::nompar(35)
         real(kind=8) ::vanocr(23)

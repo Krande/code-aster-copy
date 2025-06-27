@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine pmf_pinto_menegotto(for_pmf, nf, nbvalc, &
 #include "jeveux.h"
 !
     type(pmfcom_user), intent(in) :: for_pmf
-    integer      :: nf, nbvalc, codret
+    integer(kind=8)      :: nf, nbvalc, codret
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
     real(kind=8) :: varimp(nbvalc*nf), varip(nbvalc*nf), varim(nbvalc*nf)
     real(kind=8) :: crit(*), defap(*), defam(*)
@@ -72,11 +72,11 @@ subroutine pmf_pinto_menegotto(for_pmf, nf, nbvalc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbval = 12
-    integer             :: icodre(nbval)
+    integer(kind=8), parameter :: nbval = 12
+    integer(kind=8)             :: icodre(nbval)
     real(kind=8)        :: valres(nbval)
 
-    integer      :: ksp, fib, ivari, nbvari_grfibre
+    integer(kind=8)      :: ksp, fib, ivari, nbvari_grfibre
     real(kind=8) :: ep, em, depsth
     real(kind=8) :: cstpm(nbval+1), depsm, nu
 !
@@ -94,9 +94,9 @@ subroutine pmf_pinto_menegotto(for_pmf, nf, nbvalc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: kpg
-    integer             :: debsp
-    integer             :: icdmat
+    integer(kind=8)             :: kpg
+    integer(kind=8)             :: debsp
+    integer(kind=8)             :: icdmat
     real(kind=8)        :: instam
     real(kind=8)        :: instap
     real(kind=8)        :: epsm

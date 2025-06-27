@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine mmcalg(ndim, l_large_slip, &
 #include "asterfort/assert.h"
 #include "asterfort/matinv.h"
 !
-    integer, intent(in) :: ndim, nnm
+    integer(kind=8), intent(in) :: ndim, nnm
     aster_logical, intent(in) :: l_large_slip
     real(kind=8), intent(in) :: dffm(2, 9), ddffm(3, 9)
     real(kind=8), intent(in) :: elem_mast_coor(9, 3), ddepmam(9, 3)
@@ -103,7 +103,7 @@ subroutine mmcalg(ndim, l_large_slip, &
 ! Out VECH_2           : KAPPA(2,m)*tau_m
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, inom, idim
+    integer(kind=8) :: i, j, inom, idim
     real(kind=8) :: ddgeo1(3), ddgeo2(3), ddgeo3(3), detkap, ddepmait1(3), ddepmait2(3)
     real(kind=8) :: long_mmait(24), valmoy, kappa_in(2, 2)
 !

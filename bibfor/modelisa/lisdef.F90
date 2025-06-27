@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 #include "asterfort/wkvect.h"
     character(len=*) :: valkz, optkz
     character(len=4) :: oper
-    integer :: vali(2), opti
+    integer(kind=8) :: vali(2), opti
 !
 ! ----------------------------------------------------------------------
 !
@@ -133,25 +133,25 @@ subroutine lisdef(oper, optkz, opti, valkz, vali)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbtyth
+    integer(kind=8) :: nbtyth
     parameter(nbtyth=29)
     character(len=6) :: nomob(nbtyth)
     character(len=24) :: motcl(nbtyth)
     character(len=24) :: genre(nbtyth)
-    integer :: gencod(nbtyth), mcfcod(nbtyth)
+    integer(kind=8) :: gencod(nbtyth), mcfcod(nbtyth)
     character(len=16) :: optiof(nbtyth), optior(nbtyth), optioc(nbtyth)
     character(len=8) :: paraf(nbtyth), parar(nbtyth), parac(nbtyth)
     character(len=6) :: typlig(nbtyth)
 !
-    integer :: indxch, iret, genrec(1), iposit, nbch, i, itypob
+    integer(kind=8) :: indxch, iret, genrec(1), iposit, nbch, i, itypob
     character(len=16) :: option, typeco
     character(len=24) :: typcha, gencha, nomobj, parcha, genold, motcle
     character(len=8) :: charge, typech, lpain, nomgd
-    integer :: tabcod(30), tabcox(60), idd, index2, iexi, motclc(2)
+    integer(kind=8) :: tabcod(30), tabcox(60), idd, index2, iexi, motclc(2)
     character(len=19) :: carte, chamno
     character(len=24) :: liscns
     character(len=6) :: ligcal, nomcar
-    integer :: jlisci, jlisck
+    integer(kind=8) :: jlisci, jlisck
     aster_logical :: lfirst, ldoub
     aster_logical :: lveas, lveac, lveag
     character(len=13) :: prefob

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine vdefgn(nomte, nb2, epais, zic, sigma,&
                       effgtg)
         character(len=16) :: nomte
-        integer :: nb2
+        integer(kind=8) :: nb2
         real(kind=8) :: epais
         real(kind=8) :: zic
         real(kind=8) :: sigma(6, *)

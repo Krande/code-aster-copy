@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ interface
         character(len=8) :: table
         real(kind=8) :: freq(*)
         real(kind=8) :: masg(*)
-        integer :: nbm
-        integer :: nbmr
-        integer :: imod1
-        integer :: nuor(*)
-        integer :: ivite
+        integer(kind=8) :: nbm
+        integer(kind=8) :: nbmr
+        integer(kind=8) :: imod1
+        integer(kind=8) :: nuor(*)
+        integer(kind=8) :: ivite
     end subroutine calcsp
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine tbimta(table, ifr, nparim, lipaim, formar)
         character(len=*) :: table
-        integer :: ifr
-        integer :: nparim
+        integer(kind=8) :: ifr
+        integer(kind=8) :: nparim
         character(len=*) :: lipaim(*)
         character(len=*) :: formar
     end subroutine tbimta

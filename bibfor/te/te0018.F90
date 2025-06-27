@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,14 +46,14 @@ subroutine te0018(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxnoeu = 9, mxnpg = 27
+    integer(kind=8), parameter :: mxnoeu = 9, mxnpg = 27
     aster_logical :: l_func, l_time, l_efff
-    integer :: jv_geom, jv_time, jv_pres, jv_effe
-    integer :: jv_vect
+    integer(kind=8) :: jv_geom, jv_time, jv_pres, jv_effe
+    integer(kind=8) :: jv_vect
     real(kind=8) :: time
-    integer :: ipoids, ivf, idfde
-    integer :: nno, npg, ndim, ndofbynode
-    integer :: iret, kpg
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg, ndim, ndofbynode
+    integer(kind=8) :: iret, kpg
     real(kind=8) :: pres, pres_pg(mxnpg), coef_mult
 !
 ! --------------------------------------------------------------------------------------------------

@@ -71,19 +71,19 @@ subroutine ssdmte(mag)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i2coex, iacoex, iadesc
-    integer :: iagno, ianeno
-    integer :: iasupm, iatypl, iavale, ibid, ico, igeomr, igno
-    integer :: ilcoex, ima, ino, iret, isma, jno, k
-    integer :: kno, nbgno, nbma, nbno, nbnoco, nbnoe, nbnoet
-    integer :: nbnogn, nbnol, nbnola, nbnop2, nbnoph, nbnot2, nbsma
+    integer(kind=8) :: i, i2coex, iacoex, iadesc
+    integer(kind=8) :: iagno, ianeno
+    integer(kind=8) :: iasupm, iatypl, iavale, ibid, ico, igeomr, igno
+    integer(kind=8) :: ilcoex, ima, ino, iret, isma, jno, k
+    integer(kind=8) :: kno, nbgno, nbma, nbno, nbnoco, nbnoe, nbnoet
+    integer(kind=8) :: nbnogn, nbnol, nbnola, nbnop2, nbnoph, nbnot2, nbsma
     character(len=8), pointer :: vnomacr(:) => null()
-    integer, pointer :: noeud_conf(:) => null()
-    integer, pointer :: conx(:) => null()
+    integer(kind=8), pointer :: noeud_conf(:) => null()
+    integer(kind=8), pointer :: conx(:) => null()
     character(len=8), pointer :: nomnoe_2(:) => null()
     real(kind=8), pointer :: coordo_2(:) => null()
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: dime_2(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime_2(:) => null()
 !
 !-----------------------------------------------------------------------
     call jemarq()

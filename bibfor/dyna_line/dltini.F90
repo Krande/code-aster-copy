@@ -67,10 +67,10 @@ subroutine dltini(lcrea, nume, result, depini, vitini, &
     real(kind=8) :: fexini(*), famini(*), fliini(*)
     character(len=24) :: numedd
     aster_logical :: lcrea
-    integer :: nume, neq, inchac
-    integer :: ire, iret, jvale
-    integer :: nai, ndi, ndy, nvi
-    integer :: ierr
+    integer(kind=8) :: nume, neq, inchac
+    integer(kind=8) :: ire, iret, jvale
+    integer(kind=8) :: nai, ndi, ndy, nvi
+    integer(kind=8) :: ierr
     character(len=8) :: reuse, dep, vit
     character(len=19) :: champ, cham2
     blas_int :: b_incx, b_incy, b_n

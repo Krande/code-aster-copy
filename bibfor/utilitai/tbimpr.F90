@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim, &
 #include "asterfort/tbimta.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nparim, nparpg, ifr
+    integer(kind=8) :: nparim, nparpg, ifr
     character(len=*) :: table
     character(len=*) :: formaz, lipaim(*)
     character(len=*) :: formar
@@ -54,11 +54,11 @@ subroutine tbimpr(table, formaz, ifr, nparim, lipaim, &
 ! 0.3. ==> VARIABLES LOCALES
 !
 !
-    integer :: iret, nbpara, nblign
-    integer :: lonmax, ititr
+    integer(kind=8) :: iret, nbpara, nblign
+    integer(kind=8) :: lonmax, ititr
     character(len=8) :: format
     character(len=19) :: nomtab
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=80), pointer :: titr(:) => null()
 !     ------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,12 +41,12 @@ subroutine te0536(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
     character(len=8) :: lag, enr, elrefp
-    integer :: jgano, nno, npg, imatuu, ndim
-    integer :: ipoids, ivf, idfde, igeom, icont
-    integer :: nnos
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
-    integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss, jfisno
-    integer :: jheavn, ncompn, heavn(27, 5), jtab(7), iret, ifh, ino, imate
+    integer(kind=8) :: jgano, nno, npg, imatuu, ndim
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, icont
+    integer(kind=8) :: nnos
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno, jpmilt
+    integer(kind=8) :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm, nfiss, jfisno
+    integer(kind=8) :: jheavn, ncompn, heavn(27, 5), jtab(7), iret, ifh, ino, imate
 !
 !
 ! - FONCTIONS DE FORMES ET POINTS DE GAUSS

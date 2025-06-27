@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine getcon(nomres, iob, ishf, ilng, ctype,&
                       lcon, iadvar, nomob)
         character(len=*) :: nomres
-        integer :: iob
-        integer :: ishf
-        integer :: ilng
-        integer :: ctype
-        integer :: lcon
-        integer :: iadvar
+        integer(kind=8) :: iob
+        integer(kind=8) :: ishf
+        integer(kind=8) :: ilng
+        integer(kind=8) :: ctype
+        integer(kind=8) :: lcon
+        integer(kind=8) :: iadvar
         character(len=24) :: nomob
     end subroutine getcon
 end interface

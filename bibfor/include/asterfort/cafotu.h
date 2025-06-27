@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,6 @@ interface
         aster_logical, intent(in) :: mapAlreadyCreated
         character(len=8), intent(in) :: load, mesh, model
         character(len=4), intent(in) :: valeType
-        integer, intent(in) :: nbOcc, geomDime
+        integer(kind=8), intent(in) :: nbOcc, geomDime
     end subroutine cafotu
 end interface

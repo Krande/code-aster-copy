@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine granac(fami, kpg, ksp, icdmat, materi, &
     implicit none
 #include "asterfort/rcvalb.h"
 #include "asterfort/assert.h"
-    integer :: icdmat, kpg, ksp, nbpar, codret(1)
+    integer(kind=8) :: icdmat, kpg, ksp, nbpar, codret(1)
     real(kind=8) :: irram, irrap, tm, tp, valres(1), prec
     real(kind=8) :: depsgm, depsgp, depsgr, valpar(2)
     character(len=8) :: materi, nomgrd, nompar(2)

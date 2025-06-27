@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
     character(len=*) :: ligrel
-    integer :: igrel, nmax, adtabl(nmax), nval
+    integer(kind=8) :: igrel, nmax, adtabl(nmax), nval
     character(len=24) :: k24tab(nmax)
 ! ----------------------------------------------------------------------
 !     BUT:
@@ -57,7 +57,7 @@ subroutine inigrl(ligrel, igrel, nmax, adtabl, k24tab, &
 ! ----------------------------------------------------------------------
     character(len=24) :: noliel
     character(len=16) :: nomte
-    integer :: liel, l, te, k
+    integer(kind=8) :: liel, l, te, k
 !
 !
 !

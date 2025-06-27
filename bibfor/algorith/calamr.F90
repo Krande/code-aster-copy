@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine calamr(phib24, phi1j, bi, num, j, &
 !-----------PLONGEMENT DE LA PRESSION----
 !---------------SUR LE MODELE THERMIQUE D INTERFACE--------------
 !-----------------------------------------------------------------------
-    integer :: j
+    integer(kind=8) :: j
 !-----------------------------------------------------------------------
     phib19 = 'PHIB19'
     incr = 'BID'

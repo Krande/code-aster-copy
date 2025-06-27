@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine jeimpd(unit, clas, cmess)
 #include "jeveux_private.h"
 #include "asterfort/jjallc.h"
 #include "asterfort/jjlide.h"
-    integer :: unit
+    integer(kind=8) :: unit
     character(len=*) :: clas, cmess
 ! ---------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'IMPRESSION DE LA LISTE DES OBJETS PRESENTS SUR
@@ -33,16 +33,16 @@ subroutine jeimpd(unit, clas, cmess)
 ! IN  CLAS   : CLASSE ASSOCIEE A LA BASE ( ' ' : TOUTES LES CLASSES )
 ! IN  CMESS  : MESSAGE D'INFORMATION
 ! ---------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ---------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iacc, ibacol, ibiadd, iblono, iiadd
-    integer :: ilono, iltyp, ixdeso, ixiadd, ixlono, j, jcara
-    integer :: jdate, jdocu, jgenr, jhcod, jiacce, jiadd, jiadm
-    integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
-    integer :: jtype, k, kiadd, kj, koc, liadd, n
-    integer :: nbacce, ncla1, ncla2, nmax
+    integer(kind=8) :: i, iacc, ibacol, ibiadd, iblono, iiadd
+    integer(kind=8) :: ilono, iltyp, ixdeso, ixiadd, ixlono, j, jcara
+    integer(kind=8) :: jdate, jdocu, jgenr, jhcod, jiacce, jiadd, jiadm
+    integer(kind=8) :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
+    integer(kind=8) :: jtype, k, kiadd, kj, koc, liadd, n
+    integer(kind=8) :: nbacce, ncla1, ncla2, nmax
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -50,7 +50,7 @@ subroutine jeimpd(unit, clas, cmess)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
 !
     character(len=2) :: dn2
@@ -60,28 +60,28 @@ subroutine jeimpd(unit, clas, cmess)
      &                 dn2(n)
     character(len=8) :: nombas
     common/kbasje/nombas(n)
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! ---------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/jiacce/jiacce(n), nbacce(2*n)
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 ! ---------------------------------------------------------------------
-    integer :: ivnmax, iddeso, idiadd, idlono
+    integer(kind=8) :: ivnmax, iddeso, idiadd, idlono
     parameter(ivnmax=0, iddeso=1, idiadd=2,&
      &               idlono=8)
 ! ---------------------------------------------------------------------
     character(len=1) :: kclas, cgenr, ctype, clasi, cgen2
     character(len=32) :: crnom
     aster_logical :: lcol, lente
-    integer :: ipgcex, lgbl
+    integer(kind=8) :: ipgcex, lgbl
 ! DEB -----------------------------------------------------------------
     ipgcex = ipgc
     ipgc = -2

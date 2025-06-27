@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
         character(len=*) :: nomte
         real(kind=8) :: rho
         real(kind=8) :: xnu
-        integer :: icdmat
+        integer(kind=8) :: icdmat
         real(kind=8) :: klv(*)
-        integer :: nl
+        integer(kind=8) :: nl
     end subroutine porigy
 end interface

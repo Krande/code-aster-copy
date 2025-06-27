@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,8 +60,8 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p, &
 #include "asterfort/glrcdd.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: i, zimat, kpg, spt
-    integer :: codret
+    integer(kind=8) :: i, zimat, kpg, spt
+    integer(kind=8) :: codret
 !
     real(kind=8) :: ep, surfgp, p(3, 3), deps(*), epst(*)
     real(kind=8) :: dsig(*), matr(*), ecr(*)
@@ -70,7 +70,7 @@ subroutine glrcmm(zimat, matr, ep, surfgp, p, &
     real(kind=8) :: mp1n0, mp2n0, crit(*)
     real(kind=8) :: normn, normm, dsidep(6, *), delas(6, *), valres(4)
 !
-    integer :: codres(8)
+    integer(kind=8) :: codres(8)
     character(len=8) :: fami, poum
     character(len=16) :: nomres(8)
     character(len=32) :: phenom

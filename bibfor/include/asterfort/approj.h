@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@ interface
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: newgeo
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: node_mast_indx
+        integer(kind=8), intent(in) :: node_mast_indx
         aster_logical, intent(in) :: l_pair_dire
         real(kind=8), intent(in) :: pair_vect(3)
-        integer, intent(in) :: iter_maxi
+        integer(kind=8), intent(in) :: iter_maxi
         real(kind=8), intent(in) :: epsi_maxi
         real(kind=8), intent(in) :: tole_proj_ext 
         real(kind=8), intent(in) :: poin_coor(3)
@@ -41,8 +41,8 @@ interface
         real(kind=8), intent(out) :: ksi1_mini
         real(kind=8), intent(out) :: ksi2_mini
         real(kind=8), intent(out) :: dist_mini
-        integer, intent(out) :: proj_stat_mini
-        integer, intent(out) :: elem_mast_mini
-        integer, intent(inout) :: err_appa
+        integer(kind=8), intent(out) :: proj_stat_mini
+        integer(kind=8), intent(out) :: elem_mast_mini
+        integer(kind=8), intent(inout) :: err_appa
     end subroutine approj
 end interface

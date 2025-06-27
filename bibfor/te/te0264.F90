@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,15 +36,15 @@ subroutine te0264(option, nomte)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: icode, nbres
+    integer(kind=8) :: icode, nbres
     real(kind=8) :: soun, sounp1, theta
 !-----------------------------------------------------------------------
     parameter(nbres=3)
     character(len=8) :: nompar(nbres)
     real(kind=8) :: valpar(nbres)
     real(kind=8) :: poids, r, z, sour
-    integer :: nno, kp, npg1, i, k, itemps, ivectt, isour, nnos, jgano
-    integer :: ipoids, ivf, idfde, igeom, ndim
+    integer(kind=8) :: nno, kp, npg1, i, k, itemps, ivectt, isour, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, ndim
 !
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &

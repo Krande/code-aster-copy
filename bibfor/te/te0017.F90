@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine te0017(option, nomte)
 !.......................................................................
 !
 !
-    integer :: ipoids, ivf, idfde, igeom, itemps, iforc, ier
-    integer :: jgano, nno, ndl, kp, npg1, ii, i, l, ivectu, ndim, nnos
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, itemps, iforc, ier
+    integer(kind=8) :: jgano, nno, ndl, kp, npg1, ii, i, l, ivectu, ndim, nnos
     real(kind=8) :: poids, fx, fy, fz
     real(kind=8) :: xx, yy, zz, valpar(4)
     character(len=8) :: nompar(4)

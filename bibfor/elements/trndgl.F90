@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ subroutine trndgl(nbx, vectn, vectpt, deplg, depll, &
     implicit none
 !
 #include "jeveux.h"
-    integer :: nbx
+    integer(kind=8) :: nbx
     real(kind=8) :: vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: deplg(*), depll(*), t(3, 3), rotfic(*)
-    integer :: i, i1, i2, ib, j
+    integer(kind=8) :: i, i1, i2, ib, j
 !-----------------------------------------------------------------------
 !
     do ib = 1, nbx

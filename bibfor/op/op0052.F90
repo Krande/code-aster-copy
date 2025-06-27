@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine op0052()
     character(len=6) :: nompro
     parameter(nompro='OP0052')
 !
-    integer :: ifm, niv, ibid, n0, iret, np, nc
-    integer :: nbordr, nbropt
+    integer(kind=8) :: ifm, niv, ibid, n0, iret, np, nc
+    integer(kind=8) :: nbordr, nbropt
 !
     real(kind=8) :: prec
 !

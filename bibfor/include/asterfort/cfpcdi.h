@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,18 +23,18 @@ interface
                       mu, apcoef, apddl, appoin, inliac,&
                       matass, solveu, premax, ssgrad, ssgrpr)
         character(len=24) :: resoco
-        integer :: neq
-        integer :: nbliai
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbliai
         real(kind=8) :: tole
         real(kind=8) :: epsipc
         real(kind=8) :: mu(*)
         real(kind=8) :: apcoef(*)
-        integer :: apddl(*)
-        integer :: appoin(*)
-        integer :: inliac(*)
+        integer(kind=8) :: apddl(*)
+        integer(kind=8) :: appoin(*)
+        integer(kind=8) :: inliac(*)
         character(len=19) :: matass
         character(len=19) :: solveu
-        integer :: premax
+        integer(kind=8) :: premax
         real(kind=8) :: ssgrad(*)
         real(kind=8) :: ssgrpr(*)
     end subroutine cfpcdi

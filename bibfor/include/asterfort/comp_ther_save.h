@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: compor
-        integer, intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_cmp
         character(len=19), intent(in) :: list_vale
     end subroutine comp_ther_save
 end interface

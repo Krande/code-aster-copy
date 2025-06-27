@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ interface
         character(len=14) :: numddl
         character(len=*) :: chamno
         character(len=8) :: nomgd
-        integer :: neq
-        integer :: nbnoeu
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbnoeu
         character(len=24) :: objve1
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=24) :: objve2
         character(len=24) :: objve3
         character(len=24) :: objve4

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
                       ffe   , dffe  , ddffe,&
                       ffm   , dffm  , ddffm,&
                       ffl   , dffl  , ddffl)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         character(len=8), intent(in) :: typmae, typmam
-        integer, intent(in) :: nne, nnm
+        integer(kind=8), intent(in) :: nne, nnm
         real(kind=8), intent(in) :: xpc, ypc, xpr, ypr
         real(kind=8), intent(out) :: ffe(9), dffe(2, 9), ddffe(3, 9)
         real(kind=8), intent(out) :: ffm(9), dffm(2, 9), ddffm(3, 9)

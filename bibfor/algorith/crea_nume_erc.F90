@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,16 +61,16 @@ subroutine crea_nume_erc(baseno, numnu, matprod, nom_nume_erc, nom_matr_erc, &
     character(len=24), intent(in) ::matprod(4)
     character(len=14), intent(out) :: nom_nume_erc
     character(len=19), intent(out) :: nom_matr_erc, nom_vect_erc, solveu
-    integer, intent(out) :: valei(8)
+    integer(kind=8), intent(out) :: valei(8)
     character(len=8) ::  k8bid
     character(len=19) :: prgene
-    integer :: ismde, ismdi, ismhc, improdsmde, improdsmhc, improdsmdi, improdvalm
-    integer :: neq, nozero, inewsmde
-    integer :: inewsmdi, inewsmhc, cumul_non_zero, non_zero_impe
-    integer :: non_zero_matprod, hors_diag_impe
-    integer :: hd_matprod, nz_colncour, ii, jj, kk, tt, lddesc, ldnequ, k, jrefn
-    integer :: lddeeq, lddelg, ldnueq, ibid, ldprno, ldorig, mrefa, mdesc, vdesc
-    integer :: mvale, vvale, ll
+    integer(kind=8) :: ismde, ismdi, ismhc, improdsmde, improdsmhc, improdsmdi, improdvalm
+    integer(kind=8) :: neq, nozero, inewsmde
+    integer(kind=8) :: inewsmdi, inewsmhc, cumul_non_zero, non_zero_impe
+    integer(kind=8) :: non_zero_matprod, hors_diag_impe
+    integer(kind=8) :: hd_matprod, nz_colncour, ii, jj, kk, tt, lddesc, ldnequ, k, jrefn
+    integer(kind=8) :: lddeeq, lddelg, ldnueq, ibid, ldprno, ldorig, mrefa, mdesc, vdesc
+    integer(kind=8) :: mvale, vvale, ll
 !
 ! --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 !

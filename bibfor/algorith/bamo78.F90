@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,18 +74,18 @@ subroutine bamo78(nomres, trange, typres)
 !
 !
     character(len=8) :: k8bid
-    integer :: ibid, iret, iretou
-    integer :: icham, iarch
+    integer(kind=8) :: ibid, iret, iretou
+    integer(kind=8) :: icham, iarch
     real(kind=8) :: r8bid
     complex(kind=8) :: c16bid
-    integer :: nbcham, nume
+    integer(kind=8) :: nbcham, nume
     character(len=16) :: champ(3)
-    integer :: n0, n1
+    integer(kind=8) :: n0, n1
     character(len=8) :: basemo
-    integer :: neq
-    integer :: nbinst
-    integer :: nbmode
-    integer :: jrestr, ldnew, linst
+    integer(kind=8) :: neq
+    integer(kind=8) :: nbinst
+    integer(kind=8) :: nbmode
+    integer(kind=8) :: jrestr, ldnew, linst
     character(len=14) :: numddl
     character(len=24) :: numedd
     character(len=19) :: chamel, chamgd, chamno, chgene, ligrel, chs(2)
@@ -94,22 +94,22 @@ subroutine bamo78(nomres, trange, typres)
     character(len=24) :: chgeom, chcara(18), chharm, chtime
     character(len=24) :: chvarc, chvref
     character(len=19) :: knume, kinst, krefe
-    integer :: jnume, jinst
+    integer(kind=8) :: jnume, jinst
     character(len=8) :: ctype, sdnoli, k8bla, modele, materi, crit, mesh, answer
     character(len=1) :: typcoe
     character(len=2) :: codret
     character(len=24) :: trgene
-    integer :: jtrgen, tmod(1)
+    integer(kind=8) :: jtrgen, tmod(1)
     character(len=24) :: mate, compor, carele
     real(kind=8) :: lcoer(2)
     complex(kind=8) :: lcoec(2)
     aster_logical :: lcumu(2), lcoc(2)
 !-----------------------------------------------------------------------
-    integer :: iarc2, ievnew, iopt, lpar, n, nbins2
-    integer :: nbtrou, nc, nh, nncp, num0, nume0
+    integer(kind=8) :: iarc2, ievnew, iopt, lpar, n, nbins2
+    integer(kind=8) :: nbtrou, nc, nh, nncp, num0, nume0
     real(kind=8) :: epsi, rundf, time
     real(kind=8), pointer :: base(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

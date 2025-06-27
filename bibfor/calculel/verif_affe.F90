@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine verif_affe(modele, sd, non_lin)
     character(len=19) :: carte, ligrmo
     character(len=24) :: typres
     character(len=80) :: comment
-    integer :: n1, k, iret
+    integer(kind=8) :: n1, k, iret
     character(len=5)  :: l_cart_char_meca(24), l_cart_char_ther(11)
     character(len=8)  :: l_cart_cara_elem(14)
     character(len=80) :: l_comm_char_meca(26), l_comm_char_ther(11), l_comm_cara_elem(14)

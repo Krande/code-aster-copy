@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,28 +68,28 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
 !
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
-    integer, intent(in) :: ip
-    integer, optional, intent(in) :: iocc
+    integer(kind=8), intent(in) :: ip
+    integer(kind=8), optional, intent(in) :: iocc
     character(len=24), optional, intent(out) :: savejv
-    integer, optional, intent(out) :: lonvec
-    integer, optional, intent(out) :: iscal
+    integer(kind=8), optional, intent(out) :: lonvec
+    integer(kind=8), optional, intent(out) :: iscal
     real(kind=8), optional, intent(out) :: rscal
     complex(kind=8), optional, intent(out) :: cscal
     character(len=*), optional, intent(out) :: kscal
-    integer, optional, intent(out) :: ivect(*)
+    integer(kind=8), optional, intent(out) :: ivect(*)
     real(kind=8), optional, intent(out) :: rvect(*)
     complex(kind=8), optional, intent(out) :: cvect(*)
     character(len=*), optional, intent(out) :: kvect(*)
 !
-    integer, pointer, optional :: vi(:)
+    integer(kind=8), pointer, optional :: vi(:)
     real(kind=8), pointer, optional :: vr(:)
     complex(kind=8), pointer, optional :: vc(:)
     character(len=8), pointer, optional :: vk8(:)
     character(len=16), pointer, optional :: vk16(:)
     character(len=24), pointer, optional :: vk24(:)
 !
-    integer, optional, intent(out) :: address
-    integer, pointer, optional :: buffer(:)
+    integer(kind=8), optional, intent(out) :: address
+    integer(kind=8), pointer, optional :: buffer(:)
 !
 !   -0.2- Local variables
 !   --- For strings copying
@@ -97,7 +97,7 @@ subroutine dtmget(sd_dtm_, ip, iocc, lonvec, savejv, &
 !
 !   --- For general usage
     aster_logical :: output_test
-    integer :: i, addr, jscal, lvec, level, dec
+    integer(kind=8) :: i, addr, jscal, lvec, level, dec
     character(len=6) :: k_iocc
     character(len=24) :: savename
     type(c_ptr) :: pc

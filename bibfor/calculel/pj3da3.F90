@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine pj3da3(m, a, b, c, ok, &
 !
 !
 ! ----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
     real(kind=8) :: delta, p(3)
     real(kind=8) :: ab(3), ac(3), am(3), a11, a22, a12, b1, b2
 ! DEB ------------------------------------------------------------------

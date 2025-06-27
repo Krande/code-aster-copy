@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: iocc, nbma
+    integer(kind=8) :: iocc, nbma
     character(len=*) :: mofaz, nomaz, lismaz
 !
 !       CGMAAP -- TRAITEMENT DE L'OPTION 'APPUI'
@@ -63,14 +63,14 @@ subroutine cgmaap(mofaz, iocc, nomaz, lismaz, nbma)
 !             SES NOEUDS SONT DANS LA LISTE DES NOEUDS FOURNIS.
 !
 !
-    integer :: nbmala, i, j, jmala, jco, iacnx, ilcnx, ii, nbmc
-    integer ::  nbno, nno, jlmas, idlist, ima, n1
-    integer ::  jnnma, nuno, j1, k, nbnot
+    integer(kind=8) :: nbmala, i, j, jmala, jco, iacnx, ilcnx, ii, nbmc
+    integer(kind=8) ::  nbno, nno, jlmas, idlist, ima, n1
+    integer(kind=8) ::  jnnma, nuno, j1, k, nbnot
     character(len=8) :: noma, motcle(2), tymocl(2), typma
     character(len=16) :: motfac, typapp
     character(len=24) :: listrv, lismai, mesnoe, lismas, lnnma
-    integer, pointer :: noeuds(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: noeuds(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 !     -----------------------------------------------------------------
 !

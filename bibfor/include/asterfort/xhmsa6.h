@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       wsautm, dpf, rho110)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: ndim
-        integer :: ipgf
-        integer :: imate
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ipgf
+        integer(kind=8) :: imate
         real(kind=8) :: lamb(3)
         real(kind=8) :: wsaut(3)
         real(kind=8) :: nd(3)

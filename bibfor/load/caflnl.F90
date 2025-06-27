@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine caflnl(load, mesh, model)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FLUX_NL'
-    integer :: nflux, jvalv, nf, iocc, nbtou, nbma, jma, ncmp, lprol
+    integer(kind=8) :: nflux, jvalv, nf, iocc, nbtou, nbma, jma, ncmp, lprol
     character(len=8) :: k8b, typmcl(2)
     character(len=16) :: motcle(2)
     character(len=19) :: carte

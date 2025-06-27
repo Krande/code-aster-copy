@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: lraid, lmatra, lmass, neq, nbvec, nfreq
-    integer :: lprod(neq), itemax, nperm, nitjac, nitbat
+    integer(kind=8) :: lraid, lmatra, lmass, neq, nbvec, nfreq
+    integer(kind=8) :: lprod(neq), itemax, nperm, nitjac, nitbat
     real(kind=8) :: tol, toldyn, valpro(nbvec), vect(neq, nbvec)
     character(len=19) :: solveu
 ! BUT : RESOLUTION DU PROBLEME GENERALISE AUX VALEURS PROPRES PAR UNE
@@ -70,22 +70,22 @@ subroutine sspace(lraid, lmatra, lmass, neq, nbvec, &
 !     IN  : SOLVEU : SD SOLVEUR POUR PARAMETRER LE SOLVEUR LINEAIRE
 !-----------------------------------------------------------------------
 !
-    integer :: jsmdi, type, iordre
+    integer(kind=8) :: jsmdi, type, iordre
     aster_logical :: iconvf
     character(len=24) :: valm
     complex(kind=8) :: cbid
     character(len=1) :: kbid
     character(len=19) :: k19bid, matass, chcine, criter
-    integer :: iret
+    integer(kind=8) :: iret
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iaa, iar, ibr, icomp, iconv
-    integer :: ii, iter
-    integer :: jj, kk, ll, nfrcv
-    integer :: nitja
+    integer(kind=8) :: i, iaa, iar, ibr, icomp, iconv
+    integer(kind=8) :: ii, iter
+    integer(kind=8) :: jj, kk, ll, nfrcv
+    integer(kind=8) :: nitja
     real(kind=8) :: art, brt, dseed
-    integer, pointer :: fpos(:) => null()
-    integer, pointer :: ipos(:) => null()
+    integer(kind=8), pointer :: fpos(:) => null()
+    integer(kind=8), pointer :: ipos(:) => null()
     real(kind=8), pointer :: vjacobi(:) => null()
     real(kind=8), pointer :: rdiak(:) => null()
     real(kind=8), pointer :: rdiam(:) => null()

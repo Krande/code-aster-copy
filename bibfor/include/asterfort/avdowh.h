@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,16 +24,16 @@ interface
     subroutine avdowh(nbvec, nbordr, nommat, nomcri, ncycl,&
                       jgdeq, grdvie, forvie, post, jdomel,&
                       jnrupt)
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         character(len=8) :: nommat
         character(len=16) :: nomcri
-        integer :: ncycl(nbvec)
-        integer :: jgdeq
+        integer(kind=8) :: ncycl(nbvec)
+        integer(kind=8) :: jgdeq
         character(len=16) :: grdvie
         character(len=16) :: forvie
         aster_logical :: post
-        integer :: jdomel
-        integer :: jnrupt
+        integer(kind=8) :: jdomel
+        integer(kind=8) :: jnrupt
     end subroutine avdowh
 end interface

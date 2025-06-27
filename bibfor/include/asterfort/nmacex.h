@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 interface
     subroutine nmacex(sddisc, iterat, lextra, valext)
         character(len=19) :: sddisc
-        integer :: iterat
+        integer(kind=8) :: iterat
         aster_logical :: lextra
         real(kind=8) :: valext(4)
     end subroutine nmacex

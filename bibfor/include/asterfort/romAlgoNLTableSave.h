@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine romAlgoNLTableSave(nume_store, time_curr, paraAlgo)
         use Rom_Datastructure_type
-        integer, intent(in) :: nume_store
+        integer(kind=8), intent(in) :: nume_store
         real(kind=8), intent(in) :: time_curr
         type(ROM_DS_AlgoPara), intent(in) :: paraAlgo
     end subroutine romAlgoNLTableSave

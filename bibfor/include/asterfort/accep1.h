@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
     subroutine accep1(modmec, ligrmo, nbm, dir, yang)
         character(len=8) :: modmec
         character(len=24) :: ligrmo
-        integer :: nbm
+        integer(kind=8) :: nbm
         real(kind=8) :: dir(3, 3)
         aster_logical :: yang
     end subroutine accep1

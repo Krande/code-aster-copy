@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine rc32env(lieu, futotenv, fuseis_in)
 !
 !
 !  ------------------------------------------------------------------
-    integer :: ndim, jfact, num1, num2, k, noccpris, ind1, ind2, jmax
-    integer :: i, jfactenv, nb
+    integer(kind=8) :: ndim, jfact, num1, num2, k, noccpris, ind1, ind2, jmax
+    integer(kind=8) :: i, jfactenv, nb
     real(kind=8) :: fuseism, fuunit, ke, fen, fenel
 !
 ! DEB ------------------------------------------------------------------

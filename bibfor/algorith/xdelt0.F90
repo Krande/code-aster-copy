@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta, arete)
 #include "asterfort/elrfvf.h"
 #include "asterfort/xnormv.h"
     character(len=8) :: elrefp
-    integer :: ndime
+    integer(kind=8) :: ndime
     real(kind=8) :: tabls(*), ksi, delta, ptxx(*)
-    integer, intent(in), optional :: arete
+    integer(kind=8), intent(in), optional :: arete
 !                 CALCUL DE LA QUANTITE A MINIMISER POUR LE CALCUL
 !                    DE L INTERSECTION DE LA DROITE v*ksi+ptm AVEC
 !                     L ISO ZERO DE LA LEVEL SET
@@ -47,10 +47,10 @@ subroutine xdelt0(elrefp, ndime, tabls, ptxx, ksi, delta, arete)
 !     ----------------------------------------------------------------
 !
 !
-    integer :: nbfct
+    integer(kind=8) :: nbfct
     parameter(nbfct=27)
     real(kind=8) :: ff(nbfct), dff(3, nbfct), v(ndime), pt(ndime), ptm(ndime)
-    integer :: i, nno, k
+    integer(kind=8) :: i, nno, k
     real(kind=8) :: fctg, dfctg, x(1), dfft(3, 3), norme, rbid
 !
 !

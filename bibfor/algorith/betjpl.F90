@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine betjpl(BEHinteg, &
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: nmat, nseuil
+    integer(kind=8) :: nmat, nseuil
     real(kind=8) :: un, zero, rac2, deux, trois
     parameter(deux=2.d0)
     parameter(trois=3.d0)
@@ -65,10 +65,10 @@ subroutine betjpl(BEHinteg, &
     real(kind=8) :: pc, pt, dfcdlc, dftdlt, dfcds(6), dftds(6)
     real(kind=8) :: coef1, coef2, hdfcds(6), hdftds(6)
     real(kind=8) :: cc, ccc, tt, ttt, ct, tc, discr
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     character(len=8) :: nomail
 !       ----------------------------------------------------------------
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
 !     ------------------------------------------------------------------
     common/tdim/ndt, ndi
 !       ----------------------------------------------------------------

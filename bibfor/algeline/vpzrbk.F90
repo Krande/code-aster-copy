@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine vpzrbk(z, h, d, mm, izh, &
                   k, l)
     implicit none
-    integer :: mm, izh, k, l
+    integer(kind=8) :: mm, izh, k, l
     real(kind=8) :: z(izh, 1), h(izh, 1), d(1)
 !     TRANSFORMATION ARRIERE POUR OBTENIR LES VECTEURS (ROUTINE ORTBAK)
 !     ------------------------------------------------------------------
@@ -27,7 +27,7 @@ subroutine vpzrbk(z, h, d, mm, izh, &
 !        HANDBOOK FOR AUTOMATIC COMPUTATION - LINEAR ALGEBRA - VOL.2
 !        PAGE 350
 !     ------------------------------------------------------------------
-    integer :: m, ma, i, j
+    integer(kind=8) :: m, ma, i, j
     real(kind=8) :: g, zero
 !
 !-----------------------------------------------------------------------

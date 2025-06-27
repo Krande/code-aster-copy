@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ function lcnrts(d)
 !                                           T  1/2
 !       OUT LCNRTS :  NORME DE    D = (3/2 D D)
 !       ----------------------------------------------------------------
-    integer :: n, nd
+    integer(kind=8) :: n, nd
     real(kind=8) :: d(6), lcnrts
     common/tdim/n, nd
 !

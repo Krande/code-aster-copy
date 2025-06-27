@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine memver(action, prec, arret, titre)
 !
     real(kind=8) :: tmax, mtots, mtot, rval(1)
     character(len=8) :: k8tab(1)
-    integer :: iret
+    integer(kind=8) :: iret
     save mtots, precs
 !
     ASSERT(action .eq. 'MESURE' .or. action .eq. 'VERIF')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ subroutine nlvint(sd_nl_)
     character(len=*), intent(in) :: sd_nl_
 !
 !   -0.2- Local variables
-    integer           :: i, mxlevel, nltype_i, add, vint_reclen
+    integer(kind=8)           :: i, mxlevel, nltype_i, add, vint_reclen
     character(len=8)  :: sd_nl
-    integer, pointer  :: vindx(:) => null()
+    integer(kind=8), pointer  :: vindx(:) => null()
 !
     call jemarq()
 !

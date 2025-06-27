@@ -34,7 +34,7 @@ subroutine copy_field_with_numbering(fieldin, fieldout, mesh, nume_equa, &
     character(len=19), intent(in) :: nume_equa
     character(len=1), intent(in) :: base
     character(len=1), optional, intent(in) :: typc
-    integer, optional, intent(in) :: nequa
+    integer(kind=8), optional, intent(in) :: nequa
 !_______________________________________________________________________
 !     Copies field fieldin into a new field fieldout, converted to apply
 !     numequa as numbering
@@ -52,7 +52,7 @@ subroutine copy_field_with_numbering(fieldin, fieldout, mesh, nume_equa, &
 !
     character(len=1) :: type_sca
     character(len=24) :: crefe(2)
-    integer:: iret, neq
+    integer(kind=8):: iret, neq
 
     if (present(nequa)) then
         neq = nequa

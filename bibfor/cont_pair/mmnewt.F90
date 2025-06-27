@@ -31,15 +31,15 @@ subroutine mmnewt(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
 #include "asterfort/mmtang.h"
 !
     character(len=8), intent(in) :: type_elem
-    integer, intent(in) :: nb_node
-    integer, intent(in) :: nb_dim
+    integer(kind=8), intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_dim
     real(kind=8), intent(in) :: elem_coor(27)
     real(kind=8), intent(in) :: pt_coor(3)
-    integer, intent(in) :: iter_maxi
+    integer(kind=8), intent(in) :: iter_maxi
     real(kind=8), intent(in) :: tole_maxi
     real(kind=8), intent(out) :: ksi1, ksi2
     real(kind=8), intent(out) :: tang_1(3), tang_2(3)
-    integer, intent(out) :: error
+    integer(kind=8), intent(out) :: error
     aster_logical, intent(in), optional :: l_reli_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,7 +68,7 @@ subroutine mmnewt(type_elem, nb_node, nb_dim, elem_coor, pt_coor, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: zero = 0.d0
-    integer :: ino, idim, iter
+    integer(kind=8) :: ino, idim, iter
     real(kind=8) :: ff(9), dff(2, 9), ddff(3, 9)
     real(kind=8) :: vect_posi(3)
     real(kind=8) :: matrix(2, 2), par11(3), par12(3), par22(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,11 +48,11 @@ subroutine inilag(fmli, icar)
 !
     character(len=24) :: fmli
     real(kind=8) :: moinun, zero5
-    integer :: icar(4)
+    integer(kind=8) :: icar(4)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iblo, ldmat, nblig
+    integer(kind=8) :: i, iblo, ldmat, nblig
 !-----------------------------------------------------------------------
     data moinun/-1.0d+00/
     data zero5/0.5d+00/

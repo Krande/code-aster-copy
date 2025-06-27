@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine mnline(imat, xcdl, parcho, adime, xvect,&
                       ninc, nd, nchoc, h, hf,&
                       xline)
-        integer :: imat(2)
+        integer(kind=8) :: imat(2)
         character(len=14) :: xcdl
         character(len=14) :: parcho
         character(len=14) :: adime
         character(len=14) :: xvect
-        integer :: ninc
-        integer :: nd
-        integer :: nchoc
-        integer :: h
-        integer :: hf
+        integer(kind=8) :: ninc
+        integer(kind=8) :: nd
+        integer(kind=8) :: nchoc
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
         character(len=14) :: xline
     end subroutine mnline
 end interface 

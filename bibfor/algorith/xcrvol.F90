@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint, &
 #include "asterfort/iselli.h"
 #include "asterfort/reeref.h"
 #include "asterfort/xcalc_code.h"
-    integer :: nse, ndim, jcnse, nnose, jpint, igeom, inoloc, nfiss, iheav
+    integer(kind=8) :: nse, ndim, jcnse, nnose, jpint, igeom, inoloc, nfiss, iheav
     character(len=8) :: elrefp
-    integer :: nbnoma, jcesd3, jcesl3, jcesv3, numa2, jcesd8, jcesl8, jcesv8
+    integer(kind=8) :: nbnoma, jcesd3, jcesl3, jcesv3, numa2, jcesd8, jcesl8, jcesv8
     real(kind=8) :: vhea, vtot
     aster_logical :: lfiss
 !
@@ -44,7 +44,7 @@ subroutine xcrvol(nse, ndim, jcnse, nnose, jpint, &
     real(kind=8) :: co(ndim+1, ndim), mat(ndim, ndim), vse, bary(ndim)
     real(kind=8) :: point(ndim), he(nfiss)
     real(kind=8) :: ff(nbnoma), dfdi(nbnoma, ndim), xe(ndim), deriv
-    integer :: ise, ino2, i, j, iad, k, hea_se, hea_no
+    integer(kind=8) :: ise, ino2, i, j, iad, k, hea_se, hea_no
 !
 ! ----------------------------------------------------------------------
 !

@@ -54,14 +54,14 @@ subroutine te0078(option, nomte)
     type(FE_Quadrature) :: FEQuadRigi, FEQuadMass
     type(FE_basis) :: FEBasis
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=1)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: phenom
     real(kind=8) :: valQPM(MAX_QP), tpg, dtpg(3), flux(3), BGSEval(3, MAX_BS)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
     real(kind=8) :: cp, valres(1), Kglo(3, 3), time, deltat, theta
-    integer :: kp, imate, icamas, itemps
+    integer(kind=8) :: kp, imate, icamas, itemps
     real(kind=8), pointer :: temp(:) => null()
     character(len=8), parameter :: famiR = "RIGI"
     character(len=8), parameter :: famiM = "MASS"

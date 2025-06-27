@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 !
 interface
     subroutine zzappa(num, liste, n, app)
-        integer :: num
-        integer :: liste(1)
-        integer :: n
+        integer(kind=8) :: num
+        integer(kind=8) :: liste(1)
+        integer(kind=8) :: n
         aster_logical :: app
     end subroutine zzappa
 end interface

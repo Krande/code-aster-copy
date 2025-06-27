@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,18 +48,18 @@ subroutine coeihm(ds_thm, option, &
 #include "asterfort/THM_type.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=8), intent(in) :: nomail
     character(len=16), intent(in) :: option
-    integer, intent(in) :: dimdef, dimcon, npg, kpi, npi, ndim
-    integer, intent(in) :: nbvari
-    integer, intent(in) :: addeme, addep1, addep2, addete, adcop1, addlh1
-    integer, intent(in) :: adcome, adcp11, adcp12, adcp21, adcp22, adcote
+    integer(kind=8), intent(in) :: dimdef, dimcon, npg, kpi, npi, ndim
+    integer(kind=8), intent(in) :: nbvari
+    integer(kind=8), intent(in) :: addeme, addep1, addep2, addete, adcop1, addlh1
+    integer(kind=8), intent(in) :: adcome, adcp11, adcp12, adcp21, adcp22, adcote
     real(kind=8), intent(in) :: defgem(1:dimdef), defgep(1:dimdef)
     real(kind=8), intent(in) :: varim(nbvari), time_prev, time_curr
     real(kind=8), intent(in) :: sigm(dimcon)
     aster_logical, intent(in) :: lSigm, lVari, lMatr, lVect
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
     real(kind=8), intent(inout) :: sigp(dimcon), varip(nbvari)
     real(kind=8), intent(out) :: res(dimdef), drde(dimdef, dimdef)
 !
@@ -124,7 +124,7 @@ subroutine coeihm(ds_thm, option, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, f
+    integer(kind=8) :: i, j, f
     real(kind=8) :: depsv, epsv, deps(6)
     real(kind=8) :: t, p1, p2, dt, dp1, dp2, grat(3), grap1(3), grap2(3)
     real(kind=8) :: pvp, pad, h11, h12, rho11, phi, nl
@@ -135,7 +135,7 @@ subroutine coeihm(ds_thm, option, &
     real(kind=8) :: dsde(dimcon, dimdef)
     real(kind=8) :: tlint, ouvh, deltat
     real(kind=8) :: angl_naut(3)
-    integer :: nume_thmc
+    integer(kind=8) :: nume_thmc
     character(len=16) :: meca
     aster_logical :: lMatrPred
 !

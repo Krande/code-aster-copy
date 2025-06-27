@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine te0581(option, nomte)
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: jtab1(7), jtab2(7), jtab3(7), iret
-    integer :: j1, j2, j3, nbcmp, nbsp, nbsp2, nbsp1, nbpt
+    integer(kind=8) :: jtab1(7), jtab2(7), jtab3(7), iret
+    integer(kind=8) :: j1, j2, j3, nbcmp, nbsp, nbsp2, nbsp1, nbpt
     character(len=24) :: valk(2)
     real(kind=8) :: v1, v2
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine jeecra_wrap(nomlu, catr, ival)
         character(len=*), intent(in) :: nomlu
         character(len=*), intent(in) :: catr
-        integer, intent(in) :: ival
+        integer(kind=8), intent(in) :: ival
     end subroutine jeecra_wrap
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine dikini(nbt, nu1, mu1, dxu1, dryu1, &
 ! ----------------------------------------------------------------------
     implicit none
 #include "asterfort/r8inir.h"
-    integer :: nbt
+    integer(kind=8) :: nbt
     real(kind=8) :: nu1, mu1, dxu1, dryu1
     real(kind=8) :: nu2, mu2, dxu2, dryu2
     real(kind=8) :: ky, kz, krx, krz, rbid

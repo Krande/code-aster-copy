@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,12 @@ interface
                       a, lda, d1, d2, b,&
                       ldb, wr, wi, x, ldx,&
                       scale, xnorm, info)
-        integer :: ldx
-        integer :: ldb
-        integer :: lda
+        integer(kind=8) :: ldx
+        integer(kind=8) :: ldb
+        integer(kind=8) :: lda
         aster_logical :: ltrans
-        integer :: na
-        integer :: nw
+        integer(kind=8) :: na
+        integer(kind=8) :: nw
         real(kind=8) :: smin
         real(kind=8) :: ca
         real(kind=8) :: a(lda, *)
@@ -42,6 +42,6 @@ interface
         real(kind=8) :: x(ldx, *)
         real(kind=8) :: scale
         real(kind=8) :: xnorm
-        integer :: info
+        integer(kind=8) :: info
     end subroutine ar_dlaln2
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine cbondp(load, mesh, ndim, valeType)
 #include "asterfort/vetyma.h"
 !
     character(len=8), intent(in) :: load, mesh
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     character(len=4), intent(in) :: valeType
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,12 +68,12 @@ subroutine cbondp(load, mesh, ndim, valeType)
     real(kind=8) :: wave_dire(3), point_source(3), point_reflechi(3), wave_type_r
     character(len=8) :: signal, signde
     character(len=16) :: wave_type
-    integer :: jvalv
-    integer :: iocc, ndir, val_nb, nondp
-    integer :: jvCell
-    integer :: nbCell
+    integer(kind=8) :: jvalv
+    integer(kind=8) :: iocc, ndir, val_nb, nondp
+    integer(kind=8) :: jvCell
+    integer(kind=8) :: nbCell
     character(len=19) :: map(LOAD_MAP_NBMAX)
-    integer :: nbMap, nbCmp(LOAD_MAP_NBMAX)
+    integer(kind=8) :: nbMap, nbCmp(LOAD_MAP_NBMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

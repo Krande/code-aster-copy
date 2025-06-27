@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine wptest(exclu, xh, xb, vp, neq,&
                       nmax)
-        integer :: exclu(*)
+        integer(kind=8) :: exclu(*)
         complex(kind=8) :: xh(*)
         complex(kind=8) :: xb(*)
         complex(kind=8) :: vp
-        integer :: neq
+        integer(kind=8) :: neq
         real(kind=8) :: nmax
     end subroutine wptest
 end interface

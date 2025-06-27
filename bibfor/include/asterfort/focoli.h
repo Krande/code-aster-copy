@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine focoli(ipt, coli, interp, x, y,&
                       rvar, resu, ier)
-        integer :: ipt
+        integer(kind=8) :: ipt
         character(len=1) :: coli
         character(len=24) :: interp
         real(kind=8) :: x(*)
         real(kind=8) :: y(*)
         real(kind=8) :: rvar
         real(kind=8) :: resu
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine focoli
 end interface

@@ -44,7 +44,7 @@ subroutine te0460(nomopt, nomte)
 !
 ! --- Local variables
 !
-    integer :: cbs, fbs, total_dofs, gbs
+    integer(kind=8) :: cbs, fbs, total_dofs, gbs
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_matrix) :: gradfullvec, stabscal, gradrec_scal

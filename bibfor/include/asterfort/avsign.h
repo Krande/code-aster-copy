@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine avsign(nbvec, nbordr, vectn, vwork, tdisp,&
                       kwork, sommw, tspaq, i, jvsign)
-        integer :: tdisp
-        integer :: nbordr
-        integer :: nbvec
+        integer(kind=8) :: tdisp
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
         real(kind=8) :: vectn(3*nbvec)
         real(kind=8) :: vwork(tdisp)
-        integer :: kwork
-        integer :: sommw
-        integer :: tspaq
-        integer :: i
-        integer :: jvsign
+        integer(kind=8) :: kwork
+        integer(kind=8) :: sommw
+        integer(kind=8) :: tspaq
+        integer(kind=8) :: i
+        integer(kind=8) :: jvsign
     end subroutine avsign
 end interface

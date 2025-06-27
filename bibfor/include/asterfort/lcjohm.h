@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,17 +23,17 @@ interface
                       dimcon, nbvari, defgem, defgep, varim,&
                       varip, sigm, sigp, drde, ouvh,&
                       retcom)
-        integer :: nbvari
-        integer :: dimcon
-        integer :: dimdef
-        integer :: imate
+        integer(kind=8) :: nbvari
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: imate
         aster_logical, intent(in) :: lSigm, lMatr, lVari
-        integer :: kpi
-        integer :: npg
+        integer(kind=8) :: kpi
+        integer(kind=8) :: npg
         character(len=8) :: nomail
-        integer :: addeme
-        integer :: advico
-        integer :: ndim
+        integer(kind=8) :: addeme
+        integer(kind=8) :: advico
+        integer(kind=8) :: ndim
         real(kind=8) :: defgem(dimdef)
         real(kind=8) :: defgep(dimdef)
         real(kind=8) :: varim(nbvari)
@@ -42,6 +42,6 @@ interface
         real(kind=8) :: sigp(dimcon)
         real(kind=8) :: drde(dimdef, dimdef)
         real(kind=8) :: ouvh
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine lcjohm
 end interface

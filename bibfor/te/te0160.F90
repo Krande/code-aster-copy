@@ -52,13 +52,13 @@ subroutine te0160(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::          icodre(2)
+    integer(kind=8) ::          icodre(2)
     real(kind=8) ::     valres(2)
     character(len=16) :: nomres(2)
-    integer :: nno, kp, ii, jj, imatuu
-    integer :: ipoids, ivf, igeom, imate, icoret
-    integer :: idepla, ideplp, idfdk, imat, iyty, ivectu, ivarip
-    integer :: jgano, kk, icontp, ndim, nelyty, nnos, nordre, npg
+    integer(kind=8) :: nno, kp, ii, jj, imatuu
+    integer(kind=8) :: ipoids, ivf, igeom, imate, icoret
+    integer(kind=8) :: idepla, ideplp, idfdk, imat, iyty, ivectu, ivarip
+    integer(kind=8) :: jgano, kk, icontp, ndim, nelyty, nnos, nordre, npg
     real(kind=8) :: aire, coef, coef1, coef2
     real(kind=8), parameter :: demi = 0.5d0
     real(kind=8) :: etraction, epsth, ecompress, ecable
@@ -66,7 +66,7 @@ subroutine te0160(option, nomte)
     real(kind=8) :: preten
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
-    integer :: codret, iret
+    integer(kind=8) :: codret, iret
     real(kind=8) :: valr(2)
     character(len=16), pointer :: compor(:) => null()
     character(len=8), parameter :: valp(2) = (/'SECT', 'TENS'/)

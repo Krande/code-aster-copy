@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine chcore(chou)
 #include "asterfort/sdchgd.h"
 #include "asterfort/utmess.h"
 
-    integer :: iret, jvale, nbval, jvalin, i, jrefe
+    integer(kind=8) :: iret, jvale, nbval, jvalin, i, jrefe
     real(kind=8) :: zero
     parameter(zero=0.d0)
     character(len=3) :: tsca

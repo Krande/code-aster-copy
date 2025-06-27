@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
         character(len=*) :: prefiz
         character(len=*) :: nomaz
         character(len=*) :: motfaz
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=*) :: lisi1z
-        integer :: lonli1
+        integer(kind=8) :: lonli1
         character(len=*) :: lisi2z
-        integer :: lonli2
+        integer(kind=8) :: lonli2
         character(len=*) :: modz
     end subroutine calinn
 end interface

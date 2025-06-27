@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine xfem_pc_detr(matass)
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refa_pc_0(:) => null()
     character(len=24), pointer :: refa_pc_1(:) => null()
-    integer :: iret_0, iret_1
+    integer(kind=8) :: iret_0, iret_1
 !-----------------------------------------------------------------------
 !
     call jemarq()

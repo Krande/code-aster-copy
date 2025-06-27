@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@ function lxl_find(chaine, char1)
 !
     implicit none
 !
-    integer :: lxl_find
+    integer(kind=8) :: lxl_find
     character(len=*), intent(in) :: chaine
     character(len=1), intent(in) :: char1
 
-    integer :: i, lg
+    integer(kind=8) :: i, lg
     lxl_find = 0
     lg = len(chaine)
     do i = 1, lg

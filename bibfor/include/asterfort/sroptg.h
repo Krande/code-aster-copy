@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       invar, s, sel, ucrpm,&
                       ucrvm, ucriv, seuilv, vinm, nvi, de,&
                       depsv, dside, retcom)
-        integer :: nbmat
-        integer :: val
-        integer :: dum
-        integer :: nvi
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: val
+        integer(kind=8) :: dum
+        integer(kind=8) :: nvi
         real(kind=8) :: dt
         real(kind=8) :: mater(nbmat, 2)
         real(kind=8) :: invar
@@ -40,6 +40,6 @@ interface
         real(kind=8) :: de(6, 6)
         real(kind=8) :: depsv(6)
         real(kind=8) :: dside(6, 6)
-        integer :: retcom
+        integer(kind=8) :: retcom
     end subroutine sroptg
 end interface

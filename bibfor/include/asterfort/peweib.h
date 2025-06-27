@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
         character(len=*) :: mate, mateco
         character(len=*) :: cara
         character(len=8) :: chmat
-        integer :: nh
-        integer :: nbocc
-        integer :: iresu
+        integer(kind=8) :: nh
+        integer(kind=8) :: nbocc
+        integer(kind=8) :: iresu
         character(len=*) :: nomcmd
     end subroutine peweib
 end interface

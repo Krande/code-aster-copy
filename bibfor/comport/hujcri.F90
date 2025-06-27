@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine hujcri(mater, sig, vin, seuili)
 !       ---------------------------------------------------------------
 #include "asterc/r8maem.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: mater(22, 2), r4, i1, sig(6), vin(*)
     real(kind=8) :: d, pco, beta, seuili, pc, epsvpm
     real(kind=8) :: d13, zero, aexp, exptol

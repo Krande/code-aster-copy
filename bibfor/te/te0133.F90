@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,9 +37,9 @@ subroutine te0133(option, nomte)
 !
 !----------------------------------------------------------------------
 !
-    integer :: jgeom, jrepl1, jrepl2, jrepl3
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: i
+    integer(kind=8) :: jgeom, jrepl1, jrepl2, jrepl3
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: i
     real(kind=8) :: pgl(3, 3)
     real(kind=8) :: ux(3), uy(3), uz(3)
     real(kind=8) :: ang(3)

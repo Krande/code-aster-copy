@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ subroutine fcent(nomte, xi, nb1, vecl)
     character(len=16) :: nomte
 !
 !
-    integer :: nb1
+    integer(kind=8) :: nb1
     real(kind=8) :: rho, epais
     real(kind=8) :: xi(3, *), vomega(3), vecl(51), vecl1(42)
     real(kind=8) :: xa(3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, intsn, irota, lzi, lzr, npgsn
+    integer(kind=8) :: i, intsn, irota, lzi, lzr, npgsn
     real(kind=8) :: rnormc
 !-----------------------------------------------------------------------
     call jevech('PROTATR', 'L', irota)

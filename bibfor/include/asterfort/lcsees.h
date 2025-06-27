@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       poidpg       , shape_slav_func,&
                       jaco_upda    , dist_vect      ,&
                       vtmp )
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: nb_node_slav
-        integer, intent(in) :: nb_lagr
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: nb_node_slav
+        integer(kind=8), intent(in) :: nb_lagr
         aster_logical, intent(in) :: l_norm_smooth
-        integer, intent(in) :: indi_lagc(10)
+        integer(kind=8), intent(in) :: indi_lagc(10)
         real(kind=8), intent(in) :: lagrc
         real(kind=8), intent(in) :: poidpg
         real(kind=8), intent(in) :: shape_slav_func(9)

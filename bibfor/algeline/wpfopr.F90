@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin, &
 !
     character(len=*) :: appr, matopa, matpsc, raide
     character(len=19) :: solveu
-    integer :: lmasse, lamor, lraide
+    integer(kind=8) :: lmasse, lamor, lraide
     real(kind=8) :: fmin
     complex(kind=8) :: sigma
     aster_logical :: lqz
@@ -50,7 +50,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: lmat(3), lmatra, lmtpsc, jpomr, jrefe, ibid, jbid
+    integer(kind=8) :: lmat(3), lmatra, lmtpsc, jpomr, jrefe, ibid, jbid
     real(kind=8) :: ashift, constr(3), constc(6), valr(2)
     character(len=1) :: typcst(3), base
     character(len=8) :: namddl
@@ -59,7 +59,7 @@ subroutine wpfopr(lmasse, lamor, lraide, appr, fmin, &
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: icomb
+    integer(kind=8) :: icomb
     real(kind=8) :: fshift
 !-----------------------------------------------------------------------
     data namddl/'        '/

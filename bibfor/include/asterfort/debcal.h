@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine debcal(nin, lchin, lpain, nout, lchout)
-        integer :: nout
-        integer :: nin
+        integer(kind=8) :: nout
+        integer(kind=8) :: nin
         character(len=19) :: lchin(nin)
         character(len=8) :: lpain(nin)
         character(len=19) :: lchout(nout)

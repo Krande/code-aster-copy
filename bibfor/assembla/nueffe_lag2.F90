@@ -49,7 +49,7 @@ subroutine nueffe_lag2(nbLigr, listLigr, base, numeDofZ, renumZ, &
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: nbLigr
+    integer(kind=8), intent(in) :: nbLigr
     character(len=24), pointer :: listLigr(:)
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: numeDofZ, renumZ, modelZ
@@ -96,7 +96,7 @@ subroutine nueffe_lag2(nbLigr, listLigr, base, numeDofZ, renumZ, &
     character(len=24) :: modeLoc, idenRela
     character(len=8) :: gran_name, kbid
     character(len=3) :: kret
-    integer :: nbnode_tot, igds, nec, nlili
+    integer(kind=8) :: nbnode_tot, igds, nec, nlili
     character(len=8) :: nomcmp
     character(len=8) :: mesh
     character(len=14) :: numeDof
@@ -106,33 +106,33 @@ subroutine nueffe_lag2(nbLigr, listLigr, base, numeDofZ, renumZ, &
     character(len=19) :: nume_equa
     character(len=24) :: nequ, refn
     character(len=24) :: lili, prno, nueq, deeq, delg, crco, refp
-    integer :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg, nb_equa
-    integer :: nb_iden_rela, nb_iden_dof, nb_iden_term
-    integer :: i, iad, ianueq, icddlb
-    integer :: icer1, icer2, iconx1, iconx2, iddlag, iderli, idlgns
-    integer :: idnocm, idprn1, idprn2, idref
-    integer :: iec, iel, iexi1, ifm, igr, ilag, ilag2, ilag3
-    integer :: ili, ilsuiv, inewn, ino, inulag, inum2, inum21
-    integer :: inuno1, inuno2, ioldn, iprnm, ipsuiv, ire, iret
-    integer :: ivsuiv, j, j1, jnulag, jprno, k, l, l1, l2, long, n0
-    integer :: n0re, n1, n1m1re, n1re, n2, n21, n3, nbcmp, nbn, nb_node_subs
-    integer :: nb_node, nbnonu, nbnore, nddl1, nddlb
-    integer :: nel, niv, nlag, nma, nn, nbnm
-    integer :: ns, numa, nunoel, n22, n32, nunoe2
-    integer ::  vali(5), cont_lili_ref, ili2
+    integer(kind=8) :: nb_node_mesh, ilim, itypel, nb_dof, jdeeq, jdelg, nb_equa
+    integer(kind=8) :: nb_iden_rela, nb_iden_dof, nb_iden_term
+    integer(kind=8) :: i, iad, ianueq, icddlb
+    integer(kind=8) :: icer1, icer2, iconx1, iconx2, iddlag, iderli, idlgns
+    integer(kind=8) :: idnocm, idprn1, idprn2, idref
+    integer(kind=8) :: iec, iel, iexi1, ifm, igr, ilag, ilag2, ilag3
+    integer(kind=8) :: ili, ilsuiv, inewn, ino, inulag, inum2, inum21
+    integer(kind=8) :: inuno1, inuno2, ioldn, iprnm, ipsuiv, ire, iret
+    integer(kind=8) :: ivsuiv, j, j1, jnulag, jprno, k, l, l1, l2, long, n0
+    integer(kind=8) :: n0re, n1, n1m1re, n1re, n2, n21, n3, nbcmp, nbn, nb_node_subs
+    integer(kind=8) :: nb_node, nbnonu, nbnore, nddl1, nddlb
+    integer(kind=8) :: nel, niv, nlag, nma, nn, nbnm
+    integer(kind=8) :: ns, numa, nunoel, n22, n32, nunoe2
+    integer(kind=8) ::  vali(5), cont_lili_ref, ili2
     aster_logical :: lparallel_mesh, lligrel_cp
-    integer, pointer :: v_nnli(:) => null()
-    integer, pointer :: adli(:) => null()
-    integer, pointer :: bid(:) => null()
-    integer, pointer :: adne(:) => null()
-    integer, pointer :: qrns(:) => null()
-    integer, pointer :: p_nequ(:) => null()
-    integer, pointer :: idenRelaInfo(:) => null()
-    integer, pointer :: lagr_mult(:) => null()
-    integer, pointer :: v_logl(:) => null()
-    integer, pointer :: v_gllo(:) => null()
-    integer, pointer :: v_crco(:) => null()
-    integer, pointer :: v_refp(:) => null()
+    integer(kind=8), pointer :: v_nnli(:) => null()
+    integer(kind=8), pointer :: adli(:) => null()
+    integer(kind=8), pointer :: bid(:) => null()
+    integer(kind=8), pointer :: adne(:) => null()
+    integer(kind=8), pointer :: qrns(:) => null()
+    integer(kind=8), pointer :: p_nequ(:) => null()
+    integer(kind=8), pointer :: idenRelaInfo(:) => null()
+    integer(kind=8), pointer :: lagr_mult(:) => null()
+    integer(kind=8), pointer :: v_logl(:) => null()
+    integer(kind=8), pointer :: v_gllo(:) => null()
+    integer(kind=8), pointer :: v_crco(:) => null()
+    integer(kind=8), pointer :: v_refp(:) => null()
     character(len=24), pointer :: tco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

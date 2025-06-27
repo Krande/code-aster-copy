@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,24 +21,24 @@ interface
                       nomgen, nbec, nomast, prefix, typgeo,&
                       nomtyp, nmatyp, nufaen, nufacr, nogrfa,&
                       nofaex, tabaux, infmed, ifm)
-        integer :: nbgrou
-        integer :: nbrent
+        integer(kind=8) :: nbgrou
+        integer(kind=8) :: nbrent
         med_idt :: fid
         character(len=*) :: nomamd
-        integer :: typent
+        integer(kind=8) :: typent
         character(len=24) :: nomgen(*)
-        integer :: nbec
+        integer(kind=8) :: nbec
         character(len=8) :: nomast
         character(len=6) :: prefix
-        integer :: typgeo(*)
+        integer(kind=8) :: typgeo(*)
         character(len=8) :: nomtyp(*)
-        integer :: nmatyp(*)
-        integer :: nufaen(nbrent)
-        integer :: nufacr(nbrent)
+        integer(kind=8) :: nmatyp(*)
+        integer(kind=8) :: nufaen(nbrent)
+        integer(kind=8) :: nufacr(nbrent)
         character(len=80) :: nogrfa(nbgrou)
         character(len=*) :: nofaex(*)
-        integer :: tabaux(*)
-        integer :: infmed
-        integer :: ifm
+        integer(kind=8) :: tabaux(*)
+        integer(kind=8) :: infmed
+        integer(kind=8) :: ifm
     end subroutine irmmf2
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
 !
     implicit none
     character(len=8), intent(in) :: nogfma
-    integer, intent(in) :: ulnbnoeuds, maxmailgrp, ulnbmailles, nbgf, ncarma, nbnoeuds
+    integer(kind=8), intent(in) :: ulnbnoeuds, maxmailgrp, ulnbmailles, nbgf, ncarma, nbnoeuds
     real(kind=8), intent(in) :: vcoord(2*ulnbnoeuds)
-    integer, intent(in) :: vigroup(nbgf*maxmailgrp)
-    integer, intent(in) :: vmailgrp(nbgf)
+    integer(kind=8), intent(in) :: vigroup(nbgf*maxmailgrp)
+    integer(kind=8), intent(in) :: vmailgrp(nbgf)
     character(len=24), intent(in) :: vngroup(nbgf)
-    integer, intent(in) :: vimailles(ulnbmailles*ncarma)
+    integer(kind=8), intent(in) :: vimailles(ulnbmailles*ncarma)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -75,13 +75,13 @@ subroutine maillagefibre(nogfma, ulnbnoeuds, maxmailgrp, nbgf, vcoord, nbnoeuds,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, iadobj, idep, ifin, itype, nbmail, nno, nbnoma
+    integer(kind=8) :: ii, iadobj, idep, ifin, itype, nbmail, nno, nbnoma
     character(len=7)  :: k7bid
     character(len=24) :: objdime, objtitre, objnomnoe, objcooval, objcoodsc
     character(len=24) :: objnommai, objtypmai, objconnex, objgrpmai, objgpptnm
     character(len=24) :: nomgrf
 !
-    integer, pointer            :: dime(:) => null()
+    integer(kind=8), pointer            :: dime(:) => null()
     real(kind=8), pointer       :: xyz(:) => null()
     character(len=80), pointer  :: titre(:) => null()
 !

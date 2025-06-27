@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@ interface
                                satm  , satur  , dsatur, retcom)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         real(kind=8), intent(in) :: p1m, p1,tempm,temp
         real(kind=8), intent(out) :: satm, satur, dsatur
-        integer, intent(out) :: retcom
+        integer(kind=8), intent(out) :: retcom
     end subroutine thmEvalSatuInit
 end interface 

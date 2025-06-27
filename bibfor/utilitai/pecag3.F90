@@ -33,7 +33,7 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle, &
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: ndim, nbmail
+    integer(kind=8) :: ndim, nbmail
     real(kind=8) :: valpar(*)
     character(len=*) :: noment(*), noma
     character(len=*) :: motcle
@@ -48,8 +48,8 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ig, im, in, jcoor, jdes
-    integer :: jgro, nbma, nbno, nbnoeu, numail, nuno
+    integer(kind=8) :: i, ibid, ig, im, in, jcoor, jdes
+    integer(kind=8) :: jgro, nbma, nbno, nbnoeu, numail, nuno
     real(kind=8) :: alpha, cdx, cdy, cosa, r
     real(kind=8) :: rmax, rx, ry, sina, tamp, x, x0
     real(kind=8) :: xmax, xmin, y, y0, ymax, ymin, zmax

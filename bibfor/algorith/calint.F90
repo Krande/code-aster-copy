@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine calint(i, j, vect1, nbpts, vect2, &
                   long, tt)
     implicit none
 #include "jeveux.h"
-    integer :: i, j, long, nbpts
+    integer(kind=8) :: i, j, long, nbpts
     real(kind=8) :: vect2(nbpts)
     complex(kind=8) :: vect1(long)
 !      A PARTIR DES VALEURS DE FONCTIONS CALCULE L'INTERSPECTRE  OU
@@ -33,7 +33,7 @@ subroutine calint(i, j, vect1, nbpts, vect2, &
 !           TT    : TEMPS TOTAL DE L'EVOLUTION TEMPORELLE
 !
 !-----------------------------------------------------------------------
-    integer :: k, lvect1, lvect2, npt, npt2
+    integer(kind=8) :: k, lvect1, lvect2, npt, npt2
     real(kind=8) :: tt
 !-----------------------------------------------------------------------
     npt = nbpts

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- INPUT
 !
-    integer, intent(in) :: mxresf, neqact, nblagr
+    integer(kind=8), intent(in) :: mxresf, neqact, nblagr
     real(kind=8), intent(in) :: omemax, omemin, omeshi
     complex(kind=8), intent(in) :: sigma
     character(len=19), intent(in) :: eigsol
@@ -60,21 +60,21 @@ subroutine vpcalq(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- OUTPUT
 !
-    integer, intent(out) :: nconv
+    integer(kind=8), intent(out) :: nconv
     real(kind=8), intent(out) :: vpinf, vpmax
     aster_logical, intent(out) :: flage
 !
 ! --- INPUT/OUTPUT
 !
-    integer, intent(inout) :: npivot
+    integer(kind=8), intent(inout) :: npivot
 !
 ! --- VARIABLES LOCALES
 !
-    integer :: imet, lamor, lmasse, lraide, nbvect, neq, nfreq, lprod
-    integer :: qrn, qrlwor, qrn2, ilscal, irscal, icscal, ivscal, iiscal
-    integer :: lvalpr, iqrn, lqrn, qrar, qrai, qrba, qrvl, kqrn
-    integer :: lauc, kqrnr, mfreq, ifreq, izero
-    integer :: lresui, lresur, lresuk, lvec
+    integer(kind=8) :: imet, lamor, lmasse, lraide, nbvect, neq, nfreq, lprod
+    integer(kind=8) :: qrn, qrlwor, qrn2, ilscal, irscal, icscal, ivscal, iiscal
+    integer(kind=8) :: lvalpr, iqrn, lqrn, qrar, qrai, qrba, qrvl, kqrn
+    integer(kind=8) :: lauc, kqrnr, mfreq, ifreq, izero
+    integer(kind=8) :: lresui, lresur, lresuk, lvec
     real(kind=8) :: quapi2, omecor, precdc, rbid, rzero
     character(len=1) :: ktyp
     character(len=8) :: method

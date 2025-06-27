@@ -41,7 +41,7 @@ subroutine mmimp1(ifm, mesh, ds_contact)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: ifm
+    integer(kind=8), intent(in) :: ifm
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
@@ -56,19 +56,19 @@ subroutine mmimp1(ifm, mesh, ds_contact)
 ! In  mesh             : name of mesh
 ! In  ds_contact       : datastructure for contact management
 !
-    integer :: ztabf
-    integer :: posmae, nummae, nummam, numnoe, jdecme
+    integer(kind=8) :: ztabf
+    integer(kind=8) :: posmae, nummae, nummam, numnoe, jdecme
     character(len=8) :: nommae, nommam, nomnoe
     real(kind=8) :: ksipc1, ksipc2, ksipr1, ksipr2, wpc, r8bid, seuili
-    integer :: xs
+    integer(kind=8) :: xs
     real(kind=8) :: tau1(3), tau2(3), norm(3)
     character(len=24) :: tabfin
-    integer :: jtabf
-    integer :: iptm, i_zone, imae, inoe, iptc
-    integer :: model_ndim, nb_cont_zone, nnoe, nptm, nbmae
-    integer :: ilcnx1
+    integer(kind=8) :: jtabf
+    integer(kind=8) :: iptm, i_zone, imae, inoe, iptc
+    integer(kind=8) :: model_ndim, nb_cont_zone, nnoe, nptm, nbmae
+    integer(kind=8) :: ilcnx1
     aster_logical :: lveri
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

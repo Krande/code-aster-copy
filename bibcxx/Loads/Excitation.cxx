@@ -3,7 +3,7 @@
  * @brief Implementation of Excitation class
  * @author Natacha Bereux
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -23,7 +23,7 @@
 
 #include "Loads/Excitation.h"
 
-const std::vector< ExcitationEnum > allExcitation = {StandardExcitation, DrivenExcitation,
-                                                     OnUpdatedGeometryExcitation,
-                                                     IncrementalDirichletExcitation};
-const VectorString allExcitationNames = {"FIXE_CSTE", "FIXE_PILO", "SUIV", "DIDI"};
+const std::vector< ExcitationEnum > allExcitation = { StandardExcitation, DrivenExcitation,
+                                                      OnUpdatedGeometryExcitation,
+                                                      IncrementalDirichletExcitation };
+const VectorString allExcitationNames = { "FIXE_CSTE", "FIXE_PILO", "SUIV", "DIDI" };

@@ -48,7 +48,7 @@ subroutine te0494(nomopt, nomte)
     type(HHO_basis_cell) :: hhoBasisCell
     type(HHO_basis_face) :: hhoBasisFace
     real(kind=8) :: basis(6*MAX_FACE_COEF+MAX_CELL_COEF)
-    integer :: dec, iFace, size
+    integer(kind=8) :: dec, iFace, size
     blas_int :: b_n
     blas_int, parameter :: b_incx = 1, b_incy = 1
 !

@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) 2007 NECS - BRUNO ZUBER   WWW.NECS.FR
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine nmfici(nno, nddl, wref, vff, dfde, &
 #include "asterfort/sumetr.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: nno, nddl
+    integer(kind=8) :: nno, nddl
     real(kind=8) :: wref, vff(nno), dfde(2, nno), geom(3, nddl/3)
     real(kind=8) :: poids, b(3, 3, nddl/3)
 !-----------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine nmfici(nno, nddl, wref, vff, dfde, &
 ! OUT POIDS  POIDS REEL DU POINT DE GAUSS (AVEC DISTORSION)
 ! OUT B      MATRICE DE PASSAGE UNODAL -> SAUT DE U LOCAL
 !-----------------------------------------------------------------------
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: cova(3, 3), metr(2, 2), jac, r(3, 3), noa1
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

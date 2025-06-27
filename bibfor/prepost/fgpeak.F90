@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine fgpeak(nomfon, pseuil, coemul, nbpoin, valpoi)
 #include "asterfort/jeveuo.h"
     character(len=*) :: nomfon
     real(kind=8) :: pseuil, valpoi(*), coemul
-    integer :: nbpoin
+    integer(kind=8) :: nbpoin
 !     EXTRACTION DES PICS D'UNE FONCTION
 !     ------------------------------------------------------------------
 ! IN  NOMFOM : K8  : NOM DE LA FONCTION
@@ -35,11 +35,11 @@ subroutine fgpeak(nomfon, pseuil, coemul, nbpoin, valpoi)
 !     ------------------------------------------------------------------
 !
     character(len=32) :: fvale
-    integer :: ifonc, pass, sortie
+    integer(kind=8) :: ifonc, pass, sortie
     real(kind=8) :: max, min, valeur
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbpts
+    integer(kind=8) :: i, nbpts
 !-----------------------------------------------------------------------
     call jemarq()
 !

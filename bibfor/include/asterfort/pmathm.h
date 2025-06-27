@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine pmathm(dimmat, dimdef, dimcon, dimuel, dsde,&
                       drds, ck, b, poids, work1, work2, matri)
-        integer :: dimuel
-        integer :: dimcon
-        integer :: dimdef
-        integer :: dimmat
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: dimmat
         real(kind=8) :: dsde(dimcon, dimdef)
         real(kind=8) :: drds(dimdef, dimcon)
         real(kind=8) :: ck(dimdef)

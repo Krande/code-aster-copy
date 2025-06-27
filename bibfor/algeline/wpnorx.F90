@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine wpnorx(nbmode, neq, exclus, vecp, resufk)
     implicit none
 #include "asterc/r8miem.h"
-    integer :: nbmode, neq, exclus(*)
+    integer(kind=8) :: nbmode, neq, exclus(*)
     complex(kind=8) :: vecp(neq, nbmode)
     character(len=*) :: resufk(*)
 !     NORMALISE A LA PLUS GRANDE DES VALEURS SUR UN DDL QUI N'EST PAS
@@ -30,7 +30,7 @@ subroutine wpnorx(nbmode, neq, exclus, vecp, resufk)
 ! VAR VECP   : C : MATRICE DES MODES
 ! IN  EXCLUS : I : TABLE   DES DDL EXCLUS (0 <=> EXCLUS)
 !     ------------------------------------------------------------------
-    integer :: imode, ieq
+    integer(kind=8) :: imode, ieq
     complex(kind=8) :: normx, zero
     real(kind=8) :: prec
 !     ------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,9 @@ interface
         aster_logical,intent(out) :: amor
         character(len=8),intent(out) :: nommes
         character(len=24),intent(out) :: lfreqs
-        integer,intent(out) :: nbfreq
+        integer(kind=8),intent(out) :: nbfreq
         character(len=24),intent(out) :: matobs(3)
-        integer,intent(out) :: obsdim(3)
+        integer(kind=8),intent(out) :: obsdim(3)
         real(kind=8),intent(out) :: gamma, alpha
         aster_logical,intent(out) :: eval
     end subroutine materc

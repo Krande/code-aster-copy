@@ -71,16 +71,16 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
     character(len=19) :: chanom
     character(len=64) :: nochmd
     character(len=*) :: nomcmp(*), partie, etiqcp
-    integer :: nbcmp, numpt, numord, ifi
-    integer :: adsk, adsd, adsc, adsv, adsl
-    integer :: nbenec
-    integer :: lienec(*)
-    integer :: typent, tygeom
+    integer(kind=8) :: nbcmp, numpt, numord, ifi
+    integer(kind=8) :: adsk, adsd, adsc, adsv, adsl
+    integer(kind=8) :: nbenec
+    integer(kind=8) :: lienec(*)
+    integer(kind=8) :: typent, tygeom
     real(kind=8) :: instan
     character(len=16), intent(in) :: field_type
-    integer, intent(inout) :: nbCmpDyna
+    integer(kind=8), intent(inout) :: nbCmpDyna
     aster_logical :: lfichUniq
-    integer :: codret
+    integer(kind=8) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -116,7 +116,7 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRCAME'
-    integer, parameter :: ednoeu = 3, edmail = 0, ednoma = 4, typnoe = 0
+    integer(kind=8), parameter :: ednoeu = 3, edmail = 0, ednoma = 4, typnoe = 0
     character(len=1)   :: saux01
     character(len=8)   :: saux08, nomaas, nomtyp(MT_NTYMAX), nom_sd_fu
     character(len=16)  :: formar
@@ -127,14 +127,14 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
     character(len=200) :: nofimd
     character(len=255) :: kfic
     med_idt :: ifimed
-    integer :: nbtyp, ifm, nivinf, lnomam, jindir
-    integer :: ncmpve, nvalec, nbprof, nbvato, ncmprf
-    integer :: nbimpr, jnocm1, jnocm2, nbcmp2, icmp1, icmp2
-    integer :: adcaii, adcaik, ncmpvl, jnocm3
-    integer :: iaux, jaux, nrimpr, jtest, nb_cmp_tot, jnocmp, numcmp, cmpt
-    integer :: existc, nbcmfi, nbval, nbcmpmax, vnbcmp(1), rang, nbproc, iproc
+    integer(kind=8) :: nbtyp, ifm, nivinf, lnomam, jindir
+    integer(kind=8) :: ncmpve, nvalec, nbprof, nbvato, ncmprf
+    integer(kind=8) :: nbimpr, jnocm1, jnocm2, nbcmp2, icmp1, icmp2
+    integer(kind=8) :: adcaii, adcaik, ncmpvl, jnocm3
+    integer(kind=8) :: iaux, jaux, nrimpr, jtest, nb_cmp_tot, jnocmp, numcmp, cmpt
+    integer(kind=8) :: existc, nbcmfi, nbval, nbcmpmax, vnbcmp(1), rang, nbproc, iproc
     aster_logical :: lgaux, existm
-    integer :: iCmp
+    integer(kind=8) :: iCmp
     character(len=8), pointer :: cmpUserName(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
     character(len=8), pointer :: v_ma(:) => null()
@@ -147,11 +147,11 @@ subroutine ircame(ifi, nochmd, chanom, typech, modele, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: typgeo(MT_NTYMAX)
-    integer :: nnotyp(MT_NTYMAX)
-    integer :: modnum(MT_NTYMAX)
-    integer :: numnoa(MT_NTYMAX, MT_NNOMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
-    integer :: renumd(MT_NTYMAX)
+    integer(kind=8) :: typgeo(MT_NTYMAX)
+    integer(kind=8) :: nnotyp(MT_NTYMAX)
+    integer(kind=8) :: modnum(MT_NTYMAX)
+    integer(kind=8) :: numnoa(MT_NTYMAX, MT_NNOMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: renumd(MT_NTYMAX)
 !
 ! --------------------------------------------------------------------------------------------------
 !

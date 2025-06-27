@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine irmiim(ifmis, ifreq, nfreq, nbno, tabrig)
-        integer :: ifmis
-        integer :: ifreq
-        integer :: nfreq
-        integer :: nbno
+        integer(kind=8) :: ifmis
+        integer(kind=8) :: ifreq
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: nbno
         character(len=24) :: tabrig
     end subroutine irmiim
 end interface

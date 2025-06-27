@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine pevolu(resu, modele, carele, nbocc)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbocc
+    integer(kind=8) :: nbocc
     character(len=8) :: modele, carele
     character(len=19) :: resu
 !
@@ -67,11 +67,11 @@ subroutine pevolu(resu, modele, carele, nbocc)
 !     TRAITEMENT DU MOT CLE-FACTEUR : "VOLUMOGRAMME"
 !     ------------------------------------------------------------------
 !
-    integer :: nr, nd, np, nc, ni, no, nli, nlo, iret, ibid, nbma, nbordr, jno
-    integer :: nn, nbmaf, jma
-    integer :: nbpar, nbpmax, iocc, inum, numo, jin, nbmato, iresma, ncmpm, ifm
-    integer :: nbcmp, nbint, jbpct, ivalr, ii, i, ib, jvalr, jvali, jvalk, niv
-    integer :: nucmp, ivali, bfix, ivol(2), tord(1)
+    integer(kind=8) :: nr, nd, np, nc, ni, no, nli, nlo, iret, ibid, nbma, nbordr, jno
+    integer(kind=8) :: nn, nbmaf, jma
+    integer(kind=8) :: nbpar, nbpmax, iocc, inum, numo, jin, nbmato, iresma, ncmpm, ifm
+    integer(kind=8) :: nbcmp, nbint, jbpct, ivalr, ii, i, ib, jvalr, jvali, jvalk, niv
+    integer(kind=8) :: nucmp, ivali, bfix, ivol(2), tord(1)
     parameter(nbpmax=13)
     character(len=4) :: tych, ki
     character(len=8) :: mailla, crit, k8b, resuco, chamg, typpar(nbpmax), nomgd

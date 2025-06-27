@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,8 +52,8 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
 #include "asterfort/zbinit.h"
 #include "blas/daxpy.h"
 !
-    integer :: list_func_acti(*)
-    integer :: iter_newt, ldccvg
+    integer(kind=8) :: list_func_acti(*)
+    integer(kind=8) :: iter_newt, ldccvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Contact), intent(in) :: ds_contact
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -101,12 +101,12 @@ subroutine nmrelp(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = CORR_NEWTON
-    integer :: ifm, niv
-    integer, parameter :: zsolal = 17, zvalin = 28
+    integer(kind=8), parameter :: phaseType = CORR_NEWTON
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), parameter :: zsolal = 17, zvalin = 28
     character(len=19) :: solalt(zsolal), valint(zvalin, 2)
-    integer :: itrlmx, iterho, neq, act, opt, ldcopt
-    integer :: dimmem, nmax
+    integer(kind=8) :: itrlmx, iterho, neq, act, opt, ldcopt
+    integer(kind=8) :: dimmem, nmax
     real(kind=8) :: rhomin, rhomax, rhoexm, rhoexp
     real(kind=8) :: rhom, rhoopt, rho
     real(kind=8) :: f0, fm, f, fopt, fcvg

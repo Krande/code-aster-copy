@@ -54,8 +54,8 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in) :: min_order
-        integer, intent(in) :: max_order
+        integer(kind=8), intent(in) :: min_order
+        integer(kind=8), intent(in) :: max_order
         real(kind=8), intent(out) :: stiffMat(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
 !
 !
@@ -74,7 +74,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(3, MSIZE_CELL_SCAL) :: BSGradEval
-        integer :: dimMat, ipg, ndim
+        integer(kind=8) :: dimMat, ipg, ndim
         blas_int :: b_k, b_lda, b_ldc, b_n
 !
         ndim = hhoCell%ndim
@@ -118,8 +118,8 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in) :: min_order
-        integer, intent(in) :: max_order
+        integer(kind=8), intent(in) :: min_order
+        integer(kind=8), intent(in) :: max_order
         type(HHO_matrix), intent(out) :: stiffMat
 !
 !
@@ -138,7 +138,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(6, MSIZE_CELL_VEC) :: BVGradEval
-        integer :: dimMat, ipg
+        integer(kind=8) :: dimMat, ipg
         blas_int :: b_k, b_lda, b_ldc, b_n
 !
 ! ----- init basis

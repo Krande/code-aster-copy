@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,21 +41,21 @@ subroutine dtmforc_rede(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 #include "asterfort/as_deallocate.h"
 !
 !   -0.1- Input/output arguments
-    integer, intent(in)  :: nl_ind
+    integer(kind=8), intent(in)  :: nl_ind
     character(len=*), intent(in)  :: sd_dtm_
     character(len=*), intent(in)  :: sd_nl_
-    integer, pointer  :: buffdtm(:)
-    integer, pointer  :: buffnl(:)
+    integer(kind=8), pointer  :: buffdtm(:)
+    integer(kind=8), pointer  :: buffnl(:)
     real(kind=8), pointer  :: depl(:)
     real(kind=8), pointer :: fext(:)
 !
 !   -0.2- Local variables
     character(len=8)  :: sd_dtm, sd_nl, fonc, comp
-    integer           :: im, ier, icomp, nbmode, saredi
-    integer           :: start, finish
+    integer(kind=8)           :: im, ier, icomp, nbmode, saredi
+    integer(kind=8)           :: start, finish
     real(kind=8)      :: seuil, force
 !
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer :: dplred(:) => null()
     real(kind=8), pointer :: vint(:) => null()
     real(kind=8), pointer :: fext0(:) => null()

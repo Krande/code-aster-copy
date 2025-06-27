@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,19 +22,19 @@ subroutine hujncv(rouhuj, nitimp, iter, ndt, nvi, &
     implicit none
 #include "asterfort/utmess.h"
     character(len=*) :: rouhuj
-    integer :: nitimp, iter, ndt, nvi, umess
+    integer(kind=8) :: nitimp, iter, ndt, nvi, umess
     real(kind=8) :: erimp(nitimp, 3)
     real(kind=8) :: deps(ndt), sigd(ndt), vind(nvi)
 !
-    integer :: i
+    integer(kind=8) :: i
     write (umess, 2001)
 2001 format(t3, ' ITER', t10, ' ERR1=DDY',&
-    &          t30, 'ERR2=DY', t50, 'ERR=DDY/DY')
+   &          t30, 'ERR2=DY', t50, 'ERR=DDY/DY')
     do i = 1, min(nitimp, iter)
         write (umess, 1000) i, erimp(i, 1), erimp(i, 2), erimp(i, 3)
     end do
 1000 format(t3, i4, t10, e12.5,&
-    &          t30, e12.5, t50, e12.5)
+   &          t30, e12.5, t50, e12.5)
     call utmess('F', 'MODELISA9_10')
     write (umess, *) ' DEPS '
     write (6, 1002) (i, deps(i), i=1, ndt)

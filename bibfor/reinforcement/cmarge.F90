@@ -47,7 +47,7 @@ subroutine cmarge(N, M, Ned, Med, Ned_g, Med_g, margin, Nrd, Mrd, load_rate, c0_
     real(kind=8) :: c0_crd
     real(kind=8), allocatable :: absolute_val_array(:)
     real(kind=8) :: dot_product
-    integer :: i, sn, smallest_product, j
+    integer(kind=8) :: i, sn, smallest_product, j
     LOGICAL :: inside
     ! number of points of the diagram
     sn = size(N)

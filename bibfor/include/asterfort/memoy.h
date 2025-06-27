@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine memoy(champa, ncpa, champb, ncpb, vr,&
                      nbmail, numail)
         character(len=*) :: champa
-        integer :: ncpa
+        integer(kind=8) :: ncpa
         character(len=*) :: champb
-        integer :: ncpb
+        integer(kind=8) :: ncpb
         real(kind=8) :: vr(2)
-        integer :: nbmail
-        integer :: numail(*)
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: numail(*)
     end subroutine memoy
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,13 +24,13 @@ interface
     subroutine dinon4(neq, ul, dul, utl, nno,&
                       nbcomp, varimo, raide, nbpar, param,&
                       okdire, varipl)
-        integer :: nbpar
-        integer :: nbcomp
-        integer :: neq
+        integer(kind=8) :: nbpar
+        integer(kind=8) :: nbcomp
+        integer(kind=8) :: neq
         real(kind=8) :: ul(neq)
         real(kind=8) :: dul(neq)
         real(kind=8) :: utl(neq)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: varimo(nbcomp*1)
         real(kind=8) :: raide(nbcomp)
         real(kind=8) :: param(6, nbpar)

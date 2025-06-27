@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine dngets(ishift, which, kev, np, ritzr,&
                       ritzi, bounds, shiftr, shifti)
-        integer :: np
-        integer :: kev
-        integer :: ishift
+        integer(kind=8) :: np
+        integer(kind=8) :: kev
+        integer(kind=8) :: ishift
         character(len=2) :: which
         real(kind=8) :: ritzr(kev+np)
         real(kind=8) :: ritzi(kev+np)

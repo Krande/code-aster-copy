@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine te0289(option, nomte)
 !
 !
 !
-    integer :: mxval
+    integer(kind=8) :: mxval
     parameter(mxval=32*10*6)
 !     EN 2D :
 !     MXVAL =  6 (NBSE MAX) * 3 (NBNOSE MAX) * 4 (NBCMP MAX)-> en lineaire
@@ -55,11 +55,11 @@ subroutine te0289(option, nomte)
 !     EN 3D :
 !     MXVAL = 32 (NBSE MAX) * 4 (NBNOSE MAX) * 6 (NBCMP MAX)-> en lineaire
 !     MXVAL = 32 (NBSE MAX) * 10(NBNOSE MAX) * 6 (NBCMP MAX)-> en quadratique
-    integer :: ibid, ndim, nnop, nno, npg, ivf, jgano, irese
-    integer :: nfh, nfe, singu, ddlc, nbsig
-    integer :: jcnset, jlonch, jsigpg
-    integer :: jout1, jout2
-    integer :: nse
+    integer(kind=8) :: ibid, ndim, nnop, nno, npg, ivf, jgano, irese
+    integer(kind=8) :: nfh, nfe, singu, ddlc, nbsig
+    integer(kind=8) :: jcnset, jlonch, jsigpg
+    integer(kind=8) :: jout1, jout2
+    integer(kind=8) :: nse
 !
 !
     real(kind=8) :: siseno(mxval)

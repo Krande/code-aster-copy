@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,9 +46,9 @@ subroutine asmpi_stop(imode)
 #include "asterfort/gtstat.h"
 #include "asterfort/onerrf.h"
 #include "asterfort/ststat.h"
-    integer :: imode
+    integer(kind=8) :: imode
 
-    integer :: lout, imod2
+    integer(kind=8) :: lout, imod2
     character(len=16) :: compex
     aster_logical :: labort
 !

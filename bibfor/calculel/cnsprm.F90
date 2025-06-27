@@ -41,7 +41,7 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
 #include "asterfort/char8_to_int.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=*) :: cns1z, basez, cns2z
 ! ------------------------------------------------------------------
 ! BUT : PROJETER UN CHAM_NO_S  SUR UN MAILLAGE MESURE
@@ -67,19 +67,19 @@ subroutine cnsprm(cns1z, basez, cns2z, iret)
     character(len=19) :: cns1, cns2, trav
     character(len=24) :: vnoeud, vrange, vnoeum, vrangm, vmes, vsu, k24bid
     character(len=24) :: valk(2), vorien, vref, vrefpm
-    integer :: jcns1l, jcns1v, icmp1, icmp2, ier
-    integer :: jcns2l, jcns2v, jcns2k, jcns2d, lvsu, lcmp
-    integer :: ncmp, ibid, gd, ncmp2, ino2, icmp, ino1, icmpd
-    integer :: isma, lori, lref, lrefms
-    integer :: iddl, jddl, imod, ipos, iposi, iposj, lnoeud, lrange
-    integer :: lnoeum, lrangm, nbmesu, nbord, nddle, lmesu, ltrav
+    integer(kind=8) :: jcns1l, jcns1v, icmp1, icmp2, ier
+    integer(kind=8) :: jcns2l, jcns2v, jcns2k, jcns2d, lvsu, lcmp
+    integer(kind=8) :: ncmp, ibid, gd, ncmp2, ino2, icmp, ino1, icmpd
+    integer(kind=8) :: isma, lori, lref, lrefms
+    integer(kind=8) :: iddl, jddl, imod, ipos, iposi, iposj, lnoeud, lrange
+    integer(kind=8) :: lnoeum, lrangm, nbmesu, nbord, nddle, lmesu, ltrav
     real(kind=8) :: v1, v2, coef1, valx, valy, valz, eps
     complex(kind=8) :: v1c, v2c
     character(len=8), pointer :: cns1k(:) => null()
     character(len=8), pointer :: nomacr(:) => null()
     character(len=8), pointer :: cns1c(:) => null()
     character(len=8), pointer :: cns2c(:) => null()
-    integer, pointer :: cns1d(:) => null()
+    integer(kind=8), pointer :: cns1d(:) => null()
     aster_logical :: lcolle, lcolle2
 !     ------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, maxcmp)
-        integer :: ncmp, maxcmp, nodeid
+        integer(kind=8) :: ncmp, maxcmp, nodeid
         character(len=*) :: nume19, allorone
         character(len=8) :: stringarray(maxcmp)
     end subroutine numeddl_get_components

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,9 @@ function isnomi(elrefa, ino)
 !-----------------------------------------------------------------------
     character(len=8) :: elrefa
     aster_logical :: isnomi
-    integer :: ino
+    integer(kind=8) :: ino
 !-----------------------------------------------------------------------
-    integer :: nnos
+    integer(kind=8) :: nnos
 !-----------------------------------------------------------------------
 !
     isnomi = .false.

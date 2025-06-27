@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine alresl(opt, ligrel, nochou, nompar, base)
-        integer :: opt
+        integer(kind=8) :: opt
         character(len=19) :: ligrel
         character(len=19) :: nochou
         character(len=8) :: nompar

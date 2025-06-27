@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
 #include "asterfort/iselli.h"
 #include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xnbddl.h"
-    integer :: ndim, igeom, imate, nnop, npg, idepl, idecpg
-    integer :: nfh, ddlc, nfe, nfiss, heavn(nnop, 5), jstno
+    integer(kind=8) :: ndim, igeom, imate, nnop, npg, idepl, idecpg
+    integer(kind=8) :: nfh, ddlc, nfe, nfiss, heavn(nnop, 5), jstno
     character(len=8) :: elrefp, elrese, typmod(*)
     real(kind=8) :: basloc(6*nnop), he(nfiss), coorse(*)
     real(kind=8) :: lsn(nnop), lst(nnop), sig(4, npg)
@@ -80,10 +80,10 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
 !
     character(len=2) :: k2bid
     character(len=16) :: phenom
-    integer :: kpg, n, i, j, ino, iret, ipg, hea_se
-    integer :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
-    integer :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
-    integer :: singu
+    integer(kind=8) :: kpg, n, i, j, ino, iret, ipg, hea_se
+    integer(kind=8) :: nno, nnos, npgbis, ddls, ddld, ddlm, ndimb
+    integer(kind=8) :: jcoopg, jdfd2, jgano, idfde, ivf, ipoids, nbsig
+    integer(kind=8) :: singu
     aster_logical :: axi
     real(kind=8) :: f(3, 3), eps(6)
     real(kind=8) :: instan, rac2
@@ -94,7 +94,7 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
     real(kind=8) :: grad(3, 3)
     real(kind=8) :: zero, s, sth, d(4, 4), r, epsth(6)
     real(kind=8) :: ka, mu
-    integer :: nnops
+    integer(kind=8) :: nnops
 !
     data zero/0d0/
     data rac2/1.4142135623731d0/

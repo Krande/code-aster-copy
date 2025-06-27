@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine mmbclc(mesh, model, iter_newt, nume_inst, ds_measure, &
 !
     character(len=8), intent(in) :: mesh
     character(len=8), intent(in) :: model
-    integer, intent(in) :: iter_newt
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
     type(NL_DS_Measure), intent(inout) :: ds_measure

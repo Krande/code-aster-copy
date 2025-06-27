@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine focoli(ipt, coli, interp, x, y, &
     implicit none
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
-    integer :: ipt, ier
+    integer(kind=8) :: ipt, ier
     real(kind=8) :: x(*), y(*), rvar, resu
     character(len=1) :: coli
     character(len=24) :: interp

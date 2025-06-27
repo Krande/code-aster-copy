@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine dgendo(em, h, ea, sya, fcj, epsi_c, &
 #include "asterfort/utmess.h"
 #include "asterfort/dgendo1.h"
 
-    integer :: icisai, ipentetrac
+    integer(kind=8) :: icisai, ipentetrac
     real(kind=8) :: em, h, syt, num, np, dxp, ea, sya
     real(kind=8) :: pendt, pendf, pendc, pelast, pelasf, fcj, epsi_c
     real(kind=8) :: b

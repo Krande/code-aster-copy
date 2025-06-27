@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine lcsmelas(fm, df, dtaudf, nmat, materd_, &
     real(kind=8), intent(in) :: fm(3, 3)
     real(kind=8), intent(in) :: df(3, 3)
     real(kind=8), intent(out) :: dtaudf(6, 3, 3)
-    integer, intent(in) :: nmat
+    integer(kind=8), intent(in) :: nmat
     real(kind=8), optional, intent(in) :: materd_(nmat, 2)
     real(kind=8), optional, intent(in) :: young_
     real(kind=8), optional, intent(in) :: nu_
@@ -43,13 +43,13 @@ subroutine lcsmelas(fm, df, dtaudf, nmat, materd_, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: young, nu, unk, troisk, mu
-    integer :: ij, kl, k, l
+    integer(kind=8) :: ij, kl, k, l
     real(kind=8) :: dtaudj, dtaudb
     real(kind=8) :: dvbbtr(6, 6), dvbedf(6, 3, 3)
     real(kind=8) :: em(6)
 !
 ! - Common for SIMO-MIEHE
-    integer :: ind(3, 3), ind1(6), ind2(6)
+    integer(kind=8) :: ind(3, 3), ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6), id(6, 6)
     real(kind=8) :: bem(6), betr(6), dvbetr(6), eqbetr, trbetr
     real(kind=8) :: jp, dj, jm, dfb(3, 3)

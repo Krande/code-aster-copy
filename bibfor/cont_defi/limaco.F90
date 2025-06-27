@@ -31,7 +31,7 @@ subroutine limaco(sdcont, zoneKeyword, mesh, model, model_ndim, &
     character(len=8), intent(in) :: sdcont, mesh, model
     character(len=16), intent(in) :: zoneKeyword
     character(len=19), intent(in) :: slavElemLigr
-    integer, intent(in) :: nb_cont_zone, model_ndim
+    integer(kind=8), intent(in) :: nb_cont_zone, model_ndim
     aster_logical, intent(out) :: lLineRela
     character(len=19), intent(out) :: listRela
 !
@@ -55,7 +55,7 @@ subroutine limaco(sdcont, zoneKeyword, mesh, model, model_ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form
+    integer(kind=8) :: cont_form
     character(len=24) :: sdcont_defi
 !
 ! --------------------------------------------------------------------------------------------------

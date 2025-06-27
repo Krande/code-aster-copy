@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine genecy(cmod1, cmod2, neq, lmat, para,&
                       nbsec, beta1, beta2, ctrav)
-        integer :: neq
+        integer(kind=8) :: neq
         complex(kind=8) :: cmod1(neq)
         complex(kind=8) :: cmod2(neq)
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: para(2)
-        integer :: nbsec
+        integer(kind=8) :: nbsec
         real(kind=8) :: beta1
         real(kind=8) :: beta2
         complex(kind=8) :: ctrav(neq)

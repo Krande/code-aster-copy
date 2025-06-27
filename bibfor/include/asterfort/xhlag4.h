@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine xhlag4(ffc, idepl, idepm, lact, ndim,&
                       nnops, pla, lamb, nvec, champ)
         real(kind=8) :: ffc(16)
-        integer :: idepl
-        integer :: idepm
-        integer :: lact(16)
-        integer :: ndim
-        integer :: nnops
-        integer :: pla(27)
+        integer(kind=8) :: idepl
+        integer(kind=8) :: idepm
+        integer(kind=8) :: lact(16)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnops
+        integer(kind=8) :: pla(27)
         real(kind=8) :: lamb(3)
-        integer :: nvec
+        integer(kind=8) :: nvec
         character(len=8) :: champ
     end subroutine xhlag4
 end interface

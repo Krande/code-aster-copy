@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine defsta(nmresz, numrfz, raildz, lddl, nocmp,&
                       nbfor, nbdef, tydef, inord)
-        integer :: nbdef
-        integer :: nbfor
+        integer(kind=8) :: nbdef
+        integer(kind=8) :: nbfor
         character(len=*) :: nmresz
         character(len=*) :: numrfz
         character(len=*) :: raildz
-        integer :: lddl(nbfor, nbdef)
+        integer(kind=8) :: lddl(nbfor, nbdef)
         character(len=16) :: nocmp(nbdef)
         character(len=16) :: tydef
-        integer :: inord
+        integer(kind=8) :: inord
     end subroutine defsta
 end interface

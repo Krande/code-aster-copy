@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,13 +69,13 @@ subroutine charci(chcine, mfact, mo, valeType)
 !                                          ACOU_IMPO
 ! IN   MO      K*      : NOM DU MODELE
 ! IN   TYPE    K*1     : 'R','C' OU 'F' TYPE DES MOTS CLES
-    integer :: ifm, niv, icmp, cmp, ier, ino, userNodeNb, nuno
-    integer :: ioc, jcnsv, jcnsl, idino, userDOFNb
-    integer :: idnddl, idvddl, nbddl, iddl, i, idprol
-    integer :: nbcmp, jcmp, noc, n1, iret, icorres
-    integer :: jcnshhov, jcnshhod, jcnshhoc, i_cmp_chmx, i_cmp_hho
-    integer :: jnoxfl, nlicmp, icmpmx, nume_first, nb_cmp_chmx
-    integer, parameter :: mxcmp = 100
+    integer(kind=8) :: ifm, niv, icmp, cmp, ier, ino, userNodeNb, nuno
+    integer(kind=8) :: ioc, jcnsv, jcnsl, idino, userDOFNb
+    integer(kind=8) :: idnddl, idvddl, nbddl, iddl, i, idprol
+    integer(kind=8) :: nbcmp, jcmp, noc, n1, iret, icorres
+    integer(kind=8) :: jcnshhov, jcnshhod, jcnshhoc, i_cmp_chmx, i_cmp_hho
+    integer(kind=8) :: jnoxfl, nlicmp, icmpmx, nume_first, nb_cmp_chmx
+    integer(kind=8), parameter :: mxcmp = 100
     character(len=8) :: k8b, mesh, nomgd, nogdsi, gdcns, answer, gdhho
     character(len=8) :: evoim, licmp(20), chcity(mxcmp)
     character(len=16), parameter :: motcle(4) = (/'GROUP_MA', &

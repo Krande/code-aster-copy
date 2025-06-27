@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,21 +25,21 @@ interface
                       tl, ldtl, tr, ldtr, b,&
                       ldb, scale, x, ldx, xnorm,&
                       info)
-        integer :: ldx
-        integer :: ldb
-        integer :: ldtr
-        integer :: ldtl
+        integer(kind=8) :: ldx
+        integer(kind=8) :: ldb
+        integer(kind=8) :: ldtr
+        integer(kind=8) :: ldtl
         aster_logical :: ltranl
         aster_logical :: ltranr
-        integer :: isgn
-        integer :: n1
-        integer :: n2
+        integer(kind=8) :: isgn
+        integer(kind=8) :: n1
+        integer(kind=8) :: n2
         real(kind=8) :: tl(ldtl, *)
         real(kind=8) :: tr(ldtr, *)
         real(kind=8) :: b(ldb, *)
         real(kind=8) :: scale
         real(kind=8) :: x(ldx, *)
         real(kind=8) :: xnorm
-        integer :: info
+        integer(kind=8) :: info
     end subroutine ar_dlasy2
 end interface

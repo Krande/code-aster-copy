@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,15 +27,15 @@ interface
                       etamin, etamax, lcesbo, copilo)
         interface
         subroutine lccrma(mat, fami, kpg, ksp, poum)
-            integer,intent(in) :: mat, kpg, ksp
+            integer(kind=8),intent(in) :: mat, kpg, ksp
             character(len=1),intent(in):: poum
             character(len=*),intent(in) :: fami
         end subroutine lccrma
 
         subroutine lcesga(mode, eps, gameps, dgamde, itemax, precvg, iret)
-            integer,intent(in) :: mode, itemax
+            integer(kind=8),intent(in) :: mode, itemax
             real(kind=8),intent(in) :: eps(6), precvg
-            integer,intent(out):: iret
+            integer(kind=8),intent(out):: iret
             real(kind=8),intent(out):: gameps, dgamde(6)
         end subroutine lcesga
 
@@ -47,7 +47,7 @@ interface
         end interface
 
         character(len=8),intent(in) :: typmod(*)
-        integer,intent(in)      :: neps, mat
+        integer(kind=8),intent(in)      :: neps, mat
         real(kind=8),intent(in) :: tau, epsm(neps), epsd(neps), epsp(neps), etamin, etamax,vim(3)
         real(kind=8),intent(out):: copilo(2,*)
     end subroutine piesgv

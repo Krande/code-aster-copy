@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine epsimc(option, xyz, nno, npg, ndim, &
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, idefi, ier, igau, itemps, nbsig, ndim
-    integer :: nno, npg
+    integer(kind=8) :: i, idefi, ier, igau, itemps, nbsig, ndim
+    integer(kind=8) :: nno, npg
     real(kind=8) :: deux, exx, exy, exz, eyy, eyz, ezz
     real(kind=8) :: xgau, ygau, zero, zgau
 !-----------------------------------------------------------------------

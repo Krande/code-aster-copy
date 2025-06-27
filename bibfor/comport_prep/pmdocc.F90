@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 #include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(out) :: compor(COMPOR_SIZE)
-    integer, intent(out) :: nbVari
+    integer(kind=8), intent(out) :: nbVari
     character(len=16), intent(out) :: type_comp, mult_comp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -58,7 +58,7 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19), parameter :: comporInfo = '&&PMDORC.LIST_VARI'
-    integer :: nbocc1, nbocc2, nbocc3
+    integer(kind=8) :: nbocc1, nbocc2, nbocc3
     character(len=16) :: rela_comp
     aster_logical :: l_etat_init, l_kit_thm
     type(BehaviourPrep_MapCompor) :: prepMapCompor

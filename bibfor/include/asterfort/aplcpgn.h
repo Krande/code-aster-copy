@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,12 +29,12 @@ interface
         character(len=24), intent(in) :: mastConxInvName
         character(len=24), intent(in) :: mastNeighName, slavNeighName
         real(kind=8), intent(in) :: pair_tole, dist_ratio
-        integer, intent(in) :: nb_elem_slav
-        integer, intent(in) :: nb_elem_mast
-        integer, intent(in) :: nb_node_mast
-        integer, intent(in) :: list_elem_mast(nb_elem_mast)
-        integer, intent(in) :: list_elem_slav(nb_elem_slav)
-        integer, intent(in) :: list_node_mast(nb_node_mast)
+        integer(kind=8), intent(in) :: nb_elem_slav
+        integer(kind=8), intent(in) :: nb_elem_mast
+        integer(kind=8), intent(in) :: nb_node_mast
+        integer(kind=8), intent(in) :: list_elem_mast(nb_elem_mast)
+        integer(kind=8), intent(in) :: list_elem_slav(nb_elem_slav)
+        integer(kind=8), intent(in) :: list_node_mast(nb_node_mast)
         type(MESH_PAIRING), intent(inout) :: meshPairing
     end subroutine aplcpgn
 end interface

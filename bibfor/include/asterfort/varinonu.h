@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ interface
                         nbCell, listCell    ,&
                         nbVari, listVariName, listVariNume)
         character(len=*), intent(in) :: modelZ, comporZ
-        integer, intent(in) :: nbCell, listCell(nbCell)
-        integer, intent(in) :: nbVari
+        integer(kind=8), intent(in) :: nbCell, listCell(nbCell)
+        integer(kind=8), intent(in) :: nbVari
         character(len=16), intent(in) :: listVariName(nbVari)
         character(len=8), intent(out) ::  listVariNume(nbCell, nbVari)
     end subroutine varinonu

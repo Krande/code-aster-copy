@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine xmmbp5(ndim, nnol, pla, ffc, jac, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/xmafr2.h"
-    integer :: ndim, nnol
-    integer :: pla(27), lact(8)
+    integer(kind=8) :: ndim, nnol
+    integer(kind=8) :: pla(27), lact(8)
     real(kind=8) :: mmat(216, 216)
     real(kind=8) :: ffc(8), jac, tau1(3), tau2(3)
     real(kind=8) :: seuil, mu, coeffp
@@ -57,8 +57,8 @@ subroutine xmmbp5(ndim, nnol, pla, ffc, jac, &
 ! IN  LPENAF : INDICATEUR DE PENALISATION DU FROTTEMENT
 ! I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT
 !
-    integer :: i, j, k, l, nli, nlj
-    integer :: pli, plj
+    integer(kind=8) :: i, j, k, l, nli, nlj
+    integer(kind=8) :: pli, plj
     real(kind=8) :: ffi, ffj, taikta(2, 2), id(3, 3)
 !
 ! ----------------------------------------------------------------------

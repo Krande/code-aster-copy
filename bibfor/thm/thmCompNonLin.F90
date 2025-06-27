@@ -51,25 +51,25 @@ subroutine thmCompNonLin(option, ds_thm)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codret
+    integer(kind=8) :: codret
     real(kind=8) :: angl_naut(3)
-    integer :: jv_geom, jv_matr, jv_vect, jv_sigmm, jv_varim, jv_cret
-    integer :: jv_mater, jv_instm, jv_instp, jv_dispm
-    integer :: jv_dispp, jv_carcri, jv_varip, jv_sigmp
+    integer(kind=8) :: jv_geom, jv_matr, jv_vect, jv_sigmm, jv_varim, jv_cret
+    integer(kind=8) :: jv_mater, jv_instm, jv_instp, jv_dispm
+    integer(kind=8) :: jv_dispp, jv_carcri, jv_varip, jv_sigmp
     aster_logical :: l_axi
     character(len=3) :: inte_type
-    integer :: mecani(5), press1(7), press2(7), tempe(5), second(5)
-    integer :: dimdep, dimdef, dimcon, dimuel
-    integer :: nddls, nddlm, nddl_p1, nddl_p2, nddl_meca, nddl_2nd
-    integer :: ndim, nno, nnos
-    integer :: npi, npg, nbvari
-    integer :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2, jv_gano
+    integer(kind=8) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8) :: dimdep, dimdef, dimcon, dimuel
+    integer(kind=8) :: nddls, nddlm, nddl_p1, nddl_p2, nddl_meca, nddl_2nd
+    integer(kind=8) :: ndim, nno, nnos
+    integer(kind=8) :: npi, npg, nbvari
+    integer(kind=8) :: jv_poids, jv_func, jv_dfunc, jv_poids2, jv_func2, jv_dfunc2, jv_gano
     character(len=8) :: typmod(2)
-    integer:: lg_vi, lg_sig
+    integer(kind=8):: lg_vi, lg_sig
     real(kind=8), allocatable:: varip(:), sigp(:), deplp(:)
     aster_logical :: lVect, lMatr, lVari, lSigm, lMatrPred
     character(len=16) :: compor_copy(COMPOR_SIZE), rela_meca
-    integer :: iCompor
+    integer(kind=8) :: iCompor
     type(Behaviour_Integ) :: BEHinteg
     character(len=4), parameter :: fami = 'FPG1'
     character(len=16), pointer :: compor(:) => null()

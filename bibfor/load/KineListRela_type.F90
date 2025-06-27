@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ module KineListRela_type
         character(len=16) :: relaType = ' '
 
 ! - Number of terms in relation
-        integer :: nbTermMaxi = 0
+        integer(kind=8) :: nbTermMaxi = 0
 
 ! - List of relations (LHS)
         character(len=4) :: coefMultType = ' '
@@ -53,7 +53,7 @@ module KineListRela_type
 
 ! - Local coordinates system
         real(kind=8), pointer :: LCSVale(:) => null()
-        integer, pointer :: LCSType(:) => null()
+        integer(kind=8), pointer :: LCSType(:) => null()
 
 ! - Name of JEVEUX object for aflrch subroutine
         character(len=19) :: listLineRela = ' '

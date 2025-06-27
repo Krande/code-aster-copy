@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,16 +70,16 @@ subroutine xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: nbflmx
+    integer(kind=8) :: nbflmx
     parameter(nbflmx=20)
     character(len=8) :: lifapg(nbflmx)
 !
-    integer :: iopt, iopt1, nute, numc, igr, nbgrel
-    integer :: imolo, jmolo, nec, kfpg, kfam
-    integer :: igd, nblfpg, nbfam, nel, jliel, jfpgl, jcesdlon, jcesllon, jcesd, jcesl
-    integer :: ndime, irese, nspg, nse, npg
-    integer :: ima, iadlon, iad, iel
-    integer :: k, nuflpg, nufgpg
+    integer(kind=8) :: iopt, iopt1, nute, numc, igr, nbgrel
+    integer(kind=8) :: imolo, jmolo, nec, kfpg, kfam
+    integer(kind=8) :: igd, nblfpg, nbfam, nel, jliel, jfpgl, jcesdlon, jcesllon, jcesd, jcesl
+    integer(kind=8) :: ndime, irese, nspg, nse, npg
+    integer(kind=8) :: ima, iadlon, iad, iel
+    integer(kind=8) :: k, nuflpg, nufgpg
     character(len=8) :: nomgd, elrese(6), elrefe, mesh, famil, noma
     character(len=8), pointer :: typma(:) => null()
     character(len=16) :: nofpg, nomte
@@ -87,10 +87,10 @@ subroutine xnpgxx(model, ligrel, option, param, chsnpg, exixfm)
     character(len=24) :: chlong
     character(len=32) :: noflpg
     character(len=32), pointer :: pnlocfpg(:) => null()
-    integer, pointer :: nolocfpg(:) => null()
-    integer, pointer :: tmfpg(:) => null()
-    integer, pointer :: cesvlon(:) => null()
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: nolocfpg(:) => null()
+    integer(kind=8), pointer :: tmfpg(:) => null()
+    integer(kind=8), pointer :: cesvlon(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
 !
     data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
 !     ------------------------------------------------------------------

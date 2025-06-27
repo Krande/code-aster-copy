@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       axez, nbnac, nnoeud)
         character(len=*) :: chelez
         character(len=*) :: nomjv
-        integer :: nbel
-        integer :: numail(*)
+        integer(kind=8) :: nbel
+        integer(kind=8) :: numail(*)
         real(kind=8) :: orig(3)
         real(kind=8) :: axez(3)
-        integer :: nbnac
-        integer :: nnoeud(*)
+        integer(kind=8) :: nbnac
+        integer(kind=8) :: nnoeud(*)
     end subroutine rvche2
 end interface

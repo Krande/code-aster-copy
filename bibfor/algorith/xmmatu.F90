@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,9 +41,9 @@ subroutine xmmatu(ndim, nnop, nnops, ddls, ddlm, pla, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, ndim, ier1, ier2, nnop, ddls, ddlm, nnops, in, jn
-    integer :: k, l, pla(27), pli, plj, jheavn, ncompn, nfiss, hea_fa(2)
-    integer :: ifiss, nfh, ifa, ncomph, jheafa, ifh, jfh, dec, dej
+    integer(kind=8) :: i, j, ndim, ier1, ier2, nnop, ddls, ddlm, nnops, in, jn
+    integer(kind=8) :: k, l, pla(27), pli, plj, jheavn, ncompn, nfiss, hea_fa(2)
+    integer(kind=8) :: ifiss, nfh, ifa, ncomph, jheafa, ifh, jfh, dec, dej
     real(kind=8) :: unity(3, 3), dside2(3, 3), alocal(3, 3), ptr(3, 3), pdotal(3, 3)
     real(kind=8) :: kdotal(3, 3), au(3, 3), dsidep(6, 6), temp(3, 3), knd(3), knloc(3)
     real(kind=8) :: r, p(3, 3), ffp(27), jac, ffj, ffc(16), ffi, nd(3)

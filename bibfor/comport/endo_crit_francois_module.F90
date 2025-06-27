@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,12 +43,12 @@ module endo_crit_francois_module
 
     ! attribute state: 0=not defined, 1=allocated, 2=argument set, 3=computed
     type CRITERION
-        integer                              :: stateQuad = 0
-        integer                              :: statePath = 0
-        integer                              :: exception = 0
-        integer                              :: ndimsi = 0
+        integer(kind=8)                              :: stateQuad = 0
+        integer(kind=8)                              :: statePath = 0
+        integer(kind=8)                              :: exception = 0
+        integer(kind=8)                              :: ndimsi = 0
         type(MATERIAL)                       :: mat
-        integer                              :: itemax
+        integer(kind=8)                              :: itemax
         real(kind=8)                         :: cvquad
         real(kind=8), dimension(:), allocatable:: sig
         real(kind=8), dimension(:), allocatable:: eps0
@@ -66,9 +66,9 @@ contains
 
     function Init(ndimsi, mat, itemax, cvquad) result(self)
         implicit none
-        integer, intent(in)        :: ndimsi
+        integer(kind=8), intent(in)        :: ndimsi
         type(MATERIAL), intent(in):: mat
-        integer, intent(in)        :: itemax
+        integer(kind=8), intent(in)        :: itemax
         real(kind=8), intent(in)   :: cvquad
         type(CRITERION)         :: self
 ! ---------------------------------------------------------------------
@@ -207,7 +207,7 @@ contains
 ! ---------------------------------------------------------------------
 ! in  precx1  required accuracy : chi*dchi < precx1
 ! ---------------------------------------------------------------------
-        integer      :: iter
+        integer(kind=8)      :: iter
         real(kind=8) :: norsig, n(3), clin, ymax, y, expo(3), norexp, f, df
         real(kind=8) :: coefbe, prectr, precy3, yt, ft
 ! ---------------------------------------------------------------------
@@ -276,10 +276,10 @@ contains
         type(CRITERION), intent(in):: self
         real(kind=8)              :: dchids(self%ndimsi)
 ! ---------------------------------------------------------------------
-        integer, parameter      :: mexp = 6, factom = 720
+        integer(kind=8), parameter      :: mexp = 6, factom = 720
         real(kind=8), parameter :: srac2 = sqrt(0.5d0)
 ! ---------------------------------------------------------------------
-        integer :: nexp
+        integer(kind=8) :: nexp
         real(kind=8) :: sbnor, sbtr, coefbe, sbtnor, preexp, vpmax, targ, enor, h
         real(kind=8), dimension(self%ndimsi) :: sb, u, e2
         real(kind=8), dimension(6)         :: e
@@ -441,7 +441,7 @@ contains
 ! etap      new upper bound
 ! ---------------------------------------------------------------------
         aster_logical :: empty1, empty2
-        integer :: nsol, nsol1, nsol2, sgn(2), sgn1, sgn2, ptr
+        integer(kind=8) :: nsol, nsol1, nsol2, sgn(2), sgn1, sgn2, ptr
         real(kind=8) :: ts0(self%ndimsi), ts1(self%ndimsi), s0(3), s1(3), coefbe
         real(kind=8) :: s0s0, s0s1, s1s1, trs0, trs1, q0, q1, q2, sol(2), sol1, sol2
         real(kind=8) :: am, ap, b

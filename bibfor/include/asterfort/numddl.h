@@ -21,6 +21,6 @@ interface
         character(len=2), intent(in) :: base
         character(len=*), intent(in) :: numeDofZ, renumZ
         character(len=24), pointer :: listMatrElem(:)
-        integer, intent(in) :: nbMatrElem
+        integer(kind=8), intent(in) :: nbMatrElem
     end subroutine numddl
 end interface

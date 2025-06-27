@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine mmCombLineMatr(alpha_cont, matr_prev, matr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: count_consi
+    integer(kind=8) :: count_consi
     real(kind=8) :: matr_tmp(81, 81), coef
 !
 ! --------------------------------------------------------------------------------------------------

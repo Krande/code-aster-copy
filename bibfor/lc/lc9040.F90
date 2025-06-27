@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,31 +36,31 @@ subroutine lc9040(BEHinteg, fami, kpg, ksp, ndim, imate, &
 !
     type(Behaviour_Integ)        :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap
-    integer, intent(in) :: neps
+    integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps)
     real(kind=8), intent(in) :: deps(neps)
-    integer, intent(in) :: nsig
+    integer(kind=8), intent(in) :: nsig
     real(kind=8), intent(in) :: sigm(nsig)
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8)                 :: sigp(nsig)
     real(kind=8)                 :: vip(nvi)
     character(len=8), intent(in) :: typmod(2)
-    integer, intent(in) :: icomp
-    integer, intent(in) :: ndsde
+    integer(kind=8), intent(in) :: icomp
+    integer(kind=8), intent(in) :: ndsde
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                            merge(neps, 6, nsig*neps .eq. ndsde))
-    integer, intent(out):: codret
+    integer(kind=8), intent(out):: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,7 +94,7 @@ subroutine lc9040(BEHinteg, fami, kpg, ksp, ndim, imate, &
                 mu, su, delta, dsde, vim, &
                 vi, r)
     if (codret .ne. 0) goto 999
-    
+
     call czm_post(ndim, lSigm, lMatr, r, mu, su, delta, dsde, sigp, dsidep)
     if (lVari) vip(1:nvi) = vi(1:nvi)
 

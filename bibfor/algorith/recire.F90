@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine recire(typopt, iderre, frexci, fremin, fremax, &
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-    integer :: iderre, nbptmd
+    integer(kind=8) :: iderre, nbptmd
     real(kind=8) :: fremin, fremax, pas
     character(len=4) :: typopt, frexci
 !
@@ -39,7 +39,7 @@ subroutine recire(typopt, iderre, frexci, fremin, fremax, &
 ! OUT : NBPTMD : NOMBRE DE POINTS PAR MODES
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, nbocc
+    integer(kind=8) :: ibid, nbocc
 !-----------------------------------------------------------------------
 !
     typopt = 'TOUT'

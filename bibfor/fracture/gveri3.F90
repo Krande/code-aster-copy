@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,9 +68,9 @@ subroutine gveri3(chfond, taillr, config, lnoff, liss, &
     character(len=24) :: trav0, trav1, trav2, trav3, chfond, absgam, taillr, liss
     character(len=8) :: config, nompar(1), rinff, rsupf
 !
-    integer :: lnoff, ndeg, nbre, nr, nrf, nbpar, i, j
-    integer :: iadrt0, iadrt1, iadrt2, iadrt3, ifon, iadabs, ier
-    integer :: iatmno
+    integer(kind=8) :: lnoff, ndeg, nbre, nr, nrf, nbpar, i, j
+    integer(kind=8) :: iadrt0, iadrt1, iadrt2, iadrt3, ifon, iadabs, ier
+    integer(kind=8) :: iatmno
 !
     real(kind=8) :: maxtai, mintai, rinf, rsup, xl, valpar(1), valres
     real(kind=8) :: valr(2)

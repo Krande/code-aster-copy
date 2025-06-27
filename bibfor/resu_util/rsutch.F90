@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rsutrg.h"
-    integer :: iordr
+    integer(kind=8) :: iordr
     character(len=*) :: nomsd, nomsy, nomcha
     aster_logical :: lverif
 ! person_in_charge: jacques.pellet at edf.fr
@@ -50,7 +50,7 @@ subroutine rsutch(nomsd, nomsy, iordr, nomcha, lverif)
     character(len=3) :: nuch
     character(len=6) :: chford
     character(len=19) :: resu19, nomch3, nomch2
-    integer :: isymb, irang, jtach, nbordr
+    integer(kind=8) :: isymb, irang, jtach, nbordr
 ! ----------------------------------------------------------------------
 !
     resu19 = nomsd

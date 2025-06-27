@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ function nmcri5(dp)
     common/kconm1/imate2, jprol2, jvale2, nbval2
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: imate2, jprol2, jvale2, nbval2
+    integer(kind=8) :: imate2, jprol2, jvale2, nbval2
     real(kind=8) :: drdp, prag, hp, fp, gp, hsg, dx, rpp, demuc, xm(6)
     real(kind=8) :: deuxmu, troisk, sigy, rprim, pm, sigel(6), tp2, line
 !

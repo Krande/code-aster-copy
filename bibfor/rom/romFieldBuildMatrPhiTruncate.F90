@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,10 +42,10 @@ subroutine romFieldBuildMatrPhiTruncate(fieldBuild)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(ROM_DS_Empi) :: base
-    integer :: nbMode, nbEqua, nbEquaRID
-    integer :: iMode, iEqua, numeEqua
+    integer(kind=8) :: nbMode, nbEqua, nbEquaRID
+    integer(kind=8) :: iMode, iEqua, numeEqua
 !
 ! --------------------------------------------------------------------------------------------------
 !

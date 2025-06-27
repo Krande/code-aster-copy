@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -212,12 +212,12 @@ subroutine znaup2(ido, bmat, n, which, nev, &
 #include "blas/dznrm2.h"
 #include "blas/zcopy.h"
 #include "blas/zdotc.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    integer :: nopx, nbx, nrorth, nitref, nrstrt
+    integer(kind=8) :: nopx, nbx, nrorth, nitref, nrstrt
     common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
@@ -228,14 +228,14 @@ subroutine znaup2(ido, bmat, n, which, nev, &
 !
     character(len=1) :: bmat
     character(len=2) :: which
-    integer :: ido, info, ishift, ldh, ldq, ldv, mxiter, n, nev, np, neqact
+    integer(kind=8) :: ido, info, ishift, ldh, ldq, ldv, mxiter, n, nev, np, neqact
     real(kind=8) :: tol, alpha
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: ipntr(13)
+    integer(kind=8) :: ipntr(13)
     complex(kind=8) :: bounds(nev+np), h(ldh, nev+np), q(ldq, nev+np), resid(n)
     complex(kind=8) :: ritz(nev+np), v(ldv, nev+np), workd(3*n)
     complex(kind=8) :: workl((nev+np)*(nev+np+3))
@@ -254,8 +254,8 @@ subroutine znaup2(ido, bmat, n, which, nev, &
 !     %---------------%
 !
     aster_logical :: cnorm, getv0, initv, update, ushift
-    integer :: ierr, iter, kplusp, msglvl, nconv, nevbef, nev0, np0, nptemp, i
-    integer :: j
+    integer(kind=8) :: ierr, iter, kplusp, msglvl, nconv, nevbef, nev0, np0, nptemp, i
+    integer(kind=8) :: j
     complex(kind=8) :: cpnorm
     real(kind=8) :: rnorm, eps23, rtemp
     character(len=2) :: wprime
@@ -269,7 +269,7 @@ subroutine znaup2(ido, bmat, n, which, nev, &
 !     | LOCAL ARRAY ARGUMENTS |
 !     %-----------------------%
 !
-    integer :: kp(3)
+    integer(kind=8) :: kp(3)
     blas_int :: b_incx, b_incy, b_n
 !
 !     %--------------------%

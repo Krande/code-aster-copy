@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,18 +38,18 @@ subroutine ptenpo(n, x, mat, ep, itype, iform)
 ! --------------------------------------------------------------------------------------------------
 !
     implicit none
-    integer :: n, itype, iform
+    integer(kind=8) :: n, itype, iform
     real(kind=8) :: x(*), mat(n, n), ep(*)
 #include "asterfort/vtmv.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcft(8), ncft(3), icft(6, 3), na(4), ia(4, 4)
+    integer(kind=8) :: jcft(8), ncft(3), icft(6, 3), na(4), ia(4, 4)
     real(kind=8) :: x2(12), mat2(144)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j, kk, l, nn
+    integer(kind=8) :: i, j, kk, l, nn
     real(kind=8) :: r, zero
 !
 ! --------------------------------------------------------------------------------------------------
@@ -136,7 +136,10 @@ subroutine ptenpo(n, x, mat, ep, itype, iform)
         nn = n/2
         do i = 2, nn
             do j = 1, i-1
-        if (mat(i, j) .ne. zero .or. mat(i, j+nn) .ne. zero .or. mat(i+nn, j+nn) .ne. zero) goto 900
+            if (mat(i, j) .ne. zero .or. mat(i, j+nn) .ne. zero &
+                .or. mat(i+nn, j+nn) .ne. zero) then
+                goto 900
+            end if
             end do
         end do
         do i = 1, nn

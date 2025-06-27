@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
-    integer           :: nnoff, iadrgk, iadgks, iadgki, num
+    integer(kind=8)           :: nnoff, iadrgk, iadgks, iadgki, num
     character(len=16) :: typdis
     character(len=24) :: chfond, abscur
     aster_logical     :: milieu, connex
@@ -63,8 +63,8 @@ subroutine gkmet3(nnoff, chfond, iadrgk, milieu, connex, &
 !              --> 4 (NOEUD-NOEUD)
 ! ......................................................................
 
-    integer                            :: ifon, iadabs, ivect
-    integer                            :: i, ibid
+    integer(kind=8)                            :: ifon, iadabs, ivect
+    integer(kind=8)                            :: i, ibid
     real(kind=8)                       :: s1, s2, s3, sn2, sn1, sn
     real(kind=8), dimension(nnoff)     :: gthi, k1th, k2th, k3th
     real(kind=8), dimension(nnoff)     :: gs, k1s, k2s, k3s

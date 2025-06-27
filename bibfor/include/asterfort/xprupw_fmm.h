@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,6 +42,6 @@ interface
        real(kind=8)      :: deltat
        character(len=19) :: cnsbet
        character(len=19) :: listp
-       integer           :: nbrinit
+       integer(kind=8)           :: nbrinit
    end subroutine
 end interface

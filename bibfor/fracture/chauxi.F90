@@ -25,7 +25,7 @@ subroutine chauxi(ndim, mu, ka, r, t, &
     implicit none
 #include "asterf_types.h"
 #include "asterc/r8depi.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: mu, ka, r, t, invp(3, 3), courb(3, 3, 3)
     real(kind=8) :: du1dm(3, 3), du2dm(3, 3), du3dm(3, 3)
     real(kind=8) :: u1l(3), u2l(3), u3l(3)
@@ -52,7 +52,7 @@ subroutine chauxi(ndim, mu, ka, r, t, &
 !     U2L   :  CHAMP SINGULIER AUXILIAIRE 2 (DANS LA BASE LOCALE)
 !     U3L   :  CHAMP SINGULIER AUXILIAIRE 3 (DANS LA BASE LOCALE)
 !
-    integer :: i, j, k, l
+    integer(kind=8) :: i, j, k, l
     real(kind=8) :: du1dpo(3, 2), du2dpo(3, 2), du3dpo(3, 2)
     real(kind=8) :: du1dl(3, 3), du2dl(3, 3), du3dl(3, 3), cr1, cr2, Rc, nu
     real(kind=8) :: A1, B1, C1, D1, A2, B2, C2, D2

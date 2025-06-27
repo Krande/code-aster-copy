@@ -52,7 +52,7 @@ subroutine vethbu(model, matasz, loadNameJv, loadInfoJv, &
 !
 !
 !
-    integer :: nbout, nbin
+    integer(kind=8) :: nbout, nbin
     parameter(nbout=1, nbin=3)
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
@@ -62,7 +62,7 @@ subroutine vethbu(model, matasz, loadNameJv, loadInfoJv, &
     character(len=16) :: option
     character(len=19) :: vecel, matass
     character(len=24) :: ligrch, chalph
-    integer :: iret, nchar, icha, jchar, jinf, jdir, ndir
+    integer(kind=8) :: iret, nchar, icha, jchar, jinf, jdir, ndir
 !
 ! ----------------------------------------------------------------------
 !

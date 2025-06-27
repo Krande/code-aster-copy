@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ subroutine jxouvr(iclas, idn, mode)
 #include "asterc/opendr.h"
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/utmess.h"
-    integer :: iclas, idn
-    integer, optional :: mode
+    integer(kind=8) :: iclas, idn
+    integer(kind=8), optional :: mode
 !     ==================================================================
     character(len=2) :: dn2
     character(len=5) :: classe
-    integer :: n
+    integer(kind=8) :: n
 !-----------------------------------------------------------------------
-    integer :: ierr
+    integer(kind=8) :: ierr
 !-----------------------------------------------------------------------
     parameter(n=5)
     character(len=8) :: nomfic, kstout, kstini
@@ -40,11 +40,11 @@ subroutine jxouvr(iclas, idn, mode)
     common/kbasje/nombas(n)
     character(len=128) :: repglo, repvol
     common/banvje/repglo, repvol
-    integer :: lrepgl, lrepvo
+    integer(kind=8) :: lrepgl, lrepvo
     common/balvje/lrepgl, lrepvo
 !     ------------------------------------------------------------------
     character(len=512) :: nom512
-    integer :: mode_
+    integer(kind=8) :: mode_
 ! DEB ------------------------------------------------------------------
     mode_ = 1
     if (present(mode)) then

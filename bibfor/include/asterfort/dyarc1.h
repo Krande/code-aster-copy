@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine dyarc1(instc, nbpas, insta, nbinst, arch,&
                       epsi, crit)
         real(kind=8) :: instc(*)
-        integer :: nbpas
+        integer(kind=8) :: nbpas
         real(kind=8) :: insta(*)
-        integer :: nbinst
-        integer :: arch(*)
+        integer(kind=8) :: nbinst
+        integer(kind=8) :: arch(*)
         real(kind=8) :: epsi
         character(len=8) :: crit
     end subroutine dyarc1

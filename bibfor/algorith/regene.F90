@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -69,10 +69,10 @@ subroutine regene(nomres, resgen, profno)
 !
 !
 !
-    integer :: i, j, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
-    integer :: jbid, ldnew, llchol, llinsk, nbmod, nbnot, neq
-    integer :: nno, iadpar(13), iadpas(13), nbmo1, nbmo2, tmod(1)
-    integer :: indice, taille, inst
+    integer(kind=8) :: i, j, iarefe, ibid, idbase, ier, iord, iret, iret1, itresu
+    integer(kind=8) :: jbid, ldnew, llchol, llinsk, nbmod, nbnot, neq
+    integer(kind=8) :: nno, iadpar(13), iadpas(13), nbmo1, nbmo2, tmod(1)
+    integer(kind=8) :: indice, taille, inst
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=1) :: typsca

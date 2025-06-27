@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine getmjm(motfac, iocc, nbval, motcle, type,&
                       nbarg)
         character(len=*) :: motfac
-        integer :: iocc
-        integer :: nbval
+        integer(kind=8) :: iocc
+        integer(kind=8) :: nbval
         character(len=*) :: motcle(*)
         character(len=*) :: type(*)
-        integer :: nbarg
+        integer(kind=8) :: nbarg
     end subroutine getmjm
 end interface

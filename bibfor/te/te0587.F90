@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine te0587(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nbcoum, nbsecm, jnbspi
+    integer(kind=8) :: nbcoum, nbsecm, jnbspi
     real(kind=8) :: h, a, r1
     parameter(nbsecm=32, nbcoum=10)
     real(kind=8) :: poicou(2*nbcoum+1), poisec(2*nbsecm+1)
@@ -47,16 +47,16 @@ subroutine te0587(option, nomte)
     real(kind=8) :: cosfi, sinfi
     real(kind=8) :: fi, poids, r, omega
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), rayon, theta, l
-    integer :: nno, nnos, jgano, ndim, npg, nbcou, nbsec, lorien
-    integer :: ipoids, ivf, ic, kp, jin, jcoopg, jdfd2
-    integer :: idfdk
-    integer :: igau, icou, isect, i, jout
-    integer :: indice, icoud2, mmt
-    integer :: kpgs
+    integer(kind=8) :: nno, nnos, jgano, ndim, npg, nbcou, nbsec, lorien
+    integer(kind=8) :: ipoids, ivf, ic, kp, jin, jcoopg, jdfd2
+    integer(kind=8) :: idfdk
+    integer(kind=8) :: igau, icou, isect, i, jout
+    integer(kind=8) :: indice, icoud2, mmt
+    integer(kind=8) :: kpgs
 !
-    integer :: vali
+    integer(kind=8) :: vali
 !
-    integer, parameter :: nb_cara1 = 2
+    integer(kind=8), parameter :: nb_cara1 = 2
     real(kind=8) :: vale_cara1(nb_cara1)
     character(len=8) :: noms_cara1(nb_cara1)
     data noms_cara1/'R1', 'EP1'/

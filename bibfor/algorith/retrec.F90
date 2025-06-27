@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -79,22 +79,22 @@ subroutine retrec(nomres, resgen, nomsst)
     character(len=19) :: numddl, nume_equa_gene, knume, kinst, trange
     character(len=24) :: crefe(2), chamba, chamno, seliai, sizlia, sst
     character(len=24) :: valk(2)
-    integer :: elim, iret
+    integer(kind=8) :: elim, iret
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, iad, iarchi, ibid, ich, i_ligr_ss
-    integer :: idvecg, ieq, ier, ire1, ire2, ire3
-    integer :: iretou, j, jinst, jnume, k, k1, ldnew
-    integer :: linst, llchab, llors, llprs
-    integer :: lmapro, lmoet, lsilia, lsst
-    integer :: n1, nbcham, nbddg, nbinsg, nbinst, nbsst, neq
-    integer :: neqet, neqgen, neqred, nusst, nutars
+    integer(kind=8) :: i, i1, iad, iarchi, ibid, ich, i_ligr_ss
+    integer(kind=8) :: idvecg, ieq, ier, ire1, ire2, ire3
+    integer(kind=8) :: iretou, j, jinst, jnume, k, k1, ldnew
+    integer(kind=8) :: linst, llchab, llors, llprs
+    integer(kind=8) :: lmapro, lmoet, lsilia, lsst
+    integer(kind=8) :: n1, nbcham, nbddg, nbinsg, nbinst, nbsst, neq
+    integer(kind=8) :: neqet, neqgen, neqred, nusst, nutars
     real(kind=8), pointer :: disc(:) => null()
     real(kind=8), pointer :: resu(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    integer :: i_chmp(3), shift, i_bloc
+    integer(kind=8) :: i_chmp(3), shift, i_bloc
     type(DynaGene) :: dyna_gene
 !-----------------------------------------------------------------------
     call jemarq()

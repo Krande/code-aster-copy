@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbgrmx, nbgrma
+    integer(kind=8) :: nbgrmx, nbgrma
     character(len=8) :: mailla
     character(len=24) :: nomcyl(*), nomrac
 !     RECHERCHE DES GROUPES DE MAILLES PRESENTANT UNE RACINE COMMUNE
@@ -52,8 +52,8 @@ subroutine mefrac(mailla, nbgrmx, nomrac, nbgrma, nomcyl)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, icar, ifm, ipre, isuf, j
-    integer :: ndeb, nfin, nt
+    integer(kind=8) :: i, icar, ifm, ipre, isuf, j
+    integer(kind=8) :: ndeb, nfin, nt
 !-----------------------------------------------------------------------
     call jemarq()
 !

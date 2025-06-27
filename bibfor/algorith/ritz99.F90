@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,20 +53,20 @@ subroutine ritz99(nomres)
 ! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8) :: cbid
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
     character(len=8) :: resu_basemo, resu_modeintf, k8b, intf, listam
     character(len=19) :: numref, nume1
     character(len=24) :: trang1, trang2, tempor, tempi, tempi2, rigi1, mass1, amor1
     character(len=24) :: valk(3), concep(3)
     aster_logical :: seul, has_numref
-    integer :: iocc_ritz, iam, iamog, iamor, nbocc_modeintf, ibi4, ibi5
-    integer :: ibi6, ibid, nbocc_basemo, idgl, idiff, idor, ier
-    integer :: ii, inord, ioci, jamo2, jamog
-    integer :: lnbm, lrang1, lrang2, n, nam
-    integer :: nbamor, nbdef, nbg, nbgl, nbi, nbid, nbli, nbocc_ritz
-    integer :: nbmod1, nbmod2, nbmoda, nbmodb, nbold(1), nbtot
-    integer :: nbmm, nbbm, nbmi, iocc_modeintf, iocc_basemo
-    integer :: nnum
+    integer(kind=8) :: iocc_ritz, iam, iamog, iamor, nbocc_modeintf, ibi4, ibi5
+    integer(kind=8) :: ibi6, ibid, nbocc_basemo, idgl, idiff, idor, ier
+    integer(kind=8) :: ii, inord, ioci, jamo2, jamog
+    integer(kind=8) :: lnbm, lrang1, lrang2, n, nam
+    integer(kind=8) :: nbamor, nbdef, nbg, nbgl, nbi, nbid, nbli, nbocc_ritz
+    integer(kind=8) :: nbmod1, nbmod2, nbmoda, nbmodb, nbold(1), nbtot
+    integer(kind=8) :: nbmm, nbbm, nbmi, iocc_modeintf, iocc_basemo
+    integer(kind=8) :: nnum
     real(kind=8) :: bid, ebid
 !
 ! --------------------------------------------------------------------------------------------------

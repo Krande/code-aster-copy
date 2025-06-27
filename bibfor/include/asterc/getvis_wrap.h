@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine getvis_wrap(motfac, motcle, iocc, mxval, isval, nbval)
         character(len=*) :: motfac
         character(len=*) :: motcle
-        integer :: iocc
-        integer :: mxval
-        integer :: isval(*)
-        integer :: nbval
+        integer(kind=8) :: iocc
+        integer(kind=8) :: mxval
+        integer(kind=8) :: isval(*)
+        integer(kind=8) :: nbval
     end subroutine getvis_wrap
 end interface

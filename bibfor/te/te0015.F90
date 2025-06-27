@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,13 +39,13 @@ subroutine te0015(option, nomte)
 !.......................................................................
 !
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: rho(1), coef
     real(kind=8) :: poids
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: jgano, imate, ipesa, ivectu, nnos
-    integer :: ndim, nno, npg, ndl, kp, l, i, ii, j
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: jgano, imate, ipesa, ivectu, nnos
+    integer(kind=8) :: ndim, nno, npg, ndl, kp, l, i, ii, j
 !
 !
 !

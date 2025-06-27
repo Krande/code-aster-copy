@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
 #include "asterfort/sumetr.h"
 #include "blas/ddot.h"
     aster_logical :: axi
-    integer :: ndim, nno1, nno2, kpg, ipg, idf2
+    integer(kind=8) :: ndim, nno1, nno2, kpg, ipg, idf2
     real(kind=8) :: wref, vff1(nno1), vff2(nno2), geom(ndim, nno2)
     real(kind=8) :: rot(ndim, ndim)
     real(kind=8) :: dffr2(ndim-1, nno2), wg, b(2*ndim-1, ndim+1, 2*nno1+nno2)
@@ -51,7 +51,7 @@ subroutine ejcine(ndim, axi, nno1, nno2, vff1, &
 ! OUT ROT    MATRICE DE ROTATION DU LOCAL AU GLOBAL
 ! OUT B      MATRICE DE PASSAGE UNODAL -> SAUT DE U LOCAL
 !-----------------------------------------------------------------------
-    integer :: n, i, j
+    integer(kind=8) :: n, i, j
     real(kind=8) :: cova(3, 3), metr(2, 2), cour, jac, cosa, sina, noa1
     real(kind=8) :: ray
     real(kind=8) :: geoloc(ndim, nno2), geotan(ndim-1, nno2)

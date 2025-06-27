@@ -38,7 +38,7 @@ subroutine nmcomp(BEHinteg, &
 #include "asterfort/redece.h"
 !
     type(Behaviour_Integ) :: BEHinteg
-    integer :: kpg, ksp, ndim, imate, codret, neps, nsig, ndsde
+    integer(kind=8) :: kpg, ksp, ndim, imate, codret, neps, nsig, ndsde
     character(len=*)    :: fami
     character(len=8)    :: typmod(*)
     character(len=16)   :: compor(*), option
@@ -116,8 +116,8 @@ subroutine nmcomp(BEHinteg, &
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: conv_cp, l_epsi_varc, lMatr, lVari, lSigm, lMatrPred, lPred, invert
     aster_logical :: l_defo_meca, l_czm, l_large, l_deborst, l_grad_vari
-    integer :: icp, numlc, nvi_all, nvi, k, l, ndimsi
-    integer :: codret_vali, codret_ldc, codret_cp
+    integer(kind=8) :: icp, numlc, nvi_all, nvi, k, l, ndimsi
+    integer(kind=8) :: codret_vali, codret_ldc, codret_cp
     real(kind=8):: prec
     real(kind=8):: epsm_meca(neps), deps_meca(neps), epsm(neps), deps(neps)
     real(kind=8) :: dsidep_cp(merge(nsig, 6, nsig*neps .eq. ndsde), &

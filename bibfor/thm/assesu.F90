@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,14 +60,14 @@ subroutine assesu(ds_thm, &
 !
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical, intent(in) :: lVect, lMatr, lVari, lSigm, lMatrPred
-    integer, parameter :: maxfa = 6
+    integer(kind=8), parameter :: maxfa = 6
     character(len=16), intent(in) :: option
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=8), intent(in) :: type_elem(2)
-    integer, intent(in) :: ndim, nbvari
-    integer, intent(in) :: nno, nnos, nface
-    integer, intent(in) :: dimdef, dimcon, dimuel
-    integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
+    integer(kind=8), intent(in) :: ndim, nbvari
+    integer(kind=8), intent(in) :: nno, nnos, nface
+    integer(kind=8), intent(in) :: dimdef, dimcon, dimuel
+    integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5)
     character(len=16), intent(in)  :: compor(*)
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: elem_coor(ndim, nno)
@@ -219,19 +219,19 @@ subroutine assesu(ds_thm, &
 ! FM2ASS(MAXFA+1,NFACE) DERIVEE DE FMASS / P_K PUIS P_2,SIGMA
 ! FM1ADS(MAXFA+1,NFACE) DERIVEE DE FMADS / P_K PUIS P_1,SIGMA
 ! FM2ADS(MAXFA+1,NFACE) DERIVEE DE FMADS / P_K PUIS P_2,SIGMA
-    integer, parameter :: con = 1, dconp1 = 2, dconp2 = 3, diffu = 4, ddifp1 = 5, ddifp2 = 6
-    integer, parameter :: mob = 7, dmobp1 = 8, dmobp2 = 9, masse = 10, dmasp1 = 11, dmasp2 = 12
-    integer, parameter :: wliq = 1, wvap = 2, airdis = 3, airsec = 4, eau = 1, air = 2, densit = 14
-    integer, parameter :: vkint = 13, kxx = 1, kyy = 2, kzz = 3, kxy = 4, kyz = 5, kzx = 6
-    integer, parameter :: rhoga = 1, rholq = 2, rhoga1 = 3, rhoga2 = 4, rholq1 = 5, rholq2 = 6
-    integer :: addeme, addep1, addep2, addete, adcome, adcp11, adcp12, adcp21
-    integer :: adcp22, adcote
-    integer :: ipg, retcom, fa, i, j
+    integer(kind=8), parameter :: con = 1, dconp1 = 2, dconp2 = 3, diffu = 4, ddifp1 = 5, ddifp2 = 6
+ integer(kind=8), parameter :: mob = 7, dmobp1 = 8, dmobp2 = 9, masse = 10, dmasp1 = 11, dmasp2 = 12
+    integer(kind=8), parameter :: wliq = 1, wvap = 2, airdis = 3, airsec = 4, eau = 1, air = 2, densit = 14
+    integer(kind=8), parameter :: vkint = 13, kxx = 1, kyy = 2, kzz = 3, kxy = 4, kyz = 5, kzx = 6
+  integer(kind=8), parameter :: rhoga = 1, rholq = 2, rhoga1 = 3, rhoga2 = 4, rholq1 = 5, rholq2 = 6
+    integer(kind=8) :: addeme, addep1, addep2, addete, adcome, adcp11, adcp12, adcp21
+    integer(kind=8) :: adcp22, adcote
+    integer(kind=8) :: ipg, retcom, fa, i, j
     real(kind=8) :: gravity(3), kintvf(6)
     real(kind=8) :: valcen(14, 6), valfac(maxfa, 14, 6)
     real(kind=8) :: dsde(dimcon, dimdef)
     real(kind=8) :: mface(maxfa), dface(maxfa), xface(3, maxfa), normfa(3, maxfa), vol
-    integer :: ifa, jfa, idim
+    integer(kind=8) :: ifa, jfa, idim
     real(kind=8) :: pcp, pwp, pgp, dpgp1, dpgp2, dpwp1, dpwp2
     real(kind=8) :: cvp, dcvp1, dcvp2, cad, dcad1, dcad2
     real(kind=8) :: fluws, fluvps, fluass, fluads
@@ -263,9 +263,9 @@ subroutine assesu(ds_thm, &
     real(kind=8) :: rhol, rhog, drhol1, drhol2, drhog1, drhog2
     real(kind=8) :: parm_alpha, angl_naut(3)
     real(kind=8), parameter :: zero = 0.d0
-    integer :: iadp1k, iadp2k
-    integer :: adcm1, adcm2
-    integer :: nume_thmc, advico, vicpr1, vicpr2
+    integer(kind=8) :: iadp1k, iadp2k
+    integer(kind=8) :: adcm1, adcm2
+    integer(kind=8) :: nume_thmc, advico, vicpr1, vicpr2
 
 !
 ! --------------------------------------------------------------------------------------------------

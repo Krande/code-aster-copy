@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,16 +24,16 @@ interface
     subroutine possvd(nm, m, n, w, matu,&
                       u, matv, v, eps, rg,&
                       rv1)
-        integer :: n
-        integer :: nm
-        integer :: m
+        integer(kind=8) :: n
+        integer(kind=8) :: nm
+        integer(kind=8) :: m
         real(kind=8) :: w(n)
         aster_logical :: matu
         real(kind=8) :: u(nm, n)
         aster_logical :: matv
         real(kind=8) :: v(nm, n)
         real(kind=8) :: eps
-        integer :: rg
+        integer(kind=8) :: rg
         real(kind=8) :: rv1(n)
     end subroutine possvd
 end interface

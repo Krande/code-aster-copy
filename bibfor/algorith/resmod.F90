@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene, &
 !
 !
 !
-    integer :: nbmode, ddl(6), neq
+    integer(kind=8) :: nbmode, ddl(6), neq
     character(len=8) :: basmod, nomsst, soutr, numddl, noeud, noecho(3)
     character(len=16) :: depl
     character(len=24) :: chamba, mdgene, numgen
@@ -62,8 +62,8 @@ subroutine resmod(bmodal, nbmode, neq, numgen, mdgene, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ieq, j, jcoord, lchab, llors
-    integer :: llprs, neqgen, nsst, nunoe, nusst, nutars
+    integer(kind=8) :: i, ibid, ieq, j, jcoord, lchab, llors
+    integer(kind=8) :: llprs, neqgen, nsst, nunoe, nusst, nutars
 !-----------------------------------------------------------------------
     data depl/'DEPL            '/
     data soutr/'&SOUSSTR'/

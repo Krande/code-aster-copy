@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,9 @@ subroutine ddr_read(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_layer_rid, nb_layer_sub, nocc
-    integer :: nb_node, nb_mail
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_layer_rid, nb_layer_sub, nocc
+    integer(kind=8) :: nb_node, nb_mail
     aster_logical :: l_corr_ef
     type(ROM_DS_Empi) :: empi_prim, empi_dual
     character(len=8)  :: base_prim, base_dual, mesh, mesh_reuse

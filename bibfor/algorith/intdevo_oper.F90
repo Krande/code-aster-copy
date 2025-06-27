@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ subroutine intdevo_oper(nbequ, par, mgen, kgen, agen, &
 !
 !
 !   -0.1- Input/output arguments
-    integer, intent(in) :: nbequ
+    integer(kind=8), intent(in) :: nbequ
     real(kind=8), intent(in) :: par(:)
     real(kind=8), pointer :: mgen(:), kgen(:), agen(:)
     real(kind=8), intent(in) :: dt
     real(kind=8), pointer :: invm_c(:), op_h1(:), op_h2(:), invm_k(:)
 !
 !   -0.2- Local variables
-    integer :: i, j, iret
+    integer(kind=8) :: i, j, iret
     real(kind=8) :: invm
     blas_int :: b_incx, b_incy, b_n
 !   --------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,10 +55,10 @@ subroutine nmobsw(sd_obsv, ds_inout)
 !
     character(len=24) :: field_type
     character(len=19) :: field
-    integer :: i_keyw_fact, nb_keyw_fact, i_field
+    integer(kind=8) :: i_keyw_fact, nb_keyw_fact, i_field
     character(len=14) :: sdextr_obsv
     character(len=24) :: extr_info, extr_field
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
     character(len=24), pointer :: v_extr_field(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

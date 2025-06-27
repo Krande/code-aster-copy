@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi, &
 #include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
     aster_logical :: grand, axi
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
     real(kind=8) :: dfdi(nno, ndim), b(6, 3, nno)
 !
 ! ----------------------------------------------------------------------
@@ -41,7 +41,7 @@ subroutine nmmabu(ndim, nno, axi, grand, dfdi, &
 ! OUT B       : MATRICE B : B(6,3,NNP)
 ! ----------------------------------------------------------------------
 !
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: r2
 ! ----------------------------------------------------------------------
 !

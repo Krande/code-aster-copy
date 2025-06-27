@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@ interface
                       numins, eta, valinc, solalg, veasse, ds_system, &
                       ds_contact)
         use NonLin_Datastructure_type
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: sddyna, sdpilo, sddisc
-        integer :: nbiter
-        integer :: numins
+        integer(kind=8) :: nbiter
+        integer(kind=8) :: numins
         real(kind=8) :: eta
         character(len=19) :: valinc(*)
         character(len=19) :: solalg(*)

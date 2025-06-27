@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,21 +22,21 @@ interface
                       ddls, dfdi, ff, idepl, igthet,&
                       ithet, jac, ndim, nnop,&
                       nnos, tau1, tau2, nd, xg)
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         real(kind=8) :: basloc(9*nnop)
         real(kind=8) :: coeff
         real(kind=8) :: coeff3
-        integer :: ddld
-        integer :: ddlm
-        integer :: ddls
+        integer(kind=8) :: ddld
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: ddls
         real(kind=8) :: dfdi(nnop, ndim)
         real(kind=8) :: ff(27)
-        integer :: idepl
-        integer :: igthet
-        integer :: ithet
+        integer(kind=8) :: idepl
+        integer(kind=8) :: igthet
+        integer(kind=8) :: ithet
         real(kind=8) :: jac
-        integer :: nnos
+        integer(kind=8) :: nnos
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
         real(kind=8) :: nd(3)

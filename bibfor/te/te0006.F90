@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,9 +34,9 @@ subroutine te0006(option, nomte)
 !
     character(len=16), intent(in) :: option, nomte
 !
-    integer :: ndim, nno, nnos, npg, ino
-    integer :: ipoids, ivf, idfde, jgano, nbsig
-    integer :: iconti, iconto, ncmp, icmp, ipg, jv_geom
+    integer(kind=8) :: ndim, nno, nnos, npg, ino
+    integer(kind=8) :: ipoids, ivf, idfde, jgano, nbsig
+    integer(kind=8) :: iconti, iconto, ncmp, icmp, ipg, jv_geom
 !
     real(kind=8) :: volume, moyenne, poids(100), cova(3, 3), metr(2, 2), jac
     real(kind=8) :: somme(6), xx

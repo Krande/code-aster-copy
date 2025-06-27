@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,13 +52,13 @@ module ExternalStateVariable_type
                                                                           "VARI_R  ", "NEUT_R  ", &
                                                                           "NEUT_R  ", "NEUT_R  ", &
                                                                           "DEPL_R  "/)
-    integer, parameter :: listNbCmp(EXTEVARI_NB_MAXI) = (/7, 3, &
-                                                          1, 1, &
-                                                          1, 1, &
-                                                          6, 9, &
-                                                          5, 1, &
-                                                          1, 1, &
-                                                          1/)
+    integer(kind=8), parameter :: listNbCmp(EXTEVARI_NB_MAXI) = (/7, 3, &
+                                                                  1, 1, &
+                                                                  1, 1, &
+                                                                  6, 9, &
+                                                                  5, 1, &
+                                                                  1, 1, &
+                                                                  1/)
 ! ==================================================================================================
 !
 ! Derivated types
@@ -92,7 +92,7 @@ module ExternalStateVariable_type
 ! ----- Physical quantity
         character(len=8) :: physQuantity = " "
 ! ----- List of components
-        integer :: nbCmp = 0
+        integer(kind=8) :: nbCmp = 0
         type(EXTE_VARI_CMP), pointer :: listCmp(:) => null()
     end type EXTE_VARI_CATA
 
@@ -105,7 +105,7 @@ module ExternalStateVariable_type
 ! --------------------------------------------------------------------------------------------------
     type EXTE_VARI_DESC
 ! ----- Index in catalog
-        integer :: cataIndx = 0
+        integer(kind=8) :: cataIndx = 0
 ! ----- Name of external state variable
         character(len=8) :: exteVariName = " "
 ! ----- Origin of variable: EVOL, CHAMP
@@ -134,9 +134,9 @@ module ExternalStateVariable_type
 ! ----- Descriptor of external state variables
         type(EXTE_VARI_DESC), pointer :: exteVariList(:) => null()
 ! ----- Number of external state variables assigned by user
-        integer :: nbAffe = 0
+        integer(kind=8) :: nbAffe = 0
 ! ----- Total number of components for all external state variables
-        integer :: nbCmpTotal = 0
+        integer(kind=8) :: nbCmpTotal = 0
     end type EXTE_VARI_AFFE
 !
 end module ExternalStateVariable_type

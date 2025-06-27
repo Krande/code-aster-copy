@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine immett(nbcnx, xyzma, x3dca, itetra, xbar,&
                       immer)
-        integer :: nbcnx
+        integer(kind=8) :: nbcnx
         real(kind=8) :: xyzma(3, *)
         real(kind=8) :: x3dca(*)
-        integer :: itetra
+        integer(kind=8) :: itetra
         real(kind=8) :: xbar(*)
-        integer :: immer
+        integer(kind=8) :: immer
     end subroutine immett
 end interface

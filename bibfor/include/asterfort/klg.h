@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine klg(nno, nbrddl, pgl, k)
-        integer :: nbrddl
-        integer :: nno
+        integer(kind=8) :: nbrddl
+        integer(kind=8) :: nno
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: k(nbrddl, nbrddl)
     end subroutine klg

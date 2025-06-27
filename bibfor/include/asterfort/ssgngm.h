@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine ssgngm(noma, iocc, nbgnaj)
         character(len=8) :: noma
-        integer :: iocc
-        integer :: nbgnaj
+        integer(kind=8) :: iocc
+        integer(kind=8) :: nbgnaj
     end subroutine ssgngm
 end interface

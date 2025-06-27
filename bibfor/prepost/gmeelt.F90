@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: imod, nbtyma, nbmail, nbnoma(19), nuconn(19, 32)
+    integer(kind=8) :: imod, nbtyma, nbmail, nbnoma(19), nuconn(19, 32)
     character(len=8) :: nomail(*)
-    integer, intent(in) :: nbgrou
+    integer(kind=8), intent(in) :: nbgrou
 !
 !      GMEELT --   ECRITURE DES MAILLES ET DES GROUP_MA VENANT
 !                  D'UN FICHIER .GMSH DANS LE FICHIER .MAIL
@@ -48,19 +48,19 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
 !
 !
 !
-    integer :: neu2(32), ier, i, ij, nte, ima, ityp, nbno, inum, nbnoas
-    integer :: idiv, ino, irest, k, l, maxmai, jgrmai, jgr, ima1
-    integer :: vali(2)
+    integer(kind=8) :: neu2(32), ier, i, ij, nte, ima, ityp, nbno, inum, nbnoas
+    integer(kind=8) :: idiv, ino, irest, k, l, maxmai, jgrmai, jgr, ima1
+    integer(kind=8) :: vali(2)
     character(len=1) :: prfnoe, prfmai
     character(len=8) :: chgrou, chtab(32), chmail, k8bid
     character(len=12) :: chenti
-    integer, pointer :: nbnma(:) => null()
-    integer, pointer :: nbtym(:) => null()
-    integer, pointer :: noma(:) => null()
-    integer, pointer :: numa(:) => null()
-    integer, pointer :: typma(:) => null()
-    integer, pointer :: indma(:) => null()
-    integer, pointer :: nbmag(:) => null()
+    integer(kind=8), pointer :: nbnma(:) => null()
+    integer(kind=8), pointer :: nbtym(:) => null()
+    integer(kind=8), pointer :: noma(:) => null()
+    integer(kind=8), pointer :: numa(:) => null()
+    integer(kind=8), pointer :: typma(:) => null()
+    integer(kind=8), pointer :: indma(:) => null()
+    integer(kind=8), pointer :: nbmag(:) => null()
     character(len=8), pointer :: nomgr(:) => null()
 !
 ! ----------------------------------------------------------------------

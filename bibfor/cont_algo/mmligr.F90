@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,29 +64,29 @@ subroutine mmligr(mesh, model, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_type, nb_cont_pair, nb_cont, nb_frot
-    integer :: nb_node_elem, nb_node_mast, nb_node_slav, nb_grel, nt_node
-    integer :: jv_liel
-    integer :: i_elem, i_cont_poin, i_cont_type, i_node, i_zone, i_cont_pair
-    integer :: elem_mast_nume, elem_slav_nume, elem_indx
-    integer :: ligrcf_liel_lont, typf_cont_nume, typg_cont_nume, typf_frot_nume
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_type, nb_cont_pair, nb_cont, nb_frot
+    integer(kind=8) :: nb_node_elem, nb_node_mast, nb_node_slav, nb_grel, nt_node
+    integer(kind=8) :: jv_liel
+    integer(kind=8) :: i_elem, i_cont_poin, i_cont_type, i_node, i_zone, i_cont_pair
+    integer(kind=8) :: elem_mast_nume, elem_slav_nume, elem_indx
+    integer(kind=8) :: ligrcf_liel_lont, typf_cont_nume, typg_cont_nume, typf_frot_nume
     aster_logical :: l_cont_cont, l_cont_lac
     character(len=19) :: ligrcf, sdappa
-    integer, pointer :: v_list_pair(:) => null()
-    integer, pointer :: v_list_type(:) => null()
+    integer(kind=8), pointer :: v_list_pair(:) => null()
+    integer(kind=8), pointer :: v_list_type(:) => null()
     aster_logical :: l_renumber, l_frot
-    integer, pointer :: v_connex(:) => null()
-    integer, pointer :: v_connex_lcum(:) => null()
-    integer :: ztabf
-    integer ::  deca
+    integer(kind=8), pointer :: v_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_lcum(:) => null()
+    integer(kind=8) :: ztabf
+    integer(kind=8) ::  deca
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
-    integer, pointer :: v_ligrcf_nbno(:) => null()
-    integer, pointer :: v_ligrcf_nema(:) => null()
-    integer, pointer :: v_ligrcf_liel(:) => null()
+    integer(kind=8), pointer :: v_ligrcf_nbno(:) => null()
+    integer(kind=8), pointer :: v_ligrcf_nema(:) => null()
+    integer(kind=8), pointer :: v_ligrcf_liel(:) => null()
     character(len=24) :: sdappa_apli
-    integer, pointer :: v_sdappa_apli(:) => null()
+    integer(kind=8), pointer :: v_sdappa_apli(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

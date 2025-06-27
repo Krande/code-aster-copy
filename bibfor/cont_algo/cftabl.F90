@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ subroutine cftabl(indic, nbliac, ajliai, spliai, &
 #include "asterfort/jeveuo.h"
 !
 !
-    integer :: indic
-    integer :: nbliac
-    integer :: ajliai
-    integer :: spliai
-    integer :: posit
-    integer :: iliai
+    integer(kind=8) :: indic
+    integer(kind=8) :: nbliac
+    integer(kind=8) :: ajliai
+    integer(kind=8) :: spliai
+    integer(kind=8) :: posit
+    integer(kind=8) :: iliai
     character(len=1) :: typope
     character(len=24) :: sdcont_solv
 !
@@ -62,10 +62,10 @@ subroutine cftabl(indic, nbliac, ajliai, spliai, &
 ! IN  ILIAI  : INDICE DE LA LIAISON A AJOUTER OU SUPPRIMER
 !
 !
-    integer :: ii, posit2, liaisp
+    integer(kind=8) :: ii, posit2, liaisp
     character(len=1) :: typeaj, typesp
     character(len=19) :: sdcont_liac
-    integer, pointer :: v_sdcont_liac(:) => null()
+    integer(kind=8), pointer :: v_sdcont_liac(:) => null()
 ! ======================================================================
 !
     sdcont_liac = sdcont_solv(1:14)//'.LIAC'

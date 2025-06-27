@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine monte1(te2, nout, lchout, lpaout, igr2)
 #include "asterfort/nbpara.h"
 #include "asterfort/nopara.h"
 !
-    integer :: nout, te2, igr2
+    integer(kind=8) :: nout, te2, igr2
     character(len=19) :: ch19
     character(len=*) :: lchout(*)
     character(len=8) :: lpaout(*)
@@ -50,9 +50,9 @@ subroutine monte1(te2, nout, lchout, lpaout, igr2)
 !     sorties:
 !     met a jour les champs globaux de sortie de l ca_nuop_ion ca_nuop_
 !-----------------------------------------------------------------------
-    integer :: ipar, np, mod1, jpar, gd, iaux1, iaux2, iaux0
-    integer :: iparg, iachlo, lggrel, jcelv, jresl
-    integer :: descgd, jceld, code, debugr, ncmpel, debgr2
+    integer(kind=8) :: ipar, np, mod1, jpar, gd, iaux1, iaux2, iaux0
+    integer(kind=8) :: iparg, iachlo, lggrel, jcelv, jresl
+    integer(kind=8) :: descgd, jceld, code, debugr, ncmpel, debgr2
     character(len=8) :: nompar, typsca
 !-----------------------------------------------------------------------
 !

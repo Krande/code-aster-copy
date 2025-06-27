@@ -58,7 +58,7 @@ subroutine peMatr_ct_pr(parameters, geom, matr_cont, matr_fric)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_cont_qp, l_fric_qp, l_print
-    integer :: i_qp, nb_qp, i_dof, i_zeta, i_cmp, j_dof, nbPoinInte
+    integer(kind=8) :: i_qp, nb_qp, i_dof, i_zeta, i_cmp, j_dof, nbPoinInte
     real(kind=8) :: weight_sl_qp, coeff, hF
     real(kind=8) :: coor_qp_sl(2), tau_slav(3, 2)
     real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)

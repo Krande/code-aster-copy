@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine dfllae(keywf, i_fail, pcent_iter_plus)
         character(len=16), intent(in) :: keywf
-        integer, intent(in) :: i_fail
+        integer(kind=8), intent(in) :: i_fail
         real(kind=8), intent(out) :: pcent_iter_plus
     end subroutine dfllae
 end interface

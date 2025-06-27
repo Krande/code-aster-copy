@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@
 interface
     subroutine pecag2(ndim, nsymx, nsymy, np, xyp,&
                       vale, valpar)
-        integer :: ndim
+        integer(kind=8) :: ndim
         aster_logical :: nsymx
         aster_logical :: nsymy
-        integer :: np
+        integer(kind=8) :: np
         real(kind=8) :: xyp(2)
         real(kind=8) :: vale(*)
         real(kind=8) :: valpar(*)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai, &
 #include "asterfort/rcvarc.h"
 #include "blas/ddot.h"
 !
-    integer :: typess, nmat, kpg, ksp
+    integer(kind=8) :: typess, nmat, kpg, ksp
     real(kind=8) :: essai, materf(nmat, 2), yd(*), deps(6), dy(*)
     character(len=8) :: mod
     character(len=*) :: fami
@@ -55,7 +55,7 @@ subroutine irrini(fami, kpg, ksp, typess, essai, &
     real(kind=8) :: k, n, p0, ai0, etais, ag, irrad, irraf, zetaf, zetag
     real(kind=8) :: detai, dpi, dp, dg, yy, xx, zz
     real(kind=8) :: penpe, pe, pk
-    integer :: ndt, ndi, iret, i
+    integer(kind=8) :: ndt, ndi, iret, i
     blas_int :: b_incx, b_incy, b_n
     data id3d/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine cffpfo(resoco, nbliai, nbliac, ndim)
 #include "asterfort/jeveuo.h"
 !
     character(len=24) :: resoco
-    integer :: nbliai, nbliac, ndim
+    integer(kind=8) :: nbliai, nbliac, ndim
 !
 ! ----------------------------------------------------------------------
 !
@@ -49,12 +49,12 @@ subroutine cffpfo(resoco, nbliai, nbliac, ndim)
 !
     real(kind=8) :: coefpt, coefff, lambdc, lambdf
     real(kind=8) :: glis
-    integer :: iliai, iliac
+    integer(kind=8) :: iliai, iliac
     character(len=19) :: mu, liac
-    integer :: jmu, jliac
+    integer(kind=8) :: jmu, jliac
     character(len=24) :: tacfin
-    integer :: jtacf
-    integer :: ztacf
+    integer(kind=8) :: jtacf
+    integer(kind=8) :: ztacf
 !
 ! ----------------------------------------------------------------------
 !

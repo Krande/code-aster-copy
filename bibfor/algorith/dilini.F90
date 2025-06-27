@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine dilini(option, ivf, ivf2, idfde, &
 #include "asterfort/tecach.h"
 
 !
-    integer :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi
-    integer :: ipoid2, dimdef, dimuel, dimcon, nnom, nnos, nddls, nddlm
-    integer :: lgpg, iret, itab(7)
+    integer(kind=8) :: ivf, ivf2, idfde, idfde2, jgano, ndim, ipoids, npi
+    integer(kind=8) :: ipoid2, dimdef, dimuel, dimcon, nnom, nnos, nddls, nddlm
+    integer(kind=8) :: lgpg, iret, itab(7)
     character(len=8) :: typmod(2)
     character(len=16) :: option
     type(dil_modelisation) :: ds_dil
@@ -51,7 +51,7 @@ subroutine dilini(option, ivf, ivf2, idfde, &
 ! =====================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer :: nno, def1, def2, def3, cont1, cont2, cont3
+    integer(kind=8) :: nno, def1, def2, def3, cont1, cont2, cont3
     character(len=8) :: elrefe, elrf1, elrf2
 ! ======================================================================
 ! --- INITIALISATION ---------------------------------------------------

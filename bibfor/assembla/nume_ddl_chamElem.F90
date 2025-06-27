@@ -51,7 +51,7 @@ subroutine nume_ddl_chamElem(numeDofZ, listLigrelJvZ, modeLocZ, modelZ, verbose)
 !
     character(len=14) :: numeDof
     character(len=24), pointer :: listLigr(:) => null(), listLigrJv(:) => null()
-    integer :: nbLigr, nbLigrJv
+    integer(kind=8) :: nbLigr, nbLigrJv
     character(len=24) :: modelLigrel
 !
 ! ----------------------------------------------------------------------------------------------

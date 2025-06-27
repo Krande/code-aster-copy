@@ -59,9 +59,9 @@ subroutine cfmxsd(mesh_, model_, nume_dof, sddyna, ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: model, mesh
-    integer :: nb_cont_zone
+    integer(kind=8) :: nb_cont_zone
     aster_logical :: l_cont_disc, l_cont_cont, l_cont_allv, l_cont_lac
 !
 ! --------------------------------------------------------------------------------------------------

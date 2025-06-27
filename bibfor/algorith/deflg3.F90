@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine deflg3(gn, feta, xi, me, t, &
 #include "asterfort/tnsvec.h"
     real(kind=8) :: gn(3, 3), t(6), tl(3, 3, 3, 3)
     real(kind=8) :: dzeta(3, 3), t33(3, 3), me(3, 3, 3, 3), xi(3, 3), feta(4)
-    integer :: a, b, c, d
+    integer(kind=8) :: a, b, c, d
 ! ----------------------------------------------------------------------
 !
 !     CALCUL DU TERME T.L

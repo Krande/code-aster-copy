@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine vpzhes(mat, k, l, neq, mxeq, &
                   d)
     implicit none
-    integer :: k, l, neq, mxeq
+    integer(kind=8) :: k, l, neq, mxeq
     real(kind=8) :: mat(mxeq, neq), d(neq)
 !     MISE SOUS FORME DE HESSENBERG (FORME SUPERIEURE)
 !     ------------------------------------------------------------------
@@ -28,7 +28,7 @@ subroutine vpzhes(mat, k, l, neq, mxeq, &
 !        PAGE 342
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: m, i, j
+    integer(kind=8) :: m, i, j
     real(kind=8) :: f, g, h, scale, zero
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------

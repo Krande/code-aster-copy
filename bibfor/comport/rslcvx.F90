@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine rslcvx(fami, kpg, ksp, imat, nmat, &
 #include "asterfort/lcnrts.h"
 #include "asterfort/lcsomh.h"
 #include "asterfort/rsliso.h"
-    integer :: nmat, imat, kpg, ksp
+    integer(kind=8) :: nmat, imat, kpg, ksp
     character(len=*) :: fami
 !
     real(kind=8) :: mater(nmat, 2), seuil
@@ -49,7 +49,7 @@ subroutine rslcvx(fami, kpg, ksp, imat, nmat, &
     real(kind=8) :: unrho, d, s1, p, f, f0, rp, drdp
     real(kind=8) :: un, argmax
 !
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
 !
     parameter(un=1.d0)

@@ -43,7 +43,7 @@ subroutine chckco(char, noma, ndimg)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8) :: char, noma
-    integer :: ndimg
+    integer(kind=8) :: ndimg
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,15 +62,15 @@ subroutine chckco(char, noma, ndimg)
 !
 !
     character(len=24) :: defico
-    integer :: ino, posno, izone
-    integer :: ima, posma, numma
-    integer :: ndim, nnoma
-    integer :: posnno(9), numnno(9)
+    integer(kind=8) :: ino, posno, izone
+    integer(kind=8) :: ima, posma, numma
+    integer(kind=8) :: ndim, nnoma
+    integer(kind=8) :: posnno(9), numnno(9)
     character(len=4) :: typno, typma
     character(len=8) :: alias, nomma
     aster_logical :: lpoutr, lpoint
-    integer :: itype
-    integer :: nmaco
+    integer(kind=8) :: itype
+    integer(kind=8) :: nmaco
 !
 ! ----------------------------------------------------------------------
 !

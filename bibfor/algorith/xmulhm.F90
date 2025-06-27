@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,12 +53,12 @@ subroutine xmulhm(contac, ddls, ddlc, ddlm, jaint, ifiss, &
 #include "asterfort/conare.h"
 #include "asterfort/xplmat.h"
 #include "asterfort/xxmmvd.h"
-    integer :: contac, ddlc, ddlm, jaint, ifiss, jheano, vstnc(*)
-    integer :: lact(16), nfh, nfiss, ninter, nlact(2)
-    integer :: nno, nnol, nnom, nnos, pla(27), vit(16), nli
-    integer :: pli, i, ddls, ino, iar, nvit, ino1, ino2
-    integer :: ar(12, 3), nbar, zxain, pos(16)
-    integer, optional, intent(in) :: jstano
+    integer(kind=8) :: contac, ddlc, ddlm, jaint, ifiss, jheano, vstnc(*)
+    integer(kind=8) :: lact(16), nfh, nfiss, ninter, nlact(2)
+    integer(kind=8) :: nno, nnol, nnom, nnos, pla(27), vit(16), nli
+    integer(kind=8) :: pli, i, ddls, ino, iar, nvit, ino1, ino2
+    integer(kind=8) :: ar(12, 3), nbar, zxain, pos(16)
+    integer(kind=8), optional, intent(in) :: jstano
     aster_logical :: lelim, lcalel
     character(len=8) :: typma
 ! ----------------------------------------------------------------------

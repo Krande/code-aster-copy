@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ interface
                       vnoeud, vrange, vorien, nnoema, ncmpma)
         character(len=8) :: basemo
         character(len=8) :: nommes
-        integer :: nbmesu
-        integer :: nbmtot
+        integer(kind=8) :: nbmesu
+        integer(kind=8) :: nbmtot
         character(len=24) :: vcham
         character(len=24) :: vnoeud
         character(len=24) :: vrange
         character(len=24) :: vorien
-        integer :: nnoema
-        integer :: ncmpma
+        integer(kind=8) :: nnoema
+        integer(kind=8) :: ncmpma
     end subroutine mpmod3
 end interface

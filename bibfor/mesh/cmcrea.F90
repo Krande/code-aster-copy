@@ -46,7 +46,7 @@ subroutine cmcrea(main, maout, nbocc)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbocc
+    integer(kind=8) :: nbocc
     character(len=8) :: main, maout
 !
 ! ----------------------------------------------------------------------
@@ -59,13 +59,13 @@ subroutine cmcrea(main, maout, nbocc)
 !
 !
     character(len=16), parameter :: keywfact = 'CREA_FISS'
-    integer :: nbnomx, nbmain, nbgmin, nbmaaj, nbgmaj, nbmato, nbgmto
-    integer :: numare, numaco, numa, nbma, nbgm, nbno, ma, no, gm
-    integer :: jadin, jadout
-    integer :: jlnoma, jlconn, jltyma, jlngma, jlgpma
-    integer :: jnoma, jtyma, jconn, jngma, jgpma
-    integer :: jdim, ityin, ityout
-    integer :: iret, iOcc, ib
+    integer(kind=8) :: nbnomx, nbmain, nbgmin, nbmaaj, nbgmaj, nbmato, nbgmto
+    integer(kind=8) :: numare, numaco, numa, nbma, nbgm, nbno, ma, no, gm
+    integer(kind=8) :: jadin, jadout
+    integer(kind=8) :: jlnoma, jlconn, jltyma, jlngma, jlgpma
+    integer(kind=8) :: jnoma, jtyma, jconn, jngma, jgpma
+    integer(kind=8) :: jdim, ityin, ityout
+    integer(kind=8) :: iret, iOcc, ib
     aster_logical :: false
 !
     character(len=8) :: knum8, prefix, nomma

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -77,7 +77,7 @@ contains
         ! - Local
         character(len=16), parameter :: factorKeyword = 'AMOR_MODAL'
         character(len=16) :: answer
-        integer :: iret, nbOcc
+        integer(kind=8) :: iret, nbOcc
         aster_logical :: hasMatrDamp, hasVectDamp, hasDamp
         aster_logical :: lDampRayleigh, lDampRayleighTang
         aster_logical :: lDampContact, lDampFEModel, lDampDiscret
@@ -223,7 +223,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
     subroutine isMassMatrAssemble(listFuncActi, l_update_matr, lMassAssemble)
         ! - Parameters
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         aster_logical, intent(in) :: l_update_matr
         aster_logical, intent(out) :: lMassAssemble
         ! - Local
@@ -335,7 +335,7 @@ contains
                             hval_meelem, hval_measse)
 !   ------------------------------------------------------------------------------------------------
         ! - Parameters
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: sddisc, listLoad
@@ -348,10 +348,10 @@ contains
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
         character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
         ! - Local
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
         aster_logical :: lElas, lVarc, lExpl, lWithDirichlet
         aster_logical :: lDampMatrix
-        integer, parameter :: numeInstInit = 0
+        integer(kind=8), parameter :: numeInstInit = 0
         real(kind=8) :: timeInit
         character(len=16) :: massOption
 !   ------------------------------------------------------------------------------------------------
@@ -645,7 +645,7 @@ contains
     subroutine shiftMassMatrix(sddyna, numeTime, hval_measse)
 !   ------------------------------------------------------------------------------------------------
         ! - Parameters
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         character(len=19), intent(in) :: sddyna
         character(len=19), intent(in) :: hval_measse(*)
         ! - Local
@@ -703,7 +703,7 @@ contains
         character(len=19), intent(in) :: acceForce
         ! - Local
         character(len=19) :: massAsse, acceCurr
-        integer :: jvMass
+        integer(kind=8) :: jvMass
         real(kind=8), pointer :: acce(:) => null()
         real(kind=8), pointer :: force(:) => null()
 !   ------------------------------------------------------------------------------------------------
@@ -745,7 +745,7 @@ contains
         character(len=19), intent(in) :: viteForce
         ! - Local
         character(len=19) :: dampAsse, viteCurr
-        integer :: jvDamp
+        integer(kind=8) :: jvDamp
         real(kind=8), pointer :: vite(:) => null()
         real(kind=8), pointer :: force(:) => null()
 !   ------------------------------------------------------------------------------------------------
@@ -784,7 +784,7 @@ contains
         character(len=19), intent(in) :: resiForce
         ! - Local
         character(len=19) :: massAsse, viteCurr
-        integer :: jvMass
+        integer(kind=8) :: jvMass
         real(kind=8), pointer :: vite(:) => null()
         real(kind=8), pointer :: force(:) => null()
 !   ------------------------------------------------------------------------------------------------

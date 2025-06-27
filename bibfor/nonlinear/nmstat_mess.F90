@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,10 +48,10 @@ subroutine nmstat_mess(ds_measure, phasis)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_device, i_device
+    integer(kind=8) :: nb_device, i_device
     type(NL_DS_Device) :: device
     aster_logical :: l_time, l_count, l_acti
-    integer :: time_mesg, count_mesg, count
+    integer(kind=8) :: time_mesg, count_mesg, count
     character(len=10) :: device_type
     real(kind=8) :: time
 !

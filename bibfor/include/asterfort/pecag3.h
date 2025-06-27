@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@
 interface
     subroutine pecag3(ndim, nsymx, nsymy, noma, motcle,&
                       nbmail, noment, valpar)
-        integer :: ndim
+        integer(kind=8) :: ndim
         aster_logical :: nsymx
         aster_logical :: nsymy
         character(len=*) :: noma
         character(len=*) :: motcle
-        integer :: nbmail
+        integer(kind=8) :: nbmail
         character(len=*) :: noment(*)
         real(kind=8) :: valpar(*)
     end subroutine pecag3

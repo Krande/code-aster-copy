@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@
     volatile         r8zon
     volatile         k1zon
 !
-    integer :: iacce
+    integer(kind=8) :: iacce
     common /iacced/  iacce(1)
-    integer :: ltyp   , long   , date   , iadd   , iadm
-    integer :: lono   , hcod   , cara   , luti   , imarq
+    integer(kind=8) :: ltyp   , long   , date   , iadd   , iadm
+    integer(kind=8) :: lono   , hcod   , cara   , luti   , imarq
     common /iatrje/  ltyp(1), long(1), date(1), iadd(1), iadm(1),&
      &                 lono(1), hcod(1), cara(1), luti(1), imarq(1)
     character(len=1)       :: genr   , type
@@ -45,12 +45,12 @@
     character(len=8)       :: orig
     character(len=32)      :: rnom
     common /katrje/  genr(8), type(8), docu(2), orig(1), rnom(1)
-    integer :: indir
+    integer(kind=8) :: indir
     common /kindir/  indir(1)
-    integer :: iusadi
+    integer(kind=8) :: iusadi
     common /kusadi/  iusadi(1)
 !
-    integer :: iszon(1)
+    integer(kind=8) :: iszon(1)
     integer(kind=4)         :: i4zon(1)
     aster_logical          lszon(1)
     real(kind=8)            :: r8zon(1)

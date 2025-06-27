@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine irgags(ncmpmx, nomcmp, nomsym, nbchs, nomchs,&
                       nbcmps, nomgds, ipcmps)
-        integer :: ncmpmx
+        integer(kind=8) :: ncmpmx
         character(len=*) :: nomcmp(*)
         character(len=*) :: nomsym
-        integer :: nbchs
+        integer(kind=8) :: nbchs
         character(len=*) :: nomchs(*)
-        integer :: nbcmps(*)
+        integer(kind=8) :: nbcmps(*)
         character(len=*) :: nomgds(*)
-        integer :: ipcmps(*)
+        integer(kind=8) :: ipcmps(*)
     end subroutine irgags
 end interface

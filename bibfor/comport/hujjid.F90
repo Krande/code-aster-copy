@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,9 +65,9 @@ subroutine hujjid(mod, mater, indi, deps, prox, &
 #include "asterfort/tecael.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, nmod, i, j, k, kk, l
-    integer :: indi(7), nbmeca, iret, iadzi, iazk24
-    integer :: ifm, niv, nbmect
+    integer(kind=8) :: ndt, ndi, nmod, i, j, k, kk, l
+    integer(kind=8) :: indi(7), nbmeca, iret, iadzi, iazk24
+    integer(kind=8) :: ifm, niv, nbmect
     parameter(nmod=18)
     real(kind=8) :: depsp(6), depse(6)
     real(kind=8) :: sigd(3), sigf(6), p(7), q(7)

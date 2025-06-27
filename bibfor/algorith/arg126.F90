@@ -50,7 +50,7 @@ subroutine arg126(nomres)
 #include "asterfort/mgutdm.h"
 #include "asterfort/utmess.h"
 !
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
 !
 !
 !
@@ -58,7 +58,7 @@ subroutine arg126(nomres)
     character(len=16) :: clesst, clenom, clerot, clemcl, cletra, clelia, clel(4)
     character(len=24) :: repsst, nommcl, rotsst, famli, trasst
     character(len=24) :: valk(3)
-    integer :: nbsst, i, j, ioc, ibid, ldnmcl, ldrot, nblia, ldlid, iret, ldtra
+    integer(kind=8) :: nbsst, i, j, ioc, ibid, ldnmcl, ldrot, nblia, ldlid, iret, ldtra
     real(kind=8) :: pi
 !
 !-----------------------------------------------------------------------

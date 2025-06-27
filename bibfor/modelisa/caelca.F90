@@ -87,15 +87,15 @@ subroutine caelca(modele, chmat, caelem, irana1, icabl, &
 #include "asterfort/utmess.h"
 !
     character(len=8) :: modele, chmat, caelem
-    integer :: irana1, icabl, nbnoca(*)
+    integer(kind=8) :: irana1, icabl, nbnoca(*)
     character(len=19) :: numaca
     aster_logical :: relax, quad
     real(kind=8) :: ea, rh1000, prelax, fprg, frco, frli, sa
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ias, iasmax, icmp, icode, icste, idecma, imail, iranv, iret
-    integer :: jdesc, jmodma, jnumac, jptma, jvalk, jvalr, lonuti, nbcste, nbec
-    integer :: nbno, ncaba, ntyele(2), numail, nbcmp, idebgd, i, nbma
+    integer(kind=8) :: ias, iasmax, icmp, icode, icste, idecma, imail, iranv, iret
+    integer(kind=8) :: jdesc, jmodma, jnumac, jptma, jvalk, jvalr, lonuti, nbcste, nbec
+    integer(kind=8) :: nbno, ncaba, ntyele(2), numail, nbcmp, idebgd, i, nbma
     real(kind=8) :: eps, rbid
     aster_logical :: trouv1, trouv2, trouv3, trouv4, trouv5, relax_loc
     character(len=3) :: k3cab, k3mai

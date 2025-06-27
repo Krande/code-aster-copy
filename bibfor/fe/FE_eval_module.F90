@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -87,7 +87,7 @@ contains
         implicit none
 !
         character(len=8), intent(in) :: nomfunc
-        integer, intent(in) :: nbpara
+        integer(kind=8), intent(in) :: nbpara
         character(len=8), intent(in) :: nompara(*)
         real(kind=8), intent(inout) :: valpara(*)
         real(kind=8) :: func
@@ -101,7 +101,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret
+        integer(kind=8) :: iret
 !
         call fointe('FM', nomfunc, nbpara, nompara, valpara, func, iret)
         ASSERT(iret == 0)
@@ -132,7 +132,7 @@ contains
 !
 ! ----- Local variables
         real(kind=8) :: funcEF(MAX_BS)
-        integer :: idim
+        integer(kind=8) :: idim
         blas_int :: b_incx, b_incy, b_n
 !
         func = 0.d0
@@ -155,7 +155,7 @@ contains
         implicit none
 !
         character(len=8), intent(in) :: nomfunc(*)
-        integer, intent(in) :: nbpara, ndim
+        integer(kind=8), intent(in) :: nbpara, ndim
         character(len=8), intent(in) :: nompara(*)
         real(kind=8), intent(inout) :: valpara(*)
         real(kind=8) :: func(3)
@@ -169,7 +169,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret, idim
+        integer(kind=8) :: iret, idim
 !
         func = 0.d0
         do idim = 1, ndim
@@ -204,7 +204,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: i
+        integer(kind=8) :: i
         real(kind=8) :: gradEF(3, MAX_BS)
 !
         grad = 0.d0
@@ -301,7 +301,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
 ! ----- Local variables
-        integer :: i, n, ind
+        integer(kind=8) :: i, n, ind
         real(kind=8) :: gradEF(3, MAX_BS), funcEF(MAX_BS), ur, r
 !
         grad = 0.d0

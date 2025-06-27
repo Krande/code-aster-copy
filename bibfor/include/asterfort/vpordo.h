@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine vpordo(type, iordre, nbpro, valpro, vecpro,&
                       neq)
-        integer :: neq
-        integer :: nbpro
-        integer :: type
-        integer :: iordre
+        integer(kind=8) :: neq
+        integer(kind=8) :: nbpro
+        integer(kind=8) :: type
+        integer(kind=8) :: iordre
         real(kind=8) :: valpro(nbpro)
         real(kind=8) :: vecpro(neq, nbpro)
     end subroutine vpordo

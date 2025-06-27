@@ -43,7 +43,7 @@ subroutine pil000(typilo, compor, neps, dtau, mat, &
 #include "asterfort/utmess.h"
     character(len=8), intent(in) :: typmod(*)
     character(len=16), intent(in) :: compor(*), typilo
-    integer, intent(in) :: neps, mat
+    integer(kind=8), intent(in) :: neps, mat
     real(kind=8), intent(in) :: dtau, epsm(neps), epsd_pilo(neps), epsd_cste(neps), etamin, etamax
     real(kind=8), intent(in) :: vim(:), sigm(neps)
     real(kind=8), intent(out) :: copilo(5)
@@ -64,7 +64,7 @@ subroutine pil000(typilo, compor, neps, dtau, mat, &
 ! IN  ETAMAX  BORNE SUP DU PILOTAGE (SI UTILE)               (PRED_ELAS)
 ! OUT COPILO  COEFFICIENT DE PILOTAGE : F := A0+A1*ETA = TAU
 !---------------------------------------------------------------------------------------------------
-    integer :: ndim, nsol, sgn(2)
+    integer(kind=8) :: ndim, nsol, sgn(2)
     real(kind=8):: mu_cste(3), su_cste(3), mu_pilo(3), su_pilo(3)
     real(kind=8):: sol(2)
 !---------------------------------------------------------------------------------------------------

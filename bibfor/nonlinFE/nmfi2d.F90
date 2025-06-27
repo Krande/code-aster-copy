@@ -41,7 +41,7 @@ subroutine nmfi2d(BEHInteg, &
 #include "jeveux.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
-    integer :: mate, npg, lgpg, codret
+    integer(kind=8) :: mate, npg, lgpg, codret
     real(kind=8) :: geom(2, 4), deplm(8), ddepl(8), tm, tp
     real(kind=8) :: fint(8), ktan(8, 8), sigmo(6, npg), sigma(6, npg)
     real(kind=8) :: vim(lgpg, npg), vip(lgpg, npg)
@@ -74,11 +74,11 @@ subroutine nmfi2d(BEHInteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     character(len=4), parameter :: fami = "RIGI"
     aster_logical :: axi
-    integer :: cod(9), i, j, q, s, kpg
-    integer :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: cod(9), i, j, q, s, kpg
+    integer(kind=8) :: ndim, nno, nnos, ipoids, ivf, idfde, jgano
 !     COORDONNEES POINT DE GAUSS + POIDS : X,Y,W => 1ER INDICE
     real(kind=8) :: coopg(3, npg)
     real(kind=8) :: dsidep(6, 6), b(2, 8), sigmPost(6)

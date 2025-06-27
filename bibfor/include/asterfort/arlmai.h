@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine arlmai(mail,mailar,ndim,nom1,nom2, &
                       tabcor,nbma1,nbma2)
-        integer :: ndim
-        integer :: nbma1
-        integer :: nbma2
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbma1
+        integer(kind=8) :: nbma2
         character(len=8) :: mail
         character(len=8) :: mailar
         character(len=10) :: nom1

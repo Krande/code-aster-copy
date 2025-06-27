@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,9 +27,9 @@ subroutine romConvertEquaToNode(field_refe, list_length, v_list_equa, v_list_nod
 #include "asterfort/dismoi.h"
 !
     character(len=24), intent(in) :: field_refe
-    integer, intent(in) :: list_length
-    integer, pointer :: v_list_equa(:)
-    integer, pointer :: v_list_node(:)
+    integer(kind=8), intent(in) :: list_length
+    integer(kind=8), pointer :: v_list_equa(:)
+    integer(kind=8), pointer :: v_list_node(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,9 +46,9 @@ subroutine romConvertEquaToNode(field_refe, list_length, v_list_equa, v_list_nod
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, pointer :: v_deeq(:) => null()
+    integer(kind=8), pointer :: v_deeq(:) => null()
     character(len=19) :: numeq
-    integer :: i_list, i_equa, nume_node
+    integer(kind=8) :: i_list, i_equa, nume_node
 !
 ! --------------------------------------------------------------------------------------------------
 !

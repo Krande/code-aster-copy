@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine parti0(nbmat, tlimat, partit)
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
     character(len=*) :: tlimat(*), partit
-    integer :: nbmat
+    integer(kind=8) :: nbmat
 !----------------------------------------------------------------------
 ! but : determiner le nom de la partition attachee a la liste de
 !       matr_elem (ou de vect_elem)  tlimat
@@ -38,7 +38,7 @@ subroutine parti0(nbmat, tlimat, partit)
 !----------------------------------------------------------------------
     character(len=19) :: matel, part1
     character(len=24) :: valk(5)
-    integer :: i
+    integer(kind=8) :: i
 !----------------------------------------------------------------------
 
     partit = ' '

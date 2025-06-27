@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,10 +70,10 @@ subroutine te0155(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: codres(1), dimens, iret
-    integer :: nno, nc, lx, lorien, idepla, ideplp, i, lvect
-    integer :: lmater, lpesa, lforc, itemps, nbpar, iepsini
-    integer :: ifcx, iadzi, iazk24, kpg, spt, ichamp
+    integer(kind=8) :: codres(1), dimens, iret
+    integer(kind=8) :: nno, nc, lx, lorien, idepla, ideplp, i, lvect
+    integer(kind=8) :: lmater, lpesa, lforc, itemps, nbpar, iepsini
+    integer(kind=8) :: ifcx, iadzi, iazk24, kpg, spt, ichamp
 !
     real(kind=8) :: aire, e(1), rho(1), xl, temper, xdep, xrig, w2(3)
     real(kind=8) :: pgl(3, 3), force_rep_local(6), force(6), ql(6)

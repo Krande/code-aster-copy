@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,10 +59,10 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz, &
 #include "asterfort/xcalfev_wrap.h"
 !
     character(len=*) :: correz, ch1z, ch2z, prfchz, ligrez, modz
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8) :: inst
 !
-    integer :: ddlmax, nbnomax
+    integer(kind=8) :: ddlmax, nbnomax
     parameter(ddlmax=27, nbnomax=27)
     character(len=3) :: tsca
     character(len=8) :: ma1, ma2, nomgd
@@ -73,27 +73,27 @@ subroutine pjxfem(correz, ch1z, ch2z, tychv, prfchz, &
     character(len=1) :: base
     character(len=*) :: prol0
     character(len=8) :: chmat
-    integer :: nbno1, ncmp, gd, nbno2
-    integer :: idecal, jcns2c, jcns2v, jcns2l, jconx1, jconx2, jcns1l, jcns1v, jcns2k
-    integer :: itypel, nbelr, ima, ino2, ndim, nfe, nfh, cmp(ddlmax), nnop2
-    integer :: ipos, ino1, iad, i, alp, ig, nuno1, iacoo1, stano(nbnomax), nn, iad2
+    integer(kind=8) :: nbno1, ncmp, gd, nbno2
+    integer(kind=8) :: idecal, jcns2c, jcns2v, jcns2l, jconx1, jconx2, jcns1l, jcns1v, jcns2k
+    integer(kind=8) :: itypel, nbelr, ima, ino2, ndim, nfe, nfh, cmp(ddlmax), nnop2
+    integer(kind=8) :: ipos, ino1, iad, i, alp, ig, nuno1, iacoo1, stano(nbnomax), nn, iad2
     aster_logical :: vide, lvarc, cplan, poiss, young
     real(kind=8) :: dx(3), h1(3), ff(nbnomax), geom(nbnomax*3), baslo(nbnomax*9)
     real(kind=8) :: lsn(nbnomax), lst(nbnomax)
     real(kind=8) :: fk_escl(27, 3, 3), fk_mait(27, 3, 3), ka, mu, ff2(8)
-    integer, pointer :: pjef_nu(:) => null()
+    integer(kind=8), pointer :: pjef_nu(:) => null()
     character(len=8), pointer :: cns1k(:) => null()
-    integer, pointer :: pjef_nb(:) => null()
-    integer, pointer :: pjef_m1(:) => null()
+    integer(kind=8), pointer :: pjef_nb(:) => null()
+    integer(kind=8), pointer :: pjef_m1(:) => null()
     character(len=8), pointer :: cns1c(:) => null()
     character(len=24), pointer :: pjxx_k1(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()
     real(kind=8), pointer :: pjef_co(:) => null()
-    integer, pointer :: cns1d(:) => null()
-    integer, pointer :: cns2d(:) => null()
-    integer, pointer :: maille(:) => null()
-    integer :: jcesd_stno, jcesv_stno, jcesl_stno, jcesd_bslo, jcesv_bslo, jcesl_bslo
-    integer :: jcesd_varc, jcesv_varc, jcesl_varc, nbvarc, k, nbf, ik, nbr, nbc, nbk, ier
+    integer(kind=8), pointer :: cns1d(:) => null()
+    integer(kind=8), pointer :: cns2d(:) => null()
+    integer(kind=8), pointer :: maille(:) => null()
+    integer(kind=8) :: jcesd_stno, jcesv_stno, jcesl_stno, jcesd_bslo, jcesv_bslo, jcesl_bslo
+    integer(kind=8) :: jcesd_varc, jcesv_varc, jcesl_varc, nbvarc, k, nbf, ik, nbr, nbc, nbk, ier
     character(len=8) :: nommat
     character(len=11) :: k11
     character(len=19) :: chs_stno, chs_bslo, varcns

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine te0113(option, nomte)
 !       ELEMENTS POU_D_T
 ! ---------------------------------------------------------------------
 !
-    integer, parameter :: nbparaPR = 6
-    integer :: icodre(nbparaPR), iret
-    integer :: imate, nno, nbcmp, ino, ival, ndim, ino2
+    integer(kind=8), parameter :: nbparaPR = 6
+    integer(kind=8) :: icodre(nbparaPR), iret
+    integer(kind=8) :: imate, nno, nbcmp, ino, ival, ndim, ino2
 
 !
     real(kind=8) :: valres(nbparaPR), young, k, nexpo, rp02_min, rm_min

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm, &
 #include "jeveux_private.h"
 #include "asterfort/jxdeps.h"
 #include "asterfort/utmess.h"
-    integer :: itab(*), lty1, lon1, jadm, jitab
+    integer(kind=8) :: itab(*), lty1, lon1, jadm, jitab
     aster_logical :: ldeps
     character(len=*) :: gen1
 ! ----------------------------------------------------------------------
@@ -40,18 +40,18 @@ subroutine jxlocs(itab, gen1, lty1, lon1, jadm, &
 ! IN  LDEPS  : .TRUE. SI ON AUTUORISE LE DEPLACEMENT EN MEMOIRE
 ! OUT JITAB  : ADRESSE DANS ITAB DU SEGMENT DE VALEUR
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: iloc
+    integer(kind=8) :: iloc
     common/ilocje/iloc
 !
-    integer :: idec
+    integer(kind=8) :: idec
     integer(kind=8) :: valloc, ia, ltyp2
 ! DEB-------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ir, kadm, ladm
+    integer(kind=8) :: ir, kadm, ladm
 !-----------------------------------------------------------------------
     kadm = jadm
     ladm = iszon(jiszon+kadm-3)

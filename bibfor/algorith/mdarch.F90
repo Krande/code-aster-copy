@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,11 +28,11 @@ subroutine mdarch(typcal, isto1, ipas, disc, nbmode, &
 !
 !   Obligatory arguments
     character(len=4), intent(in)  :: typcal
-    integer, intent(in)  :: isto1
-    integer, intent(in)  :: ipas
+    integer(kind=8), intent(in)  :: isto1
+    integer(kind=8), intent(in)  :: ipas
     real(kind=8), intent(in)  :: disc
-    integer, intent(in)  :: nbmode
-    integer                        :: iorsto(*)
+    integer(kind=8), intent(in)  :: nbmode
+    integer(kind=8)                        :: iorsto(*)
     real(kind=8)                   :: discst(*)
 !
 !   Optional arguments
@@ -46,7 +46,7 @@ subroutine mdarch(typcal, isto1, ipas, disc, nbmode, &
     real(kind=8), optional              :: accstr(*)
     real(kind=8), optional              :: passto(*)
 !     typcal = 'HARM' case
-    integer, optional, intent(in)  :: nbsym
+    integer(kind=8), optional, intent(in)  :: nbsym
     character(len=4), optional, intent(in)  :: nomsym(*)
     complex(kind=8), optional, intent(in)  :: depgec(nbmode)
     complex(kind=8), optional, intent(in)  :: vitgec(nbmode)
@@ -60,7 +60,7 @@ subroutine mdarch(typcal, isto1, ipas, disc, nbmode, &
 !   ARCHIVAGE DES CHAMPS GENERALISES OBLIGATOIRES POUR LA SD_DYNA_GENE
 !
 !-----------------------------------------------------------------------
-    integer :: im, ind, ich, inom, nbsym2
+    integer(kind=8) :: im, ind, ich, inom, nbsym2
     character(len=4) :: nomsym2(3)
 !-----------------------------------------------------------------------
 !

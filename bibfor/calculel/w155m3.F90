@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ subroutine w155m3(numa, jce2d, jce2l, jce2v, isp, &
 !
 #include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
-    integer :: numa, nucou, nusec, nufib, posic, posis, isp
-    integer :: jce2l, jce2d, jce2v
-    integer :: nbcou, nbsec, nbfib, isec, icou
-    integer :: iad1, iad2, iad3, iad4
+    integer(kind=8) :: numa, nucou, nusec, nufib, posic, posis, isp
+    integer(kind=8) :: jce2l, jce2d, jce2v
+    integer(kind=8) :: nbcou, nbsec, nbfib, isec, icou
+    integer(kind=8) :: iad1, iad2, iad3, iad4
     character(len=8) :: typma
 !
 ! ----------------------------------------------------------------------

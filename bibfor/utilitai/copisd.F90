@@ -68,7 +68,7 @@ subroutine copisd(typesd, base, sd1, sd2)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: iret, i, nbtu
+    integer(kind=8) :: iret, i, nbtu
     character(len=1) :: bas2
     character(len=8) :: k81, k82
     character(len=12) :: k121, k122
@@ -76,7 +76,7 @@ subroutine copisd(typesd, base, sd1, sd2)
     character(len=16) :: corr1, corr2
     character(len=19) :: ch1, ch2, sdr1, k191, k192
     character(len=24) :: x1, x2
-    integer :: j1, iexi
+    integer(kind=8) :: j1, iexi
     character(len=24), pointer :: ltn1(:) => null()
     character(len=24), pointer :: ltn2(:) => null()
 !

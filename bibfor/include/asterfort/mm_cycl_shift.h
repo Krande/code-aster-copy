@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine mm_cycl_shift(cycl_long_acti, cycl_ecod, cycl_long)
-        integer, intent(in) :: cycl_long_acti
-        integer, intent(inout) :: cycl_ecod
-        integer, intent(inout) :: cycl_long
+        integer(kind=8), intent(in) :: cycl_long_acti
+        integer(kind=8), intent(inout) :: cycl_ecod
+        integer(kind=8), intent(inout) :: cycl_long
     end subroutine mm_cycl_shift
 end interface

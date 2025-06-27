@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
                       ncompn, jheavn, ifiss, nfiss, nfh,&
                       ifa, jheafa, ncomph)
                            
-        integer :: ndim
-        integer :: nnop
-        integer :: nnops
-        integer :: ddls
-        integer :: ddlm
-        integer :: pla(27)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnops
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: pla(27)
         real(kind=8) :: lamb(3)
         real(kind=8) :: am(3)
         real(kind=8) :: delta(6)
@@ -39,13 +39,13 @@ interface
         real(kind=8) :: jac
         real(kind=8) :: ffc(16)
         real(kind=8) :: vect(560)
-        integer :: ncompn
-        integer :: jheavn
-        integer :: nfiss
-        integer :: ifiss
-        integer :: nfh
-        integer :: ifa
-        integer :: jheafa
-        integer :: ncomph
+        integer(kind=8) :: ncompn
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ifa
+        integer(kind=8) :: jheafa
+        integer(kind=8) :: ncomph
     end subroutine xvechu
 end interface

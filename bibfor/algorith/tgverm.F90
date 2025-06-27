@@ -40,8 +40,8 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 #include "blas/dcopy.h"
     aster_logical :: matsym
     character(len=16) :: option, compor(*)
-    integer :: iret, nno1, nno2, nno3, ndim
-    integer :: vu(3, 27), vg(27), vp(27)
+    integer(kind=8) :: iret, nno1, nno2, nno3, ndim
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27)
     real(kind=8) :: carcri(*), sdepl(*), scont(*), svect(*)
     real(kind=8) :: geom(*), deplp(*), vectu(*), contp(*), matuu(*)
     real(kind=8) :: varip(*), svari(*), smatr(*), varia(*)
@@ -66,10 +66,10 @@ subroutine tgverm(option, carcri, compor, nno1, nno2, &
 !
 ! ----------------------------------------------------------------------
     character(len=24) :: matra, matrc
-    integer :: ematra, ematrc, exi
-    integer :: nddl
-    integer :: nvari, ncont, iuse
-    integer :: i, j, k, l, indi, nvar, init, pos
+    integer(kind=8) :: ematra, ematrc, exi
+    integer(kind=8) :: nddl
+    integer(kind=8) :: nvari, ncont, iuse
+    integer(kind=8) :: i, j, k, l, indi, nvar, init, pos
     real(kind=8) :: v, epsilo, fp, fm, pertu, maxdep, maxgeo, maxpre, maxgon
     real(kind=8) :: matper(nddl*nddl), epsilp, epsilg
     blas_int :: b_incx, b_incy, b_n

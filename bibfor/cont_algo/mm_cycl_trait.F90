@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,17 +41,17 @@ subroutine mm_cycl_trait(ds_contact, i_cont_poin, &
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !
     type(NL_DS_Contact), intent(in) :: ds_contact
-    integer, intent(in) :: i_cont_poin
+    integer(kind=8), intent(in) :: i_cont_poin
     real(kind=8), intent(in) :: coef_cont_prev
     real(kind=8), intent(in) :: coef_frot_prev
     real(kind=8), intent(in) :: pres_frot_prev(3)
     real(kind=8), intent(in) :: dist_frot_prev(3)
     real(kind=8), intent(in) :: pres_frot_curr(3)
     real(kind=8), intent(in) :: dist_frot_curr(3)
-    integer, intent(in) :: indi_cont_eval
-    integer, intent(in) :: indi_frot_eval
-    integer, intent(out) :: indi_cont_curr
-    integer, intent(out) :: indi_frot_curr
+    integer(kind=8), intent(in) :: indi_cont_eval
+    integer(kind=8), intent(in) :: indi_frot_eval
+    integer(kind=8), intent(out) :: indi_cont_curr
+    integer(kind=8), intent(out) :: indi_frot_curr
     real(kind=8), intent(out) :: coef_cont_curr
     real(kind=8), intent(out) :: coef_frot_curr
 !
@@ -81,8 +81,8 @@ subroutine mm_cycl_trait(ds_contact, i_cont_poin, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_cyceta
-    integer, pointer :: p_sdcont_cyceta(:) => null()
-    integer :: cycl_type, cycl_stat_prev, cycl_stat_curr
+    integer(kind=8), pointer :: p_sdcont_cyceta(:) => null()
+    integer(kind=8) :: cycl_type, cycl_stat_prev, cycl_stat_curr
 !
 ! --------------------------------------------------------------------------------------------------
 !

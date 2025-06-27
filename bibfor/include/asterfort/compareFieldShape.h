@@ -23,6 +23,6 @@ interface
         character(len=*), intent(in) :: fieldModelZ, fieldZ
         aster_logical, intent(in) :: projectOnLigrel
         character(len=*), intent(in) :: paraNameZ
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine compareFieldShape
 end interface

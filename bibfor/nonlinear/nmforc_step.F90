@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine nmforc_step(list_func_acti, &
 #include "asterfort/isfonc.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: model, cara_elem, nume_dof
     character(len=19), intent(in) :: list_load, sddyna
     type(NL_DS_Material), intent(in) :: ds_material
@@ -52,7 +52,7 @@ subroutine nmforc_step(list_func_acti, &
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(HHO_Field), intent(in) :: hhoField
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     character(len=19), intent(in) :: hval_veelem(*), hval_veasse(*)
 !
@@ -84,7 +84,7 @@ subroutine nmforc_step(list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: time_prev, time_curr
     aster_logical :: l_dyna
 !

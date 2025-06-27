@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine cfimp1(phase, noma, sdcont_defi, sdcont_solv, ifm)
     character(len=8) :: noma
     character(len=24) :: sdcont_defi, sdcont_solv
     character(len=3) :: phase
-    integer :: ifm
+    integer(kind=8) :: ifm
 !
 ! ----------------------------------------------------------------------
 !
@@ -58,21 +58,21 @@ subroutine cfimp1(phase, noma, sdcont_defi, sdcont_solv, ifm)
 !
 !
 !
-    integer :: iliac, iliai, actif, izone, ip
+    integer(kind=8) :: iliac, iliai, actif, izone, ip
     character(len=8) :: nomapp
     character(len=16) :: nomnoe
     character(len=14) :: chaiac
     character(len=4) :: type2
     real(kind=8) :: jeu
     character(len=24) :: jeuite, jeux
-    integer :: jjeuit, jjeux
+    integer(kind=8) :: jjeuit, jjeux
     character(len=19) :: liac
-    integer :: jliac
+    integer(kind=8) :: jliac
     character(len=24) :: numlia
-    integer :: jnumli
+    integer(kind=8) :: jnumli
     character(len=19) :: sdappa
-    integer :: typapp, entapp
-    integer :: nbliai, nbliac
+    integer(kind=8) :: typapp, entapp
+    integer(kind=8) :: nbliai, nbliac
 !
 ! ----------------------------------------------------------------------
 !

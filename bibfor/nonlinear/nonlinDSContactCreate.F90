@@ -40,8 +40,8 @@ subroutine nonlinDSContactCreate(ds_contact)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_loop
-    integer, parameter :: nb_loop_defi = 3
+    integer(kind=8) :: i_loop
+    integer(kind=8), parameter :: nb_loop_defi = 3
     character(len=4), parameter :: loop_type(nb_loop_defi) = (/'Geom', 'Fric', 'Cont'/)
 !
 ! --------------------------------------------------------------------------------------------------

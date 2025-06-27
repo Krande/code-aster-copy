@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine romBaseGetInfo(resultName, base)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: numeModeRefe = 1
-    integer :: iret, numeModeFirst, numeSlice, nbSnap, nbMode
+    integer(kind=8), parameter :: numeModeRefe = 1
+    integer(kind=8) :: iret, numeModeFirst, numeSlice, nbSnap, nbMode
     character(len=8)  :: model, lineicAxis, baseType
     character(len=24) :: lineicSect, fieldRefe, modeSymbName
     type(ROM_DS_Field) :: mode

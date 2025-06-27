@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ subroutine jesvos(clas)
 ! IN  CLAS   : NOM DE LA CLASSE ASSOCIEE ( ' ' POUR TOUTES LES CLASSES )
 !
 !-----------------------------------------------------------------------
-    integer :: i
-    integer :: j, jcara, jdate, jdocu, jgenr, jhcod, jiadd
-    integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
-    integer :: jrnom, jtype, n, ncla1, ncla2
+    integer(kind=8) :: i
+    integer(kind=8) :: j, jcara, jdate, jdocu, jgenr, jhcod, jiadd
+    integer(kind=8) :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
+    integer(kind=8) :: jrnom, jtype, n, ncla1, ncla2
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -42,14 +42,14 @@ subroutine jesvos(clas)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
 !
     character(len=2) :: dn2
     character(len=5) :: classe
     character(len=8) :: nomfic, kstout, kstini
     common/kficje/classe, nomfic(n), kstout(n), kstini(n), dn2(n)
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 ! ----------------------------------------------------------------------
     character(len=1) :: kclas, clasi

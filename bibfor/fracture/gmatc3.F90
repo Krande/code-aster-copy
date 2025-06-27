@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine gmatc3(nnoff, milieu, connex, &
 #include "asterfort/jemarq.h"
 #include "asterfort/wkvect.h"
 
-    integer           :: nnoff
+    integer(kind=8)           :: nnoff
     character(len=24) :: abscur
     character(len=24) :: matr
     aster_logical     :: milieu, connex
@@ -51,9 +51,9 @@ subroutine gmatc3(nnoff, milieu, connex, &
 !
 ! ......................................................................
 
-    integer          :: nseg, iseg, imatr
-    integer          :: i, j, ij, nno
-    integer          :: conn(3), conn2(3)
+    integer(kind=8)          :: nseg, iseg, imatr
+    integer(kind=8)          :: i, j, ij, nno
+    integer(kind=8)          :: conn(3), conn2(3)
     real(kind=8)     :: mele(3, 3)
     character(len=8) :: elrefe
 

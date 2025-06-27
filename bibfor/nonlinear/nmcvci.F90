@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,11 @@ subroutine nmcvci(model, hhoField, &
     character(len=24) :: l2cnci(2), cncinm, cncinp, dlci
     character(len=8) :: char1, answer
     real(kind=8) :: instap, coefr(2)
-    integer :: neq, ieq, neq2, iret, jinfc, ichar
-    integer :: nbchar, jlchar
+    integer(kind=8) :: neq, ieq, neq2, iret, jinfc, ichar
+    integer(kind=8) :: nbchar, jlchar
     character(len=1) :: typch(2)
     aster_logical :: lvcine, l_hho
-    integer, pointer :: v_dlci(:) => null()
+    integer(kind=8), pointer :: v_dlci(:) => null()
     real(kind=8), pointer :: cncim(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !----------------------------------------------------------------------

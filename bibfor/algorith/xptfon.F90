@@ -52,7 +52,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln, &
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
+    integer(kind=8) :: nmafon, jmafon, jfon, nfon, jbas, jtail, nxptff
     character(len=8) :: noma, fiss
     character(len=16) :: typdis
     character(len=16), intent(in), optional :: operation_opt
@@ -84,16 +84,16 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: ipt, ima, i, j, ibid, ndim, ino, k, ifq, ifm, niv
-    integer :: nmaabs, nbf, nbnoma, nuno, nunoa, nunob, nunoc, nunod
-    integer :: fa(6, 8), ibid3(12, 3), vecind(5)
-    integer :: jconx1, jconx2, jcoor
-    integer :: jglsn, jglst, igeom, itypma
-    integer :: indipt, jborl, jdirol, jnvdir, jlistp
-    integer :: nbfacb, iptbor(2), nbptma, ndime, indptf(3), codret
-    integer :: nunopa, nunopb, nunopc, nunopd
-    integer :: snuno, pnuno, inuno, snunop, pnunop, inunop
-    integer :: nbmai
+    integer(kind=8) :: ipt, ima, i, j, ibid, ndim, ino, k, ifq, ifm, niv
+    integer(kind=8) :: nmaabs, nbf, nbnoma, nuno, nunoa, nunob, nunoc, nunod
+    integer(kind=8) :: fa(6, 8), ibid3(12, 3), vecind(5)
+    integer(kind=8) :: jconx1, jconx2, jcoor
+    integer(kind=8) :: jglsn, jglst, igeom, itypma
+    integer(kind=8) :: indipt, jborl, jdirol, jnvdir, jlistp
+    integer(kind=8) :: nbfacb, iptbor(2), nbptma, ndime, indptf(3), codret
+    integer(kind=8) :: nunopa, nunopb, nunopc, nunopd
+    integer(kind=8) :: snuno, pnuno, inuno, snunop, pnunop, inunop
+    integer(kind=8) :: nbmai
     real(kind=8) :: m(3), p(3), gln(3), glt(3), coorg(3), vectn(12)
     real(kind=8) :: normi, r3bid(3)
     character(len=8) :: typma, nommai, alias
@@ -103,7 +103,7 @@ subroutine xptfon(noma, ndim, nmafon, cnslt, cnsln, &
     real(kind=8), pointer :: lsn(:) => null()
     real(kind=8), pointer :: lst(:) => null()
     aster_logical, pointer :: ptbord(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: gn(:) => null()
     real(kind=8), pointer :: gt(:) => null()
     real(kind=8), pointer :: lnsv(:) => null()

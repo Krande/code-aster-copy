@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine te0092(option, nomte)
     aster_logical :: l_axis
     real(kind=8) :: dfdx(9), dfdy(9), poids, r
     real(kind=8) :: sxx, sxy, syy
-    integer :: nno, kp, k, npg, ii, jj, i, j, imatuu, kd1, kd2, ij1, ij2
-    integer :: ipoids, ivf, idfde, igeom, icontr, kc
+    integer(kind=8) :: nno, kp, k, npg, ii, jj, i, j, imatuu, kd1, kd2, ij1, ij2
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, icontr, kc
 !
 ! --------------------------------------------------------------------------------------------------
 !

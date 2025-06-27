@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/utmess.h"
-    integer :: lmat, lres
+    integer(kind=8) :: lmat, lres
     character(len=*) :: cumul, typcst
     character(len=1) :: typmat, typres
     real(kind=8) :: const(2)
@@ -38,7 +38,7 @@ subroutine mtxcnl(cumul, typcst, const, typmat, lmat, &
     complex(kind=8) :: cun, c8cst
 !
 !-----------------------------------------------------------------------
-    integer :: ival, neq
+    integer(kind=8) :: ival, neq
 !-----------------------------------------------------------------------
     zero = 0.d0
     un = 1.d0

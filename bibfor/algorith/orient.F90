@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,13 +50,13 @@ subroutine orient(mdgene, sst, jcoor, ino, coordo, &
 !
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, itran, k, l, llrot, lltra, nbcmpm
+    integer(kind=8) :: ibid, itran, k, l, llrot, lltra, nbcmpm
 !
 !-----------------------------------------------------------------------
     parameter(nbcmpm=10)
     character(len=8) :: sst
     character(len=24) :: mdgene
-    integer :: jcoor, ino
+    integer(kind=8) :: jcoor, ino
     real(kind=8) :: matrot(nbcmpm, nbcmpm), xanc(3), xnew, coordo(3), r8bid
     real(kind=8) :: matbuf(nbcmpm, nbcmpm), mattmp(nbcmpm, nbcmpm)
 !

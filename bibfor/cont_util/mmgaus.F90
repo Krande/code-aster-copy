@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ subroutine mmgaus(elem_type, type_inte, gauss_indx, xpg, ypg, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: elem_type
-    integer, intent(in) :: type_inte
-    integer, intent(in) :: gauss_indx
+    integer(kind=8), intent(in) :: type_inte
+    integer(kind=8), intent(in) :: gauss_indx
     real(kind=8), intent(out) :: xpg
     real(kind=8), intent(out) :: ypg
     real(kind=8), optional, intent(out) :: gauss_weight_
@@ -50,20 +50,20 @@ subroutine mmgaus(elem_type, type_inte, gauss_indx, xpg, ypg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: zgauss = 6
-    integer, parameter :: znpgse = 6
-    integer, parameter :: zseg = 2
-    integer, parameter :: znpgtr = 12
-    integer, parameter :: ztri = 3
-    integer, parameter :: zncots = 8
-    integer, parameter :: znpncs = 5
-    integer, parameter :: znpnct = 10
+    integer(kind=8), parameter :: zgauss = 6
+    integer(kind=8), parameter :: znpgse = 6
+    integer(kind=8), parameter :: zseg = 2
+    integer(kind=8), parameter :: znpgtr = 12
+    integer(kind=8), parameter :: ztri = 3
+    integer(kind=8), parameter :: zncots = 8
+    integer(kind=8), parameter :: znpncs = 5
+    integer(kind=8), parameter :: znpnct = 10
     real(kind=8) :: fpgseg(zgauss, znpgse, zseg)
     real(kind=8) :: fpgtri(zgauss, znpgtr, ztri)
     real(kind=8) :: pncseg(zncots, znpncs)
     real(kind=8) :: pnctri(zncots, znpnct)
-    integer :: param
-    integer :: i, j, h, n, incseg, jncseg
+    integer(kind=8) :: param
+    integer(kind=8) :: i, j, h, n, incseg, jncseg
     real(kind=8) :: a, b, c, d, p1, p2, p3, gauss_weight
 !
 ! --------------------------------------------------------------------------------------------------

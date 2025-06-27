@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
         real(kind=8) :: dsidep(6,6)
         real(kind=8) :: edge
         real(kind=8) :: apex
-        integer      :: ii
-        integer      :: jj
-        integer      :: mm
-        integer      :: codret
+        integer(kind=8)      :: ii
+        integer(kind=8)      :: jj
+        integer(kind=8)      :: mm
+        integer(kind=8)      :: codret
     end subroutine ratg3d
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri, &
     implicit none
 #include "jeveux_private.h"
 #include "asterfort/utmess.h"
-    integer :: unit
-    integer :: iadmi, ideci, idatoc, lt, lonoi
+    integer(kind=8) :: unit
+    integer(kind=8) :: iadmi, ideci, idatoc, lt, lonoi
     character(len=*) :: mess, genri, typei
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR : IMPRIME UN SEGMENT DE VALEURS
@@ -40,17 +40,17 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri, &
 ! IN  MESS   : MESSAGE D'INFORMATION
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: icls, idco, idenom, idos, iep, ies, ips
-    integer :: j, jdocu, jgenr, ji, jorig, jrnom, jtype
-    integer :: k, kadm, l, ladm, n, nb, nd
-    integer :: nl, nm, nu
+    integer(kind=8) :: icls, idco, idenom, idos, iep, ies, ips
+    integer(kind=8) :: j, jdocu, jgenr, ji, jorig, jrnom, jtype
+    integer(kind=8) :: k, kadm, l, ladm, n, nb, nd
+    integer(kind=8) :: nl, nm, nu
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
     character(len=2) :: dn2
@@ -60,7 +60,7 @@ subroutine jjimpo(unit, iadmi, ideci, idatoc, genri, &
      &                 dn2(n)
 !
 ! ----------------------------------------------------------------------
-    integer :: ideno, ilmax, iluti
+    integer(kind=8) :: ideno, ilmax, iluti
     parameter(ideno=2, ilmax=4, iluti=5)
 ! ----------------------------------------------------------------------
     character(len=18) :: fmt

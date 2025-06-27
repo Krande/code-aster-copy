@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine genere(r, dim, v, x)
-        integer :: dim
+        integer(kind=8) :: dim
         complex(kind=8) :: r(dim, dim)
         complex(kind=8) :: v(dim)
         complex(kind=8) :: x(dim)

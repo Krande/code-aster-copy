@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev, &
 !
     character(len=8) :: noma
     character(len=19) :: macofo
-    integer :: ndim, nbmac, tablev(2), noe(4, 4), nbnoff, indic(4)
+    integer(kind=8) :: ndim, nbmac, tablev(2), noe(4, 4), nbnoff, indic(4)
 !
 !       FILTRE DES FACES LIBRES
 !       ----------------------------------------------------
@@ -51,8 +51,8 @@ subroutine fonno4(ndim, macofo, noma, nbmac, tablev, &
 !
 !       ----------------------------------------------------
 !
-    integer :: jmaco, iatyma, iamase, ityp
-    integer :: comp5, ima, inp, inq, compte, nn, i, j, ino1
+    integer(kind=8) :: jmaco, iatyma, iamase, ityp
+    integer(kind=8) :: comp5, ima, inp, inq, compte, nn, i, j, ino1
     character(len=8) :: type
 !
 !     -----------------------------------------------------------------

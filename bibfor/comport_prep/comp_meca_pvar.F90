@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -89,22 +89,22 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     aster_logical :: l_zone_read
     character(len=8) :: mesh
     character(len=19) :: modelLigrel
-    integer, pointer :: comporInfoInfo(:) => null()
-    integer, pointer :: comporInfoZone(:) => null()
-    integer, pointer :: zoneRead(:) => null()
-    integer, pointer :: modelCell(:) => null()
+    integer(kind=8), pointer :: comporInfoInfo(:) => null()
+    integer(kind=8), pointer :: comporInfoZone(:) => null()
+    integer(kind=8), pointer :: zoneRead(:) => null()
+    integer(kind=8), pointer :: modelCell(:) => null()
     character(len=16), pointer :: comporInfoVari(:) => null()
     character(len=16), pointer :: comporInfoRela(:) => null()
     character(len=16), pointer :: comporVale(:) => null()
-    integer, pointer :: comporDesc(:) => null()
-    integer, pointer :: comporPtma(:) => null()
-    integer :: nbVale, mapNbCmpMax, mapNbZone, nbVari, nt_vari, nb_vari_maxi, nb_zone_acti, nb_zone2
-    integer :: mapZoneNume, iCellMesh, nbCellMesh, iret, nutyel, nbVariMeca
+    integer(kind=8), pointer :: comporDesc(:) => null()
+    integer(kind=8), pointer :: comporPtma(:) => null()
+    integer(kind=8) :: nbVale, mapNbCmpMax, mapNbZone, nbVari, nt_vari, nb_vari_maxi, nb_zone_acti, nb_zone2
+    integer(kind=8) :: mapZoneNume, iCellMesh, nbCellMesh, iret, nutyel, nbVariMeca
     character(len=16) :: post_iter, vari_excl, regu_visc, post_incr
     character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp
     character(len=255) :: libr_name, subr_name
     character(len=16) :: extern_addr, notype
-    integer :: extern_type
+    integer(kind=8) :: extern_type
     type(BehaviourPrep_Exte), pointer :: prepExte(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

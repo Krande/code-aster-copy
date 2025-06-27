@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,8 +64,8 @@ subroutine lcconv(rela_comp, yd, dy, ddy, &
 #include "asterfort/lcmmcv.h"
 #include "asterfort/lkicvg.h"
 #include "asterfort/sricvg.h"
-    integer :: typess, itmax, iter, intg, nr, icomp
-    integer :: iret, nmat, nvi
+    integer(kind=8) :: typess, itmax, iter, intg, nr, icomp
+    integer(kind=8) :: iret, nmat, nvi
     real(kind=8) :: toler, essai, ddy(*), dy(*), r(*), rini(*), yd(*)
     real(kind=8) :: mater(nmat, 2), epstr(6), vinf(nvi)
     character(len=16), intent(in) :: rela_comp

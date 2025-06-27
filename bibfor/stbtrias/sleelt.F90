@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine sleelt(iunv, maxnod, nbtyma, indic, permut, &
                   nbmail, mint, mant, datset, inum)
-! aslint: disable=
+! aslint: disable=C0110
     implicit none
 !     ==============================================================
 !A PRESUPER
@@ -89,21 +89,21 @@ subroutine sleelt(iunv, maxnod, nbtyma, indic, permut, &
 #include "asterfort/lecelt.h"
 #include "asterfort/lect82.h"
 #include "asterfort/wkvect.h"
-    integer :: maxnod, nbtyma, datset
-    integer :: mint(nbtyma), mant(nbtyma)
-    integer :: nbmail(nbtyma), indic(nbtyma), permut(maxnod, nbtyma)
+    integer(kind=8) :: maxnod, nbtyma, datset
+    integer(kind=8) :: mint(nbtyma), mant(nbtyma)
+    integer(kind=8) :: nbmail(nbtyma), indic(nbtyma), permut(maxnod, nbtyma)
 !  --> DECLARATION DES VARIABLES LOCALES
     character(len=80) :: cbuf
-    integer :: ind, jnum, codgra, codmec, iprop, imat, icol, nbnode, inum
-    integer :: node(32), nod82(10000), ico, ibid2, icp, ino
-    integer :: coddes, iphyb, imatb, nsizec, nsizei, nn, it
+    integer(kind=8) :: ind, jnum, codgra, codmec, iprop, imat, icol, nbnode, inum
+    integer(kind=8) :: node(32), nod82(10000), ico, ibid2, icp, ino
+    integer(kind=8) :: coddes, iphyb, imatb, nsizec, nsizei, nn, it
 !
 !  --------- FIN DECLARATION ----------
 !
 !  --> N  D'UNITE LOGIQUE ASSOCIE AUX FICHIERS
 !-----------------------------------------------------------------------
-    integer :: i, imes, ipos, ire1, iret, iunv
-    integer :: jconn, jinfo, ndeca, niter, nndec
+    integer(kind=8) :: i, imes, ipos, ire1, iret, iunv
+    integer(kind=8) :: jconn, jinfo, ndeca, niter, nndec
 !-----------------------------------------------------------------------
     call jemarq()
     imes = iunifi('MESSAGE')

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine d1pa3d(angl, irep, passag)
         real(kind=8) :: angl(3)
-        integer :: irep
+        integer(kind=8) :: irep
         real(kind=8) :: passag(6, 6)
     end subroutine d1pa3d
 end interface

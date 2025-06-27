@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
 #include "blas/ddot.h"
 #include "blas/dnrm2.h"
     character(len=8) :: typmod(*)
-    integer :: ndim, mate, kpg, ksp
+    integer(kind=8) :: ndim, mate, kpg, ksp
     real(kind=8) :: epsp(6), epsd(6)
     real(kind=8) :: epsm(6), vim(2), sigm(6), a0, a1
 !
@@ -63,7 +63,7 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
 ! ----------------------------------------------------------------------
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: ndimsi, k, nrac1, nrac2
+    integer(kind=8) :: ndimsi, k, nrac1, nrac2
     aster_logical :: trac, comp, notrac, nocomp
     real(kind=8) :: trsigp, trsigd, sigelp(6), sigeld(6)
     real(kind=8) :: eps1(6), eps2(6), pp(6), dd(6)
@@ -83,7 +83,7 @@ subroutine pipedp(BEHinteg, kpg, ksp, ndim, typmod, &
     parameter(d13=.33333333333333d0)
 !
 !
-    integer :: ndt, ndi, nr, nvi, nmat
+    integer(kind=8) :: ndt, ndi, nr, nvi, nmat
     parameter(nmat=90)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: pc, pt, kuc, kut, ke, tbid, rbid, fcp, ftp

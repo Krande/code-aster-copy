@@ -36,7 +36,7 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
 #include "asterfort/verift.h"
 #include "asterfort/vpalem.h"
 #include "asterfort/zerofr.h"
-    integer :: ndim, imate, kpg, ksp, iret, nvi
+    integer(kind=8) :: ndim, imate, kpg, ksp, iret, nvi
     character(len=8) :: typmod(*)
     character(len=16) :: compor(*), option
     real(kind=8) :: crit(4), instam, instap, irram, irrap
@@ -96,22 +96,22 @@ subroutine nmvpir(fami, kpg, ksp, ndim, typmod, &
     real(kind=8) :: ep, nup, troikp, deumup
     real(kind=8) :: em, num, troikm, deumum
 ! AUTRES
-    integer :: nbclem, nbcvil, nbcint
+    integer(kind=8) :: nbclem, nbcvil, nbcint
     parameter(nbclem=7, nbcvil=4, nbcint=2)
     real(kind=8) :: coelem(nbclem), coevil(nbcvil)
     real(kind=8) :: coeint(nbcint)
     character(len=16) :: nomlem(nbclem), nomvil(nbcvil)
     character(len=16) :: nomint(nbcint)
-    integer :: codvil(nbcvil), codlem(nbclem), codint(nbcint)
+    integer(kind=8) :: codvil(nbcvil), codlem(nbclem), codint(nbcint)
     character(len=*) :: fami
 !
     real(kind=8) :: t1, t2, defam(6), defap(6), fluphi
-    integer :: iulmes, iret2, iret3, ibid
+    integer(kind=8) :: iulmes, iret2, iret3, ibid
     real(kind=8) :: rac2, tabs
-    integer :: k, l
-    integer :: ndimsi
+    integer(kind=8) :: k, l
+    integer(kind=8) :: ndimsi
     real(kind=8) :: alpha, beta, caa, saa, cba, sba
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     common/tdim/ndt, ndi
     real(kind=8) :: depsgr, dp1, dev(6)
     real(kind=8) :: degran(6)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
         character(len=*) :: knom1
         character(len=*) :: knom2
         character(len=*) :: knom3
-        integer :: j
+        integer(kind=8) :: j
         character(len=*) :: itab(1)
-        integer :: k
-        integer :: hdfwsv
+        integer(kind=8) :: k
+        integer(kind=8) :: hdfwsv
     end function hdfwsv
 end interface

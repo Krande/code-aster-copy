@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
 #include "asterfort/jxdeps.h"
 #include "asterfort/jxliro.h"
     character(len=*) :: cunit, clas, cmess
-    integer :: numerg, info
+    integer(kind=8) :: numerg, info
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'IMPRESSION DU CONTENU D'UN ENREGISTREMENT
 ! DU FICHIER D'ACCES DIRECT ASSOCIE A UNE BASE
@@ -40,21 +40,21 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
 !              SI > 1 ALORS ON IMPRIME LE CONTENU DE L'ENREGISTREMENT
 !              SINON ON IMPRIME UNIQUEMENT LE CHAINAGE
 ! ----------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: iadmo, jdocu, jgenr, jorig, jrnom
-    integer :: jtype, julist, jusadi, k, l, lgbl, n
-    integer :: ncla1, ncla2
+    integer(kind=8) :: iadmo, jdocu, jgenr, jorig, jrnom
+    integer(kind=8) :: jtype, julist, jusadi, k, l, lgbl, n
+    integer(kind=8) :: ncla1, ncla2
 !-----------------------------------------------------------------------
     parameter(n=5)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
@@ -66,14 +66,14 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
      &                 dn2(n)
     character(len=8) :: nombas
     common/kbasje/nombas(n)
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
 ! ----------------------------------------------------------------------
     character(len=1) :: kclas
-    integer :: itp(1), jitp, iaditp, iadyn, idco, idos, idec, icomp
-    integer :: ji, nl, nd, iaddi(2), idosl, idcol, lgl, ic
+    integer(kind=8) :: itp(1), jitp, iaditp, iadyn, idco, idos, idec, icomp
+    integer(kind=8) :: ji, nl, nd, iaddi(2), idosl, idcol, lgl, ic
 ! DEB ------------------------------------------------------------------
     kclas = clas(1:min(1, len(clas)))
     julist = iunifi(cunit)
@@ -205,8 +205,8 @@ subroutine jepreg(cunit, clas, numerg, cmess, info)
 !
 1001 format((i7, ' - ', 10(i12, 1x)))
 1002 format(i8, 1x, 'ID COLLECTION:', i8, ' ID OBJET:', i8, ' LONGUEUR:',&
-    &       i8, a, a, i6)
+   &       i8, a, a, i6)
 1003 format(i8, 1x, 'ID COLLECTION:', i8, ' ID OBJET:', i8, ' LONGUEUR:',&
-    &       i8, a, a, a, i8)
+   &       i8, a, a, a, i8)
 ! FIN -----------------------------------------------------------------
 end subroutine

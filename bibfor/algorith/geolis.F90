@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,16 +60,16 @@ subroutine geolis(modgen, sst1, sst2, intf1, intf2, &
 !
 !
 !
-    integer :: iageo2, iageo1, igeom2, nbno2, ino2, nuno2, nno2, igeom1, nbno1
-    integer :: ino1, nuno1, nno1, iagma1, nmga1, nma1, i, k, kk, ibid
-    integer :: nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, llint2
-    integer :: ialino
+    integer(kind=8) :: iageo2, iageo1, igeom2, nbno2, ino2, nuno2, nno2, igeom1, nbno1
+    integer(kind=8) :: ino1, nuno1, nno1, iagma1, nmga1, nma1, i, k, kk, ibid
+    integer(kind=8) :: nusst1, nusst2, llrot1, llrot2, lltra1, lltra2, llint2
+    integer(kind=8) :: ialino
     real(kind=8) :: tra1(3), angl1(3), centr1(3), tra2(3), angl2(3), centr2(3)
     real(kind=8) :: coor1(3), coor2(3), zero, un, rot1(3, 3), rot2(3, 3)
     character(len=8) :: modgen, lint2, sst1, sst2, intf1, intf2, mail1, mail2
     character(len=24) :: repnom, int2, toto, geom2, geom1
     character(len=*) :: limail
-    integer, pointer :: idc_defo(:) => null()
+    integer(kind=8), pointer :: idc_defo(:) => null()
 !
 !-----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine dfbde(dim, b, e, deuxmu, lambda,&
                      dsidep)
-        integer :: dim
+        integer(kind=8) :: dim
         real(kind=8) :: b(6)
         real(kind=8) :: e(6)
         real(kind=8) :: deuxmu

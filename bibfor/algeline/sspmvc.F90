@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@ subroutine sspmvc(n, m, mat, ad, t1, &
                   y)
     implicit none
 !     VERSION COMPLEXE DE SSPMVA
-    integer :: n, m, ad(*)
+    integer(kind=8) :: n, m, ad(*)
     complex(kind=8) :: mat(*), t1(*), y(*)
-    integer :: i, j, jmin, jmax, rest, k0, k1, k2, k3, k4, k5, k6, k7
+    integer(kind=8) :: i, j, jmin, jmax, rest, k0, k1, k2, k3, k4, k5, k6, k7
     rest = m-(m/8)*8
     if (rest .le. 3) then
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine jpd1ff(ip, xl, phiy, phiz, b)
     implicit none
-    integer :: ip
+    integer(kind=8) :: ip
     real(kind=8) :: xl, a, k, b(6, 12)
     real(kind=8) :: phiy, phiz
 ! ......................................................................
@@ -54,7 +54,7 @@ subroutine jpd1ff(ip, xl, phiy, phiz, b)
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: dy, dz
 !-----------------------------------------------------------------------
     a = 0.5d0*xl

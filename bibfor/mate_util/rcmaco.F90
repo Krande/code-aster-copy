@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine rcmaco(chmat, chmatgrp, indmat, nbmat, imate, l_ther, basename, base_
 !
     character(len=8) :: chmat, basename
     character(len=24) :: chmatgrp
-    integer :: indmat, nbmat, imate
+    integer(kind=8) :: indmat, nbmat, imate
     aster_logical, intent(in) :: l_ther
     character(len=1), intent(in), optional :: base_
 !
@@ -46,7 +46,7 @@ subroutine rcmaco(chmat, chmatgrp, indmat, nbmat, imate, l_ther, basename, base_
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: igrp
+    integer(kind=8) :: igrp
     character(len=19) :: codi
     character(len=1) :: base
 !

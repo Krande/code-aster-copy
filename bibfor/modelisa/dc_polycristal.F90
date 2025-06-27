@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine dc_polycristal(nboccp, sdcomp)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer, intent(in) :: nboccp
+    integer(kind=8), intent(in) :: nboccp
     character(len=8), intent(in) :: sdcomp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,11 +52,11 @@ subroutine dc_polycristal(nboccp, sdcomp)
     character(len=16) :: loca, noms(6)
     character(len=24) :: nomvar(100)
     real(kind=8) :: fvol, orie(3), dl, da, euler(3), fvolt, mu_loca
-    integer :: iocc, nloc, ndl, nda, itbint, nums(3)
-    integer :: i, nmono, imi, ipk, ipi, ipr, iorie, irra
-    integer :: ncpri, ncprk, ncprr, jcprk, jcprr, jcpri, nvit, lmk, ifvol, ipl
-    integer :: imono, nbmono, nvloc, indvar
-    integer :: nbsyst, nbsysm
+    integer(kind=8) :: iocc, nloc, ndl, nda, itbint, nums(3)
+    integer(kind=8) :: i, nmono, imi, ipk, ipi, ipr, iorie, irra
+    integer(kind=8) :: ncpri, ncprk, ncprr, jcprk, jcprr, jcpri, nvit, lmk, ifvol, ipl
+    integer(kind=8) :: imono, nbmono, nvloc, indvar
+    integer(kind=8) :: nbsyst, nbsysm
     character(len=24), pointer :: cprk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

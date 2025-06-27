@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_suffix)
         character(len=16), intent(in) :: keywordfact
         character(len=24), intent(in) :: keywordexcl
-        integer, intent(out) :: n_keyexcl
-        integer, intent(in), optional :: n_suffix
+        integer(kind=8), intent(out) :: n_keyexcl
+        integer(kind=8), intent(in), optional :: n_suffix
         character(len=8), optional, intent(in) :: list_suffix(*)
     end subroutine char_excl_keyw
 end interface

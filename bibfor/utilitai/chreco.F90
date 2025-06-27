@@ -42,7 +42,7 @@ subroutine chreco(chou)
 #include "asterfort/sdchgd.h"
 #include "asterfort/utmess.h"
 
-    integer :: iret, jvale, nbval, jvalin, i, jrefn
+    integer(kind=8) :: iret, jvale, nbval, jvalin, i, jrefn
     character(len=3) :: tsca
     character(len=4) :: tych
     character(len=8) :: chou, nomgd, partie

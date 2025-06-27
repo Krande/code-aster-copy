@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,11 +49,11 @@ subroutine aptgno(sdappa, mesh, sdcont_defi)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_cont_zone, model_ndim
-    integer :: i_zone, norm_type
-    integer :: jdecnm, nb_node_mast
-    integer :: jdecne, nb_node_slav
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_cont_zone, model_ndim
+    integer(kind=8) :: i_zone, norm_type
+    integer(kind=8) :: jdecnm, nb_node_mast
+    integer(kind=8) :: jdecne, nb_node_slav
     aster_logical :: apcald
     real(kind=8) :: norm_vect(3)
     real(kind=8), pointer :: v_sdappa_tgno(:) => null()

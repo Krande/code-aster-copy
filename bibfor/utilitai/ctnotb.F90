@@ -36,8 +36,8 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
 #include "asterfort/tbajli.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer, parameter :: ndim = 3
-    integer :: nbcmp, nbno, nbval
+    integer(kind=8), parameter :: ndim = 3
+    integer(kind=8) :: nbcmp, nbno, nbval
     character(len=8) :: typac, noma, resu, nomtb
     character(len=16) :: nsymb
     character(len=24) :: nkcha, nkcmp, mesnoe, nival, nrval, niord
@@ -67,20 +67,20 @@ subroutine ctnotb(nbno, mesnoe, noma, nbval, nkcha, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: jcmp, jkcha, jlno, jrval, jival, jniord, i, nbnox
-    integer :: jcnsl, nbcmpx, n, ino, indno
-    integer :: kcp, icmp, indcmp, ni, nr, nk, kk, nbpara
-    integer :: j, ibid
+    integer(kind=8) :: jcmp, jkcha, jlno, jrval, jival, jniord, i, nbnox
+    integer(kind=8) :: jcnsl, nbcmpx, n, ino, indno
+    integer(kind=8) :: kcp, icmp, indcmp, ni, nr, nk, kk, nbpara
+    integer(kind=8) :: j, ibid
     complex(kind=8) :: cbid
     character(len=8) :: kno
     character(len=19) :: chamns
     character(len=8), pointer :: nom_cmp(:) => null()
     character(len=16), pointer :: table_parak(:) => null()
-    integer, pointer :: table_vali(:) => null()
+    integer(kind=8), pointer :: table_vali(:) => null()
     character(len=16), pointer :: table_valk(:) => null()
     real(kind=8), pointer :: table_valr(:) => null()
     real(kind=8), pointer :: val_cmp(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
     character(len=8), pointer :: cnsc(:) => null()

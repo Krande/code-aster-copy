@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,27 +24,27 @@ interface
                       nfe, basloc, nnop, npg, sigma,&
                       lsn, lst, nfiss,&
                       heavn, jstno, codopt, ivectu, imate)
-        integer :: codopt
-        integer :: nfiss
-        integer :: npg
-        integer :: nnop
-        integer :: nfe
-        integer :: nfh
-        integer, optional :: imate
-        integer :: ndim
+        integer(kind=8) :: codopt
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: npg
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nfe
+        integer(kind=8) :: nfh
+        integer(kind=8), optional :: imate
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         character(len=8) :: elrese
         real(kind=8) :: coorse(*)
-        integer :: igeom
+        integer(kind=8) :: igeom
         real(kind=8) :: he(nfiss)
-        integer :: ddlc
-        integer :: ddlm
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: ddlm
         real(kind=8) :: basloc(3*ndim*nnop)
         real(kind=8) :: sigma(codopt*(2*ndim-1)+1, codopt*(npg-1)+1)
         real(kind=8) :: lsn(nnop)
         real(kind=8) :: lst(nnop)
-        integer :: heavn(nnop, 5)
-        integer :: ivectu
-        integer :: jstno
+        integer(kind=8) :: heavn(nnop, 5)
+        integer(kind=8) :: ivectu
+        integer(kind=8) :: jstno
     end subroutine xxbsig
 end interface

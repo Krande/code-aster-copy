@@ -51,7 +51,7 @@ subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
     real(kind=8), intent(in) :: tpsthe(6)
     character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: varc_curr
-    integer :: lonch
+    integer(kind=8) :: lonch
     character(len=19) :: maprec
     character(len=24) :: matass, cndirp, cnchci, cnresi
     character(len=24) :: temp_iter, temp_prev, vec2nd, vec2ni
@@ -72,7 +72,7 @@ subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iEqua, iMode
+    integer(kind=8) :: iEqua, iMode
     real(kind=8) :: rbid
     real(kind=8) :: time_curr
     character(len=1) :: typres

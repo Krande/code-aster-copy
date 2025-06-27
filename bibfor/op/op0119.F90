@@ -68,22 +68,24 @@ subroutine op0119()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ncarfi1, ncarfi2
+    integer(kind=8) :: ncarfi1, ncarfi2
     parameter(ncarfi1=3, ncarfi2=7)
     real(kind=8) :: pi4
 !
-    integer :: nbvfibre, maxfibre1, maxfibre2, nbfibres1, nbfibres2
-    integer :: iret, ifm, niv, nboccsec, nboccfib, nboccasf, ii, nbmagr, iidepnoeud, nbocctype1
-    integer :: nbmaills, nttri3, ntseg2, ntqua4, ntpoi1, correni(4), ncarma
-    integer :: numno, nbfibreass, jj, ng, iptrng
-    integer :: ulnbnoeuds, ulnbmailles, maxmailgrp
-    integer :: iinbnoeuds, iinbmailles
-    integer :: nbv, jdtm, nummai, nutyma
-    integer :: nbgf, jpofig, ioc, ido, jdo, ipos, in, nno, no, jcf, jdno, jdco, jnbfig, jtyfig
-    integer :: ibid, ipointeur, iinbgf, jmafig, jmaill, jsdfig
+    integer(kind=8) :: nbvfibre, maxfibre1, maxfibre2, nbfibres1, nbfibres2
+    integer(kind=8) :: iret, ifm, niv, nboccsec, nboccfib, nboccasf, ii
+    integer(kind=8) :: nbmagr, iidepnoeud, nbocctype1
+    integer(kind=8) :: nbmaills, nttri3, ntseg2, ntqua4, ntpoi1, correni(4), ncarma
+    integer(kind=8) :: numno, nbfibreass, jj, ng, iptrng
+    integer(kind=8) :: ulnbnoeuds, ulnbmailles, maxmailgrp
+    integer(kind=8) :: iinbnoeuds, iinbmailles
+    integer(kind=8) :: nbv, jdtm, nummai, nutyma
+    integer(kind=8) :: nbgf, jpofig, ioc, ido, jdo, ipos, in, nno, no, jcf
+    integer(kind=8) :: jdno, jdco, jnbfig, jtyfig
+    integer(kind=8) :: ibid, ipointeur, iinbgf, jmafig, jmaill, jsdfig
 !
     real(kind=8) :: x(4), y(4), centre(2), axep(2), surf, angle, xx, yy, cc, ss
-    integer :: iangle
+    integer(kind=8) :: iangle
 !
     character(len=8)  :: sdgf, nomas, ksudi, nommai, nogfma
     character(len=16) :: concep, cmd, limcls(3), ltymcl(3)
@@ -92,15 +94,15 @@ subroutine op0119()
 !
     character(len=24) :: valk(3)
 !
-    integer, pointer ::             vmailgrp(:) => null()
-    integer, pointer ::             vimailles(:) => null()
-    integer, pointer ::             vigroup(:) => null()
-    integer, pointer ::             vinoeud(:) => null()
+    integer(kind=8), pointer ::             vmailgrp(:) => null()
+    integer(kind=8), pointer ::             vimailles(:) => null()
+    integer(kind=8), pointer ::             vigroup(:) => null()
+    integer(kind=8), pointer ::             vinoeud(:) => null()
     real(kind=8), pointer ::         valfibre(:) => null()
     real(kind=8), pointer ::         vcoord(:) => null()
     character(len=24), pointer ::    vngroup(:) => null()
 !
-    integer, pointer ::             tousgroupesnbf(:) => null()
+    integer(kind=8), pointer ::             tousgroupesnbf(:) => null()
     character(len=24), pointer ::    tousgroupesnom(:) => null()
     real(kind=8), pointer ::         coorgrfibreass(:) => null()
     real(kind=8), pointer ::         gxgrfibreass(:) => null()
@@ -108,7 +110,7 @@ subroutine op0119()
 !
 ! --------------------------------------------------------------------------------------------------
     real(kind=8)        :: valcara(3)
-    integer             :: okcara(3)
+    integer(kind=8)             :: okcara(3)
     character(len=8)    :: nomsec, nomcara(3)
     character(len=19)   :: tabcar
 ! --------------------------------------------------------------------------------------------------

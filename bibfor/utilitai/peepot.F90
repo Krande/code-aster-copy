@@ -69,15 +69,15 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
 #include "asterfort/char8_to_int.h"
 #include "blas/dcopy.h"
 !
-    integer :: nh, nbocc
+    integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara
 !     OPERATEUR   POST_ELEM
 !     TRAITEMENT DU MOT CLE-FACTEUR "ENER_POT"
 !     ------------------------------------------------------------------
 !
-    integer :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
-    integer :: ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
-    integer :: iocc, jma, icheml, ier, nbMaiT
+    integer(kind=8) :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
+  integer(kind=8) :: ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
+    integer(kind=8) :: iocc, jma, icheml, ier, nbMaiT
     parameter(nbpaep=2, nbparr=6, nbpard=4)
     real(kind=8) :: prec, varpep(nbpaep), inst, valer(3), rundf
     character(len=1) :: base
@@ -94,16 +94,16 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
 !
     mpi_int :: mpicow, mrang, mnbproc, mpicou
     aster_logical :: dbg_ob, lmonit
-    integer :: rang, nbproc, k, ntsum, nmsum, nmmax, ngsum, ngmax
-    integer :: decalig, decalim, jmntmg, jmigk, jmigi, jmim, niv, ifm, nbgr
-    integer :: numpas, numloc, ietdeb, ietrat, ietfin, ietmax
-    integer :: longt, icoef, mode, nel, idecgr, j, nbmasum, jnp, ind
+    integer(kind=8) :: rang, nbproc, k, ntsum, nmsum, nmmax, ngsum, ngmax
+    integer(kind=8) :: decalig, decalim, jmntmg, jmigk, jmigi, jmim, niv, ifm, nbgr
+    integer(kind=8) :: numpas, numloc, ietdeb, ietrat, ietfin, ietmax
+    integer(kind=8) :: longt, icoef, mode, nel, idecgr, j, nbmasum, jnp, ind
     real(kind=8) :: retfin, ztot
     character(len=4) :: docu
     character(len=8) :: k8X, scal
     character(len=24) :: k24X
     character(len=24), pointer :: celk(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     real(kind=8), pointer :: celv(:) => null()
 !
     data noparr/'NUME_ORDRE', 'INST', 'LIEU', 'ENTITE', 'TOTALE',&

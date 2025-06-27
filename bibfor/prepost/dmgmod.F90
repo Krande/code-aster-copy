@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr, &
     character(len=16) :: nomsym
     character(len=19) :: nomsd, nomsd2
     real(kind=8) :: vdomag(*)
-    integer :: nbpt, numcmp(*)
-    integer :: ntcmp, impr, nbordr, jordr, jcoef
+    integer(kind=8) :: nbpt, numcmp(*)
+    integer(kind=8) :: ntcmp, impr, nbordr, jordr, jcoef
 !       CREATION D UN VECTEUR AUX NOEUDS/PG : AMPLITUDE MAX DE VIBRATION
 !       METHODE CALCUL DU DOMMAGE UNITAIRE = /WOHLER
 !       ----------------------------------------------------------------
@@ -67,20 +67,20 @@ subroutine dmgmod(nomsym, nomsd, nomsd2, nommat, nbordr, &
     character(len=19) :: chequi, chequ2(nbordr)
     character(len=24) :: nomdmg
     character(len=24) :: valk(3)
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
 !
     real(kind=8) :: su, salt0, dmax, saltm, val(1)
     real(kind=8) :: valr(3), r8b, dmin, smax, coeff, r8min
 !
-    integer :: ipt, iord, icmp, nbr, nbk, nbc, nbf
-    integer :: ivch, ivpt, ibid, ivalk
-    integer :: numsym, ivch2, ivord2(nbordr), numord
+    integer(kind=8) :: ipt, iord, icmp, nbr, nbk, nbc, nbf
+    integer(kind=8) :: ivch, ivpt, ibid, ivalk
+    integer(kind=8) :: numsym, ivch2, ivord2(nbordr), numord
     aster_logical :: crit
 !
 ! ---   VECTEURS DE TRAVAIL
 !
 !-----------------------------------------------------------------------
-    integer :: ik
+    integer(kind=8) :: ik
     real(kind=8), pointer :: celv(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !-----------------------------------------------------------------------

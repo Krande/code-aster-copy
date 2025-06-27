@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: npara
+    integer(kind=8) :: npara
     real(kind=8) :: prec
     character(len=8) :: crit
     character(len=*) :: tabin, basout, tabout, lipara(*), lcrit(*)
@@ -55,17 +55,17 @@ subroutine tbtrtb(tabin, basout, tabout, npara, lipara, &
 ! IN  : CRIT   : RELATIF / ABSOLU
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jnume, ii, jj
-    integer :: i, j, k, n, m, ideb, ifin, nbuti, ndim
-    integer :: jvall, kvall, jvale, kvale, ktbnp, ktbba
+    integer(kind=8) :: iret, nbpara, nblign, jnume, ii, jj
+    integer(kind=8) :: i, j, k, n, m, ideb, ifin, nbuti, ndim
+    integer(kind=8) :: jvall, kvall, jvale, kvale, ktbnp, ktbba
     character(len=1) :: base
     character(len=4) :: type, knume
     character(len=19) :: nomtab, nomta2
     character(len=24) :: nomjv, nojv2, nomjvl, nojvl2, inpar, jnpar
     character(len=24) :: valk
     aster_logical :: lok
-    integer, pointer :: tri2(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tri2(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
     character(len=24), pointer :: tblp(:) => null()
     character(len=24), pointer :: nktblp(:) => null()
 ! ----------------------------------------------------------------------

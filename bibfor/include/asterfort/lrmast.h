@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail,&
                       nbcoor)
         character(len=8) :: nomu
-        integer :: ifm
-        integer :: ifl
-        integer :: nbnoeu
-        integer :: nbmail
-        integer :: nbcoor
+        integer(kind=8) :: ifm
+        integer(kind=8) :: ifl
+        integer(kind=8) :: nbnoeu
+        integer(kind=8) :: nbmail
+        integer(kind=8) :: nbcoor
     end subroutine lrmast
 end interface

@@ -48,22 +48,22 @@ subroutine pgpche(sd_pgp, iobs)
 !   ====================================================================
 !   -0.1- Input/output arguments
     character(len=8), intent(in):: sd_pgp
-    integer, intent(in):: iobs
+    integer(kind=8), intent(in):: iobs
 !   -0.2- Local variables
     real(kind=8)      :: undef
-    integer           :: nbcmp, nbsupp, ibid, iad, icmp
-    integer           :: iret, im, ima, jcsd, jcsl
-    integer           :: jcsv, nbpt, ipt, inod, imod
-    integer           :: nbmodes, nbptmx, dec1, dec2, dec3
-    integer           :: jconn
+    integer(kind=8)           :: nbcmp, nbsupp, ibid, iad, icmp
+    integer(kind=8)           :: iret, im, ima, jcsd, jcsl
+    integer(kind=8)           :: jcsv, nbpt, ipt, inod, imod
+    integer(kind=8)           :: nbmodes, nbptmx, dec1, dec2, dec3
+    integer(kind=8)           :: jconn
     character(len=4)  :: typch, typsc
     character(len=5)  :: k_ipt
     character(len=8)  :: base, maillage, nomnod, nomma
     character(len=16) :: champ
     character(len=19) :: nomcha
 
-    integer, pointer :: lmai(:) => null()
-    integer, pointer :: indic(:) => null()
+    integer(kind=8), pointer :: lmai(:) => null()
+    integer(kind=8), pointer :: indic(:) => null()
     character(len=8), pointer :: lcmp(:) => null()
     character(len=8), pointer :: rsup1(:) => null()
     character(len=8), pointer :: rsup2(:) => null()

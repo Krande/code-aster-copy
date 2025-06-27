@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,12 +67,12 @@ subroutine xasshm_frac(ds_thm, &
 ! ----------------------------------------------------------------------
 ! IO  ds_thm           : datastructure for THM
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: nddls, nnop, dimuel, i, ndim, nnops, jheavn
-    integer :: nddlm, contac, jmate, ncompv, nvec, pla(27), ncompn
-    integer :: nptf, nfiss, jcohes, jcoheo
-    integer :: ipgf, ifa, cface(30, 6), algocr, idepd, idepm, pos(16)
-    integer :: jptint, igeom, jbasec, nlact(2), lact(16), ibid, ino
-    integer :: ifiss, nfh, jheafa, ncomph
+    integer(kind=8) :: nddls, nnop, dimuel, i, ndim, nnops, jheavn
+    integer(kind=8) :: nddlm, contac, jmate, ncompv, nvec, pla(27), ncompn
+    integer(kind=8) :: nptf, nfiss, jcohes, jcoheo
+    integer(kind=8) :: ipgf, ifa, cface(30, 6), algocr, idepd, idepm, pos(16)
+    integer(kind=8) :: jptint, igeom, jbasec, nlact(2), lact(16), ibid, ino
+    integer(kind=8) :: ifiss, nfh, jheafa, ncomph
     real(kind=8) :: dt, parm_theta, ta1, cohes(5), rela, g(3), vihydr(64)
     real(kind=8) :: rinstp, rinstm, carcri(*), jac, raug
     real(kind=8) :: ffp(27), ffpc(27), ffc(16), dfdic(nnops, 3)

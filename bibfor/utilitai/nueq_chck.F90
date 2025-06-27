@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nueq_chck(nume_equaz, nb_equaz, l_error, l_subs)
 !
 !
     character(len=*), intent(in) :: nume_equaz
-    integer, optional, intent(out) :: nb_equaz
+    integer(kind=8), optional, intent(out) :: nb_equaz
     logical, optional, intent(in) :: l_error
     logical, optional, intent(in) :: l_subs
 !
@@ -46,8 +46,8 @@ subroutine nueq_chck(nume_equaz, nb_equaz, l_error, l_subs)
 !
     character(len=19) :: nume_equa
     character(len=24) :: nueq, deeq
-    integer :: len_v, nb_equa, i_equa
-    integer, pointer :: p_nueq(:) => null()
+    integer(kind=8) :: len_v, nb_equa, i_equa
+    integer(kind=8), pointer :: p_nueq(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

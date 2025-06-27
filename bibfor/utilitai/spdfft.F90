@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ subroutine spdfft(lvar, nbva, nsens, ltra, nbpts1, &
 !     CALCUL DE LA FFT OU DE LA FFT-1 (E. BOYERE 09/06/00)
 !     ----------------------------------------------------------------
 ! parametres
-    integer :: lvar, nbva, nsens, ltra, nbpts1, nbpts, nout, nbpts2
+    integer(kind=8) :: lvar, nbva, nsens, ltra, nbpts1, nbpts, nout, nbpts2
     character(len=16) :: sym
 !
 ! variables locales
     complex(kind=8) :: dcmplx, czero, caux
     real(kind=8) :: pas, pasfrq, raux, rzero
-    integer :: lfon, i, ii, valmax, lres1
+    integer(kind=8) :: lfon, i, ii, valmax, lres1
     blas_int :: b_incx, b_incy, b_n
 !     ----------------------------------------------------------------
 !

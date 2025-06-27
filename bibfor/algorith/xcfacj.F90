@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,9 +33,9 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
 #include "asterfort/reereg.h"
 #include "asterfort/xajpin.h"
 !
-    integer :: ptmax, ipt, igeom, nno, ndim
+    integer(kind=8) :: ptmax, ipt, igeom, nno, ndim
     real(kind=8) :: lsn(*), ptint(*), ainter(*)
-    integer :: nfiss, ifiss, fisco(*), nfisc
+    integer(kind=8) :: nfiss, ifiss, fisco(*), nfisc
     character(len=8) :: typma
 !
 !              TROUVER LES PTS D'INTER ENTRE LES JONCTIONS DE FISSURE
@@ -68,9 +68,9 @@ subroutine xcfacj(ptint, ptmax, ipt, ainter, lsn, &
     real(kind=8) :: a(3), b(3), c(3), mp(2), prec, ff(nno)
     real(kind=8) :: loncar, dst
     real(kind=8) :: m(3), somlsn, epsi(2), coorma(8)
-    integer :: i, nbf, ibid, ifq, j
-    integer :: fa(6, 8), ibid3(12, 3), ifisc, jfisc, ino
-    integer :: nnof, na, nb, iret
+    integer(kind=8) :: i, nbf, ibid, ifq, j
+    integer(kind=8) :: fa(6, 8), ibid3(12, 3), ifisc, jfisc, ino
+    integer(kind=8) :: nnof, na, nb, iret
     aster_logical :: chgsgn, lajpf, ajout, c1, c2
 ! ----------------------------------------------------------------------
 !

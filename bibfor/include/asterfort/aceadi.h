@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
         character(len=8) :: noma
         character(len=8) :: nomo
         character(len=*) :: mcf
-        integer :: lmax
-        integer :: nbocc
+        integer(kind=8) :: lmax
+        integer(kind=8) :: nbocc
         type (cara_elem_carte) :: infcarte(*)
-        integer :: ivr(*)
+        integer(kind=8) :: ivr(*)
     end subroutine aceadi
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       igeom, imate, ipesa, ivectu, jvSief, vff, dff, alpha, beta)
         character(len=16) :: option
         character(len=4) :: fami
-        integer :: nddl, nno, ncomp, npg
-        integer :: kpg
-        integer :: ipoids, igeom, imate, ipesa, iepsin, itemps
-        integer :: ivectu, jvSief
+        integer(kind=8) :: nddl, nno, ncomp, npg
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ipoids, igeom, imate, ipesa, iepsin, itemps
+        integer(kind=8) :: ivectu, jvSief
         real(kind=8) :: dff(2, nno), alpha, beta, vff(nno)
     end subroutine mbxchg
 end interface

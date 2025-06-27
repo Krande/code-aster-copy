@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,18 +40,18 @@ subroutine extra1(nin, lchin, lpain)
 #include "asterfort/nopara.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nin
+    integer(kind=8) :: nin
     character(len=*) :: lchin(*)
     character(len=8) :: lpain(*)
 !-----------------------------------------------------------------------
 !     but: preparer les champs locaux "in"
 !-----------------------------------------------------------------------
-    integer :: debugr, lggrel
+    integer(kind=8) :: debugr, lggrel
     character(len=19) :: chin
     character(len=4) :: type
     character(len=8) :: nompar
-    integer :: k, iparg, imodat
-    integer :: ipar, npin, iparin
+    integer(kind=8) :: k, iparg, imodat
+    integer(kind=8) :: ipar, npin, iparin
     aster_logical :: exich
 !-------------------------------------------------------------------
 !

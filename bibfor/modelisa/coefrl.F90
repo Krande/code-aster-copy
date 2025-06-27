@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas, &
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ipas, ires, nckmax, nborck
+    integer(kind=8) :: ipas, ires, nckmax, nborck
     real(kind=8) :: bornck(20), coefck(20, 11)
     character(len=24) :: nom1, nom2, nom3
 !
@@ -48,8 +48,8 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas, &
     character(len=8) :: typflu
     common/kop144/typflu
 !
-    integer :: unit, nbomax, nbloc
-    integer :: jborne, jcoeff, jvired, nbval1, nbval2, nbval3
+    integer(kind=8) :: unit, nbomax, nbloc
+    integer(kind=8) :: jborne, jcoeff, jvired, nbval1, nbval2, nbval3
     real(kind=8) :: zero, bock1(20), coef1(20, 11)
     real(kind=8) :: vrmin, vrmax
     character(len=16) :: k16nom
@@ -58,8 +58,8 @@ subroutine coefrl(nom1, nom2, nom3, nckmax, ipas, &
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ipas1, ires1, iunit, j, k, kk
-    integer :: nb1
+    integer(kind=8) :: i, ipas1, ires1, iunit, j, k, kk
+    integer(kind=8) :: nb1
 !-----------------------------------------------------------------------
     call jemarq()
 !

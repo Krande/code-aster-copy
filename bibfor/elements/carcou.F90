@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine carcou(orien, l, pgl, rayon, theta, &
     implicit none
 #include "asterfort/matrot.h"
 #include "asterfort/utmess.h"
-    integer :: icoude
+    integer(kind=8) :: icoude
     real(kind=8) :: orien(17), angl1(3), angl2(3), angl3(3), angl4(3)
     real(kind=8) :: pgl4(3, 3)
     real(kind=8) :: l, rayon, theta, pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), omega
@@ -47,7 +47,7 @@ subroutine carcou(orien, l, pgl, rayon, theta, &
 ! ......................................................................
 !
 !-----------------------------------------------------------------------
-    integer :: i, icmp, nno
+    integer(kind=8) :: i, icmp, nno
 !-----------------------------------------------------------------------
 !
     do i = 1, 3

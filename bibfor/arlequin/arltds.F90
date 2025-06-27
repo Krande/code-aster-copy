@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine arltds(nns, npgs, ipoids, icoors, ivfs, &
 #include "asterfort/jemarq.h"
 #include "blas/dcopy.h"
 !
-    integer :: nns, npgs
-    integer :: ivfs, ipoids, idfdes, icoors
+    integer(kind=8) :: nns, npgs
+    integer(kind=8) :: ivfs, ipoids, idfdes, icoors
     real(kind=8) :: poijcs(npgs)
     real(kind=8) :: fctfs(npgs*nns)
     real(kind=8) :: dfdxs(npgs*nns), dfdys(npgs*nns), dfdzs(npgs*nns)
@@ -62,7 +62,7 @@ subroutine arltds(nns, npgs, ipoids, icoors, ivfs, &
 !
 !
 !
-    integer :: mtl, kpgs
+    integer(kind=8) :: mtl, kpgs
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

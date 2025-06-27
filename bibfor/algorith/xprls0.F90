@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,12 +74,12 @@ subroutine xprls0(noma, noesom, armin, cnsln, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: ino, inoa, inob, ima, ifm, niv, nbnog, nbmag
-    integer :: jconx2, ndim, jzero, jmaco, nbmaco, nbnoma, jmai, nunoa, nunob
-    integer :: jnomco, nbnoco, nmaabs, itypma
-    integer :: jnosom, nbnozo, cptzo, jlsno, jltno
-    integer :: ar(12, 3), nbar, iar, na, nb
-    integer :: ndime, i
+    integer(kind=8) :: ino, inoa, inob, ima, ifm, niv, nbnog, nbmag
+    integer(kind=8) :: jconx2, ndim, jzero, jmaco, nbmaco, nbnoma, jmai, nunoa, nunob
+    integer(kind=8) :: jnomco, nbnoco, nmaabs, itypma
+    integer(kind=8) :: jnosom, nbnozo, cptzo, jlsno, jltno
+    integer(kind=8) :: ar(12, 3), nbar, iar, na, nb
+    integer(kind=8) :: ndime, i
     real(kind=8) :: lsna, lsnb
     real(kind=8) :: lst(6)
     real(kind=8) :: armin
@@ -88,11 +88,11 @@ subroutine xprls0(noma, noesom, armin, cnsln, &
     real(kind=8) :: toll
 !
 !     DOMAIN RESTRICTION
-    integer :: jnodto, jeleto, node, elem, nbno, nbma
+    integer(kind=8) :: jnodto, jeleto, node, elem, nbno, nbma
 !
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: tmdim(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !
 !-----------------------------------------------------------------------
 !     DEBUT

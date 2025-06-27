@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine ibbase(ier)
 #include "asterfort/jelibf.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utremt.h"
-    integer :: ier
+    integer(kind=8) :: ier
 !     ALLOCATION ET OUVERTURE DES BASES DE DONNEES
 !     ------------------------------------------------------------------
 ! IN  COMMAND : CH* : NOM DE LA COMMANDE APPELANTE  (DEBUT OU POURSUITE)
@@ -47,15 +47,15 @@ subroutine ibbase(ier)
 !
 !     --- VARIABLES LOCALES --------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibase, ideb, indbas, indcas, ltt
-    integer :: mxbase, mxcas, nb, nbbase, n
+    integer(kind=8) :: i, ibase, ideb, indbas, indcas, ltt
+    integer(kind=8) :: mxbase, mxcas, nb, nbbase, n
     aster_logical :: restart
 !-----------------------------------------------------------------------
     parameter(mxbase=2, n=5)
-    integer :: banbbl(mxbase), balgbl(mxbase), balgre(mxbase)
+    integer(kind=8) :: banbbl(mxbase), balgbl(mxbase), balgre(mxbase)
 !
 !     --- VALEURS PAR DEFAUTS DES BASES --------------------------------
-    integer :: presba(mxbase)
+    integer(kind=8) :: presba(mxbase)
     character(len=16) :: nomba(mxbase), nom
     character(len=16) :: stin(mxbase), stout(mxbase)
     character(len=16) :: cas, motfac
@@ -65,11 +65,11 @@ subroutine ibbase(ier)
     parameter(mxcas=3)
     character(len=16) :: casca(mxcas)
     character(len=24) :: valk(3)
-    integer :: nbblca(mxbase, mxcas), lgblca(mxbase, mxcas)
-    integer :: lgreca(mxbase, mxcas)
-    integer :: vali(2), info
+    integer(kind=8) :: nbblca(mxbase, mxcas), lgblca(mxbase, mxcas)
+    integer(kind=8) :: lgreca(mxbase, mxcas)
+    integer(kind=8) :: vali(2), info
 !
-    integer :: lfic, mfic
+    integer(kind=8) :: lfic, mfic
     common/fenvje/lfic(n), mfic
 !
     data nomba/'GLOBALE ', 'VOLATILE'/

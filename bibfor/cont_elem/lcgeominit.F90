@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ subroutine lcgeominit(elem_dime, &
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 !
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: nb_node_slav, nb_node_mast
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: nb_node_slav, nb_node_mast
     real(kind=8), intent(out) :: elem_slav_init(nb_node_slav, elem_dime)
     real(kind=8), intent(out) :: elem_mast_init(nb_node_mast, elem_dime)
 !
@@ -46,8 +46,8 @@ subroutine lcgeominit(elem_dime, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node_slav, i_node_mast, i_dime
-    integer :: jv_geom
+    integer(kind=8) :: i_node_slav, i_node_mast, i_dime
+    integer(kind=8) :: jv_geom
 !
 ! --------------------------------------------------------------------------------------------------
 !

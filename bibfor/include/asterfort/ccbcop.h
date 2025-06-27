@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine ccbcop(resultIn    , resultOut,&
                       listStoreJv , nbStore,&
                       listOptionJv, nbOption)
-        integer, intent(in) :: nbStore, nbOption
+        integer(kind=8), intent(in) :: nbStore, nbOption
         character(len=8), intent(in) :: resultOut, resultIn
         character(len=19), intent(in) :: listStoreJv, listOptionJv
     end subroutine ccbcop

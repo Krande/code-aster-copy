@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine rms(imatr, vect1, long1, vect2, long2, &
                nbpts, nfcod, df, nfonc)
     implicit none
 #include "jeveux.h"
-    integer :: imatr, long1, long2, nbpts, nfcod
+    integer(kind=8) :: imatr, long1, long2, nbpts, nfcod
     real(kind=8) :: vect1(long1), vect2(long2)
 !     CALCUL DES INTEGRALES DES AUTOSPECTRES ET INTERSPECTRES
 !     ------------------------------------------------------------------
@@ -30,9 +30,9 @@ subroutine rms(imatr, vect1, long1, vect2, long2, &
 !           IMATR : NOMBRE DE TIRAGES REALISES
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, ii, j, j1, jj, k
-    integer :: kb, kf, kfonc, kk, lauto, lautor, lint1
-    integer :: lint2, lintr, nbpts2, nfonc, nmatr
+    integer(kind=8) :: i, i1, ii, j, j1, jj, k
+    integer(kind=8) :: kb, kf, kfonc, kk, lauto, lautor, lint1
+    integer(kind=8) :: lint2, lintr, nbpts2, nfonc, nmatr
     real(kind=8) :: df, var1, var2, varij1, varij2, varmod
 !-----------------------------------------------------------------------
     nmatr = long2/nfcod

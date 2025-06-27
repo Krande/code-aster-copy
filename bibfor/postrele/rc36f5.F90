@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,14 +19,14 @@
 subroutine rc36f5(nbp12, nbp23, nbp13, nbsigr, nbsg1, &
                   nbsg2, nbsg3, saltij)
     implicit none
-    integer :: nbp12, nbp23, nbp13, nbsigr, nbsg1, nbsg2, nbsg3
+    integer(kind=8) :: nbp12, nbp23, nbp13, nbsigr, nbsg1, nbsg2, nbsg3
     real(kind=8) :: saltij(*)
 !
 !     SI IL N'EXISTE PAS DE SITUATION DE PASSAGE ENTRE 2 GROUPES,
 !     ON MET LES TERMES CROISES DE SALT A ZERO
 !
 !     ------------------------------------------------------------------
-    integer :: i1, i2, isl
+    integer(kind=8) :: i1, i2, isl
 !     ------------------------------------------------------------------
 !
     if (nbp12 .eq. 0) then

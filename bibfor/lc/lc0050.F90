@@ -45,13 +45,13 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, ndim
+    integer(kind=8), intent(in) :: kpg, ksp, ndim
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(*)
     real(kind=8), intent(in) :: carcri(*)
     real(kind=8), intent(in) :: instam, instap
-    integer, intent(in) :: neps, nsig, nvi
+    integer(kind=8), intent(in) :: neps, nsig, nvi
     real(kind=8), intent(in) :: epsm(6), deps(6)
     real(kind=8), intent(in) :: sigm(6)
     real(kind=8), intent(in) :: vim(*)
@@ -60,7 +60,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8), intent(out) :: stress(6)
     real(kind=8), intent(out) :: statev(nvi)
     real(kind=8), intent(out) :: dsidep(6, 6)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -115,12 +115,12 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: npropmax = 197
+    integer(kind=8), parameter :: npropmax = 197
     real(kind=8) :: props(npropmax)
-    integer :: nprops, pfumat
-    integer :: nshr, i, nstatv, npt, noel, layer
-    integer :: kspt, kstep, kinc, j
-    integer :: iadzi, iazk24
+    integer(kind=8) :: nprops, pfumat
+    integer(kind=8) :: nshr, i, nstatv, npt, noel, layer
+    integer(kind=8) :: kspt, kstep, kinc, j
+    integer(kind=8) :: iadzi, iazk24
     real(kind=8) :: drott(3, 3), drot(3, 3), dstran(9), stran(9)
     real(kind=8) :: sse, spd, scd, rpl
     real(kind=8) :: time(2), dtime, pnewdt
@@ -133,7 +133,7 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     character(len=80) :: cmname
     real(kind=8) :: temp, dtemp
 !
-    integer :: ntens, ndi
+    integer(kind=8) :: ntens, ndi
     blas_int :: b_incx, b_incy, b_n
     common/tdim/ntens, ndi
 !

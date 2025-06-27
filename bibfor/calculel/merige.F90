@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel, &
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/utmess.h"
-    integer :: nh
+    integer(kind=8) :: nh
     character(len=1) :: base
     character(len=*) :: sigg, strx
     character(len=19) :: matel
@@ -60,7 +60,7 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel, &
     character(len=8) :: modele, cara
 !
 !-----------------------------------------------------------------------
-    integer :: icode, ier, nbpara
+    integer(kind=8) :: icode, ier, nbpara
 !-----------------------------------------------------------------------
     call jemarq()
 !

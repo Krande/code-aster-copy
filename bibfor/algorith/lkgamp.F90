@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine lkgamp(val, varv, im, sm, ucrip, &
 #include "asterfort/lkds2h.h"
 #include "asterfort/lkvacp.h"
 #include "asterfort/lkvarp.h"
-    integer :: nbmat, val, varv, retcom
+    integer(kind=8) :: nbmat, val, varv, retcom
     real(kind=8) :: im, sm(6), mater(nbmat, 2), vinm(7)
     real(kind=8) :: depsp(6), deps(6), depsv(6)
     real(kind=8) :: dgamp, dgamv, de(6, 6)
@@ -61,7 +61,7 @@ subroutine lkgamp(val, varv, im, sm, ucrip, &
 ! ----: RETCOM: CODE RETOUR POUR REDECOUPAGE DU PAS DE TEMPS ------
 ! =================================================================
     common/tdim/ndt, ndi
-    integer :: i, ndi, ndt
+    integer(kind=8) :: i, ndi, ndt
     real(kind=8) :: deux, trois
     real(kind=8) :: paraep(3), varpl(4)
     real(kind=8) :: dhds(6), ds2hds(6), dfdsp(6), ddepsp(6)

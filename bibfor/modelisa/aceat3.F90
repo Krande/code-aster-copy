@@ -37,9 +37,9 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap, &
 !
 !
     character(len=8) :: noma, nomu, crit
-    integer :: nbpart, nbtuy, nbmap(nbpart), elpar(nbpart, nbtuy), ivr(*)
-    integer :: nmmt(*), nno, icmp, iavant, no4, nbcmp, icoud2
-    integer :: nopar(nbpart, nno, nbtuy), nbzk, nozk(nbzk), isens(nbpart), ifm
+    integer(kind=8) :: nbpart, nbtuy, nbmap(nbpart), elpar(nbpart, nbtuy), ivr(*)
+    integer(kind=8) :: nmmt(*), nno, icmp, iavant, no4, nbcmp, icoud2
+    integer(kind=8) :: nopar(nbpart, nno, nbtuy), nbzk, nozk(nbzk), isens(nbpart), ifm
     real(kind=8) :: cozk(3*nbzk), coor(*), coor3(12), zk1(3), zk2(3), zk3(3)
     real(kind=8) :: angl1(3), angl2(3), angl3(3), epsi, angl4(3)
 !     AFFE_CARA_ELEM
@@ -64,8 +64,8 @@ subroutine aceat3(noma, nomu, nbtuy, nbpart, nbmap, &
     character(len=8) :: nommai, nomno1, nomno2, nomno3, nomno4
     character(len=19) :: cartor
     character(len=24) :: tmpnor, tmpvor
-    integer :: jdcmpo, jdvlvo, izk, iok1, iok2, ipa, imfin, i, ima, nummai
-    integer :: no1, no2, no3, icoude, im0, nbdroi, nbcoud
+    integer(kind=8) :: jdcmpo, jdvlvo, izk, iok1, iok2, ipa, imfin, i, ima, nummai
+    integer(kind=8) :: no1, no2, no3, icoude, im0, nbdroi, nbcoud
     real(kind=8) :: pgl1(3, 3), pgl2(3, 3), pgl3(3, 3), norme, pgl4(3, 3)
 !
 !-----------------------------------------------------------------------

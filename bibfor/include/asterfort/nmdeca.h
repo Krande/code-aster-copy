@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,15 +25,15 @@ interface
                       deltat, nbrpas, dtmin, ldcext, durdec,&
                       retdec)
         character(len=19) :: sddisc
-        integer :: iterat
-        integer :: ievdac
+        integer(kind=8) :: iterat
+        integer(kind=8) :: ievdac
         character(len=24) :: nomlis
         real(kind=8) :: instam
         real(kind=8) :: deltat
-        integer :: nbrpas
+        integer(kind=8) :: nbrpas
         real(kind=8) :: dtmin
         aster_logical :: ldcext
         real(kind=8) :: durdec
-        integer :: retdec
+        integer(kind=8) :: retdec
     end subroutine nmdeca
 end interface

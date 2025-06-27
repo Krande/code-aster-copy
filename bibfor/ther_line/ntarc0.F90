@@ -30,7 +30,7 @@ subroutine ntarc0(result, model, materfield, caraElem, listLoadResu, &
 #include "asterfort/rssepa.h"
 !
     character(len=8), intent(in) :: result, model, materfield, caraElem
-    integer, intent(in) :: nume_store
+    integer(kind=8), intent(in) :: nume_store
     real(kind=8), intent(in) :: time_curr
     real(kind=8), intent(in) :: para(*)
     character(len=24), intent(in) :: listLoadResu
@@ -57,7 +57,7 @@ subroutine ntarc0(result, model, materfield, caraElem, listLoadResu, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jvPara
+    integer(kind=8) :: jvPara
 !
 ! --------------------------------------------------------------------------------------------------
 !

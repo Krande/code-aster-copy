@@ -64,7 +64,7 @@ subroutine merith(modelZ, loadNameZ, matecoZ, caraElemZ, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: iResuElem, iret, nbResuElem1, nbResuElem2, indxMatrElem
+    integer(kind=8) :: iResuElem, iret, nbResuElem1, nbResuElem2, indxMatrElem
     character(len=8) :: model, caraElem, loadName
     character(len=19) :: matrElem
     character(len=19), parameter :: matrElem1 = '&MERITH1', matrElem2 = '&MERITH2'

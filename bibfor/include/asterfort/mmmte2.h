@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine mmmte2(ndim, nnl, nne, nnm, nbcpf, ndexcl,&
                       matrff, matrfe, matrfm, matref, matrmf)
-        integer, intent(in) :: ndim, nne, nnl, nnm, nbcpf, ndexcl(10)
+        integer(kind=8), intent(in) :: ndim, nne, nnl, nnm, nbcpf, ndexcl(10)
         real(kind=8), intent(inout) :: matrff(18, 18), matref(27, 18), matrfe(18, 27)
         real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
     end subroutine mmmte2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine conjac(i0, i1, i2, i3, macoc,&
                       nbcoc, mailla)
-        integer :: nbcoc
-        integer :: i0
-        integer :: i1
-        integer :: i2
-        integer :: i3
+        integer(kind=8) :: nbcoc
+        integer(kind=8) :: i0
+        integer(kind=8) :: i1
+        integer(kind=8) :: i2
+        integer(kind=8) :: i3
         character(len=8) :: macoc(2+nbcoc)
         character(len=8) :: mailla
     end subroutine conjac

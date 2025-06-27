@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine algoco(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
     character(len=8) :: noma
     character(len=24) :: sdcont_defi, sdcont_solv
     character(len=19) :: solveu, matass
-    integer :: ctccvg
+    integer(kind=8) :: ctccvg
 !
 ! ----------------------------------------------------------------------
 !
@@ -101,19 +101,19 @@ subroutine algoco(ds_measure, sdcont_defi, sdcont_solv, solveu, matass, &
 !
 !
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: lechec
-    integer :: ieq, iter
-    integer :: llliai, llliac
-    integer :: kkliai, kkliac
-    integer :: indic, indfac, ajliai, spliai, spavan
-    integer :: neq, nbliac, nbliai, ndim, nesmax
+    integer(kind=8) :: ieq, iter
+    integer(kind=8) :: llliai, llliac
+    integer(kind=8) :: kkliai, kkliac
+    integer(kind=8) :: indic, indfac, ajliai, spliai, spavan
+    integer(kind=8) :: neq, nbliac, nbliai, ndim, nesmax
     real(kind=8) :: rho, xjvmax
     character(len=1) :: typeaj, typesp
     character(len=19) :: macont
-    integer :: ldscon, lmat
+    integer(kind=8) :: ldscon, lmat
     character(len=19) :: ddeplc, ddepl0, ddelt
-    integer :: itemax, isto, itemul
+    integer(kind=8) :: itemax, isto, itemul
     real(kind=8), pointer :: vddelt(:) => null()
     real(kind=8), pointer :: ddep0(:) => null()
     real(kind=8), pointer :: ddepc(:) => null()

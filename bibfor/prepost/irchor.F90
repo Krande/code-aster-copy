@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,19 +48,19 @@ subroutine irchor(keywf, keywfIocc, &
 #include "asterfort/as_allocate.h"
 !
     character(len=16), intent(in) :: keywf
-    integer, intent(in) :: keywfIocc
+    integer(kind=8), intent(in) :: keywfIocc
     aster_logical, intent(in) :: lField, lResu
     character(len=8), intent(in) :: dsName
-    integer, intent(out) :: fieldListNb
+    integer(kind=8), intent(out) :: fieldListNb
     character(len=16), pointer :: fieldListType(:)
     character(len=80), pointer :: fieldMedListType(:)
-    integer, intent(out) :: storeListNb
-    integer, pointer :: storeListIndx(:)
-    integer, intent(out) :: paraListNb
+    integer(kind=8), intent(out) :: storeListNb
+    integer(kind=8), pointer :: storeListIndx(:)
+    integer(kind=8), intent(out) :: paraListNb
     character(len=16), pointer :: paraListName(:)
-    integer, intent(out) :: cmpListNb
+    integer(kind=8), intent(out) :: cmpListNb
     character(len=8), pointer :: cmpListName(:)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -87,12 +87,12 @@ subroutine irchor(keywf, keywfIocc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbFieldMedName, nbAllField
-    integer :: nbFieldName, nbResuMedName
-    integer :: iField, iStore, iCmp, iPara
-    integer :: quantityIndx, cmpCataNb, storeIndx, iret, lenString
-    integer :: nbOcc, nbParaCheck, nbCmpOut, nbStore, nbCmp
-    integer :: nbAllPara, nbParaName
+    integer(kind=8) :: nbFieldMedName, nbAllField
+    integer(kind=8) :: nbFieldName, nbResuMedName
+    integer(kind=8) :: iField, iStore, iCmp, iPara
+    integer(kind=8) :: quantityIndx, cmpCataNb, storeIndx, iret, lenString
+    integer(kind=8) :: nbOcc, nbParaCheck, nbCmpOut, nbStore, nbCmp
+    integer(kind=8) :: nbAllPara, nbParaName
     real(kind=8) :: storePrec
     character(len=3) :: paraAll, fieldAll
     character(len=8) :: resultMedName, storeCrit, quantityName
@@ -106,7 +106,7 @@ subroutine irchor(keywf, keywfIocc, &
     character(len=8), pointer :: cmpCataName(:) => null()
     character(len=16), pointer :: paraCheckName(:) => null()
     character(len=16), pointer :: paraName(:) => null()
-    integer, pointer :: storeList(:) => null()
+    integer(kind=8), pointer :: storeList(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,8 +58,8 @@ subroutine lcinit(fami, kpg, ksp, rela_comp, typess, &
 #include "asterfort/lklini.h"
 #include "asterfort/srlini.h"
 #include "asterfort/Behaviour_type.h"
-    integer :: typess, nmat, nr, nvi, kpg, ksp, nfs, nsg
-    integer :: nbcomm(nmat, 3), iret
+    integer(kind=8) :: typess, nmat, nr, nvi, kpg, ksp, nfs, nsg
+    integer(kind=8) :: nbcomm(nmat, 3), iret
     real(kind=8) :: deps(6), epsd(6), essai
     real(kind=8) :: yd(*), dy(*)
     real(kind=8) :: materf(nmat, 2)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,18 @@ interface
     subroutine cmphii(ck, cm, ndim, nbmod, niter,&
                       xcrit, ceigen, cmod, ndimax, cmat1,&
                       cmat2, cvec, ific)
-        integer :: ndimax
-        integer :: nbmod
-        integer :: ndim
+        integer(kind=8) :: ndimax
+        integer(kind=8) :: nbmod
+        integer(kind=8) :: ndim
         complex(kind=8) :: ck(*)
         complex(kind=8) :: cm(*)
-        integer :: niter
+        integer(kind=8) :: niter
         real(kind=8) :: xcrit
         complex(kind=8) :: ceigen(nbmod)
         complex(kind=8) :: cmod(ndimax, nbmod)
         complex(kind=8) :: cmat1(*)
         complex(kind=8) :: cmat2(ndim, ndim)
         complex(kind=8) :: cvec(ndim)
-        integer :: ific
+        integer(kind=8) :: ific
     end subroutine cmphii
 end interface

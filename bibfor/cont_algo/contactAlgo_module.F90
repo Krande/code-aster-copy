@@ -56,14 +56,14 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         character(len=*), intent(in) :: sdcontZ, virtualCellZ
-        integer, intent(inout) :: nbLigr
+        integer(kind=8), intent(inout) :: nbLigr
         character(len=24), pointer :: listLigr(:)
 ! ----- Locals
         character(len=16) :: typeSD
         character(len=8) :: sdcont
         character(len=24) :: ligrelName, virtualCell
         aster_logical :: lDefiContact, lDefiCont, lParallelCont
-        integer :: contForm, nbLigrCont, nbLigrNew, iret
+        integer(kind=8) :: contForm, nbLigrCont, nbLigrNew, iret
         aster_logical :: lContCont, lContLac, lContDisc, lUnil
         character(len=24), pointer :: listLigrSave(:) => null()
 !   ------------------------------------------------------------------------------------------------

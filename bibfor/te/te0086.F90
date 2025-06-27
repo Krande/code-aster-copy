@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,13 +42,13 @@ subroutine te0086(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: icodre(2)
+    integer(kind=8)             :: icodre(2)
     real(kind=8)        :: valres(2)
     character(len=16)   :: nomres(2)
 !
-    integer :: nno, kp, ii, jj, imatuu, ipoids, ivf, igeom, imate, iforce
-    integer :: ideplp, idfdk, imat, iyty, iret
-    integer :: jgano, kk, ndim, nelyty, nnos, nbval, nordre, npg
+    integer(kind=8) :: nno, kp, ii, jj, imatuu, ipoids, ivf, igeom, imate, iforce
+    integer(kind=8) :: ideplp, idfdk, imat, iyty, iret
+    integer(kind=8) :: jgano, kk, ndim, nelyty, nnos, nbval, nordre, npg
 !
     real(kind=8) :: aire, coef1, coef2, demi, etraction, ecompress, ecable, nx, jacobi
     real(kind=8) :: ytywpq(9), w(9)

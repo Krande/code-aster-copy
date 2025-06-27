@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine convertFieldNodeToNeutElem(model, &
 !
     character(len=8), intent(in) :: model
     character(len=*), intent(in) :: ligrel, fieldNode, fieldElemNeut
-    integer, intent(out) :: nbCmpField
+    integer(kind=8), intent(out) :: nbCmpField
     character(len=8), pointer :: cmpNameNode(:), cmpNameNeut(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,7 +56,7 @@ subroutine convertFieldNodeToNeutElem(model, &
     character(len=4) :: ki
     character(len=8) :: paraName, physName
     character(len=8), pointer :: cnsc(:) => null()
-    integer :: iCmp, ibid, iret
+    integer(kind=8) :: iCmp, ibid, iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

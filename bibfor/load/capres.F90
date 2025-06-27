@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ subroutine capres(load, mesh, model, geomDime, valeType, nbOccPresRep)
 #include "asterfort/dismoi.h"
 !
     character(len=8), intent(in)  :: load, mesh, model
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=4), intent(in)  :: valeType
-    integer, intent(in) :: nbOccPresRep
+    integer(kind=8), intent(in) :: nbOccPresRep
 !
 ! --------------------------------------------------------------------------------------------------
 !

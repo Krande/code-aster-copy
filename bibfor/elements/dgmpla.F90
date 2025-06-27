@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine dgmpla(eb, nub, ea, sya, num, &
 !
     real(kind=8) :: eb, nub, ea(*), sya(*), num, nuf
     real(kind=8) :: h, a, b1, b, mp, rx(*), ry(*)
-    integer :: nnap, ilit1
+    integer(kind=8) :: nnap, ilit1
 !
 ! - PARAMETRES SORTANTS
     real(kind=8) :: drp, d3, w

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine xhlan5(ino, idepl, idepm, idep0, lact, &
                   ndim, pla, lamb, nvec, champ, job, dpf)
     implicit none
 #include "asterfort/assert.h"
-    integer :: ino
+    integer(kind=8) :: ino
 #include "jeveux.h"
 !
 ! ======================================================================
@@ -38,9 +38,9 @@ subroutine xhlan5(ino, idepl, idepm, idep0, lact, &
 ! OUT LAMB  : CHAMP DEMANDE
 ! IN NVEC   : NOMBRE D ADRESSES DEPLACEMENT: 1 OU 2
 ! IN CHAMP  : NOM DU CHAMP: LAMBDA, MU OU W
-    integer :: idepl, idepm, idep0
-    integer :: j, lact(16), ndim, nli
-    integer :: pla(27), pli, nvec, indcha
+    integer(kind=8) :: idepl, idepm, idep0
+    integer(kind=8) :: j, lact(16), ndim, nli
+    integer(kind=8) :: pla(27), pli, nvec, indcha
     real(kind=8) :: lamb(3), dpf
     character(len=8) :: champ, job
 !

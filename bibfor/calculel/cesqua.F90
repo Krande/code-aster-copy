@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbchs
+    integer(kind=8) :: nbchs
     character(len=*) :: lichs(nbchs), ces3z, base
     aster_logical :: lcumul(nbchs)
 ! BUT: COPIE DE CESFUS MAIS ON SOMME QUADRATIQUEMENT
@@ -68,21 +68,21 @@ subroutine cesqua(nbchs, lichs, lcumul, base, ces3z)
 !-----------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: jce1k, jce1d, jce1l, jce1c, nbma, n1, k
-    integer :: jce3d, jce3l
-    integer :: jcmpgd, ichs, icmp, icmp3, ncmp3
-    integer :: ncmpmx, ncmp1, icmp1
-    integer :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, ncmp
+    integer(kind=8) :: jce1k, jce1d, jce1l, jce1c, nbma, n1, k
+    integer(kind=8) :: jce3d, jce3l
+    integer(kind=8) :: jcmpgd, ichs, icmp, icmp3, ncmp3
+    integer(kind=8) :: ncmpmx, ncmp1, icmp1
+    integer(kind=8) :: ima, ipt, isp, nbpt, nbsp, iad1, iad3, ncmp
     character(len=8) :: ma, nomgd, nocmp, typces, nomcmp
     character(len=3) :: tsca
     character(len=19) :: ces1, ces3
     aster_logical :: cumul
-    integer, pointer :: corr_cmp(:) => null()
+    integer(kind=8), pointer :: corr_cmp(:) => null()
     character(len=8), pointer :: licmp(:) => null()
-    integer, pointer :: nbcmp(:) => null()
-    integer, pointer :: vnbpt(:) => null()
-    integer, pointer :: vnbsp(:) => null()
-    integer, pointer :: nucmp(:) => null()
+    integer(kind=8), pointer :: nbcmp(:) => null()
+    integer(kind=8), pointer :: vnbpt(:) => null()
+    integer(kind=8), pointer :: vnbsp(:) => null()
+    integer(kind=8), pointer :: nucmp(:) => null()
     real(kind=8), pointer :: ce1v(:) => null()
     real(kind=8), pointer :: ce3v(:) => null()
     character(len=8), pointer :: ce3c(:) => null()

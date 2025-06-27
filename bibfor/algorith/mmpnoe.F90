@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,9 +30,9 @@ subroutine mmpnoe(defico, posmae, alias, typint, iptm, &
 #include "asterfort/jemarq.h"
     character(len=8) :: alias
     character(len=24) :: defico
-    integer :: iptm
-    integer :: posmae, posnoe
-    integer :: typint
+    integer(kind=8) :: iptm
+    integer(kind=8) :: posmae, posnoe
+    integer(kind=8) :: typint
 !
 ! ----------------------------------------------------------------------
 !
@@ -54,7 +54,7 @@ subroutine mmpnoe(defico, posmae, alias, typint, iptm, &
 !
 !
 !
-    integer :: nbnoe, jdecne, inoe
+    integer(kind=8) :: nbnoe, jdecne, inoe
 !
 ! ----------------------------------------------------------------------
 !

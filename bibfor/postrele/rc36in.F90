@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine rc36in(noma, nbma, listma, chindi)
 #include "asterfort/rc36zz.h"
 #include "asterfort/reliem.h"
 !
-    integer :: nbma, listma(*)
+    integer(kind=8) :: nbma, listma(*)
     character(len=8) :: noma
     character(len=24) :: chindi
 !
@@ -43,17 +43,17 @@ subroutine rc36in(noma, nbma, listma, chindi)
 ! OUT : CHINDI : CHAM_ELEM DE TYPE ELNO D'INDICES DE CONTRAINTES
 !     ------------------------------------------------------------------
 !
-    integer :: n1, n2, nbindi, iocc, nbcmp, decal, ipt, icmp, iad, nbpt
-    integer :: jconx2, in, im, ima, ino, nbnoeu, jnoeu, nbmail
-    integer :: jmail, nbtou, im1
+    integer(kind=8) :: n1, n2, nbindi, iocc, nbcmp, decal, ipt, icmp, iad, nbpt
+    integer(kind=8) :: jconx2, in, im, ima, ino, nbnoeu, jnoeu, nbmail
+    integer(kind=8) :: jmail, nbtou, im1
     parameter(nbcmp=7)
     real(kind=8) :: vale(nbcmp)
     character(len=8) :: k8b, nomgd, type
     character(len=8) :: motcls(2), typmcs(2), motcln(2), typmcn(2)
     character(len=16) :: motclf, nocmp(nbcmp)
     character(len=24) :: mesmai, mesnoe
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()

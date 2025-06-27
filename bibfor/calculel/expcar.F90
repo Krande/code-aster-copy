@@ -59,12 +59,12 @@ subroutine expcar(carte)
 !     -- RECUPERATION DES OBJETS JEVEUX DE LA CARTE:
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i2, i3, i4, i5, iadesc, iadgp
-    integer :: ialima, iavale, iavalp, icode
-    integer :: iedit, ient, igd, ima, iret, j
-    integer :: nbedit, nbgdmx, nbma, nbmato, ncmpmx, nec, num1
-    integer :: num2, numat
-    integer, pointer :: numt(:) => null()
+    integer(kind=8) :: i1, i2, i3, i4, i5, iadesc, iadgp
+    integer(kind=8) :: ialima, iavale, iavalp, icode
+    integer(kind=8) :: iedit, ient, igd, ima, iret, j
+    integer(kind=8) :: nbedit, nbgdmx, nbma, nbmato, ncmpmx, nec, num1
+    integer(kind=8) :: num2, numat
+    integer(kind=8), pointer :: numt(:) => null()
     character(len=24), pointer :: vnoli(:) => null()
     character(len=8), pointer :: vnoma(:) => null()
 !-----------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 interface
     subroutine asmpi_status(istat, resp0)
-        integer, intent(in) :: istat
-        integer, intent(out) :: resp0
+        integer(kind=8), intent(in) :: istat
+        integer(kind=8), intent(out) :: resp0
     end subroutine asmpi_status
 end interface

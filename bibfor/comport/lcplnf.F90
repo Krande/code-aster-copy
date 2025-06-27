@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,8 +65,8 @@ subroutine lcplnf(BEHinteg, &
 #include "asterfort/lcopli.h"
 #include "asterfort/lkilnf.h"
 #include "asterfort/srilnf.h"
-    integer :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), iter, itmax, nr, codret
-    integer :: nfs, nsg, i
+    integer(kind=8) :: ndt, nvi, nmat, ndi, nbcomm(nmat, 3), iter, itmax, nr, codret
+    integer(kind=8) :: nfs, nsg, i
     real(kind=8) :: materf(nmat, 2), timef
     real(kind=8) :: pkc, m13, dtot, hookf(6, 6)
     real(kind=8) :: yd(*), vind(*), toler, pgl(3, 3), dt

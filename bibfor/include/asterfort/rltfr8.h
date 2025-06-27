@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine rltfr8(nommat, neq, xsol, nbsol, typsym)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=*) :: nommat
         real(kind=8) :: xsol(neq, *)
-        integer :: nbsol
-        integer :: typsym
+        integer(kind=8) :: nbsol
+        integer(kind=8) :: typsym
     end subroutine rltfr8
 end interface

@@ -49,7 +49,7 @@ subroutine nmprac(listFuncActi, listLoad, numeDof, solveu, &
 #include "asterfort/preres.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=19), intent(in) :: listLoad
     character(len=24), intent(in) :: numeDof
     character(len=19), intent(in) :: sddyna
@@ -60,7 +60,7 @@ subroutine nmprac(listFuncActi, listLoad, numeDof, solveu, &
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: maprec
     character(len=19), intent(inout) :: matrAsse
-    integer, intent(out) :: faccvg
+    integer(kind=8), intent(out) :: faccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -89,16 +89,16 @@ subroutine nmprac(listFuncActi, listLoad, numeDof, solveu, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = ACCEL_INIT
-    integer, parameter :: numeTimeFirst = 1
+    integer(kind=8), parameter :: phaseType = ACCEL_INIT
+    integer(kind=8), parameter :: numeTimeFirst = 1
     aster_logical :: lContContinu
-    integer :: iEqua, nbEqua
-    integer :: iadia, ibid, lres
+    integer(kind=8) :: iEqua, nbEqua
+    integer(kind=8) :: iadia, ibid, lres
     character(len=8) :: answer
-    integer :: jvalm, zislv1, zislv3
-    integer :: ifm, niv
+    integer(kind=8) :: jvalm, zislv1, zislv3
+    integer(kind=8) :: ifm, niv
     character(len=19) :: asseMass, elemMass, elemDiri
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     character(len=24), pointer :: slvk(:) => null()
 !
 ! ----------------------------------------------------------------------

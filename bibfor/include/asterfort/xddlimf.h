@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ interface
                        fonree, lisrel, nomn, direct, class, mesh,&
                        hea_no)
         character(len=8) :: modele
-        integer :: ino
+        integer(kind=8) :: ino
         character(len=19) :: cnxinv
-        integer :: jnoxfv
+        integer(kind=8) :: jnoxfv
         character(len=8) :: motcle
         character(len=19) :: ch2
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: lsn(4)
         real(kind=8) :: lst(4)
         real(kind=8) :: valimr

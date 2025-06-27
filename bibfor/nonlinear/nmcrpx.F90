@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
 #include "asterfort/wkvect.h"
     character(len=*) :: motfaz, motpaz
     character(len=1) :: base
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=19) :: nomsd
 !
 ! ----------------------------------------------------------------------
@@ -81,9 +81,9 @@ subroutine nmcrpx(motfaz, motpaz, iocc, nomsd, base)
     character(len=16) :: motfac, motpas
     character(len=8) :: criter
     real(kind=8) :: prec, dtmin, tole
-    integer :: nbinst, n1, freq
+    integer(kind=8) :: nbinst, n1, freq
     character(len=24) :: sdlist, sdinfl
-    integer :: jinfl
+    integer(kind=8) :: jinfl
 !
 ! ----------------------------------------------------------------------
 !

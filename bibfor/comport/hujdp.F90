@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine hujdp(mod, deps, sigd, sigf, mater, &
 #include "asterfort/hujprc.h"
 #include "asterfort/hujprj.h"
 #include "asterfort/utmess.h"
-    integer :: ndt, ndi, i, j, ndec, iret, indi(7), nbmeca, ni
+    integer(kind=8) :: ndt, ndi, i, j, ndec, iret, indi(7), nbmeca, ni
     real(kind=8) :: di1d, i1d, n, pref, k0
     real(kind=8) :: deps(6), sigd(6), sigf(6)
     real(kind=8) :: mater(22, 2), tole1, tol, ri, vin(*)

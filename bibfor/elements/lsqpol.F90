@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,13 +61,13 @@ subroutine lsqpol(ordre, e1, npt, xx, yy, &
     real(kind=8) :: grand
     parameter(grand=1.0d20)
 !
-    integer :: ordre, npt
+    integer(kind=8) :: ordre, npt
     real(kind=8) :: xx(npt), yy(npt)
     real(kind=8) :: poly(ordre+1), sigma
 !
     real(kind=8) :: aa(ordre+1), bb(ordre+1), ff(ordre+1), poly2(ordre+1)
     real(kind=8) :: vv(npt), dd(npt), ee(npt)
-    integer :: i, j, ordok, ordok2, ordloo
+    integer(kind=8) :: i, j, ordok, ordok2, ordloo
     real(kind=8) :: a1, a2, b1, b2, poly1, d1, e1, f1, f2, v1, v2
 !
     do i = 1, ordre+1

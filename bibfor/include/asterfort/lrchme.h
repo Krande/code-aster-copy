@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,11 @@ interface
         character(len=8) :: storeCrit, param
         character(len=24) :: option
         character(len=64) :: fieldNameMed, meshMed
-        integer :: fileUnit, entityType
-        integer :: codret
-        integer :: cmpNb
-        integer :: iinst, numpt, numord
-        integer :: nbpgma(*), nbpgmm(*), nbspmm(*)
+        integer(kind=8) :: fileUnit, entityType
+        integer(kind=8) :: codret
+        integer(kind=8) :: cmpNb
+        integer(kind=8) :: iinst, numpt, numord
+        integer(kind=8) :: nbpgma(*), nbpgmm(*), nbspmm(*)
         real(kind=8) :: inst
         real(kind=8) :: storeEpsi
         character(len=1), optional, intent(in) :: base

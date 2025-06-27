@@ -25,10 +25,10 @@ interface
                         list_pairs, nb_pairs, nt_nodes)
         character(len=8), intent(in) :: noma
         character(len=24), intent(in) :: lismaco, lismavo
-        integer, intent(in) :: nbmavo, nbmaco
+        integer(kind=8), intent(in) :: nbmavo, nbmaco
         real(kind=8), intent(in) :: epai
-        integer, intent(out) :: nb_pairs, nt_nodes
-        integer, pointer :: list_pairs(:)
+        integer(kind=8), intent(out) :: nb_pairs, nt_nodes
+        integer(kind=8), pointer :: list_pairs(:)
 
     end subroutine rco3d_apco3d
 end interface

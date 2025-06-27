@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat, &
 #include "asterfort/rc36f2.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
-    integer :: nbsigr, nocc(*), situ(*)
+    integer(kind=8) :: nbsigr, nocc(*), situ(*)
     real(kind=8) :: saltij(*), ug, factus(*)
     character(len=*) :: nommat
 !
@@ -35,10 +35,10 @@ subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat, &
 !     CALCUL DU FACTEUR D'USAGE
 !
 !     ------------------------------------------------------------------
-    integer :: isk, isl, k, l, nk, nl, n0, i1, i1a4, ifm, niv, icompt
+    integer(kind=8) :: isk, isl, k, l, nk, nl, n0, i1, i1a4, ifm, niv, icompt
     real(kind=8) :: saltm, nadm(1), ukl, vale(2)
     aster_logical :: trouve, endur
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=8) :: kbid
 !     ------------------------------------------------------------------

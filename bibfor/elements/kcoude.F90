@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine kcoude(nbrddl, poids, b, c, k)
 !
 ! ......................................................................
 !
-    integer :: i, j, nbrddl
+    integer(kind=8) :: i, j, nbrddl
 !JMP      PARAMETER (NBRDDL=63)
     real(kind=8) :: b(4, nbrddl), c(4, 4), k(nbrddl, nbrddl), poids
     real(kind=8) :: c11b1i, c12b1i, c13b1i, c21b2i, c31b3i, c32b3i, c22b2i

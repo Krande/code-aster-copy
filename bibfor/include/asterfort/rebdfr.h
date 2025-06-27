@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine rebdfr(freq, nfi, nff, freqi, freqf,&
                       nmodi, nmodf, nbm, npv)
-        integer :: npv
-        integer :: nbm
+        integer(kind=8) :: npv
+        integer(kind=8) :: nbm
         real(kind=8) :: freq(2, nbm, npv)
-        integer :: nfi
-        integer :: nff
+        integer(kind=8) :: nfi
+        integer(kind=8) :: nff
         real(kind=8) :: freqi
         real(kind=8) :: freqf
-        integer :: nmodi
-        integer :: nmodf
+        integer(kind=8) :: nmodi
+        integer(kind=8) :: nmodf
     end subroutine rebdfr
 end interface

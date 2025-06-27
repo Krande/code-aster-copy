@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine mctanp(dpstrs, rprops, ii, jj, mm, edge, right, apex)
 #include "asterf_types.h"
 !
 ! Declaration of integer type variables
-    integer :: ii, jj, mm
+    integer(kind=8) :: ii, jj, mm
     real(kind=8) :: degr
 !
 !     aster_logical :: epflag, epflag0

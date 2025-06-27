@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,20 +24,20 @@ interface
     subroutine ar_ztrevc(side, howmny, select, n, t,&
                       ldt, vl, ldvl, vr, ldvr,&
                       mm, m, work, rwork, info)
-        integer :: ldvr
-        integer :: ldvl
-        integer :: ldt
+        integer(kind=8) :: ldvr
+        integer(kind=8) :: ldvl
+        integer(kind=8) :: ldt
         character(len=1) :: side
         character(len=1) :: howmny
         aster_logical :: select(*)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: t(ldt, *)
         complex(kind=8) :: vl(ldvl, *)
         complex(kind=8) :: vr(ldvr, *)
-        integer :: mm
-        integer :: m
+        integer(kind=8) :: mm
+        integer(kind=8) :: m
         complex(kind=8) :: work(*)
         real(kind=8) :: rwork(*)
-        integer :: info
+        integer(kind=8) :: info
     end subroutine ar_ztrevc
 end interface

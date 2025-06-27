@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,14 +28,14 @@ interface
                       ncomph, contac, depl0, depl1, lambm, pfm)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer, intent(in) :: nvec
-        integer, intent(in) :: nddlm
-        integer, intent(in) :: nnop
-        integer, intent(in) :: nnops
-        integer, intent(in) :: nddls
-        integer, intent(in) :: ndim
-        integer, intent(in) :: pla(27)
-        integer, intent(in) :: dimuel
+        integer(kind=8), intent(in) :: nvec
+        integer(kind=8), intent(in) :: nddlm
+        integer(kind=8), intent(in) :: nnop
+        integer(kind=8), intent(in) :: nnops
+        integer(kind=8), intent(in) :: nddls
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: pla(27)
+        integer(kind=8), intent(in) :: dimuel
         real(kind=8), intent(in) :: deplm(dimuel)
         real(kind=8), intent(in) :: deplp(dimuel)
         real(kind=8), intent(in) :: ffp(27)
@@ -43,7 +43,7 @@ interface
         real(kind=8), intent(in) :: dffc(16,3)
         real(kind=8), intent(in) :: ffp2(27)
         character(len=8), intent(in) :: job
-        integer, intent(in) :: jmate
+        integer(kind=8), intent(in) :: jmate
         real(kind=8), intent(out) :: lamb(3)
         real(kind=8), intent(out) :: t
         real(kind=8), intent(out) :: psup
@@ -58,15 +58,15 @@ interface
         real(kind=8), intent(out) :: sautm(3)
         real(kind=8), intent(out) :: gradpfm(3)
         real(kind=8), intent(out) :: pf
-        integer, intent(in) :: nfiss
-        integer, intent(in) :: jheavn
-        integer :: ifiss
-        integer, intent(in) :: ncompn
-        integer :: nfh
-        integer :: ifa
-        integer :: jheafa
-        integer, intent(in) :: ncomph
-        integer, intent(in) :: contac
+        integer(kind=8), intent(in) :: nfiss
+        integer(kind=8), intent(in) :: jheavn
+        integer(kind=8) :: ifiss
+        integer(kind=8), intent(in) :: ncompn
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ifa
+        integer(kind=8) :: jheafa
+        integer(kind=8), intent(in) :: ncomph
+        integer(kind=8), intent(in) :: contac
         real(kind=8), optional, intent(in) :: depl0(dimuel)
         real(kind=8), optional, intent(in) :: depl1(dimuel)
         real(kind=8), optional, intent(out) :: lambm(3)

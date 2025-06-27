@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine mnlgen(numdrv, matdrv, ninc)
         character(len=14) :: numdrv
         character(len=19) :: matdrv
-        integer :: ninc
+        integer(kind=8) :: ninc
     end subroutine mnlgen
 end interface 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nmpr3d_vect(nno, npg, ndof, &
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
 !
-    integer, intent(in) :: nno, npg, ndof
+    integer(kind=8), intent(in) :: nno, npg, ndof
     real(kind=8), intent(in) :: poidsg(npg), vff(nno, npg), dff(2, nno, npg)
     real(kind=8), intent(in) :: geom(3, nno)
     real(kind=8), intent(in) :: pres(npg)
@@ -53,7 +53,7 @@ subroutine nmpr3d_vect(nno, npg, ndof, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: kpg, n, i
+    integer(kind=8) :: kpg, n, i
     real(kind=8) :: cova(3, 3), metr(2, 2), jac
 !
 ! --------------------------------------------------------------------------------------------------

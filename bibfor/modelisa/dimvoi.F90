@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine dimvoi(nvtot, nvoima, nscoma, touvoi, dimvlo)
 !    OUT : DIMVLO
 !
     implicit none
-    integer :: nvtot, nvoima, nscoma
-    integer :: touvoi(1:nvoima, 1:nscoma+2)
-    integer :: dimvlo
-    integer :: iv, nsco
+    integer(kind=8) :: nvtot, nvoima, nscoma
+    integer(kind=8) :: touvoi(1:nvoima, 1:nscoma+2)
+    integer(kind=8) :: dimvlo
+    integer(kind=8) :: iv, nsco
 !
     dimvlo = 1+5*nvtot
     if (nvtot .ge. 1) then

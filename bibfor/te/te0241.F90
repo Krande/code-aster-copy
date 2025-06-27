@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,13 +42,13 @@ subroutine te0241(option, nomte)
 !                         (SECTION CONSTANTE OU NON)
 !
 !-----------------------------------------------------------------------
-    integer :: isect, itype, lmat, lmater, lorien, lsect
-    integer :: lsect2, nbpar, nbres, nc, nno
+    integer(kind=8) :: isect, itype, lmat, lmater, lorien, lsect
+    integer(kind=8) :: lsect2, nbpar, nbres, nc, nno
     real(kind=8) :: ey, ez
 !-----------------------------------------------------------------------
     parameter(nbres=3)
     real(kind=8) :: valpar, valres(nbres)
-    integer :: codres(nbres), kpg, spt
+    integer(kind=8) :: codres(nbres), kpg, spt
     character(len=8) :: nompar, fami, poum
     character(len=16) :: ch16, nomres(nbres)
     real(kind=8) ::  pgl(3, 3), mat(136)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,9 @@ subroutine endotot(dth1, dflu1, end3d, &
     implicit none
 #include "asterfort/endo3d.h"
 ! Entier
-    integer i
-    integer ngf, ndim, ifour
-    integer ipzero(ngf)
+    integer(kind=8) i
+    integer(kind=8) ngf, ndim, ifour
+    integer(kind=8) ipzero(ngf)
 ! Carac
     aster_logical ::  end3d, iso, dtiso
 ! Reel
@@ -64,4 +64,3 @@ subroutine endotot(dth1, dflu1, end3d, &
 
 !***********************************************************************
 end
-

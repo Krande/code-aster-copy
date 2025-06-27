@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine dgmode(mode, imodel, ilong, nec, dg)
-        integer :: mode
-        integer :: imodel
-        integer :: ilong
-        integer :: nec
-        integer :: dg(*)
+        integer(kind=8) :: mode
+        integer(kind=8) :: imodel
+        integer(kind=8) :: ilong
+        integer(kind=8) :: nec
+        integer(kind=8) :: dg(*)
     end subroutine dgmode
 end interface

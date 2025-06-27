@@ -115,8 +115,8 @@ contains
 !
         type(HHO_basis_cell) :: hhoBasisCell
         character(len=32) :: phenom
-        integer :: cbs, fbs, total_dofs, faces_dofs, gbs
-        integer :: jmate, ipg, icodre(3), jtemps, ndim
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs
+        integer(kind=8) :: jmate, ipg, icodre(3), jtemps, ndim
         real(kind=8), dimension(MSIZE_CELL_VEC) :: bT, G_curr_coeff
         real(kind=8), dimension(MSIZE_TDOFS_SCAL) :: temp_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL), temp_T_curr(MSIZE_CELL_SCAL)
@@ -303,8 +303,8 @@ contains
 !
         type(HHO_basis_cell) :: hhoBasisCell
         character(len=32) :: phenom
-        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
-        integer :: jmate, ipg, icodre(3), jtemps
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
+        integer(kind=8) :: jmate, ipg, icodre(3), jtemps
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: temp_T_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, time_curr, cp, temp_pg_curr, beta
@@ -422,8 +422,8 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_matrix) :: lhs_cell
         character(len=32) :: phenom
-        integer :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
-        integer :: jmate, ipg, icodre(3), jcomp, ifon(6)
+        integer(kind=8) :: cbs, fbs, total_dofs, faces_dofs, gbs, cell_offset
+        integer(kind=8) :: jmate, ipg, icodre(3), jcomp, ifon(6)
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: temp_T_curr
         real(kind=8) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8) :: coorpg(3), weight, temp_pg_curr, beta, dbeta
@@ -542,7 +542,7 @@ contains
 !
 ! --- Local variables
 !
-        integer :: cbs, fbs, total_dofs, gbs
+        integer(kind=8) :: cbs, fbs, total_dofs, gbs
 !
         call hhoTherNLDofs(hhoCell, hhoData, cbs, fbs, total_dofs, gbs)
 !
@@ -617,7 +617,7 @@ contains
         real(kind=8), intent(in) :: stress(3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gbs
+        integer(kind=8), intent(in) :: gbs
         real(kind=8), intent(inout) :: bT(MSIZE_CELL_VEC)
 !
 ! ------------------------------------------------------------------------------------------
@@ -633,7 +633,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_stress(3)
-        integer :: i, gbs_cmp, deca
+        integer(kind=8) :: i, gbs_cmp, deca
 ! --------------------------------------------------------------------------------------------------
 !
         gbs_cmp = gbs/hhoCell%ndim
@@ -659,7 +659,7 @@ contains
         real(kind=8), intent(in) :: beta
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in) :: cbs
+        integer(kind=8), intent(in) :: cbs
         real(kind=8), intent(inout) :: rhs(*)
 !
 ! ------------------------------------------------------------------------------------------
@@ -692,7 +692,7 @@ contains
         real(kind=8), intent(in) :: module_tang(3, 3)
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in) :: gbs
+        integer(kind=8), intent(in) :: gbs
         type(HHO_matrix), intent(inout) :: AT
 !
 ! --------------------------------------------------------------------------------------------------
@@ -708,7 +708,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_Agphi(MSIZE_CELL_VEC, 3)
-        integer :: i, k, gbs_cmp, col
+        integer(kind=8) :: i, k, gbs_cmp, col
 ! --------------------------------------------------------------------------------------------------
 !
         gbs_cmp = gbs/hhoCell%ndim
@@ -737,7 +737,7 @@ contains
         real(kind=8), intent(in) :: cp
         real(kind=8), intent(in) :: weight
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
-        integer, intent(in) :: cbs
+        integer(kind=8), intent(in) :: cbs
         type(HHO_matrix), intent(inout) :: lhs
 !
 ! --------------------------------------------------------------------------------------------------
@@ -772,7 +772,7 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in) :: gbs
+        integer(kind=8), intent(in) :: gbs
         real(kind=8), intent(in) :: module_tang(3, 3)
         real(kind=8), intent(in) :: BSCEval(MSIZE_CELL_SCAL)
         real(kind=8), intent(in) :: weight
@@ -793,7 +793,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: qp_module_tang(3, 3), qp_mod_vec(3)
-        integer :: i, row, gbs_cmp, dim
+        integer(kind=8) :: i, row, gbs_cmp, dim
         blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! --------------------------------------------------------------------------------------------------
 !
@@ -827,7 +827,7 @@ contains
         implicit none
 !
         character(len=8), intent(in) :: fami
-        integer, intent(in) :: imate, npg, ndim
+        integer(kind=8), intent(in) :: imate, npg, ndim
         real(kind=8), intent(in) :: time, temp_pg_curr
         real(kind=8) :: coeff
 !
@@ -841,8 +841,8 @@ contains
 !
         character(len=16) :: nomres(3)
         real(kind=8) :: valres(3)
-        integer :: icodre(3), ipg
-        integer, parameter :: spt = 1
+        integer(kind=8) :: icodre(3), ipg
+        integer(kind=8), parameter :: spt = 1
         character(len=32) :: phenom
         real(kind=8) :: lambda, lambor(3)
 !
@@ -908,7 +908,7 @@ contains
 !
         type(HHO_Data), intent(inout) :: hhoData
         character(len=8) :: fami
-        integer, intent(in) :: nbQuadPoints, ndim
+        integer(kind=8), intent(in) :: nbQuadPoints, ndim
         real(kind=8), intent(in) :: time
 !
 ! --------------------------------------------------------------------------------------------------
@@ -920,7 +920,7 @@ contains
 !
 ! --- Local variables
 !
-        integer :: imate
+        integer(kind=8) :: imate
 !
         if (hhoData%adapt()) then
             call jevech('PMATERC', 'L', imate)
@@ -941,7 +941,7 @@ contains
 !
         character(len=32), intent(in) :: phenom
         character(len=8), intent(in) :: fami
-        integer, intent(in) :: imate, ndim, kpg
+        integer(kind=8), intent(in) :: imate, ndim, kpg
         real(kind=8), intent(in) :: time, dtemp(3), temp, coorpg(3)
         real(kind=8), intent(out) :: fluxglo(3), Kglo(3, 3)
 !
@@ -964,7 +964,7 @@ contains
 !
         character(len=32), intent(in) :: phenom
         character(len=8), intent(in) :: fami, poum
-        integer, intent(in) :: imate, kpg
+        integer(kind=8), intent(in) :: imate, kpg
         real(kind=8), intent(in) :: time
         real(kind=8), intent(out) :: cp
 !
@@ -977,8 +977,8 @@ contains
 !
 ! --- Local variables
 !
-        integer :: icod(1)
-        integer, parameter :: spt = 1
+        integer(kind=8) :: icod(1)
+        integer(kind=8), parameter :: spt = 1
         real(kind=8) :: cp_(1)
 !
 ! --- Eval rho_cp
@@ -1007,7 +1007,7 @@ contains
         implicit none
 !
         character(len=16), intent(in) :: comp
-        integer, intent(in) :: ifon
+        integer(kind=8), intent(in) :: ifon
         real(kind=8), intent(in) :: temp
         real(kind=8), intent(out) :: beta, dbeta
 !

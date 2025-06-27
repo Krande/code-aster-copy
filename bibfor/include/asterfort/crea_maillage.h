@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
               character(len=8) :: noma
               character(len=8) :: noma2
               character(len=1) :: base
-              integer :: nbno
-              integer :: lino(*)
+              integer(kind=8) :: nbno
+              integer(kind=8) :: lino(*)
             end subroutine crea_maillage
           end interface 

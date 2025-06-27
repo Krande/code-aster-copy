@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ subroutine dtmforc_dvis(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
 !
 !   -0.1- Input/output arguments
-    integer, intent(in) :: nl_ind
+    integer(kind=8), intent(in) :: nl_ind
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffnl(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffnl(:)
     real(kind=8), intent(in) :: time
     real(kind=8), intent(in) :: step
     real(kind=8), pointer :: depl(:)
@@ -66,18 +66,18 @@ subroutine dtmforc_dvis(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !
 !   -0.2- Local variables
     aster_logical :: multi_support
-    integer :: i, iex, nbexci, ier, nbno
-    integer :: ino, nbdecp, iret, start, finish
+    integer(kind=8) :: i, iex, nbexci, ier, nbno
+    integer(kind=8) :: ino, nbdecp, iret, start, finish
     real(kind=8) :: sina, cosa, sinb, cosb, sing
     real(kind=8) :: cosg, depglo(3), vitglo(3), deploc(6), vitloc(6)
     real(kind=8) :: dvitlo(3), flocal(3), errmax, fgloba(3), y0(4)
     real(kind=8) :: dy0(4), ldcpar(5), resu(8)
-    integer :: ldcpai(1)
+    integer(kind=8) :: ldcpai(1)
     character(len=8) :: ldcpac(1)
     character(len=8) :: sd_dtm, sd_nl, monmot, obst_typ
     character(len=19) :: nomres
 !
-    integer, pointer :: vindx(:) => null()
+    integer(kind=8), pointer :: vindx(:) => null()
     real(kind=8), pointer :: origob(:) => null()
     real(kind=8), pointer :: coedep(:) => null()
     real(kind=8), pointer :: coevit(:) => null()

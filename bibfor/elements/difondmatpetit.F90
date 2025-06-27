@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,17 +59,17 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
 #include "asterc/r8prem.h"
 #include "asterfort/mgauss.h"
 !
-    integer      :: nbVloc, nbPara, iret
+    integer(kind=8)      :: nbVloc, nbPara, iret
     real(kind=8) :: vpara(nbPara), tirela(6), raidTang(6), vloc(nbVloc), klr(78), errmax, dulmat(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !   nombre et compteur de critères à vérifier
-    integer :: nbDDL, nbDDLii, nbDDLjj
+    integer(kind=8) :: nbDDL, nbDDLii, nbDDLjj
 !   Compteurs
-    integer :: compt, ii, jj
+    integer(kind=8) :: compt, ii, jj
 !   numérotation pour savoir quels critères sont concernés H et H- pour le transfert
-    integer :: etatG, etatHCP, etatMxCP, etatMyCP
+    integer(kind=8) :: etatG, etatHCP, etatMxCP, etatMyCP
 !   valeur avec le signe des moments et de l'effort horizontal pour le calcul
 !     des différents critères
     real(kind=8) :: valH, valMx, valMy, valMxPabs, valMyPabs
@@ -91,7 +91,7 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
 !   fsInverse       : les deltas(finaux)
 !   dfOrdo          : récupération des dérivés des critères uniquement utiles au calcul
     real(kind=8), allocatable :: MatAinverser(:, :), fsInverse(:, :), dfOrdo(:, :)
-    integer, allocatable :: assoddl(:)
+    integer(kind=8), allocatable :: assoddl(:)
 !   La partie plastique de la raideur
     real(kind=8) :: Kplastique(5, 5)
 !   factor  de linéarisation,reste dans des division euclidienne
@@ -300,10 +300,12 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
                     dfdF(ii, 3) = dfdF(ii, 3)+2.0*Cinter*Lx*Ly*valMx* &
                                   abs(tirela(4))/(Ly*tirela(3)**2)* &
                                   (1.0+2.0*valMy*abs(tirela(5))/(Lx*tirela(3)))
-                    dfdF(ii, 4) = -2.0*valMxPabs*Cinter*Lx*Ly*(1+2*valMy* &
-                                                       abs(tirela(5))/(Lx*tirela(3)))/(Ly*tirela(3))
-                    dfdF(ii, 5) = -2.0*valMyPabs*Cinter*Lx*Ly*(1+2*valMx* &
-                                                       abs(tirela(4))/(Ly*tirela(3)))/(Lx*tirela(3))
+                    dfdF(ii, 4) = &
+                        -2.0*valMxPabs*Cinter*Lx*Ly* &
+                        (1+2*valMy*abs(tirela(5))/(Lx*tirela(3)))/(Ly*tirela(3))
+                    dfdF(ii, 5) = &
+                        -2.0*valMyPabs*Cinter*Lx*Ly* &
+                        (1+2*valMx*abs(tirela(4))/(Ly*tirela(3)))/(Lx*tirela(3))
                 else
                     ! si les moments sont trop forts, on annule la composante liée à la cohésion
                     dfdF(ii, 3) = tan(phi)
@@ -421,30 +423,37 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
                                           (factor*Ly*(Velas+vloc(15))))* &
                                          (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/ &
                                           (factor*Lx*(Velas+vloc(15))))))**(1.0/3.0)
-            dfdF(ii+4, 4) = -2.0*tirela(3)*valMxPabs/(3*Lx*(Velas+vloc(15))* &
-                                                      (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/ &
-                                                       (factor*Lx*(Velas+vloc(15))))**(1.0/3.0)* &
-                                                      (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/ &
-                                         (factor*Ly*(Velas+vloc(15))))**(4.0/3.0)*factor**(2.0/3.0))
-            dfdF(ii+4, 5) = -2.0*tirela(3)*valMyPabs/(3.0*Ly*(Velas+vloc(15))* &
-                                                      (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/ &
-                                                       (factor*Lx*(Velas+vloc(15))))**(4.0/3.0)* &
-                                                      (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/ &
-                                         (factor*Ly*(Velas+vloc(15))))**(1.0/3.0)*factor**(2.0/3.0))
+            dfdF(ii+4, 4) = &
+                -2.0*tirela(3)*valMxPabs/ &
+                (3*Lx*(Velas+vloc(15))* &
+                 (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/ &
+                  (factor*Lx*(Velas+vloc(15))))**(1.0/3.0)* &
+                 (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/ &
+                  (factor*Ly*(Velas+vloc(15))))**(4.0/3.0)*factor**(2.0/3.0))
+            dfdF(ii+4, 5) = &
+                -2.0*tirela(3)*valMyPabs/ &
+                (3.0*Ly*(Velas+vloc(15))* &
+                 (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/ &
+                  (factor*Lx*(Velas+vloc(15))))**(4.0/3.0)* &
+                 (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/ &
+                  (factor*Ly*(Velas+vloc(15))))**(1.0/3.0)*factor**(2.0/3.0))
             ! calcul des dérivées du critère en CP linéarisé en H par rapport aux écrouissages
             !   qui ne sont que l'opposé des dérivées par rapport aux forces
             !   car écrouissage cinématique
             dfdQCP(ii, :) = -dfdF(ii+4, :)
             ! sauf dfdQCP(5:8,3) qui est un écrouissage isotrope
-            dfdQCP(ii, 3) = -2.0*tirela(3)*(valMx*abs(tirela(4)-vloc(16))*Ly* &
-                                            (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/(factor*Lx* &
-                                              (Velas+vloc(15))))+valMy*abs(tirela(5)-vloc(17))*Lx* &
-                               (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15)))))
-            dfdQCP(ii, 3) = dfdQCP(ii, 3)/(3.0*Ly*Lx*(Velas+vloc(15))**2* &
-                                           (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/ &
-                                            (factor*Lx*(Velas+vloc(15))))**(4.0/3.0)* &
-                                           (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/ &
-                                         (factor*Ly*(Velas+vloc(15))))**(4.0/3.0)*factor**(2.0/3.0))
+            dfdQCP(ii, 3) = &
+                -2.0*tirela(3)* &
+                (valMx*abs(tirela(4)-vloc(16))*Ly* &
+                 (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15))))+ &
+                 valMy*abs(tirela(5)-vloc(17))*Lx* &
+                 (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15)))))
+            dfdQCP(ii, 3) = &
+                dfdQCP(ii, 3)/(3.0*Ly*Lx*(Velas+vloc(15))**2* &
+                               (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/ &
+                                (factor*Lx*(Velas+vloc(15))))**(4.0/3.0)* &
+                               (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/ &
+                                (factor*Ly*(Velas+vloc(15))))**(4.0/3.0)*factor**(2.0/3.0))
         else
             ! si pas de critère de CP linérisé selon H à calculer, on mets tout à 0
             dfdF(ii+4, :) = 0.0
@@ -483,20 +492,24 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
                 dfdF(ii+8, 2) = (tirela(2)-vloc(14))/HCP*valH*valint
             end if
             dfdF(ii+8, 3) = 1.0-factor/((1-valH*HCP/(factor*(Velas+vloc(15))))**3* &
-                               (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15)))))
+                                        (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/ &
+                                         (factor*Lx*(Velas+vloc(15)))))
             dfdF(ii+8, 4) = 2.0*valMxPabs
-            dfdF(ii+8, 5) = -2.0*Ly*tirela(3)* &
-                         valMyPabs/(Lx*(Velas+vloc(15))*(1-valH*HCP/(factor*(Velas+vloc(15))))**3* &
-                               (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15)))))
+            dfdF(ii+8, 5) = &
+                -2.0*Ly*tirela(3)* &
+                valMyPabs/(Lx*(Velas+vloc(15))*(1-valH*HCP/(factor*(Velas+vloc(15))))**3* &
+                           (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15)))))
             dfdQCP(ii+4, :) = -dfdF(ii+8, :)
-            dfdQCP(ii+4, 3) = 2.0*valMy*abs(tirela(5)-vloc(17))*Ly*tirela(3)/ &
-                              (Lx*(Velas+vloc(15))**2* &
-                          (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15))))**2* &
-                               (1.0-valH*HCP/(factor*(Velas+vloc(15))))**3)
-            dfdQCP(ii+4, 3) = dfdQCP(ii+4, 3)+3.0*valH*HCP* &
-                              tirela(3)/((Velas+vloc(15))**2* &
-                                (1.0-2.0*valMy*(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15))))* &
-                                         (1.0-valH*HCP/(factor*(Velas+vloc(15))))**4)
+            dfdQCP(ii+4, 3) = &
+                2.0*valMy*abs(tirela(5)-vloc(17))*Ly*tirela(3)/ &
+                (Lx*(Velas+vloc(15))**2* &
+                 (1.0-2.0*valMy*abs(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15))))**2* &
+                 (1.0-valH*HCP/(factor*(Velas+vloc(15))))**3)
+            dfdQCP(ii+4, 3) = &
+                dfdQCP(ii+4, 3)+3.0*valH*HCP* &
+                tirela(3)/((Velas+vloc(15))**2* &
+                           (1.0-2.0*valMy*(tirela(5)-vloc(17))/(factor*Lx*(Velas+vloc(15))))* &
+                           (1.0-valH*HCP/(factor*(Velas+vloc(15))))**4)
         else
             dfdF(ii+8, :) = 0.0
             dfdQCP(ii+4, :) = 0.0
@@ -506,9 +519,9 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
             if (abs(tirela(5)-vloc(17)) .LT. error) then
                 criteres(16) = .FALSE.
             end if
-            valint = -3.0*Ly* &
-                     tirela(3)/((Velas+vloc(15))*(1.0-valH*HCP/(factor*(Velas+vloc(15))))**4* &
-                               (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15)))))
+            valint = -3.0*Ly*tirela(3)/ &
+                     ((Velas+vloc(15))*(1.0-valH*HCP/(factor*(Velas+vloc(15))))**4* &
+                      (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15)))))
             if (HCP .LT. r8prem()) then
                 if (criteres(13) .AND. criteres(14)) then
                     ! mais dans le cas où on est au point 0000
@@ -533,20 +546,26 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
                 dfdF(ii+12, 1) = (tirela(1)-vloc(13))/HCP*valH*valint
                 dfdF(ii+12, 2) = (tirela(2)-vloc(15))/HCP*valH*valint
             end if
-            dfdF(ii+12, 3) = 1-factor/((1-valH*HCP/(factor*(Velas+vloc(15))))**3* &
-                               (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15)))))
+            dfdF(ii+12, 3) = &
+                1-factor/((1-valH*HCP/(factor*(Velas+vloc(15))))**3* &
+                          (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15)))))
             dfdF(ii+12, 5) = 2.0*valMyPabs
-            dfdF(ii+12, 4) = -2.0*Lx*tirela(3)* &
-                         valMxPabs/(Ly*(Velas+vloc(15))*(1-valH*HCP/(factor*(Velas+vloc(15))))**3* &
-                               (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15)))))
+            dfdF(ii+12, 4) = &
+                -2.0*Lx*tirela(3)* &
+                valMxPabs/(Ly*(Velas+vloc(15))*(1-valH*HCP/(factor*(Velas+vloc(15))))**3* &
+                           (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15)))))
             dfdQCP(ii+8, :) = -dfdF(ii+12, :)
-            dfdQCP(ii+8, 3) = 2.0*valMx*abs(tirela(4)-vloc(16))*Lx* &
-                              tirela(3)/(Ly*(Velas+vloc(15))**2* &
-                          (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15))))**2* &
-                                         (1.0-valH*HCP/(factor*(Velas+vloc(15))))**3)
-            dfdQCP(ii+8, 3) = dfdQCP(ii+8, 3)+3.0*valH*HCP*tirela(3)/((Velas+vloc(15))**2* &
-                             (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15))))* &
-                                                        (1.0-valH*HCP/(factor*(Velas+vloc(15))))**4)
+            dfdQCP(ii+8, 3) = &
+                2.0*valMx*abs(tirela(4)-vloc(16))*Lx* &
+                tirela(3)/ &
+                (Ly*(Velas+vloc(15))**2* &
+                 (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15))))**2* &
+                 (1.0-valH*HCP/(factor*(Velas+vloc(15))))**3)
+            dfdQCP(ii+8, 3) = &
+                dfdQCP(ii+8, 3)+3.0*valH*HCP*tirela(3)/ &
+                ((Velas+vloc(15))**2* &
+                 (1.0-2.0*valMx*abs(tirela(4)-vloc(16))/(factor*Ly*(Velas+vloc(15))))* &
+                 (1.0-valH*HCP/(factor*(Velas+vloc(15))))**4)
         else
             dfdF(ii+12, :) = 0.0
             dfdQCP(ii+8, :) = 0.0
@@ -584,7 +603,8 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
     Hslid(2) = vpara(5)*exp(-1.0*vpara(6)*vloc(20))
     !
     ! création de la matrice A inverser par la suite
-    allocate (MatAinverser(nbDDL, nbDDL), fsInverse(nbDDL, nbDDL), dfOrdo(nbDDL, 5), assoddl(nbDDL))
+    allocate (MatAinverser(nbDDL, nbDDL), fsInverse(nbDDL, nbDDL), &
+              dfOrdo(nbDDL, 5), assoddl(nbDDL))
     ! matrice identite
     forall (ii=1:nbDDL, jj=1:nbDDL) fsInverse(ii, jj) = (ii/jj)*(jj/ii)
 
@@ -602,11 +622,13 @@ subroutine difondmatpetit(tirela, raidTang, vloc, vpara, nbVloc, nbPara, klr, er
         do nbDDLjj = 1, nbDDL
             jj = assoddl(nbDDLjj)
             if ((ii .le. 4) .and. (jj .le. 4)) then
-                MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))- &
-                               dfdQsl(ii, 1)*Hslid(1)*dfdF(jj, 1)-dfdQsl(ii, 2)*Hslid(2)*dfdF(jj, 2)
+                MatAinverser(nbDDLii, nbDDLjj) = &
+                    sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))- &
+                    dfdQsl(ii, 1)*Hslid(1)*dfdF(jj, 1)-dfdQsl(ii, 2)*Hslid(2)*dfdF(jj, 2)
             else if ((ii .ge. 5) .and. (jj .ge. 5)) then
-                MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))- &
-                                                 sum(dfdQCP(ii-4, :)*HHCP(:)*dfdF(jj, :))
+                MatAinverser(nbDDLii, nbDDLjj) = &
+                    sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))- &
+                    sum(dfdQCP(ii-4, :)*HHCP(:)*dfdF(jj, :))
             else
                 MatAinverser(nbDDLii, nbDDLjj) = sum(dfdF(ii, :)*raidTang(:5)*dfdF(jj, :))
             end if

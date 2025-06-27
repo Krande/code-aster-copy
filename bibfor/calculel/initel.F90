@@ -60,19 +60,19 @@ subroutine initel(ligrel, l_calc_rigi)
 !
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: igr, ngr, nmaxob, nbobj, nbprin
-    integer :: nbno, jlliel, iconx2
-    integer :: nute, nbel, iel, numa, nbnoma, ino, nuno
+    integer(kind=8) :: igr, ngr, nmaxob, nbobj, nbprin
+    integer(kind=8) :: nbno, jlliel, iconx2
+    integer(kind=8) :: nute, nbel, iel, numa, nbnoma, ino, nuno
     parameter(nmaxob=30)
-    integer :: adobj(nmaxob)
+    integer(kind=8) :: adobj(nmaxob)
     character(len=24) :: noobj(nmaxob)
     character(len=1) :: base
     character(len=8) :: exiele, ma, prin, nomail
     character(len=16) :: nomte
-    integer, pointer :: vprin(:) => null()
+    integer(kind=8), pointer :: vprin(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: liel(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
 ! ----------------------------------------------------------------------
 !
     call jemarq()

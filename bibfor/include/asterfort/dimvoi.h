@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine dimvoi(nvtot, nvoima, nscoma, touvoi, dimvlo)
-        integer :: nscoma
-        integer :: nvoima
-        integer :: nvtot
-        integer :: touvoi(1:nvoima, 1:nscoma+2)
-        integer :: dimvlo
+        integer(kind=8) :: nscoma
+        integer(kind=8) :: nvoima
+        integer(kind=8) :: nvtot
+        integer(kind=8) :: touvoi(1:nvoima, 1:nscoma+2)
+        integer(kind=8) :: dimvlo
     end subroutine dimvoi
 end interface

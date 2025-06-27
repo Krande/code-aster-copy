@@ -31,8 +31,8 @@ subroutine nmext2(mesh, field, nb_cmp, nb_node, type_extr, &
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_node
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=8), intent(in) :: type_extr
     character(len=8), intent(in) :: type_extr_cmp
     character(len=24), intent(in) :: list_node
@@ -60,16 +60,16 @@ subroutine nmext2(mesh, field, nb_cmp, nb_node, type_extr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_para_maxi
+    integer(kind=8) :: nb_para_maxi
     parameter(nb_para_maxi=20)
     real(kind=8) :: vale_resu(nb_para_maxi)
 !
-    integer :: i_node, i_node_work, node_nume
+    integer(kind=8) :: i_node, i_node_work, node_nume
     character(len=8) :: node_name
-    integer :: i_vale, nb_vale
+    integer(kind=8) :: i_vale, nb_vale
     real(kind=8) :: valr, val2r
     real(kind=8), pointer :: v_work_node(:) => null()
-    integer, pointer :: v_list_node(:) => null()
+    integer(kind=8), pointer :: v_list_node(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

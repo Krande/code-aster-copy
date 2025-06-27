@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine rvpsts(iocc, sdlieu, sdeval, sdmoye)
-        integer :: iocc
+        integer(kind=8) :: iocc
         character(len=24) :: sdlieu
         character(len=19) :: sdeval
         character(len=24) :: sdmoye

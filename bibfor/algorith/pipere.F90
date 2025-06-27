@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine pipere(npg, a, tau, nsol, eta)
 !
     implicit none
 #include "asterc/r8maem.h"
-    integer :: npg, nsol
+    integer(kind=8) :: npg, nsol
     real(kind=8) :: a(0:1, npg), tau
     real(kind=8) :: eta(2)
 !
@@ -44,7 +44,7 @@ subroutine pipere(npg, a, tau, nsol, eta)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: g
+    integer(kind=8) :: g
     real(kind=8) :: x, infini
 !
 ! ----------------------------------------------------------------------

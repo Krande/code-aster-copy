@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ function lteatt(noattr, vattr, typel)
 !  Sinon, typel est inutile.
 !-----------------------------------------------------------------------
     character(len=16) :: vattr2
-    integer :: iret
+    integer(kind=8) :: iret
 !----------------------------------------------------------------------
     if (present(typel)) then
         call teattr('C', noattr, vattr2, iret, typel=typel)

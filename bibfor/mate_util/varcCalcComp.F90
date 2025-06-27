@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine varcCalcComp(modelz, chsithz, &
 !
     character(len=*), intent(in) :: modelz, chsithz
     aster_logical, intent(in)  :: l_temp, l_hydr, l_ptot, l_sech, l_epsa
-    integer, intent(in) :: nbin, nbout
+    integer(kind=8), intent(in) :: nbin, nbout
     character(len=8), intent(in) :: lpain(*), lpaout(*)
     character(len=19), intent(in) :: lchin(*)
     character(len=19), intent(inout) :: lchout(*)

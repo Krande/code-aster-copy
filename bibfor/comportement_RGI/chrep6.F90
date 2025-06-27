@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine chrep6(x6, vp33, controle, xp6)
     aster_logical :: controle
 
 !   variables locales
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: x33(3, 3), xp33(3, 3)
 
 !   chargement et passage des deformations

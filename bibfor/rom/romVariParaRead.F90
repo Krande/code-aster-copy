@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine romVariParaRead(ds_varipara, keywfact, iocc)
 !
     type(ROM_DS_VariPara), intent(inout) :: ds_varipara
     character(len=16), intent(in) :: keywfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +48,7 @@ subroutine romVariParaRead(ds_varipara, keywfact, iocc)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_vale_para, nbret
+    integer(kind=8) :: nb_vale_para, nbret
 !
 ! --------------------------------------------------------------------------------------------------
 !

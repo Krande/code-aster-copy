@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,8 +76,8 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: imodi, nbmr, nbm, nuor(nbm)
-    integer :: iaxe, nbnfen, nofe(nbnfen), nbp1, nbp2
+    integer(kind=8) :: imodi, nbmr, nbm, nuor(nbm)
+    integer(kind=8) :: iaxe, nbnfen, nofe(nbnfen), nbp1, nbp2
     real(kind=8) :: long, discfe(nbnfen), discff(nbp1+nbp2)
     real(kind=8) :: defm(nbp1+nbp2, nbmr)
     character(len=19) :: base
@@ -87,9 +87,9 @@ subroutine deffen(base, nuor, imodi, nbmr, nbm, &
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: idir1, idir2, ier1, ier2, ifen2, imod, imodf
-    integer :: imr, iprol, iv, ivale, ivale1, ivale2, j
-    integer :: numnoe
+    integer(kind=8) :: idir1, idir2, ier1, ier2, ifen2, imod, imodf
+    integer(kind=8) :: imr, iprol, iv, ivale, ivale1, ivale2, j
+    integer(kind=8) :: numnoe
 !-----------------------------------------------------------------------
     call jemarq()
 !

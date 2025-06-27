@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,11 +46,11 @@ subroutine te0077(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: valQP(MAX_QP), cp(1)
     real(kind=8) :: mass(MAX_BS, MAX_BS)
-    integer ::  imate, itemps, kp
+    integer(kind=8) ::  imate, itemps, kp
     character(len=8), parameter :: famiM = "MASS"
 !
 !-----------------------------------------------------------------------

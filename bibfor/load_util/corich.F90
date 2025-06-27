@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine corich(actionZ, fieldZ, ichin_, ichout_)
 #include "asterfort/wkvect.h"
 !
     character(len=*), intent(in) :: actionZ, fieldZ
-    integer, optional, intent(in) :: ichin_
-    integer, optional, intent(out) :: ichout_
+    integer(kind=8), optional, intent(in) :: ichin_
+    integer(kind=8), optional, intent(out) :: ichout_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,11 +85,11 @@ subroutine corich(actionZ, fieldZ, ichin_, ichout_)
     character(len=24), parameter :: reptJv = '&&CORICH.REPT'
     character(len=24), parameter :: nuchJv = '&&CORICH.NUCH'
     character(len=24), parameter :: reptmp = '&&CORICH.REPTMP'
-    integer, parameter :: nbFieldInit = 50
-    integer :: iret, nbField, nbFieldMaxi, iField, fieldIndx
+    integer(kind=8), parameter :: nbFieldInit = 50
+    integer(kind=8) :: iret, nbField, nbFieldMaxi, iField, fieldIndx
     character(len=24) :: field, fieldCopy
-    integer :: ichin, ichout
-    integer, pointer :: nuch(:) => null()
+    integer(kind=8) :: ichin, ichout
+    integer(kind=8), pointer :: nuch(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

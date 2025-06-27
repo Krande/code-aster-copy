@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine dhrc_calc_n(eps, vint, b, c, neta1, neta2)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, k
+    integer(kind=8) :: i, k
 !
 !     INITIALISATION
     call r8inir(2, 0.0d0, neta1, 1)

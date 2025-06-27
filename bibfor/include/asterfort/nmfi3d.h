@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,14 +28,14 @@ interface
                       codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: lgpg
-        integer :: npg
-        integer :: nddl
-        integer :: nno
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nddl
+        integer(kind=8) :: nno
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff(nno, npg)
         real(kind=8) :: dfde(2, nno, npg)
-        integer :: mate
+        integer(kind=8) :: mate
         real(kind=8) :: geom(nddl)
         real(kind=8) :: deplm(nddl)
         real(kind=8) :: ddepl(nddl)
@@ -53,6 +53,6 @@ interface
         character(len=16), intent(in) :: option, compor(COMPOR_SIZE)
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         aster_logical, intent(in) :: lMatr, lVect, lSigm
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine nmfi3d
 end interface

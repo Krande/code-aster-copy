@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 #include "blas/ddot.h"
 #include "blas/dscal.h"
     character(len=24) :: resoco
-    integer :: neq, nbliai, apddl(*), appoin(*), inliac(*), premax
+    integer(kind=8) :: neq, nbliai, apddl(*), appoin(*), inliac(*), premax
     real(kind=8) :: apcoef(*), ssgrad(*), ssgrpr(*), mu(*)
     real(kind=8) :: tole, epsipc
     character(len=19) :: matass, solveu
@@ -66,17 +66,17 @@ subroutine cfpcdi(resoco, neq, nbliai, tole, epsipc, &
 !
 !
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: numer, denom, conver, alpha
     real(kind=8) :: numerp, numerm, beta
     real(kind=8) :: convm, coef
-    integer :: iliac, iliai, jdecal, nbddl, iterat, nbliac
+    integer(kind=8) :: iliac, iliai, jdecal, nbddl, iterat, nbliac
     character(len=24) :: cncin0, secmbr, ddelt, pcresi, pcdire, pcdepl
-    integer :: jsecmb, jddelt, jpcres, jpcdir, jpcdep
+    integer(kind=8) :: jsecmb, jddelt, jpcres, jpcdir, jpcdep
     character(len=19) :: k19bla
     complex(kind=8) :: c16bid
     parameter(coef=1.d-2)
-    integer :: iret
+    integer(kind=8) :: iret
     blas_int :: b_incx, b_incy, b_n
     c16bid = dcmplx(0.d0, 0.d0)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine selectComp(chams0, nom_cham, type_cham, nbcmp, nom_cmp, ndim_type)
 !
     character(len=19), intent(in) :: chams0
     character(len=*), intent(in) :: nom_cham, type_cham
-    integer, intent(out) :: nbcmp, ndim_type
+    integer(kind=8), intent(out) :: nbcmp, ndim_type
     character(len=8), intent(out) :: nom_cmp(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -36,7 +36,7 @@ subroutine selectComp(chams0, nom_cham, type_cham, nbcmp, nom_cmp, ndim_type)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jcesd, nbcmp0, icmp, icmp0
+    integer(kind=8) :: jcesd, nbcmp0, icmp, icmp0
     character(len=8)    :: nomgd
     character(len=8), pointer  :: cesk(:) => null()
     character(len=8), pointer  :: cesc(:) => null()

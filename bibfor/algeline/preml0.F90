@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,13 +26,13 @@ subroutine preml0(n1, n2, diag, col, delg, &
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: n1, diag(0:*), col(*)
-    integer :: delg(*), prno(*), deeq(*), nec, lbd1(n1), lbd2(n1)
-    integer :: rl(4, *), rl1(*), rl2(*)
-    integer :: p(*), q(*)
+    integer(kind=8) :: n1, diag(0:*), col(*)
+    integer(kind=8) :: delg(*), prno(*), deeq(*), nec, lbd1(n1), lbd2(n1)
+    integer(kind=8) :: rl(4, *), rl1(*), rl2(*)
+    integer(kind=8) :: p(*), q(*)
 !     VARIABLES LOCALES
-    integer :: nrl, lt, n2, ino, num, nobl, i, j, lmat, i2, iddl, ier, ifm, niv
-    integer :: idiai, idiai1, ii, li, iconne, nfois, vali(3)
+    integer(kind=8) :: nrl, lt, n2, ino, num, nobl, i, j, lmat, i2, iddl, ier, ifm, niv
+    integer(kind=8) :: idiai, idiai1, ii, li, iconne, nfois, vali(3)
     aster_logical :: nivdbg
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

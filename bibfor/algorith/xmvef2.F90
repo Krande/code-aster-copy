@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac, &
 #include "asterfort/xadher.h"
 #include "asterfort/xmafr1.h"
 #include "asterfort/xcalc_saut.h"
-    integer :: ndim, nno, nnos, ddls, ddlm, nfh, singu, idepl
-    integer :: algofr
+    integer(kind=8) :: ndim, nno, nnos, ddls, ddlm, nfh, singu, idepl
+    integer(kind=8) :: algofr
     real(kind=8) :: vtmp(400), nd(3)
     real(kind=8) :: ffp(27), jac, pb(3), reac12(3)
     real(kind=8) :: coeffp, coeffr, seuil, mu
@@ -79,8 +79,8 @@ subroutine xmvef2(ndim, nno, nnos, ffp, jac, &
 !
 !
 !
-    integer :: i, j, k, in, ino, ig
-    integer :: alpi
+    integer(kind=8) :: i, j, k, in, ino, ig
+    integer(kind=8) :: alpi
     real(kind=8) :: ptpb(3), p(3, 3), vitang(3), saut(3), rbid(3, 3)
     real(kind=8) :: r2bid(3, 3)
     real(kind=8) :: r3bid(3, 3), coefj

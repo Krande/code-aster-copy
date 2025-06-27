@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         use NonLin_Datastructure_type
         character(len=19), intent(in) :: sddisc, solver
         type(NL_DS_Print), intent(inout) :: ds_print
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         aster_logical, intent(in) :: lnkry, l_evol, l_stat
         aster_logical, intent(in) :: l_dry
         character(len=8), intent(in) :: result_dry

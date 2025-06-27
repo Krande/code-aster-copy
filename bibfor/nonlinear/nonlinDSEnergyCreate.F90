@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine nonlinDSEnergyCreate(ds_energy)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col
-    integer, parameter :: nb_col_defi = 8
+    integer(kind=8) :: i_col
+    integer(kind=8), parameter :: nb_col_defi = 8
     type(NL_DS_Table) :: table
     type(NL_DS_Column) :: column
 !

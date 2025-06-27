@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ subroutine vpinte(option, nfreq, valp, det, idet, &
     implicit none
 #include "asterfort/vpstur.h"
     character(len=16) :: option
-    integer :: idet(*), ieme(*), npas(*)
+    integer(kind=8) :: idet(*), ieme(*), npas(*)
     real(kind=8) :: tolf
-    integer :: nfreqb
-    integer :: lraide, lmasse, ldynam, resufi(nfreqb, *)
+    integer(kind=8) :: nfreqb
+    integer(kind=8) :: lraide, lmasse, ldynam, resufi(nfreqb, *)
     real(kind=8) :: valp(*), det(*), resufr(nfreqb, *)
     character(len=19) :: solveu
 !     METHODE D'INTERPOLATION DE VALEUR PROPRE COMPRISE ENTRE 2 BORNES
@@ -51,9 +51,9 @@ subroutine vpinte(option, nfreq, valp, det, idet, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: idec, idet0, ieme0, iemei, ier, ifreq, ii
-    integer :: ip1, ip2, itrig, jdec, jfreq, nbiter, nfreq
-    integer :: niter, nitf, ntrou
+    integer(kind=8) :: idec, idet0, ieme0, iemei, ier, ifreq, ii
+    integer(kind=8) :: ip1, ip2, itrig, jdec, jfreq, nbiter, nfreq
+    integer(kind=8) :: niter, nitf, ntrou
     real(kind=8) :: valeur
 !-----------------------------------------------------------------------
     ifreq = 0

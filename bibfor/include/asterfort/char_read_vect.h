@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine char_read_vect(keywordfact, iocc, keyword_z, vect_r)
         character(len=16), intent(in) :: keywordfact
-        integer, intent(in)  :: iocc
+        integer(kind=8), intent(in)  :: iocc
         character(len=*), intent(in) :: keyword_z
         real(kind=8), intent(out) :: vect_r(3)
     end subroutine char_read_vect

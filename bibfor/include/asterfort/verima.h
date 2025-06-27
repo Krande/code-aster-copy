@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 interface
     subroutine verima(meshz, list_obj, list_size, typez_objet)
         character(len=*), intent(in) :: meshz, typez_objet
-        integer, intent(inout) :: list_size
+        integer(kind=8), intent(inout) :: list_size
         character(len=*), intent(inout) :: list_obj(list_size)
     end subroutine verima
 end interface

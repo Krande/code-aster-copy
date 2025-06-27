@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@
 interface
     subroutine gcharf(ichar, fonc1, char1, fonc2, char2,&
                       charg, oldfon)
-        integer :: ichar
+        integer(kind=8) :: ichar
         aster_logical :: fonc1
         character(len=19) :: char1
         aster_logical :: fonc2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,19 +41,19 @@ subroutine te0475(option, nomte)
 ! Options: ECHA_THM_R ECHA_THM_F
 !
     aster_logical :: l_axi, l_vf
-    integer :: nno, nnos, ndim, nnom, napre1, napre2, ndim2
-    integer :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
-    integer :: i, j, l, ires, itemps, iopt, iech
-    integer :: idfdy, iret, igeom, natemp, iechf, ipg, npi
-    integer :: idec, jdec, kdec, ldec, ldec2, ino, jno
+    integer(kind=8) :: nno, nnos, ndim, nnom, napre1, napre2, ndim2
+    integer(kind=8) :: jv_gano, jv_poids, jv_poids2, jv_func, jv_func2, jv_dfunc, jv_dfunc2
+    integer(kind=8) :: i, j, l, ires, itemps, iopt, iech
+    integer(kind=8) :: idfdy, iret, igeom, natemp, iechf, ipg, npi
+    integer(kind=8) :: idec, jdec, kdec, ldec, ldec2, ino, jno
     real(kind=8) :: nx, ny, nz, valpar(3), deltat
     real(kind=8) :: sx(9, 9), sy(9, 9), sz(9, 9), jac
     real(kind=8) :: flu1, flu2, fluth
     real(kind=8) :: c11, c12, c21, c22, p1ext, p2ext, p1m, p2m
     character(len=8) :: nompar(3), elrefe, elref2
     real(kind=8) :: valres(3)
-    integer :: icodre(1)
-    integer :: idepm, imate
+    integer(kind=8) :: icodre(1)
+    integer(kind=8) :: idepm, imate
 !
     real(kind=8) :: hrext, tm, mamolv, rgp, rhol, coefvap, rhovs, pvs, alpha
     real(kind=8) :: p1ref, p2ref, tref

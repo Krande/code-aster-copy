@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 !
 interface
     subroutine irgmtb(tdec, typd, vers)
-        integer, parameter :: ntyele=28
-        integer, parameter :: maxel=48
-        integer, parameter :: maxno=8
-        integer :: tdec(ntyele, maxel, maxno)
-        integer :: typd(ntyele, 3)
-        integer :: vers
+        integer(kind=8), parameter :: ntyele=28
+        integer(kind=8), parameter :: maxel=48
+        integer(kind=8), parameter :: maxno=8
+        integer(kind=8) :: tdec(ntyele, maxel, maxno)
+        integer(kind=8) :: typd(ntyele, 3)
+        integer(kind=8) :: vers
     end subroutine irgmtb
 end interface

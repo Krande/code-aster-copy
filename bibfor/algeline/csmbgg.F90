@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine, &
 #include "asterfort/jeveuo.h"
     real(kind=8) :: vsmb(*), vcine(*)
     complex(kind=8) :: cvsmb(*), cvcine(*)
-    integer :: lmat
+    integer(kind=8) :: lmat
     character(len=*) :: type
 ! BUT : CALCUL DE LA CONTRIBUTION AU SECOND MEMBRE DES DDLS IMPOSEES
 !       LORSQU'ILS SONT TRAITEES PAR ELIMINATION
@@ -69,9 +69,9 @@ subroutine csmbgg(lmat, vsmb, vcine, cvsmb, cvcine, &
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: neq, nimpo, eccll
-    integer, pointer :: ccll(:) => null()
-    integer, pointer :: ccii(:) => null()
+    integer(kind=8) :: neq, nimpo, eccll
+    integer(kind=8), pointer :: ccll(:) => null()
+    integer(kind=8), pointer :: ccii(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT
 !-----------------------------------------------------------------------

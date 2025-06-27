@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini, &
 #include "asterfort/nmgrot.h"
     character(len=19) :: sdnume
     aster_logical :: lgrot, lendo
-    integer :: neq, ordre
+    integer(kind=8) :: neq, ordre
     real(kind=8) :: chaini(*), chadel(*), chamaj(*), coef
 !
 ! ----------------------------------------------------------------------
@@ -63,12 +63,12 @@ subroutine majour(neq, lgrot, lendo, sdnume, chaini, &
 !
 !
 !
-    integer :: iran(3), i, icomp, endo
+    integer(kind=8) :: iran(3), i, icomp, endo
     real(kind=8) :: theta(3), deldet(3)
-    integer :: ptdo, indic1, indic2
+    integer(kind=8) :: ptdo, indic1, indic2
     real(kind=8) :: stok
     real(kind=8) :: zero
-    integer, pointer :: ndro(:) => null()
+    integer(kind=8), pointer :: ndro(:) => null()
     parameter(zero=0.0d+0)
 !
 ! ----------------------------------------------------------------------

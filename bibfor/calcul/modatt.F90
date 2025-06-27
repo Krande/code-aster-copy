@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ function modatt(opt, te, statut, ipar)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 
-    integer :: opt, te, ipar
+    integer(kind=8) :: opt, te, ipar
     character(len=3) :: statut
-    integer :: modatt
+    integer(kind=8) :: modatt
 !-----------------------------------------------------------------------
 !  entrees:
 !     opt    : option de calcul
@@ -41,7 +41,7 @@ function modatt(opt, te, statut, ipar)
 !              champ_parametre(statut,ipar)
 !
 !-----------------------------------------------------------------------
-    integer :: nbin, jj, optmod
+    integer(kind=8) :: nbin, jj, optmod
 !-------------------------------------------------------------------
 
     jj = zi(ca_iaoptt_-1+(te-1)*ca_lgco_+opt)

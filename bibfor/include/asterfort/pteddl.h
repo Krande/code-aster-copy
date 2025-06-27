@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine pteddl(typesd   , resuz    , nb_cmp, list_cmp, nb_equa,&
                       tabl_equa, list_equa)
-        integer, intent(in) :: nb_cmp
-        integer, intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: nb_cmp
+        integer(kind=8), intent(in) :: nb_equa
         character(len=*), intent(in) :: typesd
         character(len=*), intent(in) :: resuz
         character(len=8), target, intent(in) :: list_cmp(nb_cmp)
-        integer, target, optional, intent(inout) :: tabl_equa(nb_equa, nb_cmp)
-        integer, target, optional, intent(inout) :: list_equa(nb_equa)
+        integer(kind=8), target, optional, intent(inout) :: tabl_equa(nb_equa, nb_cmp)
+        integer(kind=8), target, optional, intent(inout) :: list_equa(nb_equa)
     end subroutine pteddl
 end interface

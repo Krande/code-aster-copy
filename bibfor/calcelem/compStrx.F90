@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine compStrx(modelz, ligrel, compor, &
     character(len=*), intent(in) :: chcara(*)
     character(len=*), intent(in) :: chvarc, chvref
     character(len=*), intent(in) :: chelemz, basez
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
     aster_logical, intent(in), optional :: l_poux_
     character(len=*), intent(in), optional :: load_d_, coef_type_
     real(kind=8), intent(in), optional :: coef_real_
@@ -57,15 +57,15 @@ subroutine compStrx(modelz, ligrel, compor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxin = 65, maxout = 1
+    integer(kind=8), parameter :: maxin = 65, maxout = 1
     character(len=8) :: lpain(maxin), lpaout(maxout)
     character(len=24) :: lchin(maxin), lchout(maxout)
     character(len=1) :: base
     character(len=8) :: model, cara_elem
     character(len=16) :: option
     character(len=24) :: chdisp, chelem, chdynr, suropt
-    integer :: iret, ifiss
-    integer :: nbin, nbout, nbopt
+    integer(kind=8) :: iret, ifiss
+    integer(kind=8) :: nbin, nbout, nbopt
     aster_logical :: l_poux, l_xfem
 !
 ! --------------------------------------------------------------------------------------------------

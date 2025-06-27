@@ -49,11 +49,11 @@ subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
     character(len=24), intent(in) :: field_type
     character(len=24), intent(in) :: field_s
     character(len=4), intent(in) :: field_disc
-    integer, intent(in) :: nb_node
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: nb_poin
-    integer, intent(in) :: nb_spoi
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_elem
+    integer(kind=8), intent(in) :: nb_poin
+    integer(kind=8), intent(in) :: nb_spoi
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=24), intent(in) :: list_node
     character(len=24), intent(in) :: list_elem
     character(len=24), intent(in) :: list_poin
@@ -66,7 +66,7 @@ subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
     character(len=8), intent(in) :: type_sele_cmp
     character(len=19), intent(in) :: work_node
     character(len=19), intent(in) :: work_elem
-    integer, intent(inout) :: nb_obsf_effe
+    integer(kind=8), intent(inout) :: nb_obsf_effe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -106,27 +106,27 @@ subroutine nmobs2(meshz, sd_obsv, tabl_name, time, title, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer nb_para_maxi
+    integer(kind=8) nb_para_maxi
     parameter(nb_para_maxi=20)
     character(len=16) :: v_cmp_name(nb_para_maxi)
 !
-    integer :: i_node, i_elem, i_poin, i_spoi, i_cmp
-    integer :: iret
+    integer(kind=8) :: i_node, i_elem, i_poin, i_spoi, i_cmp
+    integer(kind=8) :: iret
     real(kind=8) :: vale_r
-    integer :: nb_node_r, nb_elem_r, nb_cmp_r, nb_poin_r, nb_spoi_r
-    integer :: nb_poin_e, nb_spoi_e, nb_poin_elem, nb_spoi_elem
-    integer :: poin_nume, spoi_nume, node_nume, elem_nume, nume_glob
+    integer(kind=8) :: nb_node_r, nb_elem_r, nb_cmp_r, nb_poin_r, nb_spoi_r
+    integer(kind=8) :: nb_poin_e, nb_spoi_e, nb_poin_elem, nb_spoi_elem
+    integer(kind=8) :: poin_nume, spoi_nume, node_nume, elem_nume, nume_glob
     character(len=8) :: node_name, elem_name
     character(len=16) :: cmp_name
     aster_logical :: l_pmesh
-    integer, pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: cesd(:) => null()
     character(len=8), pointer :: v_list_cmp(:) => null()
     character(len=16), pointer :: v_list_vari(:) => null()
-    integer, pointer :: v_list_node(:) => null()
-    integer, pointer :: v_list_elem(:) => null()
-    integer, pointer :: v_list_poin(:) => null()
-    integer, pointer :: v_list_spoi(:) => null()
-    integer, pointer :: v_nonulg(:) => null()
+    integer(kind=8), pointer :: v_list_node(:) => null()
+    integer(kind=8), pointer :: v_list_elem(:) => null()
+    integer(kind=8), pointer :: v_list_poin(:) => null()
+    integer(kind=8), pointer :: v_list_spoi(:) => null()
+    integer(kind=8), pointer :: v_nonulg(:) => null()
     real(kind=8), pointer :: v_work_node(:) => null()
     real(kind=8), pointer :: v_work_elem(:) => null()
 !

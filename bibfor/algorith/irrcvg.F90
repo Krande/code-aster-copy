@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine irrcvg(dy, ddy, nr, nmat, mater, &
 !                       =1 ITERATIONS SUPPLEMENTAIRE (ITER<ITMAX)
 !                       =3 ITMAX ATTEINT REDECOUPAGE
 !       ----------------------------------------------------------------
-    integer :: itmax, iter, nr, irteti, ii, nmat
+    integer(kind=8) :: itmax, iter, nr, irteti, ii, nmat
     real(kind=8) :: toler, ddy(nr), dy(nr), r(nr), rini(nr), mater(nmat, 2)
 !
     real(kind=8) :: er, valrm(2)

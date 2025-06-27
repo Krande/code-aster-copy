@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur, &
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
     aster_logical :: lcomod
-    integer :: icom1, icom2, nbpari, nbparr, nbpark, nconv, neq, mxresf
-    integer :: resui(*)
+    integer(kind=8) :: icom1, icom2, nbpari, nbparr, nbpark, nconv, neq, mxresf
+    integer(kind=8) :: resui(*)
     real(kind=8) :: vectr(*), resur(*)
     character(len=16) :: typres
     character(len=*) :: resuk(*)
@@ -61,9 +61,9 @@ subroutine vppcom(lcomod, icom1, icom2, resui, resur, &
 !
 !     --- VARIABLES LOCALES
     mpi_int :: rangl, rangll, mpicow, mpicou, mpico0, l1, l2
-    integer :: nconvl, nconvg, nconvm
-    integer :: ibid, izero, i, idecal, j, i8, jlcom, jlbuff, jlbufs, ifm
-    integer :: niv
+    integer(kind=8) :: nconvl, nconvg, nconvm
+    integer(kind=8) :: ibid, izero, i, idecal, j, i8, jlcom, jlbuff, jlbufs, ifm
+    integer(kind=8) :: niv
     real(kind=8) :: rbid
     complex(kind=8) :: cbid
     character(len=24) :: klcom, k24buf, k24bus, k24b

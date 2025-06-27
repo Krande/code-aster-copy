@@ -56,7 +56,7 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 !
     character(len=*) :: cnsz, cnoz, basez, nume_equaz, prol0
     character(len=1) :: kstop
-    integer, optional :: nbz
+    integer(kind=8), optional :: nbz
     character(len=24), optional :: vchamz
     aster_logical, optional :: lprofconst
     type(prolongation), optional :: prolong
@@ -99,29 +99,29 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
     character(len=24) :: noojb
     character(len=24) :: valk(3)
 !     -----------------------------------------------------------------
-    integer :: icmp, nec, jcnsv, jcnsl, gd, iexi, ncmp, jvcham, jrefk
-    integer :: reste, iec, code, nbno, nb
-    integer :: ncmpmx, jrefe, ncmp1, nb_equa, jcmpgd, icmp1, k, ieq2, nbec
-    integer :: jprn2, ino, idg2, ico, jvale, iret
-    integer :: lshift, nuprf, nb_equa_gl, jrefn
+    integer(kind=8) :: icmp, nec, jcnsv, jcnsl, gd, iexi, ncmp, jvcham, jrefk
+    integer(kind=8) :: reste, iec, code, nbno, nb
+    integer(kind=8) :: ncmpmx, jrefe, ncmp1, nb_equa, jcmpgd, icmp1, k, ieq2, nbec
+    integer(kind=8) :: jprn2, ino, idg2, ico, jvale, iret
+    integer(kind=8) :: lshift, nuprf, nb_equa_gl, jrefn
     character(len=1) :: base
     character(len=8) :: ma, nomgd, nomno, nomcmp, prolv
     aster_logical :: l_crea_nume_equa, l_chck_nume_equa, ldist, l_pmesh
     aster_logical :: lprof_const
     character(len=3) :: tsca
     character(len=19) :: cns, cno, nume_equa, messag, prnoav, nume_equa_tmp
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsc(:) => null()
     character(len=24) :: vcham
     character(len=24), pointer :: refn(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
-    integer, pointer :: tmp_nucm1(:) => null()
-    integer, pointer :: tmp_nucmp(:) => null()
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: tmp_nucm1(:) => null()
+    integer(kind=8), pointer :: tmp_nucmp(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
-    integer, pointer :: v_nequ(:) => null()
+    integer(kind=8), pointer :: v_nequ(:) => null()
 !     -----------------------------------------------------------------
     call jemarq()
 !   EVENTUEL PARALLELISME EN TEMPS

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,11 +37,11 @@ subroutine nomcod(nom, num, ic, nc)
 #include "asterfort/assert.h"
     character(len=*) :: nom
     character(len=4) :: format
-    integer :: num, ic, nc
+    integer(kind=8) :: num, ic, nc
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !-----------------------------------------------------------------------
     format = '(IX)'
     do i = ic, nc

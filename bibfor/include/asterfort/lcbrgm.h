@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@ interface
     subroutine lcbrgm(ndim, typmod, imate, epsm, deps,&
                       vim, option, sig, vip, dsidpt,&
                       codret)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: epsm(12)
         real(kind=8) :: deps(12)
         real(kind=8) :: vim(*)
@@ -30,6 +30,6 @@ interface
         real(kind=8) :: sig(6)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsidpt(6, 6, 2)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lcbrgm
 end interface

@@ -22,7 +22,7 @@ function is_numeric(string)
     character(len=*), intent(in) :: string
     aster_logical :: is_numeric
     real(kind=8) :: x
-    integer :: e, n
+    integer(kind=8) :: e, n
     character(len=12) :: fmt
 !
     n = len_trim(string)

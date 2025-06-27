@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem, &
 #include "asterfort/ssingu.h"
 #include "asterfort/tsingu.h"
 !
-    integer :: ndim, nnoem, nelem
+    integer(kind=8) :: ndim, nnoem, nelem
     real(kind=8) :: xy(3, nnoem), prec
     character(len=8) :: nomail
     character(len=16) :: types
@@ -78,16 +78,16 @@ subroutine singue(cherrs, chenes, nomail, ndim, nnoem, &
 !
 !
 !
-    integer :: jcesc, jcesd, jcesl, jcesv, iad
-    integer :: nsommx, nelcom, degre
-    integer :: nbcmp, ncmp
-    integer :: icmp, inel, nbr(nelem), nalpha
+    integer(kind=8) :: jcesc, jcesd, jcesl, jcesv, iad
+    integer(kind=8) :: nsommx, nelcom, degre
+    integer(kind=8) :: nbcmp, ncmp
+    integer(kind=8) :: icmp, inel, nbr(nelem), nalpha
     real(kind=8) :: erreur(nelem), taille(nelem), energi(nelem)
     real(kind=8) :: alpha(nelem), re(nelem), he(nelem)
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: conn(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: conn(:) => null()
     real(kind=8), pointer :: mesu(:) => null()
-    integer, pointer :: cinv(:) => null()
+    integer(kind=8), pointer :: cinv(:) => null()
 !
     call jemarq()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@
 !
 interface
     function iorim2(num1, n1, num2, n2, reorie)
-        integer :: n2
-        integer :: n1
-        integer :: num1(n1)
-        integer :: num2(n2)
+        integer(kind=8) :: n2
+        integer(kind=8) :: n1
+        integer(kind=8) :: num1(n1)
+        integer(kind=8) :: num2(n2)
         aster_logical :: reorie
-        integer :: iorim2
+        integer(kind=8) :: iorim2
     end function iorim2
 end interface

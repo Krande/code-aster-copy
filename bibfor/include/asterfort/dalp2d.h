@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,18 @@ interface
     subroutine dalp2d(nelem, nnoem, degre, nsommx, icnc,&
                       nelcom, numeli, xy, erreur, energi,&
                       aire, alpha, nalpha)
-        integer :: nelcom
-        integer :: nsommx
-        integer :: nnoem
-        integer :: nelem
-        integer :: degre
-        integer :: icnc(nsommx+2, nelem)
-        integer :: numeli(nelcom+2, nnoem)
+        integer(kind=8) :: nelcom
+        integer(kind=8) :: nsommx
+        integer(kind=8) :: nnoem
+        integer(kind=8) :: nelem
+        integer(kind=8) :: degre
+        integer(kind=8) :: icnc(nsommx+2, nelem)
+        integer(kind=8) :: numeli(nelcom+2, nnoem)
         real(kind=8) :: xy(3, nnoem)
         real(kind=8) :: erreur(nelem)
         real(kind=8) :: energi(nelem)
         real(kind=8) :: aire(nelem)
         real(kind=8) :: alpha(nelem)
-        integer :: nalpha
+        integer(kind=8) :: nalpha
     end subroutine dalp2d
 end interface

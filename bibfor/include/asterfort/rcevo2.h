@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
     subroutine rcevo2(nbinti, kinti, csigm, cinst, csiex,&
                       kemixt, cstex, csmex, lfatig, flexio,&
                       lrocht, cnoc, cresu, cpres, lsymm)
-        integer :: nbinti
+        integer(kind=8) :: nbinti
         character(len=16) :: kinti
         character(len=24) :: csigm
         character(len=24) :: cinst

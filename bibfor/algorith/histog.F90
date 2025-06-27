@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ subroutine histog(nbpt, v, vmin, vmax, x, &
     implicit none
     real(kind=8) :: v(*), x(*), y(*)
     real(kind=8) :: vmin, vmax
-    integer :: nbpt, ndec
+    integer(kind=8) :: nbpt, ndec
     real(kind=8) :: dx
-    integer :: i, icel
+    integer(kind=8) :: i, icel
     real(kind=8) :: coef
 !-----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       repkz)
         character(len=*) :: mdgenz
         character(len=*) :: nmsstz
-        integer :: nusst
+        integer(kind=8) :: nusst
         character(len=*) :: questi
-        integer :: repi
+        integer(kind=8) :: repi
         character(len=*) :: repkz
     end subroutine mgutdm
 end interface

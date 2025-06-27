@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,17 +21,17 @@
 interface
     subroutine pmfdgedef (typfib, b, gg, depl, alicom, nbfibr, nbcarm, vf, &
                           nbassepou, maxfipoutre, nbfipoutre, yj, zj, deffibasse, vfv, deffib)
-        integer :: typfib
+        integer(kind=8) :: typfib
         real(kind=8) :: b(4)
         real(kind=8) :: gg
         real(kind=8) :: depl(*)
         real(kind=8) :: alicom
-        integer :: nbfibr
-        integer :: nbcarm
+        integer(kind=8) :: nbfibr
+        integer(kind=8) :: nbcarm
         real(kind=8) :: vf(nbcarm, nbfibr)
-        integer :: nbassepou
-        integer :: maxfipoutre
-        integer :: nbfipoutre(*)
+        integer(kind=8) :: nbassepou
+        integer(kind=8) :: maxfipoutre
+        integer(kind=8) :: nbfipoutre(*)
         real(kind=8) :: yj(*)
         real(kind=8) :: zj(*)
         real(kind=8) :: deffibasse(*)

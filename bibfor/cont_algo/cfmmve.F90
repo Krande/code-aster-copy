@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,10 +61,10 @@ subroutine cfmmve(mesh, ds_contact, hval_incr, time_curr)
     character(len=19) :: disp_curr
     aster_logical :: l_cont_cont, l_cont_disc, l_cont_allv
     real(kind=8), pointer :: v_ncomp_jeux(:) => null()
-    integer, pointer :: v_ncomp_loca(:) => null()
+    integer(kind=8), pointer :: v_ncomp_loca(:) => null()
     character(len=16), pointer :: v_ncomp_enti(:) => null()
-    integer, pointer :: v_ncomp_zone(:) => null()
-    integer :: nt_ncomp_poin
+    integer(kind=8), pointer :: v_ncomp_zone(:) => null()
+    integer(kind=8) :: nt_ncomp_poin
 !
 ! --------------------------------------------------------------------------------------------------
 !

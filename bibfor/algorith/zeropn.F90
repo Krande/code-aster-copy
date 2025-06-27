@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vphqrp.h"
-    integer :: degre
+    integer(kind=8) :: degre
     real(kind=8) :: ai(degre), racine(2*degre)
     character(len=1) :: kstop
 ! =====================================================================
@@ -46,7 +46,7 @@ subroutine zeropn(kstop, degre, ai, racine, ier)
 ! =====================================================================
 ! =====================================================================
 ! =====================================================================
-    integer :: ii, ier, icode, ibid, degmax
+    integer(kind=8) :: ii, ier, icode, ibid, degmax
     parameter(degmax=4)
     real(kind=8) :: bidon(2*degre), vbid(2*degre)
     real(kind=8) :: comapo(degmax*degmax)

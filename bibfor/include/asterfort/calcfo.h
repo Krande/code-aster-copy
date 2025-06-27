@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         aster_logical :: compl
         character(len=19) :: nomfin
         character(len=19) :: nomfon
-        integer :: nbval
+        integer(kind=8) :: nbval
         real(kind=8) :: vale(*)
         character(len=24) :: nopara
     end subroutine calcfo

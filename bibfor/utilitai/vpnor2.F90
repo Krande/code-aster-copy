@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbmode, numord(*)
+    integer(kind=8) :: nbmode, numord(*)
     real(kind=8) :: coef(*)
     character(len=*) :: nomcon
 !     NORMALISATION DE TOUS LES CHAMPS D'UN MODE_MECA
@@ -42,7 +42,7 @@ subroutine vpnor2(nomcon, nbmode, numord, coef)
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: ibid, nbnosy, isy, im, iordr, iret, lvale, neq, ieq
+    integer(kind=8) :: ibid, nbnosy, isy, im, iordr, iret, lvale, neq, ieq
     real(kind=8) :: rcoef
     character(len=8) :: typmod
     character(len=16) :: nomsym

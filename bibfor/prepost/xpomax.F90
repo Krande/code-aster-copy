@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,7 +67,7 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
 #include "asterfort/indk32.h"
 #include "asterfort/rsadpa.h"
 !
-    integer :: nbnoc, nbmac, ngfon, iord
+    integer(kind=8) :: nbnoc, nbmac, ngfon, iord
     character(len=2) :: prefno(4)
     character(len=8) :: mo, malini, maxfem, resuco
     character(len=19) :: cns1, cns2, ces1, ces2, cesvi1, cesvi2
@@ -111,26 +111,26 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
 !
 !
 !
-    integer :: nbch, ddlmax
+    integer(kind=8) :: nbch, ddlmax
     parameter(nbch=17, ddlmax=52)
 !
-    integer :: i, ier, jmax, nbmax, ich, ima, nse, ise, in, l, jbaslo, ncmp
-    integer :: jcesd(nbch), jcesv(nbch), jcesl(nbch), iad, jconx1, jconx2
-    integer :: ifisc, jfiss, kfiss
-    integer :: j, ino, n, jdirno, jlsn, inn, nnn, nbnoma, nfiss, ifiss
-    integer :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, inm, nfimax
-    integer :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv, heavno(20, 3)
+    integer(kind=8) :: i, ier, jmax, nbmax, ich, ima, nse, ise, in, l, jbaslo, ncmp
+    integer(kind=8) :: jcesd(nbch), jcesv(nbch), jcesl(nbch), iad, jconx1, jconx2
+    integer(kind=8) :: ifisc, jfiss, kfiss
+    integer(kind=8) :: j, ino, n, jdirno, jlsn, inn, nnn, nbnoma, nfiss, ifiss
+    integer(kind=8) :: iacoo1, iacoo2, ndim, iad2, inntot, ndime, inm, nfimax
+    integer(kind=8) :: jtypm2, inmtot, itypse(6), iad1, iadc, iadv, heavno(20, 3)
     parameter(nfimax=10)
-    integer :: jcnse, iad4, iad3, itypel, nbelr, jhea, fisc(2*nfimax)
-    integer :: igeom, nfh, ifh, nfe, ddlc, cmp(ddlmax), jlst, jheavn, fisco(2*nfimax)
-    integer :: nbcmp, jcnsv1, jcnsv2, nbnofi, inofi, nfijon(3)
-    integer :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2, lacthm(16)
-    integer :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter(4), vit(16)
-    integer :: jnivgr, iagma, ngrm, jdirgr, iagno, iad10, iad11, npg, nlachm(2)
-    integer :: nbar, ar(12, 3), dec, ino1, ino2, iar, iad16, nli, ncompi, nvit
+    integer(kind=8) :: jcnse, iad4, iad3, itypel, nbelr, jhea, fisc(2*nfimax)
+    integer(kind=8) :: igeom, nfh, ifh, nfe, ddlc, cmp(ddlmax), jlst, jheavn, fisco(2*nfimax)
+    integer(kind=8) :: nbcmp, jcnsv1, jcnsv2, nbnofi, inofi, nfijon(3)
+    integer(kind=8) :: jcnsl2, jcesv1, jcesd1, jcesl1, jcesv2, jcesd2, jcesl2, lacthm(16)
+    integer(kind=8) :: jcviv1, jcvid1, jcvil1, jcviv2, jcvid2, jcvil2, ninter(4), vit(16)
+    integer(kind=8) :: jnivgr, iagma, ngrm, jdirgr, iagno, iad10, iad11, npg, nlachm(2)
+    integer(kind=8) :: nbar, ar(12, 3), dec, ino1, ino2, iar, iad16, nli, ncompi, nvit
     real(kind=8) :: lsno, ff(20), pinter(3)
-    integer :: jstno
-    integer :: nuflpg, nblfpg, nufgpg
+    integer(kind=8) :: jstno
+    integer(kind=8) :: nuflpg, nblfpg, nufgpg
     character(len=1) :: kbid
     character(len=8) :: k8b, typese(6), elrefp, lirefe(10), elrese(6)
     character(len=8) :: typma, noma, chmat
@@ -139,27 +139,27 @@ subroutine xpomax(mo, malini, mailx, nbnoc, nbmac, &
     character(len=24) :: dirno, geom, linofi, grpnoe, lsn, lst, hea, nogno, heavn, basloc, stano
     character(len=32) :: noflpg
     aster_logical :: opmail, lmeca, pre1
-    integer :: iad9, irese, nnose, tabse(6), ncomp, ncompn, ncompn_tmp
-    integer :: iviex, iret, jconq1, jconq2, jxc, ncompa, nfisc, nfisc2
-    integer :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2
-    integer, pointer :: maille(:) => null()
-    integer, pointer :: cnsd(:) => null()
-    integer, pointer :: tmdim(:) => null()
+    integer(kind=8) :: iad9, irese, nnose, tabse(6), ncomp, ncompn, ncompn_tmp
+    integer(kind=8) :: iviex, iret, jconq1, jconq2, jxc, ncompa, nfisc, nfisc2
+    integer(kind=8) :: jresd1, jresv1, jresl1, nbcmpc, jresd2, jresv2, jresl2
+    integer(kind=8), pointer :: maille(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
-    integer, pointer :: typm1(:) => null()
-    integer, pointer :: vtypma(:) => null()
+    integer(kind=8), pointer :: typm1(:) => null()
+    integer(kind=8), pointer :: vtypma(:) => null()
     character(len=32), pointer :: pnlocfpg(:) => null()
-    integer, pointer :: tmfpg(:) => null()
-    integer, pointer :: nolocfpg(:) => null()
+    integer(kind=8), pointer :: tmfpg(:) => null()
+    integer(kind=8), pointer :: nolocfpg(:) => null()
     real(kind=8) :: ka, mu, inst
     aster_logical :: cplan, lvarc, young, poiss
-    integer :: jinst1
+    integer(kind=8) :: jinst1
     character(len=8) :: nommat
     character(len=11) :: k11
     real(kind=8) :: varc(2), e, nu
     character(len=8), pointer :: cvrcvarc(:) => null()
     character(len=16), pointer :: valk(:) => null()
-    integer :: jcesd_varc, jcesv_varc, jcesl_varc, nbvarc, k, nbf, ik, nbr, nbc, nbk
+    integer(kind=8) :: jcesd_varc, jcesv_varc, jcesl_varc, nbvarc, k, nbf, ik, nbr, nbc, nbk
 
 !
     data typese/'SEG2', 'TRIA3', 'TETRA4', 'SEG3', 'TRIA6', 'TETRA10'/

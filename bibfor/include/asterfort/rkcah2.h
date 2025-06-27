@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
         character(len=16) :: rela_comp
         real(kind=8) :: y(*)
         real(kind=8) :: pas
-        integer :: nvi
+        integer(kind=8) :: nvi
         real(kind=8) :: w
         real(kind=8) :: wk(*)
         real(kind=8) :: h
         real(kind=8) :: eps
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine rkcah2
 end interface

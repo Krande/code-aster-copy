@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres, &
 #include "asterfort/rcvals.h"
 #include "asterfort/utmess.h"
 !
-    integer :: imat, nbres, jmat, nbmat
+    integer(kind=8) :: imat, nbres, jmat, nbmat
     character(len=*) :: phenom, nomres(nbres)
-    integer :: iarret
-    integer :: icodre(nbres)
+    integer(kind=8) :: iarret
+    integer(kind=8) :: icodre(nbres)
     complex(kind=8) :: valres(nbres)
 ! ----------------------------------------------------------------------
 !     OBTENTION DE LA VALEUR VALRES C D'UN "ELEMENT" D'UNE RELATION DE
@@ -54,8 +54,8 @@ subroutine rcvalc(jmat, phenom, nbres, nomres, valres, &
 ! DEB ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: icomp, idf, ik, ipi, ir, ires, ivalc
-    integer :: ivalk, nbc, nbf, nbobj, nbr, nbt
+    integer(kind=8) :: icomp, idf, ik, ipi, ir, ires, ivalc
+    integer(kind=8) :: ivalk, nbc, nbf, nbobj, nbr, nbt
 !-----------------------------------------------------------------------
     nbmat = zi(jmat)
     ASSERT(nbmat .eq. 1)

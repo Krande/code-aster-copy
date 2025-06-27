@@ -41,7 +41,7 @@ subroutine merit1(modelZ, caraElemZ, matecoZ, &
     character(len=*), intent(in) :: loadNameZ
     character(len=24), intent(in) :: timeMap
     character(len=19), intent(in) :: matrElem, resuElemPref
-    integer, intent(in) :: indxMatrElem
+    integer(kind=8), intent(in) :: indxMatrElem
     character(len=1), intent(in) :: jvBase
 ! ----------------------------------------------------------------------
 !
@@ -75,8 +75,8 @@ subroutine merit1(modelZ, caraElemZ, matecoZ, &
     character(len=16) :: option
     character(len=24) :: chgeom, chharm, lchin(6), lchout(1)
     character(len=24) :: ligrmo, ligrch, chcara(18)
-    integer :: ilires, iret
-    integer, parameter :: nbHarm = 0
+    integer(kind=8) :: ilires, iret
+    integer(kind=8), parameter :: nbHarm = 0
 
 ! -----------------------------------------------------------------------
     call jemarq()

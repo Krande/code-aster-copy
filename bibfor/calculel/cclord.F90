@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem, &
 #include "asterfort/wkvect.h"
 !
     aster_logical :: optdem
-    integer :: nuoplo, nbordr, minord, maxord
+    integer(kind=8) :: nuoplo, nbordr, minord, maxord
     character(len=8) :: resuin, resuou, nobase
     character(len=19) :: lisord
     character(len=24) :: lisout
@@ -60,9 +60,9 @@ subroutine cclord(nuoplo, nbordr, lisord, nobase, optdem, &
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
 !
-    integer :: jlisop, jliori, jlidep, jordop, ierd, inddeb, indfin
-    integer :: nopous, iordr, curmax, curmin, iter, decal, numord, jlnoin
-    integer :: jordo2, jlisde, jordr
+    integer(kind=8) :: jlisop, jliori, jlidep, jordop, ierd, inddeb, indfin
+    integer(kind=8) :: nopous, iordr, curmax, curmin, iter, decal, numord, jlnoin
+    integer(kind=8) :: jordo2, jlisde, jordr
 !
     character(len=1) :: isodep
     character(len=5) :: numopt

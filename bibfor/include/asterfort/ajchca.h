@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine ajchca(para, cham, lpara, lcham, nbent,&
                       maxent, surch)
-        integer :: maxent
+        integer(kind=8) :: maxent
         character(len=*) :: para
         character(len=*) :: cham
         character(len=*) :: lpara(maxent)
         character(len=*) :: lcham(maxent)
-        integer :: nbent
+        integer(kind=8) :: nbent
         character(len=*) :: surch
     end subroutine ajchca
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine canort(noma, nbma, listma, ndim, nbno,&
                       listno, type_calc)
         character(len=8), intent(in) :: noma
-        integer, intent(in) :: nbma
-        integer, intent(in) :: listma(*)
-        integer, intent(in) :: ndim
-        integer, intent(in) :: nbno
-        integer, intent(in) :: listno(*)
-        integer, intent(in) :: type_calc
+        integer(kind=8), intent(in) :: nbma
+        integer(kind=8), intent(in) :: listma(*)
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: nbno
+        integer(kind=8), intent(in) :: listno(*)
+        integer(kind=8), intent(in) :: type_calc
     end subroutine canort
 end interface

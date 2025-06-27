@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,12 +52,12 @@ subroutine mmdupd(ehead, neqns, xadj, adjncy, delta, &
 !
 !***************************************************************
 !
-    integer :: adjncy(*), dbakw(*), dforw(*), dhead(*), llist(*), marker(*)
-    integer :: qsize(*)
-    integer :: xadj(*)
-    integer :: deg, deg0, delta, ehead, elmnt, enode, fnode, i, iq2, istop
-    integer :: istrt, j, jstop, jstrt, link, maxint, mdeg, mdeg0, mtag, nabor
-    integer :: neqns, node, q2head, qxhead, tag
+    integer(kind=8) :: adjncy(*), dbakw(*), dforw(*), dhead(*), llist(*), marker(*)
+    integer(kind=8) :: qsize(*)
+    integer(kind=8) :: xadj(*)
+    integer(kind=8) :: deg, deg0, delta, ehead, elmnt, enode, fnode, i, iq2, istop
+    integer(kind=8) :: istrt, j, jstop, jstrt, link, maxint, mdeg, mdeg0, mtag, nabor
+    integer(kind=8) :: neqns, node, q2head, qxhead, tag
 !
 !***************************************************************
 !

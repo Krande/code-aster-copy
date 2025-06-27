@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine vpzrbk(z, h, d, mm, izh,&
                       k, l)
-        integer :: izh
+        integer(kind=8) :: izh
         real(kind=8) :: z(izh, 1)
         real(kind=8) :: h(izh, 1)
         real(kind=8) :: d(1)
-        integer :: mm
-        integer :: k
-        integer :: l
+        integer(kind=8) :: mm
+        integer(kind=8) :: k
+        integer(kind=8) :: l
     end subroutine vpzrbk
 end interface

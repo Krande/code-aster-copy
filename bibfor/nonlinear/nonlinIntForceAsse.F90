@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume, &
 #include "asterfort/nmdebg.h"
 #include "asterfort/copisd.h"
 !
-    integer, intent(in) :: typeAsse, list_func_acti(*)
+    integer(kind=8), intent(in) :: typeAsse, list_func_acti(*)
     character(len=19), intent(in) :: sdnume
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -61,8 +61,8 @@ subroutine nonlinIntForceAsse(typeAsse, list_func_acti, sdnume, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iRet
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iRet
     real(kind=8) :: vectCoef(2)
     character(len=19) :: vectElem(2)
     character(len=8) :: vevcprCurr, vevcprPrev

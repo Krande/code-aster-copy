@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,10 +43,10 @@ subroutine te0182(option, nomte)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
     complex(kind=8) :: rhosz, cele_c
     real(kind=8) :: rho, alpha, q_alpha, cele_r, cele_i, onde_flui
-    integer :: ipoids, ivf, idfdx, idfdy, igeom, imate, jv_amor
-    integer :: ndim, nno, ndi, ipg, imattt
-    integer :: idec, jdec, kdec, ldec, nnos, npg2, jgano
-    integer :: i, ij, ino, j, jno, mater
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom, imate, jv_amor
+    integer(kind=8) :: ndim, nno, ndi, ipg, imattt
+    integer(kind=8) :: idec, jdec, kdec, ldec, nnos, npg2, jgano
+    integer(kind=8) :: i, ij, ino, j, jno, mater
 !
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg2, &

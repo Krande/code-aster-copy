@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine mmdint(neqns, xadj, dhead, dforw, dbakw,&
                       qsize, llist, marker)
-        integer :: neqns
-        integer :: xadj(*)
-        integer :: dhead(*)
-        integer :: dforw(*)
-        integer :: dbakw(*)
-        integer :: qsize(*)
-        integer :: llist(*)
-        integer :: marker(*)
+        integer(kind=8) :: neqns
+        integer(kind=8) :: xadj(*)
+        integer(kind=8) :: dhead(*)
+        integer(kind=8) :: dforw(*)
+        integer(kind=8) :: dbakw(*)
+        integer(kind=8) :: qsize(*)
+        integer(kind=8) :: llist(*)
+        integer(kind=8) :: marker(*)
     end subroutine mmdint
 end interface

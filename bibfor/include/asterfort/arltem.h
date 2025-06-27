@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,17 +25,17 @@ interface
                       elref1,ndml1   ,jcoor1, &
                       elref2,ndml2   ,jcoor2, &
                       mcpln1,mcpln2)
-        integer :: ndim
-        integer :: nns
-        integer :: npgs
-        integer :: jcoor1
-        integer :: jcoor2
-        integer :: jcoors
-        integer :: ivfs
-        integer :: ipoids
-        integer :: idfdes
-        integer :: ndml1
-        integer :: ndml2
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nns
+        integer(kind=8) :: npgs
+        integer(kind=8) :: jcoor1
+        integer(kind=8) :: jcoor2
+        integer(kind=8) :: jcoors
+        integer(kind=8) :: ivfs
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: idfdes
+        integer(kind=8) :: ndml1
+        integer(kind=8) :: ndml2
         character(len=8) :: elref1
         character(len=8) :: elref2
         character(len=16) :: nomte

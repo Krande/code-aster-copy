@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,14 +34,14 @@ subroutine rrldc(a, nordre, x, nves)
 !
 !-----------------------------------------------------------------------
 !
-    integer :: nves, nordre
+    integer(kind=8) :: nves, nordre
     complex(kind=8) :: a(*), x(nordre, nves), r8val
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, idiag, ilign1, ilign2, in, indiag, nv
+    integer(kind=8) :: i, idiag, ilign1, ilign2, in, indiag, nv
 !-----------------------------------------------------------------------
     ilign1 = 1
     ilign2 = nordre

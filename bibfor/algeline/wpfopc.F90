@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma, &
 !
     character(len=*) :: matopa, raide
     character(len=19) :: solveu
-    integer :: lmasse, lamor, lraide
+    integer(kind=8) :: lmasse, lamor, lraide
     real(kind=8) :: fmin
     complex(kind=8) :: sigma
     aster_logical :: lqz
@@ -50,7 +50,7 @@ subroutine wpfopc(lmasse, lamor, lraide, fmin, sigma, &
 !     ------------------------------------------------------------------
 !
 !
-    integer :: lmat(3), lmatra, ibid
+    integer(kind=8) :: lmat(3), lmatra, ibid
     real(kind=8) :: ashift, constc(6), valr(2)
     character(len=1) :: typcst(3), base
     character(len=8) :: namddl

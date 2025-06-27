@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,17 +37,17 @@ subroutine te0040(option, nomte)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: icompo, iinpg
-    integer :: ioutno, iret
-    integer :: jcara, jgeom
-    integer :: lzi, lzr, nbcou, nso
+    integer(kind=8) :: icompo, iinpg
+    integer(kind=8) :: ioutno, iret
+    integer(kind=8) :: jcara, jgeom
+    integer(kind=8) :: lzi, lzr, nbcou, nso
 !
 !
 !-----------------------------------------------------------------------
 !
 !
-    integer :: jmat, jnbspi
-    integer :: nb1, nb2, npgsr, npgsn
+    integer(kind=8) :: jmat, jnbspi
+    integer(kind=8) :: nb1, nb2, npgsr, npgsn
 !
 !
 !

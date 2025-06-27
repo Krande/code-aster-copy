@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine dpfch3(nno, nnf, poids, dfrdef, dfrdnf,&
                       dfrdkf, coor, dfrdeg, dfrdng, dfrdkg,&
                       dfdx, dfdy, dfdz, jac)
-        integer :: nno
-        integer :: nnf
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnf
         real(kind=8) :: poids
         real(kind=8) :: dfrdef(1)
         real(kind=8) :: dfrdnf(1)

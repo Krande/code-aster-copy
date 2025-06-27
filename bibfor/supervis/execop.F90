@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,12 +33,12 @@ subroutine execop(num)
 #include "asterfort/sigusr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/uttcpg.h"
-    integer, intent(in), optional :: num
+    integer(kind=8), intent(in), optional :: num
 !
-    integer :: nivuti, nivpgm, unite
+    integer(kind=8) :: nivuti, nivpgm, unite
     common/inf001/nivuti, nivpgm, unite
 !
-    integer :: nuoper, imaav, imaap
+    integer(kind=8) :: nuoper, imaav, imaap
     real(kind=8) :: tpres
 !     ------------------------------------------------------------------
 !

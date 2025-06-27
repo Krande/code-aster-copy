@@ -61,15 +61,15 @@ subroutine chveno(valeType, meshZ, modelZ)
 !     V2 : ON VERIFIE QUE LES NORMALES SONT SORTANTES
 !
 !-----------------------------------------------------------------------
-    integer :: nbt
+    integer(kind=8) :: nbt
     parameter(nbt=5)
-    integer :: ier, iret, zero
-    integer :: imfac, nbmfac, n, geomDime, ndim1, vali
-    integer :: iocc, nocc, ic, nbmc, iobj, nbobj, iCell, impb, nbCell
-    integer :: cellNume, idtyma, cellTypeNume, nbmapr, nbmabo, ntrait
-    integer :: jcoor
-    integer :: if1, if2, if3, imf1, imf2, ipres, idnor, idtan
-    integer :: norien, norie1, norie2, jlima, nbmamo, nconex
+    integer(kind=8) :: ier, iret, zero
+    integer(kind=8) :: imfac, nbmfac, n, geomDime, ndim1, vali
+    integer(kind=8) :: iocc, nocc, ic, nbmc, iobj, nbobj, iCell, impb, nbCell
+    integer(kind=8) :: cellNume, idtyma, cellTypeNume, nbmapr, nbmabo, ntrait
+    integer(kind=8) :: jcoor
+    integer(kind=8) :: if1, if2, if3, imf1, imf2, ipres, idnor, idtan
+    integer(kind=8) :: norien, norie1, norie2, jlima, nbmamo, nconex
     real(kind=8) :: dnor
     aster_logical :: reorie, mcfl(nbt)
     character(len=8) :: mot, mesh, model, cellTypeName, algo
@@ -78,9 +78,9 @@ subroutine chveno(valeType, meshZ, modelZ)
     character(len=24) :: grmama, nogr, cellName
     character(len=24) :: valk(2)
     character(len=24), pointer :: objet(:) => null()
-    integer, pointer :: listCellNume(:) => null(), typmail(:) => null()
-    integer, pointer :: listCellPrin(:) => null(), listCellBord(:) => null()
-    integer, pointer :: listCellBord2(:) => null()
+    integer(kind=8), pointer :: listCellNume(:) => null(), typmail(:) => null()
+    integer(kind=8), pointer :: listCellPrin(:) => null(), listCellBord(:) => null()
+    integer(kind=8), pointer :: listCellBord2(:) => null()
 !
     data mcft/'FACE_IMPO', 'PRES_REP', 'FORCE_COQUE',&
      &            'EFFE_FOND', 'ZONE'/

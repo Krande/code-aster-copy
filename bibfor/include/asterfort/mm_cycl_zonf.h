@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,6 +23,6 @@ interface
         real(kind=8), intent(in) :: lagr_frot_norm
         real(kind=8), intent(in) :: tole_stick
         real(kind=8), intent(in) :: tole_slide
-        integer, intent(out) :: zone_frot
+        integer(kind=8), intent(out) :: zone_frot
     end subroutine mm_cycl_zonf
 end interface

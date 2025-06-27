@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,36 +65,36 @@ subroutine crnustd(numddl)
 #ifdef ASTER_HAVE_MPI
 #include "mpif.h"
 !
-    integer :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
-    integer :: nbddll, ino, iret, nbcmp, iec, iret1, iret2, jjoine
-    integer :: numero_noeud, numero_cmp, rang, nbproc, jrefn
-    integer :: nec, numloc, dime, nbddl_lag, i_ddl, nddl, nddlg, nddll
-    integer :: nbno, nbno_lc, nbno_gl, nbno_max, nbddll_gl, numnoe
-    integer :: nbddl_phys_gl, nbddl_lag_gl, i_join, jnujoi1, jnujoi2
-    integer :: numpro, nbnoee, nbnoer, jjoinr, poscom, numno1, numno2
-    integer :: lgenve1, lgenvr1, jencod, jenco2, lgenve2, lgenvr2
-    integer :: jaux, nb_ddl_envoi, jrecep1, jenvoi1, jenvoi2, jrecep2
-    integer :: nbddl, ncmpmx, iad, jcpnec, jcpne2, ico2, icmp, curpos
-    integer :: nbno_lili_lc, nbno_lili_gl, nb_comm, domj_i, numpr2
+    integer(kind=8) :: ili, idprn1, idprn2, ntot, lonmax, nbno_prno
+    integer(kind=8) :: nbddll, ino, iret, nbcmp, iec, iret1, iret2, jjoine
+    integer(kind=8) :: numero_noeud, numero_cmp, rang, nbproc, jrefn
+    integer(kind=8) :: nec, numloc, dime, nbddl_lag, i_ddl, nddl, nddlg, nddll
+    integer(kind=8) :: nbno, nbno_lc, nbno_gl, nbno_max, nbddll_gl, numnoe
+    integer(kind=8) :: nbddl_phys_gl, nbddl_lag_gl, i_join, jnujoi1, jnujoi2
+    integer(kind=8) :: numpro, nbnoee, nbnoer, jjoinr, poscom, numno1, numno2
+    integer(kind=8) :: lgenve1, lgenvr1, jencod, jenco2, lgenve2, lgenvr2
+    integer(kind=8) :: jaux, nb_ddl_envoi, jrecep1, jenvoi1, jenvoi2, jrecep2
+    integer(kind=8) :: nbddl, ncmpmx, iad, jcpnec, jcpne2, ico2, icmp, curpos
+    integer(kind=8) :: nbno_lili_lc, nbno_lili_gl, nb_comm, domj_i, numpr2
     mpi_int :: mrank, msize, mpicou, nbno4
     mpi_int :: tag4, numpr4, n4e, n4r
-    integer, pointer :: v_noext(:) => null()
-    integer, pointer :: v_deeq(:) => null()
-    integer, pointer :: v_nequ(:) => null()
-    integer, pointer :: v_delg(:) => null()
-    integer, pointer :: v_owner(:) => null()
-    integer, pointer :: v_nulg(:) => null()
-    integer, pointer :: v_nuls(:) => null()
-    integer, pointer :: v_ddlc(:) => null()
-    integer, pointer :: v_nddl(:) => null()
-    integer, pointer :: v_gddl(:) => null()
-    integer, pointer :: v_tddl(:) => null()
-    integer, pointer :: v_deeg(:) => null()
-    integer, pointer :: v_linulg(:) => null()
-    integer, pointer :: v_comm(:) => null()
-    integer, pointer :: v_tag(:) => null()
-    integer, pointer :: v_dom(:) => null()
-    integer, pointer :: v_gco(:) => null()
+    integer(kind=8), pointer :: v_noext(:) => null()
+    integer(kind=8), pointer :: v_deeq(:) => null()
+    integer(kind=8), pointer :: v_nequ(:) => null()
+    integer(kind=8), pointer :: v_delg(:) => null()
+    integer(kind=8), pointer :: v_owner(:) => null()
+    integer(kind=8), pointer :: v_nulg(:) => null()
+    integer(kind=8), pointer :: v_nuls(:) => null()
+    integer(kind=8), pointer :: v_ddlc(:) => null()
+    integer(kind=8), pointer :: v_nddl(:) => null()
+    integer(kind=8), pointer :: v_gddl(:) => null()
+    integer(kind=8), pointer :: v_tddl(:) => null()
+    integer(kind=8), pointer :: v_deeg(:) => null()
+    integer(kind=8), pointer :: v_linulg(:) => null()
+    integer(kind=8), pointer :: v_comm(:) => null()
+    integer(kind=8), pointer :: v_tag(:) => null()
+    integer(kind=8), pointer :: v_dom(:) => null()
+    integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pgid(:) => null()
 !
     character(len=8) :: k8bid, mesh, nomgdr

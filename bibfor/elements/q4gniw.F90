@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine q4gniw(qsi, eta, caraq4, dba, wsq)
     real(kind=8) :: qsi, eta, caraq4(*), dba(2, 12), wsq(12)
 !     INTERPOLATION DE LA FLECHE AU POINTS D'INTEGRATION POUR LE Q4G
 !     ------------------------------------------------------------------
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: pqsi, mqsi, peta, meta, qsic, etac
     real(kind=8) :: x5, x6, x7, x8, y5, y6, y7, y8
     real(kind=8) :: n(12)

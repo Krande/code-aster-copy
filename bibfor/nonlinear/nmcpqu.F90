@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ subroutine nmcpqu(compor, nomcmz, nompaz, exist)
 !
     character(len=24) :: nomcmp
     character(len=16) :: nompar, comp
-    integer :: iret, ima, jdecal
-    integer :: jcesd, jcesl
-    integer :: nbma
+    integer(kind=8) :: iret, ima, jdecal
+    integer(kind=8) :: jcesd, jcesl
+    integer(kind=8) :: nbma
     character(len=19) :: coto, copm
     character(len=16), pointer :: cesv(:) => null()
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,20 +39,20 @@ subroutine te0315(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/vff2dn.h"
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: fami, poum
     character(len=16) :: nomte, option
     real(kind=8) :: poids, nx, ny, norm(2), acloc(2, 3)
     real(kind=8) :: acc(2, 4), flufn(4)
-    integer :: ipoids, ivf, idfde, igeom
-    integer :: nno, kp, npg, ivectt, imate
-    integer :: ldec, spt
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: nno, kp, npg, ivectt, imate
+    integer(kind=8) :: ldec, spt
     aster_logical :: laxi
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacce, idim, itemp, jgano, k, ndim
-    integer :: nnos
+    integer(kind=8) :: i, iacce, idim, itemp, jgano, k, ndim
+    integer(kind=8) :: nnos
     real(kind=8) :: r, rho(1)
 !-----------------------------------------------------------------------
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &

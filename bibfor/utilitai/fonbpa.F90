@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: mxpf, nbpf
+    integer(kind=8) :: mxpf, nbpf
     character(len=*) :: nomf, vec(*), typfon, nompf(*)
 !     NOMBRE DE PARAMETRE D'UNE FONCTION ET NOMS DE CES PARAMETRES
 !     ON PASSE VEC, DESCRIPTEUR D'UN OBJET FONCTION (OU NAPPE)
@@ -40,8 +40,8 @@ subroutine fonbpa(nomf, vec, typfon, mxpf, nbpf, &
 !             0 POUR 'C', 1 POUR 'F',2 POUR 'N',  N POUR 'I'
 ! OUT NOMPF :NOMS DE CES PARAMETRES
 !     ------------------------------------------------------------------
-    integer :: ipa
-    integer :: vali(2)
+    integer(kind=8) :: ipa
+    integer(kind=8) :: vali(2)
     character(len=24) :: valk
     character(len=19) :: nomfon
     character(len=24), pointer :: nova(:) => null()

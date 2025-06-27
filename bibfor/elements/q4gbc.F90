@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine q4gbc(qsi, eta, jacob, caraq4, bc)
     real(kind=8) :: qsi, eta, jacob(*), caraq4(*), bc(2, 12)
 !     MATRICE BC(2,12) AU POINT QSI ETA POUR L'ELEMENT Q4GAMMA
 !     --------------------------------------------------------
-    integer :: j
+    integer(kind=8) :: j
     real(kind=8) :: vj11, vj12, vj21, vj22, peta, meta, pqsi, mqsi
     real(kind=8) :: x5, x6, x7, x8, y5, y6, y7, y8
     real(kind=8) :: bqsi(12), beta(12)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,8 +45,8 @@ interface
         real(kind=8) :: a(ngf,(ngf+1))
         real(kind=8) :: b(ngf)
         real(kind=8) :: x(ngf)
-        integer :: ipzero(ngf)
-        integer :: ngf
+        integer(kind=8) :: ipzero(ngf)
+        integer(kind=8) :: ngf
         real(kind=8) :: ekdc
         real(kind=8) :: epspc6(6)
         real(kind=8) :: dt3(3)
@@ -60,8 +60,8 @@ interface
         real(kind=8) :: rt
         real(kind=8) :: dtr
         real(kind=8) :: dim3
-        integer :: ndim
-        integer :: ifour
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ifour
         real(kind=8) :: epeqpc
         real(kind=8) :: ept
         real(kind=8) :: errgf

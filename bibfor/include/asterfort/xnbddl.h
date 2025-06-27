@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@
 !
 interface
     subroutine xnbddl(ndim, nfh, nfe, ddlc, ddld, ddls, singu)
-        integer :: ndim
-        integer :: ddls
-        integer :: ddld
-        integer :: ddlc
-        integer :: nfe
-        integer :: nfh
-        integer, optional :: singu
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddld
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: nfe
+        integer(kind=8) :: nfh
+        integer(kind=8), optional :: singu
     end subroutine xnbddl
 end interface

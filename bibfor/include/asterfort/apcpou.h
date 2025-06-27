@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine apcpou(sdcont_defi, i_zone, elem_name, zone_type,&
                       tau1       , tau2)
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: i_zone
+        integer(kind=8), intent(in) :: i_zone
         character(len=8), intent(in) :: elem_name
         character(len=4), intent(in) :: zone_type
         real(kind=8), intent(inout) :: tau1(3)

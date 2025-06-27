@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,21 +23,21 @@ interface
                       mate, phenom, npg, ipoids, idfde,&
                       geom, vff1, imatuu, icodre, igeom,&
                       ivf)
-        integer :: npg
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         character(len=16) :: option
-        integer :: dlns
-        integer :: nnos
-        integer :: mate
+        integer(kind=8) :: dlns
+        integer(kind=8) :: nnos
+        integer(kind=8) :: mate
         character(len=16) :: phenom
-        integer :: ipoids
-        integer :: idfde
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: idfde
         real(kind=8) :: geom(ndim, nno)
         real(kind=8) :: vff1(nno, npg)
-        integer :: imatuu
-        integer :: icodre(1)
-        integer :: igeom
-        integer :: ivf
+        integer(kind=8) :: imatuu
+        integer(kind=8) :: icodre(1)
+        integer(kind=8) :: igeom
+        integer(kind=8) :: ivf
     end subroutine massup
 end interface

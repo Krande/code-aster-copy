@@ -71,42 +71,42 @@ subroutine caddli(keywordfact, load, mesh, model, valeType)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: n_max_cmp = 300
-    integer :: cmp_nb
-    integer :: cmp_acti(n_max_cmp)
+    integer(kind=8), parameter :: n_max_cmp = 300
+    integer(kind=8) :: cmp_nb
+    integer(kind=8) :: cmp_acti(n_max_cmp)
     real(kind=8) :: vale_real(n_max_cmp)
     complex(kind=8) :: vale_cplx(n_max_cmp)
     character(len=8) :: vale_func(n_max_cmp)
     character(len=16) :: cmp_name(n_max_cmp)
 !
-    integer :: iocc, ino, icmp, nume_node
-    integer :: jdirec, jprnm, jnom, jcompt
-    integer :: nbcmp, nbec, nbnoeu, nddli, ier
+    integer(kind=8) :: iocc, ino, icmp, nume_node
+    integer(kind=8) :: jdirec, jprnm, jnom, jcompt
+    integer(kind=8) :: nbcmp, nbec, nbnoeu, nddli, ier
     character(len=8) :: name_node, nomg
     character(len=19) :: list_rela
     character(len=4) :: coef_type
     character(len=19) :: connex_inv, modelLigrel
     character(len=19) :: ch_xfem_stat, ch_xfem_node, ch_xfem_lnno, ch_xfem_ltno, ch_xfem_heav
-    integer :: jnoxfl, jnoxfv
+    integer(kind=8) :: jnoxfl, jnoxfv
     aster_logical :: lxfem
     character(len=24) :: list_node
-    integer :: jlino
-    integer :: nb_node, geomDime
+    integer(kind=8) :: jlino
+    integer(kind=8) :: nb_node, geomDime
     aster_logical :: l_bloc, l_ocmp
-    integer :: nb_typ_bloc
+    integer(kind=8) :: nb_typ_bloc
     character(len=16) :: val_t_bloc(3)
     character(len=8) :: bloc_cmp_name(39)
-    integer :: bloc_cmp_index(39)
-    integer :: bloc_cmp_nb
+    integer(kind=8) :: bloc_cmp_index(39)
+    integer(kind=8) :: bloc_cmp_nb
     real(kind=8) :: bloc_vale_real
     character(len=8) :: bloc_vale_fonc
     complex(kind=8) :: bloc_vale_cplx
     character(len=24) :: keywordexcl
-    integer :: n_keyexcl, itypblc
+    integer(kind=8) :: n_keyexcl, itypblc
     character(len=16) :: typblc(3), lec_typ_blc
     aster_logical :: istypblc(3)
-    integer :: cmp_nb_depl, cmp_nb_rota, cmp_nb_fourier
-    integer :: pointer
+    integer(kind=8) :: cmp_nb_depl, cmp_nb_rota, cmp_nb_fourier
+    integer(kind=8) :: pointer
     aster_logical :: lcolle
 !
 ! --------------------------------------------------------------------------------------------------

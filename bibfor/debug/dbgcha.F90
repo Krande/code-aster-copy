@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine dbgcha(valinc, instap, iterat)
 #include "asterfort/jemarq.h"
 #include "asterfort/nmchex.h"
     real(kind=8) :: instap
-    integer :: iterat
+    integer(kind=8) :: iterat
     character(len=19) :: valinc(*)
 !
 ! ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine dbgcha(valinc, instap, iterat)
 !
     character(len=19) :: depplu
     character(len=8) :: instxt, itetxt
-    integer :: codret
+    integer(kind=8) :: codret
     aster_logical :: dbg
 !
 ! ----------------------------------------------------------------------

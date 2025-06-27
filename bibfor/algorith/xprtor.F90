@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,30 +120,30 @@ subroutine xprtor(method, noma, cnxinv, fispre, &
 !
 !
 !     GENERAL PURPOSE
-    integer :: ibid, i, j, k, ndim, ifm, niv, eldim
+    integer(kind=8) :: ibid, i, j, k, ndim, ifm, niv, eldim
     real(kind=8) :: meserr(2)
 !
 !     TORUS
-    integer :: jlisno, nnodgr, jnocal, jdisfr, nnodto, nbelno, jnoel
-    integer :: jconx2, nocur, numelm, itypma, nbma, jelcal, neleto, jeleca
-    integer :: jaux, nodins
-    integer :: jndsup
+    integer(kind=8) :: jlisno, nnodgr, jnocal, jdisfr, nnodto, nbelno, jnoel
+    integer(kind=8) :: jconx2, nocur, numelm, itypma, nbma, jelcal, neleto, jeleca
+    integer(kind=8) :: jaux, nodins
+    integer(kind=8) :: jndsup
     character(len=19) :: listel
     real(kind=8) :: rdnew
 !
 !     LEVEL SETS AND LOCAL BASE
 !
 !     NODAL CONNECTION TABLE
-    integer :: jvcn, jvcnd, jvcnt, jvcndt, jlisol, jgrlr, jgrlrt
+    integer(kind=8) :: jvcn, jvcnd, jvcnt, jvcndt, jlisol, jgrlr, jgrlrt
     character(len=24) :: lisold
 !
 !     EVALUATION OF THE GRADIENT OF THE LEVEL SET
     character(len=8) :: lpain(4), lpaout(2)
     character(len=19) :: cnoln, cnolt, celgls, chams
     character(len=24) :: lchin(4), lchout(2)
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: tmdim(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     real(kind=8), pointer :: bl(:) => null()
     real(kind=8), pointer :: disv(:) => null()
     real(kind=8), pointer :: lsn(:) => null()

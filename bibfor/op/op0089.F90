@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine op0089()
     character(len=16) :: kbi1, kbi2, corres, tysd
     character(len=8) :: ouiri, ouima, affick(2)
 !
-    integer :: isma, ie, n1, lref
+    integer(kind=8) :: isma, ie, n1, lref
     character(len=8) :: noma, macrel, promes, modlms, noca
     character(len=19) :: method
     character(len=24) :: vref

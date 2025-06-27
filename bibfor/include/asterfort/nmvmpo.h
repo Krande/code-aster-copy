@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@ interface
                       xl, wgauss, icodma, sect, u, &
                       du, contm, contp, fl, klv)
         character(len=*) :: fami
-        integer :: npg
-        integer :: nno
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
         character(len=*) :: option
-        integer :: nc
+        integer(kind=8) :: nc
         real(kind=8) :: xl
         real(kind=8) :: wgauss(npg)
-        integer :: icodma
+        integer(kind=8) :: icodma
         real(kind=8) :: sect(*)
         real(kind=8) :: u(nno*nc)
         real(kind=8) :: du(nno*nc)

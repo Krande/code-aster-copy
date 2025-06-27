@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,18 +39,18 @@ subroutine iredmi(macr)
     character(len=*) :: macr
 !     INTERFACE ASTER - MISS3D : PROCEDURE  IMPR_MACR_ELEM
 !     ------------------------------------------------------------------
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
 !
     character(len=8) :: k8b, mael, basemo, masse, noma, listam
     character(len=16) :: nomcmd
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, i2, iam, icamor, icmass, icrigi
-    integer :: iret, isamor, ismass, isrigi, ival3
-    integer :: j, j2, jamo2, jamor, jfreq, jmass, jordr
-    integer :: jrefe, jrigi, k, lamor, n1, n2
-    integer :: nbamor, nbmode, nbmods, nbmodt, ntriam, ntriar
+    integer(kind=8) :: i, i2, iam, icamor, icmass, icrigi
+    integer(kind=8) :: iret, isamor, ismass, isrigi, ival3
+    integer(kind=8) :: j, j2, jamo2, jamor, jfreq, jmass, jordr
+    integer(kind=8) :: jrefe, jrigi, k, lamor, n1, n2
+    integer(kind=8) :: nbamor, nbmode, nbmods, nbmodt, ntriam, ntriar
     real(kind=8) :: petir8, pi
     real(kind=8), pointer :: mael_raid_vale(:) => null()
     real(kind=8), pointer :: mael_raid_vali(:) => null()

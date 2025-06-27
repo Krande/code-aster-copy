@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine IncrEnergy(ds_energy, energy_type_, vale_r)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cols, i_col, indx_col
+    integer(kind=8) :: nb_cols, i_col, indx_col
     character(len=24) :: energy_type
     type(NL_DS_Table) :: table
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine flexib(basmod, nbmod, flex, nl, nc,&
                       numl, numc)
-        integer :: nc
-        integer :: nl
+        integer(kind=8) :: nc
+        integer(kind=8) :: nl
         character(len=8) :: basmod
-        integer :: nbmod
+        integer(kind=8) :: nbmod
         real(kind=8) :: flex(nl, nc)
-        integer :: numl
-        integer :: numc
+        integer(kind=8) :: numl
+        integer(kind=8) :: numc
     end subroutine flexib
 end interface

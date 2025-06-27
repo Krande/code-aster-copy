@@ -37,7 +37,7 @@ subroutine reexi1(nu, mo, ma, nlili, nm, &
 !
     character(len=8) :: mo, ma
     character(len=14) :: nu
-    integer :: nlili, nm, nl, nbntt
+    integer(kind=8) :: nlili, nm, nl, nbntt
 ! ----------------------------------------------------------------------
 !     BUT:  CETTE ROUTINE SERT A :
 !
@@ -104,12 +104,12 @@ subroutine reexi1(nu, mo, ma, nlili, nm, &
 !     -- RECUPERATION DU NOM DU MODELE SOUS-JACENT A LA NUMEROTATION :
 !     ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iaconx, iaexi1, iagrel, ialiel, iamail, ianbno
-    integer :: ianema, iel, igrel
-    integer :: iino, ilconx, ili, illiel, ilnema, ima, ino
-    integer :: iret, j, jjno, jno, nbel, nbgrel, nbnm
-    integer :: nbnom, nbnot, nbsma, nbssa, nma
-    integer, pointer :: sssa(:) => null()
+    integer(kind=8) :: i, iaconx, iaexi1, iagrel, ialiel, iamail, ianbno
+    integer(kind=8) :: ianema, iel, igrel
+    integer(kind=8) :: iino, ilconx, ili, illiel, ilnema, ima, ino
+    integer(kind=8) :: iret, j, jjno, jno, nbel, nbgrel, nbnm
+    integer(kind=8) :: nbnom, nbnot, nbsma, nbssa, nma
+    integer(kind=8), pointer :: sssa(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     mo = ' '

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine gmate3(abscur, elrefe, conn, nno, mele)
         character(len=24) :: abscur
-        integer           :: conn(3)
+        integer(kind=8)           :: conn(3)
         character(len=8)  :: elrefe
-        integer           :: nno
+        integer(kind=8)           :: nno
         real(kind=8)      :: mele(3, 3)
     end subroutine gmate3
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,18 +25,18 @@ subroutine ibimpr()
 !
 #include "asterfort/uldefi.h"
 !
-    integer :: mximpr
+    integer(kind=8) :: mximpr
     parameter(mximpr=3)
     character(len=16) :: nompr(mximpr)
-    integer :: unitpr(mximpr)
+    integer(kind=8) :: unitpr(mximpr)
     character(len=1) :: autpr(mximpr)
-    integer :: passe
+    integer(kind=8) :: passe
     save passe
     data passe/0/
     data nompr/'MESSAGE', 'RESULTAT', 'ERREUR'/
     data unitpr/6, 8, 9/
     data autpr/'N', 'O', 'N'/
-    integer :: i
+    integer(kind=8) :: i
 !   ------------------------------------------------------------------
     passe = passe+1
 !

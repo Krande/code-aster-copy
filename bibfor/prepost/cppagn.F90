@@ -71,13 +71,13 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
 !
     character(len=8), intent(in) :: main
     character(len=8), intent(in) :: maout
-    integer, intent(in) :: nbma
-    integer, intent(in) :: lima(nbma)
-    integer, intent(in) :: izone
-    integer, intent(in) :: typ_dec
-    integer, intent(in) :: jcninv
+    integer(kind=8), intent(in) :: nbma
+    integer(kind=8), intent(in) :: lima(nbma)
+    integer(kind=8), intent(in) :: izone
+    integer(kind=8), intent(in) :: typ_dec
+    integer(kind=8), intent(in) :: jcninv
     aster_logical, intent(in) :: same_zone
-    integer, intent(inout) :: dec
+    integer(kind=8), intent(inout) :: dec
 !
 
 ! -------------------------------------------------------------------------------------------------
@@ -91,12 +91,12 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
 ! IN        IZONE   I  NUMERO DE LA ZONE DE CONTACT
 ! IN        TYP_DEC I  TYPE DE DECOUPE POUR LES HEXA 1:PYRA 2:HEXA
 ! -------------------------------------------------------------------------------------------------
-    integer :: inc, patch, nbnot, nbmat, info, nma, nbno, ind1, nbnwma, nbpain
-    integer :: jdim, macou, macsu, jcoor, jgmao, nbnwmaes
-    integer :: jmacsu, jmacou, jlimane, jconloc, lgma, inc2, jcnmpa, jcnnpa
-    integer :: ind, ntrouv, jtpmao, jtypma, aux, numa, laux(1)
-    integer :: jcnmai, jcnmao, incc, ntrouv1, jgma
-    integer :: conlen, cnlclg, idtpma(6), nbnoma(6), odcnpa, odcmpa, lenconloc, lenlimane, lenpat
+    integer(kind=8) :: inc, patch, nbnot, nbmat, info, nma, nbno, ind1, nbnwma, nbpain
+    integer(kind=8) :: jdim, macou, macsu, jcoor, jgmao, nbnwmaes
+    integer(kind=8) :: jmacsu, jmacou, jlimane, jconloc, lgma, inc2, jcnmpa, jcnnpa
+    integer(kind=8) :: ind, ntrouv, jtpmao, jtypma, aux, numa, laux(1)
+    integer(kind=8) :: jcnmai, jcnmao, incc, ntrouv1, jgma
+    integer(kind=8) :: conlen, cnlclg, idtpma(6), nbnoma(6), odcnpa, odcmpa, lenconloc, lenlimane, lenpat
 !
     character(len=24) :: nomnoi, nomnoe, limane, conloc
     character(len=24) :: nomnd, nomma, gpptnn
@@ -104,8 +104,8 @@ subroutine cppagn(main, maout, nbma, lima, izone, typ_dec, jcninv, same_zone, &
     character(len=16) :: knume, knuzo
     character(len=8) :: typmail, typmail_trait
     aster_logical :: false
-    integer, pointer :: ntrou(:) => null()
-    integer, pointer :: lmasu(:) => null()
+    integer(kind=8), pointer :: ntrou(:) => null()
+    integer(kind=8), pointer :: lmasu(:) => null()
 ! -------------------------------------------------------------------------------------------------
     call jemarq()
     false = .false.

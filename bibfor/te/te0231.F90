@@ -44,9 +44,9 @@ subroutine te0231(option, nomte)
 ! Link elementary matrix
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jv_geom, jv_cacoqu, nddl
-    integer :: nnco, nn3d, dim
-    integer :: nb_gauss, ncols, nrows
+    integer(kind=8) :: jv_geom, jv_cacoqu, nddl
+    integer(kind=8) :: nnco, nn3d, dim
+    integer(kind=8) :: nb_gauss, ncols, nrows
     real(kind=8) :: jac_det(NB_GAUSS_MAX), gauss_weight(NB_GAUSS_MAX)
     real(kind=8) :: gauss_coor(2, NB_GAUSS_MAX), crig
     real(kind=8) :: ff_co(3, NB_GAUSS_MAX), epai, ff_3d(8, NB_GAUSS_MAX)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,19 +44,19 @@ interface
         real(kind=8) :: epspg6p(6)
         real(kind=8) :: delta
         real(kind=8) :: beta
-        integer :: nc
-        integer :: ig(nc)
+        integer(kind=8) :: nc
+        integer(kind=8) :: ig(nc)
         real(kind=8) :: fg(nc)
-        integer :: na
+        integer(kind=8) :: na
         real(kind=8) :: fa(nc)
         real(kind=8) :: dpfa_ds(nc,6)
         real(kind=8) :: dgfa_ds(nc,6)
         real(kind=8) :: dpfa_dpg(nc)
         real(kind=8) :: dra_dl(nc)
         real(kind=8) :: souplesse66p(6,6)
-        integer :: err1
+        integer(kind=8) :: err1
         real(kind=8) :: depleq_dl
-        integer :: irr
+        integer(kind=8) :: irr
         real(kind=8) :: fglim(nc)
         real(kind=8) :: epsmt3p(3)
         real(kind=8) :: kg

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base, &
 #include "asterfort/jemarq.h"
 #include "asterfort/rdtces.h"
 #include "asterfort/rdtcns.h"
-    integer :: cret
+    integer(kind=8) :: cret
     character(len=1) :: base
     character(len=8) :: noma, nomare
     character(len=24) :: corrn, corrm
@@ -54,7 +54,7 @@ subroutine rdtchp(corrn, corrm, ch1, ch2, base, &
 !                 IMA_RE -> IMA
 !-------------------------------------------------------------------
 !
-    integer :: iret, nncp
+    integer(kind=8) :: iret, nncp
     character(len=16) :: option
     character(len=4) :: tych
     character(len=19) :: ch1s, ch2s

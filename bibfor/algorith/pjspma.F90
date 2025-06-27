@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine pjspma(corres, cham1, cham2, prolong, ligre2, &
     character(len=16)   :: corres
     character(len=19)   :: cham1, cham2, ligre2
     type(prolongation)  :: prolong
-    integer             :: iret
+    integer(kind=8)             :: iret
 !
 #include "asterfort/assert.h"
 #include "asterfort/cescel.h"
@@ -53,7 +53,7 @@ subroutine pjspma(corres, cham1, cham2, prolong, ligre2, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: nncp, ierd
+    integer(kind=8)             :: nncp, ierd
     character(len=4)    :: tycha2
     character(len=8)    :: nompar
     character(len=16)   :: option

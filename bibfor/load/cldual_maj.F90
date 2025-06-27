@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,11 @@ subroutine cldual_maj(listLoad, disp)
     character(len=8), pointer :: loadType(:) => null()
     aster_logical :: ltran
     aster_logical :: load_empty
-    integer :: nb_link, i_link, iexi
-    integer :: iLoad, nbLoad
-    integer :: i_load_diri
+    integer(kind=8) :: nb_link, i_link, iexi
+    integer(kind=8) :: iLoad, nbLoad
+    integer(kind=8) :: i_load_diri
     aster_logical :: ischar_diri
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     character(len=24), pointer :: listLoadName(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

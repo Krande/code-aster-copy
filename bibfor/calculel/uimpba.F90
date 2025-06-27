@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine uimpba(clas, iunmes)
 #include "asterfort/jexnum.h"
 #include "asterfort/split_string.h"
     character(len=*) :: clas
-    integer :: iunmes
+    integer(kind=8) :: iunmes
 ! person_in_charge: jacques.pellet at edf.fr
 ! ----------------------------------------------------------------------
 ! BUT:
@@ -50,13 +50,13 @@ subroutine uimpba(clas, iunmes)
     character(len=19) :: key
     character(len=24) :: kbid, obj
     real(kind=8) :: rlong, mega, taitot
-    integer :: i, nbobj, nbval, idx, nbcon, nbsv
-    integer ::     nstot
+    integer(kind=8) :: i, nbobj, nbval, idx, nbcon, nbsv
+    integer(kind=8) ::     nstot
     character(len=24), pointer :: liste_obj(:) => null()
     character(len=24), pointer :: types(:) => null()
-    integer, pointer :: vnbobj(:) => null()
-    integer, pointer :: nbsvc(:) => null()
-    integer, pointer :: nbsvo(:) => null()
+    integer(kind=8), pointer :: vnbobj(:) => null()
+    integer(kind=8), pointer :: nbsvc(:) => null()
+    integer(kind=8), pointer :: nbsvo(:) => null()
     real(kind=8), pointer :: tailcon(:) => null()
     real(kind=8), pointer :: taille(:) => null()
 !

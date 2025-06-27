@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine pcfact(matas, nequ, in, ip, ac,&
                       prc, vect, epsi)
-        integer :: nequ
+        integer(kind=8) :: nequ
         character(len=19) :: matas
-        integer :: in(nequ)
+        integer(kind=8) :: in(nequ)
         integer(kind=4) :: ip(*)
         real(kind=8) :: ac(*)
         real(kind=8) :: prc(*)

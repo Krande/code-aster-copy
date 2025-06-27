@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine rs_getlast(result_, nume_last, inst_last, freq_last)
 !
 
     character(len=*), intent(in) :: result_
-    integer, intent(out) :: nume_last
+    integer(kind=8), intent(out) :: nume_last
     real(kind=8), optional, intent(out) :: inst_last
     real(kind=8), optional, intent(out) :: freq_last
 !
@@ -49,7 +49,7 @@ subroutine rs_getlast(result_, nume_last, inst_last, freq_last)
     character(len=8) :: result
     character(len=8) :: k8bid
     complex(kind=8) :: c16bid
-    integer :: list(1), iret, jinst
+    integer(kind=8) :: list(1), iret, jinst
     real(kind=8) :: r8bid
 !
 ! --------------------------------------------------------------------------------------------------

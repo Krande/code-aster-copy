@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbdir, nbno
+    integer(kind=8) :: nbdir, nbno
     real(kind=8) :: dir(*)
     character(len=*) :: resu, nomcmd, masse, modsta, nomnoe(*)
     character(len=19) :: mass2
@@ -51,7 +51,7 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: lmat, neq, ibid, iordr(1), ier
+    integer(kind=8) :: lmat, neq, ibid, iordr(1), ier
     real(kind=8) :: r8b, epsi
     character(len=8) :: cmp(6), crit
     character(len=24) :: valk(3)
@@ -61,8 +61,8 @@ subroutine simul2(resu, nomcmd, masse, modsta, nbdir, &
     complex(kind=8) :: c16b
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, id, idchm, iddl
-    integer :: in, iret, nba, nbb, nbl, nbliai, nbtrou
+    integer(kind=8) :: i, id, idchm, iddl
+    integer(kind=8) :: in, iret, nba, nbb, nbl, nbliai, nbtrou
 !
     real(kind=8) :: xd
     real(kind=8), pointer :: vecteur(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 function padist(ndim, coor1, coor2)
     implicit none
     real(kind=8) :: padist
-    integer :: ndim, i
+    integer(kind=8) :: ndim, i
     real(kind=8) :: coor1(*), coor2(*), d, x
 !     BUT: CALCULER LA DISTANCE ENTRE 2 NOEUDS
 !

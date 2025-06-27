@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine desgfa(typent, numfam, nomfam, nbgf, nogrf,&
                       nbaf, valatt, nbnofa, nbelfa, ifm,&
                       codret)
-        integer :: nbaf
-        integer :: nbgf
-        integer :: typent
-        integer :: numfam
+        integer(kind=8) :: nbaf
+        integer(kind=8) :: nbgf
+        integer(kind=8) :: typent
+        integer(kind=8) :: numfam
         character(len=*) :: nomfam
         character(len=*) :: nogrf(nbgf)
-        integer :: valatt(nbaf)
-        integer :: nbnofa
-        integer :: nbelfa
-        integer :: ifm
-        integer :: codret
+        integer(kind=8) :: valatt(nbaf)
+        integer(kind=8) :: nbnofa
+        integer(kind=8) :: nbelfa
+        integer(kind=8) :: ifm
+        integer(kind=8) :: codret
     end subroutine desgfa
 end interface

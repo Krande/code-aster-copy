@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface 
     subroutine cntdif(ivect, dimen, diff, valdif, maxdim)
-        integer,intent(in) :: maxdim
-        integer,intent(in) :: dimen
-        integer,intent(in) :: ivect
-        integer,intent(out) :: diff
-        integer,intent(out) :: valdif(maxdim)
+        integer(kind=8),intent(in) :: maxdim
+        integer(kind=8),intent(in) :: dimen
+        integer(kind=8),intent(in) :: ivect
+        integer(kind=8),intent(out) :: diff
+        integer(kind=8),intent(out) :: valdif(maxdim)
     end subroutine cntdif
 end interface 

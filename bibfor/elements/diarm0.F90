@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,11 +42,11 @@ subroutine diarm0(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdc, irep, imat, ivarim, ifono, icontp, ivarip, icontm, neq, ii
+    integer(kind=8) :: jdc, irep, imat, ivarim, ifono, icontp, ivarip, icontm, neq, ii
     real(kind=8) :: r8bid, klv(78), force(3), klc(144), fl(12), duly, ulp(12), varip
     character(len=8) :: k8bid
     blas_int :: b_incx, b_incy, b_n

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine rcmo01(chmome, ima, ipt, vale)
         character(len=24) :: chmome
-        integer :: ima
-        integer :: ipt
+        integer(kind=8) :: ima
+        integer(kind=8) :: ipt
         real(kind=8) :: vale(*)
     end subroutine rcmo01
 end interface

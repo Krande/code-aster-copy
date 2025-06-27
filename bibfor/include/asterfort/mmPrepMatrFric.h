@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
                               r     , tt    ,&
                               dlagft, pdlaft,&
                               pdjeut, prese)
-        integer, intent(in) :: ndim, nbcps
+        integer(kind=8), intent(in) :: ndim, nbcps
         real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)
         real(kind=8), intent(in) :: rese(3), nrese
         real(kind=8), intent(in) :: dlagrf(2), djeut(3)

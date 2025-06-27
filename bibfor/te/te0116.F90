@@ -38,21 +38,21 @@ subroutine te0116(nomopt, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbResu = 3
-    integer :: codret(nbResu)
+    integer(kind=8), parameter :: nbResu = 3
+    integer(kind=8) :: codret(nbResu)
     character(len=16), parameter :: resuName(nbResu) = &
                                     (/'TEMP_MINI', 'TEMP_MAXI', 'EPSQ_MINI'/)
     real(kind=8) :: resuVale(nbResu)
-    integer :: ipg, npg, nb_vari, ivari, ispg
-    integer :: jmate, j_vari_out, j_vari_in, jtimem, jtimep
+    integer(kind=8) :: ipg, npg, nb_vari, ivari, ispg
+    integer(kind=8) :: jmate, j_vari_out, j_vari_in, jtimem, jtimep
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_comp, postIncr
     real(kind=8) :: instp, instm
     real(kind=8) :: tau_inf(1), x0, alpha(1)
     real(kind=8) :: T1, T2, temp, k, dt
     real(kind=8) :: p_in, p_out, ecro_in, ecro_out, valExp
-    integer :: iret, i_ecro_init
-    integer, parameter :: indxEpseq = 1
+    integer(kind=8) :: iret, i_ecro_init
+    integer(kind=8), parameter :: indxEpseq = 1
     real(kind=8) :: epsq_min
     aster_logical :: l_anneal, l_end_anneal
 ! - Protect against large overflow for exponential

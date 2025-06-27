@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepBehaviour)
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: comporMeta
-    integer, intent(in) :: nbCmp
+    integer(kind=8), intent(in) :: nbCmp
     type(META_PrepBehaviour), intent(in) :: metaPrepBehaviour
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,12 +53,12 @@ subroutine comp_meta_save(mesh, comporMeta, nbCmp, metaPrepBehaviour)
     character(len=16) :: factorKeyword
     character(len=24), parameter :: list_elem_affe = '&&COMPMETASAVE.LIST'
     aster_logical :: l_affe_all
-    integer :: nb_elem_affe
-    integer :: iFactorKeyword, nbFactorKeyword, nbPhase
-    integer :: nbVari, numeComp
+    integer(kind=8) :: nb_elem_affe
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword, nbPhase
+    integer(kind=8) :: nbVari, numeComp
     character(len=16) :: metaType, metaLaw
     character(len=16), pointer :: comporMetaValv(:) => null()
-    integer, pointer :: v_elem_affe(:) => null()
+    integer(kind=8), pointer :: v_elem_affe(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

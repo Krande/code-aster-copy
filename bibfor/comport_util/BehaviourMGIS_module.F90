@@ -66,8 +66,8 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         aster_logical, intent(in) :: lGreenLagr, lCZM, lGradVari
-        integer, intent(in) :: ndim, neps, nsig, nvi, ndsde
-        integer, intent(out) :: nstran, nforc, nstatv, nmatr
+        integer(kind=8), intent(in) :: ndim, neps, nsig, nvi, ndsde
+        integer(kind=8), intent(out) :: nstran, nforc, nstatv, nmatr
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(ndim .eq. 2 .or. ndim .eq. 3)

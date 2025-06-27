@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine zzappa(num, liste, n, app)
 !        SI OUI : APP = .TRUE.
 !        SI NON : APP = .FALSE.
 !
-    integer :: liste(1)
+    integer(kind=8) :: liste(1)
     aster_logical :: app
 !-----------------------------------------------------------------------
-    integer :: i, n, num
+    integer(kind=8) :: i, n, num
 !-----------------------------------------------------------------------
     app = .false.
     do i = 1, n

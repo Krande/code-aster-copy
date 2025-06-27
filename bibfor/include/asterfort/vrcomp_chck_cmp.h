@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
                                verbose,&
                                nbSpgDifferent, nbVariDifferent, l_modif_vari)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nbCell
+        integer(kind=8), intent(in) :: nbCell
         character(len=*), intent(in) :: comporCurrZ
         character(len=19), intent(in) :: comporCurr, comporPrev
         character(len=19), intent(in) :: variRedu

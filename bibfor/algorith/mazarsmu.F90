@@ -35,7 +35,7 @@ subroutine mazarsmu(option, epsela, deps, dimloc, mazars, &
 #include "asterf_types.h"
 #include "asterfort/sgmxve.h"
 !
-    integer             :: dimloc
+    integer(kind=8)             :: dimloc
     character(len=16)   :: option
     real(kind=8)        :: epsela(6), deps(6)
     real(kind=8)        :: varm(*), varp(*), sigp(*), dsidep(6, 6), mazars(*)
@@ -71,16 +71,16 @@ subroutine mazarsmu(option, epsela, deps, dimloc, mazars, &
 !   Index des variables internes
 !     icels  = 1, icelu  = 2, idomm = 3, iepsqt = 4
 !     iepsqc = 5, irsigm = 6, itemp = 7, idissd = 8
-    integer, parameter :: icels = 1, icelu = 2, idomm = 3, iepsqt = 4
-    integer, parameter :: iepsqc = 5, irsigm = 6, idissd = 8
+    integer(kind=8), parameter :: icels = 1, icelu = 2, idomm = 3, iepsqt = 4
+    integer(kind=8), parameter :: iepsqc = 5, irsigm = 6, idissd = 8
 ! --------------------------------------------------------------------------------------------------
 !   Index des coefficients de la loi
 !     iepsd0   = 1, ik       = 2, iac    = 3, ibc    = 4, iat = 5, ibt = 6
 !     isigmlim = 7, iepsilim = 8, iepsc0 = 9, iepst0 = 10
 !     iyoung   = 11, inu     = 12
-    integer, parameter :: ik = 2, iac = 3, ibc = 4, iat = 5, ibt = 6
-    integer, parameter :: isigmlim = 7, iepsilim = 8, iepsc0 = 9, iepst0 = 10
-    integer, parameter :: iyoung = 11, inu = 12
+    integer(kind=8), parameter :: ik = 2, iac = 3, ibc = 4, iat = 5, ibt = 6
+    integer(kind=8), parameter :: isigmlim = 7, iepsilim = 8, iepsc0 = 9, iepst0 = 10
+    integer(kind=8), parameter :: iyoung = 11, inu = 12
 !
     aster_logical :: rigi, resi
 !

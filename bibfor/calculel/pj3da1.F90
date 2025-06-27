@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine pj3da1(ino2, geom2, i, geom1, tetr4, &
     implicit none
 #include "asterf_types.h"
     real(kind=8) :: cobar2(4), geom1(*), geom2(*), epsi
-    integer :: i, tetr4(*), ino2
+    integer(kind=8) :: i, tetr4(*), ino2
     aster_logical :: ok
 !     BUT :
 !       DETERMINER SI LE TETR4 I CONTIENT LE NOEUD INO2
@@ -38,7 +38,7 @@ subroutine pj3da1(ino2, geom2, i, geom1, tetr4, &
 !
 !
 ! ----------------------------------------------------------------------
-    integer :: perm(4), lino(4), k, p
+    integer(kind=8) :: perm(4), lino(4), k, p
     real(kind=8) :: p1(3), p2(3), p3(3), p4(3), pp(3), n(3), v12(3), v13(3)
     real(kind=8) :: v14(3)
     real(kind=8) :: vol, volp, v1p(3)

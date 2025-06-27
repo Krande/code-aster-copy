@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,6 @@ interface
         character(len=16), intent(out) :: action_typek
         character(len=16), intent(out) :: subd_method
         real(kind=8), intent(out) :: subd_pas_mini
-        integer, intent(out) :: subd_pas, subd_niveau
+        integer(kind=8), intent(out) :: subd_pas, subd_niveau
     end subroutine dfdevn
 end interface

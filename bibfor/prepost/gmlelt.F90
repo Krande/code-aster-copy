@@ -36,9 +36,9 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: igmsh, maxnod, nbtyma, nbmail, nbnoma(nbtyma), nuconn(19, 32)
-    integer :: versio
-    integer, intent(inout) :: nbgrou
+    integer(kind=8) :: igmsh, maxnod, nbtyma, nbmail, nbnoma(nbtyma), nuconn(19, 32)
+    integer(kind=8) :: versio
+    integer(kind=8), intent(inout) :: nbgrou
 !
 !      GMLELT --   LECTURE DES NUMEROS DES ELEMENTS, DE LEUR TYPE,
 !                  DE LEUR NUMERO DE GROUPE, DU NOMBRE DE LEURS
@@ -63,16 +63,16 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 !
 !
     character(len=8) :: k8bid
-    integer :: imes, nbmxte, nbtag, i, ij, k, icurgr
-    integer :: indgro, ima, ibid, ityp, ino, node
-    integer :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym, jdime
-    integer :: jindma, jtag, jgr, total_length, nb_nonempty_groups
+    integer(kind=8) :: imes, nbmxte, nbtag, i, ij, k, icurgr
+    integer(kind=8) :: indgro, ima, ibid, ityp, ino, node
+    integer(kind=8) :: jnuma, jtypma, jnbnma, jnoma, jnbmag, jnbtym, jdime
+    integer(kind=8) :: jindma, jtag, jgr, total_length, nb_nonempty_groups
     aster_logical :: same_dim
 !
     parameter(nbmxte=19)
-    integer :: nbno(nbmxte)
-    integer :: dime(nbmxte)
-    integer, pointer :: noeuds(:) => null()
+    integer(kind=8) :: nbno(nbmxte)
+    integer(kind=8) :: dime(nbmxte)
+    integer(kind=8), pointer :: noeuds(:) => null()
     data nbno/2, 3, 4, 4, 8, 6, 5, 3, 6, 9, 10, 27,&
      &                      18, 14, 1, 8, 20, 15, 13/
     data dime/1, 2, 2, 3, 3, 3, 3, 1, 2, 2, 3, 3,&

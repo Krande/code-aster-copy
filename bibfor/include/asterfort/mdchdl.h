@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@
 interface
     subroutine mdchdl(lnoue2, iliai, ddlcho, ier)
         aster_logical :: lnoue2
-        integer :: iliai
-        integer :: ddlcho(*)
-        integer :: ier
+        integer(kind=8) :: iliai
+        integer(kind=8) :: ddlcho(*)
+        integer(kind=8) :: ier
     end subroutine mdchdl
 end interface

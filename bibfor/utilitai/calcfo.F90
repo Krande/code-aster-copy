@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale, &
 #include "asterfort/jemarq.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/wkvect.h"
-    integer :: nbval
+    integer(kind=8) :: nbval
     real(kind=8) :: vale(*)
     aster_logical :: compl
     character(len=24) :: nopara
@@ -36,7 +36,7 @@ subroutine calcfo(compl, nomfin, nomfon, nbval, vale, &
 !
 !     CREATION DU SD FONCTION A PARTIR D'UNE FORMULE (FONCTION )
 !     ------------------------------------------------------------------
-    integer :: ier, nbval2, lvale, lfon, ival, lprol
+    integer(kind=8) :: ier, nbval2, lvale, lfon, ival, lprol
 !     ------------------------------------------------------------------
 !
     call jemarq()

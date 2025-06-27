@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine defdda(nbec, nbcmp, numgd, ioc, motcle,&
                       iopt, icod)
-        integer :: nbec
-        integer :: nbcmp
-        integer :: numgd
-        integer :: ioc
+        integer(kind=8) :: nbec
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: numgd
+        integer(kind=8) :: ioc
         character(len=*) :: motcle
-        integer :: iopt
-        integer :: icod(nbec)
+        integer(kind=8) :: iopt
+        integer(kind=8) :: icod(nbec)
     end subroutine defdda
 end interface

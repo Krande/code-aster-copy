@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,10 +30,10 @@ subroutine elrefv(fami, ndim, &
 #include "asterfort/elrefe_info.h"
 !
     character(len=4), intent(in) :: fami
-    integer, intent(out) :: ndim, nnos
-    integer, intent(out) :: npg, jv_poids
-    integer, intent(out) :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
-    integer, intent(out) :: nnoQ, jv_vfQ, jv_dfdeQ, jv_ganoQ
+    integer(kind=8), intent(out) :: ndim, nnos
+    integer(kind=8), intent(out) :: npg, jv_poids
+    integer(kind=8), intent(out) :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
+    integer(kind=8), intent(out) :: nnoQ, jv_vfQ, jv_dfdeQ, jv_ganoQ
 !
 ! ---------------------------------------------------------------------
 ! BUT: RECUPERER DANS UNE ROUTINE TE00IJ LES ADRESSES DANS ZR

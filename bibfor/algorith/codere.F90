@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine codere(cod, npg, codret)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 
-    integer :: npg, cod(npg), codret
+    integer(kind=8) :: npg, cod(npg), codret
 ! --------------------------------------------------------------------------------------------------
 !     SYNTHESE DES CODES RETOURS : EN ENTREE, ON A UN TABLEAU
 !     DE DIM. NPG CONTENANT LES CODES RETOURS DE TOUS LES PTS DE
@@ -36,10 +36,10 @@ subroutine codere(cod, npg, codret)
 !         codret=2 : resultats non valides physiquement
 !         codret=3 : c_plan deborst sigzz non nul
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: NBR_CODRET = 4
-    integer, parameter, dimension(0:NBR_CODRET):: codret_to_gravite = [0, 4, 2, 3, 1]
-    integer, parameter, dimension(0:NBR_CODRET):: gravite_to_codret = [0, 4, 2, 3, 1]
-    integer :: i, grave
+    integer(kind=8), parameter :: NBR_CODRET = 4
+    integer(kind=8), parameter, dimension(0:NBR_CODRET):: codret_to_gravite = [0, 4, 2, 3, 1]
+    integer(kind=8), parameter, dimension(0:NBR_CODRET):: gravite_to_codret = [0, 4, 2, 3, 1]
+    integer(kind=8) :: i, grave
 ! --------------------------------------------------------------------------------------------------
 
     ! Controle de l'etendue des codes retour

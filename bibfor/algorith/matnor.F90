@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine matnor(fami, kpg, ksp, imat, nmat, &
 !         NR     :  NB DE COMPOSANTES SYSTEME NL
 !     ----------------------------------------------------------------
 #include "asterfort/rcvalb.h"
-    integer :: kpg, ksp, nmat, ndt, nvi, nr, imat, cerr(5)
+    integer(kind=8) :: kpg, ksp, nmat, ndt, nvi, nr, imat, cerr(5)
     real(kind=8) :: coefel(nmat), coefpl(nmat)
     character(len=*) :: fami, poum
     character(len=8) :: nomc(5)

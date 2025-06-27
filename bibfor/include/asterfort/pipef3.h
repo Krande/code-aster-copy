@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                       wref, vff, dfde, mate, geom,&
                       vim, ddepl, deplm, ddepl0, ddepl1,&
                       dtau, typmod, compor, copilo)
-        integer :: lgpg
-        integer :: npg
-        integer :: nddl
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nddl
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff(nno, npg)
         real(kind=8) :: dfde(2, nno, npg)
-        integer :: mate
+        integer(kind=8) :: mate
         real(kind=8) :: geom(nddl)
         real(kind=8) :: vim(lgpg, npg)
         real(kind=8) :: ddepl(nddl)

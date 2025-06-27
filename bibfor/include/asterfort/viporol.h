@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ interface
                       phi   , phim  , retcom)
         use THM_type        
         type(THM_DS), intent(in) :: ds_thm        
-        integer, intent(in) :: nbvari
-        integer, intent(in) :: advico, vicphi
+        integer(kind=8), intent(in) :: nbvari
+        integer(kind=8), intent(in) :: advico, vicphi
         real(kind=8), intent(in) :: dtemp, dpi
         real(kind=8), intent(in) :: deps(6), depsv
         real(kind=8), intent(in) :: signe, satur, unsks, phi0
@@ -38,6 +38,6 @@ interface
         real(kind=8), intent(in) :: vintm(nbvari)
         real(kind=8), intent(inout) :: vintp(nbvari)
         real(kind=8), intent(out) :: phi, phim
-        integer, intent(out) :: retcom
+        integer(kind=8), intent(out) :: retcom
     end subroutine viporol
 end interface 

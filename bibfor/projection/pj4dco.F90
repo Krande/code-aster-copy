@@ -55,13 +55,13 @@ subroutine pj4dco(typeSelect, &
 !
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
-    integer, intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+ integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
     character(len=*), intent(in) :: geom1, geom2
     character(len=16), intent(in)  :: corrMesh
     aster_logical, intent(inout) :: l_dmax
     real(kind=8), intent(in) :: dmax, dala
     character(len=16), optional, intent(in)  :: listInterc_
-    integer, optional, intent(in)  :: nbInterc_
+    integer(kind=8), optional, intent(in)  :: nbInterc_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -85,34 +85,34 @@ subroutine pj4dco(typeSelect, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical, parameter :: dbg = ASTER_FALSE
-    integer, parameter :: spacedim = 3
+    integer(kind=8), parameter :: spacedim = 3
     character(len=8) :: mesh1, mesh2, nodeName2
     character(len=14), parameter :: boite = '&&PJ4DCO.BOITE'
     character(len=16), parameter :: corrMeshTemp = '&&PJ4DCO.CORRESP'
-    integer :: nbCellType
-    integer :: cellListType(MT_NTYMAX)
+    integer(kind=8) :: nbCellType
+    integer(kind=8) :: cellListType(MT_NTYMAX)
     character(len=8) :: cellListCode(MT_NTYMAX)
-    integer :: ifm, niv, nbNode1, nbNode2, nbCell1, nbCell2, k
-    integer :: nbTria, iatr3
-    integer :: iCell1, iNode2
-    integer :: iacoo1, iacoo2, ino
-    integer :: iabtco, jxxk1, iaconu, iacocf, iacotr
-    integer :: ilcnx1
-    integer :: iaconb, cellTypeNume, idecal, cellLink1, nbtrou
+    integer(kind=8) :: ifm, niv, nbNode1, nbNode2, nbCell1, nbCell2, k
+    integer(kind=8) :: nbTria, iatr3
+    integer(kind=8) :: iCell1, iNode2
+    integer(kind=8) :: iacoo1, iacoo2, ino
+    integer(kind=8) :: iabtco, jxxk1, iaconu, iacocf, iacotr
+    integer(kind=8) :: ilcnx1
+    integer(kind=8) :: iaconb, cellTypeNume, idecal, cellLink1, nbtrou
     aster_logical :: loin, loin2
     real(kind=8) :: dmin, cobary(3)
-    integer, parameter :: nbmax = 5
-    integer :: tino2m(nbmax), nbnod, nbnodm
+    integer(kind=8), parameter :: nbmax = 5
+    integer(kind=8) :: tino2m(nbmax), nbnod, nbnodm
     real(kind=8) :: tdmin2(nbmax)
-    integer, pointer :: bt3dlc(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: bt3ddi(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: bt3dnb(:) => null()
+    integer(kind=8), pointer :: bt3dlc(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: bt3ddi(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: bt3dnb(:) => null()
     real(kind=8), pointer :: bt3dvr(:) => null()
-    integer, pointer :: listCell1(:) => null(), listNode2(:) => null()
-    integer, pointer :: lino_loin(:) => null()
-    integer, pointer :: vinterc(:) => null()
+    integer(kind=8), pointer :: listCell1(:) => null(), listNode2(:) => null()
+    integer(kind=8), pointer :: lino_loin(:) => null()
+    integer(kind=8), pointer :: vinterc(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

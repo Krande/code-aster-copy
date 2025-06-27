@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,6 @@ interface
     subroutine dismrs(questionZ, objNameZ, repi, repkz, ierd)
         character(len=*), intent(in) :: questionZ, objNameZ
         character(len=*), intent(out)  :: repkz
-        integer, intent(out) :: repi, ierd
+        integer(kind=8), intent(out) :: repi, ierd
     end subroutine dismrs
 end interface

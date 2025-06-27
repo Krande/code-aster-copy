@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model_
-        integer, intent(in) :: list_func_acti(*)
-        integer, intent(in) :: iter_newt
-        integer, intent(in) :: nume_inst 
+        integer(kind=8), intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: iter_newt
+        integer(kind=8), intent(in) :: nume_inst 
         character(len=19), intent(in) :: sddisc
         character(len=19), intent(in) :: sddyna
         type(NL_DS_Measure), intent(inout) :: ds_measure

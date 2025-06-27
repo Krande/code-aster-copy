@@ -54,28 +54,28 @@ subroutine te0557(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, j
-    integer :: nfh, ddld, ddlm, ddlp, ddlc, nddls, nddlm
-    integer :: nnop, nnops, nnopm, dimuel, jheavn, ncompn, pos(16)
-    integer :: lact(16), vstnc(32), nlact(2), algocr, jheafa, ncomph
-    integer :: ndim, nbspg, contac, ibid, iadzi, iazk24, ifisc, nfisc
-    integer :: igeom, idepm, idepd, jlsn, jfisco
-    integer :: jptint, jaint, jcface, jlonch, jbasec, jdonco
-    integer :: iinstm, iinstp, icarcr, jmate, jcohes
-    integer :: jtab(7), iret, ncompv, nnol, pla(27), jv_cont, ncompp
-    integer :: npgf, ipoidf, ivff, idfdef, jstno, jfisno, jheano
-    integer :: ninter, nface, nptf, nnof, cface(30, 6), ncompd
-    integer :: nint, ninteg, ifiss, nfiss, ncompa, ncompb, ncompc
-    integer :: jfiss, nfisc2, kfiss
+    integer(kind=8) :: i, j
+    integer(kind=8) :: nfh, ddld, ddlm, ddlp, ddlc, nddls, nddlm
+    integer(kind=8) :: nnop, nnops, nnopm, dimuel, jheavn, ncompn, pos(16)
+    integer(kind=8) :: lact(16), vstnc(32), nlact(2), algocr, jheafa, ncomph
+    integer(kind=8) :: ndim, nbspg, contac, ibid, iadzi, iazk24, ifisc, nfisc
+    integer(kind=8) :: igeom, idepm, idepd, jlsn, jfisco
+    integer(kind=8) :: jptint, jaint, jcface, jlonch, jbasec, jdonco
+    integer(kind=8) :: iinstm, iinstp, icarcr, jmate, jcohes
+    integer(kind=8) :: jtab(7), iret, ncompv, nnol, pla(27), jv_cont, ncompp
+    integer(kind=8) :: npgf, ipoidf, ivff, idfdef, jstno, jfisno, jheano
+    integer(kind=8) :: ninter, nface, nptf, nnof, cface(30, 6), ncompd
+    integer(kind=8) :: nint, ninteg, ifiss, nfiss, ncompa, ncompb, ncompc
+    integer(kind=8) :: jfiss, nfisc2, kfiss
     aster_logical :: lelim
     real(kind=8) :: rela, vcont(560), mat(1)
     character(len=8) :: elrefp, elrefc, elc, fpg, typma
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: enr
 !
-    integer :: nfimax
+    integer(kind=8) :: nfimax
     parameter(nfimax=10)
-    integer :: fisc(2*nfimax), fisco(2*nfimax)
+    integer(kind=8) :: fisc(2*nfimax), fisco(2*nfimax)
     type(THM_DS) :: ds_thm
 !
 ! --------------------------------------------------------------------------------------------------

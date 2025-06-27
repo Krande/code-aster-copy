@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,9 +60,9 @@ subroutine dndiss(ipara, nmnbn, nmplas, nmdpla, nmddpl, &
 #include "asterfort/mppffn.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/restzo.h"
-    integer :: newief, nmprox(*)
-    integer :: ncrit, zimat, ier, cief
-    integer :: cier, i, j, ipara(4)
+    integer(kind=8) :: newief, nmprox(*)
+    integer(kind=8) :: ncrit, zimat, ier, cief
+    integer(kind=8) :: cier, i, j, ipara(4)
 !
     real(kind=8) :: nmnbn(*), newnbn(*), nmplas(2, *), newpla(2, *)
     real(kind=8) :: nmdpla(2, *), newdpl(2, *), nmddpl(2, *), newddp(2, *)

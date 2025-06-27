@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine zerofc(func, xmin, xmax, prec, niter, &
             real(kind=8) :: func
         end function
     end interface
-    integer :: niter, iret
+    integer(kind=8) :: niter, iret
     real(kind=8) :: xmin, xmax, prec, dp
 ! ----------------------------------------------------------------------
 !     RECHERCHE DU ZERO DE func. ON SAIT QUE VAL0=func(0) < 0 ET func CROISSANTE
@@ -43,7 +43,7 @@ subroutine zerofc(func, xmin, xmax, prec, niter, &
 ! OUT NIT     : NOMBRE D'ITERATIONS NECESSAIRE POUR CONVERGER
 !
     real(kind=8) :: x(4), y(4)
-    integer :: i, nit
+    integer(kind=8) :: i, nit
 ! DEB ------------------------------------------------------------------
 !
     nit = 0

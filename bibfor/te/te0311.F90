@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,10 +48,10 @@ subroutine te0311(option, nomte)
 ! VECTEURS DIMENSIONNES POUR  NNO = 9 , NPG = 9
 !.......................................................................
 !
-    integer :: ndim, nno, npg1, compt, iforf
-    integer :: ipoids, ivf, idfde, i, j, k, kp, iforc, ind
-    integer :: idepl, ipres, ithet, igthet, igeom, ipref, itemps, icode
-    integer :: nnos, jgano, ino, jlsn, jlst
+    integer(kind=8) :: ndim, nno, npg1, compt, iforf
+    integer(kind=8) :: ipoids, ivf, idfde, i, j, k, kp, iforc, ind
+    integer(kind=8) :: idepl, ipres, ithet, igthet, igeom, ipref, itemps, icode
+    integer(kind=8) :: nnos, jgano, ino, jlsn, jlst
 !
     real(kind=8) :: a1(3), a2(3), a3(3), i1(3), i2(3), epsi, dfdx(9), dfdy(9)
     real(kind=8) :: coor(18), depl(3), valpar(4)
@@ -70,9 +70,9 @@ subroutine te0311(option, nomte)
     real(kind=8) :: ka, coeff, coeff3
     real(kind=8) :: u1g(3), u2g(3), u3g(3)
     real(kind=8) :: g, k1, k2, k3, prsc
-    integer :: ibalo, imate
+    integer(kind=8) :: ibalo, imate
     character(len=16) :: nomres(3)
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
 !
     character(len=8) :: nompar(4)
     character(len=4) :: fami

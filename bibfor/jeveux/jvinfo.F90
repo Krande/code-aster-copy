@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 
 function jvinfo(info)
     implicit none
-    integer :: jvinfo
-    integer :: info
+    integer(kind=8) :: jvinfo
+    integer(kind=8) :: info
 ! ----------------------------------------------------------------------
 ! Define the JEVEUX logging level (only used by jedet*)
 !
@@ -31,7 +31,7 @@ function jvinfo(info)
 !            if info < 0, return the current level.
 ! ----------------------------------------------------------------------
 
-    integer :: nivo
+    integer(kind=8) :: nivo
     common/jvnivo/nivo
 
     if (info .ge. 0) then

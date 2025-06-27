@@ -58,20 +58,20 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
     character(len=19), intent(in) :: sdappa
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
     real(kind=8), intent(in) :: pair_tole
-    integer, intent(in) :: nb_elem_slav
-    integer, intent(in) :: nb_elem_mast
-    integer, intent(in) :: list_elem_mast(nb_elem_mast)
-    integer, intent(in) :: list_elem_slav(nb_elem_slav)
-    integer, intent(inout) :: nb_pair_zone
-    integer, pointer :: list_pair_zone(:)
-    integer, pointer :: list_nbptit_zone(:)
+    integer(kind=8), intent(in) :: nb_elem_slav
+    integer(kind=8), intent(in) :: nb_elem_mast
+    integer(kind=8), intent(in) :: list_elem_mast(nb_elem_mast)
+    integer(kind=8), intent(in) :: list_elem_slav(nb_elem_slav)
+    integer(kind=8), intent(inout) :: nb_pair_zone
+    integer(kind=8), pointer :: list_pair_zone(:)
+    integer(kind=8), pointer :: list_nbptit_zone(:)
     real(kind=8), pointer :: list_ptitsl_zone(:)
     real(kind=8), pointer :: list_ptitma_zone(:)
     real(kind=8), pointer :: li_ptgausma_zone(:)
-    integer, intent(in) :: i_proc
-    integer, intent(in) :: nb_proc
+    integer(kind=8), intent(in) :: i_proc
+    integer(kind=8), intent(in) :: nb_proc
     character(len=24), intent(in) :: pair_method
 !
 ! --------------------------------------------------------------------------------------------------
@@ -96,56 +96,56 @@ subroutine aplcpg(mesh, newgeo, sdappa, i_zone, pair_tole, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: list_pair(nb_elem_mast), li_nb_pt_inte_sl(nb_elem_mast), nbpatch_t, iret, vali(2)
+integer(kind=8) :: list_pair(nb_elem_mast), li_nb_pt_inte_sl(nb_elem_mast), nbpatch_t, iret, vali(2)
     real(kind=8) :: li_pt_inte_sl(nb_elem_mast*16), li_pt_inte_ma(nb_elem_mast*16)
     real(kind=8) :: li_pt_gaus_ma(nb_elem_mast*72)
-    integer :: elem_slav_nbnode, cellSlavNume, elem_slav_dime, cellSlavIndx
-    integer :: elem_mast_nbnode, cellMastNume, elem_mast_dime, cellMastIndx
+    integer(kind=8) :: elem_slav_nbnode, cellSlavNume, elem_slav_dime, cellSlavIndx
+    integer(kind=8) :: elem_mast_nbnode, cellMastNume, elem_mast_dime, cellMastIndx
     character(len=8) :: elem_mast_code, elem_slav_code
     character(len=8) :: elem_slav_type, elem_mast_type
     real(kind=8) :: elem_mast_coor(27), elem_slav_coor(27)
-    integer :: nb_pair, nb_poin_inte
-    integer :: iMastNeigh, ISlavStart, iMastStart, iCell
-    integer :: iSlavNeigh
-    integer :: patch_indx, nb_next_alloc
+    integer(kind=8) :: nb_pair, nb_poin_inte
+    integer(kind=8) :: iMastNeigh, ISlavStart, iMastStart, iCell
+    integer(kind=8) :: iSlavNeigh
+    integer(kind=8) :: patch_indx, nb_next_alloc
     real(kind=8) :: inteArea, elem_slav_weight
     real(kind=8) :: poin_inte_sl(32)
     real(kind=8) :: poin_inte_ma(32)
     real(kind=8) :: poin_gauss_ma(74)
-    integer ::  elin_mast_nbnode
-    integer ::  elin_slav_nbnode
+    integer(kind=8) ::  elin_mast_nbnode
+    integer(kind=8) ::  elin_slav_nbnode
     character(len=8) :: elin_mast_code, elin_slav_code, elem_slav_name, elem_mast_name, elem_name
-    integer :: nbSlavStart, nbMastPaired, nbMastStart
-    integer :: cellMastPaired(nb_elem_mast)
-    integer :: elem_start, cellSlavStart(nb_elem_slav), cellMastStart(nb_elem_slav)
-    integer :: cellNeighIndx, cellNeighNume
-    integer :: slavIndxMini, mastIndxMini, slavIndxMaxi, mastIndxMaxi
-    integer :: mast_find_indx
+    integer(kind=8) :: nbSlavStart, nbMastPaired, nbMastStart
+    integer(kind=8) :: cellMastPaired(nb_elem_mast)
+    integer(kind=8) :: elem_start, cellSlavStart(nb_elem_slav), cellMastStart(nb_elem_slav)
+    integer(kind=8) :: cellNeighIndx, cellNeighNume
+    integer(kind=8) :: slavIndxMini, mastIndxMini, slavIndxMaxi, mastIndxMaxi
+    integer(kind=8) :: mast_find_indx
     aster_logical :: l_recup, debug
-    integer, pointer :: cellMastFlag(:) => null()
-    integer, pointer :: elem_mast_flag(:) => null()
-    integer, pointer :: cellSlavFlag(:) => null()
+    integer(kind=8), pointer :: cellMastFlag(:) => null()
+    integer(kind=8), pointer :: elem_mast_flag(:) => null()
+    integer(kind=8), pointer :: cellSlavFlag(:) => null()
     character(len=8) :: knuzo
     character(len=24) :: sdappa_slne, sdappa_mane
-    integer, pointer :: meshSlavNeigh(:) => null()
-    integer, pointer :: meshMastNeigh(:) => null()
-    integer :: list_slav_master(4)
-    integer :: nbMastNeigh, nbSlavNeigh
-    integer :: inteNeigh(4)
-    integer :: jv_geom, elem_type_nume
+    integer(kind=8), pointer :: meshSlavNeigh(:) => null()
+    integer(kind=8), pointer :: meshMastNeigh(:) => null()
+    integer(kind=8) :: list_slav_master(4)
+    integer(kind=8) :: nbMastNeigh, nbSlavNeigh
+    integer(kind=8) :: inteNeigh(4)
+    integer(kind=8) :: jv_geom, elem_type_nume
     real(kind=8) :: list_slav_weight(4), weight_test, tole_weight
     character(len=24) :: njv_weight_t, njv_nb_pair_zmpi
     real(kind=8), pointer :: patch_weight_t(:) => null()
-    integer, pointer :: v_mesh_comapa(:) => null()
-    integer, pointer :: v_mesh_typmail(:) => null()
-    integer, pointer :: nb_pair_zmpi(:) => null()
-    integer, pointer :: list_pair_zmpi(:) => null()
-    integer, pointer :: li_nbptsl_zmpi(:) => null()
+    integer(kind=8), pointer :: v_mesh_comapa(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: nb_pair_zmpi(:) => null()
+    integer(kind=8), pointer :: list_pair_zmpi(:) => null()
+    integer(kind=8), pointer :: li_nbptsl_zmpi(:) => null()
     real(kind=8), pointer :: li_ptintsl_zmpi(:) => null()
     real(kind=8), pointer :: li_ptintma_zmpi(:) => null()
     real(kind=8), pointer :: li_ptgausma_zmpi(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
-    integer, pointer :: v_connex_lcum(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_lcum(:) => null()
     character(len=16), pointer :: valk(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

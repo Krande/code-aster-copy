@@ -52,7 +52,7 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbcmp, nuord, nbmail, numemail(*)
+    integer(kind=8) :: nbcmp, nuord, nbmail, numemail(*)
     character(len=8) :: nomcmp(nbcmp), modele, lieu
     character(len=19) :: chpost, resu
     character(len=24) :: nomcha, nomlie
@@ -81,10 +81,10 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
 !     IN  NUMEMAIL : NUMERO DES MAILLES A TRAITER
 !     ------------------------------------------------------------------
 !
-    integer :: nbma, i, jcesl, jcesd
-    integer :: nucmp, jcmpgd, ncmpm, iad
-    integer :: ipt, nbsp, nbpt, icmp, ima, nbpara, iproc
-    integer :: nmin, nmax, npara, pmax, pmin, rank, nbproc
+    integer(kind=8) :: nbma, i, jcesl, jcesd
+    integer(kind=8) :: nucmp, jcmpgd, ncmpm, iad
+    integer(kind=8) :: ipt, nbsp, nbpt, icmp, ima, nbpara, iproc
+    integer(kind=8) :: nmin, nmax, npara, pmax, pmin, rank, nbproc
     real(kind=8) :: vmin, vmax, inst
     complex(kind=8) :: cbid
     character(len=7) :: chnuma
@@ -94,13 +94,13 @@ subroutine pemaxe(resu, nomcha, lieu, nomlie, modele, &
 ! Tableaux automatiques F90
     real(kind=8) :: mima(2*nbcmp+2)
     character(len=24) :: nompar(6*nbcmp+5), mamax(2*nbcmp+3)
-    integer :: ptmax(1+2*nbcmp)
+    integer(kind=8) :: ptmax(1+2*nbcmp)
     character(len=8), pointer :: cesk(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: list_ma(:) => null()
+    integer(kind=8), pointer :: list_ma(:) => null()
     real(kind=8), pointer :: v_value(:) => null()
     character(len=8), pointer :: v_name(:) => null()
-    integer, pointer :: v_ipt(:) => null()
+    integer(kind=8), pointer :: v_ipt(:) => null()
     mpi_int :: mrank, msize, count_send, count_recv, mpicom
 !
     call jemarq()

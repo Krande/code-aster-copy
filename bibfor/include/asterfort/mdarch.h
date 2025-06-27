@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
                       nbsym, nomsym, depgec, vitgec, accgec,&
                       depstc, vitstc, accstc)
         character(len=4) , intent(in)  :: typcal
-        integer          , intent(in)  :: isto1
-        integer          , intent(in)  :: ipas
+        integer(kind=8)          , intent(in)  :: isto1
+        integer(kind=8)          , intent(in)  :: ipas
         real(kind=8)     , intent(in)  :: disc
-        integer          , intent(in)  :: nbmode
-        integer                        :: iorsto(*)
+        integer(kind=8)          , intent(in)  :: nbmode
+        integer(kind=8)                        :: iorsto(*)
         real(kind=8)                   :: discst(*)
         real(kind=8)     , optional, intent(in)  :: dt
         real(kind=8)     , optional, intent(in)  :: depger(nbmode)
@@ -38,7 +38,7 @@ interface
         real(kind=8)     , optional              :: vitstr(*)
         real(kind=8)     , optional              :: accstr(*)
         real(kind=8)     , optional              :: passto(*)
-        integer          , optional, intent(in)  :: nbsym
+        integer(kind=8)          , optional, intent(in)  :: nbsym
         character(len=4) , optional, intent(in)  :: nomsym(*)
         complex(kind=8)  , optional, intent(in)  :: depgec(nbmode)
         complex(kind=8)  , optional, intent(in)  :: vitgec(nbmode)

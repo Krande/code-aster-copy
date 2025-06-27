@@ -20,7 +20,7 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 !
 !
     implicit none
-    integer :: lmax, nbocc
+    integer(kind=8) :: lmax, nbocc
     character(len=8) :: noma, nomo
     character(len=*) :: mcf
 !
@@ -54,9 +54,9 @@ subroutine acevd2(noma, nomo, mcf, lmax, nbocc)
 #include "asterfort/as_allocate.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nbcar = 100
-    integer :: ier, i3d, i2d, ndim, ioc, ng, nm, ncar, icar
-    integer :: ii, nbma, ialima
+    integer(kind=8), parameter :: nbcar = 100
+    integer(kind=8) :: ier, i3d, i2d, ndim, ioc, ng, nm, ncar, icar
+    integer(kind=8) :: ii, nbma, ialima
     character(len=1) :: foue
     character(len=8) :: nomu, car(nbcar)
     character(len=16) :: concep, cmd

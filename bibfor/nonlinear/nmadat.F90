@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 !
     character(len=19) :: valinc(*)
     character(len=19) :: sddisc
-    integer :: numins, nbiter
+    integer(kind=8) :: numins, nbiter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,7 +63,7 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19), parameter :: dtplus = '&&NMADAP.DTPLUS'
-    integer :: nb_adap, i_adap, jdt
+    integer(kind=8) :: nb_adap, i_adap, jdt
     character(len=19) :: metlis
     real(kind=8) :: r8bid, dt, min, pasmin, pasmax, dtm, jalon
     real(kind=8) :: newins, newdt, deltac
@@ -71,10 +71,10 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
     real(kind=8) :: insfin, insref
     aster_logical :: ladap, uncrok
     character(len=24) :: tpsite
-    integer :: jiter
-    integer :: nb_inst, nmax, inspas
+    integer(kind=8) :: jiter
+    integer(kind=8) :: nb_inst, nmax, inspas
     character(len=24) :: tpsext
-    integer :: jtpsex, actionType
+    integer(kind=8) :: jtpsex, actionType
 !
 ! --------------------------------------------------------------------------------------------------
 !

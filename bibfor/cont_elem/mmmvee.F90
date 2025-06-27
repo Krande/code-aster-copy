@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine mmmvee(phase, l_pena_cont, l_pena_fric, l_large_slip, &
 !
     character(len=4), intent(in) :: phase
     aster_logical, intent(in) :: l_pena_cont, l_pena_fric, l_large_slip
-    integer, intent(in) :: ndim, nne
+    integer(kind=8), intent(in) :: ndim, nne
     real(kind=8), intent(in) :: norm(3), tau1(3), tau2(3), mprojt(3, 3)
     real(kind=8), intent(in) :: wpg, ffe(9), jacobi, jeu
     real(kind=8), intent(in) :: coefac, coefaf, lambda, coefff
@@ -92,7 +92,7 @@ subroutine mmmvee(phase, l_pena_cont, l_pena_fric, l_large_slip, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: inoe, idim, ii, i, j, k
+    integer(kind=8) :: inoe, idim, ii, i, j, k
     real(kind=8) :: dlagft(3), plagft(3), prese(3)
     real(kind=8) :: dvitet(3), pdvitt(3), g(3, 3)
 !

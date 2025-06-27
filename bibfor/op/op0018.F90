@@ -77,8 +77,8 @@ subroutine op0018()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: dim_topo_curr, dim_topo_init
-    integer :: ifm, niv
+    integer(kind=8) :: dim_topo_curr, dim_topo_init
+    integer(kind=8) :: ifm, niv
     character(len=8) :: mesh, model
     character(len=8) :: name_elem, z_quasi_zero, methode
     character(len=16) :: k16dummy, name_type_geom, repk, valk(2)
@@ -87,30 +87,30 @@ subroutine op0018()
     character(len=24) :: kdis
     character(len=32) :: phemod
     character(len=24), parameter :: list_elem = '&&OP0018.LIST_ELEM'
-    integer, pointer :: p_list_elem(:) => null()
-    integer :: nb_elem
+    integer(kind=8), pointer :: p_list_elem(:) => null()
+    integer(kind=8) :: nb_elem
     aster_logical :: l_elem, l_grandeur_cara, lparallel_mesh
     aster_logical :: l_calc_rigi, l_need_neigh
     aster_logical :: lCheckJacobian, lCheckFSINorms, lCheckPlaneity
-    integer :: ielem, iaffe
-    integer :: vali(4), ico, idx_modelisa
-    integer, pointer :: p_cata_dim(:) => null()
-    integer, pointer :: p_cata_model(:) => null()
+    integer(kind=8) :: ielem, iaffe
+    integer(kind=8) :: vali(4), ico, idx_modelisa
+    integer(kind=8), pointer :: p_cata_dim(:) => null()
+    integer(kind=8), pointer :: p_cata_model(:) => null()
     character(len=24) :: mesh_type_geom
-    integer, pointer :: p_mesh_type_geom(:) => null()
-    integer, pointer :: p_wk_mail1(:) => null()
-    integer, pointer :: p_wk_mail2(:) => null()
+    integer(kind=8), pointer :: p_mesh_type_geom(:) => null()
+    integer(kind=8), pointer :: p_wk_mail1(:) => null()
+    integer(kind=8), pointer :: p_wk_mail2(:) => null()
     character(len=24) :: model_liel
-    integer, pointer :: p_model_liel(:) => null()
+    integer(kind=8), pointer :: p_model_liel(:) => null()
     character(len=24) :: model_maille
-    integer, pointer :: p_model_maille(:) => null()
+    integer(kind=8), pointer :: p_model_maille(:) => null()
     character(len=8), pointer :: p_model_lgrf(:) => null()
-    integer, pointer :: p_model_nbno(:) => null()
-    integer :: lont_liel, nb_grel, nb_elem_affe, nb_mesh_elem
-    integer :: nb_elem_naffe, nbproc, nbpart
-    integer :: nb_affe, nb_affe_ss, nbocc, n1
-    integer :: long_grel, nb_modelisa, nume_type_poi1, nume_grel
-    integer :: nume_elem, idx_in_grel, nume_type_model, nume_type_geom
+    integer(kind=8), pointer :: p_model_nbno(:) => null()
+    integer(kind=8) :: lont_liel, nb_grel, nb_elem_affe, nb_mesh_elem
+    integer(kind=8) :: nb_elem_naffe, nbproc, nbpart
+    integer(kind=8) :: nb_affe, nb_affe_ss, nbocc, n1
+    integer(kind=8) :: long_grel, nb_modelisa, nume_type_poi1, nume_grel
+    integer(kind=8) :: nume_elem, idx_in_grel, nume_type_model, nume_type_geom
     mpi_int :: mrank, msize
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
     subroutine matrHooke3d(elas_type, angl,&
                            h, g, g1, g2, g3,&
                            matr_elas)
-        integer, intent(in) :: elas_type
+        integer(kind=8), intent(in) :: elas_type
         real(kind=8), intent(in) :: angl(3)
         real(kind=8), intent(in) :: g, h(6)
         real(kind=8), intent(in) :: g1, g2, g3

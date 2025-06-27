@@ -51,9 +51,9 @@ subroutine te0243(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icamas, nbres
+    integer(kind=8) :: icamas, nbres
     parameter(nbres=3)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=32) :: phenom
     real(kind=8) ::  tpg, dtpg(3), tpsec, diff, fluglo(3), Kglo(3, 3)
     real(kind=8) :: resi(MAX_BS), rigi(MAX_BS, MAX_BS)
@@ -61,8 +61,8 @@ subroutine te0243(option, nomte)
     real(kind=8), pointer :: flux(:) => null()
     real(kind=8), pointer :: tempi(:) => null()
     real(kind=8), pointer :: sechf(:) => null()
-    integer ::  kp, ifon(6)
-    integer ::  imate, j
+    integer(kind=8) ::  kp, ifon(6)
+    integer(kind=8) ::  imate, j
     character(len=16) :: rela_name
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: aniso, l_rhs

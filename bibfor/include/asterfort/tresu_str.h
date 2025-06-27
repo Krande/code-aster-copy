@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         character(len=16), intent(in) :: tbtxt(2)
         character(len=80), intent(in) :: refk
         character(len=80), intent(in) :: valk
-        integer, intent(in) :: ific
+        integer(kind=8), intent(in) :: ific
         aster_logical, intent(in) :: llab
     end subroutine tresu_str
 end interface

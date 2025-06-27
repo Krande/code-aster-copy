@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
                       nbch, acceno)
         character(len=*) :: resu
         character(len=*) :: motfac
-        integer :: iocc
-        integer :: dimlis
+        integer(kind=8) :: iocc
+        integer(kind=8) :: dimlis
         character(len=*) :: lisch(*)
-        integer :: nbch
+        integer(kind=8) :: nbch
         aster_logical :: acceno
     end subroutine rsutc4
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine lislic(nomo, prefob, indxch, ligcal)
 #include "asterfort/lisdef.h"
     character(len=8) :: nomo
     character(len=13) :: prefob
-    integer :: indxch
+    integer(kind=8) :: indxch
     character(len=19) :: ligcal
 !
 ! ----------------------------------------------------------------------
@@ -48,7 +48,7 @@ subroutine lislic(nomo, prefob, indxch, ligcal)
 !
 !
     character(len=6) :: typlig
-    integer :: ibid(2)
+    integer(kind=8) :: ibid(2)
     character(len=19) :: ligrmo
 !
 ! ----------------------------------------------------------------------

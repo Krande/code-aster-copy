@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim, &
 #include "asterfort/assert.h"
 #include "asterfort/nmtacr.h"
 #include "asterfort/zeroco.h"
-    integer :: ndimsi, iret
+    integer(kind=8) :: ndimsi, iret
     real(kind=8) :: crit(3), mat(14), sigel(*), vim(9), epm(*), dp, sp
     real(kind=8) :: xi, g
 ! ----------------------------------------------------------------------
@@ -45,7 +45,7 @@ subroutine nmtaxi(ndimsi, crit, mat, sigel, vim, &
 !               IRET=1 => ECHEC
 ! ----------------------------------------------------------------------
 !
-    integer :: niter
+    integer(kind=8) :: niter
     real(kind=8) :: f, fds, gds, fdp, gdp, fdx, gdx, dpmax, sig(6), tang(6, 6)
     real(kind=8) :: x(4), y(4), gg(4)
 !

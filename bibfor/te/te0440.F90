@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,13 +50,13 @@ subroutine te0440(option, nomte)
 !
 !
 !
-    integer :: j, ndim, nno, nnop, nnops, nnos, nnom, nddl, npg, singu
-    integer :: nfh, ddls, nfe, ddlc, nse, ise, in, ino, ibid, ddlm
-    integer :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno
-    integer :: ivectu, iforc, itemps, igeom, jpmilt, irese
-    integer :: nfiss, jfisno, jheavn
-    integer :: imate, jbaslo
-    integer :: ncompn, heavn(27, 5), iret, jtab(7), ig
+    integer(kind=8) :: j, ndim, nno, nnop, nnops, nnos, nnom, nddl, npg, singu
+    integer(kind=8) :: nfh, ddls, nfe, ddlc, nse, ise, in, ino, ibid, ddlm
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jlsn, jlst, jstno
+    integer(kind=8) :: ivectu, iforc, itemps, igeom, jpmilt, irese
+    integer(kind=8) :: nfiss, jfisno, jheavn
+    integer(kind=8) :: imate, jbaslo
+    integer(kind=8) :: ncompn, heavn(27, 5), iret, jtab(7), ig
     real(kind=8) :: he, coorse(81)
     character(len=8) :: elrefp, elrese(6), fami(6), enr, lag
     aster_logical :: fonc, lbid

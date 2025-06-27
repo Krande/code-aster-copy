@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine cfleqb(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: nb_cont_zone
-    integer, intent(in) :: nt_node_middle
+    integer(kind=8), intent(in) :: nb_cont_zone
+    integer(kind=8), intent(in) :: nt_node_middle
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -51,23 +51,23 @@ subroutine cfleqb(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jdecma, elem_nume, type_nume
-    integer :: i_surf_curr, i_zone, i_elem, i_node_quad, i_surf
-    integer :: inoqto, jdecqu
-    integer :: node_quad(3, 4)
-    integer :: nb_surf, nb_elem, nb_node_middle
+    integer(kind=8) :: jdecma, elem_nume, type_nume
+    integer(kind=8) :: i_surf_curr, i_zone, i_elem, i_node_quad, i_surf
+    integer(kind=8) :: inoqto, jdecqu
+    integer(kind=8) :: node_quad(3, 4)
+    integer(kind=8) :: nb_surf, nb_elem, nb_node_middle
     character(len=8) :: type_name
     aster_logical :: l_veri
-    integer, pointer :: v_mesh_typmail(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_pzoneco
-    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pzoneco(:) => null()
     character(len=24) :: sdcont_pnoeuqu
-    integer, pointer :: v_sdcont_pnoeuqu(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pnoeuqu(:) => null()
     character(len=24) :: sdcont_noeuqu
-    integer, pointer :: v_sdcont_noeuqu(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuqu(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

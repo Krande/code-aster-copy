@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,16 +21,16 @@
           interface 
             subroutine wp1mul(lmasse,lamor,lraide,ptorig,tolf,nitf,     &
      &nbfreq,mxresf,nprec,resufi,resufr,solveu)
-              integer :: mxresf
-              integer :: lmasse
-              integer :: lamor
-              integer :: lraide
+              integer(kind=8) :: mxresf
+              integer(kind=8) :: lmasse
+              integer(kind=8) :: lamor
+              integer(kind=8) :: lraide
               complex(kind=8) :: ptorig(3,*)
               real(kind=8) :: tolf
-              integer :: nitf
-              integer :: nbfreq
-              integer :: nprec
-              integer :: resufi(mxresf,*)
+              integer(kind=8) :: nitf
+              integer(kind=8) :: nbfreq
+              integer(kind=8) :: nprec
+              integer(kind=8) :: resufi(mxresf,*)
               real(kind=8) :: resufr(mxresf,*)
               character(len=19) :: solveu
             end subroutine wp1mul

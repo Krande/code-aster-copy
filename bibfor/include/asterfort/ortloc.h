@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine ortloc(dsidep, i1, j1, r)
         real(kind=8) :: dsidep(6, 6)
-        integer :: i1
-        integer :: j1
+        integer(kind=8) :: i1
+        integer(kind=8) :: j1
         real(kind=8) :: r(9)
     end subroutine ortloc
 end interface

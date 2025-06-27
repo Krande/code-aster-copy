@@ -43,11 +43,11 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
     character(len=8), intent(in)  :: noma
     character(len=4), intent(in)  :: type_vale
     real(kind=8), intent(in)      :: dist_mini
-    integer, intent(in)           :: nb_node
+    integer(kind=8), intent(in)           :: nb_node
     character(len=24), intent(in) :: list_node
     character(len=19), intent(in) :: lisrel
     character(len=8), intent(out) :: nom_noeuds(:)
-    integer, intent(out)          :: dim
+    integer(kind=8), intent(out)          :: dim
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -69,12 +69,12 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: k, km, ka, kb
-    integer :: numnoe_m, numnoe_a, numnoe_b
+    integer(kind=8) :: k, km, ka, kb
+    integer(kind=8) :: numnoe_m, numnoe_a, numnoe_b
     character(len=8) :: nomnoe_m, nomnoe_a, nomnoe_b
-    integer ::    jlino, ier
+    integer(kind=8) ::    jlino, ier
 
-    integer :: nb_maxi, nb_term, linocara(4), nbnot
+    integer(kind=8) :: nb_maxi, nb_term, linocara(4), nbnot
     real(kind=8) :: un, cobary(4)
     real(kind=8) :: xa, ya, xb, yb, za, zb
     real(kind=8) :: vale_real
@@ -86,12 +86,12 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
 
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
     real(kind=8), pointer :: coor(:) => null()
-    integer, pointer :: nunocara(:) => null()
+    integer(kind=8), pointer :: nunocara(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

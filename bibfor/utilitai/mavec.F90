@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ subroutine mavec(mp, m, mv, n)
 !       OUT     MV = VECTEUR DEMI - MATRICE STOCKE COLONNE , LONGUEUR N
 !       ----------------------------------------------------------------
 #include "asterfort/assert.h"
-    integer :: m, n
+    integer(kind=8) :: m, n
     real(kind=8) :: mv(n), mp(m, m)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
 !-----------------------------------------------------------------------
     ASSERT(n .ge. m*(m+1)/2)
 !

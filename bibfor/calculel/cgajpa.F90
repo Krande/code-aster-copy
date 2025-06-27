@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-    integer :: nbpara, nxpara
+    integer(kind=8) :: nbpara, nxpara
     character(len=*) :: para, notype, litypa(nxpara), linopa(nxpara)
 !
 !
@@ -44,7 +44,7 @@ subroutine cgajpa(para, notype, nbpara, linopa, litypa, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
 !
 ! ----------------------------------------------------------------------
 !

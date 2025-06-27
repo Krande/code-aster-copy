@@ -32,12 +32,12 @@ subroutine rsvpar(resultNameZ, numeStore, paraNameZ, &
 #include "asterfort/rsnopa.h"
 !
     character(len=*), intent(in) :: resultNameZ
-    integer, intent(in) :: numeStore
+    integer(kind=8), intent(in) :: numeStore
     character(len=*), intent(in) :: paraNameZ
-    integer, optional, intent(in) :: paraValeI_
+    integer(kind=8), optional, intent(in) :: paraValeI_
     real(kind=8), optional, intent(in) :: paraValeR_
     character(len=*), optional, intent(in) :: paraValeKZ_
-    integer, optional, intent(out) :: ier_
+    integer(kind=8), optional, intent(out) :: ier_
 ! --------------------------------------------------------------------------------------------------
 !      VERIFICATION DE L'EXISTANCE D'UN NOM DE PARAMETRE ET DE
 !      SA VALEUR DANS UN RESULTAT COMPOSE
@@ -53,12 +53,12 @@ subroutine rsvpar(resultNameZ, numeStore, paraNameZ, &
 !              : = 100  LA VALEUR DU PARAMETRE EST CORRECTE.
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iPara, nbPara, nbAcce, ier
+    integer(kind=8) :: iPara, nbPara, nbAcce, ier
     character(len=3) :: ctype
-    integer :: paraValeI
+    integer(kind=8) :: paraValeI
     real(kind=8) :: paraValeR
     character(len=80) :: paraValeK
-    integer :: jadr
+    integer(kind=8) :: jadr
     character(len=16) :: paraName
     character(len=16), pointer :: listParaName(:) => null()
 !

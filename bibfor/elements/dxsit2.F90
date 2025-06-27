@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,11 +57,11 @@ subroutine dxsit2(nomte, pgl, sigma)
 !
 !
 !
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: iret1, iret2, iret3, iret4, iret5
-    integer :: icou, icou2, nbcou, ipg, igauh, npgh, icpg, nbcmp, imoy
-    integer :: jnbspi, jmate
-    integer :: indith, icodre(1)
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: iret1, iret2, iret3, iret4, iret5
+    integer(kind=8) :: icou, icou2, nbcou, ipg, igauh, npgh, icpg, nbcmp, imoy
+    integer(kind=8) :: jnbspi, jmate
+    integer(kind=8) :: indith, icodre(1)
 !
     real(kind=8) :: dm(3, 3), tref
     real(kind=8) :: tinf(4), tmoy(4), tsup(4)

@@ -42,8 +42,8 @@ subroutine nmpred(modele, numedd, numfix, ds_material, carele, &
 #include "asterfort/utmess.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
-    integer :: fonact(*)
-    integer :: numins
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: numins
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: matass, maprec
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -107,8 +107,8 @@ subroutine nmpred(modele, numedd, numfix, ds_material, carele, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: faccvg, rescvg, ldccvg
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: faccvg, rescvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !

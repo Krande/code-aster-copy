@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine calkbb(nno, ndim, w, def, dsidep, &
 !
 #include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
     real(kind=8) :: w, def(2*ndim, nno, ndim)
     real(kind=8) :: kbb(ndim, ndim), dsidep(2*ndim, 2*ndim)
 !-----------------------------------------------------------------------
@@ -37,7 +37,7 @@ subroutine calkbb(nno, ndim, w, def, dsidep, &
 ! OUT KBB    : MATRICE KBB
 !-----------------------------------------------------------------------
 !
-    integer :: ia, ja, na, kl, pq
+    integer(kind=8) :: ia, ja, na, kl, pq
     real(kind=8) :: t1
     real(kind=8) :: pbulle
     real(kind=8) :: devd(2*ndim, 2*ndim)

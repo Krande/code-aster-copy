@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: ninc, nd, nchoc, h, hf
+    integer(kind=8) :: ninc, nd, nchoc, h, hf
     character(len=14) :: parcho, adime, xvect
     real(kind=8) :: err
 ! ----------------------------------------------------------------------
@@ -66,19 +66,19 @@ subroutine mnlbhf(xvect, parcho, adime, ninc, nd, &
     character(len=14) :: xdep1, xdep2, xtemp
     real(kind=8) :: omega, alpha, eta, jeu
     real(kind=8) :: nrm
-    integer :: ivect
-    integer :: iadim, i, j
-    integer :: neqs, nddlx, nddly
-    integer :: nt, nddl, idep1, idep2, itemp
+    integer(kind=8) :: ivect
+    integer(kind=8) :: iadim, i, j
+    integer(kind=8) :: neqs, nddlx, nddly
+    integer(kind=8) :: nt, nddl, idep1, idep2, itemp
     real(kind=8), pointer :: tep2(:) => null()
-    integer, pointer :: vneqs(:) => null()
+    integer(kind=8), pointer :: vneqs(:) => null()
     real(kind=8), pointer :: jeumax(:) => null()
     real(kind=8), pointer :: raid(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
     real(kind=8), pointer :: orig(:) => null()
     real(kind=8), pointer :: reg(:) => null()
     character(len=8), pointer :: type(:) => null()
-    integer, pointer :: vnddl(:) => null()
+    integer(kind=8), pointer :: vnddl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,21 +27,21 @@ subroutine rsexc2(i1, i2, nomsd, nomsy, iordr, &
 #include "asterfort/assert.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/utmess.h"
-    integer :: i1, i2, icode, iret, j, nmax
+    integer(kind=8) :: i1, i2, icode, iret, j, nmax
 !-----------------------------------------------------------------------
     parameter(nmax=10)
     character(len=15) :: noms(nmax)
-    integer :: nb, iprec, iretg
+    integer(kind=8) :: nb, iprec, iretg
     aster_logical :: alarme
     save noms, nb, iprec, alarme, iretg
-    integer :: iordr
+    integer(kind=8) :: iordr
     character(len=*) :: nomsd, nomsy
     character(len=24) :: chextr
     character(len=24) :: valk(2)
     character(len=16) :: nomcmd, option
     character(len=8) :: concep
     character(len=16) :: typcon
-    integer :: vali
+    integer(kind=8) :: vali
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine utlisi(motcle, a, na, b, nb,&
                       c, nc, ntrou)
         character(len=*) :: motcle
-        integer :: a(*)
-        integer :: na
-        integer :: b(*)
-        integer :: nb
-        integer :: c(*)
-        integer :: nc
-        integer :: ntrou
+        integer(kind=8) :: a(*)
+        integer(kind=8) :: na
+        integer(kind=8) :: b(*)
+        integer(kind=8) :: nb
+        integer(kind=8) :: c(*)
+        integer(kind=8) :: nc
+        integer(kind=8) :: ntrou
     end subroutine utlisi
 end interface

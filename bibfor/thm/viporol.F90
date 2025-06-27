@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine viporol(ds_thm, nbvari, &
 #include "asterfort/THM_type.h"
 !
     type(THM_DS), intent(in) :: ds_thm
-    integer, intent(in) :: nbvari
-    integer, intent(in) :: advico, vicphi
+    integer(kind=8), intent(in) :: nbvari
+    integer(kind=8), intent(in) :: advico, vicphi
     real(kind=8), intent(in) :: dtemp, dpi
     real(kind=8), intent(in) :: deps(6), depsv
     real(kind=8), intent(in) :: signe, satur, unsks, phi0
@@ -45,7 +45,7 @@ subroutine viporol(ds_thm, nbvari, &
     real(kind=8), intent(in) :: vintm(nbvari)
     real(kind=8), intent(inout) :: vintp(nbvari)
     real(kind=8), intent(out) :: phi, phim
-    integer, intent(out) :: retcom
+    integer(kind=8), intent(out) :: retcom
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,7 +83,7 @@ subroutine viporol(ds_thm, nbvari, &
     real(kind=8) :: varbio
     real(kind=8), parameter :: epxmax = 5.d0
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer :: i
+    integer(kind=8) :: i
 !
 ! --------------------------------------------------------------------------------------------------
 !

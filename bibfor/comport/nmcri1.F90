@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ function nmcri1(dp)
     common/rconm2/alfafa, unsurn, sieleq
     common/kconm1/imate2, jprol2, jvale2, nbval2
     real(kind=8) :: deuxmu, nu, e, sigy, rprim, pm, sigel(6), line
-    integer :: imate2, jprol2, jvale2, nbval2
+    integer(kind=8) :: imate2, jprol2, jvale2, nbval2
     real(kind=8) :: drdp, airerp, alfafa, unsurn, sieleq
 !
 ! DEB-------------------------------------------------------------------

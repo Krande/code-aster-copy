@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 interface
     subroutine irgmor(tord, vers)
-        integer :: tord(8)
-        integer :: vers
+        integer(kind=8) :: tord(8)
+        integer(kind=8) :: vers
     end subroutine irgmor
 end interface

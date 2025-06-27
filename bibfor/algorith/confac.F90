@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine confac(typma, ft, nbft, f, nbf, quad)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
-    integer :: ft(12, 3), nbft, f(6, 8), nbf
+    integer(kind=8) :: ft(12, 3), nbft, f(6, 8), nbf
     character(len=8) :: typma
     character(len=*), optional, intent(in) :: quad
 ! person_in_charge: samuel.geniaut at edf.fr
@@ -45,7 +45,7 @@ subroutine confac(typma, ft, nbft, f, nbf, quad)
 !              NBF  : NOMBRE DE FACES
 !     ------------------------------------------------------------------
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
     aster_logical :: milieu
 ! ----------------------------------------------------------------------
 !

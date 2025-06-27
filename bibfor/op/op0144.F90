@@ -64,8 +64,8 @@ subroutine op0144()
     character(len=8) :: typflu
     common/kop144/typflu
 !
-    integer :: ibid, nbconn, iconn
-    integer :: ncmp
+    integer(kind=8) :: ibid, nbconn, iconn
+    integer(kind=8) :: ncmp
     real(kind=8) :: r8b
     complex(kind=8) :: c16b
     aster_logical :: tmode, calcul(2)
@@ -76,23 +76,23 @@ subroutine op0144()
     character(len=24) :: numoi, fsic, nomcha, matria, chrefe
     character(len=24) :: chvale
     character(len=32) :: nomvar
-    integer, pointer :: cata_to_field(:) => null()
-    integer, pointer :: field_to_cata(:) => null()
+    integer(kind=8), pointer :: cata_to_field(:) => null()
+    integer(kind=8), pointer :: field_to_cata(:) => null()
     character(len=8), pointer :: cmp_name(:) => null()
 !
 !-----------------------------------------------------------------------
     data nomcmp/'DX      ', 'DY      ', 'DZ      ', 'DRX     ', 'DRY     ', 'DRZ     '/
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacmp, iamor, iav, icmp, idec, idesc
-    integer :: iec, ifact, ifm, ifr, ifreq, ifsic
-    integer :: ii, imasg, inec, ino, inumo, io, ipar
-    integer :: irefe, itypfl, iv, ivite
-    integer :: j, jcrefe, jdesc, jj, long
-    integer :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
-    integer :: nec, nivdef, nivpar, numgd
+    integer(kind=8) :: i, iacmp, iamor, iav, icmp, idec, idesc
+    integer(kind=8) :: iec, ifact, ifm, ifr, ifreq, ifsic
+    integer(kind=8) :: ii, imasg, inec, ino, inumo, io, ipar
+    integer(kind=8) :: irefe, itypfl, iv, ivite
+    integer(kind=8) :: j, jcrefe, jdesc, jj, long
+    integer(kind=8) :: nbam, nbcomp, nbno, nbnoeu, nbocc, nbpar, nbpv
+    integer(kind=8) :: nec, nivdef, nivpar, numgd
     real(kind=8) :: amor, umin, vmax, vmin, vmoy, vpas
-    integer, pointer :: prno(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
     ibid = 0
 
     call jemarq()

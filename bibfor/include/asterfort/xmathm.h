@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,13 +25,13 @@ interface
                       nfiss, nfh, ifa, jheafa, ncomph)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: ndim
-        integer :: nnops
-        integer :: nnop
-        integer :: nddls
-        integer :: nddlm
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnops
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nddls
+        integer(kind=8) :: nddlm
         real(kind=8) :: ffc(16)
-        integer :: pla(27)
+        integer(kind=8) :: pla(27)
         real(kind=8) :: nd(3)
         real(kind=8) :: jac
         real(kind=8) :: ffp(27)
@@ -46,13 +46,13 @@ interface
         real(kind=8) :: dsidep(6,6)
         real(kind=8) :: p(3,3)
         real(kind=8) :: r
-        integer :: jheavn
-        integer :: ncompn
-        integer :: ifiss
-        integer :: nfiss
-        integer :: nfh
-        integer :: ifa
-        integer :: jheafa
-        integer :: ncomph
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: ncompn
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ifa
+        integer(kind=8) :: jheafa
+        integer(kind=8) :: ncomph
     end subroutine xmathm
 end interface

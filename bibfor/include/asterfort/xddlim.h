@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,16 +25,16 @@ interface
         character(len=8) :: modele
         character(len=8) :: motcle
         character(len=8) :: nomn
-        integer :: ino
+        integer(kind=8) :: ino
         real(kind=8) :: valimr
         complex(kind=8) :: valimc
         character(len=8) :: valimf
         character(len=4) :: fonree
-        integer :: icompt
+        integer(kind=8) :: icompt
         character(len=19) :: lisrel
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: direct(3)
-        integer :: jnoxfv
+        integer(kind=8) :: jnoxfv
         character(len=19) :: ch1
         character(len=19) :: ch2
         character(len=19) :: ch3

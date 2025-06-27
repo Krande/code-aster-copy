@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,26 +24,26 @@ interface
                       nbnoec, linoec, nbmaec, limaec, lvarie,&
                       sdcarm, carael, paraListNb, paraListName,&
                       nbCmpDyna, lfichUniq, codret)
-        integer :: ifichi
+        integer(kind=8) :: ifichi
         character(len=19) :: chanom
         character(len=*) :: partie
         character(len=64) :: nochmd
         character(len=8) :: noresu
         character(len=16) :: nomsym
         character(len=8) :: typech
-        integer :: numord
-        integer :: nbrcmp
+        integer(kind=8) :: numord
+        integer(kind=8) :: nbrcmp
         character(len=*) :: nomcmp(*)
-        integer :: nbnoec
-        integer :: linoec(*)
-        integer :: nbmaec
-        integer :: limaec(*)
+        integer(kind=8) :: nbnoec
+        integer(kind=8) :: linoec(*)
+        integer(kind=8) :: nbmaec
+        integer(kind=8) :: limaec(*)
         aster_logical :: lvarie
         character(len=8) :: sdcarm, carael
-        integer, intent(in) :: paraListNb
+        integer(kind=8), intent(in) :: paraListNb
         character(len=16), pointer :: paraListName(:)
-        integer, intent(inout) :: nbCmpDyna
+        integer(kind=8), intent(inout) :: nbCmpDyna
         aster_logical :: lfichUniq
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine irchme
 end interface

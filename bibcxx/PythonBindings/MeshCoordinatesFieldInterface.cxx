@@ -3,7 +3,7 @@
  * @brief Interface python de MeshCoordinates
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -44,15 +44,16 @@ void exportMeshCoordinatesFieldToPython( py::module_ &mod ) {
         .def( float() * py::self )
         .def( py::self *= float() )
         .def( -py::self )
-        .def( "__add__",
-              +[]( MeshCoordinatesField &a, const FieldOnNodesReal &b ) { return a + b; } )
-        .def( "__add__",
-              +[]( const FieldOnNodesReal &a, MeshCoordinatesField &b ) { return a + b; } )
-        .def( "__getitem__",
-              +[]( const MeshCoordinatesField &v, ASTERINTEGER node_id ) {
-                  return v.operator[]( node_id );
-              },
-              R"(
+        .def(
+            "__add__", +[]( MeshCoordinatesField &a, const FieldOnNodesReal &b ) { return a + b; } )
+        .def(
+            "__add__", +[]( const FieldOnNodesReal &a, MeshCoordinatesField &b ) { return a + b; } )
+        .def(
+            "__getitem__",
+            +[]( const MeshCoordinatesField &v, ASTERINTEGER node_id ) {
+                return v.operator[]( node_id );
+            },
+            R"(
 Return the coordinates (x,y,z) at of Node node_id in the vector.
 
 The value is the same as *getValues()[3*node_id:3*node_id+2]* without creating the entire vector.
@@ -60,7 +61,7 @@ The value is the same as *getValues()[3*node_id:3*node_id+2]* without creating t
 Returns:
     tuple[float]: coordinates (x,y,z).
         )",
-              py::arg( "node_id" ) )
+            py::arg( "node_id" ) )
         .def( "getValues", &MeshCoordinatesField::getValues, R"(
 Return a list of values of the coordinates as (x1, y1, z1, x2, y2, z2...)
 
@@ -79,11 +80,12 @@ Return a copy of MeshCoordinatesField object
 Returns:
     MeshCoordinatesField : MeshCoordinatesField object
         )" )
-        .def( "toFieldOnNodes",
-              []( const MeshCoordinatesField &field, const BaseMeshPtr mesh ) {
-                  return toFieldOnNodes( field, mesh );
-              },
-              R"(
+        .def(
+            "toFieldOnNodes",
+            []( const MeshCoordinatesField &field, const BaseMeshPtr mesh ) {
+                return toFieldOnNodes( field, mesh );
+            },
+            R"(
 Convert to FieldOnNodes
 
 Arguments:
@@ -92,7 +94,7 @@ Arguments:
 Returns:
     FieldOnNodesReal: the corresponding field
         )",
-              py::arg( "mesh" ) )
+            py::arg( "mesh" ) )
         .def( "size", &MeshCoordinatesField::size, R"(
 Return the size of the field
 

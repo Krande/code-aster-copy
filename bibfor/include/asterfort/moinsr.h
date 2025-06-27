@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine moinsr(j, n, idil, idiich, idsuiv,&
                       nosuiv, idip, noip, iilib, iimax)
-        integer :: j
-        integer :: n
-        integer :: idil
-        integer :: idiich
-        integer :: idsuiv
+        integer(kind=8) :: j
+        integer(kind=8) :: n
+        integer(kind=8) :: idil
+        integer(kind=8) :: idiich
+        integer(kind=8) :: idsuiv
         character(len=*) :: nosuiv
-        integer :: idip
+        integer(kind=8) :: idip
         character(len=*) :: noip
-        integer :: iilib
-        integer :: iimax
+        integer(kind=8) :: iilib
+        integer(kind=8) :: iimax
     end subroutine moinsr
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine cfnumm(defico, posnma, numnma)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=24), intent(in) :: defico
-    integer, intent(in) :: posnma
-    integer, intent(out) :: numnma
+    integer(kind=8), intent(in) :: posnma
+    integer(kind=8), intent(out) :: numnma
 !
 ! ----------------------------------------------------------------------
 !
@@ -46,7 +46,7 @@ subroutine cfnumm(defico, posnma, numnma)
 !
 !
     character(len=24) :: contma
-    integer :: jmaco
+    integer(kind=8) :: jmaco
 !
 ! ----------------------------------------------------------------------
 !

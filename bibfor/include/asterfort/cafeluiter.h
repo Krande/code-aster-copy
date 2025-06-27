@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       clacier, eys, typdiag, ferrcomp, precs, ferrsyme, slsyme, uc, um, &
                       condns, astend, ascomp, sstend, sscomp, ectend, eccomp,&
                       alpha, pivot, etat, ierr)
-    integer :: typco
+    integer(kind=8) :: typco
     real(kind=8) :: alphacc
     real(kind=8) :: effm
     real(kind=8) :: effn
@@ -36,15 +36,15 @@ interface
     real(kind=8) :: fbeton
     real(kind=8) :: gammas
     real(kind=8) :: gammac
-    integer :: clacier
+    integer(kind=8) :: clacier
     real(kind=8) :: eys
-    integer :: typdiag
-    integer :: ferrcomp
-    integer :: precs
-    integer :: ferrsyme
+    integer(kind=8) :: typdiag
+    integer(kind=8) :: ferrcomp
+    integer(kind=8) :: precs
+    integer(kind=8) :: ferrsyme
     real(kind=8) :: slsyme
-    integer :: uc
-    integer :: um
+    integer(kind=8) :: uc
+    integer(kind=8) :: um
     logical :: condns
     real(kind=8) :: astend
     real(kind=8) :: ascomp
@@ -53,8 +53,8 @@ interface
     real(kind=8) :: ectend
     real(kind=8) :: eccomp
     real(kind=8) :: alpha
-    integer :: pivot
-    integer :: etat
-    integer :: ierr
+    integer(kind=8) :: pivot
+    integer(kind=8) :: etat
+    integer(kind=8) :: ierr
     end subroutine cafeluiter
 end interface

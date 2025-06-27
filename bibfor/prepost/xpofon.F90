@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 #include "asterfort/utmess.h"
 !
     character(len=8) :: modele
-    integer :: mftot, nftot, nfcomf, ngfon
+    integer(kind=8) :: mftot, nftot, nfcomf, ngfon
 !     BUT : RECUPERER POUR L'IMPRESSION LES CARACTERISTIQUES DES FONDS
 !           DE FISSURE
 !   IN
@@ -41,15 +41,15 @@ subroutine xpofon(modele, mftot, nftot, nfcomf, ngfon)
 !       NGFON  : NOMBRE TOTAL DE FOND DE FISSURES
 !     =================================================================
 !     ------------------------------------------------------------------
-    integer :: jnom, jnfond
-    integer :: iret, ifiss, ifon
-    integer :: ndim, nfiss, nfond, nbnol
+    integer(kind=8) :: jnom, jnfond
+    integer(kind=8) :: iret, ifiss, ifon
+    integer(kind=8) :: ndim, nfiss, nfond, nbnol
     character(len=8) :: fiss, mo, malini
     character(len=16) :: typdis
     character(len=19) :: nomta1, nomta2
     character(len=24) :: nom
-    integer, pointer :: tbnp(:) => null()
-    integer, pointer :: fondmult(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: fondmult(:) => null()
 !
 !
 !     INITIALISATIONS

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -70,24 +70,24 @@ subroutine spect1(casint, nomu, spectr, ispect, base, &
     character(len=8) :: nomu, nomzon
     character(len=19) :: spectr, base
     real(kind=8) :: vite, vmoyzi, vmoyto
-    integer :: nbm, nuor(nbm), vali(2)
+    integer(kind=8) :: nbm, nuor(nbm), vali(2)
 !
-    integer :: dim, nbval, icmp
+    integer(kind=8) :: dim, nbval, icmp
     character(len=8) :: nomcmp, depla(3), maillage
     character(len=19) :: typflu, caelem
     character(len=24) :: refe, fsic, fsvi, fsvk, profvn, frhoe, nomcha, valr
     character(len=24) :: chvale
     character(len=3) :: tout
     real(kind=8) :: rbid, valx(3)
-    integer :: ij
+    integer(kind=8) :: ij
 !-----------------------------------------------------------------------
-    integer :: i, ic, icha, ide, ideb, idefm, idep
-    integer :: ier, ifre, ifsic, ifsvi, ifsvk, ii, ik
-    integer :: il, ilc2, im, im1, im1b, im2, im2b
-    integer :: imb, imodf, imodi, ip, ipvn, irefe, irhoe
-    integer :: irsp, ispect, itypfl, ivale, ivitn, iz
-    integer :: jm, jmb, kk, lwr, n1, n2, nbcmp
-    integer :: nbfonc, nbp, nbpf, nzex
+    integer(kind=8) :: i, ic, icha, ide, ideb, idefm, idep
+    integer(kind=8) :: ier, ifre, ifsic, ifsvi, ifsvk, ii, ik
+    integer(kind=8) :: il, ilc2, im, im1, im1b, im2, im2b
+    integer(kind=8) :: imb, imodf, imodi, ip, ipvn, irefe, irhoe
+    integer(kind=8) :: irsp, ispect, itypfl, ivale, ivitn, iz
+    integer(kind=8) :: jm, jmb, kk, lwr, n1, n2, nbcmp
+    integer(kind=8) :: nbfonc, nbp, nbpf, nzex
     real(kind=8) :: beta, beta1, beta2, eps, err, fr, frc
     real(kind=8) :: gamma, phi0, phi01, phi02, phie, r1, ren
     real(kind=8) :: rom, rov, sx, tauxv, tol, vitezi, x1
@@ -264,8 +264,9 @@ subroutine spect1(casint, nomu, spectr, ispect, base, &
                 jmb = jm-imodi+1
                 imb = im-imodi+1
                 kk = (jmb*(jmb-1))/2+imb
-              zr(ilc2+kk-1) = zr(ilc2+kk-1)+spect2(x1, x2, xlc, zr(ivitn), zr(irhoe), zr(idefm), sp&
-                                  &ect4, tol, ier, r1, err, nbp, im, jm)
+                zr(ilc2+kk-1) = zr(ilc2+kk-1)+ &
+                spect2(x1, x2, xlc, zr(ivitn), zr(irhoe), zr(idefm), sp&
+                                              &ect4, tol, ier, r1, err, nbp, im, jm)
 !
                 if (ier .ne. 0) then
                     vali(1) = nuor(jm)

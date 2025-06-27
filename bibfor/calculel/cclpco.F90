@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine cclpco(option, resuou, numord, nbpaou, lipaou, &
 #include "asterfort/jexnum.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/assert.h"
-    integer :: nbpaou, numord
+    integer(kind=8) :: nbpaou, numord
     character(len=8) :: resuou
     character(len=8) :: lipaou(*)
     character(len=16) :: option
@@ -52,8 +52,8 @@ subroutine cclpco(option, resuou, numord, nbpaou, lipaou, &
 !   LICHOU  K8*  LISTE DES CHAMPS OUT
 ! ----------------------------------------------------------------------
 ! person_in_charge: nicolas.sellenet at edf.fr
-    integer :: opt, iaopds, iapara, nparin, ipara, ierd
-    integer :: nparou, kpara, nugd
+    integer(kind=8) :: opt, iaopds, iapara, nparin, ipara, ierd
+    integer(kind=8) :: nparou, kpara, nugd
 !
     character(len=8) :: nomgd, tsca
     character(len=19) :: nochou

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine rctrac(jmat, ktrac, nomcl, temp, jprol,&
                       jvale, nbvale, e, materi)
-        integer :: jmat
-        integer :: ktrac
+        integer(kind=8) :: jmat
+        integer(kind=8) :: ktrac
         character(len=*) :: nomcl
         real(kind=8) :: temp
-        integer :: jprol
-        integer :: jvale
-        integer :: nbvale
+        integer(kind=8) :: jprol
+        integer(kind=8) :: jvale
+        integer(kind=8) :: nbvale
         real(kind=8) :: e
         character(len=*), optional, intent(in) :: materi
     end subroutine rctrac

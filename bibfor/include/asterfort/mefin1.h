@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     function mefin1(nbz, nbgrp, imod, icyl, jmod,&
                     jcyl, z, f1, f2, f3)
-        integer :: nbgrp
-        integer :: nbz
-        integer :: imod
-        integer :: icyl
-        integer :: jmod
-        integer :: jcyl
+        integer(kind=8) :: nbgrp
+        integer(kind=8) :: nbz
+        integer(kind=8) :: imod
+        integer(kind=8) :: icyl
+        integer(kind=8) :: jmod
+        integer(kind=8) :: jcyl
         real(kind=8) :: z(*)
         real(kind=8) :: f1(nbz*nbgrp, *)
         real(kind=8) :: f2(nbz*nbgrp, *)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ interface
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
         real(kind=8), intent(in)  :: parm_theta, gravity(3)
-        integer, intent(in) :: ndim
-        integer, intent(in) :: dimdef, dimcon
-        integer, intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: dimdef, dimcon
+        integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
         real(kind=8), intent(in) :: congem(dimcon), congep(dimcon)
         real(kind=8), intent(in) :: time_incr
         real(kind=8), intent(out) :: drds(dimdef+1, dimcon)

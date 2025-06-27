@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,6 @@ interface
         character(len=19) :: numout
         character(len=24) :: nomvec
         character(len=1) :: base
-        integer :: neqout
+        integer(kind=8) :: neqout
     end subroutine convnu
 end interface

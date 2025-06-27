@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ subroutine lckimp(ndim, typmod, option, mat, eps, &
 #include "asterf_types.h"
 #include "asterfort/rcvala.h"
 
-    integer           :: ndim
+    integer(kind=8)           :: ndim
     character(len=8)  :: typmod
     character(len=16) :: option
-    integer           :: mat
+    integer(kind=8)           :: mat
     real(kind=8)      :: eps(:)
     real(kind=8)      :: phitot
     real(kind=8)      :: vim(:)
@@ -57,14 +57,14 @@ subroutine lckimp(ndim, typmod, option, mat, eps, &
 !     -----------------------------------------------------------------
 !
     aster_logical :: cplan, resi
-    integer :: ndimsi, ij, kl
+    integer(kind=8) :: ndimsi, ij, kl
     real(kind=8) :: val(3), nu, lambda, deuxmu
     real(kind=8) :: e, phi
     real(kind=8) :: coplan, w, treps, epseps, sigel(2*ndim)
     real(kind=8) :: fd
     real(kind=8) :: kk, epsd(2*ndim)
     real(kind=8) :: sigm, w0
-    integer :: k2(4)
+    integer(kind=8) :: k2(4)
     character(len=8) :: nom(3)
     real(kind=8) :: kron(6), rigmin, kr(2*ndim)
     parameter(rigmin=1.d-5)

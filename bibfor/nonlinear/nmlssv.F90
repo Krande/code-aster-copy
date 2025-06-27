@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine nmlssv(list_load)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: lload_fcss
-    integer :: i, iret, nbsst
+    integer(kind=8) :: i, iret, nbsst
     character(len=24), pointer :: v_lload_fcss(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

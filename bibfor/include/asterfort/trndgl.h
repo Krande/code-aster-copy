@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine trndgl(nbx, vectn, vectpt, deplg, depll,&
                       rotfic)
-        integer :: nbx
+        integer(kind=8) :: nbx
         real(kind=8) :: vectn(9, 3)
         real(kind=8) :: vectpt(9, 2, 3)
         real(kind=8) :: deplg(*)

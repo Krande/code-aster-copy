@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
         character(len=*) :: interp
         real(kind=8) :: prec
         character(len=*) :: crit
-        integer :: nbinst
+        integer(kind=8) :: nbinst
         real(kind=8) :: ti(*)
         real(kind=8) :: temps
         complex(kind=8) :: y(*)
-        integer :: neq
+        integer(kind=8) :: neq
         complex(kind=8) :: xtract(*)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine zxtrac
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,7 +46,7 @@ subroutine nmrtim(ds_measure, device_type_, time)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: device_indx
+    integer(kind=8) :: device_indx
     type(NL_DS_Device) :: device
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       nblign)
         character(len=*) :: nomta
         character(len=*) :: baseta
-        integer :: nbpar
+        integer(kind=8) :: nbpar
         character(len=*) :: nompar(*)
         character(len=*) :: typpar(*)
-        integer :: nblign
+        integer(kind=8) :: nblign
     end subroutine tbcrsv
 end interface

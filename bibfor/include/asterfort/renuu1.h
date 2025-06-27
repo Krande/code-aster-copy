@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine renuu1(coin, longi, ordo, longo, nbco,&
                       newn)
-        integer :: coin(*)
-        integer :: longi
-        integer :: ordo(*)
-        integer :: longo
-        integer :: nbco(*)
-        integer :: newn(*)
+        integer(kind=8) :: coin(*)
+        integer(kind=8) :: longi
+        integer(kind=8) :: ordo(*)
+        integer(kind=8) :: longo
+        integer(kind=8) :: nbco(*)
+        integer(kind=8) :: newn(*)
     end subroutine renuu1
 end interface

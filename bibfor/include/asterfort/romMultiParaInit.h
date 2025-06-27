@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,6 @@ interface
     subroutine romMultiParaInit(ds_multipara, nb_mode_maxi)
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-        integer, intent(in) :: nb_mode_maxi
+        integer(kind=8), intent(in) :: nb_mode_maxi
     end subroutine romMultiParaInit
 end interface

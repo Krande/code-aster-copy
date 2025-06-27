@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,18 +50,18 @@ subroutine pofape()
 !              CHARGEMENT PERIODIQUE
 !     -----------------------------------------------------------------
 !
-    integer :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, nbc, ibid, iordo
-    integer :: ifonc1, ifonc, ilign, nbpar, nbpapf, j, nval, paract(35), nbeps
-    integer :: ifonc2, ifonce, iordoe, ifonc3, ifoncp, iordop, nbepsp
-    integer :: tdisp, nbnop, lisnoe(1), nbnot, nbordr, nnoini
-    integer :: tspaq, k, jrwork, nbcmp, ordini
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6, nbf, nbptot, nbpts, i, nbc, ibid, iordo
+    integer(kind=8) :: ifonc1, ifonc, ilign, nbpar, nbpapf, j, nval, paract(35), nbeps
+    integer(kind=8) :: ifonc2, ifonce, iordoe, ifonc3, ifoncp, iordop, nbepsp
+    integer(kind=8) :: tdisp, nbnop, lisnoe(1), nbnot, nbordr, nnoini
+    integer(kind=8) :: tspaq, k, jrwork, nbcmp, ordini
 !
     real(kind=8) :: rbid, phmax, cissio, sphere, pcorr, val(2), vmax, vmin
     real(kind=8) :: domage(1), rcrit, vresu(24), resu(7), valpar(35)
     complex(kind=8) :: cbid
     aster_logical :: lhaigh, lke, post, fordef, plcicr
     aster_logical :: crsigm, crepst, crepse, crepsp, plcr2
-    integer :: icodre(2), icodwo, icodba, icodhs
+    integer(kind=8) :: icodre(2), icodwo, icodba, icodhs
     character(len=8) :: k8b, nomten(6), nompar, nommat
     character(len=8) :: result, nomeps(6), nomepp(6)
     character(len=16) :: kdomm, nomcmd, pheno, criter, nomfor, typcha, forvie

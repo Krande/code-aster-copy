@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine ultype(unit, type)
 #include "asterfort/ulinit.h"
 #include "asterfort/ulexis.h"
 #include "asterfort/utmess.h"
-    integer :: unit
+    integer(kind=8) :: unit
     character(len=1) :: type
 !     ------------------------------------------------------------------
 !     RETOURNE LE TYPE D'UN FICHIER ASSOCIE A UNE UNITE LOGIQUE
@@ -32,17 +32,17 @@ subroutine ultype(unit, type)
 ! OUT TYPE   : A = ASCII, B = BINARY, L = LIBRE
 !
 !
-    integer :: mxf
+    integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
-    integer :: first, unitfi(mxf), nbfile
+    integer(kind=8) :: first, unitfi(mxf), nbfile
     common/asgfi1/first, unitfi, nbfile
     common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
     character(len=8) :: k8bid
-    integer :: i
+    integer(kind=8) :: i
 !
     if (first .ne. 17111990) call ulinit()
 !

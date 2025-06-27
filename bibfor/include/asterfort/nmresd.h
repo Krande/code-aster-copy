@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
                       ds_algorom_)
         use NonLin_Datastructure_type
         use ROM_Datastructure_type        
-        integer :: fonact(*)
+        integer(kind=8) :: fonact(*)
         character(len=19) :: sddyna
         type(ROM_DS_AlgoPara), optional, intent(in) :: ds_algorom_
         type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -37,6 +37,6 @@ interface
         character(len=19) :: cnpilo
         character(len=19) :: cncine
         character(len=19) :: solalg(*)
-        integer :: rescvg
+        integer(kind=8) :: rescvg
     end subroutine nmresd
 end interface

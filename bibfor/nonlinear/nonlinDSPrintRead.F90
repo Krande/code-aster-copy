@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,10 +44,10 @@ subroutine nonlinDSPrintRead(ds_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=16) :: keywf, repk
     aster_logical :: l_csv, l_info_resi, l_info_time
-    integer :: noc, unit_csv, reac_print
+    integer(kind=8) :: noc, unit_csv, reac_print
 !
 ! --------------------------------------------------------------------------------------------------
 !

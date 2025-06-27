@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine vdefgn(nomte, nb2, epais, zic, sigma, &
     character(len=16) :: nomte
     real(kind=8) :: epais, zic, demiep
     real(kind=8) :: sigma(6, *), effgtg(8, *)
-    integer :: i, j, nb2
+    integer(kind=8) :: i, j, nb2
     real(kind=8) :: wnc1, wnc2, wnc3, zic1, zic2, zic3
 !-----------------------------------------------------------------------
 !

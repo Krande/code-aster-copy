@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine te0464(option, nomte)
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
 !
-    integer :: nddlm, nl, ipoint, lorien
+    integer(kind=8) :: nddlm, nl, ipoint, lorien
     parameter(nddlm=6, nl=nddlm*nddlm)
-    integer :: i, nc, nno, jdm, jdc, j, infodi, ibid
+    integer(kind=8) :: i, nc, nno, jdm, jdc, j, infodi, ibid
     real(kind=8) :: vxx, r8bid, pgl(3, 3), klv(nl)
     character(len=8) :: k8bid
 !

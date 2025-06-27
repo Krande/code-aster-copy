@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine rc32mu()
 #include "asterfort/tbliva.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
-    integer :: ncmp, nb, kk
+    integer(kind=8) :: ibid, ns(13), nbabsc, jabsc, iret, jmune, jmuno, i, j, k, l, ndim
+    integer(kind=8) :: ncmp, nb, kk
     parameter(ncmp=6)
     real(kind=8) :: prec, momen0, momen1
     complex(kind=8) :: cbid

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -137,7 +137,7 @@ subroutine pecap2(chgeoz, iy, iz, s, alpha, &
 ! ---- INITIALISATIONS
 !      ---------------
 !-----------------------------------------------------------------------
-    integer :: i, iret, nbordr
+    integer(kind=8) :: i, iret, nbordr
     real(kind=8) :: alpha, alphar, ay, az, ey, ez, pctx
     real(kind=8) :: pcty, prec, s, xg, yg, zero
 !

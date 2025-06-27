@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@
 !
 interface
     function in_liste_entier(val,liste,indx)
-        integer :: val,liste(:)
+        integer(kind=8) :: val,liste(:)
         logical :: in_liste_entier
 !
-        integer,intent(out),optional :: indx
+        integer(kind=8),intent(out),optional :: indx
     end function in_liste_entier
 end interface

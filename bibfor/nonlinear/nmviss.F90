@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -74,18 +74,18 @@ subroutine nmviss(numedd, sddyna, ds_inout, instam, instap, &
     character(len=15) :: sdexso
     character(len=19) :: sdexsz, resu19
     character(len=24) :: tabequ, tabinf
-    integer :: ieqint, iddint
+    integer(kind=8) :: ieqint, iddint
     character(len=24) :: tabrig, tabmas, tabamo, tabfor
-    integer :: jrigt, jmast, jamot, jfor
+    integer(kind=8) :: jrigt, jmast, jamot, jfor
     character(len=8) :: k8bid
-    integer :: neq
-    integer :: nume0, nume
+    integer(kind=8) :: neq
+    integer(kind=8) :: nume0, nume
     real(kind=8) :: instd, inst, pas, coef1, coef2
     real(kind=8) :: alpha
-    integer :: iordr, iarc, iarc2, iret
-    integer :: id1, ifreq
-    integer :: jinst, ldnew
-    integer :: nddint, unitef, nbmode, npasm, nummax, nmsto
+    integer(kind=8) :: iordr, iarc, iarc2, iret
+    integer(kind=8) :: id1, ifreq
+    integer(kind=8) :: jinst, ldnew
+    integer(kind=8) :: nddint, unitef, nbmode, npasm, nummax, nmsto
     character(len=8) :: criterion
     real(kind=8) :: precision
     real(kind=8), pointer :: vaa2(:) => null()

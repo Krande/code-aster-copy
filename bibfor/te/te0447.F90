@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,8 +39,8 @@ subroutine te0447(option, nomte)
 !.......................................................................
 !
     aster_logical :: axi, grand
-    integer :: kpg, ksig, nno, nnos, npg, ipoids, ivf, ndim, ncmp
-    integer :: idfde, idepl, igeom, idefo, kk, jgano
+    integer(kind=8) :: kpg, ksig, nno, nnos, npg, ipoids, ivf, ndim, ncmp
+    integer(kind=8) :: idfde, idepl, igeom, idefo, kk, jgano
     real(kind=8) :: poids, dfdi(81), f(3, 3), r, eps(6), vpg(36)
     real(kind=8) :: tmp
 ! ......................................................................

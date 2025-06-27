@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine hujtel(mod, mater, sig, hook)
 !       SIG   :  CONTRAINTES
 !  OUT  HOOK  :  OPERATEUR RIGIDITE ELASTIQUE
 !  ---------------------------------------------------------------
-    integer :: ndt, ndi, i, j
+    integer(kind=8) :: ndt, ndi, i, j
     real(kind=8) :: sig(6), hook(6, 6), mater(22, 2), i1, coef
     real(kind=8) :: e, nu, al, demu, la
     real(kind=8) :: un, d13, zero, deux

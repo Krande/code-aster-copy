@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine xmmatb(ndim, nnops, ddls, ddlm, ffc, &
 !
 ! ----------------------------------------------------------------------
 
-    integer :: i, j, ndim, nnops, in, ddls, ddlm, ncompn, ifh, nfh, ifiss
-    integer :: plj, pla(27), jheavn, heavn(nnops, ncompn), nfiss, hea_fa(2)
-    integer :: ifa, jheafa, ncomph, dec
+    integer(kind=8) :: i, j, ndim, nnops, in, ddls, ddlm, ncompn, ifh, nfh, ifiss
+    integer(kind=8) :: plj, pla(27), jheavn, heavn(nnops, ncompn), nfiss, hea_fa(2)
+    integer(kind=8) :: ifa, jheafa, ncomph, dec
     real(kind=8) :: ffj, ffc(16), dt, ta
     real(kind=8) :: jac, ffp2(27), mmat(560, 560)
     aster_logical :: lmultc

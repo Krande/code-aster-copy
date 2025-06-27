@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -90,7 +90,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: neq, imat(*), liad(*), nchar, nveca, nume, numrep
+    integer(kind=8) :: neq, imat(*), liad(*), nchar, nveca, nume, numrep
     character(len=8) :: masse, rigid, amort
     character(len=24) :: modele, carele, charge, fomult, mate, mateco, numedd
     character(len=24) :: infoch, lifo(*)
@@ -100,18 +100,18 @@ subroutine dldiff(result, force1, lcrea, lamort, neq, &
     real(kind=8) :: fexte(*), famor(*), fliai(*)
     aster_logical :: lamort, lcrea
     type(NL_DS_Energy), intent(inout) :: ds_energy
-    integer, parameter :: nbtyar = 6
-    integer :: iwk0, iwk1, iwk2
-    integer :: ifm, niv
-    integer :: ieq, iexcl, perc, freqpr, last_prperc
-    integer :: ivite1, ivite2, iacce1, iarchi
-    integer :: ibid
-    integer :: alarm, archiv
-    integer :: ipepa, igrpa
-    integer :: ipas, istop, istoc, jstoc
-    integer :: jnbpa, jbint, jlpas
-    integer :: npatot, nbgrpa, nbptpa
-    integer :: nbexcl, nbordr
+    integer(kind=8), parameter :: nbtyar = 6
+    integer(kind=8) :: iwk0, iwk1, iwk2
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ieq, iexcl, perc, freqpr, last_prperc
+    integer(kind=8) :: ivite1, ivite2, iacce1, iarchi
+    integer(kind=8) :: ibid
+    integer(kind=8) :: alarm, archiv
+    integer(kind=8) :: ipepa, igrpa
+    integer(kind=8) :: ipas, istop, istoc, jstoc
+    integer(kind=8) :: jnbpa, jbint, jlpas
+    integer(kind=8) :: npatot, nbgrpa, nbptpa
+    integer(kind=8) :: nbexcl, nbordr
     character(len=4) :: typ1(nbtyar)
     character(len=8) :: nomres
     character(len=16) :: typres, nomcmd, typear(nbtyar)
@@ -122,7 +122,7 @@ subroutine dldiff(result, force1, lcrea, lamort, neq, &
     real(kind=8) :: dt, dtm, dtmax, temps, dt1, tf
     real(kind=8) :: omeg, deuxpi
     real(kind=8) :: r8bid
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
     real(kind=8) :: valr(2)
     aster_logical :: ener, l_obsv
     real(kind=8), pointer :: vale(:) => null()

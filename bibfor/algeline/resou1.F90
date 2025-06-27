@@ -91,23 +91,23 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm, &
 #include "asterfort/wkvect.h"
 #include "asterfort/isParallelMatrix.h"
     character(len=*) :: matass, matpre, solveu, chcine
-    integer :: nsecm
+    integer(kind=8) :: nsecm
     character(len=*) :: chsecm, chsolu, base
     real(kind=8) :: rsolu(*)
     complex(kind=8) :: csolu(*)
     character(len=*) :: criter
     aster_logical :: prepos
-    integer :: istop, iret
+    integer(kind=8) :: istop, iret
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, ifm, niv
+    integer(kind=8) :: ibid, ifm, niv
     character(len=3) :: kmpic, type, typ1, khpc
     character(len=19) :: matr19, mpre19, solv19, cine19
     character(len=19) :: secm19, csol19, crit19
     character(len=24) :: metres
 !
-    integer :: idbgav, neq, neq1, ier, niter, lmat, jvals
-    integer :: jtrav, jval2, imd, istopz
+    integer(kind=8) :: idbgav, neq, neq1, ier, niter, lmat, jvals
+    integer(kind=8) :: jtrav, jval2, imd, istopz
     real(kind=8) :: epsi
     complex(kind=8) :: cbid
     aster_logical :: dbg, l_parallel_matrix
@@ -115,7 +115,7 @@ subroutine resou1(matass, matpre, solveu, chcine, nsecm, &
     character(len=24), pointer :: slvk(:) => null()
     character(len=24), pointer :: refa(:) => null()
     real(kind=8), pointer :: slvr(:) => null()
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 ! ----------------------------------------------------------------------
     dbg = .false.

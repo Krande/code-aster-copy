@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,12 +52,12 @@ subroutine te0093(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ndimSpace = 2
-    integer :: jvWeight, jvShape, jvDShape
-    integer :: jvGeom, jvForc, jvVect
-    integer :: nno, npg
-    integer :: kpg, iNode, iDof
-    integer :: jdec, kdec
+    integer(kind=8), parameter :: ndimSpace = 2
+    integer(kind=8) :: jvWeight, jvShape, jvDShape
+    integer(kind=8) :: jvGeom, jvForc, jvVect
+    integer(kind=8) :: nno, npg
+    integer(kind=8) :: kpg, iNode, iDof
+    integer(kind=8) :: jdec, kdec
     real(kind=8) :: jacWeight, r, fx, fy
     aster_logical :: lAxis
 !

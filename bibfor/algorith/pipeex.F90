@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine pipeex(mat, sup, sud, mup, mud, &
 !
     implicit none
 #include "asterfort/rcvalb.h"
-    integer :: mat
+    integer(kind=8) :: mat
     real(kind=8) :: sup(3), sud(3), mup(3), mud(3), tau, vim(*), copilo(5)
 ! ----------------------------------------------------------------------
 !     PILOTAGE PRED_ELAS POUR LA LOI D'INTERFACE OUVERTURE
@@ -41,7 +41,7 @@ subroutine pipeex(mat, sup, sud, mup, mud, &
 ! ----------------------------------------------------------------------
     real(kind=8) :: sc, gc, dc, h, r, ka, ga, sk, val(3), tmp
     real(kind=8) :: tt, tpn, tdn, tauref
-    integer :: cod(3), kpg, spt
+    integer(kind=8) :: cod(3), kpg, spt
     character(len=16) :: nom(3)
     character(len=8) ::  fami, poum
 !

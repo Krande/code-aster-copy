@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
     real(kind=8), intent(in) :: pres_frot(3)
     real(kind=8), intent(in) :: dist_frot(3)
     real(kind=8), intent(out) :: coef_adap
-    integer, intent(out) :: stat_adap
+    integer(kind=8), intent(out) :: stat_adap
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -60,7 +60,7 @@ subroutine mm_cycl_adaf(adap_type, tole_stick, tole_slide, coef_init, pres_frot,
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: nrese, new_coef
-    integer :: icoef
+    integer(kind=8) :: icoef
     aster_logical :: l_augm, l_stop
 !
 ! --------------------------------------------------------------------------------------------------

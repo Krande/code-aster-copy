@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine acevco(nbocc, nlg, ier)
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
-    integer :: nbocc, nlg, ier
+    integer(kind=8) :: nbocc, nlg, ier
 !                          AFFE_CARA_ELEM
 !
 !        VERIFICATION DES MOTS CLES POUR L'ELEMENT COQUE
@@ -36,8 +36,8 @@ subroutine acevco(nbocc, nlg, ier)
 !  IN/OUT
 !     IER    : CUMUL DES ERREURS
 ! ----------------------------------------------------------------------
-    integer :: ioc, nco, ne, nef, nex, nexf, ng, nin
-    integer :: nk
+    integer(kind=8) :: ioc, nco, ne, nef, nex, nexf, ng, nin
+    integer(kind=8) :: nk
     character(len=8) :: k8b, nomu
     character(len=16) :: concep, cmd
 !-----------------------------------------------------------------------

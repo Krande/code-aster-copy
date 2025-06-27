@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ subroutine romLineicIndexList(tole, &
     implicit none
 !
     real(kind=8), intent(in) :: tole
-    integer, intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_node
     real(kind=8), intent(in) :: coor_node(nb_node)
-    integer, intent(in) :: nb_slice
+    integer(kind=8), intent(in) :: nb_slice
     real(kind=8), intent(in) :: coor_slice(nb_slice)
-    integer, intent(out) :: node_to_slice(nb_node)
+    integer(kind=8), intent(out) :: node_to_slice(nb_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +48,7 @@ subroutine romLineicIndexList(tole, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, i_slice
+    integer(kind=8) :: i_node, i_slice
 !
 ! --------------------------------------------------------------------------------------------------
 !

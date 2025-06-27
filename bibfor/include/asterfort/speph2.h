@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@
 interface
     subroutine speph2(movrep, napexc, nbmode, nbpf, intmod,&
                       table, specmr, specmi)
-        integer :: nbpf
+        integer(kind=8) :: nbpf
         character(len=16) :: movrep
-        integer :: napexc
-        integer :: nbmode
+        integer(kind=8) :: napexc
+        integer(kind=8) :: nbmode
         aster_logical :: intmod
         character(len=8) :: table
         real(kind=8) :: specmr(nbpf, *)

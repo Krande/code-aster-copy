@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 subroutine casurf(ndim, nno, geom, surff)
     implicit none
-    integer :: ndim, nno
+    integer(kind=8) :: ndim, nno
     real(kind=8) :: geom(ndim, nno), surff
 !
 ! ROUTINE CASURF : CALCUL DE LA SURFACE DE L ELEMENT 2D
@@ -27,11 +27,11 @@ subroutine casurf(ndim, nno, geom, surff)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: maxfa1, maxdi1
+    integer(kind=8) :: maxfa1, maxdi1
     parameter(maxfa1=6, maxdi1=3)
 !
     real(kind=8) :: t(maxdi1, maxfa1)
-    integer :: ifa, i, ideb, ifin
+    integer(kind=8) :: ifa, i, ideb, ifin
     real(kind=8) :: vol, pdvd2, pdvd1
 !
 ! ----------------------------------------------------------------------

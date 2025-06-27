@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine mmdnum(neqns, perm, invp, qsize)
-        integer :: neqns
-        integer :: perm(*)
-        integer :: invp(*)
-        integer :: qsize(*)
+        integer(kind=8) :: neqns
+        integer(kind=8) :: perm(*)
+        integer(kind=8) :: invp(*)
+        integer(kind=8) :: qsize(*)
     end subroutine mmdnum
 end interface

@@ -61,11 +61,11 @@ subroutine recmst(graexc, grdmod, nnoeex, ilnoex, ilcpex, &
 !---------MODES STATIQUES
 !
 !-----------------------------------------------------------------------
-    integer :: i1, i2, i3, i3b, i4, ibid, ilamsc
-    integer :: ilamst, ilcpex, ilnoex, ilorms, jpara, n
-    integer :: nmost1, nmost2, nnoeex
+    integer(kind=8) :: i1, i2, i3, i3b, i4, ibid, ilamsc
+    integer(kind=8) :: ilamst, ilcpex, ilnoex, ilorms, jpara, n
+    integer(kind=8) :: nmost1, nmost2, nnoeex
     character(len=8) :: c_nume_noeud
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getvid(' ', 'MODE_STAT', nbval=0, nbret=n)

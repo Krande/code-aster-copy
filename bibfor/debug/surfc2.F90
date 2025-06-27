@@ -50,25 +50,25 @@ subroutine surfc2(sdcont, mesh)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cont_zone, nb_cont_node, nb_cont_elem
+    integer(kind=8) :: nb_cont_zone, nb_cont_node, nb_cont_elem
     real(kind=8) :: tole_interp
     aster_logical :: l_veri
-    integer :: i_zone
+    integer(kind=8) :: i_zone
     character(len=8) :: elem_name
-    integer :: elem_nume, elem_indx, i_elem_slav, jdecme
-    integer :: nb_elem_slav
-    integer :: ndexfr, nb_poin_inte, vali(3)
-    integer :: type_inte, algo_cont, algo_frot, cont_init
-    integer :: i_axi, i_adapt, i_gliss, i_node_excl, i_frot_excl, dire_excl_frot_i
+    integer(kind=8) :: elem_nume, elem_indx, i_elem_slav, jdecme
+    integer(kind=8) :: nb_elem_slav
+    integer(kind=8) :: ndexfr, nb_poin_inte, vali(3)
+    integer(kind=8) :: type_inte, algo_cont, algo_frot, cont_init
+    integer(kind=8) :: i_axi, i_adapt, i_gliss, i_node_excl, i_frot_excl, dire_excl_frot_i
     real(kind=8) :: coef_cont, coef_frot, coef_coul_frot, seuil_init, seuil_auto, pene_maxi
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
     character(len=24) :: sdcont_caracf
     real(kind=8), pointer :: v_sdcont_caracf(:) => null()
     character(len=24) :: sdcont_paracr
     real(kind=8), pointer :: v_sdcont_paracr(:) => null()
-    integer :: zcmcf
+    integer(kind=8) :: zcmcf
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,13 +58,13 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 #include "asterfort/uttcpu.h"
     character(len=*), intent(in) :: optmpi
     character(len=*), intent(in) :: typsca
-    integer, intent(in) :: nudest
-    integer, intent(in) :: numess
-    integer, intent(in), optional :: nbval
-    integer, intent(inout), optional :: vi(*)
+    integer(kind=8), intent(in) :: nudest
+    integer(kind=8), intent(in) :: numess
+    integer(kind=8), intent(in), optional :: nbval
+    integer(kind=8), intent(inout), optional :: vi(*)
     integer(kind=4), intent(inout), optional :: vi4(*)
     real(kind=8), intent(inout), optional :: vr(*)
-    integer, intent(inout), optional :: sci
+    integer(kind=8), intent(inout), optional :: sci
     integer(kind=4), intent(inout), optional :: sci4
     real(kind=8), intent(inout), optional :: scr
 !
@@ -78,12 +78,12 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
 #include "asterc/asmpi_send_i4.h"
 ! DECLARATION VARIABLES LOCALES
     character(len=2) :: typsc1
-    integer :: nbv
+    integer(kind=8) :: nbv
     mpi_int :: nbv4, nbpro4, nudes4, numes4
     mpi_int :: mpicou
     aster_logical :: scal
     real(kind=8) :: wkr(1)
-    integer :: wki(1)
+    integer(kind=8) :: wki(1)
     integer(kind=4) :: wki4(1)
 ! ---------------------------------------------------------------------
     call jemarq()
@@ -177,7 +177,7 @@ subroutine asmpi_comm_point(optmpi, typsca, nudest, numess, nbval, &
     call jedema()
 #else
     character(len=1) :: kdummy
-    integer :: idummy
+    integer(kind=8) :: idummy
     integer(kind=4) :: i4dummy
     real(kind=8) :: rdummy
 !

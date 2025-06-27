@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ subroutine excar2(ngrmx, desc, dg, ncmp, debugr)
 #include "jeveux.h"
 #include "asterfort/trigd.h"
 
-    integer :: ngrmx, desc, dg(*), ncmp
+    integer(kind=8) :: ngrmx, desc, dg(*), ncmp
 !-------------------------------------------------------------------------
 ! but : recopier dans le champ local, les cmps de la carte correspondant
 !       au descripteur_grandeur dg
 !-------------------------------------------------------------------------
-    integer :: ptma, ptms, ient, ima, deb2
-    integer :: debgd, indval, debugr
+    integer(kind=8) :: ptma, ptms, ient, ima, deb2
+    integer(kind=8) :: debgd, indval, debugr
 !   fonctions formules :
 !       numail(igr,iel)=numero de la maille associee a l'element iel
 #define numail(ca_igr_,ca_iel_) zi(ca_ialiel_-1+zi(ca_illiel_-1+ca_igr_)-1+ca_iel_)

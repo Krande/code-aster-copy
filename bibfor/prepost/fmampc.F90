@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/fmdevi.h"
-    integer :: nbfonc, nbptot
+    integer(kind=8) :: nbfonc, nbptot
     real(kind=8) :: sigm(*), rampmx
 !     NBFONC  : IN  : NOMBRE DE FONCTIONS (6 EN 3D 4 EN 2D)
 !     NBPTOT  : IN  : NOMBRE DE PAS DE TEMPS DE CALCUL
@@ -30,7 +30,7 @@ subroutine fmampc(nbfonc, nbptot, sigm, rampmx)
 !     RAMPMX  : OUT : VALEUR AMPLITUDE DE CISSION
 !     -----------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: i1, i2, j
+    integer(kind=8) :: i1, i2, j
     real(kind=8) :: sig(6), rampc
     real(kind=8), pointer :: dev(:) => null()
 !     ------------------------------------------------------------------

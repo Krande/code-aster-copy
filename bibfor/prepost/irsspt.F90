@@ -35,7 +35,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp, &
 #include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cesz, nomcmp(*)
-    integer :: unite, nbmat, nummai(*), nbcmp
+    integer(kind=8) :: unite, nbmat, nummai(*), nbcmp
     real(kind=8) :: borinf, borsup
     aster_logical :: lsup, linf, lmax, lmin
 ! ---------------------------------------------------------------------
@@ -59,18 +59,18 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp, &
 ! LMIN   IN       L   : =.TRUE.  INDIQUE IMPRESSION VALEUR MINIMALE
 ! ---------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: jcesd, jcesl, ncmpc, icmp, i
-    integer :: ncmp, nbmac, nbma, nbpt, nbsp, j, ipt, isp, iad
-    integer :: ispmin, ispmax, ispmi2, ispma2, ispmi3, ispma3
-    integer :: iptmin, iptmax, iptmi2, iptma2
-    integer :: imamin, imamax, ima
+    integer(kind=8) :: jcesd, jcesl, ncmpc, icmp, i
+    integer(kind=8) :: ncmp, nbmac, nbma, nbpt, nbsp, j, ipt, isp, iad
+    integer(kind=8) :: ispmin, ispmax, ispmi2, ispma2, ispmi3, ispma3
+    integer(kind=8) :: iptmin, iptmax, iptmi2, iptma2
+    integer(kind=8) :: imamin, imamax, ima
     real(kind=8) :: vspmi3, vspma3, valr
     real(kind=8) :: vptmi2, vptma2, vmamin, vmamax
     character(len=8) :: ma, noma
     character(len=19) :: ces
     aster_logical :: lmamin, lmamax, lptmin, lptmax, lspmin, lspmax
-    integer, pointer :: num_cmp_cham(:) => null()
-    integer, pointer :: num_mail_cham(:) => null()
+    integer(kind=8), pointer :: num_cmp_cham(:) => null()
+    integer(kind=8), pointer :: num_mail_cham(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
     character(len=8), pointer :: cesk(:) => null()
     character(len=8), pointer :: cesc(:) => null()

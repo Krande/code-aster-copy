@@ -23,7 +23,7 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
     use raco3d_module
     !
     real(kind=8), intent(in) :: epai, crig
-    integer, intent(in) :: nb_gauss, nno_co, nno_3d
+    integer(kind=8), intent(in) :: nb_gauss, nno_co, nno_3d
     real(kind=8), intent(in) :: jac_det(NB_GAUSS_MAX)
     real(kind=8), intent(in) :: gauss_weight(NB_GAUSS_MAX)
     real(kind=8), intent(in) :: gauss_coor(2, NB_GAUSS_MAX)

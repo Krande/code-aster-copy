@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,16 +21,16 @@
 interface
     subroutine dgfassefibres(nboccasf, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgrp, &
                              ulnbnoeuds, ulnbmailles, nbfibres2, maxfibre2, ncarfi2, nbocctype1)
-        integer :: nboccasf
-        integer :: iinbgf
-        integer :: maxmailgrp
-        integer :: ulnbnoeuds
-        integer :: ulnbmailles
-        integer :: nbfibres2
-        integer :: tousgroupesnbf(*)
-        integer :: maxfibre2
-        integer :: ncarfi2
-        integer :: nbocctype1
+        integer(kind=8) :: nboccasf
+        integer(kind=8) :: iinbgf
+        integer(kind=8) :: maxmailgrp
+        integer(kind=8) :: ulnbnoeuds
+        integer(kind=8) :: ulnbmailles
+        integer(kind=8) :: nbfibres2
+        integer(kind=8) :: tousgroupesnbf(*)
+        integer(kind=8) :: maxfibre2
+        integer(kind=8) :: ncarfi2
+        integer(kind=8) :: nbocctype1
         character(len=24) :: tousgroupesnom(*)
     end subroutine dgfassefibres
 end interface

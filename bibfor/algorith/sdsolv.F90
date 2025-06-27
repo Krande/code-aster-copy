@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ function sdsolv(vect)
 ! person_in_charge: thomas.de-soza at edf.fr
 !
     implicit none
-    integer :: sdsolv
+    integer(kind=8) :: sdsolv
 #include "asterfort/assert.h"
     character(len=5) :: vect
 !
@@ -41,7 +41,7 @@ function sdsolv(vect)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: zslvk, zslvr, zslvi, zslvo
+    integer(kind=8) :: zslvk, zslvr, zslvi, zslvo
     parameter(zslvk=14, zslvr=5, zslvi=9, zslvo=31)
 !
 ! ----------------------------------------------------------------------

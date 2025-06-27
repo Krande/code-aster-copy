@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,14 +20,14 @@
 !
 interface
     subroutine xassfa(elp, npts, nintar, lst, noeud, cface, nface, pinter, jgrlsn)
-        integer :: npts
-        integer :: nintar
-        integer :: noeud(9)
-        integer :: cface(30,6)
-        integer :: nface
+        integer(kind=8) :: npts
+        integer(kind=8) :: nintar
+        integer(kind=8) :: noeud(9)
+        integer(kind=8) :: cface(30,6)
+        integer(kind=8) :: nface
         real(kind=8) :: lst(6)
         character(len=8) :: elp
         real(kind=8) :: pinter(*)
-        integer :: jgrlsn
+        integer(kind=8) :: jgrlsn
     end subroutine xassfa
 end interface

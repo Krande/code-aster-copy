@@ -41,9 +41,9 @@ subroutine cfmmcv(mesh, model_, list_func_acti, iter_newt, nume_inst, &
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model_
-    integer, intent(in) :: list_func_acti(*)
-    integer, intent(in) :: iter_newt
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: iter_newt
+    integer(kind=8), intent(in) :: nume_inst
     character(len=19), intent(in) :: sddisc
     character(len=19), intent(in) :: sddyna
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -81,7 +81,7 @@ subroutine cfmmcv(mesh, model_, list_func_acti, iter_newt, nume_inst, &
     aster_logical :: loop_cont_conv, loop_geom_error, l_all_verif
     character(len=8) :: model
     real(kind=8) :: r8bid, loop_cont_vale
-    integer :: loop_cont_vali
+    integer(kind=8) :: loop_cont_vali
 !
 ! --------------------------------------------------------------------------------------------------
 !

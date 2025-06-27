@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine mefver(ndim, som, xint, yint, rint)
-        integer :: ndim(14)
+        integer(kind=8) :: ndim(14)
         real(kind=8) :: som(9)
         real(kind=8) :: xint(*)
         real(kind=8) :: yint(*)

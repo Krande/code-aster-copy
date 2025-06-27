@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, &
 #include "asterfort/xelrex.h"
 #include "asterfort/xnormv.h"
     character(len=8) :: elrefp
-    integer :: ndim, joncno, jlsn, nfiss, nfisc, nnops, fisco(*), igeom
+    integer(kind=8) :: ndim, joncno, jlsn, nfiss, nfisc, nnops, fisco(*), igeom
     real(kind=8) :: txlsn(28)
-    integer, intent(in), optional :: n
+    integer(kind=8), intent(in), optional :: n
     real(kind=8), intent(in), optional :: c(ndim)
 !
 ! ======================================================================
@@ -50,8 +50,8 @@ subroutine xstjon(elrefp, ndim, joncno, jlsn, igeom, &
 !
 !---------------------------------------------------------------------
 !
-    integer :: i, iadzi, iazk24, ft(12, 3), nbft, f(6, 8), nbf
-    integer :: ar(12, 3), nbar, iar, nno, ino
+    integer(kind=8) :: i, iadzi, iazk24, ft(12, 3), nbft, f(6, 8), nbf
+    integer(kind=8) :: ar(12, 3), nbar, iar, nno, ino
     real(kind=8) :: xref(81), u(3), v(3), w(3), norme, normal(3), cridist
     real(kind=8) :: cref(ndim), ff(27), val
     character(len=8) :: typma

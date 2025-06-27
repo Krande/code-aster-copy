@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2, &
     character(len=8) :: mailar, mail, nomo
     character(len=10) :: nom1, nom2
     character(len=16) :: typmai
-    integer :: nbchel, jma1, jma2, iocc
+    integer(kind=8) :: nbchel, jma1, jma2, iocc
     character(len=19) :: chames(nbchel)
     character(len=24) :: tabcor
 !
@@ -65,17 +65,17 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2, &
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: nbnomx
+    integer(kind=8) :: nbnomx
     parameter(nbnomx=27)
-    integer :: iad, noc, iop
+    integer(kind=8) :: iad, noc, iop
     character(len=19) :: ngrm1, ngrm2
-    integer :: jgrp1, jgrp2, nbma1, nbma2
-    integer :: jdime, jcoor, jcumu, jconx
-    integer :: nbma, ndim, nbnoc1, nbnoc2
-    integer :: nummc1, nummc2
-    integer :: ncmpi, ncmpf, ncmpr, ncmpc
-    integer :: ima, icmp
-    integer :: jtypmm, jtypm, jtyp, iret
+    integer(kind=8) :: jgrp1, jgrp2, nbma1, nbma2
+    integer(kind=8) :: jdime, jcoor, jcumu, jconx
+    integer(kind=8) :: nbma, ndim, nbnoc1, nbnoc2
+    integer(kind=8) :: nummc1, nummc2
+    integer(kind=8) :: ncmpi, ncmpf, ncmpr, ncmpc
+    integer(kind=8) :: ima, icmp
+    integer(kind=8) :: jtypmm, jtypm, jtyp, iret
     character(len=8) :: nomfam, elref1, elref2
     character(len=19) :: ctfami, ctinfo
     character(len=19) :: ctref1, ctcoo1
@@ -88,14 +88,14 @@ subroutine arlchi(iocc, mail, nomo, nom1, nom2, &
     character(len=8) :: vfami, vinfo(26), ntmc1, ntmc2, materi, mater, carael
     character(len=8) :: vref1, vcoo1(3*nbnomx), vref2, vcoo2(3*nbnomx), kbid, k8b
     character(len=16) :: nocmp(15), nomcmp(3), nomte, option
-    integer :: jfamv, jfamd, jfaml, jinfv, jinfd, jinfl
-    integer :: jref1v, jref1d, jref1l, jcoo1v, jcoo1d, jcoo1l
-    integer :: jref2v, jref2d, jref2l, jcoo2v, jcoo2d, jcoo2l
-    integer :: cxno1(nbnomx), cxno2(2)
-    integer :: jadf, jadi, jadc, jadr, jtabco
-    integer :: icodre(3), iado, iadc
-    integer :: jcesd1, jcesl1, jcesd2, jcesl2
-    integer :: jtyel, ityel, ipt, nbpt, decal, i, j, l, jcesd3, jcesl3
+    integer(kind=8) :: jfamv, jfamd, jfaml, jinfv, jinfd, jinfl
+    integer(kind=8) :: jref1v, jref1d, jref1l, jcoo1v, jcoo1d, jcoo1l
+    integer(kind=8) :: jref2v, jref2d, jref2l, jcoo2v, jcoo2d, jcoo2l
+    integer(kind=8) :: cxno1(nbnomx), cxno2(2)
+    integer(kind=8) :: jadf, jadi, jadc, jadr, jtabco
+    integer(kind=8) :: icodre(3), iado, iadc
+    integer(kind=8) :: jcesd1, jcesl1, jcesd2, jcesl2
+    integer(kind=8) :: jtyel, ityel, ipt, nbpt, decal, i, j, l, jcesd3, jcesl3
     real(kind=8) :: cpara(15), corie(3), para(3), rbid(1)
 !
     character(len=16) :: motfac

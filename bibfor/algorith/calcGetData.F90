@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ subroutine calcGetData(table_new, table_old, &
 !
     character(len=8), intent(out) :: table_new
     character(len=8), intent(out) :: table_old
-    integer, intent(out) :: nb_option
+    integer(kind=8), intent(out) :: nb_option
     character(len=16), intent(out) :: list_option(:)
-    integer, intent(out) :: nume_inst
+    integer(kind=8), intent(out) :: nume_inst
     character(len=19), intent(out) :: list_inst
     character(len=16), intent(out) :: phenom
     aster_logical, intent(out) :: l_pred
@@ -62,7 +62,7 @@ subroutine calcGetData(table_new, table_old, &
 !
     character(len=24) :: k24dummy
     character(len=16) :: pred
-    integer :: nocc
+    integer(kind=8) :: nocc
 !
 ! --------------------------------------------------------------------------------------------------
 !

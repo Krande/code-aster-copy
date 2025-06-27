@@ -57,14 +57,14 @@ subroutine te0350(option, nomte)
     aster_logical :: lVect, lMatr, lVari, lSigm
     character(len=8) :: typmod(2)
     character(len=4), parameter :: fami = 'RIGI'
-    integer :: nno, npg, i, imatuu, lgpg, ndim
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: icontm, ivarim
-    integer :: iinstm, iinstp, ideplm, ideplp, icarcr
+    integer(kind=8) :: nno, npg, i, imatuu, lgpg, ndim
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: icontm, ivarim
+    integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icarcr
     character(len=16), pointer :: compor(:) => null(), v_mult_comp(:) => null()
-    integer :: ivectu, icontp, ivarip
-    integer :: ivarix, iret
-    integer :: jtab(7), jcret, codret
+    integer(kind=8) :: ivectu, icontp, ivarip
+    integer(kind=8) :: ivarix, iret
+    integer(kind=8) :: jtab(7), jcret, codret
     real(kind=8) :: def(4*27*2), dfdi(54)
     real(kind=8) :: angl_naut(3)
     type(Behaviour_Integ) :: BEHinteg

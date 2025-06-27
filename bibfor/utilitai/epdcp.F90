@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,10 +36,10 @@ subroutine epdcp(tc, td, sigi, epsi)
     real(kind=8) :: equi(3), sigi, epsi, jacaux(3), t(3, 3)
 !
     real(kind=8) :: tol, toldyn
-    integer :: nbvec, nperm
-    integer :: type, iordre
+    integer(kind=8) :: nbvec, nperm
+    integer(kind=8) :: type, iordre
 !-----------------------------------------------------------------------
-    integer :: i, k, nitjac
+    integer(kind=8) :: i, k, nitjac
 !-----------------------------------------------------------------------
     data nperm, tol, toldyn/20, 1.d-10, 1.d-2/
 ! ----------------------------------------------------------------------

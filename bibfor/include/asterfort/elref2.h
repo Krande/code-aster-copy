@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine elref2(nomte, dim, lielrf, ntrou)
-        integer :: dim
+        integer(kind=8) :: dim
         character(len=16) :: nomte
         character(len=8) :: lielrf(dim)
-        integer :: ntrou
+        integer(kind=8) :: ntrou
     end subroutine elref2
 end interface

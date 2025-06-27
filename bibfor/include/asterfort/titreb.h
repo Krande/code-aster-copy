@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine titreb(donnee, iligd, icold, nbtitr, sortie,&
                       iligs, icols, formr, nomsym, iordr)
         character(len=*) :: donnee(*)
-        integer :: iligd
-        integer :: icold
-        integer :: nbtitr
+        integer(kind=8) :: iligd
+        integer(kind=8) :: icold
+        integer(kind=8) :: nbtitr
         character(len=*) :: sortie(*)
-        integer :: iligs
-        integer :: icols
+        integer(kind=8) :: iligs
+        integer(kind=8) :: icols
         character(len=*) :: formr
         character(len=*), optional, intent(in) :: nomsym
-        integer, optional, intent(in) :: iordr
+        integer(kind=8), optional, intent(in) :: iordr
     end subroutine titreb
 end interface

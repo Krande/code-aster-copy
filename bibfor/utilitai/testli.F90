@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,8 +18,8 @@
 !
 subroutine testli(ima, numa, nma, kma, ierr)
     implicit none
-    integer :: ierr, ima, jma, kma, nma
-    integer :: numa(nma)
+    integer(kind=8) :: ierr, ima, jma, kma, nma
+    integer(kind=8) :: numa(nma)
 !-----------------------------------------------------------------------
     ierr = 0
     do jma = 1, nma

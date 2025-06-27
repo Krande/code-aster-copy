@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,8 +63,8 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/indiis.h"
-    integer :: noe(9, 6, 4), ifa, tymvol, nnof
-    integer :: iref1, ivois, isig, nbcmp
+    integer(kind=8) :: noe(9, 6, 4), ifa, tymvol, nnof
+    integer(kind=8) :: iref1, ivois, isig, nbcmp
     real(kind=8) :: dsg11(9), dsg22(9), dsg33(9), dsg12(9), dsg13(9), dsg23(9)
     character(len=8) :: typmav
 !
@@ -72,10 +72,10 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav, &
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: iarepe, jceld, jcelv, iconx1, iconx2, jad, jadv, imav, igrel, iel
-    integer :: adiel, iaval, ino, ncher, inov, in
-    integer :: nbnovo
-    integer :: iaux, jaux
+    integer(kind=8) :: iarepe, jceld, jcelv, iconx1, iconx2, jad, jadv, imav, igrel, iel
+    integer(kind=8) :: adiel, iaval, ino, ncher, inov, in
+    integer(kind=8) :: nbnovo
+    integer(kind=8) :: iaux, jaux
 !
     real(kind=8) :: sig11(9), sig22(9), sig33(9), sig12(9), sig13(9), sig23(9)
     real(kind=8) :: sigv11(9), sigv22(9), sigv33(9)
@@ -181,8 +181,8 @@ subroutine ermes3(noe, ifa, tymvol, nnof, typmav, &
         write (6, *) 'TYPE MAILLE VOLUMIQUE COURANTE :', tymvol
         write (6, 1001)
 1000    format(i3, 6x, (6(1x, 1pe12.5)))
-1001    format(11x, 'SIXX         SIYY         SIZZ         SIXY',&
-     &           '         SIXZ         SIYZ')
+1001    format(11x, 'SIXX         SIYY         SIZZ         SIXY', &
+               '         SIXZ         SIYZ')
         do 110, in = 1, nnof
             ino = noe(in, ifa, tymvol)
             ncher = zi(jad-1+ino)

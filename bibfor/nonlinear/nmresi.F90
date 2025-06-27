@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,7 +63,7 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Material), intent(in) :: ds_material
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: sdnume
@@ -76,7 +76,7 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: matass
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     real(kind=8), intent(in) :: eta
     character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
     character(len=19), intent(in) :: hval_measse(*), hval_veasse(*)
@@ -115,9 +115,9 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer, pointer :: v_ccid(:) => null()
-    integer :: nb_equa, i_equa
+    integer(kind=8) :: ifm, niv
+    integer(kind=8), pointer :: v_ccid(:) => null()
+    integer(kind=8) :: nb_equa, i_equa
     character(len=24) :: mate, varc_refe
     aster_logical :: l_stat, l_load_cine, l_cont_cont, l_cont_lac, l_rom, l_macr
     aster_logical :: l_resi_refe, l_varc_init, l_resi_comp, l_rela
@@ -129,12 +129,12 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
     character(len=19) :: cnrefe, cnfinp, cndirp, cnbudp, cnrefp
     character(len=19) :: cndfdo, cnequi, cndipi, cnsstr
     real(kind=8) :: vale_equi, vale_refe, vale_varc
-    integer :: r_rela_indx, r_resi_indx, r_equi_indx
-    integer :: r_refe_indx, r_char_indx, r_comp_indx
+    integer(kind=8) :: r_rela_indx, r_resi_indx, r_equi_indx
+    integer(kind=8) :: r_refe_indx, r_char_indx, r_comp_indx
     real(kind=8) :: resi_glob_rela, resi_glob_maxi
     character(len=16) :: r_fric_name, r_geom_name, r_comp_name
     character(len=24) :: sdnuco
-    integer, pointer :: v_sdnuco(:) => null()
+    integer(kind=8), pointer :: v_sdnuco(:) => null()
     real(kind=8) :: r_rela_vale, r_refe_vale, r_varc_vale
     real(kind=8) :: r_comp_vale, r_fric_vale, r_geom_vale, r_pene_vale
     real(kind=8), pointer :: v_cnfext(:) => null()
@@ -142,7 +142,7 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
     real(kind=8), pointer :: v_cnrefe(:) => null()
     real(kind=8), pointer :: v_cndiri(:) => null()
     real(kind=8), pointer :: v_fvarc_init(:) => null()
-    integer, pointer :: v_deeq(:) => null()
+    integer(kind=8), pointer :: v_deeq(:) => null()
     real(kind=8), pointer :: v_cnequi(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

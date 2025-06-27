@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine mateInfo(mate, mate_nb)
 #include "asterfort/infniv.h"
 !
     character(len=8), intent(in) :: mate
-    integer, intent(in) :: mate_nb
+    integer(kind=8), intent(in) :: mate_nb
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,12 +46,12 @@ subroutine mateInfo(mate, mate_nb)
 !
     character(len=6) :: nom
     character(len=19) :: noobrc
-    integer :: i_mate, ifm, niv, i
+    integer(kind=8) :: i_mate, ifm, niv, i
     character(len=32), pointer :: v_mate(:) => null()
     character(len=16), pointer :: v_mate_valk(:) => null()
     complex(kind=8), pointer :: v_mate_valc(:) => null()
     real(kind=8), pointer :: v_mate_valr(:) => null()
-    integer :: nbk, nbr, nbc, nbk2
+    integer(kind=8) :: nbk, nbr, nbc, nbk2
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine veripl(ma, nbma, linuma, ang, typerr)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=*) :: ma
-        integer :: linuma(nbma)
+        integer(kind=8) :: linuma(nbma)
         real(kind=8) :: ang
         character(len=1) :: typerr
     end subroutine veripl

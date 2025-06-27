@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,13 +43,13 @@ subroutine te0197(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=8) :: fami, poum
     real(kind=8) :: poids, r
-    integer :: nno, kp, npg1, i, ndim, jgano, nnos
-    integer :: ipoids, ivf, idfde, kpg, spt
-    integer :: j_geom, j_rota, j_vect, j_mate
-    integer :: k
+    integer(kind=8) :: nno, kp, npg1, i, ndim, jgano, nnos
+    integer(kind=8) :: ipoids, ivf, idfde, kpg, spt
+    integer(kind=8) :: j_geom, j_rota, j_vect, j_mate
+    integer(kind=8) :: k
     real(kind=8) :: rho(1)
     real(kind=8) :: rota_speed, rota_axis(3), rota_cent(3)
 !

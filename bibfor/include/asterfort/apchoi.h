@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ interface
                       tau1_mini   , tau2     , tau2_mini, ksi1          , ksi1_mini,&
                       ksi2        , ksi2_mini, proj_stat, proj_stat_mini, vect_pm  ,&
                       vect_pm_mini)
-        integer, intent(in) :: proj_stat
-        integer, intent(inout) :: proj_stat_mini
+        integer(kind=8), intent(in) :: proj_stat
+        integer(kind=8), intent(inout) :: proj_stat_mini
         real(kind=8), intent(in) :: dist
         real(kind=8), intent(inout) :: dist_mini
-        integer, intent(in) :: elem_indx
-        integer, intent(inout) :: elem_indx_mini
+        integer(kind=8), intent(in) :: elem_indx
+        integer(kind=8), intent(inout) :: elem_indx_mini
         real(kind=8), intent(in) :: tau1(3)
         real(kind=8), intent(inout) :: tau1_mini(3)
         real(kind=8), intent(in) :: tau2(3)

@@ -35,7 +35,7 @@ subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez, &
 #include "asterfort/int_to_char8.h"
 !
     character(len=*), intent(in) :: nume_ddlz
-    integer, intent(in) :: i_equa
+    integer(kind=8), intent(in) :: i_equa
     logical, intent(in) :: l_print
     character(len=1), optional, intent(out) :: type_equaz
     character(len=*), optional, intent(out) :: name_nodez
@@ -63,17 +63,17 @@ subroutine rgndas(nume_ddlz, i_equa, l_print, type_equaz, name_nodez, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idx_gd, iexi
+    integer(kind=8) :: idx_gd, iexi
     character(len=1) :: type_equa
     character(len=8) :: mesh, modl_gene, ligrel
-    integer :: nume_node, nume_cmp, nume_cmp_lagr, nume_subs, nume_link
+    integer(kind=8) :: nume_node, nume_cmp, nume_cmp_lagr, nume_subs, nume_link
     character(len=19) :: nume_equa_gene
     character(len=14) :: nume_ddl
     character(len=8) :: name_node, name_cmp, name_cmp_lagr, name_subs
     character(len=8), pointer :: p_cata_nomcmp(:) => null()
     character(len=24), pointer :: p_refe(:) => null()
-    integer :: nb_node_lagr
-    integer, pointer:: list_node_lagr(:) => null()
+    integer(kind=8) :: nb_node_lagr
+    integer(kind=8), pointer:: list_node_lagr(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

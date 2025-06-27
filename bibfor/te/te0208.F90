@@ -36,10 +36,10 @@ subroutine te0208(option, nomte)
 !
 !
 !
-    integer :: igeom, imater, ideplm, ivarim, npg, jtab(7), iret, lgpg
-    integer :: iddepl, idepl0, idepl1, ictau, icopil
-    integer :: ndim, nno, nnos, nddl
-    integer :: ipoids, ivf, idfde, jgano
+    integer(kind=8) :: igeom, imater, ideplm, ivarim, npg, jtab(7), iret, lgpg
+    integer(kind=8) :: iddepl, idepl0, idepl1, ictau, icopil
+    integer(kind=8) :: ndim, nno, nnos, nddl
+    integer(kind=8) :: ipoids, ivf, idfde, jgano
     character(len=8) :: typmod(2)
     character(len=16), pointer :: compor(:) => null()
 !

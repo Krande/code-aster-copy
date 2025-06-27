@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine xhvco4(ino, ndim, sigma, lamb, pla,&
                       jac, ffc, p, raug, vect)
-        integer :: ino
-        integer :: ndim
+        integer(kind=8) :: ino
+        integer(kind=8) :: ndim
         real(kind=8) :: sigma(6)
         real(kind=8) :: lamb(3)
-        integer :: pla(27)
+        integer(kind=8) :: pla(27)
         real(kind=8) :: jac
         real(kind=8) :: ffc(16)
         real(kind=8) :: ffp(27)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,12 +55,12 @@ subroutine nmpild(numedd, sddyna, solalg, eta, rho, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: neq
+    integer(kind=8) :: neq
     character(len=19) :: ddepla, deppr1, deppr2
     character(len=19) :: dvitla, vitpr1, vitpr2
     character(len=19) :: daccla, accpr1, accpr2
     aster_logical :: ldyna
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
 !
 ! ----------------------------------------------------------------------
 !

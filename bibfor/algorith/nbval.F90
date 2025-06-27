@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ subroutine nbval(ck, cm, cmat, ndim, lambda, &
 !-----------------------------------------------------------------------
 !
 #include "asterfort/trldc.h"
-    integer :: ndim, nb
+    integer(kind=8) :: ndim, nb
     complex(kind=8) :: ck(*), cm(*), cmat(*)
     real(kind=8) :: lambda
-    integer :: i, ipivo
+    integer(kind=8) :: i, ipivo
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
@@ -49,7 +49,7 @@ subroutine nbval(ck, cm, cmat, ndim, lambda, &
 !      INITIALISATION DE LA MATRICE K-LAMBDA*M
 !
 !-----------------------------------------------------------------------
-    integer :: idiag
+    integer(kind=8) :: idiag
 !-----------------------------------------------------------------------
     do i = 1, ndim*(ndim+1)/2
         cmat(i) = ck(i)-lambda*cm(i)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine ve0124(typres)
     character(len=16) :: type, oper
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ibid, iocc, k, n0, n1
+    integer(kind=8) :: ibid, iocc, k, n0, n1
     real(kind=8) :: r8bid
 !-----------------------------------------------------------------------
     call getres(resu, type, oper)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,14 +25,14 @@ subroutine jeveut(nomlu, cel, jctab)
 ! ----------------------------------------------------------------------
     implicit none
 #include "asterfort/jeveuo.h"
-    integer, intent(out) :: jctab
+    integer(kind=8), intent(out) :: jctab
     character(len=*), intent(in) :: nomlu, cel
 !     ------------------------------------------------------------------
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 ! DEB ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ipgcex
+    integer(kind=8) :: ipgcex
 !-----------------------------------------------------------------------
     ipgcex = ipgc
     ipgc = -1

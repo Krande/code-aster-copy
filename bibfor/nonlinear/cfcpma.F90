@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine cfcpma(resoco, neq, nbliai, numedd, matrcf)
 #include "asterfort/cfmata.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: neq, nbliai
+    integer(kind=8) :: neq, nbliai
     character(len=24) :: resoco
     character(len=14) :: numedd
     character(len=19) :: matrcf
@@ -47,7 +47,7 @@ subroutine cfcpma(resoco, neq, nbliai, numedd, matrcf)
 !
 !
 !
-    integer :: nmult
+    integer(kind=8) :: nmult
     character(len=24) :: enat
     character(len=14) :: numecf
 !

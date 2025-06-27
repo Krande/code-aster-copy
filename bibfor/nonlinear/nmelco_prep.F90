@@ -43,7 +43,7 @@ subroutine nmelco_prep(calc_type, &
     character(len=19), intent(in) :: acce_prev
     character(len=19), intent(in) :: vite_curr
     character(len=19), intent(in) :: disp_cumu_inst
-    integer, intent(in) :: nbin
+    integer(kind=8), intent(in) :: nbin
     character(len=8), intent(out) :: lpain(nbin)
     character(len=19), intent(out) :: lchin(nbin)
     character(len=16), intent(out) :: option

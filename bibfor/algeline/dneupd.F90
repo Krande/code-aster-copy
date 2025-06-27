@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -358,8 +358,8 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 #include "blas/dorm2r.h"
 #include "blas/dscal.h"
 #include "blas/dtrmm.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -371,14 +371,14 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
     character(len=1) :: bmat, howmny
     character(len=2) :: which
     aster_logical :: rvec
-    integer :: info, ldz, ldv, lworkl, n, ncv, nev
+    integer(kind=8) :: info, ldz, ldv, lworkl, n, ncv, nev
     real(kind=8) :: sigmar, sigmai, tol
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: iparam(11), ipntr(14)
+    integer(kind=8) :: iparam(11), ipntr(14)
     aster_logical :: select(ncv)
     real(kind=8) :: dr(nev+1), di(nev+1), resid(n), v(ldv, ncv), z(ldz, *)
     real(kind=8) :: workd(3*n), workl(lworkl), workev(3*ncv)
@@ -396,9 +396,9 @@ subroutine dneupd(rvec, howmny, select, dr, di, &
 !
     character(len=6) :: type
     integer(kind=4) :: ierr4
-    integer :: bounds, ierr, ih, ihbds, iheigr, iheigi, iconj, nconv, invsub
-    integer :: iuptri, iwork(1), j, k, ktrord, ldh, ldq, mode, msglvl, outncv
-    integer :: ritzr, ritzi, irr, iri, ibd
+    integer(kind=8) :: bounds, ierr, ih, ihbds, iheigr, iheigi, iconj, nconv, invsub
+    integer(kind=8) :: iuptri, iwork(1), j, k, ktrord, ldh, ldq, mode, msglvl, outncv
+    integer(kind=8) :: ritzr, ritzi, irr, iri, ibd
 ! DUE TO CRS512 INTEGER IWEV, WRR, WRI
     aster_logical :: reord
     real(kind=8) :: conds, rnorm, sep, temp, thres, vl(1, 1), temp1, eps23, eps

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       nbvalf, valef, noparf)
         character(len=19) :: nomfin
         character(len=19) :: nomfon
-        integer :: nbvalp
+        integer(kind=8) :: nbvalp
         real(kind=8) :: valep(*)
         character(len=24) :: noparp
-        integer :: nbvalf
+        integer(kind=8) :: nbvalf
         real(kind=8) :: valef(*)
         character(len=24) :: noparf
     end subroutine calcna

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,25 +29,25 @@ subroutine jerazo(nomlu, ni, i1)
 #include "asterfort/jxlocs.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: nomlu
-    integer, intent(in) :: ni, i1
+    integer(kind=8), intent(in) :: ni, i1
 ! ----------------------------------------------------------------------
 !     REMISE A "ZERO" DU SEGMENT DE VALEURS ASSOCIE A UN OBJET JEVEUX
 ! IN  NI    : NOMBRE DE VALEURS A REINITIALISER
 ! IN  I1    : INDICE DE LA PREMIERE VALEUR
 ! IN  NOMLU : NOM DE L'OBJET JEVEUX
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !-----------------------------------------------------------------------
-    integer :: i, ibacol, iblono, icre, inat, inatb, iret
-    integer :: ixdeso, ixiadd, ixlono, j1, j2, jcara, jctab
-    integer :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jini
-    integer :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
-    integer :: jtype, lonoi, ltypi, n
+    integer(kind=8) :: i, ibacol, iblono, icre, inat, inatb, iret
+    integer(kind=8) :: ixdeso, ixiadd, ixlono, j1, j2, jcara, jctab
+    integer(kind=8) :: jdate, jdocu, jgenr, jhcod, jiadd, jiadm, jini
+    integer(kind=8) :: jlong, jlono, jltyp, jluti, jmarq, jorig, jrnom
+    integer(kind=8) :: jtype, lonoi, ltypi, n
 !-----------------------------------------------------------------------
     parameter(n=5)
 ! ----------------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 ! ----------------------------------------------------------------------
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -55,14 +55,14 @@ subroutine jerazo(nomlu, ni, i1)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: numatr
+    integer(kind=8) :: numatr
     common/idatje/numatr
 ! -------------------------------------------------
     character(len=32) :: noml32
     character(len=8) :: noml8
     character(len=1) :: typei, genri
 ! ----------------------------------------------------------------------
-    integer :: iddeso, idiadd, idlono
+    integer(kind=8) :: iddeso, idiadd, idlono
     parameter(iddeso=1, idiadd=2,&
      &               idlono=8)
 ! ----------------------------------------------------------------------

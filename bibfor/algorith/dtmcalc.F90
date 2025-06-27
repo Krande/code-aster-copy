@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,24 +59,24 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 !
 !   -0.2- Local variables
     aster_logical     :: upmat, checkcpu
-    integer           :: nbrede, nbrevi, nbpas, nbnli, nbmode
-    integer           :: n100, i, append, exgyro, lev
-    integer           :: adapt, pasarch, iarch, force_arch, reinteg
-    integer           :: nltreat, nr, nbsauv, iarch_sd, i_nbar
-    integer           :: perc, last_prperc, freqpr, ifm, niv
-    integer           :: oldarch, i_nbarf, nbdvis, nbdecr
+    integer(kind=8)           :: nbrede, nbrevi, nbpas, nbnli, nbmode
+    integer(kind=8)           :: n100, i, append, exgyro, lev
+    integer(kind=8)           :: adapt, pasarch, iarch, force_arch, reinteg
+    integer(kind=8)           :: nltreat, nr, nbsauv, iarch_sd, i_nbar
+    integer(kind=8)           :: perc, last_prperc, freqpr, ifm, niv
+    integer(kind=8)           :: oldarch, i_nbarf, nbdvis, nbdecr
     real(kind=8)      :: tinit, dt, tps1(4), rint1, rint2
     real(kind=8)      :: time, lastarch, tfin, epsi, newdt
     real(kind=8)      :: dt0
     character(len=8)  :: sd_dtm, sd_int, calcres, nomres, sd_nl
 !
-    integer, pointer :: isto(:) => null()
-    integer, pointer :: allocs(:) => null()
-    integer, pointer :: buffdtm(:) => null()
-    integer, pointer :: buffint(:) => null()
+    integer(kind=8), pointer :: isto(:) => null()
+    integer(kind=8), pointer :: allocs(:) => null()
+    integer(kind=8), pointer :: buffdtm(:) => null()
+    integer(kind=8), pointer :: buffint(:) => null()
     real(kind=8), pointer :: archlst(:) => null()
     real(kind=8), pointer :: chosav0(:) => null()
-    integer, pointer :: buffnl(:) => null()
+    integer(kind=8), pointer :: buffnl(:) => null()
 
 !
 !   0 - Initializations

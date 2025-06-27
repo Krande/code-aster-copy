@@ -121,9 +121,9 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 #include "jeveux.h"
-    integer :: nbexci, nondp, nmodam, iinteg, neq
-    integer :: istoc, iarchi, imat(3), nchar, nveca, liad(*)
-    integer :: iforc2, archiv, nbtyar, mltap(nbexci)
+    integer(kind=8) :: nbexci, nondp, nmodam, iinteg, neq
+    integer(kind=8) :: istoc, iarchi, imat(3), nchar, nveca, liad(*)
+    integer(kind=8) :: iforc2, archiv, nbtyar, mltap(nbexci)
 !
     real(kind=8) :: depla(neq), vitea(neq), accea(neq), dep0(*), vit0(*)
     real(kind=8) :: acc0(*), fexte(*), famor(*), fliai(*), depl1(neq)
@@ -156,13 +156,13 @@ subroutine dlnew0(result, force0, force1, iinteg, neq, &
     character(len=6) :: nompro
     parameter(nompro='DLNEW0')
 !
-    integer :: iforc1
-    integer :: nbexre, item2(1), iret, lvale, ibid, i
-    integer :: ltps0, ltps1, nbinst, ifnobi, ifcibi, alarm
-    integer :: iexci, ieq, iresu
+    integer(kind=8) :: iforc1
+    integer(kind=8) :: nbexre, item2(1), iret, lvale, ibid, i
+    integer(kind=8) :: ltps0, ltps1, nbinst, ifnobi, ifcibi, alarm
+    integer(kind=8) :: iexci, ieq, iresu
 !
     real(kind=8) :: coefd, coefv, coefa, prec, eps0, alpha
-    integer :: numrep
+    integer(kind=8) :: numrep
     character(len=8) :: k8bid
     character(len=16) :: typa(6)
     character(len=19) :: chsol, cham19, chamno, chamn2, k19bid

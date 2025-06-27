@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,18 +50,18 @@ subroutine nurenu(nu, base)
 !                    (SAUF LE NUME_EQUA)
 !                BASE(2:2) : BASE POUR CREER LE NUME_EQUA
 !
-    integer :: rang, nbproc, neql, iddl, nbrddl, jnbddl
-    integer :: iproc, nbddpr, neqg, jnulg, decals, decald, iaux
-    integer :: njoint, numpro, nbddlj, jjoint, numddl
-    integer :: num
+    integer(kind=8) :: rang, nbproc, neql, iddl, nbrddl, jnbddl
+    integer(kind=8) :: iproc, nbddpr, neqg, jnulg, decals, decald, iaux
+    integer(kind=8) :: njoint, numpro, nbddlj, jjoint, numddl
+    integer(kind=8) :: num
 !
     character(len=4) :: chnbjo
     character(len=24) :: nonbdd, nojoin
-    integer, pointer :: tmp(:) => null()
-    integer, pointer :: pddl(:) => null()
-    integer, pointer :: nequg(:) => null()
-    integer, pointer :: nequl(:) => null()
-    integer, pointer :: join(:) => null()
+    integer(kind=8), pointer :: tmp(:) => null()
+    integer(kind=8), pointer :: pddl(:) => null()
+    integer(kind=8), pointer :: nequg(:) => null()
+    integer(kind=8), pointer :: nequl(:) => null()
+    integer(kind=8), pointer :: join(:) => null()
     mpi_int :: mrank, msize
     parameter(nonbdd='&&NUPODD.NBDDL')
 !

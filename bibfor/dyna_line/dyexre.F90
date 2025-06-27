@@ -32,10 +32,10 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu, j2nd)
 #include "jeveux.h"
 !
     character(len=24) :: exreco, exresu
-    integer :: nbexre
+    integer(kind=8) :: nbexre
     character(len=14) :: numddl
     real(kind=8) :: freq
-    integer :: j2nd
+    integer(kind=8) :: j2nd
 !
 ! ----------------------------------------------------------------------
 !
@@ -59,9 +59,9 @@ subroutine dyexre(numddl, freq, nbexre, exreco, exresu, j2nd)
 !
     character(len=19) :: chamno, chamn2
     real(kind=8) :: prec, eps0
-    integer :: ieq, neq, iresu, ibid, ifreq(1), iret
+    integer(kind=8) :: ieq, neq, iresu, ibid, ifreq(1), iret
     character(len=8) :: k8bid
-    integer :: jlccre, jlresu
+    integer(kind=8) :: jlccre, jlresu
     complex(kind=8) :: c16bid
     complex(kind=8), pointer :: vale(:) => null()
 !

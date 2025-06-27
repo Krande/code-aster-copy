@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ function iimatu(i, ndim, nfh, nfe)
 !-----------------------------------------------------------------------
     implicit none
 !-----------------------------------------------------------------------
-    integer :: i, ndim, nfh, nfe, iimatu
+    integer(kind=8) :: i, ndim, nfh, nfe, iimatu
 !-----------------------------------------------------------------------
 !
     if (nfe .gt. 0 .and. i .gt. ndim*(1+nfh)) then

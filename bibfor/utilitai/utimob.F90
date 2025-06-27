@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine utimob(unit, obin, nivo, lattr, lcont, &
 #include "asterfort/utimos.h"
 #include "asterfort/utmess.h"
     character(len=*) :: obin, xous
-    integer :: nivo, unit
+    integer(kind=8) :: nivo, unit
     aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:

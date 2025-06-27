@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 interface
     subroutine tbGetListPara(tabl_namez, nb_para, v_list_para, v_type_para, nb_line)
         character(len=*), intent(in) :: tabl_namez
-        integer, intent(out) :: nb_para
+        integer(kind=8), intent(out) :: nb_para
         character(len=24), pointer :: v_list_para(:)
         character(len=24), pointer :: v_type_para(:)
-        integer, intent(out) :: nb_line
+        integer(kind=8), intent(out) :: nb_line
     end subroutine tbGetListPara
 end interface

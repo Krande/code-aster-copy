@@ -48,10 +48,10 @@ subroutine matr_asse_scale(matasz, lvect, rvect)
     character(len=1) :: ktyp
     character(len=14) :: nonu
     character(len=19) :: matass, kstoc
-    integer :: n, n1, nz, kterm, jnlogl, nsmdi, jsmhc, nsmhc, jcolg
-    integer :: jprddl, nvale, jvale, nlong, coltmp, ier, iligg, jcoll, iligl, jval2
+    integer(kind=8) :: n, n1, nz, kterm, jnlogl, nsmdi, jsmhc, nsmhc, jcolg
+    integer(kind=8) :: jprddl, nvale, jvale, nlong, coltmp, ier, iligg, jcoll, iligl, jval2
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     !-------------------------------------------------------------------
     call jemarq()
 !

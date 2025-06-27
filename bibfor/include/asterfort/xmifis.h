@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,20 +22,20 @@ interface
     subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
                   n, ip1, ip2, pinref, miref, mifis, &
                   pintt, exit, jonc, u, v)
-        integer :: ndime
-        integer :: ndim
-        integer :: n(3)
+        integer(kind=8) :: ndime
+        integer(kind=8) :: ndim
+        integer(kind=8) :: n(3)
         character(len=8) :: elrefp
         real(kind=8) :: geom(*)
         real(kind=8) :: lsn(*)
-        integer :: ip1
-        integer :: ip2
+        integer(kind=8) :: ip1
+        integer(kind=8) :: ip2
         real(kind=8) :: pinref(*)
         real(kind=8) :: miref(ndime)
         real(kind=8) :: mifis(ndim)
         real(kind=8) :: pintt(*)
         aster_logical :: jonc
-        integer :: exit(2)
+        integer(kind=8) :: exit(2)
         real(kind=8), intent(in), optional :: u(ndime)
         real(kind=8), intent(in), optional :: v(ndime)
     end subroutine xmifis

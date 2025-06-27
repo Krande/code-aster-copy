@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: elem_nume
+    integer(kind=8), intent(in) :: elem_nume
     character(len=8), optional, intent(out) :: elem_type_
-    integer, optional, intent(out)  :: nb_node_
-    integer, optional, intent(out)  :: nb_dim_
+    integer(kind=8), optional, intent(out)  :: nb_node_
+    integer(kind=8), optional, intent(out)  :: nb_dim_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,9 +53,9 @@ subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: elem_type_nume, nb_node, nb_dim
+    integer(kind=8) :: elem_type_nume, nb_node, nb_dim
     character(len=8) :: elem_type_name, elem_type
-    integer, pointer :: v_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: v_mesh_typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

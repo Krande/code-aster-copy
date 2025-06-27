@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,18 +25,18 @@ interface
                       nmafon, listpt, goinop, jfon, jnofaf, jbas,&
                       jtail, fonmul, nbfond)
         character(len=19) :: info
-        integer :: nfon
-        integer :: jfono
-        integer :: jbaso
-        integer :: jtailo
-        integer :: nmafon
+        integer(kind=8) :: nfon
+        integer(kind=8) :: jfono
+        integer(kind=8) :: jbaso
+        integer(kind=8) :: jtailo
+        integer(kind=8) :: nmafon
         character(len=19) :: listpt
         aster_logical :: goinop
-        integer :: jfon
-        integer :: jnofaf
-        integer :: jbas
-        integer :: jtail
+        integer(kind=8) :: jfon
+        integer(kind=8) :: jnofaf
+        integer(kind=8) :: jbas
+        integer(kind=8) :: jtail
         character(len=24) :: fonmul
-        integer :: nbfond
+        integer(kind=8) :: nbfond
     end subroutine xoriff
 end interface

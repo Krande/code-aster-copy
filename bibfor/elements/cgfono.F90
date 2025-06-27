@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine cgfono(ndim, nno1, nno2, npg, wref, &
 !
 #include "asterfort/cgcine.h"
 #include "asterfort/r8inir.h"
-    integer :: ndim, nno1, nno2, npg, iu(3, 3), iuc(3), im(3)
+    integer(kind=8) :: ndim, nno1, nno2, npg, iu(3, 3), iuc(3), im(3)
     real(kind=8) :: vff1(nno1, npg), vff2(nno2, npg), geom(ndim, nno1), wref(npg)
     real(kind=8) :: vect(2*nno1*ndim+nno2*ndim)
     real(kind=8) :: dffr1(nno1, npg), tang(*), sigp(3, npg)
@@ -48,7 +48,7 @@ subroutine cgfono(ndim, nno1, nno2, npg, wref, &
 ! OUT SIGP    : CONTRAINTES GENERALISEES (RAPH_MECA   ET FULL_MECA_*)
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! ----------------------------------------------------------------------
-    integer :: g, n, i, kk
+    integer(kind=8) :: g, n, i, kk
     real(kind=8) :: wg, b(4, 3), t1, l(3), courb
 ! ----------------------------------------------------------------------
 !

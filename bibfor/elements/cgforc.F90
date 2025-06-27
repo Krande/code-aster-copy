@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine cgforc(ndim, nno1, nno2, npg, wref, &
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
 !
-    integer :: ndim, nno1, nno2, npg, mat, iu(3, 3)
+    integer(kind=8) :: ndim, nno1, nno2, npg, mat, iu(3, 3)
     real(kind=8) :: vff1(nno1, npg), geom(ndim, nno1), wref(npg)
     real(kind=8) :: vect(nno1*(ndim+1)+nno2)
     real(kind=8) :: dffr1(nno1, npg)
@@ -50,7 +50,7 @@ subroutine cgforc(ndim, nno1, nno2, npg, wref, &
 ! IN  A       : SECTION DE LA BARRE
 ! OUT VECT    : FORCES INTERIEURES    (RAPH_MECA   ET FULL_MECA_*)
 ! ----------------------------------------------------------------------
-    integer :: nddl, g, n, i, kk, codres(1)
+    integer(kind=8) :: nddl, g, n, i, kk, codres(1)
     real(kind=8) :: wg, b(4, 3), t1
     real(kind=8) :: rho(1), courb, l(3)
 ! ----------------------------------------------------------------------

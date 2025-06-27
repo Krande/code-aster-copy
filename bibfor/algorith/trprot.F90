@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -86,8 +86,8 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
 #include "asterfort/nueq_chck.h"
 !
     aster_logical :: test1, test2, test3
-    integer :: nbvale, nbrefe, isst, iadrp, i_ligr_mesh
-    integer :: i, iad(2), iad3d(3), icor(2), ndble
+    integer(kind=8) :: nbvale, nbrefe, isst, iadrp, i_ligr_mesh
+    integer(kind=8) :: i, iad(2), iad3d(3), icor(2), ndble
     real(kind=8) :: tgeom(6), const(2)
     real(kind=8) :: tailmi, norm1, norm2, ca(3), sa(3)
     real(kind=8) :: val(2), val3d(3), tol
@@ -106,13 +106,13 @@ subroutine trprot(model, bamo, tgeom, imodg, iadx, &
     character(len=24) :: nomcha
     character(len=*) :: mate, mateco
     complex(kind=8) :: cbid
-    integer :: iadg, iadx, iady, iadz, iaut, ichar
-    integer :: ichav, ilires, imodg, inoe
-    integer :: iprn, iref, iret, ival
-    integer :: ivaleu, k, nbchar, nbchav, nbnoe, ncmp
-    integer :: nec
+    integer(kind=8) :: iadg, iadx, iady, iadz, iaut, ichar
+    integer(kind=8) :: ichav, ilires, imodg, inoe
+    integer(kind=8) :: iprn, iref, iret, ival
+    integer(kind=8) :: ivaleu, k, nbchar, nbchav, nbnoe, ncmp
+    integer(kind=8) :: nec
     character(len=24), pointer :: refe(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     real(kind=8), parameter :: tmin = 1.d-15, epsi = 1.d-2
     cbid = dcmplx(0.d0, 0.d0)

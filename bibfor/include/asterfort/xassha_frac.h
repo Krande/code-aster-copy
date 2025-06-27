@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,45 +29,45 @@ interface
                            pos)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: nddls
-        integer :: nddlm
-        integer :: nnop
-        integer :: nnops
-        integer :: lact(16)
+        integer(kind=8) :: nddls
+        integer(kind=8) :: nddlm
+        integer(kind=8) :: nnop
+        integer(kind=8) :: nnops
+        integer(kind=8) :: lact(16)
         character(len=8) :: elrefp
         character(len=8) :: elrefc
         character(len=8) :: elc
-        integer :: contac
-        integer :: dimuel
-        integer :: nface
-        integer :: npgf
-        integer :: nbspg
-        integer :: nptf
-        integer :: jcohes
-        integer :: jptint
-        integer :: igeom
-        integer :: jbasec
-        integer :: nlact(2)
-        integer :: cface(30,6)
+        integer(kind=8) :: contac
+        integer(kind=8) :: dimuel
+        integer(kind=8) :: nface
+        integer(kind=8) :: npgf
+        integer(kind=8) :: nbspg
+        integer(kind=8) :: nptf
+        integer(kind=8) :: jcohes
+        integer(kind=8) :: jptint
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jbasec
+        integer(kind=8) :: nlact(2)
+        integer(kind=8) :: cface(30,6)
         character(len=8) :: fpg
-        integer :: ncompv
+        integer(kind=8) :: ncompv
         character(len=16) :: compor(*)
-        integer :: jmate
-        integer :: ndim
-        integer :: idepm
-        integer :: idepd
-        integer :: jcoheo
-        integer :: incoca
-        integer :: pla(27)
+        integer(kind=8) :: jmate
+        integer(kind=8) :: ndim
+        integer(kind=8) :: idepm
+        integer(kind=8) :: idepd
+        integer(kind=8) :: jcoheo
+        integer(kind=8) :: incoca
+        integer(kind=8) :: pla(27)
         real(kind=8) :: rela
-        integer :: algocr
-        integer :: jheavn
-        integer :: ncompn
-        integer :: ifiss
-        integer :: nfiss
-        integer :: nfh
-        integer :: jheafa
-        integer :: ncomph
-        integer :: pos(16)
+        integer(kind=8) :: algocr
+        integer(kind=8) :: jheavn
+        integer(kind=8) :: ncompn
+        integer(kind=8) :: ifiss
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: nfh
+        integer(kind=8) :: jheafa
+        integer(kind=8) :: ncomph
+        integer(kind=8) :: pos(16)
     end subroutine xassha_frac
 end interface

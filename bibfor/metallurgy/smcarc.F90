@@ -35,7 +35,7 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
 #include "asterfort/metaSteelGrainSize.h"
 #include "asterfort/Metallurgy_type.h"
 !
-    integer, intent(in) :: nb_hist, nbPhase
+    integer(kind=8), intent(in) :: nb_hist, nbPhase
     real(kind=8), intent(inout) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
     real(kind=8), intent(in)  :: coef(*), fmod(*)
     type(META_SteelParameters), intent(in) :: metaSteelPara
@@ -67,7 +67,7 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8), parameter :: zero = 0.d0, un = 1.d0, epsi = 1.d-10
-    integer :: ind(6)
+    integer(kind=8) :: ind(6)
     real(kind=8) :: tmf, x(5), tpli
     real(kind=8) :: temp_incr_eff
     real(kind=8) :: coef_phase, incrTempMart

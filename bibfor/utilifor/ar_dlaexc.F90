@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -120,7 +120,7 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q, &
 #include "blas/dlarfx.h"
 #include "blas/drot.h"
     aster_logical :: wantq
-    integer :: info, j1, ldq, ldt, n, n1, n2
+    integer(kind=8) :: info, j1, ldq, ldt, n, n1, n2
 !     ..
 !     .. ARRAY ARGUMENTS ..
     real(kind=8) :: q(ldq, *), t(ldt, *), work(*)
@@ -130,11 +130,11 @@ subroutine ar_dlaexc(wantq, n, t, ldt, q, &
     parameter(zero=0.0d+0, one=1.0d+0)
     real(kind=8) :: ten
     parameter(ten=1.0d+1)
-    integer :: ldd, ldx
+    integer(kind=8) :: ldd, ldx
     parameter(ldd=4, ldx=2)
 !     ..
 !     .. LOCAL SCALARS ..
-    integer :: ierr, j2, j3, j4, k, nd
+    integer(kind=8) :: ierr, j2, j3, j4, k, nd
     real(kind=8) :: cs, dnorm, eps, scale, smlnum, sn, t11, t22, t33, tau, tau1
     real(kind=8) :: tau2, temp, thresh, wi1, wi2, wr1, wr2, xnorm
 !     ..

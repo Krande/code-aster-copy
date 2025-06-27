@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/xpoffo.h"
-    integer :: n, jlsn, jlst, ndim, ndime, ino, nfiss
-    integer :: iad, igeom, ima, jconx1, jconx2, fisco(*)
+    integer(kind=8) :: n, jlsn, jlst, ndim, ndime, ino, nfiss
+    integer(kind=8) :: iad, igeom, ima, jconx1, jconx2, fisco(*)
     character(len=8) :: elrefp
     real(kind=8) :: co(3), lsn(nfiss), lst(nfiss)
 !
@@ -60,7 +60,7 @@ subroutine xpolsn(elrefp, ino, n, jlsn, jlst, &
 !     LST    : LEVEL SET TANGENTE DU NOEUD OU DU POINT
 !
     real(kind=8) :: ff(n), somlsn(nfiss)
-    integer :: i, j, ifiss, ifisc, nfisc, fisc(2*nfiss)
+    integer(kind=8) :: i, j, ifiss, ifisc, nfisc, fisc(2*nfiss)
 !
     call jemarq()
     co(:) = 0.d0

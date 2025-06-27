@@ -57,10 +57,10 @@ subroutine ntdoet(model, nume_dof, l_stat, ds_inout)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: calcri
     character(len=24) :: stin_evol, field_type, algo_name, field_algo
-    integer :: nb_field, i_field, neq, init_nume
+    integer(kind=8) :: nb_field, i_field, neq, init_nume
     real(kind=8) :: temp_init, init_time
     aster_logical :: l_stin_evol, l_state_init, l_field_read, l_init_stat, l_init_vale, l_reuse
     real(kind=8), pointer :: vale(:) => null()

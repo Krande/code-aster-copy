@@ -44,17 +44,17 @@ subroutine trcart(ific, nocc)
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/tresu_tole.h"
 #include "asterfort/int_to_char8.h"
-    integer, intent(in) :: ific
-    integer, intent(in) :: nocc
+    integer(kind=8), intent(in) :: ific
+    integer(kind=8), intent(in) :: nocc
 !     COMMANDE:  TEST_RESU
 !                MOT CLE FACTEUR "CARTE"
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: iocc, iret
-    integer :: n1, n2, n3, n1r, n2r, n3r, ivari, n1a, n1b
-    integer :: nl1, nl2, vali, valir
-    integer :: jnuma
+    integer(kind=8) :: iocc, iret
+    integer(kind=8) :: n1, n2, n3, n1r, n2r, n3r, ivari, n1a, n1b
+    integer(kind=8) :: nl1, nl2, vali, valir
+    integer(kind=8) :: jnuma
     real(kind=8) :: epsi, epsir, valr, valrr
     complex(kind=8) :: valc, valcr
     character(len=1) :: typres

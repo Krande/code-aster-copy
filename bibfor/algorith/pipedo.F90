@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine pipedo(ndim, typmod, tau, mate, vim, &
 #include "asterfort/zerod2.h"
 #include "asterfort/zerog2.h"
     character(len=8) :: typmod(*)
-    integer :: ndim, mate
+    integer(kind=8) :: ndim, mate
     real(kind=8) :: vim(7), epsm(6), epspc(6), epsdc(6)
     real(kind=8) :: etamin, etamax, tau
     real(kind=8) :: a0, a1, a2, a3, etas
@@ -65,17 +65,17 @@ subroutine pipedo(ndim, typmod, tau, mate, vim, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nbres
+    integer(kind=8) :: nbres
     parameter(nbres=6)
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     character(len=8) :: fami, poum
     real(kind=8) :: valres(nbres)
 !
 !
     aster_logical :: cplan, rechbg, rechbd
-    integer :: ndimsi, k, nsol, iter, nitmax
-    integer :: i, j, l, t(3, 3), kpg, spt
+    integer(kind=8) :: ndimsi, k, nsol, iter, nitmax
+    integer(kind=8) :: i, j, l, t(3, 3), kpg, spt
     real(kind=8) :: coplan, un
     real(kind=8) :: rac2, critp
     real(kind=8) :: eta

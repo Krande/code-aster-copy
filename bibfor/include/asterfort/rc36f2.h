@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine rc36f2(nbsigr, nocc, saltij, i1a4, isk,&
                       isl, nk, nl, n0)
-        integer :: nbsigr
-        integer :: nocc(*)
+        integer(kind=8) :: nbsigr
+        integer(kind=8) :: nocc(*)
         real(kind=8) :: saltij(*)
-        integer :: i1a4
-        integer :: isk
-        integer :: isl
-        integer :: nk
-        integer :: nl
-        integer :: n0
+        integer(kind=8) :: i1a4
+        integer(kind=8) :: isk
+        integer(kind=8) :: isl
+        integer(kind=8) :: nk
+        integer(kind=8) :: nl
+        integer(kind=8) :: n0
     end subroutine rc36f2
 end interface

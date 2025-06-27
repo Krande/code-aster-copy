@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     character(len=4) :: lieu
-    integer :: nb, ns
+    integer(kind=8) :: nb, ns
     real(kind=8) :: fuseism, futot, futotenv
     aster_logical :: ze200, lefat
 !
@@ -46,10 +46,10 @@ subroutine rc32fact(ze200, nb, lieu, ns, fuseism, &
 ! IN  : NS     : =0 : PAS DE SEISME, =1 : SEISME
 ! OUT : FUTOT
 !
-    integer :: jresu, jresucomb, jresus, jresucombs, ndim, jfu, jocc
-    integer :: iocc1, iocc2, num1, num2, jinfo, noccpris, jfact, i, k
-    integer :: jfus, jinfos, noccs, nbsscyc, jcombi, jpassage, jpartage
-    integer :: numpass, noccpass, num, iocc3, jsnseis, jspseis
+    integer(kind=8) :: jresu, jresucomb, jresus, jresucombs, ndim, jfu, jocc
+    integer(kind=8) :: iocc1, iocc2, num1, num2, jinfo, noccpris, jfact, i, k
+    integer(kind=8) :: jfus, jinfos, noccs, nbsscyc, jcombi, jpassage, jpartage
+    integer(kind=8) :: numpass, noccpass, num, iocc3, jsnseis, jspseis
     real(kind=8) :: fumax, fumaxs, m0(12), pres0, st0(6), sns
     real(kind=8) :: sps(2), rbid, fus(2), sbid(2), fumaxpass, fucible
     real(kind=8) :: futotss

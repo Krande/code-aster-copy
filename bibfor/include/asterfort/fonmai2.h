@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
         character(len=8) :: resu
         character(len=8) :: nomail
         character(len=8) :: typfon
-        integer          :: iocc
-        integer          :: nbnoff
+        integer(kind=8)          :: iocc
+        integer(kind=8)          :: nbnoff
         character(len=8) :: typm
     end subroutine fonmai2
 end interface

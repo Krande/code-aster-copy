@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,18 +38,18 @@ subroutine prjint(proj_tole, elem_dime, &
 #include "asterfort/apinte_prsl.h"
 !
     real(kind=8), intent(in) :: proj_tole
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: elem_mast_nbnode
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_mast_nbnode
     real(kind=8), intent(in) :: elem_mast_coor(3, 9)
     character(len=8), intent(in) :: elem_mast_code
-    integer, intent(in) :: elem_slav_nbnode
+    integer(kind=8), intent(in) :: elem_slav_nbnode
     real(kind=8), intent(in) :: elem_slav_coor(3, 9)
     character(len=8), intent(in) :: elem_slav_code
     real(kind=8), intent(out) :: poin_inte(elem_dime-1, 16)
     real(kind=8), intent(out) :: inte_weight
-    integer, intent(out) :: nb_poin_inte
-    integer, optional, intent(inout) :: inte_neigh_(4)
-    integer, optional, intent(inout) :: ierror_
+    integer(kind=8), intent(out) :: nb_poin_inte
+    integer(kind=8), optional, intent(inout) :: inte_neigh_(4)
+    integer(kind=8), optional, intent(inout) :: ierror_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -79,12 +79,12 @@ subroutine prjint(proj_tole, elem_dime, &
     real(kind=8) :: proj_coop(elem_dime-1, 4), coor(3, 4)
     real(kind=8) :: xpt, ypt, xe(3), pt(3)
     real(kind=8) :: xp1, yp1, xp2, yp2
-    integer :: test, list_next(16), nb_node_line
-    integer :: i_node, iret
+    integer(kind=8) :: test, list_next(16), nb_node_line
+    integer(kind=8) :: i_node, iret
     character(len=8) :: elem_line_code
     real(kind=8) :: mast_norm(3), slav_norm(3)
-    integer :: list_prev(16)
-    integer :: inte_neigh(4)
+    integer(kind=8) :: list_prev(16)
+    integer(kind=8) :: inte_neigh(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !

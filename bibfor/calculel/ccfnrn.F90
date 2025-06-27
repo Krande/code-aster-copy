@@ -74,7 +74,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 #include "asterfort/dylach.h"
 #include "asterfort/lislec.h"
 #include "asterfort/isParallelMesh.h"
-    integer :: nbordr
+    integer(kind=8) :: nbordr
     character(len=8) :: resuin, resultOut
     character(len=16) :: option, resultType
     character(len=19) :: lisord
@@ -82,11 +82,11 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 !  -    -                  -      -              -         -
 ! ----------------------------------------------------------------------
     mpi_int :: mpicou, mpibid
-    integer :: jordr, iret, iordr, i, ic, jref, ifm, niv, ibid
-    integer :: nuord, nh, jnmo, nbddl, lmat, jvPara, ind, iordk
-    integer :: neq, jfo, lonch, lonnew, jfr, jfi, rang, nbproc, nbpas, nbordi
-    integer :: lonc2, ltrav, j, inume, jddl, jddr, lacce, p, irelat, jordi
-    integer :: cret, jldist, iaux1, k, jcnoch, ideb, ifin, ipas, jvcham, iaux2
+    integer(kind=8) :: jordr, iret, iordr, i, ic, jref, ifm, niv, ibid
+    integer(kind=8) :: nuord, nh, jnmo, nbddl, lmat, jvPara, ind, iordk
+    integer(kind=8) :: neq, jfo, lonch, lonnew, jfr, jfi, rang, nbproc, nbpas, nbordi
+    integer(kind=8) :: lonc2, ltrav, j, inume, jddl, jddr, lacce, p, irelat, jordi
+    integer(kind=8) :: cret, jldist, iaux1, k, jcnoch, ideb, ifin, ipas, jvcham, iaux2
     character(len=1) :: stop, ktyp, kbid
     character(len=2) :: codret
     character(len=6) :: nompro
@@ -120,7 +120,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
     complex(kind=8) :: ci, cun, cmun
     complex(kind=8), pointer :: nochc(:) => null()
     complex(kind=8), pointer :: chmpc(:) => null()
-    integer, pointer :: v_list_store(:) => null()
+    integer(kind=8), pointer :: v_list_store(:) => null()
     real(kind=8), pointer :: prbid(:) => null()
     complex(kind=8), pointer :: pcbid(:) => null()
     character(len=24), pointer :: refa(:) => null()
@@ -128,7 +128,7 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
     data chvarc/'&&CCFNRN.CHVARC'/
     data k24bid/' '/
     data nomcmp/'DX', 'DY', 'DZ'/
-    integer :: iret2
+    integer(kind=8) :: iret2
     blas_int :: b_incx, b_incy, b_n
 !
     call jemarq()

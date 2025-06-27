@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ subroutine mbgnlr(lVect, lMatr, &
 !
     aster_logical, intent(in) :: lVect, lMatr
     character(len=4) :: fami
-    integer :: nno, ncomp, kpg
-    integer :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
-    integer :: imatuu
+    integer(kind=8) :: nno, ncomp, kpg
+    integer(kind=8) :: imate, icompo, igeom, ideplm, ideplp, ipoids, icontp, ivectu
+    integer(kind=8) :: imatuu
     real(kind=8) :: dff(2, nno), alpha, beta, h, preten
 !
 ! ----------------------------------------------------------------------
@@ -77,7 +77,7 @@ subroutine mbgnlr(lVect, lMatr, &
 ! OUT ***          ***
 ! ----------------------------------------------------------------------
 
-    integer :: n, nn, c, incm
+    integer(kind=8) :: n, nn, c, incm
     real(kind=8) :: posdef(3*nno)
     real(kind=8) :: covaini(3, 3), metrini(2, 2), jacini, cnvaini(3, 2), aini(2, 2)
     real(kind=8) :: covadef(3, 3), metrdef(2, 2), jacdef, cnvadef(3, 2), adef(2, 2)

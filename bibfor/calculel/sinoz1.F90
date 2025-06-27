@@ -64,16 +64,16 @@ subroutine sinoz1(model, sigmElga, sigmNoeu)
     character(len=19) :: solveu, matpre, k19bid, criter, matrElem19
     character(len=24), parameter :: matrElem = '&&MASSEL'
     character(len=24) :: vecass, vect(6)
-    integer, parameter :: nbMatrElem = 1
+    integer(kind=8), parameter :: nbMatrElem = 1
     character(len=24), pointer :: listMatrElem(:) => null()
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
     real(kind=8) :: rcmp(6)
-    integer :: ibid, jvect, nbcmp, repdim
+    integer(kind=8) :: ibid, jvect, nbcmp, repdim
     complex(kind=8) :: cbid
-    integer :: iret
-    integer :: i, ieq, ier, indeq, jprno
-    integer :: jvecas, nbno
+    integer(kind=8) :: iret
+    integer(kind=8) :: i, ieq, ier, indeq, jprno
+    integer(kind=8) :: jvecas, nbno
     real(kind=8), pointer :: sig(:) => null()
     real(kind=8), pointer :: sixx(:) => null()
     real(kind=8), pointer :: sixy(:) => null()
@@ -81,8 +81,8 @@ subroutine sinoz1(model, sigmElga, sigmNoeu)
     real(kind=8), pointer :: siyy(:) => null()
     real(kind=8), pointer :: siyz(:) => null()
     real(kind=8), pointer :: sizz(:) => null()
-    integer, pointer :: slvi(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! --------------------------------------------------------------------------------------------------

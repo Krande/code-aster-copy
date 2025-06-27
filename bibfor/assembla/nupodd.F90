@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine nupodd(nu, base, rang, nbproc)
 #include "asterfort/wkvect.h"
     character(len=14) :: nu
     character(len=2) :: base
-    integer :: rang, nbproc
+    integer(kind=8) :: rang, nbproc
 ! person_in_charge: nicolas.sellenet at edf.fr
 ! ----------------------------------------------------------------------
 !  NUME_DDL - CREATION DES TABLEAUX DE POSSESSION DES DDL
@@ -54,23 +54,23 @@ subroutine nupodd(nu, base, rang, nbproc)
 !                    (SAUF LE NUME_EQUA)
 !                BASE(2:2) : BASE POUR CREER LE NUME_EQUA
 !
-    integer :: nbma, nbnoma, jnumsd
-    integer :: nlili, ili, igr, nel, iel, numa, jpddl, nbno, ino
-    integer :: nuno, iddl, nddl, ddl1g, numpro, curpro, k1, n1
-    integer :: ddl1l, ilib, neql, jconx2, idprn2
-    integer :: nec
+    integer(kind=8) :: nbma, nbnoma, jnumsd
+    integer(kind=8) :: nlili, ili, igr, nel, iel, numa, jpddl, nbno, ino
+    integer(kind=8) :: nuno, iddl, nddl, ddl1g, numpro, curpro, k1, n1
+    integer(kind=8) :: ddl1l, ilib, neql, jconx2, idprn2
+    integer(kind=8) :: nec
 !
     character(len=8) :: noma, mo
     character(len=19) :: ligrmo, nomlig, partit
 !
     aster_logical :: ldist, ldgrel
-    integer, pointer :: adne(:) => null()
+    integer(kind=8), pointer :: adne(:) => null()
     character(len=24), pointer :: prtk(:) => null()
-    integer, pointer :: connex(:) => null()
-    integer, pointer :: nugl(:) => null()
-    integer, pointer :: adli(:) => null()
-    integer, pointer :: prno(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
+    integer(kind=8), pointer :: nugl(:) => null()
+    integer(kind=8), pointer :: adli(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
 !----------------------------------------------------------------------
     mpi_int :: mrank, msize
 !

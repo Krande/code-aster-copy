@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine asmpi_check(iret)
 #include "asterfort/asmpi_stop.h"
 #include "asterfort/ststat.h"
 #include "asterfort/utmess.h"
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !-----------------------------------------------------------------------
 !     FONCTION REALISEE : MPI CHECK ERROR
 !       AVANT D'EFFECTUER UNE COMMUNICATION BLOQUANTE
@@ -54,7 +54,7 @@ subroutine asmpi_check(iret)
 
     aster_logical :: lcont
     mpi_int :: term
-    integer :: i, nbterm, nbproc, np1, resp0
+    integer(kind=8) :: i, nbterm, nbproc, np1, resp0
     mpi_int :: nbpro4, rank, istat, mpicou, wki(1), nbv, ip4
     real(kind=8) :: tres, timeout, t0, tf
     aster_logical, allocatable :: isterm(:)

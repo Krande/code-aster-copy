@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@ interface
     subroutine mesomm(champ, long, vi, vr, vc,&
                       nbma, linuma)
         character(len=*) :: champ
-        integer, intent(in) :: long
-        integer, optional, intent(out) :: vi(*)
+        integer(kind=8), intent(in) :: long
+        integer(kind=8), optional, intent(out) :: vi(*)
         real(kind=8), optional, intent(out) :: vr(*)
         complex(kind=8), optional, intent(out) :: vc(*)
-        integer, optional, intent(in) :: nbma
-        integer, optional, intent(in) :: linuma(*)
+        integer(kind=8), optional, intent(in) :: nbma
+        integer(kind=8), optional, intent(in) :: linuma(*)
     end subroutine mesomm
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine xhlan5(ino, idepl, idepm, idep0, lact, ndim,&
                       pla, lamb, nvec, champ, job, dpf)
-        integer :: ino
-        integer :: idepl
-        integer :: idepm
-        integer :: idep0
-        integer :: lact(16)
-        integer :: ndim
-        integer :: pla(27)
+        integer(kind=8) :: ino
+        integer(kind=8) :: idepl
+        integer(kind=8) :: idepm
+        integer(kind=8) :: idep0
+        integer(kind=8) :: lact(16)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: pla(27)
         real(kind=8) :: lamb(3)
-        integer :: nvec
+        integer(kind=8) :: nvec
         character(len=8) :: champ
         character(len=8) :: job
         real(kind=8) :: dpf

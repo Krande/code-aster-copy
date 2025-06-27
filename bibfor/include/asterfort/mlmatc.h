@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine mlmatc(ni, nk, nj, a, b,&
                       c)
-        integer :: nk
-        integer :: ni
-        integer :: nj
+        integer(kind=8) :: nk
+        integer(kind=8) :: ni
+        integer(kind=8) :: nj
         complex(kind=8) :: a(ni, *)
         complex(kind=8) :: b(nk, *)
         complex(kind=8) :: c(ni, *)

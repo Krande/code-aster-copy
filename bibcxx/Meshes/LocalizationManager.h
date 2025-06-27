@@ -6,7 +6,7 @@
  * @brief Fichier entete de la classe LocalizationManager
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2023  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -100,7 +100,7 @@ class AllMeshEntitiesManager : public GenericLocalizationManager {
     AllMeshEntitiesManager( const bool &mandatory = false )
         : GenericLocalizationManager( "TOUT", mandatory ), _on( false ) {
         _skw = CapyValuePtr( new CapyConvertibleValue< bool >(
-            mandatory, "TOUT", _on, {true, false}, {"OUI", "NON"}, false ) );
+            mandatory, "TOUT", _on, { true, false }, { "OUI", "NON" }, false ) );
     };
 
     void setOnAllMeshEntities() {

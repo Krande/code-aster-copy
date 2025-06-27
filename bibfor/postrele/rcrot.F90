@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 subroutine rcrot(nbabsc, phi, vale, sigm)
     implicit none
-    integer :: nbabsc, i
+    integer(kind=8) :: nbabsc, i
     real(kind=8) :: phi, vale(4, nbabsc), sigm(4, nbabsc)
 !     CALCULER LA TENSEUR DES CONTRAINTES ECRITE AVEC LA BASE LOCALE D'UN SEGMENT AXISYMETRIQUE
 !

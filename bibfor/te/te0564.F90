@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -64,9 +64,9 @@ subroutine te0564(option, nomte)
     real(kind=8) :: dxdk, dydk, axgau, aygau
     real(kind=8) :: xgau, ygau, axxgau, ayygau
     real(kind=8) :: axygau
-    integer :: nno, nnos, jgano, ndim, ipg, npg, idfdk, iopt
-    integer :: ldec, isect, i, iorig, ivect1
-    integer :: ivect2, ino, ipoids, ivf, igeom
+    integer(kind=8) :: nno, nnos, jgano, ndim, ipg, npg, idfdk, iopt
+    integer(kind=8) :: ldec, isect, i, iorig, ivect1
+    integer(kind=8) :: ivect2, ino, ipoids, ivf, igeom
     aster_logical :: laxi
 !
 !

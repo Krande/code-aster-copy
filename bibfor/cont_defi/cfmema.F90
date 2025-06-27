@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,11 +27,11 @@ subroutine cfmema(sdcont_defi, nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_
 ! person_in_charge: mickael.abbas at edf.fr
 !
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(in) :: nb_cont_elem0
-    integer, intent(in) :: nb_cont_elem
-    integer, pointer :: v_poin_elem(:)
-    integer, pointer :: v_list_elem(:)
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(in) :: nb_cont_elem0
+    integer(kind=8), intent(in) :: nb_cont_elem
+    integer(kind=8), pointer :: v_poin_elem(:)
+    integer(kind=8), pointer :: v_list_elem(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,11 +50,11 @@ subroutine cfmema(sdcont_defi, nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_surf, i_elem
+    integer(kind=8) :: i_surf, i_elem
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_psumaco
-    integer, pointer :: v_sdcont_psumaco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_psumaco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

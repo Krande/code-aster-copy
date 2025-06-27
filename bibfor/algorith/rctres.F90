@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine rctres(sigm, tresca)
 ! ----------------------------------------------------------------------
     real(kind=8) :: tr(6), tu(6), nul(6)
     real(kind=8) :: equi(3)
-    integer :: nt, nd
+    integer(kind=8) :: nt, nd
     common/tdim/nt, nd
     data nul/6*0.d0/
 ! ----------------------------------------------------------------------

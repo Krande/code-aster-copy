@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,13 +52,13 @@ subroutine indlia(modgen, seliai, nindep, nbddl, sst, &
 #include "blas/dorgqr.h"
 !
 !-----------------------------------------------------------------------
-    integer :: nindep, nbddl
+    integer(kind=8) :: nindep, nbddl
     character(len=8) :: modgen
     character(len=24) :: seliai, sizlia, sst
 !
-    integer :: i1, j1, k1, l1, m1, nbsst, nblia, ne, nd1, nd2, lnoli1, lnoli2
-    integer :: nedec, nd1deq, nd2deq, nbeqt, inds, lds, ldelia, llprof, lknoms
-    integer :: lmalia, lsilia, lwork, jwork, lselia, ltau, neq, k, jjpvt, rang
+    integer(kind=8) :: i1, j1, k1, l1, m1, nbsst, nblia, ne, nd1, nd2, lnoli1, lnoli2
+    integer(kind=8) :: nedec, nd1deq, nd2deq, nbeqt, inds, lds, ldelia, llprof, lknoms
+    integer(kind=8) :: lmalia, lsilia, lwork, jwork, lselia, ltau, neq, k, jjpvt, rang
     integer(kind=4) :: info
 !
     character(len=8) :: int1, int2

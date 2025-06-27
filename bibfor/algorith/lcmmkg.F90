@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine lcmmkg(zinv, nvi, vind, vinf, nmat, &
     real(kind=8) :: dsdf(6, 3, 3)
     real(kind=8) :: fet(3, 3), fetfe(3, 3), eel(6), hooke(6, 6), s6(6), s(3, 3)
     real(kind=8) :: dtaudf(3, 3, 3, 3), materf(*), sfet(3, 3)
-    integer :: nr, ndt, ndi, i, j, k, l, m, n, nmat, ind(3, 3), nvi
+    integer(kind=8) :: nr, ndt, ndi, i, j, k, l, m, n, nmat, ind(3, 3), nvi
     common/tdim/ndt, ndi
     character(len=8) :: mod
     blas_int :: b_incx, b_incy, b_n

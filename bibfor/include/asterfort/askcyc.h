@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,16 +24,16 @@ interface
     subroutine askcyc(craid, ndim, soumat, beta, ni,&
                       nj, na, axok, liax, nbliax,&
                       libid)
-        integer :: nbliax
+        integer(kind=8) :: nbliax
         complex(kind=8) :: craid(*)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=24) :: soumat
         real(kind=8) :: beta
-        integer :: ni
-        integer :: nj
-        integer :: na
+        integer(kind=8) :: ni
+        integer(kind=8) :: nj
+        integer(kind=8) :: na
         aster_logical :: axok
-        integer :: liax(nbliax)
-        integer :: libid(*)
+        integer(kind=8) :: liax(nbliax)
+        integer(kind=8) :: libid(*)
     end subroutine askcyc
 end interface

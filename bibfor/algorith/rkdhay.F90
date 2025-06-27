@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine rkdhay(mod, nvi, vini, coeft, nmat, &
 #include "blas/dscal.h"
     character(len=8) :: mod
 !
-    integer :: iret, itens, ndi, nmat, nvi, ndt, ndim
+    integer(kind=8) :: iret, itens, ndi, nmat, nvi, ndt, ndim
 !
     real(kind=8) :: coeft(nmat), vini(nvi), dvin(nvi), smx(6), sigi(*)
     real(kind=8) :: ecrou(2), h, dmg, dmgmi

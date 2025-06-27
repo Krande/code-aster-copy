@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm, &
 #include "asterfort/sigeob.h"
     character(len=8) :: typmod(*)
     character(len=16) :: option
-    integer :: ndim, imate, iret
+    integer(kind=8) :: ndim, imate, iret
     real(kind=8) :: epsm(6), deps(6), vim(7), crit(*)
     real(kind=8) :: sigm(6), vip(7), dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -68,10 +68,10 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm, &
 !
     aster_logical :: rigi, resi, elas, reinit
     aster_logical :: total, tot1, tot2, tot3, dbloq
-    integer :: ndimsi, i, j, k, l, p, q, m, n, t(3, 3)
-    integer :: bdim, r1(6), r2(6)
+    integer(kind=8) :: ndimsi, i, j, k, l, p, q, m, n, t(3, 3)
+    integer(kind=8) :: bdim, r1(6), r2(6)
 !
-    integer :: intmax
+    integer(kind=8) :: intmax
     real(kind=8) :: toler
 !
     real(kind=8) :: treps, treb, eps(6), cc(6)
@@ -88,7 +88,7 @@ subroutine lceobl(ndim, typmod, imate, crit, epsm, &
     real(kind=8) :: dsiint(6, 6), dsimed(6, 6)
     real(kind=8) :: vecepm(3, 3), valepm(3)
 !
-    integer :: icodre(6)
+    integer(kind=8) :: icodre(6)
     character(len=16) :: nomres(6)
     real(kind=8) :: valres(6)
 !

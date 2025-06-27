@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,18 @@ interface
     subroutine conini(ma, noecon, maicon, marcon, nbmar,&
                       nbnoe, nbmarc, nommar, jmicor, mbcor,&
                       nomtyr, nbgco, io8gco)
-        integer :: nbnoe
-        integer :: nbmar
+        integer(kind=8) :: nbnoe
+        integer(kind=8) :: nbmar
         character(len=8) :: ma
-        integer :: noecon(nbnoe)
-        integer :: maicon(nbmar)
-        integer :: marcon(nbmar)
-        integer :: nbmarc
+        integer(kind=8) :: noecon(nbnoe)
+        integer(kind=8) :: maicon(nbmar)
+        integer(kind=8) :: marcon(nbmar)
+        integer(kind=8) :: nbmarc
         character(len=8) :: nommar(nbmar)
-        integer :: jmicor(nbmar)
-        integer :: mbcor(nbmar)
+        integer(kind=8) :: jmicor(nbmar)
+        integer(kind=8) :: mbcor(nbmar)
         character(len=8) :: nomtyr(nbmar)
-        integer :: nbgco
-        integer :: io8gco
+        integer(kind=8) :: nbgco
+        integer(kind=8) :: io8gco
     end subroutine conini
 end interface

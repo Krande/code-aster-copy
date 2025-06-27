@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,11 +53,11 @@ contains
         implicit none
 !
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in) :: min_order_cell
-        integer, intent(in) :: max_order_cell
+        integer(kind=8), intent(in) :: min_order_cell
+        integer(kind=8), intent(in) :: max_order_cell
         type(HHO_Face), intent(in) :: hhoFace
-        integer, intent(in) :: min_order_face
-        integer, intent(in) :: max_order_face
+        integer(kind=8), intent(in) :: min_order_face
+        integer(kind=8), intent(in) :: max_order_face
         real(kind=8), intent(out) :: traceMat(MSIZE_FACE_SCAL, MSIZE_CELL_SCAL)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -79,7 +79,7 @@ contains
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature) :: hhoQuad
         real(kind=8) :: BSCellEval(MSIZE_CELL_SCAL), BSFaceEval(MSIZE_FACE_SCAL)
-        integer :: rowsMat, colsMat, ipg, ndim
+        integer(kind=8) :: rowsMat, colsMat, ipg, ndim
         blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !
         ndim = hhoCell%ndim

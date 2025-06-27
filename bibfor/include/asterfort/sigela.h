@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine sigela(typmod, ndim, e, nu, epse,&
                       sigel)
         character(len=8) :: typmod(1)
-        integer :: ndim
+        integer(kind=8) :: ndim
         real(kind=8) :: e
         real(kind=8) :: nu
         real(kind=8) :: epse(6)

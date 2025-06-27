@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-    integer :: imate, kpg, ksp
+    integer(kind=8) :: imate, kpg, ksp
     character(len=8) :: typmod(*), materi
     character(len=16) :: compor(*), option, phenbid
     character(len=*) :: fami
@@ -76,9 +76,9 @@ subroutine nmgran(fami, kpg, ksp, typmod, imate, &
     real(kind=8) :: depsmo, depsdv(6), sigmmo, sigmdv(6), sigpmo, sigpdv(6)
     real(kind=8) :: smdv(6), spdv(6), smmo, spmo, dsdv(6), dsmo, deps(6), deps3
     real(kind=8) :: sigldv(6), siglmo, sigmp(6), sigmpo, sigmpd(6)
-    integer :: ndimsi, ibid, iret, ibid2
-    integer :: i, k, l, n, iret1, iret2, iret3
-    integer :: icodre(16), ndt, ndi
+    integer(kind=8) :: ndimsi, ibid, iret, ibid2
+    integer(kind=8) :: i, k, l, n, iret1, iret2, iret3
+    integer(kind=8) :: icodre(16), ndt, ndi
     character(len=16) :: nomres(16)
     character(len=8) :: nompar, mod
     real(kind=8) :: valpam, valpap

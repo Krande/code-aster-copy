@@ -82,26 +82,26 @@ subroutine calimc(chargz)
     character(len=3) :: ttran
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i2, i3, iaprno
-    integer :: ibid, icmp, icmp2, idbase
-    integer :: iddl, iddl2, ii
-    integer :: imod, imod2, inoe, iocc, j, j2
-    integer :: j3, jj, k, n2, ier
-    integer :: nbec, nbmdef, nbmdyn, nbmode(1), nbnde2, nbndef, nbndyn
-    integer :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq, nueq2
-    integer :: nmc, nbmdy2
+    integer(kind=8) :: i, i2, i3, iaprno
+    integer(kind=8) :: ibid, icmp, icmp2, idbase
+    integer(kind=8) :: iddl, iddl2, ii
+    integer(kind=8) :: imod, imod2, inoe, iocc, j, j2
+    integer(kind=8) :: j3, jj, k, n2, ier
+    integer(kind=8) :: nbec, nbmdef, nbmdyn, nbmode(1), nbnde2, nbndef, nbndyn
+    integer(kind=8) :: nbnoe, nbntot, nbterm, nec, nec2, neq, nliai, nueq, nueq2
+    integer(kind=8) :: nmc, nbmdy2
     real(kind=8) :: beta, rbid, vale, zero
     complex(kind=8), pointer :: coec(:) => null()
     real(kind=8), pointer :: coer(:) => null()
-    integer, pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
     real(kind=8), pointer :: direct(:) => null()
     character(len=8), pointer :: lisddl(:) => null()
     character(len=8), pointer :: lisno(:) => null()
     character(len=8), pointer :: ncmpin(:) => null()
     character(len=8), pointer :: ncmpsd(:) => null()
-    integer, pointer :: idc_defo(:) => null()
+    integer(kind=8), pointer :: idc_defo(:) => null()
     character(len=24), pointer :: mael_refe(:) => null()
-    integer, pointer :: lino(:) => null()
+    integer(kind=8), pointer :: lino(:) => null()
     aster_logical :: lcolle
     character(len=19) :: ligrmo
     character(len=8), pointer :: lgrf(:) => null()

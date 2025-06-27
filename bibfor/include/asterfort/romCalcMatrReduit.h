@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
     subroutine romCalcMatrReduit(modeNume, base, nbMatr, prod_matr_mode, matr_redu,&
                                  modeType)
         use Rom_Datastructure_type
-        integer, intent(in) :: nbMatr, modeNume
+        integer(kind=8), intent(in) :: nbMatr, modeNume
         type(ROM_DS_Empi), intent(in) :: base
         character(len=24), intent(in) :: matr_redu(:)
         character(len=24), intent(in) :: prod_matr_mode(:)

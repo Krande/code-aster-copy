@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@
 !
 interface
     function exigfa(dgf, ngf)
-        integer :: dgf(*)
-        integer :: ngf
+        integer(kind=8) :: dgf(*)
+        integer(kind=8) :: ngf
         aster_logical :: exigfa
     end function exigfa
 end interface

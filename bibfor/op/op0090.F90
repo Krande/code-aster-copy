@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine op0090()
 #include "asterfort/rfresu.h"
 #include "asterfort/rfrgen.h"
 #include "asterfort/rftabl.h"
-    integer :: nreg, nrb, nch, ng, ier
-    integer :: nta, nres, nc, nna
+    integer(kind=8) :: nreg, nrb, nch, ng, ier
+    integer(kind=8) :: nta, nres, nc, nna
     character(len=8) :: k8b
     character(len=19) :: cham19, resu, tabres, tabtyp(8), nappe
     data tabtyp/'NOEU#DEPL_R', 'NOEU#TEMP_R', 'NOEU#PRES_R',&

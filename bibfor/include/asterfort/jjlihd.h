@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,16 +23,16 @@ interface
                       ltypi, ic, ido, idc, jmarq,&
                       iadmi, iadyn)
         hid_t :: idts
-        integer :: nbval
-        integer :: lonoi
+        integer(kind=8) :: nbval
+        integer(kind=8) :: lonoi
         character(len=*) :: genri
         character(len=*) :: typei
-        integer :: ltypi
-        integer :: ic
-        integer :: ido
-        integer :: idc
-        integer :: jmarq(2)
-        integer :: iadmi
-        integer :: iadyn
+        integer(kind=8) :: ltypi
+        integer(kind=8) :: ic
+        integer(kind=8) :: ido
+        integer(kind=8) :: idc
+        integer(kind=8) :: jmarq(2)
+        integer(kind=8) :: iadmi
+        integer(kind=8) :: iadyn
     end subroutine jjlihd
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine b3d_d66(nu, sn3, d66, prog1, &
     real(kind=8) :: nu
     aster_logical :: prog1, comp
 !    declarations locales
-    integer i, j, k, l
+    integer(kind=8) i, j, k, l
     real(kind=8) :: s33(3, 3)
     real(kind=8) :: d1, d2, d3, sdmax, smax
     real(kind=8) :: t1, t2, t4, t6, t8, t13, t15, t16, t21, t22, t23

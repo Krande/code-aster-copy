@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine dfplgl(nmnbn, nmplas, nmdpla, bend, dfpl)
 ! OUT DFPL : GRADIENT DU CRITERE DE PLASICITE
 !
 !
-    integer :: bend
+    integer(kind=8) :: bend
 !
     real(kind=8) :: dfpl(*), nmnbn(6), nmplas(2, 3), nmdpla(2, 2)
 !

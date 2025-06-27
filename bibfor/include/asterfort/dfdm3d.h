@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
           interface 
             subroutine dfdm3d(nno,ipg,ipoids,idfde,coor,jac,dfdx,dfdy,  &
      &dfdz)
-              integer, intent(in) :: nno
-              integer, intent(in) :: ipg
-              integer, intent(in) :: ipoids
-              integer, intent(in) :: idfde
+              integer(kind=8), intent(in) :: nno
+              integer(kind=8), intent(in) :: ipg
+              integer(kind=8), intent(in) :: ipoids
+              integer(kind=8), intent(in) :: idfde
               real(kind=8), intent(in) :: coor(*)
               real(kind=8), intent(out) :: jac
               real(kind=8) ,optional, intent(out) :: dfdx(*)

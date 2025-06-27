@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
 !
-    integer :: ndim, istano
+    integer(kind=8) :: ndim, istano
     real(kind=8) :: r, theta, dfkdpo(ndim, ndim, 2), kappa, mu
     character(len=*) :: option
 !

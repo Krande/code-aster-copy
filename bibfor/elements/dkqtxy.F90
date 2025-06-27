@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ subroutine dkqtxy(qsi, eta, hft2, depf, codi, &
     real(kind=8) :: qsi, eta, hft2(2, 6), depf(12), codi(*), lcot(*), vt(2)
 !     EFFORT TRANCHANT L'ELEMENT DE PLAQUE DKQ
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: pqsi, mqsi, peta, meta
     real(kind=8) :: cl(4), sl(4), cs(4), cu(4), su(4)
     real(kind=8) :: tkq(6, 12), bc(2, 12)
 !     ------------------ PARAMETRAGE QUADRANGLE ------------------------
-    integer :: nno, nc
+    integer(kind=8) :: nno, nc
     parameter(nno=4)
     parameter(nc=4)
 !     ------------------------------------------------------------------

@@ -60,8 +60,8 @@ subroutine vetrth(model, loadNameJv, loadInfoJv, caraElem, mateco, &
     character(len=16) :: option
     character(len=24) :: ligrmo, lchin(7), lchout(4)
     character(len=24) :: chvite, convch, chgeom, chcara(18)
-    integer :: iret, jvites
-    integer :: icha, ichar, iconv, jchar, jinf, nchar
+    integer(kind=8) :: iret, jvites
+    integer(kind=8) :: icha, ichar, iconv, jchar, jinf, nchar
 !
 !-----------------------------------------------------------------------
     call jemarq()

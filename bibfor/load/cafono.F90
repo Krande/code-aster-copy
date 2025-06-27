@@ -73,14 +73,14 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: keywordFact = 'FORCE_NODALE'
-    integer, parameter :: nmocl = 10
-    integer :: nfono, n2dl, n3dl, n6dl, ncoq2d, nbcomp
-    integer :: i, idgex, ii, in, ino, iret
-    integer :: j, jj, jl, jnbno, jno
-    integer :: jprnm, jval, jvalv, nangl, nbec, nbecf
-    integer :: nbno, nbnoeu, nsurch, numel
-    integer :: igrel, inema
-    integer :: ntypel(nmocl), forimp(nmocl), ier
+    integer(kind=8), parameter :: nmocl = 10
+    integer(kind=8) :: nfono, n2dl, n3dl, n6dl, ncoq2d, nbcomp
+    integer(kind=8) :: i, idgex, ii, in, ino, iret
+    integer(kind=8) :: j, jj, jl, jnbno, jno
+    integer(kind=8) :: jprnm, jval, jvalv, nangl, nbec, nbecf
+    integer(kind=8) :: nbno, nbnoeu, nsurch, numel
+    integer(kind=8) :: igrel, inema
+    integer(kind=8) :: ntypel(nmocl), forimp(nmocl), ier
     real(kind=8) :: dgrd, valfor(nmocl)
     aster_logical :: verif, l_occu_void
     aster_logical :: lcolle
@@ -88,8 +88,8 @@ subroutine cafono(load, loadLigrel, mesh, model, valeType)
     character(len=16) :: motcle(nmocl), motcls(2)
     character(len=19) :: carte, modelLigrel
     character(len=24) :: liel, nomnoe, nomele, mesnoe
-    integer :: nb_elem_late, nb_noel_maxi, jlgns, iexi
-    integer, pointer :: desgi(:) => null()
+    integer(kind=8) :: nb_elem_late, nb_noel_maxi, jlgns, iexi
+    integer(kind=8), pointer :: desgi(:) => null()
     character(len=8), pointer :: noms_noeuds(:) => null()
     character(len=8), pointer :: ncmp(:) => null()
 !

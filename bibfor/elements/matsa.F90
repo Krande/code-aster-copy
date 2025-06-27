@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine matsa(dudx, sa1, sa2)
     implicit none
 !
 #include "asterfort/r8inir.h"
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     real(kind=8) :: dudx(9)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine nmasym(fami, kpg, ksp, icodma, option, &
 #include "asterfort/nm1das.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rcvalb.h"
-    integer :: kpg, ksp, neq, nbt, nvar, icodma
+    integer(kind=8) :: kpg, ksp, neq, nbt, nvar, icodma
     parameter(neq=6, nbt=21, nvar=4)
 !
     character(len=*) :: fami, option
@@ -57,10 +57,10 @@ subroutine nmasym(fami, kpg, ksp, icodma, option, &
 !----------VARIABLES LOCALES
 !
     real(kind=8) :: sigm, deps, dsdem, dsdep, sigp, xrig
-    integer :: nbpar, nbres, kpg1, spt
+    integer(kind=8) :: nbpar, nbres, kpg1, spt
 !
     real(kind=8) :: valpar, valres(4)
-    integer :: icodre(4)
+    integer(kind=8) :: icodre(4)
     character(len=8) :: nompar, famil, poum
     character(len=16) :: nomela, nomasl(4)
     data nomela/'E'/

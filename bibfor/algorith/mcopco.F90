@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine mcopco(noma, newgeo, ndim, nummai, ksi1, &
 #include "asterfort/mmvalp.h"
     character(len=8) :: noma
     character(len=19) :: newgeo
-    integer :: ndim, nummai
+    integer(kind=8) :: ndim, nummai
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: geom(3)
 !
@@ -56,8 +56,8 @@ subroutine mcopco(noma, newgeo, ndim, nummai, ksi1, &
 !
 !
 !
-    integer ::  jdes
-    integer :: nno, ino, no(9)
+    integer(kind=8) ::  jdes
+    integer(kind=8) :: nno, ino, no(9)
     real(kind=8) :: coor(27)
     character(len=8) :: alias
     real(kind=8), pointer :: vale(:) => null()

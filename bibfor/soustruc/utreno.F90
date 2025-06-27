@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utnono.h"
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=8) :: ma, noeud
     character(len=*) :: mcf, mcs
     aster_logical, optional :: ok_noeud
@@ -35,7 +35,7 @@ subroutine utreno(mcf, mcs, iocc, ma, noeud, ok_noeud)
 ! IN  : MA     : NOM DU MAILLAGE
 ! OUT : NOEUD  : NOM DU NOEUD RECUPERE
 !     ------------------------------------------------------------------
-    integer :: n1, iret
+    integer(kind=8) :: n1, iret
     character(len=16) :: mcnoeu, mcgrno
     character(len=24) :: valk(2), nogno
 !     ------------------------------------------------------------------

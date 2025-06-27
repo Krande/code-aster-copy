@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine trldc(a, nordre, ierr)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ibm, idiag, ierr, in, indiag, jn
-    integer :: jndiag, nordre
+    integer(kind=8) :: i, ibm, idiag, ierr, in, indiag, jn
+    integer(kind=8) :: jndiag, nordre
 !-----------------------------------------------------------------------
     data zero/0.d+00/
 !-----------------------------------------------------------------------

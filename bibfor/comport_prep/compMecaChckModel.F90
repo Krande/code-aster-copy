@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,12 +43,12 @@ subroutine compMecaChckModel(iComp, &
 #include "asterfort/asmpi_any.h"
 #include "asterfort/asmpi_all.h"
 !
-    integer, intent(in) :: iComp
+    integer(kind=8), intent(in) :: iComp
     character(len=8), intent(in) :: model
     character(len=19), intent(in) :: fullElemField
     aster_logical, intent(in) :: lAllCellAffe
     character(len=24), intent(in) :: cellAffe
-    integer, intent(in) :: nbCellAffe
+    integer(kind=8), intent(in) :: nbCellAffe
     character(len=16), intent(in) :: relaCompPY, relaComp
     character(len=16), intent(in) :: typeComp
     character(len=8), intent(in) :: chmate
@@ -78,13 +78,13 @@ subroutine compMecaChckModel(iComp, &
 !
     character(len=16) :: elemTypeName, modelType, incoType, isNuFunc, typmod2Type
     character(len=8) :: mesh
-    integer :: elemTypeNume, cellNume, nbCmpAffected
-    integer :: jvCesd, jvCesl, jvVale
-    integer :: modelTypeIret, lctestIret, iCell, incoTypeIret
-    integer :: nbCellMesh, nbCell, ibid, ier
+    integer(kind=8) :: elemTypeNume, cellNume, nbCmpAffected
+    integer(kind=8) :: jvCesd, jvCesl, jvVale
+    integer(kind=8) :: modelTypeIret, lctestIret, iCell, incoTypeIret
+    integer(kind=8) :: nbCellMesh, nbCell, ibid, ier
     character(len=16), pointer :: cesv(:) => null()
-    integer, pointer :: cellAffectedByModel(:) => null()
-    integer, pointer :: listCellAffe(:) => null()
+    integer(kind=8), pointer :: cellAffectedByModel(:) => null()
+    integer(kind=8), pointer :: listCellAffe(:) => null()
     aster_logical :: lAtOneCellAffect, lAllCellAreBound, lPlStressFuncNu, l_kit_thm, l_parallel_mesh
 !
 ! --------------------------------------------------------------------------------------------------

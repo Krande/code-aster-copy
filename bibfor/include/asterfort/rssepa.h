@@ -19,7 +19,7 @@
 interface
     subroutine rssepa(resultZ, numeStore, modelZ, materFieldZ, caraElemZ, listLoadZ)
         character(len=*), intent(in) :: resultZ
-        integer, intent(in)  :: numeStore
+        integer(kind=8), intent(in)  :: numeStore
         character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, listLoadZ
     end subroutine rssepa
 end interface

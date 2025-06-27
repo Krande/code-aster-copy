@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,9 +19,9 @@
 function iposdg(dg, cmp)
 ! aslint: disable=
     implicit none
-    integer :: iposdg
+    integer(kind=8) :: iposdg
 !
-    integer :: dg(*), cmp
+    integer(kind=8) :: dg(*), cmp
 !
 !
 !***********************************************************************
@@ -48,7 +48,7 @@ function iposdg(dg, cmp)
 !
 !***********************************************************************
 !
-    integer :: paquet, valec, nbec, reste, code, cmpt, i, lshift
+    integer(kind=8) :: paquet, valec, nbec, reste, code, cmpt, i, lshift
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

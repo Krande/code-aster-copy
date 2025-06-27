@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla, &
 #include "jeveux.h"
 #include "asterfort/indent.h"
 #include "asterfort/xcalc_saut.h"
-    integer :: ndim, nno, nnos, nnol
-    integer :: nfh, ddls, ddlm
-    integer :: singu, pla(27), lact(8)
+    integer(kind=8) :: ndim, nno, nnos, nnol
+    integer(kind=8) :: nfh, ddls, ddlm
+    integer(kind=8) :: singu, pla(27), lact(8)
     real(kind=8) :: mmat(216, 216)
     real(kind=8) :: ffc(8), ffp(27), jac, tau1(3), tau2(3)
     real(kind=8) :: seuil, knp(3, 3), mu
@@ -67,8 +67,8 @@ subroutine xmmbp3(ndim, nno, nnos, nnol, pla, &
 ! I/O MMAT   : MATRICE ELEMENTAITRE DE CONTACT/FROTTEMENT
 !
 !
-    integer :: i, j, k, l, jn, nli, pli
-    integer :: alpj
+    integer(kind=8) :: i, j, k, l, jn, nli, pli
+    integer(kind=8) :: alpj
     real(kind=8) :: ffi, tauknp(2, 3), coefj
 !
 ! ----------------------------------------------------------------------

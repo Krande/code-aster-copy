@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
     subroutine calirg(mesh, nbno, list_node, tran,  cent, &
                       l_angl_naut, angl_naut, geom_defo, l_rota, matr_rota)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: nbno
+        integer(kind=8), intent(in) :: nbno
         character(len=24), intent(in) :: list_node
         aster_logical, intent(in) :: l_angl_naut
         real(kind=8), intent(in) :: angl_naut(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac, &
 !
     character(len=24) :: lstcmp, lstmac, lstnac
     character(len=*) :: mcf, nchpt
-    integer :: iocc, iret
+    integer(kind=8) :: iocc, iret
 !
 !  OPERATION REALISEE
 !  ------------------
@@ -77,19 +77,19 @@ subroutine rvouex(mcf, iocc, nchpt, lstcmp, lstmac, &
 !
 !  VARIABLES LOCALES
 !  -----------------
-    integer :: adr, acncin, alsmac, alsnac, acmp, adrvlc, arepe
-    integer :: nbtma, nbm, nbmac, nbnac, nbmalu
-    integer :: i, in, n, m, libre, n1, ibid, igrel, jnuma, j
-    integer :: ibib, imolo, n2, kk, ier, nbvari, nbr
-    integer :: ii, jmmail, nbtrou, nbcmp, nbcmp1, nc, jcmp, jcmp1, ntc
+    integer(kind=8) :: adr, acncin, alsmac, alsnac, acmp, adrvlc, arepe
+    integer(kind=8) :: nbtma, nbm, nbmac, nbnac, nbmalu
+    integer(kind=8) :: i, in, n, m, libre, n1, ibid, igrel, jnuma, j
+    integer(kind=8) :: ibib, imolo, n2, kk, ier, nbvari, nbr
+    integer(kind=8) :: ii, jmmail, nbtrou, nbcmp, nbcmp1, nc, jcmp, jcmp1, ntc
     character(len=4) :: docu
     character(len=8) :: nmaila, nomgd, resuco, nomvar, num
     character(len=15) :: nconec
     character(len=16) :: motcle(2), typmcl(2), nchsym
     character(len=19) :: nchp19
     character(len=24) :: ncncin, nrepe, lismai, malist, nomobj, valk(3)
-    integer, pointer :: celd(:) => null()
-    integer, pointer :: entier(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
+    integer(kind=8), pointer :: entier(:) => null()
     data nbvari/100/
 !**********************************************************************
 !

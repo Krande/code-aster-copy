@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,9 +48,9 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm, &
 #include "asterfort/utmess.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
-    integer :: nmat, nvi, nsfa, nsfv, iexp, nfs, nsg
-    integer :: nbfsys, i, nuvi, ifa, nbsys, is
-    integer :: nbcomm(nmat, 3), iret
+    integer(kind=8) :: nmat, nvi, nsfa, nsfv, iexp, nfs, nsg
+    integer(kind=8) :: nbfsys, i, nuvi, ifa, nbsys, is
+    integer(kind=8) :: nbcomm(nmat, 3), iret
     real(kind=8) :: sigf(6), vin(nvi), rp, hsr(nsg, nsg), deps(6)
     real(kind=8) :: materf(nmat*2), seuil, dt, dy(nvi), alpham
     real(kind=8) :: ms(6), ng(3), q(3, 3), timed, timef, lg(3), depsdt
@@ -59,7 +59,7 @@ subroutine lcmmvx(sigf, vin, nmat, materf, nbcomm, &
     character(len=24) :: cpmono(5*nmat+1)
     character(len=16) :: nomfam, necoul, necris
     common/deps6/depsdt
-    integer :: irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: irr, decirr, nbsyst, decal, gdef
     blas_int :: b_incx, b_incy, b_n
     common/polycr/irr, decirr, nbsyst, decal, gdef
 !

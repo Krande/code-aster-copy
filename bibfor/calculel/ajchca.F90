@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine ajchca(para, cham, lpara, lcham, nbent, &
     implicit none
 !
 #include "asterfort/assert.h"
-    integer :: maxent, nbent, indice, i
+    integer(kind=8) :: maxent, nbent, indice, i
     character(len=*) :: para, cham, lpara(maxent), lcham(maxent), surch
 !
 !     CETTE ROUTINE PERMET D'AJOUTER UN COUPLE (PARAMETRE,NOM_CHAMP)

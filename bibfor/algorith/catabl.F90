@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine catabl(table_new, table_old, time, nume_store, nb_obje, &
     character(len=8), intent(in) :: table_new
     character(len=8), intent(in) :: table_old
     real(kind=8), intent(in) :: time
-    integer, intent(in) :: nume_store
-    integer, intent(in) :: nb_obje
+    integer(kind=8), intent(in) :: nume_store
+    integer(kind=8), intent(in) :: nb_obje
     character(len=16), intent(in) :: obje_name(nb_obje)
     character(len=24), intent(in) :: obje_sdname(nb_obje)
 !
@@ -63,16 +63,16 @@ subroutine catabl(table_new, table_old, time, nume_store, nb_obje, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbpara = 6
+    integer(kind=8), parameter :: nbpara = 6
     character(len=19), parameter :: nompar(nbpara) = (/ &
                                     'NOM_OBJET ', 'TYPE_OBJET', &
                                     'NOM_SD    ', 'NUME_ORDRE', &
                                     'INST      ', 'VALE_I    '/)
     character(len=19), parameter :: typpar(nbpara) = (/ &
                                     'K16', 'K16', 'K24', 'I  ', 'R8 ', 'I  '/)
-    integer :: prepar(nbpara)
+    integer(kind=8) :: prepar(nbpara)
 !
-    integer, parameter :: l_nb_obje = 9
+    integer(kind=8), parameter :: l_nb_obje = 9
     character(len=16), parameter :: l_obje_name(l_nb_obje) = (/ &
                                     'MATR_TANG_ELEM  ', 'SIEF_ELGA       ', 'VARI_ELGA       ', &
                                     'FORC_INTE_ELEM  ', 'FORC_DIRI_ELEM  ', 'FORC_NODA_ELEM  ', &
@@ -84,16 +84,16 @@ subroutine catabl(table_new, table_old, time, nume_store, nb_obje, &
 !
     character(len=19) :: nomtab
     aster_logical :: l_new_table, l_repl_object
-    integer :: i_repl_object
-    integer :: jnobj, jnosd, jnuor, jtobj, jrins, jlins
-    integer :: nboldp, nblign, t_nume_store
-    integer :: ipara, ilign, i_l_obj, i_obj, ibid, iret, nbcol
+    integer(kind=8) :: i_repl_object
+    integer(kind=8) :: jnobj, jnosd, jnuor, jtobj, jrins, jlins
+    integer(kind=8) :: nboldp, nblign, t_nume_store
+    integer(kind=8) :: ipara, ilign, i_l_obj, i_obj, ibid, iret, nbcol
     character(len=24) :: vk(3)
     character(len=16) :: k16bid, t_obje_name, obje_type
     real(kind=8) :: r8bid, v_iret(1)
     complex(kind=8) :: c16bid
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

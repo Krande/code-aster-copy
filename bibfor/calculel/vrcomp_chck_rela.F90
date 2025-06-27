@@ -38,7 +38,7 @@ subroutine vrcomp_chck_rela(mesh, nbCell, &
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nbCell
+    integer(kind=8), intent(in) :: nbCell
     character(len=19), intent(in) :: comporCurr, comporPrev
     character(len=19), intent(in) :: ligrelCurr, ligrelPrev
     character(len=48), intent(in) :: comp_comb_1, comp_comb_2
@@ -68,21 +68,21 @@ subroutine vrcomp_chck_rela(mesh, nbCell, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iCell
+    integer(kind=8) :: iCell
     aster_logical :: lCellCurr, lCellPrev
-    integer :: iadp, iadm
-    integer :: idxPrev, idxCurr
+    integer(kind=8) :: iadp, iadm
+    integer(kind=8) :: idxPrev, idxCurr
     character(len=16) :: relaCompPrev, relaCompCurr
     character(len=8) :: cellName
-    integer, pointer :: repePrev(:) => null()
-    integer, pointer :: repeCurr(:) => null()
-    integer :: jvCeslPrev, jvCesdPrev
+    integer(kind=8), pointer :: repePrev(:) => null()
+    integer(kind=8), pointer :: repeCurr(:) => null()
+    integer(kind=8) :: jvCeslPrev, jvCesdPrev
     character(len=16), pointer :: cesvPrev(:) => null()
-    integer :: jvCeslCurr, jvCesdCurr
+    integer(kind=8) :: jvCeslCurr, jvCesdCurr
     character(len=24) :: valk(7)
     character(len=16), pointer :: cesvCurr(:) => null()
     character(len=24) :: groupCell(4)
-    integer :: nbGroupCell
+    integer(kind=8) :: nbGroupCell
 !
 ! --------------------------------------------------------------------------------------------------
 !

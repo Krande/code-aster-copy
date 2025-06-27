@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
                                        mfront_valr  , mfront_valk)
         aster_logical, intent(in) :: l_mfront_func, l_mfront_anis
         character(len=8), intent(in) :: mate
-        integer, intent(in) :: i_mate_add
-        integer, intent(in) :: mfront_nbvale
+        integer(kind=8), intent(in) :: i_mate_add
+        integer(kind=8), intent(in) :: mfront_nbvale
         character(len=16), intent(in) :: mfront_prop(16)
         real(kind=8), intent(in) :: mfront_valr(16)
         character(len=16), intent(in) :: mfront_valk(16)

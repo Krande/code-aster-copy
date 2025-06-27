@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,10 +82,10 @@ subroutine dltali(neq, result, imat, masse, rigid, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: neq
-    integer :: nveca, nchar
-    integer :: liad(*)
-    integer :: imat(3), nume
+    integer(kind=8) :: neq
+    integer(kind=8) :: nveca, nchar
+    integer(kind=8) :: liad(*)
+    integer(kind=8) :: imat(3), nume
     real(kind=8) :: dep0(*), vit0(*), acc0(*)
     real(kind=8) :: fexte0(*), famor0(*), fliai0(*)
     real(kind=8) :: t0
@@ -100,12 +100,12 @@ subroutine dltali(neq, result, imat, masse, rigid, &
     aster_logical :: lcrea, lprem
     aster_logical :: lamort
     complex(kind=8) :: cbid
-    integer :: inchac
-    integer :: ibid, icode, ieq, ndy, ifextm, ifextc
+    integer(kind=8) :: inchac
+    integer(kind=8) :: ibid, icode, ieq, ndy, ifextm, ifextc
     character(len=8) :: matrei, maprei, dyna
     character(len=19) :: chsol
-    integer :: iforc0, iforc1
-    integer :: iret
+    integer(kind=8) :: iforc0, iforc1
+    integer(kind=8) :: iret
     blas_int :: b_incx, b_incy, b_n
     cbid = dcmplx(0.d0, 0.d0)
 !

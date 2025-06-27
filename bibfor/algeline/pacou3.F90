@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ subroutine pacou3(xold, fold, g, p, x, &
     real(kind=8) :: f, fold, stpmax, tolx, amor(*)
     real(kind=8) :: g(*), p(*), x(*), xold(*), fvec(*), vg, masg(*)
     real(kind=8) :: vecr1(*), vecr2(*), vecr3(*), vecr4(*), vecr5(*)
-    integer :: veci1(*)
+    integer(kind=8) :: veci1(*)
     aster_logical :: check, first
     character(len=8) :: typflu
 !
 !
 ! ALF ASSURE UNE DECROISSANCE SUFFISANTE DE LA VALEUR DE LA FONCTION.
 !-----------------------------------------------------------------------
-    integer :: i, indic, n, nbm, nmode
+    integer(kind=8) :: i, indic, n, nbm, nmode
     real(kind=8) :: a, alam, alam2, alamin, alf, b, disc
     real(kind=8) :: f2, fold2, rhs1, rhs2, slope, sum, temp
     real(kind=8) :: test, tmplam

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ interface
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
         aster_logical, intent(in) :: lMatr, lSigm
-        integer, intent(in) :: ndim, dimdef, dimcon, j_mater
-        integer, intent(in) :: addeme, addep1, addete, adcp11, adcp12
+        integer(kind=8), intent(in) :: ndim, dimdef, dimcon, j_mater
+        integer(kind=8), intent(in) :: addeme, addep1, addete, adcp11, adcp12
         real(kind=8), intent(in) :: rho11, satur, dsatur
         real(kind=8), intent(in) :: grat(3), grap1(3)
         real(kind=8), intent(in) :: p2, pvp, t

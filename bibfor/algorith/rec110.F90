@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -62,14 +62,14 @@ subroutine rec110(nomres, nomsqu, modgen)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, iadres, ibid, igr, in
-    integer :: incr, inew, iocc, iold, iposi, ireco
-    integer :: istac, jn, jncr, jposi, jstac, lconn
-    integer :: lcorr, lcort, ldime, lintd, linver, ljntd
-    integer :: lsk, lsk2, ltabi, ltabj, lvnew
-    integer :: nbcoor, nbec, nbfuse, nbma, nbmoin, nbn
-    integer :: nbnd, nbnd2, nbnew, nbni, nbnj, nbocc, nbreco
-    integer :: nbstac, ndist, nnodes, nr, numero
+    integer(kind=8) :: i, i1, i2, iadres, ibid, igr, in
+    integer(kind=8) :: incr, inew, iocc, iold, iposi, ireco
+    integer(kind=8) :: istac, jn, jncr, jposi, jstac, lconn
+    integer(kind=8) :: lcorr, lcort, ldime, lintd, linver, ljntd
+    integer(kind=8) :: lsk, lsk2, ltabi, ltabj, lvnew
+    integer(kind=8) :: nbcoor, nbec, nbfuse, nbma, nbmoin, nbn
+    integer(kind=8) :: nbnd, nbnd2, nbnew, nbni, nbnj, nbocc, nbreco
+    integer(kind=8) :: nbstac, ndist, nnodes, nr, numero
     real(kind=8) :: dist, distij, prec, xii, xj, yii, yj
     real(kind=8) :: zii, zj
     character(len=24), pointer :: ltns(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine vampli(vwork, tdisp, liste, nbt, nbordr,&
                       numini, nbp, tspaq, nomopt, cxsr)
-        integer :: nbp
-        integer :: tdisp
+        integer(kind=8) :: nbp
+        integer(kind=8) :: tdisp
         real(kind=8) :: vwork(tdisp)
-        integer :: liste(nbp)
-        integer :: nbt
-        integer :: nbordr
-        integer :: numini
-        integer :: tspaq
+        integer(kind=8) :: liste(nbp)
+        integer(kind=8) :: nbt
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: numini
+        integer(kind=8) :: tspaq
         character(len=16) :: nomopt
         character(len=19) :: cxsr
     end subroutine vampli

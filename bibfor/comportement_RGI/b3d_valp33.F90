@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,11 +29,11 @@ subroutine b3d_valp33(x33, x3, v33)
 #include "asterfort/utmess.h"
 !   declarations externes
 
-    integer k, l
+    integer(kind=8) k, l
     real(kind=8) :: x33(3, 3), x3(3), v33(3, 3), y33(3, 3)
 !   declarations locales
     real(kind=8) :: epsv, eps1, xn
-    integer i, j
+    integer(kind=8) i, j
     real(kind=8) :: un
 !   une matrice est consideree comme deja diagonale si test 20 verifie
 !   fonction de la prescision relative epsv

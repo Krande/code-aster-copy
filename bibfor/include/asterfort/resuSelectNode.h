@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
                               nodeName  , nodeNume    ,&
                               nodeNb)
         character(len=8), intent(in) :: meshName
-        integer, intent(in) :: nodeUserNb, meshNodeNb, nodeUserNume(*)
+        integer(kind=8), intent(in) :: nodeUserNb, meshNodeNb, nodeUserNume(*)
         character(len=8), pointer :: nodeName(:)
-        integer, pointer :: nodeNume(:)
-        integer, intent(out) :: nodeNb
+        integer(kind=8), pointer :: nodeNume(:)
+        integer(kind=8), intent(out) :: nodeNb
     end subroutine resuSelectNode
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine actimn(nbcmp, nbno, nbec, mcoddl, icodac)
-        integer :: nbec
-        integer :: nbno
-        integer :: nbcmp
-        integer :: mcoddl(nbno*nbec, 2)
-        integer :: icodac(nbno*nbec)
+        integer(kind=8) :: nbec
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: mcoddl(nbno*nbec, 2)
+        integer(kind=8) :: icodac(nbno*nbec)
     end subroutine actimn
 end interface

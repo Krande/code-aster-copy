@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,13 +45,13 @@ subroutine ndcrdy(result, sddyna)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24) :: tsch, psch, losd, nosd, tfor, cfsc
-    integer :: jtsch, jpsch, jlosd, jnosd, jtfor, jcfsc
+    integer(kind=8) :: jtsch, jpsch, jlosd, jnosd, jtfor, jcfsc
     character(len=24) :: tcha, ncha, veol, vaol
-    integer :: jtcha, jncha, jveol, jvaol
+    integer(kind=8) :: jtcha, jncha, jveol, jvaol
     character(len=24) :: vecent, vecabs
-    integer :: jvecen, jvecab
+    integer(kind=8) :: jvecen, jvecab
     character(len=16) :: k16bid, nomcmd
     character(len=8) :: k8bid
 !

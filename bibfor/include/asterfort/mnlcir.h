@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
         real(kind=8) :: omega
         real(kind=8) :: alpha
         real(kind=8) :: eta
-        integer :: h
-        integer :: hf
-        integer :: nt
+        integer(kind=8) :: h
+        integer(kind=8) :: hf
+        integer(kind=8) :: nt
         character(len=14) :: xsort
     end subroutine mnlcir
 end interface 

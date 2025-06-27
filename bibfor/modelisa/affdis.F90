@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ subroutine affdis(ndim, irep, eta, car, val, &
 ! --------------------------------------------------------------------------------------------------
     implicit none
 !
-    integer :: ndim, irep, jdv(3), jdc(3), ivr(*), iv, ncmp, ntp
-    integer :: isym, jdcinf, jdvinf
+    integer(kind=8) :: ndim, irep, jdv(3), jdc(3), ivr(*), iv, ncmp, ntp
+    integer(kind=8) :: isym, jdcinf, jdvinf
     real(kind=8) :: eta, val(*)
     character(len=1) :: kma(3)
     character(len=*) :: car

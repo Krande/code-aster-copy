@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine mmmtex(ndexfr, ndim, nnl, nne, nnm, nbcps, &
 #include "asterfort/isdeco.h"
 #include "asterfort/mmmte2.h"
 !
-    integer, intent(in) :: ndexfr, ndim, nne, nnl, nnm, nbcps
+    integer(kind=8), intent(in) :: ndexfr, ndim, nne, nnl, nnm, nbcps
     real(kind=8), intent(inout) :: matrff(18, 18), matref(27, 18), matrfe(18, 27)
     real(kind=8), intent(inout) :: matrmf(27, 18), matrfm(18, 27)
 !
@@ -51,7 +51,7 @@ subroutine mmmtex(ndexfr, ndim, nnl, nne, nnm, nbcps, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ndexcl(10), nbcpf
+    integer(kind=8) :: ndexcl(10), nbcpf
 !
 ! --------------------------------------------------------------------------------------------------
 !

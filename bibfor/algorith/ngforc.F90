@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine ngforc(w, b, ni2ldc, sigmam, fint)
 ! IN  SIGMAM  : CONTRAINTES A L'INSTANT PRECEDENT
 ! OUT FINT    : FORCES INTERIEURES
 ! ----------------------------------------------------------------------
-    integer :: nepg, nddl
+    integer(kind=8) :: nepg, nddl
     real(kind=8) :: sigm(size(w, 1), size(w, 2))
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 ! ----------------------------------------------------------------------

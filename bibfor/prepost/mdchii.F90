@@ -67,9 +67,9 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
     med_idt :: idfimd
-    integer :: nbtv
-    integer :: typent, typgeo
-    integer :: codret
+    integer(kind=8) :: nbtv
+    integer(kind=8) :: typent, typgeo
+    integer(kind=8) :: codret
 !
     character(len=19) :: prefix
     character(len=*) :: nochmd
@@ -80,22 +80,22 @@ subroutine mdchii(idfimd, nochmd, typent, typgeo, prefix, &
     character(len=6) :: nompro
     parameter(nompro='MDCHII')
 !
-    integer :: ednopt
-    integer :: vali(2)
+    integer(kind=8) :: ednopt
+    integer(kind=8) :: vali(2)
     parameter(ednopt=-1)
-    integer :: ednono
+    integer(kind=8) :: ednono
     parameter(ednono=-1)
-    integer :: mfloat
+    integer(kind=8) :: mfloat
     parameter(mfloat=6)
-    integer :: iterma
+    integer(kind=8) :: iterma
     parameter(iterma=1)
 !
-    integer :: ifm, nivinf, nbtv2, ncmp
-    integer :: iaux, nbcham, lnochm, nbcmfi
-    integer :: adncmp, aducmp, jaux, existc
-    integer :: finupt, finuno, numsau
-    integer :: adnume, adinst, nchmed, jnptno, jpasdt
-    integer :: typech, nbcmp, jcmp, junit, nseqca, npro
+    integer(kind=8) :: ifm, nivinf, nbtv2, ncmp
+    integer(kind=8) :: iaux, nbcham, lnochm, nbcmfi
+    integer(kind=8) :: adncmp, aducmp, jaux, existc
+    integer(kind=8) :: finupt, finuno, numsau
+    integer(kind=8) :: adnume, adinst, nchmed, jnptno, jpasdt
+    integer(kind=8) :: typech, nbcmp, jcmp, junit, nseqca, npro
     aster_logical :: ilocal
 !
     character(len=8) :: saux08

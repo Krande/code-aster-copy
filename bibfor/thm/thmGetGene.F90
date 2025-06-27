@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine thmGetGene(ds_thm, l_vf, ndim, &
 !
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: l_vf
-    integer, intent(in)  :: ndim
-    integer, intent(out) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
+    integer(kind=8), intent(in)  :: ndim
+    integer(kind=8), intent(out) :: mecani(5), press1(7), press2(7), tempe(5), second(5)
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,22 +26,22 @@ interface
         character(len=2) :: model
         character(len=8) :: bamo
         real(kind=8) :: tgeom(6)
-        integer :: imodg
-        integer :: iadx
-        integer :: iady
-        integer :: iadz
-        integer :: isst
-        integer :: iadrp
+        integer(kind=8) :: imodg
+        integer(kind=8) :: iadx
+        integer(kind=8) :: iady
+        integer(kind=8) :: iadz
+        integer(kind=8) :: isst
+        integer(kind=8) :: iadrp
         real(kind=8) :: norm1
         real(kind=8) :: norm2
-        integer :: ndble
+        integer(kind=8) :: ndble
         character(len=14) :: num
         character(len=14) :: nu
         character(len=8) :: ma
         character(len=*) :: mate, mateco
         character(len=8) :: moint
-        integer :: ilires
-        integer :: k
-        integer :: icor(2)
+        integer(kind=8) :: ilires
+        integer(kind=8) :: k
+        integer(kind=8) :: icor(2)
     end subroutine trprot
 end interface

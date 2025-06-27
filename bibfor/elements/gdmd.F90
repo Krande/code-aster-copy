@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine gdmd(x0pg, pn, pm, d)
     real(kind=8) :: x0pg(3), pn(3), pm(3), d(9, 9), pntild(3, 3), pmtild(3, 3)
 !
 !-----------------------------------------------------------------------
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: scal, un, zero
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------

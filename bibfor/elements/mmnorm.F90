@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine mmnorm(ndim, tau1, tau2, norm, noor_)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     real(kind=8), intent(in) :: tau1(3)
     real(kind=8), intent(in) :: tau2(3)
     real(kind=8), intent(out) :: norm(3)

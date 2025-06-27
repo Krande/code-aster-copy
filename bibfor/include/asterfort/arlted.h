@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,15 +26,15 @@ interface
                       fcpig1    ,poijcs, &
                       dfdx1 ,dfdy1 ,dfdz1 )
         character(len=8) :: elref1
-        integer :: ndim
-        integer :: nns
-        integer :: npgs
-        integer :: ivfs
-        integer :: ipoids
-        integer :: idfdes
-        integer :: ndml1
-        integer :: jcoor1
-        integer :: jcoors
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nns
+        integer(kind=8) :: npgs
+        integer(kind=8) :: ivfs
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: idfdes
+        integer(kind=8) :: ndml1
+        integer(kind=8) :: jcoor1
+        integer(kind=8) :: jcoors
         real(kind=8) :: poijcs(npgs)
         real(kind=8) :: fcpig1(npgs*ndim*ndim*ndml1)
         real(kind=8) :: dfdx1(npgs*ndim*ndim*ndml1)

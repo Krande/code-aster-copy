@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine clcopt(nb, fcttab, atab, ax, ay)
-        integer :: nb
+        integer(kind=8) :: nb
         real(kind=8) :: fcttab(nb, 3)
         real(kind=8) :: atab(nb)
         real(kind=8) :: ax

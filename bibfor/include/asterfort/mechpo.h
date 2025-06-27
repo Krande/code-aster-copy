@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ interface
         character(len=*) :: suropt
         character(len=*) :: lpain(*)
         character(len=*) :: lchin(*)
-        integer :: nbopt
+        integer(kind=8) :: nbopt
         character(len=*) :: typcoe
         real(kind=8) :: alpha
         complex(kind=8) :: calpha

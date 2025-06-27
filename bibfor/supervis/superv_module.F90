@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ module superv_module
 #include "asterfort/utptme.h"
 
     logical :: first = .true.
-    integer :: initMaxThreads = 0
+    integer(kind=8) :: initMaxThreads = 0
 
     public :: superv_before, superv_after
     public :: asthread_getmax, asthread_setnum, asthread_blasset, asthread_getnum
@@ -54,7 +54,7 @@ contains
 !>  @todo Remove treatments from execop.
     subroutine superv_before()
         mpi_int :: world, current
-        integer :: maxThreads, iret
+        integer(kind=8) :: maxThreads, iret
         real(kind=8) :: rval(6), vx(3), v0
         character(len=8) :: k8tab(6)
 
@@ -114,7 +114,7 @@ contains
 !>  @param[in] exception tell if an exception/error will be raised
     subroutine superv_after(exception)
         logical, optional :: exception
-        integer :: stage
+        integer(kind=8) :: stage
         stage = 1
         if (present(exception)) then
 !           Do not add another error message if an error has been raised
@@ -135,7 +135,7 @@ contains
 !>  @return current number of threads
     function asthread_getmax()
         implicit none
-        integer :: asthread_getmax
+        integer(kind=8) :: asthread_getmax
 #ifdef ASTER_HAVE_OPENMP
         asthread_getmax = omp_get_max_threads()
 #else
@@ -148,8 +148,8 @@ contains
 !>  @param[in] nbThreads new maximum number of threads
     subroutine asthread_setnum(nbThreads, blas_max)
         implicit none
-        integer, intent(in) :: nbThreads
-        integer, intent(in), optional :: blas_max
+        integer(kind=8), intent(in) :: nbThreads
+        integer(kind=8), intent(in), optional :: blas_max
 #ifdef ASTER_HAVE_OPENMP
         call omp_set_num_threads(nbThreads)
 #endif
@@ -165,7 +165,7 @@ contains
 !>  @param[in] nbThreads new maximum number of threads for Blas
     subroutine asthread_blasset(nbThreads)
         implicit none
-        integer, intent(in) :: nbThreads
+        integer(kind=8), intent(in) :: nbThreads
 #ifdef ASTER_HAVE_OPENMP
 #ifdef ASTER_HAVE_OPENBLAS
 !       no effect, conflicts with numpy init. run_aster sets OPENBLAS_NUM_THREADS=1
@@ -182,7 +182,7 @@ contains
 !>  @return the current thread id
     function asthread_getnum()
         implicit none
-        integer :: asthread_getnum
+        integer(kind=8) :: asthread_getnum
 #ifdef ASTER_HAVE_OPENMP
         asthread_getnum = omp_get_thread_num()
 #else

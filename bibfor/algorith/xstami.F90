@@ -31,8 +31,8 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3, &
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nmafon, nmaen1, nmaen2, nmaen3
-    integer :: jmafon, jmaen1, jmaen2, jmaen3
+    integer(kind=8) :: nmafon, nmaen1, nmaen2, nmaen3
+    integer(kind=8) :: jmafon, jmaen1, jmaen2, jmaen3
     character(len=8) :: noma
 !
 !
@@ -57,7 +57,7 @@ subroutine xstami(noma, nmafon, nmaen1, nmaen2, nmaen3, &
 !
 !
 !
-    integer :: ifm, niv, ima
+    integer(kind=8) :: ifm, niv, ima
     character(len=8) :: nomail
 !
     call jemarq()

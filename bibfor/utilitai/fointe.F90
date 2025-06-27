@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,11 +36,11 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu, &
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: codmes
     character(len=*), intent(in) :: nomf
-    integer, intent(in) :: nbpu
+    integer(kind=8), intent(in) :: nbpu
     character(len=*), intent(in) :: nompu(*)
     real(kind=8), intent(in) :: valpu(*)
     real(kind=8), intent(out) :: resu
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
 !     INTERPOLATION POUR CALCULER RESU = F(X,Y,Z,...)
 !     ------------------------------------------------------------------
 ! IN  CODMES : 'F','E','A','I',... PARAMETRE TRANSMIT A UTMESS, UTMESK
@@ -76,8 +76,8 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu, &
 ! IER = 200 : ERREUR AVEC UNE FORMULE
 !     ------------------------------------------------------------------
 !
-    integer :: nupar, i, nbvn, izero, isave, lprol, lvar, nbpt, lpara
-    integer :: iret, lfon, iadzi, iazk24
+    integer(kind=8) :: nupar, i, nbvn, izero, isave, lprol, lvar, nbpt, lpara
+    integer(kind=8) :: iret, lfon, iadzi, iazk24
     character(len=1) :: coli, cbid, xous
     character(len=2) :: codme2
     character(len=8) :: nomail
@@ -86,10 +86,10 @@ subroutine fointe(codmes, nomf, nbpu, nompu, valpu, &
     real(kind=8) :: rvar, rpar, tab(4), epsi
 !     ------------------------------------------------------------------
     character(len=24) :: valk(3)
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
 !     ------------------------------------------------------------------
-    integer :: mxsave, mxpara, svnbpa, svpar, isvnxt, isvind, nextsv
-    integer :: iaprol, iavale, iapara, luvale, lupara
+    integer(kind=8) :: mxsave, mxpara, svnbpa, svpar, isvnxt, isvind, nextsv
+    integer(kind=8) :: iaprol, iavale, iapara, luvale, lupara
     real(kind=8) :: svresu, tresu(1)
     character(len=1) :: svtypf
     character(len=2) :: svprgd

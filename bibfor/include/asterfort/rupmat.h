@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine rupmat(fami, kpg, ksp, imat, vim,&
                       lgpg, e, sigd)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imat
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imat
         real(kind=8) :: vim(*)
-        integer :: lgpg
+        integer(kind=8) :: lgpg
         real(kind=8) :: e
         real(kind=8) :: sigd(6)
     end subroutine rupmat

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr, &
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/utbtab.h"
-    integer :: algofr
+    integer(kind=8) :: algofr
     real(kind=8) :: p(3, 3), saut(3), lamb1(3), cstafr, cpenfr, pboul(3)
     real(kind=8) :: vitang(3), ptknp(3, 3), ik(3, 3), kn(3, 3)
     aster_logical :: adher
@@ -59,7 +59,7 @@ subroutine xadher(p, saut, lamb1, cstafr, cpenfr, &
 !
 !
 !
-    integer :: ndim, i, j, k
+    integer(kind=8) :: ndim, i, j, k
     real(kind=8) :: prec, norme, xab(3, 3), gt(3)
     real(kind=8) :: p2(2, 2), ptknp2(2, 2), kn2(2, 2), xab2(2, 2)
     real(kind=8) :: gt2(3), norme2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ subroutine rebdfr(freq, nfi, nff, freqi, freqf, &
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterfort/utmess.h"
-    integer :: nfi, nff, npv, nmodi, nmodf, nbm
+    integer(kind=8) :: nfi, nff, npv, nmodi, nmodf, nbm
     real(kind=8) :: freqi, freqf, freq(2, nbm, npv)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ind, j
+    integer(kind=8) :: i, ind, j
     real(kind=8) :: frqmax, frqmin, frqmma
 !-----------------------------------------------------------------------
     nmodi = 0

@@ -57,7 +57,7 @@ subroutine peMatr_diff(parameters, geom, matr_cont, matr_fric)
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_print
-    integer :: i_qp, nb_qp, i_lagr, i_node, i_dim, index, order, nbPoinInte, i_dof
+    integer(kind=8) :: i_qp, nb_qp, i_lagr, i_node, i_dim, index, order, nbPoinInte, i_dof
     real(kind=8) :: hF, coor_qp_sl(2), eps, norm_slav(3)
     real(kind=8) :: coor_qp(2, MAX_NB_QUAD), weight_qp(MAX_NB_QUAD)
     real(kind=8) :: vect_cont(MAX_LAGA_DOFS), vect_fric(MAX_LAGA_DOFS)

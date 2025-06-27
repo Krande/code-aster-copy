@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine nmobsz(sd_obsv, tabl_name, title, field_type, field_disc, &
     real(kind=8), intent(in) :: valr
     character(len=8), optional, intent(in) :: node_namez
     character(len=8), optional, intent(in) :: elem_namez
-    integer, optional, intent(in) :: poin_numez
-    integer, optional, intent(in) :: spoi_numez
-    integer, optional, intent(in) :: glob_numez
+    integer(kind=8), optional, intent(in) :: poin_numez
+    integer(kind=8), optional, intent(in) :: spoi_numez
+    integer(kind=8), optional, intent(in) :: glob_numez
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -77,20 +77,20 @@ subroutine nmobsz(sd_obsv, tabl_name, title, field_type, field_disc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_para = 17
+    integer(kind=8), parameter :: nb_para = 17
     character(len=24) :: para_name(nb_para)
     real(kind=8) :: tabl_vale_r(nb_para)
-    integer :: tabl_vale_i(nb_para)
+    integer(kind=8) :: tabl_vale_i(nb_para)
     character(len=24) :: tabl_vale_k(nb_para), para_name_add(nb_para)
 !
-    integer :: nb_para_add
-    integer :: nume_reuse, nume_obsv
+    integer(kind=8) :: nb_para_add
+    integer(kind=8) :: nume_reuse, nume_obsv
     complex(kind=8) :: c16bid
     character(len=16) :: obje_type
-    integer :: i_para_add, nb_vale_k, nb_vale_i, nb_vale_r
+    integer(kind=8) :: i_para_add, nb_vale_k, nb_vale_i, nb_vale_r
     character(len=14) :: sdextr_obsv
     character(len=24) :: extr_info
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

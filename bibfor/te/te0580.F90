@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine te0580(nomopt, nomte)
 !-----------------------------------------------------------------------
 
     character(len=1) :: code
-    integer :: jad, itab(8), nbv, iret, k, kpara, mater, icodre(2)
-    integer :: imate, idimge, npara, nno, igeom, ndim, ino, ier, ipt, nbpt
+    integer(kind=8) :: jad, itab(8), nbv, iret, k, kpara, mater, icodre(2)
+    integer(kind=8) :: imate, idimge, npara, nno, igeom, ndim, ino, ier, ipt, nbpt
     real(kind=8) :: valres(2), valpar(3), vxyz, pr
     character(len=8) :: nompar(3)
     character(len=16) :: nomres(2)

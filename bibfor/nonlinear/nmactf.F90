@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine nmactf(ds_print, sddisc, sderro, ds_contact, &
     type(NL_DS_Contact), intent(in) :: ds_contact
     character(len=19), intent(in) :: sddisc
     type(NL_DS_Conv), intent(in) :: ds_conv
-    integer, intent(in) :: iterat
-    integer, intent(in) :: numins
+    integer(kind=8), intent(in) :: iterat
+    integer(kind=8), intent(in) :: numins
 !
 ! ----------------------------------------------------------------------
 !
@@ -61,9 +61,9 @@ subroutine nmactf(ds_print, sddisc, sderro, ds_contact, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: retact, i_event_acti
+    integer(kind=8) :: retact, i_event_acti
     character(len=4) :: etfixe
-    integer :: actfix
+    integer(kind=8) :: actfix
 !
 ! ----------------------------------------------------------------------
 !

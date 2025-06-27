@@ -33,9 +33,9 @@ subroutine cazocc(sdcont, factorKeyword, i_zone, nb_cont_zone)
 #include "asterc/r8prem.h"
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: i_zone
+    integer(kind=8), intent(in) :: i_zone
     character(len=16), intent(in) :: factorKeyword
-    integer, optional, intent(in) :: nb_cont_zone
+    integer(kind=8), optional, intent(in) :: nb_cont_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -53,9 +53,9 @@ subroutine cazocc(sdcont, factorKeyword, i_zone, nb_cont_zone)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_defi
-    integer :: nb_frot_excl_1, nb_frot_excl_2
-    integer :: nb_cont_excl_1, nb_cont_excl_2, nb_cont_excl_3, nb_cont_excl_4
-    integer :: nb_dire_excl, noc, iadapt
+    integer(kind=8) :: nb_frot_excl_1, nb_frot_excl_2
+    integer(kind=8) :: nb_cont_excl_1, nb_cont_excl_2, nb_cont_excl_3, nb_cont_excl_4
+    integer(kind=8) :: nb_dire_excl, noc, iadapt
     character(len=16) :: s_cont_excl, s_frot_excl
     character(len=16) :: s_grglis
     character(len=16) :: s_gliss, s_type_inte, s_cont_init, s_algo_cont, s_algo_frot
@@ -66,23 +66,23 @@ subroutine cazocc(sdcont, factorKeyword, i_zone, nb_cont_zone)
     real(kind=8) :: coef_pena_frot, coef_pena_cont, pene_maxi, glis_maxi
     real(kind=8) :: algo_cont, algo_frot
     real(kind=8) :: type_inte, contInit, seuil_auto, contInitDist
-    integer :: inte_order
-    integer :: nbret
+    integer(kind=8) :: inte_order
+    integer(kind=8) :: nbret
     aster_logical :: l_inte_node, l_frot, l_node_excl, l_frot_excl, l_dire_excl_frot
     aster_logical :: l_gliss
-    integer :: zcmcf, zexcl
+    integer(kind=8) :: zcmcf, zexcl
     character(len=24) :: sdcont_caracf
     real(kind=8), pointer :: v_sdcont_caracf(:) => null()
     character(len=24) :: sdcont_exclfr
     real(kind=8), pointer :: v_sdcont_exclfr(:) => null()
     character(len=24) :: sdcont_paraci
-    integer, pointer :: v_sdcont_paraci(:) => null()
+    integer(kind=8), pointer :: v_sdcont_paraci(:) => null()
     aster_logical ::  l_newt_fr, l_cont_cont
     aster_logical ::  l_granglis
     character(len=24) :: sdcont_paracr
     real(kind=8), pointer :: v_sdcont_paracr(:) => null()
     real(kind=8) :: pene_critere
-    integer :: i_pene_zone
+    integer(kind=8) :: i_pene_zone
 !
 ! --------------------------------------------------------------------------------------------------
 !

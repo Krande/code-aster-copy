@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine cfgccj(resoco, nbliai, conjug)
 #include "blas/ddot.h"
 #include "blas/dscal.h"
     character(len=24) :: resoco
-    integer :: nbliai
+    integer(kind=8) :: nbliai
     aster_logical :: conjug
 !
 ! ----------------------------------------------------------------------
@@ -58,10 +58,10 @@ subroutine cfgccj(resoco, nbliai, conjug)
 !
 !
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8) :: numer, numer2, denom, gamma
     character(len=19) :: sgradm, sgradp, sgrprm, sgrprp, direct
-    integer :: jsgram, jsgrap, jsgprm, jsgprp, jdirec
+    integer(kind=8) :: jsgram, jsgrap, jsgprm, jsgprp, jdirec
     blas_int :: b_incx, b_incy, b_n
 !
 ! ----------------------------------------------------------------------

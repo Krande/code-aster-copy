@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
         character(len=*) :: chamn
         character(len=*) :: base
         character(len=*) :: gran_name
-        integer :: nb_node
-        integer :: nbcpno(*)
-        integer :: desc(*)
-        integer :: nb_equa
+        integer(kind=8) :: nb_node
+        integer(kind=8) :: nbcpno(*)
+        integer(kind=8) :: desc(*)
+        integer(kind=8) :: nb_equa
         character(len=*) :: typval
         real(kind=8),optional :: rval(*)
         complex(kind=8),optional :: cval(*)

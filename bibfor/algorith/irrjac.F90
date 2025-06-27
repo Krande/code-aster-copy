@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat, &
 #include "asterfort/rcvarc.h"
     character(len=*) :: fami
     character(len=8) :: mod
-    integer :: nmat, nmod, kpg, ksp
+    integer(kind=8) :: nmat, nmod, kpg, ksp
     real(kind=8) :: mater(nmat, 2), yf(*), dy(*), drdy(nmod, nmod)
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
@@ -69,7 +69,7 @@ subroutine irrjac(fami, kpg, ksp, mod, nmat, &
     real(kind=8) :: dqds(4), dqdp, dqde, dqdi, dqdg, dqde3
     real(kind=8) :: sr, ddfdds(6, 6), etaif, dede3(6), hookf(6, 6)
     real(kind=8) :: pk, kappa, r02, pe, penpe, spe
-    integer :: ndt, ndi, iret
+    integer(kind=8) :: ndt, ndi, iret
 !     ----------------------------------------------------------------
     common/tdim/ndt, ndi
 !     ----------------------------------------------------------------

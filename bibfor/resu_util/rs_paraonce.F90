@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ subroutine rs_paraonce(result, nb_para, list_para, &
 !
 !
     character(len=8), intent(in) :: result
-    integer, intent(in) :: nb_para
+    integer(kind=8), intent(in) :: nb_para
     character(len=*), intent(in) :: list_para(*)
-    integer, optional, intent(in) :: nb_store_
-    integer, pointer, optional :: v_list_store_(:)
+    integer(kind=8), optional, intent(in) :: nb_store_
+    integer(kind=8), pointer, optional :: v_list_store_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,12 +56,12 @@ subroutine rs_paraonce(result, nb_para, list_para, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_store, nume_store, nume_store0, i_para, nb_store
+    integer(kind=8) :: i_store, nume_store, nume_store0, i_para, nb_store
     character(len=3) :: ctyp
     character(len=16) :: valk(2)
     character(len=80) :: para_refe, para_curr
-    integer :: jv_para
-    integer, pointer :: v_list_store(:) => null()
+    integer(kind=8) :: jv_para
+    integer(kind=8), pointer :: v_list_store(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

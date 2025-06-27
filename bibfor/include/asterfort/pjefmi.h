@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@
 interface
     subroutine pjefmi(elrefp, nnop, coor, xg, ndim,&
                       x1, x2, lext, xmi, distv)
-        integer :: ndim
-        integer :: nnop
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnop
         character(len=8) :: elrefp
         real(kind=8) :: coor(ndim*nnop)
         real(kind=8) :: xg(ndim)

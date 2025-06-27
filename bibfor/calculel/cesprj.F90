@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
 #include "asterfort/as_allocate.h"
 !
     character(len=*) :: ces1z, correz, basez, ces2z
-    integer :: iret
+    integer(kind=8) :: iret
 ! ------------------------------------------------------------------
 ! BUT : PROJETER UN CHAM_ELEM_S  SUR UN AUTRE MAILLAGE
 !       SI CES1 EST ELEM : CES2 SERA ELEM
@@ -70,20 +70,20 @@ subroutine cesprj(ces1z, correz, basez, ces2z, iret)
     character(len=8) :: ma1, ma2, nomgd
     character(len=16) :: corres
     character(len=19) :: ces1, ces2
-    integer ::  jce1l, jce1v, jce1k, jce1d
-    integer :: jce2c, jce2l, jce2v, jce2d, ifm, niv
-    integer :: nbno1, iaconu, gd, nbno2
-    integer :: ncmpmx, iad1, iad2, ima1, ima2, nbmam2
-    integer :: idecal, ino2, icmp, ico, ino1, nuno2, ilcnx2
+    integer(kind=8) ::  jce1l, jce1v, jce1k, jce1d
+    integer(kind=8) :: jce2c, jce2l, jce2v, jce2d, ifm, niv
+    integer(kind=8) :: nbno1, iaconu, gd, nbno2
+    integer(kind=8) :: ncmpmx, iad1, iad2, ima1, ima2, nbmam2
+    integer(kind=8) :: idecal, ino2, icmp, ico, ino1, nuno2, ilcnx2
     real(kind=8) :: v1, v2, coef1
     complex(kind=8) :: v1c, v2c
-    integer, pointer :: pjef_nb(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: pjef_nb(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     character(len=24), pointer :: pjxx_k1(:) => null()
     character(len=8), pointer :: ce1c(:) => null()
     real(kind=8), pointer :: pjef_cf(:) => null()
-    integer, pointer :: pjef_m1(:) => null()
-    integer, pointer :: videcal(:) => null()
+    integer(kind=8), pointer :: pjef_m1(:) => null()
+    integer(kind=8), pointer :: videcal(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

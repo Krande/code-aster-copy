@@ -45,9 +45,9 @@ subroutine surfco(sdcont, mesh)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: unit_msg, lvel_msg
+    integer(kind=8) :: unit_msg, lvel_msg
     character(len=24) :: sdcont_defi
-    integer :: cont_form
+    integer(kind=8) :: cont_form
 !
 ! --------------------------------------------------------------------------------------------------
 !

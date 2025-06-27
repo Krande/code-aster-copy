@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine mgauss(cara, a, b, dim, nordre, &
 #include "blas/dgesv.h"
 #include "blas/dgesvx.h"
     character(len=*) :: cara
-    integer :: dim, nb, nordre, iret, idb
+    integer(kind=8) :: dim, nb, nordre, iret, idb
     real(kind=8) :: a(dim, dim), b(dim, nb), det
 !
 ! ----------------------------------------------------------------------
@@ -85,9 +85,9 @@ subroutine mgauss(cara, a, b, dim, nordre, &
 !                              IRET > 0 : PB
 !
 ! ----------------------------------------------------------------------
-    integer :: n, nrhs, ldb, ldx, ifm, niv, i, j, lda, ldaf
+    integer(kind=8) :: n, nrhs, ldb, ldx, ifm, niv, i, j, lda, ldaf
     integer(kind=4) :: ipiv4(dim), inf4, iwork4(dim)
-    integer :: vali(2)
+    integer(kind=8) :: vali(2)
     real(kind=8) :: af(dim, dim), r(dim), c(dim), x(dim, nb), rcond
     real(kind=8) :: work(4*dim), ferr(nb), berr(nb), aa(dim, dim)
     real(kind=8) :: detr, detc

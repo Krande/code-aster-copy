@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine cjsc3q(sig, x, pa, qinit, q, &
 #include "asterfort/cjsqij.h"
 #include "asterfort/lcdete.h"
 #include "asterfort/lcdevi.h"
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
 !
 !
     common/tdim/ndt, ndi
@@ -49,7 +49,7 @@ subroutine cjsc3q(sig, x, pa, qinit, q, &
     aster_logical :: devnul, trac
     real(kind=8) :: i1, s(6), qiirel
     real(kind=8) :: detq, pref
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: zero, un, trois, epssig
 !
     parameter(zero=0.d0)

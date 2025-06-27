@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine resr3d(rota, coor, ff, rho, nno, &
     real(kind=8) :: fx(27), fy(27), fz(27)
     real(kind=8) :: frx(27), fry(27), frz(27)
     real(kind=8) :: omo, omm, om1, om2, om3
-    integer :: npg, nno, i, k, kp
+    integer(kind=8) :: npg, nno, i, k, kp
 !
 !-----------------------------------------------------------------------
     real(kind=8) :: rho

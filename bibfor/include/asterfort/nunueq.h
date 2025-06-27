@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine nunueq(mesh, nume_equa, nb_equa, igds, sd_iden_relaz)
         character(len=8), intent(in) :: mesh
         character(len=19), intent(in) :: nume_equa
-        integer, intent(in) :: nb_equa
-        integer, intent(in) :: igds
+        integer(kind=8), intent(in) :: nb_equa
+        integer(kind=8), intent(in) :: igds
         character(len=*), optional, intent(in) :: sd_iden_relaz
     end subroutine nunueq
 end interface

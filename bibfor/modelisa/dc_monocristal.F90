@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine dc_monocristal(nboccm, sdcomp)
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 !
-    integer, intent(out) :: nboccm
+    integer(kind=8), intent(out) :: nboccm
     character(len=8), intent(in) :: sdcomp
 !
 ! --------------------------------------------------------------------------------------------------
@@ -53,7 +53,7 @@ subroutine dc_monocristal(nboccm, sdcomp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_para
+    integer(kind=8) :: nb_para
     parameter(nb_para=5)
 !
     character(len=8) :: materi, typpar(nb_para), chaine
@@ -63,10 +63,10 @@ subroutine dc_monocristal(nboccm, sdcomp)
     character(len=19) :: listr
     real(kind=8) :: ms(6), ng(3), q(3, 3), lg(3), pgl(3, 3)
     complex(kind=8) :: cbid
-    integer :: ifm, niv, nbtbsg, nums(2), indvar
-    integer :: iocc, nbmat, nbecou, nbecro, nbcine, nbelas, nbfasy
-    integer :: i, j, nbela1, nbsys, nvi, imk, imi, ipr, itab, itsg, irra, irr2
-    integer :: ncprr, ir, irota, iadlr, decal, nbrota, nbsyst, tabdes(13)
+    integer(kind=8) :: ifm, niv, nbtbsg, nums(2), indvar
+    integer(kind=8) :: iocc, nbmat, nbecou, nbecro, nbcine, nbelas, nbfasy
+    integer(kind=8) :: i, j, nbela1, nbsys, nvi, imk, imi, ipr, itab, itsg, irra, irr2
+    integer(kind=8) :: ncprr, ir, irota, iadlr, decal, nbrota, nbsyst, tabdes(13)
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

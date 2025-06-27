@@ -58,13 +58,13 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !
-    integer :: ifm, ifl
+    integer(kind=8) :: ifm, ifl
     character(len=24) :: cooval, coodsc, grpnoe, grpmai, connex
     character(len=24) :: titre, nomnoe, nommai, typmai
     character(len=24) :: adapma
     character(len=8) :: nomu
 !     OUT
-    integer :: nbnoeu, nbmail, nbcoor
+    integer(kind=8) :: nbnoeu, nbmail, nbcoor
 !     LECTURE DU FICHIER MAILLAGE AU FORMAT ASTER
 !
 !  REMARQUES ET RESTRICTIONS D UTILISATION
@@ -164,13 +164,13 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 ! ----- DECLARATIONS
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, icl, ier, ii, im1
-    integer :: inbn, iret, irtet, iv, j, jgcnx, jgg
-    integer :: jmail, jmail2, jnoeu, jnoeu2, jvcnx, jvg, nbg
-    integer :: nbgrma, nbgrmp, nbgrno, nbgrnp, nbltit, nbma, nbma1
-    integer :: nbmagm, nbmcoo, nbmdbg, nbmgrp, nbmint, nbmmai, nbmmax
-    integer :: nbmtit, nbno, nbno1, nbnogn, nbnoma, ntgeo, num
-    integer :: numele, numgrm, numgrn, numlti, numneu, numnod
+    integer(kind=8) :: i, iad, ibid, icl, ier, ii, im1
+    integer(kind=8) :: inbn, iret, irtet, iv, j, jgcnx, jgg
+    integer(kind=8) :: jmail, jmail2, jnoeu, jnoeu2, jvcnx, jvg, nbg
+    integer(kind=8) :: nbgrma, nbgrmp, nbgrno, nbgrnp, nbltit, nbma, nbma1
+    integer(kind=8) :: nbmagm, nbmcoo, nbmdbg, nbmgrp, nbmint, nbmmai, nbmmax
+    integer(kind=8) :: nbmtit, nbno, nbno1, nbnogn, nbnoma, ntgeo, num
+    integer(kind=8) :: numele, numgrm, numgrn, numlti, numneu, numnod
 !-----------------------------------------------------------------------
     parameter(nbmtit=1)
     parameter(nbmgrp=2)
@@ -179,13 +179,13 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
     parameter(nbmdbg=2)
     parameter(nbmint=7)
 !
-    integer :: dimtit(nbmtit), dimgrp(nbmgrp)
-    integer :: dimmai(nbmmax), dimcoo(nbmcoo)
-    integer :: dimdbg(nbmdbg)
-    integer :: nbttit(nbmtit), nbtgrp(nbmgrp)
-    integer :: nbtmai(nbmmax), nbtcoo(nbmcoo)
-    integer :: deblig
-    integer :: fmtmai(nbmmax)
+    integer(kind=8) :: dimtit(nbmtit), dimgrp(nbmgrp)
+    integer(kind=8) :: dimmai(nbmmax), dimcoo(nbmcoo)
+    integer(kind=8) :: dimdbg(nbmdbg)
+    integer(kind=8) :: nbttit(nbmtit), nbtgrp(nbmgrp)
+    integer(kind=8) :: nbtmai(nbmmax), nbtcoo(nbmcoo)
+    integer(kind=8) :: deblig
+    integer(kind=8) :: fmtmai(nbmmax)
 !
     real(kind=8) :: rv
 !

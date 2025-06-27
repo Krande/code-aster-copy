@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,13 +46,13 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer :: i, j, nbequ, ind1, iret
-    integer :: jw6, ind, iret1, iret2, nr
-    integer :: nbnoli, upmat, iret3, nbvint
+    integer(kind=8) :: i, j, nbequ, ind1, iret
+    integer(kind=8) :: jw6, ind, iret1, iret2, nr
+    integer(kind=8) :: nbnoli, upmat, iret3, nbvint
     real(kind=8) :: t1, dt, dt1, dt2, dt3
     real(kind=8) :: dt4, dt5, dt6, mdiag_r
     real(kind=8) :: kdiag_r, cdiag_r, dtnew, pas0, pas1
@@ -94,7 +94,7 @@ subroutine intdevo(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8), pointer :: op_h2(:) => null()
     real(kind=8), pointer :: x1(:) => null()
 !
-    integer, pointer :: buffnl(:) => null()
+    integer(kind=8), pointer :: buffnl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 #define mdiag (nint(par(1)).eq.1)

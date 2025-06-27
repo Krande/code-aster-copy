@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine rnomat(icesd, icesl, icesv, imap, nomcri,&
                       adrma, jtypma, k, optio, vala,&
                       valb, coefpa, nommat)
-        integer :: icesd
-        integer :: icesl
-        integer :: icesv
-        integer :: imap
+        integer(kind=8) :: icesd
+        integer(kind=8) :: icesl
+        integer(kind=8) :: icesv
+        integer(kind=8) :: imap
         character(len=16) :: nomcri
-        integer :: adrma
-        integer :: jtypma
-        integer :: k
+        integer(kind=8) :: adrma
+        integer(kind=8) :: jtypma
+        integer(kind=8) :: k
         character(len=10) :: optio
         real(kind=8) :: vala
         real(kind=8) :: valb

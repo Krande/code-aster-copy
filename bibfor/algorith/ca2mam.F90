@@ -59,7 +59,7 @@ subroutine ca2mam(modelInterfaceZ, incr, lchin, lpain, &
     character(len=8), parameter :: lpaout(1) = (/'PMATTTR'/)
     character(len=24) :: matrElem, resuElem, modelLigrel
     character(len=24) :: lchout(1)
-    integer, parameter :: nbMatrElem = 1
+    integer(kind=8), parameter :: nbMatrElem = 1
     character(len=24), pointer :: listMatrElem(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

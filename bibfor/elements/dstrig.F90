@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,9 +53,9 @@ subroutine dstrig(nomte, xyzl, option, pgl, rig, &
 !     OUT RIG    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM)
 !     ------------------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: int, multic, perm(9), perm2(36)
-    integer :: i, j, jcoqu, jdepg, k, k1, k2
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: int, multic, perm(9), perm2(36)
+    integer(kind=8) :: i, j, jcoqu, jdepg, k, k1, k2
     real(kind=8) :: wgt, aire
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)

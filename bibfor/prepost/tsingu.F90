@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine tsingu(nelem, nbr, re, taille, he)
 !
     implicit none
-    integer :: nelem, nbr(nelem)
+    integer(kind=8) :: nelem, nbr(nelem)
     real(kind=8) :: re(nelem), taille(nelem)
 !
 !     BUT:
@@ -45,7 +45,7 @@ subroutine tsingu(nelem, nbr, re, taille, he)
 !
 ! ......................................................................
 !
-    integer :: inel
+    integer(kind=8) :: inel
     real(kind=8) :: he(nelem)
 !
     do inel = 1, nelem

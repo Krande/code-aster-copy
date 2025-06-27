@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,7 +57,7 @@ subroutine bijsom(umoy, rhof, r1, r2, long, &
 #include "asterfort/defaxe.h"
 #include "asterfort/profpr.h"
     real(kind=8) :: umoy, rhof, r1, r2, long, cf0
-    integer :: icoq, jcoq, jmod, nbm
+    integer(kind=8) :: icoq, jcoq, jmod, nbm
     real(kind=8) :: rki, thetai, thetaj, tcoef(10, nbm)
     complex(kind=8) :: ysol(3, 101), bij
 !
@@ -66,7 +66,7 @@ subroutine bijsom(umoy, rhof, r1, r2, long, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: k
+    integer(kind=8) :: k
     real(kind=8) :: coep, coepr1, coepr2, dz, pi, rayon
     real(kind=8) :: wj, wpr, z
 !-----------------------------------------------------------------------

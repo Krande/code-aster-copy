@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine mltf21(p, front, frn, n, t1,&
                       t2, eps, ier)
-        integer :: p
+        integer(kind=8) :: p
         real(kind=8) :: front(*)
         real(kind=8) :: frn(*)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: t1(*)
         real(kind=8) :: t2(*)
         real(kind=8) :: eps
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine mltf21
 end interface

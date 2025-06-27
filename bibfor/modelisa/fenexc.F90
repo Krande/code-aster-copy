@@ -62,16 +62,16 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno, &
 #include "asterfort/char8_to_int.h"
 !
     character(len=8) :: noma, nomnoa
-    integer :: nbn, nuno(*), nbnfen, noefen(*)
+    integer(kind=8) :: nbn, nuno(*), nbnfen, noefen(*)
     real(kind=8) :: long, diax(*), disfen(*)
 !
     character(len=24) :: connex, typmai
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: idiscp, idiscs, indap, ino, inunop, inunos, isensp
-    integer :: isenss, lp, ls, nbnop, nbnos, nbrma, nunoap
-    integer :: nunod, nunog
+    integer(kind=8) :: idiscp, idiscs, indap, ino, inunop, inunos, isensp
+    integer(kind=8) :: isenss, lp, ls, nbnop, nbnos, nbrma, nunoap
+    integer(kind=8) :: nunod, nunog
     real(kind=8) :: difx1, difx2, refx1, tol, x, x1
     real(kind=8) :: x2, xap, xdecal
 !-----------------------------------------------------------------------

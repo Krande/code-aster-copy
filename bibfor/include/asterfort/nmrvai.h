@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ interface
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=*), intent(in) :: device_type_
         character(len=1), optional, intent(in) :: phasis
-        integer, optional, intent(in) :: input_count
-        integer, optional, intent(out) :: output_count
+        integer(kind=8), optional, intent(in) :: input_count
+        integer(kind=8), optional, intent(out) :: output_count
     end subroutine nmrvai
 end interface

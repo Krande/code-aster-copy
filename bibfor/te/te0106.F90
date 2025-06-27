@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine te0106(option, nomte)
     real(kind=8) :: pc(3), fpl, fmo, coor2d(18), zero
     real(kind=8) :: dfdx(9), dfdy(9), poids, flux, cour, cosa, sina
     real(kind=8) :: matnp(9), long, r, rp1, rp2, rp3
-    integer :: i, k, nno, kp, npg1, gi, pi, ivectt, iflux, nnos, jgano
-    integer :: ipoids, ivf, idfde, igeom, ndim
+    integer(kind=8) :: i, k, nno, kp, npg1, gi, pi, ivectt, iflux, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, ndim
 !
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg1, &

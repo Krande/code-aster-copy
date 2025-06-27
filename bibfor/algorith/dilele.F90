@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,8 +48,8 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     type(dil_modelisation)          :: ds_dil
     character(len=8), intent(in)    :: typmod(2)
     character(len=16), intent(in)   :: option, compor(COMPOR_SIZE)
-    integer, intent(in)             :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
-    integer, intent(in)             :: mate, iw, idff, idffb
+    integer(kind=8), intent(in)             :: ndim, nnos, nnom, npg, nddl, lgpg, dimdef
+    integer(kind=8), intent(in)             :: mate, iw, idff, idffb
     real(kind=8)                    :: carcri(CARCRI_SIZE), instam, instap
     real(kind=8), intent(in)        :: geomi(ndim, nnos+nnom)
     real(kind=8), intent(in)        :: vff(nnos+nnom, npg), vffb(nnos, npg)
@@ -57,7 +57,7 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     real(kind=8), intent(in)        :: siefm(dimdef*npg), vim(lgpg*npg)
     real(kind=8), intent(inout)     :: siefp(dimdef*npg), vip(lgpg*npg)
     real(kind=8), intent(inout)     :: fint(nddl), matr(nddl, nddl)
-    integer, intent(inout)          :: codret
+    integer(kind=8), intent(inout)          :: codret
 !
 ! ----------------------------------------------------------------------
 !     BUT:  CALCUL  DES OPTIONS RIGI_MECA_*, RAPH_MECA ET FULL_MECA_*
@@ -112,11 +112,11 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     aster_logical :: axi
     type(Behaviour_Integ) :: BEHinteg
     character(len=4), parameter :: fami = 'RIGI'
-    integer, parameter :: ksp = 1
-    integer       :: g, n, i
-    integer       :: xu(ndim, nnos+nnom), xg(1, nnos), xp(1, nnos)
-    integer       :: cod(npg)
-    integer       :: nnu, nng, nnp, ndu, ndg, ndp, neu, neg, nep
+    integer(kind=8), parameter :: ksp = 1
+    integer(kind=8)       :: g, n, i
+    integer(kind=8)       :: xu(ndim, nnos+nnom), xg(1, nnos), xp(1, nnos)
+    integer(kind=8)       :: cod(npg)
+    integer(kind=8)       :: nnu, nng, nnp, ndu, ndg, ndp, neu, neg, nep
     real(kind=8)  :: rpena, angmas(3)
     real(kind=8)  :: dum(ndim, nnos+nnom), dup(ndim, nnos+nnom)
     real(kind=8)  :: dgm(1, nnos), dpm(1, nnos)

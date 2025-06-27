@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine pmfm01(kanl, xl, kk12, kk13, cars,&
                       m)
-        integer :: kanl
+        integer(kind=8) :: kanl
         real(kind=8) :: xl
         real(kind=8) :: kk12
         real(kind=8) :: kk13

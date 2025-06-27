@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine dliext()
     real(kind=8) :: r8b, vpara
     real(kind=8), pointer :: intervalle(:) => null()
     complex(kind=8) :: c16b
-    integer :: ibid, n1, n2, n3, nbordr, k, iord, k1, jordr, nbvale, jvale, iad
-    integer :: jnbpa, jbint, jlpas, tordr(1), i
+    integer(kind=8) :: ibid, n1, n2, n3, nbordr, k, iord, k1, jordr, nbvale, jvale, iad
+    integer(kind=8) :: jnbpa, jbint, jlpas, tordr(1), i
 
     call jemarq()
     knum = '&&DLIEXT.KNUM'

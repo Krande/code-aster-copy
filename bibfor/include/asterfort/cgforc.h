@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,17 +23,17 @@ interface
                       vff1, dffr1, geom, mat,&
                       pesa, iu, a, tang,&
                       vect)
-        integer :: npg
-        integer :: nno2
-        integer :: nno1
-        integer :: ndim
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno2
+        integer(kind=8) :: nno1
+        integer(kind=8) :: ndim
         real(kind=8) :: wref(npg)
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: dffr1(nno1, npg)
         real(kind=8) :: geom(ndim, nno1)
-        integer :: mat
+        integer(kind=8) :: mat
         real(kind=8) :: pesa(4)
-        integer :: iu(3, 3)
+        integer(kind=8) :: iu(3, 3)
         real(kind=8) :: a
         real(kind=8) :: tang(3, 3)
         real(kind=8) :: vect(nno1*(ndim+1)+nno2)

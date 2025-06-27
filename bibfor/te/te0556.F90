@@ -53,20 +53,20 @@ subroutine te0556(option, nomte)
 !
 !......................................................................
 !
-    integer :: i, ifa, ipgf, isspg, j
-    integer :: nfh, ddld, ddlm, ddlp, ddlc, nddls, nddlm
-    integer :: nnop, nnops, nnopm, dimuel, jheavn, ncompn
-    integer :: lact(16), vstnc(32), jstno, nlact(2), algocr
-    integer :: ndim, nbspg, contac, ibid1, ibid2, iadzi, iazk24, pos(16)
-    integer :: igeom, idepm, idepd, jheafa, ncomph, jfisco
-    integer :: jptint, jaint, jcface, jlonch, jbasec, jdonco
-    integer :: iinstm, iinstp, icarcr, jmate, jcohes
-    integer :: jtab(7), iret, ncompv, nnol, pla(27)
-    integer :: npgf, ipoidf, ivff, idfdef, imatt, jcoheo
-    integer :: ninter, nface, nptf, nnof, cface(30, 6)
-    integer :: nint, ninteg, ifiss, nfiss, ii, jj, kji
-    integer :: ncompa, ncompb, ncompc, ncompd, ncompp, jfisno, jheano
-    integer :: jfiss, nfisc2, kfiss, ifisc, nfisc, jlsn
+    integer(kind=8) :: i, ifa, ipgf, isspg, j
+    integer(kind=8) :: nfh, ddld, ddlm, ddlp, ddlc, nddls, nddlm
+    integer(kind=8) :: nnop, nnops, nnopm, dimuel, jheavn, ncompn
+    integer(kind=8) :: lact(16), vstnc(32), jstno, nlact(2), algocr
+    integer(kind=8) :: ndim, nbspg, contac, ibid1, ibid2, iadzi, iazk24, pos(16)
+    integer(kind=8) :: igeom, idepm, idepd, jheafa, ncomph, jfisco
+    integer(kind=8) :: jptint, jaint, jcface, jlonch, jbasec, jdonco
+    integer(kind=8) :: iinstm, iinstp, icarcr, jmate, jcohes
+    integer(kind=8) :: jtab(7), iret, ncompv, nnol, pla(27)
+    integer(kind=8) :: npgf, ipoidf, ivff, idfdef, imatt, jcoheo
+    integer(kind=8) :: ninter, nface, nptf, nnof, cface(30, 6)
+    integer(kind=8) :: nint, ninteg, ifiss, nfiss, ii, jj, kji
+    integer(kind=8) :: ncompa, ncompb, ncompc, ncompd, ncompp, jfisno, jheano
+    integer(kind=8) :: jfiss, nfisc2, kfiss, ifisc, nfisc, jlsn
     aster_logical :: lelim
     real(kind=8) :: rela, cohes(5), coheo(5), vect(1)
     real(kind=8), dimension(:, :), pointer :: matri => null()
@@ -74,9 +74,9 @@ subroutine te0556(option, nomte)
     character(len=8) :: elrefp, elrefc, elc, fpg, typma
     character(len=16) :: enr
 !
-    integer :: nfimax
+    integer(kind=8) :: nfimax
     parameter(nfimax=10)
-    integer :: fisc(2*nfimax), fisco(2*nfimax)
+    integer(kind=8) :: fisc(2*nfimax), fisco(2*nfimax)
     type(THM_DS) :: ds_thm
 !
 !......................................................................

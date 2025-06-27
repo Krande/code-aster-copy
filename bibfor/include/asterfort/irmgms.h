@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,13 +23,13 @@
 interface
     subroutine irmgms(ifc, ndim, nno, noma, nbgrm,&
                       nonoe, lgmsh, versio)
-        integer :: ifc
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ifc
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         character(len=8) :: noma
-        integer :: nbgrm
+        integer(kind=8) :: nbgrm
         character(len=8) :: nonoe(*)
         aster_logical :: lgmsh
-        integer :: versio
+        integer(kind=8) :: versio
     end subroutine irmgms
 end interface

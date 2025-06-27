@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine jjlbsg(ic, id, ioc, ibacol, iadmi,&
                       iadyn, ltot)
-        integer :: ic
-        integer :: id
-        integer :: ioc
-        integer :: ibacol
-        integer :: iadmi
-        integer :: iadyn
-        integer :: ltot
+        integer(kind=8) :: ic
+        integer(kind=8) :: id
+        integer(kind=8) :: ioc
+        integer(kind=8) :: ibacol
+        integer(kind=8) :: iadmi
+        integer(kind=8) :: iadyn
+        integer(kind=8) :: ltot
     end subroutine jjlbsg
 end interface

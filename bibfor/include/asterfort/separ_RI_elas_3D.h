@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                                 e1i     , e2i  , e3i  ,&
                                 nu12i   , nu13i, nu23i,&
                                 hr, hi)
-        integer, intent(in) :: elas_id
+        integer(kind=8), intent(in) :: elas_id
         real(kind=8), intent(in) :: nu, g, e1, e2, e3
         real(kind=8), intent(in) :: nu12, nu13, nu23
         real(kind=8), intent(in) :: nui, gi, e1i, e2i, e3i

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine writdr(dfname, buf, nbytes, irec, ierr)
         character(len=*) :: dfname
-        integer :: buf
-        integer :: nbytes
-        integer :: irec
-        integer :: ierr
+        integer(kind=8) :: buf
+        integer(kind=8) :: nbytes
+        integer(kind=8) :: irec
+        integer(kind=8) :: ierr
     end subroutine writdr
 end interface

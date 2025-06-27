@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,13 +33,13 @@ subroutine te0129(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), jac
     real(kind=8) :: tpg, alpha, rbid
-    integer :: ndim, nno, npg1, ipoids, ivf, idfdx, idfdy
-    integer :: igeom, iflux, itempi, itemps, ino, jno, iveres
-    integer :: nnos, jgano
+    integer(kind=8) :: ndim, nno, npg1, ipoids, ivf, idfdx, idfdy
+    integer(kind=8) :: igeom, iflux, itempi, itemps, ino, jno, iveres
+    integer(kind=8) :: nnos, jgano
     character(len=8) :: coef
 !
 !-----------------------------------------------------------------------
-    integer :: i, idec, j, jdec, kdec, kp, ldec
+    integer(kind=8) :: i, idec, j, jdec, kdec, kp, ldec
 !
 !-----------------------------------------------------------------------
 !

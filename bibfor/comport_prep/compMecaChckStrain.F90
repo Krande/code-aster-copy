@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,14 +44,14 @@ subroutine compMecaChckStrain(iComp, &
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: iComp
+    integer(kind=8), intent(in) :: iComp
     character(len=8), intent(in) :: model
     character(len=19), intent(in) :: fullElemField
     aster_logical, intent(in) :: lAllCellAffe
     character(len=24), intent(in) :: cellAffe
-    integer, intent(in) :: nbCellAffe
+    integer(kind=8), intent(in) :: nbCellAffe
     aster_logical, intent(in) :: lMfront, lTotalStrain
-    integer, intent(in) :: exteDefo
+    integer(kind=8), intent(in) :: exteDefo
     character(len=16), intent(in) :: defoComp, defoCompPY
     character(len=16), intent(in) :: relaComp, relaCompPY
 !
@@ -80,13 +80,13 @@ subroutine compMecaChckStrain(iComp, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: elemTypeName, modelType, modelType2
-    integer :: elemTypeNume, cellNume
+    integer(kind=8) :: elemTypeNume, cellNume
     character(len=8) :: grille, mesh
-    integer :: jvCesd, jvCesl, jvCesv, jvVale
-    integer :: modelTypeIret, lctestIret, iCell, modelTypeIret2
-    integer :: nbCellMesh, nbCell
-    integer, pointer :: cellAffectedByModel(:) => null()
-    integer, pointer :: listCellAffe(:) => null()
+    integer(kind=8) :: jvCesd, jvCesl, jvCesv, jvVale
+    integer(kind=8) :: modelTypeIret, lctestIret, iCell, modelTypeIret2
+    integer(kind=8) :: nbCellMesh, nbCell
+    integer(kind=8), pointer :: cellAffectedByModel(:) => null()
+    integer(kind=8), pointer :: listCellAffe(:) => null()
     aster_logical :: l_coq3d, l_dkt, l_dktg, lShell, l_hho, lPipe, lSolidShell, lBeam, lDisc
     aster_logical :: lGrotGdep, lPetitReac, l_parallel_mesh
 !

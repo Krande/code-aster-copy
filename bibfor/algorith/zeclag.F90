@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,12 +29,12 @@ subroutine zeclag(vect, nbddl, ideeq)
 ! IDEEQ    /I/: VECTEUR DEEQ DU NUMDDL ASSOCIE AU CHAMNO
 !
 !-----------------------------------------------------------------------
-    integer :: nbddl
+    integer(kind=8) :: nbddl
     complex(kind=8) :: vect(nbddl)
-    integer :: ideeq(2, nbddl)
+    integer(kind=8) :: ideeq(2, nbddl)
 !-----------------------------------------------------------------------
 !
-    integer :: i, ityp
+    integer(kind=8) :: i, ityp
 !-----------------------------------------------------------------------
     do i = 1, nbddl
         ityp = ideeq(2, i)

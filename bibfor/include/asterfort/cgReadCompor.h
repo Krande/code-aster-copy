@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
     subroutine cgReadCompor(result_in, compor, iord0, l_incr)
         character(len=8), intent(in)  :: result_in
         character(len=19), intent(inout) :: compor
-        integer, intent(in)           :: iord0
+        integer(kind=8), intent(in)           :: iord0
         aster_logical, intent(out)    :: l_incr
     end subroutine cgReadCompor
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine cfzone(defico, izone, typsur, isurf)
 #include "asterfort/jeveuo.h"
     character(len=24) :: defico
     character(len=4) :: typsur
-    integer :: izone, isurf
+    integer(kind=8) :: izone, isurf
 !
 ! ----------------------------------------------------------------------
 !
@@ -51,7 +51,7 @@ subroutine cfzone(defico, izone, typsur, isurf)
 !
 !
     character(len=24) :: pzone
-    integer :: jzone
+    integer(kind=8) :: jzone
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine ptkg20(sf, a, xiz, xiy, iyr, &
 !     ------------------------------------------------------------------
     real(kind=8) :: fxb, mya, myb, mza, mzb, ktild, un2, usez, usey
     real(kind=8) :: ymapb, zmapb
-    integer :: ip(14)
+    integer(kind=8) :: ip(14)
 !-----------------------------------------------------------------------
     real(kind=8) :: ymab, zmab, zp1
 !-----------------------------------------------------------------------

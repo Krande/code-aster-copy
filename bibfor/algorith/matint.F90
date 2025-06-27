@@ -43,7 +43,7 @@ subroutine matint(kr, mr, direc, vtest, rayon)
     real(kind=8) :: kr(12, 12), mr(12, 12), direc(3), vtest(3), rayon
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: i1, j1, k1, l1
+    integer(kind=8) :: i1, j1, k1, l1
     real(kind=8) :: e, i, s, g, rho, pi, l, t(12, 12), v1(3), v2(3), v3(3), temp
     real(kind=8) :: kini(12, 12), mini(12, 12), fact
 !

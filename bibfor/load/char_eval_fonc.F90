@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
 !
 
     character(len=8), intent(in) :: load, mesh
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
     character(len=5), intent(in) :: param
 !
 ! --------------------------------------------------------------------------------------------------
@@ -62,11 +62,11 @@ subroutine char_eval_fonc(load, mesh, geomDime, param)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, jcesdf, jcesdr, nbcmpf, nbcmpr, nbmail, igeom
-    integer :: jconne, jtabco, jceslf, jceslr, ii, iadr1, iadr2, nbno, adrm
-    integer :: icompo, inoeu, nunoe, kk, iret, iad, jj, i, jvalv, n1, nbpara
-    integer :: jcesdcoq, nbcmpcoq, jceslcoq, jcesdmat, jceslmat, icodn
-    integer :: jvalk, jvalr, nbcste, icste
+    integer(kind=8) :: ibid, jcesdf, jcesdr, nbcmpf, nbcmpr, nbmail, igeom
+    integer(kind=8) :: jconne, jtabco, jceslf, jceslr, ii, iadr1, iadr2, nbno, adrm
+    integer(kind=8) :: icompo, inoeu, nunoe, kk, iret, iad, jj, i, jvalv, n1, nbpara
+    integer(kind=8) :: jcesdcoq, nbcmpcoq, jceslcoq, jcesdmat, jceslmat, icodn
+    integer(kind=8) :: jvalk, jvalr, nbcste, icste
     real(kind=8) :: valr(5), fresu
     character(len=8) :: nomval(5), nomfct, nmcmpf, carele, chmat
     character(len=19) :: carte, cartefonc, celsreel, celsfonc, connex, cartco

@@ -73,7 +73,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 !
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: model
-    integer :: numins
+    integer(kind=8) :: numins
     character(len=24) :: numedd
     character(len=24) :: numfix
     type(NL_DS_Material), intent(in) :: ds_material
@@ -81,7 +81,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
     type(NL_DS_Constitutive), intent(inout) :: ds_constitutive
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_AlgoPara), intent(inout) :: ds_algopara
-    integer :: fonact(*)
+    integer(kind=8) :: fonact(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(HHO_Field), intent(in) :: hhoField
     character(len=24) :: sderro
@@ -107,7 +107,7 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(ROM_DS_AlgoPara), intent(inout) :: ds_algorom
     real(kind=8) :: eta
-    integer :: nbiter
+    integer(kind=8) :: nbiter
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -148,8 +148,8 @@ subroutine nmnewt(mesh, model, numins, numedd, numfix, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: niveau, iterat
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: niveau, iterat
     aster_logical :: lerrit
     aster_logical :: l_loop_exte, l_cont_disc, l_cont, l_hrom_corref
     character(len=4) :: etnewt, etfixe

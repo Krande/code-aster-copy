@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine gausch(npgxyz, xpg, ypg, zpg, hpg)
-        integer :: npgxyz(3)
+        integer(kind=8) :: npgxyz(3)
         real(kind=8) :: xpg(1)
         real(kind=8) :: ypg(1)
         real(kind=8) :: zpg(1)

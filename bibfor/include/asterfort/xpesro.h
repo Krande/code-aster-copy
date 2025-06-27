@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,25 +23,25 @@ interface
                       heavn, nfh, ddlc, nfe, nfiss,&
                       ise, nnop, jlsn, jlst, ivectu,&
                       fno, imate, jbaslo, jstno)
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
         real(kind=8) :: coorse(*)
-        integer :: igeom
-        integer :: jheavt
-        integer :: ncomp
-        integer :: heavn(27,5)
-        integer :: nfh
-        integer :: ddlc
-        integer :: nfe
-        integer :: nfiss
-        integer :: ise
-        integer :: jlsn
-        integer :: jlst
-        integer :: imate
-        integer :: jbaslo
-        integer :: jstno
-        integer :: ivectu
+        integer(kind=8) :: igeom
+        integer(kind=8) :: jheavt
+        integer(kind=8) :: ncomp
+        integer(kind=8) :: heavn(27,5)
+        integer(kind=8) :: nfh
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: nfe
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: ise
+        integer(kind=8) :: jlsn
+        integer(kind=8) :: jlst
+        integer(kind=8) :: imate
+        integer(kind=8) :: jbaslo
+        integer(kind=8) :: jstno
+        integer(kind=8) :: ivectu
         real(kind=8) :: fno(ndim*nnop)
     end subroutine xpesro
 end interface

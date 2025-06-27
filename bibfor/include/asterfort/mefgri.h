@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine mefgri(ntypg, nbgtot, zg, hg, itypg,&
                       zmin, zmax)
-        integer :: nbgtot
-        integer :: ntypg
+        integer(kind=8) :: nbgtot
+        integer(kind=8) :: ntypg
         real(kind=8) :: zg(nbgtot)
         real(kind=8) :: hg(ntypg)
-        integer :: itypg(nbgtot)
+        integer(kind=8) :: itypg(nbgtot)
         real(kind=8) :: zmin
         real(kind=8) :: zmax
     end subroutine mefgri

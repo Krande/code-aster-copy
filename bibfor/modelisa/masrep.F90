@@ -41,7 +41,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
 #include "asterfort/int_to_char8.h"
 #include "blas/ddot.h"
 !
-    integer :: ioc, nbgr, nbno, ndim
+    integer(kind=8) :: ioc, nbgr, nbno, ndim
     character(len=8) :: noma, tabnoe(*)
     character(len=24) :: ligrma(nbgr)
     real(kind=8) :: rignoe(*)
@@ -52,13 +52,13 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     character(len=24) :: magrma, manoma, matyma
     real(kind=8) :: zero, x(9), y(9), z(9), rigi(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
-    integer :: appui
+    integer(kind=8) :: appui
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, iunite
-    integer :: ij, im, in, inoe, iret
-    integer :: ldgm, ldnm, ltyp, nb, nbma
-    integer :: nm, nn, noemax, ntopo, numa
+    integer(kind=8) :: ii, iunite
+    integer(kind=8) :: ij, im, in, inoe, iret
+    integer(kind=8) :: ldgm, ldnm, ltyp, nb, nbma
+    integer(kind=8) :: nm, nn, noemax, ntopo, numa
 !
     real(kind=8) :: coef, hc, r1, r2, r3, r4, r5, r6
     real(kind=8) :: surf, surtot, xc
@@ -73,7 +73,7 @@ subroutine masrep(noma, ioc, rigi, lvale, nbgr, &
     real(kind=8), pointer :: coenyy(:) => null()
     real(kind=8), pointer :: coenyz(:) => null()
     real(kind=8), pointer :: coenzz(:) => null()
-    integer, pointer :: parno(:) => null()
+    integer(kind=8), pointer :: parno(:) => null()
     real(kind=8), pointer :: surma1(:) => null()
     real(kind=8), pointer :: surma2(:) => null()
     real(kind=8), pointer :: surma3(:) => null()

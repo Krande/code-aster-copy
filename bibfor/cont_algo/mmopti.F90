@@ -52,7 +52,7 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,26 +67,26 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: disp_init, cnscon
     real(kind=8) :: jeusgn, tau1(3), tau2(3), norm(3), noor
     real(kind=8) :: mlagc(9), pres_cont, flag_cont
-    integer :: iContZone, i_elem_slav, i_poin_appa, i_poin_elem, i_cont_poin
-    integer :: nbContZone, nb_poin_elem, nb_elem_slav, model_ndim
-    integer :: nb_cont_init, nb_cont_excl
-    integer :: elem_slav_indx, elem_slav_nume, elem_slav_nbno
+    integer(kind=8) :: iContZone, i_elem_slav, i_poin_appa, i_poin_elem, i_cont_poin
+    integer(kind=8) :: nbContZone, nb_poin_elem, nb_elem_slav, model_ndim
+    integer(kind=8) :: nb_cont_init, nb_cont_excl
+    integer(kind=8) :: elem_slav_indx, elem_slav_nume, elem_slav_nbno
     real(kind=8) :: vectpm(3), seuil_init, contInitDist, armini, ksipr1, ksipr2
     aster_logical :: l_node_excl
-    integer :: jdecme
-    integer :: contInit, pair_type
+    integer(kind=8) :: jdecme
+    integer(kind=8) :: contInit, pair_type
     aster_logical :: l_veri, l_gliss, l_auto_seuil
-    integer :: ndexfr
+    integer(kind=8) :: ndexfr
     character(len=8) :: elem_slav_type
     character(len=24) :: sdappa
-    integer :: ztabf
+    integer(kind=8) :: ztabf
     character(len=24) :: sdcont_tabfin
     real(kind=8), pointer :: v_sdcont_tabfin(:) => null()
-    integer :: elem_mast_nume, elem_mast_nbno
+    integer(kind=8) :: elem_mast_nume, elem_mast_nbno
     character(len=8) :: elem_mast_type
     character(len=19) :: oldgeo, newgeo
     real(kind=8) :: elem_mast_coor(27), lenght_master_elem, lenght_master_elem_init, milieu(3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     character(len=*), intent(in) :: optionz, modelz
     character(len=24), intent(in) :: cara_elem, mate
     character(len=19), intent(in) :: compor
-    integer, intent(in) :: nh
+    integer(kind=8), intent(in) :: nh
     character(len=*), intent(in) :: ligrelz
     character(len=*), intent(in) :: sigmz, varcz, strxz, dispz
     character(len=1), intent(in) :: base
@@ -77,7 +77,7 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: mxchin = 35, nbout = 1
+    integer(kind=8), parameter :: mxchin = 35, nbout = 1
     character(len=8) :: lpaout(nbout), lpain(mxchin)
     character(len=19) :: lchout(nbout), lchin(mxchin)
     aster_logical :: l_xfem
@@ -86,7 +86,7 @@ subroutine vefnme(optionz, modelz, mate, cara_elem, &
     character(len=19) :: vect_elem, resu_elem
     character(len=19) :: chharm, ligrel_local, ligrel
     character(len=19) :: chgeom, chcara(18)
-    integer :: iret, nbin
+    integer(kind=8) :: iret, nbin
     character(len=19) :: sigm, varc, strx, disp
 !
 ! --------------------------------------------------------------------------------------------------

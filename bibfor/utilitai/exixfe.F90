@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine exixfe(modele, iret)
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
     character(len=*) :: modele
-    integer :: iret
+    integer(kind=8) :: iret
 !
 !     BUT:
 !         DETECTER SI LE MODELE EST UNE MODELISATION XFEM.
@@ -46,7 +46,7 @@ subroutine exixfe(modele, iret)
 !      CHARACTER*32 JEEXIN
 !
 !
-    integer :: ifiss
+    integer(kind=8) :: ifiss
 !
 ! ......................................................................
 !

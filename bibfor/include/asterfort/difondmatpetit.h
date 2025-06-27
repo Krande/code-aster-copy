@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
      subroutine difondmatpetit(tirela,raidTang,vloc,vpara,&
                nbVloc,nbPara,klr,errmax,dulmat,iret)
-        integer :: nbVloc
-        integer :: nbPara
-        integer :: iret
+        integer(kind=8) :: nbVloc
+        integer(kind=8) :: nbPara
+        integer(kind=8) :: iret
         real(kind=8) :: tirela(6)
         real(kind=8) :: raidTang(6)
         real(kind=8) :: vloc(nbVloc)

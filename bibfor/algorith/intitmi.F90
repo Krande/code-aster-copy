@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,20 +41,20 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
 !
 !   -0.2- Local variables
     aster_logical :: mdiag, kdiag
-    integer :: i, nbequ, ind1, iret, nbvint
-    integer :: nbnoli, upmat
+    integer(kind=8) :: i, nbequ, ind1, iret, nbvint
+    integer(kind=8) :: nbnoli, upmat
     real(kind=8) :: t1, dt, coeff, epsi, dtold
     real(kind=8) :: ksi0
     complex(kind=8) :: s0, sr0, z0, za1, za2
     complex(kind=8) :: zin
     character(len=8) :: sd_dtm, sd_int, sd_nl
 !
-    integer, pointer :: buffnl(:) => null()
+    integer(kind=8), pointer :: buffnl(:) => null()
 !
     real(kind=8), pointer :: depl1(:) => null()
     real(kind=8), pointer :: vite1(:) => null()

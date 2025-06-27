@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine mtcrou(a, b, nmax, n, nbscmb, &
                   l, d)
     implicit none
-    integer :: n, nbscmb, nmax
+    integer(kind=8) :: n, nbscmb, nmax
     real(kind=8) :: a(nmax, nmax), b(nmax, nbscmb), l(n, n), d(n)
 !     ------------------------------------------------------------------
 !     RESOLUTION PAR LA METHODE DE CROUT D'UN SYSTEME LINEAIRE
@@ -33,7 +33,7 @@ subroutine mtcrou(a, b, nmax, n, nbscmb, &
 ! IN  NBSCMB : IS : NOMBRE DE SECOND MEMBRE
 !     ------------------------------------------------------------------
     real(kind=8) :: zero, s
-    integer :: i, is, j, k
+    integer(kind=8) :: i, is, j, k
 !-----------------------------------------------------------------------
     zero = 0.d0
     do i = 1, n

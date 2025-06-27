@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
                       ddl1, tau, etamin, etamax, copilo)
         character(len=8) :: typmod(*)
         character(len=16) :: typilo, compor(*)
-        integer :: npg, neps, nddl, mat, lgpg
+        integer(kind=8) :: npg, neps, nddl, mat, lgpg
         real(kind=8) :: ddlm(nddl), ddld(nddl), ddl0(nddl), ddl1(nddl)
         real(kind=8) :: sigm(0:neps*npg-1), vim(lgpg, npg), tau
         real(kind=8) :: copilo(5, npg), etamin, etamax

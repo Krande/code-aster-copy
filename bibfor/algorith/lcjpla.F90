@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine lcjpla(fami, kpg, ksp, loi, mod, &
 #include "asterfort/irrjpl.h"
 #include "asterfort/lgljpl.h"
 #include "asterfort/rsljpl.h"
-    integer :: imat, nmat, nvi, nr, kpg, ksp, codret
+    integer(kind=8) :: imat, nmat, nvi, nr, kpg, ksp, codret
     real(kind=8) :: dsde(6, 6), devg(*), devgii, sigf(6), deps(6)
     real(kind=8) :: vin(*), vind(*), theta, dt, mater(nmat, 2)
     real(kind=8) :: vp(3), vecp(3, 3), sigd(6)

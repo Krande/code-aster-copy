@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ interface
                               matr_fric)
         character(len=4), intent(in) :: phase
         aster_logical, intent(in) :: l_large_slip, l_pena_fric
-        integer, intent(in) :: i_reso_geom, i_reso_fric
-        integer, intent(in) :: nbdm, nbcps, ndexfr
-        integer, intent(in) :: ndim, nne, nnm, nnl
+        integer(kind=8), intent(in) :: i_reso_geom, i_reso_fric
+        integer(kind=8), intent(in) :: nbdm, nbcps, ndexfr
+        integer(kind=8), intent(in) :: ndim, nne, nnm, nnl
         real(kind=8), intent(in) :: wpg, jacobi, coefac, coefaf
         real(kind=8), intent(in) :: ffe(9), ffm(9), ffl(9), dffm(2,9), ddffm(3,9)
         real(kind=8), intent(in) :: tau1(3), tau2(3), mprojt(3, 3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine pj6dap(ino2, geom2, geom1, seg2, cobary, &
 #include "asterfort/pj6da2.h"
 !
     real(kind=8) :: cobary(2), geom1(*), geom2(*), btvr(*)
-    integer :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*), seg2(*)
+    integer(kind=8) :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*), seg2(*)
 ! person_in_charge: jacques.pellet at edf.fr
 ! ======================================================================
 !  but :
@@ -64,7 +64,7 @@ subroutine pj6dap(ino2, geom2, geom1, seg2, cobary, &
 !
 !
     real(kind=8) :: cobar2(2), dmin, d2, long, rtr3
-    integer :: p, q, r, p1, q1, p2, q2, r1, r2, ino2, i, k, iposi, nx, ny, ntrbt
+    integer(kind=8) :: p, q, r, p1, q1, p2, q2, r1, r2, ino2, i, k, iposi, nx, ny, ntrbt
 !
     aster_logical :: l_dmax, loin
     real(kind=8) :: dmax, dala

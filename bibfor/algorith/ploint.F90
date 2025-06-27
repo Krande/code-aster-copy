@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine ploint(vesto, modmec, chamno, num, i, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/rsexch.h"
     aster_logical :: vrai
-    integer :: ipres, i, iret
+    integer(kind=8) :: ipres, i, iret
     character(len=8) :: k8bid, tcorx(2), tcory(2), tcorz(2)
     character(len=*) :: modmec, chamno, model
     character(len=14) :: num

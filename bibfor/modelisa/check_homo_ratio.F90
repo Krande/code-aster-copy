@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine check_homo_ratio(cara, vale, nval)
     implicit none
     character(len=*), intent(in) :: cara(*)
     real(kind=8), intent(in) :: vale(*)
-    integer, intent(in) :: nval
+    integer(kind=8), intent(in) :: nval
 !
 !   AFFE_CARA_ELEM
 !   Check the consistency of properties R1, R2, EP1, EP2 for the beam elements
@@ -29,11 +29,11 @@ subroutine check_homo_ratio(cara, vale, nval)
 #include "asterf_debug.h"
 #include "asterfort/utmess.h"
 ! ----------------------------------------------------------------------
-    integer, parameter :: nk = 4
+    integer(kind=8), parameter :: nk = 4
     character(len=3) :: tcar(nk)
     real(kind=8) :: tval(nk), rratio, eratio, homo
     real(kind=8) :: valr(6)
-    integer :: nv, i, j
+    integer(kind=8) :: nv, i, j
     character(len=3) :: carpou(nk)
 !
     data carpou/'R1', 'R2', 'EP1', 'EP2'/

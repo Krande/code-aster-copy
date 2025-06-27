@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,10 +65,10 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf, &
 #include "asterfort/lxlgut.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbvato, lgproa
-    integer :: ncmprf, nbcmpv
-    integer :: adsl, adsv
-    integer :: codret
+    integer(kind=8) :: nbvato, lgproa
+    integer(kind=8) :: ncmprf, nbcmpv
+    integer(kind=8) :: adsl, adsv
+    integer(kind=8) :: codret
 !
     character(len=*) :: nochmd
     character(len=*) :: nomcmr(*)
@@ -82,12 +82,12 @@ subroutine lrcmva(ntvale, nbvato, ntproa, lgproa, ncmprf, &
     parameter(nompro='LRCMVA')
 !
 !
-    integer :: iaux, jaux, kaux, laux, maux
-    integer :: nrcmp, ncmpdb
-    integer :: nuval
-    integer :: nbcmfi
-    integer :: adremp, advale, adncfi, adnucm, adncvm, adproa
-    integer :: ifm, nivinf
+    integer(kind=8) :: iaux, jaux, kaux, laux, maux
+    integer(kind=8) :: nrcmp, ncmpdb
+    integer(kind=8) :: nuval
+    integer(kind=8) :: nbcmfi
+    integer(kind=8) :: adremp, advale, adncfi, adnucm, adncvm, adproa
+    integer(kind=8) :: ifm, nivinf
 !
     character(len=8) :: saux08
     character(len=24) :: ntcmpl

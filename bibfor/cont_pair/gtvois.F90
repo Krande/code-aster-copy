@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,16 +28,16 @@ subroutine gtvois(v_connex, v_connex_lcum, list_elem, nb_elem, elem_nume, elem_c
 #include "asterfort/assert.h"
 !
 !
-    integer, pointer :: v_connex(:)
-    integer, pointer :: v_connex_lcum(:)
-    integer, pointer :: v_conx_inv(:)
-    integer, pointer :: v_inv_lcum(:)
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: list_elem(nb_elem)
-    integer, intent(in) :: elem_nume
+    integer(kind=8), pointer :: v_connex(:)
+    integer(kind=8), pointer :: v_connex_lcum(:)
+    integer(kind=8), pointer :: v_conx_inv(:)
+    integer(kind=8), pointer :: v_inv_lcum(:)
+    integer(kind=8), intent(in) :: nb_elem
+    integer(kind=8), intent(in) :: list_elem(nb_elem)
+    integer(kind=8), intent(in) :: elem_nume
     character(len=8), intent(in) :: elem_code
-    integer, intent(in) :: nb_neigh
-    integer, intent(out) :: list_neigh(4)
+    integer(kind=8), intent(in) :: nb_neigh
+    integer(kind=8), intent(out) :: list_neigh(4)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -58,12 +58,12 @@ subroutine gtvois(v_connex, v_connex_lcum, list_elem, nb_elem, elem_nume, elem_c
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_node, list_node(4), node_1, node_2
-    integer :: node_nbelem_1, node_nbelem_2
-    integer :: nb_find, elem_find(2)
-    integer :: list_node_next(4)
-    integer :: i_node, i_neigh, nb_dime
-    integer :: a(nb_elem), b(nb_elem), i
+    integer(kind=8) :: nb_node, list_node(4), node_1, node_2
+    integer(kind=8) :: node_nbelem_1, node_nbelem_2
+    integer(kind=8) :: nb_find, elem_find(2)
+    integer(kind=8) :: list_node_next(4)
+    integer(kind=8) :: i_node, i_neigh, nb_dime
+    integer(kind=8) :: a(nb_elem), b(nb_elem), i
 !
 ! --------------------------------------------------------------------------------------------------
 !

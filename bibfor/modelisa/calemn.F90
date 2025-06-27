@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,8 +66,8 @@ subroutine calemn(motfaz, nomaz, iocc, lisi1z, lonli1, &
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !
 !-----------------------------------------------------------------------
-    integer :: iocc, lonli1, lonli2, n1, n2, n3, n4
-    integer :: n5, n6, n7, n8, nliai
+    integer(kind=8) :: iocc, lonli1, lonli2, n1, n2, n3, n4
+    integer(kind=8) :: n5, n6, n7, n8, nliai
 !-----------------------------------------------------------------------
     call jemarq()
 !

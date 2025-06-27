@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine utgtme(nbarg, nomarg, valarg, iret)
 #include "asterc/loisem.h"
 #include "asterc/mempid.h"
 #include "asterfort/assert.h"
-    integer :: nbarg, iret
+    integer(kind=8) :: nbarg, iret
     character(len=8) :: nomarg(*)
     real(kind=8) :: valarg(*)
 ! person_in_charge: mathieu.courtois at edf.fr
@@ -45,7 +45,7 @@ subroutine utgtme(nbarg, nomarg, valarg, iret)
     real(kind=8) :: vmumps, vpetsc, rlqmem, vminit
     common/msolve/vmumps, vpetsc, rlqmem, vminit
 ! ----------------------------------------------------------------------
-    integer :: k, iv(2), ival, lois
+    integer(kind=8) :: k, iv(2), ival, lois
     character(len=8) :: nom
 ! ----------------------------------------------------------------------
     iret = 0

@@ -39,7 +39,7 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbtrou, ncmp
+    integer(kind=8) :: nbtrou, ncmp
     character(len=8) :: nocmp(*)
     character(len=*) :: champz, typemz, litroz
 !
@@ -58,8 +58,8 @@ subroutine utmach(champz, ncmp, nocmp, typemz, litroz, &
 ! OUT : NBTROU : NOMBRE D'ENTITES TROUVEES
 !     ------------------------------------------------------------------
 !
-    integer :: ierd, jcesd, jcesk, jcesl, nbent, jent, i, nbpt, nbsp, ipt
-    integer :: isp, icp, iad, idlist, icmp, ncmpmx, gd, ier
+    integer(kind=8) :: ierd, jcesd, jcesk, jcesl, nbent, jent, i, nbpt, nbsp, ipt
+    integer(kind=8) :: isp, icp, iad, idlist, icmp, ncmpmx, gd, ier
     character(len=2) :: typem
     character(len=4) :: docu
     character(len=8) :: k8b, nomgd

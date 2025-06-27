@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 #include "asterfort/jemarq.h"
 #include "asterfort/mminfi.h"
     character(len=24) :: defico
-    integer :: posmae
-    integer :: ndexfr(1), izone
+    integer(kind=8) :: posmae
+    integer(kind=8) :: ndexfr(1), izone
 !
 ! ----------------------------------------------------------------------
 !
@@ -53,11 +53,11 @@ subroutine mmssfr(defico, izone, posmae, ndexfr)
 !
 !
 !
-    integer :: numno
-    integer :: nnomai, posnno(9), numnno(9)
-    integer :: suppok, ino
-    integer :: ndimg, ndirex
-    integer :: ndexcl(10), nbexfr
+    integer(kind=8) :: numno
+    integer(kind=8) :: nnomai, posnno(9), numnno(9)
+    integer(kind=8) :: suppok, ino
+    integer(kind=8) :: ndimg, ndirex
+    integer(kind=8) :: ndexcl(10), nbexfr
 !
 ! ----------------------------------------------------------------------
 !

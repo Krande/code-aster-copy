@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
 ! ----------------------------------------------------------------------
 ! --- DECLARATION DES ARGUMENTS DE LA ROUTINE
 ! ----------------------------------------------------------------------
-    integer :: imat(2), ind, ninc, nd, h, nbpt, nchoc
+    integer(kind=8) :: imat(2), ind, ninc, nd, h, nbpt, nchoc
     character(len=14) :: xcdl, parcho, xus, xeng
     real(kind=8) :: e
 ! ----------------------------------------------------------------------
@@ -73,16 +73,16 @@ subroutine mnleng(imat, xcdl, parcho, xus, ninc, &
 ! ----------------------------------------------------------------------
     real(kind=8) :: pi
     real(kind=8) :: omega, alpha, jeu, rayon, origx, origy, ratio
-    integer :: ix, iy, idy, imdy, iky
-    integer :: ius, ieng, k, icdl, neq, i
-    integer :: ireg, nddl, nddlx, nddly
+    integer(kind=8) :: ix, iy, idy, imdy, iky
+    integer(kind=8) :: ius, ieng, k, icdl, neq, i
+    integer(kind=8) :: ireg, nddl, nddlx, nddly
     real(kind=8), pointer :: dye(:) => null()
     real(kind=8), pointer :: kye(:) => null()
     real(kind=8), pointer :: mdye(:) => null()
     real(kind=8), pointer :: ye(:) => null()
     real(kind=8), pointer :: vjeu(:) => null()
     real(kind=8), pointer :: raid(:) => null()
-    integer, pointer :: vnddl(:) => null()
+    integer(kind=8), pointer :: vnddl(:) => null()
     character(len=8), pointer :: type(:) => null()
     real(kind=8), pointer :: orig(:) => null()
     blas_int :: b_incx, b_incy, b_n

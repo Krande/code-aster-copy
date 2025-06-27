@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine te0562(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_DOF
-    integer :: nnoQ, npg, imatuu, ndim, nnos, jv_ganoQ, icodr1(1)
-    integer :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
-    integer :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
+    integer(kind=8) :: nb_DOF
+    integer(kind=8) :: nnoQ, npg, imatuu, ndim, nnos, jv_ganoQ, icodr1(1)
+    integer(kind=8) :: jv_poids, jv_vfQ, jv_dfdeQ, igeom, imate
+    integer(kind=8) :: nnoL, jv_vfL, jv_dfdeL, jv_ganoL
     character(len=8) :: typmod(2)
     character(len=16) :: phenom
 !

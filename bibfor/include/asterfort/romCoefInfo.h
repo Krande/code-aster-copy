@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
         use Rom_Datastructure_type
         character(len=1), intent(in)       :: object_type
         character(len=8), intent(in)       :: object_name_
-        integer, intent(in)                :: i_coef
+        integer(kind=8), intent(in)                :: i_coef
         type(ROM_DS_MultiCoef), intent(in) :: ds_multicoef
     end subroutine romCoefInfo
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine cheddl(ideeq, neq, ino, ityp, iran,&
                       nbran)
-        integer :: nbran
-        integer :: neq
-        integer :: ideeq(2, neq)
-        integer :: ino
-        integer :: ityp
-        integer :: iran(nbran)
+        integer(kind=8) :: nbran
+        integer(kind=8) :: neq
+        integer(kind=8) :: ideeq(2, neq)
+        integer(kind=8) :: ino
+        integer(kind=8) :: ityp
+        integer(kind=8) :: iran(nbran)
     end subroutine cheddl
 end interface

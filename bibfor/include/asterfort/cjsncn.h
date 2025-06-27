@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine cjsncn(roucjs, essmax, ndt, nvi, umess,&
                       relax, rotagd, epsd, deps, sigd,&
                       vind)
-        integer :: nvi
-        integer :: ndt
-        integer :: essmax
+        integer(kind=8) :: nvi
+        integer(kind=8) :: ndt
+        integer(kind=8) :: essmax
         character(len=*) :: roucjs
-        integer :: umess
+        integer(kind=8) :: umess
         real(kind=8) :: relax(essmax)
         real(kind=8) :: rotagd(essmax)
         real(kind=8) :: epsd(ndt)

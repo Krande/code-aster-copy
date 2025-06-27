@@ -71,8 +71,8 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbordr, nb_load
-    integer :: vali
+    integer(kind=8) :: nbordr, nb_load
+    integer(kind=8) :: vali
     character(len=8) :: resuco, resuc1, modele, cara
     character(len=16) :: tysd
     character(len=19) :: knum, lload_name
@@ -80,11 +80,11 @@ subroutine thcalr(newcal, tysd, knum, lload_name, resuco, &
     aster_logical :: newcal
 !
 !     --- VARIABLES LOCALES ---
-    integer :: iaux, jordr, iordr, jcha, iret1, iret, bufin1, iad
-    integer :: ifm, niv, linst, niveau, n2
-    integer :: nuord, nh, nbac, nbpa, jpa, nbpara
-    integer :: iadin, iadou, iopt, nbopt
-    integer :: jopt, j
+    integer(kind=8) :: iaux, jordr, iordr, jcha, iret1, iret, bufin1, iad
+    integer(kind=8) :: ifm, niv, linst, niveau, n2
+    integer(kind=8) :: nuord, nh, nbac, nbpa, jpa, nbpara
+    integer(kind=8) :: iadin, iadou, iopt, nbopt
+    integer(kind=8) :: jopt, j
     real(kind=8) :: valthe, insold, inst
     character(len=4) :: type
     character(len=6) :: nompro

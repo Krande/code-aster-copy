@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine romMultiParaROMMatrCreate(base, ds_multipara, i_coef, syst_matr)
 !
     type(ROM_DS_Empi), intent(in) :: base
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-    integer, intent(in) :: i_coef
+    integer(kind=8), intent(in) :: i_coef
     character(len=19), intent(in) :: syst_matr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -50,9 +50,9 @@ subroutine romMultiParaROMMatrCreate(base, ds_multipara, i_coef, syst_matr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbMatr, nbMode, nbModeMaxi
-    integer :: iMode, iMatr, jMode
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbMatr, nbMode, nbModeMaxi
+    integer(kind=8) :: iMode, iMatr, jMode
     aster_logical :: l_coef_cplx, l_coef_real
     real(kind=8) :: coef_r
     complex(kind=8) :: coef_c, coef_cplx

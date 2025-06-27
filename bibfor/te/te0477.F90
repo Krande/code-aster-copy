@@ -50,7 +50,7 @@ subroutine te0477(nomopt, nomte)
 ! --- Local variables
 !
     type(HHO_Quadrature) :: hhoQuadCellRigi
-    integer :: cbs, fbs, total_dofs, npg
+    integer(kind=8) :: cbs, fbs, total_dofs, npg
     character(len=8), parameter :: fami = 'RIGI'
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell

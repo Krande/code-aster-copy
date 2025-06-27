@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
 #include "asterfort/vtzero.h"
 !
     character(len=24), intent(in) :: model, cara_elem
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -67,7 +67,7 @@ subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: disp_prev, strx_prev, sigm_prev, varc_prev
     character(len=19) :: disp_cumu_inst, sigm_extr
     character(len=24) :: vrcmoi

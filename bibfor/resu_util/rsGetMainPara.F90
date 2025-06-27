@@ -37,7 +37,7 @@ subroutine rsGetMainPara(phenom, resultZ, numeStore, &
 !
     character(len=4), intent(in) :: phenom
     character(len=*), intent(in) :: resultZ
-    integer, intent(in) :: numeStore
+    integer(kind=8), intent(in) :: numeStore
     character(len=*), intent(in) :: listLoadZ
     character(len=24), intent(out) :: mateco
     character(len=8), intent(out) :: model, materField, caraElem
@@ -53,7 +53,7 @@ subroutine rsGetMainPara(phenom, resultZ, numeStore, &
 !
     character(len=1), parameter :: jvBase = "V"
     character(len=8) :: result
-    integer :: jvPara, nbLoadUser, nbLoadResu
+    integer(kind=8) :: jvPara, nbLoadUser, nbLoadResu
     character(len=24) :: listLoadResu, listLoad
     type(ListLoad_Prep) :: listLoadPrep
     aster_logical :: lTher, lConsistent

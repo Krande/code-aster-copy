@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,20 +29,20 @@ interface
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         common/tdim/ ndt,ndi
-        integer :: ndt
-        integer :: ndi
-        integer :: nsg
-        integer :: nfs
-        integer :: nvi
-        integer :: nr
-        integer :: nmat
+        integer(kind=8) :: ndt
+        integer(kind=8) :: ndi
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nr
+        integer(kind=8) :: nmat
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         real(kind=8) :: toler
-        integer :: itmax
+        integer(kind=8) :: itmax
         character(len=8) :: mod
-        integer :: imat
+        integer(kind=8) :: imat
         real(kind=8) :: materd(nmat, 2)
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: timed
@@ -54,15 +54,15 @@ interface
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
         real(kind=8) :: hsr(nsg, nsg)
         real(kind=8) :: sigf(6)
         real(kind=8) :: vinf(*)
-        integer :: icomp
-        integer :: codret
+        integer(kind=8) :: icomp
+        integer(kind=8) :: codret
         real(kind=8) :: drdy(nr, nr)
     end subroutine lcplnl
 end interface

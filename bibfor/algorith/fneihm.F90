@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine fneihm(ds_thm, fnoevo, deltat, nno1, nno2, &
 !
     type(THM_DS), intent(in) :: ds_thm
     aster_logical :: fnoevo, axi
-    integer :: dimdef, dimcon, nno1, nno2
-    integer :: dimuel, ndim
-    integer :: npi, npg, mecani(8), press1(9), press2(9)
-    integer :: addeme, addep1, addep2
-    integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
+    integer(kind=8) :: dimdef, dimcon, nno1, nno2
+    integer(kind=8) :: dimuel, ndim
+    integer(kind=8) :: npi, npg, mecani(8), press1(9), press2(9)
+    integer(kind=8) :: addeme, addep1, addep2
+    integer(kind=8) :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
     real(kind=8) :: deltat, geom(ndim, nno2), dffr2(ndim-1, nno2, npi)
     real(kind=8) :: congem(dimcon, npi), vff1(nno1, npi), vff2(nno2, npi)
     real(kind=8) :: vectu(dimuel), r(dimdef), ang(24), wref(npg)
@@ -78,8 +78,8 @@ subroutine fneihm(ds_thm, fnoevo, deltat, nno1, nno2, &
 ! OUT R       : TABLEAU DES RESIDUS
 ! OUT VECTU   : FORCES NODALES
 ! ======================================================================
-    integer :: adcome, adcp11, addlh1, adcop1, adcop2
-    integer :: kpi, i, n
+    integer(kind=8) :: adcome, adcp11, addlh1, adcop1, adcop2
+    integer(kind=8) :: kpi, i, n
     real(kind=8) :: wi, q(dimdef, dimuel)
 !
 ! ======================================================================

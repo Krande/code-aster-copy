@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,19 +43,19 @@ subroutine te0237(option, nomte)
 !
     character(len=8) :: elrefe, nompar
     character(len=16) :: nomres(3)
-    integer :: icodre(3)
+    integer(kind=8) :: icodre(3)
     real(kind=8) :: e, nu, tpg, tpgmoy, tpginf, tpgsup, valpar, tref
     real(kind=8) :: x3, eps(5), c1, c2, h, epsthe, ki(3), niv
     real(kind=8) :: e11, e22, k11, k22, ep11, ep22, ep12, esx3
     real(kind=8) :: dfdx(3), valres(3)
     real(kind=8) :: jac, r, cosa, sina, cour, correc, zmin, hic
-    integer :: i, k, kp, igeom, imate, icaco, idepl, icont, nbpar, idefor
-    integer :: itab(7)
-    integer :: nno, npg, idfdk, ivf, iret, iret1, iret2, iret3, idec, inte, npge
+    integer(kind=8) :: i, k, kp, igeom, imate, icaco, idepl, icont, nbpar, idefor
+    integer(kind=8) :: itab(7)
+    integer(kind=8) :: nno, npg, idfdk, ivf, iret, iret1, iret2, iret3, idec, inte, npge
 !
 !-----------------------------------------------------------------------
-    integer :: icou, ipoids, iret4, isp, jgano, jnbspi, nbcmp
-    integer :: nbcou, ndim, nnos
+    integer(kind=8) :: icou, ipoids, iret4, isp, jgano, jnbspi, nbcmp
+    integer(kind=8) :: nbcou, ndim, nnos
     real(kind=8) :: si11, si12, si22, zic
 !-----------------------------------------------------------------------
     call elref1(elrefe)

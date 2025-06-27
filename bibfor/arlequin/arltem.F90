@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,13 +31,13 @@ subroutine arltem(ndim, nomte, &
 #include "asterfort/arlten.h"
 #include "asterfort/arlted.h"
 
-    integer :: ndim
+    integer(kind=8) :: ndim
     character(len=16) :: nomte
-    integer :: nns, npgs
-    integer :: ivfs, ipoids, idfdes
+    integer(kind=8) :: nns, npgs
+    integer(kind=8) :: ivfs, ipoids, idfdes
     character(len=8) :: elref1, elref2
-    integer :: ndml1, jcoor1, jcoors
-    integer :: ndml2, jcoor2
+    integer(kind=8) :: ndml1, jcoor1, jcoors
+    integer(kind=8) :: ndml2, jcoor2
     real(kind=8) ::  mcpln1(2*ndim*ndml2, ndim*ndml1)
     real(kind=8) ::  mcpln2(2*ndim*ndml2, 2*ndim*ndml2), mlv(78)
 
@@ -70,7 +70,7 @@ subroutine arltem(ndim, nomte, &
     real(kind=8) ::  dfdx1(npgs*ndim*ndim*ndml1)
     real(kind=8) ::  dfdy1(npgs*ndim*ndim*ndml1)
     real(kind=8) ::  dfdz1(npgs*ndim*ndim*ndml1)
-    integer :: jinfor
+    integer(kind=8) :: jinfor
     real(kind=8) ::  e, rho, xnu
 
 ! ----------------------------------------------------------------------

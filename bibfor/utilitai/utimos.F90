@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine utimos(unit, obin, lattr, lcont)
 #include "asterfort/jeimpo.h"
 #include "asterfort/utmess.h"
     character(len=*) :: obin
-    integer :: unit
+    integer(kind=8) :: unit
     aster_logical :: lattr, lcont
 ! ----------------------------------------------------------------------
 !     IN:
@@ -45,7 +45,7 @@ subroutine utimos(unit, obin, lattr, lcont)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iret
+    integer(kind=8) :: iret
 !-----------------------------------------------------------------------
     ob1 = obin
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine rescmp(cnfnod, cnequi, &
     character(len=19), intent(in) :: cnfnod, cnequi
     real(kind=8), intent(out) :: r_comp_vale
     character(len=8), intent(out) :: r_comp_name
-    integer, intent(out) :: r_comp_indx
+    integer(kind=8), intent(out) :: r_comp_indx
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,25 +55,25 @@ subroutine rescmp(cnfnod, cnequi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nddmax = 6
+    integer(kind=8), parameter :: nddmax = 6
     character(len=8) :: nomddl(nddmax)
     real(kind=8) :: maxddf(nddmax), maxddr(nddmax)
-    integer :: numnod(nddmax)
+    integer(kind=8) :: numnod(nddmax)
     character(len=3) :: tsca
-    integer :: cmpmax
+    integer(kind=8) :: cmpmax
     character(len=19) :: cnfnod_s, cnequi_s
-    integer :: i, k
+    integer(kind=8) :: i, k
     real(kind=8) :: resim, fonam, res
-    integer :: jcnsl
-    integer :: licmpu(999)
-    integer :: nb_cmp, nb_node, i_cmp, i_node, nbcmpu
+    integer(kind=8) :: jcnsl
+    integer(kind=8) :: licmpu(999)
+    integer(kind=8) :: nb_cmp, nb_node, i_cmp, i_node, nbcmpu
     character(len=8) :: nomgd
     real(kind=8), parameter :: epsi = 1.d-50
     real(kind=8), pointer :: v_cnequi_cnsv(:) => null()
     real(kind=8), pointer :: v_cnfnod_cnsv(:) => null()
     character(len=8), pointer :: v_cnfnod_cnsc(:) => null()
     character(len=8), pointer :: v_cnfnod_cnsk(:) => null()
-    integer, pointer :: v_cnfnod_cnsd(:) => null()
+    integer(kind=8), pointer :: v_cnfnod_cnsd(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

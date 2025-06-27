@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,14 +28,14 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx, &
 #include "asterfort/xdelt2.h"
 #include "asterfort/xdelt3.h"
 #include "asterfort/xintva.h"
-    integer :: ndime, ndim, ipp, ip, n(3)
+    integer(kind=8) :: ndime, ndim, ipp, ip, n(3)
     real(kind=8) :: ptxx(*), tabco(*), tabls(*)
-    integer :: itemax
+    integer(kind=8) :: itemax
     real(kind=8) :: epsmax, ksi(ndime)
     character(len=6) :: name
     character(len=8) :: elrefp
     real(kind=8), intent(in), optional :: dekker(4*ndime)
-    integer, intent(inout), optional :: exit(2)
+    integer(kind=8), intent(inout), optional :: exit(2)
 !
 !             ALGORITHME DE NEWTON POUR CALCULER LES COORDONNEES
 !                DE REFERENCE D'UN POINT PT MILIEU D'UNE ARETE
@@ -58,7 +58,7 @@ subroutine xnewto(elrefp, name, n, ndime, ptxx, &
 !
     real(kind=8) :: eps
     real(kind=8) :: test, epsrel, epsabs, refe, itermin
-    integer :: iter, i, arete
+    integer(kind=8) :: iter, i, arete
     real(kind=8) :: zero
     parameter(zero=0.d0)
     real(kind=8) :: dist, dmin, intinf, intsup

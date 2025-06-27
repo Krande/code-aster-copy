@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,16 +38,16 @@ subroutine gapint(elem_dime, l_axis, &
 #include "asterfort/mmmjac.h"
 #include "asterfort/mmtang.h"
 !
-    integer, intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: elem_dime
     aster_logical, intent(in) :: l_axis
     character(len=8), intent(in) :: elem_slav_code
-    integer, intent(in) :: elem_slav_nbnode
+    integer(kind=8), intent(in) :: elem_slav_nbnode
     real(kind=8), intent(in) :: elem_slav_coorO(3, elem_slav_nbnode)
     real(kind=8), intent(in) :: elem_slav_coorN(3, elem_slav_nbnode)
     character(len=8), intent(in) :: elem_mast_code
-    integer, intent(in) :: elem_mast_nbnode
+    integer(kind=8), intent(in) :: elem_mast_nbnode
     real(kind=8), intent(in) :: elem_mast_coorN(3, elem_mast_nbnode)
-    integer, intent(in) :: nb_poin_inte
+    integer(kind=8), intent(in) :: nb_poin_inte
     real(kind=8), intent(in) :: poin_inte(elem_dime-1, nb_poin_inte)
     real(kind=8), intent(in) :: poin_gaus_ma(elem_dime-1, 36)
     real(kind=8), intent(out) :: gap_moy
@@ -78,11 +78,11 @@ subroutine gapint(elem_dime, l_axis, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_tria, i_gauss, nb_tria, nb_gauss, i_node, i_dime, nb_gaus_tot
+    integer(kind=8) :: i_tria, i_gauss, nb_tria, nb_gauss, i_node, i_dime, nb_gaus_tot
     real(kind=8) :: tria_coor(2, 3), gauss_weight(12), gauss_coor(2, 12), dist_sign
     real(kind=8) :: jaco_weight, dire_norm(3), dist, vect_pm(3)
     real(kind=8) :: tau1(3), tau2(3), ksi1, ksi2, jacobian, sig
-    integer :: tria_node(6, 3)
+    integer(kind=8) :: tria_node(6, 3)
     character(len=8) :: gauss_family
     real(kind=8) :: shape_func(9), shape_dfunc(2, 9)
     real(kind=8) :: gauss_coot(2)

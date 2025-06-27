@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface 
     subroutine xpente(pl, cnse, n, bis)
-        integer :: pl
-        integer :: cnse(6, 10)
-        integer :: n(18)
-        integer, intent(in), optional :: bis
+        integer(kind=8) :: pl
+        integer(kind=8) :: cnse(6, 10)
+        integer(kind=8) :: n(18)
+        integer(kind=8), intent(in), optional :: bis
     end subroutine xpente
 end interface 

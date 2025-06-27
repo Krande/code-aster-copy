@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,20 +24,20 @@ interface
                       field_type, nosdfu)
         character(len=*) :: nofimd
         character(len=8) :: typech
-        integer :: nbimpr
+        integer(kind=8) :: nbimpr
         character(len=24) :: ncaimi
         character(len=24) :: ncaimk
-        integer :: ncmprf
-        integer :: ncmpve
+        integer(kind=8) :: ncmprf
+        integer(kind=8) :: ncmpve
         character(len=*) :: ntlcmp
-        integer :: nbvato
-        integer :: nbenec
-        integer :: lienec(*)
-        integer :: adsd
-        integer :: adsl
+        integer(kind=8) :: nbvato
+        integer(kind=8) :: nbenec
+        integer(kind=8) :: lienec(*)
+        integer(kind=8) :: adsd
+        integer(kind=8) :: adsl
         character(len=8) :: nomaas
         character(len=8) :: modele
-        integer :: typgeo(*)
+        integer(kind=8) :: typgeo(*)
         character(len=8) :: nomtyp(*)
         character(len=*) :: ntproa
         character(len=19) :: chanom

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,31 +45,31 @@ subroutine op0139()
 #include "asterfort/rs_getfirst.h"
 #include "jeveux.h"
     character(len=8) :: nomo, nomfis, resuco, noma
-    integer :: ndim
+    integer(kind=8) :: ndim
     character(len=19) :: cnsln, cnslt
     character(len=24) :: vvit, vbeta, vitemp
 !
 ! AJOUT OP
 !
 !     JEVEUX AND GENERAL PURPOSE
-    integer :: ibid, ifm, niv, vali(2), i
+    integer(kind=8) :: ibid, ifm, niv, vali(2), i
     real(kind=8) :: vale(3)
     character(len=8) :: k8b
 !
 !     INPUT DATA
-    integer :: nfiss, jfiss
+    integer(kind=8) :: nfiss, jfiss
     character(len=8) :: table
 !
 !     SINGLE
-    integer :: jnfon, nfon, piece, jffis, ni, nf
-    integer :: nbptff, actpoi, maxact
+    integer(kind=8) :: jnfon, nfon, piece, jffis, ni, nf
+    integer(kind=8) :: nbptff, actpoi, maxact
 !
 !     POPAGATION DATA
-    integer :: jvit, jbeta, iadrma
-    integer :: jvitem
+    integer(kind=8) :: jvit, jbeta, iadrma
+    integer(kind=8) :: jvitem
 !
 !     OPTION NB_POINT_FOND
-    integer :: sifval
+    integer(kind=8) :: sifval
 !
 !     OPTION COMP_LINE
 !     AJOUTS
@@ -77,10 +77,10 @@ subroutine op0139()
     character(len=16) :: typdis, k16bid
     character(len=19) :: cnsdet, cnxinv
     character(len=19) :: listpt
-    integer :: nume_first
-    integer :: jbasc, jfono, jmafon
-    integer ::  nmafon, nxptff
-    integer :: nfonn, npara
+    integer(kind=8) :: nume_first
+    integer(kind=8) :: jbasc, jfono, jmafon
+    integer(kind=8) ::  nmafon, nxptff
+    integer(kind=8) :: nfonn, npara
     aster_logical :: lbid
     complex(kind=8) :: c16b(1)
     character(len=12) :: nopar3(5)

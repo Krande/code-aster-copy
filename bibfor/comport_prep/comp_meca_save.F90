@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,16 +61,16 @@ subroutine comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=24), parameter :: list_elem_affe = '&&COMPMECASAVE.LIST'
     aster_logical :: l_affe_all
-    integer, parameter :: nbCmp = COMPOR_SIZE
-    integer :: nb_elem_affe, nb_model_affe
-    integer, pointer :: v_elem_affe(:) => null()
-    integer, pointer :: modelCell(:) => null()
-    integer :: i_elem_affe
-    integer :: iFactorKeyword, nbFactorKeyword
+    integer(kind=8), parameter :: nbCmp = COMPOR_SIZE
+    integer(kind=8) :: nb_elem_affe, nb_model_affe
+    integer(kind=8), pointer :: v_elem_affe(:) => null()
+    integer(kind=8), pointer :: modelCell(:) => null()
+    integer(kind=8) :: i_elem_affe
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: rela_comp
     character(len=16), pointer :: comporValv(:) => null()
     aster_logical :: l_cristal, l_pmf, l_is_pmf, l_parallel_mesh
-    integer :: elem_nume
+    integer(kind=8) :: elem_nume
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -31,7 +31,7 @@ subroutine nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, &
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 !
-    integer, intent(in) :: nbLigr
+    integer(kind=8), intent(in) :: nbLigr
     character(len=24), pointer :: listLigr(:)
     character(len=2), intent(in) :: base
     character(len=*), intent(in) :: numeDofZ, renumZ, modelZ
@@ -78,7 +78,7 @@ subroutine nueffe(nbLigr, listLigr, base, numeDofZ, renumZ, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical, parameter :: debug = ASTER_FALSE
-    integer :: iLigr, iret
+    integer(kind=8) :: iLigr, iret
     character(len=8) :: typeLagr, model
     character(len=24) :: modeLoc, idenRela, ligrelName
     character(len=8), pointer :: ligrelLgrf(:) => null()

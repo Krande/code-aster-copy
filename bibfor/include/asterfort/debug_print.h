@@ -23,6 +23,6 @@
 interface
     subroutine debug_print(sch1, unit)
         character(len=*), intent(in) :: sch1
-        integer, optional, intent(in) :: unit
+        integer(kind=8), optional, intent(in) :: unit
     end subroutine debug_print
 end interface

@@ -22,7 +22,7 @@ interface
                       nbatte, numedd, nbeffe, eta, pilcvg, &
                       carele)
         use NonLin_Datastructure_type
-        integer :: nbatte
+        integer(kind=8) :: nbatte
         character(len=19) :: sdpilo
         real(kind=8) :: deltat
         real(kind=8) :: rho
@@ -33,9 +33,9 @@ interface
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
         character(len=19) :: valinc(*)
         character(len=24) :: numedd
-        integer :: nbeffe
+        integer(kind=8) :: nbeffe
         real(kind=8) :: eta(nbatte)
-        integer :: pilcvg
+        integer(kind=8) :: pilcvg
         character(len=24) :: carele
     end subroutine nmpilo
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     function use_orient(vect, size, epsilon)
         implicit none
         aster_logical :: use_orient
-        integer, intent(in) :: size
+        integer(kind=8), intent(in) :: size
         real(kind=8), intent(in) :: vect(size)
         real(kind=8), intent(in), optional :: epsilon
     end function use_orient

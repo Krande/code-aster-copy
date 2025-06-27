@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine rot3d(x, sina, cosa, sinb, cosb, &
 #include "asterfort/pmavec.h"
     real(kind=8) :: rx(3, 3), ry(3, 3), rz(3, 3), rzyx(3, 3), p(3), x(*), y(*)
 !-----------------------------------------------------------------------
-    integer :: i, j, k, l
+    integer(kind=8) :: i, j, k, l
     real(kind=8) :: cosa, cosb, cosg, sina, sinb, sing
 !-----------------------------------------------------------------------
     rz(1, 1) = 1.d0

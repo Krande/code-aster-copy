@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -220,12 +220,12 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
 #include "blas/ddot.h"
 #include "blas/dlapy2.h"
 #include "blas/dnrm2.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
-    integer :: nopx, nbx, nrorth, nitref, nrstrt
+    integer(kind=8) :: nopx, nbx, nrorth, nitref, nrstrt
     common/infor/&
      &  nopx, nbx, nrorth, nitref, nrstrt
 !
@@ -235,14 +235,14 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
 !
     character(len=1) :: bmat
     character(len=2) :: which
-    integer :: ido, info, ishift, ldh, ldq, ldv, mxiter, n, nev, np, neqact
+    integer(kind=8) :: ido, info, ishift, ldh, ldq, ldv, mxiter, n, nev, np, neqact
     real(kind=8) :: tol, alpha
 !
 !     %-----------------%
 !     | ARRAY ARGUMENTS |
 !     %-----------------%
 !
-    integer :: ipntr(13)
+    integer(kind=8) :: ipntr(13)
     real(kind=8) :: bounds(nev+np), h(ldh, nev+np), q(ldq, nev+np), resid(n)
     real(kind=8) :: ritzi(nev+np), ritzr(nev+np), v(ldv, nev+np), workd(3*n)
     real(kind=8) :: workl((nev+np)*(nev+np+3))
@@ -260,15 +260,15 @@ subroutine dnaup2(ido, bmat, n, which, nev, &
 !
     character(len=2) :: wprime
     aster_logical :: cnorm, getv0, initv, update, ushift
-    integer :: ierr, iter, j, kplusp, msglvl, nconv, nevbef, nev0, np0, nptemp
-    integer :: numcnv
+    integer(kind=8) :: ierr, iter, j, kplusp, msglvl, nconv, nevbef, nev0, np0, nptemp
+    integer(kind=8) :: numcnv
     real(kind=8) :: rnorm, temp, eps23
 !
 !     %-----------------------%
 !     | LOCAL ARRAY ARGUMENTS |
 !     %-----------------------%
 !
-    integer :: kp(4)
+    integer(kind=8) :: kp(4)
     blas_int :: b_incx, b_incy, b_n
     save
 !

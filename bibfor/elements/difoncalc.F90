@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,14 +57,14 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
 #include "asterc/r8prem.h"
 #include "asterfort/mgauss.h"
 !
-    integer :: nbVloc, nbPara, iret, nbdecp
+    integer(kind=8) :: nbVloc, nbPara, iret, nbdecp
     real(kind=8) :: vpara(nbPara), tirela(6), raidTang(6), vloc(nbVloc), errmax
 !
 !   compteur du nombre d'itération
-    integer :: Ite, IteCrit, ii, jj
+    integer(kind=8) :: Ite, IteCrit, ii, jj
 !   nombre de critères à vérifier
-    integer :: nbDDL, nbDDLii
-    integer :: nbcomb, comppt, comptcombi
+    integer(kind=8) :: nbDDL, nbDDLii
+    integer(kind=8) :: nbcomb, comppt, comptcombi
 !
 !   fcp     : valeur réelle du coefficient de sécuirté à la capacité portante
 !   fslid   : idem pour le glissement
@@ -121,7 +121,7 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
 !       la matrice de raideur
     real(kind=8) :: etatCP, etatG, signeHHCP3(5), fssomme
 !
-    integer, allocatable :: combss(:, :), VectVrai(:), vectPass(:)
+    integer(kind=8), allocatable :: combss(:, :), VectVrai(:), vectPass(:)
 !   MatAinverser : la matrice à inverser pour obtenir les avancements
 !   fsInverse    : les deltas(finaux)
     real(kind=8), allocatable :: MatAinverser(:, :), fsInverse(:)
@@ -507,7 +507,8 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
                     if (allocated(combss)) then
                         deallocate (combss)
                     end if
-                allocate (MatAinverser(comppt+2, comppt+2), fsInverse(comppt+2), vectPass(comppt+2))
+                    allocate (MatAinverser(comppt+2, comppt+2), fsInverse(comppt+2), &
+                              vectPass(comppt+2))
                     ! on parcours toutes les combinaisons
                     combss = combinaisons(nbDDL-2, comppt)
                     nbcomb = ubound(combss, 1)
@@ -555,7 +556,8 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
                             !   + regarder le cas des inversions iréalistes fs trop gros
                             NoConvCrit = .false.
                             do ii = 1, 2+comppt
-                                NoConvCrit = NoConvCrit .or. (fsInverse(ii) .LE. (-r8prem())) .or. &
+                                NoConvCrit = NoConvCrit .or. &
+                                             (fsInverse(ii) .LE. (-r8prem())) .or. &
                                              (abs(fsInverse(ii)) .GT. fssomme)
                             end do
                         end if
@@ -615,7 +617,8 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
                     if (allocated(combss)) then
                         deallocate (combss)
                     end if
-                allocate (MatAinverser(comppt+1, comppt+1), fsInverse(comppt+1), vectPass(comppt+1))
+                    allocate (MatAinverser(comppt+1, comppt+1), fsInverse(comppt+1), &
+                              vectPass(comppt+1))
                     ! on parcours toutes les combinaisons
                     combss = combinaisons(nbDDL-1, comppt)
                     nbcomb = ubound(combss, 1)
@@ -694,7 +697,8 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
                     if (allocated(combss)) then
                         deallocate (combss)
                     end if
-                allocate (MatAinverser(comppt+1, comppt+1), fsInverse(comppt+1), vectPass(comppt+1))
+                    allocate (MatAinverser(comppt+1, comppt+1), &
+                              fsInverse(comppt+1), vectPass(comppt+1))
                     ! on parcours toutes les combinaisons
                     combss = combinaisons(nbDDL-1, comppt)
                     nbcomb = ubound(combss, 1)
@@ -820,20 +824,28 @@ subroutine difoncalc(tirela, raidTang, vloc, vpara, nbVloc, nbPara, iret, nbdecp
             fsitenow(4) = sHslIte*((Fite(1)-Qslite(1))**2+(Fite(2)-Qslite(2))**2)**0.5+ &
                           Fite(3)*tan(phi)-Cinter*Lx*Ly*(1.0-2.0*abs(Fite(5))/(Lx*Fite(3)))* &
                           (1.0+2.0*sMxslIte*abs(Fite(4))/(Ly*Fite(3)))
-            fsitenow(5) = -Fite(3)-(Velas+QCPIte(3))*(1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
-                                                         (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
+            fsitenow(5) = -Fite(3)- &
+                          (Velas+QCPIte(3))* &
+                          (1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
+                                        (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
                           (1.0+2.0*sMxCPIte*abs(Fite(4)-QCPIte(4))/(Ly*Fite(3)))* &
                           (1.0+2.0*sMyCPIte*abs(Fite(5)-QCPIte(5))/(Lx*Fite(3)))
-            fsitenow(6) = -Fite(3)-(Velas+QCPIte(3))*(1.0-sHCPIte*((Fite(1)-QCPIte(1))**2+ &
-                                                         (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
+            fsitenow(6) = -Fite(3)- &
+                          (Velas+QCPIte(3))* &
+                          (1.0-sHCPIte*((Fite(1)-QCPIte(1))**2+ &
+                                        (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
                           (1.0+2.0*sMxCPIte*abs(Fite(4)-QCPIte(4))/(Ly*Fite(3)))* &
                           (1.0+2.0*sMyCPIte*abs(Fite(5)-QCPIte(5))/(Lx*Fite(3)))
-            fsitenow(7) = -Fite(3)-(Velas+QCPIte(3))*(1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
-                                                         (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
+            fsitenow(7) = -Fite(3)- &
+                          (Velas+QCPIte(3))* &
+                          (1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
+                                        (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
                           (1.0-2.0*sMxCPIte*abs(Fite(4)-QCPIte(4))/(Ly*Fite(3)))* &
                           (1.0+2.0*sMyCPIte*abs(Fite(5)-QCPIte(5))/(Lx*Fite(3)))
-            fsitenow(8) = -Fite(3)-(Velas+QCPIte(3))*(1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
-                                                         (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
+            fsitenow(8) = -Fite(3)- &
+                          (Velas+QCPIte(3))* &
+                          (1.0+sHCPIte*((Fite(1)-QCPIte(1))**2+ &
+                                        (Fite(2)-QCPIte(2))**2)**0.5/Fite(3))**3* &
                           (1.0+2.0*sMxCPIte*abs(Fite(4)-QCPIte(4))/(Ly*Fite(3)))* &
                           (1.0-2.0*sMyCPIte*abs(Fite(5)-QCPIte(5))/(Lx*Fite(3)))
             do ii = 1, 8
@@ -1020,7 +1032,7 @@ contains
 !   attention ici est égal à 0 pour a=0 contrairement à sign de fortran avec erreur
     function signe(a, error)
         real(kind=8) :: a, error
-        integer :: signe
+        integer(kind=8) :: signe
         if (a .LT. -error) then
             signe = -1
         else if (a .GT. error) then
@@ -1034,7 +1046,7 @@ contains
 !   attention ici est égal à 1 pour a=0 contrairement à sign de fortran avec erreur
     function signeExcl(a, error)
         real(kind=8) :: a, error
-        integer :: signeExcl
+        integer(kind=8) :: signeExcl
         if (a .LT. -error) then
             signeExcl = -1
         else if (a .GT. error) then
@@ -1046,8 +1058,8 @@ contains
 
 ! Fonction qui fait la liste des combinaisons
     function combinaisons(nbDDL, compt)
-        integer :: nbDDL, compt, jj, nbComb, comptloc, kk, ll, mm, nn
-        integer, allocatable :: combinaisons(:, :)
+        integer(kind=8) :: nbDDL, compt, jj, nbComb, comptloc, kk, ll, mm, nn
+        integer(kind=8), allocatable :: combinaisons(:, :)
         nbComb = 1
         do jj = 1, compt
             nbComb = nbComb*(nbDDL+1-jj)/jj

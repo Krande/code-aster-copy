@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,12 +40,12 @@ subroutine nmerim(sderro)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iEvent
-    integer :: eventState
+    integer(kind=8) :: iEvent
+    integer(kind=8) :: eventState
     character(len=9) :: eventLevel
     character(len=24) :: eventMesg
     character(len=24) :: eventEACTJv, eventENIVJv, eventEMSGJv
-    integer, pointer :: eventEACT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()
     character(len=24), pointer :: eventEMSG(:) => null()
 !

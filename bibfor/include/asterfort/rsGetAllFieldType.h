@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 interface
     subroutine rsGetAllFieldType(resultNameZ, nbField, listField, listStoreRefe)
         character(len=*), intent(in) :: resultNameZ
-        integer, intent(out) :: nbField
+        integer(kind=8), intent(out) :: nbField
         character(len=16), pointer :: listField(:)
-        integer, pointer :: listStoreRefe(:)
+        integer(kind=8), pointer :: listStoreRefe(:)
     end subroutine rsGetAllFieldType
 end interface

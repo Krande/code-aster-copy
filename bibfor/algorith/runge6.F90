@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine runge6(ipif, deltat, tpgp, tpgm, hpgm, &
     implicit none
 #include "jeveux.h"
 #include "asterfort/fointa.h"
-    integer :: ipif
+    integer(kind=8) :: ipif
     real(kind=8) :: deltat, tpgp, tpgm, hpgm, hpgp, err
 !     CALCUL DE h+ PAR RUNGE-KUTTA6
 !     RESOLUTION DE DH/DT = f(HYDR,TEMP)

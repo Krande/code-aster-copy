@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
         character(len=1), intent(in) :: kstop
         character(len=*), intent(in) :: noattr
         character(len=*), intent(out):: vattr
-        integer, optional, intent(out) :: iret_
+        integer(kind=8), optional, intent(out) :: iret_
         character(len=*), intent(in), optional :: typel
     end subroutine teattr
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ module matrasse_module
 #include "asterfort/jeveuo.h"
 !
     !
-    integer, private :: ierr
-    integer, parameter, public :: lagrange1_dof = 0, physical_dof = 1
-    integer, parameter, public :: lagrange2_dof = 2
+    integer(kind=8), private :: ierr
+    integer(kind=8), parameter, public :: lagrange1_dof = 0, physical_dof = 1
+    integer(kind=8), parameter, public :: lagrange2_dof = 2
     !
     public :: get_indices_of_dofs, get_num_of_dofs
     !
@@ -51,17 +51,20 @@ contains
     ! in a matrasse
     function get_num_of_dofs(type_dof, matass) result(ndof)
         ! Dummy arguments
-        integer, intent(in)                     :: type_dof
+        integer(kind=8), intent(in)                     :: type_dof
         character(len=19), intent(in)           :: matass
-        integer                                 :: ndof
+        integer(kind=8)                                 :: ndof
         ! Local variables
         character(len=14) :: nonu
-        integer, dimension(:), pointer :: delg => null()
-        integer :: nbeq, iret
+        integer(kind=8), dimension(:), pointer :: delg => null()
+        integer(kind=8) :: nbeq, iret
+        aster_logical :: test_dof
         !
         call jemarq()
         !
-ASSERT((type_dof == physical_dof) .or. (type_dof == lagrange1_dof) .or. (type_dof == lagrange2_dof))
+        test_dof = (type_dof == physical_dof) .or. (type_dof == lagrange1_dof) &
+                   .or. (type_dof == lagrange2_dof)
+        ASSERT(test_dof)
         !
         ! La matrice existe-t-elle ?
         call jeexin(matass//'.REFA', iret)
@@ -93,19 +96,22 @@ ASSERT((type_dof == physical_dof) .or. (type_dof == lagrange1_dof) .or. (type_do
     function get_indices_of_dofs(type_dof, matass) result(idof)
         !
         ! Dummy arguments
-        integer, intent(in)                     :: type_dof
+        integer(kind=8), intent(in)                     :: type_dof
         character(len=19), intent(in)           :: matass
-        integer, dimension(:), pointer           :: idof
+        integer(kind=8), dimension(:), pointer           :: idof
         ! Local variables
         character(len=14) :: nonu
-        integer, dimension(:), pointer :: delg => null()
-        integer :: nbeq, nlag1, nlag2, nphys, ndof, iret
-        integer :: i
+        integer(kind=8), dimension(:), pointer :: delg => null()
+        integer(kind=8) :: nbeq, nlag1, nlag2, nphys, ndof, iret
+        integer(kind=8) :: i
+        aster_logical :: test_dof
         mpi_int :: mpicomm
         !
         call jemarq()
         !
-ASSERT((type_dof == physical_dof) .or. (type_dof == lagrange1_dof) .or. (type_dof == lagrange2_dof))
+        test_dof = (type_dof == physical_dof) .or. (type_dof == lagrange1_dof) &
+                   .or. (type_dof == lagrange2_dof)
+        ASSERT(test_dof)
         !
         idof => null()
         ! Communicateur MPI

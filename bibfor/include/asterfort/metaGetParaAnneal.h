@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
                                  theta)
         character(len=1), intent(in) :: poum
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, j_mater
-        integer, intent(in) :: meta_type, nb_phase
+        integer(kind=8), intent(in) :: kpg, ksp, j_mater
+        integer(kind=8), intent(in) :: meta_type, nb_phase
         real(kind=8), intent(out) :: theta(*)
     end subroutine metaGetParaAnneal
 end interface

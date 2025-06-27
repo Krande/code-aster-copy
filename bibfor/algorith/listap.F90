@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine listap(motfac, iexci, typapp)
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
     character(len=16) :: motfac
-    integer :: iexci
+    integer(kind=8) :: iexci
     character(len=16) :: typapp
 !
 ! ----------------------------------------------------------------------
@@ -47,8 +47,8 @@ subroutine listap(motfac, iexci, typapp)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: eximc
-    integer :: n
+    integer(kind=8) :: eximc
+    integer(kind=8) :: n
 !
 ! ----------------------------------------------------------------------
 !

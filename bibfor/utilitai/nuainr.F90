@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine nuainr(method, np1, nx1, nc1, ic1, &
 #include "asterfort/mgauss.h"
 #include "asterfort/utmess.h"
     character(len=*) :: method
-    integer :: nx1, np1, ic1, nc1
+    integer(kind=8) :: nx1, np1, ic1, nc1
     real(kind=8) :: nuax1(*), nuav1(*), x2(nx1), dref, dref2, val2
     aster_logical :: nual1(*)
 !
@@ -44,7 +44,7 @@ subroutine nuainr(method, np1, nx1, nc1, ic1, &
 ! OU  VAL2     : VALEUR INTERPOLEE
 !
 ! VARIABLES LOCALES :
-    integer :: ip1, ix1, i, j, iret
+    integer(kind=8) :: ip1, ix1, i, j, iret
     real(kind=8) :: k0(1, 1), k1(2, 2), k2(3, 3), k3(4, 4), f(4)
     real(kind=8) :: w, x1, y1, z1, v1, d, det
     character(len=16) :: meth2

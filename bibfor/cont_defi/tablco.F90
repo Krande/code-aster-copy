@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_cont_surf
-    integer, intent(in) :: nb_cont_elem
-    integer, intent(in) :: nb_cont_node
+    integer(kind=8), intent(in) :: nb_cont_surf
+    integer(kind=8), intent(in) :: nb_cont_elem
+    integer(kind=8), intent(in) :: nb_cont_node
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,38 +56,38 @@ subroutine tablco(sdcont, mesh, nb_cont_surf, nb_cont_elem, nb_cont_node)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_elem, i_node, i_cont_surf, i
-    integer :: node_nume, elem_nume, numalo, no
-    integer :: nb_node, nb_elem, nb_node_elem
-    integer :: jdecno, jdecma
-    integer :: pre_length, inc, long
-    integer :: nt_elem_node, nt_node_elem
-    integer, pointer :: v_work_node(:) => null()
-    integer, pointer :: v_work_elem(:) => null()
-    integer, pointer :: v_connex(:) => null()
-    integer, pointer :: v_connex_longcum(:) => null()
+    integer(kind=8) :: i_elem, i_node, i_cont_surf, i
+    integer(kind=8) :: node_nume, elem_nume, numalo, no
+    integer(kind=8) :: nb_node, nb_elem, nb_node_elem
+    integer(kind=8) :: jdecno, jdecma
+    integer(kind=8) :: pre_length, inc, long
+    integer(kind=8) :: nt_elem_node, nt_node_elem
+    integer(kind=8), pointer :: v_work_node(:) => null()
+    integer(kind=8), pointer :: v_work_elem(:) => null()
+    integer(kind=8), pointer :: v_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_longcum(:) => null()
     character(len=19) :: connex_inv
-    integer, pointer :: v_coninv(:) => null()
-    integer, pointer :: v_coninv_longcum(:) => null()
+    integer(kind=8), pointer :: v_coninv(:) => null()
+    integer(kind=8), pointer :: v_coninv_longcum(:) => null()
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_noeuco
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
     character(len=24) :: sdcont_pzoneco
-    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pzoneco(:) => null()
     character(len=24) :: sdcont_psunoco
-    integer, pointer :: v_sdcont_psunoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_psunoco(:) => null()
     character(len=24) :: sdcont_psumaco
-    integer, pointer :: v_sdcont_psumaco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_psumaco(:) => null()
     character(len=24) :: sdcont_manoco
-    integer, pointer :: v_sdcont_manoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_manoco(:) => null()
     character(len=24) :: sdcont_pmanoco
-    integer, pointer :: v_sdcont_pmanoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pmanoco(:) => null()
     character(len=24) :: sdcont_nomaco
-    integer, pointer :: v_sdcont_nomaco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_nomaco(:) => null()
     character(len=24) :: sdcont_pnomaco
-    integer, pointer :: v_sdcont_pnomaco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pnomaco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

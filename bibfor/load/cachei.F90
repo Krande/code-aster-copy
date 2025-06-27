@@ -55,9 +55,9 @@ subroutine cachei(load, model, mesh, valeType, param, keywordFactZ)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, nchei, ncmp, jvale, jvalv, iocc, nxx, nyy, nzz
-    integer :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
-    integer :: nbtou, nbma, jma, nepsi, nvectn, nkn1, nkn2
+    integer(kind=8) :: i, nchei, ncmp, jvale, jvalv, iocc, nxx, nyy, nzz
+    integer(kind=8) :: nxy, nxz, nyz, nex, nky, nkz, nexx, neyy, nexy, nkxx, nkyy, nkxy
+    integer(kind=8) :: nbtou, nbma, jma, nepsi, nvectn, nkn1, nkn2
     real(kind=8) :: epxx, epyy, epzz, epxy, epxz, epyz, epx, xky, xkz, xexx
     real(kind=8) :: xeyy, xexy, xkxx, xkyy, xkxy, vect_n(3), xkn1, xkn2
     character(len=8) :: k8b, kepxx, kepyy, kepzz, kepxy, kepxz, kepyz

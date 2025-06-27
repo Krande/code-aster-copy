@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,9 +49,9 @@ subroutine op0016()
     character(len=1) :: nomcla
 !
 !-----------------------------------------------------------------------
-    integer :: i, imes, info, ires, iret, iuni
-    integer :: n, n1, n2, n3, nfic, nif, noc
-    integer :: nrg, num, numerg, nuni
+    integer(kind=8) :: i, imes, info, ires, iret, iuni
+    integer(kind=8) :: n, n1, n2, n3, nfic, nif, noc
+    integer(kind=8) :: nrg, num, numerg, nuni
 !-----------------------------------------------------------------------
     call infmaj()
     ires = iunifi('RESULTAT')

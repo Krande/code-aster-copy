@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,7 +59,7 @@ subroutine nmener(valinc, veasse, measse, &
     type(NL_DS_System), intent(in) :: ds_system
     type(NL_DS_Measure), intent(inout) :: ds_measure
     real(kind=8), intent(in) :: eta
-    integer, intent(in) :: listFuncActi(*), numeTime
+    integer(kind=8), intent(in) :: listFuncActi(*), numeTime
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
 ! --------------------------------------------------------------------------------------------------
@@ -94,16 +94,16 @@ subroutine nmener(valinc, veasse, measse, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter:: zveass = 19
-    integer :: iret(zveass)
+    integer(kind=8), parameter:: zveass = 19
+    integer(kind=8) :: iret(zveass)
     character(len=19) :: depmoi, depplu, vitmoi, vitplu, massAsse, dampAsse, rigiAsse
     character(len=19) :: fexmoi, fexplu, fammoi, fnomoi
     character(len=19) :: famplu, flimoi, fliplu, fnoplu
     character(len=19) :: lisbid
     character(len=8) :: k8bid
-    integer :: ivitmo, ivitpl
-    integer :: nbEqua, i, long, j
-    integer :: ifexte, ifamor, ifliai, ifcine, ifnoda
+    integer(kind=8) :: ivitmo, ivitpl
+    integer(kind=8) :: nbEqua, i, long, j
+    integer(kind=8) :: ifexte, ifamor, ifliai, ifcine, ifnoda
     aster_logical :: ldyna, lDampMatrix, lexpl, reassm
     real(kind=8), pointer :: epmo(:) => null()
     real(kind=8), pointer :: eppl(:) => null()

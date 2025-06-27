@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine pre_traitement(noma, fiss, ndim, nbeta, ngamma)
         character(len=8) :: noma
         character(len=8) :: fiss
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=19) :: nbeta
         character(len=19) :: ngamma
     end subroutine pre_traitement

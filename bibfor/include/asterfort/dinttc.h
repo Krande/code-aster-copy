@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,11 +29,11 @@ interface
         real(kind=8) :: zo1o2
         real(kind=8) :: do1o2
         real(kind=8) :: r
-        integer :: norm(2, 4)
-        integer :: nint
-        integer :: nhop
-        integer :: npir
+        integer(kind=8) :: norm(2, 4)
+        integer(kind=8) :: nint
+        integer(kind=8) :: nhop
+        integer(kind=8) :: npir
         real(kind=8) :: coord(3, 12)
-        integer :: nbi
+        integer(kind=8) :: nbi
     end subroutine dinttc
 end interface

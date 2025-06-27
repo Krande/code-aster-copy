@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,12 +49,12 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
 #include "asterfort/xajcin.h"
 !
     character(len=*), intent(in) :: modelz
-    integer, intent(in) :: nbLoad
+    integer(kind=8), intent(in) :: nbLoad
     character(len=24), pointer :: listLoadK24(:)
     character(len=*), intent(in) :: matez, matecoz, caraElemz
     real(kind=8), intent(in) :: time
     character(len=*), intent(in) :: comporMultz, matrElemz
-    integer, intent(in) :: modeFourier
+    integer(kind=8), intent(in) :: modeFourier
     character(len=*), intent(in) :: basez, listElemCalcz
     aster_logical, intent(in), optional :: hasExteStatVari_, onlyDirichlet_
 !
@@ -83,14 +83,14 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbFieldInMax = 32, nbFieldOutMax = 2
+    integer(kind=8), parameter :: nbFieldInMax = 32, nbFieldOutMax = 2
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
     character(len=16), parameter :: phenom = 'MECANIQUE'
-    integer :: nbFieldIn, nbFieldOut
+    integer(kind=8) :: nbFieldIn, nbFieldOut
     character(len=2) :: codret
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=16) :: option
     character(len=24), parameter :: chvarc = '&&MERIME.CHVARC'
     character(len=24), parameter :: chtime = '&&MERIME.CHTIME'
@@ -100,8 +100,8 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     character(len=8) :: model, caraElem
     character(len=24) :: mate, mateco
     character(len=19) :: matrElem, resuElem
-    integer :: iLoad, indxResuElem
-    integer :: nbSubstruct
+    integer(kind=8) :: iLoad, indxResuElem
+    integer(kind=8) :: nbSubstruct
     aster_logical :: lxfem, hasFiniteElement, hasExteStatVari, onlyDirichlet
     character(len=24), pointer :: rerr(:) => null()
     character(len=8) :: loadName

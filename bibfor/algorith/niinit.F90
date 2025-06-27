@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine niinit(typmod, &
 #include "asterfort/assert.h"
 !
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: ndim, nno1, nno2, nno3, nno4
-    integer, intent(out) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
+    integer(kind=8), intent(in) :: ndim, nno1, nno2, nno3, nno4
+    integer(kind=8), intent(out) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -50,7 +50,7 @@ subroutine niinit(typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, os, iefm
+    integer(kind=8) :: i_node, os, iefm
 !
 ! --------------------------------------------------------------------------------------------------
 !

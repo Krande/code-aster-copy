@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 function trace(ndi, s)
 !
     implicit none
-    integer :: ndi
+    integer(kind=8) :: ndi
     real(kind=8) :: s(6), trace
 ! --- BUT : CALCUL DE LA TRACE D'UNE MATRICE ---------------------------
 ! ======================================================================
@@ -27,7 +27,7 @@ function trace(ndi, s)
 ! --- : S      : MATRICE -----------------------------------------------
 ! OUT : TRACE  : TRACE DE LA MATRICE -----------------------------------
 ! ======================================================================
-    integer :: ii
+    integer(kind=8) :: ii
 ! ======================================================================
     trace = 0.0d0
     do ii = 1, ndi

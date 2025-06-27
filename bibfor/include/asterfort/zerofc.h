@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ interface
         real(kind=8) :: xmin
         real(kind=8) :: xmax
         real(kind=8) :: prec
-        integer :: niter
+        integer(kind=8) :: niter
         real(kind=8) :: dp
-        integer :: iret
-        integer :: nit
+        integer(kind=8) :: iret
+        integer(kind=8) :: nit
         interface
             function func(x)
                 real(kind=8) :: x

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,13 +46,13 @@ subroutine zerlag(nbddl, ideeq, vectr, vectz)
 !
 !     0.1 - DECLARATION DES VARIABLES D'ENTREE/SORTIE
 !
-    integer :: nbddl, ideeq(2*nbddl)
+    integer(kind=8) :: nbddl, ideeq(2*nbddl)
     real(kind=8), intent(out), optional :: vectr(nbddl)
     complex(kind=8), intent(out), optional :: vectz(nbddl)
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
-    integer :: i, ityp
+    integer(kind=8) :: i, ityp
 !  ____________________________________________________________________
 !
 !  - 1 - RECHERCHE DES DDL DE LAGRANGE ET REMPLISSAGE LES VALEURS DES

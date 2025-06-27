@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine tresu_read_refe(mclfac, iocc, tbref)
         character(len=*), intent(in) :: mclfac
-        integer, intent(in) :: iocc
+        integer(kind=8), intent(in) :: iocc
         character(len=16), intent(out) :: tbref(2)
     end subroutine tresu_read_refe
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine utncmp3(prno, ncmp, list_cmp, list_name)
         character(len=*) :: prno
-        integer :: ncmp
+        integer(kind=8) :: ncmp
         character(len=*) :: list_cmp, list_name
     end subroutine utncmp3
 end interface

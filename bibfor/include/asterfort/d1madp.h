@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine d1madp(fami, mater, instan, poum, kpg,&
                       ksp, angl, d1)
         character(len=*) :: fami
-        integer :: mater
+        integer(kind=8) :: mater
         real(kind=8) :: instan
         character(len=*) :: poum
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         real(kind=8) :: angl
         real(kind=8) :: d1(4, *)
     end subroutine d1madp

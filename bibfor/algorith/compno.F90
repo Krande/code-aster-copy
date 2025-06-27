@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine compno(mailla, nbgr, nomgr, nbto)
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbgr
+    integer(kind=8) :: nbgr
     character(len=8) :: mailla
     character(len=24) :: valk(2), nomcou, nomgr(nbgr)
 !
@@ -51,7 +51,7 @@ subroutine compno(mailla, nbgr, nomgr, nbto)
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ier, nb, nbto, num
+    integer(kind=8) :: i, ier, nb, nbto, num
 !-----------------------------------------------------------------------
     if (nbgr .eq. 0) then
         nbto = 0

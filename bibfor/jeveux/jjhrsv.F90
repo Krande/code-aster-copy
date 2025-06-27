@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine jjhrsv(idts, nbval, iadmi)
 #include "asterfort/jjalls.h"
 #include "asterfort/jjlidy.h"
 #include "asterfort/utmess.h"
-    integer :: nbval, iadmi
+    integer(kind=8) :: nbval, iadmi
     hid_t :: idts
 ! ----------------------------------------------------------------------
 ! RELIT UN SEGMENT DE VALEURS ASSOCIE A UN OBJET JEVEUX, LE TYPE INTEGER
@@ -37,18 +37,18 @@ subroutine jjhrsv(idts, nbval, iadmi)
 ! IN  NBVAL  : NOMBRE DE VALEURS DU DATASET
 ! IN  IADMI  : ADRESSE DANS JISZON DU TABLEAU DE VALEURS LUES
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
 ! ----------------------------------------------------------------------
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
 ! ----------------------------------------------------------------------
-    integer :: iret, jadr, kadm, nbv, k, lonoi, ltypi
-    integer :: ir, kitab, iconv, iadyn
+    integer(kind=8) :: iret, jadr, kadm, nbv, k, lonoi, ltypi
+    integer(kind=8) :: ir, kitab, iconv, iadyn
     character(len=1) :: typei
 ! DEB ------------------------------------------------------------------
     iconv = 0

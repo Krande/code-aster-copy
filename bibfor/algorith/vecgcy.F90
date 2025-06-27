@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,13 +41,13 @@ subroutine vecgcy(nomres, numeg)
 #include "asterfort/wkvect.h"
     character(len=8) :: nomres, numeg, modgen
     character(len=19) :: nomnum, nomsto
-    integer :: iavale, iarefe, iadesc, j, neq
+    integer(kind=8) :: iavale, iarefe, iadesc, j, neq
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

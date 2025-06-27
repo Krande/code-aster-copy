@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -66,7 +66,7 @@ subroutine mmconv(noma, ds_contact, valinc, solalg, vfrot, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: depplu, depmoi, ddepla, depdel
     aster_logical :: loop_cont_divec, loop_cont_diveg, l_cont_cont
     aster_logical :: lnewtf, lnewtg, lnewtc, l_exis_pena

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,13 +50,13 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat, &
 #include "asterfort/rcvalt.h"
 #include "asterfort/rupmat.h"
 !       ----------------------------------------------------------------
-    integer :: kpg, ksp, nmat, ndt, ndi, nr, nvi, lgpg
-    integer :: ioptio, idnr, i, j, imat
+    integer(kind=8) :: kpg, ksp, nmat, ndt, ndi, nr, nvi, lgpg
+    integer(kind=8) :: ioptio, idnr, i, j, imat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: epsi, c1d, c2d, vim(*), sigd(6), crit(*)
     character(len=*) :: fami
     character(len=8) :: mod, nomc(28), typma
-    integer :: cerr(28)
+    integer(kind=8) :: cerr(28)
     character(len=3) :: matcst
     character(len=11) :: meting
 !       ----------------------------------------------------------------

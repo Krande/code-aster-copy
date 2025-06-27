@@ -65,12 +65,12 @@ subroutine te0247(option, nomte)
     character(len=*) :: option, nomte
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: igeom, imate, iorien, nd, nk
-    integer :: iinstm, iinstp, icarcr, icontm, ideplm, ideplp, imatuu
-    integer :: ivectu, icontp, itype, nno, nc, ivarim, ivarip, itemp, i
-    integer :: jcret, iretm, iretp
-    integer :: npg, ndimel, nnoel, nnosel
-    integer :: istrxm, istrxp, ldep, codret
+    integer(kind=8) :: igeom, imate, iorien, nd, nk
+    integer(kind=8) :: iinstm, iinstp, icarcr, icontm, ideplm, ideplp, imatuu
+    integer(kind=8) :: ivectu, icontp, itype, nno, nc, ivarim, ivarip, itemp, i
+    integer(kind=8) :: jcret, iretm, iretp
+    integer(kind=8) :: npg, ndimel, nnoel, nnosel
+    integer(kind=8) :: istrxm, istrxp, ldep, codret
     parameter(nno=2, nc=6, nd=nc*nno, nk=nd*(nd+1)/2)
     real(kind=8) :: e, nu, em, num
     real(kind=8) :: a, xiy, xiz, alfay, alfaz, xjx, ez, ey, xfly, xflz
@@ -86,11 +86,11 @@ subroutine te0247(option, nomte)
     aster_logical :: reactu
     aster_logical :: lVect, lMatr, lVari, lSigm
 !
-    integer             :: retp(2), iret
+    integer(kind=8)             :: retp(2), iret
     real(kind=8)        :: valr(2)
     character(len=8)    :: valp(2)
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 17
+    integer(kind=8), parameter :: nb_cara = 17
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'A1  ', 'IY1 ', 'IZ1 ', &
                                                           'AY1 ', 'AZ1 ', 'EY1 ', &

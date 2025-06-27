@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@
 interface
     subroutine jxlocs(itab, gen1, lty1, lon1, jadm,&
                       ldeps, jitab)
-        integer :: itab(*)
+        integer(kind=8) :: itab(*)
         character(len=*) :: gen1
-        integer :: lty1
-        integer :: lon1
-        integer :: jadm
+        integer(kind=8) :: lty1
+        integer(kind=8) :: lon1
+        integer(kind=8) :: jadm
         aster_logical :: ldeps
-        integer :: jitab
+        integer(kind=8) :: jitab
     end subroutine jxlocs
 end interface

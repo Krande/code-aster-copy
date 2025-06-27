@@ -21,8 +21,8 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 !
 !
     implicit none
-    integer :: ioc, nbgr, nbno, ndim
-    integer :: zjdlm(*)
+    integer(kind=8) :: ioc, nbgr, nbno, ndim
+    integer(kind=8) :: zjdlm(*)
     character(len=8) :: noma, tabnoe(*), km
     character(len=24) :: ligrma(nbgr)
     real(kind=8) :: rignoe(*), rirot(3)
@@ -54,11 +54,11 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, ij, posi, in, inoe, iret, nb_ma_surf, NbNoeud, nbparno
-    integer :: ldgm, ldgn, ldnm, ltyp, nb, ncg
-    integer :: nfg, ngn, nm, nn, ntopo
-    integer :: num_maille, NbMaille
-    integer :: appui
+    integer(kind=8) :: ii, ij, posi, in, inoe, iret, nb_ma_surf, NbNoeud, nbparno
+    integer(kind=8) :: ldgm, ldgn, ldnm, ltyp, nb, ncg
+    integer(kind=8) :: nfg, ngn, nm, nn, ntopo
+    integer(kind=8) :: num_maille, NbMaille
+    integer(kind=8) :: appui
 !
     real(kind=8) :: x(9), y(9), z(9), rigiRep(6)
     real(kind=8) :: a(3), b(3), c(3), u(3)
@@ -72,8 +72,8 @@ subroutine rairep(noma, ioc, km, rigiRep, nbgr, &
 !
     aster_logical :: lfonc, trans
 !
-    integer, pointer        :: parno(:) => null()
-    integer, pointer        :: mailles_surf(:) => null()
+    integer(kind=8), pointer        :: parno(:) => null()
+    integer(kind=8), pointer        :: mailles_surf(:) => null()
     real(kind=8), pointer   :: coegro(:) => null()
     real(kind=8), pointer   :: coeno(:) => null()
     real(kind=8), pointer   :: surmai(:) => null()

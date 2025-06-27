@@ -52,8 +52,8 @@ subroutine ntdoch(listLoadPrep, listLoadZ, jvBase)
 !
     real(kind=8), parameter :: prec = 1d-6
     character(len=4), parameter :: phenom = "THER"
-    integer :: iLoadList, iKeyword, indxLoadInList
-    integer :: nbLoadList
+    integer(kind=8) :: iLoadList, iKeyword, indxLoadInList
+    integer(kind=8) :: nbLoadList
     character(len=24) :: listLoad
     character(len=8), parameter :: funcCste = '&&NTDOCH'
     character(len=16) :: loadKeyword, loadCommand
@@ -63,7 +63,7 @@ subroutine ntdoch(listLoadPrep, listLoadZ, jvBase)
     aster_logical :: loadIsFunc, hasMultFunc
     aster_logical :: linearOperator, implicitTheta
     real(kind=8) :: theta
-    integer :: nbval
+    integer(kind=8) :: nbval
     character(len=8) :: k8bid
     character(len=16) :: commandName, typesd
     character(len=8), pointer :: loadDble(:) => null()

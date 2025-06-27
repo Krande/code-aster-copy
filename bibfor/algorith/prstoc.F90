@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine prstoc(vecsol, vestoc, j, k, iad, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
-    integer :: ivalp, irefp, j, k
-    integer :: nbrefe, nbvale, iad, nbvec
+    integer(kind=8) :: ivalp, irefp, j, k
+    integer(kind=8) :: nbrefe, nbvale, iad, nbvec
     character(len=19) :: vecsol, vestoc
     character(len=24) :: chaine
 !
@@ -49,7 +49,7 @@ subroutine prstoc(vecsol, vestoc, j, k, iad, &
 !--------------------------LA PRESSION-------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: kb
+    integer(kind=8) :: kb
     real(kind=8), pointer :: vale(:) => null()
     character(len=24), pointer :: refe(:) => null()
     blas_int :: b_incx, b_incy, b_n

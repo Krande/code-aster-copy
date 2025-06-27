@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ subroutine lcsena(elem_dime, nb_lagr, nb_node_slav, indi_lagc, &
 #include "asterfort/assert.h"
 !
 !
-    integer, intent(in) :: elem_dime
-    integer, intent(in) :: nb_lagr
-    integer, intent(in) :: nb_node_slav
-    integer, intent(in) :: indi_lagc(10)
+    integer(kind=8), intent(in) :: elem_dime
+    integer(kind=8), intent(in) :: nb_lagr
+    integer(kind=8), intent(in) :: nb_node_slav
+    integer(kind=8), intent(in) :: indi_lagc(10)
     real(kind=8), intent(in) :: lagrc
     real(kind=8), intent(inout) :: vtmp(55)
 !
@@ -48,7 +48,7 @@ subroutine lcsena(elem_dime, nb_lagr, nb_node_slav, indi_lagc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::i_node_slav, jj, shift
+    integer(kind=8) ::i_node_slav, jj, shift
     real(kind=8) :: r_nb_lagr
 !
 ! --------------------------------------------------------------------------------------------------

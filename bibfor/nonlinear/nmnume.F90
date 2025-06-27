@@ -64,11 +64,11 @@ subroutine nmnume(model, mesh, result, compor, list_load, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv, i_load, nb_load_init, iret
+    integer(kind=8) :: ifm, niv, i_load, nb_load_init, iret
     character(len=8) :: lag12, elim_lagr
     character(len=24) :: sdnuro, sdnuen, sdnuco
     character(len=24) :: lload_info, lload_list, load_n
-    integer, pointer :: v_load_info(:) => null()
+    integer(kind=8), pointer :: v_load_info(:) => null()
     character(len=8), pointer :: v_lgrf(:) => null()
     character(len=24), pointer :: v_load_list(:) => null()
     character(len=24), pointer :: v_tco(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine dfda2d(kpg, nno, poids, sdfrde, sdfrdk,&
                       sdedx, sdedy, sdkdx, sdkdy, sdfdx,&
                       sdfdy, geom, jac)
-        integer :: kpg
-        integer :: nno
+        integer(kind=8) :: kpg
+        integer(kind=8) :: nno
         real(kind=8) :: poids
         real(kind=8) :: sdfrde(4, 4)
         real(kind=8) :: sdfrdk(4, 4)

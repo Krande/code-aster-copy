@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine gdclco(e, tau)
 ! ----------------------------------------------------------------------
 !  COMMON GRANDES DEFORMATIONS CANO-LORENTZ
 !
-    integer :: ind1(6), ind2(6)
+    integer(kind=8) :: ind1(6), ind2(6)
     real(kind=8) :: kr(6), rac2, rc(6)
     real(kind=8) :: lambda, mu, deuxmu, unk, troisk, cother
     real(kind=8) :: jm, dj, jp, djdf(3, 3)
@@ -46,7 +46,7 @@ subroutine gdclco(e, tau)
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
 !
-    integer :: ij
+    integer(kind=8) :: ij
     real(kind=8) :: e2(6), tre
 ! ----------------------------------------------------------------------
 !

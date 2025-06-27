@@ -91,7 +91,7 @@ contains
     subroutine getMecaNeumField(indxNeumType, loadPreObjectZ, loadField)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeumType
+        integer(kind=8), intent(in) :: indxNeumType
         character(len=*), intent(in) :: loadPreObjectZ
         character(len=24), intent(out) :: loadField
 !   ------------------------------------------------------------------------------------------------
@@ -147,12 +147,12 @@ contains
         character(len=24), intent(in) :: compor
         real(kind=8), intent(in) :: time
         character(len=1), intent(in) :: jvBase
-        integer, intent(in) :: iLoad
+        integer(kind=8), intent(in) :: iLoad
         real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
         aster_logical, intent(in) :: applySuiv
         character(len=24), intent(in)  :: ligrelCalc
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUM_NBMAXIN)
         character(len=*), intent(inout) :: lchin(LOAD_NEUM_NBMAXIN)
         character(len=19), intent(inout) :: resuElem
@@ -165,13 +165,13 @@ contains
 ! ----- Loads in EVOl_CHAR: no function
         aster_logical, parameter :: hasInputField = ASTER_TRUE
         aster_logical, parameter :: applyPilo = ASTER_FALSE
-        integer, parameter :: loadNume = 1
-        integer :: ier, nbField, iexist
+        integer(kind=8), parameter :: loadNume = 1
+        integer(kind=8) :: ier, nbField, iexist
         character(len=8) :: evol_char, newnom
         character(len=16) :: type_sd
         character(len=24) :: loadObjectJv
         character(len=8), pointer :: loadObject(:) => null()
-        integer :: indxNeumType
+        integer(kind=8) :: indxNeumType
         character(len=24) :: dispPrev, dispCumuInst, strxPrev, viteCurr, acceCurr
         aster_logical :: existBody2D, existBody3D, existSurf, existLine, existPressure
         aster_logical :: existNodalForce, existWind, hasLoad
@@ -398,7 +398,7 @@ contains
         character(len=19), intent(in) :: inputLoadField
         aster_logical, intent(out):: exist
 ! ----- Local
-        integer :: ier
+        integer(kind=8) :: ier
         character(len=16) :: nameInEvol
         real(kind=8), parameter :: prec = 1.0d-10
         character(len=8), parameter :: crit = 'ABSOLU'
@@ -430,7 +430,7 @@ contains
     subroutine getApplyTypeForce(indxNeumType, lSuivLoad_, lPiloLoad_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeumType
+        integer(kind=8), intent(in) :: indxNeumType
         aster_logical, optional, intent(out) :: lSuivLoad_, lPiloLoad_
 ! ----- Local
         aster_logical :: lSuivLoad, lPiloLoad
@@ -464,7 +464,7 @@ contains
     subroutine getRHSOption(indxNeumType, applySuiv, loadIsFunc, loadIsSigm, option)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeumType
+        integer(kind=8), intent(in) :: indxNeumType
         aster_logical, intent(in) :: applySuiv, loadIsFunc, loadIsSigm
         character(len=16), intent(out) :: option
 !   ------------------------------------------------------------------------------------------------
@@ -517,25 +517,25 @@ contains
 ! ----- Parameters
         character(len=24), intent(in) :: model, caraElem
         character(len=24), intent(in) :: dispPrev, dispCumuInst, strxPrev, viteCurr
-        integer, intent(in) :: iLoad
+        integer(kind=8), intent(in) :: iLoad
         character(len=19), intent(in) :: inputLoadField
         character(len=24), intent(in) :: ligrelCalc
         character(len=19), intent(inout) :: resuElem
         character(len=19), intent(in) :: vectElem
 ! ----- Local
-        integer, parameter :: nbCmp = 3
+        integer(kind=8), parameter :: nbCmp = 3
         character(len=8), parameter :: cmpName(3) = (/'DX', 'DY', 'DZ'/)
         character(len=1), parameter :: jvBaseTemporary = "V"
         character(len=16), parameter :: option = 'CHAR_MECA_SR1D1D'
         character(len=19), parameter :: field_no_refe = '&&MNVGME.RESU_PROJE'
         character(len=19), parameter :: nuage1 = '&&NUAGE1', nuage2 = '&&NUAGE2'
         character(len=19), parameter :: method = 'NUAGE_DEG_1'
-        integer, parameter :: nbFieldIn = 8, nbFieldOut = 1
+        integer(kind=8), parameter :: nbFieldIn = 8, nbFieldOut = 1
         character(len=8) :: lpain(nbFieldIn), lpaout(nbFieldOut)
         character(len=24) :: lchin(nbFieldIn)
-        integer :: nbEqua, ndim, nbno, dime, ibid, ier
+        integer(kind=8) :: nbEqua, ndim, nbno, dime, ibid, ier
         character(len=8) :: mesh_1, mesh_2, mesh_defo, answer, newnom
-        integer, pointer :: mesh1Dime(:) => null()
+        integer(kind=8), pointer :: mesh1Dime(:) => null()
         character(len=19) :: nume_equa, field_no_refe1
         character(len=24) :: chgeom, chcara(18)
         character(len=24), pointer :: fieldRefe(:) => null()
@@ -668,12 +668,12 @@ contains
 ! ----- Parameters
         character(len=*), intent(in) :: modelZ, caraElemZ
         character(len=*), intent(in) ::  matecoZ
-        integer, intent(in) :: nharm
+        integer(kind=8), intent(in) :: nharm
         character(len=24), intent(in) :: varcCurr, dispPrev, dispCumuInst
-        integer, intent(out) :: nbFieldInGene
+        integer(kind=8), intent(out) :: nbFieldInGene
         character(len=*), intent(out) :: lpain(LOAD_NEUM_NBMAXIN), lchin(LOAD_NEUM_NBMAXIN)
 ! ----- Local
-        integer :: ier
+        integer(kind=8) :: ier
         aster_logical :: lXfem
         character(len=8) :: mesh
         character(len=24) :: chgeom, chcara(18), chharm
@@ -792,13 +792,13 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         aster_logical, intent(in) :: applyPilo, applySuiv
-        integer, intent(in) :: iLoad, loadNume
+        integer(kind=8), intent(in) :: iLoad, loadNume
         character(len=*), intent(in) :: modelZ, materFieldZ
         character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
         real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
         character(len=1), intent(in) :: stop
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUM_NBMAXIN), lchin(LOAD_NEUM_NBMAXIN)
         character(len=*), intent(in) :: ligrelCalcZ
         character(len=1), intent(in) :: jvBase
@@ -807,7 +807,7 @@ contains
 ! ----- Local
         aster_logical, parameter :: hasInputField = ASTER_FALSE
         character(len=24), parameter :: inputLoadField = " "
-        integer :: indxNeumType
+        integer(kind=8) :: indxNeumType
 !   ------------------------------------------------------------------------------------------------
 !
         do indxNeumType = 1, LOAD_NEUM_NBTYPE
@@ -849,7 +849,7 @@ contains
                                loadField)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeumType, loadNume
+        integer(kind=8), intent(in) :: indxNeumType, loadNume
         character(len=*), intent(in) :: loadPreObjectZ
         aster_logical, intent(in) :: hasInputField
         character(len=*), intent(in) :: inputLoadFieldZ
@@ -942,24 +942,24 @@ contains
                                   nbFieldInGene, nbFieldIn, lpain, lchin)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeumType
+        integer(kind=8), intent(in) :: indxNeumType
         aster_logical, intent(in) :: applySuiv
         character(len=*), intent(in) :: modelZ, materFieldZ
         character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
         real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadFieldZ, loadPreObjectZ
         aster_logical, intent(in) :: loadIsSigm, loadIsFunc, loadIsVectAsse
-        integer, intent(in) :: nbFieldInGene
-        integer, intent(out) :: nbFieldIn
+        integer(kind=8), intent(in) :: nbFieldInGene
+        integer(kind=8), intent(out) :: nbFieldIn
         character(len=*), intent(inout) :: lpain(LOAD_NEUM_NBMAXIN), lchin(LOAD_NEUM_NBMAXIN)
 ! ----- Local
-        integer :: ig
+        integer(kind=8) :: ig
         character(len=8) :: ng
         character(len=8), pointer :: preSigm(:) => null()
-        integer, pointer :: desc(:) => null()
+        integer(kind=8), pointer :: desc(:) => null()
         character(len=24) :: ligrel_model
         character(len=24), parameter :: chtime = "&&VECHME.CHTIME"
-        integer, parameter :: nbCmp = 3
+        integer(kind=8), parameter :: nbCmp = 3
         character(len=8), parameter :: cmpName(nbCmp) = (/ &
                                        "INST    ", "DELTAT  ", "THETA   "/)
         real(kind=8) :: cmpValue(nbCmp)
@@ -1099,12 +1099,12 @@ contains
                               ligrelToUse)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeumType
+        integer(kind=8), intent(in) :: indxNeumType
         character(len=*), intent(in) :: loadFieldZ, loadLigrelZ, ligrelCalcZ
         character(len=24), intent(out) :: ligrelToUse
 ! ----- Locals
         character(len=24) :: fieldType, fieldLigrel
-        integer :: iret
+        integer(kind=8) :: iret
         aster_logical :: l_find
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1180,7 +1180,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         aster_logical, intent(in) :: applyPilo, applySuiv
-        integer, intent(in) :: indxNeumType, iLoad, loadNume
+        integer(kind=8), intent(in) :: indxNeumType, iLoad, loadNume
         character(len=*), intent(in) :: modelZ, materFieldZ
         character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
         real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
@@ -1188,20 +1188,20 @@ contains
         aster_logical, intent(in) :: hasInputField
         character(len=*), intent(in) :: inputLoadFieldZ
         character(len=1), intent(in) :: stop
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUM_NBMAXIN), lchin(LOAD_NEUM_NBMAXIN)
         character(len=*), intent(in) :: ligrelCalcZ
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(inout) :: resuElemZ
         character(len=*), intent(in) :: vectElemZ
 ! ----- Local
-        integer, parameter ::  nbFieldOut = 1
+        integer(kind=8), parameter ::  nbFieldOut = 1
         character(len=8), parameter :: lpaout = 'PVECTUR'
         aster_logical :: loadExist, loadIsSigm, loadIsFunc, loadIsVectAsse
         character(len=8) :: newnom, answer, mesh
         character(len=16) :: loadRHSOption
         character(len=24) :: loadField, ligrelToUse
-        integer :: iexist, nbFieldIn
+        integer(kind=8) :: iexist, nbFieldIn
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(indxNeumType .ge. 1)
@@ -1318,14 +1318,14 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         aster_logical, intent(in) :: applyPilo, applySuiv
-        integer, intent(in) :: iLoad, loadNume
-        integer, intent(inout) :: iMatr
+        integer(kind=8), intent(in) :: iLoad, loadNume
+        integer(kind=8), intent(inout) :: iMatr
         character(len=*), intent(in) :: modelZ, materFieldZ
         character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
         real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadLigrelZ, loadPreObjectZ
         character(len=1), intent(in) :: stop
-        integer, intent(inout) :: nbFieldIn
+        integer(kind=8), intent(inout) :: nbFieldIn
         character(len=*), intent(inout) :: lpain(LOAD_NEUM_NBMAXIN), lchin(LOAD_NEUM_NBMAXIN)
         character(len=*), intent(in) :: ligrelCalcZ
         character(len=1), intent(in) :: jvBase
@@ -1333,7 +1333,7 @@ contains
 ! ----- Local
         aster_logical, parameter :: hasInputField = ASTER_FALSE
         character(len=24), parameter :: inputLoadField = " "
-        integer :: indxNeumType
+        integer(kind=8) :: indxNeumType
 !   ------------------------------------------------------------------------------------------------
 !
         do indxNeumType = 1, LOAD_NEUM_NBTYPE
@@ -1387,8 +1387,8 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         aster_logical, intent(in) :: applyPilo, applySuiv
-        integer, intent(in) :: indxNeumType, iLoad, loadNume
-        integer, intent(inout) :: iMatr
+        integer(kind=8), intent(in) :: indxNeumType, iLoad, loadNume
+        integer(kind=8), intent(inout) :: iMatr
         character(len=*), intent(in) :: modelZ, materFieldZ
         character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
         real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
@@ -1396,13 +1396,13 @@ contains
         aster_logical, intent(in) :: hasInputField
         character(len=*), intent(in) :: inputLoadFieldZ
         character(len=1), intent(in) :: stop
-        integer, intent(in) :: nbFieldInGene
+        integer(kind=8), intent(in) :: nbFieldInGene
         character(len=*), intent(inout) :: lpain(LOAD_NEUM_NBMAXIN), lchin(LOAD_NEUM_NBMAXIN)
         character(len=*), intent(in) :: ligrelCalcZ
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(in) :: matrElemZ
 ! ----- Local
-        integer, parameter :: nbFieldOut = 1
+        integer(kind=8), parameter :: nbFieldOut = 1
         character(len=8) :: lpaout
         character(len=24) :: lchout
         aster_logical :: loadExist, loadIsSigm, loadIsFunc, loadIsVectAsse
@@ -1410,7 +1410,7 @@ contains
         character(len=24) :: loadField, ligrelToUse
         character(len=8) :: loadMatrType
         character(len=24), pointer :: listResuElem(:) => null()
-        integer :: nbFieldIn
+        integer(kind=8) :: nbFieldIn
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(indxNeumType .ge. 1)
@@ -1506,7 +1506,7 @@ contains
                             option, loadMatrType)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeumType
+        integer(kind=8), intent(in) :: indxNeumType
         aster_logical, intent(in) :: loadIsFunc, loadIsSigm
         character(len=16), intent(out) :: option
         character(len=8), intent(out) :: loadMatrType
@@ -1566,15 +1566,15 @@ contains
 ! ----- Parameters
         real(kind=8), intent(in) :: time
         character(len=1), intent(in) :: jvBase
-        integer, intent(in) :: iLoad
-        integer, intent(inout) :: iMatr
+        integer(kind=8), intent(in) :: iLoad
+        integer(kind=8), intent(inout) :: iMatr
         character(len=*), intent(in) :: modelZ, materFieldZ
         character(len=24), intent(in) :: compor, strxPrev, viteCurr, acceCurr
         real(kind=8), intent(in) :: timePrev, timeCurr, timeTheta
         character(len=*), intent(in) :: loadPreObjectZ, loadLigrelZ
         aster_logical, intent(in) :: applySuiv
         character(len=24), intent(in)  :: ligrelCalc
-        integer, intent(inout) :: nbFieldIn
+        integer(kind=8), intent(inout) :: nbFieldIn
         character(len=*), intent(inout) :: lpain(LOAD_NEUM_NBMAXIN)
         character(len=*), intent(inout) :: lchin(LOAD_NEUM_NBMAXIN)
         character(len=*), intent(in) :: matrElemZ
@@ -1584,13 +1584,13 @@ contains
 ! ----- Loads in EVOl_CHAR: no function
         aster_logical, parameter :: hasInputField = ASTER_TRUE
         aster_logical, parameter :: applyPilo = ASTER_FALSE
-        integer, parameter :: loadNume = 1
-        integer :: ier, nbField
+        integer(kind=8), parameter :: loadNume = 1
+        integer(kind=8) :: ier, nbField
         character(len=8) :: evol_char
         character(len=16) :: type_sd
         character(len=24) :: loadObjectJv
         character(len=8), pointer :: loadObject(:) => null()
-        integer :: indxNeumType
+        integer(kind=8) :: indxNeumType
         aster_logical :: existPressure, lSuivLoad
 !   ------------------------------------------------------------------------------------------------
 !
@@ -1662,14 +1662,14 @@ contains
                                loadField_, hasInputField_, inputLoadFieldZ_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: indxNeumType
+        integer(kind=8), intent(in) :: indxNeumType
         character(len=*), intent(in) :: loadPreObjectZ
         aster_logical, intent(out) :: loadExist
         character(len=24), optional, intent(out) :: loadField_
         aster_logical, optional, intent(in) :: hasInputField_
         character(len=*), optional, intent(in) :: inputLoadFieldZ_
 ! ----- Local
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=24) :: loadField, inputLoadField
         aster_logical :: hasInputField
 !   ------------------------------------------------------------------------------------------------

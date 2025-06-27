@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine rsnopa(nomsd, icode, nomjv, nbacc, nbpara)
         character(len=*) :: nomsd
-        integer :: icode
+        integer(kind=8) :: icode
         character(len=*) :: nomjv
-        integer :: nbacc
-        integer :: nbpara
+        integer(kind=8) :: nbacc
+        integer(kind=8) :: nbpara
     end subroutine rsnopa
 end interface

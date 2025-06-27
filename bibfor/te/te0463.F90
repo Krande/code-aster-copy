@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,17 +41,17 @@ subroutine te0463(option, nomte)
 !
 ! ------------------------------------------------------------------------------
 !   nombre max de famille dans MATER, de points de GAUSS
-    integer :: nfpgmx, nbpgmx
+    integer(kind=8) :: nfpgmx, nbpgmx
     parameter(nfpgmx=10, nbpgmx=3)
 !
-    integer :: ndim, nno, nnos, npg, jgano, icopg, idfde, ipoids, ivf, igeom, ndim1
-    integer :: jacf, iorien, ipos, nfpg, ifpg, npgfa(nfpgmx)
-    integer :: ig, ifi, decga, k, decfpg(nfpgmx)
+    integer(kind=8) :: ndim, nno, nnos, npg, jgano, icopg, idfde, ipoids, ivf, igeom, ndim1
+    integer(kind=8) :: jacf, iorien, ipos, nfpg, ifpg, npgfa(nfpgmx)
+    integer(kind=8) :: ig, ifi, decga, k, decfpg(nfpgmx)
     real(kind=8) :: copg(4, 4), copgfa(3, nbpgmx, nfpgmx), pgl(3, 3), gm1(3)
     real(kind=8) :: gm2(3)
     character(len=8) :: fami(nfpgmx)
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 !
 ! ------------------------------------------------------------------------------
 !

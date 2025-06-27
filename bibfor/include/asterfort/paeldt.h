@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine paeldt(kpg, ksp, fami, poum, icdmat,&
                       materi, em, ep, nup, depsth,&
                       tmoins, tplus, trefer)
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=4) :: fami
         character(len=1) :: poum
-        integer :: icdmat
+        integer(kind=8) :: icdmat
         character(len=8) :: materi
         real(kind=8) :: em
         real(kind=8) :: ep

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ function lisico(genchz, genrec)
 #include "asterfort/lisdef.h"
     aster_logical :: lisico
     character(len=*) :: genchz
-    integer :: genrec
+    integer(kind=8) :: genrec
 !
 ! ----------------------------------------------------------------------
 !
@@ -43,7 +43,7 @@ function lisico(genchz, genrec)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: tabcod(30), iposit(2), ibid
+    integer(kind=8) :: tabcod(30), iposit(2), ibid
     character(len=8) :: k8bid
 !
 ! ----------------------------------------------------------------------

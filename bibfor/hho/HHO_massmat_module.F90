@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ module HHO_massmat_module
 !
 ! --------------------------------------------------------------------------------------------------
     type HHO_massmat_cell
-        integer :: max_nrows = MSIZE_CELL_SCAL, max_ncols = MSIZE_CELL_SCAL
-        integer :: nrows = 0, ncols = 0
+        integer(kind=8) :: max_nrows = MSIZE_CELL_SCAL, max_ncols = MSIZE_CELL_SCAL
+        integer(kind=8) :: nrows = 0, ncols = 0
         aster_logical :: isIdentity = ASTER_FALSE
         real(kind=8) :: m(MSIZE_CELL_SCAL, MSIZE_CELL_SCAL)
 !
@@ -54,8 +54,8 @@ module HHO_massmat_module
     end type
 !
     type HHO_massmat_face
-        integer :: max_nrows = MSIZE_FACE_SCAL, max_ncols = MSIZE_FACE_SCAL
-        integer :: nrows = 0, ncols = 0
+        integer(kind=8) :: max_nrows = MSIZE_FACE_SCAL, max_ncols = MSIZE_FACE_SCAL
+        integer(kind=8) :: nrows = 0, ncols = 0
         aster_logical :: isIdentity = ASTER_FALSE
         real(kind=8) :: m(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL)
 !
@@ -81,8 +81,8 @@ contains
 !
         class(HHO_massmat_cell), intent(inout) :: this
         type(HHO_Cell), intent(in) :: hhoCell
-        integer, intent(in) :: min_order
-        integer, intent(in) :: max_order
+        integer(kind=8), intent(in) :: min_order
+        integer(kind=8), intent(in) :: max_order
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -97,7 +97,7 @@ contains
         type(HHO_basis_cell) :: hhoBasisCell
         type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(MSIZE_CELL_SCAL) :: basisScalEval
-        integer :: dimMat, ipg, i
+        integer(kind=8) :: dimMat, ipg, i
         aster_logical :: dbg
         real(kind=8) :: start, end
         blas_int :: b_incx, b_lda, b_n
@@ -170,8 +170,8 @@ contains
 !
         class(HHO_massmat_face), intent(inout) :: this
         type(HHO_Face), intent(in) :: hhoFace
-        integer, intent(in) :: min_order
-        integer, intent(in) :: max_order
+        integer(kind=8), intent(in) :: min_order
+        integer(kind=8), intent(in) :: max_order
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO
@@ -186,7 +186,7 @@ contains
         type(HHO_basis_face) :: hhoBasisFace
         type(HHO_quadrature) :: hhoQuad
         real(kind=8), dimension(MSIZE_FACE_SCAL) :: basisScalEval
-        integer :: dimMat, ipg, i
+        integer(kind=8) :: dimMat, ipg, i
         aster_logical :: dbg
         real(kind=8) :: start, end
         blas_int :: b_incx, b_lda, b_n

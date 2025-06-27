@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ interface
                       place, sni, supnd, nbass)
         integer(kind=4) :: local(*)
         integer(kind=4) :: global(*)
-        integer :: adress(*)
-        integer :: sn
-        integer :: lgsn(*)
-        integer :: place(*)
-        integer :: sni
-        integer :: supnd(*)
-        integer :: nbass
+        integer(kind=8) :: adress(*)
+        integer(kind=8) :: sn
+        integer(kind=8) :: lgsn(*)
+        integer(kind=8) :: place(*)
+        integer(kind=8) :: sni
+        integer(kind=8) :: supnd(*)
+        integer(kind=8) :: nbass
     end subroutine mltalc
 end interface

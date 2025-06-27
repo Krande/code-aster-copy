@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine acevma(nbocc, nlg)
     implicit none
 #include "asterfort/getvtx.h"
-    integer :: nbocc, nlg
+    integer(kind=8) :: nbocc, nlg
 !     AFFE_CARA_ELEM
 !     VERIFICATION DES MOTS CLES POUR L'ELEMENT MASSIF
 ! ----------------------------------------------------------------------
@@ -29,7 +29,7 @@ subroutine acevma(nbocc, nlg)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: ioc, ng
+    integer(kind=8) :: ioc, ng
 !-----------------------------------------------------------------------
     nlg = 0
     do ioc = 1, nbocc

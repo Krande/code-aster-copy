@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,15 +22,15 @@ interface
                       t, lambda, deuxmu, epsthe, kdess,&
                       bendo, gamma, seuil)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: imate
-        integer :: ndim
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: imate
+        integer(kind=8) :: ndim
         real(kind=8) :: epsm(6)
         real(kind=8) :: sref
         real(kind=8) :: sechm
         real(kind=8) :: hydrm
-        integer :: t(3, 3)
+        integer(kind=8) :: t(3, 3)
         real(kind=8) :: lambda
         real(kind=8) :: deuxmu
         real(kind=8) :: epsthe(2)

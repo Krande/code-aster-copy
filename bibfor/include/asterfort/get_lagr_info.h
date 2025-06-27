@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine get_lagr_info(nume_equaz, i_equa, idx_gd, nb_node_lagr, list_node_lagr,&
                              nume_cmpz , ligrelz)
         character(len=*), intent(in) :: nume_equaz
-        integer, intent(in) :: i_equa
-        integer, intent(in) :: idx_gd
-        integer, intent(out) :: nb_node_lagr
-        integer, pointer :: list_node_lagr(:)
-        integer, optional, intent(out) :: nume_cmpz
+        integer(kind=8), intent(in) :: i_equa
+        integer(kind=8), intent(in) :: idx_gd
+        integer(kind=8), intent(out) :: nb_node_lagr
+        integer(kind=8), pointer :: list_node_lagr(:)
+        integer(kind=8), optional, intent(out) :: nume_cmpz
         character(len=*), optional, intent(out) :: ligrelz
     end subroutine get_lagr_info
 end interface

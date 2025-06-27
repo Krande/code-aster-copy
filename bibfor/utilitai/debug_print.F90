@@ -27,9 +27,9 @@ subroutine debug_print(sch1, unit)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/utimsd.h"
     character(len=*), intent(in) :: sch1
-    integer, optional, intent(in) :: unit
+    integer(kind=8), optional, intent(in) :: unit
 !
-    integer :: rang, nbproc, iproc, unit_
+    integer(kind=8) :: rang, nbproc, iproc, unit_
     mpi_int :: mrank, msize
 !
     if (present(unit)) then

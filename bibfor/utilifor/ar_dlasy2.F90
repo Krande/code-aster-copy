@@ -1,6 +1,6 @@
 ! --------------------------------------------------------------------
 ! Copyright (C) LAPACK
-! Copyright (C) 2007 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 2007 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -128,7 +128,7 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
 #include "blas/dswap.h"
 #include "blas/idamax.h"
     aster_logical :: ltranl, ltranr
-    integer :: info, isgn, ldb, ldtl, ldtr, ldx, n1, n2
+    integer(kind=8) :: info, isgn, ldb, ldtl, ldtr, ldx, n1, n2
     real(kind=8) :: scale, xnorm
 !     ..
 !     .. ARRAY ARGUMENTS ..
@@ -142,13 +142,13 @@ subroutine ar_dlasy2(ltranl, ltranr, isgn, n1, n2, &
 !     ..
 !     .. LOCAL SCALARS ..
     aster_logical :: bswap, xswap
-    integer :: i, ip, ipiv, ipsv, j, jp, jpsv, k
+    integer(kind=8) :: i, ip, ipiv, ipsv, j, jp, jpsv, k
     real(kind=8) :: bet, eps, gam, l21, sgn, smin, smlnum, tau1, temp, u11, u12
     real(kind=8) :: u22, xmax
 !     ..
 !     .. LOCAL ARRAYS ..
     aster_logical :: bswpiv(4), xswpiv(4)
-    integer :: jpiv(4), locl21(4), locu12(4), locu22(4)
+    integer(kind=8) :: jpiv(4), locl21(4), locu12(4), locu22(4)
     real(kind=8) :: btmp(4), t16(4, 4), tmp(4), x2(2)
     blas_int :: b_incx, b_incy, b_n
 !     ..

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine gcncon(type, result)
 ! OUT RESULT : K8 : NOM UNIQUE = TYPE//NUMERO_UNIQUE
 !
 !     --- VARIABLES LOCALES --------------------------------------------
-    integer :: ipos
-    integer :: ier
+    integer(kind=8) :: ipos
+    integer(kind=8) :: ier
     character(len=24) :: numuni
     character(len=8) :: nomuni
 !     ------------------------------------------------------------------

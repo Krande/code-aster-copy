@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine bgpg3d(ppas, bg, pg, mg, phig, treps, &
 #include "asterfort/rag3d.h"
 #include "asterfort/def3d.h"
 
-    integer i
+    integer(kind=8) i
     real(kind=8), intent(in) :: treps, pglim
     real(kind=8) :: bg, pg, mg, phig, trepspg, phivg, trepsa
     real(kind=8) :: dpg_depsa6(6), dpg_depspg6(6)

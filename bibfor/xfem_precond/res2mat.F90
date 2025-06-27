@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,8 +59,8 @@ subroutine res2mat(resu, inst, chmat, nommat, mu, ka, lvarc, varcns, cplan)
     character(len=8) :: nommatz, model, is_varc, carael
     character(len=16) :: kmodl
     character(len=19) :: carmat, varcel
-    integer :: jvalm, ianorc, nbrc, irc, jvalk, jvale, ncmpa, j, ndim, nmat, imat
-    integer :: iret
+    integer(kind=8) :: jvalm, ianorc, nbrc, irc, jvalk, jvale, ncmpa, j, ndim, nmat, imat
+    integer(kind=8) :: iret
     character(len=32) :: nomrc
     real(kind=8) :: nu, ka2, e, mu2
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!

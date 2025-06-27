@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods, &
 !              INTERFACE ASTER - MISS3D : PROCEDURE  IMPR_MACR_ELEM
 !     ------------------------------------------------------------------
 !
-    integer :: aprno, gd, tabl(8), tab2(8)
+    integer(kind=8) :: aprno, gd, tabl(8), tab2(8)
     character(len=8) :: k8b, typi, impmod, impmec, interf, formim
     character(len=14) :: nume
     character(len=16) :: nomcmd
@@ -65,20 +65,20 @@ subroutine iredm1(masse, noma, basemo, nbmode, nbmods, &
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iamor, ibid, ic, idbase
-    integer :: iddl, iddl0, idgm2, idgm3, idgm4, idgm5
-    integer :: ifmis, ii, ij, imess, in
-    integer :: ino, inoe, j, j2
-    integer :: k, l, ldgm, ldnm, nb
-    integer :: nbgr, nbgr2, nbgr3, nbgr4, nbgr5, nbma, nbma2
-    integer :: nbma3, nbma4, nbma5, nbmode, nbmods, nbmodt, nbno
-    integer :: nbnoeu, nbv, ncmp, nec, neq, nf, ni
-    integer :: nm, nn, nti, nu
+    integer(kind=8) :: i, iamor, ibid, ic, idbase
+    integer(kind=8) :: iddl, iddl0, idgm2, idgm3, idgm4, idgm5
+    integer(kind=8) :: ifmis, ii, ij, imess, in
+    integer(kind=8) :: ino, inoe, j, j2
+    integer(kind=8) :: k, l, ldgm, ldnm, nb
+    integer(kind=8) :: nbgr, nbgr2, nbgr3, nbgr4, nbgr5, nbma, nbma2
+    integer(kind=8) :: nbma3, nbma4, nbma5, nbmode, nbmods, nbmodt, nbno
+    integer(kind=8) :: nbnoeu, nbv, ncmp, nec, neq, nf, ni
+    integer(kind=8) :: nm, nn, nti, nu
     real(kind=8) :: zero
     complex(kind=8) :: cbid
     character(len=24), pointer :: group_solstru(:) => null()
-    integer, pointer :: noeud(:) => null()
-    integer, pointer :: parno(:) => null()
+    integer(kind=8), pointer :: noeud(:) => null()
+    integer(kind=8), pointer :: parno(:) => null()
     real(kind=8), pointer :: vect1(:) => null()
     real(kind=8), pointer :: vect2(:) => null()
     character(len=8), pointer :: idc_type(:) => null()

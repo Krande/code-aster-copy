@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,7 +65,7 @@ subroutine rvpste(lieu, ssch19, nomsd, typaff)
 !     ------------------------------------------------------------------
 !
 !
-    integer :: alieu, ibid, l, nbl, anomsd, i, anbndf, aclocf, adescm
+    integer(kind=8) :: alieu, ibid, l, nbl, anomsd, i, anbndf, aclocf, adescm
     character(len=24) :: nrefe, descm
     character(len=19) :: sdlieu, sdeval
     character(len=4) :: docu

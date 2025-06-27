@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
                             lsn, lst, geom, kappa, mu, ff, fk,&
                             dfdi, dkdgl, face, elref, nnop2, ff2,&
                             dfdi2, kstop)
-        integer :: nnop
-        integer :: ndim
-        integer :: stano(*)
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
+        integer(kind=8) :: stano(*)
         real(kind=8) :: he
         real(kind=8) :: ff(*)
         real(kind=8) :: lsn(*)
@@ -39,7 +39,7 @@ interface
         character(len=1), optional :: kstop
         character(len=4), optional :: face
         character(len=8), optional :: elref
-        integer, optional :: nnop2
+        integer(kind=8), optional :: nnop2
         real(kind=8), optional :: ff2(:)
         real(kind=8), optional :: dfdi2(:,:)
     end subroutine xcalfev_wrap

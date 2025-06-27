@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine mudirx(nbsom, geom, idim, al1, al2,&
                       axe, ang)
-        integer :: idim
-        integer :: nbsom
+        integer(kind=8) :: idim
+        integer(kind=8) :: nbsom
         real(kind=8) :: geom(idim, nbsom)
         real(kind=8) :: al1
         real(kind=8) :: al2

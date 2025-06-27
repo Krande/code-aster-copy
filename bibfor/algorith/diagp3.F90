@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine diagp3(tens, vecp, valp)
 !                     (XX XY XZ YY YZ ZZ)
 ! ----------------------------------------------------------------------
 !
-    integer :: i, nrac, ind
+    integer(kind=8) :: i, nrac, ind
     aster_logical :: invvp, tnull
     real(kind=8) :: trace, x(6), y(6), det(4), rtemp
     real(kind=8) :: a, b, c, theta

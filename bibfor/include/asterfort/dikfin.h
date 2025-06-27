@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine dikfin(nbt, dnsdu, dnsdt, dmsdt, dnsdu2,&
                       dnsdt2, dmsdt2, ky, kz, krx,&
                       krz, klv, klv2)
-        integer :: nbt
+        integer(kind=8) :: nbt
         real(kind=8) :: dnsdu
         real(kind=8) :: dnsdt
         real(kind=8) :: dmsdt

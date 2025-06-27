@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine nmimps(ds_print, ds_conv, sderro)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_resi, nb_resi
+    integer(kind=8) :: i_resi, nb_resi
     real(kind=8) :: valr(2)
     character(len=16) :: valk(2)
     aster_logical :: lprint, l_swap_rela_maxi, l_swap_comp_rela

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine xpoco1(dirma, nbma, dirno, nbno, ma1,&
                       ma2, jnivgr)
-        integer :: nbno
-        integer :: nbma
-        integer :: dirma(nbma)
-        integer :: dirno(nbno)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nbma
+        integer(kind=8) :: dirma(nbma)
+        integer(kind=8) :: dirno(nbno)
         character(len=8) :: ma1
         character(len=8) :: ma2
-        integer :: jnivgr
+        integer(kind=8) :: jnivgr
     end subroutine xpoco1
 end interface

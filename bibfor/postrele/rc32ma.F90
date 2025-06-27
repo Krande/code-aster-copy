@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine rc32ma()
 !     ------------------------------------------------------------------
 !
     character(len=8) :: mater, nocmp(7), nopa
-    integer :: n1, icodre(7), jvala, nbpa, i
+    integer(kind=8) :: n1, icodre(7), jvala, nbpa, i
     real(kind=8) :: tempa, para(7)
 !
 ! DEB ------------------------------------------------------------------

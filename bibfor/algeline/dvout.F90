@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,14 +39,14 @@ subroutine dvout(lout, n, sx, idigit, ifmt)
 !
 !     .. SCALAR ARGUMENTS ..
     character(len=*) :: ifmt
-    integer :: idigit, lout, n
+    integer(kind=8) :: idigit, lout, n
 !
 !     .. ARRAY ARGUMENTS ..
     real(kind=8) :: sx(*)
 !
 !     .. LOCAL SCALARS ..
     character(len=80) :: line
-    integer :: i, k1, k2, lll, ndigit
+    integer(kind=8) :: i, k1, k2, lll, ndigit
 !
 !     .. EXECUTABLE STATEMENTS ..
 !

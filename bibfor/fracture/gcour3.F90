@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -88,9 +88,9 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
     character(len=2) :: licmp(3)
     character(len=1), parameter :: base = 'G'
 !
-    integer :: lnoff, iadrt1, iadrt2, iadrt3, itheta, iadrco, jmin
-    integer :: imodu, nbre, iret, ndimte
-    integer :: nbno, ifon, i, j, jresu, k, jgtl
+    integer(kind=8) :: lnoff, iadrt1, iadrt2, iadrt3, itheta, iadrco, jmin
+    integer(kind=8) :: imodu, nbre, iret, ndimte
+    integer(kind=8) :: nbno, ifon, i, j, jresu, k, jgtl
 !
     real(kind=8) :: xi1, yi1, zi1, xj1, yj1, zj1
     real(kind=8) :: xij, yij, zij, eps, d, grtx, grty, grtz
@@ -98,13 +98,13 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
     real(kind=8) :: rii, rsi, alpha, valx, valy, valz, norm2
     real(kind=8) :: grtx0, grty0, grtz0, grtx1, grty1, grtz1
     character(len=19) :: cnsta, cnstet
-    integer :: jcnsl, jstn, jstnl, stano
+    integer(kind=8) :: jcnsl, jstn, jstnl, stano
     data licmp/'DX', 'DY', 'DZ'/
 !
     aster_logical :: milieu, debug, connex
 !
 !-----------------------------------------------------------------------
-    integer :: iadrtt, jbas
+    integer(kind=8) :: iadrtt, jbas
     real(kind=8), pointer :: cnsv(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

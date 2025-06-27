@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine crmeam(promes, iaapee)
 #include "asterfort/wkvect.h"
 !
     character(len=8) :: promes
-    integer :: iaapee
+    integer(kind=8) :: iaapee
 !
 !
 !
@@ -62,22 +62,22 @@ subroutine crmeam(promes, iaapee)
     character(len=24) :: vnoeud, vrange, basepr, noeums, baseit, vsu, mesint
     character(len=24) :: modid, vref, refms
 !
-    integer :: nbmesu, nbvecb, nbord, isol, affici(2)
-    integer ::  lred, lrange, lint, ier, iposi, ipuls
-    integer :: imod, jmod, iret, llncmp, iddl, lmesu, jddl, iexist
-    integer :: iposj, ino, nddle, nddli, ico, ipos
-    integer :: lnoeud, ltrav, lredi, lwks, lrefms, lref
-    integer ::  jcnsc
-    integer :: ibid, nbcmpi, numgd, lmaela
-    integer :: lu, lvals, lv, lvsu
+    integer(kind=8) :: nbmesu, nbvecb, nbord, isol, affici(2)
+    integer(kind=8) ::  lred, lrange, lint, ier, iposi, ipuls
+    integer(kind=8) :: imod, jmod, iret, llncmp, iddl, lmesu, jddl, iexist
+    integer(kind=8) :: iposj, ino, nddle, nddli, ico, ipos
+    integer(kind=8) :: lnoeud, ltrav, lredi, lwks, lrefms, lref
+    integer(kind=8) ::  jcnsc
+    integer(kind=8) :: ibid, nbcmpi, numgd, lmaela
+    integer(kind=8) :: lu, lvals, lv, lvsu
 !
     real(kind=8) :: masg, eps, amog
     character(len=8), pointer :: cnsk(:) => null()
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: desm(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: desm(:) => null()
     real(kind=8), pointer :: cnsv(:) => null()
-    integer, pointer :: cnsd(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !
 ! ----------------------------------------------------------------------
 !

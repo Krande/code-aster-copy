@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,13 +53,13 @@ subroutine romFieldBuildGappy(resultRom, fieldBuild)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(ROM_DS_Empi) :: base
     type(ROM_DS_Field) :: mode
     character(len=8) :: resultRomName
-    integer :: nbStore, nbEqua, nbEquaRom, nbMode, nbEquaRID
-    integer :: iStore, iMode, iEqua
-    integer :: numeStore, numeEqua, iret
+    integer(kind=8) :: nbStore, nbEqua, nbEquaRom, nbMode, nbEquaRID
+    integer(kind=8) :: iStore, iMode, iEqua
+    integer(kind=8) :: numeStore, numeEqua, iret
     integer(kind=4) :: systInfo
     real(kind=8), pointer :: systMatr(:) => null(), systVect(:) => null()
     integer(kind=4), pointer :: systPerm(:) => null()

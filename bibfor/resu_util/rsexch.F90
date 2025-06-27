@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr, &
 #include "asterfort/rsutrg.h"
 #include "asterfort/utmess.h"
 !
-    integer :: iordr, icode
+    integer(kind=8) :: iordr, icode
     character(len=*) :: kstop, nomsd, nomsy, chextr
 ! person_in_charge: jacques.pellet at edf.fr
 !      RECUPERATION DU NOM DU CHAMP-GD  CORRESPONDANT A:
@@ -61,8 +61,8 @@ subroutine rsexch(kstop, nomsd, nomsy, iordr, chextr, &
     character(len=16) :: noms2
     character(len=19) :: nomd2, chext2, chext3
     character(len=24) :: valk(3)
-    integer :: iexi, irang, isymb, jtach, nbordr, nbormx
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8) :: iexi, irang, isymb, jtach, nbordr, nbormx
+    integer(kind=8), pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
     icode = -99

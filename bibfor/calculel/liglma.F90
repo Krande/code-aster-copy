@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine liglma(ligrel, nbma, linuma, linute)
 #include "asterfort/wkvect.h"
     character(len=*) :: linuma, linute
     character(len=19) :: ligrel
-    integer :: nbma
+    integer(kind=8) :: nbma
 !
 ! ----------------------------------------------------------------------
 ! but : extraction d'un ligrel de la liste des numeros de mailles et
@@ -45,8 +45,8 @@ subroutine liglma(ligrel, nbma, linuma, linute)
 ! in/jxout linute  : objet (v i) qui contiendra les numeros des
 !                    type_element associes aux elements du ligrel
 ! ----------------------------------------------------------------------
-    integer :: nbgrel, igrel, iel, numa, nute, n1, nbel
-    integer :: jnuma, jnute, ico, jliel
+    integer(kind=8) :: nbgrel, igrel, iel, numa, nute, n1, nbel
+    integer(kind=8) :: jnuma, jnute, ico, jliel
 !
 ! ----------------------------------------------------------------------
     call jemarq()

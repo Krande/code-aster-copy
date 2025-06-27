@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine diaghr(n, a, lda, eval, evec, &
 #include "asterfort/zmult.h"
 #include "blas/izamax.h"
 #include "blas/zcopy.h"
-    integer :: n, lda, ldevec
+    integer(kind=8) :: n, lda, ldevec
     real(kind=8) :: eval(*), rwk(*)
 !    CALCUL DES VALEURS PROPRES ET DES VECTEURS PROPRES D'UNE MATRICE
 !                       COMPLEXE HERMITIENNE.
@@ -46,7 +46,7 @@ subroutine diaghr(n, a, lda, eval, evec, &
 !      CWK   : VECTEUR DE TRAVAIL.
 !-----------------------------------------------------------------------
     complex(kind=8) :: a(lda, *), evec(ldevec, *), acopy(n, *), cwk(*)
-    integer :: i, j
+    integer(kind=8) :: i, j
     complex(kind=8) :: scale
     real(kind=8) :: dble
     aster_logical :: true

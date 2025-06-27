@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine rsGetOneModelFromResult(resultZ, nbStore, listStore, model)
 #include "asterfort/rsadpa.h"
 !
     character(len=*), intent(in) :: resultZ
-    integer, intent(in) :: nbStore, listStore(nbStore)
+    integer(kind=8), intent(in) :: nbStore, listStore(nbStore)
     character(len=*), intent(out) :: model
 !
 ! --------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ subroutine rsGetOneModelFromResult(resultZ, nbStore, listStore, model)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=8) :: modelRefe
-    integer :: jvPara, numeStore, iStore
+    integer(kind=8) :: jvPara, numeStore, iStore
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,10 @@ subroutine resgra(mat, matf, vcine, niter, epsi, &
 #include "asterfort/uttcpu.h"
 !
     character(len=*) :: mat, matf, vcine
-    integer :: niter, nsecm
+    integer(kind=8) :: niter, nsecm
     real(kind=8) :: epsi, rsolu(*)
     character(len=19) :: criter, solveu
-    integer :: istop, iret
+    integer(kind=8) :: istop, iret
 !----------------------------------------------------------------------
 !     ROUTINE DE HAUT NIVEAU DE RESOLUTION PAR UNE METHODE DE GRADIENT
 !     CONJUGUE (GCPC)
@@ -72,21 +72,21 @@ subroutine resgra(mat, matf, vcine, niter, epsi, &
     character(len=19) :: vcin19, matas, matfac
     character(len=4) :: type
     character(len=24) :: precon
-    integer :: ifm, niv, ier, idip, neq, nblc
-    integer :: idac, idinpc, idippc, idacpc
-    integer :: k, lmat, kdeb, ieq, istop_solv
-    integer, dimension(:), pointer :: slvi => null()
+    integer(kind=8) :: ifm, niv, ier, idip, neq, nblc
+    integer(kind=8) :: idac, idinpc, idippc, idacpc
+    integer(kind=8) :: k, lmat, kdeb, ieq, istop_solv
+    integer(kind=8), dimension(:), pointer :: slvi => null()
     real(kind=8), pointer :: w1(:) => null()
     real(kind=8), pointer :: w2(:) => null()
     real(kind=8), pointer :: w3(:) => null()
     real(kind=8), pointer :: w4(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
     character(len=24), pointer :: refaf(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()
-    integer, pointer :: in(:) => null()
-    integer, pointer :: perm(:) => null()
+    integer(kind=8), pointer :: in(:) => null()
+    integer(kind=8), pointer :: perm(:) => null()
 !
 !----------------------------------------------------------------------
 !     DEBUT

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine ef0042(nomte)
 !     CALCUL DE EFGE_ELNO
 !     ------------------------------------------------------------------
 !
-    integer :: nbterm, nno, nc, neq, irep, i, ndim, ibid
-    integer :: ldis, lorien, jeffo, jdepl, infodi, itype
+    integer(kind=8) :: nbterm, nno, nc, neq, irep, i, ndim, ibid
+    integer(kind=8) :: ldis, lorien, jeffo, jdepl, infodi, itype
     real(kind=8) :: ulr(12), flr(12)
     real(kind=8) :: pgl(3, 3), klc(144), mat(144), r8bid
     character(len=8) :: k8bid

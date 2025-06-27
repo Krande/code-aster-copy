@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine dflld2(sdlist, i_fail)
 #include "asterfort/utmess.h"
 !
     character(len=8), intent(in) :: sdlist
-    integer, intent(in) :: i_fail
+    integer(kind=8), intent(in) :: i_fail
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine dflld2(sdlist, i_fail)
     character(len=24) :: sdlist_linfor
     real(kind=8), pointer :: v_sdlist_linfor(:) => null()
     real(kind=8) :: subd_pas_mini, subd_inst, subd_duree
-    integer :: subd_niveau, subd_pas, subd_auto
+    integer(kind=8) :: subd_niveau, subd_pas, subd_auto
 !
 ! --------------------------------------------------------------------------------------------------
 !

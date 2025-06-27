@@ -35,7 +35,7 @@ subroutine matimp(matz, ific, typimz)
 #include "asterfort/int_to_char8.h"
 !
     character(len=*) :: matz, typimz
-    integer :: ific
+    integer(kind=8) :: ific
 ! ---------------------------------------------------------------------
 ! BUT: IMPRIMER UNE MATRICE SUR UN LISTING
 ! ---------------------------------------------------------------------
@@ -48,9 +48,9 @@ subroutine matimp(matz, ific, typimz)
 !
 !
 !     ------------------------------------------------------------------
-    integer :: iligl, jcoll, kterm, n, nz, nsmdi, jsmhc, nsmhc
-    integer :: jdelg, n1, nvale, jvale, nlong, jval2, nuno, nucmp, k, jcmp
-    integer :: iligg, jcolg, jnlogl, coltmp, jprddl, rang, nbproc
+    integer(kind=8) :: iligl, jcoll, kterm, n, nz, nsmdi, jsmhc, nsmhc
+    integer(kind=8) :: jdelg, n1, nvale, jvale, nlong, jval2, nuno, nucmp, k, jcmp
+    integer(kind=8) :: iligg, jcolg, jnlogl, coltmp, jprddl, rang, nbproc
     character(len=8) :: nomgd, nocmp, noma, nono, typimp
     character(len=14) :: nonu, localOrGhost
     character(len=1) :: ktyp
@@ -58,8 +58,8 @@ subroutine matimp(matz, ific, typimz)
     character(len=19) :: mat19
     aster_logical :: ltypr, lsym, lmd, l_parallel_matrix
     real(kind=8) :: dble, dimag
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: smdi(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: smdi(:) => null()
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: refn(:) => null()
     mpi_int :: mrank, msize

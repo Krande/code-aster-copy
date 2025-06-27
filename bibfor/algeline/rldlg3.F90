@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,17 +38,17 @@ subroutine rldlg3(metres, lmat, xsol, cxsol, nbsol)
 #include "asterfort/as_deallocate.h"
 
     character(len=*) :: metres
-    integer :: lmat, nbsol
+    integer(kind=8) :: lmat, nbsol
     real(kind=8) :: xsol(*)
     complex(kind=8) :: cxsol(*)
 
-    integer :: typvar, typsym, iexi
+    integer(kind=8) :: typvar, typsym, iexi
     character(len=14) :: nu
     character(len=19) :: mat19, stolci
-    integer, pointer :: m2lc(:) => null()
+    integer(kind=8), pointer :: m2lc(:) => null()
     real(kind=8), pointer :: tempor(:) => null()
     complex(kind=8), pointer :: tempoc(:) => null()
-    integer :: jscbl, jscdi, jschc, nbbloc, neq, isol, iequa
+    integer(kind=8) :: jscbl, jscdi, jschc, nbbloc, neq, isol, iequa
 !-----------------------------------------------------------------------
     call jemarq()
     neq = zi(lmat+2)

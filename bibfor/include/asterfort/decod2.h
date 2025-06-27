@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ interface
     subroutine decod2(rec, irec, ifield, itype, ilu,&
                       rlu, trouve)
         character(len=*) :: rec(20)
-        integer :: irec
-        integer :: ifield
-        integer :: itype
-        integer :: ilu
+        integer(kind=8) :: irec
+        integer(kind=8) :: ifield
+        integer(kind=8) :: itype
+        integer(kind=8) :: ilu
         real(kind=8) :: rlu
         aster_logical :: trouve
     end subroutine decod2

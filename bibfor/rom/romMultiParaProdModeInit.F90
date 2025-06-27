@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine romMultiParaProdModeInit(ds_multipara, nb_mode_maxi)
 #include "asterfort/codent.h"
 !
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
-    integer, intent(in) :: nb_mode_maxi
+    integer(kind=8), intent(in) :: nb_mode_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,8 +46,8 @@ subroutine romMultiParaProdModeInit(ds_multipara, nb_mode_maxi)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: i_matr, nb_matr, i_vect, nb_vect, jv_dummy, nbEqua
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: i_matr, nb_matr, i_vect, nb_vect, jv_dummy, nbEqua
     character(len=24) :: prod_matr_mode, matr_mode_curr
     character(len=8) :: matr_name, matr_type
     character(len=1) :: prod_type, syst_type

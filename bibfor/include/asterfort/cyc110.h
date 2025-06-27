@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine cyc110(nomres, mailla, nbsect)
         character(len=8) :: nomres
         character(len=8) :: mailla
-        integer :: nbsect
+        integer(kind=8) :: nbsect
     end subroutine cyc110
 end interface

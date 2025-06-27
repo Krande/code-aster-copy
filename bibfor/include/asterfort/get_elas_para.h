@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ interface
                              g1i_, g2i_, g3i_)
         use Behaviour_type
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: j_mater
+        integer(kind=8), intent(in) :: j_mater
         character(len=*), intent(in) :: poum
-        integer, intent(in) :: ipg, ispg
-        integer, intent(in) :: elas_id
+        integer(kind=8), intent(in) :: ipg, ispg
+        integer(kind=8), intent(in) :: elas_id
         character(len=16), intent(in) :: elas_keyword
         real(kind=8), optional, intent(in) :: time
         real(kind=8), optional, intent(in) :: temp

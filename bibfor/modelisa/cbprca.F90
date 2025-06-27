@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -48,7 +48,7 @@ subroutine cbprca(phenom_, load)
     character(len=24) :: object
     character(len=8), pointer :: p_object(:) => null()
     character(len=8) :: evol_char
-    integer :: nb_occ, nb_cham
+    integer(kind=8) :: nb_occ, nb_cham
     character(len=16) :: type_sd
     character(len=13) :: obje_pref
 !

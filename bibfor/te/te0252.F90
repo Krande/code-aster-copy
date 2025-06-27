@@ -51,13 +51,13 @@ subroutine te0252(option, nomte)
     type(FE_Quadrature) :: FEQuadCell
     type(FE_basis) :: FEBasis
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=32) :: phenom
     real(kind=8) :: valQP(MAX_QP), tpgi, r8bid
     real(kind=8) :: resi(MAX_BS)
     real(kind=8) :: chal(1)
-    integer :: kp, imate
-    integer :: ifon(6), nbDof
+    integer(kind=8) :: kp, imate
+    integer(kind=8) :: ifon(6), nbDof
     aster_logical :: aniso
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: rela_name

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine tecach(stopz, nmparz, louez, iret, nval,&
                       itab, iad, numa)
-        integer, intent(in), optional :: nval, numa
+        integer(kind=8), intent(in), optional :: nval, numa
         character(len=*), intent(in) :: stopz
         character(len=*), intent(in) :: nmparz
         character(len=*), intent(in) :: louez
-        integer, intent(out), optional :: itab(*)
-        integer, intent(out), optional :: iad
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out), optional :: itab(*)
+        integer(kind=8), intent(out), optional :: iad
+        integer(kind=8), intent(out) :: iret
     end subroutine tecach
 end interface

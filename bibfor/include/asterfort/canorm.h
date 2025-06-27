@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine canorm(coor, normal, ndim, ityp, inorm)
         real(kind=8) :: coor(*)
         real(kind=8) :: normal(3)
-        integer :: ndim
-        integer :: ityp
-        integer :: inorm
+        integer(kind=8) :: ndim
+        integer(kind=8) :: ityp
+        integer(kind=8) :: inorm
     end subroutine canorm
 end interface

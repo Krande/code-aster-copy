@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg, &
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: nbmat, codret
+    integer(kind=8) :: nbmat, codret
     real(kind=8) :: mater(nbmat, 2), sig(6), vin(*), dsde(6, 6)
     real(kind=8) :: devg(6), devgii
     character(len=8) :: mod
@@ -56,7 +56,7 @@ subroutine lgljpl(mod, nbmat, mater, sig, devg, &
 ! OUT : DSDE   : DSIG/DEPS ---------------------------------------------
 ! ======================================================================
 ! ======================================================================
-    integer :: jpara, jderiv, ndt, ndi
+    integer(kind=8) :: jpara, jderiv, ndt, ndi
     real(kind=8) :: epssig, sigc, gamcjs, pref, sn(6), snii, invn, h0
     real(kind=8) :: mun, gampn, rcos3t, rn, gn
     real(kind=8) :: duds(6), dudg, dfds(6), dfdg

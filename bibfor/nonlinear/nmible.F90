@@ -34,10 +34,10 @@ subroutine nmible(loop_exte, model, ds_contact, &
 #include "asterfort/nmimci.h"
 #include "asterfort/nmimck.h"
 !
-    integer, intent(inout) :: loop_exte
+    integer(kind=8), intent(inout) :: loop_exte
     character(len=24), intent(in) :: model
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in):: list_func_acti(*)
+    integer(kind=8), intent(in):: list_func_acti(*)
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
@@ -65,7 +65,7 @@ subroutine nmible(loop_exte, model, ds_contact, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: loop_geom_count, loop_cont_count, loop_fric_count
+    integer(kind=8) :: loop_geom_count, loop_cont_count, loop_fric_count
     aster_logical :: l_loop_frot, l_loop_geom, l_loop_cont
     aster_logical :: l_pair, l_geom_sans
     character(len=8) :: mesh

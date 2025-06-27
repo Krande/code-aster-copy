@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,22 +28,22 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: epsm(9)
         real(kind=8) :: deps(9)
-        integer :: nbvari
+        integer(kind=8) :: nbvari
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
-        integer :: iforta
+        integer(kind=8) :: iforta
         real(kind=8) :: instam
         real(kind=8) :: instap
-        integer :: iter
-        integer :: nbpar
+        integer(kind=8) :: iter
+        integer(kind=8) :: nbpar
         character(len=16) :: nompar(*)
         character(len=8) :: table
         real(kind=8) :: vr(*)
-        integer :: igrad
+        integer(kind=8) :: igrad
         real(kind=8) :: valimp(9)
-        integer :: imptgt
+        integer(kind=8) :: imptgt
         real(kind=8) :: dsidep(*)
         character(len=8) :: nomvi(*)
-        integer :: nbvita
+        integer(kind=8) :: nbvita
     end subroutine pmstab
 end interface

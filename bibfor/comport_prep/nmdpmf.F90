@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine nmdpmf(compor, chmate)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ibid, iret
+    integer(kind=8) :: ibid, iret
     aster_logical :: lcumu(2)
     aster_logical :: lcoc
     character(len=1) :: base

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -71,18 +71,18 @@ subroutine cremnl(reprise, baseno, numrep, nbordr0, nbordr, &
     character(len=19) :: nompar(12), chamno
     character(len=19) :: nompat(11)
     character(len=24) :: numedd, rigid, masse, valkt(4), matrice(3)
-    integer :: iordr, numrep, nbordr0, nbordr, nbpt, vali(4), nbhar, nbsym, isort
-    integer :: neq, imat(2), iadd, ieq, ier, ihar, ladpa
-    integer :: nbpar, neqv, nmodes, iomega, valit(1), nbpart
-    integer :: nbchoc
-    integer :: harmaxa, harmax, inspec
+    integer(kind=8) :: iordr, numrep, nbordr0, nbordr, nbpt, vali(4), nbhar, nbsym, isort
+    integer(kind=8) :: neq, imat(2), iadd, ieq, ier, ihar, ladpa
+    integer(kind=8) :: nbpar, neqv, nmodes, iomega, valit(1), nbpart
+    integer(kind=8) :: nbchoc
+    integer(kind=8) :: harmaxa, harmax, inspec
     real(kind=8) :: rvide, valr(2), freq, energ, xnorm, valrt(6)
     real(kind=8) :: espec(nbhar+1)
     complex(kind=8) :: cvide
     character(len=8), pointer :: cmp(:) => null()
     real(kind=8), pointer :: orig(:) => null()
     real(kind=8), pointer :: nspec(:) => null()
-    integer, pointer :: bif(:) => null()
+    integer(kind=8), pointer :: bif(:) => null()
     character(len=8), pointer :: noeu(:) => null()
     real(kind=8), pointer :: vale(:) => null()
     character(len=8), pointer :: type(:) => null()

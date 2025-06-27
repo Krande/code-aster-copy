@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine rercmk(nu, mo, ma, nlili, nm, &
 !
     character(len=8) :: mo, ma
     character(len=14) :: nu
-    integer :: nlili, nm, nl, nbntt
+    integer(kind=8) :: nlili, nm, nl, nbntt
 ! ----------------------------------------------------------------------
 !     BUT:  CETTE ROUTINE SERT A RENUMEROTER LES NOEUDS D'UN NUME_DDL
 !           SUIVANT L'ALGORITHME DE REVERSE-CUTHILL-MAC-KEE.
@@ -71,26 +71,26 @@ subroutine rercmk(nu, mo, ma, nlili, nm, &
     character(len=19) :: nomlig
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacoin, iaconx, iagrel, ialiel
-    integer :: iamail, ianema
-    integer :: ico, icol, icumul
-    integer :: iel, ifm, igrel, iinew, iino, iio1
-    integer :: iio2, ilconx, ili, illiel, ilnema, ima, ino
-    integer :: irempl, iret, j, jjno, jno, jrang, k
-    integer :: l1, l2, ll1, ll2, longi, longo, n1i
-    integer :: n1j, n2i, n2j, nbco, nbcomp, nbel, nbgrel
-    integer :: nbi, nbma, nbnm, nbnmre, nbnoma, nbnot, nbntre
-    integer :: nbsma, nbssa, newnno, niv
-    integer, pointer :: lcoi(:) => null()
-    integer, pointer :: vnbco(:) => null()
-    integer, pointer :: new1(:) => null()
-    integer, pointer :: old1(:) => null()
-    integer, pointer :: ordo(:) => null()
-    integer, pointer :: oldn(:) => null()
-    integer, pointer :: newn(:) => null()
-    integer, pointer :: nbno(:) => null()
-    integer, pointer :: sssa(:) => null()
-    integer, pointer :: exi1(:) => null()
+    integer(kind=8) :: i, iacoin, iaconx, iagrel, ialiel
+    integer(kind=8) :: iamail, ianema
+    integer(kind=8) :: ico, icol, icumul
+    integer(kind=8) :: iel, ifm, igrel, iinew, iino, iio1
+    integer(kind=8) :: iio2, ilconx, ili, illiel, ilnema, ima, ino
+    integer(kind=8) :: irempl, iret, j, jjno, jno, jrang, k
+    integer(kind=8) :: l1, l2, ll1, ll2, longi, longo, n1i
+    integer(kind=8) :: n1j, n2i, n2j, nbco, nbcomp, nbel, nbgrel
+    integer(kind=8) :: nbi, nbma, nbnm, nbnmre, nbnoma, nbnot, nbntre
+    integer(kind=8) :: nbsma, nbssa, newnno, niv
+    integer(kind=8), pointer :: lcoi(:) => null()
+    integer(kind=8), pointer :: vnbco(:) => null()
+    integer(kind=8), pointer :: new1(:) => null()
+    integer(kind=8), pointer :: old1(:) => null()
+    integer(kind=8), pointer :: ordo(:) => null()
+    integer(kind=8), pointer :: oldn(:) => null()
+    integer(kind=8), pointer :: newn(:) => null()
+    integer(kind=8), pointer :: nbno(:) => null()
+    integer(kind=8), pointer :: sssa(:) => null()
+    integer(kind=8), pointer :: exi1(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

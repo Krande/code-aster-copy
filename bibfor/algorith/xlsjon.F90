@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
     implicit none
 !
 #include "jeveux.h"
-    integer :: ino, jlsn, nfiss, jfisco
+    integer(kind=8) :: ino, jlsn, nfiss, jfisco
     real(kind=8) :: jonc_no(nfiss)
 !
 !       CALCUL DE LA LSN D'UN NOEUD DE L'ELEMENT PARENT EN TENANT COMPTE
@@ -33,10 +33,10 @@ subroutine xlsjon(ino, jlsn, nfiss, jfisco, jonc_no)
 !       jonc_no    : FONCTION HEAVISIDE AU NOEUD POUR CHAQUE FISSURE EN TENANT COMPTE
 !                  DES JONCTIONS
 !
-    integer :: nfimax
+    integer(kind=8) :: nfimax
     parameter(nfimax=10)
-    integer :: ifiss, i, nfisc, ifisc
-    integer :: fisco(2*nfimax), fisc(2*nfimax)
+    integer(kind=8) :: ifiss, i, nfisc, ifisc
+    integer(kind=8) :: fisco(2*nfimax), fisc(2*nfimax)
     real(kind=8) :: ljonc(nfimax+1)
 !
 !.....................................................................

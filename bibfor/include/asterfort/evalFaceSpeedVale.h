@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                                  speedVale,&
                                  x        , y       , z_)
         aster_logical, intent(in) :: lFunc, lTime
-        integer, intent(in) :: cellDime, nbNode, ipg
-        integer, intent(in) :: jvGeom, jvShape, jvLoad
+        integer(kind=8), intent(in) :: cellDime, nbNode, ipg
+        integer(kind=8), intent(in) :: jvGeom, jvShape, jvLoad
         real(kind=8), intent(in) :: time
         real(kind=8), intent(out) :: speedVale
         real(kind=8), intent(out) :: x, y

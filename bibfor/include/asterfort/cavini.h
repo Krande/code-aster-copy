@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine cavini(ndim, nno, geom, vim, npg,&
                       lgpg, imate)
-        integer :: lgpg
-        integer :: npg
-        integer :: nno
-        integer :: ndim
+        integer(kind=8) :: lgpg
+        integer(kind=8) :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
         real(kind=8) :: geom(1:ndim, 1:nno)
         real(kind=8) :: vim(1:lgpg, 1:npg)
-        integer :: imate
+        integer(kind=8) :: imate
     end subroutine cavini
 end interface

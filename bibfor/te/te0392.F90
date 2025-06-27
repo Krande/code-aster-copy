@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,15 +50,15 @@ subroutine te0392(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: idfde2, igau, imate, imatuu, ipoid2
-    integer :: nbsig, nno, npg1
+    integer(kind=8) :: idfde2, igau, imate, imatuu, ipoid2
+    integer(kind=8) :: nbsig, nno, npg1
     real(kind=8) :: jacgau
     real(kind=8) :: angl_naut(3), instan
-    integer :: igeom, ipoids, ivf, idfde
+    integer(kind=8) :: igeom, ipoids, ivf, idfde
 !
     aster_logical :: calbn
-    integer :: i, ino, j, k, proj, nbpg2, ipg, ispg
-    integer :: ndim, nnos, kp
+    integer(kind=8) :: i, ino, j, k, proj, nbpg2, ipg, ispg
+    integer(kind=8) :: ndim, nnos, kp
     real(kind=8) :: d(6, 6), s
     real(kind=8) :: poipg2(8), b(6, 81), b0(6, 3, 8)
     real(kind=8) :: jac, invja(3, 3), bi(3, 8), hx(3, 4)
@@ -67,7 +67,7 @@ subroutine te0392(option, nomte)
     real(kind=8) :: dfdx(8), dfdy(8), dfdz(8)
     real(kind=8) :: nu, nub, nu12
     character(len=16) :: elas_keyword
-    integer :: elas_id
+    integer(kind=8) :: elas_id
     data h/1.d0, 1.d0, -1.d0, -1.d0, -1.d0, -1.d0, 1.d0, 1.d0,&
      &        1.d0, -1.d0, -1.d0, 1.d0, -1.d0, 1.d0, 1.d0, -1.d0,&
      &        1.d0, -1.d0, 1.d0, -1.d0, 1.d0, -1.d0, 1.d0, -1.d0,&

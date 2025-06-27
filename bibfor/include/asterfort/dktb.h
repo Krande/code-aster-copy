@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine dktb(carat3, igau, jacgau, bmat)
         real(kind=8) :: carat3(*)
-        integer :: igau
+        integer(kind=8) :: igau
         real(kind=8) :: jacgau
         real(kind=8) :: bmat(8, 1)
     end subroutine dktb

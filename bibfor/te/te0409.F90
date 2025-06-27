@@ -92,7 +92,7 @@ subroutine te0409(option, nomte)
 ! INITIALISES AU MOMENT DE LA DECLARATION
 ! matloc et vecloc SONT INITIALISES EN FONCTION DE
 ! L OPTION FULL_MECA, RIGI_MECA_*
-    integer :: codret
+    integer(kind=8) :: codret
     real(kind=8) :: pgl(3, 3), xyzl(3, 4)
     real(kind=8) :: ul(6, 4), dul(6, 4), angmas(3)
     real(kind=8) :: matloc((6*4)*(6*4+1)/2), vecloc(6, 4)
@@ -168,14 +168,14 @@ subroutine te0409(option, nomte)
     aster_logical :: coupmf
     aster_logical :: is_param_opt(2)
 !
-    integer :: ndim, nno, npg, ipoids, icoopg
-    integer :: imate, iret, icontm, ivarim, igeom, icarcr, ideplm, ideplp
-    integer :: icacoq, icontp, ivarip, ino, nbcont, ivectu, jcret, imatuu
-    integer :: nbvari, ipg
-    integer :: i, i1, i2, j, k, l
-    integer :: icpg, icpv
-    integer :: jtab(7), nbsig
-    integer :: multic
+    integer(kind=8) :: ndim, nno, npg, ipoids, icoopg
+    integer(kind=8) :: imate, iret, icontm, ivarim, igeom, icarcr, ideplm, ideplp
+    integer(kind=8) :: icacoq, icontp, ivarip, ino, nbcont, ivectu, jcret, imatuu
+    integer(kind=8) :: nbvari, ipg
+    integer(kind=8) :: i, i1, i2, j, k, l
+    integer(kind=8) :: icpg, icpv
+    integer(kind=8) :: jtab(7), nbsig
+    integer(kind=8) :: multic
 !
     real(kind=8) :: delas(6, 6), dsidep(6, 6)
     real(kind=8) :: lambda, deuxmu, deumuf, lamf, gt, gc, gf, seuil, alphaf
@@ -189,7 +189,7 @@ subroutine te0409(option, nomte)
     real(kind=8) :: cstseu(6)
 !   -- attention la taille de ecp depend du nombre de variable interne
 !   -- lors de l ajout de variable interne il faut incrementer ecr et ecrp
-    integer, parameter :: nbvarmax = 36
+    integer(kind=8), parameter :: nbvarmax = 36
     real(kind=8) :: epst(6), ep, surfgp, sig(8), dsig(8), ecr(nbvarmax), ecrp(nbvarmax)
     real(kind=8) :: epsm(6), qsi, eta, ctor
     real(kind=8) :: carat3(21), jacob(5), caraq4(25)
@@ -199,7 +199,7 @@ subroutine te0409(option, nomte)
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: type_comp, mult_comp, rela_plas, rela_comp, defo_comp
 !
-    integer      ::  codret2(1)
+    integer(kind=8)      ::  codret2(1)
     character(len=32) :: elasKeyword
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
         character(len=1) :: st
         character(len=*) :: nomobj
         character(len=*) :: base
-        integer :: nbtitr
+        integer(kind=8) :: nbtitr
         character(len=*) :: titdon(*)
-        integer :: lgdon(*)
+        integer(kind=8) :: lgdon(*)
         character(len=*) :: formr
         character(len=*), optional, intent(in) :: nomsym
-        integer, optional, intent(in) :: iordr
+        integer(kind=8), optional, intent(in) :: iordr
     end subroutine titre1
 end interface

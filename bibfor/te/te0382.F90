@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -68,23 +68,23 @@ subroutine te0382(option, nomte)
 !
 !
 !
-    integer :: nbnase, nbnamx
+    integer(kind=8) :: nbnase, nbnamx
 !     SOUS-ELEMENTS TOUJOURS LINEAIRES => ON A TOUJOURS NBNASE=2
     parameter(nbnase=2)
 !     ON DIMENSIONNE LES VECTEURS POUR LE NBRE MAX DE NOEUDS PAR ARETE
 !     (CAS D'1 ELEMENT PARENT QUADRATIQUE) => NBNAMX=3
     parameter(nbnamx=3)
 !
-    integer :: ifm, niv, iadzi, iazk24
-    integer :: ibid, iaux, iret, itab(7)
-    integer :: igeom, jtime, ierr, ivois
-    integer :: imate, iref1, iref2, ndim
-    integer :: nno, npg, idfde, jgano, nbcmp, tyv
-    integer :: npgp, nnop, nnosp, ipoidp, ivfp, isigno
-    integer :: nbs, idfse, inp, ino, nbnapa
-    integer :: jpintt, jcnset, jlonch, jvoxse, jsigse, jpmilt
-    integer :: nse, ise, in, j, ipg, levois
-    integer :: irese, kpg, spt, noe(9, 6, 4)
+    integer(kind=8) :: ifm, niv, iadzi, iazk24
+    integer(kind=8) :: ibid, iaux, iret, itab(7)
+    integer(kind=8) :: igeom, jtime, ierr, ivois
+    integer(kind=8) :: imate, iref1, iref2, ndim
+    integer(kind=8) :: nno, npg, idfde, jgano, nbcmp, tyv
+    integer(kind=8) :: npgp, nnop, nnosp, ipoidp, ivfp, isigno
+    integer(kind=8) :: nbs, idfse, inp, ino, nbnapa
+    integer(kind=8) :: jpintt, jcnset, jlonch, jvoxse, jsigse, jpmilt
+    integer(kind=8) :: nse, ise, in, j, ipg, levois
+    integer(kind=8) :: irese, kpg, spt, noe(9, 6, 4)
 !
     real(kind=8) :: r8bid
     real(kind=8) :: dfdxp(9), dfdyp(9), poidp, he, hse, hf, coeff
@@ -96,7 +96,7 @@ subroutine te0382(option, nomte)
     real(kind=8) :: tvol, tvolse, tsau, tnor, nor, norsig, sigcal
     real(kind=8) :: e, nu, valres(2), r8tmp, coorse(81)
 !
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     character(len=2) :: noeu
     character(len=3) :: typnor
     character(len=8) :: typmav, elrefe, famil, poum

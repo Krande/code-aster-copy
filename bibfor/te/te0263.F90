@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine te0263(option, nomte)
 ! ......................................................................
 !
     real(kind=8) :: poids, r
-    integer :: nno, kp, npg1, i, k, ivectt, isour, ndim, jgano, nnos
-    integer :: ipoids, ivf, idfde, igeom
+    integer(kind=8) :: nno, kp, npg1, i, k, ivectt, isour, ndim, jgano, nnos
+    integer(kind=8) :: ipoids, ivf, idfde, igeom
 !
 !
 !-----------------------------------------------------------------------

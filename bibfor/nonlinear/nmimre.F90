@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine nmimre(ds_conv, ds_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_resi, nb_resi
+    integer(kind=8) :: i_resi, nb_resi
     real(kind=8) :: vale_calc
     character(len=16) :: locus_calc
     character(len=24) :: col_name, col_name_locus

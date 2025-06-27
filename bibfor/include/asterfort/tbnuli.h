@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine tbnuli(tabin, npacri, lipacr, vi, vr,&
                       vc, vk, lprec, lcrit, nume)
         character(len=*) :: tabin
-        integer :: npacri
+        integer(kind=8) :: npacri
         character(len=*) :: lipacr(*)
-        integer :: vi(*)
+        integer(kind=8) :: vi(*)
         real(kind=8) :: vr(*)
         complex(kind=8) :: vc(*)
         character(len=*) :: vk(*)
         real(kind=8) :: lprec(*)
         character(len=*) :: lcrit(*)
-        integer :: nume
+        integer(kind=8) :: nume
     end subroutine tbnuli
 end interface

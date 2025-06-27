@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 !
     character(len=16), intent(in) :: elem_type_name
     aster_logical, intent(in) :: l_mfront_cp
-    integer, intent(out) :: model_mfront
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: model_mfront
+    integer(kind=8), intent(out) :: codret
     character(len=16), intent(out) :: type_cpla
 !
 ! --------------------------------------------------------------------------------------------------
@@ -54,7 +54,7 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=16) :: principal, model_type
 !
 ! --------------------------------------------------------------------------------------------------

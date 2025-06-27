@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine find_Cardan_roots(coef, roots, nbroot)
 !
     real(kind=8), intent(in) :: coef(4)
     real(kind=8), intent(out) :: roots(3)
-    integer, intent(out) :: nbroot
+    integer(kind=8), intent(out) :: nbroot
 !
 !
 !    RACINES REELLES POLYNOME DEGRE 3 : A*X**3 + B*X**2 + C*X + D = 0

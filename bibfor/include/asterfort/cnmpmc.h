@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine cnmpmc(main,nbma, lima,mpmc)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=8) :: main
-        integer :: lima(nbma)
-        integer :: mpmc(nbma)
+        integer(kind=8) :: lima(nbma)
+        integer(kind=8) :: mpmc(nbma)
     end subroutine cnmpmc
 end interface

@@ -24,7 +24,7 @@ subroutine tgveri_use(option, carcri, compor, iret)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! ----------------------------------------------------------------------
 ! VAR OPTION NOM DE L'OPTION DE CALCUL
@@ -40,7 +40,7 @@ subroutine tgveri_use(option, carcri, compor, iret)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: typeMatr
+    integer(kind=8) :: typeMatr
 ! ----------------------------------------------------------------------
 !
 !     Calcul de la matrice TGTE par PERTURBATION

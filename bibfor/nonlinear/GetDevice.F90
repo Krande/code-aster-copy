@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine GetDevice(ds_measure, device_type_, device, device_indx_)
     type(NL_DS_Measure), intent(in) :: ds_measure
     character(len=*), intent(in) :: device_type_
     type(NL_DS_Device), intent(out) :: device
-    integer, optional, intent(out) :: device_indx_
+    integer(kind=8), optional, intent(out) :: device_indx_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -48,7 +48,7 @@ subroutine GetDevice(ds_measure, device_type_, device, device_indx_)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=10) :: device_type
-    integer :: i_device, device_indx, nb_device
+    integer(kind=8) :: i_device, device_indx, nb_device
 !
 ! --------------------------------------------------------------------------------------------------
 !

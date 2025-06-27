@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ subroutine char_read_tran(keywordfact, iocc, ndim, &
 #include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: iocc
+    integer(kind=8), intent(in) :: ndim
     aster_logical, optional, intent(out) :: l_tran_
     real(kind=8), optional, intent(out) :: tran_(3)
     aster_logical, optional, intent(out) :: l_cent_
@@ -59,8 +59,8 @@ subroutine char_read_tran(keywordfact, iocc, ndim, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nangmx, i
-    integer :: ntran, ncent, nangl, vali(2)
+    integer(kind=8) :: nangmx, i
+    integer(kind=8) :: ntran, ncent, nangl, vali(2)
     aster_logical :: l_tran, l_cent, l_angl_naut
     real(kind=8) :: tran(3), cent(3), angl_naut(3)
 !

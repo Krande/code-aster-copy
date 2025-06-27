@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp, &
 !
     character(len=*) :: cnsz, cesz, base, celfpz
     character(len=1) :: comp
-    integer :: cret
+    integer(kind=8) :: cret
 ! ------------------------------------------------------------------
 ! BUT: TRANSFORMER UN CHAM_ELEM_S EN CHAM_NO_S
 ! ------------------------------------------------------------------
@@ -75,15 +75,15 @@ subroutine cescns(cesz, celfpz, base, cnsz, comp, &
 !
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: ima, ncmp, icmp, jcnsl, jcnsv, ispt
-    integer :: jcesd, jcesv, jcesl, nbma, iret, nbno
-    integer :: ino, nuno, nbpt, iad1, ilcnx1
-    integer :: jcesk, nbnot, jnbno, ieq, nbsp
+    integer(kind=8) :: ima, ncmp, icmp, jcnsl, jcnsv, ispt
+    integer(kind=8) :: jcesd, jcesv, jcesl, nbma, iret, nbno
+    integer(kind=8) :: ino, nuno, nbpt, iad1, ilcnx1
+    integer(kind=8) :: jcesk, nbnot, jnbno, ieq, nbsp
     character(len=3) :: tsca
     character(len=8) :: ma, nomgd
     character(len=19) :: ces, cns, ces1
     character(len=8), pointer :: cesc(:) => null()
-    integer, pointer :: connex(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()
 !

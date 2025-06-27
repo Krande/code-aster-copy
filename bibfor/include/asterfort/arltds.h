@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine arltds(nns   ,npgs  , &
                       ipoids,icoors,ivfs  ,idfdes, &
                       poijcs,fctfs ,dfdxs ,dfdys ,dfdzs)
-        integer :: nns
-        integer :: npgs
-        integer :: icoors
-        integer :: ipoids
-        integer :: ivfs
-        integer :: idfdes
+        integer(kind=8) :: nns
+        integer(kind=8) :: npgs
+        integer(kind=8) :: icoors
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivfs
+        integer(kind=8) :: idfdes
         real(kind=8) :: poijcs(npgs)
         real(kind=8) :: fctfs(npgs*nns)
         real(kind=8) :: dfdxs(npgs*nns)

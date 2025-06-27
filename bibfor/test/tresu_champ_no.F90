@@ -49,9 +49,9 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
     character(len=19), intent(in) :: cham19
     character(len=33), intent(in) :: nonoeu
     character(len=8), intent(in) :: nocmp
-    integer, intent(in) :: nbref
+    integer(kind=8), intent(in) :: nbref
     character(len=16), intent(in) :: tbtxt(2)
-    integer, intent(in) :: refi(nbref)
+    integer(kind=8), intent(in) :: refi(nbref)
     real(kind=8), intent(in) :: refr(nbref)
     complex(kind=8), intent(in) :: refc(nbref)
     character(len=1), intent(in) :: typres
@@ -79,7 +79,7 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
 !     VARIABLES LOCALES:
     character(len=8) :: nogd, mesh
     character(len=1) :: type
-    integer :: gd, iadg, vali, ser, inog, rank
+    integer(kind=8) :: gd, iadg, vali, ser, inog, rank
     real(kind=8) :: valr
     complex(kind=8) :: valc
     character(len=8) :: nomma
@@ -88,12 +88,12 @@ subroutine tresu_champ_no(cham19, nonoeu, nocmp, nbref, tbtxt, &
     aster_logical :: skip, l_parallel_mesh, l_ok
     real(kind=8) :: ordgrd
     mpi_int :: irank
-    integer, pointer :: v_noex(:) => null()
+    integer(kind=8), pointer :: v_noex(:) => null()
 !
 !-----------------------------------------------------------------------
-    integer :: iancmp, ianueq, iaprno, iavale
-    integer :: icmp, idecal, iicmp, ino, ival, ncmp
-    integer :: ncmpmx, nec
+    integer(kind=8) :: iancmp, ianueq, iaprno, iavale
+    integer(kind=8) :: icmp, idecal, iicmp, ino, ival, ncmp
+    integer(kind=8) :: ncmpmx, nec
 !-----------------------------------------------------------------------
     call jemarq()
 !

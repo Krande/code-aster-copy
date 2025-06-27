@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine utpar1(resu_type, nb_para_maxi, para_list, nb_para)
         character(len=*), intent(in) :: resu_type
-        integer, intent(in) :: nb_para_maxi
+        integer(kind=8), intent(in) :: nb_para_maxi
         character(len=32), intent(out) :: para_list(nb_para_maxi)
-        integer, intent(out) :: nb_para
+        integer(kind=8), intent(out) :: nb_para
     end subroutine utpar1
 end interface

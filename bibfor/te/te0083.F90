@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine te0083(option, nomte)
 !     4 composantes en sortie :
 !     MT, MFY, MFZ et MEQ = sqrt(MT**2+MFY**2+MFZ**2)
 !     ------------------------------------------------------------------
-    integer :: jin, jout, i, ibid, itab(7), lgcata
-    integer :: nbpoin, nbcompin, nbcompout
+    integer(kind=8) :: jin, jout, i, ibid, itab(7), lgcata
+    integer(kind=8) :: nbpoin, nbcompin, nbcompout
     real(kind=8) :: mt, mfy, mfz, meq
 !     ------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine almulr(czero, table, nbval, mantis, expo)
     implicit none
     character(len=*) :: czero
-    integer :: nbval, expo
+    integer(kind=8) :: nbval, expo
     real(kind=8) :: table(nbval), mantis
 !     PRODUIT DE N NOMBRE AVEC TEST DE L OVERFLOW ET DE L'UNDERFLOW
 !     AVEC CUMUL DE VALEUR ANTERIEUR OU REMISE A ZERO.
@@ -36,10 +36,10 @@ subroutine almulr(czero, table, nbval, mantis, expo)
 !     ------------------------------------------------------------------
 !
     real(kind=8) :: trent, trent1, zero, dix
-    integer :: itrent
+    integer(kind=8) :: itrent
 !
 !-----------------------------------------------------------------------
-    integer :: ie, ival
+    integer(kind=8) :: ie, ival
 !-----------------------------------------------------------------------
     trent = 1.d30
     itrent = 30

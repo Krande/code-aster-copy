@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ interface
                       i1, val, ds2hds, vecn, dfds,&
                       bprimp, nvi, vint, dhds, dgds,&
                       iret)
-        integer :: nvi
-        integer :: nmat
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: para(3)
         real(kind=8) :: vara(4)
         real(kind=8) :: devsig(6)
         real(kind=8) :: i1
-        integer :: val
+        integer(kind=8) :: val
         real(kind=8) :: ds2hds(6)
         real(kind=8) :: vecn(6)
         real(kind=8) :: dfds(6)
@@ -38,6 +38,6 @@ interface
         real(kind=8) :: vint(nvi)
         real(kind=8) :: dhds(6)
         real(kind=8) :: dgds(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lkdgds
 end interface

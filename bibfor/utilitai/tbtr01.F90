@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: nbpara, nblign, nume(*)
+    integer(kind=8) :: nbpara, nblign, nume(*)
     character(len=*) :: tabin, nopara
 !     TRI D'UNE TABLE.
 ! ----------------------------------------------------------------------
@@ -41,13 +41,13 @@ subroutine tbtr01(tabin, nbpara, nopara, nblign, nume)
 !                      LES "VIDE" EN TETE
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer ::  jnuvi, i, j, jvale, jvall, nbvid, nbnvd
-    integer :: lvale, jnume
+    integer(kind=8) ::  jnuvi, i, j, jvale, jvall, nbvid, nbnvd
+    integer(kind=8) :: lvale, jnume
     character(len=4) :: type
     character(len=19) :: nomtab
     character(len=24) :: nomjv, nomjvl, inpar, jnpar
-    integer, pointer :: n_vide(:) => null()
-    integer, pointer :: tri(:) => null()
+    integer(kind=8), pointer :: n_vide(:) => null()
+    integer(kind=8), pointer :: tri(:) => null()
     character(len=24), pointer :: tblp(:) => null()
 ! ----------------------------------------------------------------------
 !

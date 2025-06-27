@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,9 +73,9 @@ contains
                           cellGeom, cellGeomLine_)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: cellNume
+        integer(kind=8), intent(in) :: cellNume
         real(kind=8), pointer :: nodeCoor(:)
-        integer, pointer :: meshTypeGeom(:), meshConx(:), meshConxCumu(:)
+        integer(kind=8), pointer :: meshTypeGeom(:), meshConx(:), meshConxCumu(:)
         type(CELL_GEOM), intent(out) :: cellGeom
         type(CELL_GEOM), optional, intent(out) :: cellGeomLine_
 !   ------------------------------------------------------------------------------------------------
@@ -116,11 +116,11 @@ contains
     subroutine cellSetType(meshTypeGeom, cellNume, cellGeom)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, pointer :: meshTypeGeom(:)
-        integer, intent(in) :: cellNume
+        integer(kind=8), pointer :: meshTypeGeom(:)
+        integer(kind=8), intent(in) :: cellNume
         type(CELL_GEOM), intent(inout) :: cellGeom
 ! ----- Local
-        integer :: cellTypeNume, nbNode, nbNodeS, cellDime
+        integer(kind=8) :: cellTypeNume, nbNode, nbNodeS, cellDime
         character(len=8) :: cellTypeName
 !   ------------------------------------------------------------------------------------------------
 !
@@ -177,12 +177,12 @@ contains
                                cellGeom)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: cellNume
+        integer(kind=8), intent(in) :: cellNume
         real(kind=8), pointer :: nodeCoor(:)
-        integer, pointer :: meshConnex(:), meshConnexCumu(:)
+        integer(kind=8), pointer :: meshConnex(:), meshConnexCumu(:)
         type(CELL_GEOM), intent(inout) :: cellGeom
 ! ----- Local
-        integer :: iNode, iDime, nodeNume
+        integer(kind=8) :: iNode, iDime, nodeNume
 !   ------------------------------------------------------------------------------------------------
 !
         cellGeom%coorNodeGlob = 0.d0
@@ -285,12 +285,12 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(CELL_GEOM), intent(in) :: cellGeom
-        integer, intent(in) :: spaceDime
+        integer(kind=8), intent(in) :: spaceDime
         real(kind=8), intent(in) :: dShapeFunc(3, MT_NNOMAX3D)
         real(kind=8), intent(out) :: tau1(3), tau2(3)
 ! ----- Local
         real(kind=8), parameter :: zero = 0.d0
-        integer :: iNode, iDime
+        integer(kind=8) :: iNode, iDime
 !   ------------------------------------------------------------------------------------------------
 !
         ASSERT(cellGeom%nbNode .le. MT_NNOMAX3D)
@@ -324,7 +324,7 @@ contains
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
         type(CELL_GEOM), intent(in) :: cellGeom
-        integer, intent(in) :: spaceDime
+        integer(kind=8), intent(in) :: spaceDime
         real(kind=8), intent(in) :: poinCoorPara(3)
         type(CELL_SKIN_BASE), intent(out) :: baseExte
 ! ----- Local
@@ -360,7 +360,7 @@ contains
     subroutine cellCompNorm(spaceDime, tau1, tau2, norm)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: spaceDime
+        integer(kind=8), intent(in) :: spaceDime
         real(kind=8), intent(in) :: tau1(3), tau2(3)
         real(kind=8), intent(out) :: norm(3)
 ! ----- Local
@@ -402,7 +402,7 @@ contains
         real(kind=8), intent(out) :: poinCoorGlob(3)
 ! ----- Local
         real(kind=8) :: shapeFunc(MT_NNOMAX3D)
-        integer :: iNode, iDime
+        integer(kind=8) :: iNode, iDime
 !   ------------------------------------------------------------------------------------------------
 !
         poinCoorGlob = 0.d0
@@ -437,7 +437,7 @@ contains
         type(CELL_GEOM), intent(in) :: cellGeom
         real(kind=8), intent(out) :: cellCentPara(3)
 ! ----- Local
-        integer :: iNode
+        integer(kind=8) :: iNode
 !   ------------------------------------------------------------------------------------------------
 !
         cellCentPara = 0.d0
@@ -487,7 +487,7 @@ contains
 ! ----- Parameters
         type(CELL_GEOM), intent(inout) :: cellGeom
 ! ----- Locals
-        integer :: iNode, jNode
+        integer(kind=8) :: iNode, jNode
         real(kind=8) :: length
 !   ------------------------------------------------------------------------------------------------
 !
@@ -518,7 +518,7 @@ contains
         type(CELL_GEOM), intent(inout) :: cellGeom
 ! ----- Local
         real(kind=8) :: cellBaryPara(3)
-        integer :: iNode
+        integer(kind=8) :: iNode
 !   ------------------------------------------------------------------------------------------------
 !
         cellGeom%baryGlob = 0.d0
@@ -546,7 +546,7 @@ contains
     subroutine cellCompNormAtBary(spaceDime, cellGeom, cellNormBary)
 !   ------------------------------------------------------------------------------------------------
 ! ----- Parameters
-        integer, intent(in) :: spaceDime
+        integer(kind=8), intent(in) :: spaceDime
         type(CELL_GEOM), intent(in) :: cellGeom
         real(kind=8), intent(out) :: cellNormBary(3)
 ! ----- Local
@@ -580,7 +580,7 @@ contains
 ! ----- Parameters
         type(CELL_GEOM), intent(inout) :: cellGeom
 ! ----- Local
-        integer :: nbNeigh
+        integer(kind=8) :: nbNeigh
 !   ------------------------------------------------------------------------------------------------
 !
         nbNeigh = 0
@@ -617,7 +617,7 @@ contains
 ! ----- Parameters
         type(CELL_GEOM), intent(in) :: cellGeom
 ! ----- Locals
-        integer :: iNode
+        integer(kind=8) :: iNode
 !   ------------------------------------------------------------------------------------------------
 !
         if (cellGeom%isLinear) then
@@ -742,9 +742,9 @@ contains
         type(CELL_GEOM), intent(in) :: cellGeom
         real(kind=8), intent(in) :: projOutside
         real(kind=8), intent(inout) :: poinCoorPara(2)
-        integer, optional, intent(out) :: projType_
+        integer(kind=8), optional, intent(out) :: projType_
 ! ----- Local
-        integer :: projType
+        integer(kind=8) :: projType
         character(len=8) :: cellCode
 !   ------------------------------------------------------------------------------------------------
 !
@@ -791,7 +791,7 @@ contains
 ! ----- Parameters
         real(kind=8), intent(in) :: projOutside
         real(kind=8), intent(inout) :: poinCoorPara(2)
-        integer, intent(out) :: projType
+        integer(kind=8), intent(out) :: projType
 ! ----- Local
         aster_logical :: near
         real(kind=8) :: ecart
@@ -849,9 +849,9 @@ contains
 ! ----- Parameters
         real(kind=8), intent(in) :: projOutside
         real(kind=8), intent(inout) :: poinCoorPara(2)
-        integer, intent(out) :: projType
+        integer(kind=8), intent(out) :: projType
 ! ----- Local
-        integer :: izone
+        integer(kind=8) :: izone
         aster_logical :: near
         real(kind=8) :: ecart, k1pk2, k2mk1, ksi1e, ksi2e
 !   tolerances --- absolue et relative --- pour determiner si deux distances sont egales
@@ -992,9 +992,9 @@ contains
 ! ----- Parameter
         real(kind=8), intent(in) :: projOutside
         real(kind=8), intent(inout) :: poinCoorPara(2)
-        integer, intent(out) :: projType
+        integer(kind=8), intent(out) :: projType
 ! ----- Local
-        integer :: izone
+        integer(kind=8) :: izone
         aster_logical :: near
         real(kind=8) :: ecart, k1pk2, k2mk1
 !   tolerances --- absolue et relative --- pour determiner si deux distances sont egales

@@ -44,7 +44,7 @@ subroutine nmassc(listFuncActi, &
 #include "asterfort/nonlinDSVectCombAddAny.h"
 #include "asterfort/nonlinDSVectCombAddHat.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -71,7 +71,7 @@ subroutine nmassc(listFuncActi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: cnffdo, cndfdo, cnfvdo, cnvady
     character(len=19) :: cnffpi, cndfpi
     real(kind=8) :: coeequ

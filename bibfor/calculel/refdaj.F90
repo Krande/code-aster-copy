@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -92,13 +92,13 @@ subroutine refdaj(arret, result, nbordr, numer, typre, &
     character(len=*) :: numer
     character(len=*) :: typre
     character(len=*) :: conre(3)
-    integer :: nbordr, codret
+    integer(kind=8) :: nbordr, codret
 !
 !     0.2 - DECLARATION DES VARIABLES LOCALES
 !
     aster_logical :: oktres, newref, oktref
-    integer :: lonref(4), indref, jrefe, nbrefs, nbrefsmax, nbinit, nbord1
-    integer :: ibid, jbid, jindi, nbord0, ir, nbcham
+    integer(kind=8) :: lonref(4), indref, jrefe, nbrefs, nbrefsmax, nbinit, nbord1
+    integer(kind=8) :: ibid, jbid, jindi, nbord0, ir, nbcham
     character(len=1) :: jvb
     character(len=8) :: k8bid, resu2
     character(len=24) :: typres, accres(10), accref(5), obindi, corefd, typref, kbid

@@ -36,8 +36,8 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot, &
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: iequiv, nbcyl, numnog(*), nbnog(*), nummag(*)
-    integer :: numgrp(*), irot(3), nbgrp, nbz
+    integer(kind=8) :: iequiv, nbcyl, numnog(*), nbnog(*), nummag(*)
+    integer(kind=8) :: numgrp(*), irot(3), nbgrp, nbz
     real(kind=8) :: xint(nbcyl), yint(nbcyl), zint(nbz, nbgrp), coor(*)
     real(kind=8) :: cent(2*nbcyl), req(nbgrp), rint(nbcyl)
     character(len=19) :: caelem
@@ -75,18 +75,18 @@ subroutine mefcen(caelem, iequiv, nbcyl, nbz, irot, &
 ! OUT : RINT   : RAYONS DES CYLINDRES
 ! ----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: i, j, iret, rangr1
+    integer(kind=8) :: i, j, iret, rangr1
     character(len=19) :: carte, carsd
     character(len=3) :: note
 !     ------------------------------------------------------------------
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iad, icesc, icesd, icesl, icmp
-    integer :: npmax, numma, numno1, numno2
+    integer(kind=8) :: iad, icesc, icesd, icesl, icmp
+    integer(kind=8) :: npmax, numma, numno1, numno2
     real(kind=8) :: epsit
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     epsit = 1.d-5

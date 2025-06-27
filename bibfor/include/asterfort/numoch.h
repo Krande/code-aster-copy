@@ -18,9 +18,9 @@
 !
 interface
     subroutine numoch(listMatrElem, nbMatrElem, listLigr, nbLigr)
-        integer, intent(in) :: nbMatrElem
+        integer(kind=8), intent(in) :: nbMatrElem
         character(len=24), pointer :: listMatrElem(:)
         character(len=24), pointer :: listLigr(:)
-        integer, intent(out) :: nbLigr
+        integer(kind=8), intent(out) :: nbLigr
     end subroutine numoch
 end interface

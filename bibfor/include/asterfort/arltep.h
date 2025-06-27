@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ interface
                       nns   ,fctfs   , &
                       elrefc,nnc   ,coorc , &
                       fctfc ,dfdxc ,dfdyc ,dfdzc)
-        integer :: ndim
-        integer :: npgs
-        integer :: kpgs
-        integer :: nns
-        integer :: nnc
+        integer(kind=8) :: ndim
+        integer(kind=8) :: npgs
+        integer(kind=8) :: kpgs
+        integer(kind=8) :: nns
+        integer(kind=8) :: nnc
         character(len=8) :: elrefc
         real(kind=8) :: coorc(ndim*nnc)
         real(kind=8) :: coors(ndim*nns)

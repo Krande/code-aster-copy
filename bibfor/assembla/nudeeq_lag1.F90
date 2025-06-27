@@ -38,12 +38,12 @@ subroutine nudeeq_lag1(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
 !
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_node_mesh
-    integer, intent(in) :: nb_node_subs
+    integer(kind=8), intent(in) :: nb_node_mesh
+    integer(kind=8), intent(in) :: nb_node_subs
     character(len=14), intent(in) :: nume_ddl
-    integer, intent(in) :: nb_equa
-    integer, intent(in) :: igds
-    integer, intent(in) :: iddlag
+    integer(kind=8), intent(in) :: nb_equa
+    integer(kind=8), intent(in) :: igds
+    integer(kind=8), intent(in) :: iddlag
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -92,7 +92,7 @@ subroutine nudeeq_lag1(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_cmp_chck
+    integer(kind=8) :: nb_cmp_chck
     parameter(nb_cmp_chck=10)
 !
     character(len=8) :: nono, nocmp
@@ -100,15 +100,15 @@ subroutine nudeeq_lag1(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
     character(len=19) :: nume_equa
     character(len=24) :: delg
     character(len=24) :: valk(2)
-    integer :: i_ligr, iadg, i_dof, ier, i_equ
-    integer :: ilag, jncmp
-    integer :: jprno, jtypl, length_prno, nb_lagr, nb_ligr
-    integer :: nb_node, ncmpmx, nddlb, nec, nob
-    integer :: i_node, i_cmp_glob, i_cmp_chck
-    integer, pointer :: lnobloq(:) => null()
-    integer, pointer :: p_nueq(:) => null()
-    integer, pointer :: p_deeq(:) => null()
-    integer, pointer :: p_delg(:) => null()
+    integer(kind=8) :: i_ligr, iadg, i_dof, ier, i_equ
+    integer(kind=8) :: ilag, jncmp
+    integer(kind=8) :: jprno, jtypl, length_prno, nb_lagr, nb_ligr
+    integer(kind=8) :: nb_node, ncmpmx, nddlb, nec, nob
+    integer(kind=8) :: i_node, i_cmp_glob, i_cmp_chck
+    integer(kind=8), pointer :: lnobloq(:) => null()
+    integer(kind=8), pointer :: p_nueq(:) => null()
+    integer(kind=8), pointer :: p_deeq(:) => null()
+    integer(kind=8), pointer :: p_delg(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

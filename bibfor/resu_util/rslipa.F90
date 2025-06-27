@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 #include "asterfort/rsadpa.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: jadd, nbval, n1, j1
+    integer(kind=8) :: jadd, nbval, n1, j1
     character(len=*) :: nomsd, nopara, nomobj
 ! person_in_charge: jacques.pellet at edf.fr
 !
@@ -54,13 +54,13 @@ subroutine rslipa(nomsd, nopara, nomobj, jadd, nbval)
 !  - cette routine ne fait pas jemarq/jedema pour ne pas
 !    invalider l'adresse jeveux jadd
 ! ----------------------------------------------------------------------
-    integer :: kk, jpara, i1, jtava, l1
+    integer(kind=8) :: kk, jpara, i1, jtava, l1
     character(len=8) :: k8b, tsca
     character(len=5) :: nom1
     character(len=24) :: nomk24
     character(len=16) :: nompar
     character(len=19) :: noms2
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
 !
     noms2 = nomsd

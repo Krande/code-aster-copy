@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ interface
     subroutine umalma(mesh, list_grpma, nb_grpma, list_ma, nb_ma)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: list_grpma(*)
-        integer, intent(in) :: nb_grpma
-        integer, pointer :: list_ma(:)
-        integer, intent(out) :: nb_ma
+        integer(kind=8), intent(in) :: nb_grpma
+        integer(kind=8), pointer :: list_ma(:)
+        integer(kind=8), intent(out) :: nb_ma
     end subroutine umalma
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,14 +21,14 @@
 interface
     subroutine xchavi(actpoi, jbasc, jffis, jfon, jvit,&
                       jbeta, ndim, nfonn, sifval)
-        integer :: actpoi
-        integer :: jbasc
-        integer :: jffis
-        integer :: jfon
-        integer :: jvit
-        integer :: jbeta
-        integer :: ndim
-        integer :: nfonn
-        integer :: sifval
+        integer(kind=8) :: actpoi
+        integer(kind=8) :: jbasc
+        integer(kind=8) :: jffis
+        integer(kind=8) :: jfon
+        integer(kind=8) :: jvit
+        integer(kind=8) :: jbeta
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nfonn
+        integer(kind=8) :: sifval
     end subroutine xchavi
 end interface

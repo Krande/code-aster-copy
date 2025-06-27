@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,15 +47,15 @@ subroutine te0120(nomopt, nomte)
 !
 !......................................................................
 !
-    integer :: nnomax, nfismax, base_codage, iadzi, ndime, iazk24
+    integer(kind=8) :: nnomax, nfismax, base_codage, iadzi, ndime, iazk24
     parameter(nnomax=27, nfismax=4, base_codage=4)
     character(len=8) :: elrefp, enr, elrese(6), enr2, typma, noma
-    integer :: ibid, jcnset, jheavt, jlonch, jheano, jhease, jheafa, jheavf, jlonco
-    integer :: ncomph, ncompn, ifiss, nfiss, ncmpfa, he(nfismax), nbnose(6), nface, ifac, ncmpfa2
-    integer ::  id_no(nnomax), id_se, isd, nbsd, list_sd(nfismax), cpt, jfiss, jlsn, nnos, jfisco
+    integer(kind=8) :: ibid, jcnset, jheavt, jlonch, jheano, jhease, jheafa, jheavf, jlonco
+    integer(kind=8) :: ncomph, ncompn, ifiss, nfiss, ncmpfa, he(nfismax), nbnose(6), nface, ifac, ncmpfa2
+    integer(kind=8) ::  id_no(nnomax), id_se, isd, nbsd, list_sd(nfismax), cpt, jfiss, jlsn, nnos, jfisco
     real(kind=8) :: heav_no(nfismax)
     aster_logical :: is_counted(base_codage**nfismax), multi_contact, pre1
-    integer :: ndim, irese, nno, nnop, nse, ise, ino, iret, jtab(7)
+    integer(kind=8) :: ndim, irese, nno, nnop, nse, ise, ino, iret, jtab(7)
     data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
     data nbnose/2, 3, 4, 3, 6, 10/
 !

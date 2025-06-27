@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine hbcalc(fmoins, gamma, dg, nbmat, materf, &
                   vg, parame, derive, incrg)
     implicit none
 #include "asterfort/utmess.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: fmoins, incrg, gamma, dg, i1e, sigeqe, derive(5)
     real(kind=8) :: vp(3), materf(nbmat, 2), etap, vh, vg, parame(4)
 ! ======================================================================

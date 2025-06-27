@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ subroutine prvite(vec1, long, ip1, ip2, itp)
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-    integer :: ip(3), long, ip1, ip2, itp
+    integer(kind=8) :: ip(3), long, ip1, ip2, itp
     real(kind=8) :: angle(71), vite(71), angl, vec1(long)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ij, j, k
-    integer :: kk, long2
+    integer(kind=8) :: i, ij, j, k
+    integer(kind=8) :: kk, long2
     real(kind=8) :: alfa, beta
 !-----------------------------------------------------------------------
     data(angle(i), i=1, 17)/&

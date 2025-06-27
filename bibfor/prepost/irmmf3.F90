@@ -54,12 +54,12 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 #include "asterfort/wkvect.h"
 !
     med_idt :: fid
-    integer :: typgeo(*), nmatyp(*)
-    integer :: typent, nbrent, nbgrou
-    integer :: nbec
-    integer :: nufaen(nbrent), nufacr(nbrent), tabaux(*)
-    integer :: infmed
-    integer :: ifm
+    integer(kind=8) :: typgeo(*), nmatyp(*)
+    integer(kind=8) :: typent, nbrent, nbgrou
+    integer(kind=8) :: nbec
+    integer(kind=8) :: nufaen(nbrent), nufacr(nbrent), tabaux(*)
+    integer(kind=8) :: infmed
+    integer(kind=8) :: ifm
     character(len=6) :: prefix
     character(len=8) :: nomast
     character(len=24) :: nomgen(*)
@@ -111,17 +111,17 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
 ! -----------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'IRMMF3'
-    integer, parameter :: edmail = 0, ednoeu = 3, tygeno = 0
-    integer :: edfuin
+    integer(kind=8), parameter :: edmail = 0, ednoeu = 3, tygeno = 0
+    integer(kind=8) :: edfuin
     parameter(edfuin=0)
-    integer :: codret
-    integer :: iaux, jaux, kaux
-    integer :: numfam, nfam, cmpt, ii
-    integer :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
-    integer :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
-    integer :: jgren, jtest4, i_fama, kfama
-    integer :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
-    integer :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
+    integer(kind=8) :: codret
+    integer(kind=8) :: iaux, jaux, kaux
+    integer(kind=8) :: numfam, nfam, cmpt, ii
+    integer(kind=8) :: ityp, jnbno, jno, jma, nbnot, nbnol, start, filter(1)
+    integer(kind=8) :: nbeg, ige, ient, entfam, nbgnof, natt, nbmal, nbmat, jtyp
+    integer(kind=8) :: jgren, jtest4, i_fama, kfama
+    integer(kind=8) :: nbgr, nfam_max, nbbloc, nbfam_tot, nbgr_tot
+    integer(kind=8) :: rang, nbproc, jgrou, jnufa, numgrp, jnofa, jnbgr, jtest, jtest12
     character(len=8) :: saux08
     character(len=9) :: saux09
     character(len=64) :: nomfam
@@ -131,7 +131,7 @@ subroutine irmmf3(fid, nomamd, typent, nbrent, nbgrou, &
     character(len=80), pointer :: v_nomfag(:) => null()
     character(len=80), pointer :: v_nomgfag(:) => null()
     character(len=80), pointer :: v_fama(:) => null()
-    integer, pointer :: v_nbgrg(:) => null()
+    integer(kind=8), pointer :: v_nbgrg(:) => null()
     mpi_int, pointer :: v_count(:) => null()
     mpi_int, pointer :: v_displ(:) => null()
     mpi_int, pointer :: v_count2(:) => null()

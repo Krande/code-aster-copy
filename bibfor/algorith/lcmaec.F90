@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,11 +32,11 @@ subroutine lcmaec(fami, kpg, ksp, poum, nmater, &
 !         NBVAL  :  NOMBRE DE COEF MATERIAU LUS
 !     ----------------------------------------------------------------
 #include "asterfort/rcvalb.h"
-    integer :: kpg, ksp, nmat, nbval, imat
+    integer(kind=8) :: kpg, ksp, nmat, nbval, imat
     real(kind=8) :: valres(nmat), vallue(nmat)
     character(len=16) :: nomres(nmat)
     character(len=*) :: fami, poum
-    integer :: icodre(nmat)
+    integer(kind=8) :: icodre(nmat)
     character(len=16) :: nmater, necoul
 !     ----------------------------------------------------------------
 !

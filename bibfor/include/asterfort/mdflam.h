@@ -33,6 +33,6 @@ interface
         real(kind=8) :: fnorma
         real(kind=8) :: flocal(3)
         real(kind=8) :: vnorm
-        integer :: critamor  
+        integer(kind=8) :: critamor  
     end subroutine mdflam
 end interface

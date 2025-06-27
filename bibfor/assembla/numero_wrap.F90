@@ -56,7 +56,7 @@ subroutine numero_wrap(numeDofZ, base, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbLigr
+    integer(kind=8) :: nbLigr
     character(len=24), pointer :: listLigr(:) => null()
     character(len=24) :: virtualCell
 !

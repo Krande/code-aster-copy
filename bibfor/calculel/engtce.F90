@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-    integer :: ific
+    integer(kind=8) :: ific
     character(len=8) :: typtes
     character(len=10) :: preci, formr
     character(len=19) :: chamel
@@ -41,7 +41,7 @@ subroutine engtce(ific, chamel, typtes, preci, formr)
 ! IN  : FORMR  : FORMAT D'IMPRESSION DU CHAMP VALE REEL
 ! ----------------------------------------------------------------------
 !
-    integer :: vali, i, jvale, long, lg1, lg2
+    integer(kind=8) :: vali, i, jvale, long, lg1, lg2
     real(kind=8) :: valr
     character(len=3) :: type
     character(len=80) :: form1, form2

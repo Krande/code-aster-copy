@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig, &
 !     OUT RIG    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM)
 !     ------------------------------------------------------------------
-    integer :: i, int, j, jcoqu, jdepg, k, multic
+    integer(kind=8) :: i, int, j, jcoqu, jdepg, k, multic
     real(kind=8) :: wgt, depl(24)
     real(kind=8) :: df(3, 3), dm(3, 3), dmf(3, 3), dc(2, 2), dci(2, 2)
     real(kind=8) :: dmc(3, 2), dfc(3, 2)
@@ -87,7 +87,7 @@ subroutine dsqrig(nomte, xyzl, option, pgl, rig, &
     real(kind=8) :: bsigth(24), enerth, ctor, un, zero, eta, excent, qsi
     real(kind=8) :: jacob(5), caraq4(25), t2iu(4), t2ui(4), t1ve(9)
     aster_logical :: coupmf, exce, indith, ismultic
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !     ------------------------------------------------------------------
 !
     call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, npg=npg, &

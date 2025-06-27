@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,8 +54,8 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 #include "asterfort/nmrigi.h"
 #include "asterfort/utmess.h"
 !
-    integer :: list_func_acti(*)
-    integer :: iter_newt, nume_inst
+    integer(kind=8) :: list_func_acti(*)
+    integer(kind=8) :: iter_newt, nume_inst
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=19) :: sddisc, sdnume
@@ -110,16 +110,16 @@ subroutine nmfcor(model, nume_dof, ds_material, cara_elem, ds_system, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = CORR_NEWTON
-    integer :: ifm, niv
+    integer(kind=8), parameter :: phaseType = CORR_NEWTON
+    integer(kind=8) :: ifm, niv
     character(len=24) :: mate, mateco, varc_refe
     aster_logical :: l_comp_fint, l_comp_rigi
     character(len=19) :: disp_curr, vite_curr, acce_curr, vect_lagr
     character(len=16) :: corrMatrType, nonLinearOption
     aster_logical :: l_cont_disc, l_unil, l_comp_cont
     aster_logical :: l_disp, l_vite, l_acce, l_dyna, l_update_matr
-    integer :: ldccvg, reac_iter
-    integer :: condcvg
+    integer(kind=8) :: ldccvg, reac_iter
+    integer(kind=8) :: condcvg
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,7 +60,7 @@ function spect2(a, b, xlc, vitn, rhoe, &
 ! ---------
 #include "jeveux.h"
 #include "asterfort/spect3.h"
-    integer :: nbp
+    integer(kind=8) :: nbp
     real(kind=8) :: a
     real(kind=8) :: b
     real(kind=8) :: xlc
@@ -68,31 +68,31 @@ function spect2(a, b, xlc, vitn, rhoe, &
     real(kind=8) :: rhoe(nbp, *)
     real(kind=8) :: defm(nbp, *)
     real(kind=8) :: tol
-    integer :: ier
+    integer(kind=8) :: ier
     real(kind=8) :: r1
     real(kind=8) :: err
-    integer :: im
-    integer :: jm
+    integer(kind=8) :: im
+    integer(kind=8) :: jm
     real(kind=8) :: spect2
     interface
         function func(xx, y, xlc, vitn, rhoe, &
                       defm, nbp, im, jm)
-            integer :: nbp
+            integer(kind=8) :: nbp
             real(kind=8) :: xx
             real(kind=8) :: y
             real(kind=8) :: xlc
             real(kind=8) :: vitn(nbp, *)
             real(kind=8) :: rhoe(nbp, *)
             real(kind=8) :: defm(nbp, *)
-            integer :: im
-            integer :: jm
+            integer(kind=8) :: im
+            integer(kind=8) :: jm
             real(kind=8) :: func
         end function func
     end interface
 !
 ! VARIABLES LOCALES
 ! -----------------
-    integer :: index, n1, n2, i, arret
+    integer(kind=8) :: index, n1, n2, i, arret
     real(kind=8) :: res, xm, dx, x0, som, x
     real(kind=8) :: w(127), coeff(381)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,10 +60,10 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, nlDynaDamping, ds_constitutive
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbMode, nbEqua
-    integer :: iExci, nbExci
-    integer :: jvMultSuppProj, jvNumeDofDEEQ
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbMode, nbEqua
+    integer(kind=8) :: iExci, nbExci
+    integer(kind=8) :: jvMultSuppProj, jvNumeDofDEEQ
     aster_logical :: lDampModal, lMultiSupport
     character(len=19) :: pfcn1, pfcn2, dispPrev, multSuppProj
     character(len=8) :: mesh

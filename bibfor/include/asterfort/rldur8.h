@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine rldur8(nommat, hcol, adia, ablo, neq,&
                       nbbloc, xsol, nbsol)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=*) :: nommat
-        integer :: hcol(*)
-        integer :: adia(*)
-        integer :: ablo(*)
-        integer :: nbbloc
+        integer(kind=8) :: hcol(*)
+        integer(kind=8) :: adia(*)
+        integer(kind=8) :: ablo(*)
+        integer(kind=8) :: nbbloc
         real(kind=8) :: xsol(neq, *)
-        integer :: nbsol
+        integer(kind=8) :: nbsol
     end subroutine rldur8
 end interface

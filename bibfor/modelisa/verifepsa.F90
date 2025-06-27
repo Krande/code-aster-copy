@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,11 +26,11 @@ subroutine verifepsa(fami, kpg, ksp, poum, &
 #include "asterfort/rcvarc.h"
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
     character(len=*), intent(in) :: poum
     real(kind=8), intent(out) :: epsa(6)
-    integer, optional, intent(out) :: iepsa_(6)
+    integer(kind=8), optional, intent(out) :: iepsa_(6)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -52,7 +52,7 @@ subroutine verifepsa(fami, kpg, ksp, poum, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, iretm(6), iretp(6), iret(6)
+    integer(kind=8) :: i, iretm(6), iretp(6), iret(6)
     real(kind=8) :: defam(6), defap(6)
     character(len=6), parameter :: name_epsa(6) = (/'EPSAXX', 'EPSAYY', 'EPSAZZ', &
                                                     'EPSAXY', 'EPSAXZ', 'EPSAYZ'/)

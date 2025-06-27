@@ -50,7 +50,7 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
     type(cara_elem_info) :: infdonn
     type(cara_elem_carte) :: infcarte(*)
 
-    integer :: lmax, nbocc, ivr(*), ifm
+    integer(kind=8) :: lmax, nbocc, ivr(*), ifm
 
 ! ----------------------------------------------------------------------
 !     AFFE_CARA_ELEM
@@ -61,12 +61,12 @@ subroutine acearm(infdonn, lmax, nbocc, infcarte, ivr)
 ! IN  : NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE DISCRET
 ! IN  : IVR    : TABLEAU DES INDICES DE VERIFICATION
 ! ----------------------------------------------------------------------
-    integer :: nrd
+    integer(kind=8) :: nrd
     parameter(nrd=2)
-    integer :: jdc(3), jdv(3), dimcar, irgma, irgm2, irgm3
-    integer :: itbmp, ndim, jdcinf, jdvinf, i, ioc
-    integer :: irep, isym, impris, nu, nfr, ngp, ngl, ifreq, nma, ldgm, nbpo
-    integer :: in, nfreq, iv, jd, ncmp, l, nbli, ncmp2, icf
+    integer(kind=8) :: jdc(3), jdv(3), dimcar, irgma, irgm2, irgm3
+    integer(kind=8) :: itbmp, ndim, jdcinf, jdvinf, i, ioc
+    integer(kind=8) :: irep, isym, impris, nu, nfr, ngp, ngl, ifreq, nma, ldgm, nbpo
+    integer(kind=8) :: in, nfreq, iv, jd, ncmp, l, nbli, ncmp2, icf
     real(kind=8) :: eta, vale(3), freq, coef, zero(5)
     character(len=1) :: kma(3)
     character(len=7) :: ledisc

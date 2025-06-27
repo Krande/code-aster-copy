@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
                       dspdp1, dspdp2, l_dspdp2)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
-        integer, intent(in) :: adcome, addep1, addep2
-        integer, intent(in) :: dimdef, dimcon
+        integer(kind=8), intent(in) :: adcome, addep1, addep2
+        integer(kind=8), intent(in) :: dimdef, dimcon
         real(kind=8), intent(in) :: dsde(dimcon, dimdef)
         real(kind=8), intent(out) :: dspdp1, dspdp2
         aster_logical, intent(out) :: l_dspdp2

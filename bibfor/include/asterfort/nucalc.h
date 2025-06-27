@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     function nucalc(opt, te, memoir)
-        integer :: opt
-        integer :: te
-        integer :: memoir
-        integer :: nucalc
+        integer(kind=8) :: opt
+        integer(kind=8) :: te
+        integer(kind=8) :: memoir
+        integer(kind=8) :: nucalc
     end function nucalc
 end interface

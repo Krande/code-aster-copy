@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,12 +41,12 @@ subroutine te0538(option, nomte)
 ! ......................................................................
     character(len=8) :: lag
     character(len=16) :: elref
-    integer :: jgano, nno, npg, imatuu, ndim
-    integer :: ipoids, ivf, idfde, igeom, imate
-    integer :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno
-    integer :: nnos, nfiss, jfisno, jheavn, ncompn, heavn(27, 5), jtab(7), ino, ig, iret
-    integer :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
-    integer :: jpmilt
+    integer(kind=8) :: jgano, nno, npg, imatuu, ndim
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, imate
+    integer(kind=8) :: jpintt, jcnset, jheavt, jlonch, jbaslo, jlsn, jlst, jstno
+    integer(kind=8) :: nnos, nfiss, jfisno, jheavn, ncompn, heavn(27, 5), jtab(7), ino, ig, iret
+    integer(kind=8) :: nfh, ddlc, nddl, nnom, nfe, ibid, ddls, ddlm
+    integer(kind=8) :: jpmilt
 !
 !
 !

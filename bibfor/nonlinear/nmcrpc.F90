@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nmcrpc(ds_inout, nume_reuse, time_curr)
 #include "asterfort/tbajli.h"
 !
     type(NL_DS_InOut), intent(in) :: ds_inout
-    integer, intent(in) :: nume_reuse
+    integer(kind=8), intent(in) :: nume_reuse
     real(kind=8), intent(in) :: time_curr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -44,7 +44,7 @@ subroutine nmcrpc(ds_inout, nume_reuse, time_curr)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: vali(1)
+    integer(kind=8) :: vali(1)
     character(len=8) :: k8bid
     complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
     real(kind=8) :: valr(1)

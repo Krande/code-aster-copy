@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine nmsssv(modelz, matez, caraElemz, listLoad, vesstf)
     character(len=1), parameter :: base = 'V'
     character(len=8) :: model, mate
     character(len=24) :: funcMultSuper, caraElem
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

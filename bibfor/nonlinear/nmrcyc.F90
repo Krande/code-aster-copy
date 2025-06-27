@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ function nmrcyc(sddisc, iterat, prec)
 #include "asterfort/nmlere.h"
 #include "asterfort/wkvect.h"
     aster_logical :: nmrcyc
-    integer :: iterat
+    integer(kind=8) :: iterat
     real(kind=8) :: prec
     character(len=19) :: sddisc
 !
@@ -42,7 +42,7 @@ function nmrcyc(sddisc, iterat, prec)
 !
 !
 !
-    integer :: itemax, maxseq, lenseq, finseq, offset, jres
+    integer(kind=8) :: itemax, maxseq, lenseq, finseq, offset, jres
     real(kind=8) :: res1, res2
     character(len=24) :: residu
 ! ----------------------------------------------------------------------

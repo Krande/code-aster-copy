@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine InitTableCvg(list_func_acti, sdsuiv, ds_print)
 #include "asterfort/jeveuo.h"
 #include "asterfort/SetTableColumn.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: sdsuiv
     type(NL_DS_Print), intent(inout) :: ds_print
 !
@@ -47,7 +47,7 @@ subroutine InitTableCvg(list_func_acti, sdsuiv, ds_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_dof_monitor, nb_dof_monitor
+    integer(kind=8) :: i_dof_monitor, nb_dof_monitor
     type(NL_DS_Table) :: table_cvg
     aster_logical :: l_line_search, l_pilo, l_cont_disc, l_cont_cont, l_hrom, l_rom
     aster_logical :: l_deborst, l_refe_rela, l_comp_rela
@@ -59,7 +59,7 @@ subroutine InitTableCvg(list_func_acti, sdsuiv, ds_print)
     character(len=24) :: col_name
     character(len=512) :: sep_line
     character(len=24) :: sdsuiv_info
-    integer, pointer :: v_sdsuiv_info(:) => null()
+    integer(kind=8), pointer :: v_sdsuiv_info(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,9 +39,9 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he, &
 #include "asterfort/xcalc_code.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
-    integer :: igeom, ndim, ddlh, ddlc, singu, nnop
-    integer :: iforc, itemps, ivectu, jlsn, jlst, heavn(27, 5)
-    integer :: imate, jbaslo, jstno
+    integer(kind=8) :: igeom, ndim, ddlh, ddlc, singu, nnop
+    integer(kind=8) :: iforc, itemps, ivectu, jlsn, jlst, heavn(27, 5)
+    integer(kind=8) :: imate, jbaslo, jstno
     real(kind=8) :: he
     aster_logical :: fonc, fono
 !-----------------------------------------------------------------------
@@ -73,9 +73,9 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he, &
 !
 !
 !
-    integer :: i, ino, ig, ier, j, n, mxstac
-    integer :: ndimb, nno, nnos, nnops, npgbis, pos, irese, nfh
-    integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg, hea_se, alp
+    integer(kind=8) :: i, ino, ig, ier, j, n, mxstac
+    integer(kind=8) :: ndimb, nno, nnos, nnops, npgbis, pos, irese, nfh
+    integer(kind=8) :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg, hea_se, alp
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop)
     real(kind=8) :: fk(27, 3, 3), ka, mu
     real(kind=8) :: forvol(ndim)
@@ -218,8 +218,9 @@ subroutine xfovol(elrefp, ndim, coorse, igeom, he, &
             do j = 1, ddlh
                 pos = pos+1
                 ig = j-nfh*int((j-1)/nfh)
-                zr(ivectu-1+pos) = zr(ivectu-1+pos)+ &
-                           xcalc_heav(heavn(ino, ig), hea_se, heavn(ino, 5))*forvol(j)*poids*ff(ino)
+                zr(ivectu-1+pos) = &
+                    zr(ivectu-1+pos)+ &
+                    xcalc_heav(heavn(ino, ig), hea_se, heavn(ino, 5))*forvol(j)*poids*ff(ino)
 !
             end do
 !

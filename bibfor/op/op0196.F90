@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,9 +54,9 @@ subroutine op0196()
 #include "asterfort/xpomax.h"
 #include "asterfort/xposep.h"
 #include "asterfort/xxishm.h"
-    integer :: jlicha, nbordr, ior, jord, iord, jinst1, jinst2, nbcham
-    integer :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv, ic
-    integer :: jmod, mftot, nftot, nfcomf, ngfon
+    integer(kind=8) :: jlicha, nbordr, ior, jord, iord, jinst1, jinst2, nbcham
+    integer(kind=8) :: ibid, iret, nsetot, nnntot, ncotot, nbnoc, nbmac, ifm, niv, ic
+    integer(kind=8) :: jmod, mftot, nftot, nfcomf, ngfon
     character(len=1) :: kbid
     character(len=2) :: k2b(4)
     character(len=8) :: maxfem, mo, malini, resuco, resux, modvis

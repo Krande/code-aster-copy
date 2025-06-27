@@ -34,7 +34,7 @@ subroutine resuSaveParameters(resultName, resultType, &
     character(len=16), intent(in) :: resultType
     character(len=8), intent(in) :: model, caraElem, materField
     character(len=24), intent(in) :: listLoadResu
-    integer, optional, intent(in) :: empiNumePlan_, empiSnapNb_
+    integer(kind=8), optional, intent(in) :: empiNumePlan_, empiSnapNb_
     character(len=24), optional, intent(in) :: empiFieldType_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -57,8 +57,8 @@ subroutine resuSaveParameters(resultName, resultType, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: storeNb, jvPara, iStore, storeNume
-    integer, pointer :: storeList(:) => null()
+    integer(kind=8) :: storeNb, jvPara, iStore, storeNume
+    integer(kind=8), pointer :: storeList(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

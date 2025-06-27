@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine zlscal(n, za, zx, incx)
-        integer :: n
+        integer(kind=8) :: n
         complex(kind=8) :: za
         complex(kind=8) :: zx(*)
-        integer :: incx
+        integer(kind=8) :: incx
     end subroutine zlscal
 end interface

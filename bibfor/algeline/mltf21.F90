@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,10 +26,10 @@ subroutine mltf21(p, front, frn, n, t1, &
 #include "asterfort/col21j.h"
 #include "asterfort/colni1.h"
 #include "asterfort/colni2.h"
-    integer :: p, n, ier
+    integer(kind=8) :: p, n, ier
     real(kind=8) :: front(*), t1(*), t2(*), frn(*), eps
 !                                          VARIABLES LOCALES
-    integer :: dia1, dia2, j, l, m, r, dia21, n1, jj
+    integer(kind=8) :: dia1, dia2, j, l, m, r, dia21, n1, jj
     real(kind=8) :: coef1
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

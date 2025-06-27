@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma, &
     character(len=16) :: corres
     character(len=19) :: ligrel
     character(len=19) :: dcnsln, dcnslt, cnsln, cnslt, grln, grlt, ndomp, edomg
-    integer :: ndim
+    integer(kind=8) :: ndim
 !
 ! person_in_charge: samuel.geniaut at edf.fr
 !
@@ -105,11 +105,11 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma, &
 !     CHARACTERISTICS OF THE MESHES
 !
 !     PROJECTION LEVEL SETS MESH
-    integer :: nbelpr, jefrom, jcnlnl, jcnltl
+    integer(kind=8) :: nbelpr, jefrom, jcnlnl, jcnltl
 !
 !     PROJECTION PHYSICAL MESH
     character(len=19) :: tmplsn, tmplst
-    integer :: jnto, nunopr
+    integer(kind=8) :: jnto, nunopr
 !
 !     PROJECTION CODE
     aster_logical :: ldmax
@@ -119,8 +119,8 @@ subroutine xprpls(ligrel, dnoma, dcnsln, dcnslt, noma, &
     character(len=24) :: lchin(4), lchout(2)
 !
 !     GENERAL PURPOSE
-    integer :: i, ibid
-    integer :: ifm, niv
+    integer(kind=8) :: i, ibid
+    integer(kind=8) :: ifm, niv
     real(kind=8), pointer :: cnlnv(:) => null()
     real(kind=8), pointer :: cnltv(:) => null()
     real(kind=8), pointer :: tmpln(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine gdinor(norm, lobj2, iadnum, coorn, in2)
         character(len=24) :: norm
-        integer :: lobj2
-        integer :: iadnum
+        integer(kind=8) :: lobj2
+        integer(kind=8) :: iadnum
         character(len=24) :: coorn
-        integer :: in2
+        integer(kind=8) :: in2
     end subroutine gdinor
 end interface

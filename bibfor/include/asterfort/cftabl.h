@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine cftabl(indic, nbliac, ajliai, spliai, &
                       sdcont_solv, typope, posit,&
                       iliai)
-        integer :: indic
-        integer :: nbliac
-        integer :: ajliai
-        integer :: spliai
+        integer(kind=8) :: indic
+        integer(kind=8) :: nbliac
+        integer(kind=8) :: ajliai
+        integer(kind=8) :: spliai
         character(len=24) :: sdcont_solv
         character(len=1) :: typope
-        integer :: posit
-        integer :: iliai
+        integer(kind=8) :: posit
+        integer(kind=8) :: iliai
     end subroutine cftabl
 end interface

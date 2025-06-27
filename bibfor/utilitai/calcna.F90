@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ subroutine calcna(nomfin, nomfon, nbvalp, valep, noparp, &
 #include "asterfort/lxlgut.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nbvalp, nbvalf
+    integer(kind=8) :: nbvalp, nbvalf
     real(kind=8) :: valep(*), valef(*)
     character(len=19) :: nomfin, nomfon
     character(len=24) :: noparp, noparf
 !
 !     CREATION DU SD FONCTION A PARTIR D'UNE FORMULE (NAPPE )
 !     ------------------------------------------------------------------
-    integer :: lont, i, ival, lval, lfon, lprol, lpara, ier
+    integer(kind=8) :: lont, i, ival, lval, lfon, lprol, lpara, ier
     real(kind=8) :: vale(2)
     character(len=16) :: nopara(2)
 !     ------------------------------------------------------------------

@@ -43,7 +43,7 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 !
     character(len=8) :: noma, noma2
     character(len=1) :: base
-    integer :: nbno, lino(*)
+    integer(kind=8) :: nbno, lino(*)
 
 ! person_in_charge: jacques.pellet at edf.fr
 
@@ -57,8 +57,8 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
 !  lima   : in  : liste des numeros des noeuds
 ! ======================================================================
 
-    integer ::  nbnoin, ino, jdim, jcorou, iad, ntgeo, nbnoou
-    integer ::  ino2, typpoi, jadou, itypou, k
+    integer(kind=8) ::  nbnoin, ino, jdim, jcorou, iad, ntgeo, nbnoou
+    integer(kind=8) ::  ino2, typpoi, jadou, itypou, k
     character(len=4) :: docu
     character(len=8) ::  nomno, nom
     character(len=24) ::  cooval, coodsc

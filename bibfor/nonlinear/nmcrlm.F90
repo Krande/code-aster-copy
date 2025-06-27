@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,7 +50,7 @@ subroutine nmcrlm(listr8_sdaster, sddisc, list_inst_work)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_inst, i_inst
+    integer(kind=8) :: nb_inst, i_inst
     real(kind=8) :: dtmin, deltat
     character(len=8) :: list_method
     character(len=24) :: sddisc_linf

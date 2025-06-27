@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@
 interface
     subroutine avenca(jrvecp, nbvec, nbordr, lsig0, iflag,&
                       rmima)
-        integer :: nbordr
-        integer :: nbvec
-        integer :: jrvecp
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbvec
+        integer(kind=8) :: jrvecp
         aster_logical :: lsig0
-        integer :: iflag(nbvec)
+        integer(kind=8) :: iflag(nbvec)
         real(kind=8) :: rmima(4*nbvec)
     end subroutine avenca
 end interface

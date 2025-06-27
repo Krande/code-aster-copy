@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine celfpg(celz, nomobj, iret)
 #include "asterfort/wkvect.h"
 !
     character(len=*) :: celz, nomobj
-    integer :: iret
+    integer(kind=8) :: iret
 ! person_in_charge: jacques.pellet at edf.fr
 ! ------------------------------------------------------------------
 ! BUT : EXTRAIRE DU CHAM_ELEM (ELGA) CELZ UN OBJET JEVEUX CONTENANT
@@ -75,13 +75,13 @@ subroutine celfpg(celz, nomobj, iret)
     character(len=16) :: nofpg
     character(len=19) :: cel, ligrel, ligrsv
     character(len=24) :: nomosv
-    integer :: jobj, nbma, jcelv, nec
-    integer :: igr, iel, illiel
-    integer :: nbgr, imolo, jmolo, numa, nbel, kfpg
-    integer :: iexi
+    integer(kind=8) :: jobj, nbma, jcelv, nec
+    integer(kind=8) :: igr, iel, illiel
+    integer(kind=8) :: nbgr, imolo, jmolo, numa, nbel, kfpg
+    integer(kind=8) :: iexi
     character(len=24), pointer :: celk(:) => null()
-    integer, pointer :: liel(:) => null()
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: liel(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     save ligrsv, nomosv
 !
 #define numail(igr,iel) liel(zi(illiel+igr-1)+iel-1)

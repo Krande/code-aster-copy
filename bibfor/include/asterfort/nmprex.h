@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         character(len=19) :: depmoi
         character(len=19) :: solalg(*)
         character(len=19) :: sddisc
-        integer :: numins
+        integer(kind=8) :: numins
         character(len=19) :: incest
         character(len=19) :: depest
     end subroutine nmprex

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine xbasgl(ndim, basloc, ipt, p, invp)
 #include "asterc/r8prem.h"
 #include "asterfort/matinv.h"
 !
-    integer :: ndim, ipt
+    integer(kind=8) :: ndim, ipt
     real(kind=8) :: basloc(*)
     real(kind=8) :: p(3, 3), invp(3, 3)
 !
@@ -39,7 +39,7 @@ subroutine xbasgl(ndim, basloc, ipt, p, invp)
 !
 !----------------------------------------------------------------
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
     real(kind=8) :: e1(3), e2(3), e3(3), norme
 !----------------------------------------------------------------
 !

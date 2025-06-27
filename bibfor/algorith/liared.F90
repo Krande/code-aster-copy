@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -63,12 +63,12 @@ subroutine liared(nomres, fmli, iblo, liamod, nlilia, &
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: iblo, nlilia, ncolia, nlipro, ncopro, taille(2), nbcol
+    integer(kind=8) :: iblo, nlilia, ncolia, nlipro, ncopro, taille(2), nbcol
     character(len=8) :: nomres
     character(len=24) :: fmli, liamod, promod, indcol
 !
 !-- VARIABLES DE LA ROUTINE
-    integer :: i1, j1, k1, l1, lliamo, lpromo, ltemp, lpro
+    integer(kind=8) :: i1, j1, k1, l1, lliamo, lpromo, ltemp, lpro
     real(kind=8) :: temp, eps, coeff
     parameter(eps=2.3d-16)
 !

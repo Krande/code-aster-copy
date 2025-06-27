@@ -42,21 +42,21 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
     character(len=16), pointer :: v_sdlist_eevenk(:)
     character(len=24), intent(in):: sdlist_loca
     real(kind=8), pointer :: v_sdlist_esubdr(:)
-    integer, intent(in) :: i_fail_save
+    integer(kind=8), intent(in) :: i_fail_save
     character(len=16), intent(in) :: event_typek
     real(kind=8), intent(in) :: vale_ref
     character(len=16), intent(in) :: nom_cham
     character(len=16), intent(in) :: nom_cmp
     character(len=16), intent(in) :: crit_cmp
     character(len=24), intent(in) :: lst_loca
-    integer, intent(in):: etat_loca
+    integer(kind=8), intent(in):: etat_loca
     real(kind=8), intent(in) :: pene_maxi
     real(kind=8), intent(in) :: resi_glob_maxi
     character(len=16), intent(in) :: action_typek
     character(len=16), intent(in) :: subd_methode
     real(kind=8), intent(in) :: subd_pas_mini
-    integer, intent(in) :: subd_niveau
-    integer, intent(in) :: subd_pas
+    integer(kind=8), intent(in) :: subd_niveau
+    integer(kind=8), intent(in) :: subd_pas
     character(len=16), intent(in) :: subd_auto
     real(kind=8), intent(in) :: subd_inst
     real(kind=8), intent(in) :: subd_duree
@@ -98,9 +98,9 @@ subroutine dfllsv(v_sdlist_linfor, v_sdlist_eevenr, v_sdlist_eevenk, sdlist_loca
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer:: nb_loca, lg_ini
-    integer, pointer :: v_sdlist_loca(:) => null()
-    integer, pointer :: v_lst_loca(:) => null()
+    integer(kind=8):: nb_loca, lg_ini
+    integer(kind=8), pointer :: v_sdlist_loca(:) => null()
+    integer(kind=8), pointer :: v_lst_loca(:) => null()
 ! --------------------------------------------------------------------------------------------------
 
     call jemarq()

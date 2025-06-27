@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ function inpara(opt, te, statut, nopara)
 #include "jeveux.h"
     character(len=8) :: nopara
     character(len=3) :: statut
-    integer :: opt, te
-    integer :: inpara
+    integer(kind=8) :: opt, te
+    integer(kind=8) :: inpara
 !-----------------------------------------------------------------------
 !     entrees:
 !        opt    : option
@@ -41,8 +41,8 @@ function inpara(opt, te, statut, nopara)
 !                --> rend : 0 si le nompara n'est pas trouve
 !
 !-----------------------------------------------------------------------
-    integer :: i, deb, fin, trouve, jj, optmod, optnom
-    integer ::    nucalc
+    integer(kind=8) :: i, deb, fin, trouve, jj, optmod, optnom
+    integer(kind=8) ::    nucalc
 !-------------------------------------------------------------------
 
     jj = zi(ca_iaoptt_-1+(te-1)*ca_lgco_+opt)

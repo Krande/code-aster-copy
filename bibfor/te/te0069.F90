@@ -43,8 +43,8 @@ subroutine te0069(option, nomte)
     type(FE_basis) :: FEBasis
 !
     character(len=8), parameter :: famiR = "RIGI"
-    integer :: icamas, kp, imate, itemps
-    integer :: icodre(1)
+    integer(kind=8) :: icamas, kp, imate, itemps
+    integer(kind=8) :: icodre(1)
     character(len=16) :: phenom
     real(kind=8) :: time, Kglo(3, 3), fluglo(3), dtpg(3), tpg
     real(kind=8), pointer :: flux(:) => null()

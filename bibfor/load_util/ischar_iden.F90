@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
 #include "asterfort/jeveuo.h"
 !
     aster_logical :: ischar_iden
-    integer, pointer :: v_load_info(:)
-    integer, intent(in) :: i_load
-    integer, intent(in) :: nb_load
+    integer(kind=8), pointer :: v_load_info(:)
+    integer(kind=8), intent(in) :: i_load
+    integer(kind=8), intent(in) :: nb_load
     character(len=4), intent(in) :: load_type_1
     character(len=4), intent(in) :: load_type_2
     character(len=24), optional, intent(in) :: load_name
@@ -65,7 +65,7 @@ function ischar_iden(v_load_info, i_load, nb_load, load_type_1, load_type_2, loa
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: load_nume_diri, load_nume_neum, jafci, ier
+    integer(kind=8) :: load_nume_diri, load_nume_neum, jafci, ier
     aster_logical :: ldiri, lelim, ldual, ldidi, lneum
     aster_logical :: londe, lsigm, lelem, lsuiv, lpilo
 !

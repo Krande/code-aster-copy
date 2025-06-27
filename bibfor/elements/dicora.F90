@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,11 +39,11 @@ subroutine dicora(for_discret, iret)
 #include "asterfort/vecma.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out)          :: iret
+    integer(kind=8), intent(out)          :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iiter, imat, ivarim, neq, iterat, ii, ifono, icontp, ivarip, icontm, irmetg
+    integer(kind=8) :: iiter, imat, ivarim, neq, iterat, ii, ifono, icontp, ivarip, icontm, irmetg
     real(kind=8) :: ulp(12), klv(78), klv2(78), varipc(7), klc(144), fl(12)
 !
 ! --------------------------------------------------------------------------------------------------

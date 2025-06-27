@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/nonlinDSVectCombAddAny.h"
     !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: sddyna, hval_incr(*), hval_veasse(*)
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     type(NL_DS_System), intent(in) :: ds_system
@@ -67,7 +67,7 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: cnffdo, cndfdo, cnfvdo, olhyst, cnhyst
     aster_logical :: l_wave
     aster_logical :: lDampMatrix, lElemDampFromUser

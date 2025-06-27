@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine lxscan(chin, ideb, iclass, ival, rval, &
 #include "asterf_types.h"
 #include "asterc/ismaem.h"
     character(len=*) :: chin, cval
-    integer :: ideb, iclass, ival
+    integer(kind=8) :: ideb, iclass, ival
     real(kind=8) :: rval
 !                          ANALYSEUR LEXICAL
 !     ------------------------------------------------------------------
@@ -47,15 +47,15 @@ subroutine lxscan(chin, ideb, iclass, ival, rval, &
 !
 !     --- VARIABLES GLOBALES -------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: ietat, iexp, ilire, isigne, kclass, kdeb
-    integer :: lgmax, maxexp, minexp, mxchar, mxcla1, mxclas, mxdeli
-    integer :: mxetat
+    integer(kind=8) :: ietat, iexp, ilire, isigne, kclass, kdeb
+    integer(kind=8) :: lgmax, maxexp, minexp, mxchar, mxcla1, mxclas, mxdeli
+    integer(kind=8) :: mxetat
     real(kind=8) :: rinfin
 !-----------------------------------------------------------------------
     parameter(mxclas=10, mxchar=255, mxdeli=15)
 !
-    integer :: clnum, cllet, clsig, clpnt, clexp, clquo, clbls, clbl, clill
-    integer :: cleor, nbdeli
+    integer(kind=8) :: clnum, cllet, clsig, clpnt, clexp, clquo, clbls, clbl, clill
+    integer(kind=8) :: cleor, nbdeli
     common/lxcn01/clnum, cllet, clsig, clpnt, clexp, clquo,&
      &                  clbls, clbl, clill, cleor, nbdeli
 !
@@ -65,12 +65,12 @@ subroutine lxscan(chin, ideb, iclass, ival, rval, &
     common/lxfi00/isigne
 !     --- VARIABLES LOCALES --------------------------------------------
     parameter(mxetat=13, mxcla1=mxclas+1)
-    integer :: neweta(mxcla1, mxetat)
+    integer(kind=8) :: neweta(mxcla1, mxetat)
 !
     aster_logical :: nbeneg, expneg
     character(len=1) :: carext
     real(kind=8) :: xndec, xdec
-    integer :: nival, inival
+    integer(kind=8) :: nival, inival
     character(len=80) :: serr
 !
 !     ------------------------------------------------------------------

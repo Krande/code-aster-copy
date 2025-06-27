@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ subroutine te0420(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=16) :: FEForm
-    integer :: nno, ino, ndofbynode
-    integer :: jv_prme, jv_pres
+    integer(kind=8) :: nno, ino, ndofbynode
+    integer(kind=8) :: jv_prme, jv_pres
 !
 ! --------------------------------------------------------------------------------------------------
 !

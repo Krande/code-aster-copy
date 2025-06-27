@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm, &
 #include "asterfort/resdp1.h"
 #include "asterfort/trace.h"
 #include "blas/ddot.h"
-    integer :: iret, nvi
+    integer(kind=8) :: iret, nvi
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)
     real(kind=8) :: sigm(6), materf(5, 2), dsidep(6, 6)
     character(len=8) :: mod
@@ -54,7 +54,7 @@ subroutine lcdpli(mod, nvi, option, materf, sigm, &
 ! OUT IRET    CODE RETOUR (0 = OK)
 ! =====================================================================
     aster_logical :: rigi, resi
-    integer :: ndt, ndi, ii
+    integer(kind=8) :: ndt, ndi, ii
     real(kind=8) :: trois, deux, dp, dpdeno, alpha, pmoins, pplus
     real(kind=8) :: hookf(6, 6), dkooh(6, 6), plas
     real(kind=8) :: epsp(6), epsm2(6), sige(6), se(6), siie, seq, i1e

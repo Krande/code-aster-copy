@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -95,7 +95,7 @@ subroutine chpchd(chin, type, celmod, prol0, base, &
 !         /'CESE->ELEM'   : CHAM_ELEM_S/ELEM  -> CHAM_ELEM/ELEM
 ! -----------------------------------------------------------------
 !
-    integer :: ib, iret, nncp, ibid
+    integer(kind=8) :: ib, iret, nncp, ibid
     character(len=3) :: prol0, exixfm
     character(len=8) :: ma, ma2, tychi, nomgd, param, model
     character(len=16) :: cas, option, nomcmd, kbid

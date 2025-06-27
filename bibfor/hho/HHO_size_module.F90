@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,9 @@ contains
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
-        integer, intent(out)                :: cbs
-        integer, intent(out)                :: fbs
-        integer, intent(out)                :: total_dofs
+        integer(kind=8), intent(out)                :: cbs
+        integer(kind=8), intent(out)                :: fbs
+        integer(kind=8), intent(out)                :: total_dofs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermics
@@ -85,10 +85,10 @@ contains
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
-        integer, intent(out)                :: cbs
-        integer, intent(out)                :: fbs
-        integer, intent(out)                :: total_dofs
-        integer, intent(out)                :: gbs
+        integer(kind=8), intent(out)                :: cbs
+        integer(kind=8), intent(out)                :: fbs
+        integer(kind=8), intent(out)                :: total_dofs
+        integer(kind=8), intent(out)                :: gbs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermics
@@ -103,7 +103,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ndim
+        integer(kind=8) :: ndim
 ! --------------------------------------------------------------------------------------------------
 !
         ndim = hhoCell%ndim
@@ -125,9 +125,9 @@ contains
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
-        integer, intent(out)                :: cbs
-        integer, intent(out)                :: fbs
-        integer, intent(out)                :: total_dofs
+        integer(kind=8), intent(out)                :: cbs
+        integer(kind=8), intent(out)                :: fbs
+        integer(kind=8), intent(out)                :: total_dofs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -141,7 +141,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ndim
+        integer(kind=8) :: ndim
 ! --------------------------------------------------------------------------------------------------
 !
         ndim = hhoCell%ndim
@@ -164,11 +164,11 @@ contains
 !
         type(HHO_Cell), intent(in)          :: hhoCell
         type(HHO_Data), intent(in)          :: hhoData
-        integer, intent(out)                :: cbs
-        integer, intent(out)                :: fbs
-        integer, intent(out)                :: total_dofs
-        integer, intent(out)                :: gbs
-        integer, intent(out)                :: gbs_sym
+        integer(kind=8), intent(out)                :: cbs
+        integer(kind=8), intent(out)                :: fbs
+        integer(kind=8), intent(out)                :: total_dofs
+        integer(kind=8), intent(out)                :: gbs
+        integer(kind=8), intent(out)                :: gbs_sym
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -183,7 +183,7 @@ contains
 !   Out gbs_sym     : number of symmetric gradient dofs
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ndim, gbs_comp
+        integer(kind=8) :: ndim, gbs_comp
 ! --------------------------------------------------------------------------------------------------
 !
         ndim = hhoCell%ndim
@@ -204,7 +204,7 @@ contains
 !
         type(HHO_Face), intent(in)  :: hhoFace
         type(HHO_Data), intent(in)  :: hhoData
-        integer, intent(out)        :: fbs
+        integer(kind=8), intent(out)        :: fbs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermic
@@ -230,7 +230,7 @@ contains
 !
         type(HHO_Face), intent(in)  :: hhoFace
         type(HHO_Data), intent(in)  :: hhoData
-        integer, intent(out)        :: fbs
+        integer(kind=8), intent(out)        :: fbs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -242,7 +242,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: fbs_ther
+        integer(kind=8) :: fbs_ther
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoTherFaceDofs(hhoFace, hhoData, fbs_ther)
@@ -260,7 +260,7 @@ contains
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        integer, intent(out)        :: cbs
+        integer(kind=8), intent(out)        :: cbs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - thermic
@@ -286,7 +286,7 @@ contains
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        integer, intent(out)        :: cbs
+        integer(kind=8), intent(out)        :: cbs
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -298,7 +298,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: cbs_ther
+        integer(kind=8) :: cbs_ther
 ! --------------------------------------------------------------------------------------------------
 !
         call hhoTherCellDofs(hhoCell, hhoData, cbs_ther)
@@ -317,8 +317,8 @@ contains
 !
         type(HHO_Cell), intent(in)  :: hhoCell
         type(HHO_Data), intent(in)  :: hhoData
-        integer, intent(out)        :: gbs
-        integer, intent(out)        :: gbs_sym
+        integer(kind=8), intent(out)        :: gbs
+        integer(kind=8), intent(out)        :: gbs_sym
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - mechanics
@@ -331,7 +331,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: gbs_comp, ndim
+        integer(kind=8) :: gbs_comp, ndim
 ! --------------------------------------------------------------------------------------------------
 !
         ndim = hhoCell%ndim

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,17 +24,17 @@ interface
                       nsg, hsr, vind, dy, dpdtau,&
                       dprdas, dhrdas, hr, dpr, sgnr,&
                       iret)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         real(kind=8) :: taur
         real(kind=8) :: materf(nmat*2)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
         real(kind=8) :: dt
-        integer :: ir
-        integer :: is
-        integer :: nbsys
-        integer :: nfs
+        integer(kind=8) :: ir
+        integer(kind=8) :: is
+        integer(kind=8) :: nbsys
+        integer(kind=8) :: nfs
         real(kind=8) :: hsr(nsg, nsg)
         real(kind=8) :: vind(36)
         real(kind=8) :: dy(12)
@@ -44,6 +44,6 @@ interface
         real(kind=8) :: hr
         real(kind=8) :: dpr
         real(kind=8) :: sgnr
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmjd
 end interface

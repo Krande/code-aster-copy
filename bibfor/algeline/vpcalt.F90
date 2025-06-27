@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ subroutine vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- INPUT
 !
-    integer, intent(in) :: mxresf, nblagr, nstoc
+    integer(kind=8), intent(in) :: mxresf, nblagr, nstoc
     real(kind=8), intent(in) :: omemax, omemin, omeshi
     complex(kind=8), intent(in) :: sigma
     character(len=19), intent(in) :: eigsol, matopa, matpsc, solveu, vecrig
@@ -62,21 +62,21 @@ subroutine vpcalt(eigsol, vecrer, vecrei, vecrek, vecvp, &
 !
 ! --- OUTPUT
 !
-    integer, intent(out) :: nconv
+    integer(kind=8), intent(out) :: nconv
     real(kind=8), intent(out) :: vpinf, vpmax
     aster_logical, intent(out) :: flage
 !
 ! --- INPUT/OUTPUT
 !
-    integer, intent(inout) :: npivot
+    integer(kind=8), intent(inout) :: npivot
 !
 ! --- VARIABLES LOCALES
 !
-    integer :: i, iret, imet, lamor, lmasse, lmatra, lraide, nbvect, neq, nfreq
-    integer :: lselec, ldiagr, lsurdr, lprod, lddl, lsign, lxrig, lmtpsc
-    integer :: iadx, iady, iadz, iadrh, iadrb
-    integer :: mfreq, ifreq, nitv, nborto, nitqrm
-    integer :: lresui, lresur, lresuk, lvec
+    integer(kind=8) :: i, iret, imet, lamor, lmasse, lmatra, lraide, nbvect, neq, nfreq
+    integer(kind=8) :: lselec, ldiagr, lsurdr, lprod, lddl, lsign, lxrig, lmtpsc
+    integer(kind=8) :: iadx, iady, iadz, iadrh, iadrb
+    integer(kind=8) :: mfreq, ifreq, nitv, nborto, nitqrm
+    integer(kind=8) :: lresui, lresur, lresuk, lvec
     real(kind=8) :: quapi2, omecor, precdc, rbid, rzero, prorto, prsudg
     character(len=1) :: appr
     character(len=8) :: method

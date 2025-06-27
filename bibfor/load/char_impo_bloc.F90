@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ subroutine char_impo_bloc(nomg, istype_bloc, cmp_nb, cmp_name, cmp_index, &
     character(len=8), intent(in) :: nomg
     aster_logical, intent(in) :: istype_bloc(3)
     character(len=8), intent(out) :: cmp_name(39)
-    integer, intent(out) :: cmp_index(39)
-    integer, intent(out) :: cmp_nb
+    integer(kind=8), intent(out) :: cmp_index(39)
+    integer(kind=8), intent(out) :: cmp_nb
     real(kind=8), intent(out) :: vale_real
     character(len=8), intent(out) :: vale_fonc
     complex(kind=8), intent(out):: vale_cplx
@@ -63,7 +63,7 @@ subroutine char_impo_bloc(nomg, istype_bloc, cmp_nb, cmp_name, cmp_index, &
     character(len=8) :: look_name_depla(3)
     character(len=8) :: look_name_rota(3)
     character(len=8) :: look_name_fourier(33)
-    integer :: i_exis, i_cmp, jnom
+    integer(kind=8) :: i_exis, i_cmp, jnom
 !
     data look_name_depla/'DX', 'DY', 'DZ'/
     data look_name_rota/'DRX', 'DRY', 'DRZ'/

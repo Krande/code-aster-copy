@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,13 +59,13 @@ subroutine lccnvx(fami, kpg, ksp, rela_comp, &
 #include "asterfort/lkcnvx.h"
 #include "asterfort/srcnvx.h"
 #include "asterfort/rslcvx.h"
-    integer :: nmat, imat, nvi, kpg, ksp, nfs, nsg
+    integer(kind=8) :: nmat, imat, nvi, kpg, ksp, nfs, nsg
     character(len=*) :: fami
     real(kind=8) :: materf(nmat, 2), seuil
     real(kind=8) :: timed, timef, deps(6), vinf(*)
     real(kind=8) :: sigd(6), sigf(6), vind(*), hsr(nsg, nsg)
     character(len=16), intent(in) :: rela_comp
-    integer :: nbcomm(nmat, 3)
+    integer(kind=8) :: nbcomm(nmat, 3)
     real(kind=8) :: pgl(3, 3), vp(3), vecp(3, 3), toutms(nfs, nsg, 6)
     character(len=24) :: cpmono(5*nmat+1)
 ! ======================================================================

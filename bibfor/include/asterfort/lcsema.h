@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                       poidspg      , shape_mast_func,&
                       jaco_upda    , dist_vect      ,&
                       vtmp )
-        integer, intent(in) :: elem_dime
-        integer, intent(in) :: nb_node_mast, nb_node_slav, nb_lagr
+        integer(kind=8), intent(in) :: elem_dime
+        integer(kind=8), intent(in) :: nb_node_mast, nb_node_slav, nb_lagr
         aster_logical, intent(in) :: l_norm_smooth
         real(kind=8), intent(in) :: shape_mast_func(9)
         real(kind=8), intent(in) :: poidspg

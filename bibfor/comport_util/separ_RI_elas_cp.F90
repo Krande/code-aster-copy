@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine separ_RI_elas_cp(elas_id, nu, g, nui, gi, &
 !
     implicit none
 !
-    integer, intent(in) :: elas_id
+    integer(kind=8), intent(in) :: elas_id
     real(kind=8), intent(in) :: nu, g, e1, e2
     real(kind=8), intent(in) :: nu12
     real(kind=8), intent(in) :: nui, gi, e1i, e2i

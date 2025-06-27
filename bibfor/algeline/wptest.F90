@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine wptest(exclu, xh, xb, vp, neq, &
     implicit none
 !
     complex(kind=8) :: vp, xh(*), xb(*)
-    integer :: neq, exclu(*)
+    integer(kind=8) :: neq, exclu(*)
     real(kind=8) :: nmax
 !
 !     TEST SUR LE COUPLAGE HAUT-BAS DU PB GENERALISE ASSOCIE AU PB
@@ -36,7 +36,7 @@ subroutine wptest(exclu, xh, xb, vp, neq, &
 ! IN  NEQ  : I : TAILLE DES VECTEURS DU PB QUADRATIQUE
 ! OUT NMAX : R : NORME MAX DU COUPLAGE
 !     -----------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: a
 !     -----------------------------------------------------------------
 !

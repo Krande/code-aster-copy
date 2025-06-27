@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,24 +28,24 @@ subroutine jemarq()
 #include "asterfort/assert.h"
 #include "asterfort/jjalls.h"
 #include "asterfort/jjlidy.h"
-    integer :: k, n
+    integer(kind=8) :: k, n
 !-----------------------------------------------------------------------
     parameter(n=5)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
 ! ----------------------------------------------------------------------
-    integer :: iadma(1), iadrs, lsi, ktempo(2)
+    integer(kind=8) :: iadma(1), iadrs, lsi, ktempo(2)
 ! ----------------------------------------------------------------------
     if (kdesma(1) .eq. 0) then
 !

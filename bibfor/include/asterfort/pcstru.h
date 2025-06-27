@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,18 +24,18 @@ interface
     subroutine pcstru(n, in, ip, icpl, icpc,&
                       icpd, icpcx, icplx, niveau, complt,&
                       lca, imp, ier)
-        integer :: n
-        integer :: in(n)
+        integer(kind=8) :: n
+        integer(kind=8) :: in(n)
         integer(kind=4) :: ip(*)
-        integer :: icpl(0:n)
+        integer(kind=8) :: icpl(0:n)
         integer(kind=4) :: icpc(*)
-        integer :: icpd(n)
-        integer :: icpcx(*)
-        integer :: icplx(0:n)
-        integer :: niveau
+        integer(kind=8) :: icpd(n)
+        integer(kind=8) :: icpcx(*)
+        integer(kind=8) :: icplx(0:n)
+        integer(kind=8) :: niveau
         aster_logical :: complt
-        integer :: lca
-        integer :: imp
-        integer :: ier
+        integer(kind=8) :: lca
+        integer(kind=8) :: imp
+        integer(kind=8) :: ier
     end subroutine pcstru
 end interface

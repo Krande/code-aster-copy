@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine split_string(instring, delim, string1, string2)
     character(len=*), intent(out), optional:: string2
 
     character(len=80) :: instr, part1, part2
-    integer :: index
+    integer(kind=8) :: index
 
     instr = instring
     instr = trim(instr)

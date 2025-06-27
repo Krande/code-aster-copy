@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,8 +47,8 @@ subroutine cvmres(mod, nmat, materd, materf, timed, &
 #include "asterfort/cvmcvx.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-    integer :: ndt, ndi, nmat
-    integer :: ioptio, idnr, nopt
+    integer(kind=8) :: ndt, ndi, nmat
+    integer(kind=8) :: ioptio, idnr, nopt
 !
     real(kind=8) :: hookf(6, 6), dkooh(6, 6), fkooh(6, 6)
     real(kind=8) :: sigf(6), dsig(6), sigd(6), dfds(6)

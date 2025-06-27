@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine lecelt(iunv, maxnod, nbtyma, indic, permut,&
                       codgra, node, nbnode)
-        integer :: nbtyma
-        integer :: maxnod
-        integer :: iunv
-        integer :: indic(nbtyma)
-        integer :: permut(maxnod, nbtyma)
-        integer :: codgra
-        integer :: node(maxnod)
-        integer :: nbnode
+        integer(kind=8) :: nbtyma
+        integer(kind=8) :: maxnod
+        integer(kind=8) :: iunv
+        integer(kind=8) :: indic(nbtyma)
+        integer(kind=8) :: permut(maxnod, nbtyma)
+        integer(kind=8) :: codgra
+        integer(kind=8) :: node(maxnod)
+        integer(kind=8) :: nbnode
     end subroutine lecelt
 end interface

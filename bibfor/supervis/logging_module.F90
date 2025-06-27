@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,20 +26,20 @@ module logging_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 
-    integer, parameter :: LOGLEVEL_SIZE = 3
+    integer(kind=8), parameter :: LOGLEVEL_SIZE = 3
     ! generic logger
-    integer, parameter :: LOGLEVEL = 1
+    integer(kind=8), parameter :: LOGLEVEL = 1
     ! for memory (jeveux) traces
-    integer, parameter :: LOGLEVEL_MEM = 2
+    integer(kind=8), parameter :: LOGLEVEL_MEM = 2
     ! for MGIS usages
-    integer, parameter :: LOGLEVEL_MGIS = 3
+    integer(kind=8), parameter :: LOGLEVEL_MGIS = 3
 
     ! levels (same value as in the *logging* Python module + verbose)
-    integer, parameter :: DEBUG = 10, VERBOSE = 15, INFO = 20
-    integer, parameter :: WARNING = 30, ERROR = 40, UNSET = -1
+    integer(kind=8), parameter :: DEBUG = 10, VERBOSE = 15, INFO = 20
+    integer(kind=8), parameter :: WARNING = 30, ERROR = 40, UNSET = -1
 
     ! current level for each logger
-    integer :: level_(LOGLEVEL_SIZE)
+    integer(kind=8) :: level_(LOGLEVEL_SIZE)
     ! environment variables to set each logger
     character(len=24) :: envvar_(LOGLEVEL_SIZE)
 
@@ -60,18 +60,18 @@ contains
 
 !>  Set the level of a logger
     subroutine setLevel(logid, level)
-        integer, intent(in) :: logid, level
+        integer(kind=8), intent(in) :: logid, level
         ASSERT(logid .gt. 0 .and. logid .le. LOGLEVEL_SIZE)
         level_(logid) = level
     end subroutine setLevel
 
 !>  Returns the current level of a logger
     function getLevel(logid)
-        integer :: getLevel
-        integer, intent(in) :: logid
+        integer(kind=8) :: getLevel
+        integer(kind=8), intent(in) :: logid
 
         character(len=8) :: value
-        integer :: level
+        integer(kind=8) :: level
         ASSERT(logid .gt. 0 .and. logid .le. LOGLEVEL_SIZE)
         if (level_(logid) .eq. UNSET) then
             call get_environment_variable(envvar_(logid), value)
@@ -100,7 +100,7 @@ contains
 !>  Tell if a logger is enabled at a given level
     function is_enabled(logid, level)
         aster_logical :: is_enabled
-        integer, intent(in) :: logid, level
+        integer(kind=8), intent(in) :: logid, level
         ASSERT(logid .gt. 0 .and. logid .le. LOGLEVEL_SIZE)
         is_enabled = (getLevel(logid) .le. level)
     end function is_enabled

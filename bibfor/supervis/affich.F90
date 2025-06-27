@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine affich(nomfic, texte)
 #include "asterfort/uldefi.h"
     character(len=*) :: texte
     character(len=*) :: nomfic
-    integer :: ifm, ier
+    integer(kind=8) :: ifm, ier
     aster_logical :: ouvert
 !     ----------------------------------------------------------------
     ouvert = .true.

@@ -19,6 +19,6 @@
 interface
     subroutine vtcopy(fieldInZ, fieldOutZ, codret)
         character(len=*), intent(in) :: fieldInZ, fieldOutZ
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine vtcopy
 end interface

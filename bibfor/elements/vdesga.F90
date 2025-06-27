@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine vdesga(kwgt, nb1, nb2, depl, btild, &
     real(kind=8) :: kappa
 !
 !-----------------------------------------------------------------------
-    integer :: i, indith, jcara, k, kwgt
-    integer :: nb1, nb2
+    integer(kind=8) :: i, indith, jcara, k, kwgt
+    integer(kind=8) :: nb1, nb2
     real(kind=8) :: alpha, deux
 !-----------------------------------------------------------------------
     deux = 2.0d0

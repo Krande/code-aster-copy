@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,11 +51,11 @@ subroutine sfifj(nomres)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nfinit, nfin, nbm, nbpoin, nbid
-    integer :: npoin, iff, lvale, ibid, in
-    integer :: im1, im2, nvecx, nvecy
-    integer :: nveco, ier, ncham, jpara
-    integer :: lnumi, lnumj, lfreq, mxval, nbabs, ij
+    integer(kind=8) :: nfinit, nfin, nbm, nbpoin, nbid
+    integer(kind=8) :: npoin, iff, lvale, ibid, in
+    integer(kind=8) :: im1, im2, nvecx, nvecy
+    integer(kind=8) :: nveco, ier, ncham, jpara
+    integer(kind=8) :: lnumi, lnumj, lfreq, mxval, nbabs, ij
     real(kind=8) :: fmin, fmax, finit, ffin, df, f, prs
     real(kind=8) :: kste, uflui, dhyd, rho, jc, fcoupu, fmodel
     real(kind=8) :: dir(3, 3), fcoup, fcoup_red
@@ -71,7 +71,7 @@ subroutine sfifj(nomres)
     real(kind=8), pointer :: vecx(:) => null()
     real(kind=8), pointer :: vecy(:) => null()
     real(kind=8), pointer :: vecz(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
     character(len=16), pointer :: vate(:) => null()
     real(kind=8), pointer :: vare(:) => null()
 !

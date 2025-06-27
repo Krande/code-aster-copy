@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,8 +19,8 @@
 interface
     subroutine lcinfo(compor, numlc, nbvari, nbvari_exte)
         character(len=*), intent(in) :: compor
-        integer, intent(out) :: numlc
-        integer, intent(out) :: nbvari
-        integer, intent(out) :: nbvari_exte
+        integer(kind=8), intent(out) :: numlc
+        integer(kind=8), intent(out) :: nbvari
+        integer(kind=8), intent(out) :: nbvari_exte
     end subroutine lcinfo
 end interface

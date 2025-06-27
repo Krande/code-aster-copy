@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,9 +49,9 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: nbvato, ncmpve, numcmp(ncmpve), nbmaec, typmai(*), adsd
-    integer :: limaec(*), nbimpr, typgeo(*), profas(nbvato), tyefma(*)
-    integer :: nroimp(nbvato), promed(nbvato), prorec(nbvato), adsl
+    integer(kind=8) :: nbvato, ncmpve, numcmp(ncmpve), nbmaec, typmai(*), adsd
+    integer(kind=8) :: limaec(*), nbimpr, typgeo(*), profas(nbvato), tyefma(*)
+    integer(kind=8) :: nroimp(nbvato), promed(nbvato), prorec(nbvato), adsl
     character(len=*) :: nofimd
     character(len=8) :: nomtyp(*), typech, sdcarm, nosdfu
     character(len=19) :: chanom
@@ -109,16 +109,16 @@ subroutine ircmpe(nofimd, ncmpve, numcmp, exicmp, nbvato, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=80), parameter :: ednopf = ' ', ednoga = ' '
-    integer, parameter :: nmaxfi = 10
-    integer :: nugrfi(nmaxfi), nugrf2(nmaxfi)
-    integer :: nmaty0(MT_NTYMAX), adraux(MT_NTYMAX)
-    integer :: ifm, niv, ibid, iret, i_fpg, jaux, kaux, ima, jcesd, laux
-    integer :: jcesc, jcesl, jcesv, nrefma
-    integer :: nrcmp, nrpg, nrsp, nbpg, nbsp, nb_fpg, typmas, nbimp0, nrimpr
-    integer :: nbtcou, nbqcou, nbsec, nbfib, jnbimpr, jnbimpr2, jnbimpr3
-    integer :: adcaii, adcaik, nbgrf, nbmaect, nbimprl(1), jindir
-    integer :: nbgrf2, nbtcou2, nbqcou2, nbsec2, nbfib2, ima2, nbimprt
-    integer :: igrfi, imafib, rang, nbproc, jma, jnbma, ityp, nbmal, iaux
+    integer(kind=8), parameter :: nmaxfi = 10
+    integer(kind=8) :: nugrfi(nmaxfi), nugrf2(nmaxfi)
+    integer(kind=8) :: nmaty0(MT_NTYMAX), adraux(MT_NTYMAX)
+    integer(kind=8) :: ifm, niv, ibid, iret, i_fpg, jaux, kaux, ima, jcesd, laux
+    integer(kind=8) :: jcesc, jcesl, jcesv, nrefma
+    integer(kind=8) :: nrcmp, nrpg, nrsp, nbpg, nbsp, nb_fpg, typmas, nbimp0, nrimpr
+    integer(kind=8) :: nbtcou, nbqcou, nbsec, nbfib, jnbimpr, jnbimpr2, jnbimpr3
+    integer(kind=8) :: adcaii, adcaik, nbgrf, nbmaect, nbimprl(1), jindir
+    integer(kind=8) :: nbgrf2, nbtcou2, nbqcou2, nbsec2, nbfib2, ima2, nbimprt
+    integer(kind=8) :: igrfi, imafib, rang, nbproc, jma, jnbma, ityp, nbmal, iaux
     character(len=16) :: nomfpg
     character(len=64) :: noprof
     aster_logical :: exicar, grfidt, elga_sp, okgrcq, oktuy

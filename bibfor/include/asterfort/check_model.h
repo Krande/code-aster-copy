@@ -19,6 +19,6 @@
 interface
     subroutine check_model(mesh, cont_form)
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: cont_form
+        integer(kind=8), intent(in) :: cont_form
     end subroutine check_model
 end interface

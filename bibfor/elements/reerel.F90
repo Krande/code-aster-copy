@@ -25,7 +25,7 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
 #include "asterfort/elrfvf.h"
 #include "asterfort/elrfdf.h"
 !
-    integer, intent(in) :: ndim, nnop
+    integer(kind=8), intent(in) :: ndim, nnop
     real(kind=8), intent(in) :: xe(ndim), tabar(*)
     character(len=8), intent(in) :: elrefp
     real(kind=8), intent(out) :: xg(ndim)
@@ -47,7 +47,7 @@ subroutine reerel(elrefp, nnop, ndim, tabar, xe, &
 !......................................................................
 !
     real(kind=8) :: ff(nnop), dff(nnop)
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !......................................................................
 !

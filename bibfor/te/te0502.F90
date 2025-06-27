@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,16 +45,16 @@ subroutine te0502(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: npgmax = 10
+    integer(kind=8), parameter :: npgmax = 10
     real(kind=8) :: dfdx(9), dfdy(9), poids, r
     real(kind=8) :: dni(2, 9, npgmax), uloc(2, 9), ul(2, npgmax)
     real(kind=8) :: jacob(npgmax), umi(2), aire, rr
     real(kind=8) :: xr, xrr, xaux, rbid
     real(kind=8) :: s, um, xma, xm, coef, cmin, alfa, aksi, cc
-    integer :: kp, i, j, k, ij, itemps, imattt
-    integer :: itempi, ifon(6), ivite, igeom, imate
-    integer :: nbvf, jvalf, idim, jdim
-    integer :: nno, npg, ipoids, ivf, idfde
+    integer(kind=8) :: kp, i, j, k, ij, itemps, imattt
+    integer(kind=8) :: itempi, ifon(6), ivite, igeom, imate
+    integer(kind=8) :: nbvf, jvalf, idim, jdim
+    integer(kind=8) :: nno, npg, ipoids, ivf, idfde
     aster_logical :: aniso
 !
 ! --------------------------------------------------------------------------------------------------

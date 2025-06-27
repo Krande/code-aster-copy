@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ module FE_quadrature_module
 !
     type FE_Quadrature
         character(len=8)                    :: fami = " "
-        integer                             :: nbQuadPoints = 0
+        integer(kind=8)                             :: nbQuadPoints = 0
         real(kind=8), dimension(3, MAX_QP)  :: points_param = 0.d0
         real(kind=8), dimension(MAX_QP)     :: weights_param = 0.d0
         real(kind=8), dimension(3, MAX_QP)  :: points = 0.d0
@@ -77,7 +77,7 @@ contains
 !
         implicit none
 !
-        integer, intent(in)                             :: nbnodes, ndim
+        integer(kind=8), intent(in)                             :: nbnodes, ndim
         real(kind=8), dimension(3, nbnodes), intent(in) :: coorno
         aster_logical, intent(in)                       :: l_skin
         real(kind=8), intent(in)                        :: basis(*), dbasis(*)
@@ -98,7 +98,7 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: normal(3)
-        integer :: i, iadzi, iazk24, ind
+        integer(kind=8) :: i, iadzi, iazk24, ind
 !
         coorac = 0.d0
 !
@@ -166,7 +166,7 @@ contains
         implicit none
 !
         real(kind=8), dimension(3, *), intent(in)  :: coorno
-        integer, intent(in)                        :: nbnodes
+        integer(kind=8), intent(in)                        :: nbnodes
         aster_logical, intent(in)                  :: l_skin
         class(FE_quadrature), intent(inout)        :: this
 !
@@ -181,7 +181,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nbpg, ipg, jpoids, jcoopg, idim, dimp, jdfde, jvf, ind
+        integer(kind=8) :: nbpg, ipg, jpoids, jcoopg, idim, dimp, jdfde, jvf, ind
         real(kind=8) :: coorac(3), jaco
 !
 !------ get quadrature points
@@ -231,7 +231,7 @@ contains
 !   Out this    : FE quadrature
 !
 ! --------------------------------------------------------------------------------------------------
-        integer :: ipg
+        integer(kind=8) :: ipg
 !
         this%fami = fami
 !
@@ -268,7 +268,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ipg
+        integer(kind=8) :: ipg
 !
         this%fami = fami
 !
@@ -300,7 +300,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ipg
+        integer(kind=8) :: ipg
 !
         write (6, *) "QUADRATURE INFORMATIONS"
         write (6, *) "familly: ", this%fami

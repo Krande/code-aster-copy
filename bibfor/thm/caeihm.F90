@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -76,16 +76,16 @@ subroutine caeihm(ds_thm, nomte, l_axi, mecani, press1, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_axi, l_vf
-    integer :: mecani(8), press1(9), press2(9), tempe(5), dimuel
-    integer :: ndim, nnos, nno1, nno2, ntrou
-    integer :: dimdef, dimcon
-    integer :: npg, npi, n, i
-    integer :: ivf1, idf1, ivf2, idf2, jgano1, jgano2, iw
-    integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
-    integer, parameter :: f1q8(6) = (/1, 2, 5, 4, 3, 7/)
-    integer, parameter :: f2q8(2) = (/8, 6/)
-    integer, parameter :: f3q8(2) = (/1, 2/)
-    integer, parameter :: f4q8(2) = (/4, 3/)
+    integer(kind=8) :: mecani(8), press1(9), press2(9), tempe(5), dimuel
+    integer(kind=8) :: ndim, nnos, nno1, nno2, ntrou
+    integer(kind=8) :: dimdef, dimcon
+    integer(kind=8) :: npg, npi, n, i
+    integer(kind=8) :: ivf1, idf1, ivf2, idf2, jgano1, jgano2, iw
+    integer(kind=8) :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
+    integer(kind=8), parameter :: f1q8(6) = (/1, 2, 5, 4, 3, 7/)
+    integer(kind=8), parameter :: f2q8(2) = (/8, 6/)
+    integer(kind=8), parameter :: f3q8(2) = (/1, 2/)
+    integer(kind=8), parameter :: f4q8(2) = (/4, 3/)
     character(len=8) :: lielrf(10)
     character(len=16) :: nomte
 !

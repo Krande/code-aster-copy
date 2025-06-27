@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine mvmult(mat, vec, res)
 !
     character(len=1) :: typmat, typres1, typres2
     character(len=19) :: vec19, res19, mat19
-    integer:: jchin, jchout, lmat
+    integer(kind=8):: jchin, jchout, lmat
 !
     call jemarq()
 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,14 +38,14 @@ subroutine meta_vpta_coef(metaRela, metaGlob, &
 #include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(in) :: metaRela, metaGlob
-    integer, intent(in) :: lgpg
+    integer(kind=8), intent(in) :: lgpg
     character(len=4), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: j_mater
     aster_logical, intent(in) :: l_temp
     real(kind=8), intent(in) :: temp
-    integer, intent(in) :: meta_type
-    integer, intent(in) :: nb_phasis
+    integer(kind=8), intent(in) :: meta_type
+    integer(kind=8), intent(in) :: nb_phasis
     real(kind=8), intent(in) :: phas_prev(*)
     real(kind=8), intent(in) :: phas_curr(*)
     real(kind=8), intent(in) :: zcold_curr
@@ -83,8 +83,8 @@ subroutine meta_vpta_coef(metaRela, metaGlob, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: j_vari
-    integer :: i_phasis, i_phasis_c, ksp, nb_phasis_c
+    integer(kind=8) :: j_vari
+    integer(kind=8) :: i_phasis, i_phasis_c, ksp, nb_phasis_c
     real(kind=8) :: epsp(5), h0(5)
     real(kind=8) :: kpt(4), fpt(4)
     real(kind=8) :: eta(5), n(5), unsurn(5), c(5), m(5)

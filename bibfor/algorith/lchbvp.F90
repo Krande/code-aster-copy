@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine lchbvp(sigd, vp, vecp)
     real(kind=8) :: seb(6), deux, se(6), tu(6), tol, toldyn, jacaux(3)
     character(len=10) :: cvp1, cvp2, cvp3
     character(len=24) :: valk(3)
-    integer :: ndt, ndi, nperm, ttrij, otrij, nitjac
+    integer(kind=8) :: ndt, ndi, nperm, ttrij, otrij, nitjac
 ! ======================================================================
     parameter(deux=2.0d0)
 ! ======================================================================

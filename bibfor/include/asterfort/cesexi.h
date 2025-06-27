@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine cesexi(stop, jcesd, jcesl, ima, ipt,&
                       ispt, icmp, iad)
         character(len=1) :: stop
-        integer :: jcesd
-        integer :: jcesl
-        integer :: ima
-        integer :: ipt
-        integer :: ispt
-        integer :: icmp
-        integer :: iad
+        integer(kind=8) :: jcesd
+        integer(kind=8) :: jcesl
+        integer(kind=8) :: ima
+        integer(kind=8) :: ipt
+        integer(kind=8) :: ispt
+        integer(kind=8) :: icmp
+        integer(kind=8) :: iad
     end subroutine cesexi
 end interface

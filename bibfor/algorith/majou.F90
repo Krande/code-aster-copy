@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -67,8 +67,8 @@ subroutine majou(model, modmec, solveu, num, nu, &
 #include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
-    integer :: nbvale, nbrefe, ibid, nbid, nbmode, ilires
-    integer :: i, icor(2), ndble, tabad(5), jj, kk
+    integer(kind=8) :: nbvale, nbrefe, ibid, nbid, nbmode, ilires
+    integer(kind=8) :: i, icor(2), ndble, tabad(5), jj, kk
     real(kind=8) :: const(2)
     character(len=1) :: typech(2), typcst(2)
     character(len=2) :: model
@@ -83,7 +83,7 @@ subroutine majou(model, modmec, solveu, num, nu, &
     character(len=24) :: nomcha
     character(len=*) :: mate, mateco
     complex(kind=8) :: cbid
-    integer :: nbsel, idsel, n15, n16, ii, vali, tmod(1)
+    integer(kind=8) :: nbsel, idsel, n15, n16, ii, vali, tmod(1)
     character(len=20) :: tempor
 !
 ! -----------------------------------------------------------------
@@ -91,12 +91,12 @@ subroutine majou(model, modmec, solveu, num, nu, &
 ! ON RECUPERE LE NOMBRE DE MODES DANS LE MODE_MECA
 ! DEFINI
 !-----------------------------------------------------------------------
-    integer :: iadirg, iadpr, iadx, iady, iadz
-    integer :: irefp, iret, ivalp, jpara, nbnumo
+    integer(kind=8) :: iadirg, iadpr, iadx, iady, iadz
+    integer(kind=8) :: irefp, iret, ivalp, jpara, nbnumo
 !
     real(kind=8) :: bid, ebid
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

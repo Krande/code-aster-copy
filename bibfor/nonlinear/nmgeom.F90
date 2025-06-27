@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine nmgeom(ndim, nno, axi, grand, geom, &
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
     aster_logical :: axi, grand
-    integer :: ndim, nno, kpg
+    integer(kind=8) :: ndim, nno, kpg
     real(kind=8) :: geom(ndim, nno), dfdi(nno, ndim), depl(ndim, nno)
     real(kind=8) :: poids, f(3, 3), eps(6), r
     aster_logical :: ldfdi
@@ -63,11 +63,11 @@ subroutine nmgeom(ndim, nno, axi, grand, geom, &
 !
 !
     aster_logical :: tridim
-    integer :: i, j, k, n
+    integer(kind=8) :: i, j, k, n
     real(kind=8) :: grad(3, 3), epstab(3, 3), ur, tmp
     real(kind=8) :: rac2, kron(3, 3)
 !-----------------------------------------------------------------------
-    integer :: idfde, ipoids, ivf
+    integer(kind=8) :: idfde, ipoids, ivf
 !-----------------------------------------------------------------------
     data kron/1.d0, 0.d0, 0.d0, 0.d0, 1.d0, 0.d0, 0.d0, 0.d0, 1.d0/
     rac2 = sqrt(2.d0)

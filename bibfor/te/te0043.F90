@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ subroutine te0043(option, nomte)
 !      CHARACTER*32   JEXNUM,JEXNOM,JEXR8,JEXATR
 !
     real(kind=8) :: pgl(3, 3), mat(144), r8bid, omega
-    integer :: infodi, lrota, ldis, lorien, lpesa, lvectu, itype
-    integer :: nbterm, nno, nc, ndim, irep, i, ibid
+    integer(kind=8) :: infodi, lrota, ldis, lorien, lpesa, lvectu, itype
+    integer(kind=8) :: nbterm, nno, nc, ndim, irep, i, ibid
     character(len=8) :: k8bid
     character(len=20) :: kmess(5)
 !     ------------------------------------------------------------------

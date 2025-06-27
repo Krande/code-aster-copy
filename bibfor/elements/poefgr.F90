@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu, rho, effo)
 !
     implicit none
 !
-    integer :: mater
+    integer(kind=8) :: mater
     character(len=*) :: nomte
     real(kind=8) :: klc(12, 12), e, xnu, rho, effo(*)
 !
@@ -49,9 +49,9 @@ subroutine poefgr(nomte, klc, mater, e, xnu, rho, effo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i, iret, itype, j, jdepl, kanl, ldyna
-    integer :: lmater, lopt, lorien
-    integer :: nc, ncc, nno, nnoc
+    integer(kind=8) :: i, iret, itype, j, jdepl, kanl, ldyna
+    integer(kind=8) :: lmater, lopt, lorien
+    integer(kind=8) :: nc, ncc, nno, nnoc
     real(kind=8) :: a, a2, xl, ethm
     real(kind=8) :: ul(12), fe(12), mlv(78), mlc(12, 12), fei(12)
     real(kind=8) :: pgl(3, 3)
@@ -59,7 +59,7 @@ subroutine poefgr(nomte, klc, mater, e, xnu, rho, effo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nb_cara = 3
+    integer(kind=8), parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8), parameter :: noms_cara(nb_cara) = (/'A1  ', 'A2  ', 'TVAR'/)
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,13 +54,13 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
 !
     aster_logical :: matuv
 !
-    integer :: nbchoc, info, nbmode, irigi, ibid
-    integer :: nl_type, vali, jrefa, jmod, ifm
-    integer :: neq, nbnli, istoav, iret, ifac
-    integer :: i, j, jj, k, ia
-    integer :: jm, iddlx, iddly, iddlz, nunoe
-    integer :: nm, m, n, ierr, icolc
-    integer :: nbch1, nbch2, neqch1, neqch2
+    integer(kind=8) :: nbchoc, info, nbmode, irigi, ibid
+    integer(kind=8) :: nl_type, vali, jrefa, jmod, ifm
+    integer(kind=8) :: neq, nbnli, istoav, iret, ifac
+    integer(kind=8) :: i, j, jj, k, ia
+    integer(kind=8) :: jm, iddlx, iddly, iddlz, nunoe
+    integer(kind=8) :: nm, m, n, ierr, icolc
+    integer(kind=8) :: nbch1, nbch2, neqch1, neqch2
 !
     real(kind=8) :: seuil, crit, trlocj, valr(3), nvect(3)
     real(kind=8) :: soup, cef, kn, cc, cs
@@ -76,7 +76,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     character(len=19) :: marig, solveu, matpre
     character(len=24) :: solver
 !
-    integer, pointer :: indic(:) => null()
+    integer(kind=8), pointer :: indic(:) => null()
     real(kind=8), pointer :: riggen(:) => null()
     real(kind=8), pointer :: a(:) => null()
     real(kind=8), pointer :: efloc(:) => null()
@@ -92,7 +92,7 @@ subroutine dtmprep_verichoc(sd_dtm_, sd_nl_)
     real(kind=8), pointer :: rfimpo(:) => null()
     real(kind=8), pointer :: rfimpx(:) => null()
 !
-    integer, pointer :: slvi(:) => null()
+    integer(kind=8), pointer :: slvi(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 #define bmodal(m,n) zr(jmod-1+(n-1)*neq+m)

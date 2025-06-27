@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine ptktfv(itype, sk, e, rof, ce, &
 #include "asterfort/fun1.h"
 #include "asterfort/fun2.h"
 #include "asterfort/utmess.h"
-    integer :: itype
+    integer(kind=8) :: itype
     real(kind=8) :: sk(*)
     real(kind=8) :: e, rof, ce, a1, ai1, a2, ai2, xl, xiy1, xiy2, xiz1, xiz2
     real(kind=8) :: xjx1, xjx2
@@ -89,13 +89,13 @@ subroutine ptktfv(itype, sk, e, rof, ce, &
 ! FUN1     - AIRES ET CONSTANTE DE TORSION EQUIVALENTES
 ! FUN2     - MOMENTS D INERTIE EQUIVALENTS
 !     ------------------------------------------------------------------
-    integer :: i, k
+    integer(kind=8) :: i, k
     real(kind=8) :: zero
     real(kind=8) :: c2, c4, c8, c9, c12, c60
     real(kind=8) :: exl, xl2, xl3, phiy, phiz, asy, asz
     real(kind=8) :: aa, asy1, asy2, asz1, asz2, xjx, vt, q, xkk
     real(kind=8) :: se, ce2
-    integer, parameter :: ip(16) = (/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120/)
+    integer(kind=8), parameter :: ip(16) = (/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66, 78, 91, 105, 120/)
 !
     zero = 0.d0
     c2 = 2.d0

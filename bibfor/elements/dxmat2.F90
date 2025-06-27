@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
-    integer :: icou, npg, indith
+    integer(kind=8) :: icou, npg, indith
     real(kind=8) :: pgl(3, 3), ordi, epi, epais, dm(3, 3)
 !
 !     BUT:
@@ -63,9 +63,9 @@ subroutine dxmat2(pgl, icou, npg, ordi, epi, &
 !
 !
 !
-    integer :: jcoqu, jmate, iret
-    integer :: nbv, i, nbpar, nbcou, jcou
-    integer :: icodre(134)
+    integer(kind=8) :: jcoqu, jmate, iret
+    integer(kind=8) :: nbv, i, nbpar, nbcou, jcou
+    integer(kind=8) :: icodre(134)
 !
     real(kind=8) :: cdf, cdm, valres(134), df(3, 3), dmf(3, 3), t1ve(9)
     real(kind=8) :: young, nu, valpar

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,10 +28,10 @@
               character(len=8), intent(in) :: maille
               character(len=8), intent(in) :: noeud
               character(len=8), intent(in) :: cmp
-              integer, intent(in) :: npoint
-              integer, intent(in) :: nusp
-              integer, intent(in) :: ivari
+              integer(kind=8), intent(in) :: npoint
+              integer(kind=8), intent(in) :: nusp
+              integer(kind=8), intent(in) :: ivari
               character(len=16), intent(in) :: nomvari
-              integer, intent(out) :: ier
+              integer(kind=8), intent(out) :: ier
             end subroutine focrrs
           end interface 

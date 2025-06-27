@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 
 function nbno(mode)
     implicit none
-    integer :: nbno
+    integer(kind=8) :: nbno
 !
 !     BUT: TROUVER LE NOMBRE DE NOEUDS ASSOCIES A UN MODE_LOCAL
 !     DE TYPE CHAM_NO, VECTEUR, OU MATRICE .
@@ -35,7 +35,7 @@ function nbno(mode)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
-    integer :: mode, m1, m2, n1, n2
+    integer(kind=8) :: mode, m1, m2, n1, n2
 !
 !     FONCTIONS JEVEUX
 !
@@ -43,7 +43,7 @@ function nbno(mode)
 !
 !
 !-----------------------------------------------------------------------
-    integer :: iadm, iadm1, iadm2, ischn, ismat
+    integer(kind=8) :: iadm, iadm1, iadm2, ischn, ismat
 !-----------------------------------------------------------------------
     call jemarq()
     ismat = 0

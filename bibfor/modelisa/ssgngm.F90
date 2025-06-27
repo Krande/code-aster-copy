@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,16 +52,16 @@ subroutine ssgngm(noma, iocc, nbgnaj)
     character(len=8) :: k8b, koui
     character(len=16) :: selec
     character(len=24) :: grpma, grpno, nomgno, nomgma
-    integer :: nbgnaj, nbis, ii
-    integer :: ialii1, ialii2, n, ntrou
+    integer(kind=8) :: nbgnaj, nbis, ii
+    integer(kind=8) :: ialii1, ialii2, n, ntrou
     character(len=24), pointer :: v_gno(:) => null(), v_gma(:) => null()
 !
 ! DEB-------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ialgma, ialima, ialino, ianbno, iangno
-    integer :: ibid, ier, iocc, iret, jtrav
-    integer :: n1, nb, nbgma, nbgno, nbma, nbnoto, no
+    integer(kind=8) :: i, ialgma, ialima, ialino, ianbno, iangno
+    integer(kind=8) :: ibid, ier, iocc, iret, jtrav
+    integer(kind=8) :: n1, nb, nbgma, nbgno, nbma, nbnoto, no
     aster_logical :: l_exi_in_grp, l_exi_in_grp_p, l_parallel_mesh, l_added_grpno
 !-----------------------------------------------------------------------
     call jemarq()

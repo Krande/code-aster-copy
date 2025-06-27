@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,10 +46,10 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
     character(len=*), optional, intent(in) :: nume_ddlz
     character(len=*), optional, intent(in) :: meshz
     character(len=*), optional, intent(in) :: nume_equaz
-    integer, optional, intent(in) :: nb_equa_inz
-    integer, optional, intent(in) :: idx_gdz
-    integer, optional, intent(out) :: nb_equa_outz
-    integer, optional, intent(in) :: nbz
+    integer(kind=8), optional, intent(in) :: nb_equa_inz
+    integer(kind=8), optional, intent(in) :: idx_gdz
+    integer(kind=8), optional, intent(out) :: nb_equa_outz
+    integer(kind=8), optional, intent(in) :: nbz
     character(len=24), optional, intent(in) :: vchamz
 !
 ! --------------------------------------------------------------------------------------------------
@@ -83,7 +83,7 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
     character(len=19) :: nume_equa, field_node, chamno, nume_equa_tmp
     character(len=24) :: obj_refe, obj_vale, noojb
     character(len=24), pointer :: p_refe(:) => null()
-    integer :: idx_gd, nb_equa, j_vale, ideb, ifin, i, jvcham, nb_equa_gl, jrefn, prev, iexi
+    integer(kind=8) :: idx_gd, nb_equa, j_vale, ideb, ifin, i, jvcham, nb_equa_gl, jrefn, prev, iexi
     aster_logical :: l_pmesh
 !
 ! --------------------------------------------------------------------------------------------------

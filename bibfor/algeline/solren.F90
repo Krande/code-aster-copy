@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine solren(sn, nbmat, mater, q, codret)
 #include "asterfort/calcq.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbmat, codret
+    integer(kind=8) :: nbmat, codret
     real(kind=8) :: sn(6), mater(nbmat, 2), q(6)
 ! --- BUT : CALCUL DE Q ------------------------------------------------
 ! ======================================================================

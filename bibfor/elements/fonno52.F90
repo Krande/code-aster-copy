@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine fonno52(noma, na, nb, ndim, vnor, vdir)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=8) :: noma
-    integer :: na, nb, ndim
+    integer(kind=8) :: na, nb, ndim
     real(kind=8) :: vnor(2, 3), vdir(2, 3)
 
 !

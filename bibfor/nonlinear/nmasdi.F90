@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine nmasdi(list_func_acti, hval_veasse, cndfdo)
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/isfonc.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: hval_veasse(*), cndfdo
 !
 ! --------------------------------------------------------------------------------------------------

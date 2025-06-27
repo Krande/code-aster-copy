@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ contains
 
     subroutine r_as_matmul(A, B, n1, n2, n3, C)
         implicit none
-        integer :: n1, n2, n3, i, j, k
+        integer(kind=8) :: n1, n2, n3, i, j, k
         real(kind=8) :: A(n1, n2), B(n2, n3), C(n1, n3)
 
         C(:, :) = 0.d0

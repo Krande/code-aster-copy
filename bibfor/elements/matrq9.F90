@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine matrq9(mat)
 ! CALCUL DE LA MATRICE DE PASSAGE GAUSS NOEUDS POUR LES MECQQU9
 !
     real(kind=8) :: mat(9, 9), a, b1, b2, c1, c2, d1, d2
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
     a = sqrt(3.d0)/3.d0
     b1 = 2.25d0*(a+1.d0)**2

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine dyarc1(instc, nbpas, insta, nbinst, arch, &
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbpas, nbinst, arch(*)
+    integer(kind=8) :: nbpas, nbinst, arch(*)
     real(kind=8) :: epsi, instc(*), insta(*)
     character(len=8) :: crit
 !
@@ -46,8 +46,8 @@ subroutine dyarc1(instc, nbpas, insta, nbinst, arch, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbtrou, i, j
-    integer :: inda, indc
+    integer(kind=8) :: nbtrou, i, j
+    integer(kind=8) :: inda, indc
     real(kind=8) :: rval
     real(kind=8) :: valr
     aster_logical :: trouve

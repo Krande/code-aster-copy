@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine zadder(uplo, n, alpha, x, incx, &
     implicit none
 #include "asterf_types.h"
 #include "blas/zaxpy.h"
-    integer :: n, incx, lda
+    integer(kind=8) :: n, incx, lda
     real(kind=8) :: alpha
     complex(kind=8) :: x(*), a(*)
     character(len=*) :: uplo
@@ -38,7 +38,7 @@ subroutine zadder(uplo, n, alpha, x, incx, &
 ! I/O : A    : MATRICE COMPLEXE DE DIMENSION N.
 ! IN  : LDA  : DIMENSION DE A.
 !-----------------------------------------------------------------------
-    integer :: ix, j
+    integer(kind=8) :: ix, j
     complex(kind=8) :: temp, temp1, temp2, temp3, temp4
     aster_logical :: upper
     real(kind=8) :: dble

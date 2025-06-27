@@ -55,11 +55,11 @@ subroutine mmveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
     real(kind=8), intent(in) :: time_curr
-    integer, intent(in) :: nt_ncomp_poin
+    integer(kind=8), intent(in) :: nt_ncomp_poin
     real(kind=8), pointer :: v_ncomp_jeux(:)
-    integer, pointer :: v_ncomp_loca(:)
+    integer(kind=8), pointer :: v_ncomp_loca(:)
     character(len=16), pointer :: v_ncomp_enti(:)
-    integer, pointer :: v_ncomp_zone(:)
+    integer(kind=8), pointer :: v_ncomp_zone(:)
 
 !
 ! --------------------------------------------------------------------------------------------------
@@ -82,14 +82,14 @@ subroutine mmveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: newgeo, sdappa
-    integer :: type_inte, ndexfr
-    integer :: pair_type, pair_enti
-    integer :: jdecme
-    integer :: elem_slav_indx, elem_slav_nume, elem_mast_nume, node_slav_indx
-    integer :: elem_mast_indx, node_slav_nume
-    integer :: i_zone, i_elem_slav, i_poin, i_poin_elem, i_ncomp_poin
-    integer :: model_ndim, nb_cont_zone
-    integer :: nb_poin_elem, nb_elem_slav, nb_poin, elem_slav_nbno, nt_ncomp_poin0
+    integer(kind=8) :: type_inte, ndexfr
+    integer(kind=8) :: pair_type, pair_enti
+    integer(kind=8) :: jdecme
+    integer(kind=8) :: elem_slav_indx, elem_slav_nume, elem_mast_nume, node_slav_indx
+    integer(kind=8) :: elem_mast_indx, node_slav_nume
+    integer(kind=8) :: i_zone, i_elem_slav, i_poin, i_poin_elem, i_ncomp_poin
+    integer(kind=8) :: model_ndim, nb_cont_zone
+    integer(kind=8) :: nb_poin_elem, nb_elem_slav, nb_poin, elem_slav_nbno, nt_ncomp_poin0
     real(kind=8) :: node_coor_proj(3), poin_coor(3)
     real(kind=8) :: tau1m(3), tau2m(3)
     real(kind=8) :: tau1(3), tau2(3)

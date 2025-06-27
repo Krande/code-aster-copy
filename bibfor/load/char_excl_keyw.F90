@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
     character(len=16), intent(in) :: keywordfact
     character(len=24), intent(in) :: keywordexcl
-    integer, intent(out) :: n_keyexcl
-    integer, intent(in), optional :: n_suffix
+    integer(kind=8), intent(out) :: n_keyexcl
+    integer(kind=8), intent(in), optional :: n_suffix
     character(len=8), optional, intent(in) :: list_suffix(*)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -48,12 +48,12 @@ subroutine char_excl_keyw(keywordfact, keywordexcl, n_keyexcl, n_suffix, list_su
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: n_keyexcl_affe
+    integer(kind=8) :: n_keyexcl_affe
     parameter(n_keyexcl_affe=8)
     character(len=24) :: excl_affe(n_keyexcl_affe)
-    integer :: leng_affe(n_keyexcl_affe)
+    integer(kind=8) :: leng_affe(n_keyexcl_affe)
 !
-    integer :: i_keyw, i_suffix
+    integer(kind=8) :: i_keyw, i_suffix
     character(len=24) :: keyword
     character(len=8) :: suffix
     character(len=24), pointer :: p_keywordexcl(:) => null()

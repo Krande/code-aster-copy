@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine ptma01(kanl, itype, m, ist, rho, &
 #include "asterc/r8gaem.h"
 #include "asterfort/fun1.h"
 #include "asterfort/utmess.h"
-    integer :: kanl, ist, itype
+    integer(kind=8) :: kanl, ist, itype
     real(kind=8) :: e, rho, a1, a2, xl, xiy1, xiy2, xiz1, xiz2, g
     real(kind=8) :: m(*), alfay1, alfay2, alfaz1, alfaz2, ey, ez
 !     CALCUL DE LA MATRICE DE MASSE DES ELEMENTS DE POUTRE
@@ -75,7 +75,7 @@ subroutine ptma01(kanl, itype, m, ist, rho, &
     real(kind=8) :: c070, c105, c120, c140
     real(kind=8) :: c210, c420
 !
-    integer :: ip(12), i
+    integer(kind=8) :: ip(12), i
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     data ip/0, 1, 3, 6, 10, 15, 21, 28, 36, 45, 55, 66/

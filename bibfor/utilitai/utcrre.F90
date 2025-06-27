@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,12 +35,12 @@ subroutine utcrre(result, nbval)
 #include "asterfort/rsagsd.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/rsrusd.h"
-    integer :: nbval
+    integer(kind=8) :: nbval
     character(len=8) :: result
 !
 !
-    integer :: iret
-    integer :: nbav
+    integer(kind=8) :: iret
+    integer(kind=8) :: nbav
 !
     character(len=8) :: k8bid
     character(len=19) :: resu19

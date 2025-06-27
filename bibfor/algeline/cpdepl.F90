@@ -40,17 +40,17 @@ subroutine cpdepl(melflu, base, nuor, nbm)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: nbm, nuor(nbm)
+    integer(kind=8) :: nbm, nuor(nbm)
     character(len=8) :: base
     character(len=19) :: melflu
 !
-    integer :: iddl(6)
+    integer(kind=8) :: iddl(6)
     character(len=8) :: mailla
     character(len=14) :: numddl
     character(len=24) :: nomcha, matria, nomnoe
 !-----------------------------------------------------------------------
-    integer :: icham, im, imod, lnoe
-    integer :: neq
+    integer(kind=8) :: icham, im, imod, lnoe
+    integer(kind=8) :: neq
 !-----------------------------------------------------------------------
     data iddl/1, 2, 3, 4, 5, 6/
 !

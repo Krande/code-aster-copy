@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc, &
 #include "asterfort/tbexve.h"
 #include "asterfort/utmess.h"
     real(kind=8) :: fmin, fmax, precdc, effmin, effmax
-    integer :: nfreq
+    integer(kind=8) :: nfreq
     character(len=9) :: typevp
     character(len=19) :: tabmod
 ! DANS LA TABLE TABMOD RECUPERE LE NBRE DE FREQUENCES CORRESPONDANT A
@@ -50,8 +50,8 @@ subroutine vptabl(tabmod, typevp, fmin, fmax, precdc, &
 ! person_in_charge: albert.alarcon at edf.fr
 !
 ! VARIABLES LOCALES
-    integer :: ier, nbval1, nbval2, nbval3, jobj1, jobj2, jobj3, jobj4, jobj5, i
-    integer :: ifm, niv, ibid, ll, nbval4, nbval5
+    integer(kind=8) :: ier, nbval1, nbval2, nbval3, jobj1, jobj2, jobj3, jobj4, jobj5, i
+    integer(kind=8) :: ifm, niv, ibid, ll, nbval4, nbval5
     real(kind=8) :: vr(2), lprec(2), rdenom, eps
     complex(kind=8) :: cbid
     character(len=4) :: typval

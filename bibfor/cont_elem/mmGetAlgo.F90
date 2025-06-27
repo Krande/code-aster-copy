@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ subroutine mmGetAlgo(l_large_slip, ndexfr, jeusup, lambds, &
 #include "asterfort/jevech.h"
 !
     aster_logical, intent(out) :: l_large_slip
-    integer, intent(out) :: ndexfr
+    integer(kind=8), intent(out) :: ndexfr
     real(kind=8), intent(out) :: jeusup
     real(kind=8), intent(out) :: lambds
-    integer, intent(out) :: ialgoc, i_reso_fric, ialgof, i_reso_geom
+    integer(kind=8), intent(out) :: ialgoc, i_reso_fric, ialgof, i_reso_geom
     aster_logical, intent(out) :: l_pena_cont, l_pena_fric
     real(kind=8), optional, intent(out) :: lambds_prev_, jeu_prev_
 !
@@ -64,7 +64,7 @@ subroutine mmGetAlgo(l_large_slip, ndexfr, jeusup, lambds, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jpcf
+    integer(kind=8) :: jpcf
     real(kind=8) :: lambds_prev, jeu_prev
 !
 ! --------------------------------------------------------------------------------------------------

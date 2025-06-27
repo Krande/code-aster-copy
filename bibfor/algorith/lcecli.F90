@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate, &
 #include "asterfort/rcvalb.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-    integer :: mate, ndim, kpg, ksp
+    integer(kind=8) :: mate, ndim, kpg, ksp
     real(kind=8) :: lamb(ndim), saut(ndim), sigma(6), dsidep(6, 6)
     real(kind=8) :: vim(*), vip(*), r, laug(ndim)
     character(len=16) :: option
@@ -54,10 +54,10 @@ subroutine lcecli(fami, kpg, ksp, ndim, mate, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: resi, rigi, elas
-    integer :: i, j, diss, cass
+    integer(kind=8) :: i, j, diss, cass
     real(kind=8) :: sc, gc, lc, val(3), rtan, kapp, zero
     real(kind=8) :: na, ka, rk, ra, coef, coef2
-    integer :: cod(3)
+    integer(kind=8) :: cod(3)
     character(len=16) :: nom(3)
     character(len=1) :: poum
     parameter(zero=0.d0)

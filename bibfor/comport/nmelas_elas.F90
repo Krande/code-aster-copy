@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine nmelas_elas(BEHinteg, &
     character(len=*), intent(in)      :: fami
     character(len=8), intent(in)      :: typmod(*)
     character(len=16), intent(in)     :: option
-    integer, intent(in)               :: imate, kpg, ksp
+    integer(kind=8), intent(in)               :: imate, kpg, ksp
     real(kind=8), intent(in)          :: eps(:)
     real(kind=8), intent(out)         :: sig(:), vi(1), dsidep(:, :)
 ! --------------------------------------------------------------------------------------------------
@@ -61,11 +61,11 @@ subroutine nmelas_elas(BEHinteg, &
 !               ATTENTION LES TENSEURS ET MATRICES SONT RANGES DANS
 !               L'ORDRE :  XX,YY,ZZ,SQRT(2)*XY,SQRT(2)*XZ,SQRT(2)*YZ
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: elas_id = 1
+    integer(kind=8), parameter :: elas_id = 1
     character(len=16), parameter :: elas_keyword = 'ELAS'
 ! --------------------------------------------------------------------------------------------------
     aster_logical :: cplan, resi, rigi
-    integer       :: ndimsi, k, l
+    integer(kind=8)       :: ndimsi, k, l
     real(kind=8)  :: kr(size(eps))
     real(kind=8)  :: e, nu, lambda, deuxmu, troisk
     real(kind=8)  :: eps_th, eps_hy, eps_se, eps_an(6), eps_vc(size(eps))

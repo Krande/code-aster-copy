@@ -37,10 +37,10 @@ subroutine entete()
 #include "asterfort/asmpi_info.h"
 #include "asterfort/utmess.h"
     mpi_int :: rank, size
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
 !
 #ifdef ASTER_HAVE_OPENMP
-    integer :: maxThreads
+    integer(kind=8) :: maxThreads
 #endif
 ! ----------------------------------------------------------------------
 ! --- INFORMATIONS GLOBALES

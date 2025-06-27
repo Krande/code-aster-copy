@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine matela(icodma, materi, itemp, temp, e,&
                       nu)
-        integer :: icodma
+        integer(kind=8) :: icodma
         character(len=*) :: materi
-        integer :: itemp
+        integer(kind=8) :: itemp
         real(kind=8) :: temp
         real(kind=8) :: e
         real(kind=8) :: nu

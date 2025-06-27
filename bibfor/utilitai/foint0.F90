@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine foint0()
 !     REMISE A "ZERO" DU COMMON UTILISE PAR FOINT2
 !     ------------------------------------------------------------------
 !
-    integer :: isvind, isvnxt, svnbpa, svpar, nextsv
-    integer :: iaprol, iavale, iapara, luvale
+    integer(kind=8) :: isvind, isvnxt, svnbpa, svpar, nextsv
+    integer(kind=8) :: iaprol, iavale, iapara, luvale
     real(kind=8) :: svresu
     character(len=1) :: svtypf
     character(len=2) :: svprgd
@@ -37,7 +37,7 @@ subroutine foint0()
      &                svtypf(4), svprgd(4), svinte(4)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, lupara, mxpara, mxsave
+    integer(kind=8) :: i, lupara, mxpara, mxsave
 !-----------------------------------------------------------------------
     mxpara = 10
     mxsave = 4

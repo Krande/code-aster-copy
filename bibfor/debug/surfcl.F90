@@ -40,7 +40,7 @@ subroutine surfcl(sdcont, mesh, unit_msg)
 !
     character(len=8), intent(in) :: sdcont
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: unit_msg
+    integer(kind=8), intent(in) :: unit_msg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -56,33 +56,33 @@ subroutine surfcl(sdcont, mesh, unit_msg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: zdirn
-    integer :: model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem
-    integer :: nb_cont_node, nt_elem_node, nt_node_elem
-    integer :: nt_node_slav, nt_elem_slav, nt_node_slavc, nt_elem_slavc
-    integer :: nt_node_mast, nt_elem_mast, nt_node_mastc, nt_elem_mastc
-    integer :: nb_node_excl, nb_cont_poinc, nb_cont_poin
-    integer :: i_zone, i_surf, i_elem, i_node, node_nume
+    integer(kind=8) :: zdirn
+    integer(kind=8) :: model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem
+    integer(kind=8) :: nb_cont_node, nt_elem_node, nt_node_elem
+    integer(kind=8) :: nt_node_slav, nt_elem_slav, nt_node_slavc, nt_elem_slavc
+    integer(kind=8) :: nt_node_mast, nt_elem_mast, nt_node_mastc, nt_elem_mastc
+    integer(kind=8) :: nb_node_excl, nb_cont_poinc, nb_cont_poin
+    integer(kind=8) :: i_zone, i_surf, i_elem, i_node, node_nume
     real(kind=8) :: tole_interp, tole_proj_ext, resi_appa, dist_appa
-    integer :: type_norm, type_appa_search, type_norm_mast, type_norm_slav, type_appa, algo_cont
+integer(kind=8) :: type_norm, type_appa_search, type_norm_mast, type_norm_slav, type_appa, algo_cont
     aster_logical :: l_dist_shell, l_dist_beam, l_veri
     aster_logical :: l_liss, l_exis_verif, lstop
     character(len=8) :: jeuf1, jeuf2
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_pzoneco
-    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pzoneco(:) => null()
     character(len=24) :: sdcont_mailco
-    integer, pointer :: v_sdcont_mailco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_mailco(:) => null()
     character(len=24) :: sdcont_noeuco
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
     character(len=24) :: sdcont_psumaco
-    integer, pointer :: v_sdcont_psumaco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_psumaco(:) => null()
     character(len=24) :: sdcont_psunoco
-    integer, pointer :: v_sdcont_psunoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_psunoco(:) => null()
     character(len=24) :: sdcont_ssnoco
-    integer, pointer :: v_sdcont_ssnoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_ssnoco(:) => null()
     character(len=24) :: sdcont_pssnoco
-    integer, pointer :: v_sdcont_pssnoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pssnoco(:) => null()
     character(len=24) :: sdcont_dirapp
     real(kind=8), pointer :: v_sdcont_dirapp(:) => null()
     character(len=24) :: sdcont_dirnor
@@ -92,13 +92,13 @@ subroutine surfcl(sdcont, mesh, unit_msg)
     character(len=24) :: sdcont_jeufo2
     character(len=8), pointer :: v_sdcont_jeufo2(:) => null()
     character(len=24) :: sdcont_manoco
-    integer, pointer :: v_sdcont_manoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_manoco(:) => null()
     character(len=24) :: sdcont_pmanoco
-    integer, pointer :: v_sdcont_pmanoco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pmanoco(:) => null()
     character(len=24) :: sdcont_nomaco
-    integer, pointer :: v_sdcont_nomaco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_nomaco(:) => null()
     character(len=24) :: sdcont_pnomaco
-    integer, pointer :: v_sdcont_pnomaco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pnomaco(:) => null()
     character(len=8), pointer :: v_work_node(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------

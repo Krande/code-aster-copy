@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,9 +32,9 @@ subroutine apstoc(ds_contact, nb_pair, list_pair, list_nbptit, list_ptitsl, &
 !
 !
     type(NL_DS_Contact), intent(inout) :: ds_contact
-    integer, intent(in):: nb_pair
-    integer, pointer :: list_pair(:)
-    integer, pointer :: list_nbptit(:)
+    integer(kind=8), intent(in):: nb_pair
+    integer(kind=8), pointer :: list_pair(:)
+    integer(kind=8), pointer :: list_nbptit(:)
     real(kind=8), pointer :: list_ptitsl(:)
     real(kind=8), pointer :: list_ptitma(:)
     real(kind=8), pointer :: list_ptgama(:)
@@ -54,8 +54,8 @@ subroutine apstoc(ds_contact, nb_pair, list_pair, list_nbptit, list_ptitsl, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: sdappa
-    integer, pointer :: v_sdappa_apli(:) => null()
-    integer, pointer :: v_sdappa_apli2(:) => null()
+    integer(kind=8), pointer :: v_sdappa_apli(:) => null()
+    integer(kind=8), pointer :: v_sdappa_apli2(:) => null()
     real(kind=8), pointer :: v_sdappa_apli3(:) => null()
     real(kind=8), pointer :: v_sdappa_apli4(:) => null()
     real(kind=8), pointer :: v_sdappa_apli5(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,12 +46,12 @@ subroutine fieldNodeHasConstantProfile(fieldz, lConst)
     character(len=8) :: mesh
     character(len=16) :: fieldSupp
     character(len=19) :: field
-    integer, pointer :: deeq(:) => null()
-    integer, pointer :: nodeNbCmp(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: nodeNbCmp(:) => null()
     character(len=19) :: numeequa
-    integer :: iNode, iEqua
-    integer :: numeNode, numeCmp
-    integer :: nbNodeMesh, nbEqua, nbCmpNode, nbCmp
+    integer(kind=8) :: iNode, iEqua
+    integer(kind=8) :: numeNode, numeCmp
+    integer(kind=8) :: nbNodeMesh, nbEqua, nbCmpNode, nbCmp
 !
 ! --------------------------------------------------------------------------------------------------
 !

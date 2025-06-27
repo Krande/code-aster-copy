@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                       chresu)
         character(len=8) :: nomres
         character(len=8) :: noma
-        integer :: nbma
-        integer :: listma(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: listma(*)
         character(len=24) :: chindi
         character(len=24) :: chresu
     end subroutine rc36rs

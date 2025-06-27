@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,25 +19,25 @@
 function jjprem(nombre, iret)
     implicit none
 #include "asterfort/utmess.h"
-    integer :: jjprem, nombre, iret
+    integer(kind=8) :: jjprem, nombre, iret
 !     ==================================================================
-    integer :: npre
+    integer(kind=8) :: npre
 !-----------------------------------------------------------------------
-    integer :: iter
+    integer(kind=8) :: iter
 !-----------------------------------------------------------------------
     parameter(npre=281)
-    integer :: jprem
+    integer(kind=8) :: jprem
     common/jpreje/jprem(npre)
 !   division entière : npre / 2
-    integer, parameter :: npre2 = 140
+    integer(kind=8), parameter :: npre2 = 140
 !     ==================================================================
     real(kind=8) :: prem(npre), fact, r8nomb
     save prem
     parameter(fact=1.3d0)
-    integer :: ipas, i, iprem, j, vali(2)
-    integer :: npr1, npr2, npr3, npr4
+    integer(kind=8) :: ipas, i, iprem, j, vali(2)
+    integer(kind=8) :: npr1, npr2, npr3, npr4
     parameter(npr1=81, npr2=90, npr3=90, npr4=20)
-    integer :: ipr1(npr1), ipr2(npr2), ipr3(npr3), ipr4(npr4)
+    integer(kind=8) :: ipr1(npr1), ipr2(npr2), ipr3(npr3), ipr4(npr4)
 !
     data ipas/0/
     data ipr1/11, 17, 23, 37, 53,&

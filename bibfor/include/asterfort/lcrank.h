@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine lcrank(ndim, typmod, imate, option, tmpm, tmpp, &
                       dstrai0, stresm0, stres, vim, vip, &
                       dsidep, codret)
-        integer :: ndim
+        integer(kind=8) :: ndim
         character(len=8) :: typmod(*)
-        integer :: imate
+        integer(kind=8) :: imate
         character(len=16) :: option
         real(kind=8) :: tmpm
         real(kind=8) :: tmpp
@@ -34,6 +34,6 @@ interface
         real(kind=8) :: vim(*)
         real(kind=8) :: vip(*)
         real(kind=8) :: dsidep(6,6)
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lcrank
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,16 +24,16 @@ interface
     subroutine scalep(spectr, noma, base, nuor, nbm,&
                       imodi, nbmr, nbexcp, ltable, iaxe,&
                       scal)
-        integer :: nbexcp
-        integer :: nbmr
-        integer :: nbm
+        integer(kind=8) :: nbexcp
+        integer(kind=8) :: nbmr
+        integer(kind=8) :: nbm
         character(len=19) :: spectr
         character(len=8) :: noma
         character(len=19) :: base
-        integer :: nuor(nbm)
-        integer :: imodi
+        integer(kind=8) :: nuor(nbm)
+        integer(kind=8) :: imodi
         aster_logical :: ltable
-        integer :: iaxe
+        integer(kind=8) :: iaxe
         real(kind=8) :: scal(nbexcp, nbmr)
     end subroutine scalep
 end interface

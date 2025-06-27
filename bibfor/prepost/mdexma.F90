@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,22 +58,22 @@ subroutine mdexma(nofimd, idfimd, nomamd, option, existm, &
 !
     aster_logical :: existm, ficexi, dejouv
 !
-    integer :: option, ndim, codret
+    integer(kind=8) :: option, ndim, codret
 !
 ! 0.2. ==> COMMUNS
 !
 ! 0.3. ==> VARIABLES LOCALES
 !
-    integer :: edlect
+    integer(kind=8) :: edlect
     parameter(edlect=0)
-    integer :: ednstr
+    integer(kind=8) :: ednstr
     parameter(ednstr=0)
 !
 !
-    integer :: lnomam, nbmaie
+    integer(kind=8) :: lnomam, nbmaie
     med_idt :: idfimd
-    integer :: iaux, jaux, kaux, tyaux
-    integer :: vali(2)
+    integer(kind=8) :: iaux, jaux, kaux, tyaux
+    integer(kind=8) :: vali(2)
 !
     character(len=8) :: saux08
     character(len=64) :: noma64

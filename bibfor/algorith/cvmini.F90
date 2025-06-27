@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ subroutine cvmini(typess, essai, mod, nmat, materf, &
 #include "asterfort/cvmcvx.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/lcopli.h"
-    integer :: ndt, ndi, typess, nmat
-    integer :: ioptio, idnr, nopt
+    integer(kind=8) :: ndt, ndi, typess, nmat
+    integer(kind=8) :: ioptio, idnr, nopt
 !
 !
     real(kind=8) :: yd(*), dy(*), essai
@@ -83,7 +83,7 @@ subroutine cvmini(typess, essai, mod, nmat, materf, &
 !       ----------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: difc1, difc2
 !-----------------------------------------------------------------------
     if (typess .eq. -1) typess = 2

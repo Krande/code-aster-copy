@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine cginit(nomte, iu, iuc, im)
 #include "asterfort/assert.h"
 !
     character(len=16) :: nomte
-    integer :: iu(3, 3), iuc(3), im(3)
+    integer(kind=8) :: iu(3, 3), iuc(3), im(3)
 ! ----------------------------------------------------------------------
 !            DECALAGE D'INDICE POUR LES ELEMENTS GAINE/CABLE
 ! ----------------------------------------------------------------------
@@ -32,8 +32,8 @@ subroutine cginit(nomte, iu, iuc, im)
 ! OUT IUC    DECALAGE D'INDICE POUR ACCEDER AUX DDL DE DEPL RELA CABLE
 ! OUT IM     DECALAGE D'INDICE POUR ACCEDER AUX DDL DE LAGRANGE
 ! ----------------------------------------------------------------------
-    integer :: n
-    integer :: use3(3), ucse3(3), umse3(2)
+    integer(kind=8) :: n
+    integer(kind=8) :: use3(3), ucse3(3), umse3(2)
 ! ----------------------------------------------------------------------
     data use3/1, 2, 3/
     data ucse3/1, 2, 3/

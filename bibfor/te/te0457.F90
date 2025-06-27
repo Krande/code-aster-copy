@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine te0457(option, nomte)
 !
 !---------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: maxpara = 4
+    integer(kind=8), parameter :: maxpara = 4
     real(kind=8) :: valpar(maxpara)
     character(len=8) :: nompar(maxpara)
     type(HHO_Data) :: hhoData
@@ -72,8 +72,8 @@ subroutine te0457(option, nomte)
     real(kind=8), dimension(MSIZE_FACE_SCAL, MSIZE_FACE_SCAL) :: lhs
     real(kind=8) :: CoeffQP_curr(MAX_QP_FACE), coeff, d_alpha, temp_eval_curr
     real(kind=8) :: sigma(MAX_QP_FACE), epsil(MAX_QP_FACE), rbid, tz0, time_curr
-    integer :: fbs, celldim, ipg, nbpara, npg
-    integer :: j_time, j_coefh, j_para
+    integer(kind=8) :: fbs, celldim, ipg, nbpara, npg
+    integer(kind=8) :: j_time, j_coefh, j_para
     blas_int :: b_incx, b_lda, b_n
 !
 !

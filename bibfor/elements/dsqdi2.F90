@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -85,8 +85,8 @@ subroutine dsqdi2(xyzl, df, dci, dmf, dfc, &
 !                                 AUX INCONNUES DE MEMBRANE UM
 !
 ! -----  VARIABLES LOCALES
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: nc, i, j, k, ic, int, iret
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: nc, i, j, k, ic, int, iret
     real(kind=8) :: qsi, eta, zero, undemi, un, deux, trois, det
     real(kind=8) :: l(4), x(4), y(4)
     real(kind=8) :: hft2(2, 6), dfcbfa(2, 4), hmft2(2, 6)

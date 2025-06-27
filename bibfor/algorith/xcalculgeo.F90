@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
 #include "jeveux.h"
 #include "asterfort/calcul.h"
 
-    integer             :: jbl, jvp, jbeta, jlistp
-    integer             :: node, ndim
+    integer(kind=8)             :: jbl, jvp, jbeta, jlistp
+    integer(kind=8)             :: node, ndim
     real(kind=8)        :: newlsn, newlst, deltat
     real(kind=8)        :: vale(:)
 !
@@ -63,7 +63,7 @@ subroutine xcalculgeo(ndim, vale, jvp, jbl, deltat, jbeta, &
 !
 !     ------------------------------------------------------------------
 
-    integer                      :: k, pos, pos1
+    integer(kind=8)                      :: k, pos, pos1
     real(kind=8), dimension(ndim) :: t1, n1, p1
     real(kind=8)                 :: deltaa, cbeta, sbeta
 !

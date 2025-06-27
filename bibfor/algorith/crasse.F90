@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,14 +47,14 @@ subroutine crasse()
 !
 !
 !
-    integer :: iret, nbfac, iocc, nbord1, iord2, iord1
-    integer :: kord1, iad, jord2, n1, nordmx
+    integer(kind=8) :: iret, nbfac, iocc, nbord1, iord2, iord1
+    integer(kind=8) :: kord1, iad, jord2, n1, nordmx
     real(kind=8) :: inst1, inst2, trans, tprev, valr(2)
     character(len=8) :: k8b, resu2, resu1
     character(len=16) :: type, oper, chter
     character(len=19) :: nomch, cham1, resu19
-    integer :: nbcham, kch
-    integer, pointer :: ord1(:) => null()
+    integer(kind=8) :: nbcham, kch
+    integer(kind=8), pointer :: ord1(:) => null()
 !
 ! ----------------------------------------------------------------------
     call jemarq()

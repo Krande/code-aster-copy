@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ function xcalc_saut(id_no, id_escl, id_mait, iflag)
 #include "jeveux.h"
 #include "asterfort/xcalc_heav.h"
 !-----------------------------------------------------------------------
-    integer :: id_no, id_escl, id_mait
-    integer, optional ::  iflag
+    integer(kind=8) :: id_no, id_escl, id_mait
+    integer(kind=8), optional ::  iflag
     real(kind=8) :: xcalc_saut
 !-----------------------------------------------------------------------
-    integer :: iflagg
+    integer(kind=8) :: iflagg
 !-----------------------------------------------------------------------
 !
     iflagg = -99

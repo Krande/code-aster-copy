@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,8 +37,8 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: nbma, nbcmp
-    integer :: lima(nbma)
+    integer(kind=8) :: nbma, nbcmp
+    integer(kind=8) :: lima(nbma)
     character(len=*) :: ces1z, ces2z, base
     character(len=*) :: licmp(*)
 !
@@ -84,11 +84,11 @@ subroutine cesred(ces1z, nbma, lima, nbcmp, licmp, &
 !
 !-----------------------------------------------------------------------
     aster_logical :: loter
-    integer :: jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2
-    integer :: jce2d, jce2v, jce2l, jnbpt, jnbsp, jnbcmp, nbpt
-    integer :: kma, isp, iad1, iad2, jce3c, nbsp, ipt
-    integer :: ncmpmx, ncmp1, icmp1, icmp2, icmp3
-    integer :: ima
+    integer(kind=8) :: jce1d, jce1v, jce1l, jce1c, nbmam, ncmp2
+    integer(kind=8) :: jce2d, jce2v, jce2l, jnbpt, jnbsp, jnbcmp, nbpt
+    integer(kind=8) :: kma, isp, iad1, iad2, jce3c, nbsp, ipt
+    integer(kind=8) :: ncmpmx, ncmp1, icmp1, icmp2, icmp3
+    integer(kind=8) :: ima
     character(len=8) :: ma, nomgd, nocmp, typces
     character(len=3) :: tsca
     character(len=19) :: ces1, ces2

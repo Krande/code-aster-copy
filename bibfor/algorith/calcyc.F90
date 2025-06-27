@@ -48,7 +48,7 @@ subroutine calcyc(nomres)
 #include "asterfort/zconju.h"
 #include "asterfort/zreord.h"
 !
-    integer :: vali(3)
+    integer(kind=8) :: vali(3)
 !
 !
     character(len=6) :: pgc
@@ -62,17 +62,17 @@ subroutine calcyc(nomres)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid, icomp, icone, idia, idiam
-    integer :: if, imes, ldfre, ldmoc, ldnbd, llitmp
-    integer :: llnum, lteig, ltkcom, ltlax0
-    integer :: ltlax1, ltlbid, ltmcom, ltnbd, ltrv1, ltrv2, lttrge
-    integer :: ltzm1, ltzm2, ltzv1, ltzv2, ltzv3, maxdia, nbdax
-    integer :: nbdax0, nbdax1, nbddef, nbddg, nbddr, nbdia, nbdia1
-    integer :: nbdia2, nblif, nbmcal, nbmobt, nbmos, nbnew, nbsec
-    integer :: nbtmp, nmaxit, ntail, ntt, numa
-    integer :: i1, j1
+    integer(kind=8) :: i, iad, ibid, icomp, icone, idia, idiam
+    integer(kind=8) :: if, imes, ldfre, ldmoc, ldnbd, llitmp
+    integer(kind=8) :: llnum, lteig, ltkcom, ltlax0
+    integer(kind=8) :: ltlax1, ltlbid, ltmcom, ltnbd, ltrv1, ltrv2, lttrge
+    integer(kind=8) :: ltzm1, ltzm2, ltzv1, ltzv2, ltzv3, maxdia, nbdax
+    integer(kind=8) :: nbdax0, nbdax1, nbddef, nbddg, nbddr, nbdia, nbdia1
+    integer(kind=8) :: nbdia2, nblif, nbmcal, nbmobt, nbmos, nbnew, nbsec
+    integer(kind=8) :: nbtmp, nmaxit, ntail, ntt, numa
+    integer(kind=8) :: i1, j1
     real(kind=8) :: beta, omeg2, pi, pima, precaj, precse
-    integer, pointer :: cycl_nbsc(:) => null()
+    integer(kind=8), pointer :: cycl_nbsc(:) => null()
     character(len=8), pointer :: cycl_type(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
 !

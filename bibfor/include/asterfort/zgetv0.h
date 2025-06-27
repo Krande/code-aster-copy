@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,18 +24,18 @@ interface
     subroutine zgetv0(ido, bmat, initv, n, j,&
                       v, ldv, resid, rnorm, ipntr,&
                       workd, ierr, alpha)
-        integer :: ldv
-        integer :: j
-        integer :: n
-        integer :: ido
+        integer(kind=8) :: ldv
+        integer(kind=8) :: j
+        integer(kind=8) :: n
+        integer(kind=8) :: ido
         character(len=1) :: bmat
         aster_logical :: initv
         complex(kind=8) :: v(ldv, j)
         complex(kind=8) :: resid(n)
         real(kind=8) :: rnorm
-        integer :: ipntr(3)
+        integer(kind=8) :: ipntr(3)
         complex(kind=8) :: workd(2*n)
-        integer :: ierr
+        integer(kind=8) :: ierr
         real(kind=8) :: alpha
     end subroutine zgetv0
 end interface

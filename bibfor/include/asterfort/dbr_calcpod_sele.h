@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine dbr_calcpod_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_mode_maxi
+        integer(kind=8), intent(in) :: nb_mode_maxi
         real(kind=8), intent(in) :: tole_svd
         real(kind=8), pointer :: s(:)
-        integer, intent(in) :: nb_sing
-        integer, intent(out) :: nb_mode
+        integer(kind=8), intent(in) :: nb_sing
+        integer(kind=8), intent(out) :: nb_mode
     end subroutine dbr_calcpod_sele
 end interface

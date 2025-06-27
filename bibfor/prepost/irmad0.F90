@@ -39,7 +39,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: versio, nstat
+    integer(kind=8) :: versio, nstat
     character(len=*) :: chamno(*), nomsym
 !     IMPRESSION D'UNE LISTE DE CHAMNO A COMPOSANTES REELLES OU
 !     COMPLEXES AU FORMAT IDEAS  ( COMMANDE MACRO_MADMACS )
@@ -48,7 +48,7 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     ------------------------------------------------------------------
 !
     character(len=1) :: type, typi
-    integer :: gd, gdi
+    integer(kind=8) :: gd, gdi
     character(len=8) :: k8b, nomma, nomgd
     character(len=16) :: nomcmd
     character(len=19) :: chamn
@@ -56,12 +56,12 @@ subroutine irmad0(ifc, versio, nstat, chamno, nomsym)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, iaec, iaprno
-    integer :: ibid, ifc, ino, iret, itype
-    integer ::  nbno, ncmpmx, nec
+    integer(kind=8) :: i, iad, iaec, iaprno
+    integer(kind=8) :: ibid, ifc, ino, iret, itype
+    integer(kind=8) ::  nbno, ncmpmx, nec
     character(len=8), pointer :: nomnoe(:) => null()
-    integer, pointer :: numnoe(:) => null()
-    integer, pointer :: nueq(:) => null()
+    integer(kind=8), pointer :: numnoe(:) => null()
+    integer(kind=8), pointer :: nueq(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     chamn = chamno(1)

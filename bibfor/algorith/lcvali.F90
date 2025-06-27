@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,9 +28,9 @@ subroutine lcvali(fami, kpg, ksp, imate, materi, &
 #include "blas/ddot.h"
 #include "blas/dscal.h"
 !
-    integer :: imate, kpg, ksp, iret1, iret2, iret3, codret, icodre(4), iret
-    integer :: ndim
-    integer :: ndimsi
+    integer(kind=8) :: imate, kpg, ksp, iret1, iret2, iret3, codret, icodre(4), iret
+    integer(kind=8) :: ndim
+    integer(kind=8) :: ndimsi
     character(len=*) :: fami
     character(len=8) :: materi
     character(len=16) :: compor(*), nomres(4)

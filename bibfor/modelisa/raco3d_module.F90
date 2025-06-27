@@ -27,16 +27,16 @@ module raco3d_module
 
 ! Global variables (may evolve with time)
 
-    integer :: NB_GAUSS_MAX = 20
-    integer :: NB_GREL_MAX = 9
-    integer :: NB_NO_CO_MAX = 3
-    integer :: NB_NO_3D_MAX = 8
-    integer :: NB_NDDL_MAX = 6*4+10*3
+    integer(kind=8) :: NB_GAUSS_MAX = 20
+    integer(kind=8) :: NB_GREL_MAX = 9
+    integer(kind=8) :: NB_NO_CO_MAX = 3
+    integer(kind=8) :: NB_NO_3D_MAX = 8
+    integer(kind=8) :: NB_NDDL_MAX = 6*4+10*3
 
 ! Shell-3d link structures
 
     type :: PointerContainer
-        integer, pointer :: iptr(:) => null()
+        integer(kind=8), pointer :: iptr(:) => null()
         real(kind=8), pointer :: rptr(:) => null()
     end type PointerContainer
 !
@@ -54,7 +54,7 @@ contains
         real(kind=8) :: det, sc, tc
         real(kind=8) :: closestP(3), closestQ(3)
         real(kind=8) :: endpoint_distances(4)
-        integer :: i
+        integer(kind=8) :: i
 
         do i = 1, 3
             P1(i) = coorseg1(i, 1)
@@ -129,11 +129,11 @@ contains
 
         real(kind=8), intent(in) :: t(3), s(3), coor_pt_co(3, NB_NO_CO_MAX)
         real(kind=8), intent(in) :: ddf_co(:), pg_coor, epai
-        integer, intent(in) :: nno_co
+        integer(kind=8), intent(in) :: nno_co
         !
         real(kind=8) :: magnitude, normal(3)
         real(kind=8) :: vect(3), vect1(3), vect2(3)
-        integer :: l, k
+        integer(kind=8) :: l, k
 
         normal = 0.0d0
         vect = 0.0d0
@@ -179,7 +179,7 @@ contains
         real(kind=8) :: res(3)
         ! Others
         real(kind=8) :: xi(2), dxi(2), ff(8), df(3, 8)
-        integer :: max_iter, iter
+        integer(kind=8) :: max_iter, iter
         real(kind=8) :: F(3), jac(3, 2), det, residual(2)
         real(kind=8) ::  tol
         real(kind=8), dimension(2, 2) :: JtJ

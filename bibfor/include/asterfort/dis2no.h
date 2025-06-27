@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     function dis2no(geom, ino1, ino2)
         real(kind=8) :: geom(*)
-        integer :: ino1
-        integer :: ino2
+        integer(kind=8) :: ino1
+        integer(kind=8) :: ino2
         real(kind=8) :: dis2no
     end function dis2no
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine testli(ima, numa, nma, kma, ierr)
-        integer :: nma
-        integer :: ima
-        integer :: numa(nma)
-        integer :: kma
-        integer :: ierr
+        integer(kind=8) :: nma
+        integer(kind=8) :: ima
+        integer(kind=8) :: numa(nma)
+        integer(kind=8) :: kma
+        integer(kind=8) :: ierr
     end subroutine testli
 end interface

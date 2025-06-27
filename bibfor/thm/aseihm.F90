@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -101,10 +101,10 @@ subroutine aseihm(ds_thm, option, &
 !......................................................................
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: ndim, nno1, nno2, npi, npg, dimuel, dimdef, dimcon, nbvari
-    integer :: mecani(8), press1(9), press2(9), tempe(5)
-    integer :: j_mater
-    integer :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
+    integer(kind=8) :: ndim, nno1, nno2, npi, npg, dimuel, dimdef, dimcon, nbvari
+    integer(kind=8) :: mecani(8), press1(9), press2(9), tempe(5)
+    integer(kind=8) :: j_mater
+    integer(kind=8) :: iu(3, 18), ip(2, 9), ipf(2, 2, 9), iq(2, 2, 9)
     real(kind=8) :: vff1(nno1, npi), vff2(nno2, npi), dffr2(ndim-1, nno2, npi)
     real(kind=8) :: wref(npi), ang(24)
     real(kind=8) :: time_prev, time_curr, deplm(dimuel), deplp(dimuel)
@@ -116,14 +116,14 @@ subroutine aseihm(ds_thm, option, &
     character(len=16), intent(in) :: compor(*)
 !
 ! - VARIABLES SORTIE
-    integer :: retcom
+    integer(kind=8) :: retcom
     real(kind=8) :: vectu(dimuel), varip(nbvari, npi), sigp(dimcon, npi)
     real(kind=8) :: matuu(dimuel*dimuel)
 !
 ! - VARIABLES LOCALES
-    integer :: addeme, adcome, addep1, addep2, addete
-    integer :: adcp11, adcp12, adcp21, adcp22, adcote, adcop1
-    integer :: i, j, m, k, km, kpi, addlh1
+    integer(kind=8) :: addeme, adcome, addep1, addep2, addete
+    integer(kind=8) :: adcp11, adcp12, adcp21, adcp22, adcote, adcop1
+    integer(kind=8) :: i, j, m, k, km, kpi, addlh1
     real(kind=8) :: q(dimdef, dimuel), res(dimdef), drde(dimdef, dimdef), wi
     real(kind=8) :: defgem(dimdef), defgep(dimdef), matri
 !

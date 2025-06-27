@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine masyns(matas)
     character(len=*) :: matas
     character(len=1) :: base, ktyp
     character(len=19) :: mat19
-    integer :: i, nbloc, lgbloc, jvalmi, jvalms, jvalma
+    integer(kind=8) :: i, nbloc, lgbloc, jvalmi, jvalms, jvalma
     character(len=24), pointer :: refa(:) => null()
 !
 !---------------------------------------------------------------------

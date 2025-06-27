@@ -42,7 +42,7 @@ subroutine te0456(nomopt, nomte)
     type(HHO_Data) :: hhoData
     type(HHO_Cell) :: hhoCell
     type(HHO_Quadrature) :: hhoQuad
-    integer :: nbnodes, npg
+    integer(kind=8) :: nbnodes, npg
 ! --------------------------------------------------------------------------------------------------
 !
 ! --- Retrieve HHO informations

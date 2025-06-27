@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine giecas(nfic, ndim, nbobj)
 #include "asterfort/utmess.h"
 #include "asterfort/uttrii.h"
 #include "asterfort/wkvect.h"
-    integer :: nfic, ndim, nbobj
+    integer(kind=8) :: nfic, ndim, nbobj
 ! ----------------------------------------------------------------------
 !     BUT: ECRIRE LE FICHIER DE MAILLAGE ASTER A PARTIR DES OBJETS
 !          CREES PAR GILIRE ( '&&GILIRE.....')
@@ -47,7 +47,7 @@ subroutine giecas(nfic, ndim, nbobj)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: vali
+    integer(kind=8) :: vali
 !     VARIABLES LOCALES:
     character(len=7) :: k7bid, k7nom(7)
     character(len=8) :: tymail, nomobj, nomno, k8nom(7), nomobg
@@ -55,23 +55,23 @@ subroutine giecas(nfic, ndim, nbobj)
 !
     character(len=1) :: cbid
 !-----------------------------------------------------------------------
-    integer :: i, ianema
-    integer :: iaptin, icok
-    integer :: icoma, iecrit, iecrma, ii, il, ima, imb
-    integer :: ino, inu, inutri, iret, itot, itrnu, j
-    integer :: jj, k, kk, l, nbelc, nbele, nbelim
-    integer :: nbelt, nbfois, nbno, nbnono, nbnoto, nbobno, nbrest
-    integer :: nbsoob, ncoo, nmelim, nono, numno
+    integer(kind=8) :: i, ianema
+    integer(kind=8) :: iaptin, icok
+    integer(kind=8) :: icoma, iecrit, iecrma, ii, il, ima, imb
+    integer(kind=8) :: ino, inu, inutri, iret, itot, itrnu, j
+    integer(kind=8) :: jj, k, kk, l, nbelc, nbele, nbelim
+    integer(kind=8) :: nbelt, nbfois, nbno, nbnono, nbnoto, nbobno, nbrest
+    integer(kind=8) :: nbsoob, ncoo, nmelim, nono, numno
     character(len=8), pointer :: objet_nom(:) => null()
     real(kind=8), pointer :: coordo(:) => null()
-    integer, pointer :: objet_num(:) => null()
+    integer(kind=8), pointer :: objet_num(:) => null()
     character(len=8), pointer :: point_nom(:) => null()
-    integer, pointer :: descobj(:) => null()
+    integer(kind=8), pointer :: descobj(:) => null()
     character(len=8), pointer :: vnomobj(:) => null()
-    integer, pointer :: soob(:) => null()
-    integer, pointer :: ssob(:) => null()
-    integer, pointer :: point_num(:) => null()
-    integer, pointer :: cumul_ele(:) => null()
+    integer(kind=8), pointer :: soob(:) => null()
+    integer(kind=8), pointer :: ssob(:) => null()
+    integer(kind=8), pointer :: point_num(:) => null()
+    integer(kind=8), pointer :: cumul_ele(:) => null()
 !-----------------------------------------------------------------------
     data cbid/' '/
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,8 +25,8 @@ interface
         real(kind=8) :: coor(18)
         real(kind=8) :: ff(81)
         real(kind=8) :: rho
-        integer :: nno
-        integer :: npg
+        integer(kind=8) :: nno
+        integer(kind=8) :: npg
         real(kind=8) :: frx(9)
         real(kind=8) :: fry(9)
     end subroutine resrot

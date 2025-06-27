@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(in) :: mesh
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: i_zone
-        integer, intent(in) :: elem_mast_indx
+        integer(kind=8), intent(in) :: i_zone
+        integer(kind=8), intent(in) :: elem_mast_indx
         real(kind=8), intent(out) :: tau1(3)
         real(kind=8), intent(out) :: tau2(3)
     end subroutine mmexfr

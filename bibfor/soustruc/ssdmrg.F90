@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,16 +51,16 @@ subroutine ssdmrg(mag)
     real(kind=8) :: prec, di, dj
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iacoo2
-    integer :: iasupi, iasupj, iconf, ii, inoi, inoj
-    integer :: iocc, isma, j, jj, jsma, n1, nbnoi
-    integer :: nbnoj, nbsma, nbsmar, nnnoe, nocc
-    integer, pointer :: liis(:) => null()
+    integer(kind=8) :: i, iacoo2
+    integer(kind=8) :: iasupi, iasupj, iconf, ii, inoi, inoj
+    integer(kind=8) :: iocc, isma, j, jj, jsma, n1, nbnoi
+    integer(kind=8) :: nbnoj, nbsma, nbsmar, nnnoe, nocc
+    integer(kind=8), pointer :: liis(:) => null()
     character(len=8), pointer :: lik8(:) => null()
     real(kind=8), pointer :: para_r(:) => null()
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: dime_2(:) => null()
-    integer, pointer :: noeud_conf(:) => null()
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: dime_2(:) => null()
+    integer(kind=8), pointer :: noeud_conf(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     call getfac('RECO_GLOBAL', nocc)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine pmfitx(icdmat, isw, casect, gto)
-        integer :: icdmat
-        integer :: isw
+        integer(kind=8) :: icdmat
+        integer(kind=8) :: isw
         real(kind=8) :: casect(6)
         real(kind=8) :: gto
     end subroutine pmfitx

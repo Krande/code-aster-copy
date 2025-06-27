@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,8 +30,8 @@ subroutine xalgo3(ndim, elrefp, nnop, it, nnose, cnset, typma, ndime, &
 #    include "asterfort/xalg42.h"
 #    include "asterfort/xalg20.h"
     character(len=8) :: typma, elrefp
-    integer ::  ndim, ndime, nnop, it, nnose, cnset(*), exit(2)
-    integer ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
+    integer(kind=8) ::  ndim, ndime, nnop, it, nnose, cnset(*), exit(2)
+    integer(kind=8) ::  ninter, pmmax, npts, nptm, nmilie, mfis, ar(12, 3)
     real(kind=8) :: lonref, ainter(*), pmilie(*), lsnelp(27)
     real(kind=8) :: pinref(*), pintt(*), pmitt(*), geom(81)
     aster_logical :: jonc

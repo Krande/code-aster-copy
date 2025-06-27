@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,7 +47,7 @@ subroutine romSolveDOMSystSolve(solver, ds_solve)
 ! --------------------------------------------------------------------------------------------------
 !
     complex(kind=8), parameter :: c16bid = (0.d0, 0.d0)
-    integer :: icode, ibid, ifm, niv
+    integer(kind=8) :: icode, ibid, ifm, niv
     character(len=19) :: maprec, crgc, vect_zero
     character(len=19) :: syst_matr, syst_2mbr, syst_solu
 !

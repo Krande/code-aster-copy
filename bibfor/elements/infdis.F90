@@ -62,7 +62,7 @@ subroutine infdis(quest, ivale, rvale, kvale)
 !
     character(len=4) :: quest
     character(len=*) :: kvale
-    integer :: ivale
+    integer(kind=8) :: ivale
     real(kind=8) :: rvale
 !
 #include "jeveux.h"
@@ -73,14 +73,14 @@ subroutine infdis(quest, ivale, rvale, kvale)
 #include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: nbelem, ii, jdc, jj, kk, iadzi, iazk24, icoord
+    integer(kind=8) :: nbelem, ii, jdc, jj, kk, iadzi, iazk24, icoord
     parameter(nbelem=8)
-    integer :: lenmnd(nbelem), lenmdd(nbelem)
+    integer(kind=8) :: lenmnd(nbelem), lenmdd(nbelem)
     character(len=13) :: elemnd(nbelem), elemdd(nbelem)
     character(len=20) :: caracz
 ! --------------------------------------------------------------------------------------------------
     character(len=8) :: nommai, mailla
-    integer :: nbnoeu
+    integer(kind=8) :: nbnoeu
 ! --------------------------------------------------------------------------------------------------
     data elemnd/'_DIS_T_N     ', '_DIS_TR_N    ', '_DIS_T_L     ', '_DIS_TR_L    ', &
         '2D_DIS_T_N   ', '2D_DIS_TR_N  ', '2D_DIS_T_L   ', '2D_DIS_TR_L  '/

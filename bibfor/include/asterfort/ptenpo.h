@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine ptenpo(n, x, mat, ep, itype,&
                       iform)
-        integer :: n
+        integer(kind=8) :: n
         real(kind=8) :: x(*)
         real(kind=8) :: mat(n, n)
         real(kind=8) :: ep(*)
-        integer :: itype
-        integer :: iform
+        integer(kind=8) :: itype
+        integer(kind=8) :: iform
     end subroutine ptenpo
 end interface

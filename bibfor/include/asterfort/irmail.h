@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
     subroutine irmail(form, ifi, versio, noma, lmod,&
                       nomo, infmai, formar, lfichUniq, nosdfu)
         character(len=*) :: form
-        integer :: ifi
-        integer :: versio
+        integer(kind=8) :: ifi
+        integer(kind=8) :: versio
         character(len=8) :: noma
         aster_logical :: lmod
         character(len=8) :: nomo
-        integer :: infmai
+        integer(kind=8) :: infmai
         character(len=16) :: formar
         aster_logical, optional :: lfichUniq
         character(len=8), optional :: nosdfu

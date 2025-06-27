@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,33 +30,33 @@ module DynaGene_module
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelibe.h"
 
-    integer, parameter :: nb_field = 7
-    integer, parameter :: ordr = 1, disc = 2, ptem = 3, depl = 4, vite = 5, acce = 6, vint = 7
+    integer(kind=8), parameter :: nb_field = 7
+  integer(kind=8), parameter :: ordr = 1, disc = 2, ptem = 3, depl = 4, vite = 5, acce = 6, vint = 7
     character(len=8), parameter :: field_names(nb_field) = (/'   .ORDR', '   .DISC', '   .PTEM', \
     '   .DEPL', '   .VITE', '   .ACCE', '.NL.VINT'/)
 
     type DynaGene
-        integer :: ordr = ordr
-        integer :: disc = disc
-        integer :: ptem = ptem
-        integer :: depl = depl
-        integer :: vite = vite
-        integer :: acce = acce
-        integer :: vint = vint
-        integer :: length = 0
-        integer :: n_bloc = -1
+        integer(kind=8) :: ordr = ordr
+        integer(kind=8) :: disc = disc
+        integer(kind=8) :: ptem = ptem
+        integer(kind=8) :: depl = depl
+        integer(kind=8) :: vite = vite
+        integer(kind=8) :: acce = acce
+        integer(kind=8) :: vint = vint
+        integer(kind=8) :: length = 0
+        integer(kind=8) :: n_bloc = -1
         character(len=8), private :: sdname
-        integer, private, dimension(:), pointer :: v_shift => null()
+        integer(kind=8), private, dimension(:), pointer :: v_shift => null()
         real(kind=8), private, dimension(:), pointer :: v_bloc => null()
-        integer, private, dimension(:), pointer :: v_blo2 => null()
-        integer, private, dimension(:), pointer :: v_ordr => null()
+        integer(kind=8), private, dimension(:), pointer :: v_blo2 => null()
+        integer(kind=8), private, dimension(:), pointer :: v_ordr => null()
         real(kind=8), private, dimension(:), pointer :: v_disc => null()
         real(kind=8), private, dimension(:), pointer :: v_ptem => null()
         real(kind=8), private, dimension(:), pointer :: v_depl => null()
         real(kind=8), private, dimension(:), pointer :: v_vite => null()
         real(kind=8), private, dimension(:), pointer :: v_acce => null()
         real(kind=8), private, dimension(:), pointer :: v_vint => null()
-        integer, private :: current_bloc(nb_field) = -1
+        integer(kind=8), private :: current_bloc(nb_field) = -1
     contains
         procedure, public, pass :: init => init_dyna_gene
         procedure, public, pass :: free => free_dyna_gene
@@ -84,7 +84,7 @@ contains
         implicit none
 !
         class(DynaGene), intent(in) :: this
-        integer, intent(in) :: field_type, i_bloc
+        integer(kind=8), intent(in) :: field_type, i_bloc
         character(len=24), intent(out) :: field_name
 
         character(len=7) :: intk7
@@ -111,7 +111,7 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type
+        integer(kind=8), intent(in) :: field_type
 
         character(len=24) :: field_name
 
@@ -130,7 +130,7 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type, i_bloc
+        integer(kind=8), intent(in) :: field_type, i_bloc
 
         character(len=24) :: field_name
 
@@ -166,7 +166,7 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type, i_bloc
+        integer(kind=8), intent(in) :: field_type, i_bloc
 
         if (this%current_bloc(field_type) .ne. i_bloc) then
             call this%free_field(field_type)
@@ -182,12 +182,12 @@ contains
         implicit none
 !
         class(DynaGene), intent(in) :: this
-        integer, intent(in) :: field_type
-        integer, intent(out), optional :: shift, length
-        integer, intent(out), optional, dimension(:), pointer :: vi
+        integer(kind=8), intent(in) :: field_type
+        integer(kind=8), intent(out), optional :: shift, length
+        integer(kind=8), intent(out), optional, dimension(:), pointer :: vi
         real(kind=8), intent(out), optional, dimension(:), pointer :: vr
 
-        integer:: i_bloc
+        integer(kind=8):: i_bloc
 
         i_bloc = this%current_bloc(field_type)
         if (present(shift)) then
@@ -238,7 +238,7 @@ contains
         class(DynaGene), intent(inout) :: this
         character(len=8), intent(in) :: sdname
 
-        integer :: iret, length, i_bloc
+        integer(kind=8) :: iret, length, i_bloc
         character(len=24) :: field_name
 
         this%sdname = sdname
@@ -276,7 +276,7 @@ contains
 !
         class(DynaGene), intent(inout) :: this
 
-        integer :: field_type
+        integer(kind=8) :: field_type
 
         if (this%n_bloc .gt. 0) then
             call jelibe(this%sdname//'           .BLOC')
@@ -299,12 +299,12 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type, idx
-        integer, intent(out), optional :: shift, length
+        integer(kind=8), intent(in) :: field_type, idx
+        integer(kind=8), intent(out), optional :: shift, length
         real(kind=8), intent(out), optional, dimension(:), pointer :: vr
-        integer, intent(out), optional, dimension(:), pointer :: vi
+        integer(kind=8), intent(out), optional, dimension(:), pointer :: vi
 !
-        integer :: i_bloc
+        integer(kind=8) :: i_bloc
 
         ASSERT(idx .ge. 1 .and. idx .le. this%length)
         ASSERT(field_type .ge. 1 .and. field_type .le. nb_field)
@@ -329,13 +329,13 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type
+        integer(kind=8), intent(in) :: field_type
         real(kind=8), intent(in) :: disc
-        integer, intent(out), optional :: shift, length
+        integer(kind=8), intent(out), optional :: shift, length
         real(kind=8), intent(out), optional, dimension(:), pointer :: vr
-        integer, intent(out), optional, dimension(:), pointer :: vi
+        integer(kind=8), intent(out), optional, dimension(:), pointer :: vi
 !
-        integer :: i_bloc
+        integer(kind=8) :: i_bloc
 
         ASSERT(field_type .ge. 1 .and. field_type .le. nb_field)
 
@@ -359,13 +359,13 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type
-        integer, intent(in) :: ordr
-        integer, intent(out), optional :: shift, length
+        integer(kind=8), intent(in) :: field_type
+        integer(kind=8), intent(in) :: ordr
+        integer(kind=8), intent(out), optional :: shift, length
         real(kind=8), intent(out), optional, dimension(:), pointer :: vr
-        integer, intent(out), optional, dimension(:), pointer :: vi
+        integer(kind=8), intent(out), optional, dimension(:), pointer :: vi
 !
-        integer :: i_bloc
+        integer(kind=8) :: i_bloc
 
         ASSERT(field_type .ge. 1 .and. field_type .le. nb_field)
 
@@ -390,10 +390,10 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type, i_bloc
-        integer, intent(out), optional :: shift, length
+        integer(kind=8), intent(in) :: field_type, i_bloc
+        integer(kind=8), intent(out), optional :: shift, length
         real(kind=8), intent(out), optional, dimension(:), pointer :: vr
-        integer, intent(out), optional, dimension(:), pointer :: vi
+        integer(kind=8), intent(out), optional, dimension(:), pointer :: vi
 !
 
         ASSERT(field_type .ge. 1 .and. field_type .le. nb_field)
@@ -416,8 +416,8 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type
-        integer, intent(out) :: i_bloc
+        integer(kind=8), intent(in) :: field_type
+        integer(kind=8), intent(out) :: i_bloc
 !
 
         ASSERT(field_type .ge. 1 .and. field_type .le. nb_field)
@@ -433,8 +433,8 @@ contains
         implicit none
 !
         class(DynaGene), intent(inout) :: this
-        integer, intent(in) :: field_type
-        integer, intent(out) :: iret
+        integer(kind=8), intent(in) :: field_type
+        integer(kind=8), intent(out) :: iret
 
         character(len=24) :: field_name
 

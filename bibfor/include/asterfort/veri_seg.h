@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ interface
                         nbmaok, x3dca, iproj, n1, n2, numail)
         character(len=8) :: mailla
         real(kind=8) :: dmax_cable
-        integer :: lnuma(*)
-        integer :: liproj(*)
-        integer :: lidoubno(*)
-        integer :: nbmaok
+        integer(kind=8) :: lnuma(*)
+        integer(kind=8) :: liproj(*)
+        integer(kind=8) :: lidoubno(*)
+        integer(kind=8) :: nbmaok
         real(kind=8) :: x3dca(3)
-        integer :: iproj
-        integer :: n1
-        integer :: n2
-        integer :: numail
+        integer(kind=8) :: iproj
+        integer(kind=8) :: n1
+        integer(kind=8) :: n2
+        integer(kind=8) :: numail
     end subroutine veri_seg
 end interface

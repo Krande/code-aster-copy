@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,23 +32,24 @@ subroutine dgffibres(nboccfib, iinbgf, tousgroupesnom, tousgroupesnbf, maxmailgr
 !
     implicit none
 !
-    integer :: nboccfib, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles, nbfibres1, maxfibre1, ncarfi1
-    integer           :: tousgroupesnbf(*)
-    character(len=24) :: tousgroupesnom(*)
-!
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
+    !
+    integer(kind=8) :: nboccfib, iinbgf, maxmailgrp, ulnbnoeuds, ulnbmailles
+    integer(kind=8) ::  nbfibres1, maxfibre1, ncarfi1
+    integer(kind=8) :: tousgroupesnbf(*)
+    character(len=24) :: tousgroupesnom(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer           :: ioc, nbvfibre
+    integer(kind=8)           :: ioc, nbvfibre
     character(len=7)  :: k7bid
 !
-    integer           :: vali(3)
+    integer(kind=8)           :: vali(3)
     character(len=24) :: valk(3)
 !
     character(len=16) :: limcls(3), ltymcl(3)

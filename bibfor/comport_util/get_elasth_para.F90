@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,11 +31,11 @@ subroutine get_elasth_para(fami, j_mater, poum, ipg, ispg, &
 !
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: j_mater
     character(len=*), intent(in) :: poum
-    integer, intent(in) :: ipg
-    integer, intent(in) :: ispg
-    integer, intent(in) :: elas_type
+    integer(kind=8), intent(in) :: ipg
+    integer(kind=8), intent(in) :: ispg
+    integer(kind=8), intent(in) :: elas_type
     character(len=16), intent(in) :: elas_keyword
     character(len=8), optional, intent(in) :: materi_
     real(kind=8), optional, intent(in) :: temp_vale_
@@ -80,18 +80,18 @@ subroutine get_elasth_para(fami, j_mater, poum, ipg, ispg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbresm
+    integer(kind=8) :: nbresm
     parameter(nbresm=4)
-    integer :: icodre(nbresm)
+    integer(kind=8) :: icodre(nbresm)
     character(len=16) :: nomres(nbresm)
     real(kind=8) :: valres(nbresm)
 !
     character(len=8) :: para_name, materi
     character(len=24) :: valk(3)
     real(kind=8) :: para_vale
-    integer :: nbres, nb_para, i
+    integer(kind=8) :: nbres, nb_para, i
     real(kind=8) :: alpha_c, alpha_f, alpha_a
-    integer :: iadzi, iazk24
+    integer(kind=8) :: iadzi, iazk24
     real(kind=8) :: z_h_r
     real(kind=8) :: deps_ch_tref
 !

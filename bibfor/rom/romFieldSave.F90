@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,11 @@ subroutine romFieldSave(operation, resultName, numeStore, &
 !
     character(len=*), intent(in) :: operation
     character(len=8), intent(in) :: resultName
-    integer, intent(in) :: numeStore
+    integer(kind=8), intent(in) :: numeStore
     type(ROM_DS_Field), intent(in) :: field
     real(kind=8), optional, pointer :: fieldValeC_(:)
-    integer, optional, intent(in) :: nbEquaR_
-    integer, optional, pointer :: equaCToR_(:)
+    integer(kind=8), optional, intent(in) :: nbEquaR_
+    integer(kind=8), optional, pointer :: equaCToR_(:)
     real(kind=8), optional, pointer :: fieldValeR_(:)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -67,7 +67,7 @@ subroutine romFieldSave(operation, resultName, numeStore, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, nbEqua, iEqua, equaNume, nbEquaRead
+    integer(kind=8) :: iret, nbEqua, iEqua, equaNume, nbEquaRead
     character(len=24) :: resultField
     real(kind=8), pointer :: valeWrite(:) => null()
     character(len=24) :: fieldRefe, fieldName

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,10 +41,10 @@ subroutine get_med_types(mesh, vect_types)
 !
 ! ------------------------------------------------------------------------------
 
-    integer :: typgeo(MT_NTYMAX)
-    integer :: i, nbcell
-    integer, pointer :: dime(:) => null()
-    integer, pointer :: typmast(:) => null(), typmmed(:) => null()
+    integer(kind=8) :: typgeo(MT_NTYMAX)
+    integer(kind=8) :: i, nbcell
+    integer(kind=8), pointer :: dime(:) => null()
+    integer(kind=8), pointer :: typmast(:) => null(), typmmed(:) => null()
 
     call jemarq()
 

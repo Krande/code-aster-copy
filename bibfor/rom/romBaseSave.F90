@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,10 +32,10 @@ subroutine romBaseSave(base, nbMode, nbSnap, &
 #include "asterfort/as_deallocate.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
-    integer, intent(in) :: nbMode, nbSnap
+    integer(kind=8), intent(in) :: nbMode, nbSnap
     real(kind=8), pointer :: baseValeR(:)
     real(kind=8), optional, pointer :: baseSing_(:)
-    integer, optional, pointer      :: baseNumeSlice_(:)
+    integer(kind=8), optional, pointer      :: baseNumeSlice_(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -54,9 +54,9 @@ subroutine romBaseSave(base, nbMode, nbSnap, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: iMode, iEqua, numeMode
-    integer :: nbEqua, numeSlice
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: iMode, iEqua, numeMode
+    integer(kind=8) :: nbEqua, numeSlice
     real(kind=8) :: modeSing
     character(len=8)  :: resultName
     type(ROM_DS_Field) :: mode

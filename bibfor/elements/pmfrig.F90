@@ -58,22 +58,22 @@ subroutine pmfrig(nomte, icdmat, klv)
 #include "asterfort/utmess.h"
 !
     character(len=*) :: nomte
-    integer :: icdmat
+    integer(kind=8) :: icdmat
     real(kind=8) :: klv(*)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbasspou, maxfipoutre, jacf
-    integer :: i, ii, pos, posfib, ig, codres(4), icp, isdcom
+    integer(kind=8) :: nbasspou, maxfipoutre, jacf
+    integer(kind=8) :: i, ii, pos, posfib, ig, codres(4), icp, isdcom
     real(kind=8) :: g, xjx, gxjx, xl, casect(6), vs(6), val(4)
     real(kind=8) :: cars1(6), a, alfay, alfaz, ey, ez, xjg, skt(78)
     character(len=16) :: ch16
     character(len=32) :: materi
     character(len=16), pointer :: compor(:) => null()
 !
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 6
+    integer(kind=8), parameter :: nb_cara = 6
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'AY1', 'AZ1', 'EY1', 'EZ1', 'JX1', 'JG1'/
@@ -81,7 +81,7 @@ subroutine pmfrig(nomte, icdmat, klv)
     real(kind=8), pointer :: yj(:) => null(), zj(:) => null()
     real(kind=8), allocatable :: vfv(:, :), skp(:, :)
     real(kind=8), pointer :: vev(:) => null()
-    integer, pointer :: nbfipoutre(:) => null()
+    integer(kind=8), pointer :: nbfipoutre(:) => null()
     real(kind=8), pointer :: gxjxpou(:) => null()
 ! --------------------------------------------------------------------------------------------------
 !   Poutres droites multifibres

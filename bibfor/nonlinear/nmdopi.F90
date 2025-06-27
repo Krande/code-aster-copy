@@ -85,25 +85,25 @@ subroutine nmdopi(modelz, numedd, ds_algopara, sdpilo)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbno, numequ, nddl, nb_node_mesh, nb_dof_acti
-    integer :: nume_node
-    integer :: ino, iddl
-    integer :: jvale
-    integer :: jplir, jpltk
-    integer :: ibid, n1, n2, neq, ndim
+    integer(kind=8) :: nbno, numequ, nddl, nb_node_mesh, nb_dof_acti
+    integer(kind=8) :: nume_node
+    integer(kind=8) :: ino, iddl
+    integer(kind=8) :: jvale
+    integer(kind=8) :: jplir, jpltk
+    integer(kind=8) :: ibid, n1, n2, neq, ndim
     real(kind=8) :: coef, lm(2)
     character(len=8) :: mesh, lborn(2), nomcmp
     character(len=8) :: modele
     character(len=16) :: relmet
     character(len=24) :: lisnoe, liscmp
-    integer :: jlinoe, jlicmp
+    integer(kind=8) :: jlinoe, jlicmp
     character(len=24) :: typpil, projbo, typsel, evolpa, txt(2)
     character(len=19) :: chapil, selpil, ligrmo, ligrpi
     character(len=19) :: careta, cartyp
     real(kind=8) :: etrmax, etrmin, etamin, etamax
-    integer :: nbmocl
+    integer(kind=8) :: nbmocl
     character(len=16) :: limocl(2), tymocl(2)
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8), pointer :: plsl(:) => null()
     aster_logical :: lSelectDof
 !

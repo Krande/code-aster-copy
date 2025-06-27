@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ interface
         real(kind=8) :: lambda
         real(kind=8) :: mu
         real(kind=8) :: ecrob
-        integer :: bdim
+        integer(kind=8) :: bdim
         real(kind=8) :: fb(6)
         real(kind=8) :: nofbm
         real(kind=8) :: fbm(6)

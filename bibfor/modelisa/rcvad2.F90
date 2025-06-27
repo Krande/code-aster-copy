@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat, &
 #include "asterfort/rcfode.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
-    integer :: kpg, ksp, imat, nbres, jmat
+    integer(kind=8) :: kpg, ksp, imat, nbres, jmat
     character(len=*) :: fami, poum
-    integer :: icodre(nbres)
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     character(len=*) :: phenom
     real(kind=8) :: temp, valres(nbres), devres(nbres)
@@ -50,8 +50,8 @@ subroutine rcvad2(fami, kpg, ksp, poum, jmat, &
 !
 !
 !
-    integer :: nbobj, nbf, nbr, ivalr, ivalk, ir, idf, ires
-    integer :: lmat, lfct, icomp, ipi, ifon, ik, nbmat, iret
+    integer(kind=8) :: nbobj, nbf, nbr, ivalr, ivalk, ir, idf, ires
+    integer(kind=8) :: lmat, lfct, icomp, ipi, ifon, ik, nbmat, iret
     character(len=10) :: phen
 !
 ! ----------------------------------------------------------------------

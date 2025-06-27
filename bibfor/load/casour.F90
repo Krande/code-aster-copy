@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,18 +34,18 @@ subroutine casour(load, mesh, model, geomDime, valeType)
 !
     character(len=8), intent(in) :: load, mesh, model
     character(len=4), intent(in) :: valeType
-    integer, intent(in) :: geomDime
+    integer(kind=8), intent(in) :: geomDime
 !
 !
 ! BUT : STOCKAGE DES SOURCES DANS UNE CARTE ALLOUEE SUR LE
 !       LIGREL DU MODELE
 !
 !-----------------------------------------------------------------------
-    integer :: nsour, jvalv, n1, ncmp, iocc
+    integer(kind=8) :: nsour, jvalv, n1, ncmp, iocc
     character(len=16) :: motclf
     character(len=19) :: carte
     character(len=19) :: cartes(1)
-    integer :: ncmps(1)
+    integer(kind=8) :: ncmps(1)
     character(len=8), pointer :: vncmp(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()

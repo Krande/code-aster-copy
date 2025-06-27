@@ -30,8 +30,8 @@ subroutine ef0409()
 #include "blas/dcopy.h"
 ! person_in_charge: sebastien.fayolle at edf.fr
 !
-    integer :: nnos, ipoids, ivf, idfdx, jgano, jtab(7), ipg, npg
-    integer :: ichn, icontm, nno, igeom, ndim, iret
+    integer(kind=8) :: nnos, ipoids, ivf, idfdx, jgano, jtab(7), ipg, npg
+    integer(kind=8) :: ichn, icontm, nno, igeom, ndim, iret
 !
 !     ---> POUR DKT MATELEM = 3 * 6 DDL = 171 TERMES STOCKAGE SYME
 !     ---> POUR DKQ MATELEM = 4 * 6 DDL = 300 TERMES STOCKAGE SYME

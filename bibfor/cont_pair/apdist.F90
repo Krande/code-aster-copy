@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine apdist(elem_type, elem_coor, elem_nbnode, ksi1, ksi2, &
 !
     character(len=8), intent(in) :: elem_type
     real(kind=8), intent(in) :: elem_coor(27)
-    integer, intent(in) :: elem_nbnode
+    integer(kind=8), intent(in) :: elem_nbnode
     real(kind=8), intent(in) :: ksi1
     real(kind=8), intent(in) :: ksi2
     real(kind=8), intent(in) :: poin_coor(3)
@@ -53,7 +53,7 @@ subroutine apdist(elem_type, elem_coor, elem_nbnode, ksi1, ksi2, &
 ! --------------------------------------------------------------------------------------------------
 !
     real(kind=8) :: poin_proj_coor(3)
-    integer :: i_dime, i_node
+    integer(kind=8) :: i_dime, i_node
     real(kind=8), parameter :: zero = 0.d0
     real(kind=8) :: ksi(2), ff(9)
 !

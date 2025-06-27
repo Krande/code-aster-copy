@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine bsthpl(nomte, bsigth, indith)
 !     OUT INDITH : LOGICAL = .TRUE.  YA DES DEFORMATIONS THERMIQUES
 !                          = .FALSE. SINON
 !     ------------------------------------------------------------------
-    integer :: i, jgeom, nno
+    integer(kind=8) :: i, jgeom, nno
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), sigth(32), zero
 !     ------------------------------------------------------------------
 !

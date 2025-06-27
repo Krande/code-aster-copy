@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: iuni, nbfonc, impr
+    integer(kind=8) :: iuni, nbfonc, impr
     real(kind=8) :: valpar(nbfonc)
     character(len=*) :: vecpro(*), chval
 !     ECRITURE DES VALEURS (PARAMETRE, FONCTION) D'UNE NAPPE,
@@ -46,12 +46,12 @@ subroutine foec2n(iuni, vecpro, valpar, chval, nbfonc, &
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------
-    integer :: n1, n2, jv, n
+    integer(kind=8) :: n1, n2, jv, n
     character(len=8) :: nompan, nomres, nompaf
     character(len=8) :: tprol(3), prolgd, interp
 !-----------------------------------------------------------------------
-    integer :: i, ik, j, k, lf, lfon, lr
-    integer :: lvar, n0, ndom, nf1, nf2, nn, npas
+    integer(kind=8) :: i, ik, j, k, lf, lfon, lr
+    integer(kind=8) :: lvar, n0, ndom, nf1, nf2, nn, npas
 !
 !-----------------------------------------------------------------------
     data tprol/'CONSTANT', 'LINEAIRE', 'EXCLU'/

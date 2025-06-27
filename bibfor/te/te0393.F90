@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,10 +47,10 @@ subroutine te0393(option, nomte)
     real(kind=8) :: pjacob, ajacob
 !
     real(kind=8) :: forref, momref
-    integer :: nno, nc, ino, i, ndim, nnos, npg, ipoids, ivf, idfdk, jgano, kp
-    integer :: ne, ic, kc, k0, k1, ico
-    integer :: ivectu, jvDisp, igeom, jvSief, lorien, jefint
-    integer :: ifint
+    integer(kind=8) :: nno, nc, ino, i, ndim, nnos, npg, ipoids, ivf, idfdk, jgano, kp
+    integer(kind=8) :: ne, ic, kc, k0, k1, ico
+    integer(kind=8) :: ivectu, jvDisp, igeom, jvSief, lorien, jefint
+    integer(kind=8) :: ifint
 !
     parameter(zero=0.0d0, un=1.0d0)
 ! ----------------------------------------------------------------------

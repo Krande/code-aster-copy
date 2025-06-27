@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine matbmn(nb1, vectt, dudxnx, jdn1nx, jdn2nx, &
 #include "asterfort/hsame.h"
 #include "asterfort/promat.h"
 #include "asterfort/r8inir.h"
-    integer :: nb1
+    integer(kind=8) :: nb1
 !
 !
     real(kind=8) :: vectt(3, 3)

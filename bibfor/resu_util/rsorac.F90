@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,8 +35,8 @@ subroutine rsorac(nomsd, acces, ival, rval, kval, &
 #include "asterfort/rsindi.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(out) :: nbtrou, nutrou(*)
-    integer, intent(in) :: ival, ndim
+    integer(kind=8), intent(out) :: nbtrou, nutrou(*)
+    integer(kind=8), intent(in) :: ival, ndim
     real(kind=8), intent(in) :: rval, epsi
     character(len=*), intent(in) :: nomsd, acces, kval, crit
     complex(kind=8), intent(in) :: cval
@@ -74,8 +74,8 @@ subroutine rsorac(nomsd, acces, ival, rval, kval, &
 ! ----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacces, iaobj, iatava, idebu, ier1
-    integer :: ier2, iloty, imaxi, jordr, nbordr, nordr, numed
+    integer(kind=8) :: i, iacces, iaobj, iatava, idebu, ier1
+    integer(kind=8) :: ier2, iloty, imaxi, jordr, nbordr, nordr, numed
 !
 !-----------------------------------------------------------------------
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,11 +30,11 @@ subroutine matrc(nno, kcis, matc, vectt)
 #include "asterfort/utbtab.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: kcis, matc(5, 5), vectt(3, 3)
 !
     real(kind=8) :: valres(5), valpar(1)
-    integer :: icodre(5)
+    integer(kind=8) :: icodre(5)
     character(len=4) :: fami
     character(len=8) :: nompar
     character(len=16) :: nomres(5)
@@ -43,8 +43,8 @@ subroutine matrc(nno, kcis, matc, vectt)
     real(kind=8) :: passag(3, 3), pas2(2, 2), dorth(3, 3), work(3, 3), d(3, 3)
     real(kind=8) :: dcis(2, 2), c, s, d2(2, 2), el, et, glt, gtn, delta
     real(kind=8) :: r8bid4(4)
-    integer :: i, j, jmate, nbv, nbpar, jcoqu, iret
-    integer :: ndim, nnos, npg, ipoids, ivf, idfde, jgano, jcou
+    integer(kind=8) :: i, j, jmate, nbv, nbpar, jcoqu, iret
+    integer(kind=8) :: ndim, nnos, npg, ipoids, ivf, idfde, jgano, jcou
 !
     fami = 'RIGI'
     call elrefe_info(fami=fami, ndim=ndim, nno=nno, nnos=nnos, &

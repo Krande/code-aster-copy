@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: lmat, nprec, nmrig
+    integer(kind=8) :: lmat, nprec, nmrig
     character(len=*) :: vemrig
 !
 !
@@ -81,16 +81,16 @@ subroutine tldlg2(lmat, nprec, nmrig, vemrig)
     character(len=14) :: nu
     character(len=19) :: noma19, nomb19
     complex(kind=8) :: cbid
-    integer :: ndeci, isingu, nom, neq, typvar, typsym
-    integer :: lmatb, ndigi2, npivot, ksing, nmrav
-    integer :: ifm, niv
-    integer :: pass, ieq, jeq, krig, lxsol
-    integer :: lcine
-    integer :: jdigs, jrefab, jccid
+    integer(kind=8) :: ndeci, isingu, nom, neq, typvar, typsym
+    integer(kind=8) :: lmatb, ndigi2, npivot, ksing, nmrav
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: pass, ieq, jeq, krig, lxsol
+    integer(kind=8) :: lcine
+    integer(kind=8) :: jdigs, jrefab, jccid
     real(kind=8) :: epsb, d1, moydia
-    integer, pointer :: delg(:) => null()
-    integer, pointer :: ksingu(:) => null()
-    integer, pointer :: posmodri(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
+    integer(kind=8), pointer :: ksingu(:) => null()
+    integer(kind=8), pointer :: posmodri(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------

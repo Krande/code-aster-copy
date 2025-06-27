@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine ssdmu1(dref, crit, prec, geo1, geo2, &
     real(kind=8) :: prec, geo1(3), geo2(3), dref
     character(len=8) :: crit2
     real(kind=8) :: dist, a1, a2, a3
-    integer :: iconf
+    integer(kind=8) :: iconf
 !
 ! ----------------------------------------------------------------------
 !     BUT:

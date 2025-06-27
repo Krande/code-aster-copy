@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine ulaffe(unit, fichie, name, acces, autor)
-        integer :: unit
+        integer(kind=8) :: unit
         character(len=*) :: fichie
         character(len=*) :: name
         character(len=*) :: acces

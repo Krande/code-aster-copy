@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 201662017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 201662025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -60,8 +60,8 @@ subroutine calprc(nomres, classe, basmod, nommat)
     character(len=14) :: num
     character(len=24) :: valk
     complex(kind=8) :: xprod, dcmplx, cbid
-    integer :: ldref, nbdef, ntail, ldres, ier, lmat, neq, jdeb, ldres2
-    integer :: iddeeq, idbase, ltvec1, ltvec2, i, j, k, iad, lddes, jrefa
+    integer(kind=8) :: ldref, nbdef, ntail, ldres, ier, lmat, neq, jdeb, ldres2
+    integer(kind=8) :: iddeeq, idbase, ltvec1, ltvec2, i, j, k, iad, lddes, jrefa
     aster_logical :: lsym
     cbid = dcmplx(0.d0, 0.d0)
 !

@@ -33,7 +33,7 @@ subroutine deelpo(caelem, noma, numail, phie)
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
-    integer :: numail
+    integer(kind=8) :: numail
     real(kind=8) :: phie
     character(len=8) :: caelem, noma
 ! RECUPERATION DU DIAMETRE EXTERIEUR D'UN ELEMENT DE POUTRE
@@ -45,10 +45,10 @@ subroutine deelpo(caelem, noma, numail, phie)
 !-----------------------------------------------------------------------
 !
 !
-    integer :: ias, iasbon, iasedi, iasmax, icad, icav, icmp
-    integer :: icode, iglma, igrand, ima, inomcp, irang1
-    integer :: irang2, iranv1, iranv2, iret, nbcmp, nbma
-    integer :: nuenti, numa, nbec
+    integer(kind=8) :: ias, iasbon, iasedi, iasmax, icad, icav, icmp
+    integer(kind=8) :: icode, iglma, igrand, ima, inomcp, irang1
+    integer(kind=8) :: irang2, iranv1, iranv2, iret, nbcmp, nbma
+    integer(kind=8) :: nuenti, numa, nbec
 !
 !
     real(kind=8) :: difr, r1, r2, tolr

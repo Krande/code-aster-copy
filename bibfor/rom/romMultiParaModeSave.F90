@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine romMultiParaModeSave(multPara, base, numeMode, modeName)
 !
     type(ROM_DS_MultiPara), intent(in) :: multPara
     type(ROM_DS_Empi), intent(inout) :: base
-    integer, intent(in) :: numeMode
+    integer(kind=8), intent(in) :: numeMode
     character(len=19), intent(in) :: modeName
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +51,7 @@ subroutine romMultiParaModeSave(multPara, base, numeMode, modeName)
 !
     complex(kind=8) :: normc
     real(kind=8) :: normr
-    integer :: nbEqua
+    integer(kind=8) :: nbEqua
     character(len=24) :: fieldName
     character(len=1) :: syst_type
     character(len=8) :: resultName

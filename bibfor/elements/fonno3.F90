@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine fonno3(noma, tablev, ndim, na, nb, &
 #include "asterfort/jexnum.h"
 !
     character(len=8) :: noma
-    integer :: tablev(2), ndim, na, nb, noe(4, 4)
+    integer(kind=8) :: tablev(2), ndim, na, nb, noe(4, 4)
 !
 !      RECUP DES FACES CONNECTEES AU FOND
 !          POUR CHACUNE DES 2 MAILLES
@@ -46,10 +46,10 @@ subroutine fonno3(noma, tablev, ndim, na, nb, &
 !                MAILLES CONNECTEES AU NOEUD SOMMET COURANT
 !                ET AUX LEVRES
 !
-    integer :: iatyma, iamase, ityp
-    integer :: i, j, jf, numert(12, 3), nbft, numero(6, 8), nbf
-    integer :: compte, ima, nn, inp, compt(2), compf
-    integer :: numerf(4, 2)
+    integer(kind=8) :: iatyma, iamase, ityp
+    integer(kind=8) :: i, j, jf, numert(12, 3), nbft, numero(6, 8), nbf
+    integer(kind=8) :: compte, ima, nn, inp, compt(2), compf
+    integer(kind=8) :: numerf(4, 2)
     character(len=8) :: type
 !
 !     -----------------------------------------------------------------

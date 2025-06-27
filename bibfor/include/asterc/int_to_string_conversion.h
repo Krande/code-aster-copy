@@ -21,7 +21,7 @@
 #include "asterf_types.h"
 interface
     subroutine int_to_string_conversion(value, out)
-        integer, intent(in) :: value
+        integer(kind=8), intent(in) :: value
         character(len=8), intent(out) :: out
     end subroutine int_to_string_conversion
 end interface

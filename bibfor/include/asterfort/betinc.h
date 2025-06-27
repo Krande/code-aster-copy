@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,10 +21,10 @@
 interface
     subroutine betinc(materf, nmat, sige, nseuil, dpc,&
                       dpt, sigf, verifc, verift)
-        integer :: nmat
+        integer(kind=8) :: nmat
         real(kind=8) :: materf(nmat, 2)
         real(kind=8) :: sige(6)
-        integer :: nseuil
+        integer(kind=8) :: nseuil
         real(kind=8) :: dpc
         real(kind=8) :: dpt
         real(kind=8) :: sigf(6)

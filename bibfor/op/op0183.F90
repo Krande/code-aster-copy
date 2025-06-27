@@ -64,14 +64,14 @@ subroutine op0183()
 #include "asterfort/vrcins.h"
 #include "asterfort/vtcreb.h"
 #include "jeveux.h"
-    integer :: ibid
-    integer :: i, iad
-    integer :: iordr, iret, iret2, j
-    integer :: jfo
-    integer :: jordr, ifm, niv
-    integer :: lonch, lvafon, n0
-    integer :: nbddl, nbordr, nc, nh, np
-    integer :: ltps, ltps2
+    integer(kind=8) :: ibid
+    integer(kind=8) :: i, iad
+    integer(kind=8) :: iordr, iret, iret2, j
+    integer(kind=8) :: jfo
+    integer(kind=8) :: jordr, ifm, niv
+    integer(kind=8) :: lonch, lvafon, n0
+    integer(kind=8) :: nbddl, nbordr, nc, nh, np
+    integer(kind=8) :: ltps, ltps2
     real(kind=8) :: time, prec
     character(len=1), parameter :: jvBase = "V"
     character(len=2) :: codret

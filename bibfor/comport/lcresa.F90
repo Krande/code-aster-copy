@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine lcresa(fami, kpg, ksp, typmod, imat, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
-    integer :: imat, nmat, nr, nvi, kpg, ksp, iret, itens, ndt, ndi
+    integer(kind=8) :: imat, nmat, nr, nvi, kpg, ksp, iret, itens, ndt, ndi
     real(kind=8) :: deps(6), epsd(6), r(nr), yf(nr), dy(nr), x, theta, yd(*)
     real(kind=8) :: crit(*)
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), timed, timef, evi(6)

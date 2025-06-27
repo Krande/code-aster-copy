@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine lecvec(iad, long, type, unite)
-        integer :: iad
-        integer :: long
+        integer(kind=8) :: iad
+        integer(kind=8) :: long
         character(len=3) :: type
-        integer :: unite
+        integer(kind=8) :: unite
     end subroutine lecvec
 end interface

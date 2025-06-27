@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine lkcrip(invar, s, vin, nbmat, mater, &
 #include "asterfort/lkhtet.h"
 #include "asterfort/lkvacp.h"
 #include "asterfort/lkvarp.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: invar, s(6), mater(nbmat, 2), vin(7), seuil
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
 ! =================================================================
@@ -40,7 +40,7 @@ subroutine lkcrip(invar, s, vin, nbmat, mater, &
 ! OUT : UCRIP
 !       SEUIL :  VALEUR DE F(S) ELASTOPLASTIQUE -------------------
 ! =================================================================
-    integer :: ndi, ndt
+    integer(kind=8) :: ndi, ndt
     real(kind=8) :: sii, sigc, pref, lgleps
     real(kind=8) :: rcos3t, h0e, h0c, htheta, ucrip
     real(kind=8) :: paraep(3), varpl(4), zero

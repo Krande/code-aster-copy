@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,14 +53,14 @@ subroutine b3d_jacobi(a, q, w)
     implicit none
     real(kind=8) :: a(3, 3), w(3), q(3, 3)
 !     .. parameters ..
-    integer :: n
+    integer(kind=8) :: n
     parameter(n=3)
 !     .. local variables ..
     real(kind=8) :: sd, so
     real(kind=8) :: s, c, t
     real(kind=8) :: g, h, z, theta
     real(kind=8) :: thresh
-    integer :: i, x, y, r
+    integer(kind=8) :: i, x, y, r
 !
     thresh = 0.d0
     h = 0.d0

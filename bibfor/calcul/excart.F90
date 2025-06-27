@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,14 +32,14 @@ subroutine excart(imodat, iparg)
 #include "asterfort/excar2.h"
 #include "asterfort/jacopo.h"
 !
-    integer :: imodat, iparg
+    integer(kind=8) :: imodat, iparg
 !----------------------------------------------------------------------
 !     entrees:
 !       imodat : indice dans la collection modeloc
 !----------------------------------------------------------------------
-    integer :: desc, modloc, dec1, dec2, lgcata
-    integer :: ipt, ityplo
-    integer :: nbpoin, ncmp, ngrmx, debugr
+    integer(kind=8) :: desc, modloc, dec1, dec2, lgcata
+    integer(kind=8) :: ipt, ityplo
+    integer(kind=8) :: nbpoin, ncmp, ngrmx, debugr
 !-------------------------------------------------------------------
 
 !   recuperation de la carte:

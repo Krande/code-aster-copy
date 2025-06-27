@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,8 +53,8 @@ subroutine d1cro2(zimat, nmnbn, nmplas, nmdpla, nmddpl, &
 #include "asterfort/hplass.h"
 #include "asterfort/nmnet1.h"
 #include "asterfort/r8inir.h"
-    integer :: bend, nbxx, i, j
-    integer :: nmprox(2), cief, cier, zimat
+    integer(kind=8) :: bend, nbxx, i, j
+    integer(kind=8) :: nmprox(2), cief, cier, zimat
 !
     real(kind=8) :: nmnbn(6), nmplas(2, 3), nmdpla(2, 2), nmddpl(2, 2)
     real(kind=8) :: cnbn(6), cplas(2, 3), czef, czeg

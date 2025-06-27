@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine caldis(fremax, fremin, pas, frexci, nbptmd, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/ordr8.h"
 #include "asterfort/wkvect.h"
-    integer :: nbptmd, nbmode, nindex, npdsc3, lismod(*)
+    integer(kind=8) :: nbptmd, nbmode, nindex, npdsc3, lismod(*)
     real(kind=8) :: fremax, fremin, pas, fremod(*), amomod(*), frefin
     character(len=4) :: frexci
 !
@@ -52,9 +52,9 @@ subroutine caldis(fremax, fremin, pas, frexci, nbptmd, &
     real(kind=8) :: frema1, fredeb
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i1, i2, iadii1, iadr1, iadsc1, iadsc2, iadsc3
-    integer :: ibid1, icont1, ifreq1, igex1, ilfex, illex, ilong1
-    integer :: imode, inajou, nbmax, npdsc0, npdsc2, mxval
+    integer(kind=8) :: i1, i2, iadii1, iadr1, iadsc1, iadsc2, iadsc3
+    integer(kind=8) :: ibid1, icont1, ifreq1, igex1, ilfex, illex, ilong1
+    integer(kind=8) :: imode, inajou, nbmax, npdsc0, npdsc2, mxval
     real(kind=8) :: amor, f0, f1, f2, freq
     real(kind=8) :: pasmin, r8ecar
 !-----------------------------------------------------------------------

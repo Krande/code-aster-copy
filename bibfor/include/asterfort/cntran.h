@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine cntran(linoeu, nbno, chs1, chs2)
-        integer :: linoeu(*)
-        integer :: nbno
+        integer(kind=8) :: linoeu(*)
+        integer(kind=8) :: nbno
         character(len=*) :: chs1
         character(len=*) :: chs2
     end subroutine cntran

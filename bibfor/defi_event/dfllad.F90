@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,25 +55,25 @@ subroutine dfllad(sdlist)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: keywf
-    integer :: nb_adapt, nbret
-    integer :: ibid, nb_iter_newton_ref, nb_incr_seuil
-    integer :: i_adap
+    integer(kind=8) :: nb_adapt, nbret
+    integer(kind=8) :: ibid, nb_iter_newton_ref, nb_incr_seuil
+    integer(kind=8) :: i_adap
     character(len=16) :: event_typek, nom_para, crit_comp, action_typek, nom_cham
     character(len=8) :: nomgd, nom_cmp
     real(kind=8) :: pcent_augm, vale_ref, valer
-    integer :: valei, nucmp(1)
+    integer(kind=8) :: valei, nucmp(1)
     character(len=24) :: sdlist_aevenr
     real(kind=8), pointer :: v_sdlist_aevenr(:) => null()
     character(len=24) :: sdlist_loca
-    integer, pointer :: v_sdlist_loca(:) => null()
-    integer, pointer :: v_lst_loca(:) => null()
+    integer(kind=8), pointer :: v_sdlist_loca(:) => null()
+    integer(kind=8), pointer :: v_lst_loca(:) => null()
     character(len=24) :: sdlist_atplur
     real(kind=8), pointer :: v_sdlist_atplur(:) => null()
     character(len=24) :: sdlist_atpluk
     character(len=16), pointer :: v_sdlist_atpluk(:) => null()
     character(len=24) :: sdlist_linfor
     real(kind=8), pointer :: v_sdlist_linfor(:) => null()
-    integer           :: nocc, nb_loca, lg_ini, etat_loca
+    integer(kind=8)           :: nocc, nb_loca, lg_ini, etat_loca
     character(len=8)  :: mesh
     character(len=24) :: model, lst_loca
 !

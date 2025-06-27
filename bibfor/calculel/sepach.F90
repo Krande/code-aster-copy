@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,10 +51,10 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 !-----------------------------------------------------------------------
 !
 !
-    integer :: gd, gdre, jdescr, jdesci, nbval, nbval2
-    integer :: jvaler, jvalei, ivale, ier, iret1, iret2
-    integer :: nmax1, nmax2, jncmpr, jncmpc, i, jrefe
-    integer ::  nbsp
+    integer(kind=8) :: gd, gdre, jdescr, jdesci, nbval, nbval2
+    integer(kind=8) :: jvaler, jvalei, ivale, ier, iret1, iret2
+    integer(kind=8) :: nmax1, nmax2, jncmpr, jncmpc, i, jrefe
+    integer(kind=8) ::  nbsp
     character(len=8) :: nomgd, nomre
     character(len=4) :: typch
     character(len=1) :: ktyp

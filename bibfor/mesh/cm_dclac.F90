@@ -57,18 +57,18 @@ subroutine cm_dclac(meshIn, meshOut)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=24), parameter :: cninv = '&&CPPAGN.CNINV'
     character(len=24) :: typ_dec_lac, nomnoe, nommai
     character(len=16), parameter :: keywfact = 'DECOUPE_LAC'
     character(len=16) :: ligrma
     character(len=8) :: meshAux, nomn
     character(len=7) :: knume
-    integer :: nbSlavCellGroup, iSlavCellGroup, nbtrav, jvConxInv
-    integer :: nbCell, nbCellInit, nb_ma_test, nbnoeu, nbmail, ino, ima
-    integer :: typ_dec
-    integer, pointer :: li_trav(:) => null()
-    integer, pointer :: listCell(:) => null()
+    integer(kind=8) :: nbSlavCellGroup, iSlavCellGroup, nbtrav, jvConxInv
+    integer(kind=8) :: nbCell, nbCellInit, nb_ma_test, nbnoeu, nbmail, ino, ima
+    integer(kind=8) :: typ_dec
+    integer(kind=8), pointer :: li_trav(:) => null()
+    integer(kind=8), pointer :: listCell(:) => null()
     character(len=24), pointer :: slavCellGroup(:) => null()
     character(len=24), pointer :: ptrPatchName(:) => null()
     aster_logical :: same_zone

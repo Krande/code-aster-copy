@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine utvtsv(raz, n, s, v, vtsv)
     implicit none
     character(len=*) :: raz
-    integer :: n
+    integer(kind=8) :: n
     real(kind=8) :: s(*), v(*), vtsv
 !     ------------------------------------------------------------------
 !     PRODUIT VT . S . V - S CARREE SYMETRIQUE - V VECTEUR
@@ -32,7 +32,7 @@ subroutine utvtsv(raz, n, s, v, vtsv)
 !OUT  R   VTSV PRODUIT VT . S . V
 !     ------------------------------------------------------------------
     character(len=4) :: raz2
-    integer :: ik, k, l
+    integer(kind=8) :: ik, k, l
 !-----------------------------------------------------------------------
 #define k1(i,j) (j)*(j-1)/2+i
 #define k2(i,j) (i)*(i-1)/2+j

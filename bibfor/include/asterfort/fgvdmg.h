@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ interface
         character(len=*) :: mexpic
         character(len=*) :: mcompt
         character(len=*) :: mdomag
-        integer :: nbord
-        integer :: nbpt
-        integer :: ntcmp
-        integer :: nbcmp
-        integer :: numcmp(*)
-        integer :: impr
+        integer(kind=8) :: nbord
+        integer(kind=8) :: nbpt
+        integer(kind=8) :: ntcmp
+        integer(kind=8) :: nbcmp
+        integer(kind=8) :: numcmp(*)
+        integer(kind=8) :: impr
         real(kind=8) :: vdomag(*)
     end subroutine fgvdmg
 end interface

@@ -59,13 +59,13 @@ subroutine te0027(option, nomte)
 !
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: ipoids, ivf, idfde
-    integer :: igeom, itemps, idepl, imate
-    integer :: iepsr, iepsf, isigi, isigm
-    integer :: iforc, iforf, ithet, igthet, irota, ipesa, ier
-    integer :: jgano, nno, nnos, npg, ncmp
-    integer :: i, j, k, kk, l, m, kp, ndim, compt, iret
-    integer :: ivites, iaccel, j1, j2, ireth, matcod
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: igeom, itemps, idepl, imate
+    integer(kind=8) :: iepsr, iepsf, isigi, isigm
+    integer(kind=8) :: iforc, iforf, ithet, igthet, irota, ipesa, ier
+    integer(kind=8) :: jgano, nno, nnos, npg, ncmp
+    integer(kind=8) :: i, j, k, kk, l, m, kp, ndim, compt, iret
+    integer(kind=8) :: ivites, iaccel, j1, j2, ireth, matcod
 !
     real(kind=8) :: epsref(6), epsi, rac2
     real(kind=8) :: dfdi(81), f(3, 3), sr(3, 3)
@@ -82,7 +82,7 @@ subroutine te0027(option, nomte)
 !
     aster_logical :: grand, fonc, incr, epsini
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=4) :: fami
     character(len=8) :: nompar(4), typmod(2)
     character(len=16), pointer :: compor(:) => null()

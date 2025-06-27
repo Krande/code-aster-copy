@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,10 +38,10 @@ subroutine ef0436(nomte)
 ! ----------------------------------------------------------------------
 !
     character(len=4) :: fami
-    integer :: nddl, nno, nnos, npg, ndim, ncomp
-    integer :: i, n, c, cc, kpg
-    integer :: ipoids, ivf, idfde, jgano, jefno
-    integer :: igeom, icacoq, imate, idepl
+    integer(kind=8) :: nddl, nno, nnos, npg, ndim, ncomp
+    integer(kind=8) :: i, n, c, cc, kpg
+    integer(kind=8) :: ipoids, ivf, idfde, jgano, jefno
+    integer(kind=8) :: igeom, icacoq, imate, idepl
     real(kind=8) :: dff(2, 8), vff(8), b(3, 3, 8), jac
     real(kind=8) :: alpha, beta
     real(kind=8) :: epsm(3), epsthe, sig(3), sigg(3, 9), rig(3, 3)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine rcsn01(nbm, adrm, ipt, sn3, sn4,&
                       alphaa, alphab, nbth, iocs, sn6)
-        integer :: nbm
-        integer :: adrm(*)
-        integer :: ipt
+        integer(kind=8) :: nbm
+        integer(kind=8) :: adrm(*)
+        integer(kind=8) :: ipt
         real(kind=8) :: sn3
         real(kind=8) :: sn4
         real(kind=8) :: alphaa
         real(kind=8) :: alphab
-        integer :: nbth
-        integer :: iocs
+        integer(kind=8) :: nbth
+        integer(kind=8) :: iocs
         real(kind=8) :: sn6
     end subroutine rcsn01
 end interface

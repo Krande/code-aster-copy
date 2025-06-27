@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,12 +32,12 @@ function dvolu2(coord, norm)
 !
 ! DECLARATION GLOBALE
 !
-    integer :: norm(2, 4)
+    integer(kind=8) :: norm(2, 4)
     real(kind=8) :: coord(3, 12), dvolu2
 !
 ! DECLARATION LOCALE
 !
-    integer :: i, j, k, l, m, n
+    integer(kind=8) :: i, j, k, l, m, n
     real(kind=8) :: vol3, vol4, vol5
 !
 ! 1 - RECHERCHE DES DEUX POINTS INTERNES

@@ -26,7 +26,7 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
 #include "asterfort/lcdevi.h"
 #include "asterfort/trace.h"
 #include "blas/ddot.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: vim(*), vip(*), sigp(6), dsidep(6, 6), materf(nbmat, 2)
     real(kind=8) :: vp(3), vecp(3, 3)
     character(len=8) :: mod(*)
@@ -43,7 +43,7 @@ subroutine hbrjpl(mod, nbmat, materf, sigp, vip, &
 ! --- : VECP   : VECTEURS PROPRES DU DEVIATEUR ELASTIQUE ---------------
 ! OUT : DSIDEP : DSIG/DEPS ---------------------------------------------
 ! ======================================================================
-    integer :: ndt, ndi, ii
+    integer(kind=8) :: ndt, ndi, ii
     real(kind=8) :: gp, etap, sig3, mu, k, neuf
     real(kind=8) :: i1e, dg, sigeqe, se(6), un, zero
     real(kind=8) :: deux, trois, sf(6), seqf

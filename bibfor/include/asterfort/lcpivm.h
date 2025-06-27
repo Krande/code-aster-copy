@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,9 +24,9 @@ interface
                       vim, option, taup, vip, dtaudf,&
                       iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: mate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: mate
         character(len=16) :: compor
         real(kind=8) :: carcri(*)
         real(kind=8) :: instam
@@ -38,6 +38,6 @@ interface
         real(kind=8) :: taup(6)
         real(kind=8) :: vip(8)
         real(kind=8) :: dtaudf(6, 3, 3)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcpivm
 end interface

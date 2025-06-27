@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine fsplit(fieldType, fieldSupport, fieldQuantity)
 ! OUT  : fieldSupport   : SUPPORT DU CHAMP XXXX
 ! OUT  : fieldQuantity  : NOM DE LA GRANDEUR PHYSIQUE AVEC SON TYPE YYYY..._Z
 ! ----------------------------------------------------------------------
-    integer :: I, J, K, L
+    integer(kind=8) :: I, J, K, L
 !-----------------------------------------------------------------------
 !
     fieldSupport = ''

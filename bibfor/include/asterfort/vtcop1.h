@@ -19,6 +19,6 @@
 interface
     subroutine vtcop1(fieldInZ, fieldOutZ, codret)
         character(len=*), intent(in) :: fieldInZ, fieldOutZ
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine vtcop1
 end interface

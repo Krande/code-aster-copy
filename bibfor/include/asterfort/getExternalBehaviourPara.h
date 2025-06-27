@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ interface
                                         elem_type_, type_cpla_in_, type_cpla_out_)
         use BehaviourPrepare_type
         character(len=8), intent(in) :: mesh
-        integer, pointer :: v_model_elem(:)
+        integer(kind=8), pointer :: v_model_elem(:)
         character(len=16), intent(in) :: rela_comp
         character(len=16), intent(in) :: defo_comp
         character(len=16), intent(in) :: kit_comp(4)
         type(BehaviourPrep_Exte), intent(inout) :: prepExte
         character(len=16), optional, intent(in) :: keywf_
-        integer, optional, intent(in) :: i_comp_
-        integer, optional, intent(in) :: elem_type_
+        integer(kind=8), optional, intent(in) :: i_comp_
+        integer(kind=8), optional, intent(in) :: elem_type_
         character(len=16), optional, intent(in) :: type_cpla_in_
         character(len=16), optional, intent(out) :: type_cpla_out_
     end subroutine getExternalBehaviourPara

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine discrt(ff0, ff1, ff2, nbpt, amor, &
 #include "asterfort/fitof.h"
 #include "asterfort/phase.h"
 #include "asterfort/transf.h"
-    integer :: nbpt, i1
+    integer(kind=8) :: nbpt, i1
     real(kind=8) :: ff0, ff1, ff2, f1, f2, f(*), amor, phi, phi1, phi2
     complex(kind=8) :: icmplx, horig, hbid
 !-----------------------------------------------------------------------

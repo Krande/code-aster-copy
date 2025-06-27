@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine lcicma(a, la, ca, lc, cc, &
 !       IN  A       :  MATRICE EMETTEUR
 !       OUT B       :  MATRICE RECEPTEUR
 !       ----------------------------------------------------------------
-    integer :: la, ca, lc, cc, xa, ya, lb, cb, xb, yb, i, j
+    integer(kind=8) :: la, ca, lc, cc, xa, ya, lb, cb, xb, yb, i, j
     real(kind=8) :: a(la, ca), b(lb, cb)
 !
     do i = 1, lc

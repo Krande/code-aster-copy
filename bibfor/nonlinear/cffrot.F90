@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine cffrot(maf1, koper, maf2, mafrot, numedd)
 !
 !
 !
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8) :: coefmu(2)
     character(len=1) :: typcst(2)
     character(len=14) :: numedf, numef1, numef2

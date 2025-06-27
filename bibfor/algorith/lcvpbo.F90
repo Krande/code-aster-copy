@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine lcvpbo(a, b, l0, l1, etamin, &
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
     aster_logical, intent(out) :: vide
-    integer, intent(out) :: nsol, sgn(2)
+    integer(kind=8), intent(out) :: nsol, sgn(2)
     real(kind=8), intent(in) :: a, b, l0, l1, etamin, etamax
     real(kind=8), intent(out) :: sol(2)
 !

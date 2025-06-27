@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ subroutine fondpl(modele, mate, mateco, numedd, neq, chondp, &
 #include "asterfort/reajre.h"
 #include "asterfort/vrcins.h"
 !
-    integer :: i, ibid, iret, j, jvaond
-    integer :: nchond, neq, npain
+    integer(kind=8) :: i, ibid, iret, j, jvaond
+    integer(kind=8) :: nchond, neq, npain
     character(len=8) :: lpain(6), lpaout(1), chondp(nchond)
     character(len=24) :: modele, mateco, numedd, vecond
     character(len=24) :: chinst

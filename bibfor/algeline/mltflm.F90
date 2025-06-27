@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ subroutine mltflm(nb, n, p, front, adper, &
 #include "asterfort/mltfld.h"
 #include "asterfort/mltflj.h"
 #include "blas/dgemv.h"
-    integer :: nb, n, p, adper(*), ad(*), ier
+    integer(kind=8) :: nb, n, p, adper(*), ad(*), ier
     real(kind=8) :: front(*), t1(*), eps, c(nb, nb, *), alpha, beta
-    integer :: i, kb, adk, adki, decal, l
-    integer :: m, ll, k, ind, ia, j, restp, npb
-    integer :: incx, incy
+    integer(kind=8) :: i, kb, adk, adki, decal, l
+    integer(kind=8) :: m, ll, k, ind, ia, j, restp, npb
+    integer(kind=8) :: incx, incy
     character(len=1) :: tra
     blas_int :: b_incx, b_incy, b_lda, b_m, b_n
 !-----------------------------------------------------------------------

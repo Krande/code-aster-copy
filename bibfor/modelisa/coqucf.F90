@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,6 +18,7 @@
 
 subroutine coqucf(nomu)
     implicit none
+!
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
@@ -34,6 +35,7 @@ subroutine coqucf(nomu)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
+!
     character(len=8) :: nomu
 !
 !                          AFFE_CARA_ELEM
@@ -49,11 +51,11 @@ subroutine coqucf(nomu)
 ! ----------------------------------------------------------------------
 !
 !
-    integer :: ifm, niv, iret, ibid, ii, jj, kk
-    integer :: jcesdf, jcesdo, nbmail, adrm, iad
-    integer :: nbcmpf, nbcmpo, icompo, inoeu, nbno, nunoe, igeom
-    integer :: jceslf, jceslo
-    integer :: jconne, iadr1, iadr2, jtabco
+    integer(kind=8) :: ifm, niv, iret, ibid, ii, jj, kk
+    integer(kind=8) :: jcesdf, jcesdo, nbmail, adrm, iad
+    integer(kind=8) :: nbcmpf, nbcmpo, icompo, inoeu, nbno, nunoe, igeom
+    integer(kind=8) :: jceslf, jceslo
+    integer(kind=8) :: jconne, iadr1, iadr2, jtabco
     real(kind=8) :: valr(3), fresu
     character(len=8) :: nomma, nmcmpf, nomval(3), nomfct
     character(len=19) :: cartco, cartcf, celsco, celscf, connex
@@ -207,10 +209,10 @@ subroutine coqucf(nomu)
     call detrsd('CHAM_ELEM_S', celsco)
     call detrsd('CHAM_ELEM_S', celscf)
 !
-90  format(' MAILLE_NB  : [ [  CENTRE DE GRAVITE ],',&
-     &       '  FONCTION  ,  VALEUR       ]')
-91  format("'", i7, "_", i1, "' : [ [", 3(e18.10, ","), "], '",&
-     &       a, "' ,", e18.10, "],")
+90  format(' MAILLE_NB  : [ [  CENTRE DE GRAVITE ],', &
+           '  FONCTION  ,  VALEUR       ]')
+91  format("'", i7, "_", i1, "' : [ [", 3(e18.10, ","), "], '", &
+           a, "' ,", e18.10, "],")
 !
 999 continue
     call jedema()

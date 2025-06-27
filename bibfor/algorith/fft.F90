@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,11 @@ subroutine fft(s, n, ifft)
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
 ! parametres
-    integer :: n, ifft
+    integer(kind=8) :: n, ifft
     complex(kind=8) :: s(n)
 ! variables locales
-    integer :: i, ip, isgn, j, k, l
-    integer :: le, le1, m, n2, nm1, nv2
+    integer(kind=8) :: i, ip, isgn, j, k, l
+    integer(kind=8) :: le, le1, m, n2, nm1, nv2
     complex(kind=8) :: calpha
     real(kind=8) :: pi
     blas_int :: b_incx, b_n

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine rkdcha(nvi, vini, coeft, nmat, sigi, &
 !     CETTE ROUTINE FOURNIT LA DERIVEE DE L ENSEMBLE DES VARIABLES
 !     INTERNES DU MODELE
 !     ----------------------------------------------------------------
-    integer :: itens, nvi, nmat
+    integer(kind=8) :: itens, nvi, nmat
     real(kind=8) :: coeft(nmat), vini(*), dvin(*)
     real(kind=8) :: smx(6), petin(6), petin2(6), sigi(6)
     real(kind=8) :: evi(6), a1v(6), a2v(6), csi(6), devi(6), da1v(6), da2v(6)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine vpecst(ifm, typres, omgmin, omgmax, nbfre1,&
                       nbfre2, nbfreq, nblagr, typep, typcon,&
                       dimc1, zimc1)
-        integer :: ifm
+        integer(kind=8) :: ifm
         character(len=16) :: typres
         real(kind=8) :: omgmin
         real(kind=8) :: omgmax
-        integer :: nbfre1
-        integer :: nbfre2
-        integer :: nbfreq
-        integer :: nblagr
+        integer(kind=8) :: nbfre1
+        integer(kind=8) :: nbfre2
+        integer(kind=8) :: nbfreq
+        integer(kind=8) :: nblagr
         character(len=1) :: typep
         character(len=8) :: typcon
         real(kind=8) :: dimc1

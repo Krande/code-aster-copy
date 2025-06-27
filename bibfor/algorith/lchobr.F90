@@ -32,7 +32,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 #include "blas/ddot.h"
-    integer :: itmax, nbmat, nr, nvi, icomp, irtet
+    integer(kind=8) :: itmax, nbmat, nr, nvi, icomp, irtet
     real(kind=8) :: toler, materf(nbmat, 2), depsm(6), sigm(6)
     real(kind=8) :: vim(*), sigp(6), vip(*), seuil, vp(3), vecp(3, 3)
     character(len=8) :: mod
@@ -70,7 +70,7 @@ subroutine lchobr(toler, itmax, mod, nbmat, materf, &
 !            NDI      NOMBRE DE COMPOSANTES DIRECTES DES TENSEURS
 !            NVI      NOMBRE DE VARIABLES INTERNES
 ! ======================================================================
-    integer :: ndt, ndi, iteri, iter
+    integer(kind=8) :: ndt, ndi, iteri, iter
     real(kind=8) :: gm, etam, etap, aux
     real(kind=8) :: se(6)
     real(kind=8) :: seq, i1e, seuil2, plas, dg, sigeqe

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine gmardm(nomgrm, modele, ier)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 
-    integer, intent(out) :: ier
+    integer(kind=8), intent(out) :: ier
     character(len=8), intent(in) :: modele
     character(len=24), intent(in) :: nomgrm
 
@@ -46,9 +46,9 @@ subroutine gmardm(nomgrm, modele, ier)
 ! In  modele         : name of modele
 ! out  ier           : code retour (1 -> oui, 0 -> non)
 
-    integer :: nma, kma, ibid, jma, ima
+    integer(kind=8) :: nma, kma, ibid, jma, ima
     character(len=24) :: karg, nomte
-    integer, pointer :: v_model_elem(:) => null()
+    integer(kind=8), pointer :: v_model_elem(:) => null()
     character(len=8) :: noma
 
     call jemarq()

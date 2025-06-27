@@ -34,7 +34,7 @@ interface
         character(len=*), intent(in) :: viteCurrZ, acceCurrZ, strxPrevZ
         character(len=*), intent(inout) :: vectElemZ
         character(len=*), optional, intent(in) :: varcCurrZ_
-        integer, optional, intent(in) :: nharm_
+        integer(kind=8), optional, intent(in) :: nharm_
         character(len=*), optional, intent(in) :: ligrelCalcZ_
         character(len=1), optional, intent(in) :: jvBaseZ_
     end subroutine vecgme

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine xorima(noma, nbmaf, jdlima, jconx1, jconx2,&
                       jcoor, sens)
         character(len=8) :: noma
-        integer :: nbmaf
-        integer :: jdlima
-        integer :: jconx1
-        integer :: jconx2
-        integer :: jcoor
+        integer(kind=8) :: nbmaf
+        integer(kind=8) :: jdlima
+        integer(kind=8) :: jconx1
+        integer(kind=8) :: jconx2
+        integer(kind=8) :: jcoor
         character(len=19) :: sens
     end subroutine xorima
 end interface

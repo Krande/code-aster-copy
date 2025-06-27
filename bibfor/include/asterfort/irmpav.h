@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,10 +19,10 @@
 !
 interface
     subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
-        integer, intent(in) :: paraListNb
+        integer(kind=8), intent(in) :: paraListNb
         character(len=16), pointer :: paraListName(:)
         character(len=*) :: nomcon
-        integer :: ifichi, numdt, numit
+        integer(kind=8) :: ifichi, numdt, numit
         real(kind=8) :: dt
     end subroutine irmpav
 end interface

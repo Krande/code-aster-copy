@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -47,14 +47,14 @@ subroutine nmetpl(ds_inout, sd_suiv, sd_obsv)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nb_field, i_field
-    integer :: i_keyw_fact, nb_keyw_fact
+    integer(kind=8) :: nb_field, i_field
+    integer(kind=8) :: i_keyw_fact, nb_keyw_fact
     character(len=24) :: algo_name_old, algo_name_new
     character(len=6) :: hat_type, hat_vari
     character(len=24) :: field_type
     character(len=14) :: sdextr_suiv, sdextr_obsv
     character(len=24) :: extr_info
-    integer, pointer :: v_extr_info(:) => null()
+    integer(kind=8), pointer :: v_extr_info(:) => null()
     character(len=24) :: extr_field
     character(len=24), pointer :: v_extr_field(:) => null()
 !

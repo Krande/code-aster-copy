@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine rcvad2(fami, kpg, ksp, poum, jmat,&
                       phenom, nbres, nomres, valres, devres,&
                       icodre)
-        integer :: nbres
+        integer(kind=8) :: nbres
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
         character(len=*) :: poum
-        integer :: jmat
+        integer(kind=8) :: jmat
         character(len=*) :: phenom
         character(len=16) :: nomres(nbres)
         real(kind=8) :: valres(nbres)
         real(kind=8) :: devres(nbres)
-        integer :: icodre(nbres)
+        integer(kind=8) :: icodre(nbres)
     end subroutine rcvad2
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                       lda, x, incx, beta, y,&
                       incy)
         character(len=*) :: trans
-        integer :: m
-        integer :: n
+        integer(kind=8) :: m
+        integer(kind=8) :: n
         complex(kind=8) :: alpha
         complex(kind=8) :: a(*)
-        integer :: lda
+        integer(kind=8) :: lda
         complex(kind=8) :: x(*)
-        integer :: incx
+        integer(kind=8) :: incx
         complex(kind=8) :: beta
         complex(kind=8) :: y(*)
-        integer :: incy
+        integer(kind=8) :: incy
     end subroutine zmulmv
 end interface

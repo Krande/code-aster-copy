@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,18 +21,18 @@
 interface
     subroutine pmfitsbts(typfib, nf, ncarf, vf, vsig, b, wi, nbassepou, yj, zj, &
                          maxfipoutre, nbfipoutre, vsigv, vfv, flp, ve)
-        integer :: typfib
-        integer :: nf
-        integer :: ncarf
+        integer(kind=8) :: typfib
+        integer(kind=8) :: nf
+        integer(kind=8) :: ncarf
         real(kind=8) :: vf(ncarf, nf)
         real(kind=8) :: vsig(nf)
         real(kind=8) :: b(4)
         real(kind=8) :: wi
-        integer :: nbassepou
+        integer(kind=8) :: nbassepou
         real(kind=8) :: yj(*)
         real(kind=8) :: zj(*)
-        integer :: maxfipoutre
-        integer :: nbfipoutre(*)
+        integer(kind=8) :: maxfipoutre
+        integer(kind=8) :: nbfipoutre(*)
         real(kind=8) :: vsigv(*)
         real(kind=8) :: vfv(7,*)
         real(kind=8) :: flp(12,*)

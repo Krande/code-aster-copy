@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine hujori(sens, nmat, reorie, angl_naut, vec, &
 !========================= DEBUT DES DECLARATIONS ====================
 #include "asterf_types.h"
 #include "asterfort/matrot.h"
-    integer :: i, j, nmat
+    integer(kind=8) :: i, j, nmat
     real(kind=8) :: zero, deux, dsqr, isqr
     real(kind=8) :: angl_naut(3), p(3, 3), passag(6, 6), passal(6, 6)
     real(kind=8) :: vec1(6), vec(6), mat(6, 6), mat1(6, 6), work(6, 6)

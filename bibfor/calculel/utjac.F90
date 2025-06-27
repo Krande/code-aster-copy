@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,12 +43,12 @@ subroutine utjac(l2d, geom, ipg, idfde, niv, &
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
 #include "jeveux.h"
-    integer :: ipg, idfde, niv, ifm, nno
+    integer(kind=8) :: ipg, idfde, niv, ifm, nno
     real(kind=8) :: jacob, geom(*)
     aster_logical :: l2d
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: i, i1, j, kp, idfdk, idfdn
+    integer(kind=8) :: i, i1, j, kp, idfdk, idfdn
     real(kind=8) :: dxde, dxdk, dyde, dydk, xp, yp, dfrde, dfrdk, dfrdn, g(3, 3)
     real(kind=8) :: j11, j21, j31
 !

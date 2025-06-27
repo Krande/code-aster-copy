@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine cesvar(carele, compor, ligrel, dcel)
 ! ----------------------------------------------------------------------
     character(len=8) :: carel2, lpain(2)
     character(len=19) :: lchin(2)
-    integer :: nbch, iret
+    integer(kind=8) :: nbch, iret
 !-----------------------------------------------------------------------
     carel2 = carele
 !

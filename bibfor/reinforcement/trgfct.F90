@@ -34,14 +34,14 @@ subroutine trgfct(nb, fcttab)
     !     ! FACETTES POUR METHODE DE CAPRA ET MAURY
     !
     !       nb FACETTES
-    integer :: nb
+    integer(kind=8) :: nb
     !       NOMBRE DE DIVISIONS ENTRE -PI/2 ET +PI/2
     real(kind=8) :: fcttab(nb, 6)
     !
     !       ANGLE DE LA FACETTE (-PI/2 <= X < +PI/2)
     real(kind=8) :: angle
     real(kind=8) :: pas, pi
-    integer :: i
+    integer(kind=8) :: i
     !
     pi = r8pi()
     fcttab(1, 1) = 0d0

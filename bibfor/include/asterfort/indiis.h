@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     function indiis(lis, is, rang, nbis)
-        integer :: lis(*)
-        integer :: is
-        integer :: rang
-        integer :: nbis
-        integer :: indiis
+        integer(kind=8) :: lis(*)
+        integer(kind=8) :: is
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbis
+        integer(kind=8) :: indiis
     end function indiis
 end interface

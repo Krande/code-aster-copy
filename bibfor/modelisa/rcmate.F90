@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine rcmate(chmat, nomail, nomode)
 !  IN : NOMAIL : NOM DU MAILLAGE
 ! ----------------------------------------------------------------------
 !
-    integer :: nocc, i, nm, nt, jvalv, nbma, jmail, nbcmp
-    integer :: jad
+    integer(kind=8) :: nocc, i, nm, nt, jvalv, nbma, jmail, nbcmp
+    integer(kind=8) :: jad
     character(len=4) :: oui
     character(len=8) :: nommat, typmcl(2)
     character(len=16) :: motcle(2)

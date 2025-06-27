@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,8 +57,8 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
 !     OUT RIG    : MATRICE DE RIGIDITE
 !     OUT ENER   : TERMES POUR ENER_POT (EPOT_ELEM)
 !     ------------------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: multic, i, jcoqu, jdepg
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: multic, i, jcoqu, jdepg
     real(kind=8), parameter :: un = 1.d0
     real(kind=8) :: wgt
     real(kind=8) :: df(9), dm(9), dmf(9), dc(4), dci(4)
@@ -74,8 +74,8 @@ subroutine dkqrig(nomte, xyzl, option, pgl, rig, &
 !
 !   LOCAL VARIABLES FOR COEF_RIGI_DRZ
 !
-    integer :: j, ii, jj, irot
-    integer, parameter :: npgmx = 9
+    integer(kind=8) :: j, ii, jj, irot
+    integer(kind=8), parameter :: npgmx = 9
     real(kind=8) :: shp(3, 4, npgmx), shpr1(3, 4, npgmx), shpr2(3, 4, npgmx), bb(12, npgmx)
     real(kind=8) :: gshp1(3, 4), gshp2(3, 4)
     real(kind=8) :: dArea, gam, epais, fact, gm(3, 4)

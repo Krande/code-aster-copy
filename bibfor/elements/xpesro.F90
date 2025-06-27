@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,9 +38,9 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp, &
 #include "asterfort/xcalc_heav.h"
     character(len=8) :: elrefp
     real(kind=8) :: coorse(*)
-    integer :: igeom, ndim, ddlc, nfe, nnop
-    integer :: ivectu, jlsn, jlst, imate, jbaslo, jstno
-    integer :: jheavt, nfh, nfiss, ise, heavn(27, 5), ncomp
+    integer(kind=8) :: igeom, ndim, ddlc, nfe, nnop
+    integer(kind=8) :: ivectu, jlsn, jlst, imate, jbaslo, jstno
+    integer(kind=8) :: jheavt, nfh, nfiss, ise, heavn(27, 5), ncomp
     real(kind=8) :: fno(ndim*nnop)
 !-----------------------------------------------------------------------
 ! FONCTION REALISEE : CALCUL DU SECOND MEMBRE AUX PG DU SOUS EL COURANT
@@ -69,17 +69,17 @@ subroutine xpesro(elrefp, ndim, coorse, igeom, jheavt, ncomp, &
 ! IN IVECTU   : INDICE DU SECONDE MEMBRE
 !
 !
-    integer :: i, ino, ig, j, n
-    integer :: ndimb, nno, nnos, nnops, npgbis, pos, ifiz, he(nfiss), hea_se
-    integer :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg
+    integer(kind=8) :: i, ino, ig, j, n
+    integer(kind=8) :: ndimb, nno, nnos, nnops, npgbis, pos, ifiz, he(nfiss), hea_se
+    integer(kind=8) :: jcoopg, ipoids, ivf, idfde, jdfd2, jgano, kpg
     real(kind=8) :: xe(ndim), xg(ndim), ff(nnop)
     real(kind=8) :: fk(27, 3, 3), ka, mu
-    integer :: alp, singu
+    integer(kind=8) :: alp, singu
     real(kind=8) :: forvol(ndim)
     real(kind=8) :: poids, r
     character(len=8) :: elrese(6), fami(6)
     aster_logical :: grdepl, axi
-    integer :: irese
+    integer(kind=8) :: irese
 !
     data elrese/'SE2', 'TR3', 'TE4', 'SE3', 'TR6', 'T10'/
     data fami/'BID', 'XINT', 'XINT', 'BID', 'XINT', 'XINT'/

@@ -633,7 +633,7 @@ subroutine te0000(numc, opt, te)
 #include "asterfort/uttcpu.h"
 #include "asterfort/assert.h"
 
-    integer :: numc, opt, te
+    integer(kind=8) :: numc, opt, te
 !-----------------------------------------------------------------------
 !     entrees:
 !      numc  :  numero du calcul a lancer

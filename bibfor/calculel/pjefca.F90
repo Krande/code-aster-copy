@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,14 +61,14 @@ subroutine pjefca(moa1, lima1, iocc, ncas)
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
     character(len=*) :: moa1, ncas, lima1
-    integer :: iocc
+    integer(kind=8) :: iocc
 !---------------- VARIABLES LOCALES  --------------------------
     character(len=8) :: moa, nomo1, noma1, cdim1
-    integer :: ndim, iagma1, nbma1, ditopo, typm1, dim1
-    integer :: nb1, kma, n1, iexi
-    integer, pointer :: repe(:) => null()
-    integer, pointer :: tmdim(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8) :: ndim, iagma1, nbma1, ditopo, typm1, dim1
+    integer(kind=8) :: nb1, kma, n1, iexi
+    integer(kind=8), pointer :: repe(:) => null()
+    integer(kind=8), pointer :: tmdim(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
 !

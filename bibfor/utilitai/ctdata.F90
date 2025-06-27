@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -78,7 +78,7 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
 #include "asterfort/rs_get_liststore.h"
 #include "asterfort/rsGetOneBehaviourFromResult.h"
 !
-    integer :: nbcmp, nbno, nbma, nbval
+    integer(kind=8) :: nbcmp, nbno, nbma, nbval
     character(len=1) :: tsca
     character(len=4) :: tych
     character(len=8) :: noma
@@ -88,17 +88,17 @@ subroutine ctdata(mesnoe, mesmai, nkcha, tych, toucmp, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jkcha, i, iret, jlno, n1, jlma, n2, n3, nchi, n0, n4, ncho, ierr
-    integer :: n5, igrel, nbVari
-    integer, pointer :: repe(:) => null()
+    integer(kind=8) :: jkcha, i, iret, jlno, n1, jlma, n2, n3, nchi, n0, n4, ncho, ierr
+    integer(kind=8) :: n5, igrel, nbVari
+    integer(kind=8), pointer :: repe(:) => null()
     character(len=8) :: model, nomgd, noca
     character(len=8) :: typmcl(4), lpain(6), lpaout(2), result
     character(len=16) :: motcle(4), fieldName
     character(len=19) :: ligrel, ligrmo, cel19, compor
     character(len=24) :: chgeom, lchin(6), lchout(2)
     aster_logical :: exicar
-    integer, pointer :: listStore(:) => null()
-    integer :: nbStore
+    integer(kind=8), pointer :: listStore(:) => null()
+    integer(kind=8) :: nbStore
     character(len=16), pointer :: variName(:) => null()
     character(len=8), pointer :: cmpName(:) => null()
 !

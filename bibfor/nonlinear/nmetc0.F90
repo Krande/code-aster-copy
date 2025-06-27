@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -51,7 +51,7 @@ subroutine nmetc0(model, cara_elem, compor, ds_inout)
 !
     character(len=24) :: field_type, init_name
     character(len=24) :: sief_init, vari_init, strx_init
-    integer :: i_field, nb_field, iret
+    integer(kind=8) :: i_field, nb_field, iret
     character(len=8) :: lpain(1), lpaout(2)
     character(len=24) :: lchin(1), lchout(2)
     character(len=19) :: ligrmo

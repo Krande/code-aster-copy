@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,7 +37,7 @@ subroutine te0103(option, nomte)
 !        DONNEES:      OPTION       -->  OPTION DE CALCUL
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
-    integer :: ndimax, nbvar, kp, kq, nbddl, mzr
+    integer(kind=8) :: ndimax, nbvar, kp, kq, nbddl, mzr
     parameter(ndimax=27)
     parameter(nbvar=4)
     character(len=8) :: nompar(nbvar)
@@ -45,8 +45,8 @@ subroutine te0103(option, nomte)
     real(kind=8) :: coor2d(18), valpar(nbvar), cour, cosa, sina
     real(kind=8) :: dfdx(9), dfdy(9), poids, x, y, z, xgau, ygau, zgau, pk, un
     real(kind=8) :: long, matp(3, 3), matn(3, 3), h, hmoins, hplus, poi1, poi2
-    integer :: nno, nnos, npg2, gi, pi, gj, pj, k, imattt, ndim, jgano
-    integer :: idfde, igeom, itemps, ipoids, ivf, i, j, icoefh, ier, nbv, ind
+    integer(kind=8) :: nno, nnos, npg2, gi, pi, gj, pj, k, imattt, ndim, jgano
+    integer(kind=8) :: idfde, igeom, itemps, ipoids, ivf, i, j, icoefh, ier, nbv, ind
 !
 !
     if (nomte .ne. 'THCPSE3' .and. nomte .ne. 'THCASE3' .and. nomte .ne. 'THCOSE3' .and. &

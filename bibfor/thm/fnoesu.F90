@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ subroutine fnoesu(nface, &
 !
     implicit none
 !
-    integer, parameter :: maxfa = 6
-    integer, intent(in) :: nface
-    integer, intent(in) :: dimcon, dimuel
-    integer, intent(in) :: press1(7), press2(7)
+    integer(kind=8), parameter :: maxfa = 6
+    integer(kind=8), intent(in) :: nface
+    integer(kind=8), intent(in) :: dimcon, dimuel
+    integer(kind=8), intent(in) :: press1(7), press2(7)
     real(kind=8), intent(in) :: congem(dimcon, maxfa+1)
     real(kind=8), intent(inout) :: vectu(dimuel)
 !
@@ -47,10 +47,10 @@ subroutine fnoesu(nface, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: adcp11, adcp12, adcp21, adcp22
+    integer(kind=8) :: adcp11, adcp12, adcp21, adcp22
     real(kind=8) :: sfluw, sfluvp, sfluas, sfluad
-    integer :: ifa
-    integer :: adcm1, adcm2
+    integer(kind=8) :: ifa
+    integer(kind=8) :: adcm1, adcm2
 !
 #define adcf1(fa) 2*(fa-1)+1
 #define adcf2(fa) 2*(fa-1)+2

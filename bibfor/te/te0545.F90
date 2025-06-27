@@ -61,12 +61,12 @@ subroutine te0545(option, nomte)
     character(len=16) :: defo_comp
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: axi, matsym
-    integer :: nnoQ, nnoL, npg, ndim, nddl, neps, lgpg
-    integer :: jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL
-    integer :: imate, icontm, ivarim, iinstm, iinstp, ideplm, ideplp
-    integer :: ivectu, icontp, ivarip, imatns, imatuu, icarcr, ivarix, igeom, icoret
-    integer :: iret, nnos, jv_ganoQ, jv_ganoL, itab(7)
-    integer :: codret
+    integer(kind=8) :: nnoQ, nnoL, npg, ndim, nddl, neps, lgpg
+    integer(kind=8) :: jv_poids, jv_vfQ, jv_dfdeQ, jv_vfL, jv_dfdeL
+    integer(kind=8) :: imate, icontm, ivarim, iinstm, iinstp, ideplm, ideplp
+    integer(kind=8) :: ivectu, icontp, ivarip, imatns, imatuu, icarcr, ivarix, igeom, icoret
+    integer(kind=8) :: iret, nnos, jv_ganoQ, jv_ganoL, itab(7)
+    integer(kind=8) :: codret
     real(kind=8) :: angmas(3)
     real(kind=8), allocatable :: b(:, :, :), w(:, :), ni2ldc(:, :)
     aster_logical :: lMatr, lVect, lSigm, lVari

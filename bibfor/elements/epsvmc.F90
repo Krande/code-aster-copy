@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,13 +35,13 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
 !
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: nno
-    integer, intent(in) :: ndim
-    integer, intent(in) :: nbsig
-    integer, intent(in) :: npg
-    integer, intent(in) :: j_poids
-    integer, intent(in) :: j_vf
-    integer, intent(in) :: j_dfde
+    integer(kind=8), intent(in) :: nno
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: nbsig
+    integer(kind=8), intent(in) :: npg
+    integer(kind=8), intent(in) :: j_poids
+    integer(kind=8), intent(in) :: j_vf
+    integer(kind=8), intent(in) :: j_dfde
     real(kind=8), intent(in) :: xyz(1)
     real(kind=8), intent(in) :: disp(1)
     real(kind=8), intent(in) :: time
@@ -80,7 +80,7 @@ subroutine epsvmc(fami, nno, ndim, nbsig, npg, &
     real(kind=8) :: epsi_varc(162), epsi_tota_g(162), epsi_tota(162)
     real(kind=8) :: d(4, 4)
     real(kind=8) :: zero, un, deux
-    integer :: i, kpg, imate
+    integer(kind=8) :: i, kpg, imate
     aster_logical :: l_modi_cp
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,16 +40,16 @@ subroutine xfisco(noma, modelx)
 !
 !
 !
-    integer ::  jcesd, jcesl, ibid, iret, nncp
-    integer :: jcesd2, jcesl2, iad, iad3
-    integer :: ima, nbma, ifiss, ifis2, ifis3, nfiss, nfis2
+    integer(kind=8) ::  jcesd, jcesl, ibid, iret, nncp
+    integer(kind=8) :: jcesd2, jcesl2, iad, iad3
+    integer(kind=8) :: ima, nbma, ifiss, ifis2, ifis3, nfiss, nfis2
     character(len=19) :: ces, ces2, ligrel, chglo
     character(len=8) :: nomfis, nomfi3, licmp(2), valk(3)
     character(len=8), pointer :: jonfiss(:) => null()
-    integer, pointer :: joncoef(:) => null()
-    integer, pointer :: nbsp(:) => null()
+    integer(kind=8), pointer :: joncoef(:) => null()
+    integer(kind=8), pointer :: nbsp(:) => null()
     character(len=8), pointer :: cesv2(:) => null()
-    integer, pointer :: cesv(:) => null()
+    integer(kind=8), pointer :: cesv(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine cgleco(resu, modele, mate, iord0, compor, &
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: iord0
+    integer(kind=8), intent(in) :: iord0
     character(len=8), intent(in) :: resu
     character(len=8), intent(in) :: modele
     character(len=8), intent(in) :: mate
@@ -62,8 +62,8 @@ subroutine cgleco(resu, modele, mate, iord0, compor, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nbFactorKeyword, iret, nbetin
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nbFactorKeyword, iret, nbetin
     character(len=16), parameter :: factorKeyword = 'COMPORTEMENT'
     character(len=24) :: repk
     character(len=8) :: mesh

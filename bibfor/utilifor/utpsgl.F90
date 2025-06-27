@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,10 +34,10 @@ subroutine utpsgl(nn, nc, p, sg, sl)
     real(kind=8) :: r(9), zero
     real(kind=8) :: ml14(14, 14), mr14(14, 14), mtr14(14, 14), mv14(14, 14)
     real(kind=8) :: ml16(16, 16), mr16(16, 16), mtr16(16, 16), mv16(16, 16)
-    integer :: in(3)
+    integer(kind=8) :: in(3)
 !-----------------------------------------------------------------------
-    integer :: i, j, k, l, m, n, nb
-    integer :: nc, nn
+    integer(kind=8) :: i, j, k, l, m, n, nb
+    integer(kind=8) :: nc, nn
 !-----------------------------------------------------------------------
     data zero/0.d0/
 !

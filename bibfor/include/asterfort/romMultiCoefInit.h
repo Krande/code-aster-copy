@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine romMultiCoefInit(nb_vari_coef, ds_multicoef)
         use Rom_Datastructure_type
-        integer, intent(in) :: nb_vari_coef
+        integer(kind=8), intent(in) :: nb_vari_coef
         type(ROM_DS_MultiCoef), intent(inout) :: ds_multicoef
     end subroutine romMultiCoefInit
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,14 +57,14 @@ subroutine op0153()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
-    integer :: i, ibid, idangt, idvcob, idvctu, ifires
-    integer :: indic, info, iobst, ipoupr, ipourp, iprfuo, iprfut
-    integer :: ipus, ire1, ire2, iret, itube, ivuso
-    integer :: ivusob, ivust, ivustu, jfn, jins2, jinst
-    integer :: jprut, jsect, jusuo, jusut, jvg, k
-    integer :: n0, n1, n5, na, nbinst, nbpair, nbpar
-    integer :: nbpar2, nbpmr, nbpt, nbsec2, nbsect, nbtota, nbv
-    integer :: nbvpu, ni1, nis, npu, ntn
+    integer(kind=8) :: i, ibid, idangt, idvcob, idvctu, ifires
+    integer(kind=8) :: indic, info, iobst, ipoupr, ipourp, iprfuo, iprfut
+    integer(kind=8) :: ipus, ire1, ire2, iret, itube, ivuso
+    integer(kind=8) :: ivusob, ivust, ivustu, jfn, jins2, jinst
+    integer(kind=8) :: jprut, jsect, jusuo, jusut, jvg, k
+    integer(kind=8) :: n0, n1, n5, na, nbinst, nbpair, nbpar
+    integer(kind=8) :: nbpar2, nbpmr, nbpt, nbsec2, nbsect, nbtota, nbv
+    integer(kind=8) :: nbvpu, ni1, nis, npu, ntn
     real(kind=8) :: coinst, haut, puusur, rayoo, rayot
 !
 !-----------------------------------------------------------------------

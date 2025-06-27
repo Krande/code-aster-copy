@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine mateMFrontToAsterProperties(mfront_name, aster_name_, index_, l_anis_
 !
     character(len=16), intent(inout) :: mfront_name
     character(len=16), optional, intent(inout) :: aster_name_
-    integer, optional, intent(out) :: index_
+    integer(kind=8), optional, intent(out) :: index_
     aster_logical, optional, intent(out) :: l_anis_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -46,9 +46,9 @@ subroutine mateMFrontToAsterProperties(mfront_name, aster_name_, index_, l_anis_
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: l_find_mfront
-    integer :: indexE, i_keyw
-    integer, parameter :: ianis = 5
-    integer, parameter :: nb_keyw_max = 13
+    integer(kind=8) :: indexE, i_keyw
+    integer(kind=8), parameter :: ianis = 5
+    integer(kind=8), parameter :: nb_keyw_max = 13
     character(len=16) :: aster_name
     character(len=16), parameter :: mfront_keyw(nb_keyw_max) = &
                                     (/'YoungModulus    ', 'PoissonRatio    ', 'ThermalExpansion', &

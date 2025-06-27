@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine asgnbc(ibla, nbloc, bloca, nbterm, inobl, iadbl,&
                       nomblo, numblo, fact)
-        integer :: nbterm
-        integer :: ibla
+        integer(kind=8) :: nbterm
+        integer(kind=8) :: ibla
         complex(kind=8) :: bloca(*)
-        integer :: inobl(nbterm)
-        integer :: iadbl(nbterm)
+        integer(kind=8) :: inobl(nbterm)
+        integer(kind=8) :: iadbl(nbterm)
         character(len=24) :: nomblo
-        integer :: numblo, nbloc
+        integer(kind=8) :: numblo, nbloc
         real(kind=8) :: fact
     end subroutine asgnbc
 end interface

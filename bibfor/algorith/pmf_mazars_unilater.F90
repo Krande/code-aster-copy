@@ -66,7 +66,7 @@ subroutine pmf_mazars_unilater(for_pmf, nf, nbvalc, &
 ! --------------------------------------------------------------------------------------------------
 !
     type(pmfcom_user), intent(in) :: for_pmf
-    integer      :: nf, nbvalc, codret
+    integer(kind=8)      :: nf, nbvalc, codret
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
     real(kind=8) :: varimp(nbvalc*nf), varip(nbvalc*nf), varim(nbvalc*nf)
     real(kind=8) :: crit(*), defap(*), defam(*)
@@ -75,7 +75,7 @@ subroutine pmf_mazars_unilater(for_pmf, nf, nbvalc, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer      :: ksp, fib, ivari, iret, nbvari_grfibre
+    integer(kind=8)      :: ksp, fib, ivari, iret, nbvari_grfibre
     real(kind=8) :: ep, depsth, tempplus, tempmax
     real(kind=8) :: epsmeca(6), depsmeca(6), dsidep(6, 6), sigf_mu(6)
     real(kind=8) :: nu, bendo, kdess, valsech, valsechref, valhydr
@@ -85,14 +85,14 @@ subroutine pmf_mazars_unilater(for_pmf, nf, nbvalc, &
     character(len=30) :: valkm(3)
     aster_logical     :: istemp, ishydr, issech, resi, rigi
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nbval = 10
-    integer             :: icodre(nbval)
+    integer(kind=8), parameter :: nbval = 10
+    integer(kind=8)             :: icodre(nbval)
     real(kind=8)        :: valres(nbval)
 !   Index des coefficients de la loi de mazars
 !       iepsd0 = 1, ik = 2, iac = 3, ibc = 4, iat = 5, ibt = 6
-    integer, parameter :: iepsd0 = 1
-    integer, parameter :: isigmlim = 7, iepsilim = 8, iepsc0 = 9, iepst0 = 10
-    integer, parameter :: iyoung = 11, inu = 12
+    integer(kind=8), parameter :: iepsd0 = 1
+    integer(kind=8), parameter :: isigmlim = 7, iepsilim = 8, iepsc0 = 9, iepst0 = 10
+    integer(kind=8), parameter :: iyoung = 11, inu = 12
     character(len=8), parameter :: mazars(nbval) = ['EPSD0   ', 'K       ', 'AC      ', &
                                                     'BC      ', 'AT      ', 'BT      ', &
                                                     'SIGM_LIM', 'EPSI_LIM', 'EPSC0   ', &
@@ -101,13 +101,13 @@ subroutine pmf_mazars_unilater(for_pmf, nf, nbvalc, &
 !
 !   Variables internes : ici on a seulement besoin de itemp
 !       itemp  : température maximale atteinte par le matériau
-    integer, parameter :: itemp = 7
+    integer(kind=8), parameter :: itemp = 7
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer             :: kpg
-    integer             :: debsp
-    integer             :: icdmat
+    integer(kind=8)             :: kpg
+    integer(kind=8)             :: debsp
+    integer(kind=8)             :: icdmat
     real(kind=8)        :: instam
     real(kind=8)        :: instap
     real(kind=8)        :: epsm

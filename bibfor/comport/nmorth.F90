@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,11 +36,11 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
 #include "asterfort/verifepsa.h"
 #include "asterfort/utbtab.h"
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    integer, intent(in)          :: ndim
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: ndim
     character(len=16), intent(in):: phenom
-    integer, intent(in)          :: imate
+    integer(kind=8), intent(in)          :: imate
     character(len=*), intent(in) :: poum
     real(kind=8), intent(in)      :: deps(2*ndim)
     real(kind=8), intent(in)      :: sigm(2*ndim)
@@ -77,7 +77,7 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
     real(kind=8) :: depsme(6), rac2, epsm2(6)
     real(kind=8) :: work(3, 3), deplth_mat(3, 3), depgth_mat(3, 3)
     real(kind=8) :: sigm2(2*ndim)
-    integer :: ndimsi, i, j
+    integer(kind=8) :: ndimsi, i, j
     aster_logical :: vrai
 ! --------------------------------------------------------------------
 !

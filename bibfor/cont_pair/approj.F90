@@ -45,10 +45,10 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
     character(len=8), intent(in) :: mesh
     character(len=19), intent(in) :: newgeo
     character(len=24), intent(in) :: sdcont_defi
-    integer, intent(in) :: node_mast_indx
+    integer(kind=8), intent(in) :: node_mast_indx
     aster_logical, intent(in) :: l_pair_dire
     real(kind=8), intent(in) :: pair_vect(3)
-    integer, intent(in) :: iter_maxi
+    integer(kind=8), intent(in) :: iter_maxi
     real(kind=8), intent(in) :: epsi_maxi
     real(kind=8), intent(in) :: tole_proj_ext
     real(kind=8), intent(in) :: poin_coor(3)
@@ -58,9 +58,9 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
     real(kind=8), intent(out) :: ksi1_mini
     real(kind=8), intent(out) :: ksi2_mini
     real(kind=8), intent(out) :: dist_mini
-    integer, intent(out) :: proj_stat_mini
-    integer, intent(out) :: elem_mast_mini
-    integer, intent(inout) :: err_appa
+    integer(kind=8), intent(out) :: proj_stat_mini
+    integer(kind=8), intent(out) :: elem_mast_mini
+    integer(kind=8), intent(inout) :: err_appa
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -94,14 +94,14 @@ subroutine approj(mesh, newgeo, sdcont_defi, node_mast_indx, l_pair_dire, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=8) :: elem_mast_type, elem_mast_name
-    integer :: elem_mast_ndim, niverr, elem_mast_nbnode, node_nbelem, ino
+    integer(kind=8) :: elem_mast_ndim, niverr, elem_mast_nbnode, node_nbelem, ino
     real(kind=8) :: elem_mast_coor(27), vect_pm(3)
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: ksi1, ksi2, dist
-    integer :: proj_stat, i_elem_mast, elem_mast_indx, elem_mast_nume
-    integer :: jdeciv, mesh_ndim
+    integer(kind=8) :: proj_stat, i_elem_mast, elem_mast_indx, elem_mast_nume
+    integer(kind=8) :: jdeciv, mesh_ndim
     aster_logical :: l_poi1, l_cont_disc
 
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,15 +53,15 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
     character(len=24) :: domj, recv, send, gcom, pgid
     character(len=19) :: tag_name, comm_name, joints
     character(len=32) :: nojoie, nojoir
-    integer :: rang, nbproc, nb_comm, domdis, iret, domj_i
-    integer :: i_comm, nbnoee, nbnoer, i_no, numno
+    integer(kind=8) :: rang, nbproc, nb_comm, domdis, iret, domj_i
+    integer(kind=8) :: i_comm, nbnoee, nbnoer, i_no, numno
     mpi_int :: mrank, msize, mpicou, tag4, numpr4, n4e, n4r
-    integer, pointer :: v_comm(:) => null()
-    integer, pointer :: v_tag(:) => null()
-    integer, pointer :: v_joine(:) => null()
-    integer, pointer :: v_joinr(:) => null()
-    integer, pointer :: v_dom(:) => null()
-    integer, pointer :: v_gco(:) => null()
+    integer(kind=8), pointer :: v_comm(:) => null()
+    integer(kind=8), pointer :: v_tag(:) => null()
+    integer(kind=8), pointer :: v_joine(:) => null()
+    integer(kind=8), pointer :: v_joinr(:) => null()
+    integer(kind=8), pointer :: v_dom(:) => null()
+    integer(kind=8), pointer :: v_gco(:) => null()
     integer(kind=4), pointer :: v_pid(:) => null()
     integer(kind=4), pointer :: v_send(:) => null()
     integer(kind=4), pointer :: v_recv(:) => null()

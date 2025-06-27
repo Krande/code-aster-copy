@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine cflema(sdcont_defi , nb_cont_surf, nb_cont_elem0, v_list_elem, v_poin_elem,&
                       nb_cont_elem)
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: nb_cont_surf
-        integer, intent(in) :: nb_cont_elem0
-        integer, intent(inout) :: nb_cont_elem
-        integer, pointer :: v_poin_elem(:)
-        integer, pointer :: v_list_elem(:)
+        integer(kind=8), intent(in) :: nb_cont_surf
+        integer(kind=8), intent(in) :: nb_cont_elem0
+        integer(kind=8), intent(inout) :: nb_cont_elem
+        integer(kind=8), pointer :: v_poin_elem(:)
+        integer(kind=8), pointer :: v_list_elem(:)
     end subroutine cflema
 end interface

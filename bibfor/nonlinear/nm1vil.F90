@@ -32,7 +32,7 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi, &
 #include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
 !
-    integer :: icdmat, kpg, ksp, iret, nbvalc
+    integer(kind=8) :: icdmat, kpg, ksp, iret, nbvalc
     real(kind=8) :: crit(*)
     real(kind=8) :: instam, instap
     real(kind=8) :: tm, tp, tref
@@ -87,11 +87,11 @@ subroutine nm1vil(fami, kpg, ksp, icdmat, materi, &
     real(kind=8) :: ep, nup, troikp, deumup
     real(kind=8) :: em, num, troikm, deumum
 ! AUTRES
-    integer :: nbcgil, iret2
+    integer(kind=8) :: nbcgil, iret2
     parameter(nbcgil=5)
     real(kind=8) :: coegil(nbcgil)
     character(len=8) :: nomgil(nbcgil)
-    integer :: codgil(nbcgil)
+    integer(kind=8) :: codgil(nbcgil)
     real(kind=8) :: t1, t2
     real(kind=8) :: degran, depsan, depsim, depsgr
     real(kind=8) :: coef1, coefb, expqt

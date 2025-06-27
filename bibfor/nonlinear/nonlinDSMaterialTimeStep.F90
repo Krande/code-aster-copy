@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine nonlinDSMaterialTimeStep(model, ds_material, cara_elem, &
     character(len=19), intent(in) :: hval_incr(*)
     character(len=24), intent(in) :: nume_dof
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -63,7 +63,7 @@ subroutine nonlinDSMaterialTimeStep(model, ds_material, cara_elem, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: vect_elem, vect_asse, varc_curr
     real(kind=8) :: time_curr
 !

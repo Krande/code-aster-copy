@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: nbloc, lgbloc(*), lonmat, adinit(lonmat), typsym
+    integer(kind=8) :: nbloc, lgbloc(*), lonmat, adinit(lonmat), typsym
     character(len=24) :: factol, factou, valm
     character(len=*) :: nommat
-    integer :: fin, deb, mati, mats, ip, irefac, lgblib
+    integer(kind=8) :: fin, deb, mati, mats, ip, irefac, lgblib
 !===============================================================
 !     ASSEMBLAGE DE LA MATRICE INITIALE DANS LA MATRICE FACTOR
 !     VERSION ASTER
@@ -48,7 +48,7 @@ subroutine mltasa(nbloc, lgbloc, adinit, nommat, lonmat, &
 !     VERSION NON SYMETRIQUE
 !=============================================================
     character(len=8) :: base
-    integer :: i, i1, ib, ifacl, ifacu, code, adprov
+    integer(kind=8) :: i, i1, ib, ifacl, ifacu, code, adprov
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
     data valm/'                   .VALM'/

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 
 function rgcmpg(icode, irgcmp)
     implicit none
-    integer :: rgcmpg
+    integer(kind=8) :: rgcmpg
 #include "asterfort/exisdg.h"
-    integer :: icode, irgcmp
+    integer(kind=8) :: icode, irgcmp
 !
 ! --- ------------------------------------------------------------------
 !
@@ -35,7 +35,7 @@ function rgcmpg(icode, irgcmp)
 ! OUT
 !     RGCMPG : RANG DE LA VALEUR DANS L'ENTIER CODE
 ! --- ------------------------------------------------------------------
-    integer :: icmp, irgval
+    integer(kind=8) :: icmp, irgval
 ! --- ------------------------------------------------------------------
 !
     irgval = 0

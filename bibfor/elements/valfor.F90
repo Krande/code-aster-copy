@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,11 +35,11 @@ subroutine valfor(indn, lt1, lt2, l1, l2, &
     implicit none
 #include "asterfort/utmess.h"
 !
-    integer :: indn
+    integer(kind=8) :: indn
 !
-    integer :: lt1, lt2
+    integer(kind=8) :: lt1, lt2
 !
-    integer :: l1, l2, l3
+    integer(kind=8) :: l1, l2, l3
 !
 !DEB
 !

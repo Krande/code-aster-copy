@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,7 +61,7 @@ subroutine sigvmc(fami, nno, ndim, nbsig, npg, &
     character(len=*) :: fami
     real(kind=8) :: xyz(1), depl(1), angl_naut(3), sigma(1)
     real(kind=8) :: instan, nharm
-    integer :: ipoids, ivf, idfde
+    integer(kind=8) :: ipoids, ivf, idfde
 ! -----  VARIABLES LOCALES
     character(len=16) :: option
     real(kind=8) :: sigth(162), sighy(162), sigse(162)
@@ -72,7 +72,7 @@ subroutine sigvmc(fami, nno, ndim, nbsig, npg, &
 ! --- INITIALISATIONS :
 !     -----------------
 !-----------------------------------------------------------------------
-    integer :: i, mater, nbsig, ndim, nno, npg
+    integer(kind=8) :: i, mater, nbsig, ndim, nno, npg
     real(kind=8) :: zero
 !-----------------------------------------------------------------------
     zero = 0.0d0

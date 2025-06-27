@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine nmtarl(mode, ndimsi, mat, sigel, vim,&
                       epm, dp, sp, xi, dirdp,&
                       dirsp, dirxi, min, rho, ener)
-        integer :: mode
-        integer :: ndimsi
+        integer(kind=8) :: mode
+        integer(kind=8) :: ndimsi
         real(kind=8) :: mat(*)
         real(kind=8) :: sigel(*)
         real(kind=8) :: vim(*)

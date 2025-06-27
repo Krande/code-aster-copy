@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,8 +28,8 @@ subroutine cfappi(noma, defico, nomnoe, typapp, posapp)
 #include "asterfort/utmess.h"
     character(len=8) :: noma
     character(len=24) :: defico
-    integer :: posapp
-    integer :: typapp
+    integer(kind=8) :: posapp
+    integer(kind=8) :: typapp
     character(len=8) :: nomnoe
 !
 ! ----------------------------------------------------------------------

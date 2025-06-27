@@ -62,7 +62,7 @@ subroutine nmflma(matrType, mod45, &
     character(len=16), intent(in) :: matrType
     character(len=4), intent(in) :: mod45
     aster_logical, intent(in) :: l_hpp, lModiRigi
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=*), intent(in) :: modelZ
     character(len=24), intent(in) :: caraElem
@@ -70,9 +70,9 @@ subroutine nmflma(matrType, mod45, &
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     character(len=19), intent(in) :: sddyna, listLoad
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: numeTime
+    integer(kind=8), intent(in) :: numeTime
     type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
-    integer, intent(in) :: nbDofExcl
+    integer(kind=8), intent(in) :: nbDofExcl
     character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
     character(len=24), intent(in) :: numeDof
     type(NL_DS_System), intent(in) :: ds_system
@@ -124,21 +124,21 @@ subroutine nmflma(matrType, mod45, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = POST_BUCKLING
-    integer, parameter :: iterNewtPred = 0
-    integer, parameter :: zvalin = 28
+    integer(kind=8), parameter :: phaseType = POST_BUCKLING
+    integer(kind=8), parameter :: iterNewtPred = 0
+    integer(kind=8), parameter :: zvalin = 28
     character(len=16), parameter :: modlag = 'MODI_LAGR_OUI'
     character(len=8), parameter :: tdiag = 'MAX_ABS'
     character(len=19), parameter :: matrRigiSyme = '&&NMFLMA.RIGISYME'
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_update_matr
     aster_logical :: lRigiCompute, lSuperElement, lNeumUndead
     character(len=16) :: nonLinearOption
-    integer :: reincr
+    integer(kind=8) :: reincr
     character(len=8) :: answer
     character(len=19) :: massElem, geomElem
     character(len=19) :: depplu, vitplu, accplu, sigplu, varplu, hval_incrCopy(zvalin)
-    integer :: nmax, ldccvg
+    integer(kind=8) :: nmax, ldccvg
     character(len=24) :: superElem
 !
 ! --------------------------------------------------------------------------------------------------

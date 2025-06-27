@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,10 +50,10 @@ subroutine romResultCreateMode(result, fieldName, mode)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: numeStoreFirst
+    integer(kind=8) :: numeStoreFirst
     character(len=8) :: model
     character(len=24) :: fieldRefe
-    integer :: iret, nbStore, jvPara
+    integer(kind=8) :: iret, nbStore, jvPara
     character(len=8) :: resultName
     character(len=16) :: resultType
 !

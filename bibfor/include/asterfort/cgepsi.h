@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine cgepsi(ndim, nno1, nno2, npg, wref,&
                       vff1, dffr1,geom, tang, ddl,&
                       iu,iuc,eps)
-        integer :: ndim
-        integer :: nno1
-        integer :: nno2
-        integer :: npg
-        integer :: iu(3, 3)
-        integer :: iuc(3)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno1
+        integer(kind=8) :: nno2
+        integer(kind=8) :: npg
+        integer(kind=8) :: iu(3, 3)
+        integer(kind=8) :: iuc(3)
         real(kind=8) :: vff1(nno1, npg)
         real(kind=8) :: dffr1(nno1, npg)
         real(kind=8) :: geom(ndim, nno1)

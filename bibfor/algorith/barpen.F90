@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,12 +20,12 @@ subroutine barpen(i1, i2, coor, poin)
     implicit none
 #include "asterfort/barso1.h"
 #include "asterfort/utmess.h"
-    integer :: i1, i2, poin(*)
+    integer(kind=8) :: i1, i2, poin(*)
     real(kind=8) :: coor(*)
 !     BARSOUM : TRAITEMENT DES MAILLES "PENTA15" ET "PENTA18"
 !-----------------------------------------------------------------------
 !
-    integer :: i, n1, n2, n3
+    integer(kind=8) :: i, n1, n2, n3
 !     ------------------------------------------------------------------
 !
 !     ------------------------------------------------------------------

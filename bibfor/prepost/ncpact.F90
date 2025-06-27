@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine ncpact(dg, nec, nbc)
 !
 !
 #include "asterfort/nbbit1.h"
-    integer :: dg(*), nec, nbc
+    integer(kind=8) :: dg(*), nec, nbc
 !
 !**********************************************************************
 !
@@ -30,7 +30,7 @@ subroutine ncpact(dg, nec, nbc)
 !
 !**********************************************************************
 !
-    integer :: i, compt
+    integer(kind=8) :: i, compt
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------

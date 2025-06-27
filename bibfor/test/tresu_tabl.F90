@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt, &
     character(len=8), intent(in) :: typtes
     character(len=*), intent(in) :: typres
     character(len=16), intent(in) :: tbtxt(2)
-    integer, intent(in) :: refi
+    integer(kind=8), intent(in) :: refi
     real(kind=8), intent(in) :: refr
     complex(kind=8), intent(in) :: refc
     real(kind=8), intent(in) :: epsi
@@ -56,7 +56,7 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt, &
 ! IN  : LLAB   : FLAG D IMPRESSION DES LABELS
 ! OUT : IMPRESSION SUR LISTING
 ! ----------------------------------------------------------------------
-    integer :: vali, jvale, jvall, nblign, nbpara, i, ipar
+    integer(kind=8) :: vali, jvale, jvall, nblign, nbpara, i, ipar
     real(kind=8) :: valr
     complex(kind=8) :: valc
     aster_logical :: exist
@@ -68,7 +68,7 @@ subroutine tresu_tabl(nomta, para, typtes, typres, tbtxt, &
     aster_logical :: skip
     real(kind=8) :: ordgrd
     character(len=24), pointer :: tblp(:) => null()
-    integer, pointer :: tbnp(:) => null()
+    integer(kind=8), pointer :: tbnp(:) => null()
 !     ------------------------------------------------------------------
 !
     skip = .false.

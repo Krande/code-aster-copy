@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,11 +41,11 @@ function xtest_code(id1, id2, lfno, nfh, nfissmax, fno1, fno2)
 #include "asterfort/xcalc_digit.h"
 #include "asterfort/xextr_uplet.h"
 !-----------------------------------------------------------------------
-    integer :: id1, id2, nfissmax, nfh
-    integer :: fno1(nfissmax), fno2(nfissmax)
+    integer(kind=8) :: id1, id2, nfissmax, nfh
+    integer(kind=8) :: fno1(nfissmax), fno2(nfissmax)
     aster_logical :: xtest_code, lfno
 !-----------------------------------------------------------------------
-    integer :: n1, n2, idigi, up1(nfissmax), up2(nfissmax), n1_red, n2_red
+    integer(kind=8) :: n1, n2, idigi, up1(nfissmax), up2(nfissmax), n1_red, n2_red
 !-----------------------------------------------------------------------
 !
     xtest_code = .true.

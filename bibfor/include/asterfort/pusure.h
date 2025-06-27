@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine pusure(nbpt, fn, vt1, vt2, iadh,&
                       t, pusee)
-        integer :: nbpt
+        integer(kind=8) :: nbpt
         real(kind=8) :: fn(*)
         real(kind=8) :: vt1(*)
         real(kind=8) :: vt2(*)
-        integer :: iadh(*)
+        integer(kind=8) :: iadh(*)
         real(kind=8) :: t(*)
         real(kind=8) :: pusee
     end subroutine pusure

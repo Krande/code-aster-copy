@@ -34,7 +34,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
 #include "asterfort/nbelem.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbcmb, nuharm(*)
+    integer(kind=8) :: nbcmb, nuharm(*)
     character(len=*) :: nomch(*), basz, tyharm(*), chpres
     real(kind=8) :: angle, coef(*)
 !     RECOMBINAISON DE FOURIER
@@ -47,7 +47,7 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
 !     IN  COEF   : R8  : COEF MULTIPLICATEUR ASSOCIE A L'HARMONIQUE
 !     IN  CHPRES : K19 : NOM DU CHAMP RESULTAT
 !     -----------------------------------------------------------------
-    integer :: ibid, mode
+    integer(kind=8) :: ibid, mode
     character(len=1) :: base
     character(len=4) :: docu
     character(len=5) :: refe, desc, vale
@@ -56,16 +56,16 @@ subroutine refode(nbcmb, angle, nomch, nuharm, tyharm, &
     aster_logical :: lmeca, lther
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, i1, ic, icoef, idecgr
-    integer :: igrel, im, ino, ip, iret, ival
-    integer :: jdesc, jrefe, jvale, k
-    integer :: kdesc, krefe, kvale, lvale, nbdesc, nbec, nbelgr
-    integer :: nbgr, nbnoeu, nbpt, nbrefe, nbscal, nbvale
+    integer(kind=8) :: i, i1, ic, icoef, idecgr
+    integer(kind=8) :: igrel, im, ino, ip, iret, ival
+    integer(kind=8) :: jdesc, jrefe, jvale, k
+    integer(kind=8) :: kdesc, krefe, kvale, lvale, nbdesc, nbec, nbelgr
+    integer(kind=8) :: nbgr, nbnoeu, nbpt, nbrefe, nbscal, nbvale
     real(kind=8) :: ang
-    integer, pointer :: celd(:) => null()
+    integer(kind=8), pointer :: celd(:) => null()
     real(kind=8), pointer :: celv(:) => null()
     character(len=24), pointer :: celk(:) => null()
-    integer, pointer :: prno(:) => null()
+    integer(kind=8), pointer :: prno(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()
     base = basz

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,9 +36,9 @@ subroutine te0176(option, nomte)
 !
     character(len=16) :: nomte, option
     real(kind=8) :: dfdx(9), dfdy(9), poids
-    integer :: ipoids, ivf, idfde, igeom, ij
-    integer :: nno, kp, npg1, i, j, imattt, ndi
-    integer :: ndim, nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfde, igeom, ij
+    integer(kind=8) :: nno, kp, npg1, i, j, imattt, ndi
+    integer(kind=8) :: ndim, nnos, jgano
 !
 !
 !

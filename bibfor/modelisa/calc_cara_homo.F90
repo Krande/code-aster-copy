@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine calc_cara_homo(noma, nomgrma, listma, nbma, ncarac, &
                           cara, vale, caram, valem)
     implicit none
     character(len=24), intent(in) :: nomgrma
-    integer, intent(in) :: ncarac, listma(*), nbma
+    integer(kind=8), intent(in) :: ncarac, listma(*), nbma
     character(len=8), intent(in) :: cara(*), noma
     real(kind=8), intent(in) :: vale(*)
     character(len=8), intent(out) :: caram(4)
@@ -40,9 +40,9 @@ subroutine calc_cara_homo(noma, nomgrma, listma, nbma, ncarac, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 ! ----------------------------------------------------------------------
-    integer, parameter :: nk = 4
-    integer :: i, j, imail, numail, no1, no2
-    integer :: jcxma, jcoor, i_para(nk)
+    integer(kind=8), parameter :: nk = 4
+    integer(kind=8) :: i, j, imail, numail, no1, no2
+    integer(kind=8) :: jcxma, jcoor, i_para(nk)
     real(kind=8) :: lonpou, v_diff, vdeb, vale1, vale2, l
     real(kind=8) :: rratio, eratio, homo, valr(6)
     character(len=3) :: carpou(nk)

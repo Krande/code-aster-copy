@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine nmfini(sddyna, nlDynaDamping, &
     character(len=19), intent(in) :: valinc(*), measse(*)
     character(len=19), intent(in) :: sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=24), intent(in) :: model, caraElem
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -52,7 +52,7 @@ subroutine nmfini(sddyna, nlDynaDamping, &
     type(NL_DS_Measure), intent(inout) :: ds_measure
     character(len=24), intent(in) :: numeDof
     character(len=19), intent(in) :: sddisc, solalg(*)
-    integer, intent(in) :: numeTime
+    integer(kind=8), intent(in) :: numeTime
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,8 +83,8 @@ subroutine nmfini(sddyna, nlDynaDamping, &
 !
     character(len=19) :: masse, dampAsse, vitmoi, accmoi
     character(len=19) :: fexmoi, fammoi, flimoi
-    integer :: imasse, iamort
-    integer :: nbEqua, iEqua
+    integer(kind=8) :: imasse, iamort
+    integer(kind=8) :: nbEqua, iEqua
     aster_logical :: lDampMatrix, ldyna
     character(len=19) :: fnomoi
     real(kind=8) :: timePrev, timeCurr

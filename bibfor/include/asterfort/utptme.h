@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,6 +21,6 @@ interface
     subroutine utptme(nomarg, valarg, iret)
         character(len=8), intent(in) :: nomarg
         real(kind=8), intent(in) :: valarg
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
     end subroutine utptme
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,11 +65,11 @@ subroutine xmfrot(algofr, coeffr, coeffp, ddlm, ddls, &
 #include "asterfort/xmmbp3.h"
 #include "asterfort/xmmbp5.h"
 #include "asterfort/xmmsa1.h"
-    integer :: algofr, ddlm, ddls
-    integer :: idepd, idepm, indco
-    integer :: lact(8), ndim
-    integer :: nfh, nfiss, nno, nnol, nnos, nvit
-    integer :: pla(27), singu
+    integer(kind=8) :: algofr, ddlm, ddls
+    integer(kind=8) :: idepd, idepm, indco
+    integer(kind=8) :: lact(8), ndim
+    integer(kind=8) :: nfh, nfiss, nno, nnol, nnos, nvit
+    integer(kind=8) :: pla(27), singu
     real(kind=8) :: coeffp, coeffr, ik(3, 3), jac, knp(3, 3)
     real(kind=8) :: mmat(216, 216), mu, nd(3), p(3, 3), ffc(8), ffp(27)
     real(kind=8) :: ptknp(3, 3), seuil, tau1(3), tau2(3)

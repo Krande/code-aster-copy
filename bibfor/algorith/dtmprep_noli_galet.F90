@@ -66,13 +66,13 @@ subroutine dtmprep_noli_galet(sd_dtm_, sd_nl_, icomp)
 !   Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_nl_
-    integer, intent(in) :: icomp
+    integer(kind=8), intent(in) :: icomp
 !   Local variables
     aster_logical     :: lnoeu2
-    integer           :: i, n1, ibid, nbdecr, nbnoli, nbfx
-    integer           :: nbmcl, ier, nbno1, nbno2, ino1
-    integer           :: ino2, ind1, ind2, nbmode, info
-    integer           :: vali, j, neq, mxlevel, nexcit
+    integer(kind=8)           :: i, n1, ibid, nbdecr, nbnoli, nbfx
+    integer(kind=8)           :: nbmcl, ier, nbno1, nbno2, ino1
+    integer(kind=8)           :: ino2, ind1, ind2, nbmode, info
+    integer(kind=8)           :: vali, j, neq, mxlevel, nexcit
 !
     real(kind=8)      :: r8bid, alpha, beta
     real(kind=8)      :: sina, cosa, sinb, cosb, sing
@@ -87,7 +87,7 @@ subroutine dtmprep_noli_galet(sd_dtm_, sd_nl_, icomp)
     character(len=19) :: nomres, nomfon
     character(len=24) :: nl_title, valk(3)
 !
-    integer, pointer       :: ddlcho(:) => null()
+    integer(kind=8), pointer       :: ddlcho(:) => null()
     real(kind=8), pointer       :: coor_no1(:) => null()
     real(kind=8), pointer       :: coor_no2(:) => null()
     real(kind=8), pointer       :: vale(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,13 +29,13 @@ subroutine modiMetriVeri(noma, ioc, modmai, nutyptu)
 #include "asterfort/reliem.h"
 #include "asterfort/utmess.h"
     character(len=8), intent(in) :: noma
-    integer, intent(in) :: ioc, nutyptu(3)
+    integer(kind=8), intent(in) :: ioc, nutyptu(3)
     character(len=24), intent(in) :: modmai
 !     AFFE_CARA_ELEM/POUTRE
 !     VERIFICATION QUE MODI_METRIQUE='OUI' N'EST AFFECTE QUE
 !     SUR DES TUYAUX
 ! ----------------------------------------------------------------------
-    integer :: ibid, nbma, jma, i, ima, ixma, jdme, itypma, ityp
+    integer(kind=8) :: ibid, nbma, jma, i, ima, ixma, jdme, itypma, ityp
     character(len=8) :: mmt, typmcl(2)
     character(len=16) :: motfac, motcls(2)
     character(len=24) :: mesmai

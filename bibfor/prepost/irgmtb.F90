@@ -25,14 +25,14 @@ subroutine irgmtb(tdec, typd, vers)
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 !
-    integer :: ntyele, maxel, maxno
+    integer(kind=8) :: ntyele, maxel, maxno
     parameter(ntyele=28)
     parameter(maxel=48)
     parameter(maxno=8)
 !
-    integer :: tdec(ntyele, maxel, maxno)
-    integer :: typd(ntyele, 3)
-    integer :: vers
+    integer(kind=8) :: tdec(ntyele, maxel, maxno)
+    integer(kind=8) :: typd(ntyele, 3)
+    integer(kind=8) :: vers
 !     IN  : VERS
 !     OUT : TDEC, TYPD
 !
@@ -72,7 +72,7 @@ subroutine irgmtb(tdec, typd, vers)
 !          = 2 == '1.2'    FICHIER GMSH
 !     EN VERSION 1.2, ON NE DECOUPE PAS LES QUAD4, PENTA6, PYRAM5, HEXA8
 !
-    integer :: typpoi, typseg, typtri, typtet, ino, i, j, k, ind
+    integer(kind=8) :: typpoi, typseg, typtri, typtet, ino, i, j, k, ind
 !
 ! --- VERIF
     if (vers .ne. 1 .and. vers .ne. 2) goto 999

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ subroutine invjax(stop, nno, ndim, nderiv, dff, &
     implicit none
 #include "asterfort/assert.h"
 #include "asterfort/matinv.h"
-    integer :: nno, ndim, nderiv, ipb
+    integer(kind=8) :: nno, ndim, nderiv, ipb
     real(kind=8) :: coor(ndim*nno)
     real(kind=8) :: dff(3, nno), invjac(3, 3), inv(ndim, ndim)
     character(len=1) :: stop
-    integer, optional, intent(in) :: ndim_coor_
+    integer(kind=8), optional, intent(in) :: ndim_coor_
 !
 ! ----------------------------------------------------------------------
 !
@@ -47,7 +47,7 @@ subroutine invjax(stop, nno, ndim, nderiv, dff, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: idim, jdim, ino, i, j, ndim_coor
+    integer(kind=8) :: idim, jdim, ino, i, j, ndim_coor
     real(kind=8) :: jacobi(ndim, ndim), det
 !
 ! ----------------------------------------------------------------------

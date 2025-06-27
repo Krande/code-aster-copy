@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine pj2dap(ino2, geom2, geom1, tria3, cobary, &
 #include "asterfort/pj2dgb.h"
 !
     real(kind=8) :: cobary(3), geom1(*), geom2(*), btvr(*)
-    integer :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*), tria3(*)
+    integer(kind=8) :: itr3, nbtrou, btdi(*), btnb(*), btlc(*), btco(*), tria3(*)
 !  but :
 !    trouver le tria3 qui servira a interpoler le noeud ino2
 !    ainsi que les coordonnees barycentriques de ino2 dans ce tria3
@@ -64,7 +64,7 @@ subroutine pj2dap(ino2, geom2, geom1, tria3, cobary, &
 !
 !
     real(kind=8) :: cobar2(3), dmin, d2, dx, dy, xmin, ymin, surf, rtr3
-    integer :: p, q, p1, q1, p2, q2, ino2, i, k, iposi, nx, ntrbt
+    integer(kind=8) :: p, q, p1, q1, p2, q2, ino2, i, k, iposi, nx, ntrbt
     aster_logical :: ok
 !
     aster_logical :: l_dmax, loin

@@ -39,7 +39,7 @@ subroutine apimpr_c(ifm, mesh, ds_contact)
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: ifm
+    integer(kind=8), intent(in) :: ifm
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(in) :: ds_contact
 !
@@ -58,14 +58,14 @@ subroutine apimpr_c(ifm, mesh, ds_contact)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=19) :: sdappa
-    integer :: nb_cont_zone, nt_poin, nb_poin_zone
-    integer :: pair_type, pair_enti
+    integer(kind=8) :: nb_cont_zone, nt_poin, nb_poin_zone
+    integer(kind=8) :: pair_type, pair_enti
     real(kind=8) :: poin_coor(3)
     real(kind=8) :: dist, ksi1, ksi2, tau1(3), tau2(3)
     character(len=16) :: poin_name
-    integer :: i_zone, i_poin, k, i_poin_zone
-    integer :: node_mast_nume(1), elem_mast_nume
-    integer :: node_mast_indx(1), elem_mast_indx
+    integer(kind=8) :: i_zone, i_poin, k, i_poin_zone
+    integer(kind=8) :: node_mast_nume(1), elem_mast_nume
+    integer(kind=8) :: node_mast_indx(1), elem_mast_indx
     character(len=8) :: node_mast_name, elem_mast_name
 !
 ! --------------------------------------------------------------------------------------------------

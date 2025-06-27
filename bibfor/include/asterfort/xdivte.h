@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine xdivte(elp, cnset, nse, nnose, exit)
         character(len=8) :: elp
-        integer :: cnset(*)
-        integer :: nse
-        integer :: nnose
-        integer :: exit(2)
+        integer(kind=8) :: cnset(*)
+        integer(kind=8) :: nse
+        integer(kind=8) :: nnose
+        integer(kind=8) :: exit(2)
     end subroutine xdivte
 end interface

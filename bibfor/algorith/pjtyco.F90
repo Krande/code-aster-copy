@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,15 +56,15 @@ subroutine pjtyco(isole, resuin, cham1, lnoeu, lelno, &
 
 ! 0.3. ==> VARIABLES LOCALES
 
-    integer :: i, ie, iret
-    integer :: nbordr
-    integer :: iordr, isym, nbsym
+    integer(kind=8) :: i, ie, iret
+    integer(kind=8) :: nbordr
+    integer(kind=8) :: iordr, isym, nbsym
     aster_logical :: acceno
     real(kind=8) :: prec
     character(len=4) :: tych
     character(len=8) :: crit
     character(len=16) :: nomsym(200)
-    integer, pointer :: nume_ordre(:) => null()
+    integer(kind=8), pointer :: nume_ordre(:) => null()
 
 ! DEB ------------------------------------------------------------------
     call jemarq()

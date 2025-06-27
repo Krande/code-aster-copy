@@ -81,14 +81,14 @@ subroutine comdlt()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbVectAsse, nbLoad
-    integer :: jvMatr(3), nume, niv, ifm, jvLoadWave, ladpa, numrep
-    integer :: jvVectFunc, jvVectAsse, nbWave, ifexte, ifamor, ifliai
-    integer :: neq, idepl0, ivite0, iacce0, iwk, iordr
-    integer :: iinteg, iret, nbpas, nbpas_min, nbpas_max
-    integer :: nbord, jchar, jinst, pasar, nbar
-    integer :: lresu, lcrre, iresu, nbexre, l, ncomu
-    integer :: nbchre, iocc, nfon, nbexcl, i, counter, lsize
+    integer(kind=8) :: nbVectAsse, nbLoad
+    integer(kind=8) :: jvMatr(3), nume, niv, ifm, jvLoadWave, ladpa, numrep
+    integer(kind=8) :: jvVectFunc, jvVectAsse, nbWave, ifexte, ifamor, ifliai
+    integer(kind=8) :: neq, idepl0, ivite0, iacce0, iwk, iordr
+    integer(kind=8) :: iinteg, iret, nbpas, nbpas_min, nbpas_max
+    integer(kind=8) :: nbord, jchar, jinst, pasar, nbar
+    integer(kind=8) :: lresu, lcrre, iresu, nbexre, l, ncomu
+    integer(kind=8) :: nbchre, iocc, nfon, nbexcl, i, counter, lsize
     real(kind=8) :: t0, time, rundf, alpha, tinit
     real(kind=8) :: tfin, dt, dtmin, dtmax, cdivi
     real(kind=8) :: nbpas_max_r, epsi
@@ -111,13 +111,13 @@ subroutine comdlt()
     character(len=46) :: champs
     type(NL_DS_Energy) :: ds_energy
     aster_logical :: lamort, lcrea, lprem, exipou
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
     character(len=8), pointer :: chexc(:) => null()
     data model/'                        '/
     data allschemes/'NEWMARK', 'WILSON', 'DIFF_CENTRE', 'ADAPT_ORDRE2'/
     character(len=8) :: mesh
     aster_logical :: l_obsv
-    integer, parameter :: zvalin = 28
+    integer(kind=8), parameter :: zvalin = 28
     character(len=19) :: valinc(zvalin)
     character(len=19) :: depmoi, vitmoi, accmoi
 !

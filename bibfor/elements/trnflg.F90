@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,13 +19,13 @@
 subroutine trnflg(nbx, vectpt, vecl, vecg)
     implicit none
 !
-    integer :: nbx
+    integer(kind=8) :: nbx
     real(kind=8) :: vecl(*), vecg(*), vectpt(9, 3, 3)
 !
 !     CONSTRUCTION DE LA MATRICE VECG = PLGT * VECL
 !
 !-----------------------------------------------------------------------
-    integer :: i1, ib
+    integer(kind=8) :: i1, ib
 !-----------------------------------------------------------------------
     do ib = 1, nbx
 !

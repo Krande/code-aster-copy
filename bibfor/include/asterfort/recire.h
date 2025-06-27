@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine recire(typopt, iderre, frexci, fremin, fremax,&
                       pas, nbptmd)
         character(len=4) :: typopt
-        integer :: iderre
+        integer(kind=8) :: iderre
         character(len=4) :: frexci
         real(kind=8) :: fremin
         real(kind=8) :: fremax
         real(kind=8) :: pas
-        integer :: nbptmd
+        integer(kind=8) :: nbptmd
     end subroutine recire
 end interface

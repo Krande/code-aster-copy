@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine nmas2d(BEHinteg, &
 #include "asterfort/Behaviour_type.h"
 !
     type(Behaviour_Integ), intent(inout) :: BEHinteg
-    integer :: nno, npg, imate, lgpg, codret, cod(9), npgs
-    integer :: ipoids, ivf, idfde
+    integer(kind=8) :: nno, npg, imate, lgpg, codret, cod(9), npgs
+    integer(kind=8) :: ipoids, ivf, idfde
     character(len=*) :: fami
     character(len=8) :: typmod(*)
     character(len=16) :: option
@@ -93,10 +93,10 @@ subroutine nmas2d(BEHinteg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: ksp = 1
+    integer(kind=8), parameter :: ksp = 1
     aster_logical :: grand, axi
-    integer :: kpg, kk, kkd, n, i, m, j, j1, kl, kpgs, proj
-    integer, parameter :: ndimLdc = 2
+    integer(kind=8) :: kpg, kk, kkd, n, i, m, j, j1, kl, kpgs, proj
+    integer(kind=8), parameter :: ndimLdc = 2
     real(kind=8) :: dsidep(6, 6), f(3, 3), eps(6), deps(6), r, sigma(6), sign(6)
     real(kind=8) :: poids, tmp, sig(6)
     real(kind=8), parameter :: rac2 = sqrt(2.d0)

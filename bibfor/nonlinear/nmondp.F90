@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine nmondp(list_load, londe, chondp, nondp)
 #include "asterfort/wkvect.h"
 #include "asterfort/ischar_iden.h"
 !
-    integer :: nondp
+    integer(kind=8) :: nondp
     character(len=24) :: chondp
     character(len=19) :: list_load
     aster_logical :: londe
@@ -36,9 +36,9 @@ subroutine nmondp(list_load, londe, chondp, nondp)
 ! ----------------------------------------------------------------------
 !
     character(len=24) :: lload_name, lload_info
-    integer, pointer :: v_load_info(:) => null()
+    integer(kind=8), pointer :: v_load_info(:) => null()
     character(len=24), pointer :: v_load_name(:) => null()
-    integer :: iondp, nond, i_load, nb_load
+    integer(kind=8) :: iondp, nond, i_load, nb_load
 !
     call jemarq()
 !

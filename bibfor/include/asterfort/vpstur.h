@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,14 +24,14 @@ interface
     subroutine vpstur(lmatk, valshi, lmatm, lmatsh, mantis,&
                       expo, pivot, ier, solveu, caldet,&
                       calfac)
-        integer :: lmatk
+        integer(kind=8) :: lmatk
         real(kind=8) :: valshi
-        integer :: lmatm
-        integer :: lmatsh
+        integer(kind=8) :: lmatm
+        integer(kind=8) :: lmatsh
         real(kind=8) :: mantis
-        integer :: expo
-        integer :: pivot
-        integer :: ier
+        integer(kind=8) :: expo
+        integer(kind=8) :: pivot
+        integer(kind=8) :: ier
         character(len=19) :: solveu
         aster_logical :: caldet
         aster_logical :: calfac

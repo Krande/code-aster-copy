@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine nonlinSystemInit(list_func_acti, nume_dof, ds_algopara, ds_contact, d
 #include "asterfort/vtcreb.h"
 #include "asterfort/cfdisl.h"
 !
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: nume_dof
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Contact), intent(in) :: ds_contact
@@ -54,7 +54,7 @@ subroutine nonlinSystemInit(list_func_acti, nume_dof, ds_algopara, ds_contact, d
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_cont_elem, l_cont_all_verif
 !
 ! --------------------------------------------------------------------------------------------------

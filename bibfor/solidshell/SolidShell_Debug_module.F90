@@ -258,7 +258,7 @@ contains
     subroutine dbgMatrRigiKpg(kpg, zeta, poids, jacob, matrRigi)
 !   ------------------------------------------------------------------------------------------------
 ! - Parameters
-        integer, intent(in)      :: kpg
+        integer(kind=8), intent(in)      :: kpg
         real(kind=8), intent(in) :: zeta, poids, jacob
         real(kind=8), intent(in) :: matrRigi(SSH_NBDOF_MAX, SSH_NBDOF_MAX)
 !   ------------------------------------------------------------------------------------------------

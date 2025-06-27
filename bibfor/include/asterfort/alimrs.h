@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,11 +25,11 @@ interface
         character(len=8) :: ma1
         character(len=8) :: ma2
         character(len=*) :: moint
-        integer :: ndble
+        integer(kind=8) :: ndble
         character(len=14) :: nume_ddl
         character(len=19) :: cn1
         character(len=*) :: chno
         character(len=*) :: cmp
-        integer :: icor(2)
+        integer(kind=8) :: icor(2)
     end subroutine alimrs
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,12 +18,12 @@
 !
 function lxlgut(chaine)
     implicit none
-    integer :: lxlgut
+    integer(kind=8) :: lxlgut
     character(len=*) :: chaine
 !     RENVOI LA LONGUEUR UTILE DE LA CHAINE
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, lg
+    integer(kind=8) :: i, lg
 !-----------------------------------------------------------------------
     lg = len(chaine)
     do i = lg, 1, -1

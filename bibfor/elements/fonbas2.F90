@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 
-    integer           :: nbnoff
+    integer(kind=8)           :: nbnoff
     character(len=8)  :: noma, typm
     character(len=19) :: basnof, basloc, lnno, ltno
     character(len=24) :: fonoeu, absfon, abscur, coorfond
@@ -61,10 +61,10 @@ subroutine fonbas2(noma, basnof, typm, fonoeu, coorfond, nbnoff, absfon, &
 !        LNNO   : LEVLE-SETS NORMAUX EN CHAQUE NOEUD DU MAILLAGE
 !-----------------------------------------------------------------------
 !
-    integer :: ibid, indica, indicb, ina, inb, ino, jnoe
-    integer :: iseg, jbas, jabsf, jabscur, coorfd
-    integer :: jgsl, jlnsl, jltsl
-    integer :: k, nbno, ndim, nseg
+    integer(kind=8) :: ibid, indica, indicb, ina, inb, ino, jnoe
+    integer(kind=8) :: iseg, jbas, jabsf, jabscur, coorfd
+    integer(kind=8) :: jgsl, jlnsl, jltsl
+    integer(kind=8) :: k, nbno, ndim, nseg
     real(kind=8) :: d, dmin, eps, norm2, s, sn, xln, xlt
     real(kind=8) :: xa, ya, za, xb, yb, zb, xm, ym, zm
     real(kind=8) :: xab, yab, zab, xam, yam, zam, xnm, ynm, znm

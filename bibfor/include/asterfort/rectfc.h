@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine rectfc(nbmode, nbvect, omeshi, npivot, nblagr,&
                       valpro, nvpro, resufi, resufr, nfreq)
-        integer :: nfreq
-        integer :: nvpro
-        integer :: nbmode
-        integer :: nbvect
+        integer(kind=8) :: nfreq
+        integer(kind=8) :: nvpro
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbvect
         complex(kind=8) :: omeshi
-        integer :: npivot
-        integer :: nblagr
+        integer(kind=8) :: npivot
+        integer(kind=8) :: nblagr
         complex(kind=8) :: valpro(nvpro)
-        integer :: resufi(nfreq, *)
+        integer(kind=8) :: resufi(nfreq, *)
         real(kind=8) :: resufr(nfreq, *)
     end subroutine rectfc
 end interface

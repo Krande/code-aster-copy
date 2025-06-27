@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
                        dfdi, dkdgl, face,&
                        nnop_lin, ff_lin, dfdi_lin)
         character(len=8), intent(in) :: elrefp
-        integer :: nnop
-        integer :: ndim
-        integer :: stano(*)
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
+        integer(kind=8) :: stano(*)
         real(kind=8) :: he
         real(kind=8) :: ff(*)
         real(kind=8) :: basloc(*)
@@ -38,7 +38,7 @@ interface
         real(kind=8), optional :: dfdi(nnop,ndim)
         character(len=4), optional :: face
         real(kind=8) :: geom(*)
-        integer, optional :: nnop_lin
+        integer(kind=8), optional :: nnop_lin
         real(kind=8), optional :: ff_lin(:)
         real(kind=8), optional :: dfdi_lin(:,:)
     end subroutine xcalfev

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ subroutine cffact(ldscon, isto, nbliac, &
 #include "asterfort/tldlg3.h"
 !
 !
-    integer :: nbliac, indfac
-    integer :: ldscon
-    integer :: isto
+    integer(kind=8) :: nbliac, indfac
+    integer(kind=8) :: ldscon
+    integer(kind=8) :: isto
     aster_logical :: lechec
 !
 ! ----------------------------------------------------------------------
@@ -58,9 +58,9 @@ subroutine cffact(ldscon, isto, nbliac, &
 !
 !
 !
-    integer :: ifm, niv
-    integer :: ilideb, ilifin, ier
-    integer :: ndeci, isingu, npvneg
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ilideb, ilifin, ier
+    integer(kind=8) :: ndeci, isingu, npvneg
 !
 ! ----------------------------------------------------------------------
 !

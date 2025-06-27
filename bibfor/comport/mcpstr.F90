@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,13 +38,13 @@ subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
     implicit none
 ! ======================================================================
 !
-    integer      :: codret
+    integer(kind=8)      :: codret
 !
 #include "asterf_types.h"
 #include "asterfort/jacobi.h"
 !
 ! Declaration of constant parameters
-    integer      :: mmax, nmax, ndt, ndi
+    integer(kind=8)      :: mmax, nmax, ndt, ndi
     parameter(mmax=3, nmax=6)
 !
 ! Declaration of real type variables
@@ -55,8 +55,8 @@ subroutine mcpstr(stress, tridim, pstrs, eigprj, ii, &
     real(kind=8) :: tu(nmax), tr(nmax), t1(nmax)
 !
 ! Declaration of integer type variables
-    integer :: itri, iorder, ii, jj, mm
-    integer :: mxiter, i, itjac1
+    integer(kind=8) :: itri, iorder, ii, jj, mm
+    integer(kind=8) :: mxiter, i, itjac1
 !
 ! Declaration of integer type variables
     aster_logical :: tridim

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,7 +24,7 @@ subroutine dfbde(dim, b, e, deuxmu, lambda, &
 #include "asterfort/dfpdf.h"
 #include "asterfort/diago3.h"
 #include "asterfort/r8inir.h"
-    integer :: dim
+    integer(kind=8) :: dim
     real(kind=8) :: b(6), e(6), deuxmu, lambda
     real(kind=8) :: dsidep(6, 6)
 ! ----------------------------------------------------------------------
@@ -42,8 +42,8 @@ subroutine dfbde(dim, b, e, deuxmu, lambda, &
 !     OUT DSIDEP      : DFB/DEPS
 ! ----------------------------------------------------------------------
 !
-    integer :: i, j, k, l, t(3, 3)
-    integer :: p, q, ik, pq, rs
+    integer(kind=8) :: i, j, k, l, t(3, 3)
+    integer(kind=8) :: p, q, ik, pq, rs
     real(kind=8) :: rtemp2
     real(kind=8) :: rtemp3, rtemp4, rac2, kron(3, 3), dbede(6, 6), mtemp(6, 6)
     real(kind=8) :: beeb(6), beebp(6), vecbeb(3, 3), valbeb(3)

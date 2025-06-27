@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
-    integer :: nbpu, ier
+    integer(kind=8) :: nbpu, ier
     real(kind=8) :: valpu(*), resure, resuim
     character(len=*) :: codmes, nomf, nompu(*)
 !     INTERPOLATION POUR FONCTION COMPLEXE A VARIABLE REELLE
@@ -48,16 +48,16 @@ subroutine fointc(codmes, nomf, nbpu, nompu, valpu, &
 ! OUT IER    : CODE RETOUR
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: lprol, i, i1, i2, lvale, lfonc, nbvale
+    integer(kind=8) :: lprol, i, i1, i2, lvale, lfonc, nbvale
     real(kind=8) :: epsi, valr, resu(2)
     character(len=1) :: coli
     character(len=24) :: interp, prolgd
     character(len=19) :: nomfon
     character(len=24) :: chprol, chvale
 !     ------------------------------------------------------------------
-    integer :: mxsave
+    integer(kind=8) :: mxsave
     parameter(mxsave=4)
-    integer :: isvnxt, nextsv(mxsave), isvind, isave
+    integer(kind=8) :: isvnxt, nextsv(mxsave), isvind, isave
     character(len=24) :: svprgd(mxsave)
     character(len=24) :: svinte(mxsave)
     character(len=19) :: svnomf(mxsave)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,10 +31,10 @@ subroutine comp_read_mesh(mesh, keywordfact, iocc, &
 !
     character(len=8), intent(in) :: mesh
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=24), intent(in) :: list_elem_affe
     aster_logical, intent(out) :: l_affe_all
-    integer, intent(out):: nb_elem_affe
+    integer(kind=8), intent(out):: nb_elem_affe
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -55,7 +55,7 @@ subroutine comp_read_mesh(mesh, keywordfact, iocc, &
 !
     character(len=8), parameter :: keyw_type(2) = (/'GROUP_MA', 'MAILLE  '/)
     character(len=16), parameter :: keyw_name(2) = (/'GROUP_MA', 'MAILLE  '/)
-    integer :: nt
+    integer(kind=8) :: nt
     aster_logical :: l_parallel_mesh
 !
 ! --------------------------------------------------------------------------------------------------

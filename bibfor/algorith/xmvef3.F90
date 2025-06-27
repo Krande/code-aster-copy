@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ subroutine xmvef3(ndim, nnol, pla, ffc, reac12, &
 !
     implicit none
 #include "blas/ddot.h"
-    integer :: ndim, nnol, pla(27)
-    integer :: lact(8)
+    integer(kind=8) :: ndim, nnol, pla(27)
+    integer(kind=8) :: lact(8)
     real(kind=8) :: vtmp(400), tau1(3), tau2(3)
     real(kind=8) :: ffc(8), jac, pb(3), reac12(3)
     real(kind=8) :: cstafr, seuil, mu
@@ -72,8 +72,8 @@ subroutine xmvef3(ndim, nnol, pla, ffc, reac12, &
 !
 !
 !
-    integer :: i, k
-    integer :: pli, nli
+    integer(kind=8) :: i, k
+    integer(kind=8) :: pli, nli
     real(kind=8) :: ffi, metr(2), rpb(3)
     blas_int :: b_incx, b_incy, b_n
 !

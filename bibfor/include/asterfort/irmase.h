@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       sdcarm, nomase)
         character(len=*) :: nofimd
         character(len=*) :: typsec
-        integer :: nbrcou
-        integer :: nbsect
-        integer :: nummai
+        integer(kind=8) :: nbrcou
+        integer(kind=8) :: nbsect
+        integer(kind=8) :: nummai
         character(len=8) :: sdcarm
         character(len=*) :: nomase
     end subroutine irmase

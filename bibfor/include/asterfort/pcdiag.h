@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine pcdiag(n, icpl, icpc, icpd)
-        integer :: n
-        integer :: icpl(0:n)
+        integer(kind=8) :: n
+        integer(kind=8) :: icpl(0:n)
         integer(kind=4) :: icpc(*)
-        integer :: icpd(n)
+        integer(kind=8) :: icpd(n)
     end subroutine pcdiag
 end interface

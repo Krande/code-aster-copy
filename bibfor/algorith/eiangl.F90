@@ -19,7 +19,7 @@
 subroutine eiangl(ndim, nno2, angnau, ang)
     implicit none
 #include "asterc/r8dgrd.h"
-    integer :: ndim, nno2
+    integer(kind=8) :: ndim, nno2
     real(kind=8) :: angnau(3), ang(merge(1, 3, ndim .eq. 2), nno2)
 !
 !--------------------------------------------------
@@ -31,7 +31,7 @@ subroutine eiangl(ndim, nno2, angnau, ang)
 !  OUT :
 !        ANG : ANGLES NAUTIQUES AUX NOEUDS EN RADIAN
 !--------------------------------------------------
-    integer::i
+    integer(kind=8)::i
     real(kind=8):: deg_2_rad
 !--------------------------------------------------
     deg_2_rad = r8dgrd()

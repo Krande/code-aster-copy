@@ -37,7 +37,7 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
 #include "asterfort/nocart.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: lmax, nbocc
+    integer(kind=8) :: lmax, nbocc
     aster_logical :: locagb, locamb
     character(len=8) :: nomu, noma
 !                          AFFE_CARA_ELEM
@@ -53,9 +53,9 @@ subroutine aceaco(nomu, noma, lmax, locagb, locamb, &
 !     LOCAMB : EXISTANCE DE MEMBRANE
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE COQUE
 ! ----------------------------------------------------------------------
-    integer :: nvec, i, ioc, jdcc, jdls, jdvc, jdccf, jdvcf
-    integer :: na, nco, ncr, nex, ng, nin, nk, nv, nvf, nexf
-    integer :: iret
+    integer(kind=8) :: nvec, i, ioc, jdcc, jdls, jdvc, jdccf, jdvcf
+    integer(kind=8) :: na, nco, ncr, nex, ng, nin, nk, nv, nvf, nexf
+    integer(kind=8) :: iret
     aster_logical :: lcartf
     real(kind=8) :: ang(2), epa, kappa, correc, rigi, excent
     real(kind=8) :: vect(3), xiner

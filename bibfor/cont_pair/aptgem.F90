@@ -50,11 +50,11 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
     character(len=8), intent(in) :: mesh
     character(len=24), intent(in) :: sdcont_defi
     character(len=19), intent(in) :: newgeo
-    integer, intent(in) :: model_ndim
-    integer, intent(in) :: i_zone
-    integer, intent(in) :: jdecma
-    integer, intent(in) :: nb_elem
-    integer, intent(inout) :: err_appa
+    integer(kind=8), intent(in) :: model_ndim
+    integer(kind=8), intent(in) :: i_zone
+    integer(kind=8), intent(in) :: jdecma
+    integer(kind=8), intent(in) :: nb_elem
+    integer(kind=8), intent(inout) :: err_appa
     character(len=4), intent(in) :: zone_type
     real(kind=8), intent(in) :: epsi_maxi
 !
@@ -83,17 +83,17 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
 !
     character(len=8) :: elem_type, elem_name, node_name, valk(2)
     mpi_int :: i_proc, nb_proc, mpicou
-    integer :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
-    integer :: node_nume(9), longc
-    integer :: elem_nbnode, niverr
+    integer(kind=8) :: nb_elem_mpi, nbr_elem_mpi, idx_start, idx_end
+    integer(kind=8) :: node_nume(9), longc
+    integer(kind=8) :: elem_nbnode, niverr
     aster_logical :: l_beam, l_poi1, one_proc
-    integer :: i_node, i_elem, elem_ndim
-    integer :: elem_indx, elem_nume
+    integer(kind=8) :: i_node, i_elem, elem_ndim
+    integer(kind=8) :: elem_indx, elem_nume
     real(kind=8) :: tau1(3), tau2(3)
     character(len=24) :: sdappa_tgel
     real(kind=8) :: elem_coor(27), node_coor(3)
     real(kind=8), pointer :: v_sdappa_tgel(:) => null()
-    integer, pointer :: v_mesh_connex(:) => null()
+    integer(kind=8), pointer :: v_mesh_connex(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

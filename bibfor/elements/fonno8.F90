@@ -34,7 +34,7 @@ subroutine fonno8(resu, noma, tablev, vect)
 #include "asterfort/char8_to_int.h"
 !
     character(len=8) :: noma, resu
-    integer :: tablev(2)
+    integer(kind=8) :: tablev(2)
     real(kind=8) :: vect(3)
 !
 !      DETERMINATION D'UN VECTEUR SE DIRIGEANT VERS LA LEVRE SUPERIEURE
@@ -51,10 +51,10 @@ subroutine fonno8(resu, noma, tablev, vect)
 !                DE LA LEVRE INF VERS LA LEVRE SUP
 !
 !
-    integer :: comp
-    integer :: iamase, iatyma, ifon, ilev, inn, inn2, inp, iret, ityp, itypma
-    integer ::  jconx, jfon
-    integer :: nblev, nn, nn2, nbnott(3)
+    integer(kind=8) :: comp
+    integer(kind=8) :: iamase, iatyma, ifon, ilev, inn, inn2, inp, iret, ityp, itypma
+    integer(kind=8) ::  jconx, jfon
+    integer(kind=8) :: nblev, nn, nn2, nbnott(3)
     real(kind=8) :: xg, yg, zg
     character(len=8) :: type
     character(len=8), pointer :: mail(:) => null()

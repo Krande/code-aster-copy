@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/padist.h"
-    integer :: nfon, jfono, jbaso, jtailo, jindpt, jfon, jbas, jtail
-    integer :: jnofaf
+    integer(kind=8) :: nfon, jfono, jbaso, jtailo, jindpt, jfon, jbas, jtail
+    integer(kind=8) :: jnofaf
     character(len=19) :: typfon
 !
 ! ----------------------------------------------------------------------
@@ -57,7 +57,7 @@ subroutine xffcr(nfon, jfono, jbaso, jtailo, jindpt, &
 !     JTAIL :  ADRESSE DES TAILLES MAXIMALES DE MAILLES ORDONNÉES
 !
 !
-    integer :: indipt, ipt, k
+    integer(kind=8) :: indipt, ipt, k
     real(kind=8) :: m(3), p(3)
 !
 ! ----------------------------------------------------------------------

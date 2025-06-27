@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,18 +23,18 @@ interface
                       iadvec, inumor, fondep, fonvit, fonacc,&
                       neq, typbas, basemo, nbmode, riggen,&
                       nommot, nomres)
-        integer :: nbmode
-        integer :: nexci
-        integer :: nexcir
-        integer :: idescf(*)
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nexci
+        integer(kind=8) :: nexcir
+        integer(kind=8) :: idescf(*)
         character(len=8) :: nomfon(2*nexci)
         real(kind=8) :: coefm(*)
-        integer :: iadvec(*)
-        integer :: inumor(*)
+        integer(kind=8) :: iadvec(*)
+        integer(kind=8) :: inumor(*)
         character(len=8) :: fondep(2*nexci)
         character(len=8) :: fonvit(2*nexci)
         character(len=8) :: fonacc(2*nexci)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=16) :: typbas
         character(len=8) :: basemo
         real(kind=8) :: riggen(nbmode)

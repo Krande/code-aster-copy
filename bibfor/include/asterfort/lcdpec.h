@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,17 +26,17 @@ interface
                       codret)
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
-        integer :: nsg
-        integer :: nfs
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nmat
         real(kind=8) :: vind(*)
-        integer :: nbcomm(nmat, 3)
-        integer :: ndt
+        integer(kind=8) :: nbcomm(nmat, 3)
+        integer(kind=8) :: ndt
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: materf(nmat*2)
-        integer :: iter
-        integer :: nvi
-        integer :: itmax
+        integer(kind=8) :: iter
+        integer(kind=8) :: nvi
+        integer(kind=8) :: itmax
         real(kind=8) :: toler
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: toutms(nfs, nsg, 6)
@@ -47,8 +47,8 @@ interface
         real(kind=8) :: vinf(*)
         real(kind=8) :: sigf(6)
         real(kind=8) :: df(3, 3)
-        integer :: nr
+        integer(kind=8) :: nr
         character(len=8) :: mod
-        integer :: codret
+        integer(kind=8) :: codret
     end subroutine lcdpec
 end interface

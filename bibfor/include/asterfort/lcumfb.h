@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine lcumfb(sigi, nstrs, vari, nvari, cmat,&
                       nmat, tdt, hini, hfin, afd,&
                       bfd, cfd)
-        integer :: nmat
-        integer :: nvari
+        integer(kind=8) :: nmat
+        integer(kind=8) :: nvari
         real(kind=8) :: sigi(6)
-        integer :: nstrs
+        integer(kind=8) :: nstrs
         real(kind=8) :: vari(nvari)
         real(kind=8) :: cmat(nmat)
         real(kind=8) :: tdt

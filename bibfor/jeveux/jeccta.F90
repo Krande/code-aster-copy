@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine jeccta(colle1)
 !
     character(len=8) :: base, type, acces, stock, modelo
     character(len=24) :: colle2
-    integer :: k, nbobj, lont1, lont2, jloncu
-    integer :: n1, jcoll1, jcoll2
+    integer(kind=8) :: k, nbobj, lont1, lont2, jloncu
+    integer(kind=8) :: n1, jcoll1, jcoll2
 !-----------------------------------------------------------------------
     call jemarq()
 !

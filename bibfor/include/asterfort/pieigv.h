@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine pieigv(neps, tau, imate, vim, epsm,&
                       epspc, epsdc, typmod, etamin, etamax,&
                       copilo)
-        integer :: neps
+        integer(kind=8) :: neps
         real(kind=8) :: tau
-        integer :: imate
+        integer(kind=8) :: imate
         real(kind=8) :: vim(2)
         real(kind=8) :: epsm(neps)
         real(kind=8) :: epspc(neps)

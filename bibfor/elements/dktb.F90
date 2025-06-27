@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine dktb(carat3, igau, jacgau, bmat)
 #include "asterfort/dktbf.h"
 #include "asterfort/dxtbm.h"
 #include "asterfort/elrefe_info.h"
-    integer :: igau
+    integer(kind=8) :: igau
     real(kind=8) :: bmat(8, 1), carat3(*), jacgau
 ! --- CALCUL DE LA MATRICE (B) RELIANT LES DEFORMATIONS DU PREMIER
 ! --- ORDRE AUX DEPLACEMENTS AU POINT D'INTEGRATION D'INDICE IGAU
@@ -35,8 +35,8 @@ subroutine dktb(carat3, igau, jacgau, bmat)
 !     OUT JACGAU        : PRODUIT JACOBIEN*POIDS AU POINT D'INTEGRATION
 !                         COURANT
 !     OUT BMAT(8,1)     : MATRICE (B) AU POINT D'INTEGRATION COURANT
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
-    integer :: i, j
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: i, j
     real(kind=8) :: qsi, eta, bm(3, 6), bf(3, 9), bc(2, 9)
 !     ------------------------------------------------------------------
 !

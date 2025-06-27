@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 function ulnume()
     implicit none
-    integer :: ulnume
+    integer(kind=8) :: ulnume
 !     ------------------------------------------------------------------
 !     RETOURNE UN NUMERO D'UNITE LOGIQUE NON UTILISE
 !              -1 SI AUCUN DE DISPONIBLE
@@ -27,16 +27,16 @@ function ulnume()
 !
 #include "asterfort/ulinit.h"
 #include "asterfort/utmess.h"
-    integer :: mxf
+    integer(kind=8) :: mxf
     parameter(mxf=100)
     character(len=1) :: typefi(mxf), accefi(mxf), etatfi(mxf), modifi(mxf)
     character(len=16) :: ddname(mxf)
     character(len=255) :: namefi(mxf)
-    integer :: first, unitfi(mxf), nbfile
+    integer(kind=8) :: first, unitfi(mxf), nbfile
     common/asgfi1/first, unitfi, nbfile
     common/asgfi2/namefi, ddname, typefi, accefi, etatfi, modifi
 !
-    integer :: i, ival, k
+    integer(kind=8) :: i, ival, k
 !
     if (first .ne. 17111990) call ulinit()
 !

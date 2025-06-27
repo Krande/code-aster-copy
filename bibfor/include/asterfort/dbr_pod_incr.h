@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,6 +25,6 @@ interface
         type(ROM_DS_Empi), intent(in) :: base
         type(ROM_DS_ParaDBR_POD) , intent(in) :: paraPod
         real(kind=8), pointer :: q(:), s(:), v(:)
-        integer, intent(out) :: nbModeOut, nbSnapOut
+        integer(kind=8), intent(out) :: nbModeOut, nbSnapOut
     end subroutine dbr_pod_incr
 end interface

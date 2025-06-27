@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine dchlmx(iparg, nin, lpain, &
 #include "asterfort/nopara.h"
 #include "asterfort/typele.h"
 
-    integer :: nin, nout, taille, iparg
+    integer(kind=8) :: nin, nout, taille, iparg
     character(len=8) :: lpain(*), lpaout(*)
 !-----------------------------------------------------------------------
 !     sorties:
@@ -44,10 +44,10 @@ subroutine dchlmx(iparg, nin, lpain, &
 !             tient compte des cases "undef"
 !             =0 => aucun type_elem ne connait le parametre nompar
 ! ----------------------------------------------------------------------
-    integer :: max
-    integer :: iparin, iparou, jceld, debugr
-    integer :: npin, npou, te, ipar, nval, mode
-    integer :: nbsp, ncdyn, jel, taill1
+    integer(kind=8) :: max
+    integer(kind=8) :: iparin, iparou, jceld, debugr
+    integer(kind=8) :: npin, npou, te, ipar, nval, mode
+    integer(kind=8) :: nbsp, ncdyn, jel, taill1
     character(len=8) :: tych, nopare, nompar
 !-------------------------------------------------------------------
 

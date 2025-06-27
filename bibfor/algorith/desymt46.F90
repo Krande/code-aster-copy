@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine desymt46(ftos, ftot)
 !               F_IJKL=F_JIKL et F_IJKL=F_IJLK
 ! --------------------------------------------------------------------------------------------------
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer :: i, j, k, l, ijk(3, 3)
+    integer(kind=8) :: i, j, k, l, ijk(3, 3)
     real(kind=8) :: fnew(6, 6)
 ! ---------------------------------------------------------------------
 !

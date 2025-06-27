@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine rvpstd(valee, type, codir, valdir, valeq)
         real(kind=8) :: valee(*)
         character(len=2) :: type
-        integer :: codir
+        integer(kind=8) :: codir
         real(kind=8) :: valdir(*)
         real(kind=8) :: valeq(*)
     end subroutine rvpstd

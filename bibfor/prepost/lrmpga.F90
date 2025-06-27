@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,8 +82,8 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: fileUnit, nbCell, ntypel, npgmax, numpt, numord
-    integer :: pgmail(nbCell), pgmmil(nbCell), spmmil(nbCell), indpg(ntypel, npgmax)
+    integer(kind=8) :: fileUnit, nbCell, ntypel, npgmax, numpt, numord
+    integer(kind=8) :: pgmail(nbCell), pgmmil(nbCell), spmmil(nbCell), indpg(ntypel, npgmax)
     character(len=8) :: param
     character(len=19) :: ligrel
     character(len=24) :: option
@@ -93,27 +93,27 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     character(len=6) :: nompro
     parameter(nompro='LRMPGA')
 !
-    integer, parameter :: nbCellType = 19
-    integer, parameter :: MED_ACC_RDONLY = 0
-    integer, parameter :: MED_CELL = 0
-    integer, parameter :: MED_COMPACT_STMODE = 2
+    integer(kind=8), parameter :: nbCellType = 19
+    integer(kind=8), parameter :: MED_ACC_RDONLY = 0
+    integer(kind=8), parameter :: MED_CELL = 0
+    integer(kind=8), parameter :: MED_COMPACT_STMODE = 2
 !
-    integer :: ifm, nivinf, nbCmp, nbProfile, jnopro
+    integer(kind=8) :: ifm, nivinf, nbCmp, nbProfile, jnopro
     med_idt :: MEDFileIden
-    integer :: codret, nbLocalizations, iret, igrel
-    integer :: iTypeCellInField, nbgrel, jnonpg, iProfile, lgproa, codre2
-    integer :: typeElemNume, i, iCellType, nbStep
-    integer :: AsterNbPg, MEDNbPg, nbElem, lonmax
-    integer :: nufgpg, jnoloc
-    integer :: modelDime, jvGrel
-    integer :: nbTypeCellInField, iElem
-    integer :: jngaok
-    integer :: ipg, ipgm, jperm
-    integer :: npr, nbValues, l_fapg
-    integer :: iopt, imod, jvModeLoc, igrd, jvDescrigd, nec, nbsp
-    integer :: typeCellNume, jadproa, jtypma, jmedtoaster, ima, imed, itypma
+    integer(kind=8) :: codret, nbLocalizations, iret, igrel
+    integer(kind=8) :: iTypeCellInField, nbgrel, jnonpg, iProfile, lgproa, codre2
+    integer(kind=8) :: typeElemNume, i, iCellType, nbStep
+    integer(kind=8) :: AsterNbPg, MEDNbPg, nbElem, lonmax
+    integer(kind=8) :: nufgpg, jnoloc
+    integer(kind=8) :: modelDime, jvGrel
+    integer(kind=8) :: nbTypeCellInField, iElem
+    integer(kind=8) :: jngaok
+    integer(kind=8) :: ipg, ipgm, jperm
+    integer(kind=8) :: npr, nbValues, l_fapg
+    integer(kind=8) :: iopt, imod, jvModeLoc, igrd, jvDescrigd, nec, nbsp
+    integer(kind=8) :: typeCellNume, jadproa, jtypma, jmedtoaster, ima, imed, itypma
     character(len=8) :: typma
-    integer, parameter :: MEDIterMesh = 1
+    integer(kind=8), parameter :: MEDIterMesh = 1
 !
     character(len=1) :: fileState
     character(len=8) :: cellTypeIden, fapg, elref, typeCellName
@@ -127,18 +127,18 @@ subroutine lrmpga(fileUnit, ligrel, MEDFieldName, nbCell, pgmail, &
     character(len=16), pointer :: cunit(:) => null()
     character(len=8), pointer :: typema(:) => null()
     character(len=8), pointer :: asterCellType(:) => null()
-    integer, pointer :: MEDCellType(:) => null()
+    integer(kind=8), pointer :: MEDCellType(:) => null()
     !character(len=8), pointer :: asterElemType(:) => null()
-    integer, pointer :: tmfpg(:) => null()
+    integer(kind=8), pointer :: tmfpg(:) => null()
     aster_logical :: l_parallel_mesh
-    integer, pointer :: repe(:) => null()
+    integer(kind=8), pointer :: repe(:) => null()
 !
-    integer, parameter :: MED_GEOMETRY_TYPE(nbCellType) = &
-                          (/1, 102, 103, 104, &
-                            203, 204, 206, 207, &
-                            208, 209, 304, 305, &
-                            306, 308, 310, 313, &
-                            315, 320, 327/)
+    integer(kind=8), parameter :: MED_GEOMETRY_TYPE(nbCellType) = &
+                                  (/1, 102, 103, 104, &
+                                    203, 204, 206, 207, &
+                                    208, 209, 304, 305, &
+                                    306, 308, 310, 313, &
+                                    315, 320, 327/)
     character(len=8), parameter :: AsterAllCellType(nbCellType) = &
                                    (/'POI1    ', 'SEG2    ', 'SEG3    ', 'SEG4    ', &
                                      'TRIA3   ', 'QUAD4   ', 'TRIA6   ', 'TRIA7   ', &

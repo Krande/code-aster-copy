@@ -67,10 +67,10 @@ subroutine pacoa2(lisi1z, lisi2z, lonli1, lonli2, noma1z, &
     character(len=8) :: nomno1, nomno2, nomo1, nomo2
     character(len=24) :: lisin1, lisin2, lisou1, lisou2
     character(len=24) :: valk(3)
-    integer :: lonli1, lonli2, lonlis, iret, idlou1, idlou2, idlin1, idlin2
-    integer :: ino1
-    integer :: idlou3, idlou4, lonmax, idlinv, i1, nuno1, j2, i2, ino2, nuno2
-    integer :: j1
+    integer(kind=8) :: lonli1, lonli2, lonlis, iret, idlou1, idlou2, idlin1, idlin2
+    integer(kind=8) :: ino1
+    integer(kind=8) :: idlou3, idlou4, lonmax, idlinv, i1, nuno1, j2, i2, ino2, nuno2
+    integer(kind=8) :: j1
 !
 !-----------------------------------------------------------------------
     real(kind=8) :: d, dmin

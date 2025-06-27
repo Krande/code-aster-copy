@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine cfdism(ds_contact, l_dist_beam, l_dist_shell, node_slav_indx, gap_str
     type(NL_DS_Contact), intent(in) :: ds_contact
     aster_logical, intent(in) :: l_dist_beam
     aster_logical, intent(in) :: l_dist_shell
-    integer, intent(in) :: node_slav_indx
+    integer(kind=8), intent(in) :: node_slav_indx
     real(kind=8), intent(out) :: gap_structural
 !
 ! --------------------------------------------------------------------------------------------------
@@ -52,7 +52,7 @@ subroutine cfdism(ds_contact, l_dist_beam, l_dist_shell, node_slav_indx, gap_str
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=24) :: sdcont_jeupou, sdcont_jeucoq
-    integer :: nt_elem_slav, jdeciv, i_elem_slav, elem_slav_indx
+    integer(kind=8) :: nt_elem_slav, jdeciv, i_elem_slav, elem_slav_indx
     real(kind=8) :: gap_elem
     real(kind=8), pointer :: v_sdcont_jeupou(:) => null()
     real(kind=8), pointer :: v_sdcont_jeucoq(:) => null()

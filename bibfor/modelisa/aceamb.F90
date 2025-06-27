@@ -43,7 +43,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 !
-    integer :: lmax, nbocc
+    integer(kind=8) :: lmax, nbocc
     character(len=8) :: nomu, noma
 !
 !                          AFFE_CARA_ELEM
@@ -57,11 +57,11 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
 !     LMAX   : LONGUEUR
 !     NBOCC  : NOMBRE D'OCCURENCES DU MOT CLE MEMBRANE
 ! ----------------------------------------------------------------------
-    integer :: jdcc, jdvc, jdls, ioc, ng, iret
-    integer :: n1, n2, n3, n4, n5, n6
-    integer :: i, nbmat, nbma, ncomp
-    integer :: ima, nbno, adrm, numa, jgrma, igr, nbmat0
-    integer :: noe1, noe2, noe3
+    integer(kind=8) :: jdcc, jdvc, jdls, ioc, ng, iret
+    integer(kind=8) :: n1, n2, n3, n4, n5, n6
+    integer(kind=8) :: i, nbmat, nbma, ncomp
+    integer(kind=8) :: ima, nbno, adrm, numa, jgrma, igr, nbmat0
+    integer(kind=8) :: noe1, noe2, noe3
     real(kind=8) :: ep, tens
     real(kind=8) :: ang(2), angx(2)
     real(kind=8) :: axex(3), axey(3), xnorm, epsi, vecnor(3)
@@ -69,7 +69,7 @@ subroutine aceamb(nomu, noma, lmax, nbocc)
     character(len=19) :: cartgr
     character(len=24) :: tmpngr, tmpvgr, nomagr, connex
     character(len=32) :: kjexn
-    integer, pointer :: nume_ma(:) => null()
+    integer(kind=8), pointer :: nume_ma(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !     ------------------------------------------------------------------
     call jemarq()

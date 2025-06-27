@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,9 +35,9 @@ subroutine shl329()
     real(kind=8) :: nx(9), ny(9), nz(9), norm(3, 9), acc(3, 9)
     real(kind=8) :: flufn(9), acloc(3, 8), qsi, eta, zero, un
     real(kind=8) :: x(3, 9), ff(4, 4), dfdx(4, 4), dfdy(4, 4)
-    integer :: igeom, ipg, iadzi, iazk24, ivetel
-    integer :: iacce, iharm, ivectu, i, k, idim, ino, jno, j
-    integer :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
+    integer(kind=8) :: igeom, ipg, iadzi, iazk24, ivetel
+    integer(kind=8) :: iacce, iharm, ivectu, i, k, idim, ino, jno, j
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, icoopg, ivf, idfdx, idfd2, jgano
 !
 ! DEB ------------------------------------------------------------------
 !

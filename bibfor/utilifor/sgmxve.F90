@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 function sgmxve(nbterm, vect)
     implicit none
     real(kind=8) :: sgmxve
-    integer :: nbterm
+    integer(kind=8) :: nbterm
     real(kind=8) :: vect(*)
 !
 !              SIGNE DE LA VALEUR ABSOLUE MAXIMALE
@@ -32,7 +32,7 @@ function sgmxve(nbterm, vect)
 !
 ! --- ------------------------------------------------------------------
 !
-    integer :: ii
+    integer(kind=8) :: ii
     real(kind=8) :: vmax
 ! --- ------------------------------------------------------------------
 !

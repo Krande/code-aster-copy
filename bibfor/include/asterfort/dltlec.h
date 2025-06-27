@@ -28,14 +28,14 @@ interface
         use NonLin_Datastructure_type
         character(len=8), intent(out) :: result
         character(len=24), intent(out) :: model, numeDOF, materField, mate, caraElem
-        integer, intent(out) :: jvMatr(3)
+        integer(kind=8), intent(out) :: jvMatr(3)
         character(len=8), intent(out) :: masse, rigid, amort
         aster_logical, intent(out) :: lamort
         character(len=19), intent(out) :: listLoad, solveu
         character(len=24), intent(out) :: loadNameJv, loadInfoJv, loadFuncJv
-        integer, intent(out) :: nbVectAsse, nbLoad, nbWave
-        integer, intent(out) :: jvLoadWave, jvVectAsse, jvVectFunc
-        integer, intent(out) :: nume, numrep, iinteg
+        integer(kind=8), intent(out) :: nbVectAsse, nbLoad, nbWave
+        integer(kind=8), intent(out) :: jvLoadWave, jvVectAsse, jvVectFunc
+        integer(kind=8), intent(out) :: nume, numrep, iinteg
         real(kind=8), intent(out) :: t0
         type(NL_DS_InOut), intent(out) :: ds_inout
     end subroutine dltlec

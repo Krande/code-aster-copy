@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine dimmai(typem, dimma)
     implicit none
     character(len=*) :: typem
-    integer :: dimma
+    integer(kind=8) :: dimma
 !
     if (typem(1:2) .eq. 'TE' .or. typem(1:2) .eq. 'PE' .or. typem(1:2) .eq. 'HE') then
         dimma = 3

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu, &
 #include "asterfort/rsutnu.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc, nbordr
+    integer(kind=8) :: iocc, nbordr
     character(len=*) :: resu, nomcha, motcle, objveu
 !     RECUPERATION DES NUMEROS D'ORDRE DANS UNE STRUCTURE DE DONNEES
 !     DE TYPE "RESULTAT" A PARTIR D'UN NOM SYMBOLIQUE ET DES VARIABLES
@@ -43,7 +43,7 @@ subroutine rsutn2(resu, nomcha, motcle, iocc, objveu, &
 ! OUT : OBJVEU : NOM JEVEUX DU VECTEUR ZI POUR ECRIRE LA LISTE DES NUME
 ! OUT : NBORDR : NOMBRE DE NUMERO D'ORDRE VALIDE POUR LE NOMCHA
 !     ------------------------------------------------------------------
-    integer :: iret, ii, iordr, lordr, jordr, np, nc, nbtord
+    integer(kind=8) :: iret, ii, iordr, lordr, jordr, np, nc, nbtord
     real(kind=8) :: prec
     character(len=8) :: k8b, crit
     character(len=16) :: k16b

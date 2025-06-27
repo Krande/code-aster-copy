@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine ajlagr(rigid, masse, masinv)
 ! IN  : MASSE  : NOM DE LA MATRICE DE MASSE
 ! OUT : MASINV : NOM DE LA MATRICE DE MASSE AVEC LES LAGRANGES
 !-----------------------------------------------------------------------
-    integer :: neq, hbloc, nbbloc, mxddl
+    integer(kind=8) :: neq, hbloc, nbbloc, mxddl
     real(kind=8) :: zero, un, mmax, kmax, coef, lcoef(2)
     character(len=1) :: typmat, typma2, typcst(2)
     character(len=8) :: raid, mass, masi, nomddl, matrer
@@ -55,10 +55,10 @@ subroutine ajlagr(rigid, masse, masinv)
 !     ------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, imati, imatm, imatr, imtrer, j, jconl
-    integer :: jmass, jraid, nbmat
-    integer, pointer :: lagr(:) => null()
-    integer, pointer :: smde(:) => null()
+    integer(kind=8) :: i, imati, imatm, imatr, imtrer, j, jconl
+    integer(kind=8) :: jmass, jraid, nbmat
+    integer(kind=8), pointer :: lagr(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
     character(len=24), pointer :: refa1(:) => null()
     character(len=24), pointer :: refa2(:) => null()
 !

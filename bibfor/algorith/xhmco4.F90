@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,13 +27,13 @@ subroutine xhmco4(ndim, nnop, nnops, pla, nd, tau1, &
 #include "asterfort/transp.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_saut.h"
-    integer :: ndim, nnop, nnops, nddls, pla(27)
-    integer :: nddlm
+    integer(kind=8) :: ndim, nnop, nnops, nddls, pla(27)
+    integer(kind=8) :: nddlm
     real(kind=8) :: mmat(560, 560)
     real(kind=8) :: ffp(27), jac, ffc(16)
     real(kind=8) :: nd(3), tau1(3), tau2(3)
-    integer :: ifiss, nfiss, nfh, ifa, jheafa, ncomph
-    integer :: jheavn, ncompn
+    integer(kind=8) :: ifiss, nfiss, nfh, ifa, jheafa, ncomph
+    integer(kind=8) :: jheavn, ncompn
 ! ======================================================================
 ! person_in_charge: daniele.colombo at ifpen.fr
 !
@@ -56,7 +56,7 @@ subroutine xhmco4(ndim, nnop, nnops, pla, nd, tau1, &
 ! IN  NDDLM  : NOMBRE DE DDLS DES NOEUDS MILIEU
 ! I/O MMAT   : MATRICE ELEMENTAITRE DE COHESION
 !
-    integer :: i, j, k, l, pli, plj, jn, hea_fa(2), dec, ifh
+    integer(kind=8) :: i, j, k, l, pli, plj, jn, hea_fa(2), dec, ifh
     real(kind=8) :: dside2(3, 3), ptr(3, 3), temp(3, 3), au(3, 3)
     real(kind=8) :: p(3, 3), coefj, ffi, ffj
     aster_logical :: lmultc

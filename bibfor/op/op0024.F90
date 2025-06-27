@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,9 +52,9 @@ subroutine op0024()
 #include "asterfort/wkvect.h"
     real(kind=8) :: debut, fin, pas, xxx, xpdt, toler, derpas
     real(kind=8) :: valr(3), newval
-    integer :: ifm, niv, nv, nbvale, ndim, jpas, jnbp, jbor, jval, kval, i
-    integer :: vali
-    integer :: n1, nbocc, nsup, iocc, np, nbpas, nbval, iinter, ico, j
+    integer(kind=8) :: ifm, niv, nv, nbvale, ndim, jpas, jnbp, jbor, jval, kval, i
+    integer(kind=8) :: vali
+    integer(kind=8) :: n1, nbocc, nsup, iocc, np, nbpas, nbval, iinter, ico, j
     character(len=19) :: resu
     character(len=16) :: nomcmd, concep
 !     ------------------------------------------------------------------

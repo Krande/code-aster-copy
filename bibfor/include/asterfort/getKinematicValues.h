@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,17 +24,17 @@ interface
                                   userNodeNb  , userNodeName,&
                                   cnuddl      , cvlddl      , nbddl)
         character(len=16), intent(in) :: keywordFact
-        integer, intent(in) :: ioc
+        integer(kind=8), intent(in) :: ioc
         character(len=*), intent(in) :: mesh
         character(len=8), intent(in) :: nogdsi
         character(len=1), intent(in) :: valeType
         aster_logical, intent(in) :: lxfem
         character(len=19), intent(in) :: noxfem
-        integer, intent(in) :: userDOFNb
+        integer(kind=8), intent(in) :: userDOFNb
         character(len=16), intent(in) :: userDOFName(*)
-        integer, intent(in) :: userNodeNb
+        integer(kind=8), intent(in) :: userNodeNb
         character(len=24), intent(in) :: userNodeName
         character(len=24), intent(out) :: cnuddl, cvlddl
-        integer, intent(out) :: nbddl
+        integer(kind=8), intent(out) :: nbddl
     end subroutine getKinematicValues
 end interface

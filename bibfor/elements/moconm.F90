@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,15 +27,15 @@ subroutine moconm(dir, sigb, siga, hh, nlit, &
 #include "asterfort/wkvect.h"
     character(len=8) :: nufsup, nufinf, nufsd1, nufid1, nufsd2, nufid2
     character(len=1) :: dir
-    integer :: nlit
+    integer(kind=8) :: nlit
     real(kind=8) :: sigb, siga(nlit), hh, om(nlit), rr(nlit), prec, e1, sigma
-    integer :: ptmax, ordlu
+    integer(kind=8) :: ptmax, ordlu
     parameter(ptmax=50)
     parameter(ordlu=2)
     real(kind=8) :: nn(nlit*ptmax), mm(nlit*ptmax), eta, rhol(nlit+2)
     real(kind=8) :: xi(nlit+2), omm(nlit+2), nn0, mm0, poly(ordlu+1), xx
-    integer :: i, j, k, ii, ilit, deb, npt, tri(nlit+2)
-    integer :: ordok, jvale, jfon, jprol
+    integer(kind=8) :: i, j, k, ii, ilit, deb, npt, tri(nlit+2)
+    integer(kind=8) :: ordok, jvale, jfon, jprol
 !
 ! --- TRI SELON LA POSITION DANS L'EPAISSEUR
 !    POUR AVOIR: RR(TRI(I))<=RR(TRI(I+1))

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,8 +31,8 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre, &
 #include "asterfort/rcvals.h"
 #include "asterfort/tbexlr.h"
     character(len=*) :: nommaz, phenom, nomres
-    integer :: icodre, iarret
-    integer :: valres(*)
+    integer(kind=8) :: icodre, iarret
+    integer(kind=8) :: valres(*)
 !
 !     OBTENTION DES ADRESSES DES COMPOSANTES D'UN MATERIAU METALLURGIQUE
 !
@@ -43,8 +43,8 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre, &
 !       ICODRE : 0 SI ON A TROUVE, 1 SINON
 ! ----------------------------------------------------------------------
 !
-    integer :: iret, nbr, nbc, nbk, nbco, ik, nbcb1, nbcb2, nblb2
-    integer :: nbhist, nbtrc
+    integer(kind=8) :: iret, nbr, nbc, nbk, nbco, ik, nbcb1, nbcb2, nblb2
+    integer(kind=8) :: nbhist, nbtrc
     character(len=11) :: k11
     character(len=8) :: nommat
     character(len=32) :: nomphe

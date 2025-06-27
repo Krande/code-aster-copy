@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,7 +41,7 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xddlimf.h"
 !
-    integer :: ino, icompt, ndim, jnoxfv
+    integer(kind=8) :: ino, icompt, ndim, jnoxfv
     real(kind=8) :: valimr, direct(3)
     character(len=4) :: fonree
     character(len=8) :: modele, nomn, valimf, motcle
@@ -74,15 +74,15 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
 !
 !
 !
-    integer :: nbxcmp, nfimax
+    integer(kind=8) :: nbxcmp, nfimax
     parameter(nbxcmp=60, nfimax=10)
-    integer :: ier, stano(4), jstnol, jstnod, nrel, fisco(2*nfimax)
-    integer ::  jlsnl, jlsnd, jlstl, jlstd, jfiscl, jfiscd, fisc(2*nfimax)
-    integer ::  jfisnl, jfisnd, nfh, ifh, nfisc
-    integer ::  i, j, nterm, irel, dimens(nbxcmp), ifiss, nfiss, ifisc
-    integer ::  nbno, nbmano, adrma, ima, numa, nbnoma, nuno, nuno2
-    integer ::  jconx2, iad, fisno(4)
-    integer ::  jheavnl, jheavnd, ncompn, heavn(5), hea_se
+    integer(kind=8) :: ier, stano(4), jstnol, jstnod, nrel, fisco(2*nfimax)
+    integer(kind=8) ::  jlsnl, jlsnd, jlstl, jlstd, jfiscl, jfiscd, fisc(2*nfimax)
+    integer(kind=8) ::  jfisnl, jfisnd, nfh, ifh, nfisc
+    integer(kind=8) ::  i, j, nterm, irel, dimens(nbxcmp), ifiss, nfiss, ifisc
+    integer(kind=8) ::  nbno, nbmano, adrma, ima, numa, nbnoma, nuno, nuno2
+    integer(kind=8) ::  jconx2, iad, fisno(4)
+    integer(kind=8) ::  jheavnl, jheavnd, ncompn, heavn(5), hea_se
     real(kind=8) :: r, theta(2), he(2, 4), t, coef(nbxcmp), sign
     real(kind=8) :: lsn(4), lst(4), minlsn, maxlsn, lsn2, ljonc(nfimax)
     character(len=8) :: ddl(nbxcmp), noeud(nbxcmp), noma
@@ -90,14 +90,14 @@ subroutine xddlim(modele, motcle, nomn, ino, valimr, &
     character(len=19) :: ch4, ch5
     complex(kind=8) :: cbid, valimc
     aster_logical :: class
-    integer, pointer :: nunotmp(:) => null()
+    integer(kind=8), pointer :: nunotmp(:) => null()
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: connex(:) => null(), ihea_no(:) => null()
-    integer, pointer :: fisnv(:) => null()
-    integer, pointer :: fiscv(:) => null()
+    integer(kind=8), pointer :: connex(:) => null(), ihea_no(:) => null()
+    integer(kind=8), pointer :: fisnv(:) => null()
+    integer(kind=8), pointer :: fiscv(:) => null()
     real(kind=8), pointer :: lsnv(:) => null()
     real(kind=8), pointer :: lstv(:) => null()
-    integer, pointer :: stnov(:) => null()
+    integer(kind=8), pointer :: stnov(:) => null()
     cbid = dcmplx(0.d0, 0.d0)
 !
 ! ----------------------------------------------------------------------

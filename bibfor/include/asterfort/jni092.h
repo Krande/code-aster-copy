@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine jni092(elrefe, nmaxob, liobj, nbobj)
-        integer :: nmaxob
+        integer(kind=8) :: nmaxob
         character(len=8) :: elrefe
         character(len=24) :: liobj(nmaxob)
-        integer :: nbobj
+        integer(kind=8) :: nbobj
     end subroutine jni092
 end interface

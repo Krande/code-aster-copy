@@ -25,7 +25,7 @@ interface
                   typmod, etamin, etamax, copilo)
         character(len=8), intent(in) :: typmod(*)
         character(len=16), intent(in) :: compor(*), typilo
-        integer, intent(in) :: neps, mat
+        integer(kind=8), intent(in) :: neps, mat
         real(kind=8), intent(in) :: dtau, epsm(neps), epsd_pilo(neps), epsd_cste(neps)
         real(kind=8), intent(in) :: etamin, etamax
         real(kind=8), intent(in) :: vim(:), sigm(neps)

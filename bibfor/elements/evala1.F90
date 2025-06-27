@@ -44,8 +44,8 @@ subroutine evala1(fami, kpg, ksp, mod, relcom, &
     real(kind=8) :: angle, rot(2, 2), degr, sigr1(2, 2), sigr2(2, 2), temp
     real(kind=8) :: sigf(6), ratio1, pi, value1, ratio2, value2, valeur
     real(kind=8) :: incang(3), angref, valmax
-    integer :: i, j, k, iang, nbind(3), disc, kpg, ksp
-    integer :: imat, icode, iangmx(3)
+    integer(kind=8) :: i, j, k, iang, nbind(3), disc, kpg, ksp
+    integer(kind=8) :: imat, icode, iangmx(3)
     character(len=*) :: fami
     character(len=8) :: mod
     character(len=16) :: relcom

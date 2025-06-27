@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine nmepsi(ndim, nno, l_axi, l_large, vff,&
                       r, dfdi, disp, f, epsi_)
         aster_logical, intent(in) :: l_axi, l_large
-        integer, intent(in) :: ndim, nno
+        integer(kind=8), intent(in) :: ndim, nno
         real(kind=8), intent(in) :: vff(nno), r, dfdi(nno, ndim), disp(ndim, nno)
         real(kind=8), intent(out) :: f(3, 3)
         real(kind=8), optional, intent(out) :: epsi_(:)

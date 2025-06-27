@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,11 +45,11 @@ subroutine te0597(option, nomte)
 ! ----------------------------------------------------------------------
 !
     aster_logical :: mini
-    integer :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
-    integer :: iw, ivf1, ivf2, idf1, idf2
-    integer :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
-    integer :: igeom, imate, imatuu
-    integer :: ibid
+    integer(kind=8) :: ndim, nno1, nno2, nnos, npg, jgn, ntrou
+    integer(kind=8) :: iw, ivf1, ivf2, idf1, idf2
+    integer(kind=8) :: vu(3, 27), vg(27), vp(27), vpi(3, 27)
+    integer(kind=8) :: igeom, imate, imatuu
+    integer(kind=8) :: ibid
     character(len=8) :: lielrf(10), typmod(2), alias8
 ! ----------------------------------------------------------------------
 !

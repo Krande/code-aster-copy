@@ -45,8 +45,8 @@ subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
 #include "asterfort/uttcpg.h"
 #include "asterfort/romAlgoNLTableSave.h"
 !
-    integer :: listFuncActi(*)
-    integer :: numeInst
+    integer(kind=8) :: listFuncActi(*)
+    integer(kind=8) :: numeInst
     type(NL_DS_Print), intent(in) :: ds_print
     type(NL_DS_InOut), intent(in) :: ds_inout
     type(NL_DS_Material), intent(in) :: ds_material
@@ -87,14 +87,14 @@ subroutine nmarch(numeInst, model, ds_material, caraElem, listFuncActi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, numeStoring
+    integer(kind=8) :: iret, numeStoring
     real(kind=8) :: timeCurr
     character(len=8) :: result
     aster_logical :: forceStoring, lprint, l_hho, lStoringInitState, lastTimeStep
     character(len=19) :: k19bid
     character(len=24) :: listLoadResu
     character(len=4) :: etcalc
-    integer :: numeReuse
+    integer(kind=8) :: numeReuse
 !
 ! --------------------------------------------------------------------------------------------------
 !

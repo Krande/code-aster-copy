@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine intersect_conic(m, line, nb, point1, point2)
       real(kind=8), intent(in) :: m(3,3)
       real(kind=8), intent(in) :: line(3)
-      integer, intent(out) :: nb
+      integer(kind=8), intent(out) :: nb
       real(kind=8), intent(out) :: point1(3)
       real(kind=8), intent(out) :: point2(3)
     end subroutine intersect_conic

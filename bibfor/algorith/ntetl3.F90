@@ -27,7 +27,7 @@ subroutine ntetl3(i_field, ds_inout, tempct)
 #include "asterfort/nmetnc.h"
 #include "asterfort/utmess.h"
 !
-    integer, intent(in) :: i_field
+    integer(kind=8), intent(in) :: i_field
     type(NL_DS_InOut), intent(inout) :: ds_inout
     real(kind=8), intent(in) :: tempct
 !
@@ -45,7 +45,7 @@ subroutine ntetl3(i_field, ds_inout, tempct)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret
+    integer(kind=8) :: iret
     character(len=24) :: fieldType
     character(len=24) :: algo_name, field_algo
     character(len=4) :: init_type, fieldDisc

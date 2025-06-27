@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -65,12 +65,12 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: nrofic, typen
-    integer :: ncmprf, jnocmp
-    integer :: nbcmpv
-    integer :: iinst, numpt, numord
-    integer :: npgma(*), npgmm(*), nspmm(*)
-    integer :: codret, codre2
+    integer(kind=8) :: nrofic, typen
+    integer(kind=8) :: ncmprf, jnocmp
+    integer(kind=8) :: nbcmpv
+    integer(kind=8) :: iinst, numpt, numord
+    integer(kind=8) :: npgma(*), npgmm(*), nspmm(*)
+    integer(kind=8) :: codret, codre2
     character(len=*) :: typech
     character(len=8) :: nomgd, nomaas
     character(len=8) :: crit, param
@@ -120,24 +120,24 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=6), parameter :: nompro = 'LRCAME'
-    integer :: typent, vali(4)
+    integer(kind=8) :: typent, vali(4)
     character(len=64), parameter :: ednopf = ' '
-    integer, parameter :: ednoeu = 3, edmail = 0, edconn = 1, ednoda = 0
-    integer, parameter :: edlect = 0, typnoe = 0, ntypel = 26, npgmax = 27
-    integer :: iaux, letype, vlib(3), vfic(3), iret
+    integer(kind=8), parameter :: ednoeu = 3, edmail = 0, edconn = 1, ednoda = 0
+    integer(kind=8), parameter :: edlect = 0, typnoe = 0, ntypel = 26, npgmax = 27
+    integer(kind=8) :: iaux, letype, vlib(3), vfic(3), iret
     med_idt :: idfimd, ifimed
-    integer :: indpg(ntypel, npgmax)
-    integer :: nbvato, nbcmfi, nbval, nbma, nbprof
-    integer :: adsl, adsv, adsd, i, j
-    integer :: ncmput, existc, ndim, npas, lgproa
-    integer :: ifm, niv
-    integer :: tygeom, nbtyp
-    integer :: nnotyp(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
-    integer :: typgeo(MT_NTYMAX), lygeom(MT_NTYMAX), lypent(MT_NTYMAX), ltyp(MT_NTYMAX)
-    integer :: renumd(MT_NTYMAX), nlyval(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
-    integer :: nbtylu, iaux2, k, nbty(MT_NTYMAX), lnbpro(MT_NTYMAX)
-    integer :: nbnoma, nmatyp, jntpro, lgprof, cptyma, iprof
-    integer :: jnumty, numma, ima, hdfok, medok, jmaill
+    integer(kind=8) :: indpg(ntypel, npgmax)
+    integer(kind=8) :: nbvato, nbcmfi, nbval, nbma, nbprof
+    integer(kind=8) :: adsl, adsv, adsd, i, j
+    integer(kind=8) :: ncmput, existc, ndim, npas, lgproa
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: tygeom, nbtyp
+    integer(kind=8) :: nnotyp(MT_NTYMAX), modnum(MT_NTYMAX), numnoa(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: typgeo(MT_NTYMAX), lygeom(MT_NTYMAX), lypent(MT_NTYMAX), ltyp(MT_NTYMAX)
+    integer(kind=8) :: renumd(MT_NTYMAX), nlyval(MT_NTYMAX), nuanom(MT_NTYMAX, MT_NNOMAX)
+    integer(kind=8) :: nbtylu, iaux2, k, nbty(MT_NTYMAX), lnbpro(MT_NTYMAX)
+    integer(kind=8) :: nbnoma, nmatyp, jntpro, lgprof, cptyma, iprof
+    integer(kind=8) :: jnumty, numma, ima, hdfok, medok, jmaill
     aster_logical :: lrenum
     character(len=1) :: saux01
     character(len=8) :: saux08, modele
@@ -154,10 +154,10 @@ subroutine lrcame(nrofic, nochmd, nomamd, nomaas, ligrel, &
     aster_logical :: existm, existt
     aster_logical :: logaux
     character(len=8), pointer :: lgrf(:) => null()
-    integer, pointer :: nume(:) => null()
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: nume(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
     real(kind=8), pointer :: vinst(:) => null()
-    integer :: iCmp
+    integer(kind=8) :: iCmp
     character(len=8), pointer :: cmpUserName(:) => null()
     character(len=8), pointer :: cmpCataName(:) => null()
 !

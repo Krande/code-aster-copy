@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine inmat4(elrefa, nno, nnos, npg, nofpg, mgano)
 #include "asterfort/inmat6.h"
 !
     character(len=8) :: elrefa, nofpg
-    integer :: nno, nnos, npg
+    integer(kind=8) :: nno, nnos, npg
     real(kind=8) :: mgano(*)
 
 ! ======================================================================
@@ -34,7 +34,7 @@ subroutine inmat4(elrefa, nno, nnos, npg, nofpg, mgano)
 !       POUR UNE FAMILLE D'UN ELREFA
 ! ======================================================================
 !
-    integer :: kpg, kno, knos, k
+    integer(kind=8) :: kpg, kno, knos, k
     real(kind=8) :: mganos(MT_NBPGMX, MT_NNOMAX), mgano2(MT_NBPGMX, MT_NNOMAX)
     ASSERT(npg .le. MT_NBPGMX)
     ASSERT(nno .le. MT_NNOMAX)

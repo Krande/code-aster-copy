@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,9 +31,9 @@ subroutine coecis(napcis, foncis)
 !       FONCTION DES COEFFICIENTS DE CISAILLEMENT POUR SECTION='CERCLE'
 !     ------------------------------------------------------------------
 !
-    integer :: nbvale, nbfonc, nprol, nbvalf
-    integer :: lpro, lpar, jval, lnomf, ladrf, lval, i, ifonc, ival
-    integer :: nbvfon, lpro2, jval2, lval2, ival2, lfon
+    integer(kind=8) :: nbvale, nbfonc, nprol, nbvalf
+    integer(kind=8) :: lpro, lpar, jval, lnomf, ladrf, lval, i, ifonc, ival
+    integer(kind=8) :: nbvfon, lpro2, jval2, lval2, ival2, lfon
 !     ------------------------------------------------------------------
 !
     call jemarq()

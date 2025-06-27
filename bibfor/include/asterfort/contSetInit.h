@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,6 @@
 interface
     subroutine contSetInit(sdcont, mesh, nbContZone)
         character(len=8), intent(in) :: sdcont, mesh
-        integer, intent(in) :: nbContZone
+        integer(kind=8), intent(in) :: nbContZone
     end subroutine contSetInit
 end interface

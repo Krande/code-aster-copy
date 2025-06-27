@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq, &
 #include "asterfort/wptest.h"
     character(len=1) :: appr
     character(len=*) :: opt
-    integer :: nbfreq, nbvect, neq, lagr(*), mxresf, nlivr, resufi(mxresf, *)
+    integer(kind=8) :: nbfreq, nbvect, neq, lagr(*), mxresf, nlivr, resufi(mxresf, *)
     complex(kind=8) :: vecp(neq, *), shift
     real(kind=8) :: resufr(mxresf, *), yh(neq, *), yb(neq, *), vpr(*), vpi(*)
     real(kind=8) :: vr(nlivr, *), omecor
@@ -70,8 +70,8 @@ subroutine wp2vec(appr, opt, nbfreq, nbvect, neq, &
 !     ------------------------------------------------------------------
     real(kind=8) :: si, mod2, a, b, nmabp, nmabm, am, om, eps, seuilr, seuilp
     real(kind=8) :: c1, auxrj, seuilc, auxij, auxrk, auxik
-    integer :: i, j, k, av1, av2, av, iadind, nbfrga, vali(5), nbcmpp, nbcmpc
-    integer :: nbreel, nbfr, ibid
+    integer(kind=8) :: i, j, k, av1, av2, av, iadind, nbfrga, vali(5), nbcmpp, nbcmpc
+    integer(kind=8) :: nbreel, nbfr, ibid
     complex(kind=8) :: des, vpq, mhu, vpp, vpm
     aster_logical :: trouve, lconj
     character(len=1) :: kmsg

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine irnbsp(chaine, nbsp)
     implicit none
 !
     character(len=8), intent(in) :: chaine
-    integer, intent(out)         ::  nbsp
+    integer(kind=8), intent(out)         ::  nbsp
 !
 ! ----------------------------------------------------------------------------
 !  Read number of sous-point from a chaine
@@ -31,8 +31,8 @@ subroutine irnbsp(chaine, nbsp)
 !
     character(len=1), parameter :: chiffr(0:9) = ['0', '1', '2', '3', '4', &
                                                   '5', '6', '7', '8', '9']
-    integer, parameter :: num(0:9) = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
-    integer :: val(0:7), expo, ii, icara
+    integer(kind=8), parameter :: num(0:9) = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+    integer(kind=8) :: val(0:7), expo, ii, icara
 !
     val(:) = 0
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,6 @@ interface
         aster_logical, intent(out) :: ignore
         real(kind=8), intent(out) :: compare
         character(len=*), intent(in), optional :: mcf
-        integer, intent(in), optional :: iocc
+        integer(kind=8), intent(in), optional :: iocc
     end subroutine tresu_ordgrd
 end interface

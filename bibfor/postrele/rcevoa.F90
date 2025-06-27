@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,22 +59,22 @@ subroutine rcevoa(typtab, nommat)
 !
 !     ------------------------------------------------------------------
 !
-    integer :: n1, ibid, nbtran, nbpar, nbteta, nbcycl, nbabsc, nbins0, iret
-    integer :: ind, i, k, l, jnock, jnocl, nk, nl, jteta, kinst, jfaij, jabsc
-    integer :: i1, i2, ifm, niv, ndim, ioc, it, is1, is2, jinst, jtabl, jnbcy
-    integer :: nbitot
+    integer(kind=8) :: n1, ibid, nbtran, nbpar, nbteta, nbcycl, nbabsc, nbins0, iret
+    integer(kind=8) :: ind, i, k, l, jnock, jnocl, nk, nl, jteta, kinst, jfaij, jabsc
+    integer(kind=8) :: i1, i2, ifm, niv, ndim, ioc, it, is1, is2, jinst, jtabl, jnbcy
+    integer(kind=8) :: nbitot
     real(kind=8) :: r8b, prec(2), vale(4), valres(4), rij, rapp, fatot, fakl
     real(kind=8) :: fam, theta, rcal, sittef, aamorc, bamorc, damorc, ramorc, d
     real(kind=8) :: sitt1, sitt2, fkl
     complex(kind=8) :: cbid
     aster_logical :: exist, trouve
-    integer :: icodre(4)
+    integer(kind=8) :: icodre(4)
     character(len=8) :: k8b, nomres, crit(2), nompar, table
     character(len=16) :: motclf, valek(4), concep, nomcmd, nomval(4)
     character(len=19) :: nomf
     character(len=24) :: instan, ktheta, abscur, valk(7)
 !
-    integer :: nparm, npard
+    integer(kind=8) :: nparm, npard
     parameter(nparm=2, npard=2)
     character(len=8) :: typarm(nparm), typard(npard)
     character(len=16) :: noparm(nparm), nopard(npard)

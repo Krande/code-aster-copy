@@ -20,9 +20,9 @@
 !
 interface
     subroutine cm2027(main, maout, nbma, lima)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=8) :: main
         character(len=8) :: maout
-        integer :: lima(nbma)
+        integer(kind=8) :: lima(nbma)
     end subroutine cm2027
 end interface

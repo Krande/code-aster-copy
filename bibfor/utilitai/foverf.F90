@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine foverf(v, nc, ier)
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-    integer :: nc, ier, i, isens, ilarge, niv, ifm
+    integer(kind=8) :: nc, ier, i, isens, ilarge, niv, ifm
     real(kind=8) :: v(nc)
     character(len=16) :: nomcmd, typfon
     character(len=19) :: nomfon
@@ -131,8 +131,8 @@ subroutine foverf(v, nc, ier)
 !
 1000 format('EGALITE       I=', i6, '   VALEUR(I)   :', 1pe16.9)
 1001 format('CROISSANT     I=', i6, '   VALEUR(I-1) :', 1pe16.9,&
-    &       '   VALEUR(I)   :', 1pe16.9)
+   &       '   VALEUR(I)   :', 1pe16.9)
 1002 format('DECROISSANT   I=', i6, '   VALEUR(I-1) :', 1pe16.9,&
-    &       '   VALEUR(I)   :', 1pe16.9)
+   &       '   VALEUR(I)   :', 1pe16.9)
 !
 end subroutine

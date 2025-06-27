@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine refdcp(resin, resout)
 !
 !   COPIER LE CONTENU DE REFERENCES DYNAMIQUE DE resin DANS resout
 !
-    integer :: ir1, ir2
+    integer(kind=8) :: ir1, ir2
     character(len=16) :: refd, indi
     character(len=1) :: jvb
 !

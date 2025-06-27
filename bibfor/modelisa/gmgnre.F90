@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma, &
     character(len=8) :: noma
     character(len=*) :: selez
     character(len=16) :: selec
-    integer :: nbma, nbnoto, nbno, listma(*), listno(*), litrav(*)
+    integer(kind=8) :: nbma, nbnoto, nbno, listma(*), listno(*), litrav(*)
 ! ----------------------------------------------------------------------
 !     BUT: REMPLIR LA LISTE DE NOEUD SOUS-JACENTE A LA LISTE DE MAILLE
 !
@@ -56,12 +56,12 @@ subroutine gmgnre(noma, nbnoto, litrav, listma, nbma, &
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=8) :: typm, notyma(19)
-    integer :: posini, posfin, sel, nutyma
-    integer :: pini(3, 19), pfin(3, 19)
+    integer(kind=8) :: posini, posfin, sel, nutyma
+    integer(kind=8) :: pini(3, 19), pfin(3, 19)
 !
 !-----------------------------------------------------------------------
-    integer :: i, iacnex, ima, ino, nbnoma, numno
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8) :: i, iacnex, ima, ino, nbnoma, numno
+    integer(kind=8), pointer :: typmail(:) => null()
 !-----------------------------------------------------------------------
     data notyma/'POI1',&
      &              'SEG2', 'SEG3',&

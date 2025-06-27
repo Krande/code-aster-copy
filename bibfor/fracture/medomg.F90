@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine medomg(result, numord, modele, mate, mateco, lischa)
 #include "asterfort/rslesd.h"
 !
 !
-    integer :: numord
+    integer(kind=8) :: numord
     character(len=8) :: modele, result
     character(len=24) :: mate, mateco
     character(len=19) :: lischa
@@ -59,7 +59,7 @@ subroutine medomg(result, numord, modele, mate, mateco, lischa)
     character(len=8) :: materi
     character(len=16) :: phenom, motfac, nomcmd
     character(len=19) :: lisold
-    integer :: iexcit, nbchar
+    integer(kind=8) :: iexcit, nbchar
     character(len=1) :: base, codarr
 !
 ! ----------------------------------------------------------------------

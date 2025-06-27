@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 interface
     subroutine nmdeco(sddisc, numeInst, iterat, i_event_acti, retdec)
-        integer :: numeInst, iterat
-        integer :: i_event_acti
+        integer(kind=8) :: numeInst, iterat
+        integer(kind=8) :: i_event_acti
         character(len=19), intent(in) :: sddisc
-        integer :: retdec
+        integer(kind=8) :: retdec
     end subroutine nmdeco
 end interface

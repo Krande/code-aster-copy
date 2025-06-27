@@ -50,8 +50,8 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), nbnoma(*)
-    integer :: permut(maxnod, *), typma(*), nbmat, nummai(*), ncmpu, nucmp(*)
+    integer(kind=8) :: maxnod, ifi, ligrel(*), nbgrel, longr(*), ncmpmx, celd(*), nbnoma(*)
+    integer(kind=8) :: permut(maxnod, *), typma(*), nbmat, nummai(*), ncmpu, nucmp(*)
     character(len=*) :: nomcmp(*), nomel(*), loc, titr, nomsym, nomsd
     complex(kind=8) :: vale(*)
     aster_logical :: lmasu
@@ -85,26 +85,26 @@ subroutine ircecs(ifi, ligrel, nbgrel, longr, ncmpmx, &
     character(len=8) :: nocmp, ktype
     character(len=80) :: entete(10), titre, texte
     character(len=24) :: nomst
-    integer :: nbchs, nbcmpt, entier, nbspt, nnoe
-    integer :: impre, iente, impel, ilong, imodel
+    integer(kind=8) :: nbchs, nbcmpt, entier, nbspt, nnoe
+    integer(kind=8) :: impre, iente, impel, ilong, imodel
     aster_logical :: afaire, lcmp, lnocen
 !
 !  --- INITIALISATIONS ----
 !
 !-----------------------------------------------------------------------
-    integer :: i, iachml, iad, iaec, iast, ic
-    integer :: ichs, icmax0, icmp, icms, icmsup, ico
-    integer :: icoef, icomax, icomm, icou, icp, icvg, icvn
-    integer :: ida, idebu, idern, iel, ielg, ier, ies
-    integer :: ifin, igre, igrel, ilig, imai, inoa
-    integer :: inos, ipg, ipoin1, ipoin2, ir, ires
-    integer :: irvg, irvn, is0, isp, ispt, isup
-    integer :: itseg2, itype, iutil, j, jmax, jmod, jspt
-    integer :: jtitr, mode, nbcou, nbdats, nbelgr
-    integer :: nbpg, ncmpp, nec, npcalc, nsca, nscal
-    integer, pointer :: ipcmps(:) => null()
+    integer(kind=8) :: i, iachml, iad, iaec, iast, ic
+    integer(kind=8) :: ichs, icmax0, icmp, icms, icmsup, ico
+    integer(kind=8) :: icoef, icomax, icomm, icou, icp, icvg, icvn
+    integer(kind=8) :: ida, idebu, idern, iel, ielg, ier, ies
+    integer(kind=8) :: ifin, igre, igrel, ilig, imai, inoa
+    integer(kind=8) :: inos, ipg, ipoin1, ipoin2, ir, ires
+    integer(kind=8) :: irvg, irvn, is0, isp, ispt, isup
+    integer(kind=8) :: itseg2, itype, iutil, j, jmax, jmod, jspt
+    integer(kind=8) :: jtitr, mode, nbcou, nbdats, nbelgr
+    integer(kind=8) :: nbpg, ncmpp, nec, npcalc, nsca, nscal
+    integer(kind=8), pointer :: ipcmps(:) => null()
     aster_logical, pointer :: ltabl(:) => null()
-    integer, pointer :: nbcmps(:) => null()
+    integer(kind=8), pointer :: nbcmps(:) => null()
     character(len=8), pointer :: nomchs(:) => null()
     character(len=8), pointer :: nomgds(:) => null()
 !-----------------------------------------------------------------------

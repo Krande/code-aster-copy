@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,21 +50,21 @@ subroutine nugrco(nu, base)
 !                    (SAUF LE NUME_EQUA)
 !                BASE(2:2) : BASE POUR CREER LE NUME_EQUA
 !
-    integer :: rang, nbproc, jcomm1, iddl, neql, jgraco
-    integer :: iproc, nbedge, iaux, jtmp, nmatch, iproc1
-    integer :: iproc2, posit, jordjo, num, neqg, nulodd
-    integer :: nbddlj, jjoint, curpos, numpro, jjoin2
-    integer :: iddlg, iddll
+    integer(kind=8) :: rang, nbproc, jcomm1, iddl, neql, jgraco
+    integer(kind=8) :: iproc, nbedge, iaux, jtmp, nmatch, iproc1
+    integer(kind=8) :: iproc2, posit, jordjo, num, neqg, nulodd
+    integer(kind=8) :: nbddlj, jjoint, curpos, numpro, jjoin2
+    integer(kind=8) :: iddlg, iddll
 !
     character(len=4) :: chnbjo
     character(len=24) :: nojoin, nogrco
-    integer, pointer :: masque(:) => null()
-    integer, pointer :: posproc(:) => null()
-    integer, pointer :: nulg(:) => null()
-    integer, pointer :: nugl(:) => null()
-    integer, pointer :: nequg(:) => null()
-    integer, pointer :: nequl(:) => null()
-    integer, pointer :: pddl(:) => null()
+    integer(kind=8), pointer :: masque(:) => null()
+    integer(kind=8), pointer :: posproc(:) => null()
+    integer(kind=8), pointer :: nulg(:) => null()
+    integer(kind=8), pointer :: nugl(:) => null()
+    integer(kind=8), pointer :: nequg(:) => null()
+    integer(kind=8), pointer :: nequl(:) => null()
+    integer(kind=8), pointer :: pddl(:) => null()
     mpi_int :: mrank, msize
     parameter(nogrco='&&NUGRCO.GRAPH_COMM')
 !

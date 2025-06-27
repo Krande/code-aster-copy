@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ interface
     subroutine dtmforc_calcnoli(sd_dtm_, sd_nl_, buffdtm, buffnl,&
                             time   ,dt, depl  , vite   ,fext, &
                             nbmode,nlacc,nlcase,idx_start,idx_end)
-        integer               , intent(in)  :: nbmode,nlacc,nlcase,idx_start,idx_end
+        integer(kind=8)               , intent(in)  :: nbmode,nlacc,nlcase,idx_start,idx_end
         character(len=*)      , intent(in)  :: sd_dtm_
         character(len=*)      , intent(in)  :: sd_nl_
-        integer     , pointer  :: buffdtm  (:)
-        integer     , pointer  :: buffnl   (:)
+        integer(kind=8)     , pointer  :: buffdtm  (:)
+        integer(kind=8)     , pointer  :: buffnl   (:)
         real(kind=8)          , intent(in)  :: time
     real(kind=8)          , intent(in)  :: dt
         real(kind=8), pointer  :: depl     (:)

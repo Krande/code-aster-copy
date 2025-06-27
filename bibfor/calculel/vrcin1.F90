@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -97,9 +97,9 @@ subroutine vrcin1(modele, chmat, carele, inst, codret, nompar)
 
     real(kind=8) :: instev
 
-    integer :: n1, ibid, nbma, jcesd1, jcesl1, iad, lonk80
-    integer :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
-    integer :: nbcvrc, jlisch, nval1
+    integer(kind=8) :: n1, ibid, nbma, jcesd1, jcesl1, iad, lonk80
+    integer(kind=8) :: itrou, nbk80, k, ima, jlk80, iret, nbchs, jlissd, ichs
+    integer(kind=8) :: nbcvrc, jlisch, nval1
     aster_logical :: l_xfem, l_elga
     character(len=8) :: varc, mailla, tysd, proldr, prolga, nomevo, finst
     character(len=8) :: ma2

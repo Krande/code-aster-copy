@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ function ndynin(sddyna, chaine)
 ! person_in_charge: mickael.abbas at edf.fr
 !
     implicit none
-    integer :: ndynin
+    integer(kind=8) :: ndynin
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
@@ -51,7 +51,7 @@ function ndynin(sddyna, chaine)
 !
 !
 !
-    integer :: jtfor, jncha
+    integer(kind=8) :: jtfor, jncha
     character(len=24) :: tfor, ncha
 !
 ! ----------------------------------------------------------------------

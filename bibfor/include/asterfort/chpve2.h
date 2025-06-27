@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine chpve2(nomch, nbtyp, tabtyp, ier)
-        integer :: nbtyp
+        integer(kind=8) :: nbtyp
         character(len=*) :: nomch
         character(len=*) :: tabtyp(nbtyp)
-        integer :: ier
+        integer(kind=8) :: ier
     end subroutine chpve2
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine extdia(matr, numddl, icode, diag)
         character(len=8) :: matr
         character(len=24) :: numddl
-        integer :: icode
+        integer(kind=8) :: icode
         real(kind=8) :: diag(*)
     end subroutine extdia
 end interface

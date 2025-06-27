@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 subroutine jeimpr(unit, clas, cmess)
     implicit none
 #include "jeveux_private.h"
-    integer :: unit
+    integer(kind=8) :: unit
     character(len=*) :: clas, cmess
 ! ----------------------------------------------------------------------
 ! IMPRESSION DU REPERTOIRE D'UNE OU PLUSIEURS CLASSES
@@ -30,10 +30,10 @@ subroutine jeimpr(unit, clas, cmess)
 !
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iiadd, iibas, iibdy, ilong, ilono, iltyp
-    integer :: j, jcara, jdate, jdocu, jgenr, jhcod, jiadd
-    integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
-    integer :: jrnom, jtype, k, n, ncla1, ncla2
+    integer(kind=8) :: i, iiadd, iibas, iibdy, ilong, ilono, iltyp
+    integer(kind=8) :: j, jcara, jdate, jdocu, jgenr, jhcod, jiadd
+    integer(kind=8) :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
+    integer(kind=8) :: jrnom, jtype, k, n, ncla1, ncla2
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -41,7 +41,7 @@ subroutine jeimpr(unit, clas, cmess)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
 !
     character(len=2) :: dn2

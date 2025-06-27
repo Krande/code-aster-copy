@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,16 +24,16 @@ interface
                       dy, rp, alphap, gammap, dt,&
                       dalpha, dgamma, dp, crit, sgns,&
                       nfs, nsg, hsr, iret)
-        integer :: nsg
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nmat
         real(kind=8) :: taus
         real(kind=8) :: coeft(nmat)
         real(kind=8) :: materf(nmat)
-        integer :: ifa
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: ifa
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=16) :: necoul
-        integer :: is
-        integer :: nbsys
+        integer(kind=8) :: is
+        integer(kind=8) :: nbsys
         real(kind=8) :: vind(*)
         real(kind=8) :: dy(*)
         real(kind=8) :: rp
@@ -45,8 +45,8 @@ interface
         real(kind=8) :: dp
         real(kind=8) :: crit
         real(kind=8) :: sgns
-        integer :: nfs
+        integer(kind=8) :: nfs
         real(kind=8) :: hsr(nsg, nsg)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine lcmmfe
 end interface

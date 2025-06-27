@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine nonlinDSPrintTableLine(table, col_sep, unit_print)
 !
     type(NL_DS_Table), intent(in) :: table
     character(len=1), intent(in) :: col_sep
-    integer, intent(in) :: unit_print
+    integer(kind=8), intent(in) :: unit_print
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -46,17 +46,17 @@ subroutine nonlinDSPrintTableLine(table, col_sep, unit_print)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_col, nb_cols
+    integer(kind=8) :: i_col, nb_cols
     type(NL_DS_Column) :: col
-    integer :: vali
-    integer :: pos, posfin, posmar
+    integer(kind=8) :: vali
+    integer(kind=8) :: pos, posfin, posmar
     character(len=16) :: chvide
     character(len=24) :: valk, name
     real(kind=8) :: valr
     character(len=512) :: table_line
-    integer :: longr, longi
+    integer(kind=8) :: longr, longi
     aster_logical :: l_vale_affe, l_vale_real, l_vale_inte, l_vale_strg
-    integer :: col_width, line_width
+    integer(kind=8) :: col_width, line_width
     character(len=1) :: mark
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -46,8 +46,8 @@ subroutine te0227(option, nomte)
     real(kind=8) :: dfdx(3), r, rm, poids, cour, nx, ny, yg
     real(kind=8) :: rho, x(3), y(3), xxi, xyi, yyi
     real(kind=8) :: matine(6), volume, depi
-    integer :: nno, ipoids, ivf, idfdk, igeom, imate, icaco
-    integer :: kp, npg, i, j, k, lcastr
+    integer(kind=8) :: nno, ipoids, ivf, idfdk, igeom, imate, icaco
+    integer(kind=8) :: kp, npg, i, j, k, lcastr
 !
 ! --------------------------------------------------------------------------------------------------
 !

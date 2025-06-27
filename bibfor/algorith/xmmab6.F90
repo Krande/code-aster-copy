@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@ subroutine xmmab6(ndim, nnol, pla, ffc, jac, &
 !
     implicit none
 #include "blas/ddot.h"
-    integer :: ndim, nnol
-    integer :: pla(27), lact(8)
+    integer(kind=8) :: ndim, nnol
+    integer(kind=8) :: pla(27), lact(8)
     real(kind=8) :: mmat(216, 216)
     real(kind=8) :: ffc(8), jac, tau1(3), tau2(3)
 !
@@ -53,8 +53,8 @@ subroutine xmmab6(ndim, nnol, pla, ffc, jac, &
 !
 !
 !
-    integer :: i, j, k, l, nli, nlj
-    integer :: pli, plj
+    integer(kind=8) :: i, j, k, l, nli, nlj
+    integer(kind=8) :: pli, plj
     real(kind=8) :: ffi, ffj, metr(2, 2)
     blas_int :: b_incx, b_incy, b_n
 !

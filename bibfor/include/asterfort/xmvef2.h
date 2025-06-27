@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,23 +23,23 @@ interface
                       seuil, reac12, singu, fk, nfh,&
                       coeffp, coeffr, mu, algofr, nd,&
                       ddls, ddlm, idepl, pb, vtmp)
-        integer :: ndim
-        integer :: nno
-        integer :: nnos
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
+        integer(kind=8) :: nnos
         real(kind=8) :: ffp(27)
         real(kind=8) :: jac
         real(kind=8) :: seuil
         real(kind=8) :: reac12(3)
-        integer :: singu
-        integer :: nfh
+        integer(kind=8) :: singu
+        integer(kind=8) :: nfh
         real(kind=8) :: coeffp
         real(kind=8) :: coeffr
         real(kind=8) :: mu
-        integer :: algofr
+        integer(kind=8) :: algofr
         real(kind=8) :: nd(3)
-        integer :: ddls
-        integer :: ddlm
-        integer :: idepl
+        integer(kind=8) :: ddls
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: idepl
         real(kind=8) :: pb(3)
         real(kind=8) :: vtmp(400)
         real(kind=8) :: fk(27,3,3)

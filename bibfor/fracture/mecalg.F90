@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -82,7 +82,7 @@ subroutine mecalg(optioz, result, modele, depla, theta, &
     character(len=24) :: depla, mate, mateco, compor, theta
     character(len=24) :: chvite, chacce
     real(kind=8) :: time
-    integer :: iord, nbprup, iadnoe
+    integer(kind=8) :: iord, nbprup, iadnoe
     aster_logical :: incr
 !
 !
@@ -92,11 +92,11 @@ subroutine mecalg(optioz, result, modele, depla, theta, &
     character(len=6) :: nompro
     parameter(nompro='MECALG')
 !
-    integer :: nbmxpa
+    integer(kind=8) :: nbmxpa
     parameter(nbmxpa=20)
 !
-    integer :: ibid, iret, nres, numfon, livi(nbmxpa), coor
-    integer :: nchin, nsig, ino1, ino2, inga, pbtype
+    integer(kind=8) :: ibid, iret, nres, numfon, livi(nbmxpa), coor
+    integer(kind=8) :: nchin, nsig, ino1, ino2, inga, pbtype
     real(kind=8) :: g(1), livr(nbmxpa)
     complex(kind=8) :: livc(nbmxpa)
     aster_logical :: lfonc, lxfem

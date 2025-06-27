@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine tsingu(nelem, nbr, re, taille, he)
-        integer :: nelem
-        integer :: nbr(nelem)
+        integer(kind=8) :: nelem
+        integer(kind=8) :: nbr(nelem)
         real(kind=8) :: re(nelem)
         real(kind=8) :: taille(nelem)
         real(kind=8) :: he(nelem)

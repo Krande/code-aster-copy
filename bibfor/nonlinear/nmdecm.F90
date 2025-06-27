@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,12 +26,12 @@ subroutine nmdecm(sddisc, i_event_acti, nomlis, instam, deltat, &
 #include "asterfort/assert.h"
 #include "asterfort/nmdecc.h"
 #include "asterfort/utdidt.h"
-    integer :: i_event_acti
+    integer(kind=8) :: i_event_acti
     character(len=19) :: sddisc
     character(len=24) :: nomlis
-    integer :: nbrpas
+    integer(kind=8) :: nbrpas
     real(kind=8) :: instam, deltat, dtmin
-    integer :: retdec
+    integer(kind=8) :: retdec
 !
 ! ----------------------------------------------------------------------
 !

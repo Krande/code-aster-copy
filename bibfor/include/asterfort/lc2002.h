@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,26 +26,26 @@ interface
                       option, sigp, vip, typmod, ndsde,&
                       dsidep, codret)
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg
-        integer, intent(in) :: ksp
-        integer, intent(in) :: ndim
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: kpg
+        integer(kind=8), intent(in) :: ksp
+        integer(kind=8), intent(in) :: ndim
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(*)
         real(kind=8), intent(in) :: carcri(*)
         real(kind=8), intent(in) :: instam
         real(kind=8), intent(in) :: instap
-        integer, intent(in) :: neps
+        integer(kind=8), intent(in) :: neps
         real(kind=8), intent(in) :: epsm(neps)
         real(kind=8), intent(in) :: deps(neps)
-        integer, intent(in) :: nsig
+        integer(kind=8), intent(in) :: nsig
         real(kind=8), intent(in) :: sigm(nsig)
         real(kind=8), intent(in) :: vim(*)
         character(len=16), intent(in) :: option
         real(kind=8), intent(out) :: sigp(nsig)
         real(kind=8), intent(out) :: vip(*)
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: ndsde
+        integer(kind=8), intent(in) :: ndsde
         real(kind=8), intent(out) :: dsidep(ndsde)
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine lc2002
 end interface

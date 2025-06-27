@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag, &
 #include "asterfort/raxini.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: nbvec, nbordr, iflag(nbvec), jvecpg, jraxe
+    integer(kind=8) :: nbvec, nbordr, iflag(nbvec), jvecpg, jraxe
     real(kind=8) :: rmima(4*nbvec)
     character(len=16) :: proaxe
 ! ----------------------------------------------------------------------
@@ -65,8 +65,8 @@ subroutine projax(jvecpg, nbvec, nbordr, proaxe, iflag, &
 !
 !-----------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: i, n1, ivect, iordr, jsec1, jsec2, jsec3, jsec4
-    integer :: indsec, nbpts1, nbpts2, nbpts3, nbpts4, nptsec(4)
+    integer(kind=8) :: i, n1, ivect, iordr, jsec1, jsec2, jsec3, jsec4
+    integer(kind=8) :: indsec, nbpts1, nbpts2, nbpts3, nbpts4, nptsec(4)
 !
     real(kind=8) :: umin, umax, vmin, vmax, u0, v0, diamin
     real(kind=8) :: cstai, cstbi, cstas, cstbs, uaxe2, vaxe2

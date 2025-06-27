@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,7 +26,7 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
 #include "asterfort/jexnom.h"
 !
     character(len=16) :: nomte
-    integer :: dim
+    integer(kind=8) :: dim
     character(len=8) :: lielrf(dim)
 ! ---------------------------------------------------------------------
 ! BUT: RECUPERER LA LISTE DES ELREFE D'UN TYPE_ELEM
@@ -41,9 +41,9 @@ subroutine elref2(nomte, dim, lielrf, ntrou)
 !   SI NOMTE A PLUS D'ELREFE QUE DIM => ERREUR <F>
 !----------------------------------------------------------------------
 !
-    integer :: nute, ntrou, iad, k
+    integer(kind=8) :: nute, ntrou, iad, k
     character(len=8), pointer :: noelrefe(:) => null()
-    integer, pointer :: nbelrefe(:) => null()
+    integer(kind=8), pointer :: nbelrefe(:) => null()
 !
     call jenonu(jexnom('&CATA.TE.NOMTE', nomte), nute)
     ASSERT(nute .gt. 0)

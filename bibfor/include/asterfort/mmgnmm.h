@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       mprojn, mprt1n, mprt2n, mprnt1, mprnt2,&
                       kappa , vech1 , vech2 , h     , &
                       matrmm)
-        integer, intent(in) :: ndim, nnm
+        integer(kind=8), intent(in) :: ndim, nnm
         real(kind=8), intent(in) :: wpg, ffm(9),dffm(2,9)
         real(kind=8), intent(in) :: mprojn(3, 3), mprt1n(3,3), mprt2n(3,3), mprnt1(3,3), mprnt2(3,3)
         real(kind=8), intent(in) :: jacobi, coefac, jeu, dlagrc

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
         use Rom_Datastructure_type
         type(ROM_DS_MultiPara), intent(inout) :: ds_multipara
         aster_logical, intent(in) :: l_init
-        integer, optional, intent(in) :: i_coef_
-        integer, optional, intent(in) :: i_mode_coef_
+        integer(kind=8), optional, intent(in) :: i_coef_
+        integer(kind=8), optional, intent(in) :: i_mode_coef_
     end subroutine romEvalCoef
 end interface

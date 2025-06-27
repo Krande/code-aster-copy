@@ -42,8 +42,8 @@ subroutine op0156()
 #include "asterfort/utmess.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtcreb.h"
-    integer :: n1, iret, ier
-    integer :: lmat, jchin, jchout
+    integer(kind=8) :: n1, iret, ier
+    integer(kind=8) :: lmat, jchin, jchout
     character(len=1) :: typmat, typres
     character(len=24) :: valk(2)
     character(len=14) :: numem

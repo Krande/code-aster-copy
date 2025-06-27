@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor, &
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
-    integer :: imate, nbvar, kpg, ksp, memo, visc, idelta, nrad
+    integer(kind=8) :: imate, nbvar, kpg, ksp, memo, visc, idelta, nrad
     character(len=16) :: compor(3), valk(2), texte(2), nomres(12)
     real(kind=8) :: mat(18), matel(4)
     character(len=*) :: fami
@@ -44,7 +44,7 @@ subroutine nmcham(fami, kpg, ksp, imate, compor, &
     real(kind=8) :: coef, valres(12), c2inf, gamm20, delta1, delta2
     real(kind=8) :: r0, rinf, b, cinf, k, w, gamma0, epsi
     real(kind=8) :: un, ainf, kvi, valden, unskvi
-    integer :: icodre(12)
+    integer(kind=8) :: icodre(12)
     character(len=8) :: nomemo(4)
 !.========================= DEBUT DU CODE EXECUTABLE ==================
 !

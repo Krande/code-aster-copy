@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine hsj1f(intsn, xr, epais, vectg, vectt, &
                  hsf, kwgt, hsj1fx, wgt)
     implicit none
 #include "asterfort/jacbm1.h"
-    integer :: intsn, kwgt
+    integer(kind=8) :: intsn, kwgt
     real(kind=8) :: xr(*)
     real(kind=8) :: vectg(2, 3), vectt(3, 3), matj(3, 3), jm1(3, 3), epais, detj
     real(kind=8) :: hsf(3, 9), hsj1fx(3, 9), wgt
@@ -28,7 +28,7 @@ subroutine hsj1f(intsn, xr, epais, vectg, vectt, &
 !     CONSTRUCTION DE J-1 AUX PTS DE GAUSS NORMAL.    J = JACOBIEN
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, j1, jb, k, k1
+    integer(kind=8) :: i, j, j1, jb, k, k1
     real(kind=8) :: wgt1
 !-----------------------------------------------------------------------
     call jacbm1(epais, vectg, vectt, matj, jm1, &

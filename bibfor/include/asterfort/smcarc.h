@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       temp_curr, temp_incr, time_incr, &
                       vari_prev, vari_curr)
         use Metallurgy_type
-        integer, intent(in) :: nb_hist, nb_phase
+        integer(kind=8), intent(in) :: nb_hist, nb_phase
         real(kind=8), intent(inout) :: ftrc((3*nb_hist), 3), trc((3*nb_hist), 5)
         real(kind=8), intent(in)  :: coef(*), fmod(*)
         type(META_SteelParameters), intent(in) :: metaSteelPara

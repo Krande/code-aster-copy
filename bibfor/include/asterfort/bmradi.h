@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine bmradi(basmod, intf, nomint, numint, nbddl,&
                       ivddl, nbdif)
-        integer :: nbddl
+        integer(kind=8) :: nbddl
         character(len=8) :: basmod
         character(len=8) :: intf
         character(len=8) :: nomint
-        integer :: numint
-        integer :: ivddl(nbddl)
-        integer :: nbdif
+        integer(kind=8) :: numint
+        integer(kind=8) :: ivddl(nbddl)
+        integer(kind=8) :: nbdif
     end subroutine bmradi
 end interface

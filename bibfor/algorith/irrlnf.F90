@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine irrlnf(nmat, materf, yf, eloupl, vinf)
 !  OUT
 !     VINF   : VARIABLES INTERNES INTEGREES
 ! --- -------------------------------------------------------------
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: yf(*), vinf(*), materf(nmat, 2), eloupl
 !
 !     DEFORMATION PLASTIQUE CUMULEE

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,7 @@ subroutine te0309(option, nomte)
     type(FE_basis) :: FEBasis
 !
     real(kind=8) :: normal(3)
-    integer :: index, kp
+    integer(kind=8) :: index, kp
     real(kind=8) :: mass(MAX_BS, MAX_BS)
     real(kind=8) :: valQP(MAX_QP)
 !-----------------------------------------------------------------------

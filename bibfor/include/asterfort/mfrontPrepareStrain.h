@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ interface
     subroutine mfrontPrepareStrain(l_greenlag, neps, epsm, deps, &
                                    stran, dstran)
         aster_logical, intent(in) :: l_greenlag
-        integer, intent(in) :: neps
+        integer(kind=8), intent(in) :: neps
         real(kind=8), intent(in) :: epsm(neps), deps(neps)
         real(kind=8), intent(out) :: stran(neps), dstran(neps)
     end subroutine mfrontPrepareStrain

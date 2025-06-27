@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,11 +44,11 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
     character(len=8) :: nomo
     character(len=24) :: tabcor
 !
-    integer :: ima, nbma, ibid
-    integer :: jnbno, jad, jlgrf, jdime, jtyel, jtabco
+    integer(kind=8) :: ima, nbma, ibid
+    integer(kind=8) :: jnbno, jad, jlgrf, jdime, jtyel, jtabco
     character(len=8) :: k8bid
     character(len=19) :: ligarl
-    integer :: numori, ityel, iret
+    integer(kind=8) :: numori, ityel, iret
 !
 ! ----------------------------------------------------------------------
 !

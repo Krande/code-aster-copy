@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@
 interface
     subroutine contac(macor, nbcor, macoc, nbcoc, lface,&
                       lomodi, locorr, loreor, ma)
-        integer :: nbcoc
-        integer :: nbcor
+        integer(kind=8) :: nbcoc
+        integer(kind=8) :: nbcor
         character(len=8) :: macor(nbcor+2)
         character(len=8) :: macoc(nbcoc+2)
         aster_logical :: lface

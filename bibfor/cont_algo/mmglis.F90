@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,15 +50,15 @@ subroutine mmglis(ds_contact)
 !     SI LA CONVERGENCE EN CONTRAINTE ACTIVE EST ATTEINTE
 ! In  ds_contact       : datastructure for contact management
 !
-    integer :: ifm, niv
-    integer :: ztabf
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: ztabf
     character(len=24) :: tabfin
-    integer :: jtabf
-    integer :: nzoco, nbmae, nptm
+    integer(kind=8) :: jtabf
+    integer(kind=8) :: nzoco, nbmae, nptm
     aster_logical :: lveri, lgliss
-    integer :: izone, imae, iptc, iptm
-    integer :: xs
-    integer :: posmae, jdecme
+    integer(kind=8) :: izone, imae, iptc, iptm
+    integer(kind=8) :: xs
+    integer(kind=8) :: posmae, jdecme
 !
 ! ----------------------------------------------------------------------
 !

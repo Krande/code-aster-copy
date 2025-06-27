@@ -33,7 +33,7 @@ interface
         use NonLin_Datastructure_type
         use NonLinearDyna_type
         use Rom_Datastructure_type
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         character(len=*), intent(in) :: modelz
         character(len=24), intent(in) :: caraElem
         type(NL_DS_Material), intent(in) :: ds_material
@@ -41,7 +41,7 @@ interface
         character(len=19), intent(in) :: listLoad, sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
         character(len=19), intent(in) :: sddisc
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
         type(NL_DS_AlgoPara), intent(in) :: ds_algopara
         type(NL_DS_Contact), intent(inout) :: ds_contact
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
@@ -55,6 +55,6 @@ interface
         type(NL_DS_System), intent(in) :: ds_system
         character(len=19), intent(in) :: maprec
         character(len=19), intent(inout) :: matrAsse
-        integer, intent(out) :: faccvg, ldccvg
+        integer(kind=8), intent(out) :: faccvg, ldccvg
     end subroutine nmprma
 end interface

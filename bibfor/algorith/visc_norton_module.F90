@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,7 +54,7 @@ contains
         implicit none
 
         aster_logical, intent(in)            :: visc
-        integer, intent(in)                  :: kpg, ksp, imate
+        integer(kind=8), intent(in)                  :: kpg, ksp, imate
         real(kind=8), intent(in)             :: deltat
         character(len=*), intent(in)         :: fami
         type(VISCO)                         :: self
@@ -65,9 +65,9 @@ contains
 ! imate     material pointer
 ! deltat    time increment (instap - instam)
 ! --------------------------------------------------------------------------------------------------
-        integer, parameter:: nb = 2
+        integer(kind=8), parameter:: nb = 2
 ! --------------------------------------------------------------------------------------------------
-        integer             :: iok(nb)
+        integer(kind=8)             :: iok(nb)
         real(kind=8)        :: vale(nb)
         character(len=16)   :: nom(nb)
 ! --------------------------------------------------------------------------------------------------

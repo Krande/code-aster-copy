@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,7 +58,7 @@ subroutine op0081()
 #include "asterfort/remp81.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: ioc, n1, nbvam, imod, nma
+    integer(kind=8) :: ioc, n1, nbvam, imod, nma
 !
     real(kind=8) :: pi
 !
@@ -66,8 +66,8 @@ subroutine op0081()
     character(len=8) :: macrin
     character(len=19) :: raid, mass, amor, impe, typmat
     character(len=24) :: nommat
-    integer :: nbmod, iocm, iocf, ioca, vali(2)
-    integer :: lmass, lrigi, lamor, ldref, ldres
+    integer(kind=8) :: nbmod, iocm, iocf, ioca, vali(2)
+    integer(kind=8) :: lmass, lrigi, lamor, ldref, ldres
 !
     data blanc/'        '/
 !

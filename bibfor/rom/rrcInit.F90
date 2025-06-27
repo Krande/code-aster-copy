@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -49,14 +49,14 @@ subroutine rrcInit(cmdPara)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     type(ROM_DS_Result) :: resultDom, resultRom
     character(len=8) :: mesh, modelRom
-    integer :: nbNodeMesh, nbFieldBuild, nbFieldResult
-    integer :: iFieldBuild
+    integer(kind=8) :: nbNodeMesh, nbFieldBuild, nbFieldResult
+    integer(kind=8) :: iFieldBuild
     character(len=16), pointer :: resultField(:) => null()
-    integer, pointer :: resultFieldNume(:) => null()
-    integer, pointer :: listNode(:) => null()
+    integer(kind=8), pointer :: resultFieldNume(:) => null()
+    integer(kind=8), pointer :: listNode(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

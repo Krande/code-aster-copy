@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,12 +22,12 @@ interface
     subroutine gmgnre(noma, nbnoto, litrav, listma, nbma,&
                       listno, nbno, selez)
         character(len=8) :: noma
-        integer :: nbnoto
-        integer :: litrav(*)
-        integer :: listma(*)
-        integer :: nbma
-        integer :: listno(*)
-        integer :: nbno
+        integer(kind=8) :: nbnoto
+        integer(kind=8) :: litrav(*)
+        integer(kind=8) :: listma(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: listno(*)
+        integer(kind=8) :: nbno
         character(len=*) :: selez
     end subroutine gmgnre
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para, &
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
 !
-    integer :: ntab, vi(*)
+    integer(kind=8) :: ntab, vi(*)
     real(kind=8) :: vr(*)
     complex(kind=8) :: vc(*)
     character(len=*) :: tabout, basout, ltabin(*), para, typpar, vk(*)
@@ -50,9 +50,9 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para, &
 ! IN  : VK     : LISTE DES CRITERES POUR LES PARAMETRES "K"
 ! ----------------------------------------------------------------------
 ! ----------------------------------------------------------------------
-    integer :: iret, nbpara, nblign, jtbnp, nbpu, nbpart, ipar
-    integer :: jtblp, i, j, k, jvale
-    integer :: ki, kr, kc, kk, jvall
+    integer(kind=8) :: iret, nbpara, nblign, jtbnp, nbpu, nbpart, ipar
+    integer(kind=8) :: jtblp, i, j, k, jvale
+    integer(kind=8) :: ki, kr, kc, kk, jvall
 !
     character(len=1) :: base
     character(len=4) :: type, ktype
@@ -62,7 +62,7 @@ subroutine tbfutb(tabout, basout, ntab, ltabin, para, &
     character(len=24), pointer :: para_r(:) => null()
     character(len=8), pointer :: type_r(:) => null()
     complex(kind=8), pointer :: vale_c(:) => null()
-    integer, pointer :: vale_i(:) => null()
+    integer(kind=8), pointer :: vale_i(:) => null()
     character(len=80), pointer :: vale_k(:) => null()
     real(kind=8), pointer :: vale_r(:) => null()
 ! ----------------------------------------------------------------------

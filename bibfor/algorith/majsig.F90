@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine majsig(materf, se, seq, i1e, alpha, &
 ! =====================================================================
 ! --- MISE A JOUR DES CONTRAINTES -------------------------------------
 ! =====================================================================
-    integer :: ii, ndt, ndi
+    integer(kind=8) :: ii, ndt, ndi
     real(kind=8) :: young, nu, troisk, deuxmu, trois, deux, un
     real(kind=8) :: i1, dev(6), plas
     parameter(trois=3.0d0)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,7 +18,7 @@
 !
 function rsmxno(nomsd)
     implicit none
-    integer :: rsmxno
+    integer(kind=8) :: rsmxno
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
@@ -29,8 +29,8 @@ function rsmxno(nomsd)
 ! ----------------------------------------------------------------------
 ! IN  : NOMSD  : NOM DE LA STRUCTURE "RESULTAT"
     character(len=19) :: nomd2
-    integer :: nbordr, k, ival
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8) :: nbordr, k, ival
+    integer(kind=8), pointer :: ordr(:) => null()
 ! ----------------------------------------------------------------------
     call jemarq()
     ival = 0

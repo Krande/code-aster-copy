@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
         use NonLin_Datastructure_type
         character(len=24), intent(in) :: nume_dof
         type(NL_DS_Conv), intent(inout) :: ds_conv
-        integer, intent(in) :: ieq_rela
-        integer, intent(in) :: ieq_maxi
-        integer, intent(in) :: ieq_refe
-        integer, intent(in) :: ieq_comp
+        integer(kind=8), intent(in) :: ieq_rela
+        integer(kind=8), intent(in) :: ieq_maxi
+        integer(kind=8), intent(in) :: ieq_refe
+        integer(kind=8), intent(in) :: ieq_comp
         real(kind=8), intent(in) :: vale_rela
         real(kind=8), intent(in) :: vale_maxi
         real(kind=8), intent(in) :: vale_refe

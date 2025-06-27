@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-    integer :: nbordr, tdisp, kwork, sommw, tspaq, i
+    integer(kind=8) :: nbordr, tdisp, kwork, sommw, tspaq, i
     real(kind=8) :: vwork(tdisp)
 !   vphydr(nbordr)
-    integer :: jvphyd
+    integer(kind=8) :: jvphyd
 ! ----------------------------------------------------------------------
 ! BUT: CALCULER LA PRESSION HYDROSTATIQUE MAXIMALE.
 ! ----------------------------------------------------------------------
@@ -51,7 +51,7 @@ subroutine avphyd(nbordr, vwork, tdisp, kwork, sommw, &
 !  VPHYDR : OUT  R  : VECTEUR CONTENANT LA PRESSION HYDROSTATIQUE A
 !                     TOUS LES INSTANTS.
 ! ----------------------------------------------------------------------
-    integer :: iordr, adrs, decal
+    integer(kind=8) :: iordr, adrs, decal
     real(kind=8) :: sixx, siyy, sizz
 !     ------------------------------------------------------------------
 !

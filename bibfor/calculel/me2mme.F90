@@ -56,7 +56,7 @@ subroutine me2mme(modelZ, listLoadZ, &
 !
     character(len=*) :: modelZ, caraElemZ, vectElemZ, listLoadZ, materFieldZ, matecoZ, jvBaseZ
     real(kind=8) :: timeCurr
-    integer :: numeHarm
+    integer(kind=8) :: numeHarm
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -73,7 +73,7 @@ subroutine me2mme(modelZ, listLoadZ, &
     character(len=24) :: varcCurr, varcRefe
     real(kind=8) :: timePara(3)
     aster_logical, parameter :: varcLine = ASTER_TRUE
-    integer :: nbFaceVite, nbPlaneWave, nbWave
+    integer(kind=8) :: nbFaceVite, nbPlaneWave, nbWave
     character(len=8), pointer :: planeWave(:) => null()
     character(len=8), pointer :: faceVite(:) => null()
     character(len=8), pointer :: wave(:) => null()

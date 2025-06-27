@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,7 +53,7 @@ subroutine romFieldGetInfo(model, fieldName, fieldRefe, field, l_chck_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbEqua
+    integer(kind=8) :: nbEqua
     character(len=8) :: mesh
     character(len=4) :: fieldSupp
     aster_logical :: lLagr, l_chck, lConst

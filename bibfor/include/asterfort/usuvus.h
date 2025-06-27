@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,12 +23,12 @@ interface
                       nbpt, fn, vg, iret)
         real(kind=8) :: puusur
         real(kind=8) :: vusur(*)
-        integer :: nbinst
+        integer(kind=8) :: nbinst
         real(kind=8) :: temps(*)
-        integer :: isupp
-        integer :: nbpt
+        integer(kind=8) :: isupp
+        integer(kind=8) :: nbpt
         real(kind=8) :: fn(*)
         real(kind=8) :: vg(*)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine usuvus
 end interface

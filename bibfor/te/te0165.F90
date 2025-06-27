@@ -49,7 +49,7 @@ subroutine te0165(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: icodre(2)
+    integer(kind=8) :: icodre(2)
     real(kind=8) :: valres(2)
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: nomres(2)
@@ -57,12 +57,12 @@ subroutine te0165(option, nomte)
     real(kind=8) :: e
     real(kind=8) :: norml1, norml2, norl10, norl20, l0, allong
     real(kind=8) :: preten, epsthe
-    integer :: imatuu, ivectu, icontp
-    integer :: lsect, igeom, imate, idepla, ideplp
-    integer :: i, icoret, kc
+    integer(kind=8) :: imatuu, ivectu, icontp
+    integer(kind=8) :: lsect, igeom, imate, idepla, ideplp
+    integer(kind=8) :: i, icoret, kc
     character(len=16) :: defo_comp, rela_comp
     aster_logical :: lVect, lMatr, lVari, lSigm
-    integer :: codret
+    integer(kind=8) :: codret
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

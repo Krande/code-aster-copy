@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                                             japptr, japddl, japcoe,&
                                             jjeux , jtacf , jmu   ,&
                                             njeux , ztacf , iliac )
-        integer :: jsecmb
+        integer(kind=8) :: jsecmb
         real(kind=8) :: jeuini, coefpn, lambdc
-        integer :: iliai, iliac
-        integer :: jmu
-        integer :: japcoe, japddl, japptr
-        integer :: jtacf
-        integer :: jjeux, njeux
-        integer :: ztacf
-        integer :: nbliai, neq
-        integer :: nbddl, jdecal
+        integer(kind=8) :: iliai, iliac
+        integer(kind=8) :: jmu
+        integer(kind=8) :: japcoe, japddl, japptr
+        integer(kind=8) :: jtacf
+        integer(kind=8) :: jjeux, njeux
+        integer(kind=8) :: ztacf
+        integer(kind=8) :: nbliai, neq
+        integer(kind=8) :: nbddl, jdecal
     end subroutine compute_ineq_conditions_vector
 end interface

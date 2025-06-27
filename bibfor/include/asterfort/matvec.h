@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine matvec(nordre, amat, nombv, v1, v2,&
                       vecres)
-        integer :: nordre
+        integer(kind=8) :: nordre
         real(kind=8) :: amat(*)
-        integer :: nombv
+        integer(kind=8) :: nombv
         real(kind=8) :: v1(*)
         real(kind=8) :: v2(*)
         real(kind=8) :: vecres(*)

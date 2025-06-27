@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,9 +18,9 @@
 !
 interface 
     subroutine tpermh(ndim, angl_naut, aniso, perm_coef, tperm)
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: ndim
         real(kind=8), intent(in) :: angl_naut(3)
-        integer, intent(in) :: aniso
+        integer(kind=8), intent(in) :: aniso
         real(kind=8), intent(in) :: perm_coef(4)
         real(kind=8), intent(out) :: tperm(ndim, ndim)
     end subroutine tpermh

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
         character(len=16), intent(in) :: loadType
         character(len=8), intent(in) :: load, mesh
         character(len=4), intent(in) :: valeType
-        integer, intent(out) :: nbMap
+        integer(kind=8), intent(out) :: nbMap
         character(len=19), intent(out) :: map(LOAD_MAP_NBMAX)
-        integer, intent(out) :: nbCmp(LOAD_MAP_NBMAX)
+        integer(kind=8), intent(out) :: nbCmp(LOAD_MAP_NBMAX)
         aster_logical, optional, intent(in) :: createMap_
         character(len=8), optional, intent(out) :: physQuantity_(LOAD_MAP_NBMAX)
         character(len=8), optional, intent(out) :: cmpName_(LOAD_MAP_NBMAX, LOAD_MAP_NBCMPMAX)

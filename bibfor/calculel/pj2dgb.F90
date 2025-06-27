@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi, &
     implicit none
 #include "asterfort/assert.h"
     real(kind=8) :: geom1(*), geom2(*), btvr(*)
-    integer :: ino2, p1, q1, p2, q2
-    integer :: btdi(*), btnb(*), btlc(*), btco(*), tria3(*)
+    integer(kind=8) :: ino2, p1, q1, p2, q2
+    integer(kind=8) :: btdi(*), btnb(*), btlc(*), btco(*), tria3(*)
 !     BUT :
 !       TROUVER LA "GROSSE BOITE" (P1,Q1,P2,Q2) DANS LA QUELLE
 !       ON EST SUR DE TROUVER LE TRIA3 LE PLUS PROCHE DE INO2
@@ -43,7 +43,7 @@ subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi, &
 !  OUT  Q2         I  : ORDONNEE DU COIN HAUT/DROIT DE LA GROSSE BOITE
 ! ----------------------------------------------------------------------
     real(kind=8) :: d, x1, y1, x2, y2, xmin, ymin, dx, dy
-    integer :: p0, q0, nx, ny, k, p, q, itr, ntrbt, iposi, ino1
+    integer(kind=8) :: p0, q0, nx, ny, k, p, q, itr, ntrbt, iposi, ino1
 !
 ! DEB ------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-    integer :: iocc, nbma, listma(*), nbchar, lichar(*)
+    integer(kind=8) :: iocc, nbma, listma(*), nbchar, lichar(*)
     character(len=1) :: etat
     character(len=24) :: chmome
 !
@@ -49,8 +49,8 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar, &
 ! OUT : CHNOME : TORSEUR RESULTAT
 !     ------------------------------------------------------------------
 !
-    integer :: nbresu, nbcmp, icha, ir
-    integer :: vali(2)
+    integer(kind=8) :: nbresu, nbcmp, icha, ir
+    integer(kind=8) :: vali(2)
     aster_logical :: seisme, autre
     character(len=8) :: nocmp(3)
     character(len=24) :: chams0
@@ -59,7 +59,7 @@ subroutine rc36cm(iocc, etat, nbma, listma, nbchar, &
     aster_logical, pointer :: licm(:) => null()
     real(kind=8), pointer :: licr(:) => null()
     character(len=24), pointer :: champ(:) => null()
-    integer, pointer :: nume_char(:) => null()
+    integer(kind=8), pointer :: nume_char(:) => null()
 ! DEB ------------------------------------------------------------------
     call jemarq()
     cbid = (0.d0, 0.d0)

@@ -22,7 +22,7 @@ subroutine eiinit(nomte, iu, il)
     implicit none
 #include "asterfort/assert.h"
     character(len=16) :: nomte
-    integer :: iu(:, :), il(:, :)
+    integer(kind=8) :: iu(:, :), il(:, :)
 ! ----------------------------------------------------------------------
 !            DECALAGE D'INDICE POUR LES ELEMENTS D'INTERFACE
 ! ----------------------------------------------------------------------
@@ -30,10 +30,10 @@ subroutine eiinit(nomte, iu, il)
 ! OUT IU     DECALAGE D'INDICE POUR ACCEDER AUX DDL DE DEPLACEMENT
 ! OUT IL     DECALAGE D'INDICE POUR ACCEDER AUX DDL DE LAGRANGE
 ! ----------------------------------------------------------------------
-    integer :: n
-    integer :: uh20(16), lh20(4)
-    integer :: up15(12), lp15(3)
-    integer :: uq8(6), lq8(2)
+    integer(kind=8) :: n
+    integer(kind=8) :: uh20(16), lh20(4)
+    integer(kind=8) :: up15(12), lp15(3)
+    integer(kind=8) :: uq8(6), lq8(2)
 ! ----------------------------------------------------------------------
     data uh20/1, 2, 3, 4, 9, 10, 11, 12, 5, 6, 7, 8, 17, 18, 19, 20/
     data lh20/13, 14, 15, 16/

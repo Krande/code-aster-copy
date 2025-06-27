@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ function cos3t(s, pref, epssig)
 ! --- : EPSSIG : EPSILON DE TOLERANCE ----------------------------------
 ! OUT : COS3T  = RAC(54)*DET(S)/(SII)**3 -------------------------------
 ! ======================================================================
-    integer :: ndt, ndi
+    integer(kind=8) :: ndt, ndi
     real(kind=8) :: sii, siirel, dets, un, mun
     blas_int :: b_incx, b_incy, b_n
 ! ======================================================================

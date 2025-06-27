@@ -111,19 +111,19 @@ module calcG_type
 !------ temperature in VARC
         aster_logical      :: l_temp = ASTER_FALSE
 ! ----- topological dimension
-        integer            :: ndim = 0
+        integer(kind=8)            :: ndim = 0
 ! ----- name of list of NUME
         character(len=24)  :: list_nume_name = ' '
 ! ----- list of nume
-        integer, pointer   :: list_nume(:) => null()
+        integer(kind=8), pointer   :: list_nume(:) => null()
 ! ----- number of order
-        integer            :: nb_nume = 0
+        integer(kind=8)            :: nb_nume = 0
 ! ----- number option to compute
-        integer            :: nb_option = 0
+        integer(kind=8)            :: nb_option = 0
 ! ----- list of options
         character(len=8)   :: list_option(NB_MAX_OPT) = ' '
 ! ----- level information
-        integer            :: level_info = 1
+        integer(kind=8)            :: level_info = 1
     contains
         procedure, pass    :: initialize => initialize_field
         procedure, pass    :: print => print_field
@@ -151,7 +151,7 @@ module calcG_type
 ! ----- name of loading
         character(len=24)  :: loading = ' '
 ! ----- index order
-        integer            :: nume_ordre = -1
+        integer(kind=8)            :: nume_ordre = -1
 ! ----- option to compute
         character(len=8)   :: option = ' '
 !------ modal analysis ?
@@ -195,7 +195,7 @@ module calcG_type
 ! ----- name of the matrix from A*G(s)=g(theta)
         character(len=24)       :: matrix = ' '
 ! ----- number of theta field
-        integer                 :: nb_theta_field = 0
+        integer(kind=8)                 :: nb_theta_field = 0
 ! ----- name of crack
         character(len=8)        :: crack = ' '
 ! ----- type of crack
@@ -209,7 +209,7 @@ module calcG_type
 ! ----- name of the nodes of the mesh (support of crack)
         character(len=24)       :: nomNoeud = ' '
 ! ----- number of nodes in the crack
-        integer                 :: nb_fondNoeud = 0
+        integer(kind=8)                 :: nb_fondNoeud = 0
 ! ----- radius
         real(kind=8)            :: r_inf = 0.d0, r_sup = 0.d0
 ! ----- radius function of curvilinear abcissa
@@ -219,11 +219,11 @@ module calcG_type
 ! ----- lenght of crack
         real(kind=8)            :: lonfis = 0.d0
 ! ----- number of layer
-        integer                 :: nb_couche_inf = 0, nb_couche_sup = 0
+        integer(kind=8)                 :: nb_couche_inf = 0, nb_couche_sup = 0
 ! ----- type of discretization
         character(len=8)        :: discretization = ' '
 ! ----- nubmer of nodes if nb_pts_fond is defined (for linear discretization)
-        integer                 :: nb_point_fond = 0
+        integer(kind=8)                 :: nb_point_fond = 0
 ! ----- name of fields for nb_point_fond
         character(len=19)       :: npf_baseloc = '&&CALC_G.BASLOC'
         character(len=24)       :: npf_basefond = '&&CALC_G.BASFON'
@@ -231,9 +231,9 @@ module calcG_type
         character(len=24)       :: npf_absfon = '&&CALC_G.ABSFON'
         character(len=24)       :: npf_abscurv = '&&CALC_G.ABSCUR'
 ! ----- number of nodes (for linear discretization)
-        integer                 :: nnof = 0
+        integer(kind=8)                 :: nnof = 0
 ! ----- nubmer of nodes (for legendre discretization)
-        integer                 :: degree = 0
+        integer(kind=8)                 :: degree = 0
 !-------the crack is symetric ?
         character(len=8)        :: symech = 'NON'
 ! ----- the crack is closed ?
@@ -279,7 +279,7 @@ module calcG_type
 ! ----- list of parameters
         character(len=24)  :: list_name_para(NB_MAX_PARA) = ' '
         character(len=8)   :: list_type_para(NB_MAX_PARA) = ' '
-        integer            :: nb_para = 0
+        integer(kind=8)            :: nb_para = 0
 ! ----- grandeur
         real(kind=8), pointer :: v_G(:) => null()
         real(kind=8), pointer :: v_K1(:) => null()
@@ -292,7 +292,7 @@ module calcG_type
         real(kind=8), pointer :: v_TEMP(:) => null()
         character(len=8), pointer :: v_COMPOR(:) => null()
 ! ----- nb point
-        integer :: nb_point = 1
+        integer(kind=8) :: nb_point = 1
 !
 ! ----- member function
     contains
@@ -310,7 +310,7 @@ module calcG_type
 !
     type CalcG_Stat
 ! ----- level information
-        integer            :: level_info = 1
+        integer(kind=8)            :: level_info = 1
         real(kind=8)       :: time
 ! ----- cgField
         real(kind=8)       :: init_cgField = 0.d0
@@ -318,26 +318,26 @@ module calcG_type
 ! ----- cgTheta
         real(kind=8)       :: init_cgTheta = 0.d0
         real(kind=8)       :: npf_cgTheta = 0.d0
-        integer            :: nb_npf_cgTheta = 0
+        integer(kind=8)            :: nb_npf_cgTheta = 0
 ! ----- cgStudy
         real(kind=8)       :: init_cgStudy = 0.d0
-        integer            :: nb_init_cgStudy = 0
+        integer(kind=8)            :: nb_init_cgStudy = 0
 ! ----- cgTable
         real(kind=8)       :: init_cgTable = 0.d0
         real(kind=8)       :: clean_cgTable = 0.d0
         real(kind=8)       :: save_cgTable = 0.d0
-        integer            :: nb_save_cgTable = 0
+        integer(kind=8)            :: nb_save_cgTable = 0
 ! ----- cgComputeGtheta
         real(kind=8)       :: cgCmpGtheta = 0.d0
-        integer            :: nb_cgCmpGtheta = 0
+        integer(kind=8)            :: nb_cgCmpGtheta = 0
         real(kind=8)       :: cgCmpGtheta_te = 0.d0
-        integer            :: nb_cgCmpGtheta_te = 0
+        integer(kind=8)            :: nb_cgCmpGtheta_te = 0
         real(kind=8)       :: cgCmpGtheta_sys = 0.d0
-        integer            :: nb_cgCmpGtheta_sys = 0
+        integer(kind=8)            :: nb_cgCmpGtheta_sys = 0
         real(kind=8)       :: cgCmpGtheta_disc = 0.d0
-        integer            :: nb_cgCmpGtheta_disc = 0
+        integer(kind=8)            :: nb_cgCmpGtheta_disc = 0
         real(kind=8)       :: cgCmpGtheta_mes = 0.d0
-        integer            :: nb_cgCmpGtheta_mes = 0
+        integer(kind=8)            :: nb_cgCmpGtheta_mes = 0
 ! ----- routines
         real(kind=8)       :: cgVerif = 0.d0
         real(kind=8)       :: cgThetaFact = 0.d0
@@ -373,7 +373,7 @@ contains
 !   In this     : calG Stat
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ifm
+        integer(kind=8) :: ifm
 !
 ! --- Level of information
 !
@@ -399,13 +399,13 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, ifm, nbropt
+        integer(kind=8) :: ier, ifm, nbropt
         character(len=3) :: repk
         character(len=16) :: k16bid
         character(len=19) :: lisopt
         character(len=8)  :: modele, mater
         character(len=8)  :: templist(NB_MAX_OPT)
-        integer, pointer :: v_nume(:) => null()
+        integer(kind=8), pointer :: v_nume(:) => null()
         real(kind=8) :: start, finish
 !
         call cpu_time(start)
@@ -511,7 +511,7 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: i
+        integer(kind=8) :: i
 !
         print *, "----------------------------------------------------------------------"
         print *, "Informations about CalcG_Field"
@@ -667,8 +667,8 @@ contains
 !   In this     : calG field
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret
-        integer, pointer :: ordr(:) => null()
+        integer(kind=8) :: iret
+        integer(kind=8), pointer :: ordr(:) => null()
         real(kind=8) :: start, finish
 !
         call cpu_time(start)
@@ -749,7 +749,7 @@ contains
 !
         class(CalcG_Study), intent(inout)  :: this
         character(len=8), intent(in)       :: result_in
-        integer, intent(in)                :: nume_index
+        integer(kind=8), intent(in)                :: nume_index
         type(CalcG_Stat), intent(inout)    :: cgStat
 !
 ! --------------------------------------------------------------------------------------------------
@@ -867,7 +867,7 @@ contains
 !   In result_in   : name of result field
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret
+        integer(kind=8) :: iret
 !
         call rsexch('F', result_in, 'DEPL', this%nume_ordre, this%depl, iret)
         call rsexch(' ', result_in, 'VITE', this%nume_ordre, this%vitesse, iret)
@@ -898,7 +898,7 @@ contains
 !   In result_in   : name of result field
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ipuls, jinst
+        integer(kind=8) :: ipuls, jinst
         character(len=8)  :: k8bid
 
 !
@@ -933,13 +933,13 @@ contains
 !   In this     : theta type
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ier, i, ndim, jma, nume
+        integer(kind=8) :: ier, i, ndim, jma, nume
         character(len=8) :: typfon, nompar(1), typma
         real(kind=8) :: maxtai, mintai, valpar(1), valres_i, valres_s
         aster_logical :: l_disc
         real(kind=8), pointer :: fondTailleR(:) => null()
         real(kind=8), pointer :: absfon(:) => null()
-        integer, pointer :: typmail(:) => null()
+        integer(kind=8), pointer :: typmail(:) => null()
         real(kind=8) :: start, finish
         character(len=8) :: thetafactorsin
 !
@@ -1381,7 +1381,7 @@ contains
         implicit none
 !
         class(CalcG_Theta), intent(in)  :: this
-        integer, pointer :: v_fondnoeuNume(:)
+        integer(kind=8), pointer :: v_fondnoeuNume(:)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -1476,9 +1476,9 @@ contains
 !   initialization of a CalcG_Table type
 !   In this     : calcG Table
 ! --------------------------------------------------------------------------------------
-        integer :: iopt, nbValues
+        integer(kind=8) :: iopt, nbValues
         character(len=8) :: option
-        integer, pointer :: fondNoeudNume(:) => null()
+        integer(kind=8), pointer :: fondNoeudNume(:) => null()
         real(kind=8) :: start, finish
 !
         call cpu_time(start)
@@ -1585,7 +1585,7 @@ contains
         class(CalcG_Table), intent(inout)  :: this
         type(CalcG_field), intent(in) :: cgField
         type(CalcG_study), intent(in) :: cgStudy
-        integer, intent(in) :: node_id
+        integer(kind=8), intent(in) :: node_id
 !
 ! ----------------------------------------------------------------------------------------
 !
@@ -1645,12 +1645,12 @@ contains
 !   In this     : calcG Table
 ! --------------------------------------------------------------------------------------
 !
-        integer            :: livi(NB_MAX_PARA)
+        integer(kind=8)            :: livi(NB_MAX_PARA)
         real(kind=8)       :: livr(NB_MAX_PARA)
         complex(kind=8)    :: livc(NB_MAX_PARA)
         character(len=24)  :: livk(NB_MAX_PARA)
         real(kind=8) :: coor(3), start, finish
-        integer :: i_node, iopt
+        integer(kind=8) :: i_node, iopt
         character(len=8) :: option
         real(kind=8), pointer   :: fondNoeudCoor(:) => null()
         real(kind=8), pointer   :: absfon(:) => null()
@@ -1754,12 +1754,12 @@ contains
         real(kind=8), pointer   :: v_abscur(:) => null()
         real(kind=8), pointer :: gsv(:) => null()
         aster_logical, pointer :: gsl(:) => null()
-        integer, pointer   :: fondNoeudNume(:) => null()
+        integer(kind=8), pointer   :: fondNoeudNume(:) => null()
         character(len=8), pointer   :: v_noeuf(:) => null()
         character(len=8), pointer   :: fondNoeud(:) => null()
         character(len=19) :: cnsbas
-        integer :: i_node, nume, k, node_nume, ndim, nbno, ibid
-        integer :: ina, inb, nseg, iseg, indica, indicb
+        integer(kind=8) :: i_node, nume, k, node_nume, ndim, nbno, ibid
+        integer(kind=8) :: ina, inb, nseg, iseg, indica, indicb
         real(kind=8) :: smax, s, s1, s2, coor1(3), coor2(3), start, finish
         real(kind=8) :: base1(6), base2(6), eps, dmin, sn, n(3)
         real(kind=8) :: xm, ym, zm, xa, ya, za, xb, yb, zb, d

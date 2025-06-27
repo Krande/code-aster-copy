@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine get_jvbasename(bas_, numext, path)
         implicit none
         character(len=*), intent(in) :: bas_
-        integer, intent(in) :: numext
+        integer(kind=8), intent(in) :: numext
         character(len=*), intent(out) :: path
     end subroutine get_jvbasename
 end interface

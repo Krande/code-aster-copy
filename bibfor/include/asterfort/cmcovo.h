@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine cmcovo(main, maout, nbma, lima, prefno,&
                       prefma, inima, epais, plan, trans)
-        integer :: nbma
+        integer(kind=8) :: nbma
         character(len=8) :: main
         character(len=8) :: maout
-        integer :: lima(nbma)
+        integer(kind=8) :: lima(nbma)
         character(len=8) :: prefno
         character(len=8) :: prefma
-        integer :: inima
+        integer(kind=8) :: inima
         real(kind=8) :: epais
         character(len=8) :: plan
         character(len=8) :: trans

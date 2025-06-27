@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine mmgaus(elem_type    , type_inte, gauss_indx, xpg, ypg,&
                       gauss_weight_)
         character(len=8), intent(in) :: elem_type
-        integer, intent(in) :: type_inte
-        integer, intent(in) :: gauss_indx
+        integer(kind=8), intent(in) :: type_inte
+        integer(kind=8), intent(in) :: gauss_indx
         real(kind=8), intent(out) :: xpg
         real(kind=8), intent(out) :: ypg
         real(kind=8), optional, intent(out) :: gauss_weight_

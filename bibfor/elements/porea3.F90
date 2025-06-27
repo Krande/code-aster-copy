@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine porea3(nno, nc, deplm, deplp, geom, &
 #include "asterfort/trigom.h"
 #include "blas/ddot.h"
 !
-    integer :: nno, nc
+    integer(kind=8) :: nno, nc
     real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma
     real(kind=8) :: pgl(3, 3), xl1, angp(3)
 !
@@ -55,7 +55,7 @@ subroutine porea3(nno, nc, deplm, deplp, geom, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: utg(14), xug(6), xd0(3), alfa1, beta1
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,9 +44,9 @@ subroutine te0032(option, nomte)
 !                                  CHAR_MECA_PRES_F
 !                                  CHAR_MECA_PESA_R
 !     -----------------------------------------------------------------
-    integer :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
-    integer :: i, j, ier, iplan, jgeom, jcoqu, jvecg, jpres, itemps
-    integer :: iadzi, iazk24, lpesa
+    integer(kind=8) :: ndim, nno, nnos, npg, ipoids, ivf, idfdx, jgano
+    integer(kind=8) :: i, j, ier, iplan, jgeom, jcoqu, jvecg, jpres, itemps
+    integer(kind=8) :: iadzi, iazk24, lpesa
     real(kind=8) :: pgl(3, 3), xyzl(3, 4), pglo(3), ploc(3)
     real(kind=8) :: vecl(24), for(6, 4), for2(6, 4), rho, epais
     real(kind=8) :: undemi

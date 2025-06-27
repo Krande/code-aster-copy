@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
 #include "asterfort/wkvect.h"
 #include "asterfort/wpordc.h"
 !
-    integer :: mxresf
-    integer :: nbfreq, nbvect, neq, resufi(mxresf, *)
+    integer(kind=8) :: mxresf
+    integer(kind=8) :: nbfreq, nbvect, neq, resufi(mxresf, *)
     complex(kind=8) :: vecp(neq, *), vauc(2*neq, *), vp(*)
     real(kind=8) :: resufr(mxresf, *)
 !     RESTITUTION DES VALEURS PROPRES ET DES MODES DU PB QUADRATIQUE
@@ -43,7 +43,7 @@ subroutine wp5vec(nbfreq, nbvect, neq, vp, vecp, &
 !     -----------------------------------------------------------------
 !
     real(kind=8) :: am, om
-    integer :: i, j, k, iadind
+    integer(kind=8) :: i, j, k, iadind
 !
     call jemarq()
 !

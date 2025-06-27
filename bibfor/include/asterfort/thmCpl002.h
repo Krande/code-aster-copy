@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,10 +35,10 @@ interface
         type(THM_DS), intent(in) :: ds_thm
         aster_logical, intent(in) :: lMatr, lSigm, lVari
         real(kind=8), intent(in) :: angl_naut(3)
-        integer, intent(in) :: ndim, nbvari
-        integer, intent(in) :: dimdef, dimcon
-        integer, intent(in) :: adcome, adcote, adcp11 
-        integer, intent(in) :: addeme, addete, addep1
+        integer(kind=8), intent(in) :: ndim, nbvari
+        integer(kind=8), intent(in) :: dimdef, dimcon
+        integer(kind=8), intent(in) :: adcome, adcote, adcp11 
+        integer(kind=8), intent(in) :: addeme, addete, addep1
         real(kind=8), intent(in) :: temp, p1
         real(kind=8), intent(in) :: dtemp, dp1
         real(kind=8), intent(in) :: epsv, depsv, deps(6), tbiot(6)
@@ -48,6 +48,6 @@ interface
         real(kind=8), intent(in) :: vintm(nbvari)
         real(kind=8), intent(inout) :: vintp(nbvari)
         real(kind=8), intent(inout) :: dsde(dimcon, dimdef)
-        integer, intent(out) :: retcom
+        integer(kind=8), intent(out) :: retcom
     end subroutine thmCpl002
 end interface 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd, &
                   indal)
     implicit none
 #include "asterfort/rcvala.h"
-    integer :: ndt, ndi, nvi, imat, nbmat
+    integer(kind=8) :: ndt, ndi, nvi, imat, nbmat
     real(kind=8) :: materd(nbmat, 2), materf(nbmat, 2), tempd
     character(len=8) :: mod
     character(len=3) :: matcst
@@ -43,10 +43,10 @@ subroutine dpvpma(mod, imat, nbmat, tempd, materd, &
 ! --- : NVI    : NB DE VARIABLES INTERNES -------------------------
 ! --- : INDAL  : INDICATEUR SUR ALPHA
 ! =================================================================
-    integer :: ii, indal, i, j
+    integer(kind=8) :: ii, indal, i, j
     real(kind=8) :: e, nu, mu, k
     real(kind=8) :: un, deux, trois
-    integer :: cerr(17)
+    integer(kind=8) :: cerr(17)
     character(len=16) :: nomc(17)
 ! =================================================================
     parameter(trois=3.0d0)

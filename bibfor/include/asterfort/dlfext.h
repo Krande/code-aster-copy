@@ -20,7 +20,7 @@ interface
     subroutine dlfext(nbVectAsse, nbLoad, temps, neq, liad, &
                       lifo, loadNameJv, loadInfoJv, loadFuncJv, model, &
                       materField, mateco, caraElem, numedd, f)
-        integer, intent(in) :: nbVectAsse, nbLoad, neq, liad(*)
+        integer(kind=8), intent(in) :: nbVectAsse, nbLoad, neq, liad(*)
         real(kind=8), intent(in) :: temps
         character(len=24), intent(in) :: lifo(*), loadInfoJv, loadFuncJv
         character(len=24), intent(in) :: model, caraElem, loadNameJv, materField, mateco, numedd

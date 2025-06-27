@@ -70,14 +70,14 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
 !  BASCOR : IN  : 'G' OU 'V' : BASE POUR LA CREATION DE CORRN ET CORRM
 ! ======================================================================
 !
-    integer :: nbmaou, nbnoin, iret, jnuma, jwk1, jconx2, ima, numa
-    integer :: nbno, lont
-    integer :: ino, nuno, jdim, itypou, jadin, jadou, ibid
-    integer :: jcorou, iadr, jwk4
-    integer :: iad, ntgeo, nbnoou, nbnomx, jwk2, nbgma, jgma, igm, nbma, nbmain
-    integer :: jwk3, nbgmin, jgmanv, nbgmnv, k, jnmpg, nmpg, nbgno, jmaor
-    integer :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg, numgno
-    integer :: jcorrm, imain, imaou, n1
+    integer(kind=8) :: nbmaou, nbnoin, iret, jnuma, jwk1, jconx2, ima, numa
+    integer(kind=8) :: nbno, lont
+    integer(kind=8) :: ino, nuno, jdim, itypou, jadin, jadou, ibid
+    integer(kind=8) :: jcorou, iadr, jwk4
+    integer(kind=8) :: iad, ntgeo, nbnoou, nbnomx, jwk2, nbgma, jgma, igm, nbma, nbmain
+    integer(kind=8) :: jwk3, nbgmin, jgmanv, nbgmnv, k, jnmpg, nmpg, nbgno, jmaor
+    integer(kind=8) :: nbgnin, jgnonv, jnnpg, nbgnnv, ign, nnpg, numgno
+    integer(kind=8) :: jcorrm, imain, imaou, n1
     character(len=4) :: docu
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
@@ -88,13 +88,13 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
     aster_logical :: lvide, lpmesh, l_exi_in_grp, l_exi_in_grp_p
     character(len=24), pointer :: grp_noeu_in(:) => null()
     real(kind=8), pointer :: vale(:) => null()
-    integer, pointer :: vconnex(:) => null()
-    integer, pointer :: typmail(:) => null()
-    integer, pointer :: num_noeu_in(:) => null()
-    integer, pointer :: maex(:) => null()
-    integer, pointer :: malg(:) => null()
-    integer, pointer :: noex(:) => null()
-    integer, pointer :: nolg(:) => null()
+    integer(kind=8), pointer :: vconnex(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: num_noeu_in(:) => null()
+    integer(kind=8), pointer :: maex(:) => null()
+    integer(kind=8), pointer :: malg(:) => null()
+    integer(kind=8), pointer :: noex(:) => null()
+    integer(kind=8), pointer :: nolg(:) => null()
 !
     call jemarq()
 !

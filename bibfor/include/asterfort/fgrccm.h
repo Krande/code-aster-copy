@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine fgrccm(nbextr, ext, ncyc, sigmin, sigmax)
-        integer :: nbextr
+        integer(kind=8) :: nbextr
         real(kind=8) :: ext(*)
-        integer :: ncyc
+        integer(kind=8) :: ncyc
         real(kind=8) :: sigmin(*)
         real(kind=8) :: sigmax(*)
     end subroutine fgrccm

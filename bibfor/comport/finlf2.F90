@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine finlf2(ndim, delta, alpha, kn, kt, &
 !
     implicit none
 !
-    integer :: ndim
+    integer(kind=8) :: ndim
     real(kind=8) :: delta(ndim), alpha
     real(kind=8) :: kn, kt, mu, Bn, Bt, m1, m2, cbar, d1
     real(kind=8) :: res
@@ -35,7 +35,7 @@ subroutine finlf2(ndim, delta, alpha, kn, kt, &
 ! IN : D1 - ENERGIE MAXIMALE DISSIPE PAR ENDOMMAGEMENT
 ! OUT : RES - VALUE OF THE FUNCTION
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !
     res = Bn*((mu*kn*delta(1)-cbar)/(mu*(kn*alpha**m2+Bn*(1-alpha)**m1)))**2
     do i = 2, ndim

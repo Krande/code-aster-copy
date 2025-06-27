@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,9 +59,9 @@ subroutine isOptionPossible(ligrel_, option_, para_name_, &
     character(len=19) :: ligrel
     character(len=16) :: option, nomte
     character(len=8) :: para_name, dmo, dma
-    integer :: indx_option
-    integer :: igrel, ngrel, te, mode, nel, ier
-    integer, pointer :: v_liel(:) => null()
+    integer(kind=8) :: indx_option
+    integer(kind=8) :: igrel, ngrel, te, mode, nel, ier
+    integer(kind=8), pointer :: v_liel(:) => null()
     aster_logical :: l_all, l_some
 !
 ! --------------------------------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
     subroutine cfleqa(mesh, sdcont_defi, nb_cont_zone, nt_node_middle)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: sdcont_defi
-        integer, intent(in) :: nb_cont_zone
-        integer, intent(out) :: nt_node_middle
+        integer(kind=8), intent(in) :: nb_cont_zone
+        integer(kind=8), intent(out) :: nt_node_middle
     end subroutine cfleqa
 end interface

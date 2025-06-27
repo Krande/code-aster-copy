@@ -49,7 +49,7 @@ subroutine vecgme(stop, &
     character(len=*), intent(in) :: viteCurrZ, acceCurrZ, strxPrevZ
     character(len=*), intent(inout) :: vectElemZ
     character(len=*), optional, intent(in) :: varcCurrZ_
-    integer, optional, intent(in) :: nharm_
+    integer(kind=8), optional, intent(in) :: nharm_
     character(len=*), optional, intent(in) :: ligrelCalcZ_
     character(len=1), optional, intent(in) :: jvBase_
 !
@@ -87,15 +87,15 @@ subroutine vecgme(stop, &
     character(len=8) :: lpain(LOAD_NEUM_NBMAXIN)
     character(len=24) :: lchin(LOAD_NEUM_NBMAXIN)
     aster_logical, parameter :: applyPilo = ASTER_FALSE, applySuiv = ASTER_TRUE
-    integer :: nbLoad, iLoad, loadNume, nbFieldInGene
-    integer :: nharm
+    integer(kind=8) :: nbLoad, iLoad, loadNume, nbFieldInGene
+    integer(kind=8) :: nharm
     real(kind=8), parameter :: timeTheta = 0.d0
     character(len=8) :: loadName
     character(len=13) :: loadPreObject
     character(len=24) :: ligrelCalc, loadLigrel
     character(len=19) :: vectElem, resuElem
     character(len=24), pointer :: listLoadName(:) => null()
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     aster_logical :: noLoadInList
     character(len=1) :: jvBase
     character(len=24) :: varcCurr

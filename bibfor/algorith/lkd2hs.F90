@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine lkd2hs(nmat, materf, devsig, sii, rcos3t, &
 #include "asterfort/lcprte.h"
 #include "asterfort/lkd2de.h"
 #include "asterfort/lkhlod.h"
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: devsig(6), rcos3t, sii, d2hds2(6, 6)
     real(kind=8) :: materf(nmat, 2), dhds(6)
 !
-    integer :: ndi, ndt, i, j
+    integer(kind=8) :: ndi, ndt, i, j
     real(kind=8) :: mident(6, 6), zero, un, rhlode, gamcjs
     real(kind=8) :: coef1, deux, trois, coef3, coef4, r54, coef7, cinq
     real(kind=8) :: coef6, ddetds(6), mat1(6, 6), mat2(6, 6)

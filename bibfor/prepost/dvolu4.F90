@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,12 +34,12 @@ function dvolu4(coord, norm, coord1)
 !
 ! DECLARATION GLOBALE
 !
-    integer :: norm(2, 4)
+    integer(kind=8) :: norm(2, 4)
     real(kind=8) :: coord(3, 12), coord1(3), dvolu4
 !
 ! DECLARATION LOCALE
 !
-    integer :: i, j, k, l, e
+    integer(kind=8) :: i, j, k, l, e
     real(kind=8) :: xo1i, yo1i, zo1i, do1i
     aster_logical :: lnoeu
 !

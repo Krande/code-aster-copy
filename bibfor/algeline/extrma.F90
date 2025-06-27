@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,9 @@ subroutine extrma(amatst, nlig, ncol, nmat, amat)
 !     OUT : AMAT      : MATRICE DIMENSIONNEE NLIG,NCOL
 ! ------------------------------------------------------------------
     implicit none
-    integer :: ncol, nlig
+    integer(kind=8) :: ncol, nlig
     real(kind=8) :: amatst(9, 6, 6), amat(nlig, ncol)
-    integer :: i, j, nmat
+    integer(kind=8) :: i, j, nmat
 !-----------------------------------------------------------------------
 !
     do j = 1, ncol

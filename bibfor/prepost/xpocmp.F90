@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,8 +32,8 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-    integer :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(*)
-    integer :: ddlc
+    integer(kind=8) :: ndim, nfh, nfe, ima, n, jconx1, jconx2, nbcmp, cmp(*)
+    integer(kind=8) :: ddlc
     aster_logical :: lmeca, pre1, press, press1, pref, lagf
     character(len=8) :: elrefp
     character(len=19) :: cns1
@@ -56,7 +56,7 @@ subroutine xpocmp(elrefp, cns1, ima, n, jconx1, &
 !     CMP    : POSITION DES DDLS DE DEPL X-FEM DANS LE CHAMP_NO DE DEPL1
 !
 !
-    integer :: jcnsl1, i, j, k, ino, icmp, ndc, ipos, nnos, ibid
+    integer(kind=8) :: jcnsl1, i, j, k, ino, icmp, ndc, ipos, nnos, ibid
     aster_logical :: exist(n, nbcmp), contas
     character(len=8) :: nomcmp, k8bid
     character(len=8), pointer :: cnsc(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,20 +55,20 @@ subroutine op0168()
 #include "asterfort/wkvect.h"
 !
 !-----------------------------------------------------------------------
-    integer :: i, ibid, ifr, impr, iord, iprec, iret
-    integer :: j, jadr, jme, jnom, jor, jordr, tmod(1)
-    integer :: k, lmod, lvali, lvalk, lvalr, n1
-    integer :: n10, n2, n3, n4, n5, n6, n7
-    integer :: n8, n9, nbfilt, nbme, nbmode, nbmodt, nbmodu
-    integer :: nbmr, nbpara, nbpari, nbpark, nbparr, ndimt, neq
-    integer :: npari, npark, nparr, nume, nume1, nume2
+    integer(kind=8) :: i, ibid, ifr, impr, iord, iprec, iret
+    integer(kind=8) :: j, jadr, jme, jnom, jor, jordr, tmod(1)
+    integer(kind=8) :: k, lmod, lvali, lvalk, lvalr, n1
+    integer(kind=8) :: n10, n2, n3, n4, n5, n6, n7
+    integer(kind=8) :: n8, n9, nbfilt, nbme, nbmode, nbmodt, nbmodu
+    integer(kind=8) :: nbmr, nbpara, nbpari, nbpark, nbparr, ndimt, neq
+    integer(kind=8) :: npari, npark, nparr, nume, nume1, nume2
     real(kind=8) :: cumulx, cumuly, cumulz, dx, dy, dz, fremax
     real(kind=8) :: fremin, freq, seuil, undf
 !-----------------------------------------------------------------------
     parameter(nbpari=1, nbparr=15, nbpark=3, nbpara=19)
-    integer :: lpar(3)
-    integer :: vali(2)
-    integer :: nbvect
+    integer(kind=8) :: lpar(3)
+    integer(kind=8) :: vali(2)
+    integer(kind=8) :: nbvect
     real(kind=8) :: r8b, prec, zero, mastot, valr(7)
     character(len=1) :: typmod
     character(len=3) :: ouinon

@@ -73,17 +73,17 @@ subroutine te0540(option, nomte)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nc, nno, dimklv, npg, iret, codrep
+    integer(kind=8) :: nc, nno, dimklv, npg, iret, codrep
     parameter(nc=9, dimklv=2*nc*(2*nc+1)/2, nno=2, npg=2)
     real(kind=8) :: fl(2*nc), u(2*nc), du(2*nc)
     real(kind=8) :: klv(dimklv), sk(dimklv)
 !
-    integer :: i, jcret, npge, iposig, ipomod, jmodfb, jsigfb, iposcp, ifgp
-    integer :: igeom, imate, icontm, iorien, ivarim, iinstp, ipoids
-    integer :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
-    integer :: jacf, ivarmp, codret, ivf
-    integer :: ncomp, nbvalc, isdcom, nbasspou, maxfipoutre
-    integer :: kp, istrxm, istrxp, icomax, ico
+    integer(kind=8) :: i, jcret, npge, iposig, ipomod, jmodfb, jsigfb, iposcp, ifgp
+    integer(kind=8) :: igeom, imate, icontm, iorien, ivarim, iinstp, ipoids
+    integer(kind=8) :: icarcr, ideplm, ideplp, iinstm, ivectu, icontp, ivarip, imat
+    integer(kind=8) :: jacf, ivarmp, codret, ivf
+    integer(kind=8) :: ncomp, nbvalc, isdcom, nbasspou, maxfipoutre
+    integer(kind=8) :: kp, istrxm, istrxp, icomax, ico
     real(kind=8) :: ey, ez, gamma, xl, gg, xjx
     real(kind=8) :: e, g, nu, temp, temm, gxjx
     real(kind=8) :: defam(6), defap(6), angp(3)
@@ -101,8 +101,8 @@ subroutine te0540(option, nomte)
     character(len=16) :: rela_comp, defo_comp, mult_comp, type_comp
 !
     real(kind=8), allocatable :: vfv(:, :), vvp(:, :), skp(:, :)
-    integer :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
-    integer, pointer :: nbfipoutre(:) => null()
+    integer(kind=8) :: nbfibr, nbgrfi, tygrfi, nbcarm, nug(10)
+    integer(kind=8), pointer :: nbfipoutre(:) => null()
     real(kind=8), pointer :: gxjxpou(:) => null()
 !
     real(kind=8), pointer :: yj(:) => null(), zj(:) => null()
@@ -111,7 +111,7 @@ subroutine te0540(option, nomte)
     real(kind=8), pointer :: defmfib(:) => null()
     real(kind=8), pointer :: defpfib(:) => null()
 ! --------------------------------------------------------------------------------------------------
-    integer, parameter :: nb_cara = 3
+    integer(kind=8), parameter :: nb_cara = 3
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'EY1', 'EZ1', 'JX1'/

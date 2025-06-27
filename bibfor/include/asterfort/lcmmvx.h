@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,14 +23,14 @@ interface
                       cpmono, pgl, nvi, hsr, nfs,&
                       nsg, toutms, timed, timef, deps,&
                       seuil)
-        integer :: nsg
-        integer :: nfs
-        integer :: nvi
-        integer :: nmat
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: nvi
+        integer(kind=8) :: nmat
         real(kind=8) :: sigf(6)
         real(kind=8) :: vin(nvi)
         real(kind=8) :: materf(nmat*2)
-        integer :: nbcomm(nmat, 3)
+        integer(kind=8) :: nbcomm(nmat, 3)
         character(len=24) :: cpmono(5*nmat+1)
         real(kind=8) :: pgl(3, 3)
         real(kind=8) :: hsr(nsg, nsg)

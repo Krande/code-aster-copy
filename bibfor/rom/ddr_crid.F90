@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,8 +40,8 @@ subroutine ddr_crid(ds_para, nb_node_rid, v_node_rid)
 #include "asterfort/addGroupNode.h"
 !
     type(ROM_DS_ParaDDR), intent(in) :: ds_para
-    integer, intent(in)           :: nb_node_rid
-    integer, intent(in)           :: v_node_rid(nb_node_rid)
+    integer(kind=8), intent(in)           :: nb_node_rid
+    integer(kind=8), intent(in)           :: v_node_rid(nb_node_rid)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -57,20 +57,20 @@ subroutine ddr_crid(ds_para, nb_node_rid, v_node_rid)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: nb_elem, nb_node, node_nbelem, elem_nbnode
-    integer :: nunolo
-    integer :: i_layer
-    integer :: i_elem, i_node, i_elem_node, i_node_elem, i_rid_maxi
-    integer :: nb_rid_elem, nb_int_node, nb_group_add, nb_sub_node, nb_layer_sub, i_couche
-    integer :: indx, node_nume, elem_nume, nb_rid_node
-    integer :: nb_layer_rid
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nb_elem, nb_node, node_nbelem, elem_nbnode
+    integer(kind=8) :: nunolo
+    integer(kind=8) :: i_layer
+    integer(kind=8) :: i_elem, i_node, i_elem_node, i_node_elem, i_rid_maxi
+    integer(kind=8) :: nb_rid_elem, nb_int_node, nb_group_add, nb_sub_node, nb_layer_sub, i_couche
+    integer(kind=8) :: indx, node_nume, elem_nume, nb_rid_node
+    integer(kind=8) :: nb_layer_rid
     character(len=8) :: mesh
     character(len=24):: grelem_rid, grnode_int, grnode_sub
-    integer, pointer :: v_coninv(:) => null()
-    integer, pointer :: v_coninv_longcum(:) => null()
-    integer, pointer :: v_connex(:) => null()
-    integer, pointer :: v_connex_longcum(:) => null()
+    integer(kind=8), pointer :: v_coninv(:) => null()
+    integer(kind=8), pointer :: v_coninv_longcum(:) => null()
+    integer(kind=8), pointer :: v_connex(:) => null()
+    integer(kind=8), pointer :: v_connex_longcum(:) => null()
     aster_logical :: test, l_corr_ef
     aster_logical, pointer :: v_liel_rid(:) => null()
     aster_logical, pointer :: v_lino_rid(:) => null()
@@ -78,7 +78,7 @@ subroutine ddr_crid(ds_para, nb_node_rid, v_node_rid)
     aster_logical, pointer :: v_list_in(:) => null()
     aster_logical, pointer :: v_list_sb(:) => null()
     aster_logical, pointer :: v_loca_sb(:) => null()
-    integer, pointer :: v_group(:) => null()
+    integer(kind=8), pointer :: v_group(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

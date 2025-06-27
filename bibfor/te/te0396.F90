@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,11 +40,11 @@ subroutine te0396(option, nomte)
 !                      NOMTE        -->  NOM DU TYPE ELEMENT
 ! ......................................................................
 !
-    integer :: nno, npg, ipoids, ivf, idfdk, kp, ne, imate
-    integer :: lorien, jefint, kc, igeom, i, k0, ifint, ic
+    integer(kind=8) :: nno, npg, ipoids, ivf, idfdk, kp, ne, imate
+    integer(kind=8) :: lorien, jefint, kc, igeom, i, k0, ifint, ic
     character(len=8) :: elrefe
     character(len=16) :: nomres(4)
-    integer :: icodre(4)
+    integer(kind=8) :: icodre(4)
     real(kind=8) :: en(3, 2), enprim(3, 2), valres(4), granc(6), fint(6, 3)
     real(kind=8) :: y0(3), x00(3, 3), x0pg(3), rot0(3, 3), nu, gn(3), gm(3)
     real(kind=8) :: pn(3), pm(3), qigk(3), rotk(3, 3), rotabs(3, 3), epsthe
@@ -52,11 +52,11 @@ subroutine te0396(option, nomte)
 !      CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
 !
 !-----------------------------------------------------------------------
-    integer :: ico, jgano, ndim, nnos
+    integer(kind=8) :: ico, jgano, ndim, nnos
     real(kind=8) :: a, ajacob, ay, az, e, g, pjacob
     real(kind=8) :: r8bid, unsurj, xiy, xiz, xjx
 !-----------------------------------------------------------------------
-    integer, parameter :: nb_cara = 6
+    integer(kind=8), parameter :: nb_cara = 6
     real(kind=8) :: vale_cara(nb_cara)
     character(len=8) :: noms_cara(nb_cara)
     data noms_cara/'A1', 'IY1', 'IZ1', 'AY1', 'AZ1', 'JX1'/

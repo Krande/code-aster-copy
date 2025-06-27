@@ -22,7 +22,7 @@ function cfmmvd(vect)
 !
 #include "asterfort/assert.h"
 !
-    integer :: cfmmvd
+    integer(kind=8) :: cfmmvd
     character(len=5), intent(in) :: vect
 !
 ! --------------------------------------------------------------------------------------------------
@@ -38,13 +38,13 @@ function cfmmvd(vect)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: zmeth = 23, ztole = 3, ztabf = 34, zcmcf = 17
-    integer, parameter :: ztgde = 6, zdirn = 6, zdime = 18, zpoud = 3
-    integer, parameter :: ztypm = 2, zperc = 4, ztypn = 2, zmesx = 5
-    integer, parameter :: zapme = 3, zmaes = 4, zresu = 30, zcmdf = 6
-    integer, parameter :: zexcl = 3, zparr = 7, zpari = 31
-    integer, parameter :: ztaco = 2, zeven = 5, zcoco = 8, ztacf = 4
-    integer, parameter :: zetat = 3
+    integer(kind=8), parameter :: zmeth = 23, ztole = 3, ztabf = 34, zcmcf = 17
+    integer(kind=8), parameter :: ztgde = 6, zdirn = 6, zdime = 18, zpoud = 3
+    integer(kind=8), parameter :: ztypm = 2, zperc = 4, ztypn = 2, zmesx = 5
+    integer(kind=8), parameter :: zapme = 3, zmaes = 4, zresu = 30, zcmdf = 6
+    integer(kind=8), parameter :: zexcl = 3, zparr = 7, zpari = 31
+    integer(kind=8), parameter :: ztaco = 2, zeven = 5, zcoco = 8, ztacf = 4
+    integer(kind=8), parameter :: zetat = 3
 !
 ! --------------------------------------------------------------------------------------------------
 !

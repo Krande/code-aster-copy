@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: lnoff
+    integer(kind=8) :: lnoff
     character(len=8) :: fiss, typfis, conf
     character(len=24) :: chfond, basfon, fonoeu
 !
@@ -53,12 +53,12 @@ subroutine xrecff(fiss, typfis, chfond, basfon, fonoeu, &
 !
 !     ------------------------------------------------------------------
 !
-    integer :: numfon, ibid, idepfi, iarrfi, ifon, ibas, inoeu
+    integer(kind=8) :: numfon, ibid, idepfi, iarrfi, ifon, ibas, inoeu
 !
-    integer :: i, j, k, nfonu, jfonu, jbasu, jnoeu
+    integer(kind=8) :: i, j, k, nfonu, jfonu, jbasu, jnoeu
     real(kind=8) :: smax, s, s1, s2, xyz1, xyz2
     character(len=24) :: fontmp, bastmp, noeutmp, valk
-    integer, pointer :: fondmult(:) => null()
+    integer(kind=8), pointer :: fondmult(:) => null()
     real(kind=8), pointer :: fondfiss(:) => null()
     real(kind=8), pointer :: basefond(:) => null()
     character(len=8), pointer :: fonoeud(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ interface
                       numaca, quad, sens, evalz)
         character(len=19) :: tablca
         character(len=8) :: mailla
-        integer :: icabl
-        integer :: nbf0
-        integer :: nbnoca(*)
+        integer(kind=8) :: icabl
+        integer(kind=8) :: nbf0
+        integer(kind=8) :: nbnoca(*)
         character(len=19) :: numaca
         aster_logical :: quad
-        integer :: sens
+        integer(kind=8) :: sens
         aster_logical, optional :: evalz
     end subroutine topoca
 end interface

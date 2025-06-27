@@ -54,13 +54,13 @@ subroutine te0167(option, nomte)
     real(kind=8) :: nx, ny, d(6), us(3), e(3, 3)
     real(kind=8) :: poids
     real(kind=8) :: rho, alpha, r_impe, rhon, q_alpha, q_c
-    integer :: ipoids, ivf, idfde
-    integer :: jv_geom, jv_mate, jv_matr
-    integer :: jvVect, jvDisp, jvDispm, jvDispp
-    integer :: ndim, nno, ndi, ipg, npg, n1, n2, nn
-    integer :: ldec
-    integer :: i, ij, j
-    integer :: j_mater, iret, codret
+    integer(kind=8) :: ipoids, ivf, idfde
+    integer(kind=8) :: jv_geom, jv_mate, jv_matr
+    integer(kind=8) :: jvVect, jvDisp, jvDispm, jvDispp
+    integer(kind=8) :: ndim, nno, ndi, ipg, npg, n1, n2, nn
+    integer(kind=8) :: ldec
+    integer(kind=8) :: i, ij, j
+    integer(kind=8) :: j_mater, iret, codret
     character(len=16), pointer :: compor(:) => null()
     character(len=16) :: FEForm, rela_comp
     aster_logical :: l_axis

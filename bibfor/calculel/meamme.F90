@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,15 +83,15 @@ subroutine meamme(modelz, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbFieldInMax = 16, nbFieldOutMax = 2
+    integer(kind=8), parameter :: nbFieldInMax = 16, nbFieldOutMax = 2
     character(len=8) :: lpain(nbFieldInMax), lpaout(nbFieldOutMax)
     character(len=19) :: lchin(nbFieldInMax), lchout(nbFieldOutMax)
 !
     character(len=16), parameter :: option = 'AMOR_MECA'
-    integer :: nbFieldIn, nbFieldOut
+    integer(kind=8) :: nbFieldIn, nbFieldOut
     character(len=2) :: codret
-    integer :: iret
-    integer, parameter :: modeFourier = 0
+    integer(kind=8) :: iret
+    integer(kind=8), parameter :: modeFourier = 0
     character(len=24), parameter :: chvarc = '&&MEAMME.CHVARC'
     character(len=24) :: compor, vari
     character(len=8) :: physQuantityName
@@ -102,15 +102,15 @@ subroutine meamme(modelz, &
     character(len=8) :: model, caraElem, mesh
     character(len=24) :: mate, mateco, amor_flui
     character(len=19) :: matrElem
-    integer :: nbResuElem, iResuElem, idxResuElemRigi
-    integer :: nbSubstruct
+    integer(kind=8) :: nbResuElem, iResuElem, idxResuElemRigi
+    integer(kind=8) :: nbSubstruct
     character(len=24), pointer :: rerr(:) => null()
     character(len=24), pointer :: listResuElem(:) => null()
     character(len=19) :: modelLigrel, modelResu
     character(len=24), parameter :: nonLinearMap = "&&MEAMMA.NONLIN"
-    integer, parameter :: nbCmp = 1
+    integer(kind=8), parameter :: nbCmp = 1
     character(len=8), parameter :: cmpName = ('X1')
-    integer, parameter :: cmpVale = 1
+    integer(kind=8), parameter :: cmpVale = 1
 !
 ! --------------------------------------------------------------------------------------------------
 !

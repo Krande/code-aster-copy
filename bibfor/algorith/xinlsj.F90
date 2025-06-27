@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,7 +42,7 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 #include "asterfort/as_allocate.h"
 !
     character(len=8) :: noma, fiss
-    integer :: ndim, nfiss
+    integer(kind=8) :: ndim, nfiss
     character(len=19) :: cnslj
 !
 ! ----------------------------------------------------------------------
@@ -55,9 +55,9 @@ subroutine xinlsj(noma, ndim, fiss, nfiss, cnslj)
 !
 !
     real(kind=8) :: point(3), dist, dmin
-    integer :: jjonf, jjonc, jjon3, ino, nbno, iret, ibid
-    integer :: nfini, ifiss, nfis2, nfis3, ifis2, ifis3, cpt, nfisd
-    integer ::  jcnsl, jcnsvn, coefln(10), iadrco, nuno
+    integer(kind=8) :: jjonf, jjonc, jjon3, ino, nbno, iret, ibid
+    integer(kind=8) :: nfini, ifiss, nfis2, nfis3, ifis2, ifis3, cpt, nfisd
+    integer(kind=8) ::  jcnsl, jcnsvn, coefln(10), iadrco, nuno
     character(len=8) :: ch, nomfis(10)
     character(len=19) :: cnsln, cnslt, jonfis, joncoe
     character(len=8), pointer :: vfiss(:) => null()

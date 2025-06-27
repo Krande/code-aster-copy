@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
-        integer :: nno
+        integer(kind=8) :: nno
         real(kind=8) :: sdfde(4, 4)
         real(kind=8) :: sdfdk(4, 4)
         real(kind=8) :: poipg(4)

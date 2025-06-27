@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine lirtet(ifl, ilec, inom, cnl, nom,&
                       icl, iv, rv, cv, deblig)
-        integer :: ifl
-        integer :: ilec
-        integer :: inom
+        integer(kind=8) :: ifl
+        integer(kind=8) :: ilec
+        integer(kind=8) :: inom
         character(len=14) :: cnl
         character(len=24) :: nom
-        integer :: icl
-        integer :: iv
+        integer(kind=8) :: icl
+        integer(kind=8) :: iv
         real(kind=8) :: rv
         character(len=*) :: cv
-        integer :: deblig
+        integer(kind=8) :: deblig
     end subroutine lirtet
 end interface

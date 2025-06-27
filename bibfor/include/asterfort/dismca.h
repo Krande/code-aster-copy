@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine dismca(question_, object_, answeri, answerk_, ierd)
         character(len=*), intent(in) :: question_
         character(len=*), intent(in) :: object_
-        integer, intent(out) :: answeri, ierd
+        integer(kind=8), intent(out) :: answeri, ierd
         character(len=*), intent(out)  :: answerk_
     end subroutine dismca
 end interface

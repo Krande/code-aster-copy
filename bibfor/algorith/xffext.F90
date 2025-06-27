@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
-    integer :: jinfo, nfon, nmafon, nbptex
+    integer(kind=8) :: jinfo, nfon, nmafon, nbptex
     character(len=19) :: listpt, ptextr
 !
 ! ----------------------------------------------------------------------
@@ -50,7 +50,7 @@ subroutine xffext(jinfo, nfon, nmafon, listpt, ptextr, &
 ! OUT    NBPTEX  : NOMBRE D'EXTREMITES DU OU DES FONDS
 !
 !
-    integer :: ima, ipt, jlistp, jptext, nocc, ptasso
+    integer(kind=8) :: ima, ipt, jlistp, jptext, nocc, ptasso
 !
 ! ----------------------------------------------------------------------
 !

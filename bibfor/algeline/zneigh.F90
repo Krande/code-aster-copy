@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -139,8 +139,8 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
 #include "blas/zlacpy.h"
 #include "blas/zlahqr.h"
 #include "blas/zlaset.h"
-    integer :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
-    integer :: mngets, mneupd
+    integer(kind=8) :: logfil, ndigit, mgetv0, mnaupd, mnaup2, mnaitr, mneigh, mnapps
+    integer(kind=8) :: mngets, mneupd
     common/debug/&
      &  logfil, ndigit, mgetv0,&
      &  mnaupd, mnaup2, mnaitr, mneigh, mnapps, mngets, mneupd
@@ -149,7 +149,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
 !     | SCALAR ARGUMENTS |
 !     %------------------%
 !
-    integer :: ierr, n, ldh, ldq
+    integer(kind=8) :: ierr, n, ldh, ldq
     integer(kind=4) :: ierr4
     real(kind=8) :: rnorm
 !
@@ -174,7 +174,7 @@ subroutine zneigh(rnorm, n, h, ldh, ritz, &
 !     %------------------------%
 !
     aster_logical :: select(1)
-    integer :: j, msglvl
+    integer(kind=8) :: j, msglvl
     complex(kind=8) :: vl(1)
     real(kind=8) :: temp
     blas_int :: b_incx, b_incy, b_n

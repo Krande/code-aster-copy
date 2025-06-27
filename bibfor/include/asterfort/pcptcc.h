@@ -24,33 +24,33 @@ interface
                       modelZ, partsd, lsdpar, &
                       i, ipas, ideb, ifin, irelat, &
                       chamno, lonnew, lonch, ktyp, vcnoch, noch, nochc)
-        integer :: option
+        integer(kind=8) :: option
         aster_logical :: ldist
         aster_logical :: dbg_ob
         aster_logical :: dbgv_ob
         aster_logical :: lcpu
         aster_logical :: ltest
-        integer :: rang
-        integer :: nbproc
+        integer(kind=8) :: rang
+        integer(kind=8) :: nbproc
         mpi_int :: mpicou
-        integer :: nbordr
-        integer :: nbpas
+        integer(kind=8) :: nbordr
+        integer(kind=8) :: nbpas
         character(len=24) :: vldist
         character(len=24) :: vcham
         character(len=24) :: lisori
-        integer :: nbordi
+        integer(kind=8) :: nbordi
         character(len=19) :: lisord
         character(len=*), intent(in) :: modelZ
         character(len=19) :: partsd
         aster_logical :: lsdpar
-        integer :: i
-        integer :: ipas
-        integer :: ideb
-        integer :: ifin
-        integer :: irelat
+        integer(kind=8) :: i
+        integer(kind=8) :: ipas
+        integer(kind=8) :: ideb
+        integer(kind=8) :: ifin
+        integer(kind=8) :: irelat
         character(len=24) :: chamno
-        integer :: lonnew
-        integer :: lonch
+        integer(kind=8) :: lonnew
+        integer(kind=8) :: lonch
         character(len=1) :: ktyp
         character(len=24) :: vcnoch
         real(kind=8), pointer :: noch(:)

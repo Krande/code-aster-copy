@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine btkb(ndimc, ndimx, nddle, wmatc, btild,&
                     wmatcb, ktildi)
-        integer :: ndimx
-        integer :: ndimc
-        integer :: nddle
+        integer(kind=8) :: ndimx
+        integer(kind=8) :: ndimc
+        integer(kind=8) :: nddle
         real(kind=8) :: wmatc(ndimc, ndimc)
         real(kind=8) :: btild(ndimc, ndimx)
         real(kind=8) :: wmatcb(ndimc, ndimx)

@@ -52,14 +52,14 @@ subroutine nmnpas(mesh, model, cara_elem, &
 !
     character(len=8) :: mesh
     character(len=24), intent(in) :: model, cara_elem
-    integer, intent(in) :: list_func_acti(*)
+    integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=19), intent(in) :: list_load
     type(NL_DS_Material), intent(in) :: ds_material
     type(NL_DS_Constitutive), intent(in) :: ds_constitutive
     type(NL_DS_Measure), intent(inout) :: ds_measure
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: nume_inst
+    integer(kind=8), intent(in) :: nume_inst
     character(len=24), intent(in) :: sdsuiv
     character(len=19), intent(in) :: sddyna
     type(NL_DS_Contact), intent(inout) :: ds_contact
@@ -100,7 +100,7 @@ subroutine nmnpas(mesh, model, cara_elem, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: ldyna, lnkry, l_cont, l_diri_undead, l_hho
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     character(len=19) :: disp_prev, vari_prev, vari_curr
 !
 ! --------------------------------------------------------------------------------------------------

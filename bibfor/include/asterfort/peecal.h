@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,22 +19,22 @@
     interface
         subroutine peecal(tych,resu,nomcha,lieu,nomlie, list_ma, nbma, modele,lFromResult&
      &,chpost,nbcmp,nomcmp,nomcp2,nuord,inst,iocc,ligrel,cespoi)
-              integer :: nbcmp
+              integer(kind=8) :: nbcmp
               character(len=4) :: tych
               character(len=19) :: resu
               character(len=24) :: nomcha
               character(len=8) :: lieu
               character(len=*) :: nomlie
-              integer :: list_ma(*)
-              integer :: nbma
+              integer(kind=8) :: list_ma(*)
+              integer(kind=8) :: nbma
               character(len=8) :: modele
               aster_logical, intent(in) :: lFromResult
               character(len=19) :: chpost
               character(len=8) :: nomcmp(nbcmp)
               character(len=8) :: nomcp2(nbcmp)
-              integer :: nuord
+              integer(kind=8) :: nuord
               real(kind=8) :: inst
-              integer :: iocc
+              integer(kind=8) :: iocc
               character(len=19) :: ligrel
               character(len=19) :: cespoi
         end subroutine peecal

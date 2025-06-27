@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,15 +73,15 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri, &
 ! NOMCRI   IN    K16: NOM DU CRITERE AVEC PLANS CRITIQUES.
 !
 !-----------------------------------------------------------------------
-    integer :: ibid, lordr, nbordr, ndim, iret, iret1
-    integer :: nbno, ino, tdisp(1), jrwork, tpaq, iret2, iret3
-    integer :: nbpaq, numpaq, nnopaq, bormax, nbpmax, nbp0, bor0
-    integer :: nbcmp, k, ordini, iord, jinst
-    integer :: nnoini, nbnop, tspaq, iordr
-    integer :: jsigv, jsigd, jsigl, jepsd, jepsl, jepsv, kwork
-    integer :: jepspd, jepspl, jepspv, iret4, jepped, jeppel
-    integer :: inop, somnow, icmp, jnoeu, nunoe, jeppev
-    integer :: vali(2), paract(35), valep, ic, tord(1)
+    integer(kind=8) :: ibid, lordr, nbordr, ndim, iret, iret1
+    integer(kind=8) :: nbno, ino, tdisp(1), jrwork, tpaq, iret2, iret3
+    integer(kind=8) :: nbpaq, numpaq, nnopaq, bormax, nbpmax, nbp0, bor0
+    integer(kind=8) :: nbcmp, k, ordini, iord, jinst
+    integer(kind=8) :: nnoini, nbnop, tspaq, iordr
+    integer(kind=8) :: jsigv, jsigd, jsigl, jepsd, jepsl, jepsv, kwork
+    integer(kind=8) :: jepspd, jepspl, jepspv, iret4, jepped, jeppel
+    integer(kind=8) :: inop, somnow, icmp, jnoeu, nunoe, jeppev
+    integer(kind=8) :: vali(2), paract(35), valep, ic, tord(1)
     aster_logical :: post, crsigm, crepst, crepse, crepsp, lbid, creppe
 !
     real(kind=8) :: r8b, val1, val2, resu(7), vresu(24), valpar(35)
@@ -94,8 +94,8 @@ subroutine paqnoe(nomsd, nomu, nommai, nommet, nomcri, &
     character(len=19) :: cnsr, lisnoe, cheppe, cns7, cns8
     character(len=19) :: chsig, cheps, cns1, cns2, cns3, cns4, chsig1, chsig2
     character(len=19) :: chepsp, cns5, cns6
-    integer, pointer :: nume_ordre(:) => null()
-    integer, pointer :: paqno(:) => null()
+    integer(kind=8), pointer :: nume_ordre(:) => null()
+    integer(kind=8), pointer :: paqno(:) => null()
 !
 !
 !-----------------------------------------------------------------------

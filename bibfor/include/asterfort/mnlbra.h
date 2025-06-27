@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       epsman, amax, xus)
         character(len=14) :: xups
         character(len=14) :: xfpnla
-        integer :: ninc
-        integer :: ordman
-        integer :: nbpt
+        integer(kind=8) :: ninc
+        integer(kind=8) :: ordman
+        integer(kind=8) :: nbpt
         real(kind=8) :: epsman
         real(kind=8) :: amax
         character(len=14) :: xus

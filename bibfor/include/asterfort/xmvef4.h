@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,15 +21,15 @@
 interface
     subroutine xmvef4(ndim, nnol, pla, ffc, reac12,&
                       jac, tau1, tau2, lact, vtmp)
-        integer :: ndim
-        integer :: nnol
-        integer :: pla(27)
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nnol
+        integer(kind=8) :: pla(27)
         real(kind=8) :: ffc(8)
         real(kind=8) :: reac12(3)
         real(kind=8) :: jac
         real(kind=8) :: tau1(3)
         real(kind=8) :: tau2(3)
-        integer :: lact(8)
+        integer(kind=8) :: lact(8)
         real(kind=8) :: vtmp(400)
     end subroutine xmvef4
 end interface

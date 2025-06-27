@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine valfor(indn, lt1, lt2, l1, l2,&
                       l3)
-        integer :: indn
-        integer :: lt1
-        integer :: lt2
-        integer :: l1
-        integer :: l2
-        integer :: l3
+        integer(kind=8) :: indn
+        integer(kind=8) :: lt1
+        integer(kind=8) :: lt2
+        integer(kind=8) :: l1
+        integer(kind=8) :: l2
+        integer(kind=8) :: l3
     end subroutine valfor
 end interface

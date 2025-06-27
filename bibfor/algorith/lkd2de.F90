@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine lkd2de(devsig, d2dets)
 !     ------------------------------------------------------------------
     real(kind=8) :: devsig(6), d2dets(6, 6)
 !
-    integer :: ndi, ndt
+    integer(kind=8) :: ndi, ndt
     real(kind=8) :: zero, deux, r2
     parameter(zero=0.0d0)
     parameter(deux=2.0d0)

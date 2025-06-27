@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,9 +43,9 @@ subroutine comp_meta_read(metaPrepBehaviour)
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16) :: factorKeyword
-    integer :: iFactorKeyword, nbFactorKeyword
+    integer(kind=8) :: iFactorKeyword, nbFactorKeyword
     character(len=16) :: metaType, metaLaw
-    integer :: nbCompElem, numeComp, nbVari, idummy, idummy2, iret, nbPhase
+    integer(kind=8) :: nbCompElem, numeComp, nbVari, idummy, idummy2, iret, nbPhase
     character(len=16) :: compElem(2), compCodePY, metaCodePY
     aster_logical :: hasTemper
 !

@@ -19,7 +19,7 @@
 interface
     subroutine czm_post(ndim, lSigm, lMatr, r, mu, su, delta, dsde, sigp, dsidep)
         aster_logical, intent(in) :: lMatr, lSigm
-        integer, intent(in):: ndim
+        integer(kind=8), intent(in):: ndim
         real(kind=8),intent(in):: r, mu(1:ndim), su(1:ndim), delta(1:ndim), dsde(:,:)
         real(kind=8),intent(out):: sigp(:), dsidep(:,:)
     end subroutine

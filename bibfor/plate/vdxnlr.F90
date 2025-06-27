@@ -58,11 +58,11 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: jnbspi
+    integer(kind=8) :: jnbspi
     character(len=32) :: elasKeyword
     character(len=16) :: option, nomte
-    integer :: nb1, nb2, nddle, npge, npgsr, npgsn, itab(8), codret
-    integer :: cod, ksp
+    integer(kind=8) :: nb1, nb2, nddle, npge, npgsr, npgsn, itab(8), codret
+    integer(kind=8) :: cod, ksp
     real(kind=8) :: xi(3, 9)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3), vecpt(9, 3, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)
@@ -72,9 +72,9 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     real(kind=8) :: btdf(3, 42), btild(5, 42), wmatcb(5, 42), ktildi(42, 42)
     real(kind=8) :: ktild(42, 42), rig(51, 51)
     real(kind=8) :: ctor, epais, kappa
-    integer, parameter :: nbv = 2
+    integer(kind=8), parameter :: nbv = 2
     character(len=16), parameter :: nomres(nbv) = (/'E ', 'NU'/)
-    integer :: valret(nbv)
+    integer(kind=8) :: valret(nbv)
     real(kind=8) :: valres(nbv)
     real(kind=8) :: rotfcm(9), rotfcp(9)
     real(kind=8) :: deplm(42), deplp(42)
@@ -82,11 +82,11 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     real(kind=8) :: dtild(5, 5), sgmtd(5), effint(42), vecl(48), vecll(51)
     real(kind=8) :: sign(4), sigma(4), dsidep(6, 6), angmas(3)
     real(kind=8) :: matc(5, 5), valpar
-    integer :: i, ib, icarcr, icontm, icontp, icou
-    integer :: ideplm, ideplp, iinstm, iinstp, imate, inte, intsn
-    integer :: intsr, iret, ivarim, ivarip, ivarix, ivectu, j
-    integer :: jcara, jcrf, k1, k2, kpgs, kwgt, lgpg
-    integer :: lzi, lzr, nbcou, nbvari, nddlet, ndimv
+    integer(kind=8) :: i, ib, icarcr, icontm, icontp, icou
+    integer(kind=8) :: ideplm, ideplp, iinstm, iinstp, imate, inte, intsn
+    integer(kind=8) :: intsr, iret, ivarim, ivarip, ivarix, ivectu, j
+    integer(kind=8) :: jcara, jcrf, k1, k2, kpgs, kwgt, lgpg
+    integer(kind=8) :: lzi, lzr, nbcou, nbvari, nddlet, ndimv
     real(kind=8) :: coef, crf, gxz, gyz, hic
     real(kind=8) :: x(1), zic, zmin
     parameter(npge=3)
@@ -96,7 +96,7 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
     blas_int :: b_incx, b_incy, b_n
     real(kind=8) :: cisail
     real(kind=8), parameter :: rac2 = sqrt(2.d0)
-    integer, parameter :: ndimLdc = 2
+    integer(kind=8), parameter :: ndimLdc = 2
     character(len=8), parameter :: typmod(2) = (/"C_PLAN  ", "        "/)
     type(Behaviour_Integ) :: BEHinteg
     character(len=4), parameter :: fami = "MASS"

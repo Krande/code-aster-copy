@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ function spect4(xx, y, xlc, vitn, rhoe, &
 !-----------------------------------------------------------------------
 !
 #include "jeveux.h"
-    integer :: i, im, jm, nbp
+    integer(kind=8) :: i, im, jm, nbp
     real(kind=8) :: defm(nbp, *), vitn(nbp, *), rhoe(nbp, *), xlc, xx, y
 !
 !-----------------------------------------------------------------------

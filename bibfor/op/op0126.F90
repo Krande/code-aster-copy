@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,8 +41,8 @@ subroutine op0126()
 #include "asterfort/infmaj.h"
 #include "asterfort/vecomo.h"
 #include "asterfort/versst.h"
-    integer :: ival, ibid, nblia, i, iinc, irep11, irep12, irep21, irep22, iopt
-    integer :: iret
+    integer(kind=8) :: ival, ibid, nblia, i, iinc, irep11, irep12, irep21, irep22, iopt
+    integer(kind=8) :: iret
     character(len=3) :: rep
     character(len=8) :: nomres, sst1, sst2, intf1, intf2, k8bid, option
     character(len=16) :: nomcon, nomope

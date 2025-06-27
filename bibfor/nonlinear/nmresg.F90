@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -59,22 +59,22 @@ subroutine nmresg(numedd, sddyna, instap, cndonn, accsol)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ier
-    integer :: ifonc, imode, imode2
-    integer :: neq, nbgene, nbmodp
-    integer :: j2memb, jaccp, jaccg
+    integer(kind=8) :: ier
+    integer(kind=8) :: ifonc, imode, imode2
+    integer(kind=8) :: neq, nbgene, nbmodp
+    integer(kind=8) :: j2memb, jaccp, jaccg
     aster_logical :: lexge, lacce
     character(len=19) :: fmodal, valfon
-    integer :: jfmoda, jvalfo
+    integer(kind=8) :: jfmoda, jvalfo
     character(len=19) :: depgep, vitgep, accgep
-    integer :: jdepgp, jvitgp, jaccgp
+    integer(kind=8) :: jdepgp, jvitgp, jaccgp
     character(len=19) :: basmod, masgen, amogen, riggen
-    integer :: jbasmo, jmasge, jamoge, jrigge
+    integer(kind=8) :: jbasmo, jmasge, jamoge, jrigge
     character(len=19) :: fongen, forgen
-    integer :: jfonge, jforge
+    integer(kind=8) :: jfonge, jforge
     character(len=19) :: accgcn
-    integer :: jacccn
-    integer :: ifm, niv
+    integer(kind=8) :: jacccn
+    integer(kind=8) :: ifm, niv
     blas_int :: b_incx, b_incy, b_n
 !
 ! --------------------------------------------------------------------------------------------------

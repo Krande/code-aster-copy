@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -57,9 +57,9 @@ subroutine op0031()
     real(kind=8) :: r8val(2)
     aster_logical :: lcoefc, lreent
     complex(kind=8) :: cval
-    integer :: nbocag, nboccr, nboccc, nbocc, ldesc, l, lnom, iocc, i
-    integer :: ibid, lcoef, ltypec, nbcst, lr, lc, iret, ides1
-    integer :: jrefe, jpomr, n1, n2, k, iexi
+    integer(kind=8) :: nbocag, nboccr, nboccc, nbocc, ldesc, l, lnom, iocc, i
+    integer(kind=8) :: ibid, lcoef, ltypec, nbcst, lr, lc, iret, ides1
+    integer(kind=8) :: jrefe, jpomr, n1, n2, k, iexi
 ! ------------------------------------------------------------------
 !
     call jemarq()

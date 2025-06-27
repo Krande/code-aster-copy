@@ -78,13 +78,13 @@ subroutine crtype()
 #include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
-    integer :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
-    integer :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
-    integer :: iad, jinst, nbpf, nuprev
-    integer :: ino, nbv(1), jrefe, icmpd, icmpi, nocc
-    integer :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
-    integer :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
-    integer :: nbordr1, nbordr2, ier1, nbModel, nbMaterField, nbCaraElem
+    integer(kind=8) :: mxpara, ibid, ier, lg, icompt, iret, nbfac, numini, numfin
+    integer(kind=8) :: n0, n1, n2, n3, nis, nbinst, ip, nbval, nume, igd, l, i, j, jc
+    integer(kind=8) :: iad, jinst, nbpf, nuprev
+    integer(kind=8) :: ino, nbv(1), jrefe, icmpd, icmpi, nocc
+    integer(kind=8) :: nbtrou, jcpt, nbr, ivmx, k, iocc, nbecd, nbeci, nboini, iexi
+    integer(kind=8) :: valii(2), nfr, n4, jnmo, nmode, nbcmpd, nbcmpi, tnum(1)
+    integer(kind=8) :: nbordr1, nbordr2, ier1, nbModel, nbMaterField, nbCaraElem
 !
     parameter(mxpara=10)
 !
@@ -109,13 +109,13 @@ subroutine crtype()
     real(kind=8), pointer :: coor(:) => null()
     character(len=8), pointer :: vnomf(:) => null()
     real(kind=8), pointer :: val(:) => null()
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: deeq(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: deeq(:) => null()
     character(len=24), pointer :: prol(:) => null()
     character(len=8) :: answer
     aster_logical :: lAlarm
     aster_logical, parameter :: staticOperator = ASTER_TRUE
-    integer :: nbLoad, iLoad, indxLoadInList
+    integer(kind=8) :: nbLoad, iLoad, indxLoadInList
     character(len=4), parameter :: phenom = "MECA"
     character(len=16), parameter :: loadApply = "FIXE_CSTE"
     character(len=8), pointer :: loadName(:) => null()

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,8 +42,8 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo, &
     character(len=8) :: charge
     character(len=19) :: lisrel
     character(len=10) :: nom1, nom2
-    integer :: ndim, zocc
-    integer :: nbma1, nbma2
+    integer(kind=8) :: ndim, zocc
+    integer(kind=8) :: nbma1, nbma2
 !
 ! ----------------------------------------------------------------------
 !
@@ -62,24 +62,24 @@ subroutine arlcpl(zocc, nbma1, nbma2, mail, nomo, &
 ! IN  NDIM   : DIMENSION DE L'ESPACE GLOBAL (2 OU 3)
 !
 !
-    integer :: nbnomx
+    integer(kind=8) :: nbnomx
     parameter(nbnomx=27)
-    integer :: nliai, nddl
+    integer(kind=8) :: nliai, nddl
     parameter(nliai=12, nddl=nliai*nliai)
     aster_logical :: proj
     character(len=8) :: marlel, modarl, mailar
     character(len=24) :: tabcor
-    integer :: iaux, jaux
-    integer :: imatu1, imatu2, iexi
-    integer :: jma1, jma2
-    integer :: nbnoc1, nbnoc2
-    integer :: chtest, i, j, jj, k
+    integer(kind=8) :: iaux, jaux
+    integer(kind=8) :: imatu1, imatu2, iexi
+    integer(kind=8) :: jma1, jma2
+    integer(kind=8) :: nbnoc1, nbnoc2
+    integer(kind=8) :: chtest, i, j, jj, k
     character(len=19) :: ligarl, arlmt1, arlmt2
     real(kind=8) :: m1de(nliai, nliai)
     real(kind=8) :: m3de(nliai, 3*nbnomx)
     character(len=5) :: ch1, ch2
 !
-    integer :: len1, len2, iproj
+    integer(kind=8) :: len1, len2, iproj
     character(len=5), dimension(2+nbnomx, nbma1) :: numno1
     character(len=5), dimension(2, nbma2) :: numno2
     character(len=5), dimension(nbnomx*nbma1) :: numn1t

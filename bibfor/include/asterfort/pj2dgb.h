@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,18 +22,18 @@ interface
     subroutine pj2dgb(ino2, geom2, geom1, tria3, btdi,&
                       btvr, btnb, btlc, btco, p1,&
                       q1, p2, q2)
-        integer :: ino2
+        integer(kind=8) :: ino2
         real(kind=8) :: geom2(*)
         real(kind=8) :: geom1(*)
-        integer :: tria3(*)
-        integer :: btdi(*)
+        integer(kind=8) :: tria3(*)
+        integer(kind=8) :: btdi(*)
         real(kind=8) :: btvr(*)
-        integer :: btnb(*)
-        integer :: btlc(*)
-        integer :: btco(*)
-        integer :: p1
-        integer :: q1
-        integer :: p2
-        integer :: q2
+        integer(kind=8) :: btnb(*)
+        integer(kind=8) :: btlc(*)
+        integer(kind=8) :: btco(*)
+        integer(kind=8) :: p1
+        integer(kind=8) :: q1
+        integer(kind=8) :: p2
+        integer(kind=8) :: q2
     end subroutine pj2dgb
 end interface

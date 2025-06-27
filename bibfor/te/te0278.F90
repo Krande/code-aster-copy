@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,14 +42,14 @@ subroutine te0278(option, nomte)
     character(len=8) :: nompar(4)
     real(kind=8) :: nx, ny, nz, sx(9, 9), sy(9, 9), sz(9, 9), xx, yy, zz
     real(kind=8) :: jac, tem, hechp, valpar(4)
-    integer :: ipoids, ivf, idfdx, idfdy, igeom
-    integer :: ndim, nno, ipg, npg1, iveres, ihechp
-    integer :: idec, jdec, kdec, ldec
-    integer ::  nnos, jgano
+    integer(kind=8) :: ipoids, ivf, idfdx, idfdy, igeom
+    integer(kind=8) :: ndim, nno, ipg, npg1, iveres, ihechp
+    integer(kind=8) :: idec, jdec, kdec, ldec
+    integer(kind=8) ::  nnos, jgano
 !---- DEBUT-----------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, ier, ino, itemp, itemps, j, jno
+    integer(kind=8) :: i, ier, ino, itemp, itemps, j, jno
 !
 !-----------------------------------------------------------------------
 !

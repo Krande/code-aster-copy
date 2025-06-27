@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine fgrain(pic, npic, itrv, ncyc, sigmin, &
 #include "asterfort/utmess.h"
     real(kind=8) :: pic(*), x, y, e1, e2, e3, sigmax(*), sigmin(*)
     real(kind=8) :: r1, r2, rd, rad
-    integer :: npic, ncyc, itrv(*), npicb
+    integer(kind=8) :: npic, ncyc, itrv(*), npicb
     aster_logical :: lresi, cyczer
 !       ----------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ifm, j, k, niv, npicr
+    integer(kind=8) :: i, ifm, j, k, niv, npicr
 !-----------------------------------------------------------------------
     lresi = .false.
     npicb = npic

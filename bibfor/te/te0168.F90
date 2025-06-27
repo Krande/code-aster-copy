@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,12 +40,12 @@ subroutine te0168(option, nomte)
 ! ......................................................................
 !
 !
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     real(kind=8) :: rho(1), coef, jacobi, en(3, 2)
     real(kind=8) :: matp(6, 6), matv(21), a
-    integer :: nno, npg, k, kp, i, ii, jj, ki, ky, nddl, nvec, imatuu, lsect
-    integer :: ipoids, ivf, iyty, igeom, imate, iacce, ivect
-    integer :: ndim, nnos, jgano, idfdk
+    integer(kind=8) :: nno, npg, k, kp, i, ii, jj, ki, ky, nddl, nvec, imatuu, lsect
+    integer(kind=8) :: ipoids, ivf, iyty, igeom, imate, iacce, ivect
+    integer(kind=8) :: ndim, nnos, jgano, idfdk
 ! ......................................................................
 !
 !

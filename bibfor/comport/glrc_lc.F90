@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,7 +35,7 @@ subroutine glrc_lc(epsm, deps, vim, option, sig, &
 #include "asterfort/glrc_sig_mat.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/dxefro.h"
-    integer :: codret
+    integer(kind=8) :: codret
     real(kind=8) :: epsm(6), deps(6), vim(*), crit(*), seuil, alfmc
     real(kind=8) :: lambda, deuxmu, lamf, deumuf, alf, gmt, gmc, gf
     real(kind=8) :: epsic, epsiels, epsilim
@@ -92,7 +92,7 @@ subroutine glrc_lc(epsm, deps, vim, option, sig, &
 !
     aster_logical :: rigi, resi, coup
     aster_logical :: lelas, elas, elas1, elas2
-    integer :: k, kdmax
+    integer(kind=8) :: k, kdmax
     real(kind=8) :: eps(6), emp(2), efp(2), qff(2), eps8(8), epsu(6)
     real(kind=8) :: vmp(2, 2), vfp(2, 2), eps8out(8)
     real(kind=8) :: muf, trot, treps, eps33, de33d1, de33d2

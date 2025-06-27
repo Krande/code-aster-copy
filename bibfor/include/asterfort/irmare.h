@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,21 +25,21 @@ interface
                       connex, point, noma, typma, typel,&
                       lmod, titre, nbtitr, nbgrn, nbgrm,&
                       nomai, nonoe, formar)
-        integer :: ifc
-        integer :: ndim
-        integer :: nno
+        integer(kind=8) :: ifc
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nno
         real(kind=8) :: coordo(*)
-        integer :: nbma
-        integer :: connex(*)
-        integer :: point(*)
+        integer(kind=8) :: nbma
+        integer(kind=8) :: connex(*)
+        integer(kind=8) :: point(*)
         character(len=8) :: noma
-        integer :: typma(*)
-        integer :: typel(*)
+        integer(kind=8) :: typma(*)
+        integer(kind=8) :: typel(*)
         aster_logical :: lmod
         character(len=80) :: titre(*)
-        integer :: nbtitr
-        integer :: nbgrn
-        integer :: nbgrm
+        integer(kind=8) :: nbtitr
+        integer(kind=8) :: nbgrn
+        integer(kind=8) :: nbgrm
         character(len=8) :: nomai(*)
         character(len=8) :: nonoe(*)
         character(len=16) :: formar

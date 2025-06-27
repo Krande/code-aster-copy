@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@ interface
     subroutine fiintf(nomfon, nbpu, param, val, iret,&
                       coderr, resu)
         character(len=*), intent(in) :: nomfon
-        integer, intent(in) :: nbpu
+        integer(kind=8), intent(in) :: nbpu
         character(len=*), intent(in) :: param(*)
         real(kind=8), intent(in) :: val(*)
-        integer, intent(out) :: iret
+        integer(kind=8), intent(out) :: iret
         character(len=*), intent(in) :: coderr
         real(kind=8), intent(out) :: resu(:)
     end subroutine fiintf

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=8) :: mailla
-    integer :: tnd(*), nbn
+    integer(kind=8) :: tnd(*), nbn
     real(kind=8) :: tabsc(*), tcoor(*)
 !
 !***********************************************************************
@@ -58,7 +58,7 @@ subroutine rvabsc(mailla, tnd, nbn, tabsc, tcoor)
 !  VARIABLES LOCALES
 !  -----------------
 !
-    integer :: i
+    integer(kind=8) :: i
     real(kind=8) :: xc, xp, yc, yp, l, zzc, zzp
     real(kind=8), pointer :: vale(:) => null()
 !

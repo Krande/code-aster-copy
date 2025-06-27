@@ -22,21 +22,21 @@ interface
                       ivarip, ichg, ichn, jcret, icarcr, iinstm, iinstp)
         character(len=16) :: option
         character(len=16), pointer :: compor(:)
-        integer :: icontm
-        integer :: ivarim
-        integer :: ideplm
-        integer :: ideplp
-        integer :: igeom
-        integer :: imate
-        integer :: imatuu
-        integer :: ivectu
-        integer :: icontp
-        integer :: ivarip
-        integer :: ichg
-        integer :: ichn
-        integer :: jcret
-        integer :: icarcr
-        integer :: iinstm
-        integer :: iinstp
+        integer(kind=8) :: icontm
+        integer(kind=8) :: ivarim
+        integer(kind=8) :: ideplm
+        integer(kind=8) :: ideplp
+        integer(kind=8) :: igeom
+        integer(kind=8) :: imate
+        integer(kind=8) :: imatuu
+        integer(kind=8) :: ivectu
+        integer(kind=8) :: icontp
+        integer(kind=8) :: ivarip
+        integer(kind=8) :: ichg
+        integer(kind=8) :: ichn
+        integer(kind=8) :: jcret
+        integer(kind=8) :: icarcr
+        integer(kind=8) :: iinstm
+        integer(kind=8) :: iinstp
     end subroutine dilcar
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,8 +26,8 @@ interface
         character(len=1) :: base
         character(len=19) :: nomnum
         character(len=19) :: nomsto
-        integer :: nbmode
-        integer :: nbloc
-        integer :: nterm
+        integer(kind=8) :: nbmode
+        integer(kind=8) :: nbloc
+        integer(kind=8) :: nterm
     end subroutine mefsm1
 end interface

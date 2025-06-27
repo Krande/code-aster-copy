@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume, &
 #include "asterfort/mstget.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: neq, lmatm
+    integer(kind=8) :: neq, lmatm
     real(kind=8) :: coef(3), xnorm
     character(len=8) :: monaxe
     character(len=14) :: nume
@@ -48,9 +48,9 @@ subroutine psmo93(solveu, masse, raide, raidfa, nume, &
     aster_logical :: accuni
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, ia, id, ii, imod, ind
-    integer :: jaxe, jcoef, lddad, lmoad, lmoda, na, nbacc
-    integer :: nbmoad, nbmoda, nbpsmo, nd, nnaxe
+    integer(kind=8) :: i, ia, id, ii, imod, ind
+    integer(kind=8) :: jaxe, jcoef, lddad, lmoad, lmoda, na, nbacc
+    integer(kind=8) :: nbmoad, nbmoda, nbpsmo, nd, nnaxe
 !-----------------------------------------------------------------------
     call jemarq()
 !

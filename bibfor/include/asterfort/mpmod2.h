@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                       vnoeud, vrange, vcham)
         character(len=8) :: basemo
         character(len=8) :: nommes
-        integer :: nbmesu
-        integer :: nbmtot
+        integer(kind=8) :: nbmesu
+        integer(kind=8) :: nbmtot
         character(len=24) :: basepr
         character(len=24) :: vnoeud
         character(len=24) :: vrange

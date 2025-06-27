@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
 #include "asterfort/utmess.h"
 #include "jeveux.h"
     character(len=*) :: motfaz
-    integer :: iocc
+    integer(kind=8) :: iocc
     character(len=8) :: criter
     real(kind=8) :: prec, tole
 !
@@ -54,7 +54,7 @@ subroutine nmcrpp(motfaz, iocc, prec, criter, tole)
 !                +PREC POUR RELATIF
 !                -PREC POUR ABSOLU
 
-    integer :: n0, n1, n2
+    integer(kind=8) :: n0, n1, n2
     character(len=16) :: motfac
     real(kind=8) :: predef
 !

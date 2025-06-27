@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine get_jvbasename(bas_, numext, path)
     implicit none
 !
     character(len=*), intent(in) :: bas_
-    integer, intent(in) :: numext
+    integer(kind=8), intent(in) :: numext
     character(len=*), intent(out) :: path
 ! aslint: disable=W1303
 ! for the path name
@@ -38,10 +38,10 @@ subroutine get_jvbasename(bas_, numext, path)
 !
     character(len=128) :: repglo, repvol
     common/banvje/repglo, repvol
-    integer :: lrepgl, lrepvo
+    integer(kind=8) :: lrepgl, lrepvo
     common/balvje/lrepgl, lrepvo
 !
-    integer :: nchar
+    integer(kind=8) :: nchar
     character(len=4) :: base
     character(len=8) :: fname
     character(len=512) :: dir, nom512

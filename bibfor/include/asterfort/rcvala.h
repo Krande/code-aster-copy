@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,17 +21,17 @@
           interface 
             subroutine rcvala(jmat,nomat,phenom,nbpar,nompar,valpar,    &
      &nbres,nomres,valres,icodre,iarret,nan)
-              integer, intent(in) :: nbres
-              integer, intent(in) :: nbpar
-              integer, intent(in) :: jmat
+              integer(kind=8), intent(in) :: nbres
+              integer(kind=8), intent(in) :: nbpar
+              integer(kind=8), intent(in) :: jmat
               character(len=*), intent(in) :: nomat
               character(len=*), intent(in) :: phenom
               character(len=*), intent(in) :: nompar(nbpar)
               real(kind=8), intent(in) :: valpar(nbpar)
               character(len=*), intent(in) :: nomres(nbres)
               real(kind=8), intent(out) :: valres(nbres)
-              integer, intent(out) :: icodre(nbres)
-              integer, intent(in) :: iarret
+              integer(kind=8), intent(out) :: icodre(nbres)
+              integer(kind=8), intent(in) :: iarret
               character(len=3) ,optional, intent(in) :: nan
             end subroutine rcvala
           end interface 

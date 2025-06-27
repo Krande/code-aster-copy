@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,12 +21,12 @@
 interface
     subroutine exchem(modloc, tcmp, nbc, nbsp, tvale,&
                       valcmp, taberr)
-        integer :: modloc(*)
-        integer :: tcmp(*)
-        integer :: nbc
-        integer :: nbsp
+        integer(kind=8) :: modloc(*)
+        integer(kind=8) :: tcmp(*)
+        integer(kind=8) :: nbc
+        integer(kind=8) :: nbsp
         real(kind=8) :: tvale(*)
         real(kind=8) :: valcmp(*)
-        integer :: taberr(*)
+        integer(kind=8) :: taberr(*)
     end subroutine exchem
 end interface

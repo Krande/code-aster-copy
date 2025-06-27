@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,10 +20,10 @@
 !
 interface
     subroutine jxlibd(idco, idos, ic, iaddi, lonoi)
-        integer :: idco
-        integer :: idos
-        integer :: ic
-        integer :: iaddi(2)
-        integer :: lonoi
+        integer(kind=8) :: idco
+        integer(kind=8) :: idos
+        integer(kind=8) :: ic
+        integer(kind=8) :: iaddi(2)
+        integer(kind=8) :: lonoi
     end subroutine jxlibd
 end interface

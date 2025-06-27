@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,16 +22,16 @@ interface
     subroutine ecrneu(imod, nbnode, ama, bma, cma,&
                       ami, bmi, cmi, min, man,&
                       ites)
-        integer :: imod
-        integer :: nbnode
+        integer(kind=8) :: imod
+        integer(kind=8) :: nbnode
         real(kind=8) :: ama
         real(kind=8) :: bma
         real(kind=8) :: cma
         real(kind=8) :: ami
         real(kind=8) :: bmi
         real(kind=8) :: cmi
-        integer :: min
-        integer :: man
-        integer :: ites
+        integer(kind=8) :: min
+        integer(kind=8) :: man
+        integer(kind=8) :: ites
     end subroutine ecrneu
 end interface

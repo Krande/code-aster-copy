@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,9 +26,9 @@ interface
         character(len=24) :: chfond
         character(len=24) :: taillr
         character(len=8) :: config
-        integer :: lnoff
+        integer(kind=8) :: lnoff
         character(len=24) :: liss
-        integer :: ndeg
+        integer(kind=8) :: ndeg
         character(len=24) :: trav1
         character(len=24) :: trav2
         character(len=24) :: trav3

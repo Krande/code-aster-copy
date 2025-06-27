@@ -34,7 +34,7 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 !
     use cara_elem_parameter_module
     implicit none
-    integer :: lmax, nbepo, ntyele(*), ivr(*), nbocc(*)
+    integer(kind=8) :: lmax, nbepo, ntyele(*), ivr(*), nbocc(*)
     character(len=8) :: noma, nomo
     character(len=16) :: nomele(*)
 !
@@ -68,19 +68,19 @@ subroutine aceaor(noma, nomo, lmax, nbepo, ntyele, nomele, ivr, nbocc)
 #include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, ifm, ioc, ixma
-    integer :: jj, jad, jin, jdcmpo, jdco, jdgm, nbid
-    integer :: jdls, jdme, jdno, jdori, jdtm, jinit
-    integer :: jdvlvo, nbmagr, nbmail
-    integer :: nbval, ncar, ng
-    integer :: no1, no2, nocaor, ntpoi, ntseg, ntseg3, ntseg4
-    integer :: nummai, nutyel, nutyma, nbalarme
-    integer :: nval
+    integer(kind=8) :: ii, ifm, ioc, ixma
+    integer(kind=8) :: jj, jad, jin, jdcmpo, jdco, jdgm, nbid
+    integer(kind=8) :: jdls, jdme, jdno, jdori, jdtm, jinit
+    integer(kind=8) :: jdvlvo, nbmagr, nbmail
+    integer(kind=8) :: nbval, ncar, ng
+    integer(kind=8) :: no1, no2, nocaor, ntpoi, ntseg, ntseg3, ntseg4
+    integer(kind=8) :: nummai, nutyel, nutyma, nbalarme
+    integer(kind=8) :: nval
     parameter(nbval=6)
 ! --------------------------------------------------------------------------------------------------
-    integer :: iret
+    integer(kind=8) :: iret
     real(kind=8)        :: valcara(2)
-    integer             :: okcara(2)
+    integer(kind=8)             :: okcara(2)
     character(len=8)    :: nomsec, nomcara(2)
     character(len=19)   :: tabcar
 ! --------------------------------------------------------------------------------------------------

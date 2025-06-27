@@ -19,6 +19,6 @@
 interface
     subroutine vrrefe(dsName1Z, dsName2Z, ier)
         character(len=*), intent(in) :: dsName1Z, dsName2Z
-        integer, intent(out) :: ier
+        integer(kind=8), intent(out) :: ier
     end subroutine vrrefe
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
 #include "jeveux.h"
 #include "asterfort/elraga.h"
 #include "asterfort/elrefe_info.h"
-    integer :: nno
+    integer(kind=8) :: nno
     real(kind=8) :: sdfde(4, 4), sdfdk(4, 4), coopg(8), poipg(4)
 !
 !   BUT : RECUPERER TOUS LES INDICES DU VECTEUR ZR DANS LEQUEL
@@ -36,7 +36,7 @@ subroutine iniqs4(nno, sdfde, sdfdk, poipg, coopg)
 !
 ! =============================================================
 !
-    integer :: i, j, k, ndim, nnos, npg, ipoids, ivf, idfde, jgano, nbpg
+    integer(kind=8) :: i, j, k, ndim, nnos, npg, ipoids, ivf, idfde, jgano, nbpg
     character(len=8) :: elrefe, famil
 !     ------------------------------------------------------------------
 !

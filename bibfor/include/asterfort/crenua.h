@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,9 +25,9 @@ interface
                       l_crea_nual)
         character(len=*), intent(in) :: nuagez
         character(len=*), intent(in) :: gran_name
-        integer, intent(in) :: nb_point
-        integer, intent(in) :: nb_dim
-        integer, intent(in) :: nb_cmp_max
+        integer(kind=8), intent(in) :: nb_point
+        integer(kind=8), intent(in) :: nb_dim
+        integer(kind=8), intent(in) :: nb_cmp_max
         aster_logical, intent(in) :: l_crea_nual
     end subroutine crenua
 end interface

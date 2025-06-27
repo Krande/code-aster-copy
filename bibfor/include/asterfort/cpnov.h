@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine cpnov(main,numa,coor,ind,nomnoe, conneo)
-        integer :: ind
-        integer :: numa
-        integer :: conneo(*)
+        integer(kind=8) :: ind
+        integer(kind=8) :: numa
+        integer(kind=8) :: conneo(*)
         real(kind=8) :: coor(3, *)
         character(len=8) :: main
         character(len=24) :: nomnoe

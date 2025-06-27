@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
                       delta, r, am)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: jmate
-        integer :: ndim
+        integer(kind=8) :: jmate
+        integer(kind=8) :: ndim
         real(kind=8) :: cohes(5)
         real(kind=8) :: dpf
         real(kind=8) :: saut(3)
@@ -39,7 +39,7 @@ interface
         real(kind=8) :: pf
         real(kind=8) :: rho11
         real(kind=8) :: w11
-        integer :: ipgf
+        integer(kind=8) :: ipgf
         real(kind=8) :: rela
         real(kind=8) :: dsidep(6,6)
         real(kind=8) :: delta(6)

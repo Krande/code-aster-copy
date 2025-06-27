@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
 #include "asterfort/jjlide.h"
 #include "asterfort/jjvern.h"
 #include "asterfort/utmess.h"
-    integer :: unit
+    integer(kind=8) :: unit
     character(len=*) :: nomlu, cidatr, mess
 ! ----------------------------------------------------------------------
 ! ROUTINE D'IMPRESSION DES OBJETS SYSTEME OU DES OBJETS ATTRIBUT DE
@@ -39,17 +39,17 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
 ! IN  CIDATR: NOM DE L'ATTRIBUT
 ! IN  MESS  : MESSAGE UTILISATEUR
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 !     -----------------------------------------------------------------
-    integer :: iclas, iclaos, iclaco, idatos, idatco, idatoc
+    integer(kind=8) :: iclas, iclaos, iclaco, idatos, idatco, idatoc
     common/iatcje/iclas, iclaos, iclaco, idatos, idatco, idatoc
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iadmex, iadmi, ibatr, idatr, ideci, ipgcex, iret2
-    integer :: ixatr, jcara, jdate, jdocu, jgenr, jhcod, jiadd
-    integer :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
-    integer :: jrnom, jtype, k, n
+    integer(kind=8) :: iadmex, iadmi, ibatr, idatr, ideci, ipgcex, iret2
+    integer(kind=8) :: ixatr, jcara, jdate, jdocu, jgenr, jhcod, jiadd
+    integer(kind=8) :: jiadm, jlong, jlono, jltyp, jluti, jmarq, jorig
+    integer(kind=8) :: jrnom, jtype, k, n
 !-----------------------------------------------------------------------
     parameter(n=5)
     common/jiatje/jltyp(n), jlong(n), jdate(n), jiadd(n), jiadm(n),&
@@ -63,23 +63,23 @@ subroutine jeprat(unit, nomlu, cidatr, mess)
 !
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 !
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
 !     ------------------------------------------------------------------
     character(len=32) :: noml32, valk(2)
     character(len=1) :: genri, typei
     character(len=8) :: nom
-    integer :: icre, iret, jctab, ltypi, lonoi
-    integer :: ibacol
+    integer(kind=8) :: icre, iret, jctab, ltypi, lonoi
+    integer(kind=8) :: ibacol
     aster_logical :: lcol
 !     ------------------------------------------------------------------
-    integer :: idnum
+    integer(kind=8) :: idnum
     parameter(idnum=10)
     character(len=8) :: cidnom(idnum)
-    integer :: idpar
+    integer(kind=8) :: idpar
     parameter(idpar=3)
     character(len=8) :: cidpar(idpar)
-    integer :: lidbas
+    integer(kind=8) :: lidbas
     parameter(lidbas=20)
     character(len=8) :: cidbas(lidbas)
     data cidnom/'$$DESO  ', '$$IADD  ', '$$IADM  ', '$$MARQ  ',&

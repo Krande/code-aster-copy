@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine lcmmsg(nomfam, nbsys, nusys, pgl2, mus,&
                       ng, mg, ir, q)
         character(len=16) :: nomfam
-        integer :: nbsys
-        integer :: nusys
+        integer(kind=8) :: nbsys
+        integer(kind=8) :: nusys
         real(kind=8) :: pgl2(3, 3)
         real(kind=8) :: mus(6)
         real(kind=8) :: ng(3)
         real(kind=8) :: mg(3)
-        integer :: ir
+        integer(kind=8) :: ir
         real(kind=8) :: q(3, 3)
     end subroutine lcmmsg
 end interface

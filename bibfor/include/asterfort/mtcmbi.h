@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine mtcmbi(typmat, lmat, coef, ccoef, lres)
         character(len=*) :: typmat
-        integer :: lmat
+        integer(kind=8) :: lmat
         real(kind=8) :: coef
         complex(kind=8) :: ccoef
-        integer :: lres
+        integer(kind=8) :: lres
     end subroutine mtcmbi
 end interface

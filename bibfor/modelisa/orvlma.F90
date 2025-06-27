@@ -39,8 +39,8 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !
-    integer :: nbCell, noeud, norien
-    integer, pointer :: listCellNume(:)
+    integer(kind=8) :: nbCell, noeud, norien
+    integer(kind=8), pointer :: listCellNume(:)
     character(len=8) :: noma
     real(kind=8) :: vect(*)
 !.======================================================================
@@ -57,19 +57,19 @@ subroutine orvlma(noma, listCellNume, nbCell, norien, vect, &
 !    NOEUD          IN    I       NOEUD D'ORIENTATION
 !.========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer :: cellTypeNume, lori, jori, nori, kori, iliste
-    integer :: iCell, numail, cellNume, norieg, lliste, zero, ibid(1)
-    integer :: im1, im2, ico
-    integer :: p1, p2, ifm, niv, p3, p4
-    integer :: nbnmai, jdesm1, jdesm2
-    integer :: nbmavo, indi, im3, jcoor
-    integer :: nbmaor, ii, kdeb
+    integer(kind=8) :: cellTypeNume, lori, jori, nori, kori, iliste
+    integer(kind=8) :: iCell, numail, cellNume, norieg, lliste, zero, ibid(1)
+    integer(kind=8) :: im1, im2, ico
+    integer(kind=8) :: p1, p2, ifm, niv, p3, p4
+    integer(kind=8) :: nbnmai, jdesm1, jdesm2
+    integer(kind=8) :: nbmavo, indi, im3, jcoor
+    integer(kind=8) :: nbmaor, ii, kdeb
     aster_logical :: hasSkin1D, hasSkin2D, reorie
     character(len=2) :: kdim
     character(len=8) :: cellTypeName, nomail
     character(len=24) :: nomavo
     character(len=24) :: valk(2)
-    integer, pointer :: typmail(:) => null()
+    integer(kind=8), pointer :: typmail(:) => null()
 !
 #define pasori(iCell) zi(lori-1+iCell).eq.0
 !

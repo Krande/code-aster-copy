@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ interface
                       matevg)
         real(kind=8) :: alpha
         real(kind=8) :: beta
-        integer :: zilzi(*)
+        integer(kind=8) :: zilzi(*)
         real(kind=8) :: zrlzr(*)
         real(kind=8) :: matevn(2, 2, 1)
         real(kind=8) :: matevg(2, 2, 1)

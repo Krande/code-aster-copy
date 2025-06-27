@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,10 +25,10 @@ interface
                       nomcmp, lsup, linf, lmax, lmin,&
                       borinf, borsup)
         character(len=*) :: cesz
-        integer :: unite
-        integer :: nbmat
-        integer :: nummai(*)
-        integer :: nbcmp
+        integer(kind=8) :: unite
+        integer(kind=8) :: nbmat
+        integer(kind=8) :: nummai(*)
+        integer(kind=8) :: nbcmp
         character(len=*) :: nomcmp(*)
         aster_logical :: lsup
         aster_logical :: linf

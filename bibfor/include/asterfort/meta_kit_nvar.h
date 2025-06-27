@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2021 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,6 +20,6 @@ interface
     subroutine meta_kit_nvar(metaPhas, metaRela, metaGlob,&
                              nbMetaPhas, nbVariMetaRela, nbVariMetaGlob)
         character(len=16), intent(in) :: metaPhas, metaRela, metaGlob
-        integer, intent(out) :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
+        integer(kind=8), intent(out) :: nbMetaPhas, nbVariMetaRela, nbVariMetaGlob
     end subroutine meta_kit_nvar
 end interface

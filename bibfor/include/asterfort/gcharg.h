@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -35,6 +35,6 @@ interface
         character(len=19) :: chrota
         aster_logical :: lfonc
         real(kind=8) :: time
-        integer :: iord
+        integer(kind=8) :: iord
     end subroutine gcharg
 end interface

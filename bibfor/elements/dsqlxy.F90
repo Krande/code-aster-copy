@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine dsqlxy(qsi, eta, hlt2, an, depf, &
     real(kind=8) :: lambda(4)
 !     'LAMBDA' DE L'ELEMENT DE PLAQUE DSQ
 !     ------------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: pqsi, mqsi, peta, meta
     real(kind=8) :: c(4), s(4)
     real(kind=8) :: ta(6, 4), tb(6, 12)

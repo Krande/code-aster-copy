@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ subroutine cbvalc(rouc, neq, smhc, smdi, idlexc, &
 #include "asterfort/assert.h"
     character(len=2) :: rouc
     integer(kind=4) :: smhc(*)
-    integer :: neq, smdi(*), idlexc(*)
-    integer :: kin, idebli, ilig, ifinli, ind, jcol
+    integer(kind=8) :: neq, smdi(*), idlexc(*)
+    integer(kind=8) :: kin, idebli, ilig, ifinli, ind, jcol
     real(kind=8) :: coefr, valmr(*)
     complex(kind=8) :: coefc, valmc(*), valmi(*)
 !     ------------------------------------------------------------------

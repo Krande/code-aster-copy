@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,10 +23,10 @@ interface
                       isval, nbval)
         character(len=*) :: motfac
         character(len=*) :: motcle
-        integer :: iocc
-        integer :: iarg
-        integer :: mxval
-        integer :: isval(mxval)
-        integer :: nbval
+        integer(kind=8) :: iocc
+        integer(kind=8) :: iarg
+        integer(kind=8) :: mxval
+        integer(kind=8) :: isval(mxval)
+        integer(kind=8) :: nbval
     end subroutine getltx
 end interface

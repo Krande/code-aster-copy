@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,10 +29,10 @@ subroutine lcvisc(fami, kpg, ksp, ndim, imate, &
 #include "asterfort/rcvalb.h"
 
     character(len=*), intent(in) :: fami
-    integer, intent(in)          :: kpg
-    integer, intent(in)          :: ksp
-    integer, intent(in)          :: ndim
-    integer, intent(in)          :: imate
+    integer(kind=8), intent(in)          :: kpg
+    integer(kind=8), intent(in)          :: ksp
+    integer(kind=8), intent(in)          :: ndim
+    integer(kind=8), intent(in)          :: imate
     aster_logical, intent(in)   :: lSigm
     aster_logical, intent(in)   :: lMatr
     aster_logical, intent(in)   :: lVari
@@ -44,7 +44,7 @@ subroutine lcvisc(fami, kpg, ksp, ndim, imate, &
     real(kind=8), intent(out)    :: vip(:)
     real(kind=8), intent(inout)  :: dsidep(:, :)
 ! ----------------------------------------------------------------------
-    integer      :: nd, iok(2)
+    integer(kind=8)      :: nd, iok(2)
     real(kind=8) :: k, tau, dt, a, b
     real(kind=8) :: sivm(2*ndim), siv(2*ndim), sivi(2*ndim), enerElas, incrEnerDiss
     real(kind=8) :: valev(2)

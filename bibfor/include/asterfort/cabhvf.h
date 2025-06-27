@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ interface
     subroutine cabhvf(maxfa    , ndim , nno  , nnos , nface,&
                       elem_coor,&
                       vol      , mface, dface, xface, normfa)
-        integer, intent(in) :: maxfa, ndim, nno, nnos, nface
+        integer(kind=8), intent(in) :: maxfa, ndim, nno, nnos, nface
         real(kind=8), intent(in) :: elem_coor(ndim, nno)
         real(kind=8), intent(out) :: vol
         real(kind=8), intent(out) :: mface(1:maxfa)

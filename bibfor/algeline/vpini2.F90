@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,22 +43,22 @@ subroutine vpini2(eigsol, lcomod, nbvecg, nfreqg, nbpark, &
 !
 ! --- INPUT
 !
-    integer, intent(in) :: nbvecg, nfreqg, nbpark, nbpari, nbparr
+    integer(kind=8), intent(in) :: nbvecg, nfreqg, nbpark, nbpari, nbparr
     aster_logical, intent(in) :: lcomod
     character(len=19), intent(in) :: eigsol
     character(len=24), intent(in) :: vecrer, vecrei, vecrek, vecvp
 !
 ! --- OUTPUT
 !
-    integer, intent(out) :: mxresf
+    integer(kind=8), intent(out) :: mxresf
 !
 ! --- INPUT/OUTPUT
 ! None
 !
 ! --- VARIABLES LOCALES
 !
-    integer :: nbvect, nfreq, iauxr, iauxi, iauxk, lresui, lresur, lresuk
-    integer :: lraide, neq, indf, lvec
+    integer(kind=8) :: nbvect, nfreq, iauxr, iauxi, iauxk, lresui, lresur, lresuk
+    integer(kind=8) :: lraide, neq, indf, lvec
     real(kind=8) :: undf
     character(len=19) :: raide
     character(len=24) :: kzero

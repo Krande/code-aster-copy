@@ -49,12 +49,12 @@ subroutine dibili(for_discret, iret)
 #include "blas/dcopy.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer, intent(out) :: iret
+    integer(kind=8), intent(out) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: imat, ivarim, jdc, irep, iadzi, iazk24, neq, ivarip, ii, ifono, icontp
-    integer :: icontm, iretvc
+    integer(kind=8) :: imat, ivarim, jdc, irep, iadzi, iazk24, neq, ivarip, ii, ifono, icontp
+    integer(kind=8) :: icontm, iretvc
     real(kind=8) :: r8bid, klv(78), raide(6), ulp(12), temper, temp1, temp2, klc(144), fl(12)
     character(len=8) :: k8bid
     character(len=24) :: messak(5)
@@ -62,15 +62,15 @@ subroutine dibili(for_discret, iret)
 !   loi bi-linéaire sur 6 composantes
 !       nbparc : 3 paramètres par composante
 !       nbvint : 1 variables internes par composantes
-    integer :: nbparc, nbvint
+    integer(kind=8) :: nbparc, nbvint
     parameter(nbparc=3, nbvint=1*6)
 !       nbpart : nombre paramètres total
 !       valpar : valeur paramètres de la loi
 !       nompar : nom des paramètres de la loi
-    integer :: nbpart
+    integer(kind=8) :: nbpart
     parameter(nbpart=nbparc*6)
     real(kind=8) :: valpar(nbpart), coeflo(6, nbparc), vardnl(nbvint)
-    integer :: codret(nbpart)
+    integer(kind=8) :: codret(nbpart)
     character(len=8) :: nompar(nbpart)
     aster_logical :: okdire(6)
     blas_int :: b_incx, b_incy, b_n

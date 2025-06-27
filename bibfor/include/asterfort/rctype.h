@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface
     subroutine rctype(jmat     , nb_para_list, para_list_name, para_list_vale, para_vale,&
                       para_type, keyw_factz  , keywz, materi)
-        integer, intent(in) :: jmat
-        integer, intent(in) :: nb_para_list
+        integer(kind=8), intent(in) :: jmat
+        integer(kind=8), intent(in) :: nb_para_list
         character(len=*), intent(in) :: para_list_name(*)
         real(kind=8), intent(in) :: para_list_vale(*)
         real(kind=8), intent(out) :: para_vale

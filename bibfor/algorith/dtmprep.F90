@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -73,17 +73,17 @@ subroutine dtmprep(sd_dtm_)
     character(len=*), intent(in) :: sd_dtm_
 !
 !   -0.2- Local variables
-    integer :: iret, append, substruc, vali(1), nbmode
-    integer :: nbstor, jmas1, jmas2, jrefe, jrig1
-    integer :: jrig2, lamor, jamo1, jamo2, i
-    integer :: neq, jbase, nexcit, nexcir
-    integer :: ntotex, jcoefm, jiadve, jinumo
-    integer :: jidesc, jnomfo, jnodep, jnovit, jnoacc
-    integer :: jpsdel, jgyog, jrgyg, ng2, jscdeg
-    integer :: descr, descm, desca, lagrcorr
-    integer :: jrefa, nbnli, nbpas
-    integer :: ibid, nbbas, nbmodi, piv
-    integer :: nbsst, j, jmas3, nbmody
+    integer(kind=8) :: iret, append, substruc, vali(1), nbmode
+    integer(kind=8) :: nbstor, jmas1, jmas2, jrefe, jrig1
+    integer(kind=8) :: jrig2, lamor, jamo1, jamo2, i
+    integer(kind=8) :: neq, jbase, nexcit, nexcir
+    integer(kind=8) :: ntotex, jcoefm, jiadve, jinumo
+    integer(kind=8) :: jidesc, jnomfo, jnodep, jnovit, jnoacc
+    integer(kind=8) :: jpsdel, jgyog, jrgyg, ng2, jscdeg
+    integer(kind=8) :: descr, descm, desca, lagrcorr
+    integer(kind=8) :: jrefa, nbnli, nbpas
+    integer(kind=8) :: ibid, nbbas, nbmodi, piv
+    integer(kind=8) :: nbsst, j, jmas3, nbmody
     real(kind=8) :: acrit, agene, valr(2), omeg2
     real(kind=8) :: vrotat, dt, dtmax, dtmin, tinit
     real(kind=8) :: tfin, epsi
@@ -98,9 +98,9 @@ subroutine dtmprep(sd_dtm_)
     character(len=24) :: typres, nomcmd, nume24, nomstr, valk(1), jvname
     character(len=24) :: solver, lisins
 !
-    integer, pointer :: desc(:) => null()
-    integer, pointer :: smde(:) => null()
-    integer, pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
+    integer(kind=8), pointer :: smde(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
     real(kind=8), pointer :: conl(:) => null()
     real(kind=8), pointer :: puls(:) => null()
     real(kind=8), pointer :: puls2(:) => null()

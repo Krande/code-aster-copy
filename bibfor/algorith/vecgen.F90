@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -56,7 +56,7 @@ subroutine vecgen(nomres, numeg)
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
 !
-    integer :: ier
+    integer(kind=8) :: ier
 !
 !
 !
@@ -74,22 +74,22 @@ subroutine vecgen(nomres, numeg)
     character(len=24) :: nomcha, deeq, typeba, seliai, sizlia, sst
     character(len=8) :: kbid
     complex(kind=8) :: cbid
-    integer :: gd, gd0, nblia, ibid, elim, neqet, neqred, lmapro, lsilia, lsst
-    integer :: nbsst, i1, j1
-    integer :: vali(3), tmod(1)
+    integer(kind=8) :: gd, gd0, nblia, ibid, elim, neqet, neqred, lmapro, lsilia, lsst
+    integer(kind=8) :: nbsst, i1, j1
+    integer(kind=8) :: vali(3), tmod(1)
 !
 !-----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, iadmod, iavale, iddeeq, idvale, idvect, ioc
-    integer :: ipos, iret, j, lddesc, ldnddl
-    integer :: ldnsst, ldnvec, ldprs, ldstr
-    integer :: lrdesc, lrref, lrval, nbchar, nbmod, nddl0
-    integer :: neq, neqgen, nusst
+    integer(kind=8) :: i, iadmod, iavale, iddeeq, idvale, idvect, ioc
+    integer(kind=8) :: ipos, iret, j, lddesc, ldnddl
+    integer(kind=8) :: ldnsst, ldnvec, ldprs, ldstr
+    integer(kind=8) :: lrdesc, lrref, lrval, nbchar, nbmod, nddl0
+    integer(kind=8) :: neq, neqgen, nusst
     real(kind=8) :: rbid
     real(kind=8), pointer :: vale(:) => null()
     character(len=24), pointer :: refe(:) => null()
     character(len=24), pointer :: refn(:) => null()
-    integer, pointer :: nllneq(:) => null()
+    integer(kind=8), pointer :: nllneq(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !-----------------------------------------------------------------------
     data pgc/'VECGEN'/

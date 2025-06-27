@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@ interface
     subroutine nbnlma(noma, nbm    , limanu    , nbtyp, lityp,&
                       nbn , l_error, elem_error)
         character(len=8), intent(in) :: noma
-        integer, intent(in) :: nbm
-        integer, intent(in) :: limanu(*)
-        integer, intent(in) :: nbtyp
+        integer(kind=8), intent(in) :: nbm
+        integer(kind=8), intent(in) :: limanu(*)
+        integer(kind=8), intent(in) :: nbtyp
         character(len=8), intent(in) :: lityp(*)
-        integer, intent(out) :: nbn
+        integer(kind=8), intent(out) :: nbn
         aster_logical, intent(out) :: l_error
         character(len=8), intent(out) :: elem_error
     end subroutine nbnlma

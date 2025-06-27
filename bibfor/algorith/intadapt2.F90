@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,12 +43,12 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
 !   -0.1- Input/output arguments
     character(len=*), intent(in) :: sd_dtm_
     character(len=*), intent(in) :: sd_int_
-    integer, pointer :: buffdtm(:)
-    integer, pointer :: buffint(:)
+    integer(kind=8), pointer :: buffdtm(:)
+    integer(kind=8), pointer :: buffint(:)
 !
 !   -0.2- Local variables
-    integer :: i, nbequ, ind1, iret1, iret2
-    integer :: npper, nrmax, nr, nbnoli, nbvint
+    integer(kind=8) :: i, nbequ, ind1, iret1, iret2
+    integer(kind=8) :: npper, nrmax, nr, nbnoli, nbvint
     real(kind=8) :: t1, dt, dt1, dt2, pas1
     real(kind=8) :: pas2, coeff, err, epsi, norm
     real(kind=8) :: cpmin, freq
@@ -70,7 +70,7 @@ subroutine intadapt2(sd_dtm_, sd_int_, buffdtm, buffint)
     real(kind=8), pointer :: nlsav0(:) => null()
     real(kind=8), pointer :: nlsav1(:) => null()
 !
-    integer, pointer :: buffnl(:) => null()
+    integer(kind=8), pointer :: buffnl(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !
 ! Algorithm parameters saved in a linear vector, easily accessible using the defines

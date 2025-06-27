@@ -21,6 +21,6 @@
 interface
     subroutine eiinit(nomte, iu, il)
         character(len=16) :: nomte
-        integer :: iu(:,:), il(:,:)
+        integer(kind=8) :: iu(:,:), il(:,:)
     end subroutine 
 end interface

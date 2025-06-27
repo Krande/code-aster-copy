@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,25 +28,25 @@ interface
         use Behaviour_type
         type(Behaviour_Integ), intent(in) :: BEHinteg
         character(len=*), intent(in) :: fami
-        integer, intent(in) :: kpg, ksp, ndim
+        integer(kind=8), intent(in) :: kpg, ksp, ndim
         character(len=8), intent(in) :: typmod(*)
-        integer, intent(in) :: imate
+        integer(kind=8), intent(in) :: imate
         character(len=16), intent(in) :: compor(COMPOR_SIZE)
         real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
         real(kind=8), intent(in) :: instam, instap
-        integer, intent(in) :: neps
+        integer(kind=8), intent(in) :: neps
         real(kind=8), intent(in) :: epsm(neps), deps(neps)
-        integer, intent(in) :: nsig
+        integer(kind=8), intent(in) :: nsig
         real(kind=8), intent(in) :: sigm(nsig)
-        integer, intent(in) :: nvi
+        integer(kind=8), intent(in) :: nvi
         real(kind=8), intent(in) :: vim(nvi)
         character(len=16), intent(in) :: option
         real(kind=8), intent(in) :: angmas(*)
         real(kind=8), intent(out) :: sigp(nsig)
         real(kind=8), intent(out) :: vip(nvi)
-        integer, intent(in) :: ndsde
+        integer(kind=8), intent(in) :: ndsde
         real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                                             merge(neps, 6, nsig*neps .eq. ndsde))
-        integer, intent(out) :: codret
+        integer(kind=8), intent(out) :: codret
     end subroutine lc7058
 end interface

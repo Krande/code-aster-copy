@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,10 +45,10 @@ subroutine nmini0(eta, nume_inst, matass, &
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
     character(len=19), intent(out) :: matass
-    integer, intent(out) :: nume_inst
+    integer(kind=8), intent(out) :: nume_inst
     real(kind=8), intent(out) :: eta
-    integer, intent(in) :: zmeelm, zmeass, zveelm
-    integer, intent(in) :: zveass, zsolal, zvalin
+    integer(kind=8), intent(in) :: zmeelm, zmeass, zveelm
+    integer(kind=8), intent(in) :: zveass, zsolal, zvalin
     type(NL_DS_Print), intent(out) :: ds_print
     type(NL_DS_Conv), intent(out) :: ds_conv
     type(NL_DS_AlgoPara), intent(out) :: ds_algopara
@@ -79,9 +79,9 @@ subroutine nmini0(eta, nume_inst, matass, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     real(kind=8), parameter :: zero = 0.d0
-    integer :: long
+    integer(kind=8) :: long
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -42,8 +42,8 @@ subroutine nmprde(modele, numedd, numfix, ds_material, carele, &
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtzero.h"
 !
-    integer :: fonact(*)
-    integer :: numins, ldccvg, faccvg, rescvg
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: numins, ldccvg, faccvg, rescvg
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     character(len=19) :: maprec, matass
     type(NL_DS_Measure), intent(inout) :: ds_measure
@@ -117,7 +117,7 @@ subroutine nmprde(modele, numedd, numfix, ds_material, carele, &
     character(len=19) :: incest, depest, depmoi
     character(len=19) :: depso1, depso2
     aster_logical :: lproj
-    integer :: iret
+    integer(kind=8) :: iret
 !
 ! --------------------------------------------------------------------------------------------------
 !

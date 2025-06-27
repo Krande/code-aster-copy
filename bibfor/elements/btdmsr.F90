@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine btdmsr(nb1, nb2, ksi3s2, intsr, xr, &
                   btds)
 !
     implicit none
-    integer :: nb1, nb2, intsr
+    integer(kind=8) :: nb1, nb2, intsr
     real(kind=8) :: xr(*), epais, vectpt(9, 2, 3)
     real(kind=8) :: hsj1m(3, 9), hsj1s(2, 9), btdm(4, 3, 42), btds(4, 2, 42)
     real(kind=8) :: dnsdsm(9, 42), dnsds(9, 42)
@@ -29,9 +29,9 @@ subroutine btdmsr(nb1, nb2, ksi3s2, intsr, xr, &
     common/dnsms/dnsdsm, dnsds
 !
 !-----------------------------------------------------------------------
-    integer :: i, i1, i2, i3, i4, i5, intsr1
-    integer :: intsr2, j, j1, jb, k, k1, l1
-    integer :: l2, l3, l4, l5
+    integer(kind=8) :: i, i1, i2, i3, i4, i5, intsr1
+    integer(kind=8) :: intsr2, j, j1, jb, k, k1, l1
+    integer(kind=8) :: l2, l3, l4, l5
 !-----------------------------------------------------------------------
     l1 = 44
     l2 = 76

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine lcgrad(resi, rigi, sig, apg, lag, grad, aldc, &
 ! OUT SIEF     CONTRAINTES GENERALISEES
 ! OUT DSDE     MATRICE TANGENTE GENERALISEE
 ! ----------------------------------------------------------------------
-    integer :: i, neps, ndim, ndimsi
+    integer(kind=8) :: i, neps, ndim, ndimsi
 ! ----------------------------------------------------------------------
 
 ! Initialisation

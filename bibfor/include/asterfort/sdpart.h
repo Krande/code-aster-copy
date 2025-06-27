@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine sdpart(nbsd, nbsdp0, sdloc)
-        integer :: nbsd
-        integer :: nbsdp0
-        integer :: sdloc(nbsd)
+        integer(kind=8) :: nbsd
+        integer(kind=8) :: nbsdp0
+        integer(kind=8) :: sdloc(nbsd)
     end subroutine sdpart
 end interface

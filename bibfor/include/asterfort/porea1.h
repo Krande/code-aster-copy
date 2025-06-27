@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@
 interface
     subroutine porea1(nno, nc, deplm, deplp, geom,&
                       gamma, vecteu, pgl, xl1, angp)
-        integer :: nc
-        integer :: nno
+        integer(kind=8) :: nc
+        integer(kind=8) :: nno
         real(kind=8) :: deplm(nno*nc)
         real(kind=8) :: deplp(nno*nc)
         real(kind=8) :: geom(3, nno)

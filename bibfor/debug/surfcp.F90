@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine surfcp(sdcont, unit_msg)
 #include "Contact_type.h"
 !
     character(len=8), intent(in) :: sdcont
-    integer, intent(in) :: unit_msg
+    integer(kind=8), intent(in) :: unit_msg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -43,12 +43,12 @@ subroutine surfcp(sdcont, unit_msg)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cont_form, algo_cont, algo_frot
+    integer(kind=8) :: cont_form, algo_cont, algo_frot
     character(len=24) :: sdcont_defi
-    integer :: cont_mult, frot_maxi, geom_maxi, cont_maxi
-    integer :: geom_nbiter
+    integer(kind=8) :: cont_mult, frot_maxi, geom_maxi, cont_maxi
+    integer(kind=8) :: geom_nbiter
     real(kind=8) :: geom_resi, frot_resi
-    integer :: i_reso_cont, i_reso_fric, i_reso_geom
+    integer(kind=8) :: i_reso_cont, i_reso_fric, i_reso_geom
 !
 ! --------------------------------------------------------------------------------------------------
 !

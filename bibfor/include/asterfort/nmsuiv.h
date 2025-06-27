@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ interface
         type(NL_DS_Material), intent(in) :: ds_material
         character(len=*), intent(in) :: modelz
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
         character(len=19), intent(in) :: valinc(*)
     end subroutine nmsuiv
 end interface

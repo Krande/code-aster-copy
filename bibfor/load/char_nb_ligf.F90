@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,8 +33,8 @@ subroutine char_nb_ligf(mesh, keywordfact, type_late, nb_elem_late, nb_noel_maxi
     character(len=16), intent(in) :: keywordfact
     character(len=8), intent(in) :: mesh
     character(len=4), intent(in) :: type_late
-    integer, intent(out) :: nb_elem_late
-    integer, intent(out) :: nb_noel_maxi
+    integer(kind=8), intent(out) :: nb_elem_late
+    integer(kind=8), intent(out) :: nb_noel_maxi
     character(len=*), intent(in), optional :: suffix
 !
 ! --------------------------------------------------------------------------------------------------
@@ -56,14 +56,14 @@ subroutine char_nb_ligf(mesh, keywordfact, type_late, nb_elem_late, nb_noel_maxi
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbocc, iocc, ielem, nume_type, nume_elem, nb_noel
+    integer(kind=8) :: nbocc, iocc, ielem, nume_type, nume_elem, nb_noel
     character(len=8) :: suffix_local
     character(len=24) :: list_node
     character(len=24) :: list_elem
-    integer, pointer :: p_list_elem(:) => null()
-    integer :: nb_node, nb_elem
-    integer, pointer :: p_mesh_typmail(:) => null()
-    integer, pointer :: p_cata_nbno(:) => null()
+    integer(kind=8), pointer :: p_list_elem(:) => null()
+    integer(kind=8) :: nb_node, nb_elem
+    integer(kind=8), pointer :: p_mesh_typmail(:) => null()
+    integer(kind=8), pointer :: p_cata_nbno(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

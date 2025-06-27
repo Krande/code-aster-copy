@@ -24,11 +24,11 @@ interface
         map_noco_nbnoco, resuelem, fonrez, lisrel )
         character(len=19), intent(in) :: ligrel, resuelem, lisrel
         character(len=8), intent(in) :: noma
-        integer, intent(in) :: nb_pairs, nbnocot
-        integer, intent(in) :: map_noco_pair(:,:,:)
-        integer, intent(in) :: map_noco_nbnoco(:,:,:)
-        integer, intent(in) :: map_noco_nbelem(:,:)
-        integer, pointer, intent(in) :: list_total_no_co(:)
+        integer(kind=8), intent(in) :: nb_pairs, nbnocot
+        integer(kind=8), intent(in) :: map_noco_pair(:,:,:)
+        integer(kind=8), intent(in) :: map_noco_nbnoco(:,:,:)
+        integer(kind=8), intent(in) :: map_noco_nbelem(:,:)
+        integer(kind=8), pointer, intent(in) :: list_total_no_co(:)
         character(len=*), intent(in) :: fonrez
     end subroutine rco3d_clcrela
 end interface

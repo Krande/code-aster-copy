@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,18 +23,18 @@ interface
                       r, enrhyd, nfh)
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
-        integer :: dimcon
-        integer :: dimenr
-        integer :: imate
-        integer :: mecani(5)
-        integer :: press1(7)
-        integer :: enrmec(3)
-        integer :: ndim
+        integer(kind=8) :: dimcon
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: imate
+        integer(kind=8) :: mecani(5)
+        integer(kind=8) :: press1(7)
+        integer(kind=8) :: enrmec(3)
+        integer(kind=8) :: ndim
         real(kind=8) :: dt
         aster_logical :: fnoevo
         real(kind=8) :: congem(dimcon)
         real(kind=8) :: r(dimenr)
-        integer :: enrhyd(3)
-        integer :: nfh
+        integer(kind=8) :: enrhyd(3)
+        integer(kind=8) :: nfh
     end subroutine xfnoda
 end interface 

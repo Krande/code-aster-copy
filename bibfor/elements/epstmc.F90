@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine epstmc(fami, ndim, instan, poum, kpg, &
 !
 !
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: ndim
+    integer(kind=8), intent(in) :: ndim
     character(len=*), intent(in) :: poum
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: j_mater
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: j_mater
     real(kind=8), intent(in) :: angl_naut(3)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: instan
@@ -68,19 +68,19 @@ subroutine epstmc(fami, ndim, instan, poum, kpg, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbres = 3
-    integer :: icodre(nbres)
+    integer(kind=8), parameter :: nbres = 3
+    integer(kind=8) :: icodre(nbres)
     character(len=16) :: nomres(nbres)
     real(kind=8) :: valres(nbres)
 !
-    integer :: nbv, elas_id, nbpar
+    integer(kind=8) :: nbv, elas_id, nbpar
     real(kind=8) :: biot, e
     character(len=8) :: nompar
     character(len=32) :: phenom
     real(kind=8) :: valpar, bendog, kdessi
     real(kind=8) :: troisk, nu
     real(kind=8) :: hydr, sech, sref, ptot
-    integer :: k, iret
+    integer(kind=8) :: k, iret
     character(len=16) :: elas_keyword
     character(len=6), parameter :: epsa(6) = (/'EPSAXX', 'EPSAYY', 'EPSAZZ', &
                                                'EPSAXY', 'EPSAXZ', 'EPSAYZ'/)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                       nnom, ddls, nddl, ddlm, nfiss,&
                       contac)
         character(len=16) :: nomte
-        integer :: nfh
-        integer :: nfe
-        integer :: singu
-        integer :: ddlc
-        integer :: nnom
-        integer :: ddls
-        integer :: nddl
-        integer :: ddlm
-        integer :: nfiss
-        integer :: contac
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nfe
+        integer(kind=8) :: singu
+        integer(kind=8) :: ddlc
+        integer(kind=8) :: nnom
+        integer(kind=8) :: ddls
+        integer(kind=8) :: nddl
+        integer(kind=8) :: ddlm
+        integer(kind=8) :: nfiss
+        integer(kind=8) :: contac
     end subroutine xteini
 end interface

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
 #include "asterfort/reeref.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: ndim, ndime, nnop, igeom
+    integer(kind=8) :: ndim, ndime, nnop, igeom
     real(kind=8) :: co(ndim), ff(nnop)
     character(len=8) :: elrefp
 !
@@ -53,7 +53,7 @@ subroutine xpoffo(ndim, ndime, elrefp, nnop, igeom, &
 !
     real(kind=8) :: a(3), b(3), c(3), ab(3), ac(3), nd(3), norme, nab, y(3)
     real(kind=8) :: an(ndim), coloc(2), xe(3), n(ndim)
-    integer :: j, igeolo, ino
+    integer(kind=8) :: j, igeolo, ino
     character(len=24) :: geomlo
     blas_int :: b_incx, b_incy, b_n
 !

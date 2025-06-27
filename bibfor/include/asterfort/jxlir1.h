@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine jxlir1(ic, caralu)
-        integer :: ic
-        integer :: caralu(*)
+        integer(kind=8) :: ic
+        integer(kind=8) :: caralu(*)
     end subroutine jxlir1
 end interface

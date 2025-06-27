@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine caltau(ifa, is, sigf, fkooh,&
                       nfs, nsg, toutms, taus, mus,&
                       msns)
-        integer :: nsg
-        integer :: nfs
-        integer :: ifa
-        integer :: is
+        integer(kind=8) :: nsg
+        integer(kind=8) :: nfs
+        integer(kind=8) :: ifa
+        integer(kind=8) :: is
         real(kind=8) :: sigf(6)
         real(kind=8) :: fkooh(6, 6)
         real(kind=8) :: toutms(nfs, nsg, 6)

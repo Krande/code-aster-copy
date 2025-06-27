@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,11 +39,11 @@ subroutine mdall2(nomres, basemo, res, nbo, nbmode)
 !
 !     ------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: iinst, inord, iptem, jacce, jvite, jdepl, jpass
-    integer :: ibid, jinst, jordr, nbmode, nbo
+    integer(kind=8) :: iinst, inord, iptem, jacce, jvite, jdepl, jpass
+    integer(kind=8) :: ibid, jinst, jordr, nbmode, nbo
     real(kind=8) :: dtbid
     character(len=8) :: k8b
-    integer, pointer :: ordr(:) => null()
+    integer(kind=8), pointer :: ordr(:) => null()
 !-----------------------------------------------------------------------
     blanc8 = '        '
     blan16 = '                '

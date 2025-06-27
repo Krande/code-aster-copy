@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -50,8 +50,8 @@ subroutine bsthco(nomte, bsigth, indith)
 !     OUT INDITH : LOGICAL = .TRUE.  YA DES DEFORMATIONS THERMIQUES
 !                          = .FALSE. SINON
 !     ------------------------------------------------------------------
-    integer :: icara, icompo, icou, imate, inte, intsn, intsr, jgeom, lzi
-    integer :: lzr, nb1, nb2, nbcou, npge, npgsn, npgsr, kwgt, itab(8), iret
+    integer(kind=8) :: icara, icompo, icou, imate, inte, intsn, intsr, jgeom, lzi
+    integer(kind=8) :: lzr, nb1, nb2, nbcou, npge, npgsn, npgsr, kwgt, itab(8), iret
     parameter(npge=3)
     real(kind=8) :: vecta(9, 2, 3), vectn(9, 3), vectpt(9, 2, 3)
     real(kind=8) :: vectg(2, 3), vectt(3, 3)

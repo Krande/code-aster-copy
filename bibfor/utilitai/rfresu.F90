@@ -60,17 +60,17 @@ subroutine rfresu()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbtrou, numer1(1), l, n1, iret, ivari
-    integer :: nm, ngm, npoint, np, nn, npr, ngn
-    integer :: nres, ifm, niv, nusp, cellNume
+    integer(kind=8) :: nbtrou, numer1(1), l, n1, iret, ivari
+    integer(kind=8) :: nm, ngm, npoint, np, nn, npr, ngn
+    integer(kind=8) :: nres, ifm, niv, nusp, cellNume
     real(kind=8) :: epsi
     character(len=8) :: k8b, crit, cellName, mesh, intres, model
     character(len=8) :: nodeName, cmpName, nomgd
     character(len=16) :: nomcmd, typcon, fieldName, npresu, variName
     character(len=19) :: funcName, cham19, result
     character(len=24) :: valk(3), groupCellName, groupNodeName, compor
-    integer, pointer :: listStore(:) => null()
-    integer :: nbStore
+    integer(kind=8), pointer :: listStore(:) => null()
+    integer(kind=8) :: nbStore
 !
 ! --------------------------------------------------------------------------------------------------
 !

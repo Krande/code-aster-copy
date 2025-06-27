@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,13 +45,13 @@ subroutine analybar(x3d1, x3d2, x3d3, x3dp, xbar, &
 #include "asterfort/tstbar.h"
 ! ARGUMENTS
 ! ---------
-    integer :: iproj, inoeu, icote
+    integer(kind=8) :: iproj, inoeu, icote
     real(kind=8) :: xbar(3), excent, x3d1(3), x3d2(3), x3d3(3), x3dp(3)
 !
 ! VARIABLES LOCALES
 ! -----------------
     real(kind=8) :: h, d, alpha, alpha_max, r8bid3(3), xbar2(2)
-    integer :: j, ino, jno, kno, lno_neg(2), iproj2
+    integer(kind=8) :: j, ino, jno, kno, lno_neg(2), iproj2
 !
 !
 !-------------------   DEBUT DU CODE EXECUTABLE    ---------------------

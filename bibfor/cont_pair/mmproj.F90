@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,8 +29,8 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt, &
 #include "asterfort/mmnewt.h"
 #include "asterfort/mmtole.h"
     character(len=8) :: alias
-    integer :: ndim
-    integer :: nno
+    integer(kind=8) :: ndim
+    integer(kind=8) :: nno
     real(kind=8) :: coorma(27)
     real(kind=8) :: coorpt(3)
     aster_logical :: dirapp
@@ -38,9 +38,9 @@ subroutine mmproj(alias, nno, ndim, coorma, coorpt, &
     real(kind=8) :: ksi1, ksi2
     real(kind=8) :: tau1(3), tau2(3)
     real(kind=8) :: toleou
-    integer :: iproj
-    integer :: niverr
-    integer :: itemax
+    integer(kind=8) :: iproj
+    integer(kind=8) :: niverr
+    integer(kind=8) :: itemax
     real(kind=8) :: epsmax
 !
 ! ----------------------------------------------------------------------

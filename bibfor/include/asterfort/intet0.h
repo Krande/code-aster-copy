@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,6 +22,6 @@ interface
     subroutine intet0(angle, tet0, iax)
         real(kind=8) :: angle
         real(kind=8) :: tet0(10, 10)
-        integer :: iax
+        integer(kind=8) :: iax
     end subroutine intet0
 end interface

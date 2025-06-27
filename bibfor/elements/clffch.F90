@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -54,11 +54,11 @@ subroutine clffch(alias, type, nno, xi, yi, &
     real(kind=8) :: tn(*), ajx(*), ajy(*), ajz(*), xin(20), yin(20), zin(20)
     real(kind=8) :: bjxx(*), bjyy(*), bjzz(*), bjxy(*), bjxz(*), bjyz(*), xi, yi
     real(kind=8) :: zi
-    integer :: ider, nno
+    integer(kind=8) :: ider, nno
 !----------------------------------------------------------------------
     real(kind=8) :: x0, y0, z0, fxy, fxydx, fxydy, fxydxy, fz, fzdz, fzd2z, f
     real(kind=8) :: fdx, fdy, fdz
-    integer :: i
+    integer(kind=8) :: i
 !----------------------------------------------------------------------
 !
     if (type .eq. 'POUTRE') then

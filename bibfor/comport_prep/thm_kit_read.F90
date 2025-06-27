@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine thm_kit_read(keywordfact, iocc, rela_comp, rela_thmc, rela_hydr, &
 #include "asterc/lckitread.h"
 !
     character(len=16), intent(in) :: keywordfact
-    integer, intent(in) :: iocc
+    integer(kind=8), intent(in) :: iocc
     character(len=16), intent(in) :: rela_comp
     character(len=16), intent(out) :: rela_thmc
     character(len=16), intent(out) :: rela_hydr
@@ -53,7 +53,7 @@ subroutine thm_kit_read(keywordfact, iocc, rela_comp, rela_thmc, rela_hydr, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nocc
+    integer(kind=8) :: nocc
     character(len=16) :: rela_kit(4), rela_list(4), list_kit(5)
 !
 ! --------------------------------------------------------------------------------------------------

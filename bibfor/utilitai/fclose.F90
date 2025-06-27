@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@ subroutine fclose(unit)
 ! aslint: disable=
     implicit none
 #include "asterfort/utmess.h"
-    integer :: unit
+    integer(kind=8) :: unit
 !
 !     FERMETURE DE L'UNITE LOGIQUE fort.UNIT
 !     UTILE POUR APPEL DEPUIS PYTHON UNE FOIS LES BASES JEVEUX FERMEES
@@ -28,7 +28,7 @@ subroutine fclose(unit)
 !
 ! IN  : UNIT   : NUMERO D'UNITE LOGIQUE
 !     ------------------------------------------------------------------
-    integer :: ierr
+    integer(kind=8) :: ierr
     character(len=4) :: k4b
 !     ------------------------------------------------------------------
 !

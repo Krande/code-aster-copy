@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,6 +39,6 @@ interface
         type(NL_DS_Energy), intent(in) :: ds_energy
         type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
         type(NL_DS_PostTimeStep), intent(in) :: ds_posttimestep
-        integer, intent(inout) :: list_func_acti(*)
+        integer(kind=8), intent(inout) :: list_func_acti(*)
     end subroutine nmfonc
 end interface

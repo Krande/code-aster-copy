@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine uttr24(vk24, ndim)
 !
 !     ARGUMENTS:
 !     ----------
-    integer :: ndim
+    integer(kind=8) :: ndim
     character(len=24) :: vk24(ndim)
 ! ----------------------------------------------------------------------
 !     BUT : TRIER DANS L'ORDRE ALPHABETIQUE UN VECTEUR DE K24
@@ -33,7 +33,7 @@ subroutine uttr24(vk24, ndim)
 !
 ! ----------------------------------------------------------------------
     character(len=24) :: ct
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
 !
 ! DEB-------------------------------------------------------------------

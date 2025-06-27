@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine op0166()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, n1, n2, n3, nbocc
+    integer(kind=8) :: iret, n1, n2, n3, nbocc
     aster_logical :: isole, lnoeu, lelno, lelem, lelga, lxfem
     character(len=4) :: tychv, typcal
     character(len=8) :: k8b, noma1, noma2, noma3, resuin, projon, norein

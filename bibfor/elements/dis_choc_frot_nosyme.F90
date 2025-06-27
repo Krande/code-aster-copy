@@ -27,7 +27,7 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 #include "asterfort/utpvgl.h"
 !
     type(te0047_dscr), intent(in) :: for_discret
-    integer :: icodma
+    integer(kind=8) :: icodma
     real(kind=8) :: ulp(*), klv(*), xg(*), varmo(*), varpl(*), force(*), klvp(36)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -49,18 +49,18 @@ subroutine dis_choc_frot_nosyme(for_discret, icodma, ulp, xg, klv, &
 ! --------------------------------------------------------------------------------------------------
 ! person_in_charge: jean-luc.flejou at edf.fr
 !
-    integer, parameter :: nbre1 = 11
-    integer :: codre1(nbre1)
+    integer(kind=8), parameter :: nbre1 = 11
+    integer(kind=8) :: codre1(nbre1)
     real(kind=8) :: valre1(nbre1)
     character(len=8) :: nomre1(nbre1)
 !   Index des variables internes
-    integer, parameter :: idepx = 1, idepy = 2, idepz = 3, iidic = 4, idepyp = 5, idepzp = 6
-    integer, parameter :: ifx = 7, ify = 8, ifz = 9, icalc = 10
+    integer(kind=8), parameter :: idepx = 1, idepy = 2, idepz = 3, iidic = 4, idepyp = 5, idepzp = 6
+    integer(kind=8), parameter :: ifx = 7, ify = 8, ifz = 9, icalc = 10
 !   État du discret : adhérent, glissant, décollé
-    integer, parameter :: EtatAdher = 0, EtatGliss = 1, EtatDecol = 2
-    integer, parameter :: EnPlasticite = 2
+    integer(kind=8), parameter :: EtatAdher = 0, EtatGliss = 1, EtatDecol = 2
+    integer(kind=8), parameter :: EnPlasticite = 2
 !
-    integer :: indic, ii
+    integer(kind=8) :: indic, ii
     real(kind=8) :: xl(6), xd(3), rignor, rigtan
     real(kind=8) :: coulom, dist12, utotx, utoty, utotz, depx, depy, depz
     real(kind=8) :: lambda, fort, dist0, rtmp, kp, kt

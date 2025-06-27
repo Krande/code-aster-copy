@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       list_ptitma,list_ptgama)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(inout) :: ds_contact
-        integer, intent(in):: nb_pair
-        integer, pointer :: list_pair(:)
-        integer, pointer :: list_nbptit(:)
+        integer(kind=8), intent(in):: nb_pair
+        integer(kind=8), pointer :: list_pair(:)
+        integer(kind=8), pointer :: list_nbptit(:)
         real(kind=8), pointer :: list_ptitsl(:)
         real(kind=8), pointer :: list_ptitma(:)
         real(kind=8), pointer :: list_ptgama(:)

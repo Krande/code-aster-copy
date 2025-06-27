@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@ interface
                       sddyna   , sdnume   , nume_dof      , ds_measure, ds_contact,&
                       hval_incr, hval_algo)
         use NonLin_Datastructure_type
-        integer, intent(in) :: list_func_acti(*)
+        integer(kind=8), intent(in) :: list_func_acti(*)
         character(len=8), intent(in) :: mesh
         character(len=24), intent(in) :: model, nume_dof
         type(NL_DS_Contact), intent(in) :: ds_contact
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=19), intent(in) :: sddyna, sddisc, sdnume
         character(len=19), intent(in) :: hval_incr(*), hval_algo(*)
-        integer, intent(in) :: nume_inst
+        integer(kind=8), intent(in) :: nume_inst
     end subroutine nmnble
 end interface

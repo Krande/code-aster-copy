@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd, &
 #include "asterfort/varecr.h"
 #include "asterfort/wkvect.h"
 #include "blas/ddot.h"
-    integer :: nbmat
+    integer(kind=8) :: nbmat
     real(kind=8) :: mater(nbmat, 2), gamp, evp, sigd(6), sige(6), epssig
     real(kind=8) :: invare, gamps, invars, evps, b
 ! --- BUT : CALCUL DE LA PROJECTION AU SOMMET --------------------------
@@ -52,7 +52,7 @@ subroutine calcpj(nbmat, mater, gamp, evp, sigd, &
 ! ------------ : DU MATERIAU -------------------------------------------
 ! ======================================================================
 ! ======================================================================
-    integer :: jpara, jpara2, ndt, ndi
+    integer(kind=8) :: jpara, jpara2, ndt, ndi
     real(kind=8) :: mu, sigc, sig(6), sd(6), sgamp, mgamp
     real(kind=8) :: zero, deux, trois, se(6)
     real(kind=8) :: sigii, siie, invar, gamult, k

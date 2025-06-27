@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine csmbmc(nommat, neq, vsmb)
 #include "asterfort/jeveuo.h"
     character(len=*) :: nommat
     complex(kind=8) :: vsmb(*)
-    integer :: neq
+    integer(kind=8) :: neq
 ! BUT :
 !-----------------------------------------------------------------------
 !     FONCTIONS JEVEUX
@@ -35,12 +35,12 @@ subroutine csmbmc(nommat, neq, vsmb)
 !-----------------------------------------------------------------------
 !     VARIABLES LOCALES
 !-----------------------------------------------------------------------
-    integer :: ieq, iccid
+    integer(kind=8) :: ieq, iccid
     character(len=14) :: nu
     character(len=19) :: mat
     character(len=24), pointer :: refa(:) => null()
-    integer, pointer :: ccid(:) => null()
-    integer, pointer :: nugl(:) => null()
+    integer(kind=8), pointer :: ccid(:) => null()
+    integer(kind=8), pointer :: nugl(:) => null()
 !-----------------------------------------------------------------------
 !     DEBUT
     call jemarq()

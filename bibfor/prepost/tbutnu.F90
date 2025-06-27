@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab, &
 #include "asterfort/tbexv1.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: iocc, nbinst
+    integer(kind=8) :: iocc, nbinst
     real(kind=8) :: prec
     character(len=8) :: crit
     character(len=16) :: motfac
@@ -44,8 +44,8 @@ subroutine tbutnu(motfac, iocc, nomjv, nbinst, nomtab, &
 !        PAR DEFAUT, TOUT_INST
 !
 !
-    integer :: ibid, np, nc, n1, n2, jinstd, jinst, jordr, ii, nbval, nbtrou
-    integer :: nutrou(1)
+    integer(kind=8) :: ibid, np, nc, n1, n2, jinstd, jinst, jordr, ii, nbval, nbtrou
+    integer(kind=8) :: nutrou(1)
     real(kind=8) :: dinst
     real(kind=8) :: valr
     complex(kind=8) :: cbid

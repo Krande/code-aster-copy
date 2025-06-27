@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp, &
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/lteatt.h"
-    integer :: nno, igeom, nbcmp
-    integer :: poiaxi
+    integer(kind=8) :: nno, igeom, nbcmp
+    integer(kind=8) :: poiaxi
     real(kind=8) :: ff(nno), dfdx(nno), dfdy(nno), poids, dsx, dsy, norme, sig(*)
 !  ERREUR EN MECANIQUE - TERME VOLUMIQUE - DIMENSION 2
 !  **        **                *                     *
@@ -73,7 +73,7 @@ subroutine ermev2(nno, igeom, ff, sig, nbcmp, &
 !
 !
 !
-    integer :: i
+    integer(kind=8) :: i
 !
     real(kind=8) :: dsig11, dsig12, dsig22, dsig21, spg11, spg22, spg33, spg12
     real(kind=8) :: r, sig11, sig22, sig33, sig12

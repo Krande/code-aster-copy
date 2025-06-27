@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,12 +30,12 @@ module csc_store_type
         ! valeurs des termes non-nuls de la colonne
         real(kind=8), dimension(:), pointer :: values
         ! nombre de termes non-nuls dans la colonne
-        integer :: nnz
+        integer(kind=8) :: nnz
     end type dyn_column
 !
     type, public :: csc_store
-        integer :: ncol
-        integer :: nnz
+        integer(kind=8) :: ncol
+        integer(kind=8) :: nnz
         type(dyn_column), dimension(:), pointer :: pcol
         real(kind=8), dimension(:), pointer     :: rwork
         integer(kind=4), dimension(:), pointer  :: iwork
@@ -81,10 +81,10 @@ contains
 ! nwork : taille des tableaux de travail rwork et iwork qui stockent
 ! le vecteur avant compression
     subroutine create_csc_store(ncol, cs, nwork)
-        integer, intent(in) :: ncol, nwork
+        integer(kind=8), intent(in) :: ncol, nwork
         type(csc_store), intent(out) :: cs
         !
-        integer :: ii
+        integer(kind=8) :: ii
         !
         call new_csc_store(cs)
         cs%ncol = ncol
@@ -101,7 +101,7 @@ contains
     subroutine free_csc_store(cs)
         type(csc_store), intent(inout) :: cs
         !
-        integer :: ii
+        integer(kind=8) :: ii
         !
         do ii = 1, cs%ncol
             call free_dyn_column(cs%pcol(ii))
@@ -113,7 +113,7 @@ contains
     end subroutine free_csc_store
 
     subroutine create_dyn_column(nnz, dc)
-        integer, intent(in) :: nnz
+        integer(kind=8), intent(in) :: nnz
         type(dyn_column), intent(out) :: dc
         !
         !
@@ -128,12 +128,12 @@ contains
 ! Compress and store nv vectors in cs
 ! v(:,k) <-> column jcol(k) in cs
     subroutine put_to_csc_store(v, ldv, nv, jcol, cs)
-        integer, dimension(:), intent(in)      :: jcol
-        integer, intent(in)                    :: ldv, nv
+        integer(kind=8), dimension(:), intent(in)      :: jcol
+        integer(kind=8), intent(in)                    :: ldv, nv
         real(kind=8), dimension(:), intent(in) :: v
         type(csc_store), intent(inout)         :: cs
 !
-        integer :: ii, jj, kk, nnz, off
+        integer(kind=8) :: ii, jj, kk, nnz, off
 !
         do kk = 1, nv
             do jj = 1, 2

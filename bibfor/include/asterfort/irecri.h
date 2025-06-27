@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,23 +30,23 @@ interface
                       lsup       , borsup        ,&
                       linf       , borinf        ,&
                       realFormat , cplxFormat)
-        integer, intent(in) :: fileUnit
+        integer(kind=8), intent(in) :: fileUnit
         character(len=*), intent(in) :: dsName, titleKeywf
-        integer, intent(in) :: titleKeywfIocc
+        integer(kind=8), intent(in) :: titleKeywfIocc
         aster_logical, intent(in) :: lResu
-        integer, intent(in) :: storeNb
-        integer , pointer :: storeListIndx(:)
-        integer, intent(in) :: fieldListNb
+        integer(kind=8), intent(in) :: storeNb
+        integer(kind=8) , pointer :: storeListIndx(:)
+        integer(kind=8), intent(in) :: fieldListNb
         character(len=*), pointer :: fieldListType(:)
-        integer, intent(in) :: paraNb
+        integer(kind=8), intent(in) :: paraNb
         character(len=*), pointer :: paraName(:)
         character(len=1), intent(in) :: paraFormat
-        integer, intent(in) :: cmpUserNb
+        integer(kind=8), intent(in) :: cmpUserNb
         character(len=8), pointer :: cmpUserName(:)
-        integer, intent(in) :: nodeUserNb
-        integer , pointer :: nodeUserNume(:)
-        integer, intent(in) :: cellUserNb
-        integer , pointer :: cellUserNume(:)
+        integer(kind=8), intent(in) :: nodeUserNb
+        integer(kind=8) , pointer :: nodeUserNume(:)
+        integer(kind=8), intent(in) :: cellUserNb
+        integer(kind=8) , pointer :: cellUserNume(:)
         aster_logical, intent(in) :: lMeshCoor
         aster_logical, intent(in) :: lsup, linf, lmax, lmin
         real(kind=8), intent(in) :: borsup, borinf

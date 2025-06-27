@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@
 interface
     subroutine fgdoma(nommat, nbcycl, epsmin, epsmax, dom)
         character(len=*) :: nommat
-        integer :: nbcycl
+        integer(kind=8) :: nbcycl
         real(kind=8) :: epsmin(*)
         real(kind=8) :: epsmax(*)
         real(kind=8) :: dom(*)

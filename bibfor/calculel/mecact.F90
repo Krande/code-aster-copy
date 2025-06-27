@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -42,15 +42,15 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz, &
     character(len=*), intent(in) :: nomgdz, moclez
     character(len=8) :: nomgd
     character(len=6) :: mocle
-    integer, intent(in) :: ncmp
+    integer(kind=8), intent(in) :: ncmp
     character(len=*), intent(in), optional :: nomcmp, sk, lnomcmp(ncmp), vk(ncmp)
-    integer, intent(in), optional :: si, vi(ncmp)
+    integer(kind=8), intent(in), optional :: si, vi(ncmp)
     real(kind=8), intent(in), optional :: sr, vr(ncmp)
     complex(kind=8), intent(in), optional :: sc, vc(ncmp)
 !
 !   Liste des variables locales utilisées pour récuperer les arguments
     character(len=24) :: licmp(ncmp), kcmp(ncmp)
-    integer :: icmp(ncmp)
+    integer(kind=8) :: icmp(ncmp)
     real(kind=8) :: rcmp(ncmp)
     complex(kind=8) :: ccmp(ncmp)
 ! ----------------------------------------------------------------------
@@ -85,7 +85,7 @@ subroutine mecact(base, nomcar, moclez, nomco, nomgdz, &
     character(len=8) :: noma
 !
 !-----------------------------------------------------------------------
-    integer :: i, ianoma, iret, jncmp, jvalv, ltyp, j
+    integer(kind=8) :: i, ianoma, iret, jncmp, jvalv, ltyp, j
 !
 !-----------------------------------------------------------------------
     call jemarq()

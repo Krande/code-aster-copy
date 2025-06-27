@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,7 +23,7 @@ subroutine xmafr1(ndim, nd, p)
     implicit none
 #include "jeveux.h"
     real(kind=8) :: nd(3), p(3, 3)
-    integer :: ndim
+    integer(kind=8) :: ndim
 ! ----------------------------------------------------------------------
 !        CALCUL DE LA MATRICE DE L'OPÉRATEUR DE PROJECTION
 !
@@ -36,7 +36,7 @@ subroutine xmafr1(ndim, nd, p)
 !
 !
 !
-    integer :: i, j
+    integer(kind=8) :: i, j
 !
 !     P : OPÉRATEUR DE PROJECTION
     do i = 1, ndim

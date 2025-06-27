@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine liscn1(lisold, ichar, nomfct, typfct, phase, &
                       npuis)
         character(len=19), intent(in) :: lisold
-        integer, intent(in)  :: ichar
+        integer(kind=8), intent(in)  :: ichar
         character(len=16) , intent(out) :: typfct
         character(len=8), intent(out)  :: nomfct
         real(kind=8), intent(out)  :: phase
-        integer, intent(out)  :: npuis
+        integer(kind=8), intent(out)  :: npuis
     end subroutine liscn1
 end interface

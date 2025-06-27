@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -18,10 +18,10 @@
 !
 subroutine pctrii(tab, ltab)
     implicit none
-    integer :: ltab, tab(ltab)
+    integer(kind=8) :: ltab, tab(ltab)
 !
 !-----------------------------------------------------------------------
-    integer :: i, indic, ip1, itab, k
+    integer(kind=8) :: i, indic, ip1, itab, k
 !-----------------------------------------------------------------------
     do k = ltab, 2, -1
         indic = 0

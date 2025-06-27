@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,7 +39,7 @@ subroutine dtmclean(sd_dtm_)
     character(len=*), intent(in)  :: sd_dtm_
     character(len=8)                    :: sd_dtm, sd_nl
 
-    integer                             :: nbnli
+    integer(kind=8)                             :: nbnli
 
     call jemarq()
 

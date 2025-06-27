@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,30 +36,30 @@ subroutine lc0001(BEHinteg, &
 
     type(Behaviour_Integ), intent(in):: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg
-    integer, intent(in) :: ksp
-    integer, intent(in) :: ndim
-    integer, intent(in) :: imate
+    integer(kind=8), intent(in) :: kpg
+    integer(kind=8), intent(in) :: ksp
+    integer(kind=8), intent(in) :: ndim
+    integer(kind=8), intent(in) :: imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam
     real(kind=8), intent(in) :: instap
-    integer, intent(in) :: neps
+    integer(kind=8), intent(in) :: neps
     real(kind=8), intent(in) :: epsm(neps)
     real(kind=8), intent(in) :: deps(neps)
-    integer, intent(in) :: nsig
+    integer(kind=8), intent(in) :: nsig
     real(kind=8), intent(in) :: sigm(nsig)
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(in) :: vim(nvi)
     character(len=16), intent(in) :: option
     real(kind=8), intent(in) :: angmas(*)
     real(kind=8)                 :: sigp(nsig)
     real(kind=8)                 :: vip(nvi)
     character(len=8), intent(in) :: typmod(2)
-    integer, intent(in) :: ndsde
+    integer(kind=8), intent(in) :: ndsde
     real(kind=8) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
                            merge(neps, 6, nsig*neps .eq. ndsde))
-    integer, intent(out):: codret
+    integer(kind=8), intent(out):: codret
 ! --------------------------------------------------------------------------------------------------
 !   RELATION='ELAS': COMPORTEMENT ELASTIQUE INCREMENTAL (ISOTROPE, ISOTROPE TRANSVERSE, ORTHOTROPE)
 ! --------------------------------------------------------------------------------------------------
@@ -84,7 +84,7 @@ subroutine lc0001(BEHinteg, &
     character(len=1)  :: poum
     character(len=16) :: mcmate
     aster_logical     :: lMatr, lSigm, lVari
-    integer           :: icodre, ndimsi
+    integer(kind=8)           :: icodre, ndimsi
     real(kind=8)      :: sig(2*ndim), dsde(2*ndim, 2*ndim), vi(nvi), zero(2*ndim), eps(2*ndim)
 ! --------------------------------------------------------------------------------------------------
     ASSERT(neps .eq. nsig)

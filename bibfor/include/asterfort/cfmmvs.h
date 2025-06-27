@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,9 +22,9 @@ interface
     subroutine cfmmvs(ds_contact, nt_ncomp_poin, v_ncomp_jeux, v_ncomp_loca, v_ncomp_zone)
         use NonLin_Datastructure_type
         type(NL_DS_Contact), intent(in) :: ds_contact
-        integer, intent(in) :: nt_ncomp_poin
+        integer(kind=8), intent(in) :: nt_ncomp_poin
         real(kind=8), pointer :: v_ncomp_jeux(:)
-        integer, pointer :: v_ncomp_loca(:)
-        integer, pointer :: v_ncomp_zone(:)
+        integer(kind=8), pointer :: v_ncomp_loca(:)
+        integer(kind=8), pointer :: v_ncomp_zone(:)
     end subroutine cfmmvs
 end interface

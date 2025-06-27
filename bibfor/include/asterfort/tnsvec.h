@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine tnsvec(choix, ndim, mat, vec, r)
-        integer :: ndim
-        integer :: choix
+        integer(kind=8) :: ndim
+        integer(kind=8) :: choix
         real(kind=8) :: mat(3, 3)
         real(kind=8) :: vec(2*ndim)
         real(kind=8) :: r

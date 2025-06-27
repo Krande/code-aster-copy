@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,9 +29,9 @@ subroutine stokma(amat, nlig, ncol, nmat, amatst)
 !     OUT : AMATST    : TABLEAU DIMENSIONNE 9,6,6
 ! ------------------------------------------------------------------
     implicit none
-    integer :: ncol, nlig, nmat
+    integer(kind=8) :: ncol, nlig, nmat
     real(kind=8) :: amat(nlig, ncol), amatst(9, 6, 6)
-    integer :: i, j
+    integer(kind=8) :: i, j
 !-----------------------------------------------------------------------
 !
     do j = 1, ncol

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,10 +24,10 @@ interface
                       deps, sigm, vim, option, sigp,&
                       vip, dsidep, iret)
         character(len=*) :: fami
-        integer :: kpg
-        integer :: ksp
-        integer :: ndim
-        integer :: imate
+        integer(kind=8) :: kpg
+        integer(kind=8) :: ksp
+        integer(kind=8) :: ndim
+        integer(kind=8) :: imate
         character(len=16) :: compor(*)
         real(kind=8) :: crit(*)
         real(kind=8) :: instam
@@ -40,6 +40,6 @@ interface
         real(kind=8) :: sigp(6)
         real(kind=8) :: vip(9)
         real(kind=8) :: dsidep(6, 6)
-        integer :: iret
+        integer(kind=8) :: iret
     end subroutine nmtahe
 end interface

@@ -62,7 +62,7 @@ subroutine vedime(modelZ, loadNameJvZ, loadInfoJvZ, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nbin = 3, nbout = 1
+    integer(kind=8), parameter :: nbin = 3, nbout = 1
     character(len=8) :: lpain(nbin), lpaout(nbout)
     character(len=24) :: lchin(nbin), lchout(nbout)
     character(len=8) :: loadName, newnom
@@ -70,9 +70,9 @@ subroutine vedime(modelZ, loadNameJvZ, loadInfoJvZ, &
     character(len=24) :: vectElem, resuElem
     character(len=24), parameter :: chtime = '&&VEDIME.CH_INST_R'
     character(len=24) :: loadLigrel, chgeom
-    integer :: loadNume, nbLoad, iLoad
+    integer(kind=8) :: loadNume, nbLoad, iLoad
     character(len=24), pointer :: listLoadName(:) => null()
-    integer, pointer :: listLoadInfo(:) => null()
+    integer(kind=8), pointer :: listLoadInfo(:) => null()
     aster_logical :: noLoadInList, lCumul
     character(len=1) :: jvBase
 !

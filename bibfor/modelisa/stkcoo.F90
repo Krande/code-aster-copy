@@ -47,8 +47,8 @@ subroutine stkcoo(ifl, icl, iv, rv, cv, &
 #include "asterfort/tesmcl.h"
 #include "asterfort/utmess.h"
 !
-    integer :: deblig
-    integer :: nbm
+    integer(kind=8) :: deblig
+    integer(kind=8) :: nbm
     real(kind=8) :: rv
     character(len=8) :: mcl(nbm), nomn
     character(len=14) :: cnl
@@ -56,8 +56,8 @@ subroutine stkcoo(ifl, icl, iv, rv, cv, &
     character(len=24) :: coo, nno, nom
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, icl, idec, ifl, iret
-    integer :: irtet, irteti, iv, num, numtcl
+    integer(kind=8) :: i, iad, icl, idec, ifl, iret
+    integer(kind=8) :: irtet, irteti, iv, num, numtcl
 !
 !-----------------------------------------------------------------------
     call jemarq()

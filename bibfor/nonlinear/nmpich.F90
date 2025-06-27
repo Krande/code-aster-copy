@@ -33,8 +33,8 @@ subroutine nmpich(modele, numedd, ds_material, carele, ds_system, &
 #include "asterfort/nmceta.h"
 #include "asterfort/nmpilo.h"
 !
-    integer :: fonact(*)
-    integer :: iterat, pilcvg, ldccvg
+    integer(kind=8) :: fonact(*)
+    integer(kind=8) :: iterat, pilcvg, ldccvg
     real(kind=8) :: deltat, eta, rho, offset
     character(len=19) :: lischa, sdnume, sdpilo, sddisc, matass
     character(len=24) :: modele, numedd, carele
@@ -91,9 +91,9 @@ subroutine nmpich(modele, numedd, ds_material, carele, ds_system, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbeffe, nbatte
+    integer(kind=8) :: nbeffe, nbatte
     real(kind=8) :: proeta(2), residu
-    integer :: ifm, niv
+    integer(kind=8) :: ifm, niv
     aster_logical :: irecli
 !
 ! --------------------------------------------------------------------------------------------------

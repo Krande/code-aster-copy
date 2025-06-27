@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine srfsxi(nmat, materf, i1, devsig, dshds, &
     !!! Variables globales
     !!!
 
-    integer :: nmat
+    integer(kind=8) :: nmat
     real(kind=8) :: i1, devsig(6), dshds(6), dfdsdx(6), materf(nmat, 2)
     real(kind=8) :: para(3), xi, vara(4), dpardx(3), tmp
     aster_logical :: plas
@@ -61,7 +61,7 @@ subroutine srfsxi(nmat, materf, i1, devsig, dshds, &
     !!! Variables locales
     !!!
 
-    integer :: ndt, ndi, i
+    integer(kind=8) :: ndt, ndi, i
     real(kind=8) :: sigc, v1, v2, a0, a2, m0, m1, qi, xi1
     real(kind=8) :: xi2, s0, a1, s1, fi
     real(kind=8) :: fp, ffp, xi5, fact1, fact2, s5, m5, a5, pref, fact3

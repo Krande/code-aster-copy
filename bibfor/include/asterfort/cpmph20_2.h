@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine cpmph20_2(conloc, numa, indno, indma)
-        integer, intent(in) :: indma
-        integer, intent(in) :: indno
-        integer, intent(in) :: numa
+        integer(kind=8), intent(in) :: indma
+        integer(kind=8), intent(in) :: indno
+        integer(kind=8), intent(in) :: numa
         character(len=24), intent(in) :: conloc
     end subroutine cpmph20_2
 end interface

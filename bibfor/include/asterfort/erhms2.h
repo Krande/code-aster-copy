@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,20 +25,20 @@ interface
                       nx, ny, sielnp, adsip, sielnm,&
                       nbcmp, typmav, tbref1, tbref2, ivois,&
                       tm2h1s)
-        integer :: ino
-        integer :: nbs
+        integer(kind=8) :: ino
+        integer(kind=8) :: nbs
         real(kind=8) :: theta
         real(kind=8) :: jac(3)
         real(kind=8) :: nx(3)
         real(kind=8) :: ny(3)
         real(kind=8) :: sielnp(140)
-        integer :: adsip
+        integer(kind=8) :: adsip
         real(kind=8) :: sielnm(140)
-        integer :: nbcmp
+        integer(kind=8) :: nbcmp
         character(len=8) :: typmav
-        integer :: tbref1(12)
-        integer :: tbref2(12)
-        integer :: ivois
+        integer(kind=8) :: tbref1(12)
+        integer(kind=8) :: tbref2(12)
+        integer(kind=8) :: ivois
         real(kind=8) :: tm2h1s(3)
     end subroutine erhms2
 end interface

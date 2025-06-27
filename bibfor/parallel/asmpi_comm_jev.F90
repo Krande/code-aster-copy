@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,8 +61,8 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 #include "asterf_mpi.h"
 !
 ! DECLARATION VARIABLES LOCALES
-    integer :: jnomjv, iexi, bcrank, ibid
-    integer :: iobj, nbobj, nlong
+    integer(kind=8) :: jnomjv, iexi, bcrank, ibid
+    integer(kind=8) :: iobj, nbobj, nlong
     mpi_int :: nbpro4, mpicou, nbv
     character(len=1) :: typsca, xous
     character(len=8) :: kbid, stock

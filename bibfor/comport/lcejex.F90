@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate, &
 #include "asterfort/rcvalb.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
-    integer :: mate, ndim, kpg, ksp
+    integer(kind=8) :: mate, ndim, kpg, ksp
     real(kind=8) :: am(ndim), da(ndim), sigma(6), dsidep(6, 6)
     real(kind=8) :: vim(*), vip(*)
     character(len=16) :: option
@@ -44,10 +44,10 @@ subroutine lcejex(fami, kpg, ksp, ndim, mate, &
 !-----------------------------------------------------------------------
 !
     aster_logical :: resi, rigi, elas
-    integer :: diss, i, j
+    integer(kind=8) :: diss, i, j
     real(kind=8) :: sc, gc, lc, k0, val(4), rtan
     real(kind=8) :: a(ndim), na, ka, kap, r0, rc, beta, rk, ra, coef, coef2
-    integer :: cod(4)
+    integer(kind=8) :: cod(4)
     character(len=16) :: nom(4)
     character(len=1) :: poum
     blas_int :: b_incx, b_incy, b_n

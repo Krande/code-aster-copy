@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,7 +45,7 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj, &
 #include "asterfort/xstami.h"
 #include "asterfort/xstano.h"
 #include "asterfort/xtabff.h"
-    integer :: ndim
+    integer(kind=8) :: ndim
     character(len=8) :: noma, fiss
     character(len=16), intent(in), optional :: operation_opt
     character(len=19) :: cnslt, cnsln, cnslj
@@ -75,18 +75,18 @@ subroutine xenrch(noma, cnslt, cnsln, cnslj, &
 ! OUT CNSENR : CHAM_NO SIMPLE REEL POUR VISUALISATION
 !
 !
-    integer :: nxmafi, nxptff
+    integer(kind=8) :: nxmafi, nxptff
 !
-    integer :: nbno, ino, imae, nmafon, jfon, jtail, nfon, jnofaf
-    integer :: jfono, jbaso, jtailo
-    integer :: jcoor, jstano, jfonmu
-    integer :: jensv, jensl, nbma, nbmai
-    integer :: jenslr, jcaraf
-    integer :: i, nmafis
-    integer :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
-    integer :: nbfond, numfon
-    integer :: ifm, niv
-    integer :: nmaen1, nmaen2, nmaen3, ncouch, nfono
+    integer(kind=8) :: nbno, ino, imae, nmafon, jfon, jtail, nfon, jnofaf
+    integer(kind=8) :: jfono, jbaso, jtailo
+    integer(kind=8) :: jcoor, jstano, jfonmu
+    integer(kind=8) :: jensv, jensl, nbma, nbmai
+    integer(kind=8) :: jenslr, jcaraf
+    integer(kind=8) :: i, nmafis
+    integer(kind=8) :: jmafis, jmafon, k, jbas, jmaen1, jmaen2, jmaen3
+    integer(kind=8) :: nbfond, numfon
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: nmaen1, nmaen2, nmaen3, ncouch, nfono
     character(len=16) :: typdis, operation
     character(len=19) :: cnxinv, info, listpt
     character(len=24) :: mafis, stano, xcarfo, fonmul

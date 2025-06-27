@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
     character(len=*) :: maz, nomgdz, cnoz, basez, prof
-    integer :: ncmpz, nbnoz, linoe(nbnoz), cnocmp(nbnoz*ncmpz)
+    integer(kind=8) :: ncmpz, nbnoz, linoe(nbnoz), cnocmp(nbnoz*ncmpz)
     character(len=*) :: licmp(ncmpz)
 ! ------------------------------------------------------------------
 ! BUT : CREER UN CHAM_NO A VALEURS NULLES SUR UN PROFIL DEJA EXISTANT
@@ -49,13 +49,13 @@ subroutine cnocre(maz, nomgdz, nbnoz, linoe, ncmpz, &
 !     ------------------------------------------------------------------
 !     VARIABLES LOCALES:
 !     ------------------
-    integer :: ibid, nbno, ino
-    integer :: i, k, jcnsl, jcnsv, ncmp
+    integer(kind=8) :: ibid, nbno, ino
+    integer(kind=8) :: i, k, jcnsl, jcnsv, ncmp
     character(len=3) :: tsca
     character(len=8) :: nomgd
     character(len=19) :: cns
     character(len=8), pointer :: cnsk(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
 !     ------------------------------------------------------------------
 !
     call jemarq()

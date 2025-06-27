@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
     type(Behaviour_Integ), intent(in) :: BEHinteg
-    integer :: mate, ndim, kpg, ksp
+    integer(kind=8) :: mate, ndim, kpg, ksp
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sigma(6), dsidep(6, 6)
     real(kind=8) :: vim(*), vip(*), instam, instap
@@ -62,10 +62,10 @@ subroutine lcejfr(BEHinteg, fami, kpg, ksp, ndim, &
 ! IN : MATE, OPTION, VIM, COOROT,INSTAM, INSTAP
 ! OUT : SIGMA , DSIDEP , VIP
 !-----------------------------------------------------------------------
-    integer :: nbpa
+    integer(kind=8) :: nbpa
     parameter(nbpa=10)
-    integer :: cod(nbpa)
-    integer :: i, j, n, ifplas, kronec, ifouv
+    integer(kind=8) :: cod(nbpa)
+    integer(kind=8) :: i, j, n, ifplas, kronec, ifouv
     real(kind=8) :: kn, kt, kappa, mu, adhe, a(ndim), plasti(ndim), dplas(ndim)
     real(kind=8) :: lambda, dlam, val(nbpa), criter
     real(kind=8) :: abstau, tau(ndim), coefd, coefhd, r8bid

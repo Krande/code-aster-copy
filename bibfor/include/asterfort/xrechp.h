@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,21 +23,21 @@ interface
                       ihechp, jptint, jcface, jlonch,&
                       jlst, jbasec, nfh, nfe, fonree,&
                       imattt, heavn)
-        integer :: nfe
-        integer :: nfh
-        integer :: nnop
-        integer :: ndim
+        integer(kind=8) :: nfe
+        integer(kind=8) :: nfh
+        integer(kind=8) :: nnop
+        integer(kind=8) :: ndim
         character(len=8) :: elrefp
-        integer :: igeom
-        integer :: itps
-        integer :: ihechp
-        integer :: jptint
-        integer :: jcface
-        integer :: jlonch
-        integer :: jlst
-        integer :: jbasec
-        integer :: heavn(27,5)
+        integer(kind=8) :: igeom
+        integer(kind=8) :: itps
+        integer(kind=8) :: ihechp
+        integer(kind=8) :: jptint
+        integer(kind=8) :: jcface
+        integer(kind=8) :: jlonch
+        integer(kind=8) :: jlst
+        integer(kind=8) :: jbasec
+        integer(kind=8) :: heavn(27,5)
         character(len=4) :: fonree
-        integer :: imattt
+        integer(kind=8) :: imattt
     end subroutine xrechp
 end interface

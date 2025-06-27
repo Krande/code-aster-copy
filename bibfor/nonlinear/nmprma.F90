@@ -62,7 +62,7 @@ subroutine nmprma(listFuncActi, &
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 !
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=*), intent(in) :: modelz
     character(len=24), intent(in) :: caraElem
     type(NL_DS_Material), intent(in) :: ds_material
@@ -70,7 +70,7 @@ subroutine nmprma(listFuncActi, &
     character(len=19), intent(in) :: listLoad, sddyna
     type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
     character(len=19), intent(in) :: sddisc
-    integer, intent(in) :: numeTime
+    integer(kind=8), intent(in) :: numeTime
     type(NL_DS_AlgoPara), intent(in) :: ds_algopara
     type(NL_DS_Contact), intent(inout) :: ds_contact
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
@@ -84,7 +84,7 @@ subroutine nmprma(listFuncActi, &
     type(NL_DS_System), intent(in) :: ds_system
     character(len=19), intent(in) :: maprec
     character(len=19), intent(inout) :: matrAsse
-    integer, intent(out) :: faccvg, ldccvg
+    integer(kind=8), intent(out) :: faccvg, ldccvg
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -135,16 +135,16 @@ subroutine nmprma(listFuncActi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: phaseType = PRED_EULER
-    integer, parameter :: iterNewtPred = 0
-    integer :: ifm, niv
+    integer(kind=8), parameter :: phaseType = PRED_EULER
+    integer(kind=8), parameter :: iterNewtPred = 0
+    integer(kind=8) :: ifm, niv
     aster_logical :: l_update_matr, l_renumber
     aster_logical :: lRigiCompute, lDampMatrUpdate, lRigiAssemble
     aster_logical :: lMassAssemble
     aster_logical :: lContCompute, lContContinu
     character(len=16) :: matrType, nonLinearOption
     character(len=19) :: contElem, rigid
-    integer :: reac_incr
+    integer(kind=8) :: reac_incr
     character(len=8) :: answer
     real(kind=8) :: time
 !

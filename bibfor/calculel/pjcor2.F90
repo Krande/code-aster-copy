@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres, &
     character(len=16) :: option
     character(len=16) :: corres
     character(len=19) :: ligrel
-    integer :: iret
+    integer(kind=8) :: iret
 !
 #include "jeveux.h"
 #include "asterfort/alchml.h"
@@ -56,18 +56,18 @@ subroutine pjcor2(noca, cns1z, ces2z, ligrel, corres, &
     character(len=8) :: nomgd, nompar
     character(len=19) :: cns1, ces2, cel2, dcel
     character(len=24) :: valk(5)
-    integer :: ipo
-    integer :: jce2c, jce2l, jce2d, jce2k
-    integer :: jcns1c, jcns1l
-    integer :: nbno1, ncmp1
-    integer :: iad2, icmp, ima, ipt, isp, jlgrf
+    integer(kind=8) :: ipo
+    integer(kind=8) :: jce2c, jce2l, jce2d, jce2k
+    integer(kind=8) :: jcns1c, jcns1l
+    integer(kind=8) :: nbno1, ncmp1
+    integer(kind=8) :: iad2, icmp, ima, ipt, isp, jlgrf
 !    integer :: ima, ipt, isp, jlgrf
 !
     real(kind=8), pointer :: cnsv(:) => null()
     real(kind=8), pointer :: cesv(:) => null()
-    integer, pointer :: cnsd(:) => null()
+    integer(kind=8), pointer :: cnsd(:) => null()
     character(len=8), pointer :: cnsk(:) => null()
-    integer, pointer :: pjef_sp(:) => null()
+    integer(kind=8), pointer :: pjef_sp(:) => null()
 ! --------------------------------------------------------------------------------------------------
     call jemarq()
     iret = 0

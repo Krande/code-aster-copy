@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,13 +22,13 @@ interface
     subroutine reciex(intexc, iderex, nindex, nnoeex, ncmpex,&
                       nvasex, graexc, excmod, napexc)
         character(len=8) :: intexc
-        integer :: iderex
-        integer :: nindex
-        integer :: nnoeex
-        integer :: ncmpex
-        integer :: nvasex
+        integer(kind=8) :: iderex
+        integer(kind=8) :: nindex
+        integer(kind=8) :: nnoeex
+        integer(kind=8) :: ncmpex
+        integer(kind=8) :: nvasex
         character(len=16) :: graexc
         character(len=4) :: excmod
-        integer :: napexc
+        integer(kind=8) :: napexc
     end subroutine reciex
 end interface

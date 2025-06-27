@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine dc_multifibre(nbocci, sdcomp)
 !
     implicit none
 !
-    integer, intent(in) :: nbocci
+    integer(kind=8), intent(in) :: nbocci
     character(len=8), intent(in) :: sdcomp
 !
 #include "jeveux.h"
@@ -57,10 +57,10 @@ subroutine dc_multifibre(nbocci, sdcomp)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nbDeborst, imi, jcprk, iocc, irett
-    integer :: ibid, nbg, nbgrfib, jnmgrfib, ig, ig1, jnbfig, iaff
-    integer :: nbVariMax, nbVari, icp, numeLaw
-    integer :: valmi(5)
+    integer(kind=8) :: nbDeborst, imi, jcprk, iocc, irett
+    integer(kind=8) :: ibid, nbg, nbgrfib, jnmgrfib, ig, ig1, jnbfig, iaff
+    integer(kind=8) :: nbVariMax, nbVari, icp, numeLaw
+    integer(kind=8) :: valmi(5)
 !
     aster_logical :: l_kit, l_cristal
 !

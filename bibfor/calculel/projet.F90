@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -33,11 +33,11 @@ subroutine projet(ndim, npg1, nno, vect, res)
 !
 #include "asterfort/intrpo.h"
     real(kind=8) :: vloc(3, 27), vl(81), vh(50)
-    integer :: j8(8), j27(27)
+    integer(kind=8) :: j8(8), j27(27)
     real(kind=8) :: vect(50), res(50), mpt(4, 4), mpp(6, 6), mp(3, 3), mpq(4, 4)
 !
 !-----------------------------------------------------------------------
-    integer :: i, ic, in, j, ndim, nno, npg1
+    integer(kind=8) :: i, ic, in, j, ndim, nno, npg1
 !
     real(kind=8) :: a, b, c, cinq, de, s, trois
     real(kind=8) :: un, xab, zero

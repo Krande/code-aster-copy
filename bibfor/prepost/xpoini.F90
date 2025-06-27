@@ -56,8 +56,8 @@ subroutine xpoini(maxfem, modele, malini, modvis, licham, &
 !       PREFNO : PREFERENCES POUR LE NOMAGE DES NOUVELLES ENTITES
 !       NOGRFI : NOM DU GROUPE DES NOEUDS SITUES SUR LA FISSURE
 !
-    integer :: iret, ibid, jlicha, jxc, i
-    integer :: nbcham, nchmax
+    integer(kind=8) :: iret, ibid, jlicha, jxc, i
+    integer(kind=8) :: nbcham, nchmax
 !     NOMBRE MAX DE CHAMPS A POST-TRAITER
     parameter(nchmax=3)
     character(len=8) :: k8b

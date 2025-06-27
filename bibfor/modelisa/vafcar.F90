@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -37,15 +37,15 @@ subroutine vafcar(tpgz, imclf, nmobjz, nutyel, ntyele, car, ncar, ivr, kioc, ier
 !
     use cara_elem_parameter_module
     implicit none
-    integer :: ntyele(*), ivr(*), ncar, nutyel, ier, imclf
+    integer(kind=8) :: ntyele(*), ivr(*), ncar, nutyel, ier, imclf
     character(len=6) :: kioc
     character(len=*) :: tpgz, nmobjz, car(*)
 !
 #include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
-    integer :: ii, ll0, ll1
-    integer :: npd, npf
+    integer(kind=8) :: ii, ll0, ll1
+    integer(kind=8) :: npd, npf
     character(len=8) :: tpg, nomobj, carz
     character(len=17) :: tpge
     character(len=24) :: valk(4)

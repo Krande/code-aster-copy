@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,10 +22,10 @@ interface
     subroutine rcma01(chmate, ima, ipt, nbm, adrm,&
                       vale)
         character(len=24) :: chmate
-        integer :: ima
-        integer :: ipt
-        integer :: nbm
-        integer :: adrm(*)
+        integer(kind=8) :: ima
+        integer(kind=8) :: ipt
+        integer(kind=8) :: nbm
+        integer(kind=8) :: adrm(*)
         real(kind=8) :: vale(*)
     end subroutine rcma01
 end interface

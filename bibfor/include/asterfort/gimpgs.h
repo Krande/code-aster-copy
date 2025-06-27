@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,17 +25,17 @@ interface
                       gi, ndeg, ndimte, gthi, extim,&
                       time, iordr, unit)
         character(len=8) :: result
-        integer :: nnoff
+        integer(kind=8) :: nnoff
         real(kind=8) :: absc(*)
         real(kind=8) :: gs(1)
-        integer :: numero
+        integer(kind=8) :: numero
         real(kind=8) :: gi(1)
-        integer :: ndeg
-        integer :: ndimte
+        integer(kind=8) :: ndeg
+        integer(kind=8) :: ndimte
         real(kind=8) :: gthi(1)
         aster_logical :: extim
         real(kind=8) :: time
-        integer :: iordr
-        integer :: unit
+        integer(kind=8) :: iordr
+        integer(kind=8) :: unit
     end subroutine gimpgs
 end interface

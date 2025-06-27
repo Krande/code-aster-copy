@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,8 +34,8 @@ subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1, &
 ! OUT  DEFGEM  : TABLEAU ASSEMBLE A L'INSTANT -
 ! OUT  DEFGEP  : TABLEAU ASSEMBLE A L'INSTANT +
 !     ------------------------------------------------------------------
-    integer :: dimdef, dimenr, addeme, adenme, ndim, addep1, i, adenhy
-    integer :: nfh, ifh
+    integer(kind=8) :: dimdef, dimenr, addeme, adenme, ndim, addep1, i, adenhy
+    integer(kind=8) :: nfh, ifh
     real(kind=8) :: degem1(dimenr), degep1(dimenr)
     real(kind=8) :: defgem(dimdef), defgep(dimdef)
 !

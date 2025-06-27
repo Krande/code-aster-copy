@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -55,7 +55,7 @@ subroutine accel0(model, numeDof, listFuncActi, listLoad, &
     character(len=19), intent(in) :: hval_meelem(*), hval_measse(*)
     character(len=19), intent(in) :: hval_veasse(*), hval_veelem(*)
     character(len=19), intent(in) :: hval_algo(*), hval_incr(*)
-    integer, intent(in) :: listFuncActi(*)
+    integer(kind=8), intent(in) :: listFuncActi(*)
     type(NL_DS_System), intent(in) :: ds_system
 !
 ! --------------------------------------------------------------------------------------------------
@@ -88,9 +88,9 @@ subroutine accel0(model, numeDof, listFuncActi, listLoad, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ifm, niv
-    integer :: neq
-    integer :: faccvg, rescvg
+    integer(kind=8) :: ifm, niv
+    integer(kind=8) :: neq
+    integer(kind=8) :: faccvg, rescvg
     character(len=19) :: depso1, depso2
     character(len=19) :: cncine, cncinx, cndonn, k19bla
     character(len=19) :: disp_prev, acce_prev

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,12 +25,12 @@ subroutine nmextv(nb_cmp_vale, func_name, v_cmp_name, v_cmp_vale, nb_vale, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nb_cmp_vale
+    integer(kind=8), intent(in) :: nb_cmp_vale
     character(len=8), intent(in) :: func_name
     character(len=8), intent(in) :: v_cmp_name(*)
     real(kind=8), intent(in) :: v_cmp_vale(*)
     real(kind=8), intent(out) :: vale_resu(*)
-    integer, intent(out) :: nb_vale
+    integer(kind=8), intent(out) :: nb_vale
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -49,7 +49,7 @@ subroutine nmextv(nb_cmp_vale, func_name, v_cmp_name, v_cmp_vale, nb_vale, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_cmp_vale, icode
+    integer(kind=8) :: i_cmp_vale, icode
     real(kind=8) :: valr
 !
 ! --------------------------------------------------------------------------------------------------

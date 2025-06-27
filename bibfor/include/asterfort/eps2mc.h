@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,13 +21,13 @@
 interface
     subroutine eps2mc(nno, ndim, nbsig, npg, ipoids,&
                       ivf, idfde, xyz, depl, eps2)
-        integer :: nno
-        integer :: ndim
-        integer :: nbsig
-        integer :: npg
-        integer :: ipoids
-        integer :: ivf
-        integer :: idfde
+        integer(kind=8) :: nno
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbsig
+        integer(kind=8) :: npg
+        integer(kind=8) :: ipoids
+        integer(kind=8) :: ivf
+        integer(kind=8) :: idfde
         real(kind=8) :: xyz(1)
         real(kind=8) :: depl(1)
         real(kind=8) :: eps2(1)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,6 +24,6 @@ interface
         character(len=19), intent(in) :: newgeo
         character(len=24), intent(in) :: sdcont_defi
         character(len=19), intent(in) :: sdappa
-        integer, intent(inout) :: err_appa
+        integer(kind=8), intent(inout) :: err_appa
     end subroutine aplcno
 end interface

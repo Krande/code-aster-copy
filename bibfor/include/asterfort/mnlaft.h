@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,8 +21,8 @@
 interface 
     subroutine mnlaft(x, y, h, nt,&
                       pq)
-        integer :: nt
-        integer :: h
+        integer(kind=8) :: nt
+        integer(kind=8) :: h
         real(kind=8) :: x(2*h+1)
         real(kind=8) :: y(2*h+1)
         real(kind=8) :: pq(2*h+1)

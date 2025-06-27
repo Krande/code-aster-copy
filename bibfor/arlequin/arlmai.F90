@@ -65,26 +65,26 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
 !     ARGUMENTS:
 !     ----------
     character(len=8) :: mail, mailar
-    integer :: ndim, nbma1, nbma2
+    integer(kind=8) :: ndim, nbma1, nbma2
     character(len=10) :: nom1, nom2
     character(len=24) :: tabcor
 !
 !
-    integer :: nbnomx
+    integer(kind=8) :: nbnomx
     parameter(nbnomx=27)
-    integer :: nmain1, nmain2
-    integer :: nnoin1, nnoin2, cxcumu
+    integer(kind=8) :: nmain1, nmain2
+    integer(kind=8) :: nnoin1, nnoin2, cxcumu
     character(len=24) :: k8bid, nom
-    integer :: icpl, i
-    integer :: numma1, numma2
-    integer :: imail
-    integer :: nbno, nbmat, nctot
-    integer :: iret
+    integer(kind=8) :: icpl, i
+    integer(kind=8) :: numma1, numma2
+    integer(kind=8) :: imail
+    integer(kind=8) :: nbno, nbmat, nctot
+    integer(kind=8) :: iret
     character(len=24) :: maidim, cooval
-    integer :: jdime, jcoor
-    integer :: jcooro, jconxo, jcumuo
+    integer(kind=8) :: jdime, jcoor
+    integer(kind=8) :: jcooro, jconxo, jcumuo
     character(len=19) :: ngrm1, ngrm2
-    integer :: jtabco
+    integer(kind=8) :: jtabco
 !
 ! ----------------------------------------------------------------------
 !

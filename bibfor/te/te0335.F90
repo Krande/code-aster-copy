@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -61,13 +61,13 @@ subroutine te0335(option, nomte)
 !
 !
 !
-    integer :: neeqmx, nceqmx
+    integer(kind=8) :: neeqmx, nceqmx
     parameter(neeqmx=14, nceqmx=17)
 !
-    integer :: ndim, ndim1, nno, nnos, npg, ipoids, ivf, idfde, jgano
-    integer :: idefo, icont, iequi
-    integer :: iret, itabin(7), itabou(7), nbcmp, ncmpeq, nbsp
-    integer :: idec, ideceq, ipg, ino, isp
+    integer(kind=8) :: ndim, ndim1, nno, nnos, npg, ipoids, ivf, idfde, jgano
+    integer(kind=8) :: idefo, icont, iequi
+    integer(kind=8) :: iret, itabin(7), itabou(7), nbcmp, ncmpeq, nbsp
+    integer(kind=8) :: idec, ideceq, ipg, ino, isp
 !
 !
 ! ----------------------------------------------------------------------

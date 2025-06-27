@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine nmnkft(solver, sddisc, iterat_)
 #include "asterfort/nmlerr.h"
 !
     character(len=19), intent(in) :: solver, sddisc
-    integer, optional, intent(in) :: iterat_
+    integer(kind=8), optional, intent(in) :: iterat_
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -44,7 +44,7 @@ subroutine nmnkft(solver, sddisc, iterat_)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer ::  ibid, iterat
+    integer(kind=8) ::  ibid, iterat
     real(kind=8) :: epsi, epsold, resnew(1), resold(1), epsmin
     real(kind=8), pointer :: slvr(:) => null()
 !

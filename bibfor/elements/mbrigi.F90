@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,11 +36,11 @@ subroutine mbrigi(fami, kpg, imate, rig)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: codres(7)
+    integer(kind=8) :: codres(7)
     character(len=4) :: fami
     character(len=16) :: nomres(7)
     character(len=32) :: phenom
-    integer :: kpg, imate, codret
+    integer(kind=8) :: kpg, imate, codret
     real(kind=8) :: valres(7), rig(3, 3)
 !
 ! - VERIFICATION DU COMPORTEMENT

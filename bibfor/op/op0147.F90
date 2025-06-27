@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -39,16 +39,16 @@ subroutine op0147()
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !-----------------------------------------------------------------------
-    integer :: i, ifreq, im, imasg, imod1, inumo
-    integer :: inuor, ivite, jnuor, nbm, nbmr
-    integer :: nnn, npv, i1, i3, ivitef
+    integer(kind=8) :: i, ifreq, im, imasg, imod1, inumo
+    integer(kind=8) :: inuor, ivite, jnuor, nbm, nbmr
+    integer(kind=8) :: nnn, npv, i1, i3, ivitef
 !-----------------------------------------------------------------------
     aster_logical :: casint
     character(len=8) :: table, nomu, option
     character(len=16) :: concep, cmd
     character(len=19) :: base
     character(len=24) :: freq, masg, vite, numo, nomobj, chnumi
-    integer :: lnumi, lrefes
+    integer(kind=8) :: lnumi, lrefes
     real(kind=8) :: epsi, val, vitef
     character(len=16), pointer :: refe(:) => null()
 !

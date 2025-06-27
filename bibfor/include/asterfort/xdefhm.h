@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,17 +22,17 @@ interface
     subroutine xdefhm(dimdef, dimenr, addeme, adenme, addep1,&
                       ndim, degem1, degep1, defgem, defgep, adenhy,&
                       nfh)
-        integer :: dimenr
-        integer :: dimdef
-        integer :: addeme
-        integer :: adenme
-        integer :: addep1
-        integer :: ndim
+        integer(kind=8) :: dimenr
+        integer(kind=8) :: dimdef
+        integer(kind=8) :: addeme
+        integer(kind=8) :: adenme
+        integer(kind=8) :: addep1
+        integer(kind=8) :: ndim
         real(kind=8) :: degem1(dimenr)
         real(kind=8) :: degep1(dimenr)
         real(kind=8) :: defgem(dimdef)
         real(kind=8) :: defgep(dimdef)
-        integer :: adenhy
-        integer :: nfh
+        integer(kind=8) :: adenhy
+        integer(kind=8) :: nfh
     end subroutine xdefhm
 end interface 

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,8 +23,8 @@ interface
                       lichou)
         character(len=16) :: option
         character(len=8) :: resuou
-        integer :: numord
-        integer :: nbpaou
+        integer(kind=8) :: numord
+        integer(kind=8) :: nbpaou
         character(len=8) :: lipaou(*)
         character(len=24) :: lichou(*)
     end subroutine cclpco

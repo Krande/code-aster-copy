@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         character(len=19), intent(in) :: valinc(*), measse(*)
         character(len=19), intent(in) :: sddyna
         type(NLDYNA_DAMPING), intent(in) :: nlDynaDamping
-        integer, intent(in) :: listFuncActi(*)
+        integer(kind=8), intent(in) :: listFuncActi(*)
         character(len=24), intent(in) :: model, caraElem
         type(NL_DS_Material), intent(in) :: ds_material
         type(NL_DS_Constitutive), intent(in) :: ds_constitutive
@@ -35,6 +35,6 @@ interface
         type(NL_DS_Measure), intent(inout) :: ds_measure
         character(len=24), intent(in) :: numeDof
         character(len=19), intent(in) :: sddisc, solalg(*)
-        integer, intent(in) :: numeTime
+        integer(kind=8), intent(in) :: numeTime
     end subroutine nmfini
 end interface

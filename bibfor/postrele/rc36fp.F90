@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,7 +34,7 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij, &
 #include "asterfort/rc36f6.h"
 #include "asterfort/rcvale.h"
 #include "asterfort/utmess.h"
-    integer :: nbsigr, nocc(*), situ(*), sigr(*)
+    integer(kind=8) :: nbsigr, nocc(*), situ(*), sigr(*)
     real(kind=8) :: saltij(*), ug, factus(*)
     character(len=*) :: nommat
 !
@@ -44,15 +44,15 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij, &
 !
 !     ------------------------------------------------------------------
 !     ------------------------------------------------------------------
-    integer :: isk, isl, k, l, nk, nl, n0, i1, i1a4, nsitup, ifm, niv, icompt
-    integer :: nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
+    integer(kind=8) :: isk, isl, k, l, nk, nl, n0, i1, i1a4, nsitup, ifm, niv, icompt
+    integer(kind=8) :: nbsg1, nbsg2, nbsg3, nbp12, nbp23, nbp13
     real(kind=8) :: saltm, nadm(1), ukl, vale(2)
     aster_logical :: trouve, endur, yapass
-    integer :: icodre(1)
+    integer(kind=8) :: icodre(1)
     character(len=2) :: k2c, k2l
     character(len=3) :: typass
     character(len=8) :: k8b
-    integer, pointer :: passage_sit(:) => null()
+    integer(kind=8), pointer :: passage_sit(:) => null()
 !     ------------------------------------------------------------------
 !
     call infniv(ifm, niv)
@@ -206,7 +206,7 @@ subroutine rc36fp(nbsigr, nocc, situ, sigr, saltij, &
 1010 format(1p, 9x, 'NB_OCCUR ', '|', 40(i9, 1x, i9, '|'))
 1012 format(1p, 9x, 'SITUATION', '|', 40(i7, '_A', 1x, i7, '_B|'))
 1040 format(1p, a15, e12.5, ', LIGNE:', i4, a2, ', COLONNE:', i4, a2,&
-    &       ', PASSAGE: ', a3, ', SITUATION DE PASSAGE: ', i4)
+   &       ', PASSAGE: ', a3, ', SITUATION DE PASSAGE: ', i4)
 1042 format(1p, a15, e12.5, ', LIGNE:', i4, a2, ', COLONNE:', i4, a2)
 1030 format(1p, a15, i12)
 1020 format(1p, a15, e12.5)

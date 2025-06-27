@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine lisnnn(motfac, iexci, charge)
 #include "asterfort/jemarq.h"
 !
     character(len=16) :: motfac
-    integer :: iexci
+    integer(kind=8) :: iexci
     character(len=8) :: charge
 !
 ! ----------------------------------------------------------------------
@@ -46,8 +46,8 @@ subroutine lisnnn(motfac, iexci, charge)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: nval
-    integer :: eximve, eximvg
+    integer(kind=8) :: nval
+    integer(kind=8) :: eximve, eximvg
 !
 ! ----------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,8 +20,8 @@
 !
 interface
     subroutine uttcpl(dim, nbmesu, nomc, noml, prpal)
-        integer :: dim
-        integer :: nbmesu
+        integer(kind=8) :: dim
+        integer(kind=8) :: nbmesu
         character(len=24) :: nomc(dim)
         character(len=80) :: noml(dim)
         character(len=1) :: prpal(dim)

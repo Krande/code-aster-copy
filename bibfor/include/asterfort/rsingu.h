@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine rsingu(ndim, nelem, nbr, nalpha, degre,&
                       prec, erreur, alpha, types, re)
-        integer :: nelem
-        integer :: ndim
-        integer :: nbr(nelem)
-        integer :: nalpha
-        integer :: degre
+        integer(kind=8) :: nelem
+        integer(kind=8) :: ndim
+        integer(kind=8) :: nbr(nelem)
+        integer(kind=8) :: nalpha
+        integer(kind=8) :: degre
         real(kind=8) :: prec
         real(kind=8) :: erreur(nelem)
         real(kind=8) :: alpha(nelem)

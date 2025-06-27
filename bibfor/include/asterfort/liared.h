@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,15 +24,15 @@ interface
                       indcol, nbcol)
         character(len=8) :: nomres
         character(len=24) :: fmli
-        integer :: iblo
+        integer(kind=8) :: iblo
         character(len=24) :: liamod
-        integer :: nlilia
-        integer :: ncolia
+        integer(kind=8) :: nlilia
+        integer(kind=8) :: ncolia
         character(len=24) :: promod
-        integer :: nlipro
-        integer :: ncopro
-        integer :: taille(2)
+        integer(kind=8) :: nlipro
+        integer(kind=8) :: ncopro
+        integer(kind=8) :: taille(2)
         character(len=24) :: indcol
-        integer :: nbcol
+        integer(kind=8) :: nbcol
     end subroutine liared
 end interface

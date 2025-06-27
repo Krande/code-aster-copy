@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,8 +38,8 @@ subroutine op0017()
 #include "asterfort/utimsd.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-    integer :: nivo, n3, n1, ifi, n2, nbocc, ncon, ipos, long(1), n4
-    integer :: i, iocc
+    integer(kind=8) :: nivo, n3, n1, ifi, n2, nbocc, ncon, ipos, long(1), n4
+    integer(kind=8) :: i, iocc
     aster_logical :: lattr, lcont
     character(len=1) :: base
     character(len=3) :: perm

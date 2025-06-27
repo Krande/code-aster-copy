@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine hsj1ms(epais, vectg, vectt, hsfm, hss, &
 !     CONSTRUCTION DE J-1 AUX PTS D'INTEGRATION REDUITS.   J = JACOBIEN
 !
 !-----------------------------------------------------------------------
-    integer :: i, j, j1, jb, k, k1
+    integer(kind=8) :: i, j, j1, jb, k, k1
 !-----------------------------------------------------------------------
     call jacbm1(epais, vectg, vectt, matj, jm1, &
                 detj)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,11 +24,11 @@ interface
                       vectScalType_, maskElem_, maskInve_)
         character(len=1), intent(in) :: jvBase
         character(len=*), intent(in) :: vectAsseZ
-        integer, intent(in) :: nbVectElem
+        integer(kind=8), intent(in) :: nbVectElem
         character(len=*), intent(in) :: listVectElem(nbVectElem)
         real(kind=8), intent(in) :: coefVectElem(nbVectElem)
         character(len=*), optional, intent(in) :: vectAsseForNumeZ_, numeDofZ_
-        integer, optional, intent(in) :: vectScalType_
+        integer(kind=8), optional, intent(in) :: vectScalType_
         character(len=24), optional, intent(in) :: maskElem_
         aster_logical, optional, intent(in) :: maskInve_
     end subroutine assvec

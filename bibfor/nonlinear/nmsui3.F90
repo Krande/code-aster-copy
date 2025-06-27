@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -34,11 +34,11 @@ subroutine nmsui3(ds_print, field_disc, nb_elem, nb_node, nb_poin, &
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !
-    integer, intent(in) :: nb_node
-    integer, intent(in) :: nb_elem
-    integer, intent(in) :: nb_poin
-    integer, intent(in) :: nb_spoi
-    integer, intent(in) :: nb_cmp
+    integer(kind=8), intent(in) :: nb_node
+    integer(kind=8), intent(in) :: nb_elem
+    integer(kind=8), intent(in) :: nb_poin
+    integer(kind=8), intent(in) :: nb_spoi
+    integer(kind=8), intent(in) :: nb_cmp
     character(len=24), intent(in) :: list_elem
     character(len=19), intent(in) :: field
     character(len=4), intent(in) :: field_disc
@@ -49,7 +49,7 @@ subroutine nmsui3(ds_print, field_disc, nb_elem, nb_node, nb_poin, &
     character(len=8), intent(in) :: type_extr_cmp
     character(len=19), intent(in) :: work_node
     character(len=19), intent(in) :: work_elem
-    integer, intent(inout) :: i_dof_monitor
+    integer(kind=8), intent(inout) :: i_dof_monitor
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -78,13 +78,13 @@ subroutine nmsui3(ds_print, field_disc, nb_elem, nb_node, nb_poin, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_node, i_elem, i_poin, i_spoi, i_cmp
-    integer :: nb_poin_elem, nb_spoi_elem, elem_nume, iret
+    integer(kind=8) :: i_node, i_elem, i_poin, i_spoi, i_cmp
+    integer(kind=8) :: nb_poin_elem, nb_spoi_elem, elem_nume, iret
     real(kind=8) :: vale_r
-    integer :: nb_cmp_r, nb_poin_r, nb_spoi_r, nb_node_r, nb_elem_r
-    integer :: nb_poin_e, nb_spoi_e
-    integer, pointer :: cesd(:) => null()
-    integer, pointer :: v_list_elem(:) => null()
+    integer(kind=8) :: nb_cmp_r, nb_poin_r, nb_spoi_r, nb_node_r, nb_elem_r
+    integer(kind=8) :: nb_poin_e, nb_spoi_e
+    integer(kind=8), pointer :: cesd(:) => null()
+    integer(kind=8), pointer :: v_list_elem(:) => null()
     real(kind=8), pointer :: v_work_node(:) => null()
     real(kind=8), pointer :: v_work_elem(:) => null()
 !

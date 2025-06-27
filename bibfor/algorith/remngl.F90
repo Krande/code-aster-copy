@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -83,23 +83,23 @@ subroutine remngl(nomres, typsd, modcyc, profno, indirf, &
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: i, iad, ibid(1), icomp, iddi, idi
-    integer :: idiam, idicou, ieqf, ieqi, ier, ii, inum
-    integer :: iorc, iormo, j, jj, k, ldfreq, ldkge
-    integer :: ldmge, ldom2, ldomo, ldotm, ldtyd, llcham
-    integer ::    llmoc
-    integer :: lmass, ltetax, ltetgd, ltflax, ltfldr, ltflga, ltinds
-    integer :: ltorf, ltorto, ltveco, ltvere, ltvezt, mdiapa
-    integer :: nbcmp, nbdax, nbddg, nbddr, nbdia, nbmoc, nbmod
-    integer :: nbnot, nborc, nbsec, nddcou, neq, neqsec, numa
-    integer :: numd, numg
+    integer(kind=8) :: i, iad, ibid(1), icomp, iddi, idi
+    integer(kind=8) :: idiam, idicou, ieqf, ieqi, ier, ii, inum
+    integer(kind=8) :: iorc, iormo, j, jj, k, ldfreq, ldkge
+    integer(kind=8) :: ldmge, ldom2, ldomo, ldotm, ldtyd, llcham
+    integer(kind=8) ::    llmoc
+    integer(kind=8) :: lmass, ltetax, ltetgd, ltflax, ltfldr, ltflga, ltinds
+    integer(kind=8) :: ltorf, ltorto, ltveco, ltvere, ltvezt, mdiapa
+    integer(kind=8) :: nbcmp, nbdax, nbddg, nbddr, nbdia, nbmoc, nbmod
+    integer(kind=8) :: nbnot, nborc, nbsec, nddcou, neq, neqsec, numa
+    integer(kind=8) :: numd, numg
     real(kind=8), pointer :: teta_secteur(:) => null()
-    integer, pointer :: skeleton(:) => null()
+    integer(kind=8), pointer :: skeleton(:) => null()
     real(kind=8), pointer :: cycl_freq(:) => null()
-    integer, pointer :: cycl_diam(:) => null()
-    integer, pointer :: cycl_desc(:) => null()
-    integer, pointer :: cycl_nuin(:) => null()
-    integer, pointer :: cycl_nbsc(:) => null()
+    integer(kind=8), pointer :: cycl_diam(:) => null()
+    integer(kind=8), pointer :: cycl_desc(:) => null()
+    integer(kind=8), pointer :: cycl_nuin(:) => null()
+    integer(kind=8), pointer :: cycl_nbsc(:) => null()
     character(len=24), pointer :: cycl_refe(:) => null()
 !-----------------------------------------------------------------------
     data depl/'DEPL            '/

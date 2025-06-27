@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,14 +22,14 @@ interface
     subroutine oreino(noma, lnoeud, nbno, nori, next,&
                       coor, crit, prec, iera, ier)
         character(len=8) :: noma
-        integer :: lnoeud(*)
-        integer :: nbno
-        integer :: nori
-        integer :: next
+        integer(kind=8) :: lnoeud(*)
+        integer(kind=8) :: nbno
+        integer(kind=8) :: nori
+        integer(kind=8) :: next
         real(kind=8) :: coor(*)
         character(len=*) :: crit
         real(kind=8) :: prec
-        integer :: iera
-        integer :: ier
+        integer(kind=8) :: iera
+        integer(kind=8) :: ier
     end subroutine oreino
 end interface

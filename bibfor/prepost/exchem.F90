@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale, &
 #include "asterfort/ncpact.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: modloc(*), tcmp(*), nbc, taberr(*), nbsp
+    integer(kind=8) :: modloc(*), tcmp(*), nbc, taberr(*), nbsp
     real(kind=8) :: tvale(*), valcmp(*)
 !
 !*********************************************************************
@@ -74,8 +74,8 @@ subroutine exchem(modloc, tcmp, nbc, nbsp, tvale, &
 !
 !*********************************************************************
 !
-    integer :: gd, nbpt, nbnmai, acpact, nbec, adesgd
-    integer :: nbrcpa, adrnd, asgtnd, aposcp, poscmp, i, j, k
+    integer(kind=8) :: gd, nbpt, nbnmai, acpact, nbec, adesgd
+    integer(kind=8) :: nbrcpa, adrnd, asgtnd, aposcp, poscmp, i, j, k
 !
 !   FONCTIONS EXTERNES
 !   ------------------

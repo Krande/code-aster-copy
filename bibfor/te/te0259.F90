@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,17 +43,17 @@ subroutine te0259(option, nomte)
 !                         MULTI-FIBRES (SECTION CONSTANTE)
 !
 !
-    integer :: nddl, nbres
+    integer(kind=8) :: nddl, nbres
     parameter(nbres=3)
     real(kind=8) :: valres(nbres)
-    integer :: codres(nbres)
+    integer(kind=8) :: codres(nbres)
     character(len=8) :: nompar, fami, poum
     character(len=16) :: nomres(nbres)
     real(kind=8) :: pgl(3, 3), klv(78), klw(78), mlv(105)
     real(kind=8) :: e, rho
     real(kind=8) :: valpar, xnu, zero
-    integer :: imate, lmat, lorien
-    integer :: nbpar, nc, nno, kpg, spt
+    integer(kind=8) :: imate, lmat, lorien
+    integer(kind=8) :: nbpar, nc, nno, kpg, spt
 !     ------------------------------------------------------------------
     data nomres/'E', 'RHO', 'NU'/
 !     ------------------------------------------------------------------

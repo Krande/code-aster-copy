@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,7 +43,7 @@ subroutine mm_cycl_print(ds_print, ds_measure)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: cycl_nb(4), cycl_nb_tot
+    integer(kind=8) :: cycl_nb(4), cycl_nb_tot
     real(kind=8) :: resi_pressure
 !
 ! --------------------------------------------------------------------------------------------------

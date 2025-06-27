@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,7 +38,7 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, &
 #include "asterfort/utmess.h"
 !
     character(len=4) :: lieu
-    integer :: iocc1, iocc2, ns
+    integer(kind=8) :: iocc1, iocc2, ns
     real(kind=8) :: sn, instsn(4), snet, sigmoypres, snther, sp3, spmeca3
     aster_logical :: ze200
 !
@@ -57,10 +57,10 @@ subroutine rc32sna(ze200, lieu, iocc1, iocc2, ns, &
 ! OUT : SIGMOYPRES : CONTRAINTE MOYENNE DE PRESSION (pour le rochet)
 ! OUT : SNTHER : AMPLITUDE DE CONTRAINTES THERMIQUES(pour le rochet)
 !
-    integer :: jinfoi, nmecap, npresp, ntherp, jinfor, numcha, iret
-    integer :: jchara, jcharb, k, j, jtranp, jsigu, i0, i1, e0(2)
-    integer :: jtemp, jtranq, nmecaq, npresq, ntherq, jvalin, jsnseis
-    integer :: choix
+    integer(kind=8) :: jinfoi, nmecap, npresp, ntherp, jinfor, numcha, iret
+    integer(kind=8) :: jchara, jcharb, k, j, jtranp, jsigu, i0, i1, e0(2)
+    integer(kind=8) :: jtemp, jtranq, nmecaq, npresq, ntherq, jvalin, jsnseis
+    integer(kind=8) :: choix
     real(kind=8) :: presap, presbp, map(12), mbp(12), s2pp, sb(6), sbet(6)
     real(kind=8) :: smoypr1(6), smoypr2(6), instpmin, instpmax
     real(kind=8) :: tresca, sa(6), st(6), stet(6), sipr(6), sc(6)

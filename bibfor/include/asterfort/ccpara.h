@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2020 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,8 +27,8 @@ interface
         character(len=8) :: modele
         character(len=8) :: resuin
         character(len=8) :: resuou
-        integer :: numord
-        integer :: nordm1
+        integer(kind=8) :: numord
+        integer(kind=8) :: nordm1
         aster_logical :: exitim
         character(len=8) :: mater
         character(len=8) :: carael

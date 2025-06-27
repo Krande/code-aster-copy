@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,9 +20,9 @@
 !
 interface
     subroutine hpalloc(adr, l, ec, abrt)
-        integer :: adr
-        integer :: l
-        integer :: ec
-        integer :: abrt
+        integer(kind=8) :: adr
+        integer(kind=8) :: l
+        integer(kind=8) :: ec
+        integer(kind=8) :: abrt
     end subroutine hpalloc
 end interface

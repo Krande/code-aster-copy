@@ -41,9 +41,9 @@ module postComp_type
 ! ----- Type of MODE_MECA
         character(len=16) :: modeType = " "
 ! ----- Number of storing indexes to compute
-        integer :: nbStore = 0
+        integer(kind=8) :: nbStore = 0
 ! ----- List of storing indexes to compute
-        integer, pointer :: listStore(:) => null()
+        integer(kind=8), pointer :: listStore(:) => null()
 ! ----- JEVEUX name of datastructure for list of storing indexes
         character(len=19) :: listStoreJv = " "
 ! ----- Flag for transient result
@@ -58,7 +58,7 @@ module postComp_type
 ! ==================================================================================================
     type POST_COMP_FIELDS
 ! ----- Number of equations
-        integer :: nbEqua
+        integer(kind=8) :: nbEqua
 ! ----- Zero field
         character(len=24) :: vectZero = "&&CCFNRN.ZERO"
 ! ----- Input fields: DEPL, VITE, ACCE, SIEF_ELGA, STRX_ELGA
@@ -100,9 +100,9 @@ module postComp_type
 ! ----- Reference numbering
         character(len=24) :: numeDofRefe = " "
 ! ----- Adress of mass matrix
-        integer :: jvMassMatr = 0
+        integer(kind=8) :: jvMassMatr = 0
 ! ----- Fourier harmonic
-        integer :: nh = -1
+        integer(kind=8) :: nh = -1
 ! ----- Value for frequency access
         aster_logical :: hasFreq = ASTER_FALSE
         real(kind=8) :: freq = -1.d0

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,6 +19,6 @@
 interface
     subroutine mateInfo(mate, mate_nb)
         character(len=8), intent(in) :: mate
-        integer, intent(in) :: mate_nb
+        integer(kind=8), intent(in) :: mate_nb
     end subroutine mateInfo
 end interface

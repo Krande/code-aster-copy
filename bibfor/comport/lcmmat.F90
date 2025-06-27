@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -75,8 +75,8 @@ subroutine lcmmat(fami, kpg, ksp, mult_comp, mod, &
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-    integer :: nmat, ndt, ndi, nr, nvi, nbcomm(nmat, 3), nbval, nvini
-    integer :: kpg, ksp, irota, impexp, nfs, nsg
+    integer(kind=8) :: nmat, ndt, ndi, nr, nvi, nbcomm(nmat, 3), nbval, nvini
+    integer(kind=8) :: kpg, ksp, irota, impexp, nfs, nsg
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: hook(6, 6)
     real(kind=8) :: kooh(6, 6), q(3, 3)
@@ -84,15 +84,15 @@ subroutine lcmmat(fami, kpg, ksp, mult_comp, mod, &
     real(kind=8) :: valres(nmat), ms(6), ng(3), lg(3), vind(*)
     real(kind=8) :: hsr(nsg, nsg), toutms(nfs, nsg, 6)
     character(len=8) :: mod, nomc(3)
-    integer :: cerr(3)
+    integer(kind=8) :: cerr(3)
     character(len=3) :: matcst
     character(len=*) :: fami
     character(len=16) :: nmater, necoul, necris, necrci
     character(len=16), intent(in) :: mult_comp
     character(len=16) :: phenom, nomfam
     character(len=24) :: cpmono(5*nmat+1)
-    integer :: i, imat, nbfsys, ifa, j, dimtms, itbint
-    integer :: nbsyst, nbsys
+    integer(kind=8) :: i, imat, nbfsys, ifa, j, dimtms, itbint
+    integer(kind=8) :: nbsyst, nbsys
 !     ----------------------------------------------------------------
 !
 ! -   NB DE COMPOSANTES / VARIABLES INTERNES -------------------------

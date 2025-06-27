@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine sansno(sdcont, keywf, mesh, sans, psans, &
     character(len=24), intent(in) :: sans
     character(len=24), intent(in) :: psans
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nb_keyw
+    integer(kind=8), intent(in) :: nb_keyw
     character(len=16), intent(in) :: keyw_type(nb_keyw)
     character(len=16), intent(in) :: keyw_name(nb_keyw)
 !
@@ -68,21 +68,21 @@ subroutine sansno(sdcont, keywf, mesh, sans, psans, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: i_zone, i_node, i_surf, i_elim
-    integer :: jdecno, node_nume, node_nume_elim
-    integer :: nb_elim, nb_node, nb_node_elim, nt_node_elim
-    integer :: work_vect_len
-    integer, pointer :: v_psans(:) => null()
-    integer, pointer :: v_sans(:) => null()
-    integer :: nb_cont_zone, nb_cont_node
-    integer, pointer :: v_vect_work(:) => null()
+    integer(kind=8) :: i_zone, i_node, i_surf, i_elim
+    integer(kind=8) :: jdecno, node_nume, node_nume_elim
+    integer(kind=8) :: nb_elim, nb_node, nb_node_elim, nt_node_elim
+    integer(kind=8) :: work_vect_len
+    integer(kind=8), pointer :: v_psans(:) => null()
+    integer(kind=8), pointer :: v_sans(:) => null()
+    integer(kind=8) :: nb_cont_zone, nb_cont_node
+    integer(kind=8), pointer :: v_vect_work(:) => null()
     character(len=24) :: list_elim
-    integer, pointer :: v_list_elim(:) => null()
+    integer(kind=8), pointer :: v_list_elim(:) => null()
     character(len=24) :: sdcont_defi
     character(len=24) :: sdcont_noeuco
-    integer, pointer :: v_sdcont_noeuco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_noeuco(:) => null()
     character(len=24) :: sdcont_pzoneco
-    integer, pointer :: v_sdcont_pzoneco(:) => null()
+    integer(kind=8), pointer :: v_sdcont_pzoneco(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -26,6 +26,6 @@ interface
         real(kind=8), intent(out) :: mfront_valr(16)
         character(len=16), intent(out) :: mfront_valk(16)
         character(len=16), intent(out) :: mfront_prop(16)
-        integer, intent(out) :: mfront_nbvale
+        integer(kind=8), intent(out) :: mfront_nbvale
     end subroutine mateMFrontGetProperties
 end interface

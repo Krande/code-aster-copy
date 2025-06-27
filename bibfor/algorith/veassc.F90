@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -53,13 +53,13 @@ subroutine veassc(lischa, vecele)
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: ichar, nbchar
+    integer(kind=8) :: ichar, nbchar
     character(len=8) :: newnom
     character(len=19) :: chamno, lchout
     character(len=13) :: prefob
-    integer :: genrec
+    integer(kind=8) :: genrec
     aster_logical :: lveac
-    integer :: nbveac, iexis
+    integer(kind=8) :: nbveac, iexis
 !
 ! ----------------------------------------------------------------------
 !

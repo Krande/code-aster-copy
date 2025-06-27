@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -28,7 +28,7 @@ subroutine dsde2d(ndim, f, dsde, d)
 ! OUT D       : 2FF(dS/dE)F^TF^T
 !
     implicit none
-    integer :: ndim, indi(6), indj(6), mn, op, ij, kl, nmax
+    integer(kind=8) :: ndim, indi(6), indj(6), mn, op, ij, kl, nmax
     real(kind=8) :: f(3, 3), d(6, 6), dsde(6, 6), f1, f2, f3, f4
     real(kind=8) :: rind(6)
     data indi/1, 2, 3, 1, 1, 2/

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,8 +24,8 @@ interface
         character(len=16) :: nomte
         character(len=*) :: option
         real(kind=8) :: xi(3, 9)
-        integer :: nb1
-        integer :: npgsr
+        integer(kind=8) :: nb1
+        integer(kind=8) :: npgsr
         real(kind=8) :: edgpg(*)
         real(kind=8) :: effgt(8, 9)
     end subroutine vdxedg

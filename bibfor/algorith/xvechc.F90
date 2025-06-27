@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -32,7 +32,7 @@ subroutine xvechc(nnops, pla, ffc, pinf, &
 !
 ! ----------------------------------------------------------------------
 !
-    integer :: i, nnops, pli, pla(27)
+    integer(kind=8) :: i, nnops, pli, pla(27)
     real(kind=8) :: ffc(16), pinf, pf, psup, jac
     real(kind=8) :: vect(560), ffi
 !   CALCUL DE LA CONTINUITE DE LA PRESSION

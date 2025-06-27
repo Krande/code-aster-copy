@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
 #include "asterfort/jexnum.h"
 #include "asterfort/jexnom.h"
 !
-    integer :: repi, ierd
+    integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz
     character(len=32) :: repk
@@ -57,13 +57,13 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
     character(len=19) :: noligr
     character(len=19) :: nomob
     aster_logical :: isLagr, isDbLagr
-    integer, pointer :: nequ(:) => null()
-    integer, pointer :: delg(:) => null()
+    integer(kind=8), pointer :: nequ(:) => null()
+    integer(kind=8), pointer :: delg(:) => null()
 !
 !
 !
 !-----------------------------------------------------------------------
-    integer :: i, nbddlb, nbnos, neq, nlili
+    integer(kind=8) :: i, nbddlb, nbnos, neq, nlili
     character(len=24), pointer :: refn(:) => null()
 !-----------------------------------------------------------------------
     call jemarq()

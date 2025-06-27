@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,9 +23,9 @@ interface
                       nb_cont_node)
         character(len=24), intent(in) :: sdcont_defi
         character(len=8), intent(in) :: mesh
-        integer, intent(in) :: unit_msg
-        integer, intent(in) :: nb_cont_elem
-        integer, intent(in) :: nb_cont_node
-        integer, intent(in) :: nb_cont_zone
+        integer(kind=8), intent(in) :: unit_msg
+        integer(kind=8), intent(in) :: nb_cont_elem
+        integer(kind=8), intent(in) :: nb_cont_node
+        integer(kind=8), intent(in) :: nb_cont_zone
     end subroutine surfll
 end interface

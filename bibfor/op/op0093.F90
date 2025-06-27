@@ -51,9 +51,9 @@ subroutine op0093()
 #include "asterfort/utmess.h"
 #include "asterfort/vpcrea.h"
 #include "asterfort/wkvect.h"
-    integer :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, nbmodd
-    integer :: nbmost, lddld, i, lmodd, nbmodf, nbfona, lddlf, lmodf, nbmoad
-    integer :: nbmoda, nbmoin, nbmodi, massfa, jrefa
+    integer(kind=8) :: ibid, neq, lmatr, ifm, niv, iret, nra, nma, nbpsmo, nbmodd
+    integer(kind=8) :: nbmost, lddld, i, lmodd, nbmodf, nbfona, lddlf, lmodf, nbmoad
+    integer(kind=8) :: nbmoda, nbmoin, nbmodi, massfa, jrefa
     character(len=8) :: resu, nomma
     character(len=14) :: nume
     character(len=16) :: k16bid, concep

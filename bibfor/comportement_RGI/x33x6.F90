@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ subroutine x33x6(x33, x6)
     implicit none
 #include "asterfort/indice0.h"
     real(kind=8) :: x6(6), x33(3, 3)
-    integer :: i, k, l
+    integer(kind=8) :: i, k, l
     do i = 1, 6
         call indice0(i, k, l)
         if (i .le. 3) then

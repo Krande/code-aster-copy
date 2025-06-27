@@ -38,14 +38,14 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu, &
 !
     character(len=8) :: noma, nomo
     character(len=16) :: motfac
-    integer :: nzocu
+    integer(kind=8) :: nzocu
     character(len=24) :: nbgdcu
     character(len=24) :: compcu
     character(len=24) :: nopono
     character(len=24) :: nolino
     character(len=24) :: lisnoe
     character(len=24) :: poinoe
-    integer :: nnoco
+    integer(kind=8) :: nnoco
 !
 ! ----------------------------------------------------------------------
 !
@@ -76,17 +76,17 @@ subroutine elimun(noma, nomo, motfac, nzocu, nbgdcu, &
 !
 !
 !
-    integer :: jdebut, juelim, jdecal, jdecat
-    integer :: nbelim
+    integer(kind=8) :: jdebut, juelim, jdecal, jdecat
+    integer(kind=8) :: nbelim
     character(len=8) :: k8bla, cmp, nomnoe
-    integer :: i, j, icmp, izone, ino, numno1, numno2
-    integer :: nbno, nbsup, nb, nbcmp, ntsup
-    integer :: n1, n2, n3
-    integer :: jnl, jnp, jpoi, jnoe
+    integer(kind=8) :: i, j, icmp, izone, ino, numno1, numno2
+    integer(kind=8) :: nbno, nbsup, nb, nbcmp, ntsup
+    integer(kind=8) :: n1, n2, n3
+    integer(kind=8) :: jnl, jnp, jpoi, jnoe
     character(len=24) :: nelim
-    integer :: jelim
-    integer :: jnbgd, jcmpg
-    integer :: exist(1)
+    integer(kind=8) :: jelim
+    integer(kind=8) :: jnbgd, jcmpg
+    integer(kind=8) :: exist(1)
 !
 ! ----------------------------------------------------------------------
 !

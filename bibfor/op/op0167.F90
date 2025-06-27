@@ -95,8 +95,8 @@ subroutine op0167()
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: nori, ntab, n1
-    integer :: k, iret, iqtr
+    integer(kind=8) :: nori, ntab, n1
+    integer(kind=8) :: k, iret, iqtr
     real(kind=8) :: epais, shrink, lonmin
     character(len=4) :: answer
     character(len=4) :: cdim
@@ -106,59 +106,61 @@ subroutine op0167()
     character(len=16) :: kbi1, kbi2
     character(len=19) :: table, ligrel
     character(len=19), parameter :: k19void = ' '
-    integer :: nbMeshIn
+    integer(kind=8) :: nbMeshIn
     character(len=24), parameter :: crgrnu = '&&OP0167.CR_GR.NUM'
     character(len=24), parameter :: crgrno = '&&OP0167.CR_GR.NOM'
     character(len=24) :: grCellName, grNodeName
-    integer :: jvConnexIn, jvConnexOut, jvGeofi
-    integer :: connexLength, cellShift, listCreaLength
-    integer :: cellNumeIn, cellNumeOut, cellTypeIn, cellTypeToModify
-    integer :: nodeNumeIn, nodeNumeOut, level
-    integer :: iCell, iNode, iCellModi, iGrCell, iGrNode
-    integer :: iocc, nbOcc
+    integer(kind=8) :: jvConnexIn, jvConnexOut, jvGeofi
+    integer(kind=8) :: connexLength, cellShift, listCreaLength
+    integer(kind=8) :: cellNumeIn, cellNumeOut, cellTypeIn, cellTypeToModify
+    integer(kind=8) :: nodeNumeIn, nodeNumeOut, level
+    integer(kind=8) :: iCell, iNode, iCellModi, iGrCell, iGrNode
+    integer(kind=8) :: iocc, nbOcc
     character(len=24), parameter :: jvCellNume = '&&OP0167.LISTCELL'
     character(len=24), parameter :: jvNodeNume = '&&OP0167.LISTNODE'
-    integer :: nbCellIn, nbCellOut, nbCell, nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
-    integer :: nbNodeInCellOut, nbNodeInCellIn, iCount, hugeValue, nbCellOut2
-    integer :: nbGrCellFromCreaCell, nbGrCellFromCreaPoi1, nbGrCellIn, nbGrCellOut
-    integer :: nbGrNodeIn, nbGrNodeOut
-    integer :: nbCellInGrOut, nbCellInGrIn, nbNodeInGrOut, nbNodeInGrIn
-    integer :: nbNodeCrea, nbNodeIn, nbNodeOut, nbNode
-    integer :: nbField, oldInsideCells, newInsideCells
-    integer :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
-    integer :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
-    integer :: iOccQuadTria, iad, nbOccRaff, rank, nbproc, pCellShift, iProc
-    integer :: nbOccCreaPoi1, nbOccCreaMaille, nbOccModiHHO, nbOccCoqueSolide
+    integer(kind=8) :: nbCellIn, nbCellOut, nbCell
+    integer(kind=8) :: nbCellCrea, nbCellModi, nbCellType, nbCellAddPoi1
+    integer(kind=8) :: nbNodeInCellOut, nbNodeInCellIn, iCount, hugeValue, nbCellOut2
+    integer(kind=8) :: nbGrCellFromCreaCell, nbGrCellFromCreaPoi1, nbGrCellIn, nbGrCellOut
+    integer(kind=8) :: nbGrNodeIn, nbGrNodeOut
+    integer(kind=8) :: nbCellInGrOut, nbCellInGrIn, nbNodeInGrOut, nbNodeInGrIn
+    integer(kind=8) :: nbNodeCrea, nbNodeIn, nbNodeOut, nbNode
+    integer(kind=8) :: nbField, oldInsideCells, newInsideCells
+    integer(kind=8) :: nbOccDecoupeLac, nbOccEclaPg, nbGeomFibre, nbOccCreaFiss, nbOccLineQuad
+    integer(kind=8) :: nbOccQuadLine, nbOccModiMaille, nbOccCoquVolu, nbOccRestreint, nbOccRepere
+    integer(kind=8) :: iOccQuadTria, iad, nbOccRaff, rank, nbproc, pCellShift, iProc
+    integer(kind=8) :: nbOccCreaPoi1, nbOccCreaMaille, nbOccModiHHO, nbOccCoqueSolide
     aster_logical :: lpb, pMesh
     character(len=8) :: cellNameIn, cellNameOut, nodeNameIn, nodeNameOut
     aster_logical :: lPrefCellName, lPrefCellNume, lPrefNodeNume
-    integer :: prefCellNume, prefNodeNume, prefNume, info
+    integer(kind=8) :: prefCellNume, prefNodeNume, prefNume, info
     character(len=8) :: prefCellName, prefNodeName
-    integer, pointer :: modiCellNume(:) => null(), modiCellType(:) => null()
-    integer, pointer :: listCellNume(:) => null(), listNodeNume(:) => null()
+    integer(kind=8), pointer :: modiCellNume(:) => null(), modiCellType(:) => null()
+    integer(kind=8), pointer :: listCellNume(:) => null(), listNodeNume(:) => null()
     character(len=16), pointer :: listField(:) => null()
-    integer, pointer :: connexAdr(:) => null()
-    integer, pointer :: nbNodeByCellOut(:) => null()
-    integer, pointer :: allCellNume(:) => null()
+    integer(kind=8), pointer :: connexAdr(:) => null()
+    integer(kind=8), pointer :: nbNodeByCellOut(:) => null()
+    integer(kind=8), pointer :: allCellNume(:) => null()
     character(len=24), pointer :: creaCellOccGrName(:) => null()
     character(len=8), pointer :: creaCellName(:) => null()
-    integer, pointer :: creaCellNume(:) => null()
-    integer, pointer :: creaCellOccNb(:) => null()
+    integer(kind=8), pointer :: creaCellNume(:) => null()
+    integer(kind=8), pointer :: creaCellOccNb(:) => null()
     character(len=8), pointer :: creaNodeName(:) => null()
-    integer, pointer :: creaNodeNume(:) => null()
+    integer(kind=8), pointer :: creaNodeNume(:) => null()
     character(len=8), pointer :: creaPoi1Name(:) => null(), creaGrPoi1CellName(:) => null()
-    integer, pointer :: creaPoi1Ref(:) => null()
-    integer, pointer :: creaPoi1Ref2(:) => null()
+    integer(kind=8), pointer :: creaPoi1Ref(:) => null()
+    integer(kind=8), pointer :: creaPoi1Ref2(:) => null()
     aster_logical, pointer :: creaPoi1Flag(:) => null()
-    integer, pointer :: creaGrPoi1NbCell(:) => null()
+    integer(kind=8), pointer :: creaGrPoi1NbCell(:) => null()
     character(len=24), pointer :: creaGrPoi1GrName(:) => null()
-    integer, pointer :: cellInGrIn(:) => null(), cellInGrOut(:) => null()
-    integer, pointer :: nodeInGrIn(:) => null(), nodeInGrOut(:) => null()
-    integer, pointer :: meshDimeIn(:) => null(), meshDimeOut(:) => null()
-    integer, pointer :: meshTypmailIn(:) => null(), meshTypmailOut(:) => null()
-    integer, pointer :: nodeOwner(:) => null(), cellOwner(:) => null(), globalCellId(:) => null()
-    integer, pointer :: nbCellPerProc(:) => null(), cellOwnerIn(:) => null()
-    integer, pointer :: globalCellIdIn(:) => null()
+    integer(kind=8), pointer :: cellInGrIn(:) => null(), cellInGrOut(:) => null()
+    integer(kind=8), pointer :: nodeInGrIn(:) => null(), nodeInGrOut(:) => null()
+    integer(kind=8), pointer :: meshDimeIn(:) => null(), meshDimeOut(:) => null()
+    integer(kind=8), pointer :: meshTypmailIn(:) => null(), meshTypmailOut(:) => null()
+    integer(kind=8), pointer :: nodeOwner(:) => null(), cellOwner(:) => null()
+    integer(kind=8), pointer ::  globalCellId(:) => null()
+    integer(kind=8), pointer :: nbCellPerProc(:) => null(), cellOwnerIn(:) => null()
+    integer(kind=8), pointer :: globalCellIdIn(:) => null()
     real(kind=8), pointer :: meshValeIn(:) => null(), meshValeOut(:) => null()
     type(Mmesh) :: meshSolidShell
     character(len=8) :: convType(2)

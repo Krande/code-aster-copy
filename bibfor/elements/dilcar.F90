@@ -30,8 +30,8 @@ subroutine dilcar(option, compor, icontm, ivarim, ideplm, ideplp, &
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
-    integer :: icontm, ivarim, ideplm, ideplp, igeom, imate, jcret
-    integer :: imatuu, ivectu, icontp, ichg, ichn, ivarip, icarcr, iinstm, iinstp
+    integer(kind=8) :: icontm, ivarim, ideplm, ideplp, igeom, imate, jcret
+    integer(kind=8) :: imatuu, ivectu, icontp, ichg, ichn, ivarip, icarcr, iinstm, iinstp
     character(len=16) :: option
     character(len=16), pointer :: compor(:)
 !

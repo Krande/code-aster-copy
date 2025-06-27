@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ interface
         real(kind=8) :: cfrots
         real(kind=8) :: ktang
         real(kind=8) :: ctang
-        integer :: iadher
+        integer(kind=8) :: iadher
         real(kind=8) :: oldvt(2)
         real(kind=8) :: oldft(2)
         real(kind=8) :: oldxlo(3)

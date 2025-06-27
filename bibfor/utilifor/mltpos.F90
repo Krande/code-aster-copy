@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -24,12 +24,12 @@ subroutine mltpos(nbsn, parent, fils, frere, pile, &
     implicit none
 #include "asterfort/blimax.h"
 #include "asterfort/tri.h"
-    integer :: nbsn, parent(*), fils(*), frere(*), pile(*), lfront(*)
-    integer :: seq(*), estim
-    integer :: flag(*)
-    integer :: u(nbsn), w(nbsn), tab(nbsn), liste(nbsn)
+    integer(kind=8) :: nbsn, parent(*), fils(*), frere(*), pile(*), lfront(*)
+    integer(kind=8) :: seq(*), estim
+    integer(kind=8) :: flag(*)
+    integer(kind=8) :: u(nbsn), w(nbsn), tab(nbsn), liste(nbsn)
 !
-    integer :: init, filsi, nd, iq, md, m, i, k, sni, itemp, lp, q1, q2, sn
+    integer(kind=8) :: init, filsi, nd, iq, md, m, i, k, sni, itemp, lp, q1, q2, sn
 !-----------------------------------------------------------------------
 !     CALCUL DES TABLEAUX U ET W (VOIR NOTES RESP. DE  ASHCRAFT ET YANG)
 !

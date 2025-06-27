@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2019 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 interface
     subroutine romGreedyResiNormCalc(i_coef, nb_equa, ds_algoGreedy)
         use Rom_Datastructure_type
-        integer, intent(in) :: i_coef, nb_equa
+        integer(kind=8), intent(in) :: i_coef, nb_equa
         type(ROM_DS_AlgoGreedy), intent(inout) :: ds_algoGreedy
     end subroutine romGreedyResiNormCalc
 end interface

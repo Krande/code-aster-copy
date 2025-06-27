@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -38,12 +38,12 @@ subroutine ptenth(ul, xl, f, n, mat, enerth)
 !
     implicit none
 !
-    integer ::  n
+    integer(kind=8) ::  n
     real(kind=8) :: ul(12), f, mat(n, n), enerth
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: ii, jj
+    integer(kind=8) :: ii, jj
     real(kind=8) :: ugt(12), flt(12), xl, flm(12)
 !
 ! --------------------------------------------------------------------------------------------------

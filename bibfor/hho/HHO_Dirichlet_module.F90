@@ -88,13 +88,13 @@ contains
 !
 !===================================================================================================
 !
-    integer function hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
+    integer(kind=8) function hhoDiriNum(nb_cmp_hho_dir, nume_cmp, ndim)
 !
         implicit none
 !
-        integer, intent(in) :: nb_cmp_hho_dir
-        integer, intent(in) :: nume_cmp
-        integer, intent(in) :: ndim
+        integer(kind=8), intent(in) :: nb_cmp_hho_dir
+        integer(kind=8), intent(in) :: nume_cmp
+        integer(kind=8), intent(in) :: ndim
 !
 ! --------------------------------------------------------------------------------------------------
 !   HHO - Dirichlet loads
@@ -152,30 +152,30 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: nume_gd, ifm, niv, nb_cmp_hho_max, offset
-        integer :: i_cmp, ndim, elem_ndim, type_nume, i_func, nb_cine_func, nb_elem_mesh
-        integer :: nb_cmp_hho_dir_c, nb_cmp_hho_dir_f, nb_cmp_hho_dir, nume_cmp_f
+        integer(kind=8) :: nume_gd, ifm, niv, nb_cmp_hho_max, offset
+        integer(kind=8) :: i_cmp, ndim, elem_ndim, type_nume, i_func, nb_cine_func, nb_elem_mesh
+        integer(kind=8) :: nb_cmp_hho_dir_c, nb_cmp_hho_dir_f, nb_cmp_hho_dir, nume_cmp_f
         character(len=8) :: name_gd, load_name, load_type, type_name, load_cine, mesh
         character(len=8), pointer :: v_field_valv(:) => null()
         character(len=8), pointer :: p_cata_nomcmp(:) => null()
         character(len=8), pointer :: v_field_ncmp(:) => null()
         character(len=19), parameter :: connex_inv = '&&HHOMEC.CONINV'
         aster_logical, pointer :: v_elem_affe(:) => null()
-        integer, pointer :: v_coninv(:) => null()
-        integer, pointer :: v_connex(:) => null()
-        integer, pointer :: v_cata_tmdim(:) => null()
-        integer, pointer :: v_coninv_longcum(:) => null()
-        integer :: i_load, nb_load, ibid, elem_nume, node_nume, nb_node_elem, i_elem, i_elem_affe
-        integer :: i_affe_cine, nb_affe_cine, node_nume_loc, i_node, nb_node, nume_cmp, dim_cmp
+        integer(kind=8), pointer :: v_coninv(:) => null()
+        integer(kind=8), pointer :: v_connex(:) => null()
+        integer(kind=8), pointer :: v_cata_tmdim(:) => null()
+        integer(kind=8), pointer :: v_coninv_longcum(:) => null()
+   integer(kind=8) :: i_load, nb_load, ibid, elem_nume, node_nume, nb_node_elem, i_elem, i_elem_affe
+     integer(kind=8) :: i_affe_cine, nb_affe_cine, node_nume_loc, i_node, nb_node, nume_cmp, dim_cmp
         character(len=24) :: lload_name, lload_info
-        integer, pointer :: v_load_info(:) => null()
+        integer(kind=8), pointer :: v_load_info(:) => null()
         character(len=24), pointer :: v_load_name(:) => null()
         aster_logical :: l_cine, l_func, isCellNode
         type(HHO_Data) :: hhoData
-        integer, pointer :: v_afci(:) => null()
+        integer(kind=8), pointer :: v_afci(:) => null()
         character(len=8), pointer :: v_afck(:) => null()
         character(len=8), pointer :: v_afcv(:) => null()
-        integer, pointer :: v_mesh_typmail(:) => null()
+        integer(kind=8), pointer :: v_mesh_typmail(:) => null()
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -370,7 +370,7 @@ contains
         implicit none
 !
         type(HHO_Field), intent(in) :: hhoField
-        integer, intent(in) :: i_affe_cine, jv_cesd, jv_cesl, jv_cesv
+        integer(kind=8), intent(in) :: i_affe_cine, jv_cesd, jv_cesl, jv_cesv
         real(kind=8), intent(out) :: res
 !
 !
@@ -385,8 +385,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: elem_nume, node_nume_loc, nume_cmp
-        integer :: iad
+        integer(kind=8) :: elem_nume, node_nume_loc, nume_cmp
+        integer(kind=8) :: iad
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -430,12 +430,12 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: ifm, niv
+        integer(kind=8) :: ifm, niv
         character(len=16) :: option
         character(len=19) :: ligrel_model
         character(len=1) :: base
-        integer, parameter :: nbin = 4
-        integer, parameter :: nbout = 1
+        integer(kind=8), parameter :: nbin = 4
+        integer(kind=8), parameter :: nbout = 1
         character(len=8) :: lpain(nbin), lpaout(nbout)
         character(len=19) :: lchin(nbin), lchout(nbout)
         character(len=24) :: chgeom, chtime
@@ -507,13 +507,13 @@ contains
 !
 !
         character(len=16), intent(in) :: keywordFact
-        integer, intent(in) :: ioc
+        integer(kind=8), intent(in) :: ioc
         character(len=8), intent(in) :: nogdsi, model
         character(len=1), intent(in) :: valeType
-        integer, intent(in) :: userDOFNb
+        integer(kind=8), intent(in) :: userDOFNb
         character(len=16), intent(in) :: userDOFName(*)
         character(len=24), intent(out) :: cnuddl, cvlddl
-        integer, intent(out) :: nbddl
+        integer(kind=8), intent(out) :: nbddl
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -523,8 +523,8 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idnddl, idvddl, jcmp, max_cmp_f, max_cmp_c
-        integer :: iddl, i, nbcmp, ila, icmp, userDOFNbSupp, ndim
+        integer(kind=8) :: idnddl, idvddl, jcmp, max_cmp_f, max_cmp_c
+        integer(kind=8) :: iddl, i, nbcmp, ila, icmp, userDOFNbSupp, ndim
         character(len=16) :: currentDOF
         real(kind=8) :: valeDOF
         character(len=2) :: typeJEVEUX
@@ -534,7 +534,7 @@ contains
         character(len=16), parameter :: motcle(5) = (/'GROUP_MA', 'MAILLE  ', &
                                                       'GROUP_NO', 'NOEUD   ', &
                                                       'TOUT    '/)
-        integer, parameter :: nbCmpSupp = 16
+        integer(kind=8), parameter :: nbCmpSupp = 16
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -827,7 +827,7 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: idim, iFace, ind
+        integer(kind=8) :: idim, iFace, ind
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -871,12 +871,12 @@ contains
 !
 ! --------------------------------------------------------------------------------------------------
 !
-        integer, parameter :: maxpara = 4
+        integer(kind=8), parameter :: maxpara = 4
         real(kind=8) :: valpar(maxpara)
         character(len=8) :: nompar(maxpara)
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
-        integer :: cbs, fbs, total_dofs, idim, iFace, nbpara, ind
+        integer(kind=8) :: cbs, fbs, total_dofs, idim, iFace, nbpara, ind
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
 !
@@ -989,7 +989,7 @@ contains
 !
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
-        integer :: cbs, fbs, total_dofs, idim, iFace, ind, ndim
+        integer(kind=8) :: cbs, fbs, total_dofs, idim, iFace, ind, ndim
         real(kind=8) :: FuncValuesQP(3, MAX_QP_FACE), FuncValuesCellQP(3, MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_VEC), rhs_cell(MSIZE_CELL_VEC)
 !
@@ -1081,7 +1081,7 @@ contains
 !
         type(HHO_Face) :: hhoFace
         type(HHO_Quadrature) :: hhoQuadFace, hhoQuadCell
-        integer :: cbs, fbs, total_dofs, iFace, ind
+        integer(kind=8) :: cbs, fbs, total_dofs, iFace, ind
         real(kind=8) :: FuncValuesQP(MAX_QP_FACE), FuncValuesCellQP(MAX_QP_CELL)
         real(kind=8) :: rhs_face(MSIZE_FACE_SCAL), rhs_cell(MSIZE_CELL_SCAL)
 !
@@ -1138,7 +1138,7 @@ contains
 !
 !===================================================================================================
 !
-    integer function hhoDiriOffset(typema)
+    integer(kind=8) function hhoDiriOffset(typema)
 !
         implicit none
 !
@@ -1152,7 +1152,7 @@ contains
 !   In (opt) typema : type of element
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=8) :: typma2
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1193,7 +1193,7 @@ contains
         implicit none
 !
         character(len=8), intent(in), optional :: typema
-        integer, intent(in) :: i_node
+        integer(kind=8), intent(in) :: i_node
         aster_logical :: isCellNode
 !
 ! --------------------------------------------------------------------------------------------------
@@ -1204,7 +1204,7 @@ contains
 !   In (opt) typema : type of element
 ! --------------------------------------------------------------------------------------------------
 !
-        integer :: iret
+        integer(kind=8) :: iret
         character(len=8) :: typma2
 !
 ! --------------------------------------------------------------------------------------------------

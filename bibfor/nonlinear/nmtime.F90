@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine nmtime(ds_measure, operation_, device_type_)
     type(NL_DS_Device) :: device
     character(len=9) :: timer_type
     character(len=10) :: device_type
-    integer :: i_timer, timer_indx, nb_timer
+    integer(kind=8) :: i_timer, timer_indx, nb_timer
     type(NL_DS_Timer) :: timer
     character(len=24) :: operation, cpu_name
     real(kind=8) :: time, list_time(7)

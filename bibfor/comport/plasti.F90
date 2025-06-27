@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami
-    integer, intent(in) :: kpg, ksp, imate
+    integer(kind=8), intent(in) :: kpg, ksp, imate
     character(len=16), intent(in) :: compor(COMPOR_SIZE)
     real(kind=8), intent(in) :: carcri(CARCRI_SIZE)
     real(kind=8), intent(in) :: instam, instap
@@ -54,10 +54,10 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
     real(kind=8), intent(in) :: angmas(3)
     real(kind=8), intent(out) :: sigp(6), vip(*)
     character(len=8), intent(in) :: typmod(*)
-    integer, intent(in) :: icomp
-    integer, intent(in) :: nvi
+    integer(kind=8), intent(in) :: icomp
+    integer(kind=8), intent(in) :: nvi
     real(kind=8), intent(out) :: dsidep(6, *)
-    integer, intent(out) :: codret
+    integer(kind=8), intent(out) :: codret
     character(len=16), optional, intent(in) :: mult_compor_
 !
 ! --------------------------------------------------------------------------------------------------
@@ -148,15 +148,15 @@ subroutine plasti(BEHinteg, fami, kpg, ksp, typmod, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer, parameter :: nmat = 90, nsg = 30, nfs = 5, nrm = nfs*nsg+6
+    integer(kind=8), parameter :: nmat = 90, nsg = 30, nfs = 5, nrm = nfs*nsg+6
     character(len=3) :: matcst
     character(len=7) :: etatd, etatf
     character(len=8) :: mod, typma
     character(len=16) :: rela_comp, defo_comp, mult_comp
     character(len=24) :: cpmono(5*nmat+1)
     aster_logical :: l_temp
-    integer :: ndt, ndi, nr, itmax, irtet
-    integer :: nbcomm(nmat, 3), numhsr(1), irr, decirr, nbsyst, decal, gdef
+    integer(kind=8) :: ndt, ndi, nr, itmax, irtet
+    integer(kind=8) :: nbcomm(nmat, 3), numhsr(1), irr, decirr, nbsyst, decal, gdef
     real(kind=8) :: toler, epsi, materd(nmat, 2), materf(nmat, 2)
     real(kind=8) :: epsd(9), deps(9)
     real(kind=8) :: seuil, theta, dt, devg(6), devgii

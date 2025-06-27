@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine utlisi(motcle, a, na, b, nb, &
 #include "asterfort/indiis.h"
 #include "asterfort/utmess.h"
     character(len=*) :: motcle
-    integer :: a(*), b(*), c(*), na, nb, nc, ntrou
+    integer(kind=8) :: a(*), b(*), c(*), na, nb, nc, ntrou
 ! ----------------------------------------------------------------------
 !     BUT :
 !
@@ -72,7 +72,7 @@ subroutine utlisi(motcle, a, na, b, nb, &
 !
 ! ----------------------------------------------------------------------
     character(len=5) :: motcl2
-    integer :: ia, ib, ic, ii
+    integer(kind=8) :: ia, ib, ic, ii
 ! DEB-------------------------------------------------------------------
     motcl2 = motcle
 !

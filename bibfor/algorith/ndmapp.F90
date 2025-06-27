@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -52,7 +52,7 @@ subroutine ndmapp(sddyna, valinc)
     character(len=19) :: depplu, vitplu, accplu
     character(len=19) :: depent, vitent, accent
     character(len=19) :: depabs, vitabs, accabs
-    integer :: neq, ie
+    integer(kind=8) :: neq, ie
     real(kind=8), pointer :: accab(:) => null()
     real(kind=8), pointer :: accen(:) => null()
     real(kind=8), pointer :: accp(:) => null()

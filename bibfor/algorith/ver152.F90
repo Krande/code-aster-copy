@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -31,7 +31,7 @@ subroutine ver152(option, moflui, moint, n12, model)
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
-    integer :: n12
+    integer(kind=8) :: n12
     character(len=*) :: option, model, moflui, moint
     character(len=9) :: optio9
     character(len=16) :: rep, rk16

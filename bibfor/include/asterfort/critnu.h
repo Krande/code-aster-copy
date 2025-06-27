@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,11 +20,11 @@
 !
 interface
     function critnu(zimat, nmnbn, deps, dtg, normm)
-        integer :: zimat
+        integer(kind=8) :: zimat
         real(kind=8) :: nmnbn(6)
         real(kind=8) :: deps(6)
         real(kind=8) :: dtg(6, 6)
         real(kind=8) :: normm
-        integer :: critnu
+        integer(kind=8) :: critnu
     end function critnu
 end interface

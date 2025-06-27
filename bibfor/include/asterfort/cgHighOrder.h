@@ -26,7 +26,7 @@ use calcG_type
         type(CalcG_Study), intent(in) :: cgStudy
         type(CalcG_stat), intent(inout) :: cgStat
         character(len=19), intent(in) :: chscer, chseli
-        integer, intent(in) :: jcesd2, jcesl2
+        integer(kind=8), intent(in) :: jcesd2, jcesl2
         real(kind=8), pointer :: v_cer(:)
         real(kind=8), pointer :: v_eli(:)
         character(len=19), intent(inout) :: chcer

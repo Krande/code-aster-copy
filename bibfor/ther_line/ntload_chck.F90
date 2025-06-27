@@ -42,7 +42,7 @@ subroutine ntload_chck(listLoad)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: iret, iLoad, nbLoad
+    integer(kind=8) :: iret, iLoad, nbLoad
     aster_logical :: isnotallowed
     character(len=8) :: loadName
     character(len=24) :: loadField

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@ interface
                       advico, vicphi,&
                       phi0  , dp1   , dp2  , signe, satur,&
                       em    , phi   , phim)
-        integer, intent(in) :: nbvari
+        integer(kind=8), intent(in) :: nbvari
         real(kind=8), intent(in) :: vintm(nbvari)
         real(kind=8), intent(inout) :: vintp(nbvari)
-        integer, intent(in) :: advico
-        integer, intent(in) :: vicphi
+        integer(kind=8), intent(in) :: advico
+        integer(kind=8), intent(in) :: vicphi
         real(kind=8), intent(in) :: phi0
         real(kind=8), intent(in) :: dp1
         real(kind=8), intent(in) :: dp2

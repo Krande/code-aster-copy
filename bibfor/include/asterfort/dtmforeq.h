@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2018 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,8 +22,8 @@ interface
     subroutine dtmforeq(sd_dtm_, sd_int_, index, buffdtm, buffint)
         character(len=*) , intent(in) :: sd_dtm_
         character(len=*) , intent(in) :: sd_int_ 
-        integer          , intent(in) :: index 
-        integer, pointer :: buffdtm(:)
-        integer, pointer              :: buffint(:)
+        integer(kind=8)          , intent(in) :: index 
+        integer(kind=8), pointer :: buffdtm(:)
+        integer(kind=8), pointer              :: buffint(:)
     end subroutine dtmforeq
 end interface

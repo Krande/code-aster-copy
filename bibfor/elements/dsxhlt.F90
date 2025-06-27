@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,7 +21,7 @@ subroutine dsxhlt(df, jacob, hlt2)
     real(kind=8) :: df(3, 3), jacob(*), hlt2(4, 6)
 !     MATRICE PRODUIT HL.T2(4,6)
 !     -----------------------------------------------------------------
-    integer :: i, j, k
+    integer(kind=8) :: i, j, k
     real(kind=8) :: vj11, vj12, vj21, vj22, hl(4, 6), t2(3, 3)
 !     ---------------------------------------------------------------
     vj11 = jacob(1)

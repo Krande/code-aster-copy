@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -29,7 +29,7 @@ subroutine inteCellAreaWrap(mesh, nbPoinInte, poinInteSlav, &
 #include "asterfort/mesh_pairing_type.h"
 !
     character(len=8), intent(in) :: mesh
-    integer, intent(in) :: nbPoinInte
+    integer(kind=8), intent(in) :: nbPoinInte
     real(kind=8), intent(in) :: poinInteSlav(2, MAX_NB_INTE)
     real(kind=8), intent(out) :: inteArea
 !
@@ -48,7 +48,7 @@ subroutine inteCellAreaWrap(mesh, nbPoinInte, poinInteSlav, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer :: spaceDime
+    integer(kind=8) :: spaceDime
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ subroutine iniMat0(l, x1, x2, x3, x4, x5, &
 !-----------------------------------------------------------------------
     implicit none
 #include "asterfort/assert.h"
-    integer, intent(in) :: l
+    integer(kind=8), intent(in) :: l
     real(kind=8), intent(out) :: x1(l, l)
     real(kind=8), optional, intent(out) :: x2(l, l), x3(l, l), x4(l, l), x5(l, l)
     real(kind=8), optional, intent(out) :: x6(l, l), x7(l, l), x8(l, l)

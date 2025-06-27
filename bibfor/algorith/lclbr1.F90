@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -30,7 +30,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod, &
     character(len=*) :: fami
     character(len=8) :: typmod(2)
     character(len=16) :: compor(*), option
-    integer :: kpg, ksp, ndim, imate
+    integer(kind=8) :: kpg, ksp, ndim, imate
     real(kind=8) :: epsm(6), deps(6)
     real(kind=8) :: sig(6), dsidep(6, 12)
 ! ----------------------------------------------------------------------
@@ -53,7 +53,7 @@ subroutine lclbr1(fami, kpg, ksp, ndim, typmod, &
 ! ----------------------------------------------------------------------
 ! LOC EDFRC1  COMMON CARACTERISTIQUES DU MATERIAU (AFFECTE DANS EDFRMA)
     aster_logical :: rigi, resi, coup, plan, seca
-    integer :: ndimsi, k, l, i, j, m, n, t(3, 3)
+    integer(kind=8) :: ndimsi, k, l, i, j, m, n, t(3, 3)
     real(kind=8) :: eps(6), kron(6)
     real(kind=8) :: rac2, e
     real(kind=8) :: tr(6), rtemp2

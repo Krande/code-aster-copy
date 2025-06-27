@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,11 +21,11 @@
 interface
     subroutine trmult(modsta, numexi, mailla, neq, iddeeq,&
                       pside, numddl)
-        integer :: neq
+        integer(kind=8) :: neq
         character(len=8) :: modsta
-        integer :: numexi
+        integer(kind=8) :: numexi
         character(len=8) :: mailla
-        integer :: iddeeq
+        integer(kind=8) :: iddeeq
         real(kind=8) :: pside(neq)
         character(len=8) :: numddl
     end subroutine trmult

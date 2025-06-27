@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -36,7 +36,7 @@ subroutine lecojb(ob, unite, base, iret)
 !
     character(len=*) :: ob
     character(len=1) :: base
-    integer :: unite, iret
+    integer(kind=8) :: unite, iret
 !    BUT : LIRE UN OBJET JEVEUX SUR L'UNITE LOGIQUE : UNITE.
 !          S'IL N'Y A PLUS RIEN A LIRE SUR LE FICHIER : IRET=1
 ! OUT   OB (K24)   : NOM DE L'OBJET LU
@@ -48,9 +48,9 @@ subroutine lecojb(ob, unite, base, iret)
     character(len=40) :: acces
     character(len=8) :: stock, modlon, nomk8, genr
     character(len=16) :: mocle1, mocle2, mocle3, mocle4
-    integer :: lonmax
-    integer :: iad, long, nmaxoc, nutioc, iobj, lont
-    integer :: jtmp, k
+    integer(kind=8) :: lonmax
+    integer(kind=8) :: iad, long, nmaxoc, nutioc, iobj, lont
+    integer(kind=8) :: jtmp, k
 !
     call jemarq()
     read (unite, 1001, end=9998) mocle1, genr
@@ -153,8 +153,8 @@ subroutine lecojb(ob, unite, base, iret)
 1001 format(a13, a6)
 1002 format(a5, a24, a6, a3, a8, i12)
 1004 format(a5, a24, a6, a3, a8, i12, a8, i12,&
-    &        a7, a2, a10, a8, a10, a8,&
-    &        a8, i12, a6, i12)
+   &        a7, a2, a10, a8, a10, a8,&
+   &        a8, i12, a6, i12)
 1005 format(a5, a8, a8, i12)
 1006 format(a8, i12)
 end subroutine

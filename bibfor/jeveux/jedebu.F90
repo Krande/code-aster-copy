@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ subroutine jedebu(nbfi, mxzon, idb)
 #include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utptme.h"
-    integer :: nbfi, mxzon, idb
+    integer(kind=8) :: nbfi, mxzon, idb
 ! ----------------------------------------------------------------------
 ! ROUTINE UTILISATEUR D'INITIALISATION GENERALE POUR LE GESTIONNAIRE
 !         DE MEMOIRE
@@ -51,19 +51,19 @@ subroutine jedebu(nbfi, mxzon, idb)
 !              ( 0: RIEN, 1: MISE A UNDEF DES SEGMENTS DE VALEURS )
 !
 ! ----------------------------------------------------------------------
-    integer :: lk1zon, jk1zon, liszon, jiszon
+    integer(kind=8) :: lk1zon, jk1zon, liszon, jiszon
     common/izonje/lk1zon, jk1zon, liszon, jiszon
 ! ----------------------------------------------------------------------
-    integer :: nbfic
+    integer(kind=8) :: nbfic
     common/iparje/nbfic
-    integer :: iloc
+    integer(kind=8) :: iloc
     common/ilocje/iloc
 ! ----------------------------------------------------------------------
 !-----------------------------------------------------------------------
-    integer :: i, jcara, jdate, jdocu, jgenr, jhcod
-    integer :: jiacce, jiadd, jiadm, jlong, jlono, jltyp
-    integer :: jluti, jmarq, jorig, jrnom, jtype, k
-    integer :: n, nbacce
+    integer(kind=8) :: i, jcara, jdate, jdocu, jgenr, jhcod
+    integer(kind=8) :: jiacce, jiadd, jiadm, jlong, jlono, jltyp
+    integer(kind=8) :: jluti, jmarq, jorig, jrnom, jtype, k
+    integer(kind=8) :: n, nbacce
     real(kind=8) :: val
 !-----------------------------------------------------------------------
     parameter(n=5)
@@ -72,14 +72,14 @@ subroutine jedebu(nbfi, mxzon, idb)
      &                 jlono(n), jhcod(n), jcara(n), jluti(n), jmarq(n)
     common/jkatje/jgenr(n), jtype(n), jdocu(n), jorig(n), jrnom(n)
 ! ----------------------------------------------------------------------
-    integer :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
-    integer :: nitecr, kmarq
+    integer(kind=8) :: nblmax, nbluti, longbl, kitlec, kitecr, kiadm, iitlec, iitecr
+    integer(kind=8) :: nitecr, kmarq
     common/ificje/nblmax(n), nbluti(n), longbl(n),&
      &                 kitlec(n), kitecr(n), kiadm(n),&
      &                 iitlec(n), iitecr(n), nitecr(n), kmarq(n)
     aster_logical :: litlec
     common/lficje/litlec(n)
-    integer :: nrhcod, nremax, nreuti
+    integer(kind=8) :: nrhcod, nremax, nreuti
     common/icodje/nrhcod(n), nremax(n), nreuti(n)
     character(len=2) :: dn2
     character(len=5) :: classe
@@ -91,51 +91,51 @@ subroutine jedebu(nbfi, mxzon, idb)
     character(len=32) :: nomuti, nomos, nomoc, bl32
     common/nomcje/nomuti, nomos, nomco, nomoc, bl32
 ! ----------------------------------------------------------------------
-    integer :: isstat
+    integer(kind=8) :: isstat
     common/iconje/isstat
-    integer :: msstat, lsstat
+    integer(kind=8) :: msstat, lsstat
     common/jconje/msstat, lsstat
 ! ----------------------------------------------------------------------
-    integer :: datei
+    integer(kind=8) :: datei
     common/iheuje/datei
 ! ----------------------------------------------------------------------
-    integer :: illici, jclass(0:255)
+    integer(kind=8) :: illici, jclass(0:255)
     common/jchaje/illici, jclass
 ! ----------------------------------------------------------------------
-    integer :: istat
+    integer(kind=8) :: istat
     common/istaje/istat(4)
     character(len=4) :: kstat
     common/kstaje/kstat
-    integer :: mslois
+    integer(kind=8) :: mslois
     common/jenvje/mslois
-    integer :: lbis, lois, lols, lor8, loc8
+    integer(kind=8) :: lbis, lois, lols, lor8, loc8
     common/ienvje/lbis, lois, lols, lor8, loc8
-    integer :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
+    integer(kind=8) :: ipgc, kdesma(2), lgd, lgduti, kposma(2), lgp, lgputi
     common/iadmje/ipgc, kdesma, lgd, lgduti, kposma, lgp, lgputi
-    integer :: idn, iext, nbenrg
+    integer(kind=8) :: idn, iext, nbenrg
     common/iextje/idn(n), iext(n), nbenrg(n)
-    integer :: lfic, mfic
+    integer(kind=8) :: lfic, mfic
     common/fenvje/lfic(n), mfic
     character(len=128) :: repglo, repvol
     common/banvje/repglo, repvol
-    integer :: lrepgl, lrepvo
+    integer(kind=8) :: lrepgl, lrepvo
     common/balvje/lrepgl, lrepvo
-    integer :: lundef, idebug
+    integer(kind=8) :: lundef, idebug
     common/undfje/lundef, idebug
-    integer :: ldyn, lgdyn, nbdyn, nbfree
+    integer(kind=8) :: ldyn, lgdyn, nbdyn, nbfree
     common/idynje/ldyn, lgdyn, nbdyn, nbfree
-    integer :: icdyn, mxltot
+    integer(kind=8) :: icdyn, mxltot
     common/xdynje/icdyn, mxltot
     real(kind=8) :: mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio, cuvtrav
     common/r8dyje/mxdyn, mcdyn, mldyn, vmxdyn, vmet, lgio(2), cuvtrav
     real(kind=8) :: svuse, smxuse
     common/statje/svuse, smxuse
     common/jiacce/jiacce(n), nbacce(2*n)
-    integer :: indiq_jjagod, indiq_jjldyn
+    integer(kind=8) :: indiq_jjagod, indiq_jjldyn
     common/idagod/indiq_jjagod, indiq_jjldyn
 
 ! --------------------------------- ------------------------------------
-    integer :: mxlici, iret
+    integer(kind=8) :: mxlici, iret
     parameter(mxlici=67)
     character(len=mxlici) :: clicit
     data clicit/' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.$&_abcdefghijklmnopqrstuvwxyz'/

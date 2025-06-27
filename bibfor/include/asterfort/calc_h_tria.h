@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -20,7 +20,7 @@
 !
 interface
     subroutine calc_h_tria(ino, x3d1, x3d2, x3d3, h)
-        integer :: ino
+        integer(kind=8) :: ino
         real(kind=8) :: x3d1(3)
         real(kind=8) :: x3d2(3)
         real(kind=8) :: x3d3(3)

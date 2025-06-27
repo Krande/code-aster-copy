@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -45,15 +45,15 @@ subroutine op0118()
 #include "asterfort/jedetr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-    integer :: npfft, dim, dim2, l, nbtir
-    integer :: ifm, niv, nbval, nbfreq, k
-    integer :: nbfc, long, ln, ln2, lonv, lvalf, lvalc, lr, lv
-    integer :: lx, ly, ln4, kf, ifo, kt, it
-    integer :: ix, iy, lnr, kk, ifft
-    integer :: jump
-    integer :: linst, lrefe, ibid, ifonc, inum, ispec
+    integer(kind=8) :: npfft, dim, dim2, l, nbtir
+    integer(kind=8) :: ifm, niv, nbval, nbfreq, k
+    integer(kind=8) :: nbfc, long, ln, ln2, lonv, lvalf, lvalc, lr, lv
+    integer(kind=8) :: lx, ly, ln4, kf, ifo, kt, it
+    integer(kind=8) :: ix, iy, lnr, kk, ifft
+    integer(kind=8) :: jump
+    integer(kind=8) :: linst, lrefe, ibid, ifonc, inum, ispec
 !
-    integer :: lnuor, lnuord
+    integer(kind=8) :: lnuor, lnuord
 !
     real(kind=8) :: pui2, pui2d, pui3d, freini, frefin, dfreq, tt, dt, tini
     real(kind=8) :: tfin, duree
@@ -62,7 +62,7 @@ subroutine op0118()
     character(len=16) :: typvec, nomcmd
     character(len=19) :: nominf
     character(len=24) :: chinst, chvale
-    integer, pointer :: desc(:) => null()
+    integer(kind=8), pointer :: desc(:) => null()
     real(kind=8), pointer :: vale(:) => null()
 !
 !     ------------------------------------------------------------------

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -58,15 +58,15 @@ subroutine pbflui(umoy, hmoy, rmoy, long, cf0, &
 #include "asterfort/profpr.h"
 #include "asterfort/wkvect.h"
     real(kind=8) :: umoy, hmoy, rmoy, long, cf0, mcf0, fsvr(7)
-    integer :: icoq, imod, nbm
+    integer(kind=8) :: icoq, imod, nbm
     real(kind=8) :: rki, tcoef(10, nbm), s1, s2
     complex(kind=8) :: ysol(3, 101)
 !
 !-----------------------------------------------------------------------
 !
 !-----------------------------------------------------------------------
-    integer :: icond, id, igama, iharm, ikcal, iki, ilbda
-    integer :: ipass
+    integer(kind=8) :: icond, id, igama, iharm, ikcal, iki, ilbda
+    integer(kind=8) :: ipass
     real(kind=8) :: coepr1, coepr2, r1, r2, rhof, rkip, wpr
 !
 !-----------------------------------------------------------------------

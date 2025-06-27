@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ interface
         character(len=16) :: nomfor
         character(len=16) :: typcha
         character(len=3) :: impgrd
-        integer :: paract(35)
+        integer(kind=8) :: paract(35)
         aster_logical :: fordef
         aster_logical :: crsigm
         aster_logical :: crepst

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -23,15 +23,15 @@ interface
                       limane, jmacou, jmacsu, macou ,&
                       macsu , ind   , ind1  )
         character(len=8), intent(in) :: maout
-        integer, intent(in) :: inc 
-        integer, intent(in) :: jcnnpa
+        integer(kind=8), intent(in) :: inc 
+        integer(kind=8), intent(in) :: jcnnpa
         character(len=24), intent(in) :: conloc
         character(len=24), intent(in) :: limane
-        integer, intent(in) :: jmacou
-        integer, intent(in) :: jmacsu
-        integer, intent(in) :: macou
-        integer, intent(in) :: macsu
-        integer, intent(out) :: ind 
-        integer, intent(out) :: ind1 
+        integer(kind=8), intent(in) :: jmacou
+        integer(kind=8), intent(in) :: jmacsu
+        integer(kind=8), intent(in) :: macou
+        integer(kind=8), intent(in) :: macsu
+        integer(kind=8), intent(out) :: ind 
+        integer(kind=8), intent(out) :: ind1 
     end subroutine cphe27
 end interface

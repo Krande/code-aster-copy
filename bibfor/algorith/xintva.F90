@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, &
 #include "asterfort/provec.h"
 #include "asterfort/xnormv.h"
 #include "blas/ddot.h"
-    integer :: ndime
+    integer(kind=8) :: ndime
     character(len=6) :: name
     real(kind=8) :: ptxx(*), intinf, intsup, dekker(4*ndime)
 !
@@ -48,7 +48,7 @@ subroutine xintva(name, dekker, ptxx, ndime, intinf, &
     real(kind=8) :: ka(ndime), kb(ndime), kc(ndime), b1, c1, c2, ad(ndime)
     real(kind=8) :: norm_ab, norm_bc, norm_ca, eps, tole, d(ndime), bd(ndime)
     real(kind=8) :: norm_n, n(ndime), norm_ad, norm_bd
-    integer :: j, cpt
+    integer(kind=8) :: j, cpt
     blas_int :: b_incx, b_incy, b_n
     parameter(eps=1.d-12)
     parameter(tole=5.d-7)

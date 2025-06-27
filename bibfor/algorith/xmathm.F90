@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -43,8 +43,8 @@ subroutine xmathm(ds_thm, ndim, &
 ! ----------------------------------------------------------------------
 !
     type(THM_DS), intent(inout) :: ds_thm
-    integer :: nnops, nnop, nddls, nddlm, ndim, pla(27)
-    integer :: jheavn, ncompn, nfiss, ifiss, nfh, ifa, jheafa, ncomph
+    integer(kind=8) :: nnops, nnop, nddls, nddlm, ndim, pla(27)
+    integer(kind=8) :: jheavn, ncompn, nfiss, ifiss, nfh, ifa, jheafa, ncomph
     real(kind=8) :: ffc(16), nd(3), jac, ffp(27)
     real(kind=8) :: ffp2(27), mmat(560, 560), dt, ta, saut(3)
     real(kind=8) :: dffc(16, 3), rho11

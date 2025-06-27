@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -91,9 +91,9 @@ subroutine op0041()
 #include "asterfort/xinlsj.h"
 #include "asterfort/xlenri.h"
 #include "asterfort/xlorie.h"
-    integer :: ifm, niv, ibid, mxval, iret
-    integer :: me1, me2, me3, me4
-    integer :: ndim, jinfo, jmod, jma
+    integer(kind=8) :: ifm, niv, ibid, mxval, iret
+    integer(kind=8) :: me1, me2, me3, me4
+    integer(kind=8) :: ndim, jinfo, jmod, jma
     real(kind=8) :: noeud(3), vect1(3), vect2(3), a, b, r, dmax
     character(len=8) :: fiss, nfonf, nfong, mafis, fonfis, noma, meth
     character(len=8) :: maiaux

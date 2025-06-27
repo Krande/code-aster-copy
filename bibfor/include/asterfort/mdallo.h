@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -27,22 +27,22 @@ subroutine mdallo(nomres, typcal, nbsauv, base, nbmodes,&
                   jvint, sauve, sd_index, checkarg)
         character(len=8) , intent(in) :: nomres
         character(len=4) , intent(in) :: typcal
-        integer          , intent(in) :: nbsauv
+        integer(kind=8)          , intent(in) :: nbsauv
         character(len=*) , optional, intent(in)  :: base
-        integer          , optional, intent(in)  :: nbmodes
+        integer(kind=8)          , optional, intent(in)  :: nbmodes
         character(len=*) , optional, intent(in)  :: rigi, mass, amor
-        integer          , optional, intent(out) :: jordr, jdisc
-        integer          , optional, intent(in)  :: nbsym
+        integer(kind=8)          , optional, intent(out) :: jordr, jdisc
+        integer(kind=8)          , optional, intent(in)  :: nbsym
         character(len=4) , optional, intent(in)  :: nomsym(*)
-        integer          , optional, intent(out) :: jdepl, jvite, jacce
+        integer(kind=8)          , optional, intent(out) :: jdepl, jvite, jacce
         character(len=*) , optional, intent(in)  :: method
         real(kind=8)     , optional, intent(in)  :: dt
-        integer          , optional, intent(out) :: jptem
-        integer          , optional, intent(in)  :: nbnli
+        integer(kind=8)          , optional, intent(out) :: jptem
+        integer(kind=8)          , optional, intent(in)  :: nbnli
         character(len=*) , optional, intent(in)  :: sd_nl_
-        integer          , optional, intent(out) :: jvint
+        integer(kind=8)          , optional, intent(out) :: jvint
         character(len=4) , optional, intent(in)  :: sauve
-        integer          , optional, intent(in)  :: sd_index
+        integer(kind=8)          , optional, intent(in)  :: sd_index
         aster_logical    , optional, intent(in)  :: checkarg
     end subroutine mdallo
 end interface

@@ -55,14 +55,14 @@ subroutine crkucv()
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
 !
-    integer :: ibid, ier, icompt, iret, numini, numfin
-    integer :: n1, nis, nbinst, nbval, nume, j
-    integer :: iad, jinst, jchin, jchout
-    integer :: nbv(1), jrefe
-    integer :: jcpt, nbr, ivmx, k, iocc, nboini
-    integer :: tnum(1)
-    integer :: nbordr1, nbordr2, numei
-    integer :: lmat, lma2, nr, neq
+    integer(kind=8) :: ibid, ier, icompt, iret, numini, numfin
+    integer(kind=8) :: n1, nis, nbinst, nbval, nume, j
+    integer(kind=8) :: iad, jinst, jchin, jchout
+    integer(kind=8) :: nbv(1), jrefe
+    integer(kind=8) :: jcpt, nbr, ivmx, k, iocc, nboini
+    integer(kind=8) :: tnum(1)
+    integer(kind=8) :: nbordr1, nbordr2, numei
+    integer(kind=8) :: lmat, lma2, nr, neq
 !
     real(kind=8) :: rbid, tps, prec
     complex(kind=8) :: cbid

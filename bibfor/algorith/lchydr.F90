@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,11 +22,11 @@ subroutine lchydr(a, h)
 !       IN  A      :  TENSEUR
 !       OUT H      :  PARTIE SPHERIQUE DE A    H = 1/3 TR(A)
 !       ----------------------------------------------------------------
-    integer :: n, nd
+    integer(kind=8) :: n, nd
     real(kind=8) :: a(6), ta, h
     common/tdim/n, nd
 !-----------------------------------------------------------------------
-    integer :: i
+    integer(kind=8) :: i
 !       ----------------------------------------------------------------
     ta = 0.d0
     do i = 1, nd

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -41,23 +41,23 @@ interface
     subroutine getIntVect(vect, x1, x2, x3, x4, x5,&
                       x6, x7, x8, x9, x10, x11, x12, x13, x14,&
                       x15, x16, x17)
-        integer, intent(in) :: vect(*)
-        integer, intent(out) :: x1
-        integer, optional, intent(out) :: x2
-        integer, optional, intent(out) :: x3
-        integer, optional, intent(out) :: x4
-        integer, optional, intent(out) :: x5
-        integer, optional, intent(out) :: x6
-        integer, optional, intent(out) :: x7
-        integer, optional, intent(out) :: x8
-        integer, optional, intent(out) :: x9
-        integer, optional, intent(out) :: x10
-        integer, optional, intent(out) :: x11
-        integer, optional, intent(out) :: x12
-        integer, optional, intent(out) :: x13
-        integer, optional, intent(out) :: x14
-        integer, optional, intent(out) :: x15
-        integer, optional, intent(out) :: x16
-        integer, optional, intent(out) :: x17
+        integer(kind=8), intent(in) :: vect(*)
+        integer(kind=8), intent(out) :: x1
+        integer(kind=8), optional, intent(out) :: x2
+        integer(kind=8), optional, intent(out) :: x3
+        integer(kind=8), optional, intent(out) :: x4
+        integer(kind=8), optional, intent(out) :: x5
+        integer(kind=8), optional, intent(out) :: x6
+        integer(kind=8), optional, intent(out) :: x7
+        integer(kind=8), optional, intent(out) :: x8
+        integer(kind=8), optional, intent(out) :: x9
+        integer(kind=8), optional, intent(out) :: x10
+        integer(kind=8), optional, intent(out) :: x11
+        integer(kind=8), optional, intent(out) :: x12
+        integer(kind=8), optional, intent(out) :: x13
+        integer(kind=8), optional, intent(out) :: x14
+        integer(kind=8), optional, intent(out) :: x15
+        integer(kind=8), optional, intent(out) :: x16
+        integer(kind=8), optional, intent(out) :: x17
     end subroutine getIntVect
 end interface

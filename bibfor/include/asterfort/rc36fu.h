@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2017 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -21,9 +21,9 @@
 interface
     subroutine rc36fu(nbsigr, nocc, situ, saltij, nommat,&
                       ug, factus)
-        integer :: nbsigr
-        integer :: nocc(*)
-        integer :: situ(*)
+        integer(kind=8) :: nbsigr
+        integer(kind=8) :: nocc(*)
+        integer(kind=8) :: situ(*)
         real(kind=8) :: saltij(*)
         character(len=*) :: nommat
         real(kind=8) :: ug
