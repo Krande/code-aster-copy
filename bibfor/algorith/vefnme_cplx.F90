@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -19,7 +19,7 @@
 !
 subroutine vefnme_cplx(option, base, model, mate, carele, &
                        compor, partps, nh, ligrelz, varicomz, &
-                       sigmaz, strxz, deplz, depl_incrz, vecelz)
+                       sigmazPrev, sigmaz, strxz, deplz, depl_incrz, vecelz)
 !
     implicit none
 !
@@ -55,7 +55,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     character(len=*), intent(in) :: ligrelz
     integer, intent(in) :: nh
     character(len=19), intent(in) :: compor
-    character(len=*), intent(in) :: sigmaz
+    character(len=*), intent(in) :: sigmazPrev, sigmaz
     character(len=*), intent(in) :: varicomz
     character(len=*), intent(in) :: strxz
     character(len=*), intent(in) :: deplz
@@ -90,7 +90,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer, parameter :: nbout = 1
-    integer, parameter :: nbin = 32
+    integer, parameter :: nbin = 33
     character(len=8) :: lpaout(nbout), lpain(nbin)
     character(len=19) :: lchout(nbout), lchin(nbin)
 !
@@ -104,7 +104,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     real(kind=8) :: instm, instp
     character(len=19) :: pintto, cnseto, heavto, loncha, basloc, lsn, lst, stano
     character(len=19) :: pmilto, fissno, hea_no
-    character(len=19) :: sigma, varicom, strx
+    character(len=19) :: sigmaPrev, sigma, varicom, strx
     character(len=19) :: depl, depl_incr
     character(len=19) :: chdecr(nbin), chdeci(nbin), ch19, chr, chi, ch1(nbout), ch2(nbout)
     aster_logical :: debug, lcmplx, lsspt
@@ -118,6 +118,7 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
 ! - Initializations
 !
     carael = carele(1:8)
+    sigmaPrev = sigmazPrev
     sigma = sigmaz
     varicom = varicomz
     strx = strxz
@@ -231,6 +232,8 @@ subroutine vefnme_cplx(option, base, model, mate, carele, &
     lchin(18) = chcara(16)
     lpain(19) = 'PFIBRES'
     lchin(19) = chcara(17)
+    lpain(33) = 'PCONTGM'
+    lchin(33) = sigmaPrev
 !
 ! --- CADRE X-FEM
 !

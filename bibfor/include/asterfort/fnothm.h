@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -25,7 +25,7 @@ interface
                       jv_poids , jv_poids2,&
                       jv_func  , jv_func2 , jv_dfunc , jv_dfunc2,&
                       nddls    , nddlm    , nddl_meca, nddl_p1  , nddl_p2, nddl_2nd, &
-                      congem   , b        , r        , vectu )
+                      congem   , congep   , b        , r        , vectu )
         use THM_type
         type(THM_DS), intent(inout) :: ds_thm
         integer, intent(in) :: jv_mater
@@ -42,7 +42,7 @@ interface
         integer, intent(in) :: jv_func, jv_func2, jv_dfunc, jv_dfunc2
         integer, intent(in) :: nddls, nddlm
         integer, intent(in) :: nddl_meca, nddl_p1, nddl_p2, nddl_2nd
-        real(kind=8), intent(inout) :: congem(1:npi*dimcon)
+        real(kind=8), intent(inout) :: congem(1:npi*dimcon), congep(1:npi*dimcon)
         real(kind=8), intent(inout) :: b(dimdef, dimuel)
         real(kind=8), intent(inout) :: r(1:dimdef+1)
         real(kind=8), intent(out) :: vectu(dimuel)

@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -22,7 +22,7 @@ interface
                       jv_mater, ndim  , fnoevo,&
                       mecani  , press1, press2  , tempe ,second, &
                       dimdef  , dimcon, dt      , congem,&
-                      r)
+                      congep  , r)
         use THM_type
         type(THM_DS), intent(in) :: ds_thm
         integer, intent(in) :: jv_mater
@@ -32,7 +32,7 @@ interface
         integer, intent(in) :: second(5)
         integer, intent(in) :: dimdef, dimcon
         real(kind=8), intent(in) :: dt
-        real(kind=8), intent(inout) :: congem(dimcon)
+        real(kind=8), intent(inout) :: congem(dimcon), congep(dimcon)
         real(kind=8), intent(out) :: r(dimdef+1)
     end subroutine fonoda
 end interface
