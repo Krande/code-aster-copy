@@ -70,9 +70,9 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
     real(kind=8), intent(out) :: sigp(nsig)
     real(kind=8), intent(out) :: vip(nvi)
     integer(kind=8), intent(in) :: ndsde
-    real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsidep_loc), &
-                                        merge(neps, 6, nsig*neps .eq. ndsidep_loc))
-    integer, intent(out) :: codret
+    real(kind=8), intent(out) :: dsidep(merge(nsig, 6, nsig*neps .eq. ndsde), &
+                                        merge(neps, 6, nsig*neps .eq. ndsde))
+    integer(kind=8), intent(out) :: codret
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -113,9 +113,9 @@ subroutine lc9058(BEHinteg, fami, kpg, ksp, ndim, &
     integer(kind=8) :: i, j
     integer(kind=8) :: nstran, nforc, nstatv, nmatr
     integer(kind=8), parameter :: s0 = 0, s1 = 1
-    real(kind=8) :: dstran(neps), stran(neps)
-    real(kind=8) :: dsidepMGIS(merge(nsig, 6, nsig*neps .eq. ndsidep_loc)* &
-                               merge(neps, 6, nsig*neps .eq. ndsidep_loc))
+    real(kind=8) :: dstran(ndim), stran(ndim)
+    real(kind=8) :: dsidepMGIS(merge(nsig, 6, nsig*neps .eq. ndsde)* &
+                               merge(neps, 6, nsig*neps .eq. ndsde))
     real(kind=8) :: dtime, pnewdt, rdt
     character(len=16) :: rela_comp, defo_comp, extern_addr
     aster_logical :: lGreenLagr, lCZM, lGradVari
