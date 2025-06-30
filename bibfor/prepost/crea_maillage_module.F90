@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -3048,8 +3048,8 @@ contains
                         coor_diff = abs(this%nodes(v_nkeep(i_node))%coor- &
                                         this%nodes(v_nkeep(j_node))%coor)
                         if (maxval(coor_diff) < tole_comp) then
-                                !! Verif pas de noeud double
-                            ASSERT(ASTER_FALSE)
+                            !! Verif pas de noeud double
+                            call utmess('F', 'MAILLAGE1_4')
                         end if
                     end do
                 end do
