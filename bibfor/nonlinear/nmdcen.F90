@@ -47,7 +47,7 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
     integer(kind=8) :: ipas, nbnew
     character(len=24) :: tpsdin
-    integer(kind=8) :: jnivtp
+    integer(kind=8) :: jnivtp, nivini
 !
 ! ----------------------------------------------------------------------
 !
@@ -68,14 +68,15 @@ subroutine nmdcen(sddisc, numins, nbini, nbins)
 !
 ! --- RECOPIE DE LA PARTIE HAUTE DE LA LISTE
 !
-    do ipas = nbnew, numins+nbins, -1
-        zi(jnivtp-1+ipas) = zi(jnivtp-1+ipas-nbins)
+    do ipas = nbini, numins+1, -1
+        zi(jnivtp-1+ipas+nbins) = zi(jnivtp-1+ipas)
     end do
 !
 ! --- INCREMENTATION DU NIVEAU SUR LA PARTIE DECOUPEE
 !
-    do ipas = numins, numins+nbins-1
-        zi(jnivtp-1+ipas) = zi(jnivtp-1+ipas)+1
+    nivini = zi(jnivtp-1+numins)
+    do ipas = numins, numins+nbins
+        zi(jnivtp-1+ipas) = nivini+1
     end do
 !
     call jedema()

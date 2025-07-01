@@ -71,7 +71,7 @@ subroutine dflldc(keywf, i_fail, dtmin, event_typek, &
 !
     subd_methode = ' '
     subd_auto = ' '
-    subd_niveau = 0
+    subd_niveau = -1
     subd_pas = 0
     subd_pas_mini = 0.d0
     subd_inst = 0.d0

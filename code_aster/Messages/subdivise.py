@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -49,7 +49,9 @@ Pour activer la découpe du pas de temps, utilisez la commande DEFI_LIST_INST.""
 Les incréments de temps au delà de cet instant sont tous plus petits que SUBD_INST."""
     ),
     16: _("""Le pas de temps minimum %(r1)19.12e (SUBD_PAS_MINI) est atteint."""),
-    17: _("""Le nombre maximal %(i1)d de niveaux de subdivision est atteint."""),
+    17: _(
+        """Le nombre maximal autorisé SUBD_NIVEAU=%(i1)d de niveaux de subdivision est dépassé."""
+    ),
     18: _(
         """La découpe sera maintenue au delà de l'instant %(r1)19.12e, pendant une durée de %(r2)19.12e."""
     ),

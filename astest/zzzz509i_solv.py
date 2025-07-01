@@ -25,7 +25,9 @@ test = CA.TestCase()
 
 DEBUT(CODE="OUI")
 
-with test.assertRaisesRegex(CA.AsterError, "niveaux.*subdivision.*atteint"):
+with test.assertRaisesRegex(
+    CA.AsterError, "Le nombre maximal autorisé SUBD_NIVEAU.*de niveaux de subdivision est dépassé."
+):
     MECA_NON_LINE(
         INCREMENT=_F(LIST_INST=times, INST_FIN=time_inter),
         MODELE=model,
