@@ -43,8 +43,6 @@ MAIL = DEFI_GROUP(
         _F(GROUP_MA="droitem", NOM="droiten"),
         _F(GROUP_MA="pointgm", NOM="pointgn"),
         _F(GROUP_MA="restm", NOM="restn"),
-        _F(GROUP_MA="sifg"),
-        _F(GROUP_MA="sifd"),
     ),
     MAILLAGE=MAIL,
 )

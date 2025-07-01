@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -385,7 +385,10 @@ def cleanRuptureMeshwithCreatedGroup(__mail_1):
     ## Input : __mail_1 : sliding zone mesh
 
     __mail_1 = DEFI_GROUP(
-        reuse=__mail_1, MAILLAGE=__mail_1, DETR_GROUP_MA=_F(NOM=("RUPTURE", "ALL"))
+        reuse=__mail_1,
+        MAILLAGE=__mail_1,
+        DETR_GROUP_MA=_F(NOM=("RUPTURE", "ALL")),
+        DETR_GROUP_NO=_F(NOM=("RUPTURE")),
     )
     __mail_1 = DEFI_GROUP(
         reuse=__mail_1,
