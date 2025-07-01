@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -155,7 +155,7 @@ class THER_XT_HEXA8(Element):
                 (SP.PINSTR, CTEMPSR),
                 (OP.MASS_THER.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.MASS_THER.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER(
             te=571,
@@ -173,7 +173,7 @@ class THER_XT_HEXA8(Element):
                 (SP.PINSTR, CTEMPSR),
                 (OP.RIGI_THER.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((OP.RIGI_THER.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_PARO_F(
             te=594,
@@ -190,7 +190,7 @@ class THER_XT_HEXA8(Element):
                 (OP.RIGI_THER_PARO_F.PSTANO, STANO_I),
                 (SP.PINSTR, CTEMPSR),
             ),
-            para_out=((OP.RIGI_THER_PARO_F.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.RIGI_THER_PARO_R(
             te=594,
@@ -207,7 +207,7 @@ class THER_XT_HEXA8(Element):
                 (OP.RIGI_THER_PARO_R.PSTANO, STANO_I),
                 (SP.PINSTR, CTEMPSR),
             ),
-            para_out=((OP.RIGI_THER_PARO_R.PMATTTR, MMATTTR),),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.TEMP_ELGA(
             te=578,

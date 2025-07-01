@@ -66,10 +66,6 @@ PLSN = InputParameter(phys=PHY.NEUT_R)
 
 PLST = InputParameter(phys=PHY.NEUT_R)
 
-
-PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
-
-
 MASS_THER = Option(
     para_in=(
         PBASLOR,
@@ -88,6 +84,6 @@ MASS_THER = Option(
         PVARCPR,
         PCHHOBS,
     ),
-    para_out=(PMATTTR,),
+    para_out=(SP.PMATTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
 )

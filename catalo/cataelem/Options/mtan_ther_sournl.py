@@ -27,13 +27,9 @@ import cataelem.Commons.attributes as AT
 
 PCHHOBS = InputParameter(phys=PHY.N3600R, comment=""" HHO - coefficient base locale""")
 
-
-PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
-
-
 MTAN_THER_SOURNL = Option(
     para_in=(SP.PGEOMER, SP.PSOURNL, SP.PTEMPEI, SP.PINSTR, PCHHOBS),
-    para_out=(PMATTTR,),
+    para_out=(SP.PMATTTR,),
     condition=(CondCalcul("+", ((AT.PHENO, "TH"), (AT.BORD, "0"))),),
     comment="""  MTAN_THER_SOURNL :  """,
 )

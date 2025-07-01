@@ -1705,6 +1705,8 @@ PMASSINE = OutputParameter(phys=PHY.MASS_R, type="ELEM", comment="""""")
 
 PMATTTC = OutputParameter(phys=PHY.MPRE_C, type="RESL", comment="""""")
 
+PMATTTR = OutputParameter(phys=PHY.MTEM_R, type="RESL")
+
 PMATUN1 = OutputParameter(
     phys=PHY.MZNS_R,
     type="RESL",

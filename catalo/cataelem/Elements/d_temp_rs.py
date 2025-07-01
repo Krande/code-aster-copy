@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -88,9 +88,7 @@ for cmp in ("TEMP", "TEMP_INF", "TEMP_MIL", "TEMP_SUP", "E1", "H1"):
                 para_out=((SP.PVECTTR, MVECTTR),),
             ),
             OP.THER_DDLM_R(
-                te=330,
-                para_in=((SP.PDDLMUR, LC.MDDLMUR),),
-                para_out=((OP.THER_DDLM_R.PMATTTR, MMATTTR),),
+                te=330, para_in=((SP.PDDLMUR, LC.MDDLMUR),), para_out=((SP.PMATTTR, MMATTTR),)
             ),
         )
 

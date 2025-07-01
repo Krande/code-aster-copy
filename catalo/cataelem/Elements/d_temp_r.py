@@ -91,9 +91,7 @@ for cmp in ("TEMP", "TEMP_INF", "TEMP_MIL", "TEMP_SUP", "E1", "H1"):
                 para_out=((SP.PVECTTR, MVECTTR),),
             ),
             OP.THER_DDLM_R(
-                te=2,
-                para_in=((SP.PDDLMUR, LC.MDDLMUR),),
-                para_out=((OP.THER_DDLM_R.PMATTTR, MMATTTR),),
+                te=2, para_in=((SP.PDDLMUR, LC.MDDLMUR),), para_out=((SP.PMATTTR, MMATTTR),)
             ),
         )
 
