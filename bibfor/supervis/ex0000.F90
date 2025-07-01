@@ -118,7 +118,6 @@ subroutine ex0000(nuoper)
 #include "asterfort/op0134.h"
 #include "asterfort/op0136.h"
 #include "asterfort/op0137.h"
-#include "asterfort/op0139.h"
 #include "asterfort/op0140.h"
 #include "asterfort/op0141.h"
 #include "asterfort/op0142.h"
@@ -379,8 +378,6 @@ subroutine ex0000(nuoper)
         call op0136()
     case (137)
         call op0137()
-    case (139)
-        call op0139()
     case (140)
         call op0140()
     case (141)

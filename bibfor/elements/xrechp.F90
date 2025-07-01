@@ -60,7 +60,6 @@ subroutine xrechp(ndim, elrefp, nnop, igeom, itps, &
 #include "asterfort/lteatt.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
-#include "asterfort/xcalc_saut.h"
 #include "asterfort/xjacf2.h"
 #include "asterfort/xjacff.h"
 #include "asterfort/xxmmvd.h"

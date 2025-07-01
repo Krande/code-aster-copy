@@ -26,7 +26,6 @@ subroutine nmactp(ds_print, sddisc, sderro, ds_contact, &
 #include "asterf_types.h"
 #include "event_def.h"
 #include "asterfort/assert.h"
-#include "asterfort/isacti.h"
 #include "asterfort/nmacto.h"
 #include "asterfort/nmeceb.h"
 #include "asterfort/nmevac.h"

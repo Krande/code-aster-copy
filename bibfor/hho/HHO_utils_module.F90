@@ -32,7 +32,6 @@ module HHO_utils_module
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/symt46.h"
-#include "asterfort/getResuElem.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
