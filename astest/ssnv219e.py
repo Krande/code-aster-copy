@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2022 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -18,19 +18,35 @@
 # --------------------------------------------------------------------
 
 from code_aster.Commands import *
+import aster_core
+
 
 try:
     # Import du module de calcul symbolique Sympy
+    aster_core.matfpe(-1)
+
     import sympy
+
+    aster_core.matfpe(+1)
 
     sympy_available = True
 except ImportError:
     sympy_available = False
 
+# ================================================================================================
+# Definition des caracteristiques du materiau
+# ================================================================================================
+E = 1
+NU = 0.0
+
+# ================================================================================================
+# Mise en oeuvre de la Méthode des Solutions Manufacturées
+# ================================================================================================
+
+
 if sympy_available:
 
-    from code_aster.MacroCommands.Contrib import TensorModule
-    from code_aster.MacroCommands.Contrib import HookeTensor
+    from code_aster.MacroCommands.Contrib import TensorModule, HookeTensor
 
     X, Y, Z = sympy.symbols("X Y Z")
 
