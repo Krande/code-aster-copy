@@ -683,6 +683,7 @@ subroutine te0222(option, nomte)
                         eps, gonf, pres, sigl, energi)
             call tecach('NNO', 'PCONTGR', 'L', iret, iad=isigm)
             if (iret == 0) then
+                ! Option G / KJ : on écrase les contraintes élastiques recalculées
                 call jevech('PCONTGR', 'L', isigm)
                 do i = 1, 3
                     sigl(i) = zr(isigm+ncmp*(kp-1)+i-1)
