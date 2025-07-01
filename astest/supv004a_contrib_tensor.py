@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -17,9 +17,23 @@
 # along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 # --------------------------------------------------------------------
 
+import aster_core
+
 import unittest
 
 import numpy as NP
+
+try:
+    aster_core.matfpe(-1)
+    import sympy
+
+    aster_core.matfpe(+1)
+
+    X, Y, Z = sympy.symbols("X Y Z")
+    ASTER_HAVE_SYMPY = True
+except ImportError:
+    ASTER_HAVE_SYMPY = False
+
 
 from code_aster.MacroCommands.Contrib.TensorModule import (
     Tensor,
@@ -31,14 +45,6 @@ from code_aster.MacroCommands.Contrib.TensorModule import (
     laplacien,
 )
 from code_aster.MacroCommands.Contrib.HookeTensor import HookeOrthotropic
-
-try:
-    import sympy
-
-    X, Y, Z = sympy.symbols("X Y Z")
-    ASTER_HAVE_SYMPY = True
-except ImportError:
-    ASTER_HAVE_SYMPY = False
 
 
 class TensorUnitTest(unittest.TestCase):
