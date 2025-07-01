@@ -125,6 +125,7 @@ Enumeration of modelings.
         .value( "AXIS_INTERFACE_S", AXIS_INTERFACE_S )
         .value( "AXIS_JHMS", AXIS_JHMS )
         .value( "AXIS_JOINT", AXIS_JOINT )
+        .value( "AXIS_SECH", AXIS_SECH )
         .value( "AXIS_SI", AXIS_SI )
         .value( "AXIS_THH2D", AXIS_THH2D )
         .value( "AXIS_THH2MD", AXIS_THH2MD )

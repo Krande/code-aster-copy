@@ -3748,6 +3748,7 @@ TEMP_R = PhysicalQuantity(
         "DTZ",
         "HHO_CT[10]",
         "HHO_FT[6]",
+        "SECH",
     ),
     comment="""  TEMP_R Type:R Temperature inconnue du phenomene thermique
        TEMP : temperature
@@ -3763,6 +3764,7 @@ TEMP_R = PhysicalQuantity(
        DTZ : derivee de la temperature selon z (n'est pas un ddl)
        HHO_CT : degres de liberté HHO: 1, X, Y, Z, X2, Y2, Z2 (X, Y, Z cell)
        HHO_FT : degres de liberté HHO: 1, X, Y, X2, Y2, XY (X, Y face)
+       SECH : séchage ou concentration en eau
 """,
 )
 

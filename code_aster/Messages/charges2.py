@@ -27,7 +27,7 @@ Le modèle sur lequel est défini le chargement n'est pas cohérent avec le mod�
     ),
     3: _(
         """
- La fonction %(k1)s fournie à l'opérande FLUN de FLUX_NL doit avoir le paramètre TEMP.
+ La fonction %(k1)s fournie à l'opérande FLUN de FLUX_NL doit avoir le paramètre TEMP ou le paramètre SECH.
 """
     ),
     4: _(

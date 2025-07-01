@@ -3,7 +3,7 @@
  * @brief Initialisation des modelisations autorisees pour chaque physique
  * @author Nicolas Sellenet
  * @section LICENCE
- *   Copyright (C) 1991 - 2024  EDF R&D                www.code-aster.org
+ *   Copyright (C) 1991 - 2025  EDF R&D                www.code-aster.org
  *
  *   This file is part of Code_Aster.
  *
@@ -115,6 +115,7 @@ const char *const ModelingNames[nbModelings] = {
     "AXIS_INTERFACE_S",
     "AXIS_JHMS",
     "AXIS_JOINT",
+    "AXIS_SECH",
     "AXIS_SI",
     "AXIS_THH2D",
     "AXIS_THH2MD",
@@ -405,7 +406,7 @@ const Modelings MechanicsModelings[nbModelingsMechanics] = { PlanarBar,
 
 const Modelings ThermalModelings[nbModelingsThermal] = {
     Tridimensional, DIAG_3D,    HHO_3D,     Axisymmetrical, AXIS_DIAG, AXIS_FOURIER, AXIS_HHO,
-    COQUE,          COQUE_AXIS, COQUE_PLAN, Planar,         PLAN_DIAG, PLAN_HHO
+    COQUE,          COQUE_AXIS, COQUE_PLAN, Planar,         PLAN_DIAG, PLAN_HHO,     AXIS_SECH
 };
 
 const Modelings AcousticModelings[nbModelingsAcoustic] = { Tridimensional,

@@ -5823,6 +5823,24 @@ phen.add(
 )
 
 phen.add(
+    "AXIS_SECH",
+    Modelisation(
+        dim=(2, 2),
+        code="AXH",
+        attrs=((AT.AXIS, "OUI"),),
+        elements=(
+            (MT.TRIA3, EL.SEAXTR3),
+            (MT.QUAD4, EL.SEAXQU4),
+            (MT.TRIA6, EL.SEAXTR6),
+            (MT.QUAD8, EL.SEAXQU8),
+            (MT.QUAD9, EL.SEAXQU9),
+            (MT.SEG2, EL.SEAXSE2),
+            (MT.SEG3, EL.SEAXSE3),
+        ),
+    ),
+)
+
+phen.add(
     "AXIS_FOURIER",
     Modelisation(
         dim=(2, 2),
