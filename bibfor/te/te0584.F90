@@ -15,66 +15,54 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0584(option, nomte)
+!
+    use pipeElem_module
+!
     implicit none
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
+!
+#include "asterfort/assert.h"
+#include "asterfort/pipeElem_type.h"
+#include "asterfort/tudege.h"
+#include "asterfort/tuepsi.h"
 #include "asterfort/tusief.h"
-#include "asterfort/utmess.h"
-    character(len=16) :: option, nomte
-! ......................................................................
+#include "jeveux.h"
 !
-!    - FONCTION REALISEE:  CALCUL DES OPTIONS EPSI_ELGA
-!                          ET SIEF_ELGA POUR UN TUYAU DROIT
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+    character(len=16), intent(in) :: option, nomte
 !
+! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: nbrddm
-    parameter(nbrddm=156)
-    real(kind=8) :: b(4, nbrddm)
-    real(kind=8) :: vin(nbrddm), mat(4, nbrddm)
-    real(kind=8) :: vtemp(nbrddm), pass(nbrddm, nbrddm)
-    integer(kind=8) :: m, nbrddl
-    integer(kind=8) :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
-    integer(kind=8) :: npg, ipoids, ivf
+! Elementary computation
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &
-                     jdfd2=jdfd2, jgano=jgano)
+! Elements: TUYAU_*
 !
+! Option: DEGE_ELGA, DEGE_ELNO, EPSI_ELGA, SIEF_ELGA
 !
-    m = 3
-    if (nomte .eq. 'MET6SEG3') m = 6
+! --------------------------------------------------------------------------------------------------
 !
-!     FORMULE GENERALE
+    integer(kind=8) :: nbNode, nbFourier, nbDof
 !
-    nbrddl = nno*(6+3+6*(m-1))
+! --------------------------------------------------------------------------------------------------
 !
-!     VERIFS PRAGMATIQUES
-!
-    if (nbrddl .gt. nbrddm) then
-        call utmess('F', 'ELEMENTS4_40')
-    end if
-    if (nomte .eq. 'MET3SEG3') then
-        if (nbrddl .ne. 63) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
-    else if (nomte .eq. 'MET6SEG3') then
-        if (nbrddl .ne. 117) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
-    else if (nomte .eq. 'MET3SEG4') then
-        if (nbrddl .ne. 84) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
+    call pipeGetDime(nomte, 'RIGI', &
+                     nbNode, nbFourier, nbDof)
+
+! - Compute options
+    if (option .eq. "SIEF_ELGA") then
+        call tusief(nbNode, nbFourier, nbDof)
+
+    elseif (option .eq. "EPSI_ELGA") then
+        call tuepsi(nbNode, nbFourier, nbDof)
+
+    elseif (option .eq. "DEGE_ELGA") then
+        call tudege(ASTER_TRUE, nbNode, nbFourier, nbDof)
+
+    elseif (option .eq. "DEGE_ELNO") then
+        call tudege(ASTER_FALSE, nbNode, nbFourier, nbDof)
+
     else
-        call utmess('F', 'ELEMENTS4_42')
+        ASSERT(ASTER_FALSE)
     end if
 !
-    call tusief(option, nomte, nbrddl, b, vin, &
-                mat, pass, vtemp)
 end subroutine

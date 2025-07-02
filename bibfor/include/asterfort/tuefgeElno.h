@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine tutemp(nbNode, nbDof, nbFourier)
+    subroutine tuefgeElno(lLine, nbNode, nbDof, nbFourier)
+        aster_logical, intent(in) :: lLine
         integer(kind=8), intent(in) :: nbNode, nbDof, nbFourier
-    end subroutine tutemp
+    end subroutine tuefgeElno
 end interface

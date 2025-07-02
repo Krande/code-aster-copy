@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine tutemp(nbNode, nbDof, nbFourier)
-        integer(kind=8), intent(in) :: nbNode, nbDof, nbFourier
-    end subroutine tutemp
+    subroutine tudege(lElga, nbNode, nbFourier, nbDof)
+        aster_logical, intent(in) :: lElga
+        integer(kind=8), intent(in) :: nbNode, nbFourier, nbDof
+    end subroutine tudege
 end interface

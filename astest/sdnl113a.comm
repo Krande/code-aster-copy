@@ -389,7 +389,7 @@ TEST_RESU(
             RESULTAT=RESULT,
             NOM_CHAM="REAC_NODA",
             NOM_CMP="DX",
-            VALE_CALC=4037.9368500007236,
+            VALE_CALC=4037.99537080224,
         ),
         _F(
             GROUP_NO="A",

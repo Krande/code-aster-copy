@@ -15,8 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=W1403
-! Empty for E1009 error message
 !
 ! ==================================================================================================
 !
@@ -26,13 +24,28 @@
 !
 module pipeElem_type
 ! ==================================================================================================
+    use beamElem_type
 ! ==================================================================================================
     implicit none
 ! ==================================================================================================
     private
 #include "asterf_types.h"
 #include "asterfort/pipeElem_type.h"
+! ==================================================================================================
+! Type: properties of pipe element
+! ==================================================================================================
+    type pipeElem_Prop
+        integer(kind=8) :: nbNode = 0
+! ----- Fourier modes
+        integer(kind=8) :: nbFourier = 0
+! ----- Properties of beam
+        type(beamElem_Prop) :: beamElem
+! ----- Global properties
+        aster_logical :: lModiMetric = ASTER_FALSE
+        integer(kind=8) :: pipeType = PIPE_TYPE_UNDEF
+    end type pipeElem_Prop
 !===================================================================================================
+    public :: pipeElem_Prop
 contains
 !===================================================================================================
 end module pipeElem_type

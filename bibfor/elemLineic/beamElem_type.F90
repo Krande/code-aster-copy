@@ -28,6 +28,7 @@ module beamElem_type
 ! ==================================================================================================
     private
 #include "asterf_types.h"
+#include "asterfort/beamElem_type.h"
 ! ==================================================================================================
 ! Type: properties of pipe section
 ! ==================================================================================================
@@ -38,8 +39,28 @@ module beamElem_type
         real(kind=8) :: radiusMoy = 0.d0
         real(kind=8) :: area = 0.d0
     end type sectPipe_Prop
+! ==================================================================================================
+! Type: properties of beam
+! ==================================================================================================
+    type beamElem_Prop
+        integer(kind=8) :: nbNode = 0
+        real(kind=8) :: elemLength = 0.d0
+! ----- Main properties: section and beam
+        integer(kind=8) :: sectType = BEAM_SECT_UNDEF
+        integer(kind=8) :: beamType = BEAM_TYPE_UNDEF
+! ----- Properties of section
+        type(sectPipe_Prop) :: sectPipe
+! ----- Properties of elbow
+        real(kind=8) :: thetaElbow = 0.d0
+        real(kind=8) :: radiusElbow = 0.d0
+        real(kind=8) :: omegaElbow = 0.d0
+        real(kind=8) :: tk(BEAM_MAX_NODE) = 0.d0
+! ----- Local basis matrix for cell
+        real(kind=8) :: pglCell(3, 3) = 0.d0
+        real(kind=8) :: pgl(3, 3, BEAM_MAX_NODE) = 0.d0
+    end type beamElem_Prop
 !===================================================================================================
-    public :: sectPipe_Prop
+    public :: beamElem_Prop, sectPipe_Prop
 contains
 !===================================================================================================
 end module beamElem_type

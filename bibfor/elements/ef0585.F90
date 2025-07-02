@@ -15,62 +15,42 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine ef0585(nomte)
+!
+    use pipeElem_module
     implicit none
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
-#include "asterfort/tuforc.h"
-#include "asterfort/utmess.h"
 !
-    character(len=16) :: nomte
-!     CALCUL DE EFGE_ELNO
-!     ------------------------------------------------------------------
+#include "asterfort/assert.h"
+#include "asterfort/pipeElem_type.h"
+#include "asterfort/tuefgeElno.h"
 !
-    integer(kind=8) :: nbrddm
-    parameter(nbrddm=156)
-    real(kind=8) :: b(4, nbrddm), f(nbrddm)
-    real(kind=8) :: vin(nbrddm), vout(nbrddm), mat(nbrddm, 4)
-    real(kind=8) :: vtemp(nbrddm), pass(nbrddm, nbrddm)
+    character(len=16), intent(in) :: nomte
 !
-!     CHARACTER*32       JEXNUM , JEXNOM , JEXR8 , JEXATR
+! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
-    integer(kind=8) :: npg, ipoids, ivf
-    integer(kind=8) :: m, nbrddl
+! Elementary computation
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &
-                     jdfd2=jdfd2, jgano=jgano)
+! Elements: TUYAU
 !
-    m = 3
-    if (nomte .eq. 'MET6SEG3') m = 6
+! Option: EFGE_ELNO (linear case)
 !
-!     FORMULE GENERALE
+! --------------------------------------------------------------------------------------------------
 !
-    nbrddl = nno*(6+3+6*(m-1))
+! In  nomte            : type of finite element
 !
-!     VERIFS PRAGMATIQUES
+! --------------------------------------------------------------------------------------------------
 !
-    if (nbrddl .gt. nbrddm) then
-        call utmess('F', 'ELEMENTS4_40')
-    end if
-    if (nomte .eq. 'MET3SEG3') then
-        if (nbrddl .ne. 63) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
-    else if (nomte .eq. 'MET6SEG3') then
-        if (nbrddl .ne. 117) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
-    else if (nomte .eq. 'MET3SEG4') then
-        if (nbrddl .ne. 84) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
-    else
-        call utmess('F', 'ELEMENTS4_42')
-    end if
+    character(len=4), parameter :: fami = "RIGI"
+    aster_logical, parameter :: lLine = ASTER_TRUE
+    integer(kind=8) :: nbFourier, nbDof, nbNode
 !
-    call tuforc('EFGE_ELNO', nomte, nbrddl, b, f, &
-                vin, vout, mat, pass, vtemp)
+! --------------------------------------------------------------------------------------------------
+!
+    call pipeGetDime(nomte, fami, &
+                     nbNode, nbFourier, nbDof)
+
+! - Compute option
+    call tuefgeElno(lLine, nbNode, nbDof, nbFourier)
+!
 end subroutine

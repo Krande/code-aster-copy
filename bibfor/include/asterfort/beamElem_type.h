@@ -16,8 +16,23 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-interface
-    subroutine tutemp(nbNode, nbDof, nbFourier)
-        integer(kind=8), intent(in) :: nbNode, nbDof, nbFourier
-    end subroutine tutemp
-end interface
+! Type of beam
+#define BEAM_TYPE_UNDEF        -1
+#define BEAM_TYPE_STRAIGHT     0
+#define BEAM_TYPE_ELBOW        1
+
+! Type of section
+#define BEAM_SECT_UNDEF        -1
+#define BEAM_SECT_PIPE         0
+
+! Discretization
+#define BEAM_MAX_NODE         4
+
+! Index of DOF
+#define BEAM_NBDOF            6
+#define BEAM_DOF_DX           1
+#define BEAM_DOF_DY           2
+#define BEAM_DOF_DZ           3
+#define BEAM_DOF_DRX          4
+#define BEAM_DOF_DRY          5
+#define BEAM_DOF_DRZ          6

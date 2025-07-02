@@ -71,49 +71,9 @@ cata_msg = {
  option  %(k1)s  : incompatibilité des deux champs d entrée
 """
     ),
-    40: _(
-        """
- le nombre de ddl est trop grand
-"""
-    ),
-    41: _(
-        """
- le nombre de ddl est faux
-"""
-    ),
-    42: _(
-        """
- nom de type élément inattendu
-"""
-    ),
-    43: _(
-        """
- comportement. élastique inexistant
-"""
-    ),
-    44: _(
-        """
- l'option " %(k1)s " est interdite pour les tuyaux
-"""
-    ),
-    45: _(
-        """
- l'option " %(k1)s " en repère local est interdite pour les tuyaux : utiliser le repère global
-"""
-    ),
-    46: _(
-        """
- le nombre de couches et de secteurs doivent être supérieurs a 0
-"""
-    ),
     48: _(
         """
  champ  %(k1)s  non traité, on abandonne
-"""
-    ),
-    49: _(
-        """
- l'option " %(k1)s " est non prévue
 """
     ),
     51: _(

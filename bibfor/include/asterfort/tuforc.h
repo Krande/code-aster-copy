@@ -15,21 +15,10 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine tuforc(option, nomte, nbrddl, b, f,&
-                      vin, vout, mat, pass, vtemp)
-        integer(kind=8) :: nbrddl
-        character(len=*) :: option
-        character(len=16) :: nomte
-        real(kind=8) :: b(4, nbrddl)
-        real(kind=8) :: f(nbrddl)
-        real(kind=8) :: vin(nbrddl)
-        real(kind=8) :: vout(nbrddl)
-        real(kind=8) :: mat(nbrddl, 4)
-        real(kind=8) :: pass(nbrddl, nbrddl)
-        real(kind=8) :: vtemp(nbrddl)
+    subroutine tuforc(option, nbNode, nbDof, nbFourier)
+        character(len=16), intent(in) :: option
+        integer(kind=8), intent(in) :: nbNode, nbDof, nbFourier
     end subroutine tuforc
 end interface

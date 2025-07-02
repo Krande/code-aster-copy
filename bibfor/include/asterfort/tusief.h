@@ -15,19 +15,9 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
-!
 !
 interface
-    subroutine tusief(option, nomte, nbrddl, b, vin,&
-                      mat, pass, vtemp)
-        integer(kind=8) :: nbrddl
-        character(len=16) :: option
-        character(len=16) :: nomte
-        real(kind=8) :: b(4, nbrddl)
-        real(kind=8) :: vin(nbrddl)
-        real(kind=8) :: mat(4, nbrddl)
-        real(kind=8) :: pass(nbrddl, nbrddl)
-        real(kind=8) :: vtemp(nbrddl)
+    subroutine tusief(nbNode, nbFourier, nbDof)
+        integer(kind=8), intent(in) :: nbNode, nbFourier, nbDof
     end subroutine tusief
 end interface

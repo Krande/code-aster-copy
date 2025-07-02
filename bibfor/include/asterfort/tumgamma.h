@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine tutemp(nbNode, nbDof, nbFourier)
-        integer(kind=8), intent(in) :: nbNode, nbDof, nbFourier
-    end subroutine tutemp
+    subroutine tumgamma(nbNode, nbFourier, nbDof)
+        integer(kind=8), intent(in) :: nbNode, nbFourier, nbDof
+    end subroutine tumgamma
 end interface

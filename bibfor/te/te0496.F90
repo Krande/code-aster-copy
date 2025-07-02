@@ -32,13 +32,14 @@ subroutine te0496(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
+#include "asterfort/lteatt.h"
 !
     character(len=16) :: option, nomte
 !
 ! --------------------------------------------------------------------------------------------------
 !
 !
-    integer(kind=8) :: nbcou, npgh, nbsect, nbfibr, nbvari, jcompo, jdcel, jnbsp
+    integer(kind=8) :: nbLayer, npgh, nbSect, nbFibr, nbvari, jcompo, jdcel, jnbsp
     integer(kind=8) :: itab(2), iret
 !
 ! --------------------------------------------------------------------------------------------------
@@ -68,37 +69,36 @@ subroutine te0496(option, nomte)
 !
 !   Cas des éléments "coque épaisse" (multi-couche)
     if ((nomte .eq. 'MEC3QU9H') .or. (nomte .eq. 'MEC3TR7H') .or. (nomte .eq. 'MECXSE3')) then
-        nbcou = zi(jnbsp-1+1)
+        nbLayer = zi(jnbsp-1+1)
         npgh = 3
-        zi(jdcel-1+1) = npgh*nbcou
+        zi(jdcel-1+1) = npgh*nbLayer
 !
 !   Cas des éléments "DKT"
     else if ((nomte .eq. 'MEDKQU4') .or. (nomte .eq. 'MEDKTR3') .or. &
              (nomte .eq. 'MEDSQU4') .or. (nomte .eq. 'MEDSTR3') .or. &
              (nomte .eq. 'MEQ4QU4') .or. (nomte .eq. 'MET3TR3')) then
-        nbcou = zi(jnbsp-1+1)
+        nbLayer = zi(jnbsp-1+1)
         npgh = 3
-        zi(jdcel-1+1) = npgh*nbcou
-!
-!   Cas des éléments "TUYAU" :
-    else if ((nomte .eq. 'MET3SEG3') .or. (nomte .eq. 'MET6SEG3') .or. &
-             (nomte .eq. 'MET3SEG4')) then
-        nbcou = zi(jnbsp-1+1)
-        nbsect = zi(jnbsp-1+2)
-        zi(jdcel-1+1) = (2*nbsect+1)*(2*nbcou+1)
+        zi(jdcel-1+1) = npgh*nbLayer
+
+!   Cas des éléments "TUYAU"
+    else if (lteatt('TUYAU', 'OUI')) then
+        nbLayer = zi(jnbsp-1+1)
+        nbSect = zi(jnbsp-1+2)
+        zi(jdcel-1+1) = (2*nbSect+1)*(2*nbLayer+1)
 !
 !   Cas des éléments de poutre "multi-fibres"
     else if (nomte .eq. 'MECA_POU_D_EM') then
-        nbfibr = zi(jnbsp-1+1)
-        zi(jdcel-1+1) = nbfibr
+        nbFibr = zi(jnbsp-1+1)
+        zi(jdcel-1+1) = nbFibr
 !
     else if (nomte .eq. 'MECA_POU_D_TGM') then
-        nbfibr = zi(jnbsp-1+1)
-        zi(jdcel-1+1) = nbfibr
+        nbFibr = zi(jnbsp-1+1)
+        zi(jdcel-1+1) = nbFibr
 !
     else if (nomte .eq. 'MECA_POU_D_SQUE') then
-        nbfibr = zi(jnbsp-1+1)
-        zi(jdcel-1+1) = nbfibr
+        nbFibr = zi(jnbsp-1+1)
+        zi(jdcel-1+1) = nbFibr
     end if
 !
 999 continue

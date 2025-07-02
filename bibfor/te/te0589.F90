@@ -15,64 +15,38 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-
+!
 subroutine te0589(option, nomte)
+!
+    use pipeElem_module
+!
     implicit none
-#include "jeveux.h"
-#include "asterfort/elrefe_info.h"
+!
+#include "asterfort/assert.h"
+#include "asterfort/pipeElem_type.h"
 #include "asterfort/tutemp.h"
-#include "asterfort/utmess.h"
-    character(len=16) :: option, nomte
-! ......................................................................
+#include "jeveux.h"
 !
-!    - FONCTION REALISEE:  CALCUL DU SECOND MEMBRE : TRAVAIL DE LA
-!                          DILATATION THERMIQUE
+    character(len=16), intent(in) :: option, nomte
 !
-!    - ARGUMENTS:
-!        DONNEES:      OPTION       -->  OPTION DE CALCUL
-!                      NOMTE        -->  NOM DU TYPE ELEMENT
-! ......................................................................
+! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8) :: nbrddm, npg, ipoids, ivf
-    parameter(nbrddm=156)
-    integer(kind=8) :: ndim, nnos, nno, jcoopg, idfdk, jdfd2, jgano
-    real(kind=8) :: f(nbrddm), b(4, nbrddm), vout(nbrddm)
-    real(kind=8) :: vtemp(nbrddm), pass(nbrddm, nbrddm)
-    integer(kind=8) :: m, nbrddl
+! Elementary computation
 !
-    call elrefe_info(fami='RIGI', ndim=ndim, nno=nno, nnos=nnos, &
-                     npg=npg, jpoids=ipoids, jcoopg=jcoopg, jvf=ivf, jdfde=idfdk, &
-                     jdfd2=jdfd2, jgano=jgano)
+! Elements: TUYAU_*
 !
+! Option: CHAR_MECA_TEMP_R
 !
-    m = 3
-    if (nomte .eq. 'MET6SEG3') m = 6
+! --------------------------------------------------------------------------------------------------
 !
-!     FORMULE GENERALE
+    integer(kind=8) :: nbNode, nbFourier, nbDof
 !
-    nbrddl = nno*(6+3+6*(m-1))
+! --------------------------------------------------------------------------------------------------
 !
-!     VERIFS PRAGMATIQUES
+    call pipeGetDime(nomte, 'RIGI', &
+                     nbNode, nbFourier, nbDof)
+
+! - Compute options
+    call tutemp(nbNode, nbDof, nbFourier)
 !
-    if (nbrddl .gt. nbrddm) then
-        call utmess('F', 'ELEMENTS4_40')
-    end if
-    if (nomte .eq. 'MET3SEG3') then
-        if (nbrddl .ne. 63) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
-    else if (nomte .eq. 'MET6SEG3') then
-        if (nbrddl .ne. 117) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
-    else if (nomte .eq. 'MET3SEG4') then
-        if (nbrddl .ne. 84) then
-            call utmess('F', 'ELEMENTS4_41')
-        end if
-    else
-        call utmess('F', 'ELEMENTS4_42')
-    end if
-!
-    call tutemp(option, nomte, nbrddl, f, b, &
-                vout, pass, vtemp)
 end subroutine

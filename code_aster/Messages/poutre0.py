@@ -186,6 +186,9 @@ Vous avez renseigné %(k2)s. Le GROUP_MA %(k1)s n'existe pas dans le maillage.
     49: _(
         """La méthode IMPLEX ne peut pas être utilisée avec la loi de comportement %(k1)s sur les éléments barre."""
     ),
+    50: _(
+        """On ne trouve pas de comportement élastique sur la poutre. C'est nécessaire pour récupérer la masse volumique."""
+    ),
     59: _(
         """Le coefficient de poisson n'est pas constant. Les éléments de poutre n'en tiennent pas compte."""
     ),
@@ -197,6 +200,16 @@ Vous avez renseigné %(k2)s. Le GROUP_MA %(k1)s n'existe pas dans le maillage.
         """Avec l'option GROT_GDEP, les coefficients de flexibilité ne sont pas pris en compte dans la matrice de raideur géométrique.
    Coefficient de flexibilité suivant y : %(r1)f
    Coefficient de flexibilité suivant z : %(r2)f"""
+    ),
+    81: _(
+        """
+Pour les éléments de poutre à section variable affine : seule une section rectangle plein est possible.
+"""
+    ),
+    82: _(
+        """
+Pour les éléments de poutre à section variable homothétique : l'aire initiale est nulle.
+"""
     ),
     90: _(
         """Le seul comportement élastique valide est ELAS pour les éléments de poutre squelette."""

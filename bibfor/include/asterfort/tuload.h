@@ -17,7 +17,8 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine tutemp(nbNode, nbDof, nbFourier)
+    subroutine tuload(option, nbNode, nbDof, nbFourier)
+        character(len=16), intent(in) :: option
         integer(kind=8), intent(in) :: nbNode, nbDof, nbFourier
-    end subroutine tutemp
+    end subroutine tuload
 end interface
