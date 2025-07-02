@@ -738,12 +738,12 @@ class MECA_HEXA20(Element):
                 (OP.EPVC_ELGA.PVARCPR, LC.ZVARCPG),
                 (SP.PVARCRR, LC.ZVARCPG),
             ),
-            para_out=((OP.EPVC_ELGA.PDEFOPG, LC.EEPVARC),),
+            para_out=((OP.EPVC_ELGA.PDEFOPG, LC.EGVARC3D),),
         ),
         OP.EPVC_ELNO(
             te=4,
-            para_in=((OP.EPVC_ELNO.PDEFOPG, LC.EEPVARC),),
-            para_out=((SP.PDEFONO, LC.NEPVARC),),
+            para_in=((OP.EPVC_ELNO.PDEFOPG, LC.EGVARC3D),),
+            para_out=((SP.PDEFONO, LC.NVARC3D),),
         ),
         OP.ERME_ELEM(
             te=375,

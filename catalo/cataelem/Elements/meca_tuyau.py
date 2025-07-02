@@ -47,13 +47,6 @@ EDEFGPG = LocatedComponents(
 # Curvilinear coordinates (for SEG3)
 CABSCUR = LocatedComponents(phys=PHY.ABSC_R, type="ELEM", components=("ABSC[3]",))
 
-# For MINMAX
-EGAMIMA = LocatedComponents(
-    phys=PHY.SPMX_R,
-    type="ELGA",
-    location="RIGI",
-    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
-)
 
 # Local orientation for pipes
 CCAORIE = LocatedComponents(
@@ -458,7 +451,7 @@ class MET3SEG3(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, EGAMIMA), (SP.PNOMIMA, LC.ENOMIMA))),
+        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, LC.EGMINMAX), (SP.PNOMIMA, LC.NMINMAX))),
         OP.M_GAMMA(
             te=582,
             para_in=(

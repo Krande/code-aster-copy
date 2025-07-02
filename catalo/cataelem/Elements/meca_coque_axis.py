@@ -1,6 +1,6 @@
 # coding=utf-8
 # --------------------------------------------------------------------
-# Copyright (C) 1991 - 2024 - EDF R&D - www.code-aster.org
+# Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 # This file is part of code_aster.
 #
 # code_aster is free software: you can redistribute it and/or modify
@@ -172,14 +172,6 @@ EEFFRGR = LocatedComponents(
 
 EEFFRNR = LocatedComponents(
     phys=PHY.SIEF_R, type="ELNO", components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY")
-)
-
-
-EGAMIMA = LocatedComponents(
-    phys=PHY.SPMX_R,
-    type="ELGA",
-    location="RIGI",
-    components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS"),
 )
 
 
@@ -409,7 +401,7 @@ class MECXSE3(Element):
             ),
             para_out=((SP.PMATUUR, MMATUUR),),
         ),
-        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, EGAMIMA), (SP.PNOMIMA, LC.ENOMIMA))),
+        OP.MINMAX_SP(te=99, para_out=((SP.PGAMIMA, LC.EGMINMAX), (SP.PNOMIMA, LC.NMINMAX))),
         OP.M_GAMMA(
             te=226,
             para_in=(
