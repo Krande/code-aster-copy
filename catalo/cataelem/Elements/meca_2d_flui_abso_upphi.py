@@ -61,16 +61,6 @@ class MEFASE2(Element):
         OP.COOR_ELGA(
             te=478, para_in=((SP.PGEOMER, NGEOMER),), para_out=((OP.COOR_ELGA.PCOORPG, EGGEOP_R),)
         ),
-        OP.IMPE_ABSO(
-            te=99,
-            para_in=(
-                (SP.PGEOMER, NGEOMER),
-                (SP.PMATERC, LC.CMATERC),
-                (SP.PVITENT, DDL_MECA),
-                (SP.PVITPLU, DDL_MECA),
-            ),
-            para_out=((SP.PVECTUR, MVECTUR),),
-        ),
         OP.IMPE_MECA(
             te=148,
             para_in=(

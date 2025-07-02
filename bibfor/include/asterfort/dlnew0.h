@@ -18,24 +18,25 @@
 #include "asterf_types.h"
 !
 interface
-    subroutine dlnew0(result, force0, force1, iinteg, neq,&
-                      istoc, iarchi, nbexci, nondp, nmodam,&
-                      lamort, limped, lmodst, imat, masse,&
-                      rigid, amort, nchar, nveca, liad,&
-                      lifo, modele, mate, mateco, carele, charge,&
-                      infoch, fomult, numedd, depla, vitea,&
-                      accea, dep0, vit0, acc0, fexte,&
-                      famor, fliai, depl1, vite1, acce1,&
-                      psdel, fammo, fimpe, fonde, vien,&
-                      vite, vita1, mltap, a0, a2,&
-                      a3, a4, a5, a6, a7,&
-                      a8, c0, c1, c2, c3,&
-                      c4, c5, nodepl, novite, noacce,&
-                      matres, maprec, solveu, criter, chondp,&
-                      vitini, vitent, valmod, basmod,&
-                      veanec, vaanec, vaonde, veonde, dt,&
-                      theta, tempm, temps, iforc2, tabwk1,&
-                      tabwk2, archiv, nbtyar, typear, numrep, ds_energy, kineLoad)
+    subroutine dlnew0(result, force0, force1, iinteg, neq, &
+                      istoc, iarchi, nbexci, nondp, nmodam, &
+                      lamort, lmodst, imat, masse, &
+                      rigid, amort, nchar, nveca, liad, &
+                      lifo, modele, mate, mateco, carele, &
+                      charge, infoch, fomult, numedd, depla, &
+                      vitea, accea, dep0, vit0, acc0, &
+                      fexte, famor, fliai, depl1, vite1, &
+                      acce1, psdel, fammo, fonde, &
+                      vien, vite, vita1, mltap, a0, &
+                      a2, a3, a4, a5, a6, &
+                      a7, a8, c0, c1, c2, &
+                      c3, c4, c5, nodepl, novite, &
+                      noacce, matres, maprec, solveu, criter, &
+                      chondp, valmod, basmod, &
+                      vaonde, veonde, dt, &
+                      theta, temps, iforc2, tabwk1, &
+                      tabwk2, archiv, nbtyar, typear, numrep, &
+                      ds_energy, kineLoad)
         use NonLin_Datastructure_type
         integer(kind=8) :: nbtyar
         integer(kind=8) :: nondp
@@ -81,7 +82,6 @@ interface
         real(kind=8) :: acce1(neq)
         real(kind=8) :: psdel(neq)
         real(kind=8) :: fammo(neq)
-        real(kind=8) :: fimpe(neq)
         real(kind=8) :: fonde(neq)
         real(kind=8) :: vien(neq)
         real(kind=8) :: vite(neq)
@@ -109,17 +109,12 @@ interface
         character(len=19) :: solveu
         character(len=24) :: criter
         character(len=8) :: chondp(nondp)
-        character(len=24) :: vitini
-        character(len=24) :: vitent
         character(len=24) :: valmod
         character(len=24) :: basmod
-        character(len=24) :: veanec
-        character(len=24) :: vaanec
         character(len=24) :: vaonde
         character(len=24) :: veonde
         real(kind=8) :: dt
         real(kind=8) :: theta
-        real(kind=8) :: tempm
         real(kind=8) :: temps
         integer(kind=8) :: iforc2
         real(kind=8) :: tabwk1(neq)

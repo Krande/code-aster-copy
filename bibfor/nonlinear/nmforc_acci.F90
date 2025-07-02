@@ -39,7 +39,6 @@ subroutine nmforc_acci(list_func_acti, &
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
-#include "asterfort/nonlinDynaImpeCompute.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/nonlinLoadCompute.h"
 #include "asterfort/nonlinLoadDynaCompute.h"
@@ -90,10 +89,9 @@ subroutine nmforc_acci(list_func_acti, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter :: phaseTypePred = PRED_EULER
     integer(kind=8) :: ifm, niv
     real(kind=8) :: time_prev, time_curr
-    aster_logical :: l_macr, l_impe
+    aster_logical :: l_macr
     character(len=19) :: disp_curr, cnsstr
 !
 ! --------------------------------------------------------------------------------------------------
@@ -108,10 +106,8 @@ subroutine nmforc_acci(list_func_acti, &
     ASSERT(nume_inst .eq. 0)
     time_prev = 0.d0
     time_curr = diinst(sddisc, nume_inst)
-!
+
 ! - Active functionnalities
-!
-    l_impe = ndynlo(sddyna, 'IMPE_ABSO')
     l_macr = isfonc(list_func_acti, 'MACR_ELEM_STAT')
 !
 ! - Compute loads
@@ -130,16 +126,7 @@ subroutine nmforc_acci(list_func_acti, &
                                ds_material, ds_measure, ds_inout, &
                                time_prev, time_curr, &
                                hval_veelem, hval_veasse)
-!
-! - Compute impedance
-!
-    if (l_impe) then
-        call nonlinDynaImpeCompute(phaseTypePred, sddyna, &
-                                   model, nume_dof, &
-                                   ds_material, ds_measure, &
-                                   hval_incr, &
-                                   hval_veelem, hval_veasse)
-    end if
+
 !
 ! - Compute sub-structuring effect on second member
 !

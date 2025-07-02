@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 ! aslint: disable=W1504
 !
 subroutine nmener(valinc, veasse, measse, &
@@ -94,7 +93,7 @@ subroutine nmener(valinc, veasse, measse, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    integer(kind=8), parameter:: zveass = 19
+    integer(kind=8), parameter:: zveass = 18
     integer(kind=8) :: iret(zveass)
     character(len=19) :: depmoi, depplu, vitmoi, vitplu, massAsse, dampAsse, rigiAsse
     character(len=19) :: fexmoi, fexplu, fammoi, fnomoi
@@ -241,9 +240,9 @@ subroutine nmener(valinc, veasse, measse, &
 ! --------------------------------------------------------------------
 ! 5  - CNFEDO : CHARGES MECANIQUES FIXES DONNEES
 ! 9  - CNFSDO : FORCES SUIVEUSES
-! 12 - CNSSTF : FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION
+! 10 - CNSSTF : FORCES ISSUES DU CALCUL PAR SOUS-STRUCTURATION
 ! --------------------------------------------------------------------
-            if ((i .eq. 5) .or. (i .eq. 8) .or. (i .eq. 11)) then
+            if ((i .eq. 5) .or. (i .eq. 8) .or. (i .eq. 10)) then
                 fexpl(:) = fexpl(:)+veass(:)
 ! --------------------------------------------------------------------
 ! 6  - CNFEPI : FORCES PILOTEES PARAMETRE ETA A PRENDRE EN COMPTE
@@ -252,31 +251,26 @@ subroutine nmener(valinc, veasse, measse, &
                 fexpl(:) = fexpl(:)+eta*veass(:)
 ! --------------------------------------------------------------------
 ! 1  - CNDIRI : BtLAMBDA                : IL FAUT PRENDRE L OPPOSE
-! 8  - CNONDP : CHARGEMENT ONDES PLANES : IL FAUT PRENDRE L OPPOSE
+! 7  - CNONDP : CHARGEMENT ONDES PLANES : IL FAUT PRENDRE L OPPOSE
 ! --------------------------------------------------------------------
             else if ((i .eq. 1) .or. (i .eq. 7)) then
                 fexpl(:) = fexpl(:)-veass(:)
 ! --------------------------------------------------------------------
-! 17 - CNAMOD : FORCE D AMORTISSEMENT MODAL
+! 15 - CNAMOD : FORCE D AMORTISSEMENT MODAL
 ! --------------------------------------------------------------------
-            else if (i .eq. 16) then
+            else if (i .eq. 15) then
                 fampl(:) = fampl(:)+veass(:)
 ! --------------------------------------------------------------------
-! 10 - CNIMPE : FORCES IMPEDANCE
+! 17 - CNVISS : CHARGEMENT VEC_ISS (FORCE_SOL)
 ! --------------------------------------------------------------------
-            else if (i .eq. 9) then
-                flipl(:) = flipl(:)+veass(:)
-! --------------------------------------------------------------------
-! 19 - CNVISS : CHARGEMENT VEC_ISS (FORCE_SOL)
-! --------------------------------------------------------------------
-            else if (i .eq. 18) then
+            else if (i .eq. 17) then
 ! CHARGEMENT FORCE_SOL CNVISS. SI ON COMPTE SA CONTRIBUTION EN TANT
 ! QUE FORCE DISSIPATIVE DE LIAISON, ON DOIT PRENDRE L OPPOSE.
                 flipl(:) = flipl(:)-veass(:)
 ! --------------------------------------------------------------------
-! 14 - CNCINE : INCREMENTS DE DEPLACEMENT IMPOSES (AFFE_CHAR_CINE)
+! 12 - CNCINE : INCREMENTS DE DEPLACEMENT IMPOSES (AFFE_CHAR_CINE)
 ! --------------------------------------------------------------------
-            else if (i .eq. 13) then
+            else if (i .eq. 12) then
 ! ON DOIT RECONSTRUIRE LA MATRICE DE MASSE CAR ELLE A ETE MODIFIEE
 ! POUR SUPPRIMER DES DEGRES DE LIBERTE EN RAISON DE AFFE_CHAR_CINE.
                 reassm = .true.

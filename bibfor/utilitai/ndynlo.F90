@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! person_in_charge: mickael.abbas at edf.fr
 !
 function ndynlo(sddyna, chainz)
 !
@@ -147,8 +146,6 @@ function ndynlo(sddyna, chainz)
         ndynlo = v_infosd(4)
     else if (chaine .eq. 'PROJ_MODAL') then
         ndynlo = v_infosd(5)
-    else if (chaine .eq. 'IMPE_ABSO') then
-        ndynlo = v_infosd(6)
     else if (chaine .eq. 'ONDE_PLANE') then
         ndynlo = v_infosd(7)
     else if (chaine .eq. 'EXPL_GENE') then

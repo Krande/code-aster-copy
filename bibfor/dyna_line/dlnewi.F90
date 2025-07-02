@@ -118,16 +118,15 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     character(len=19) :: force0, force1
     character(len=19) :: solveu
     character(len=24) :: modele, mate, carele, charge, infoch, fomult, numedd, mateco
-    character(len=24) :: criter, kineLoad, answer
+    character(len=24) :: criter, kineLoad
     character(len=24) :: lifo(*)
     real(kind=8) :: dep0(*), vit0(*), acc0(*), t0, fexte(*), famor(*), fliai(*)
-    aster_logical :: lcrea, lamort, limped, lmodst, l_harm, l_matr_impe, l_damp_modal
+    aster_logical :: lcrea, lamort, lmodst, l_harm, l_matr_impe, l_damp_modal
     type(NL_DS_Energy), intent(inout) :: ds_energy
     integer(kind=8), parameter :: nbtyar = 6
     integer(kind=8) :: igrpa, ipepa, perc, freqpr, last_prperc
     integer(kind=8) :: iddeeq, ierr
     integer(kind=8) :: iexci, iexcl
-    integer(kind=8) :: ifimpe
     integer(kind=8) :: idepla
     integer(kind=8) :: ivite1, ivitea, ivita1
     integer(kind=8) :: iacce1, iaccea
@@ -208,21 +207,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
         valmod = modalDamping%jvDataDamp(1:19)//'.VALM'
         basmod = modalDamping%jvDataDamp(1:19)//'.BASM'
     end if
-
-! - IMPE_ABSO elements in model ?
-    limped = ASTER_FALSE
-    call dismoi('EXI_IMPE_ABSO', modele, 'MODELE', repk=answer)
-    limped = answer .eq. 'OUI'
-!    call dismoi('CHAM_MATER', rigid, 'MATR_ASSE', repk=mateFromRigid, arret='C', ier=ierc)
-!    if (ierc .ne. 0) then
-    mateFromRigid = ' '
-!    end if
-    if (mateFromRigid .eq. ' ') then
-        limped = ASTER_FALSE
-    end if
-    if (limped) then
-        call utmess('I', 'DYNALINE1_23')
-    end if
 !
 !     --- CHARGEMENT PAR ONDES PLANES
 !
@@ -253,7 +237,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     vaanec = '?????'
     veonde = '&&VEONDE           '
     vaonde = '?????'
-    call wkvect('&&DLNEWI.FOIMPE', 'V V R', neq, ifimpe)
     call wkvect('&&DLNEWI.FOONDE', 'V V R', neq, ifonde)
     call wkvect('&&DLNEWI.DEPLA', 'V V R', neq, idepla)
     call wkvect('&&DLNEWI.VITEA', 'V V R', neq, ivitea)
@@ -472,22 +455,23 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
 
             call dlnew0(result, force0, force1, iinteg, neq, &
                         istoc, iarchi, nbexci, nondp, nmodam, &
-                        lamort, limped, lmodst, imat, masse, &
+                        lamort, lmodst, imat, masse, &
                         rigid, amort, nchar, nveca, liad, &
-                        lifo, modele, mate, mateco, carele, charge, &
-                        infoch, fomult, numedd, zr(idepla), zr(ivitea), &
-                        zr(iaccea), dep0, vit0, acc0, fexte, &
-                        famor, fliai, epl1, zr(ivite1), zr(iacce1), &
-                        zr(jpsdel), fammo, zr(ifimpe), zr(ifonde), vien, &
-                        vite, zr(ivita1), zi(jmltap), a0, a2, &
-                        a3, a4, a5, a6, a7, &
-                        a8, c0, c1, c2, c3, &
-                        c4, c5, zk8(jnodep), zk8(jnovit), zk8(jnoacc), &
-                        matr_resu, maprec, solveu, criter, chondp, &
-                        vitini, vitent, valmod, basmod, &
-                        veanec, vaanec, vaonde, veonde, dt, &
-                        theta, tempm, temps, iforc2, zr(iwk1), &
-                        zr(iwk2), archiv, nbtyar, typear, numrep, ds_energy, kineLoad)
+                        lifo, modele, mate, mateco, carele, &
+                        charge, infoch, fomult, numedd, zr(idepla), &
+                        zr(ivitea), zr(iaccea), dep0, vit0, acc0, &
+                        fexte, famor, fliai, epl1, zr(ivite1), &
+                        zr(iacce1), zr(jpsdel), fammo, zr(ifonde), &
+                        vien, vite, zr(ivita1), zi(jmltap), a0, &
+                        a2, a3, a4, a5, a6, &
+                        a7, a8, c0, c1, c2, &
+                        c3, c4, c5, zk8(jnodep), zk8(jnovit), &
+                        zk8(jnoacc), matr_resu, maprec, solveu, criter, &
+                        chondp, valmod, basmod, &
+                        vaonde, veonde, dt, &
+                        theta, temps, iforc2, zr(iwk1), &
+                        zr(iwk2), archiv, nbtyar, typear, numrep, &
+                        ds_energy, kineLoad)
 !
             if (archiv .eq. 1) lastarch = temps
             perc = int(100.d0*(real(ipas)/real(npatot)))
