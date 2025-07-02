@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 interface
-    subroutine te0119(option, nomte)
-        character(len=16), intent(in) :: option, nomte
-    end subroutine te0119
+    subroutine checkCaraElem(modelZ, caraElemZ)
+        character(len=*), intent(in) :: modelZ, caraElemZ
+    end subroutine checkCaraElem
 end interface

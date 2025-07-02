@@ -842,12 +842,14 @@ class MEDSQU4(Element):
         ),
         OP.VARI_ELNO(te=-1),
         OP.VERI_CARA_ELEM(
-            te=119, para_in=((SP.PCACOQU, CCACOQU),), para_out=((SP.PBIDON, LC.ECOURAN),)
+            te=119,
+            para_in=((SP.PCACOQU, CCACOQU),),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
         ),
         OP.VERI_PLAN(
             te=51,
             para_in=((SP.PGEOMER, LC.EGEOM3D), (SP.PCHCKPR, LC.CCHCKPR)),
-            para_out=((OP.VERI_PLAN.PCODRET, LC.ECODRET), (OP.VERI_PLAN.PINDICR, LC.CINDICR)),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
         ),
     )
 

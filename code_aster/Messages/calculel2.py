@@ -209,9 +209,8 @@ On ne peut pas transférer le champ sur le nouveau support car on n'a pas le mod
     ),
     31: _(
         """
-Erreur utilisateur dans la commande AFFE_CARA_ELEM :
   On a affecté un excentrement non nul (mot clé COQUE / EXCENTREMENT)
-  sur un élément qui ne sait pas traiter l'excentrement (maille %(k1)s).
+  sur un élément qui ne sait pas traiter l'excentrement.
 """
     ),
     32: _(

@@ -68,11 +68,6 @@ cata_msg = {
 
 """
     ),
-    67: _(
-        """
- Le code %(i1)d retourné lors de l'intégration de la loi de comportement n'est pas traité.
-"""
-    ),
     93: _(
         """
   -> Risque et conseils : dans le cas d'une résolution incrémentale, on ne prend pas en compte

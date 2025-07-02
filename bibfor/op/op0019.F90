@@ -31,11 +31,11 @@ subroutine op0019()
     use cara_elem_carte_type
     implicit none
 !
-#include "asterf_types.h"
-#include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-!
+#include "asterf_types.h"
+#include "asterfort/ace_crea_carte.h"
+#include "asterfort/ace_masse_repartie.h"
 #include "asterfort/aceaba.h"
 #include "asterfort/aceaca.h"
 #include "asterfort/aceaco.h"
@@ -51,9 +51,7 @@ subroutine op0019()
 #include "asterfort/acearm.h"
 #include "asterfort/acearp.h"
 #include "asterfort/acecel.h"
-#include "asterfort/ace_crea_carte.h"
 #include "asterfort/aceinc.h"
-#include "asterfort/ace_masse_repartie.h"
 #include "asterfort/acevba.h"
 #include "asterfort/acevco.h"
 #include "asterfort/acevdi.h"
@@ -70,10 +68,10 @@ subroutine op0019()
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/calcul.h"
+#include "asterfort/checkCaraElem.h"
 #include "asterfort/coqucf.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/detrsd_vide.h"
+#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
@@ -93,6 +91,7 @@ subroutine op0019()
 #include "asterfort/verif_affe.h"
 #include "asterfort/verima.h"
 #include "asterfort/wkvect.h"
+#include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -120,9 +119,9 @@ subroutine op0019()
     integer(kind=8) :: iclf, ioc, icle, ng, nocc, nocctout, nocctot
     integer(kind=8) :: depart, jdnm
     aster_logical :: locaco, locagb, locamb, l_pmesh
-    character(len=8) :: ver(3), nomu, nomo, noma, lpain(3), lpaout(1)
+    character(len=8) :: ver(3), nomu, nomo, noma
     character(len=16) :: concep, cmd, mclef, k16bid
-    character(len=19) :: cartcf, ligrmo, lchin(3), lchout(1)
+    character(len=19) :: cartcf
     character(len=24) :: mlgnma, modnom, tmpncf, mlgnno
 !
 ! --------------------------------------------------------------------------------------------------
@@ -602,15 +601,10 @@ subroutine op0019()
 !           POUTRE      /  TUYAU_NCOU  TUYAU_NSEC
     call pmfd00()
 ! --------------------------------------------------------------------------------------------------
-!   APPEL DE L'OPTION DE VERIFICATION VERI_CARA_ELEM :
-    lpain(1) = 'PCACOQU'
-    lchin(1) = nomu//'.CARCOQUE'
-    lpaout(1) = 'PBIDON'
-    lchout(1) = '&&OP0019.BIDON'
-    ligrmo = nomo//'.MODELE'
-    call calcul('C', 'VERI_CARA_ELEM', ligrmo, 1, lchin, &
-                lpain, 1, lchout, lpaout, 'V', 'OUI')
-! --------------------------------------------------------------------------------------------------
+
+! - Some checks by element (calcul)
+    call checkCaraElem(nomo, nomu)
+
 !   Certaines cartes peuvent etre vides : il faut les detruire.
     do ii = 1, ACE_NB_CARTE
         call detrsd_vide('CARTE', info_carte(ii)%nom_carte)

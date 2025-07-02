@@ -23,70 +23,78 @@ import cataelem.Commons.physical_quantities as PHY
 # ----------------------------------------------------------------------------------------------
 # Located components - ELEM - Field on element (constant)
 # ----------------------------------------------------------------------------------------------
-# Generic components for geometric / 2D
+# Field for geometry (2D)
 CGEOM2D = LocatedComponents(phys=PHY.GEOM_R, type="ELEM", components=("X", "Y"))
 
-# Generic components for geometric / 3D
+# Field for geometry (3D)
 CGEOM3D = LocatedComponents(phys=PHY.GEOM_R, type="ELEM", components=("X", "Y", "Z"))
 
-# Displacements / 3D
+# Field for displacements (3D)
 CDEPL3D = LocatedComponents(phys=PHY.DEPL_R, type="ELEM", components=("DX", "DY", "DZ"))
 
-# For strains (Function-3D)
+# Field for strains (Function-3D)
 CEPS3DF = LocatedComponents(
     phys=PHY.EPSI_F, type="ELEM", components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ")
 )
 
-# For strains (Real-3D)
+# Field for strains (Real-3D)
 CEPS3DR = LocatedComponents(
     phys=PHY.EPSI_R, type="ELEM", components=("EPXX", "EPYY", "EPZZ", "EPXY", "EPXZ", "EPYZ")
 )
 
-# For strains (Real-2D)
+# Field for strains (Real-2D)
 CEPS2DR = LocatedComponents(
     phys=PHY.EPSI_R, type="ELEM", components=("EPXX", "EPYY", "EPZZ", "EPXY")
 )
 
-# For strains (Complex-2D)
+# Field for strains (Complex-2D)
 CEPS2DC = LocatedComponents(
     phys=PHY.EPSI_C, type="ELEM", components=("EPXX", "EPYY", "EPZZ", "EPXY")
 )
 
-# For strains (Function-2D)
+# Field for strains (Function-2D)
 CEPS2DF = LocatedComponents(
     phys=PHY.EPSI_F, type="ELEM", components=("EPXX", "EPYY", "EPZZ", "EPXY")
 )
 
-# For distributed loads (function-2D)
+# Field for distributed loads (function-2D)
 CFOR2DF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY"))
 
-# For distributed loads (function-3D)
+# Field for distributed loads (function-3D)
 CFOR3DF = LocatedComponents(phys=PHY.FORC_F, type="ELEM", components=("FX", "FY", "FZ"))
 
-# For distributed forces (Real-2D)
+# Field for distributed loads (function-pipe)
+CFORPIF = LocatedComponents(
+    phys=PHY.FORC_F, type="ELEM", components=("FX", "FY", "FZ", "MX", "MY", "MZ", "REP")
+)
+
+# Field for distributed loads (Real-2D)
 CFOR2DR = LocatedComponents(phys=PHY.FORC_R, type="ELEM", components=("FX", "FY"))
 
-# For distributed forces (Real-3D)
+# Field for distributed loads (Real-3D)
 CFOR3DR = LocatedComponents(phys=PHY.FORC_R, type="ELEM", components=("FX", "FY", "FZ"))
 
-CNEUTR1 = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
+# Field for distributed loads (real-pipe)
+CFORPIR = LocatedComponents(
+    phys=PHY.FORC_R, type="ELEM", components=("FX", "FY", "FZ", "MX", "MY", "MZ", "REP")
+)
 
-# For pressure (Function-2D)
+# Field for pressure (Function-2D)
 CPRE2DF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES", "CISA"))
 
-# For pressure (Function-3D)
+# Field for pressure (Function-3D)
 CPRE3DF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PRES",))
 
-# For pressure (Real-3D)
+# Field for pressure (Real-3D)
 CPRE3DR = LocatedComponents(phys=PHY.PRES_R, type="ELEM", components=("PRES",))
 
-# For pressure (Real-3D for solid shell elements)
+# Field for pressure (Real-3D for solid shell elements)
 CPRESBR = LocatedComponents(phys=PHY.PRES_R, type="ELEM", components=("PINF", "PSUP"))
 
-# For pressure (Function-3D)
+# Field for pressure (Function-3D)
 CPRESBF = LocatedComponents(phys=PHY.PRES_F, type="ELEM", components=("PINF", "PSUP"))
 
-# For 'EFFE_FOND'
+# Field for 'EFFE_FOND'
 CEFOND = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
 
 # Output field for theta (fracture mechanic-XFEM-2D)
@@ -106,19 +114,19 @@ CGTHETA = LocatedComponents(phys=PHY.RUPT_R, type="ELEM", components=("GTHETA",)
 # Field for abscisses of Lagrange polynom (fracture mechanic)
 CABSLAG = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[3]",))
 
-# For structural elements: radius
+# Field for structural elements: radius
 CRADIUS = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
 
-# For structural elements: section (2D)
+# Field for structural elements: section (2D)
 CSECT2D = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[6]",))
 
-# For structural elements: section (3D)
+# Field for structural elements: section (3D)
 CSECT3D = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[10]",))
 
-# For L2-Norm
+# Field for L2-Norm
 CNORML2 = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[30]",))
 
-# For Error
+# Field for Error
 CERROR = LocatedComponents(
     phys=PHY.ERRE_R,
     type="ELEM",
@@ -229,6 +237,9 @@ CINDICR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
 
 # Field for parameters of indicator (AFFE_MODELE)
 CCHCKPR = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X[2]",))
+
+
+CNEUTR1 = LocatedComponents(phys=PHY.NEUT_R, type="ELEM", components=("X1",))
 
 CBORNPI = LocatedComponents(phys=PHY.PILO_R, type="ELEM", components=("A0", "A1"))
 
@@ -943,12 +954,15 @@ EDFEQNO = LocatedComponents(
     ),
 )
 
-# For external state variables strains
+# For external state variables strains (3D)
 NEPVARC = LocatedComponents(
     phys=PHY.EPSI_R,
     type="ELNO",
     components=("EPTHER_L", "EPTHER_T", "EPTHER_N", "EPSECH", "EPHYDR", "EPPTOT"),
 )
+
+# For external state variables strains (1D)
+NVARC1D = LocatedComponents(phys=PHY.EPSI_R, type="ELNO", components=("EPTHER_L",))
 
 # For nodal forces (Real-2D)
 NFOR2DR = LocatedComponents(phys=PHY.FORC_R, type="ELNO", components=("FX", "FY"))
@@ -1000,6 +1014,21 @@ NSOURCR = LocatedComponents(phys=PHY.SOUR_R, type="ELNO", components=("SOUR",))
 
 # For phases in metallurgy
 EPHASES = LocatedComponents(phys=PHY.VARI_R, type="ELNO", components=("VARI",))
+
+# For generalized forces - Beams (Real)
+NEFGEBR = LocatedComponents(
+    phys=PHY.SIEF_R, type="ELNO", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
+)
+
+# For generalized forces - Beams (Complex)
+NEFGEBC = LocatedComponents(
+    phys=PHY.SIEF_C, type="ELNO", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
+)
+
+# For MIN-MAX SP
+NMINMAX = LocatedComponents(
+    phys=PHY.SPMX_R, type="ELNO", components=("VAL", "NUCOU", "NUSECT", "NUFIBR", "POSIC", "POSIS")
+)
 
 DDL_NOZ1 = LocatedComponents(phys=PHY.SIZZ_R, type="ELNO", components=("SIZZ",))
 
@@ -1265,6 +1294,11 @@ EEPVARC = LocatedComponents(
     components=("EPTHER_L", "EPTHER_T", "EPTHER_N", "EPSECH", "EPHYDR", "EPPTOT"),
 )
 
+# For external state variables strains (1D)
+EGVARC1D = LocatedComponents(
+    phys=PHY.EPSI_R, type="ELGA", location="RIGI", components=("EPTHER_L",)
+)
+
 # For fatigue (3D)
 EGFC3DR = LocatedComponents(
     phys=PHY.FACY_R,
@@ -1343,7 +1377,7 @@ EGRAT3R = LocatedComponents(
 # Field for hydratation
 EHYDRR = LocatedComponents(phys=PHY.HYDR_R, type="ELGA", location="MASS", components=("HYDR",))
 
-# For generalized forces - Plates (Real-3D)
+# For generalized forces - Plates (Real)
 EGFG3DR = LocatedComponents(
     phys=PHY.SIEF_R,
     type="ELGA",
@@ -1351,12 +1385,22 @@ EGFG3DR = LocatedComponents(
     components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
 )
 
-# For generalized forces - Plates (Complex-3D)
+# For generalized forces - Plates (Complex)
 EGFG3DC = LocatedComponents(
     phys=PHY.SIEF_C,
     type="ELGA",
     location="RIGI",
     components=("NXX", "NYY", "NXY", "MXX", "MYY", "MXY", "QX", "QY"),
+)
+
+# For generalized forces - Beams (Real)
+EEFGEBR = LocatedComponents(
+    phys=PHY.SIEF_R, type="ELGA", location="RIGI", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
+)
+
+# For generalized forces - Beams (Complex)
+EEFGEBC = LocatedComponents(
+    phys=PHY.SIEF_C, type="ELGA", location="RIGI", components=("N", "VY", "VZ", "MT", "MFY", "MFZ")
 )
 
 EGMATE_R = LocatedComponents(

@@ -962,7 +962,9 @@ class TemplateElement(Element):
             para_out=((OP.VARI_ELNO.PVARINR, LC.ZVARINO),),
         ),
         OP.VERI_CARA_ELEM(
-            te=119, para_in=((SP.PCACOQU, CCACOQU),), para_out=((SP.PBIDON, LC.ECOURAN),)
+            te=119,
+            para_in=((SP.PCACOQU, CCACOQU),),
+            para_out=((SP.PCODRET, LC.ECODRET), (SP.PINDICR, LC.CINDICR)),
         ),
     )
 

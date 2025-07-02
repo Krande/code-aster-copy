@@ -106,11 +106,8 @@ PCADISM = InputParameter(
 PCAGEPO = InputParameter(
     phys=PHY.CAGEPO_R,
     container="CARA!.CARGEOPO",
-    comment=""" RAYON ET EPAISSAUR POUR LES TUYAUX
+    comment=""" RAYON ET EPAISSEUR POUR LES TUYAUX
  CARACTERISTIQUES DES SECTIONS DE POUTRE CERCLE OU RECTANGLE
-  PCAGEPO : CARACTERISTIQUE POUTRES, SECTION RECTANGLE OU CERCLE,
-           NECESSITE DE FOURNIR LE CONCEPT PRODUIT PAR AFFE_CARA_ELEM
-  PCAGEPO : CARACTERISTIQUE POUTRES, SECTION RECTANGLE OU CERCLE
 """,
 )
 
@@ -162,6 +159,13 @@ PCAMASS = InputParameter(
  PCAMASS : CARACTERISTIQUE DE MASSIF
 """,
 )
+
+PCAORIE = InputParameter(
+    phys=PHY.CAORIE_R,
+    container="CARA!.CARORIEN",
+    comment="""  PCAORIE : ORIENTATION LOCALE D'UN ELEMENT DE POUTRE OU DE TUYAU  """,
+)
+
 
 PCAPOUF = InputParameter(phys=PHY.CAPOUF_R, comment="""""")
 
@@ -1386,8 +1390,6 @@ XXXXXX = InputParameter(phys=PHY.SIEF_R, container="RESU!SIGM_ELNO!N", comment="
 
 PDEPLGA = OutputParameter(phys=PHY.DEPL_R, type="ELGA", comment="""Déplacements aux sous-points""")
 
-PBIDON = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
-
 PCAFI_R = OutputParameter(phys=PHY.CAFI_R, type="ELEM", comment="""""")
 
 PCARAGE = OutputParameter(phys=PHY.MASS_R, type="ELEM", comment="""""")
@@ -1398,12 +1400,7 @@ PINDICR = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""Real value fo
 
 PCOURAN = OutputParameter(phys=PHY.NEUT_R, type="ELEM", comment="""""")
 
-PCODRET = OutputParameter(
-    phys=PHY.CODE_I,
-    type="ELEM",
-    comment=""" CODE RETOUR INTEGRATION COMPORTEMENT
-""",
-)
+PCODRET = OutputParameter(phys=PHY.CODE_I, type="ELEM", comment="""Return code""")
 
 PCOPRED = OutputParameter(
     phys=PHY.CODE_I, type="ELEM", comment=""" Indicator for complete prediction or not"""
