@@ -29,6 +29,7 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp, &
 ! OUT : PUUSUR : PUISSANCE USURE
 !-----------------------------------------------------------------------
 #include "jeveux.h"
+#include "nldef.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/getvid.h"
@@ -43,7 +44,6 @@ subroutine usupu2(nbpt, nbpair, coef, ang, isupp, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/nlget.h"
 #include "asterfort/stapu2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"

@@ -265,8 +265,8 @@ subroutine spect1(casint, nomu, spectr, ispect, base, &
                 imb = im-imodi+1
                 kk = (jmb*(jmb-1))/2+imb
                 zr(ilc2+kk-1) = zr(ilc2+kk-1)+ &
-                spect2(x1, x2, xlc, zr(ivitn), zr(irhoe), zr(idefm), sp&
-                                              &ect4, tol, ier, r1, err, nbp, im, jm)
+                                spect2(x1, x2, xlc, zr(ivitn), zr(irhoe), zr(idefm), spect4, &
+                                       tol, ier, r1, err, nbp, im, jm)
 !
                 if (ier .ne. 0) then
                     vali(1) = nuor(jm)
