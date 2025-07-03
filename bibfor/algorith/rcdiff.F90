@@ -94,7 +94,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !
     else if (phenom .eq. 'SECH_BAZANT') then
         nbpar = 1
-        nompar(1) = 'TEMP'
+        nompar(1) = 'SECH'
         valpar(1) = c
         nomres(1) = 'D1'
         nomres(2) = 'ALPHA_BAZANT'
@@ -112,9 +112,9 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !
     else if (phenom .eq. 'SECH_NAPPE') then
         nbpar = 2
-        nompar(1) = 'TEMP'
+        nompar(1) = 'SECH'
         valpar(1) = c
-        nompar(2) = 'TSEC'
+        nompar(2) = 'TEMP'
         valpar(2) = temp
         nomres(1) = 'FONCTION'
         call rcvalb(fami, kpg, spt, poum, imate, &

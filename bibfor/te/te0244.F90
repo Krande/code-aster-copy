@@ -36,6 +36,7 @@ subroutine te0244(option, nomte)
 #include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
+#include "asterfort/rcvarc.h"
 #include "asterfort/rcfode.h"
 #include "asterfort/ntcomp.h"
 #include "asterfort/writeVector.h"
@@ -66,8 +67,8 @@ subroutine te0244(option, nomte)
     real(kind=8) :: resi_f(MAX_BS), resi_m(MAX_BS), resi(MAX_BS)
     real(kind=8) :: resi_mp(MAX_BS), resi_p(MAX_BS), dfluxglo(3)
     real(kind=8) ::  deltat, theta, chal(1), diff, Kglo(3, 3)
-    real(kind=8) :: beta, dbeta, tpg, dtpg(3), tpsec, flux(3)
-    integer(kind=8) :: kp, imate, icamas, ifon(6), itemps
+    real(kind=8) :: beta, dbeta, tpg, dtpg(3), flux(3), sechpg, dsechpg(3), tpsec
+    integer(kind=8) :: kp, imate, icamas, ifon(6), itemps, iret
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: lhyd, aniso
     real(kind=8), pointer :: tempi(:) => null()
@@ -98,8 +99,9 @@ subroutine te0244(option, nomte)
 !          ISECHF EST FICTIF
             call jevech('PTEMPER', 'L', vr=sechf)
         end if
-!
-    else if (rela_name(1:5) .eq. 'THER_') then
+    end if
+
+    if (rela_name(1:5) .eq. 'THER_') then
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
         aniso = ASTER_FALSE
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
@@ -114,17 +116,22 @@ subroutine te0244(option, nomte)
 !
     resi_f = 0.d0
     do kp = 1, FEQuadRigi%nbQuadPoints
-        tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
         BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
-        dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
 !
         if (rela_name(1:5) .eq. 'THER_') then
+            tpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
+            dtpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
             call ntcomp(rela_name, FECell%ndim, tpg, dtpg, &
                         FEQuadRigi%points(1:3, kp), aniso, ifon, flux, Kglo, dfluxglo)
         else if (rela_name(1:5) .eq. 'SECH_') then
+            sechpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
+            BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
+            dsechpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
             tpsec = FEEvalFuncRScal(FEBasis, sechf, FEQuadRigi%points_param(1:3, kp))
-            call rcdiff(zi(imate), rela_name, tpsec, tpg, diff)
-            flux = diff*dtpg
+            call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, 1, tpg, iret)
+            if (iret .ne. 0) call utmess('F', 'THERMIQUE1_2')
+            call rcdiff(zi(imate), rela_name, tpg, sechpg, diff)
+            flux = diff*dsechpg
         else
             ASSERT(ASTER_FALSE)
         end if

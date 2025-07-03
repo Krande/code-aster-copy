@@ -68,9 +68,9 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 
     nomres(1) = 'FONC_DESORP'
     nbpar = 2
-    nompar(1) = 'TEMP'
+    nompar(1) = 'SECH'
     valpar(1) = c
-    nompar(2) = 'TSEC'
+    nompar(2) = 'TEMP'
     valpar(2) = temp
     call rcvalb(fami, kpg, ksp, poum, imate, &
                 ' ', 'BETON_DESORP', nbpar, nompar, valpar, &
