@@ -28,7 +28,7 @@ from cataelem.Options.options import OP
 # --------------------------------------------------------------------------------------------------
 # Located components
 # --------------------------------------------------------------------------------------------------
-DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("SECH",))
+DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -36,10 +36,9 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
-
 # --------------------------------------------------------------------------------------------------
-class SEPLQU4(Element):
-    """Drying - PLAN - QUAD4"""
+class THPLQU4(Element):
+    """Thermics - PLAN - QUAD4"""
 
     meshType = MT.QUAD4
     elrefe = (
@@ -87,6 +86,7 @@ class SEPLQU4(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
+                (SP.PTMPCHI, DDL_THER),
                 (OP.CHAR_THER_EVOLNI.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTTI, MVECTTR), (SP.PVECTTR, MVECTTR)),
@@ -287,9 +287,10 @@ class SEPLQU4(Element):
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
+                (SP.PTMPCHF, DDL_THER),
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MASS_THER_TANG(
             te=246,
@@ -340,6 +341,7 @@ class SEPLQU4(Element):
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
+                (SP.PTMPCHF, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX2R)),
@@ -443,8 +445,8 @@ class SEPLQU4(Element):
 
 
 # --------------------------------------------------------------------------------------------------
-class SEPLQU8(SEPLQU4):
-    """Drying - PLAN - QUAD8"""
+class THPLQU8(THPLQU4):
+    """Thermics - PLAN - QUAD8"""
 
     meshType = MT.QUAD8
     elrefe = (
@@ -457,8 +459,8 @@ class SEPLQU8(SEPLQU4):
 
 
 # --------------------------------------------------------------------------------------------------
-class SEPLQU9(SEPLQU4):
-    """Drying - PLAN - QUAD9"""
+class THPLQU9(THPLQU4):
+    """Thermics - PLAN - QUAD9"""
 
     meshType = MT.QUAD9
     elrefe = (
@@ -471,8 +473,8 @@ class SEPLQU9(SEPLQU4):
 
 
 # --------------------------------------------------------------------------------------------------
-class SEPLTR3(SEPLQU4):
-    """Drying - PLAN - TRIA3"""
+class THPLTR3(THPLQU4):
+    """Thermics - PLAN - TRIA3"""
 
     meshType = MT.TRIA3
     elrefe = (
@@ -485,8 +487,8 @@ class SEPLTR3(SEPLQU4):
 
 
 # --------------------------------------------------------------------------------------------------
-class SEPLTR6(SEPLQU4):
-    """Drying - PLAN - TRIA6"""
+class THPLTR6(THPLQU4):
+    """Thermics - PLAN - TRIA6"""
 
     meshType = MT.TRIA6
     elrefe = (

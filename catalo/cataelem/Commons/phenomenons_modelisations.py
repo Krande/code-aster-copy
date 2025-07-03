@@ -5728,6 +5728,30 @@ phen.add(
 )
 
 phen.add(
+    "3D_SECH",
+    Modelisation(
+        dim=(3, 3),
+        code="3DH",
+        elements=(
+            (MT.HEXA8, EL.SECH_HEXA8),
+            (MT.PENTA6, EL.SECH_PENTA6),
+            (MT.TETRA4, EL.SECH_TETRA4),
+            (MT.PYRAM5, EL.SECH_PYRAM5),
+            (MT.QUAD4, EL.SECH_FACE4),
+            (MT.TRIA3, EL.SECH_FACE3),
+            (MT.HEXA27, EL.SECH_HEXA27),
+            (MT.HEXA20, EL.SECH_HEXA20),
+            (MT.PENTA15, EL.SECH_PENTA15),
+            (MT.TETRA10, EL.SECH_TETRA10),
+            (MT.PYRAM13, EL.SECH_PYRAM13),
+            (MT.QUAD9, EL.SECH_FACE9),
+            (MT.QUAD8, EL.SECH_FACE8),
+            (MT.TRIA6, EL.SECH_FACE6),
+        ),
+    ),
+)
+
+phen.add(
     "3D1XH",
     Modelisation(
         dim=(3, 3),
@@ -5972,6 +5996,23 @@ phen.add(
             (MT.QUAD9, EL.THPLQU9),
             (MT.SEG2, EL.THPLSE2),
             (MT.SEG3, EL.THPLSE3),
+        ),
+    ),
+)
+
+phen.add(
+    "PLAN_SECH",
+    Modelisation(
+        dim=(2, 2),
+        code="PLH",
+        elements=(
+            (MT.TRIA3, EL.SEPLTR3),
+            (MT.QUAD4, EL.SEPLQU4),
+            (MT.TRIA6, EL.SEPLTR6),
+            (MT.QUAD8, EL.SEPLQU8),
+            (MT.QUAD9, EL.SEPLQU9),
+            (MT.SEG2, EL.SEPLSE2),
+            (MT.SEG3, EL.SEPLSE3),
         ),
     ),
 )

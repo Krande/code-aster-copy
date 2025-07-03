@@ -58,7 +58,7 @@ subroutine te0243(option, nomte)
     integer(kind=8) :: icodre(nbres)
     character(len=32) :: phenom
     real(kind=8) :: tpg, dtpg(3), diff, fluglo(3), Kglo(3, 3)
-    real(kind=8) :: sechpg, dsechpg(3), tpsec
+    real(kind=8) :: sechpg, dsechpg(3)
     real(kind=8) :: resi(MAX_BS), rigi(MAX_BS, MAX_BS), resi_p(MAX_BS)
     real(kind=8) :: BGSEval(3, MAX_BS), BSEval(MAX_BS), eps, tempi_save, delta
     real(kind=8), pointer :: flux(:) => null()
@@ -88,18 +88,18 @@ subroutine te0243(option, nomte)
         call jevech('PFLUXPR', 'E', vr=flux)
     end if
 !
-    if (rela_name(1:5) .eq. 'SECH_') then
-        if (rela_name(1:12) .eq. 'SECH_GRANGER' .or. &
-            rela_name(1:10) .eq. 'SECH_NAPPE' .or. &
-            rela_name(1:8) .eq. 'SECH_RFT') then
-            call jevech('PTMPCHF', 'L', vr=sechf)
-        else
-!          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
-!          ISECHF EST FICTIF
-            call jevech('PTEMPEI', 'L', vr=sechf)
-        end if
+!     if ((rela_name(1:5) .eq. 'SECH_')) then
+!         if (rela_name(1:12) .eq. 'SECH_GRANGER' .or. &
+!             rela_name(1:10) .eq. 'SECH_NAPPE' .or. &
+!             rela_name(1:8) .eq. 'SECH_RFT') then
+!             call jevech('PTMPCHF', 'L', vr=sechf)
+!         else
+! !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
+! !          ISECHF EST FICTIF
+!             call jevech('PTEMPEI', 'L', vr=sechf)
+!         end if
 !
-    else if (rela_name(1:5) .eq. 'THER_') then
+    if (rela_name(1:5) .eq. 'THER_') then
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))
         aniso = ASTER_FALSE
         if (phenom(1:12) .eq. 'THER_NL_ORTH') then
@@ -131,7 +131,6 @@ subroutine te0243(option, nomte)
             dsechpg = FEEvalGradVec(FEBasis, tempi, FEQuadCell%points_param(1:3, kp), BGSEval)
             call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, 1, tpg, iret)
             if (iret .ne. 0) call utmess('F', 'THERMIQUE1_2')
-            tpsec = FEEvalFuncRScal(FEBasis, sechf, FEQuadCell%points_param(1:3, kp))
             call rcdiff(zi(imate), rela_name, tpg, sechpg, diff)
             fluglo = diff*dsechpg
             Kglo = 0.d0

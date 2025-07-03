@@ -70,6 +70,7 @@ const char *const ModelingNames[nbModelings] = {
     "3D_INTERFACE_S",
     "3D_JOINT",
     "3D_JOINT_HYME",
+    "3D_SECH",
     "3D_SI",
     "3D_THH2D",
     "3D_THH2MD",
@@ -206,6 +207,7 @@ const char *const ModelingNames[nbModelings] = {
     "PLAN_JHMS",
     "PLAN_JOINT",
     "PLAN_JOINT_HYME",
+    "PLAN_SECH",
     "POU_D_E",
     "POU_D_EM",
     "POU_D_SQUE",
@@ -405,8 +407,8 @@ const Modelings MechanicsModelings[nbModelingsMechanics] = { PlanarBar,
                                                              TUYAU_6M };
 
 const Modelings ThermalModelings[nbModelingsThermal] = {
-    Tridimensional, DIAG_3D,    HHO_3D,     Axisymmetrical, AXIS_DIAG, AXIS_FOURIER, AXIS_HHO,
-    COQUE,          COQUE_AXIS, COQUE_PLAN, Planar,         PLAN_DIAG, PLAN_HHO,     AXIS_SECH
+    Tridimensional, DIAG_3D,    HHO_3D, Axisymmetrical, AXIS_DIAG, AXIS_FOURIER, AXIS_HHO, COQUE,
+    COQUE_AXIS,     COQUE_PLAN, Planar, PLAN_DIAG,      PLAN_HHO,  AXIS_SECH,    SECH_3D,  PLAN_SECH
 };
 
 const Modelings AcousticModelings[nbModelingsAcoustic] = { Tridimensional,
