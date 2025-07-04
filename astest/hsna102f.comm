@@ -40,9 +40,9 @@ poro = 0.161  # porosité moyenne [-]
 from hsna102f_fonctions import coefficient_de_diffusion_vapeur, coefficient_de_diffusion
 
 DIFF_R = FORMULE(
-    NOM_PARA=("TEMP", "TSEC"),
-    VALE="""coefficient_de_diffusion_vapeur(TEMP, poro, alpha, beta, a, b, Ad, T0_K, TSEC) 
-                       + coefficient_de_diffusion(TEMP, K0, poro, alpha, beta, p, Ad, T0_K, TSEC, Ea_R)""",
+    NOM_PARA=("SECH", "TEMP"),
+    VALE="""coefficient_de_diffusion_vapeur(SECH, poro, alpha, beta, a, b, Ad, T0_K, TEMP) 
+                       + coefficient_de_diffusion(SECH, K0, poro, alpha, beta, p, Ad, T0_K, TEMP, Ea_R)""",
     coefficient_de_diffusion_vapeur=coefficient_de_diffusion_vapeur,
     coefficient_de_diffusion=coefficient_de_diffusion,
     K0=K0,
@@ -64,14 +64,12 @@ BETON = DEFI_MATERIAU(
     SECH_RFT=_F(PERM_IN=K0, QSR_K=Ea_R, A_MIL=a, B_MIL=b, VG_M_P=p),
 )
 
-CHMAT = (AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(GROUP_MA="SURF", MATER=BETON)),)
-
-MOTH = (
+MOSECH = (
     AFFE_MODELE(
         MAILLAGE=MAIL,
         AFFE=_F(
             GROUP_MA=("SURF", "FE", "FI", "DSUP", "DINF"),
-            MODELISATION="AXIS",
+            MODELISATION="AXIS_SECH",
             PHENOMENE="THERMIQUE",
         ),
     ),
@@ -86,6 +84,14 @@ TEMP = CREA_CHAMP(
     AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
 )
 
+CHMAT = (
+    AFFE_MATERIAU(
+        MAILLAGE=MAIL,
+        AFFE=_F(GROUP_MA="SURF", MATER=BETON),
+        AFFE_VARC=(_F(NOM_VARC="TEMP", CHAM_GD=TEMP, VALE_REF=0),),
+    ),
+)
+
 RESUTHER = CREA_RESU(
     OPERATION="AFFE", TYPE_RESU="EVOL_THER", AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=TEMP, INST=0.0),)
 )
@@ -93,7 +99,7 @@ RESUTHER = CREA_RESU(
 
 CEQ = DEFI_CONSTANTE(VALE=58.8)
 
-CHARSE = AFFE_CHAR_THER_F(MODELE=MOTH, TEMP_IMPO=_F(GROUP_MA="FE", TEMP=CEQ))
+CHARSE = AFFE_CHAR_THER_F(MODELE=MOSECH, SECH_IMPO=_F(GROUP_MA="FE", SECH=CEQ))
 
 #      LES INSTANTS DE CALCULS CORRESPONDENT AUX PROFILS DE TENEUR EN EAU
 #      PROPOSES FIG. 15.1., P.199 DE [GRANGER, 1995]
@@ -120,7 +126,7 @@ LISTDEP = (DEFI_LIST_REEL(VALE=(3600, 259200, 2419200, 39420000, 94608000, 15768
 
 RESUSECHREF = (
     THER_NON_LINE(
-        MODELE=MOTH,
+        MODELE=MOSECH,
         EXCIT=_F(CHARGE=CHARSE),
         CHAM_MATER=CHMAT,
         SOLVEUR=_F(METHODE="MULT_FRONT"),
@@ -136,7 +142,7 @@ RESUSECHREF = (
 
 RESUSECH = (
     THER_NON_LINE(
-        MODELE=MOTH,
+        MODELE=MOSECH,
         EXCIT=_F(CHARGE=CHARSE),
         CHAM_MATER=CHMAT,
         SOLVEUR=_F(METHODE="MULT_FRONT"),
@@ -144,7 +150,6 @@ RESUSECH = (
         ETAT_INIT=_F(VALE=128.8),
         INCREMENT=_F(LIST_INST=LISTSECH),
         COMPORTEMENT=_F(RELATION="SECH_RFT", TOUT="OUI"),
-        # COMPORTEMENT=_F(RELATION="SECH_NAPPE", TOUT="OUI"),
         EVOL_THER_SECH=RESUTHER,
         INFO=1,
         CONVERGENCE=_F(ITER_GLOB_MAXI=20, RESI_GLOB_RELA=1e-06),
@@ -667,7 +672,7 @@ TEST_RESU(
             INST=3600,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879999999999998e02,
         ),
         _F(
@@ -675,7 +680,7 @@ TEST_RESU(
             INST=259200,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879999999999364e02,
         ),
         _F(
@@ -683,7 +688,7 @@ TEST_RESU(
             INST=2419200,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2845780063601214e02,
         ),
         _F(
@@ -691,7 +696,7 @@ TEST_RESU(
             INST=39420000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.0511662983796056e02,
         ),
         _F(
@@ -699,7 +704,7 @@ TEST_RESU(
             INST=94608000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=9.3223367211295169e01,
         ),
         _F(
@@ -707,7 +712,7 @@ TEST_RESU(
             INST=157680000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=8.6243397581457245e01,
         ),
     )
@@ -721,7 +726,7 @@ TEST_RESU(
             INST=3600,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879999999999970e02,
         ),
         _F(
@@ -729,7 +734,7 @@ TEST_RESU(
             INST=259200,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879970557803858e02,
         ),
         _F(
@@ -737,7 +742,7 @@ TEST_RESU(
             INST=2419200,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2622418002788167e02,
         ),
         _F(
@@ -745,7 +750,7 @@ TEST_RESU(
             INST=39420000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.0088005495545711e02,
         ),
         _F(
@@ -753,7 +758,7 @@ TEST_RESU(
             INST=94608000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=8.9271504310821911e01,
         ),
         _F(
@@ -761,7 +766,7 @@ TEST_RESU(
             INST=157680000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=8.2484206837012891e01,
         ),
     )
@@ -775,7 +780,7 @@ TEST_RESU(
             INST=3600,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879999999997560e02,
         ),
         _F(
@@ -783,7 +788,7 @@ TEST_RESU(
             INST=259200,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2845101868890600e02,
         ),
         _F(
@@ -791,7 +796,7 @@ TEST_RESU(
             INST=2419200,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.1999773069390473e02,
         ),
         _F(
@@ -799,7 +804,7 @@ TEST_RESU(
             INST=39420000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=9.3256929468085332e01,
         ),
         _F(
@@ -807,7 +812,7 @@ TEST_RESU(
             INST=94608000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=8.2236190690133441e01,
         ),
         _F(
@@ -815,7 +820,7 @@ TEST_RESU(
             INST=157680000,
             RESULTAT=RESUSECHREF,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=7.5895066405305272e01,
         ),
     )
@@ -833,7 +838,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879999999999998e02,
             VALE_REFE=1.2879999999999998e02,
             PRECISION=1.0e-2,
@@ -844,7 +849,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879999999999364e02,
             VALE_REFE=1.2879999999999364e02,
             PRECISION=1.0e-2,
@@ -855,7 +860,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2845780063601214e02,
             VALE_REFE=1.2845780063601214e02,
             PRECISION=1.0e-2,
@@ -866,7 +871,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.0511662983796056e02,
             VALE_REFE=1.0511662983796056e02,
             PRECISION=1.0e-2,
@@ -877,7 +882,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=9.3223367211295169e01,
             VALE_REFE=9.3223367211295169e01,
             PRECISION=1.0e-2,
@@ -888,7 +893,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=8.6243397581457245e01,
             VALE_REFE=8.6243397581457245e01,
             PRECISION=1.0e-2,
@@ -905,7 +910,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879999999999970e02,
             VALE_REFE=1.2879999999999970e02,
             PRECISION=1.0e-2,
@@ -916,7 +921,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879970557803858e02,
             VALE_REFE=1.2879970557803858e02,
             PRECISION=1.0e-2,
@@ -927,7 +932,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2622418002788167e02,
             VALE_REFE=1.2622418002788167e02,
             PRECISION=1.0e-2,
@@ -938,7 +943,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.0088005495545711e02,
             VALE_REFE=1.0088005495545711e02,
             PRECISION=1.0e-2,
@@ -949,7 +954,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=8.9271504310821911e01,
             VALE_REFE=8.9271504310821911e01,
             PRECISION=1.0e-2,
@@ -960,7 +965,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=8.2484206837012891e01,
             VALE_REFE=8.2484206837012891e01,
             PRECISION=1.0e-2,
@@ -977,7 +982,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2879999999997560e02,
             VALE_REFE=1.2879999999997560e02,
             PRECISION=1.0e-2,
@@ -988,7 +993,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.2845101868890600e02,
             VALE_REFE=1.2845101868890600e02,
             PRECISION=1.0e-2,
@@ -999,7 +1004,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=1.1999773069390473e02,
             VALE_REFE=1.1999773069390473e02,
             PRECISION=1.0e-2,
@@ -1010,7 +1015,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=9.3256929468085332e01,
             VALE_REFE=9.3256929468085332e01,
             PRECISION=1.0e-2,
@@ -1021,7 +1026,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=8.2236190690133441e01,
             VALE_REFE=8.2236190690133441e01,
             PRECISION=1.0e-2,
@@ -1032,7 +1037,7 @@ TEST_RESU(
             REFERENCE="AUTRE_ASTER",
             RESULTAT=RESUSECH,
             NOM_CHAM="TEMP",
-            NOM_CMP="TEMP",
+            NOM_CMP="SECH",
             VALE_CALC=7.5895066405305272e01,
             VALE_REFE=7.5895066405305272e01,
             PRECISION=1.0e-2,

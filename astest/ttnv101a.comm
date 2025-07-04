@@ -22,7 +22,7 @@ DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 MAIL = LIRE_MAILLAGE(FORMAT="MED")
 
 MODTHER = AFFE_MODELE(
-    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D_DIAG")
+    MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", PHENOMENE="THERMIQUE", MODELISATION="3D_SECH_DIAG")
 )
 
 # =====================================================================
@@ -55,7 +55,11 @@ PARA__ = 2.5e-11
 PARB__ = 0.12
 MATSECH = DEFI_MATERIAU(SECH_GRANGER=_F(A=PARA__, B=PARB__, QSR_K=4700, TEMP_0_C=0.0))
 
-CHMASECH = AFFE_MATERIAU(MAILLAGE=MAIL, AFFE=_F(TOUT="OUI", MATER=MATSECH))
+CHMASECH = AFFE_MATERIAU(
+    MAILLAGE=MAIL,
+    AFFE=_F(TOUT="OUI", MATER=MATSECH),
+    AFFE_VARC=(_F(NOM_VARC="TEMP", CHAM_GD=TEMP, VALE_REF=0),),
+)
 # =========================================================================
 #  Concentration en eau correspondant a 50% d'humidite (Ceq) et a 100% (C0)
 # =========================================================================
@@ -65,7 +69,7 @@ C0 = 106.42
 # =========================================================================
 #  Condition limite de concentration en eau imposee
 # =========================================================================
-charsec = AFFE_CHAR_THER(MODELE=MODTHER, TEMP_IMPO=_F(GROUP_MA="echange", TEMP=Ceq))
+charsec = AFFE_CHAR_THER(MODELE=MODTHER, SECH_IMPO=_F(GROUP_MA="echange", SECH=Ceq))
 # =========================================================================
 #  Resolution
 # =========================================================================
@@ -87,7 +91,7 @@ RESUSECH = THER_NON_LINE(
 # =========================================================================
 # Calcul de la masse d'eau moyenne a chaque instant
 CMoy = POST_ELEM(
-    INTEGRALE=_F(GROUP_MA="MAILVOL", NOM_CMP="TEMP", NOM_CHAM="TEMP", TYPE_MAILLE="3D"),
+    INTEGRALE=_F(GROUP_MA="MAILVOL", NOM_CMP="SECH", NOM_CHAM="TEMP", TYPE_MAILLE="3D"),
     RESULTAT=RESUSECH,
     MODELE=MODTHER,
     CHAM_MATER=CHMASECH,
@@ -96,7 +100,7 @@ CMoy = POST_ELEM(
 IMPR_TABLE(TABLE=CMoy)
 
 ## calcul de la perte de masse en % a chaque instant
-Dmasse = FORMULE(VALE="100*(C0-MOYE_TEMP)/2410", C0=C0, NOM_PARA="MOYE_TEMP")
+Dmasse = FORMULE(VALE="100*(C0-MOYE_SECH)/2410", C0=C0, NOM_PARA="MOYE_SECH")
 TPERTE0 = CALC_TABLE(TABLE=CMoy, ACTION=(_F(OPERATION="OPER", FORMULE=Dmasse, NOM_PARA="DP_P"),))
 IMPR_TABLE(TABLE=TPERTE0)
 
