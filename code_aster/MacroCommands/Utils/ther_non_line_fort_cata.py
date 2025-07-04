@@ -96,7 +96,6 @@ THER_NON_LINE_FORT_CATA = OPER(
     CHAM_MATER=SIMP(statut="o", typ=(cham_mater)),
     CARA_ELEM=SIMP(statut="f", typ=(cara_elem)),
     COMPORTEMENT=C_COMPORTEMENT("THER_NON_LINE"),
-    EVOL_THER_SECH=SIMP(statut="f", typ=evol_ther),
     EXCIT=FACT(
         statut="o",
         max="**",

@@ -16,7 +16,7 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
-subroutine ntdcom(result_dry, l_dry)
+subroutine ntdcom(l_dry)
 !
     implicit none
 !
@@ -28,7 +28,6 @@ subroutine ntdcom(result_dry, l_dry)
 #include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 !
-    character(len=8), intent(out) :: result_dry
     aster_logical, intent(out) :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
@@ -39,7 +38,6 @@ subroutine ntdcom(result_dry, l_dry)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-! Out result_dry       : name of datastructure for results (drying)
 ! Out l_dry            : .true. if drying (concrete)
 !
 ! --------------------------------------------------------------------------------------------------
@@ -51,7 +49,6 @@ subroutine ntdcom(result_dry, l_dry)
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    result_dry = ' '
     l_dry = ASTER_FALSE
 !
 ! - Look for behaviour
@@ -73,24 +70,6 @@ subroutine ntdcom(result_dry, l_dry)
 !
     if (l_dry .and. lrela) then
         call utmess('F', 'THERNONLINE4_96')
-    end if
-!
-    if (l_dry) then
-        call getvid(' ', 'EVOL_THER_SECH', nbval=0, nbret=n1)
-        if (n1 .eq. 0) then
-            call utmess('F', 'THERNONLINE4_97', sk=comp_rela)
-        else
-            call getvid(' ', 'EVOL_THER_SECH', scal=result_dry, nbret=n1)
-            call gettco(result_dry, tysd)
-            if (tysd(1:9) .ne. 'EVOL_THER') then
-                call utmess('F', 'THERNONLINE4_98', sk=result_dry)
-            else
-                call dismoi('NB_CHAMP_UTI', result_dry, 'RESULTAT', repi=nbcham)
-                if (nbcham .le. 0) then
-                    call utmess('F', 'THERNONLINE4_99', sk=result_dry)
-                end if
-            end if
-        end if
     end if
 !
 end subroutine

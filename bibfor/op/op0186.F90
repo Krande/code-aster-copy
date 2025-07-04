@@ -80,7 +80,7 @@ subroutine op0186()
     real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), rho
     real(kind=8) :: para(2), time_curr, tconso
     real(kind=8) :: rtab(2), theta_read
-    character(len=8) :: result, result_dry, mesh, model, materField, caraElem
+    character(len=8) :: result, mesh, model, materField, caraElem
     character(len=19) :: sdobse
     character(len=19) :: solver, maprec, sddisc, varc_curr
     character(len=24) :: mateco, listLoad
@@ -137,7 +137,7 @@ subroutine op0186()
                 ther_crit_i, ther_crit_r, &
                 ds_inout, ds_algopara, &
                 ds_algorom, ds_print, &
-                result_dry, comporTher, &
+                comporTher, &
                 mesh, l_dry)
     itmax = ther_crit_i(3)
 !
@@ -217,7 +217,7 @@ subroutine op0186()
 !
     call nxnpas(sddisc, solver, nume_inst, ds_print, &
                 lnkry, l_evol, l_stat, &
-                l_dry, result_dry, dry_prev, dry_curr, &
+                l_dry, dry_prev, dry_curr, &
                 para, time_curr, deltat, reasma, &
                 tpsthe)
 !

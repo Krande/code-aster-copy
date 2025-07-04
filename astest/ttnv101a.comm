@@ -42,11 +42,6 @@ TEMP = CREA_CHAMP(
     AFFE=_F(TOUT="OUI", NOM_CMP="TEMP", VALE=20.0),
 )
 
-RESUTHER = CREA_RESU(
-    OPERATION="AFFE",
-    TYPE_RESU="EVOL_THER",
-    AFFE=(_F(NOM_CHAM="TEMP", CHAM_GD=TEMP, LIST_INST=listinst),),
-)
 # ======================================================================
 #  Parametres materiau de sechage
 # ======================================================================
@@ -78,7 +73,6 @@ RESUSECH = THER_NON_LINE(
     MODELE=MODTHER,
     CHAM_MATER=CHMASECH,
     COMPORTEMENT=_F(RELATION="SECH_GRANGER"),
-    EVOL_THER_SECH=RESUTHER,
     EXCIT=_F(CHARGE=charsec),
     CONVERGENCE=_F(ITER_GLOB_MAXI=500),
     INCREMENT=_F(LIST_INST=listinst),
