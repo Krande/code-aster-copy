@@ -45,9 +45,9 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !-----------------------------------------------------------------------
     parameter(nbres=10)
     integer(kind=8) :: nbpar, kpg, spt
-    real(kind=8) :: valres(nbres), valpar(2), tz0
+    real(kind=8) :: valres(nbres), valpar(1), tz0
     integer(kind=8) :: icodre(nbres)
-    character(len=8) :: nompar(2), fami, poum
+    character(len=8) :: nompar(1), fami, poum
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
     real(kind=8) :: val_non_physique
@@ -61,9 +61,8 @@ subroutine rcdiff(imate, comp, temp, c, diff)
     poum = '+'
     tz0 = r8t0()
     if (phenom .eq. 'SECH_GRANGER') then
-        nbpar = 1
-        nompar(1) = 'TEMP'
-        valpar(1) = temp
+        nbpar = 0
+
         nomres(1) = 'A'
         nomres(2) = 'B'
         nomres(3) = 'QSR_K'
@@ -82,9 +81,7 @@ subroutine rcdiff(imate, comp, temp, c, diff)
                &0/(temp+tz0)-1.d0/(valres(4)+tz0)))
 !
     else if (phenom .eq. 'SECH_MENSI') then
-        nbpar = 1
-        nompar(1) = 'TEMP'
-        valpar(1) = temp
+        nbpar = 0
         nomres(1) = 'A'
         nomres(2) = 'B'
         call rcvalb(fami, kpg, spt, poum, imate, &
@@ -111,11 +108,9 @@ subroutine rcdiff(imate, comp, temp, c, diff)
                           c, temp, diff)
 !
     else if (phenom .eq. 'SECH_NAPPE') then
-        nbpar = 2
+        nbpar = 1
         nompar(1) = 'SECH'
         valpar(1) = c
-        nompar(2) = 'TEMP'
-        valpar(2) = temp
         nomres(1) = 'FONCTION'
         call rcvalb(fami, kpg, spt, poum, imate, &
                     ' ', phenom, nbpar, nompar, valpar, &

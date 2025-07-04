@@ -38,12 +38,12 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 !   diff (out) : coefficient de diffusion
 ! ......................................................................
     integer(kind=8)           :: codret(5), nbpar
-    real(kind=8)      :: valres(5), hygr, valpar(2), dpc, tz0
+    real(kind=8)      :: valres(5), hygr, valpar(1), dpc, tz0
     real(kind=8)      :: richardsDiffusionCoef, vapourDiffusionCoef
     real(kind=8)      :: perm_in, qsr_k, poro, a_mil, b_mil, t0_C, vg_m_p
     real(kind=8)      :: t0_K, tempK, beta, satu
     character(len=16) :: nomres(5)
-    character(len=8) :: nompar(2)
+    character(len=8) :: nompar(1)
 !
 !   --------------------------------------------------------------------
 !
@@ -67,11 +67,9 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     vg_m_p = valres(5)
 
     nomres(1) = 'FONC_DESORP'
-    nbpar = 2
+    nbpar = 1
     nompar(1) = 'SECH'
     valpar(1) = c
-    nompar(2) = 'TEMP'
-    valpar(2) = temp
     call rcvalb(fami, kpg, ksp, poum, imate, &
                 ' ', 'BETON_DESORP', nbpar, nompar, valpar, &
                 1, nomres, valres, codret, 0)

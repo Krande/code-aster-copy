@@ -32,7 +32,7 @@ MGEOMER = LocatedComponents(
 )
 
 
-for cmp in ("TEMP", "TEMP_INF", "TEMP_MIL", "TEMP_SUP", "E1", "H1"):
+for cmp in ("TEMP", "TEMP_INF", "TEMP_MIL", "TEMP_SUP", "E1", "H1", "SECH"):
 
     # ----------------
     # Modes locaux :
