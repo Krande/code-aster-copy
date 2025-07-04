@@ -5819,6 +5819,22 @@ phen.add(
 )
 
 phen.add(
+    "3D_SECH_DIAG",
+    Modelisation(
+        dim=(3, 3),
+        code="3DJ",
+        attrs=((AT.LUMPE, "OUI"),),
+        elements=(
+            (MT.HEXA8, EL.SECH_HEXA8_D),
+            (MT.PENTA6, EL.SECH_PENTA6_D),
+            (MT.TETRA4, EL.SECH_TETRA4_D),
+            (MT.QUAD4, EL.SECH_FACE4_D),
+            (MT.TRIA3, EL.SECH_FACE3_D),
+        ),
+    ),
+)
+
+phen.add(
     "AXIS",
     Modelisation(
         dim=(2, 2),
@@ -5861,6 +5877,16 @@ phen.add(
             (MT.SEG2, EL.SEAXSE2),
             (MT.SEG3, EL.SEAXSE3),
         ),
+    ),
+)
+
+phen.add(
+    "AXIS_SECH_DIAG",
+    Modelisation(
+        dim=(2, 2),
+        code="AXJ",
+        attrs=((AT.AXIS, "OUI"), (AT.LUMPE, "OUI")),
+        elements=((MT.TRIA3, EL.SEAXTL3), (MT.QUAD4, EL.SEAXQL4), (MT.SEG2, EL.SEAXSL2)),
     ),
 )
 
@@ -5996,23 +6022,6 @@ phen.add(
             (MT.QUAD9, EL.THPLQU9),
             (MT.SEG2, EL.THPLSE2),
             (MT.SEG3, EL.THPLSE3),
-        ),
-    ),
-)
-
-phen.add(
-    "PLAN_SECH",
-    Modelisation(
-        dim=(2, 2),
-        code="PLH",
-        elements=(
-            (MT.TRIA3, EL.SEPLTR3),
-            (MT.QUAD4, EL.SEPLQU4),
-            (MT.TRIA6, EL.SEPLTR6),
-            (MT.QUAD8, EL.SEPLQU8),
-            (MT.QUAD9, EL.SEPLQU9),
-            (MT.SEG2, EL.SEPLSE2),
-            (MT.SEG3, EL.SEPLSE3),
         ),
     ),
 )

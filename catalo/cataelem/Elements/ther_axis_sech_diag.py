@@ -28,7 +28,7 @@ from cataelem.Options.options import OP
 # --------------------------------------------------------------------------------------------------
 # Located components
 # --------------------------------------------------------------------------------------------------
-DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("TEMP",))
+DDL_THER = LocatedComponents(phys=PHY.TEMP_R, type="ELNO", components=("SECH",))
 
 MVECTTR = ArrayOfComponents(phys=PHY.VTEM_R, locatedComponents=DDL_THER)
 
@@ -36,35 +36,22 @@ MMATTTR = ArrayOfComponents(phys=PHY.MTEM_R, locatedComponents=DDL_THER)
 
 MMATTSR = ArrayOfComponents(phys=PHY.MTNS_R, locatedComponents=DDL_THER)
 
-
 # --------------------------------------------------------------------------------------------------
-class THPLQU4(Element):
-    """Thermics - PLAN - QUAD4"""
+class SEAXTL3(Element):
+    """Drying - AXIS_DIAG - TRIA3"""
 
-    meshType = MT.QUAD4
+    meshType = MT.TRIA3
     elrefe = (
         ElrefeLoc(
-            MT.QU4,
-            gauss=("RIGI=FPG4", "MASS=FPG4", "FPG1=FPG1", "NOEU=NOEU"),
+            MT.TR3,
+            gauss=("RIGI=FPG3", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
             mater=("FPG1", "RIGI", "MASS"),
         ),
     )
     calculs = (
-        OP.CARA_CISA(
-            te=509,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PTEMPE1, DDL_THER), (SP.PTEMPE2, DDL_THER)),
-            para_out=((SP.PCASECT, LC.CCASECT),),
-        ),
-        OP.CARA_GAUCHI(
-            te=509,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PTEMPER, DDL_THER)),
-            para_out=((SP.PCASECT, LC.CCASECT),),
-        ),
-        OP.CARA_TORSION(
-            te=509,
-            para_in=((SP.PGEOMER, LC.EGEOM2D), (SP.PTEMPER, DDL_THER)),
-            para_out=((SP.PCASECT, LC.CCASECT),),
-        ),
+        OP.CARA_CISA(te=-1),
+        OP.CARA_GAUCHI(te=-1),
+        OP.CARA_TORSION(te=-1),
         OP.CHAR_THER_EVOL(
             te=78,
             para_in=(
@@ -87,7 +74,6 @@ class THPLQU4(Element):
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
-                (SP.PTMPCHI, DDL_THER),
                 (OP.CHAR_THER_EVOLNI.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTTI, MVECTTR), (SP.PVECTTR, MVECTTR)),
@@ -288,10 +274,9 @@ class THPLQU4(Element):
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTMPCHF, DDL_THER),
                 (OP.RIGI_THER_TANG.PVARCPR, LC.ZVARCPG),
             ),
-            para_out=((SP.PMATTTR, MMATTTR), (OP.RIGI_THER_TANG.PMATTSR, MMATTSR)),
+            para_out=((SP.PMATTTR, MMATTTR),),
         ),
         OP.MASS_THER_TANG(
             te=246,
@@ -342,7 +327,6 @@ class THPLQU4(Element):
                 (SP.PCAMASS, LC.CCAMA3D),
                 (SP.PMATERC, LC.CMATERC),
                 (SP.PTEMPEI, DDL_THER),
-                (SP.PTMPCHF, DDL_THER),
                 (OP.RAPH_THER.PVARCPR, LC.ZVARCPG),
             ),
             para_out=((SP.PRESIDU, MVECTTR), (OP.RAPH_THER.PFLUXPR, LC.EFLUX2R)),
@@ -446,56 +430,14 @@ class THPLQU4(Element):
 
 
 # --------------------------------------------------------------------------------------------------
-class THPLQU8(THPLQU4):
-    """Thermics - PLAN - QUAD8"""
+class SEAXQL4(SEAXTL3):
+    """Drying - AXIS_DIAG - QUAD4"""
 
-    meshType = MT.QUAD8
+    meshType = MT.QUAD4
     elrefe = (
         ElrefeLoc(
-            MT.QU8,
-            gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI", "MASS"),
-        ),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THPLQU9(THPLQU4):
-    """Thermics - PLAN - QUAD9"""
-
-    meshType = MT.QUAD9
-    elrefe = (
-        ElrefeLoc(
-            MT.QU9,
-            gauss=("RIGI=FPG9", "MASS=FPG9", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI", "MASS"),
-        ),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THPLTR3(THPLQU4):
-    """Thermics - PLAN - TRIA3"""
-
-    meshType = MT.TRIA3
-    elrefe = (
-        ElrefeLoc(
-            MT.TR3,
-            gauss=("RIGI=FPG3", "MASS=FPG3", "FPG1=FPG1", "NOEU=NOEU"),
-            mater=("FPG1", "RIGI", "MASS"),
-        ),
-    )
-
-
-# --------------------------------------------------------------------------------------------------
-class THPLTR6(THPLQU4):
-    """Thermics - PLAN - TRIA6"""
-
-    meshType = MT.TRIA6
-    elrefe = (
-        ElrefeLoc(
-            MT.TR6,
-            gauss=("RIGI=FPG6", "MASS=FPG6", "FPG1=FPG1", "NOEU=NOEU"),
+            MT.QU4,
+            gauss=("RIGI=FPG4", "MASS=NOEU_S", "FPG1=FPG1", "NOEU=NOEU"),
             mater=("FPG1", "RIGI", "MASS"),
         ),
     )

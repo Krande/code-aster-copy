@@ -276,3 +276,11 @@ class SEAXSE3(SEAXSE2):
 
     meshType = MT.SEG3
     elrefe = (ElrefeLoc(MT.SE3, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)
+
+
+# --------------------------------------------------------------------------------------------------
+class SEAXSL2(SEAXSE2):
+    """Drying - Skin (diag) element AXIS - SEG2"""
+
+    meshType = MT.SEG2
+    elrefe = (ElrefeLoc(MT.SE2, gauss=("RIGI=FPG4", "FPG1=FPG1"), mater=("FPG1",)),)

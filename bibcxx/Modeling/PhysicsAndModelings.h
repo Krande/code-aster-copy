@@ -91,6 +91,7 @@ enum Modelings {
     JOINT_3D,
     JOINT_HYME_3D,
     SECH_3D,
+    SECH_3D_DIAG,
     SI_3D,
     THH2D_3D,
     THH2MD_3D,
@@ -137,6 +138,7 @@ enum Modelings {
     AXIS_JHMS,
     AXIS_JOINT,
     AXIS_SECH,
+    AXIS_SECH_DIAG,
     AXIS_SI,
     AXIS_THH2D,
     AXIS_THH2MD,
@@ -227,7 +229,6 @@ enum Modelings {
     PLAN_JHMS,
     PLAN_JOINT,
     PLAN_JOINT_HYME,
-    PLAN_SECH,
     POU_D_E,
     POU_D_EM,
     POU_D_SQUE,
@@ -241,7 +242,7 @@ enum Modelings {
     TUYAU_3M,
     TUYAU_6M,
 };
-const int nbModelings = 195;
+const int nbModelings = 196;
 /**
  * @var ModelingNames
  * @brief Nom Aster des differentes modelisations disponibles
@@ -251,7 +252,7 @@ extern const char *const ModelingNames[nbModelings];
 const int nbModelingsMechanics = 183;
 extern const Modelings MechanicsModelings[nbModelingsMechanics];
 
-const int nbModelingsThermal = 16;
+const int nbModelingsThermal = 17;
 extern const Modelings ThermalModelings[nbModelingsThermal];
 
 const int nbModelingsAcoustic = 4;
