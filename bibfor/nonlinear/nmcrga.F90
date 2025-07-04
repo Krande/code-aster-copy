@@ -1,5 +1,5 @@
 ! --------------------------------------------------------------------
-! Copyright (C) 1991 - 2023 - EDF R&D - www.code-aster.org
+! Copyright (C) 1991 - 2025 - EDF R&D - www.code-aster.org
 ! This file is part of code_aster.
 !
 ! code_aster is free software: you can redistribute it and/or modify
@@ -125,8 +125,8 @@ subroutine nmcrga(sderro)
                                       '         ', '         ', '         ', &
                                       '         ', '         ', '         ', &
                                       '         ', '         ', '         ', &
-                                      '         ', '         ', '         ', &
-                                      '         ', '         ', '         ', &
+                                      '         ', 'RESI_RELA', 'RESI_MAXI', &
+                                      'RESI_REFE', 'RESI_COMP', '         ', &
                                       'LDLT_SP  ', '         ', '         ', &
                                       '         '/)
 !
@@ -151,8 +151,8 @@ subroutine nmcrga(sderro)
     integer :: iEvent
     character(len=24) :: eventECONJv, eventECOVJv, eventENIVJv, eventEFCTJv, eventEMSGJv
     character(len=24) :: eventCONVJv, eventEEVTJv, eventENOMJv, eventEACTJv
-    integer, pointer :: eventEACT(:) => null(), eventECOV(:) => null(), eventCONV(:) => null()
-    integer, pointer :: eventEEVT(:) => null()
+    integer(kind=8), pointer :: eventEACT(:) => null(), eventECOV(:) => null()
+    integer(kind=8), pointer :: eventEEVT(:) => null(), eventCONV(:) => null()
     character(len=16), pointer :: eventENOM(:) => null()
     character(len=16), pointer :: eventENIV(:) => null()
     character(len=24), pointer :: eventEMSG(:) => null(), eventEFCT(:) => null()
