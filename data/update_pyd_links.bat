@@ -3,7 +3,7 @@ title Create testing link
 mode con: cols=90 lines=30
 Color 0F
 cls
-set aster_lib=%~dp0lib\aster
+set aster_lib=%~dp0..\..\lib\aster
 for %%A IN (aster,aster_core,aster_fonctions,libaster,med_aster) do (
     if exist "%aster_lib%\%%A.pyd" (
         del %aster_lib%\%%A.pyd
@@ -13,6 +13,6 @@ for %%A IN (aster,aster_core,aster_fonctions,libaster,med_aster) do (
 if exist "%aster_lib%\libAsterGC.pyd" (
     del %aster_lib%\libAsterGC.pyd
 )
-mklink /h %aster_lib%\libAsterGC.pyd %aster_lib%\AsterGC.dll
+mklink /h %aster_lib%\libAsterGC.pyd %aster_lib%\aster.dll
 
 exit
