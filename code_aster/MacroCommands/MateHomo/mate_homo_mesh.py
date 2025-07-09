@@ -93,12 +93,12 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     fullvolume.setName(group_tout)
     l0groups = preserved_groups + [fullvolume]
 
-    volume_ver, dirthick, newmesh = rebuild_with_groups(m0, l0groups)
+    volume_ver, ep_ver, newmesh = rebuild_with_groups(m0, l0groups)
 
     mesh = Mesh()
     mesh.buildFromMedCouplingMesh(newmesh)
 
-    return mesh, group_tout, volume_ver, dirthick
+    return mesh, group_tout, volume_ver, ep_ver
 
 
 def check_meshdim(m0):
@@ -206,6 +206,8 @@ def rebuild_with_groups(m0, l0groups):
         face_groups.append(cellsmax)
         face_nodes[grpname] = ndsmax
 
+    ep_ver = dirthick["Z"]
+
     skin_cells = mc.DataArrayInt.Range(0, skin.getNumberOfCells(), 1)
     bbox_cells = mc.DataArrayInt.BuildUnion(face_groups)
     internal_skin_cells = skin_cells.buildSubstraction(bbox_cells)
@@ -287,4 +289,4 @@ def rebuild_with_groups(m0, l0groups):
 
     newmesh.setGroupsAtLevel(1, node_groups)
 
-    return volume_ver, dirthick, newmesh
+    return volume_ver, ep_ver, newmesh

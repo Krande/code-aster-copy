@@ -213,7 +213,7 @@ class SymmetryManager:
         mesh_fused.setName(meshin.getName())
 
         l0grp = [mesh_fused.getGroupArr(0, grp) for grp in mesh_fused.getGroupsOnSpecifiedLev(0)]
-        volume_ver, dirthick, mesh_merged = rebuild_with_groups(mesh_fused[0], l0grp)
+        volume_ver, ep_ver, mesh_merged = rebuild_with_groups(mesh_fused[0], l0grp)
 
         return mesh_merged, point_ids_to_keep_sym, point_ids_to_merge
 

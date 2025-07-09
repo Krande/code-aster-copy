@@ -64,8 +64,4 @@ CALC_MATE_HOMO = MACRO(
         condition="""equal_to("TYPE_HOMO", "MASSIF")""",
         CORR_THER=SIMP(statut="f", typ=CO, validators=NoRepeat()),
     ),
-    b_corr_plaque=BLOC(
-        condition="""equal_to("TYPE_HOMO", "PLAQUE")""",
-        VECT_NORM=SIMP(statut="o", typ="TXM", into=("X", "Y", "Z")),
-    ),
 )
