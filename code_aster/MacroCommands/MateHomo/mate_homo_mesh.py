@@ -93,12 +93,42 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     fullvolume.setName(group_tout)
     l0groups = preserved_groups + [fullvolume]
 
-    volume_ver, ep_ver, newmesh = rebuild_with_groups(m0, l0groups)
+    newmesh = rebuild_with_groups(m0, l0groups)
+    volume_ver, ep_ver = get_mesh_size(newmesh)
 
     mesh = Mesh()
     mesh.buildFromMedCouplingMesh(newmesh)
 
     return mesh, group_tout, volume_ver, ep_ver
+
+
+def get_mesh_size(mcmesh):
+    """
+    Calculate some mesh properties.
+
+    Args:
+    -----
+        mcmesh (MEDFileUMesh) : Input mesh
+
+    Returns:
+    --------
+        volume_ver (float): Total volume of the bounding box of the mesh object.
+        ep_ver (float) : Thickness along the Z-axis.
+    """
+
+    m0 = mcmesh[0]
+    bounds = m0.getBoundingBox()
+    volume_ver = 1.0
+    dirthick = {}
+
+    for (idx, dirname) in enumerate("x y z".split()):
+        vmin, vmax = bounds[idx]
+        volume_ver *= vmax - vmin
+        dirthick[dirname.upper()] = vmax - vmin
+
+    ep_ver = dirthick["Z"]
+
+    return volume_ver, ep_ver
 
 
 def check_meshdim(m0):
@@ -180,13 +210,9 @@ def rebuild_with_groups(m0, l0groups):
     tol = MESH_TOL
     face_groups = []
     face_nodes = {}
-    volume_ver = 1.0
-    dirthick = {}
 
     for (idx, dirname) in enumerate("x y z".split()):
         vmin, vmax = bounds[idx]
-        volume_ver *= vmax - vmin
-        dirthick[dirname.upper()] = vmax - vmin
 
         ndsmin = m0.getCoords()[:, idx].findIdsInRange(vmin - tol, vmin + tol)
         cellsmin = skin.getCellIdsLyingOnNodes(ndsmin, True)
@@ -205,8 +231,6 @@ def rebuild_with_groups(m0, l0groups):
         cellsmax.setName(grpname)
         face_groups.append(cellsmax)
         face_nodes[grpname] = ndsmax
-
-    ep_ver = dirthick["Z"]
 
     skin_cells = mc.DataArrayInt.Range(0, skin.getNumberOfCells(), 1)
     bbox_cells = mc.DataArrayInt.BuildUnion(face_groups)
@@ -289,4 +313,4 @@ def rebuild_with_groups(m0, l0groups):
 
     newmesh.setGroupsAtLevel(1, node_groups)
 
-    return volume_ver, ep_ver, newmesh
+    return newmesh
