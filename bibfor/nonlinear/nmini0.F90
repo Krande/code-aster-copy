@@ -28,7 +28,6 @@ subroutine nmini0(eta, nume_inst, matass, &
 !
     implicit none
 !
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/nmchai.h"
 #include "asterfort/infdbg.h"

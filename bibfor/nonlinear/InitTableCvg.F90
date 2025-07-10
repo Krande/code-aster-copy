@@ -24,7 +24,6 @@ subroutine InitTableCvg(list_func_acti, sdsuiv, ds_print)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/SetTableColumn.h"

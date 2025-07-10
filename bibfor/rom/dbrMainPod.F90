@@ -24,7 +24,6 @@ subroutine dbrMainPod(paraPod, baseOut)
     implicit none
 !
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/dbr_calcpod_q.h"
 #include "asterfort/dbr_calcpod_redu.h"
 #include "asterfort/dbr_calcpod_save.h"

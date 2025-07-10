@@ -38,8 +38,6 @@ subroutine ndxforc_step(list_func_acti, &
 #include "asterfort/nonlinLoadDynaCompute.h"
 #include "asterfort/nmvcpr.h"
 #include "asterfort/diinst.h"
-#include "asterfort/ndynlo.h"
-#include "asterfort/isfonc.h"
 !
     integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: model, cara_elem, nume_dof

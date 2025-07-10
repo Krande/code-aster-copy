@@ -24,7 +24,6 @@ subroutine mtdefs(matout, matin, base, typc)
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

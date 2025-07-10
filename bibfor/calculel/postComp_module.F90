@@ -86,7 +86,6 @@ module postComp_module
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/zaxpy.h"
-#include "blas/zcopy.h"
 #include "jeveux.h"
 ! ==================================================================================================
 contains

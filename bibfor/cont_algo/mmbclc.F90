@@ -24,7 +24,6 @@ subroutine mmbclc(mesh, model, iter_newt, nume_inst, ds_measure, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/copisd.h"
 #include "asterfort/mmbouc.h"

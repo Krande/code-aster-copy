@@ -25,7 +25,6 @@ subroutine romModeParaSave(resultName, numeMode, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/rsadpa.h"
 !
     character(len=8), intent(in) :: resultName

@@ -28,10 +28,8 @@ subroutine cnsprj(cns1z, correz, basez, cns2z, iret)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !

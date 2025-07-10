@@ -60,8 +60,6 @@ subroutine get_value_mode_local(nmparz, listepara, valepara, iret, retpara_, nbp
 #include "asterfort/assert.h"
 #include "asterfort/chloet.h"
 #include "asterfort/contex_param.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/rgcmpg.h"
 #include "asterfort/utmess.h"
 !

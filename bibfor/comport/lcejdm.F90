@@ -27,7 +27,6 @@ subroutine lcejdm(BEHinteg, fami, kpg, ksp, ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8pi.h"
 #include "asterfort/matinv.h"
 #include "asterfort/pmavec.h"
 #include "asterfort/r8inir.h"

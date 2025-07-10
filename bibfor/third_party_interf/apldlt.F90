@@ -29,7 +29,6 @@ subroutine apldlt(kptsc, action, prepost, rsolu, vcine, nbsol)
 ! person_in_charge: natacha.bereux@edf.fr
 
 #include "jeveux.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

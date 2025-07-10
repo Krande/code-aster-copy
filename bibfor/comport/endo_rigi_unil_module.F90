@@ -29,7 +29,6 @@ module endo_rigi_unil_module
 #include "asterfort/assert.h"
 #include "asterfort/lcvalp.h"
 #include "asterfort/lcesme.h"
-#include "asterc/r8vide.h"
 
 ! --------------------------------------------------------------------------------------------------
 

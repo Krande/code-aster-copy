@@ -22,7 +22,6 @@ subroutine te0372(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"

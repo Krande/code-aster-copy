@@ -22,7 +22,6 @@ subroutine extrs2(resu0, resu1, typcon, lrest, mailla, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

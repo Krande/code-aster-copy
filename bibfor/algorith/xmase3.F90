@@ -36,7 +36,6 @@ subroutine xmase3(elrefp, ndim, coorse, igeom, he, &
 #include "asterfort/iselli.h"
 #include "asterfort/xnbddl.h"
 #include "asterfort/iimatu.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/indent.h"
     integer(kind=8) :: ndim, igeom, imate, nnop, npg, nfh, ddlc, nfe, heavn(27, 5)
     integer(kind=8) :: jstno, nnops, ddlm

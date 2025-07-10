@@ -20,7 +20,6 @@ subroutine pipeab(mat, dtau, vim, sup, sud, mup, mud, nsol, sol, sgn)
 
     implicit none
 #include "asterfort/assert.h"
-#include "asterc/r8vide.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/zerop2.h"

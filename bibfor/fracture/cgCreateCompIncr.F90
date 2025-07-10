@@ -25,7 +25,6 @@ subroutine cgCreateCompIncr(compor, l_etat_init)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/copisd.h"
 #include "asterfort/jedema.h"

@@ -21,7 +21,6 @@ subroutine addGroupElem(mesh, nb_add)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jedetr.h"

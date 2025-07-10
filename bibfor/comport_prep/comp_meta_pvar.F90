@@ -40,7 +40,6 @@ subroutine comp_meta_pvar(model, comporMeta, comporMetaInfo)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
 !
     character(len=8), intent(in) :: model

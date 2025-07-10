@@ -36,8 +36,6 @@ subroutine nmcese(modele, numedd, ds_material, carele, &
 #include "asterfort/nmcere.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmrcyc.h"
-#include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
 !
     integer(kind=8) :: fonact(*)
     integer(kind=8) :: iterat

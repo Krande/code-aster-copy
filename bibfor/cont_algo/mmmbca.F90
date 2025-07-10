@@ -57,7 +57,6 @@ subroutine mmmbca(mesh, iter_newt, nume_inst, &
 #include "asterfort/mmstac.h"
 #include "asterfort/mmstaf.h"
 #include "asterfort/mreacg.h"
-#include "asterfort/ndynlo.h"
 #include "Contact_type.h"
 #include "jeveux.h"
 !

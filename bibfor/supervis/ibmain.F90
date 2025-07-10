@@ -33,7 +33,6 @@ subroutine ibmain()
 #include "asterfort/jeinif.h"
 #include "asterfort/lxinit.h"
 #include "asterfort/ststat.h"
-#include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
 
     character(len=8) :: nomf

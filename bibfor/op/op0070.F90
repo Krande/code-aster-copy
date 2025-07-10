@@ -56,7 +56,6 @@ subroutine op0070()
 #include "asterfort/onerrf.h"
 #include "asterfort/titre.h"
 #include "asterfort/setTimeListProgressBar.h"
-#include "asterfort/isfonc.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

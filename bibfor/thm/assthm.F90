@@ -42,7 +42,6 @@ subroutine assthm(ds_thm, option, j_mater, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cabthm.h"
 #include "asterfort/equthm.h"
@@ -155,10 +154,12 @@ subroutine assthm(ds_thm, option, j_mater, &
     real(kind=8) :: dfdi(nno, 3), dfdi2(nnos, 3), b(dimdef, dimuel)
     real(kind=8) :: drds(dimdef+1, dimcon), drdsr(dimdef, dimcon), dsde(dimcon, dimdef)
     real(kind=8) :: r(dimdef+1), sigbar(dimdef)
-    real(kind=8) :: work1(dimcon, dimuel), work2(dimdef, dimuel), matri(dimmat, dimmat)
+    real(kind=8) :: work1(dimcon, dimuel), work2(dimdef, dimuel)
+    real(kind=8), allocatable, dimension(:, :) :: matri
 !
 ! --------------------------------------------------------------------------------------------------
 !
+    allocate (matri(dimmat, dimmat))
     ASSERT(nddls*nnos .le. dimmat)
     ASSERT(dimuel .le. dimmat)
     codret = 0
@@ -359,5 +360,6 @@ subroutine assthm(ds_thm, option, j_mater, &
     end if
 ! ======================================================================
 99  continue
+    deallocate (matri)
 ! ======================================================================
 end subroutine

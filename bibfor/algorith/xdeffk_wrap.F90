@@ -22,7 +22,6 @@ subroutine xdeffk_wrap(kappa, mu, r, theta, ndim, fkpo, option, istano)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/xdeffk.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"

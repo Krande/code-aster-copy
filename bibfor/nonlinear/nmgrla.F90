@@ -39,7 +39,6 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/lcdetf.h"
@@ -47,7 +46,6 @@ subroutine nmgrla(FECell, FEBasis, FEQuad, option, typmod, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmgrtg.h"
 #include "asterfort/pk2sig.h"
-#include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
 #include "FE_module.h"
 !

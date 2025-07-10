@@ -24,7 +24,6 @@ subroutine nonlinDSMeasureClean(ds_measure)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nonlinDSTableIOClean.h"
 !
     type(NL_DS_Measure), intent(inout) :: ds_measure

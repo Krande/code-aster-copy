@@ -22,7 +22,6 @@ subroutine mbpk2c(sens, alpha, beta, h, covaini, jacini, jacdef, sigin, sigout)
 #include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/promat.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/r8inir.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"

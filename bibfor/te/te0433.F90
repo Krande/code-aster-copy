@@ -22,7 +22,6 @@ subroutine te0433(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/cargri.h"
 #include "asterfort/dxqpgl.h"
 #include "asterfort/dxtpgl.h"

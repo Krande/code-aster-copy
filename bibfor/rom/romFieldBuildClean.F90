@@ -23,7 +23,6 @@ subroutine romFieldBuildClean(fieldBuild)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/romBaseClean.h"
 #include "asterfort/romFieldClean.h"

@@ -31,11 +31,9 @@ module mesh_modification_module
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -99,7 +97,8 @@ contains
         type(MESH_OPER_MODI_PARA), intent(inout) :: meshOperModiPara
 ! ----- Local
         character(len=8) :: mesh, nodeName
-   integer(kind=8) :: iFactorKeyword, nbret, nbVectCmp, nbGroupNode, nbGroupCell, nodeNume, cellNume
+        integer(kind=8) :: iFactorKeyword, nbret, nbVectCmp, nbGroupNode, nbGroupCell
+        integer(kind=8) :: nodeNume, cellNume
         character(len=16), parameter :: factorKeyword = "ORIE_NORM_COQUE"
         aster_logical :: orieByVect
         real(kind=8) :: orieVect(3)

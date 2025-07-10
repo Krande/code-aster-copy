@@ -20,14 +20,7 @@ subroutine nurota(modelz, nume_ddl, compor, sdnuro)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbelem.h"
-#include "asterfort/nbgrel.h"
-#include "asterfort/typele.h"
 #include "asterfort/sele_elem_comp.h"
 #include "asterfort/sele_node_elem.h"
 #include "asterfort/select_dof.h"

@@ -28,7 +28,6 @@ subroutine mm_pene_loop(ds_contact)
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
-#include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
@@ -37,7 +36,6 @@ subroutine mm_pene_loop(ds_contact)
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"
 #include "asterfort/mminfm.h"
-#include "asterfort/ndynlo.h"
 !
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !

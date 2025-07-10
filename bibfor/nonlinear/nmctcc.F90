@@ -26,15 +26,12 @@ subroutine nmctcc(mesh, model_, nume_inst, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/mm_cycl_flip.h"
 #include "asterfort/mmstat.h"
 #include "asterfort/nmcrel.h"
-#include "asterfort/utmess.h"
 #include "asterfort/nmchex.h"
 !
     character(len=8), intent(in) :: mesh

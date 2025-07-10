@@ -31,7 +31,6 @@ subroutine crnustd(numddl)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/create_graph_comm.h"
 #include "asterfort/assert.h"
-#include "asterfort/codlet.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jedema.h"

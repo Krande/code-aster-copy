@@ -34,7 +34,6 @@ subroutine te0541(option, nomte)
 #include "asterfort/xsigth.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
-#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 ! ----------------------------------------------------------------------
 ! FONCTION REALISEE:  CALCUL DE L'OPTION CHAR_MECA_TEMP_R POUR LES

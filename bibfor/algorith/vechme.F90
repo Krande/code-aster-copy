@@ -30,7 +30,6 @@ subroutine vechme(stop, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

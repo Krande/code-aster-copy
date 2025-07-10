@@ -29,7 +29,6 @@ subroutine setMFrontPara(prepCrit, iFactorKeyword)
 #include "asterc/mgis_set_integer_parameter.h"
 #include "asterc/mgis_set_outofbounds_policy.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     type(BehaviourPrep_Crit), pointer :: prepCrit(:)

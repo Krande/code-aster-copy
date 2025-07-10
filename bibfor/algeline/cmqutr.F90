@@ -15,14 +15,12 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C0110
 
 subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
                   prefix, ndinit)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/ingrma.h"
@@ -76,12 +74,14 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
     parameter(ntyele=28)
     parameter(maxel=48)
     parameter(maxno=8)
-    integer(kind=8) :: tdec(ntyele, maxel, maxno)
+    integer(kind=8), allocatable :: tdec(:, :, :)
     integer(kind=8) :: typd(ntyele, 3)
 !     ------------------------------------------------------------------
 !
     call jemarq()
     call infniv(ifm, niv)
+!
+    allocate (tdec(ntyele, maxel, maxno))
 !
 !====
 ! 1. TABLEAU DE DECOUPAGE
@@ -363,6 +363,7 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !
 !     -- RETASSAGE  DE CONNEX (QUI A ETE ALLOUEE TROP GRANDE) :
     call jeccta(connex)
+    deallocate (tdec)
 !
 !
 !

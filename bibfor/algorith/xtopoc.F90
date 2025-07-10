@@ -23,7 +23,6 @@ subroutine xtopoc(modele, decou)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cescre.h"
 #include "asterfort/cesexi.h"

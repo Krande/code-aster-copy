@@ -23,7 +23,6 @@ subroutine jeimpm(unit)
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
 #include "asterfort/jxveri.h"
-#include "asterfort/utmess.h"
     integer(kind=8) :: unit
 ! ----------------------------------------------------------------------
 ! IMPRIME LA SEGMENTATION DE LA MEMOIRE

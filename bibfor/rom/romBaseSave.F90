@@ -24,7 +24,6 @@ subroutine romBaseSave(base, nbMode, nbSnap, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/romModeSave.h"

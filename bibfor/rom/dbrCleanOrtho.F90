@@ -23,7 +23,6 @@ subroutine dbrCleanOrtho(paraOrtho)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/romBaseClean.h"
 !
     type(ROM_DS_ParaDBR_Ortho), intent(inout) :: paraOrtho

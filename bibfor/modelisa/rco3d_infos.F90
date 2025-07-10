@@ -30,9 +30,7 @@ subroutine rco3d_infos(typmaco, typma3d, epai, j_geom, nb_gauss, gauss_coor, &
 #include "asterfort/elrfd2.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/reerel.h"
 #include "asterfort/elrfno.h"
-#include "asterfort/mmproj.h"
 #include "asterfort/provec.h"
 #include "jeveux.h"
 !

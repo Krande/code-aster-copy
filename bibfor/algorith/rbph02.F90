@@ -24,7 +24,6 @@ subroutine rbph02(mailla, numddl, chamno, nomgd, neq, &
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"

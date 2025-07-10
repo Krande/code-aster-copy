@@ -35,7 +35,6 @@ subroutine te0261(option, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/ltequa.h"

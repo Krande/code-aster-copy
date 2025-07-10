@@ -45,7 +45,6 @@ subroutine mmopti(mesh, ds_contact, list_func_acti)
 #include "asterfort/mminfl.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/utmess.h"
-#include "asterc/r8prem.h"
 #include "blas/ddot.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/mmvalp.h"

@@ -24,7 +24,6 @@ subroutine matr_asse_compute_kinematic_rhs(matasz, vcinez, vrhsz)
 #include "asterfort/csmbgg.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"

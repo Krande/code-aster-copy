@@ -24,8 +24,6 @@ subroutine nmdomt_ls(ds_algopara)
     implicit none
 !
 #include "asterc/getfac.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"

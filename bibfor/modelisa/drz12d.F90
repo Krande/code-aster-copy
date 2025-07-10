@@ -22,8 +22,6 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getres.h"
-#include "asterc/indik8.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
@@ -31,9 +29,7 @@ subroutine drz12d(noma, ligrmo, type_vale, nb_node, list_node, &
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"

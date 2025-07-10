@@ -24,7 +24,6 @@ subroutine nzcizi(fami, kpg, ksp, ndim, imat, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/nzcalc.h"
 #include "asterfort/verift.h"

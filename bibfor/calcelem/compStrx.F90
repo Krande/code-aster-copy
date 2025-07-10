@@ -26,7 +26,6 @@ subroutine compStrx(modelz, ligrel, compor, &
 !
 #include "asterf_types.h"
 #include "asterfort/ajchca.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jeexin.h"

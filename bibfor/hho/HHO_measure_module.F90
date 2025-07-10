@@ -27,7 +27,6 @@ module HHO_measure_module
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "MeshTypes_type.h"
-#include "blas/ddot.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

@@ -27,7 +27,6 @@ subroutine op9999(options)
 #include "asterc/rmfile.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/asmpi_checkalarm.h"
-#include "asterfort/assert.h"
 #include "asterfort/get_jvbasename.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
@@ -40,7 +39,6 @@ subroutine op9999(options)
 #include "asterfort/jxveri.h"
 #include "asterfort/ststat.h"
 #include "asterfort/uimpba.h"
-#include "asterfort/ulexis.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"
 

@@ -71,9 +71,7 @@ subroutine dglrdm()
 !       EPSI_C  :
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dgelas.h"
 #include "asterfort/dgendo.h"

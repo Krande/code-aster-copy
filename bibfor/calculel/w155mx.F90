@@ -23,7 +23,6 @@ subroutine w155mx(resultOut, resultIn, nbStore, listStore)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getexm.h"
 #include "asterc/getfac.h"
 #include "asterfort/alchml.h"
 #include "asterfort/assert.h"

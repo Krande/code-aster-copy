@@ -23,7 +23,6 @@ subroutine ntcrli(listInst, sddisc, lostat)
 #include "asterf_types.h"
 #include "asterfort/gettco.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
 #include "asterfort/getvr8.h"

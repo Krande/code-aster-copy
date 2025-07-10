@@ -28,7 +28,6 @@ subroutine nzcomp(jvMaterCode, metaPara, numeComp, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zacier.h"
 #include "asterfort/zedgar.h"

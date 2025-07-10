@@ -25,7 +25,6 @@ module csc_matrix_type
 !
     private
 #include "asterf_petsc.h"
-#include "asterc/asmpi_comm.h"
 #include "asterc/r8prem.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"

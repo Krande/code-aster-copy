@@ -36,7 +36,6 @@ subroutine calcva(ds_thm, ndim, &
 #include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
 #include "jeveux.h"

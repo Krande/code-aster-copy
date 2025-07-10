@@ -50,12 +50,8 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/mecact.h"
 #include "asterfort/mecara.h"
@@ -66,9 +62,6 @@ subroutine chrpel(champ1, repere, nom_cham, icham, type_chamz, &
 #include "asterfort/sepach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
-#include "blas/ddot.h"
     !
     integer(kind=8) :: icham
     character(len=*) :: champ1, repere, type_chamz, nomch, nom_cham

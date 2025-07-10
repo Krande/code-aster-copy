@@ -29,7 +29,6 @@ subroutine sepach(carael, chinz, base, chreel, chimag)
 #include "asterfort/gnomsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedup1.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"

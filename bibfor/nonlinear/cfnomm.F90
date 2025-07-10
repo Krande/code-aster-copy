@@ -26,8 +26,6 @@ subroutine cfnomm(noma, defico, typent, posent, noment)
 #include "asterfort/cfnumn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

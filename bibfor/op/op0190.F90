@@ -42,9 +42,6 @@ subroutine op0190()
 #include "asterfort/utmess.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecreo.h"
-#include "asterfort/jelira.h"
-#include "asterfort/tecach.h"
-#include "asterfort/cescre.h"
 #include "asterfort/exlim3.h"
 #include "asterfort/alchml.h"
 !

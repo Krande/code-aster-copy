@@ -23,14 +23,10 @@ subroutine dismcgo(questi, nomobz, repi, repkz, ierd)
 !     ----------
 #include "jeveux.h"
 !
-#include "asterfort/assert.h"
-#include "asterfort/dismgd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
     integer(kind=8) :: repi, ierd
     character(len=*) :: questi
     character(len=*) :: nomobz, repkz

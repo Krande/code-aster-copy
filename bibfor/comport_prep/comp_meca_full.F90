@@ -21,9 +21,7 @@ subroutine comp_meca_full(model, comp_elas, full_elem_s)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getexm.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"

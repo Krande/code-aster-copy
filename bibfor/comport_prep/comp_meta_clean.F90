@@ -23,7 +23,6 @@ subroutine comp_meta_clean(comporMetaInfo)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"

@@ -34,7 +34,6 @@ subroutine ddr_crid(ds_para, nb_node_rid, v_node_rid)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/addGroupElem.h"
 #include "asterfort/addGroupNode.h"

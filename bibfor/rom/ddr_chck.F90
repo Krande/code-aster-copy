@@ -23,7 +23,6 @@ subroutine ddr_chck(cmdPara)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jenonu.h"

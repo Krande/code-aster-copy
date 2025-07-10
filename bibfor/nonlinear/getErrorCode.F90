@@ -22,7 +22,6 @@ subroutine getErrorCode(codret, ldccvg)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmiret.h"
 !
     character(len=19), intent(in) :: codret

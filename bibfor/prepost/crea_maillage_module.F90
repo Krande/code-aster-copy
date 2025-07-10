@@ -36,7 +36,6 @@ module crea_maillage_module
 #include "asterfort/assert.h"
 #include "asterfort/build_tree_comm.h"
 #include "asterfort/codent.h"
-#include "asterfort/codlet.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/isParallelMesh.h"

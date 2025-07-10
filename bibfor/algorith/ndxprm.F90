@@ -36,7 +36,6 @@ subroutine ndxprm(modelz, ds_material, carele, ds_constitutive, ds_algopara, &
 #include "asterfort/asmari.h"
 #include "asterfort/diinst.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/ndxmat.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"

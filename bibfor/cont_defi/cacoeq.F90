@@ -23,7 +23,6 @@ subroutine cacoeq(sdcont, mesh, lLineRela, listRela)
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-#include "asterfort/aflrch.h"
 #include "asterfort/afrela.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmex.h"

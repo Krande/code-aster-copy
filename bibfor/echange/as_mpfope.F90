@@ -21,7 +21,6 @@ subroutine as_mpfope(fid, nom, acces, comm, cret)
     implicit none
 #include "asterf.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "med/mpfope.h"
     med_idt, intent(inout) :: fid

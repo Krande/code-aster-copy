@@ -24,7 +24,6 @@ subroutine comp_read_mesh(mesh, keywordfact, iocc, &
 #include "asterf_types.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/isParallelMesh.h"
-#include "asterfort/assert.h"
 #include "asterfort/reliem.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

@@ -25,7 +25,6 @@ subroutine romGreedyResiMaxi(ds_multipara, ds_algoGreedy, i_coef_maxi)
 !
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 !
     type(ROM_DS_MultiPara), intent(in) :: ds_multipara
     type(ROM_DS_AlgoGreedy), intent(in) :: ds_algoGreedy

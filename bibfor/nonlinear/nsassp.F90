@@ -26,7 +26,6 @@ subroutine nsassp(list_func_acti, ds_contact, ds_system, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/nmasdi.h"

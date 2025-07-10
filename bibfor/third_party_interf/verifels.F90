@@ -54,7 +54,6 @@ subroutine verifels(cequi, ht, bw, enrobi, enrobs, &
     implicit none
 !
 #include "extern/dintels.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !

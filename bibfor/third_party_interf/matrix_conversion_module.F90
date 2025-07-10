@@ -25,7 +25,6 @@ module matrix_conversion_module
 !
     private
 #include "asterf_petsc.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

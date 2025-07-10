@@ -25,7 +25,6 @@ subroutine nonlinDSAlgoParaInit(list_func_acti, ds_algopara, ds_contact)
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"

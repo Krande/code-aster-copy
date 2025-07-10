@@ -33,8 +33,6 @@ subroutine sgcomp(compor_curr, sigm, ligrel_currz, iret, &
 #include "asterfort/cestas.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=*), intent(in) :: compor_curr

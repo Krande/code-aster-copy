@@ -31,9 +31,7 @@ subroutine zwaeckel(metaSteelPara, nbPhase, nbVari, &
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
-#include "asterfort/smcarc.h"
 #include "asterfort/utmess.h"
-#include "asterfort/metaSteelGrainSize.h"
 #include "asterfort/Metallurgy_type.h"
 !
     type(META_SteelParameters), intent(in) :: metaSteelPara

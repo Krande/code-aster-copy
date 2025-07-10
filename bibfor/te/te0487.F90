@@ -40,7 +40,6 @@ subroutine te0487(nomopt, nomte)
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/rccoma.h"
-#include "asterfort/teattr.h"
 #include "blas/dgemv.h"
 #include "jeveux.h"
 !

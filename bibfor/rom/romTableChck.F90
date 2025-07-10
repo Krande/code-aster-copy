@@ -25,7 +25,6 @@ subroutine romTableChck(tablReduCoor, lTablFromResu, nbModeIn, nbSnapIn_, nbStor
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbexve.h"

@@ -28,7 +28,6 @@ subroutine apsave_pair(i_zone, elem_slav_nume, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 !

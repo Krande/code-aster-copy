@@ -23,8 +23,6 @@ subroutine posddl(typesd, resu, node_name, cmp_name, node_nume, &
 !
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/select_dof.h"

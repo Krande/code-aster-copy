@@ -24,7 +24,6 @@ subroutine as_mfiope(fid, nom, acces, cret)
 #include "asterf_types.h"
 #include "asterf.h"
 #include "asterfort/utmess.h"
-#include "asterfort/assert.h"
 #include "med/mfiope.h"
     med_idt, intent(out) :: fid
     character(len=*), intent(in) :: nom

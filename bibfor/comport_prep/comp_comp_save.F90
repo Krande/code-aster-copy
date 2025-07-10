@@ -22,7 +22,6 @@ subroutine comp_comp_save(mesh, compor, v_info_valk, v_info_vali)
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"

@@ -27,7 +27,6 @@ subroutine nonlinDSMaterialInit(model, mater, mateco, cara_elem, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/utmess.h"

@@ -22,7 +22,6 @@ subroutine romVariParaInfo(ds_varipara)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

@@ -23,7 +23,6 @@ subroutine sele_elem_comp(modelz, compor, defo_comp, list_elem_comp)
 #include "asterfort/assert.h"
 #include "asterfort/nbelem.h"
 #include "asterfort/nbgrel.h"
-#include "asterfort/typele.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/jeveuo.h"

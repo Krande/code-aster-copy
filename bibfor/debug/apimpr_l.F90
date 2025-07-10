@@ -26,7 +26,6 @@ subroutine apimpr_l(ifm, mesh, ds_contact)
 #include "asterfort/jeveuo.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/codent.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"

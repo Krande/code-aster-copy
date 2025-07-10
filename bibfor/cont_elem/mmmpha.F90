@@ -22,7 +22,6 @@ subroutine mmmpha(leltf, lcont, ladhe, l_fric_no, phase)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     aster_logical, intent(in) :: leltf
     aster_logical, intent(in) :: lcont, ladhe, l_fric_no

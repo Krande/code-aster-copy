@@ -36,7 +36,6 @@ subroutine nifipd(ndim, nnod, nnog, nnop, npg, &
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
-#include "asterfort/r8inir.h"
 #include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !

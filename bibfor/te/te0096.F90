@@ -42,7 +42,6 @@ subroutine te0096(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"

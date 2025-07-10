@@ -76,7 +76,6 @@ subroutine cftels(typco, typstru, effrts, effm, effn, efft, effmt, &
 !
 #include "asterc/r8pi.h"
 #include "asterc/r8dgrd.h"
-#include "asterfort/utmess.h"
 !
 !
     integer(kind=8) ::typco

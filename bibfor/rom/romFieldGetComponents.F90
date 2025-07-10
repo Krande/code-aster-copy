@@ -33,7 +33,6 @@ subroutine romFieldGetComponents(field)
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"

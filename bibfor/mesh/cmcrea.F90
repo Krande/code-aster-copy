@@ -26,7 +26,6 @@ subroutine cmcrea(main, maout, nbocc)
 #include "asterfort/copisd.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jeccta.h"
 #include "asterfort/jecrec.h"

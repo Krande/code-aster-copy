@@ -25,7 +25,6 @@ subroutine thmMecaElas(ds_thm, lMatr, lSigm, angl_naut, dtemp, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/thmTherElas.h"
 !
     type(THM_DS), intent(in) :: ds_thm

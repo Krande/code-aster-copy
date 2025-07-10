@@ -39,7 +39,6 @@ subroutine te0048(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalfev_wrap.h"

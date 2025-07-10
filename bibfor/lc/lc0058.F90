@@ -46,7 +46,6 @@ subroutine lc0058(BEHinteg, fami, kpg, ksp, ndim, &
 #include "asterfort/mfront_get_mater_value.h"
 #include "asterfort/mfrontPrepareStrain.h"
 #include "asterfort/use_orient.h"
-#include "asterfort/utmess.h"
 !
     type(Behaviour_Integ), intent(in) :: BEHinteg
     character(len=*), intent(in) :: fami

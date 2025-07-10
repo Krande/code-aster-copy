@@ -22,7 +22,6 @@ subroutine nmlssv(list_load)
     implicit none
 !
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/wkvect.h"
 !

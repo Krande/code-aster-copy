@@ -25,7 +25,6 @@ subroutine te0309(option, nomte)
 !
     implicit none
 !
-#include "asterfort/jevech.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/writeMatrix.h"

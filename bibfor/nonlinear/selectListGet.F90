@@ -24,7 +24,6 @@ subroutine selectListGet(selectList, nume_inst, inst, l_select)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utacli.h"
 !
     type(NL_DS_SelectList), intent(in) :: selectList

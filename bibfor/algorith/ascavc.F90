@@ -26,7 +26,6 @@ subroutine ascavc(lchar, infcha, fomult, numedd, vpara, vci, dlci_, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/ascova.h"
-#include "asterfort/assert.h"
 #include "asterfort/calvci.h"
 #include "asterfort/corich.h"
 #include "asterfort/detrsd.h"

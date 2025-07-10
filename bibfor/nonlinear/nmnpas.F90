@@ -31,7 +31,6 @@ subroutine nmnpas(mesh, model, cara_elem, &
 !
     implicit none
 !
-#include "asterc/isnnem.h"
 #include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/SetResi.h"

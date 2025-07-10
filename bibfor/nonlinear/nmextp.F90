@@ -22,7 +22,6 @@ subroutine nmextp(keyw_fact, i_keyw_fact, field_type, field_disc, field, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"

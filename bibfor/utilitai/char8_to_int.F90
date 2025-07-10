@@ -22,7 +22,6 @@ function char8_to_int(to_convert, lcolle, nommai, typent)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/is_numeric.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jexnom.h"
 !

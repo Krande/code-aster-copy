@@ -38,7 +38,6 @@ module NonLinearElem_module
     private
 #include "asterf_types.h"
 #include "asterfort/asmatr.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"

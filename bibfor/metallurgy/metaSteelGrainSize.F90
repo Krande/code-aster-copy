@@ -26,7 +26,6 @@ subroutine metaSteelGrainSize(metaSteelPara, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     type(META_SteelParameters), intent(in) :: metaSteelPara
     real(kind=8), intent(in) :: d_prev, temp, time_incr1, time_incr2

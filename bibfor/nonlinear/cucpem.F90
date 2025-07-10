@@ -26,7 +26,6 @@ subroutine cucpem(deficu, resocu, nbliai)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "blas/daxpy.h"
     character(len=24) :: deficu, resocu
     integer(kind=8) :: nbliai
 !

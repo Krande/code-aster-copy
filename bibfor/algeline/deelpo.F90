@@ -27,7 +27,6 @@ subroutine deelpo(caelem, noma, numail, phie)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"

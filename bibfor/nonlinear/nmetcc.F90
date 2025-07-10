@@ -25,7 +25,6 @@ subroutine nmetcc(field_type, algo_name, init_name, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/ndynkk.h"
 !
     character(len=24), intent(in) :: field_type

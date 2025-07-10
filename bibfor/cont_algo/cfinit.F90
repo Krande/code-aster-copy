@@ -25,7 +25,6 @@ subroutine cfinit(ds_contact, nume_inst)
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/utmess.h"

@@ -39,8 +39,6 @@ subroutine rfresu()
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/ordonn.h"
 #include "asterfort/rs_get_liststore.h"

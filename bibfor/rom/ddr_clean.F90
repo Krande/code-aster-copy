@@ -23,7 +23,6 @@ subroutine ddr_clean(ds_para)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/romBaseClean.h"
 !
     type(ROM_DS_ParaDDR), intent(inout) :: ds_para

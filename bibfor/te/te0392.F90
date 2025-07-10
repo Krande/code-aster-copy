@@ -23,7 +23,6 @@ subroutine te0392(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/caatdb.h"
 #include "asterfort/cast3d.h"
 #include "asterfort/dfdm3d.h"

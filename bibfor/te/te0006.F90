@@ -28,9 +28,6 @@ subroutine te0006(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/subaco.h"
-#include "asterfort/sumetr.h"
-#include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: option, nomte
 !

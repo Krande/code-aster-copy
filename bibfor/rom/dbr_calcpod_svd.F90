@@ -24,7 +24,6 @@ subroutine dbr_calcpod_svd(m, n, q, s, v, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "blas/dgesvd.h"

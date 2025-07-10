@@ -33,7 +33,6 @@ subroutine thmFlh005(ds_thm, lMatr, lSigm, ndim, j_mater, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/thmEvalPermLiquGaz.h"
 !
     type(THM_DS), intent(in) :: ds_thm

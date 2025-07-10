@@ -26,7 +26,6 @@ subroutine mat152(option, modelDime, modelInterface, ivalk, &
 #include "asterfort/ca2mam.h"
 #include "asterfort/calmaa.h"
 #include "asterfort/codent.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

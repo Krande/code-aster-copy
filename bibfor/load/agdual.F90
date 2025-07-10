@@ -28,8 +28,6 @@ subroutine agdual(load, type_liai, nbrela, nbterm)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/juveca.h"
 #include "asterfort/jeexin.h"

@@ -30,7 +30,6 @@ subroutine ngfint(option, typmod, ndim, nddl, neps, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/Behaviour_type.h"

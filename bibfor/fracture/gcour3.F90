@@ -64,8 +64,6 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
 #include "jeveux.h"
 #include "asterc/r8maem.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/cnocns.h"
 #include "asterfort/cnscre.h"
 #include "asterfort/cnscno.h"
@@ -76,7 +74,6 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
 !
     character(len=24) :: trav1, trav2, trav3, chfond, chamno, coorn
@@ -171,7 +168,8 @@ subroutine gcour3(resu, noma, coorn, lnoff, trav1, &
 !       VOIR RÉFÉRENCE BOOK I (05/01/2004)
         if (k .ne. (ndimte+1)) then
 !
-         if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') .or. (liss .eq. 'MIXTE')) then
+            if ((liss .eq. 'LAGRANGE') .or. (liss .eq. 'LAGRANGE_NO_NO') &
+                .or. (liss .eq. 'MIXTE')) then
                 zr(iadrt3-1+(k-1)*lnoff+k) = 1.d0
                 if ((k .eq. 1) .and. connex) then
                     iadrtt = iadrt3+(k-1)*lnoff+lnoff-1

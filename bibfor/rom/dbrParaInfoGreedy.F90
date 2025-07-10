@@ -24,7 +24,6 @@ subroutine dbrParaInfoGreedy(paraGreedy)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romMultiParaInfo.h"
 #include "asterfort/romSolveInfo.h"

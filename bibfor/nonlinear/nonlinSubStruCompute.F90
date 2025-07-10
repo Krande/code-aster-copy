@@ -25,7 +25,6 @@ subroutine nonlinSubStruCompute(ds_measure, disp, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmtime.h"
 #include "asterfort/nmmacv.h"

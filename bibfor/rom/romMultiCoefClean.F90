@@ -24,7 +24,6 @@ subroutine romMultiCoefClean(ds_multicoef)
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !

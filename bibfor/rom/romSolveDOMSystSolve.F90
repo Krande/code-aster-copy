@@ -24,7 +24,6 @@ subroutine romSolveDOMSystSolve(solver, ds_solve)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/preres.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"

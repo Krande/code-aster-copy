@@ -40,7 +40,6 @@ subroutine rc32t2()
 #include "asterfort/tbexip.h"
 #include "asterfort/tbexv1.h"
 #include "asterfort/tbliva.h"
-#include "asterfort/trace.h"
 #include "asterfort/utmess.h"
 !
 !     ------------------------------------------------------------------

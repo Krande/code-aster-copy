@@ -23,9 +23,6 @@ subroutine deltau(jrwork, jnbpg, nbpgt, nbordr, ordini, &
 ! person_in_charge: van-xuan.tran at edf.fr
     implicit none
 #include "jeveux.h"
-#include "asterc/loisem.h"
-#include "asterc/lor8em.h"
-#include "asterc/r8pi.h"
 #include "asterfort/acgrdo.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"

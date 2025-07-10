@@ -24,15 +24,12 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismme.h"
 #include "asterfort/dismnu.h"
 #include "asterfort/gettco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 
     integer(kind=8) :: repi, ierd
     character(len=*) :: questi

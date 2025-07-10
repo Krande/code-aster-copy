@@ -22,7 +22,6 @@ subroutine lcsegp(elem_dime, nb_lagr, indi_lagc, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     integer(kind=8), intent(in) :: elem_dime
     integer(kind=8), intent(in) :: nb_lagr

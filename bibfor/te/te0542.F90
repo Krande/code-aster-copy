@@ -26,7 +26,6 @@ subroutine te0542(option, nomte)
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/ltequa.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/teattr.h"

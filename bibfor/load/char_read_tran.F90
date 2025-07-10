@@ -25,7 +25,6 @@ subroutine char_read_tran(keywordfact, iocc, ndim, &
 !
 #include "asterf_types.h"
 #include "asterc/r8dgrd.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
 !

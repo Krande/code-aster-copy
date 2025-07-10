@@ -27,7 +27,6 @@ subroutine ssdeu1(motcle, noma, nbno, iliste)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"

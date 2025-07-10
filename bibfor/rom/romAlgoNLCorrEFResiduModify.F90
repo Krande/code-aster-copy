@@ -25,7 +25,6 @@ subroutine romAlgoNLCorrEFResiduModify(vect_2mbr, ds_algorom)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
 !

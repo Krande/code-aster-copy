@@ -28,7 +28,6 @@ module MetallurgyZirc_Compute_module
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/Metallurgy_type.h"
 ! ==================================================================================================

@@ -23,7 +23,6 @@ subroutine cbchei(load, mesh, model, valeType)
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/cachei.h"
 #include "asterfort/carces.h"
 #include "asterfort/celces.h"
@@ -65,7 +64,8 @@ subroutine cbchei(load, mesh, model, valeType)
     integer(kind=8), parameter :: nbcmpdisp = 17
     character(len=8), parameter :: nomcmpdisp(nbcmpdisp) = (/ &
                                    'EPXX', 'EPYY', 'EPZZ', 'EPXY', 'EPXZ', 'EPYZ', &
-                           'EPX ', 'KY  ', 'KZ  ', 'EXX ', 'EYY ', 'EXY ', 'KXX ', 'KYY ', 'KXY ', &
+                                   'EPX ', 'KY  ', 'KZ  ', 'EXX ', 'EYY ', 'EXY ', &
+                                   'KXX ', 'KYY ', 'KXY ', &
                                    'GAX ', 'GAY '/)
 !
 ! --------------------------------------------------------------------------------------------------

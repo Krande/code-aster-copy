@@ -36,14 +36,12 @@ module HHO_LargeStrainMeca_module
     private
 #include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8vide.h"
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/desymt46.h"
-#include "asterfort/dmatmc.h"
 #include "asterfort/lagmodtonommod.h"
 #include "asterfort/lcdetf.h"
 #include "asterfort/nmcomp.h"
@@ -51,7 +49,6 @@ module HHO_LargeStrainMeca_module
 #include "asterfort/pk2topk1.h"
 #include "asterfort/poslog.h"
 #include "asterfort/prelog.h"
-#include "asterfort/utmess.h"
 #include "blas/dger.h"
 !
 ! --------------------------------------------------------------------------------------------------

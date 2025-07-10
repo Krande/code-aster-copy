@@ -22,7 +22,6 @@ subroutine comp_meca_uvar(compor_info, vari_link_base, vari_redu, nb_vari_redu, 
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/codent.h"

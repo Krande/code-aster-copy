@@ -23,10 +23,7 @@ subroutine thmGetElemModel(ds_thm, l_axi_, l_vf_, ndim_, type_elem_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/rcvarc.h"
-#include "asterfort/utmess.h"
 !
     type(THM_DS), intent(inout) :: ds_thm
     aster_logical, optional, intent(out) :: l_axi_, l_vf_

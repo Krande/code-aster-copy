@@ -25,7 +25,6 @@ subroutine nmvcpr_elem(modelz, matez, matecoz, cara_elemz, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/maveElemCreate.h"
 #include "asterfort/nmchex.h"

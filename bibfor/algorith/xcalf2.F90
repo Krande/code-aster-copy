@@ -25,7 +25,6 @@ subroutine xcalf2(he, lsng, lstg, baslog, fe, &
 !
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/xbasgl.h"
 #include "asterfort/xdeffe.h"
 #include "asterfort/xderfe.h"

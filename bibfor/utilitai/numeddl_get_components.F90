@@ -26,7 +26,6 @@ subroutine numeddl_get_components(nume19, allorone, nodeid, ncmp, stringarray, m
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"
 #include "asterfort/utmess.h"

@@ -25,7 +25,6 @@ subroutine setLogVect(vect, x1, x2, x3, x4, x5, &
 !-----------------------------------------------------------------------
     implicit none
 #include "asterf_types.h"
-#include "asterfort/assert.h"
     aster_logical, intent(inout) :: vect(*)
     aster_logical, intent(in) :: x1
     aster_logical, optional, intent(in) :: x2, x3, x4, x5, x6, x7, x8

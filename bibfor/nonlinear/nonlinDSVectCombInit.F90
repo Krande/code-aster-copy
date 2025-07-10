@@ -26,7 +26,6 @@ subroutine nonlinDSVectCombInit(ds_vectcomb)
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 !
     type(NL_DS_VectComb), intent(out) :: ds_vectcomb
 !

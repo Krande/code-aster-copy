@@ -54,7 +54,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/preres.h"
 #include "asterfort/sigusr.h"

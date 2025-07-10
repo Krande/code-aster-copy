@@ -26,8 +26,6 @@ subroutine cfmmcv(mesh, model_, list_func_acti, iter_newt, nume_inst, &
 !
 #include "asterf_types.h"
 #include "asterfort/cfconv.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/mm_cycl_print.h"
 #include "asterfort/mmbclc.h"

@@ -30,9 +30,7 @@ subroutine nmelco_prep(calc_type, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/megeom.h"
-#include "asterfort/jeveuo.h"
 !
     character(len=4), intent(in) :: calc_type
     character(len=24), intent(in) :: model

@@ -22,8 +22,6 @@ subroutine tebiot(ds_thm, angl_naut, tbiot)
 !
     implicit none
 !
-#include "asterc/r8dgrd.h"
-#include "asterc/r8pi.h"
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utbtab.h"

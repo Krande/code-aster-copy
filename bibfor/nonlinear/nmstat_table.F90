@@ -24,7 +24,6 @@ subroutine nmstat_table(ds_measure)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/tbajli.h"
 !
     type(NL_DS_Measure), intent(in) :: ds_measure

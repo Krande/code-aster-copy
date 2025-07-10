@@ -23,7 +23,8 @@
 
 #define MAX_PENA_DOFS 66
 
-#define MAX_NITS_DOFS 108
+! value for 2D problem
+#define MAX_NITS_DOFS 50
 
 #define TOLE_BORNE 0.d0
 

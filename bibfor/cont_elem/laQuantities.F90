@@ -23,7 +23,6 @@ subroutine laQuantities(geom, param)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "jeveux.h"

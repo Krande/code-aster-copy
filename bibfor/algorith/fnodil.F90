@@ -29,10 +29,7 @@ subroutine fnodil(option, typmod, ds_dil, ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
-#include "asterfort/nmepsi.h"
 #include "asterfort/nmbeps.h"
 
 !

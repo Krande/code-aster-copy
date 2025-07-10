@@ -34,7 +34,6 @@ subroutine nmfext(eta, listFuncActi, veasse, cnfext, &
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/ndasva.h"
-#include "asterfort/ndynlo.h"
 #include "asterfort/ndynre.h"
 #include "asterfort/nmasfi.h"
 #include "asterfort/nmasva.h"

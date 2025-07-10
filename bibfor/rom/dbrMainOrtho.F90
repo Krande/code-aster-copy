@@ -26,7 +26,6 @@ subroutine dbrMainOrtho(paraOrtho, baseOut)
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/dbr_calcpod_svd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romBaseCreateMatrix.h"

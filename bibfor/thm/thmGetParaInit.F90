@@ -24,7 +24,6 @@ subroutine thmGetParaInit(j_mater, ds_thm, l_check_)
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
-#include "asterc/r8prem.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 #include "asterfort/THM_type.h"

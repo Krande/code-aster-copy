@@ -43,7 +43,6 @@ subroutine vdxnlr(option, nomte, xi, rig, nb1, &
 #include "asterfort/matrkb.h"
 #include "asterfort/moytpg.h"
 #include "asterfort/nmcomp.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"

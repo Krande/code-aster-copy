@@ -24,7 +24,6 @@ subroutine iniVect0(l, x1, x2, x3, x4, x5, &
 !   initialisation des arguments à 0.d0
 !-----------------------------------------------------------------------
     implicit none
-#include "asterfort/assert.h"
     integer(kind=8), intent(in) :: l
     real(kind=8), intent(out) :: x1(l)
     real(kind=8), optional, intent(out) :: x2(l), x3(l), x4(l), x5(l), x6(l), x7(l), x8(l)

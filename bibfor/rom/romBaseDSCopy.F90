@@ -23,7 +23,6 @@ subroutine romBaseDSCopy(baseIn, resultName, baseOut)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/romModeDSCopy.h"
 #include "asterfort/romLineicDSCopy.h"
 !

@@ -19,7 +19,6 @@
 subroutine find_Cardan_roots(coef, roots, nbroot)
 !
     implicit none
-#include "asterc/r8prem.h"
 #include "asterc/r8pi.h"
 #include "asterfort/cubic_root.h"
 !

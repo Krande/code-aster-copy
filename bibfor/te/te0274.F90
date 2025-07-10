@@ -38,7 +38,6 @@ subroutine te0274(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/foderi.h"

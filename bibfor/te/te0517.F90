@@ -48,7 +48,6 @@ subroutine te0517(option, nomte)
 #include "asterfort/terefe.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utpvlg.h"
-#include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !
 ! --------------------------------------------------------------------------------------------------

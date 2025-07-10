@@ -23,7 +23,6 @@ subroutine nmrtim(ds_measure, device_type_, time)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/GetDevice.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

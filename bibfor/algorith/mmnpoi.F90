@@ -25,8 +25,6 @@ subroutine mmnpoi(noma, nommae, numnoe, iptm, nompt)
 !
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
     character(len=8) :: noma
     character(len=8) :: nommae

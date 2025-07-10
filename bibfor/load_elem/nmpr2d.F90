@@ -24,7 +24,6 @@ subroutine nmpr2d(l_axis, nno, npg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/subac1.h"
 #include "asterfort/subacv.h"
 #include "asterfort/sumetr.h"

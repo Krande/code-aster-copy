@@ -27,7 +27,6 @@ subroutine intbuff(sd_int, addrs, level)
 #include "jeveux.h"
 #include "asterfort/codent.h"
 #include "asterfort/crevec.h"
-#include "asterfort/intget.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"

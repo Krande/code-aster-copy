@@ -20,7 +20,6 @@ subroutine deprecated_material(mater)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: mater

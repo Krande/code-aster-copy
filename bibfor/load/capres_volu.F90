@@ -32,8 +32,6 @@ subroutine capres_volu(load, mesh, valeType, nbOccPresRep)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getelem.h"

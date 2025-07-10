@@ -33,7 +33,6 @@ subroutine te0178(option, nomte)
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/rcvalc.h"
 #include "asterfort/vff2dn.h"
 #include "asterfort/getFluidPara.h"
 #include "asterc/r8prem.h"

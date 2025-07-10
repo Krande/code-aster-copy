@@ -32,11 +32,6 @@ subroutine exchno(imodat, iparg)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/trigd.h"
-#include "asterfort/utmess.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jenuno.h"
 !
     integer(kind=8) :: imodat, iparg
 !----------------------------------------------------------------------

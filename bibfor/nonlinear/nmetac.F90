@@ -24,8 +24,6 @@ subroutine nmetac(list_func_acti, sddyna, ds_contact, ds_inout)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/SetIOField.h"

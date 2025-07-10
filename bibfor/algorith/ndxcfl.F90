@@ -21,7 +21,6 @@ subroutine ndxcfl(mate, mateco, cara_elem, sddyna, sddisc)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/pascom.h"

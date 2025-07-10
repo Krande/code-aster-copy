@@ -23,7 +23,6 @@ subroutine te0475(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/dimthm.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/assert.h"

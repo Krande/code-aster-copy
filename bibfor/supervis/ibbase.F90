@@ -20,7 +20,6 @@ subroutine ibbase(ier)
     implicit none
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterc/jdcget.h"
 #include "asterc/loisem.h"
 #include "asterc/mofiem.h"

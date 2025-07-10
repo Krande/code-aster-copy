@@ -23,7 +23,6 @@ subroutine romResultPrintInfo(result)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Result), intent(in) :: result

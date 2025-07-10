@@ -26,7 +26,6 @@ subroutine comp_ther_read(list_vale)
 #include "asterc/lccree.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
-#include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !

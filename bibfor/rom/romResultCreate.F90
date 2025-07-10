@@ -23,7 +23,6 @@ subroutine romResultCreate(result)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/rscrsd.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"

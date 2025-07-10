@@ -23,7 +23,6 @@ subroutine dbr_calcpod_size(base, snap, m, n)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
     type(ROM_DS_Snap), intent(in) :: snap

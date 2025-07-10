@@ -34,7 +34,6 @@ module constraint_module
 #include "asterc/slu_get_nnz_of_lower_factor.h"
 #include "asterc/slu_get_perm_col.h"
 #include "asterc/slu_get_perm_row.h"
-#include "asterc/slu_get_upper_factor.h"
 #include "asterc/slu_solve.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
@@ -87,7 +86,8 @@ contains
         call slu_factorize(m_4, n_4, nnz_4, b%values, b%rowind, b%colptr, factors, info)
         ASSERT(info == 0)
         if (debug) then
-       print *, "ELG Factorisation LU (SuperLU dgtrf) de la matrice C^T de taille : ", b%m, "x", b%n
+            print *, "ELG Factorisation LU (SuperLU dgtrf) de la matrice C^T de taille : ", &
+                b%m, "x", b%n
         end if
 !  Récupération de L à partir de factors
         call slu_get_nnz_of_lower_factor(factors, nnz_l, info)

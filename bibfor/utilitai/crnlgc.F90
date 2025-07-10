@@ -18,12 +18,10 @@
 
 subroutine crnlgc(nume_equa)
     implicit none
-#include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_comm.h"
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
 #include "asterc/asmpi_sendrecv_i.h"
-#include "asterc/loisem.h"
 #include "asterf_config.h"
 #include "asterf_debug.h"
 #include "asterf_types.h"

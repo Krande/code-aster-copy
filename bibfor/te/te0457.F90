@@ -37,7 +37,6 @@ subroutine te0457(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeMatrix.h"
-#include "blas/dcopy.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !

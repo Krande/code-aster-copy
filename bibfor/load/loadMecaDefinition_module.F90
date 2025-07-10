@@ -31,7 +31,6 @@ module loadMecaDefinition_module
 ! ==================================================================================================
     private
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/wkvect.h"
 ! ==================================================================================================
 contains

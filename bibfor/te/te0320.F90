@@ -27,12 +27,10 @@ subroutine te0320(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/Metallurgy_type.h"
-#include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "MeshTypes_type.h"
 !

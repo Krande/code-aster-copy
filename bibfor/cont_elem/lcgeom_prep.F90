@@ -28,7 +28,6 @@ subroutine lcgeom_prep(elem_dime, l_axis, l_upda_jaco, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/lctppe.h"
 !
     integer(kind=8), intent(in) :: elem_dime

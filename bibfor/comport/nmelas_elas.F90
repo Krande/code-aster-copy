@@ -27,8 +27,6 @@ subroutine nmelas_elas(BEHinteg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
 #include "asterfort/verift.h"
 #include "asterfort/verifh.h"
 #include "asterfort/verifs.h"

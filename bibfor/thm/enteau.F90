@@ -22,7 +22,6 @@ function enteau(dtemp, alpha, temp, rho, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     real(kind=8), intent(in) :: dtemp
     real(kind=8), intent(in) :: alpha

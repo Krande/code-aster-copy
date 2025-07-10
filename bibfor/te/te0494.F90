@@ -28,7 +28,6 @@ subroutine te0494(nomopt, nomte)
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/HHO_basis_module.h"

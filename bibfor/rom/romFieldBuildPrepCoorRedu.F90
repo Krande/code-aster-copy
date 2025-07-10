@@ -23,7 +23,6 @@ subroutine romFieldBuildPrepCoorRedu(resultRom, tablReduCoor, fieldBuild)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romFieldBuildGappy.h"
 #include "asterfort/utmess.h"

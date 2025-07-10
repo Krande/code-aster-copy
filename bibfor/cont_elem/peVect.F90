@@ -25,12 +25,8 @@ subroutine peVect(parameters, geom, vect_cont, vect_fric)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/getInterCont.h"
-#include "asterfort/getQuadCont.h"
 #include "asterfort/peVect_ct_pr.h"
 #include "asterfort/peVect_cf_pr.h"
-#include "blas/daxpy.h"
-#include "blas/dgemv.h"
 #include "contact_module.h"
 !
     type(ContactParameters), intent(in) :: parameters

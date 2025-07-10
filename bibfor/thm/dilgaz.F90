@@ -20,7 +20,6 @@ function dilgaz(satur, phi, alphfi, temp)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     real(kind=8), intent(in) :: satur
     real(kind=8), intent(in) :: phi

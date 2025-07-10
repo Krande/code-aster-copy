@@ -57,7 +57,6 @@ subroutine nmcoma(listFuncActi, &
 #include "asterfort/nmrenu.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/nonlinIntForce.h"
-#include "asterfort/nonlinIntForceAsse.h"
 #include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: listFuncActi(*)

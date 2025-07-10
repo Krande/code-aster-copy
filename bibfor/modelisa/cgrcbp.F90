@@ -29,7 +29,6 @@ subroutine cgrcbp(mofaz, iocc, nomaz, l_write, nbgraj)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/lxlgut.h"

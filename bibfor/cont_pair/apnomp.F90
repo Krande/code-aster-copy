@@ -20,7 +20,6 @@ subroutine apnomp(sdappa, i_poin, poin_name)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

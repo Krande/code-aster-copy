@@ -24,9 +24,6 @@ subroutine dtauno(jrwork, lisnoe, nbnot, nbordr, ordini, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/loisem.h"
-#include "asterc/lor8em.h"
-#include "asterc/r8pi.h"
 #include "asterfort/acgrdo.h"
 #include "asterfort/carces.h"
 #include "asterfort/cncinv.h"

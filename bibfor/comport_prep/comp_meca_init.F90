@@ -24,7 +24,6 @@ subroutine comp_meca_init(prepPara)
 !
     implicit none
 !
-#include "asterc/getfac.h"
 !
     type(BehaviourPrep_Para), intent(out) :: prepPara
 !

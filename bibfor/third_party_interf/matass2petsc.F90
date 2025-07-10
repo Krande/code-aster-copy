@@ -32,7 +32,6 @@ subroutine matass2petsc(matasz, local, petscMatz, iret)
 !
 #include "asterf.h"
 #include "jeveux.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/apetsc.h"
 #include "asterfort/apmams.h"
 #include "asterfort/assert.h"
@@ -43,7 +42,6 @@ subroutine matass2petsc(matasz, local, petscMatz, iret)
 #include "asterfort/mtmchc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-#include "blas/dcopy.h"
 !
 ! arguments
     character(len=*), intent(in) :: matasz

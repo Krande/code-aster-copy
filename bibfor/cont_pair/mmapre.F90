@@ -27,7 +27,6 @@ subroutine mmapre(mesh, ds_contact)
 #include "asterfort/apinfi.h"
 #include "asterfort/apinfr.h"
 #include "asterfort/apvect.h"
-#include "asterfort/armin.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfnumm.h"
@@ -43,8 +42,6 @@ subroutine mmapre(mesh, ds_contact)
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfm.h"
-#include "asterfort/mminfr.h"
-#include "blas/ddot.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !

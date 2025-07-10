@@ -23,7 +23,6 @@ subroutine caddlp(load, mesh, model, valeType)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterfort/afddli.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/assert.h"
@@ -38,10 +37,8 @@ subroutine caddlp(load, mesh, model, valeType)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"

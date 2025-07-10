@@ -23,7 +23,6 @@ subroutine gtvois(v_connex, v_connex_lcum, list_elem, nb_elem, elem_nume, elem_c
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utlisi.h"
 #include "asterfort/assert.h"
 !

@@ -26,7 +26,6 @@ subroutine irmpar(nomcon, ifichi, paraListNb, paraListName)
 #include "asterfort/as_mficom.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mprcre.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

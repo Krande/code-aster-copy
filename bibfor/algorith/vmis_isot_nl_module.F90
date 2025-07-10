@@ -39,8 +39,6 @@ module vmis_isot_nl_module
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-#include "asterc/r8pi.h"
-#include "asterc/r8prem.h"
 #include "asterfort/zerop2.h"
 
 ! --------------------------------------------------------------------------------------------------

@@ -24,7 +24,6 @@ subroutine pgpche(sd_pgp, iobs)
 ! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cesred.h"
@@ -33,7 +32,6 @@ subroutine pgpche(sd_pgp, iobs)
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/pgpget.h"

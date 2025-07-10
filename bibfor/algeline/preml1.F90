@@ -35,10 +35,8 @@ subroutine preml1(neq, n2, diag, delg, col, &
 #include "asterfort/amdbar.h"
 #include "asterfort/genmmd.h"
 #include "asterfort/infniv.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/prmadj.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
     integer(kind=8) :: neq, diag(0:neq), lgind, lgadjn
     integer(kind=8) :: col(*), xadj(neq+1), adjncy(lgadjn)
     integer(kind=8) :: delg(neq), nbsn, adress(neq), parent(neq)

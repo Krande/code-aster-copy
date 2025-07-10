@@ -25,7 +25,6 @@ subroutine aptgen(sdappa, mesh, sdcont_defi, newgeo, err_appa)
 #include "asterfort/cfdisr.h"
 #include "asterfort/aptgem.h"
 #include "asterfort/mminfi.h"
-#include "asterfort/mminfr.h"
 #include "asterfort/cfcald.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/jelira.h"

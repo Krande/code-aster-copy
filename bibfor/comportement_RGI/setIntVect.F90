@@ -24,7 +24,6 @@ subroutine setIntVect(vect, x1, x2, x3, x4, x5, &
 !   copie de valeurs entières dans un tableau
 !-----------------------------------------------------------------------
     implicit none
-#include "asterfort/assert.h"
     integer(kind=8), intent(inout) :: vect(*)
     integer(kind=8), intent(in) :: x1
     integer(kind=8), optional, intent(in) :: x2, x3, x4, x5, x6, x7, x8

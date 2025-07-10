@@ -25,27 +25,15 @@ subroutine cgComputeLayers(cgField, cgTheta, cnstet, v_numc)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/cnscno.h"
-#include "asterfort/cnscre.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/fointe.h"
-#include "asterfort/imprsd.h"
-#include "asterfort/ismali.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/cncinv.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/conare.h"
 #include "asterfort/char8_to_int.h"
 

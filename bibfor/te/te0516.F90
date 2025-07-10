@@ -68,7 +68,6 @@ subroutine te0516(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/Behaviour_type.h"
-#include "blas/ddot.h"
 #include "blas/dscal.h"
 !
 ! --------------------------------------------------------------------------------------------------

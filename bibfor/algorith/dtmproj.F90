@@ -25,7 +25,6 @@ subroutine dtmproj(sd_dtm_, sd_int_, oldcase, buffdtm, buffint)
 !           in sd_dtm/NL_CASE, given that the preceding case is oldcase
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dtmcase_coder.h"
 #include "asterfort/dtmget.h"

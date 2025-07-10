@@ -26,7 +26,6 @@ subroutine me2mme_evol(modelZ, caraElemZ, materFieldZ, matecoZ, nharm, jvBase, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "LoadTypes_type.h"
 !
     character(len=*), intent(in) :: modelZ, caraElemZ, materFieldZ, matecoZ

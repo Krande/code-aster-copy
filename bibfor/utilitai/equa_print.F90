@@ -23,8 +23,6 @@ subroutine equa_print(mesh, i_equa, type_equa, name_node, name_cmp, &
     implicit none
 !
 #include "asterfort/int_to_char8.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
 !

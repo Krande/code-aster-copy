@@ -27,7 +27,6 @@ subroutine cpmptr3(conloc, jmacou, indno, indma)
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jedema.h"
-#include "asterfort/assert.h"
 
 !
     integer(kind=8), intent(in) :: indma

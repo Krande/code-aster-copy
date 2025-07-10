@@ -27,8 +27,6 @@ module FE_mass_module
     private
 #include "asterf_types.h"
 #include "FE_module.h"
-#include "blas/daxpy.h"
-#include "blas/dscal.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !

@@ -24,8 +24,6 @@ subroutine apcoor(v_connex, v_connex_lcum, jv_geom, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/jexnum.h"
 !
     integer(kind=8), pointer :: v_connex(:)
     integer(kind=8), pointer :: v_connex_lcum(:)

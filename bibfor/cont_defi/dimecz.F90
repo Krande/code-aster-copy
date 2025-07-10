@@ -21,14 +21,12 @@ subroutine dimecz(sdcont, mesh, nb_cont_zone)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnbsf.h"
 #include "asterfort/cfzone.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mmnbnz.h"
-#include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

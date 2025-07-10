@@ -40,7 +40,6 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/comp_meca_exc2.h"
 #include "asterfort/comp_meca_l.h"
@@ -98,8 +97,8 @@ subroutine comp_meca_pvar(model_, comporMap_, comporList_, comporInfo)
     character(len=16), pointer :: comporVale(:) => null()
     integer(kind=8), pointer :: comporDesc(:) => null()
     integer(kind=8), pointer :: comporPtma(:) => null()
-    integer(kind=8) :: nbVale, mapNbCmpMax, mapNbZone, nbVari, nt_vari, nb_vari_maxi, nb_zone_acti, nb_zone2
-    integer(kind=8) :: mapZoneNume, iCellMesh, nbCellMesh, iret, nutyel, nbVariMeca
+    integer(kind=8) :: nbVale, mapNbCmpMax, mapNbZone, nbVari, nt_vari, nb_vari_maxi, nb_zone_acti
+    integer(kind=8) :: mapZoneNume, iCellMesh, nbCellMesh, iret, nutyel, nbVariMeca, nb_zone2
     character(len=16) :: post_iter, vari_excl, regu_visc, post_incr
     character(len=16) :: rela_comp, defo_comp, kit_comp(4), type_cpla, type_comp
     character(len=255) :: libr_name, subr_name

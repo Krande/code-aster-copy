@@ -26,7 +26,6 @@ subroutine calc_epth_elga(fami, ndim, poum, kpg, ksp, &
 #include "asterfort/matrot.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/utpslg.h"
-#include "asterfort/utrcyl.h"
 #include "asterfort/verift.h"
 !
 !

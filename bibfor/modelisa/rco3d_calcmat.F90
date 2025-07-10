@@ -25,7 +25,6 @@ subroutine rco3d_calcmat(nb_gauss, gauss_weight, gauss_coor, jac_det, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "jeveux.h"
 
     real(kind=8), intent(in) :: epai, crig

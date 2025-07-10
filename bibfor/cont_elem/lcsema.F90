@@ -27,7 +27,6 @@ subroutine lcsema(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
     integer(kind=8), intent(in) :: elem_dime
@@ -75,7 +74,8 @@ subroutine lcsema(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
             do i_dime = 1, elem_dime
                 jj = (i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
                 vtmp(jj) = vtmp(jj)+ &
-                          (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1))* &
+                           (zr(jv_norm+nb_node_slav*elem_dime+ &
+                               (i_node_mast-1)*elem_dime+i_dime-1))* &
                            jaco_upda*poidspg*shape_mast_func(i_node_mast)*lagrc
             end do
         end do

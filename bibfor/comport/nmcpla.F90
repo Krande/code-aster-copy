@@ -30,7 +30,6 @@ subroutine nmcpla(BEHinteg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/lcopil.h"
 #include "asterfort/nmcomp.h"

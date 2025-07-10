@@ -25,7 +25,6 @@ subroutine caliun(sdcont_, mesh_, model_)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/caraun.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/creaun.h"
 #include "asterfort/elimun.h"
 #include "asterfort/jedema.h"

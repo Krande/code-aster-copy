@@ -60,7 +60,6 @@ subroutine te0347(option, nomte)
 #include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 #include "asterfort/utpvlg.h"
-#include "blas/ddot.h"
 !
     character(len=16) :: option, nomte
 !

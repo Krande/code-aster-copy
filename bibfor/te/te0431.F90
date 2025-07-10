@@ -25,7 +25,6 @@ subroutine te0431(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8dgrd.h"
 #include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cargri.h"

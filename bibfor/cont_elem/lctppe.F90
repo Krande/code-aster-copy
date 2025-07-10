@@ -27,13 +27,11 @@ subroutine lctppe(side, l_axis, l_upda_jaco, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/mmnonf.h"
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmmjac.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmtang.h"
-#include "asterfort/assert.h"
 !
     character(len=*), intent(in) :: side
     integer(kind=8), intent(in) :: elem_dime

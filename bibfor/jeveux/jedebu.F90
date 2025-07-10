@@ -37,7 +37,6 @@ subroutine jedebu(nbfi, mxzon, idb)
 #include "asterfort/adjust_memlimit.h"
 #include "asterfort/assert.h"
 #include "asterfort/jxdate.h"
-#include "asterfort/utgtme.h"
 #include "asterfort/utmess.h"
 #include "asterfort/utptme.h"
     integer(kind=8) :: nbfi, mxzon, idb

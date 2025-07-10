@@ -29,7 +29,6 @@ module contact_algebra_module
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/mmtang.h"
-#include "asterfort/assert.h"
 #include "asterfort/matinv.h"
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"

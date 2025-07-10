@@ -21,7 +21,6 @@ subroutine aplcno(mesh, newgeo, sdcont_defi, sdappa, err_appa)
     implicit none
 !
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/aptgnn.h"

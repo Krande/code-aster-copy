@@ -29,7 +29,6 @@ subroutine patrma(llist1, llist2, t, nbtymx, nomma, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/pacoor.h"

@@ -27,7 +27,6 @@ subroutine intitmi(sd_dtm_, sd_int_, buffdtm, buffint)
 #include "jeveux.h"
 #include "blas/dcopy.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/dtmacce.h"
 #include "asterfort/dtmforc.h"
 #include "asterfort/dtmget.h"

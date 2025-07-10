@@ -25,7 +25,6 @@ subroutine rrcInit(cmdPara)
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romFieldBuildInit.h"

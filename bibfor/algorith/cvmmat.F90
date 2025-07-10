@@ -45,7 +45,6 @@ subroutine cvmmat(fami, kpg, ksp, mod, imat, &
 !           NR     :  NB DE COMPOSANTES SYSTEME NL
 !           NVI    :  NB DE VARIABLES INTERNES
 !       ----------------------------------------------------------------
-#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvalt.h"
 #include "asterfort/rupmat.h"

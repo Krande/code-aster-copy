@@ -21,7 +21,6 @@ subroutine ef0436(nomte)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
-#include "asterc/r8prem.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mbcine.h"

@@ -46,8 +46,6 @@ subroutine calipj(load, model)
 #include "LoadTypes_type.h"
 #include "asterc/getfac.h"
 #include "asterfort/aflrch.h"
-#include "asterfort/assert.h"
-#include "asterfort/infniv.h"
 !
     character(len=8), intent(in) :: load, model
 !

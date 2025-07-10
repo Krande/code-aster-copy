@@ -25,7 +25,6 @@ subroutine varpi(ds_thm, j_mater, p1, p1m, dp1, dp2, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/THM_type.h"
 #include "asterfort/rcvala.h"
 !

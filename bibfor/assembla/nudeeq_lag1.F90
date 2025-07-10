@@ -27,7 +27,6 @@ subroutine nudeeq_lag1(mesh, nb_node_mesh, nb_node_subs, nume_ddl, nb_equa, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nbec.h"

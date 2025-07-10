@@ -24,7 +24,6 @@ subroutine ntetcr(nume_dof, ds_inout, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nthydr.h"
 #include "asterfort/nmetcc.h"
 #include "asterfort/vtcreb.h"

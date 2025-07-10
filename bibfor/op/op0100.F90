@@ -29,7 +29,6 @@ subroutine op0100()
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"

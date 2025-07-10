@@ -36,13 +36,9 @@ subroutine te0455(nomopt, nomte)
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/nmtstm.h"
 #include "asterfort/writeVector.h"
-#include "asterfort/writeMatrix.h"
 #include "jeveux.h"
-#include "blas/dscal.h"
-#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !  HHO

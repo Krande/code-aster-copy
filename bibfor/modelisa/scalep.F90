@@ -47,9 +47,7 @@ subroutine scalep(spectr, noma, base, nuor, nbm, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
 !

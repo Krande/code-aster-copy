@@ -23,7 +23,6 @@ subroutine romLineicDSCopy(lineicNumeIn, lineicNumeOut)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 !
     type(ROM_DS_LineicNumb), intent(in) :: lineicNumeIn

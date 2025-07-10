@@ -21,7 +21,6 @@ subroutine mateInfo(mate, mate_nb)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"

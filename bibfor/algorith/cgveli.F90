@@ -22,7 +22,6 @@ subroutine cgveli(typfis, typdis, ndim, lnoff, liss, &
 !
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
     integer(kind=8) :: lnoff, ndeg, ndim
     character(len=8) :: typfis

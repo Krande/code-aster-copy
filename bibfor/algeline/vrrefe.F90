@@ -28,7 +28,6 @@ subroutine vrrefe(dsName1Z, dsName2Z, ier)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/utmess.h"
 #include "asterfort/assert.h"
 !
     character(len=*), intent(in) :: dsName1Z, dsName2Z

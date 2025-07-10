@@ -23,7 +23,6 @@ subroutine thmGetParaHydr(j_mater, ds_thm)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/THM_type.h"

@@ -34,7 +34,6 @@ subroutine arlmol(nomo, mailar, modarl, tabcor)
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 !

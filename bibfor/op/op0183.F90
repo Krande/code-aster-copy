@@ -52,7 +52,6 @@ subroutine op0183()
 #include "asterfort/nmdoch.h"
 #include "asterfort/nmdocc.h"
 #include "asterfort/onerrf.h"
-#include "asterfort/rcmfmc.h"
 #include "asterfort/refdcp.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rscrsd.h"

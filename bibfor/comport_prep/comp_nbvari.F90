@@ -27,7 +27,6 @@ subroutine comp_nbvari(rela_comp, defo_comp, type_cpla, kit_comp, &
 !
 #include "asterc/mgis_get_sizeof_isvs.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_nbvari_kit.h"
 #include "asterfort/comp_nbvari_std.h"

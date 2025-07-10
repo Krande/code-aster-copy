@@ -25,7 +25,6 @@ subroutine oriem1(ma, kdim, numa2d, numa3d)
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/provec.h"

@@ -24,7 +24,6 @@ subroutine te0550(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/teattr.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/vff2dn.h"

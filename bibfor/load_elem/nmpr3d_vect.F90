@@ -23,7 +23,6 @@ subroutine nmpr3d_vect(nno, npg, ndof, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/subaco.h"
 #include "asterfort/sumetr.h"
 !

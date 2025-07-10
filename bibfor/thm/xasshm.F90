@@ -43,7 +43,6 @@ subroutine xasshm(ds_thm, &
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/pmathm.h"
-#include "asterc/r8prem.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
 #include "asterfort/xcabhm.h"

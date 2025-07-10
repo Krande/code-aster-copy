@@ -26,8 +26,6 @@ subroutine te0588(option, nomte)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/eulnau.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/elref1.h"
 #include "asterfort/iselli.h"
 #include "asterc/ismaem.h"
@@ -43,7 +41,6 @@ subroutine te0588(option, nomte)
 #include "asterfort/xhmddl.h"
 #include "asterfort/xhmini.h"
 #include "asterfort/xpeshm.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 #include "asterfort/thmGetElemModel.h"
 #include "asterfort/Behaviour_type.h"

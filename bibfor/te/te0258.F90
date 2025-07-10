@@ -30,7 +30,6 @@ subroutine te0258(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"
 #include "asterc/r8prem.h"
-#include "asterfort/rcvalb.h"
 !
     character(len=16), intent(in) :: option, nomte
 !

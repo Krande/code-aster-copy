@@ -41,8 +41,6 @@ subroutine dtmcalc(sd_dtm_, sd_int_)
 #include "asterfort/intbuff.h"
 #include "asterfort/intget.h"
 #include "asterfort/intsav.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mdidisvisc.h"
 #include "asterfort/mdidisisot.h"
 #include "asterfort/mdsize.h"

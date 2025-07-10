@@ -24,7 +24,6 @@ subroutine nonlinDSPrintClean(ds_print)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nonlinDSTableIOClean.h"
 !
     type(NL_DS_Print), intent(inout) :: ds_print

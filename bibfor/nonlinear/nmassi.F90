@@ -26,16 +26,13 @@ subroutine nmassi(list_func_acti, sddyna, nlDynaDamping, ds_system, hval_incr, h
     implicit none
     !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmacfi.h"
 #include "asterfort/nmacva.h"
 #include "asterfort/nmdebg.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/ndynkk.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/copisd.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nonlinDSVectCombCompute.h"

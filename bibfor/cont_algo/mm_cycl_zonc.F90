@@ -20,8 +20,6 @@ subroutine mm_cycl_zonc(pres_near, laug_cont, zone_cont)
 !
     implicit none
 !
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !

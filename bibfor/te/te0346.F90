@@ -38,7 +38,6 @@ subroutine te0346(option, nomte)
 #include "asterfort/utpslg.h"
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
-#include "blas/ddot.h"
 #include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(in) :: option, nomte

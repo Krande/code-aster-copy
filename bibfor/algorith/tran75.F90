@@ -45,7 +45,6 @@ subroutine tran75(nomres, typres, nomin, basemo)
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnocre.h"
-#include "asterfort/codent.h"
 #include "asterfort/copmod.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"

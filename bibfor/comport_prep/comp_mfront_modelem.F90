@@ -24,7 +24,6 @@ subroutine comp_mfront_modelem(elem_type_name, l_mfront_cp, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/teattr.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"

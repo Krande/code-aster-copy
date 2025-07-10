@@ -29,7 +29,6 @@ subroutine getBehaviourAlgo(plane_stress, rela_comp, &
 #include "asterf_types.h"
 #include "asterc/lcalgo.h"
 #include "asterc/lctest.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/utlcal.h"
 #include "asterfort/utmess.h"

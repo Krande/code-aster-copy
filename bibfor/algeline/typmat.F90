@@ -19,7 +19,6 @@
 function typmat(nbmat, tlimat)
     implicit none
 #include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/redetr.h"

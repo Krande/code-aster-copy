@@ -24,9 +24,6 @@ subroutine fetcrf(nomo, nbsd)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-#include "asterc/getfac.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
 #include "asterfort/gmgnre.h"
@@ -41,7 +38,6 @@ subroutine fetcrf(nomo, nbsd)
 #include "asterfort/jerazo.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/lxcadr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"

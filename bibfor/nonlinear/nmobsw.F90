@@ -24,7 +24,6 @@ subroutine nmobsw(sd_obsv, ds_inout)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/diinst.h"
 #include "asterfort/nmextd.h"
 #include "asterfort/jeveuo.h"
 !

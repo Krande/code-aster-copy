@@ -23,7 +23,6 @@ subroutine mateMFrontAddProperties(mate, v_mate_read, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/mateMFrontGetProperties.h"
 #include "asterfort/mateMFrontCheck.h"
 #include "asterfort/mateMFrontAddElasticity.h"

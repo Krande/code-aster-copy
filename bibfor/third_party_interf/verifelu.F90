@@ -67,7 +67,6 @@ subroutine verifelu(typco, alphacc, ht, bw, enrobi, enrobs, facier, fbeton, &
     implicit none
 !
 #include "extern/dintelu.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
 !

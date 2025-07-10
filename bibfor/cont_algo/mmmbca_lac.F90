@@ -25,11 +25,8 @@ subroutine mmmbca_lac(mesh, disp_curr, ds_contact)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8nnem.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/aptype.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/infdbg.h"

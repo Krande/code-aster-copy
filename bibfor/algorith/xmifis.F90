@@ -24,7 +24,6 @@ subroutine xmifis(ndim, ndime, elrefp, geom, lsn, &
 !
 #include "jeveux.h"
 #include "blas/ddot.h"
-#include "asterfort/assert.h"
 #include "asterfort/reeref.h"
 #include "asterfort/reerel.h"
 #include "asterfort/xelrex.h"

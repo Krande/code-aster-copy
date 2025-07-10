@@ -27,9 +27,7 @@ subroutine cnsimp(cnsz, unite)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !

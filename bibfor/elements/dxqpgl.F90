@@ -21,9 +21,6 @@ subroutine dxqpgl(xyzg, pgl)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8miem.h"
-#include "asterfort/assert.h"
-#include "asterfort/utmess.h"
     real(kind=8) :: xyzg(3, *), pgl(3, 3)
 !
 !     IN  XYZG  R  12  COORDONNEES  X1 Y1 Z1 X2 Y2 ...

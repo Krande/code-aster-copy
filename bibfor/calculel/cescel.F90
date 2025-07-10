@@ -41,7 +41,6 @@ subroutine cescel(cesz, ligrez, optini, nompaz, prolz, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"

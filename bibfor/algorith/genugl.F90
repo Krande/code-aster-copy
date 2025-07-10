@@ -41,7 +41,6 @@ subroutine genugl(nume_equa, indirf, modgen, mailsk)
 !
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isdeco.h"
 #include "asterfort/jecrec.h"

@@ -57,7 +57,6 @@ subroutine te0565(nomopt, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/dfdm3d.h"
@@ -69,7 +68,6 @@ subroutine te0565(nomopt, nomte)
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/getElemOrientation.h"
-#include "asterfort/rctype.h"
 #include "asterfort/reeref.h"
 #include "asterfort/tecach.h"
 #include "asterfort/teattr.h"

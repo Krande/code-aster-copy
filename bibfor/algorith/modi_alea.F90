@@ -45,7 +45,6 @@ subroutine modi_alea(ma, alea)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/assert.h"
 #include "asterfort/ggubs.h"
     integer(kind=8) :: n1, jcoor, nno, ino
     character(len=8) :: ma8

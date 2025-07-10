@@ -30,7 +30,6 @@ subroutine te0460(nomopt, nomte)
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
-#include "asterfort/writeMatrix.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------

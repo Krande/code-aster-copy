@@ -30,7 +30,6 @@ subroutine hasBehaviourFeature(model, caraElem, compor, feature, lFlag)
 #include "asterfort/cesexi.h"
 #include "asterfort/cesred.h"
 #include "asterfort/cesvar.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jeveuo.h"

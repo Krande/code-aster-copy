@@ -20,7 +20,6 @@ subroutine dpao2d(angl_naut, irep, matr_tran)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     real(kind=8), intent(in) :: angl_naut(3)
     integer(kind=8), intent(out) :: irep

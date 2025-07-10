@@ -19,7 +19,6 @@
 subroutine utncmp(cham19, ncmp, nomobj)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/utncmp2.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"

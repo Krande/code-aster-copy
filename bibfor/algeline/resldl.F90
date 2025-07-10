@@ -31,7 +31,6 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/rldlg3.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/isParallelMatrix.h"
 !

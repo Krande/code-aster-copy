@@ -22,8 +22,6 @@ subroutine getDensity(jvMater, rho, elasKeywordZ_)
 !
     implicit none
 !
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/get_elas_id.h"

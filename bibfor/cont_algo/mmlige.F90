@@ -26,7 +26,6 @@ subroutine mmlige(mesh, ds_contact, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/cfdisi.h"
@@ -37,7 +36,6 @@ subroutine mmlige(mesh, ds_contact, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/liglma.h"
 #include "asterfort/mmelem_data_c.h"
 #include "asterfort/mmelem_data_l.h"

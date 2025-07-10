@@ -35,7 +35,6 @@ subroutine xprini(noma, cnxinv, grille, noesom, vcn, &
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xprcnu.h"
-#include "asterfort/assert.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: noma

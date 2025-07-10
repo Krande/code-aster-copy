@@ -74,7 +74,6 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
 #include "asterfort/utmess.h"
 !
 #include "jeveux.h"
-#include "asterfort/jevech.h"
 !
     integer(kind=8) :: icompo
 !

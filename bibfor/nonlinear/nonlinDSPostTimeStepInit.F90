@@ -25,8 +25,6 @@ subroutine nonlinDSPostTimeStepInit(result, model, ds_algopara, ds_constitutive,
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/dismoi.h"

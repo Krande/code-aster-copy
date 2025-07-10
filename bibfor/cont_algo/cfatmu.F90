@@ -21,7 +21,6 @@ subroutine cfatmu(neq, nbliac, sdcont_solv)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/calatm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

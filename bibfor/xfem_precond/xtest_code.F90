@@ -37,7 +37,6 @@ function xtest_code(id1, id2, lfno, nfh, nfissmax, fno1, fno2)
 !-----------------------------------------------------------------------
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_digit.h"
 #include "asterfort/xextr_uplet.h"
 !-----------------------------------------------------------------------

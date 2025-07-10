@@ -19,7 +19,6 @@
 subroutine i2sens(chemin, nbrma2, limail, nbrma, connex, &
                   typmai, abscis)
     implicit none
-#include "asterfort/assert.h"
 #include "asterfort/i2extf.h"
     integer(kind=8) :: nbrma, nbrma2
     integer(kind=8) :: chemin(nbrma2), limail(nbrma)

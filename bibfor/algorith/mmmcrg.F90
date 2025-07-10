@@ -27,8 +27,6 @@ subroutine mmmcrg(noma, ddepla, depplu, ngeom, vgeom)
 #include "asterfort/cnomax.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
     character(len=8) :: noma
     character(len=19) :: depplu, ddepla

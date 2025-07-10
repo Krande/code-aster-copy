@@ -33,7 +33,6 @@ subroutine thmMecaSpecial(ds_thm, option, lMatr, meca, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/dsipdp.h"
 #include "asterfort/lchbr2.h"

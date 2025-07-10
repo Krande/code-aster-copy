@@ -34,7 +34,6 @@ subroutine te0182(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
-#include "asterfort/rcvalc.h"
 #include "asterfort/getFluidPara.h"
 #include "asterc/r8prem.h"
 #include "asterfort/utmess.h"

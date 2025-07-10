@@ -33,7 +33,6 @@ function xcalc_heav(id_no, hea_se, iflag)
     implicit none
 !-----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterfort/assert.h"
 !-----------------------------------------------------------------------
     integer(kind=8) :: id_no, hea_se
     integer(kind=8) :: iflag

@@ -26,7 +26,6 @@ subroutine intePoinCoorWrap(mesh, nodeCoorName, baseName, iPair, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mesh_pairing_type.h"
 #include "jeveux.h"

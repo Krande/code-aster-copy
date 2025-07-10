@@ -23,7 +23,6 @@ subroutine nmimre(ds_conv, ds_print)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmimck.h"
 #include "asterfort/nmimcr.h"
 !

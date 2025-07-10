@@ -29,8 +29,6 @@ subroutine cfnors(noma, ds_contact, posmai, typent, &
 #include "asterfort/assert.h"
 #include "asterfort/cfnord.h"
 #include "asterfort/copnor.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !

@@ -20,7 +20,6 @@ subroutine asmasu(ma1, ma2, mag)
     implicit none
 #include "jeveux.h"
 #include "asterfort/codent.h"
-#include "asterfort/codlet.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecreo.h"
@@ -147,16 +146,16 @@ subroutine asmasu(ma1, ma2, mag)
     call jeveuo(ma2//'.COORDO    .VALE', 'L', vr=coo2)
     call wkvect(coordo//'.VALE', 'G V R', 3*nbno, iavale)
 !     -- COORDONNEES DES NOEUDS :
-    do 51, ino = 1, nbn1
-    do k = 1, 3
-        zr(iavale-1+3*(ino-1)+k) = coo1(3*(ino-1)+k)
+    do ino = 1, nbn1
+        do k = 1, 3
+            zr(iavale-1+3*(ino-1)+k) = coo1(3*(ino-1)+k)
+        end do
     end do
-51  end do
-    do 52, ino = 1, nbn2
-    do k = 1, 3
-        zr(iavale-1+3*(nbn1+ino-1)+k) = coo2(3*(ino-1)+k)
+    do ino = 1, nbn2
+        do k = 1, 3
+            zr(iavale-1+3*(nbn1+ino-1)+k) = coo2(3*(ino-1)+k)
+        end do
     end do
-52  end do
 !
 !
 !     --OBJET .TYPMAIL:

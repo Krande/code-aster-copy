@@ -23,7 +23,6 @@ subroutine romModePrintInfo(mode)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Field), intent(in) :: mode

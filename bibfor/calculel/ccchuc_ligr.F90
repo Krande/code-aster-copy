@@ -23,7 +23,6 @@ subroutine ccchuc_ligr(model, list_elem_stor, nb_elem_old, nb_elem_new, list_ele
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/exlim1.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/jeveuo.h"

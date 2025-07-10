@@ -23,8 +23,6 @@ subroutine ntdoet(model, nume_dof, l_stat, ds_inout)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"

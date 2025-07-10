@@ -27,7 +27,6 @@ subroutine smcarc(nb_hist, nbPhase, ftrc, trc, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/smcaba.h"
 #include "asterfort/smcavo.h"
 #include "asterfort/smcomo.h"

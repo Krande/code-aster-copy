@@ -81,7 +81,6 @@ subroutine gcour2(resu, noma, nomno, coorn, nbnoeu, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
-#include "blas/dcopy.h"
 !
     character(len=24) :: trav1, trav2, trav3, fonoeu
     character(len=24) :: obj3, norm, numgam, chamno, chfond, basfon

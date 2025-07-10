@@ -31,7 +31,6 @@ subroutine jefini(cond, close)
 #include "asterfort/jjlidy.h"
 #include "asterfort/ulclos.h"
 #include "asterfort/utgtme.h"
-#include "asterfort/utmess.h"
 
     character(len=*) :: cond
     aster_logical, intent(in), optional :: close

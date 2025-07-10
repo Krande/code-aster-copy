@@ -23,7 +23,6 @@ subroutine compareFieldShape(fieldModelZ, fieldZ, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescel.h"
 #include "asterfort/cesexi.h"

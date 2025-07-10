@@ -27,8 +27,6 @@ subroutine te0139(option, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"

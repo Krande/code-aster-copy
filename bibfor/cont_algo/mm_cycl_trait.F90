@@ -28,13 +28,9 @@ subroutine mm_cycl_trait(ds_contact, i_cont_poin, &
 !
     implicit none
 !
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/mminfi.h"
-#include "asterfort/mminfl.h"
 #include "asterfort/mm_cycl_t2.h"
 #include "asterfort/mm_cycl_t3.h"
 !

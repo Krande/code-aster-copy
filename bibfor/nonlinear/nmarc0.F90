@@ -26,7 +26,6 @@ subroutine nmarc0(result, modele, ds_material, carele, fonact, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

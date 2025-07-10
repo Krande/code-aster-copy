@@ -25,14 +25,10 @@ subroutine laVect(parameters, geom, vect_cont, vect_fric)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/getInterCont.h"
-#include "asterfort/getQuadCont.h"
 #include "asterfort/laVect_ct_pr.h"
 #include "asterfort/laVect_ct_std.h"
 #include "asterfort/laVect_cf_pr.h"
 #include "asterfort/laVect_cf_std.h"
-#include "blas/daxpy.h"
-#include "blas/dgemv.h"
 #include "contact_module.h"
 !
     type(ContactParameters), intent(in) :: parameters

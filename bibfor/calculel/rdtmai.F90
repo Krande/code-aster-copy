@@ -18,7 +18,6 @@
 
 subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
     implicit none
-#include "asterc/getres.h"
 #include "asterf_types.h"
 #include "asterfort/addGrpMa.h"
 #include "asterfort/as_allocate.h"

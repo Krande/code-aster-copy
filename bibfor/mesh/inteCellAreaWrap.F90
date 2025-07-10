@@ -24,7 +24,6 @@ subroutine inteCellAreaWrap(mesh, nbPoinInte, poinInteSlav, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/mesh_pairing_type.h"
 !

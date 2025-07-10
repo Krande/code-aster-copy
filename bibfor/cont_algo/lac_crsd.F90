@@ -25,8 +25,6 @@ subroutine lac_crsd(nume_dof, ds_contact)
 !
 #include "asterf_types.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"

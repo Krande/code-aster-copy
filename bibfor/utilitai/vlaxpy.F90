@@ -19,7 +19,6 @@
 subroutine vlaxpy(alpha, chamna, chamnb)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"

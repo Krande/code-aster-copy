@@ -39,7 +39,6 @@ subroutine op0024()
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/infmaj.h"

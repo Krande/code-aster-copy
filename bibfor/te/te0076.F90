@@ -25,7 +25,6 @@ subroutine te0076(option, nomte)
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/nlcomp.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"

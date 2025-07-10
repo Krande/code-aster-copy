@@ -33,7 +33,6 @@ subroutine te0440(option, nomte)
 #include "asterfort/xfovol.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
-#include "asterfort/lteatt.h"
 !
     character(len=16), intent(in) :: option, nomte
 !......................................................................

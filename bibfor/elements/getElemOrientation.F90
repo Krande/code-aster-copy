@@ -24,7 +24,6 @@ subroutine getElemOrientation(ndim, nno, jv_geom, angl_naut)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcangm.h"
 !
     integer(kind=8), intent(in) :: ndim, nno

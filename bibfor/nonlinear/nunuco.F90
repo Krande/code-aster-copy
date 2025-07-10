@@ -21,7 +21,6 @@ subroutine nunuco(nume_ddl, sdnuco)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/select_dof.h"
 #include "asterfort/wkvect.h"

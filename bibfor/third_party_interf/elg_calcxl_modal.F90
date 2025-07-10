@@ -29,7 +29,6 @@ subroutine elg_calcxl_modal(x1, omega2, ke_mass, vlag)
 #include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
-#include "asterfort/elg_allocvr.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

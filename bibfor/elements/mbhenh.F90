@@ -20,7 +20,6 @@ subroutine mbhenh(imate, kpg, fami, aini, adef, jacini, jacdef, sigpk2, dsigpk2)
 !
     implicit none
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/fctlam.h"
 #include "jeveux.h"
 #include "asterfort/rccoma.h"

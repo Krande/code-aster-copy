@@ -25,7 +25,6 @@ module FE_mechanics_module
     private
 #include "asterf_types.h"
 #include "FE_module.h"
-#include "blas/dgemv.h"
 #include "asterfort/assert.h"
 #include "jeveux.h"
 !

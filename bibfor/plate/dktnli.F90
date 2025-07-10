@@ -50,7 +50,6 @@ subroutine dktnli(option, xyzl, pgl, uml, dul, &
 #include "asterfort/tecach.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/utctab.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option

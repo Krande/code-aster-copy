@@ -50,7 +50,6 @@ subroutine op0072()
 #include "asterfort/wkvect.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"
-#include "blas/zcopy.h"
 #include "blas/zdotc.h"
 !
     character(len=1) :: typvec

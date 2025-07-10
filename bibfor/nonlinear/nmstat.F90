@@ -24,8 +24,6 @@ subroutine nmstat(phasis, ds_measure, ds_print, sddisc, nume_inst, sderro)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/diinst.h"
 #include "asterfort/impmem.h"
 #include "asterfort/GetDevice.h"

@@ -28,7 +28,6 @@ subroutine zedgar(jv_mater, nb_phase, &
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
 #include "asterc/r8t0.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zevolu.h"
 #include "asterfort/metaZircGetParameters.h"

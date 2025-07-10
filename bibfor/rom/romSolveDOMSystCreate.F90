@@ -24,7 +24,6 @@ subroutine romSolveDOMSystCreate(syst_matr_type, syst_2mbr_type, syst_type, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/mtdefs.h"

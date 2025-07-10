@@ -33,7 +33,6 @@ subroutine dtmforc_decr(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 !       fext             : projected total non-linear force
 !
 #include "jeveux.h"
-#include "blas/dcopy.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dtmget.h"

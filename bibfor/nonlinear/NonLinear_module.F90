@@ -41,7 +41,6 @@ module NonLinear_module
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infdbg.h"

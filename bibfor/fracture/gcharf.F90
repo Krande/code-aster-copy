@@ -34,7 +34,6 @@ subroutine gcharf(ichar, fonc1, char1, fonc2, char2, &
 #include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"

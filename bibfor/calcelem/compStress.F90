@@ -26,7 +26,6 @@ subroutine compStress(modelz, ligrel, compor, &
 !
 #include "asterf_types.h"
 #include "asterfort/ajchca.h"
-#include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"

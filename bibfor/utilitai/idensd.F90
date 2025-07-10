@@ -25,7 +25,6 @@ function idensd(dsTypeZ, dsName1Z, dsName2Z)
 #include "asterfort/idenob.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 !
     aster_logical :: idensd

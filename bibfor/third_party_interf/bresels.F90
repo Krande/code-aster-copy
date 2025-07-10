@@ -88,11 +88,8 @@ subroutine bresels(cequi, effmy, effmz, effn, &
 !
     implicit none
 !
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/juveca.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/cafels.h"
 #include "extern/dintels.h"
 #include "asterc/r8prem.h"

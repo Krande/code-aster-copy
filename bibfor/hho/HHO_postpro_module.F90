@@ -48,7 +48,6 @@ module HHO_postpro_module
 #include "asterfort/utmess.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------

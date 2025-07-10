@@ -51,7 +51,6 @@ subroutine debca1(nin)
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/asmpi_info.h"
-#include "asterfort/isParallelMesh.h"
 
     integer(kind=8) :: nin
 !----------------------------------------------------------------------

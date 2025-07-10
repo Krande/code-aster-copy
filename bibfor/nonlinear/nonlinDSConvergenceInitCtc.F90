@@ -24,7 +24,6 @@ subroutine nonlinDSConvergenceInitCtc(ds_conv, list_func_acti, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisr.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"

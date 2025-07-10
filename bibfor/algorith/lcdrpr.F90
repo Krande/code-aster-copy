@@ -26,7 +26,6 @@ subroutine lcdrpr(fami, typmod, option, imate, compor, sigm, &
 #include "asterfort/dpvpdi.h"
 #include "asterfort/lcdpli.h"
 #include "asterfort/lcdppa.h"
-#include "asterfort/utmess.h"
 #include "asterfort/get_varc.h"
 !
 !

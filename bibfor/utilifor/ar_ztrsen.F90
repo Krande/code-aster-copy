@@ -171,10 +171,6 @@ subroutine ar_ztrsen(select, n, t, ldt, q, &
 #include "asterc/matfpe.h"
 #include "asterfort/ar_ztrexc.h"
 #include "asterfort/xerbla.h"
-#include "blas/lsame.h"
-#include "blas/zlacon.h"
-#include "blas/zlacpy.h"
-#include "blas/zlange.h"
     integer(kind=8) :: info, ldq, ldt, m, n
 !     ..
 !     .. ARRAY ARGUMENTS ..

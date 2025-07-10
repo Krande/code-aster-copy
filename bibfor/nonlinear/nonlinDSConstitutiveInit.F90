@@ -23,11 +23,9 @@ subroutine nonlinDSConstitutiveInit(modelZ, caraElemZ, ds_constitutive, verbose_
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/nmdoco.h"
 #include "asterfort/nmcpqu.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 #include "asterfort/comp_info.h"

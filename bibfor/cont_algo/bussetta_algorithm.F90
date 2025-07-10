@@ -21,7 +21,6 @@ subroutine bussetta_algorithm(dist_cont_curr, dist_cont_prev, dist_max, coef_bus
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr
 !

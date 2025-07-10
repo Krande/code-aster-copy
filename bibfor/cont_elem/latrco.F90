@@ -20,7 +20,6 @@ subroutine latrco(iTria, nbPoinInte, poinInte, triaCoorPara)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/mesh_pairing_type.h"
 !
     integer(kind=8), intent(in) :: iTria

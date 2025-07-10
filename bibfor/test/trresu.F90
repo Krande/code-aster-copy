@@ -24,7 +24,6 @@ subroutine trresu(ific, nocc)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/dismoi.h"
@@ -40,9 +39,6 @@ subroutine trresu(ific, nocc)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/lxliis.h"
 #include "asterfort/rsadpa.h"

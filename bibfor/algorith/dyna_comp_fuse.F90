@@ -21,7 +21,6 @@ subroutine dyna_comp_fuse(mesh, comp_noli, comp_fuse)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_elas.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/carces.h"

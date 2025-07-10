@@ -24,7 +24,6 @@ subroutine getTHMPara(prepMapCarcri)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/getvr8.h"
 !

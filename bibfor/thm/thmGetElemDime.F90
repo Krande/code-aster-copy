@@ -25,7 +25,6 @@ subroutine thmGetElemDime(ndim, nnos, nnom, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/thmGetGeneDime.h"
 !
     integer(kind=8), intent(in) :: ndim, nnos, nnom

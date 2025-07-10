@@ -19,7 +19,6 @@
 subroutine intersect_conic(m, line, nb, point1, point2)
 !
     implicit none
-#include "asterc/r8prem.h"
 #include "asterfort/get_line_points.h"
 !
     real(kind=8), intent(in) :: m(3, 3)

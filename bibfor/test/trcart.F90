@@ -33,8 +33,6 @@ subroutine trcart(ific, nocc)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/utcmp1.h"
 #include "asterfort/utmess.h"

@@ -24,11 +24,9 @@ subroutine crcnct(base, nomch, mailla, gd, nbcmp, &
 !     ----------
 #include "jeveux.h"
 #include "asterc/indik8.h"
-#include "asterfort/assert.h"
 #include "asterfort/afchno.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeecra.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"

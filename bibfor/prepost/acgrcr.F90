@@ -23,9 +23,6 @@ subroutine acgrcr(nbvec, jvectn, jvectu, jvectv, nbordr, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/loisem.h"
-#include "asterc/lor8em.h"
-#include "asterc/r8maem.h"
 #include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/acplcr.h"

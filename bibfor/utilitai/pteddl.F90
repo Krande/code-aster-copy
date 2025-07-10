@@ -21,7 +21,6 @@ subroutine pteddl(typesd, resuz, nb_cmp, list_cmp, nb_equa, &
 !
     implicit none
 !
-#include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/select_dof_2.h"
 !

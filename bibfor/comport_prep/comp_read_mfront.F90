@@ -23,8 +23,6 @@ subroutine comp_read_mfront(keywf, i_comp, extern_addr)
 !
 #include "asterfort/assert.h"
 #include "asterfort/getvid.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 !
     character(len=16), intent(in) :: keywf

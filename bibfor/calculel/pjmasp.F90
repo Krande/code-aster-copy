@@ -24,7 +24,6 @@ subroutine pjmasp(moa2, masp, corres, noca)
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cesvar.h"
-#include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"

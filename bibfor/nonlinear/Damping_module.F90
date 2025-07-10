@@ -35,7 +35,6 @@ module Damping_module
     private
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/r8pi.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
@@ -59,7 +58,6 @@ module Damping_module
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/zerlag.h"
-#include "blas/dcopy.h"
 ! ==================================================================================================
 contains
 ! --------------------------------------------------------------------------------------------------

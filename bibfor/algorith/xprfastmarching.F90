@@ -25,7 +25,6 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom, &
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescns.h"
@@ -37,8 +36,6 @@ subroutine xprfastmarching(cmnd, noma, cnxinv, noesom, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/xprls0.h"

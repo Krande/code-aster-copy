@@ -31,7 +31,6 @@ subroutine xcalfev(elrefp, ndim, nnop, basloc, stano, &
 #include "asterfort/coor_cyl.h"
 #include "asterfort/elrfvf.h"
 #include "asterfort/is_enr_line.h"
-#include "asterfort/iselli.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xdeffk_wrap.h"
 #include "asterfort/xderfk_wrap.h"

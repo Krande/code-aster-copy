@@ -31,7 +31,6 @@ subroutine utmess_core(typ, idmess, nk, valk, ni, &
 #include "asterc/utprin.h"
 #include "asterf_types.h"
 #include "asterfort/asmpi_warn.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetc.h"
 #include "asterfort/jefini.h"

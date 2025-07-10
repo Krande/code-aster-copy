@@ -26,7 +26,6 @@ subroutine mm_cycl_d4(ds_contact, i_cont_poin, indi_cont_eval, indi_cont_prev, &
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
 #include "asterfort/assert.h"
-#include "asterfort/iscycl.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

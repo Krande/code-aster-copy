@@ -30,8 +30,6 @@ subroutine vefcur(vec1, nbn, knom, vec2, nbvale, &
 !  IN : NBVALE  :    DIMENSION DES VECTEURS KNOM ET VEC2
 ! ----------------------------------------------------------------------
 #include "jeveux.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/utmess.h"
 #include "asterfort/char8_to_int.h"
 !

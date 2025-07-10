@@ -27,7 +27,6 @@ subroutine nonlinLoadDirichletCompute(list_load, model, nume_dof, &
 !
 #include "asterf_types.h"
 #include "asterfort/ap_assembly_vector.h"
-#include "asterfort/assert.h"
 #include "asterfort/assvec.h"
 #include "asterfort/conlag.h"
 #include "asterfort/dismoi.h"

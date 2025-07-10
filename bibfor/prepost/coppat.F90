@@ -29,7 +29,6 @@ subroutine coppat(main, maout, nbma, nbpain, lenpat, same_zone)
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jelira.h"
 

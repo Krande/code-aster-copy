@@ -30,7 +30,6 @@ subroutine assma2(ldistme, lmasym, tt, nu14, ncmp, matel, &
 #include "asterc/indik8.h"
 #include "asterfort/ascopr.h"
 #include "asterfort/asretm.h"
-#include "asterfort/assert.h"
 #include "asterfort/cordd2.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

@@ -36,11 +36,8 @@ module kichenin_nl_module
 
 #include "asterf_types.h"
 #include "asterc/r8gaem.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
-#include "asterc/r8pi.h"
-#include "asterc/r8prem.h"
 
 ! --------------------------------------------------------------------------------------------------
 

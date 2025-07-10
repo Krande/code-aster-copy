@@ -25,7 +25,6 @@ subroutine dtmeigen_fsi(sd_dtm_, buffdtm)
 !                as to accomodate to the change in modal frequencies and shapes
 !
 #include "jeveux.h"
-#include "blas/dcopy.h"
 #include "asterfort/coefmo.h"
 #include "asterfort/dtmcase_coder.h"
 #include "asterfort/dtmget.h"

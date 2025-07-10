@@ -34,7 +34,6 @@ subroutine laElemCont(parameters, geom, coor_qp_sl, hF, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "contact_module.h"
-#include "blas/dgemm.h"
 !
     type(ContactParameters), intent(in) :: parameters
     type(ContactGeom), intent(in) :: geom

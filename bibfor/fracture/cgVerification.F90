@@ -31,8 +31,6 @@ subroutine cgVerification(cgField, cgTheta, cgStudy, cgStat)
 #include "asterfort/dismoi.h"
 #include "asterc/getfac.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "jeveux.h"
 !
     type(CalcG_field), intent(in) :: cgField

@@ -21,7 +21,6 @@ subroutine medomg(result, numord, modele, mate, mateco, lischa)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

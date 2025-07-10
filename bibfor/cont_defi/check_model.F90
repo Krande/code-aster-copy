@@ -20,7 +20,6 @@ subroutine check_model(mesh, cont_form)
 !
     implicit none
 !
-#include "asterfort/exixfe.h"
 #include "asterfort/exipat.h"
 #include "asterfort/utmess.h"
 !

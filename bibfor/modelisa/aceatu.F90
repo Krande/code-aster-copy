@@ -32,7 +32,6 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"

@@ -29,10 +29,8 @@ subroutine apetsc(action, solvez, matasz, rsolu, vcinez, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/asmpi_comm.h"
 #include "asterc/aster_petsc_initialize.h"
 #include "asterc/aster_petsc_finalize.h"
-#include "asterc/getfac.h"
 #include "asterfort/apmain.h"
 #include "asterfort/apldlt.h"
 #include "asterfort/assert.h"

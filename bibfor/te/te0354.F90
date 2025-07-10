@@ -26,11 +26,9 @@ subroutine te0354(option, nomte)
     use FE_mass_module
 !
     implicit none
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/fointe.h"
 #include "asterfort/foderi.h"
-#include "asterfort/utmess.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/writeMatrix.h"
 #include "FE_module.h"

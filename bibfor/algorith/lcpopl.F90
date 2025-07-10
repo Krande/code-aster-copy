@@ -33,11 +33,7 @@ subroutine lcpopl(loi, nmat, materd, materf, &
 !     ----------------------------------------------------------------
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
-#include "asterc/r8vide.h"
-#include "asterfort/hujori.h"
 #include "asterfort/lgldcm.h"
-#include "asterfort/utmess.h"
     integer(kind=8) :: nmat
     real(kind=8) :: materd(nmat, 2), materf(nmat, 2), sigf(*), vind(*), vinf(*)
     character(len=8) :: mod

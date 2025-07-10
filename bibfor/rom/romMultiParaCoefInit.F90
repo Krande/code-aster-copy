@@ -23,7 +23,6 @@ subroutine romMultiParaCoefInit(ds_multipara)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "asterfort/romEvalCoefInit.h"

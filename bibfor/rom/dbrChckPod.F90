@@ -24,7 +24,6 @@ subroutine dbrChckPod(operation, paraPod, lReuse, base)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romTableChck.h"
 #include "asterfort/rs_paraonce.h"

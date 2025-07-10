@@ -24,9 +24,7 @@ subroutine carc_save(mesh, carcri, prepMapCarcri)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/lcdiscard.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"

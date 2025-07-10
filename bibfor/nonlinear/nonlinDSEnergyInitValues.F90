@@ -27,7 +27,6 @@ subroutine nonlinDSEnergyInitValues(ds_energy, stin_evol, ds_inout)
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/IncrEnergy.h"
 #include "asterfort/ltnotb.h"

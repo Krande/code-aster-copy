@@ -26,7 +26,6 @@ subroutine pecag3(ndim, nsymx, nsymy, noma, motcle, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"

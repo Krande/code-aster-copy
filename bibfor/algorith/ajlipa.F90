@@ -32,7 +32,6 @@ subroutine ajlipa(modelz, base, kdis)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 

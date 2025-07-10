@@ -59,8 +59,6 @@ subroutine nmprma(listFuncActi, &
 #include "asterfort/nmrigi.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 !
     integer(kind=8), intent(in) :: listFuncActi(*)
     character(len=*), intent(in) :: modelz

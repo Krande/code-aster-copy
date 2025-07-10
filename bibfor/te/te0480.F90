@@ -24,7 +24,6 @@ subroutine te0480(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/dimthm.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"
 #include "asterfort/vff2dn.h"

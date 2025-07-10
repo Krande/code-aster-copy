@@ -56,7 +56,6 @@ subroutine te0031(option, nomte)
 #include "asterfort/utpvgl.h"
 #include "asterfort/utpvlg.h"
 #include "asterfort/vecma.h"
-#include "asterc/r8prem.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/plateChckHomo.h"
 !

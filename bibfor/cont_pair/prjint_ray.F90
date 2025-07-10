@@ -29,7 +29,6 @@ subroutine prjint_ray(proj_tole, dist_ratio, elem_dime, &
 #include "asterfort/assert.h"
 #include "asterfort/cfadju.h"
 #include "asterfort/lcodrm.h"
-#include "asterfort/reerel.h"
 #include "asterfort/projMaAndCheck.h"
 #include "asterfort/interNodesInside.h"
 #include "asterfort/interNodesEdge.h"

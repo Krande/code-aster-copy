@@ -22,7 +22,6 @@ subroutine te0065(option, nomte)
 !
 #include "MeshTypes_type.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elref2.h"
 #include "asterfort/elrefe_info.h"

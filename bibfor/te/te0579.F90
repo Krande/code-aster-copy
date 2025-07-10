@@ -54,7 +54,6 @@ subroutine te0579(option, nomte)
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xlinhm.h"
-#include "blas/ddot.h"
 !
     character(len=8) :: noma, elrefp, enr, elref
     character(len=16) :: nomte, option

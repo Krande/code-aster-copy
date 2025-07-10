@@ -25,9 +25,7 @@ subroutine surfcl(sdcont, mesh, unit_msg)
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"
@@ -62,9 +60,9 @@ subroutine surfcl(sdcont, mesh, unit_msg)
     integer(kind=8) :: nt_node_slav, nt_elem_slav, nt_node_slavc, nt_elem_slavc
     integer(kind=8) :: nt_node_mast, nt_elem_mast, nt_node_mastc, nt_elem_mastc
     integer(kind=8) :: nb_node_excl, nb_cont_poinc, nb_cont_poin
-    integer(kind=8) :: i_zone, i_surf, i_elem, i_node, node_nume
+    integer(kind=8) :: i_zone, i_surf, i_elem, i_node, node_nume, type_appa, algo_cont
     real(kind=8) :: tole_interp, tole_proj_ext, resi_appa, dist_appa
-integer(kind=8) :: type_norm, type_appa_search, type_norm_mast, type_norm_slav, type_appa, algo_cont
+    integer(kind=8) :: type_norm, type_appa_search, type_norm_mast, type_norm_slav
     aster_logical :: l_dist_shell, l_dist_beam, l_veri
     aster_logical :: l_liss, l_exis_verif, lstop
     character(len=8) :: jeuf1, jeuf2

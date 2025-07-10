@@ -22,7 +22,6 @@ subroutine compGetMecaPart(rela_comp, kit_comp, meca_comp)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 !
     character(len=16), intent(in) :: rela_comp, kit_comp(4)

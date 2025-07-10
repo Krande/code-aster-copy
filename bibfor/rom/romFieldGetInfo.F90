@@ -24,7 +24,6 @@ subroutine romFieldGetInfo(model, fieldName, fieldRefe, field, l_chck_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jelira.h"
 #include "asterfort/romFieldGetComponents.h"

@@ -24,7 +24,6 @@ subroutine getIntVect(vect, x1, x2, x3, x4, x5, &
 !   récupèration de valeurs entières dans un tableau
 !-----------------------------------------------------------------------
     implicit none
-#include "asterfort/assert.h"
     integer(kind=8), intent(in) :: vect(*)
     integer(kind=8), intent(out) :: x1
     integer(kind=8), optional, intent(out) :: x2, x3, x4, x5, x6, x7, x8

@@ -24,7 +24,6 @@ subroutine caprec(load, loadLigrel, mesh, model, valeType)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/indik8.h"
-#include "asterc/r8gaem.h"
 #include "asterfort/aflrch.h"
 #include "asterfort/armin.h"
 #include "asterfort/assert.h"

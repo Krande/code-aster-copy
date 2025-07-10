@@ -22,7 +22,6 @@ subroutine copy_field_with_numbering(fieldin, fieldout, mesh, nume_equa, &
 
 #include "jeveux.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/vtcrea.h"
 #include "asterfort/vtcopy.h"
 #include "asterfort/vtzero.h"

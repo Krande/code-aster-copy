@@ -58,7 +58,6 @@ subroutine mdconf(typflu, base, noma, nbm, lnoe, &
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/mtdscr.h"

@@ -29,7 +29,6 @@ module HHO_algebra_module
 #include "blas/dgemm.h"
 #include "blas/dgemv.h"
 #include "blas/dsymv.h"
-#include "blas/dsyr.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

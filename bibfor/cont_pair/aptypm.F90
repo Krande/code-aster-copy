@@ -21,8 +21,6 @@ subroutine aptypm(mesh, elem_nume, elem_ndim, elem_nbnode, elem_type, &
 !
     implicit none
 !
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmtypm.h"
 #include "asterfort/int_to_char8.h"
 !

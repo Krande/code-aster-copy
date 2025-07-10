@@ -71,7 +71,6 @@ subroutine comdlt()
 #include "asterfort/vrcref.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
-#include "blas/dcopy.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

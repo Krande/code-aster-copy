@@ -24,7 +24,6 @@ subroutine thmEvalFickSteam(j_mater, &
 !
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 !
     integer(kind=8), intent(in) :: j_mater

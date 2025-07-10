@@ -31,7 +31,6 @@ module lmp_module
 !
     private
 #include "asterf.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"

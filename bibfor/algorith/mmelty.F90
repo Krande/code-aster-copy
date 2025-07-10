@@ -20,7 +20,6 @@ subroutine mmelty(mesh, elem_nume, elem_type_, nb_node_, nb_dim_)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"

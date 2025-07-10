@@ -22,7 +22,6 @@ subroutine te0436(option, nomte)
 !
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
-#include "asterc/r8prem.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/mbcine.h"

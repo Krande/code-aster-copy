@@ -27,7 +27,6 @@ subroutine compMecaChckModel(iComp, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/lctest.h"
-#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/comp_meca_l.h"

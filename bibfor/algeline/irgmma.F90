@@ -15,7 +15,6 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
-! aslint: disable=C0110
 !
 subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
                   nobj, nbel, versio)
@@ -26,17 +25,13 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
 #include "asterfort/infniv.h"
 #include "asterfort/irgmtb.h"
 #include "asterfort/jecrec.h"
-#include "asterfort/jecreo.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
@@ -67,7 +62,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     parameter(ntyele=28)
     parameter(maxel=48)
     parameter(maxno=8)
-    integer(kind=8) :: tdec(ntyele, maxel, maxno)
+    integer(kind=8), allocatable :: tdec(:, :, :)
     integer(kind=8) :: typd(ntyele, 3)
     integer(kind=8) :: vali(3)
 !     NBRE, POINTEURS, NOM D'OBJET POUR CHAQUE TYPE D'ELEMENT
@@ -77,6 +72,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
 !
     call infniv(ifm, niv)
     call jemarq()
+    allocate (tdec(ntyele, maxel, maxno))
 !
 ! --- INIT
     do i = 1, ntyele
@@ -233,6 +229,7 @@ subroutine irgmma(nomain, nomaou, nbmat, nummai, basz, &
     end do
 !
     call jedetr('&&IRGMMA.NUME_MAILLE')
+    deallocate (tdec)
 !
     call jedema()
 !

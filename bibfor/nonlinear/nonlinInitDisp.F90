@@ -27,7 +27,6 @@ subroutine nonlinInitDisp(list_func_acti, sdnume, nume_dof, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/isnnem.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/isfonc.h"

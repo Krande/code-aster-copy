@@ -21,7 +21,6 @@ subroutine dmatcp(fami, mater, time, poum, ipg, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/matrHookePlaneStress.h"

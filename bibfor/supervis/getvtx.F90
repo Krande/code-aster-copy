@@ -30,7 +30,6 @@ subroutine getvtx(motfac, motcle, iocc, nbval, vect, &
 #include "asterc/getvtx_wrap.h"
 #include "asterfort/assert.h"
 !
-#include "asterc/getres.h"
 !   really used variables
     integer(kind=8) :: uioc, unbret, umax
 !   this kind of dynamic allocation is not supported with gfortran < 4.8

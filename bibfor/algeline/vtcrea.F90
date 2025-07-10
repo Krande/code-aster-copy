@@ -19,7 +19,6 @@
 subroutine vtcrea(champ, crefe, base, typc, neq)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/copisd.h"
 #include "asterfort/exisd.h"

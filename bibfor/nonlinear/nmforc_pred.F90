@@ -50,7 +50,6 @@ subroutine nmforc_pred(list_func_acti, &
 #include "asterfort/nonlinRForceCompute.h"
 #include "asterfort/nonlinSubStruCompute.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jeveuo.h"
 !
     integer(kind=8), intent(in) :: list_func_acti(*)
     character(len=24), intent(in) :: model, cara_elem, nume_dof

@@ -25,7 +25,6 @@ subroutine diinit(mesh_, model_, ds_inout, mate, mateco, cara_elem, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndynlo.h"

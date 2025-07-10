@@ -28,7 +28,6 @@ subroutine te0553(option, nomte)
 #include "asterfort/writeMatrix.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/assert.h"
-!#include "asterc/r8vide.h"
 !
     character(len=16), intent(in) :: option, nomte
 !

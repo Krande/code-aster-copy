@@ -31,7 +31,6 @@ subroutine cfcarm(noma, defico, newgeo, posmai, typmai, &
 #include "asterfort/cftypm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmtypm.h"

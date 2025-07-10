@@ -29,7 +29,6 @@ subroutine mmgeom(ndim, &
 !
 #include "jeveux.h"
 #include "asterfort/mmcaln.h"
-#include "asterfort/assert.h"
 !
     integer(kind=8), intent(in) :: ndim, nne, nnm
     real(kind=8), intent(in) :: ffe(9), ffm(9)

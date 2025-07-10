@@ -30,11 +30,9 @@ subroutine nbnlma(noma, nbm, limanu, nbtyp, lityp, &
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !

@@ -52,7 +52,6 @@ subroutine gromab(mailla, nmabet, nbmabe, mail2d, caelem, &
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/rgcmpg.h"
 #include "asterfort/utmess.h"

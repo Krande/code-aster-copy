@@ -25,7 +25,6 @@ subroutine addPhantomNodesFromCells(mesh, indic_nodes)
 #include "asterf_debug.h"
 #include "asterf_types.h"
 #include "asterfort/asmpi_info.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"

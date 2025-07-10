@@ -24,7 +24,6 @@ subroutine nonlinDSErrorIndicInit(model, ds_constitutive, ds_errorindic)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/jeveuo.h"

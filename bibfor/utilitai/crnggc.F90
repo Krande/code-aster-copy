@@ -18,11 +18,9 @@
 
 subroutine crnggc(chamnz)
     implicit none
-#include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
 #include "asterc/asmpi_sendrecv_i.h"
-#include "asterc/loisem.h"
 #include "asterf_config.h"
 #include "asterf_debug.h"
 #include "asterf_types.h"
@@ -48,7 +46,6 @@ subroutine crnggc(chamnz)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/nbec.h"

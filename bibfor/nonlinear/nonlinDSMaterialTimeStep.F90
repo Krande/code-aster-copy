@@ -26,7 +26,6 @@ subroutine nonlinDSMaterialTimeStep(model, ds_material, cara_elem, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/diinst.h"
 #include "asterfort/detrsd.h"

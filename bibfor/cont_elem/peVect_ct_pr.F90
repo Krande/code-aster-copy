@@ -24,11 +24,9 @@ subroutine peVect_ct_pr(parameters, geom, vect_cont, vect_fric, k_diff)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/laElemCont.h"
-#include "blas/daxpy.h"
 #include "blas/dgemv.h"
 #include "contact_module.h"
 !

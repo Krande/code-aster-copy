@@ -31,7 +31,6 @@ module augmented_lagrangian_module
 !
     private
 #include "asterf.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 !
     public :: augmented_lagrangian_setup, augmented_lagrangian_apply, augmented_lagrangian_destroy

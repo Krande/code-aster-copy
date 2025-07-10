@@ -25,7 +25,6 @@ subroutine dbrDSInitGreedy(multiPara, algoGreedy, paraGreedy)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
 !
     type(ROM_DS_MultiPara), intent(in)   :: multiPara
     type(ROM_DS_AlgoGreedy), intent(in)  :: algoGreedy

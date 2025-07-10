@@ -36,7 +36,6 @@ subroutine modsta(motcle, matfac, matpre, solveu, lmatm, &
 #include "asterfort/zerlag.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-#include "blas/dcopy.h"
     integer(kind=8) :: lmatm, iddl(*), neq, nbmode
     real(kind=8) :: coef(*), zrmod(neq, *)
     character(len=*) :: motcle, nume, matfac, matpre, solveu

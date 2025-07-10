@@ -28,7 +28,6 @@ subroutine rsinch(nomsd, nomch, acces, rval, chextr, &
 #include "asterfort/copisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"

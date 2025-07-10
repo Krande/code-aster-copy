@@ -27,7 +27,6 @@ subroutine lcsees(elem_dime, nb_node_slav, nb_lagr, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
     integer(kind=8), intent(in) :: elem_dime

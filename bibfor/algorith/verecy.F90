@@ -45,7 +45,6 @@ subroutine verecy(intf, numd, numg, nbsec, prec, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"

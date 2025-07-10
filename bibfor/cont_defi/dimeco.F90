@@ -21,7 +21,6 @@ subroutine dimeco(sdcont, model_ndim, nb_cont_zone, nb_cont_surf, nb_cont_elem, 
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/cfnben.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"

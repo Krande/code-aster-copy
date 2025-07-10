@@ -25,7 +25,6 @@ subroutine porea4(nno, nc, geom, gamma, pgl, &
 #include "asterfort/matrot.h"
 #include "asterfort/tecach.h"
 #include "asterfort/normev.h"
-#include "blas/ddot.h"
 !
     integer(kind=8) :: nno, nc
     real(kind=8) :: geom(3, nno), gamma

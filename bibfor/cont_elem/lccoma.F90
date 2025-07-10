@@ -26,7 +26,6 @@ subroutine lccoma(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 !
     integer(kind=8), intent(in) :: elem_dime
@@ -82,11 +81,15 @@ subroutine lccoma(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
                     do i_dime = 1, elem_dime
                         jj = (i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
                         mmat(jj, indlgc) = mmat(jj, indlgc)+ &
-                           (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1)* &
-                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                                           (zr(jv_norm+nb_node_slav*elem_dime+ &
+                                               (i_node_mast-1)*elem_dime+i_dime-1)* &
+                                            jaco_upda*poidpg*shape_mast_func(i_node_mast)) &
+                                           /(r_nb_lagr)
                         mmat(indlgc, jj) = mmat(indlgc, jj)+ &
-                           (zr(jv_norm+nb_node_slav*elem_dime+(i_node_mast-1)*elem_dime+i_dime-1)* &
-                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                                           (zr(jv_norm+nb_node_slav*elem_dime+ &
+                                               (i_node_mast-1)*elem_dime+i_dime-1)* &
+                                            jaco_upda*poidpg*shape_mast_func(i_node_mast)) &
+                                           /(r_nb_lagr)
                     end do
                 end do
             end if
@@ -101,10 +104,12 @@ subroutine lccoma(elem_dime, nb_node_mast, nb_node_slav, nb_lagr, &
                         jj = (i_node_mast-1)*elem_dime+nb_node_slav*elem_dime+nb_lagr+i_dime
                         mmat(jj, indlgc) = mmat(jj, indlgc)+ &
                                            (-dist_vect(i_dime)* &
-                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                                            jaco_upda*poidpg* &
+                                            shape_mast_func(i_node_mast))/(r_nb_lagr)
                         mmat(indlgc, jj) = mmat(indlgc, jj)+ &
                                            (-dist_vect(i_dime)* &
-                                          jaco_upda*poidpg*shape_mast_func(i_node_mast))/(r_nb_lagr)
+                                            jaco_upda*poidpg* &
+                                            shape_mast_func(i_node_mast))/(r_nb_lagr)
                     end do
                 end do
             end if

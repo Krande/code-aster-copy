@@ -28,7 +28,6 @@ subroutine nonlinDSPostTimeStepSave(mod45, sdmode, sdstab, &
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/tbajli.h"

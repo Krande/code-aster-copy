@@ -34,17 +34,12 @@ subroutine mmeval_prep(mesh, time_curr, model_ndim, ds_contact, &
 !
 #include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/cfdist.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/mmvalp.h"
 #include "asterfort/mmvalp_scal.h"
 #include "asterfort/mcopco.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmnewj.h"
 #include "asterfort/int_to_char8.h"
 !

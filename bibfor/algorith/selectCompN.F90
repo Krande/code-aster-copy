@@ -21,7 +21,6 @@ subroutine selectCompN(chams0, nom_cham, type_cham, nbcmp, nom_cmp, ndim_type)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !

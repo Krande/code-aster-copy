@@ -22,7 +22,6 @@ subroutine char_crea_neum(load, model, mesh, geomDime, valeType)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/cachre.h"
 #include "asterfort/char_eval_fonc.h"
 #include "asterfort/utmess.h"

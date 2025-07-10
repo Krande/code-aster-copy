@@ -37,7 +37,6 @@ subroutine xelgano(modele, sigelga, sigseno)
 !
 ! DECLARATION PARAMETRES D'APPELS
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

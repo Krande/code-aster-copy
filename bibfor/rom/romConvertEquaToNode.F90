@@ -22,7 +22,6 @@ subroutine romConvertEquaToNode(field_refe, list_length, v_list_equa, v_list_nod
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/dismoi.h"
 !

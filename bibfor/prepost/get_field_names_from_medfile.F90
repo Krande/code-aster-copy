@@ -41,7 +41,6 @@ subroutine get_field_names_from_medfile(idfimd, field_name_vector)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/wkvect.h"
 !
     med_idt idfimd

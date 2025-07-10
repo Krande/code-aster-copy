@@ -49,8 +49,6 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jelira.h"
-#include "asterfort/char8_to_int.h"
 !
     real(kind=8) :: rv
     integer(kind=8) :: nbm

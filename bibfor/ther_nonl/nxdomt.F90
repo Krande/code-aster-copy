@@ -24,7 +24,6 @@ subroutine nxdomt(ds_algopara, ds_algorom)
 !
     implicit none
 !
-#include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"

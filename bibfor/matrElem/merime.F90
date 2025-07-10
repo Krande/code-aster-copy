@@ -26,7 +26,6 @@ subroutine merime(modelz, nbLoad, listLoadK24, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/codent.h"
 #include "asterfort/detrsd.h"

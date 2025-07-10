@@ -35,7 +35,6 @@ subroutine rco3d_crealigrel(ligrel, noma, mod, list_pairs, nb_pairs, nt_nodes, &
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"

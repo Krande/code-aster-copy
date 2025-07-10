@@ -24,7 +24,6 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_cvar.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_meca_info.h"
@@ -32,8 +31,6 @@ subroutine pmdocc(compor, nbVari, type_comp, mult_comp)
 #include "asterfort/comp_meca_read.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/imvari.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/utmess.h"
 #include "asterfort/setBehaviourTypeValue.h"
 #include "asterfort/Behaviour_type.h"

@@ -32,7 +32,6 @@ subroutine rvgarg(nxdnom, nxdnum, nvchef, nvcodo, nxdvar)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jeimpo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"

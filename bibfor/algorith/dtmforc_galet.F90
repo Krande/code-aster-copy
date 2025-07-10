@@ -34,7 +34,6 @@ subroutine dtmforc_galet(nl_ind, sd_dtm_, sd_nl_, buffdtm, buffnl, &
 ! --------------------------------------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "blas/dcopy.h"
 #include "asterfort/assert.h"
 #include "asterfort/dtmget.h"
 #include "asterfort/fointe.h"

@@ -38,7 +38,6 @@ subroutine crkucv()
 #include "asterfort/jemarq.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/mrmult.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/refdaj.h"

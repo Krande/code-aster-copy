@@ -30,7 +30,6 @@ subroutine mmvape(phase, leltf, l_pena_cont, l_pena_fric, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/mmmvcc.h"
 #include "asterfort/mmmvff.h"
 !

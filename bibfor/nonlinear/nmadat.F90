@@ -34,7 +34,6 @@ subroutine nmadat(sddisc, numins, nbiter, valinc)
 #include "asterfort/juveca.h"
 #include "asterfort/nmcadt.h"
 #include "asterfort/nmdcei.h"
-#include "asterfort/nmecev.h"
 #include "asterfort/nmjalo.h"
 #include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"

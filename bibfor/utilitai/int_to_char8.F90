@@ -21,7 +21,6 @@ function int_to_char8(to_convert, lcolle, nommai, typent)
     implicit none
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 #include "asterc/int_to_string_conversion.h"

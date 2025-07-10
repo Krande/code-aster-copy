@@ -24,8 +24,6 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/assert.h"
-#include "asterfort/copisd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/getvid.h"

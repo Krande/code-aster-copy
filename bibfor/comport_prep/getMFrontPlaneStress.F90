@@ -25,7 +25,6 @@ subroutine getMFrontPlaneStress(keywf, i_comp, rela_comp, l_mfront_cp)
 #include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
 #include "asterc/lctest.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 !
     character(len=16), intent(in) :: keywf

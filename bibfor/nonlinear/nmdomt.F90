@@ -25,8 +25,6 @@ subroutine nmdomt(ds_algopara, ds_algorom_)
     implicit none
 !
 #include "asterc/getexm.h"
-#include "asterc/getfac.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/romAlgoNLRead.h"
 #include "asterfort/getvid.h"

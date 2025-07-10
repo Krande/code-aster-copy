@@ -34,7 +34,6 @@ subroutine nonlinIntForce(phaseType, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/assert.h"
 #include "asterfort/nmfint.h"

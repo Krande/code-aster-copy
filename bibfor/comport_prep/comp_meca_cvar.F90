@@ -24,7 +24,6 @@ subroutine comp_meca_cvar(prepMapCompor)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_nbvari.h"
 !
     type(BehaviourPrep_MapCompor), intent(inout) :: prepMapCompor

@@ -43,7 +43,6 @@ subroutine dltlec(result, model, numeDOF, materField, mate, &
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/infniv.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/nmarnr.h"
@@ -52,7 +51,6 @@ subroutine dltlec(result, model, numeDOF, materField, mate, &
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/nonlinDSInOutCreate.h"
-#include "asterfort/assert.h"
 !
     character(len=19), intent(out) :: listLoad, solveu
     character(len=24), intent(out) :: loadNameJv, loadInfoJv, loadFuncJv

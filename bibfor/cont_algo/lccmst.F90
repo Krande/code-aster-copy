@@ -28,7 +28,6 @@ subroutine lccmst(ds_contact, matr_asse)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/mtdsc2.h"
-#include "asterfort/assert.h"
 !
 !
     type(NL_DS_Contact), intent(in) :: ds_contact

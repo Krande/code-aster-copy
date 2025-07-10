@@ -18,7 +18,6 @@
 
 subroutine te0265(nomopt, nomte)
     implicit none
-#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"

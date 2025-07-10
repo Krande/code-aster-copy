@@ -21,7 +21,6 @@ subroutine nueqch(error, chamno, nume_node, cmp_name, nueq)
 !
     implicit none
 !
-#include "asterc/ismaem.h"
 #include "asterfort/select_dof.h"
 #include "asterfort/utmess.h"
 #include "asterfort/as_allocate.h"

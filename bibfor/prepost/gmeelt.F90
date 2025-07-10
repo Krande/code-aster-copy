@@ -23,7 +23,6 @@ subroutine gmeelt(imod, nbtyma, nomail, nbnoma, nuconn, &
 #include "asterfort/codent.h"
 #include "asterfort/codnop.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"

@@ -20,7 +20,6 @@ subroutine rcadme(nommaz, phenom, nomres, valres, icodre, &
                   iarret)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"

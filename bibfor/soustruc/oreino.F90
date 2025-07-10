@@ -25,8 +25,6 @@ subroutine oreino(noma, lnoeud, nbno, nori, next, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !

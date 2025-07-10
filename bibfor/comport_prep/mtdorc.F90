@@ -22,7 +22,6 @@ subroutine mtdorc(factorKeyword, model, comporMeta)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/comp_init.h"
 #include "asterfort/comp_meta_clean.h"
 #include "asterfort/comp_meta_info.h"

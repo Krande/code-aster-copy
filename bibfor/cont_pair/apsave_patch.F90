@@ -26,7 +26,6 @@ subroutine apsave_patch(mesh, sdappa, i_zone, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"

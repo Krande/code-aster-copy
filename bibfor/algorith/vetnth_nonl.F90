@@ -24,7 +24,6 @@ subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/corich.h"
 #include "asterfort/inical.h"

@@ -67,7 +67,6 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
 #include "asterfort/vrcref.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/char8_to_int.h"
-#include "blas/dcopy.h"
 !
     integer(kind=8) :: nh, nbocc
     character(len=*) :: resu, modele, mate, mateco, cara
@@ -75,9 +74,9 @@ subroutine peepot(resu, modele, mate, mateco, cara, &
 !     TRAITEMENT DU MOT CLE-FACTEUR "ENER_POT"
 !     ------------------------------------------------------------------
 !
-    integer(kind=8) :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst, jnmo, ibid
-  integer(kind=8) :: ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im, nbparr, nbpard, nbpaep
-    integer(kind=8) :: iocc, jma, icheml, ier, nbMaiT
+    integer(kind=8) :: nd, nr, ni, iret, np, nc, jord, jins, jad, nbordr, iord, numord, iainst
+    integer(kind=8) :: ire1, ire2, nt, nm, ng, nbgrma, ig, jgr, nbma, nume, im
+    integer(kind=8) :: iocc, jma, icheml, ier, nbMaiT, nbparr, nbpard, nbpaep, jnmo, ibid
     parameter(nbpaep=2, nbparr=6, nbpard=4)
     real(kind=8) :: prec, varpep(nbpaep), inst, valer(3), rundf
     character(len=1) :: base

@@ -26,7 +26,6 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 #include "jeveux.h"
 #include "blas/dcopy.h"
 #include "blas/daxpy.h"
-#include "blas/zcopy.h"
 #include "blas/zaxpy.h"
 #include "asterc/r8vide.h"
 #include "asterfort/asasve.h"
@@ -73,7 +72,6 @@ subroutine ccfnrn(option, resuin, resultOut, lisord, nbordr, &
 #include "asterfort/ascomb.h"
 #include "asterfort/dylach.h"
 #include "asterfort/lislec.h"
-#include "asterfort/isParallelMesh.h"
     integer(kind=8) :: nbordr
     character(len=8) :: resuin, resultOut
     character(len=16) :: option, resultType

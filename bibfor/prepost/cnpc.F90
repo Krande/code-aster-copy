@@ -22,7 +22,6 @@ subroutine cnpc(main, macou, macsu, conneo)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utlisi.h"

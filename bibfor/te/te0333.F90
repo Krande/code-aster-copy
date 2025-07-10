@@ -29,7 +29,6 @@ subroutine te0333(option, nomte)
 #include "asterfort/get_elas_para.h"
 #include "asterfort/epsvmc.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"

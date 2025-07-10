@@ -21,7 +21,6 @@ subroutine cylrep(ndim, x, axe_z, orig, pgcyl, &
 !
     implicit none
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 !

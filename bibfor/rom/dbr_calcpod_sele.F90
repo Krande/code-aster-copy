@@ -23,7 +23,6 @@ subroutine dbr_calcpod_sele(nb_mode_maxi, tole_svd, s, nb_sing, nb_mode)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 !

@@ -21,7 +21,6 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
 #include "asterc/asmpi_recv_r.h"
 #include "asterc/asmpi_send_r.h"
 #include "asterc/asmpi_sendrecv_r.h"
-#include "asterc/loisem.h"
 #include "asterf_config.h"
 #include "asterf_debug.h"
 #include "asterf_petsc.h"
@@ -160,8 +159,8 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
             end if
             ASSERT((lgenvo+lgrecep) .gt. 0)
 !
-            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1, lgenvo), jvaleue)
-            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1, lgrecep), jvaleur)
+            call wkvect('&&CPYSOL.TMP1E', 'V V R', max(1_8, lgenvo), jvaleue)
+            call wkvect('&&CPYSOL.TMP1R', 'V V R', max(1_8, lgrecep), jvaleur)
 
             if (lgenvo > 0) then
                 call jeveuo(nojoine, 'L', jjointe)

@@ -26,7 +26,6 @@ subroutine op0152()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/assert.h"
 #include "asterfort/cal152.h"
 #include "asterfort/calmdg.h"
 #include "asterfort/chpver.h"

@@ -28,7 +28,6 @@ subroutine nmequi(l_disp, l_pilo, l_macr, cnequi, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/nmdebg.h"

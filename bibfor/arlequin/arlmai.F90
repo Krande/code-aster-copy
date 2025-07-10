@@ -48,17 +48,11 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !

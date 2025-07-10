@@ -26,7 +26,6 @@ subroutine get_varc(fami, kpg, ksp, poum, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8nnem.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecael.h"
 #include "asterfort/utmess.h"

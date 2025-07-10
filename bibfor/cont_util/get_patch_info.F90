@@ -21,7 +21,6 @@ subroutine get_patch_info(sdappa, patch_indx, nb_elem_patch, list_elem)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

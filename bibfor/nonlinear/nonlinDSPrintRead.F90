@@ -24,7 +24,6 @@ subroutine nonlinDSPrintRead(ds_print)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infdbg.h"

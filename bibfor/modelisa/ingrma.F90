@@ -37,9 +37,7 @@ subroutine ingrma(sdmail, nomma, lgrma, nbgrma, codret)
 #include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/char8_to_int.h"
 !
