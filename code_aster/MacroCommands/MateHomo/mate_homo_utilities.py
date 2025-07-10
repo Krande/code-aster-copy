@@ -102,7 +102,7 @@ def get_temp_def_alpha_result(result, missing=DEFAULT_TEMP_REF):
     return temp_def_alpha
 
 
-def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
+def parse_mater_groups(ls_affe, varc_name, ls_group_tout):
     """
     Returns the appropriate material fields prescription to compute the
     homogeneous parameters.
@@ -116,8 +116,6 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
        input.
 
     Args:
-        type_homo (str): Type of homogenization (MASSIF | PLAQUE). Determines the
-            type of homogenization to be performed.
         ls_affe (list): List of material prescriptions from the user command.
             These prescriptions define the material properties and their variations
             with respect to temperature or other variables.
@@ -135,7 +133,6 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
     mat1, mat2, mat3 = "ELAS", "THER", "THER_NL"
     mandatory_elas, optional_elas = ["E", "NU"], ["RHO", "ALPHA"]
     mandatory_ther, optional_ther = ["LAMBDA"], ["RHO_CP"]
-    need_ther = type_homo in ("MASSIF",)
 
     affe_mod_mate = []
     affe_mod_calc = []
@@ -159,9 +156,8 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
         if mat1 not in matNames:
             UTMESS("F", "HOMO1_8", valk=(mat1, mater.getName(), mater.userName))
 
-        if need_ther:
-            if mat2 not in matNames and mat3 not in matNames:
-                UTMESS("F", "HOMO1_9", valk=(mat2, mat3, mater.getName(), mater.userName))
+        if mat2 not in matNames and mat3 not in matNames:
+            UTMESS("F", "HOMO1_9", valk=(mat2, mat3, mater.getName(), mater.userName))
 
         keyelas = " ".join([m for m in matNames if m in (mat1,)])
         keyther = " ".join([m for m in matNames if m in (mat2, mat3)])
@@ -174,7 +170,6 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
             keyther: mandatory_ther + optional_ther,
         }
 
-        check_list = mandatory_elas if not need_ther else mandatory_elas + mandatory_ther
         temp_def_alpha_current_mat = get_temp_def_alpha_material(mater, missing=None)
         ls_temp_def_alpha.append(temp_def_alpha_current_mat)
 
@@ -194,6 +189,7 @@ def parse_mater_groups(type_homo, ls_affe, varc_name, ls_group_tout):
                         pass
                 missing_in_at_least_one.append(p)
 
+        check_list = mandatory_elas + mandatory_ther
         for p in check_list:
             if p not in f_para:
                 UTMESS("F", "HOMO1_10", valk=(p, mater.getName(), mater.userName))
@@ -288,7 +284,7 @@ def prepare_alpha_loads(ls_affe_mod_mate, varc_values):
     return ls_alpha_calc
 
 
-def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values):
+def setup_calcul(mesh, ls_group_tout, ls_affe, varc_name, varc_values):
     """
     Sets up the computation of homogeneous parameters.
 
@@ -343,9 +339,7 @@ def setup_calcul(type_homo, mesh, ls_group_tout, ls_affe, varc_name, varc_values
             behavior of the material at different temperatures.
     """
 
-    ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(
-        type_homo, ls_affe, varc_name, ls_group_tout
-    )
+    ls_affe_mod_mate, ls_affe_mod_calc = parse_mater_groups(ls_affe, varc_name, ls_group_tout)
 
     ls_alpha_calc = prepare_alpha_loads(ls_affe_mod_mate, varc_values)
 
