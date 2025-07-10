@@ -338,7 +338,7 @@ contains
         PetscReal :: info(MAT_INFO_SIZE)
         !
         call MatGetInfo(a_mat, MAT_GLOBAL_SUM, info, ierr)
-        nnz = info(MAT_INFO_NZ_USED)
+        nnz = to_petsc_int(info(MAT_INFO_NZ_USED))
         call MatGetSize(a_mat, mm, nn, ierr)
         ASSERT(ierr == 0)
         allocate (ia(mm+1), stat=ierr)

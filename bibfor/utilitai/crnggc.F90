@@ -151,7 +151,7 @@ subroutine crnggc(chamnz)
         call jeveuo(tag_name, 'L', vi=v_tag)
         call jeveuo(gcom, 'L', vi=v_gco)
         call jeveuo(pgid, 'L', vi4=v_pgid)
-        mpicou = v_gco(1)
+        mpicou = to_mpi_int(v_gco(1))
     end if
 
 !     !!!! IL PEUT ETRE INTERESSANT DE STOCKER CES INFOS
@@ -305,7 +305,7 @@ subroutine crnggc(chamnz)
             gcom = joints//'.GCOM'
             call jeveuo(domj, 'L', vi=v_dom)
             call jeveuo(gcom, 'L', vi=v_gco)
-            mpicou = v_gco(1)
+            mpicou = to_mpi_int(v_gco(1))
             do ijoin = 1, nb_comm
                 domj_i = v_comm(ijoin)
                 numpro = v_dom(domj_i)

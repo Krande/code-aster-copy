@@ -124,12 +124,12 @@ subroutine crnustd(numddl)
 !
     nume_equa = numddl//".NUME"
     call jeveuo(nume_equa//'.REFN', 'L', jrefn)
-    mesh = zk24(jrefn)
-    nomgdr = zk24(jrefn+1)
+    mesh = zk24(jrefn) (1:8)
+    nomgdr = zk24(jrefn+1) (1:8)
     meshj = mesh//".JOIN"
     call jeveuo(meshj//'.GCOM', 'L', vi=v_gco)
     call jeveuo(meshj//'.PGID', 'L', vi4=v_pgid)
-    mpicou = v_gco(1)
+    mpicou = to_mpi_int(v_gco(1))
 !
     call jeveuo(mesh//'.DIME', 'L', dime)
     call jeveuo(mesh//'.NUNOLG', 'L', vi=v_nulg)
@@ -290,8 +290,8 @@ subroutine crnustd(numddl)
                 nb_ddl_envoi = nb_ddl_envoi+zzprno(1, numno1, 2)
             end do
             zi(jenvoi1) = nb_ddl_envoi
-            n4e = lgenvr1
-            n4r = lgenve1
+            n4e = to_mpi_int(lgenvr1)
+            n4r = to_mpi_int(lgenve1)
             call asmpi_sendrecv_i(zi(jenvoi1), n4e, numpr4, tag4, &
                                   zi(jrecep1), n4r, numpr4, tag4, mpicou)
 !
@@ -329,8 +329,8 @@ subroutine crnustd(numddl)
                 end do
 !
                 ASSERT(zi(jrecep1) .eq. nbddl)
-                n4e = nbddl
-                n4r = nb_ddl_envoi
+                n4e = to_mpi_int(nbddl)
+                n4r = to_mpi_int(nb_ddl_envoi)
                 call asmpi_sendrecv_i(zi(jenvoi2), n4e, numpr4, tag4, &
                                       zi(jrecep2), n4r, numpr4, tag4, mpicou)
 !
@@ -419,7 +419,7 @@ subroutine crnustd(numddl)
             call jeveuo(joints//".DOMJ", 'L', vi=v_dom)
             call jeveuo(joints//".PGID", 'L', vi4=v_pgid)
             call jeveuo(joints//".GCOM", 'L', vi=v_gco)
-            mpicou = v_gco(1)
+            mpicou = to_mpi_int(v_gco(1))
             do i_join = 1, nb_comm
                 domj_i = v_comm(i_join)
                 numpro = v_dom(domj_i)
@@ -441,7 +441,7 @@ subroutine crnustd(numddl)
                             nddll = zzprno(ili, numnoe, 1)
                             zi(jnujoi1+jaux-1) = v_nuls(nddll)
                         end do
-                        n4e = nbnoee
+                        n4e = to_mpi_int(nbnoee)
                     end if
 
                     call jeexin(nojoir, iret2)
@@ -449,7 +449,7 @@ subroutine crnustd(numddl)
                         call jeveuo(nojoir, 'L', jjoinr)
                         call jelira(nojoir, 'LONMAX', nbnoer, k8bid)
                         call wkvect('&&CRNSTD.NUM_DDL_GLOB_R', 'V V I', nbnoer, jnujoi2)
-                        n4r = nbnoer
+                        n4r = to_mpi_int(nbnoer)
                     end if
 
                     if (rang .lt. numpro) then

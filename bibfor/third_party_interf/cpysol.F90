@@ -137,7 +137,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
         call jeveuo(domj, 'L', vi=v_dom)
         call jeveuo(gcom, 'L', vi=v_gco)
         call jeveuo(pgid, 'L', vi4=v_pgid)
-        mpicou = v_gco(1)
+        mpicou = to_mpi_int(v_gco(1))
     end if
 !
     do iaux = 1, nb_comm
@@ -217,7 +217,7 @@ subroutine cpysol(nomat, numddl, rsolu, debglo, vecpet)
             call jeveuo(gcom, 'L', vi=v_gco)
             call jeveuo(pgid, 'L', vi4=v_pgid)
             call jeveuo(domj, 'L', vi=v_dom)
-            mpicou = v_gco(1)
+            mpicou = to_mpi_int(v_gco(1))
             do ijoin = 1, nb_comm
                 domj_i = v_comm(ijoin)
                 numpro = v_dom(domj_i)
