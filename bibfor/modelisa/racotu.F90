@@ -53,8 +53,8 @@ subroutine racotu(iprno, lonlis, klisno, noepou, noma, &
     character(len=24) :: lchin(6), lchout(3), valech
     real(kind=8) :: coef(4), eg1(3), eg2(3), eg3(3)
     real(kind=8) :: rayon, coori1(3), gp1(3)
-    integer(kind=8) :: imod, info, ifm, idch1, idch2
-    integer(kind=8) :: iwi1wo1, iwo1vi1, k
+    integer(kind=8) :: imod, info, ifm, idch1
+    integer(kind=8) :: iwi1wo1, k
     integer(kind=8) :: nbcoef, idec, ival, nbec, ino, i
     real(kind=8), pointer :: vale(:) => null()
 !

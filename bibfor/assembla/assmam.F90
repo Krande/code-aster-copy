@@ -99,12 +99,11 @@ subroutine assmam(jvBase, matrAsseZ, &
     character(len=16) :: optio, optio2
     character(len=1) :: typsca
     character(len=2) :: tt
-    character(len=3) :: mathpc
     character(len=8) ::  nogdco, nogdsi, mesh, mesh2, model, mo2
     character(len=8) :: symel, kempic
     character(len=14) :: numeDof, nu14
     character(len=19) :: matrAsse, mat19, resu, matel, ligre1
-    character(len=21) :: cMeshName
+    character(len=24) :: cMeshName
     character(len=1) :: matsym
     character(len=3) :: matd, answer
     real(kind=8) :: c1, temps(7)
@@ -117,7 +116,7 @@ subroutine assmam(jvBase, matrAsseZ, &
     integer(kind=8) :: ibid, iconx1, iconx2, idbgav
     integer(kind=8) :: jprn1, jprn2, jresl, maxDDLMa
     integer(kind=8) :: iel, ier, ifm, igr
-    integer(kind=8) :: ilima, ilimat, ilimo, ilinu
+    integer(kind=8) :: ilima, ilimo, ilinu
     integer(kind=8) :: imat, iresu
     integer(kind=8) :: iret, itbloc
     integer(kind=8) :: jrefa, jsmdi, jsmhc, jvalm(2)

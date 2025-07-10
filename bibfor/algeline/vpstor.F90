@@ -66,7 +66,7 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     integer(kind=8) :: imode, jmode, ier, nmin, imin, nmax, imax
     integer(kind=8) :: vali(3), jpara
     integer(kind=8) :: nmin1, kmode, nordr, iarg, i, ladpa, lmode, lvale
-    integer(kind=8) :: nbpast, irang, iret, jmodg, jmacr, jbasm
+    integer(kind=8) :: nbpast, irang, iret, jmodg
     integer(kind=8) :: jmod2, igd, jrefe
     parameter(nbpast=19)
     character(len=8) :: res, k8b, modele, chmat, carael, basemo, mesh, nomgd
@@ -75,7 +75,6 @@ subroutine vpstor(ineg, typ, modes, nbmode, neq, &
     character(len=24) :: nume, nopast(nbpast)
     character(len=24) :: valk, typeba, raide, raide2, k24b
     aster_logical :: lrefd, lbasm, lstock
-    character(len=24), pointer :: rerr(:) => null()
     integer(kind=8), pointer :: p_desc(:) => null()
     blas_int :: b_incx, b_incy, b_n
 !     ------------------------------------------------------------------

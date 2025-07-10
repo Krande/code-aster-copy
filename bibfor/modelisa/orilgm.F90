@@ -56,14 +56,14 @@ subroutine orilgm(noma)
 !
 ! ========================= DEBUT DES DECLARATIONS ====================
 ! -----  VARIABLES LOCALES
-    integer(kind=8) :: ifm, niv, nbf1, nbf3, jjj, n1, n2
+    integer(kind=8) :: ifm, niv, nbf1, jjj, n1, n2
     integer(kind=8) :: n3, noeud, iocc, ier, ndim, igr, ng, nbmail, norit, norien
     integer(kind=8) :: ntrait, jjv, nbmato, ima, nbmavi, jmavi, k
     integer(kind=8) :: ncf3, ngs, jgs, nbmasu, jmafr, nconex
     real(kind=8) :: vect(3)
     aster_logical :: reorie, orivec
     character(len=8) :: k8b
-    character(len=16) :: mofac, mofb3d, mofc3d
+    character(len=16) :: mofac, mofc3d
     character(len=24) :: grmama, nnoeud, gmat
     character(len=24) :: valk(2)
     integer(kind=8), pointer :: listCellNume(:) => null()

@@ -55,7 +55,6 @@ subroutine crea_maillage(noma, noma2, base, nbno, lino)
     integer(kind=8) ::  nbnoin, ino, jdim, jcorou, iad, ntgeo, nbnoou
     integer(kind=8) ::  ino2, typpoi, jadou, itypou, k
     character(len=4) :: docu
-    character(len=8) ::  nomno, nom
     character(len=24) ::  cooval, coodsc
     character(len=24) ::  dimin, dimou, connex, typmai
     real(kind=8), pointer :: vale(:) => null()

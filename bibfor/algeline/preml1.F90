@@ -59,9 +59,7 @@ subroutine preml1(neq, n2, diag, delg, col, &
     integer(kind=8) :: nbnd, nd, nbnd1, ddlmoy, renum
     integer(kind=8) :: pas, k, ndanc, iddl, sni, ind, nddl
     integer(kind=8) :: vali(2)
-    integer(kind=4) :: nbnd4, nadj4, nbsn4, fctnz4, lgind4
     character(len=24) :: noxadj, noadjn, noperm, noinvp, nopare, nospnd
-    integer(kind=8) :: xadjd4, adjnc4, invpn4, permn4, paren4, spndn4
 !
     data noxadj/'&&PREML1.NOMXADJ_PROV   '/
     data noadjn/'&&PREML1.NOMADJN_PROV   '/

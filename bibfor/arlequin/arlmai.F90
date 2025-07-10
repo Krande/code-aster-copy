@@ -68,7 +68,7 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
     parameter(nbnomx=27)
     integer(kind=8) :: nmain1, nmain2
     integer(kind=8) :: nnoin1, nnoin2, cxcumu
-    character(len=24) :: k8bid, nom
+    character(len=24) :: k8bid
     integer(kind=8) :: icpl, i
     integer(kind=8) :: numma1, numma2
     integer(kind=8) :: imail

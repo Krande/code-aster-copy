@@ -62,12 +62,12 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 ! ----------------------------------------------------------------------
     integer(kind=8) :: ntgeo, ipo, ipg, nuno2
     integer(kind=8) ::  nbno2p, nno2, ino2p
-    integer(kind=8) :: k, j1, ipoi1, ipy5, ipy13
+    integer(kind=8) ::  j1, ipoi1, ipy5, ipy13
     integer(kind=8) :: nbma, nbpt, nbcmp, nbmamo
     integer(kind=8) :: ima, ipt, icmp, iad, iadime
     integer(kind=8) ::  jdimt, jpo2, nbtrou, jlitr
     integer(kind=8) :: jcesd, jcesl, iatypm
-    character(len=8) :: nom, mail2
+    character(len=8) ::  mail2
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc, limato, litrou
     real(kind=8) :: xmoy(3), rayo

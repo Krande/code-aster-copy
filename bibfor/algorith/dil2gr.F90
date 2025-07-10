@@ -28,7 +28,7 @@ subroutine dil2gr(imate, ndim, dimdef, &
 ! ======================================================================
 ! --- VARIABLES LOCALES ------------------------------------------------
 ! ======================================================================
-    integer(kind=8) :: i, j, adder2
+    integer(kind=8) :: i, j
     real(kind=8) :: val(5)
     integer(kind=8) :: icodre(5), kpg, spt
     character(len=8) :: ncra(5), fami, poum

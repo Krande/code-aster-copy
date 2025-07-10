@@ -1278,7 +1278,6 @@ contains
 !
         integer(kind=8) :: i_dof
         real(kind=8) :: dv_du_(MAX_LAGA_DOFS, 3), Tn(3, 3), dTn(MAX_LAGA_DOFS, 3, 3)
-        real(kind=8) :: dvT_g(MAX_LAGA_DOFS, 3)
 !
 ! ------ First derivative of tangential speed
 !
@@ -1315,10 +1314,8 @@ contains
 ! --------------------------------------------------------------------------------------------------
 !
         real(kind=8) :: norm_slav_prev(3)
-        real(kind=8) :: tau_slav_prev(3, 2)
         real(kind=8) :: dGap_du_ns(MAX_LAGA_DOFS, 3)
-        real(kind=8) :: norm_mast_prev(3), tau_mast_prev(3, 2), tau_dZeta(3), coor_mast_prev(2)
-        real(kind=8) :: gap_prev
+        real(kind=8) :: tau_mast_prev(3, 2), tau_dZeta(3)
         integer(kind=8) :: i_dof
 !
 ! ------ Compute outward previous slave normal

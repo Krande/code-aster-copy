@@ -80,7 +80,7 @@ subroutine rdtmai(noma, nomare, base, corrn, corrm, bascor)
     character(len=4) :: docu
     character(len=8) :: typmcl(2)
     character(len=16) :: motcle(2)
-    character(len=8) :: nomma, nomno, ttgrma, ttgrno
+    character(len=8) ::   ttgrma, ttgrno
     character(len=24) :: grpnoe, cooval, coodsc
     character(len=24) :: grpmai, connex, typmai, dimin, dimou, nomgma, nomgno
     character(len=24) :: ptngrn, ptngrm, valk(2)

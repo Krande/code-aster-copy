@@ -52,7 +52,7 @@ subroutine irgmm3(nomain, nomaou, nbmat, nummai, basz, &
     integer(kind=8) :: idlima
     aster_logical :: logic
     character(len=1) :: base
-    character(len=8) :: k8b, nomg, typm, typm2
+    character(len=8) :: k8b, typm, typm2
     character(len=24) :: typmai, connex, nodime, cooval, coodsc
     character(len=24) ::  titre, numold, nbnune
     character(len=24) :: typmav, connev, nodimv, coovav, coodsv

@@ -55,14 +55,13 @@ subroutine cmqutr(basz, nomain, nomaou, nbma, nummai, &
 !     ------------------------------------------------------------------
     integer(kind=8) :: i, ima, nbmat, nbmail, typtri, nbtri, iret, nbgrno, nbnomx, nbpt
     integer(kind=8) :: ino, ima2, imav, iatyma, jvg, jtypm, jdime, jopt, jnpt
-    integer(kind=8) :: nbno, ier, jgg, im, j, lgpref, lgnd, nbmag, nbgrm, ifm, niv, iq4
+    integer(kind=8) :: nbno, ier, jgg, im, j, lgpref, nbmag, nbgrm, ifm, niv, iq4
     integer(kind=8) :: iq8, iq9, igrma, nbgm, jlgrma, jgrma, nbma2, jdec, ig, ind
     integer(kind=8) :: nbmais
     aster_logical :: logic
     character(len=1) :: base
     character(len=24) :: valk
     character(len=8) :: typm, nima
-    character(len=16) :: knume
     character(len=24) :: typmai, connex, nodime, grpnoe, cooval
     character(len=24) :: coodsc, grpmai, nomg
     character(len=24) :: typmav, connev, nodimv, grpnov, gpptnn, coovav

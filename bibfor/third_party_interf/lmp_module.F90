@@ -52,7 +52,7 @@ contains
         PetscErrorCode, intent(out) :: ierr
         ! Local variables
         PetscInt :: maxits
-        integer(kind=8) :: ifm, niv, si
+        integer(kind=8) :: ifm, niv
         aster_logical :: verbose
         !
         call infniv(ifm, niv)

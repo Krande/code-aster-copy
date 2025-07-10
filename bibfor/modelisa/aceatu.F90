@@ -66,14 +66,13 @@ subroutine aceatu(noma, nomo, nbepo, ntyele, ivr, nbocc)
     integer(kind=8) :: iext1, iext2, ima, inn, ioc, jcozk, jdco, jdgn, jdno, jdme
     integer(kind=8) ::   jma, jnozk
     integer(kind=8) :: nbext2, nbpart, nbtuy, ncar, ni1, ni2, nj, nj1, nj2, nng
-    integer(kind=8) :: numnoe, nutyel, nval, ixma, j
+    integer(kind=8) ::  nutyel, nval, ixma, j
     integer(kind=8) ::  nno, nbtuy4, nbext1, jzkpar, ibid
     integer(kind=8) :: ier, nbmail
     real(kind=8) :: val(3), epsi
     character(len=8) :: nomu, car, crit
     character(len=16) :: concep, cmd, nunoel
     character(len=24) :: mlggno, mlgcoo, mlgcnx, modmai, nomlu
-    character(len=24) :: nomnoe
     integer(kind=8), pointer :: eltuy(:) => null()
     integer(kind=8), pointer :: lismapart(:) => null()
     integer(kind=8), pointer :: lisnopart(:) => null()

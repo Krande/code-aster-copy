@@ -50,7 +50,7 @@ subroutine nonlinDSEnergyInitValues(ds_energy, stin_evol, ds_inout)
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8) :: nb_para, iret, nb_line, i, ibid
-    real(kind=8) :: rbid, valr, precision, init_time
+    real(kind=8) ::  valr, precision, init_time
     complex(kind=8) :: cbid
     character(len=8) :: k8b, ctype, criterion
     character(len=19) :: nomtab

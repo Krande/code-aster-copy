@@ -59,7 +59,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
 !
 !
     character(len=19) :: nomma2
-    character(len=8) :: type, khpc
+    character(len=8) :: type
     character(len=16) :: metres
     character(len=19) :: vci19, solveu
     complex(kind=8) :: cbid

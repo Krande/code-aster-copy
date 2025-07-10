@@ -47,12 +47,12 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=32) :: repk
-    character(len=24) :: p1, p2, k24
+    character(len=24) ::   k24
     character(len=19) :: nomob, solveu
     character(len=2) :: typmat
     character(len=8) :: nommai
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, ibid, ier
+    integer(kind=8) ::  ier
     character(len=16) :: typeco
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()

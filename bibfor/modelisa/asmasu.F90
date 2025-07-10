@@ -46,9 +46,7 @@ subroutine asmasu(ma1, ma2, mag)
 !-----------------------------------------------------------------------
 !
     character(len=1) :: kkk
-    character(len=8) :: kind
     character(len=19) :: coordo
-    character(len=8) :: noma, nono
     character(len=24) :: nogma, nogmab, nogno, nognob
     integer(kind=8) :: nbma, nbm1, nbm2, nbno, nbn1, nbn2, nbgma, nbgm1, nbgm2
     integer(kind=8) :: i1, icompt, ino, l1, l2, l3, i, n, ncoor, k, ifm, niv

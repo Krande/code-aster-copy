@@ -103,7 +103,7 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lMatr, lSigm, lVari
-    integer(kind=8) :: i, j
+    integer(kind=8) :: i
     integer(kind=8) :: nstran, nforc, nstatv, nmatr
     integer(kind=8), parameter :: s0 = 0, s1 = 1
     real(kind=8) :: dstran(2*ndim+1), stran(2*ndim+1), dsidepMGIS((2*ndim)*(2*ndim+2)+1)

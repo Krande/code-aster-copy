@@ -85,7 +85,7 @@ subroutine eclpgm(ma2, mo, cham1, ligrel, shrink, &
     integer(kind=8) :: npg1, nbpi, iagese, nno2, nuse, nse1
     integer(kind=8) :: ima, nbelgr, nupoin, npoini, iterm, ipoini
     integer(kind=8) :: iret, ich, nch2
-    character(len=8) :: mo, ma1, ma2, nom, elrefa, fapg, nompar
+    character(len=8) :: mo, ma1, ma2, elrefa, fapg, nompar
     character(len=8) :: tych
     character(len=16) :: nomte, lisch(nch)
     character(len=19) :: ligrel, ligrmo, cel, cham1, ligre1

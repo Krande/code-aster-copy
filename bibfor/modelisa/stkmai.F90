@@ -60,7 +60,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
     save b8
 !
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, iadc, iadt, icl, ifl, iret, iret2
+    integer(kind=8) :: i, iadc, iadt, icl, ifl, iret
     integer(kind=8) :: irtet, irteti, iv, nume, numn
     integer(kind=8) :: numtcl
 !-----------------------------------------------------------------------
