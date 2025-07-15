@@ -1,0 +1,10 @@
+P time_limit 300
+P memory_limit 1024
+P ncpus 1
+P mpi_nbcpu 1
+P mpi_nbnoeud 1
+P testlist submit verification sequential
+
+F comm hplv111a.comm D 1
+F mmed hplv111a.med D 20
+F nom hplv111a.json D 0

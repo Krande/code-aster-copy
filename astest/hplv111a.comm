@@ -24,11 +24,10 @@ import os.path as osp
 from math import pi
 
 from code_aster.Commands import *
-from code_aster.Utilities import ExecutionParameter
 
 DEBUT(CODE="OUI", ERREUR=_F(ALARME="EXCEPTION"))
 
-testname = "hplv108b"
+testname = "hplv111a"
 
 with open("%s.json" % testname) as f:
     testresu = json.load(f)
@@ -36,23 +35,22 @@ with open("%s.json" % testname) as f:
 MA = LIRE_MAILLAGE(UNITE=20, FORMAT="MED")
 
 UN = DEFI_CONSTANTE(VALE=1.0)
-POISSON = DEFI_CONSTANTE(VALE=0.3)
-ZERO = DEFI_CONSTANTE(VALE=0.0)
+E = 195100.0
+E_ACIER = DEFI_CONSTANTE(VALE=E)
+NU_ACIER = DEFI_CONSTANTE(VALE=0.3)
+ALPHA_ACIER = DEFI_CONSTANTE(VALE=16.4e-6)
+RHO_ACIER = DEFI_CONSTANTE(VALE=8.0e-6)
 
-MATEUNI = DEFI_MATERIAU(
-    ELAS_FO=_F(E=UN, NU=POISSON, ALPHA=UN, RHO=UN, TEMP_DEF_ALPHA=20.0),
-    THER_FO=_F(LAMBDA=UN, RHO_CP=ZERO),
+ACIER = DEFI_MATERIAU(
+    ELAS_FO=_F(E=E_ACIER, NU=NU_ACIER, ALPHA=ALPHA_ACIER, RHO=RHO_ACIER, TEMP_DEF_ALPHA=20.0),
+    THER_FO=_F(LAMBDA=UN),
 )
 
-side = 32.54
-diam = 22.6
-ratio = 1 - (pi / 4 * diam**2) / (side**2)
-
-TAB_HOMO = CALC_MATE_HOMO(
+PARA_EQ_PLAQUE = CALC_MATE_HOMO(
     MAILLAGE=MA,
-    AFFE=_F(GROUP_MA="plaque", MATER=MATEUNI),
-    VARC=_F(NOM_VARC="TEMP", VALE=(20,)),
-    TYPE_HOMO="PLAQUE",
+    AFFE=_F(TOUT="OUI", MATER=ACIER),
+    VARC=_F(NOM_VARC="TEMP", VALE=21.0),
+    TYPE_HOMO="PLAQUE_CT",
     CORR_MECA=CO("CORR_MECA"),
 )
 
@@ -61,20 +59,20 @@ MA_RELOAD = LIRE_MAILLAGE(FORMAT="MED", UNITE=80)
 CORR_MECA_RELOAD = LIRE_CORR_HOMO(UNITE=80, TYPE_RESU="EVOL_ELAS", MAILLAGE=MA_RELOAD)
 
 testrefe = {
-    "FLEX_G_LT": 0.15477,
-    "FLEX_L": 0.43789,
-    "FLEX_LT": 0.07824,
-    "FLEX_T": 0.43789,
-    "MEMB_G_LT": 0.15493,
-    "MEMB_L": 0.43865,
-    "MEMB_LT": 0.07747,
-    "MEMB_T": 0.43865,
-    "RHO": 1.0 * ratio,
-    "ALPHA": 1.0,
+    "MEMB_L": 0.31721,
+    "MEMB_T": 0.31721,
+    "MEMB_LT": 0.04639,
+    "MEMB_G_LT": 0.07391,
+    "FLEX_L": 0.35372,
+    "FLEX_T": 0.35372,
+    "FLEX_LT": 0.07846,
+    "FLEX_G_LT": 0.19348,
+    "CISA_L": 0.21865,
+    "CISA_T": 0.21865,
+    "ALPHA": 16.4e-6,
 }
 
 h = 2 * MA.createMedCouplingMesh()[0].getBoundingBox()[-1][1]
-E = 1
 c_flex = E * (h**3) / 12
 c_memb = E * h
 
@@ -83,34 +81,49 @@ def update_refe(para, value):
     upvalue = value
     if "FLEX" in para:
         upvalue *= c_flex
-    elif "MEMB" in para:
+    elif "MEMB" in para or "CISA" in para:
         upvalue *= c_memb
     else:
         pass
 
-    if "G_LT" in para:
+    if "G_LT" in para or "CISA" in para:
         upvalue /= 2
 
     return upvalue
 
 
-temp = "20.0"
+def update_calc(para, value):
+    upvalue = value
+    if "FLEX" in para:
+        upvalue /= c_flex
+    elif "MEMB" in para or "CISA" in para:
+        upvalue /= c_memb
+    else:
+        pass
+
+    if "G_LT" in para or "CISA" in para:
+        upvalue *= 2
+
+    return upvalue
+
+
+temp = "21.0"
 for para, value in testrefe.items():
     vale_calc = testresu[temp][para]
     vale_refe = update_refe(para, value)
     TEST_TABLE(
-        TABLE=TAB_HOMO,
+        TABLE=PARA_EQ_PLAQUE,
         NOM_PARA=para,
         VALE_REFE=vale_refe,
         REFERENCE="SOURCE_EXTERNE",
         VALE_CALC=vale_calc,
-        PRECISION=1.0e-2,
+        PRECISION=2.0e-3,
         FILTRE=_F(NOM_PARA="TEMP", VALE=float(temp)),
     )
 
 tab_values = {
     para: items
-    for para, items in TAB_HOMO.EXTR_TABLE().values().items()
+    for para, items in PARA_EQ_PLAQUE.EXTR_TABLE().values().items()
     if all(abs(i) > 1.0e-12 for i in items)
 }
 
@@ -123,14 +136,6 @@ tmpdir = tempfile.mkdtemp()
 with open(osp.join(tmpdir, "%s.json" % testname), "w") as f:
     json.dump(vale_calc, f, indent=1, sort_keys=True)
 
-MAT_HOMO = DEFI_MATERIAU(
-    TABLE=_F(
-        TABLE=TAB_HOMO,
-        NOM_PARA="TEMP",
-        COMPOR=("ELAS_COQUE_FO",),
-        INTERPOL="LIN",
-        PROL_GAUCHE="EXCLU",
-        PROL_DROITE="EXCLU",
-    )
-)
+testcalc = {para: round(update_calc(para, vale_calc[float(temp)][para]), 5) for para in testrefe}
+
 FIN()

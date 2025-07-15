@@ -26,6 +26,7 @@ from .mate_homo_utilities import setup_calcul
 from .mate_homo_mesh import prepare_mesh_syme, check_meshdim, check_meshpara
 from .mate_homo_massif import calc_tabpara_massif, calc_corr_massif_syme
 from .mate_homo_plaque import calc_tabpara_plaque, calc_corr_plaque_syme
+from .mate_homo_plaque_ct import calc_corr_plaque_ct
 from .syme_utilities import SymmetryManager
 
 
@@ -80,7 +81,23 @@ def mate_homo_ops(self, **kwargs):
 
     elif type_homo in ("PLAQUE",):
         elas_fields, ther_fields = calc_corr_plaque_syme(
-            MODME, CHMATME, MODTH, CHMATTH, L_INST, (group_tout,)
+            MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
+        )
+
+        C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(
+            DEPLMATE,
+            volume_ver,
+            (group_tout,),
+            varc_name,
+            varc_values,
+            ep_ver,
+            **elas_fields,
+            **ther_fields
+        )
+
+    elif type_homo in ("PLAQUE_CT",):
+        elas_fields, ther_fields = calc_corr_plaque_ct(
+            MODME, CHMATME, MODTH, CHMATTH, L_INST, alpha_calc, (group_tout,)
         )
 
         C_hom, D_hom, G_hom, tabpara = calc_tabpara_plaque(
