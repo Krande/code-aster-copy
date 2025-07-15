@@ -80,47 +80,23 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma):
         ThermalResultDict: Dictionary of thermal correctors. Empty.
     """
 
-    SYME_MECA_XX_mm = AFFE_CHAR_CINE(
-        MODELE=MODME,
-        MECA_IMPO=(
-            _F(GROUP_MA="face_xmin", DX=0.0),
-            _F(GROUP_MA="face_ymin", DY=0.0),
-            _F(GROUP_MA="face_zmin", DZ=0.0),
-            _F(GROUP_MA="face_xmax", DX=0.0),
-            _F(GROUP_MA="face_ymax", DY=0.0),
-        ),
-    )
-
-    ANTI_MECA_12_mm = AFFE_CHAR_CINE(
-        MODELE=MODME,
-        MECA_IMPO=(
-            _F(GROUP_MA="face_xmin", DY=0.0),
-            _F(GROUP_MA="face_ymin", DX=0.0),
-            _F(GROUP_MA="face_zmin", DZ=0.0),
-            _F(GROUP_MA="face_xmax", DY=0.0),
-            _F(GROUP_MA="face_ymax", DX=0.0),
-        ),
-    )
-
-    SYME_MECA_XX_ff = AFFE_CHAR_CINE(
+    SYME_MECA_XX = AFFE_CHAR_CINE(
         MODELE=MODME,
         MECA_IMPO=(
             _F(GROUP_NO="lock_rigi", DZ=0.0),
             _F(GROUP_MA="face_xmin", DX=0.0),
             _F(GROUP_MA="face_ymin", DY=0.0),
-            _F(GROUP_MA="face_zmin", DX=0.0, DY=0.0),
             _F(GROUP_MA="face_xmax", DX=0.0),
             _F(GROUP_MA="face_ymax", DY=0.0),
         ),
     )
 
-    ANTI_MECA_12_ff = AFFE_CHAR_CINE(
+    ANTI_MECA_12 = AFFE_CHAR_CINE(
         MODELE=MODME,
         MECA_IMPO=(
             _F(GROUP_NO="lock_rigi", DZ=0.0),
             _F(GROUP_MA="face_xmin", DY=0.0),
             _F(GROUP_MA="face_ymin", DX=0.0),
-            _F(GROUP_MA="face_zmin", DX=0.0, DY=0.0),
             _F(GROUP_MA="face_xmax", DY=0.0),
             _F(GROUP_MA="face_ymax", DX=0.0),
         ),
@@ -150,7 +126,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma):
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR11_mm), _F(CHARGE=SYME_MECA_XX_mm)),
+        EXCIT=(_F(CHARGE=CHAR11_mm), _F(CHARGE=SYME_MECA_XX)),
         OPTION="SANS",
     )
 
@@ -158,7 +134,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma):
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR22_mm), _F(CHARGE=SYME_MECA_XX_mm)),
+        EXCIT=(_F(CHARGE=CHAR22_mm), _F(CHARGE=SYME_MECA_XX)),
         OPTION="SANS",
     )
 
@@ -166,7 +142,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma):
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR12_mm), _F(CHARGE=ANTI_MECA_12_mm)),
+        EXCIT=(_F(CHARGE=CHAR12_mm), _F(CHARGE=ANTI_MECA_12)),
         OPTION="SANS",
     )
 
@@ -174,7 +150,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma):
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR11_ff), _F(CHARGE=SYME_MECA_XX_ff)),
+        EXCIT=(_F(CHARGE=CHAR11_ff), _F(CHARGE=SYME_MECA_XX)),
         OPTION="SANS",
     )
 
@@ -182,7 +158,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma):
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR22_ff), _F(CHARGE=SYME_MECA_XX_ff)),
+        EXCIT=(_F(CHARGE=CHAR22_ff), _F(CHARGE=SYME_MECA_XX)),
         OPTION="SANS",
     )
 
@@ -190,7 +166,7 @@ def calc_corr_plaque_syme(MODME, CHMATME, MODTH, CHMATTH, L_INST, ls_group_ma):
         MODELE=MODME,
         CHAM_MATER=CHMATME,
         LIST_INST=L_INST,
-        EXCIT=(_F(CHARGE=CHAR12_ff), _F(CHARGE=ANTI_MECA_12_ff)),
+        EXCIT=(_F(CHARGE=CHAR12_ff), _F(CHARGE=ANTI_MECA_12)),
         OPTION="SANS",
     )
 
@@ -378,18 +354,18 @@ def calc_tabpara_plaque(DEPLMATE, volume_ver, ls_group_ma, varc_name, ls_varc, e
         lambda_meca_mm = loimel["LAME1_mm"][i]
         mu_meca_mm = loimel["LAME2_mm"][i]
 
-        C1111_hom = (2 * h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_11_11_mm)
-        C2222_hom = (2 * h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_22_22_mm)
-        C1122_hom = (2 * h / volume_ver) * (lambda_meca_mm - work_meca_11_22_mm)
-        C1212_hom = (2 * h / volume_ver) * (mu_meca_mm - work_meca_12_12_mm)
+        C1111_hom = (h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_11_11_mm)
+        C2222_hom = (h / volume_ver) * ((lambda_meca_mm + 2 * mu_meca_mm) - work_meca_22_22_mm)
+        C1122_hom = (h / volume_ver) * (lambda_meca_mm - work_meca_11_22_mm)
+        C1212_hom = (h / volume_ver) * (mu_meca_mm - work_meca_12_12_mm)
 
         lambda_meca_ff = loimel["LAME1_ff"][i]
         mu_meca_ff = loimel["LAME2_ff"][i]
 
-        D1111_hom = (2 * h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_11_11_ff)
-        D2222_hom = (2 * h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_22_22_ff)
-        D1122_hom = (2 * h / volume_ver) * (lambda_meca_ff - work_meca_11_22_ff)
-        D1212_hom = (2 * h / volume_ver) * (mu_meca_ff - work_meca_12_12_ff)
+        D1111_hom = (h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_11_11_ff)
+        D2222_hom = (h / volume_ver) * ((lambda_meca_ff + 2 * mu_meca_ff) - work_meca_22_22_ff)
+        D1122_hom = (h / volume_ver) * (lambda_meca_ff - work_meca_11_22_ff)
+        D1212_hom = (h / volume_ver) * (mu_meca_ff - work_meca_12_12_ff)
 
         G11_hom = 0.0
         G22_hom = 0.0

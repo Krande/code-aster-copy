@@ -27,7 +27,8 @@ from ...Objects import Model, ThermalResultDict, ElasticResultDict
 from ...Messages import ASSERT, UTMESS
 from ...Helpers.LogicalUnit import LogicalUnitFile
 from ...Utilities import medcoupling as medc
-from . import NameConverter, check_mesh
+from .mate_homo_mesh import check_meshpara
+from . import NameConverter
 
 
 def parse_med(unit):
@@ -129,7 +130,7 @@ def lire_corr_ops(self, **kwargs):
 
     """
     unit = kwargs.get("UNITE")
-    mesh = check_mesh(kwargs.get("MAILLAGE"))
+    mesh = check_meshpara(kwargs.get("MAILLAGE"))
     type_calcul = kwargs.get("TYPE_RESU")
 
     fnames_depl, fnames_ther = parse_med(unit)

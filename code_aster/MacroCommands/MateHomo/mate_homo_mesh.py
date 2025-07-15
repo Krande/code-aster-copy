@@ -37,7 +37,6 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
         affe_groups (list): List of material prescriptions from the user
             command.
         affe_all (bool): True if TOUT='OUI' is used.
-
     Returns:
         Mesh: The internal VER mesh.
         str: The name of the volume group created.
@@ -47,10 +46,7 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
 
     ASSERT(len(affe_groups) > 0 or affe_all)
 
-    mm = meshin.createMedCouplingMesh()
-    m0full = mm[0]
-
-    assert check_meshdim(m0full)
+    m0full = meshin[0]
 
     body_groups = []
 
@@ -60,17 +56,17 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     else:
         # Les groupes de GROUP_MA doivent exister et leur intersection est vide
         for grp in affe_groups:
-            if grp not in mm.getGroupsOnSpecifiedLev(0):
+            if grp not in meshin.getGroupsOnSpecifiedLev(0):
                 UTMESS("F", "HOMO1_4", valk=grp)
 
         intersection = mc.DataArrayInt.BuildIntersection(
-            [mm.getGroupArr(0, grp) for grp in affe_groups if len(affe_groups) > 1]
+            [meshin.getGroupArr(0, grp) for grp in affe_groups if len(affe_groups) > 1]
         )
         if not len(intersection) == 0:
             UTMESS("F", "HOMO1_5")
 
         for grp in affe_groups:
-            body_groups.append(mm.getGroupArr(0, grp))
+            body_groups.append(meshin.getGroupArr(0, grp))
 
     bodycells = mc.DataArrayInt.BuildUnion(body_groups)
     m0 = m0full[bodycells]
@@ -79,10 +75,10 @@ def prepare_mesh_syme(meshin, affe_groups, affe_all):
     # Conservation de tous les groupes de volume sauf BODY et ajout du groupe bodycells
     group_tout = "BODY"
     preserved_groups = []
-    ls_grp_vol = [i for i in mm.getGroupsOnSpecifiedLev(0) if i != group_tout]
+    ls_grp_vol = [i for i in meshin.getGroupsOnSpecifiedLev(0) if i != group_tout]
     for gname in ls_grp_vol:
         try:
-            grp = mm.getGroupArr(0, gname)
+            grp = meshin.getGroupArr(0, gname)
             ni = bodycells.findIdForEach(grp)
             ni.setName(grp.getName())
             preserved_groups.append(ni)
@@ -129,6 +125,16 @@ def get_mesh_size(mcmesh):
     ep_ver = dirthick["Z"]
 
     return volume_ver, ep_ver
+
+
+def check_meshpara(mesh):
+    """
+    Check the type of mesh and raise an error if the mesh is parallel.
+    """
+    if mesh.isParallel():
+        UTMESS("F", "HOMO1_19", valk=mesh.getName())
+
+    return mesh
 
 
 def check_meshdim(m0):
