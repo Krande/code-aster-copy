@@ -45,9 +45,9 @@ subroutine rcdiff(imate, comp, temp, c, diff)
 !-----------------------------------------------------------------------
     parameter(nbres=10)
     integer(kind=8) :: nbpar, kpg, spt
-    real(kind=8) :: valres(nbres), valpar(1), tz0
+    real(kind=8) :: valres(nbres), valpar(2), tz0
     integer(kind=8) :: icodre(nbres)
-    character(len=8) :: nompar(1), fami, poum
+    character(len=8) :: nompar(2), fami, poum
     character(len=16) :: nomres(nbres)
     character(len=32) :: phenom
     real(kind=8) :: val_non_physique
@@ -108,9 +108,15 @@ subroutine rcdiff(imate, comp, temp, c, diff)
                           c, temp, diff)
 !
     else if (phenom .eq. 'SECH_NAPPE') then
-        nbpar = 1
+        nbpar = 2
         nompar(1) = 'SECH'
         valpar(1) = c
+!       pour SECH_NAPPE il faut donner TEMP en paramètre pour avoir
+!       la valeur du bon instant selon l'option
+!       sinon il faudrait voir globalement s'il ne serait pas plus
+!       correct de mettre poum = '-' pour l'option CHAR_THER_EVOLNI
+        nompar(2) = 'TEMP'
+        valpar(2) = temp
         nomres(1) = 'FONCTION'
         call rcvalb(fami, kpg, spt, poum, imate, &
                     ' ', phenom, nbpar, nompar, valpar, &

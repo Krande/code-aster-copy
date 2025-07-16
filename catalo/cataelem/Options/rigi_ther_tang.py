@@ -47,7 +47,6 @@ RIGI_THER_TANG = Option(
         SP.PCAMASS,
         SP.PMATERC,
         SP.PTEMPEI,
-        SP.PTMPCHF,
         PVARCPR,
         PCHHOGT,
         PCHHOST,

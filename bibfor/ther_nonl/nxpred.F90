@@ -20,7 +20,7 @@
 subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
                   solver, l_stat, tpsthe, timeMap, matass, &
                   lonch, maprec, varc_curr, temp_prev, temp_iter, &
-                  cn2mbr, hydr_prev, hydr_curr, dry_curr, &
+                  cn2mbr, hydr_prev, hydr_curr, &
                   comporTher, cndirp, cnchci, vec2nd, vec2ni, &
                   ds_algorom)
 !
@@ -55,7 +55,7 @@ subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
     character(len=19) :: maprec
     character(len=24) :: matass, cndirp, cnchci, cnresi
     character(len=24) :: temp_iter, temp_prev, vec2nd, vec2ni
-    character(len=24) :: hydr_prev, hydr_curr, comporTher, dry_curr
+    character(len=24) :: hydr_prev, hydr_curr, comporTher
     aster_logical :: l_stat
     character(len=24), intent(in) :: cn2mbr
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom
@@ -128,8 +128,7 @@ subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
                     loadNameJv, loadInfoJv, &
                     tpsthe, timeMap, temp_prev, temp_iter, &
                     varc_curr, comporTher, &
-                    hydr_prev, hydr_curr, dry_curr, &
-                    veresi, "V")
+                    hydr_prev, hydr_curr, veresi, "V")
         call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', rbid, &
                     typres, cnresi)

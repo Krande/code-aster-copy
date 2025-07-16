@@ -20,7 +20,7 @@ subroutine merxth(l_stat, &
                   modelZ, caraElemZ, matecoZ, &
                   loadNameJvZ, loadInfoJvZ, &
                   tpsthe, timeMapZ, &
-                  tempIterZ, comporTherZ, varcCurrZ, dryCurrZ, &
+                  tempIterZ, comporTherZ, varcCurrZ, &
                   matrElemZ, jvBase)
 !
     use loadTherCompute_module
@@ -44,7 +44,7 @@ subroutine merxth(l_stat, &
     character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
     real(kind=8), intent(in) :: tpsthe(6)
     character(len=*), intent(in) :: comporTherZ, timeMapZ
-    character(len=*), intent(in) :: tempIterZ, varcCurrZ, dryCurrZ
+    character(len=*), intent(in) :: tempIterZ, varcCurrZ
     character(len=*), intent(in) :: matrElemZ
     character(len=1), intent(in) :: jvBase
 !
@@ -67,7 +67,6 @@ subroutine merxth(l_stat, &
 ! In  tempIter          : temperature field at current Newton iteration
 ! In  comporTher        : name of comportment definition (field)
 ! In  varcCurr          : command variable for current time
-! In  dryCurr           : current drying
 ! In  matrElem          : name of matrElem result
 ! In  jvBase            : JEVEUX base for object
 !
@@ -82,7 +81,7 @@ subroutine merxth(l_stat, &
     integer(kind=8), pointer :: listLoadInfo(:) => null()
     character(len=24) :: matrElem, resuElem
     real(kind=8) :: timeCurr, timePara(2), theta
-    character(len=24) :: timeMap, tempPrev, tempIter, varcCurr, dryCurr
+    character(len=24) :: timeMap, tempPrev, tempIter, varcCurr
     character(len=13) :: loadPreObject
     character(len=24) :: loadLigrel
 !
@@ -98,7 +97,6 @@ subroutine merxth(l_stat, &
     timeMap = timeMapZ
     tempIter = tempIterZ
     varcCurr = varcCurrZ
-    dryCurr = dryCurrZ
     tempPrev = " "
 
 ! - Get time parameters
@@ -128,7 +126,7 @@ subroutine merxth(l_stat, &
     call ther_mtan(l_stat, &
                    modelZ, caraElemZ, matecoZ, &
                    timePara, varcCurr, &
-                   comporTherZ, tempIter, dryCurr, resuElem, &
+                   comporTherZ, tempIter, resuElem, &
                    matrElem, jvBase)
 
 ! - Get loads

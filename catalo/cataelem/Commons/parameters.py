@@ -1222,9 +1222,8 @@ PTEMP_P = InputParameter(
 
 PTHETAR = InputParameter(phys=PHY.DEPL_R, comment="""""")
 
-PTMPCHF = InputParameter(phys=PHY.TEMP_R, comment="""""")
+PTMPCHF = InputParameter(phys=PHY.TEMP_R, comment="""HHO ONLY""")
 
-PTMPCHI = InputParameter(phys=PHY.TEMP_R, comment="""""")
 
 PTRIAGM = InputParameter(
     phys=PHY.ENDO_R,

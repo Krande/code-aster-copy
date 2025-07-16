@@ -75,6 +75,7 @@ class SEAXTL3(Element):
                 (SP.PTEMPER, DDL_THER),
                 (SP.PINSTR, LC.CTIMETR),
                 (OP.CHAR_THER_EVOLNI.PVARCPR, LC.ZVARCPG),
+                (OP.CHAR_THER_EVOLNI.PVARCMR, LC.ZVARCPG),
             ),
             para_out=((SP.PVECTTI, MVECTTR), (SP.PVECTTR, MVECTTR)),
         ),

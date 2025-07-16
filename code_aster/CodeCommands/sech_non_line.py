@@ -88,7 +88,6 @@ class NonLinearThermalAnalysisFort(ExecuteCommand):
         self.remove_dependencies(keywords, "MODELE")
         self.remove_dependencies(keywords, "CHAM_MATER")
         self.remove_dependencies(keywords, "CARA_ELEM")
-        self.remove_dependencies(keywords, "RESU_THER_SECH")
         self.remove_dependencies(keywords, "ETAT_INIT", ("EVOL_THER, 'CHAM_NO"))
         self.remove_dependencies(keywords, "EXCIT", ("CHARGE", "FONC_MULT"))
 

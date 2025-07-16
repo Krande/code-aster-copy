@@ -20,7 +20,7 @@
 interface
     subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
                       solver, l_stat, timeMap, timeParaIn, temp_iter, &
-                      vhydr, varc_curr, dry_prev, dry_curr, cn2mbr_stat, &
+                      vhydr, varc_prev, varc_curr, cn2mbr_stat, &
                       cn2mbr_tran, matass, maprec, cndiri, cncine, &
                       mediri, comporTher, ds_algorom_)
         use Rom_Datastructure_type
@@ -30,13 +30,12 @@ interface
         character(len=24), intent(in) :: nume_dof
         character(len=19), intent(in) :: solver
         character(len=24), intent(in) :: timeMap
+        character(len=19), intent(in) :: varc_prev
         character(len=19), intent(in) :: varc_curr
         aster_logical, intent(in) :: l_stat
         real(kind=8), intent(in) :: timeParaIn(6)
         character(len=24), intent(in) :: temp_iter
         character(len=24), intent(in) :: vhydr
-        character(len=24), intent(in) :: dry_prev
-        character(len=24), intent(in) :: dry_curr
         character(len=24), intent(in) :: cn2mbr_stat
         character(len=24), intent(in) :: cn2mbr_tran
         character(len=24), intent(in) :: matass

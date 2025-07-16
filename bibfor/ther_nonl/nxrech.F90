@@ -20,7 +20,7 @@
 subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
                   tpsthe, timeMap, lonch, comporTher, varc_curr, &
                   temp_iter, vtempp, vtempr, temp_prev, hydr_prev, &
-                  hydr_curr, dry_curr, vec2nd, cnvabt, &
+                  hydr_curr, vec2nd, cnvabt, &
                   cnresi, rho, iterho, ds_algopara, l_stat)
 !
     use NonLin_Datastructure_type
@@ -55,7 +55,7 @@ subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
     integer(kind=8) :: lonch
     real(kind=8) :: rho
     character(len=24) :: temp_prev, vtempr, vtempp, temp_iter, cnvabt, cnresi, vec2nd
-    character(len=24) :: hydr_prev, hydr_curr, comporTher, dry_curr
+    character(len=24) :: hydr_prev, hydr_curr, comporTher
     aster_logical, intent(in) :: l_stat
 !
 ! --------------------------------------------------------------------------------------------------
@@ -153,8 +153,7 @@ subroutine nxrech(model, mateco, caraElem, listLoad, nume_dof, &
                     loadNameJv, loadInfoJv, &
                     tpsthe, timeMap, temp_prev, vtempr, &
                     varc_curr, comporTher, &
-                    hydr_prev, hydr_curr, dry_curr, &
-                    veresi, "V")
+                    hydr_prev, hydr_curr, veresi, "V")
         call asasve(veresi, nume_dof, typres, varesi)
         call ascova('D', varesi, bidon, 'INST', r8bid, &
                     typres, cnresi)

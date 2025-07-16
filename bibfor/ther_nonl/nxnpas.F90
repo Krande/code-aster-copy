@@ -19,7 +19,6 @@
 !
 subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
                   lnkry, l_evol, l_stat, &
-                  l_dry, dry_prev, dry_curr, &
                   para, time_curr, deltat, reasma, &
                   tpsthe)
 !
@@ -42,8 +41,6 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
     type(NL_DS_Print), intent(inout) :: ds_print
     integer(kind=8), intent(in) :: nume_inst
     aster_logical, intent(in) :: lnkry, l_evol, l_stat
-    aster_logical, intent(in) :: l_dry
-    character(len=24), intent(in) :: dry_prev, dry_curr
     real(kind=8), intent(inout) :: para(2)
     real(kind=8), intent(out) :: time_curr, deltat
     aster_logical, intent(out) :: reasma
@@ -63,10 +60,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 ! In  nume_inst        : index of current time step
 ! In  l_stat           : .true. is stationnary
 ! In  l_evol           : .true. if transient
-! In  l_dry            : .true. if drying (concrete)
 ! In  lnkry            : .true. if Newton-Krylov solver
-! In  dry_prev         : dry field at previous time step
-! In  dry_curr         : dry field at current time step
 ! IO  para             : parameters for time
 !                            (1) THETA
 !                            (2) DELTA
@@ -77,9 +71,7 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-    real(kind=8) :: theta, timet, timtdt, theta_read, time_prev
-    integer(kind=8) :: icoret, nbcham
-    character(len=1) :: base
+    real(kind=8) :: theta, theta_read, time_prev
 !
 ! --------------------------------------------------------------------------------------------------
 !

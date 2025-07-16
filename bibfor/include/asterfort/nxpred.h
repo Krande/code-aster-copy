@@ -22,7 +22,7 @@ interface
     subroutine nxpred(model, mateco, caraElem, listLoad, nume_dof, &
                       solver, l_stat, tpsthe, timeMap, matass, &
                       lonch, maprec, varc_curr, temp_prev, temp_iter, &
-                      cn2mbr, hydr_prev, hydr_curr, dry_curr, &
+                      cn2mbr, hydr_prev, hydr_curr, &
                       comporTher, cndirp, cnchci, vec2nd, vec2ni, &
                       ds_algorom)
         use Rom_Datastructure_type
@@ -41,7 +41,6 @@ interface
         character(len=24) :: temp_iter
         character(len=24) :: hydr_prev
         character(len=24) :: hydr_curr
-        character(len=24) :: dry_curr
         character(len=24) :: comporTher
         character(len=24) :: cndirp
         character(len=24) :: cnchci

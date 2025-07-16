@@ -19,7 +19,7 @@
 subroutine ther_mtan(l_stat, &
                      modelZ, caraElemZ, matecoZ, &
                      timePara, varcCurrZ, &
-                     comporTherZ, tempIterZ, dryCurrZ, &
+                     comporTherZ, tempIterZ, &
                      resuElemZ, matrElemZ, jvBase)
 !
     implicit none
@@ -36,7 +36,7 @@ subroutine ther_mtan(l_stat, &
     aster_logical, intent(in) :: l_stat
     character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
     real(kind=8), intent(in) :: timePara(2)
-    character(len=*), intent(in) :: tempIterZ, dryCurrZ, comporTherZ, varcCurrZ
+    character(len=*), intent(in) :: tempIterZ, comporTherZ, varcCurrZ
     character(len=*), intent(inout) :: resuElemZ
     character(len=*), intent(in) :: matrElemZ
     character(len=1), intent(in) :: jvBase
@@ -58,7 +58,6 @@ subroutine ther_mtan(l_stat, &
 ! In  varcCurr         : command variable for current time
 ! In  comporTher       : name of comportment definition (field)
 ! In  tempIter         : temperature field at current Newton iteration
-! In  dryCurr          : current drying
 ! IO  resuElem         : name of resu_elem
 ! In  matrElem         : name of matr_elem result
 ! In  jvBase           : JEVEUX base for object
@@ -66,7 +65,7 @@ subroutine ther_mtan(l_stat, &
 ! --------------------------------------------------------------------------------------------------
 !
     character(len=16), parameter :: optionRigi = 'RIGI_THER_TANG', optionMass = 'MASS_THER_TANG'
-    integer(kind=8), parameter :: nbIn = 7, nbout = 1
+    integer(kind=8), parameter :: nbIn = 6, nbout = 1
     character(len=8) :: lpain(nbIn), lpaout(nbout)
     character(len=24) :: lchin(nbIn), lchout(nbout)
     character(len=24) :: ligrel_model
@@ -101,12 +100,10 @@ subroutine ther_mtan(l_stat, &
     lchin(3) = tempIterZ
     lpain(4) = 'PCOMPOR'
     lchin(4) = comporTherZ
-    lpain(5) = 'PTMPCHF'
-    lchin(5) = dryCurrZ
-    lpain(6) = 'PVARCPR'
-    lchin(6) = varcCurrZ
-    lpain(7) = 'PCAMASS'
-    lchin(7) = chcara(12)
+    lpain(5) = 'PVARCPR'
+    lchin(5) = varcCurrZ
+    lpain(6) = 'PCAMASS'
+    lchin(6) = chcara(12)
 
 ! - Output fields
     lpaout(1) = 'PMATTSR'

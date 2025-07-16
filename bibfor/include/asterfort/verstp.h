@@ -23,15 +23,14 @@ interface
                       loadNameJvZ, loadInfoJvZ, &
                       tpsthe, timeMapZ, tempPrevZ, tempIterZ, &
                       varcCurrZ, comporTherZ, &
-                      hydrPrevZ, hydrCurrZ, dryCurrZ, &
-                      vectElemZ, jvBase)
+                      hydrPrevZ, hydrCurrZ, vectElemZ, jvBase)
         aster_logical, intent(in) :: l_stat
         character(len=*), intent(in) :: modelZ, caraElemZ, matecoZ
         character(len=*), intent(in) :: loadNameJvZ, loadInfoJvZ
         real(kind=8), intent(in) :: tpsthe(6)
         character(len=*), intent(in) :: comporTherZ, timeMapZ
         character(len=*), intent(in) :: tempPrevZ, tempIterZ, varcCurrZ
-        character(len=*), intent(in) :: hydrPrevZ, hydrCurrZ, dryCurrZ
+        character(len=*), intent(in) :: hydrPrevZ, hydrCurrZ
         character(len=*), intent(inout) :: vectElemZ
         character(len=1), intent(in) :: jvBase
     end subroutine verstp

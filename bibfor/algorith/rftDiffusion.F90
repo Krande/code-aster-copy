@@ -76,6 +76,9 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
 !
     if (codret(1) .eq. 0) then
         call utmess('F', 'ALGORITH10_22')
+!       si un jour on veut autorisé cela il faudra faire les appels
+!       avec temp en paramètre et rcvala pour avoir le bon temp
+!       selon l'option
     else
 !       leverett isotherm
         call leverettIsotTher(c, temp, imate, hygr, dpc, poro, t0_C, beta)

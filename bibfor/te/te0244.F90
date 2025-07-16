@@ -72,7 +72,6 @@ subroutine te0244(option, nomte)
     character(len=16), pointer :: compor(:) => null()
     aster_logical :: lhyd, aniso
     real(kind=8), pointer :: tempi(:) => null()
-    real(kind=8), pointer :: sechf(:) => null()
     real(kind=8), pointer :: hydrpg(:) => null()
 !
     call FECell%init()
@@ -127,7 +126,7 @@ subroutine te0244(option, nomte)
             sechpg = FEEvalFuncRScal(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp))
             BGSEval = FEBasis%grad(FEQuadRigi%points_param(1:3, kp), FEQuadRigi%jacob(1:3, 1:3, kp))
             dsechpg = FEEvalGradVec(FEBasis, tempi, FEQuadRigi%points_param(1:3, kp), BGSEval)
-            call rcvarc(' ', 'TEMP', '+', 'RIGI', kp, 1, tpg, iret)
+            call rcvarc(' ', 'TEMP', '-', 'RIGI', kp, 1, tpg, iret)
             if (iret .ne. 0) call utmess('F', 'THERMIQUE1_2')
             call rcdiff(zi(imate), rela_name, tpg, sechpg, diff)
             flux = diff*dsechpg

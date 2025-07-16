@@ -18,20 +18,19 @@
 !
 interface
     subroutine vetnth_nonl(model, caraElem, mateco, time, compor, &
-                           temp_iter, varc_curr, &
+                           temp_iter, varc_prev, varc_curr,&
                            vect_elem_l, vect_elem_nl, base, &
-                           dry_prev_, dry_curr_, hydr_prev_)
+                           hydr_prev_)
         character(len=8), intent(in) :: model, caraElem
         character(len=24), intent(in) :: mateco
         character(len=24), intent(in) :: time
         character(len=24), intent(in) :: compor
         character(len=24), intent(in) :: temp_iter
+        character(len=19), intent(in) :: varc_prev
         character(len=19), intent(in) :: varc_curr
         character(len=24), intent(in) :: vect_elem_l
         character(len=24), intent(in) :: vect_elem_nl
         character(len=1), intent(in) :: base
-        character(len=24), optional, intent(in) :: dry_prev_
-        character(len=24), optional, intent(in) :: dry_curr_
         character(len=24), optional, intent(in) :: hydr_prev_
     end subroutine vetnth_nonl
 end interface
