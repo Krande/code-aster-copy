@@ -34,7 +34,6 @@ module model_module
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/lteatt.h"
 ! ==================================================================================================
 contains

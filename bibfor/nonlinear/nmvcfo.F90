@@ -22,7 +22,6 @@ subroutine nmvcfo(type_comp, model, mater, mateco, cara_elem, compor, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmvarc_prep.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"

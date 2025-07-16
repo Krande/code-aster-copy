@@ -24,7 +24,6 @@ subroutine dbrParaInfoPod(operation, paraPod)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romFieldPrintInfo.h"
 #include "asterfort/romSnapInfo.h"

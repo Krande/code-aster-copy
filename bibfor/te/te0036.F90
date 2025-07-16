@@ -38,7 +38,6 @@ subroutine te0036(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm1d.h"
 #include "asterfort/dfdm2b.h"

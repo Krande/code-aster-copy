@@ -23,7 +23,6 @@ subroutine rrcClean(cmdPara)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/romFieldBuildClean.h"
 #include "asterfort/romResultClean.h"
 #include "asterfort/romTableClean.h"

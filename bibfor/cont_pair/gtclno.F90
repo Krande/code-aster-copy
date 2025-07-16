@@ -21,7 +21,6 @@ subroutine gtclno(jv_geom, list_node, nb_node, testnode, nume_node_cl)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "jeveux.h"
 !
 !

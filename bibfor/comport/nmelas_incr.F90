@@ -27,8 +27,6 @@ subroutine nmelas_incr(BEHinteg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
 #include "asterfort/verift.h"
 #include "asterfort/verifh.h"
 #include "asterfort/verifs.h"
@@ -87,12 +85,14 @@ subroutine nmelas_incr(BEHinteg, &
 
     ! Caracteristiques elastiques t- et t+
 
-    call get_elas_para(fami,imate,'-',kpg,ksp,elas_id,elas_keyword,e_=em,nu_=num,BEHinteg=BEHinteg)
+    call get_elas_para(fami, imate, '-', kpg, ksp, elas_id, elas_keyword, e_=em, nu_=num, &
+                       BEHinteg=BEHinteg)
     lambdam = em*num/((1-2*num)*(1+num))
     deuxmum = em/(1+num)
     troiskm = em/(1-2*num)
 
-    call get_elas_para(fami,imate,'+',kpg,ksp,elas_id,elas_keyword,e_=ep,nu_=nup,BEHinteg=BEHinteg)
+    call get_elas_para(fami, imate, '+', kpg, ksp, elas_id, elas_keyword, e_=ep, nu_=nup, &
+                       BEHinteg=BEHinteg)
     lambdap = ep*nup/((1-2*nup)*(1+nup))
     deuxmup = ep/(1+nup)
     troiskp = ep/(1-2*nup)

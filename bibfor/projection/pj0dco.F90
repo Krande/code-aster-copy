@@ -30,16 +30,13 @@ subroutine pj0dco(typeSelect, &
 #include "asterc/r8maem.h"
 #include "MeshTypes_type.h"
 #include "asterfort/assert.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/pjxxut.h"
 #include "asterfort/utimsd.h"
 #include "asterfort/utmess.h"
@@ -48,7 +45,8 @@ subroutine pj0dco(typeSelect, &
 !
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
- integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+    integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*)
+    integer(kind=8), intent(in) :: nbNodeSelect2, listNodeSelect2(*)
     character(len=*), intent(in) :: geom1, geom2
     character(len=16), intent(in)  :: corrMesh
     real(kind=8), intent(in) :: dmax0d

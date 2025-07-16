@@ -24,7 +24,6 @@ subroutine nmstat_mess(ds_measure, phasis)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/nmtimr.h"
 #include "asterfort/nmrvai.h"

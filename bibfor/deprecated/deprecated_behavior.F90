@@ -20,7 +20,6 @@ subroutine deprecated_behavior(rela_comp)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: rela_comp

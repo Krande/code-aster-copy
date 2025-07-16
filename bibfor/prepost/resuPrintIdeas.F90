@@ -27,7 +27,7 @@ subroutine resuPrintIdeas(fileUnit, dsName, lResu, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
+#include "asterf_types.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

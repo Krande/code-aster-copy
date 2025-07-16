@@ -29,7 +29,6 @@ subroutine thmFlh002(ds_thm, lMatr, lSigm, ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     type(THM_DS), intent(in) :: ds_thm
     aster_logical, intent(in) :: lMatr, lSigm

@@ -19,16 +19,11 @@
 subroutine numeddl_get_component_name(nume19, cmpid, cmpname)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/nbec.h"
 #include "asterfort/utmess.h"
 !
     integer(kind=8) :: cmpid

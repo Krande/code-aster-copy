@@ -35,7 +35,6 @@ subroutine vtcreb(field_nodez, base, type_scalz, &
 #include "asterfort/idensd.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/sdchgd.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/asmpi_comm_vect.h"
 !

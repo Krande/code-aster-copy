@@ -28,7 +28,6 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jelira.h"
-#include "asterfort/knindi.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisdg.h"
@@ -41,7 +40,6 @@ subroutine verif_affe_carte(ligrmo, carte, comment, non_lin)
 #include "asterfort/as_allocate.h"
 #include "asterfort/etenca.h"
 #include "asterfort/jeexin.h"
-#include "asterc/r8prem.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=19), intent(in) :: ligrmo

@@ -21,8 +21,6 @@ subroutine merige(model_, cara_elem_, sigg, strx, matel, &
     implicit none
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/exi_fiss.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exixfe.h"

@@ -32,7 +32,6 @@ subroutine mmmvmm(phase, l_pena_cont, l_pena_fric, l_large_slip, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     character(len=4), intent(in) :: phase
     aster_logical, intent(in) :: l_pena_cont, l_pena_fric, l_large_slip

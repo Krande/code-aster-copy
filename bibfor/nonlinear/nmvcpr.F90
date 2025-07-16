@@ -26,7 +26,6 @@ subroutine nmvcpr(modelz, cara_elemz, hval_incr, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmvcpr_elem.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"

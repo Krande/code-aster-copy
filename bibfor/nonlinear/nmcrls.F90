@@ -26,7 +26,6 @@ subroutine nmcrls(sddisc, listInstJv, numeInit, numeEnd, &
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utdidt.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
     character(len=19), intent(in) :: sddisc, listInstJv

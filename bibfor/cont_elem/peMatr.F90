@@ -26,13 +26,8 @@ subroutine peMatr(parameters, geom, matr_cont, matr_fric)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/getInterCont.h"
-#include "asterfort/getQuadCont.h"
-#include "asterfort/laElemCont.h"
 #include "asterfort/peMatr_ct_pr.h"
 #include "asterfort/peMatr_cf_pr.h"
-#include "blas/dgemm.h"
-#include "blas/dger.h"
 #include "contact_module.h"
 !
     type(ContactParameters), intent(in) :: parameters

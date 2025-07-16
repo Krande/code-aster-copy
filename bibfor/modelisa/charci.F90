@@ -49,7 +49,6 @@ subroutine charci(chcine, mfact, mo, valeType)
 #include "asterfort/jexnom.h"
 #include "asterfort/reliem.h"
 #include "asterfort/rsexch.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/rs_getfirst.h"
 #include "asterfort/getKinematicValues.h"

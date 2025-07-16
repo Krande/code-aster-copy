@@ -35,7 +35,6 @@ subroutine cucrsd(mesh, nume_dof, ds_contact)
 #include "asterfort/jeecra.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/posddl.h"

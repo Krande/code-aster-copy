@@ -40,7 +40,6 @@ module SolidShell_Kinematic_Hexa_module
 #include "asterf_types.h"
 #include "asterfort/SolidShell_type.h"
 #include "asterc/r8miem.h"
-#include "asterfort/assert.h"
 #include "asterfort/diagp3.h"
 #include "asterfort/tnsvec.h"
 ! ==================================================================================================

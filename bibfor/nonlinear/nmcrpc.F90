@@ -23,7 +23,6 @@ subroutine nmcrpc(ds_inout, nume_reuse, time_curr)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/tbajli.h"
 !
     type(NL_DS_InOut), intent(in) :: ds_inout

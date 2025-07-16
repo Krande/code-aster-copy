@@ -32,7 +32,6 @@ subroutine dldiff(result, force1, lcrea, lamort, neq, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
-#include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8depi.h"
 #include "asterfort/dismoi.h"

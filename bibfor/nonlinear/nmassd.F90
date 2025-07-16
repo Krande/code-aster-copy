@@ -24,7 +24,6 @@ subroutine nmassd(list_func_acti, hval_veasse, cnpilo, cndonn)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/isfonc.h"

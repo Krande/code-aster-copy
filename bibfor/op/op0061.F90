@@ -36,7 +36,6 @@ subroutine op0061()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/r8depi.h"
-#include "asterfort/assert.h"
 #include "asterfort/compno.h"
 #include "asterfort/cremnl.h"
 #include "asterfort/cresol.h"

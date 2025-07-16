@@ -34,7 +34,6 @@ subroutine mmchml_c(ds_contact, ligrcf, chmlcf, sddyna, time_incr)
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfr.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/ndynre.h"
 #include "Contact_type.h"
 #include "jeveux.h"
 !

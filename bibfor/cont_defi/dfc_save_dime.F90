@@ -22,7 +22,6 @@ subroutine dfc_save_dime(sdcont, mesh, model_ndim, nb_cont_zone, nb_cont_surf, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/dimeco.h"
 #include "asterfort/dimecz.h"
 !

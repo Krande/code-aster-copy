@@ -38,7 +38,6 @@ subroutine op0165()
 #include "asterfort/rcevol.h"
 #include "asterfort/rc3600.h"
 #include "asterfort/rc3600_momeq.h"
-#include "asterc/getfac.h"
 #include "asterfort/rc3200.h"
 #include "asterfort/titre.h"
 !     ------------------------------------------------------------------

@@ -38,8 +38,6 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 #include "asterfort/calc_coor_elga.h"
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
-#include "asterfort/codent.h"
-#include "asterfort/codlet.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exlim1.h"
@@ -51,7 +49,6 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenonu.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
@@ -65,12 +62,12 @@ subroutine pjma2p(ndim, moa2, ma2p, corres)
 ! ----------------------------------------------------------------------
     integer(kind=8) :: ntgeo, ipo, ipg, nuno2
     integer(kind=8) ::  nbno2p, nno2, ino2p
-    integer(kind=8) :: k, j1, ipoi1, ipy5, ipy13
+    integer(kind=8) ::  j1, ipoi1, ipy5, ipy13
     integer(kind=8) :: nbma, nbpt, nbcmp, nbmamo
     integer(kind=8) :: ima, ipt, icmp, iad, iadime
     integer(kind=8) ::  jdimt, jpo2, nbtrou, jlitr
     integer(kind=8) :: jcesd, jcesl, iatypm
-    character(len=8) :: nom, mail2
+    character(len=8) ::  mail2
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc, limato, litrou
     real(kind=8) :: xmoy(3), rayo

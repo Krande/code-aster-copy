@@ -33,7 +33,6 @@ subroutine xxbsig(elrefp, elrese, ndim, coorse, igeom, &
 #include "asterfort/indent.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/reeref.h"
-#include "asterfort/xcinem.h"
 #include "asterfort/xcalc_heav.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xkamat.h"

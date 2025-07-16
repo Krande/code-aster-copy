@@ -56,7 +56,6 @@ subroutine lrmast(nomu, ifm, ifl, nbnoeu, nbmail, &
 #include "asterfort/ulopen.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/char8_to_int.h"
 !
     integer(kind=8) :: ifm, ifl
     character(len=24) :: cooval, coodsc, grpnoe, grpmai, connex

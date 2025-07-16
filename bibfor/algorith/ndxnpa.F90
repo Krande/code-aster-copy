@@ -31,7 +31,6 @@ subroutine ndxnpa(model, cara_elem, &
 #include "jeveux.h"
 #include "asterc/isnnem.h"
 #include "asterfort/copisd.h"
-#include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/initia.h"
 #include "asterfort/isfonc.h"

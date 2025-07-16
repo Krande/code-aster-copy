@@ -24,7 +24,6 @@ subroutine memame(optionz, modelz, matez, matecoz, caraElemz, time, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"

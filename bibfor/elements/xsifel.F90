@@ -51,7 +51,6 @@ subroutine xsifel(elrefp, ndim, coorse, igeom, jheavt, &
 #include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xnbddl.h"
-#include "blas/ddot.h"
 !
     character(len=8) :: elrefp
     integer(kind=8) :: igeom, ndim, nfh, ddlc, ddlm, nfe, nnop, idecpg, idepl, jheavn

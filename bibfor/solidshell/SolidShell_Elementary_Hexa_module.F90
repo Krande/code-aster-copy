@@ -57,7 +57,6 @@ module SolidShell_Elementary_Hexa_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/tefrep.h"
-#include "asterfort/utmess.h"
 #include "asterfort/epstmc.h"
 ! ==================================================================================================
 contains

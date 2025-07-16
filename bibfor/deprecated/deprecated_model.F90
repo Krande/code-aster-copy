@@ -20,7 +20,6 @@ subroutine deprecated_model(model)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: model

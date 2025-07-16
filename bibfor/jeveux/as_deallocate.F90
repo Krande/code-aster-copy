@@ -27,7 +27,6 @@ subroutine as_deallocate(vl, vi, vi4, vr, vc, &
 #include "asterf_types.h"
 #include "asterf_debug.h"
 #include "jeveux_private.h"
-#include "asterc/hpalloc.h"
 #include "asterfort/assert.h"
 !
     aster_logical, optional, pointer :: vl(:)

@@ -21,11 +21,8 @@ subroutine matrRotLGTher(aniso, ndim, coorpg, matr)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/matrot.h"
-#include "asterfort/utrcyl.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/rcangm.h"
 !
     integer(kind=8), intent(in) :: ndim

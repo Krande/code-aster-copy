@@ -24,7 +24,6 @@ subroutine romAlgoNLClean(paraAlgo)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/romBaseClean.h"
 #include "asterfort/nonlinDSTableIOClean.h"

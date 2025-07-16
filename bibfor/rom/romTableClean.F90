@@ -23,7 +23,6 @@ subroutine romTableClean(tablReduCoor)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/nonlinDSTableIOClean.h"
 !
     type(ROM_DS_TablReduCoor), intent(inout) :: tablReduCoor

@@ -23,7 +23,6 @@ subroutine te0370(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/teattr.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"

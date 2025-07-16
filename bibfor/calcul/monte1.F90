@@ -18,7 +18,9 @@
 !
 subroutine monte1(te2, nout, lchout, lpaout, igr2)
 !
-    use calcul_module, only : ca_iachoi_, ca_iadsgd_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_, ca_iawtyp_, ca_nbelgr_, ca_nbgr_, ca_npario_, ca_paral_, ca_lparal_, ca_nuop_, ca_iel_
+    use calcul_module, only: ca_iachoi_, ca_iadsgd_, ca_iaoppa_, ca_iawlo2_, ca_iawloc_, &
+                             ca_iawtyp_, ca_nbelgr_, ca_nbgr_, ca_npario_, &
+                             ca_paral_, ca_lparal_, ca_nuop_, ca_iel_
 !
     implicit none
 ! person_in_charge: jacques.pellet at edf.fr
@@ -26,7 +28,6 @@ subroutine monte1(te2, nout, lchout, lpaout, igr2)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/indik8.h"
-#include "asterfort/assert.h"
 #include "asterfort/digde2.h"
 #include "asterfort/grdeur.h"
 #include "asterfort/jacopo.h"

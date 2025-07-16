@@ -30,7 +30,6 @@ module HHO_precalc_module
 #include "asterfort/dismoi.h"
 #include "asterfort/inical.h"
 #include "asterfort/megeom.h"
-#include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

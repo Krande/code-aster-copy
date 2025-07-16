@@ -21,13 +21,10 @@ subroutine porea3(nno, nc, deplm, deplp, geom, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8rddg.h"
 #include "asterfort/angvx.h"
 #include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/normev.h"
-#include "asterfort/trigom.h"
-#include "blas/ddot.h"
 !
     integer(kind=8) :: nno, nc
     real(kind=8) :: deplm(nno*nc), deplp(nno*nc), geom(3, nno), gamma

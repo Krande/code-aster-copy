@@ -25,7 +25,6 @@ subroutine xcenfi(elrefp, ndim, ndime, nno, geom, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "blas/ddot.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/reerel.h"

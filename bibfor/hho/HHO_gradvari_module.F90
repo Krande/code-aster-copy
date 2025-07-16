@@ -62,7 +62,6 @@ module HHO_GV_module
 #include "asterfort/rcvalb.h"
 #include "asterfort/deflg4.h"
 #include "asterfort/prodmt.h"
-#include "asterfort/readMatrix.h"
 #include "blas/dsyr.h"
 #include "jeveux.h"
 !
@@ -164,7 +163,8 @@ contains
         type(HHO_matrix) :: lhs_mv, lhs_ml, lhs_mm, lhs_ll, lhs_vm, lhs_vv, lhs_vl, lhs_lm, lhs_lv
         real(kind=8) :: rhs_vari(MSIZE_TDOFS_SCAL), rhs_lagv(MSIZE_CELL_SCAL)
         real(kind=8) :: rhs_mk(MSIZE_TDOFS_VEC)
-    integer(kind=8) :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL), mapLagv(MSIZE_CELL_SCAL)
+        integer(kind=8) :: mapMeca(MSIZE_TDOFS_VEC), mapVari(MSIZE_TDOFS_SCAL)
+        integer(kind=8) :: mapLagv(MSIZE_CELL_SCAL)
         integer(kind=8) :: mk_cbs, mk_fbs, mk_total_dofs, mk_gbs, mk_gbs_sym, mk_gbs_cmp
         integer(kind=8) :: gv_cbs, gv_fbs, gv_total_dofs, gv_gbs, gv_faces_dofs, gv_cell_offset
         integer(kind=8) :: cod(27), ipg, mk_gbs_tot

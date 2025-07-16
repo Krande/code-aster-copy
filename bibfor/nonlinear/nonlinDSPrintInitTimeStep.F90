@@ -24,8 +24,6 @@ subroutine nonlinDSPrintInitTimeStep(ds_print)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/utmess.h"
 #include "asterfort/ComputeTableWidth.h"
 #include "asterfort/SetTableColumn.h"

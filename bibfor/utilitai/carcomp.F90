@@ -30,7 +30,6 @@ subroutine carcomp(carte_1, carte_2, iret, indxCmpExcl_)
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 !
     character(len=*), intent(in) :: carte_1, carte_2
     integer(kind=8), intent(out) :: iret

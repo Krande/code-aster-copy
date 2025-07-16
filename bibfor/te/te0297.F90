@@ -27,7 +27,6 @@ subroutine te0297(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/ltequa.h"
 #include "asterfort/rcvad2.h"
 #include "asterfort/teattr.h"

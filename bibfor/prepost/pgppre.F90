@@ -25,7 +25,6 @@ subroutine pgppre(sd_pgp)
 ! ----------------------------------------------------------------------
 ! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterc/getres.h"
 #include "asterfort/gettco.h"
@@ -37,7 +36,6 @@ subroutine pgppre(sd_pgp)
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/pgpche.h"
 #include "asterfort/pgpchn.h"
 #include "asterfort/pgpget.h"

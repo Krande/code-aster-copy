@@ -24,7 +24,6 @@ subroutine dbrMainGreedy(paraGreedy, baseOut)
     implicit none
 !
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romEvalCoef.h"
 #include "asterfort/romGreedyModeSave.h"

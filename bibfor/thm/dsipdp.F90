@@ -26,7 +26,6 @@ subroutine dsipdp(ds_thm, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     type(THM_DS), intent(in) :: ds_thm
     integer(kind=8), intent(in) :: adcome, addep1, addep2

@@ -54,7 +54,6 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/preres.h"
 #include "asterfort/sigusr.h"
@@ -142,7 +141,7 @@ subroutine dlnewi(result, force0, force1, lcrea, lamort, &
     integer(kind=8) :: jbint, jlpas, jmltap, jnbpa
     integer(kind=8) :: jnoacc, jnodep, jnovit, jpsdel
     integer(kind=8) :: n1, na, nbexci, nbexcl, nbgrpa, nbordr
-    integer(kind=8) :: nbptpa, nbv, nd, nmodam, npatot, nv, ierc
+    integer(kind=8) :: nbptpa, nbv, nd, nmodam, npatot, nv
     character(len=4) :: typ1(nbtyar)
     character(len=8) :: mateFromRigid, matr_resu, modsta
     character(len=8) :: nomddl

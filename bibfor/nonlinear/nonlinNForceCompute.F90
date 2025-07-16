@@ -26,7 +26,6 @@ subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/nmchex.h"
@@ -34,8 +33,6 @@ subroutine nonlinNForceCompute(model, cara_elem, list_func_acti, &
 #include "asterfort/nmvcex.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vefnme.h"
-#include "asterfort/vtaxpy.h"
-#include "asterfort/vtzero.h"
 !
     character(len=24), intent(in) :: model, cara_elem
     integer(kind=8), intent(in) :: list_func_acti(*)

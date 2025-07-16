@@ -24,7 +24,6 @@ subroutine romSolveInfo(ds_solve)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Solve), intent(in) :: ds_solve

@@ -45,16 +45,12 @@ subroutine arlmaf(mail, mailar, dime, ngrma, ima, &
 #include "asterfort/arlgrm.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 !
 !     ARGUMENTS:
 !     ----------
@@ -64,7 +60,7 @@ subroutine arlmaf(mail, mailar, dime, ngrma, ima, &
     character(len=19) :: ngrma
     integer(kind=8) :: imail
     integer(kind=8) :: ima, nummai, cxcumu
-    integer(kind=8) :: itypma, iret
+    integer(kind=8) :: itypma
     integer(kind=8) :: cxno(27), nbno, ino, cxmax
     integer(kind=8) :: jgcnx, jtypm
     character(len=8) :: nomel, nommai, k8bid

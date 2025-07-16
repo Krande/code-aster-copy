@@ -23,7 +23,6 @@ subroutine thmMatrHooke(ds_thm, angl_naut)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/matrHooke3d.h"
 #include "asterfort/separ_RI_elas_3D.h"
 !

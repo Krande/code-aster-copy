@@ -27,6 +27,7 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 ! OUT : PUUSUR : PUISSANCE USURE
 !-----------------------------------------------------------------------
 #include "jeveux.h"
+#include "nldef.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/dismoi.h"
@@ -42,7 +43,6 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/lxlgut.h"
-#include "asterfort/nlget.h"
 #include "asterfort/reliem.h"
 #include "asterfort/statpu.h"
 #include "asterfort/utmess.h"
@@ -53,7 +53,8 @@ subroutine usupus(puusur, kforn, kvgli, nbpt)
     character(len=19) :: trange, kforn, kvgli
 !
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, ichoc, idebut, idwk4, ifin, ifires, nbvint, ifl, nbtot, nbflam, ic, dec, nbchoc
+    integer(kind=8) :: i, ichoc, idebut, idwk4, ifin, ifires, nbvint
+    integer(kind=8) :: ifl, nbtot, nbflam, ic, dec, nbchoc
     integer(kind=8) :: impr, j, jfn, jnomno, nbno
     integer(kind=8) :: jvg, jwk1, jwk2, jwk3, lg
     integer(kind=8) :: n1, n2, n3, nbnoli, nbloc

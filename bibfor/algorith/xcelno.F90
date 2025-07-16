@@ -36,7 +36,6 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xtest_code.h"
 !
@@ -65,7 +64,8 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
     character(len=19) :: ces_hno, ces_fno, ces_stno
     aster_logical :: lfno, limpr
     aster_logical, pointer :: is_nfh_no(:) => null()
-  integer(kind=8), pointer :: list_sd_no(:) => null(), count_sd_no(:) => null(), connex(:) => null()
+    integer(kind=8), pointer :: list_sd_no(:) => null(), count_sd_no(:) => null()
+    integer(kind=8), pointer :: connex(:) => null()
     integer(kind=8), pointer :: tmp_fno(:) => null(), nfh_ref(:) => null()
     integer(kind=8) :: nfissmax
     parameter(nfissmax=4)
@@ -304,7 +304,8 @@ subroutine xcelno(noma, modelx, cel_hno, opt, npa)
         do nuno = 1, nbno
             write (6, *) 'nuno=', nuno
             write (6, *) '   - nfh_ref=', nfh_ref(nuno)
-           write (6, *) '   - list_sd=', list_sd_no((deca*(nuno-1)+1):(deca*(nuno-1)+nfh_ref(nuno)))
+            write (6, *) '   - list_sd=', &
+                list_sd_no((deca*(nuno-1)+1):(deca*(nuno-1)+nfh_ref(nuno)))
         end do
     end if
 !

@@ -23,7 +23,6 @@ subroutine ntload_chck(listLoad)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"

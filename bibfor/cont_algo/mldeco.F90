@@ -23,8 +23,6 @@ subroutine mldeco(ds_contact)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/cfdisi.h"
-#include "asterfort/cfmmvd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

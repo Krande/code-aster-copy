@@ -26,7 +26,6 @@ subroutine pgpext(sd_pgp)
 ! ----------------------------------------------------------------------
 ! person_in_charge: hassan.berro at edf.fr
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jedema.h"

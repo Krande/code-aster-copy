@@ -21,6 +21,7 @@ subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
 !
     implicit none
 !
+#include "asterf_types.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvtx.h"

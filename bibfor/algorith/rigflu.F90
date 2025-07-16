@@ -27,7 +27,6 @@ subroutine rigflu(modelZ, matecoZ, &
 #include "asterfort/addModelLigrel.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asmatr.h"
-#include "asterfort/assert.h"
 #include "asterfort/mecact.h"
 #include "asterfort/merith.h"
 #include "asterfort/numero.h"

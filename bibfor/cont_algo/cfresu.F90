@@ -29,7 +29,6 @@ subroutine cfresu(time_incr, sddisc, ds_contact, disp_cumu_inst, disp_iter, &
 #include "jeveux.h"
 #include "asterc/r8miem.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/apinfi.h"
 #include "asterfort/caladu.h"
 #include "asterfort/cfdisd.h"

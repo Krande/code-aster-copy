@@ -23,7 +23,6 @@ subroutine calirg(mesh, nbno, list_node, tran, cent, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8dgrd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

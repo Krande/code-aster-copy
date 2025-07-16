@@ -101,9 +101,6 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
 #include "asterc/r8dgrd.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/juveca.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/mgauss.h"
 
 !VARIABLES PRINCIPALES
 !------------------------------
@@ -390,10 +387,10 @@ subroutine sandcas2(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gammac, 
     dnsxs = vect(2)
     dnsyi = vect(3)
     dnsys = vect(4)
-    etsxi = vect(5)
-    etsxs = vect(6)
-    etsyi = vect(7)
-    etsys = vect(8)
+    etsxi = to_aster_int(vect(5))
+    etsxs = to_aster_int(vect(6))
+    etsyi = to_aster_int(vect(7))
+    etsys = to_aster_int(vect(8))
     snsxi = vect(9)
     snsxs = vect(10)
     snsyi = vect(11)

@@ -26,10 +26,8 @@ subroutine crvloc(dim, adcom0, iatyma, jconnex0, jconnexc, vgeloc, &
 #include "jeveux.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/nbsomm.h"
 #include "asterfort/somloc.h"
-#include "asterfort/assert.h"
 !
     integer(kind=8) :: adcom0, iatyma, nvtot, nvoima, nscoma
     integer(kind=8) :: touvoi(1:nvoima, 1:nscoma+2)

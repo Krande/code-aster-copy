@@ -25,7 +25,6 @@ subroutine ntarc0(result, model, materfield, caraElem, listLoadResu, &
 #include "jeveux.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/rssepa.h"
 !

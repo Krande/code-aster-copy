@@ -29,7 +29,6 @@ subroutine cont_init(mesh, ds_contact, nume_inst, ds_measure, &
 #include "asterfort/mminit.h"
 #include "asterfort/mminit_lac.h"
 #include "asterfort/cfinit.h"
-#include "asterfort/ndynlo.h"
 !
     character(len=8), intent(in) :: mesh
     type(NL_DS_Contact), intent(inout) :: ds_contact

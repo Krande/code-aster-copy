@@ -22,7 +22,6 @@ subroutine getFluidPara(j_mater, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 !
 ! --------------------------------------------------------------------------------------------------

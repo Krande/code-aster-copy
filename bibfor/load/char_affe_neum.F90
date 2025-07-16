@@ -23,7 +23,6 @@ subroutine char_affe_neum(model, mesh, ndim, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/getelem.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"

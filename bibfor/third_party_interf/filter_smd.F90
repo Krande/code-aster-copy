@@ -28,9 +28,7 @@ subroutine filter_smd(nommat, vsmb)
 
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/asmpi_info.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"

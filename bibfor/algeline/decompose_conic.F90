@@ -19,7 +19,6 @@
 subroutine decompose_conic(m0, nline, line1, line2, indic)
 !
     implicit none
-#include "asterc/r8prem.h"
 #include "asterfort/mat_com.h"
 #include "asterfort/num_rank_mat33.h"
 !

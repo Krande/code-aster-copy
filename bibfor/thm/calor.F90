@@ -22,7 +22,6 @@ function calor(mdal, temp, dtemp, deps, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     real(kind=8), intent(in) :: mdal(6)
     real(kind=8), intent(in) :: temp

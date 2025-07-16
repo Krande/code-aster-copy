@@ -37,9 +37,7 @@ subroutine te0437(nomopt, nomte)
 #include "asterfort/foderi.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/jevech.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/readVector.h"
-#include "asterfort/writeMatrix.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------

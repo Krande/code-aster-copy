@@ -26,7 +26,6 @@ subroutine nonlinDSDynamicInit(hval_incr, sddyna, nlDynaDamping, ds_constitutive
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/ndynlo.h"

@@ -33,7 +33,6 @@ subroutine ajellt(ligretZ, meshZ, nbCell, listCell, &
 #include "asterfort/jexnum.h"
 #include "asterfort/juveca.h"
 #include "asterfort/ligretDebug.h"
-#include "asterfort/wkvect.h"
 #include "jeveux.h"
 !
     character(len=*), intent(in) :: ligretZ, meshZ

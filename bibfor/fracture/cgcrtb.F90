@@ -22,7 +22,6 @@ subroutine cgcrtb(table, option, ndim, typfis, nxpara, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cgajpa.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"

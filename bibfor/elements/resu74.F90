@@ -29,7 +29,6 @@ subroutine resu74(tran, nomres)
 #include "jeveux.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/copvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"

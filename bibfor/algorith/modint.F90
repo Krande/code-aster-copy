@@ -61,7 +61,6 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 #include "jeveux.h"
 #include "asterf_types.h"
 #include "asterc/isnnem.h"
-#include "asterc/getran.h"
 #include "asterc/matfpe.h"
 #include "asterc/r8vide.h"
 #include "asterc/r8pi.h"
@@ -77,8 +76,6 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/infniv.h"
 #include "asterfort/nmop45.h"
 #include "asterfort/omega2.h"
@@ -96,7 +93,6 @@ subroutine modint(ssami, raiint, nddlin, nbmod, shift, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "blas/ddot.h"
-#include "blas/dgeev.h"
 #include "blas/dggev.h"
     integer(kind=8) :: nddlin, nbmod, nnoint, neq, switch, jfreq
     real(kind=8) :: shift

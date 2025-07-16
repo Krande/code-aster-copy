@@ -25,8 +25,6 @@ subroutine nonlinDSAlgoParaCreate(ds_algopara)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 !
     type(NL_DS_AlgoPara), intent(out) :: ds_algopara
 !

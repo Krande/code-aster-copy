@@ -30,7 +30,6 @@ subroutine te0514(option, nomte)
 #include "asterfort/iselli.h"
 #include "asterfort/jevech.h"
 #include "asterfort/loncar.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/ltequa.h"
 #include "asterfort/ndcent.h"
 #include "asterfort/padist.h"
@@ -443,7 +442,8 @@ subroutine te0514(option, nomte)
                 do in = 1, nnose
                     lconnec_ok = lconnec_ok .and. &
                                  ((cnse(ise, in) .gt. 0 .and. cnse(ise, in) .le. nno+nnc) .or. &
-                               (cnse(ise, in) .gt. 1000 .and. cnse(ise, in) .le. 1000+ncompp) .or. &
+                                  (cnse(ise, in) .gt. 1000 .and. cnse(ise, in) .le. 1000+ncompp) &
+                                  .or. &
                                   (cnse(ise, in) .gt. 2000 .and. cnse(ise, in) .le. 2000+ncompm))
                     zi(jcnset-1+nnose*(ise2-1)+in) = cnse(ise, in)
                 end do

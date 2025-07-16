@@ -40,7 +40,6 @@ subroutine asmpi_comm_jev(optmpi, nomjev)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/asmpi_comm.h"
-#include "asterc/loisem.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"

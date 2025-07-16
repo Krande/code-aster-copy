@@ -28,13 +28,11 @@ subroutine comp_meca_chck(model, mesh, chmate, &
 #include "asterc/lccree.h"
 #include "asterc/lcdiscard.h"
 #include "asterc/lctest.h"
-#include "asterfort/assert.h"
 #include "asterfort/compMecaChckModel.h"
 #include "asterfort/compMecaChckStrain.h"
 #include "asterfort/compMecaSelectPlaneStressAlgo.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmvcd2.h"
 !

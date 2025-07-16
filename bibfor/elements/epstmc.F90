@@ -24,7 +24,6 @@ subroutine epstmc(fami, ndim, instan, poum, kpg, &
 !
 #include "jeveux.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/get_elas_id.h"
 #include "asterfort/get_elas_para.h"
 #include "asterfort/calc_epth_elga.h"

@@ -23,7 +23,6 @@ subroutine nmrinc(ds_measure, device_type_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmrvai.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

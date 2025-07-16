@@ -27,7 +27,6 @@ subroutine gapint(elem_dime, l_axis, &
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/lctria.h"
 #include "asterfort/apdist.h"
 #include "asterfort/reerel.h"

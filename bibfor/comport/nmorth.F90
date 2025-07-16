@@ -28,7 +28,6 @@ subroutine nmorth(fami, kpg, ksp, ndim, phenom, &
 #include "asterfort/dmatmc.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/matrot.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/utmess.h"
 #include "asterfort/verift.h"
 #include "asterfort/verifh.h"

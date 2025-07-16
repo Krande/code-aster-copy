@@ -23,7 +23,7 @@ subroutine romAlgoNLPrintInfo(paraAlgo)
 !
     implicit none
 !
-#include "asterfort/assert.h"
+#include "asterf_types.h"
 #include "asterfort/utmess.h"
 #include "asterfort/romBasePrintInfo.h"
 !

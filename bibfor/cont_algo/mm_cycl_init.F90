@@ -23,7 +23,6 @@ subroutine mm_cycl_init(ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

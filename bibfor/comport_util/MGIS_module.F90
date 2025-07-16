@@ -31,7 +31,6 @@ module MGIS_module
 ! ==================================================================================================
     private
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"

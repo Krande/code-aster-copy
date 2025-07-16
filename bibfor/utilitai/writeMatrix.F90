@@ -22,7 +22,6 @@ subroutine writeMatrix(name, nrows, ncols, l_sym, mat)
 !
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
-#include "blas/dcopy.h"
 #include "blas/daxpy.h"
 #include "jeveux.h"
 !

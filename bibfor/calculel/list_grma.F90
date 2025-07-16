@@ -28,10 +28,8 @@ subroutine list_grma(mailla, ima, n1, lgrma, nbgrma)
 #include "asterfort/jeveuo.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
-#include "asterfort/assert.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jexnom.h"
 !
 
     character(len=8), intent(in) :: mailla

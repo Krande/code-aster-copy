@@ -23,7 +23,6 @@ subroutine cptr06(maout, inc, jcnnpa, conloc, &
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeecra.h"

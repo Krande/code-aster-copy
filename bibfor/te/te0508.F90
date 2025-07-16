@@ -22,7 +22,6 @@ subroutine te0508(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefv.h"
 #include "asterfort/jevech.h"

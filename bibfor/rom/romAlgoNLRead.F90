@@ -23,7 +23,6 @@ subroutine romAlgoNLRead(paraAlgo)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"

@@ -21,7 +21,6 @@ subroutine compMecaSelectPlaneStressAlgo(lNeedDeborst, type_cpla)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     aster_logical, intent(in) :: lNeedDeborst
     character(len=16), intent(inout) :: type_cpla

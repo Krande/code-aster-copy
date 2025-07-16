@@ -31,7 +31,6 @@ module HHO_rhs_module
 #include "asterf_types.h"
 #include "asterfort/HHO_size_module.h"
 #include "blas/daxpy.h"
-#include "blas/dscal.h"
 #include "blas/dcopy.h"
 #include "jeveux.h"
 !

@@ -31,7 +31,6 @@ subroutine calcGetData(table_new, table_old, &
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/diinst.h"
 !
     character(len=8), intent(out) :: table_new
     character(len=8), intent(out) :: table_old

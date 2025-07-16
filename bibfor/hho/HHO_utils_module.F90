@@ -26,14 +26,10 @@ module HHO_utils_module
 !
     private
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisd.h"
 #include "asterfort/symt46.h"
-#include "asterfort/getResuElem.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 #include "MeshTypes_type.h"
 !

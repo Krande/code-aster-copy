@@ -30,7 +30,6 @@ subroutine ap_on_off(action, option)
 #include "jeveux.h"
 #include "asterc/aster_petsc_initialize.h"
 #include "asterc/aster_petsc_finalize.h"
-#include "asterc/getfac.h"
 #include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !

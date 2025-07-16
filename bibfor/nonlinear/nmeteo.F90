@@ -24,7 +24,6 @@ subroutine nmeteo(result, sddisc, ds_inout, force, nume_store, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/diincl.h"
 #include "asterfort/exisd.h"
 #include "asterfort/nmarcc.h"

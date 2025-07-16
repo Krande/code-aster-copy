@@ -52,7 +52,6 @@ subroutine mecalg(optioz, result, modele, depla, theta, &
 #include "jeveux.h"
 #include "asterfort/alchml.h"
 #include "asterfort/xelgano.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/chpchd.h"
 #include "asterfort/chpver.h"

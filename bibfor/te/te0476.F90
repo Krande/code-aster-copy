@@ -30,12 +30,10 @@ subroutine te0476(option, nomte)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/writeVector.h"
-#include "blas/dcopy.h"
 !
     character(len=16), intent(in) :: option, nomte
 !

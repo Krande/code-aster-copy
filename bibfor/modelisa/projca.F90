@@ -73,9 +73,7 @@ subroutine projca(tablca, lirela, nmabet, nbmabe, mailla, &
 !
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/projkm.h"
 #include "asterfort/reci2d.h"
 #include "asterfort/tbajli.h"

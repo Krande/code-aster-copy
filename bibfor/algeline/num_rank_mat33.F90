@@ -19,7 +19,6 @@
 function num_rank_mat33(m, prec, indic)
 !
     implicit none
-#include "asterc/r8prem.h"
 #include "asterfort/cubic_root.h"
 #include "asterfort/det_mat.h"
 #include "asterfort/norm_mat.h"

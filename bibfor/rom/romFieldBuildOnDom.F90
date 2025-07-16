@@ -24,7 +24,6 @@ subroutine romFieldBuildOnDom(resultRom, fieldBuild)
     implicit none
 !
 #include "asterfort/as_allocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
 #include "blas/dgemm.h"

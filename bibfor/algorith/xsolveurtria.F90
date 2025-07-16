@@ -20,8 +20,6 @@ subroutine xsolveurtria(coor_nod, x, y, z, D, indmax, solution)
 
     implicit none
 
-#include "asterc/r8gaem.h"
-
     integer(kind=8)                           ::  indmax
     real(kind=8), dimension(3, 3)       ::  coor_nod
     real(kind=8)                      ::  D(:), x(:), y(:), z(:), solution

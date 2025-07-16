@@ -24,11 +24,9 @@ subroutine nonlinSystemInit(list_func_acti, nume_dof, ds_algopara, ds_contact, d
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/isfonc.h"
-#include "asterfort/ndynlo.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/cfdisl.h"
 !

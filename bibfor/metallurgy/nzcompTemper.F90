@@ -28,7 +28,6 @@ subroutine nzcompTemper(metaPara, numeComp, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/zjma.h"
 #include "asterfort/Metallurgy_type.h"

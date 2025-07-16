@@ -33,7 +33,6 @@ subroutine modirepcham(resuou, resuin)
     character(len=19) :: resuou, resuin
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/dismoi.h"

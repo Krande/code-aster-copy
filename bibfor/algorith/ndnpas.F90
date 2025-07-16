@@ -24,7 +24,6 @@ subroutine ndnpas(fonact, numedd, numins, sddisc, sddyna, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dismoi.h"

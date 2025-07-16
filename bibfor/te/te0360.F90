@@ -24,7 +24,6 @@ subroutine te0360(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/eiangl.h"
 #include "asterfort/eimatb.h"
 #include "asterfort/elref2.h"

@@ -20,7 +20,6 @@ subroutine capres(load, mesh, model, geomDime, valeType, nbOccPresRep)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/capres_skin.h"
 #include "asterfort/capres_volu.h"
 #include "asterfort/dismoi.h"

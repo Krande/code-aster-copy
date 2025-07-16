@@ -40,7 +40,6 @@ subroutine nifism(ndim, nnod, nnog, nnop, npg, &
 #include "asterfort/nmcomp.h"
 #include "asterfort/nmepsi.h"
 #include "asterfort/nmmalu.h"
-#include "asterfort/r8inir.h"
 #include "asterfort/rcvala.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"

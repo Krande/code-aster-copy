@@ -30,7 +30,6 @@ subroutine lcejtu(BEHinteg, fami, kpg, ksp, ndim, &
 #include "asterc/r8pi.h"
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
 #include "asterfort/assert.h"

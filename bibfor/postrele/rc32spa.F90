@@ -21,7 +21,6 @@ subroutine rc32spa(ze200, lieu, iocc1, iocc2, ns, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8vide.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"

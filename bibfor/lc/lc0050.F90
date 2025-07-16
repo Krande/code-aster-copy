@@ -29,15 +29,11 @@ subroutine lc0050(BEHinteg, fami, kpg, ksp, ndim, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8nnem.h"
 #include "asterc/umatwp.h"
-#include "asterfort/assert.h"
-#include "asterfort/jevech.h"
 #include "asterfort/lcicma.h"
 #include "asterfort/matrot.h"
 #include "asterfort/tecael.h"
 #include "asterfort/mat_proto.h"
-#include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/dscal.h"
 #include "asterfort/umatPrepareStrain.h"

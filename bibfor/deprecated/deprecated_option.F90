@@ -19,7 +19,6 @@
 subroutine deprecated_option(option)
 !
     implicit none
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     character(len=*), intent(in) :: option

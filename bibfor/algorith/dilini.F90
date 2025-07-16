@@ -27,7 +27,6 @@ subroutine dilini(option, ivf, ivf2, idfde, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 
 #include "asterfort/elref1.h"
 #include "asterfort/elrefe_info.h"

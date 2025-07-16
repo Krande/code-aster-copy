@@ -34,9 +34,7 @@ subroutine nmflam(optionSpec, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/isnnem.h"
 #include "asterc/r8maem.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/diinst.h"
@@ -48,7 +46,6 @@ subroutine nmflam(optionSpec, &
 #include "asterfort/nmflin.h"
 #include "asterfort/nmflma.h"
 #include "asterfort/nmop45.h"
-#include "asterfort/omega2.h"
 #include "asterfort/rsadpa.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vpSorensen.h"

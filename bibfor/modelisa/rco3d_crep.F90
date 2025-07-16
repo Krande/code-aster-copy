@@ -23,20 +23,14 @@ subroutine rco3d_crep(cara_elem, noma, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/carces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/detrsd.h"
 #include "asterc/indik8.h"
-#include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmavo.h"
 #include "asterfort/utmess.h"
 

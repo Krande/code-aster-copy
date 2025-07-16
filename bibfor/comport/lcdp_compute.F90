@@ -26,7 +26,6 @@ function lcdp_compute(resi, rigi, elas, itemax, prec, m, eps, ep, ka, state, &
 #include "asterfort/assert.h"
 #include "asterfort/proten.h"
 #include "asterfort/zerop2.h"
-#include "asterfort/zerop3.h"
 #include "asterfort/zerofr.h"
 #include "asterfort/utmess.h"
 

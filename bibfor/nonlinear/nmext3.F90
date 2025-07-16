@@ -30,9 +30,7 @@ subroutine nmext3(mesh, field, field_type, field_s, &
 #include "asterfort/as_deallocate.h"
 #include "asterfort/celces.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/nmextj.h"
 #include "asterfort/sdmpic.h"
 !

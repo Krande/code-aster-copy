@@ -28,16 +28,13 @@ subroutine nmetcr(ds_inout, model, compor, list_func_acti, sddyna, &
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/GetIOField.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/nmetac.h"
 #include "asterfort/nmetc0.h"
 #include "asterfort/nmetcc.h"
 #include "asterfort/rscrsd.h"
-#include "asterfort/SetIOField.h"
 !
     type(NL_DS_InOut), intent(inout) :: ds_inout
     character(len=24), intent(in) :: model

@@ -27,9 +27,6 @@ subroutine cbsour(load, mesh, model, geomDime, valeType)
 #include "asterfort/getvid.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/utmess.h"
-#include "asterfort/celces.h"
-#include "asterfort/cescar.h"
-#include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/convertFieldNodeToFieldElga.h"
 

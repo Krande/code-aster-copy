@@ -29,12 +29,10 @@ subroutine nmelcv(model, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmelco_prep.h"

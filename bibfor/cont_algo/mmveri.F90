@@ -34,8 +34,6 @@ subroutine mmveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdist.h"
 #include "asterfort/cfnumm.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mcopco.h"
 #include "asterfort/mmelty.h"
 #include "asterfort/mminfi.h"

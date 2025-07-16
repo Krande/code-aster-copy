@@ -54,8 +54,6 @@ subroutine fenexc(noma, nomnoa, long, nbn, nuno, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/lexseg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"

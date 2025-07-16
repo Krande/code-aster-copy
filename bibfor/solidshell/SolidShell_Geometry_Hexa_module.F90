@@ -36,7 +36,6 @@ module SolidShell_Geometry_Hexa_module
     private
 #include "asterf_types.h"
 #include "asterfort/SolidShell_type.h"
-#include "asterfort/assert.h"
 #include "blas/ddot.h"
 ! ==================================================================================================
 contains

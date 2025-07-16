@@ -27,7 +27,6 @@ subroutine comp_ntvari(model_, comporMap_, comporList_, comporInfo, &
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/comp_meca_l.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getExternalBehaviourPara.h"
 #include "asterfort/jelira.h"

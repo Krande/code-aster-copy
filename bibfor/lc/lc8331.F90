@@ -30,7 +30,6 @@ subroutine lc8331(BEHinteg, &
 !
 #include "asterf_types.h"
 #include "asterfort/Behaviour_type.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/kitPrepBehaviour.h"
 !

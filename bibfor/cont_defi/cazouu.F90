@@ -21,7 +21,6 @@ subroutine cazouu(keywf, nb_cont_zone, keyw_, keyw_type_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getmjm.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"

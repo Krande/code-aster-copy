@@ -54,7 +54,6 @@ subroutine prere3(solveu, base, iret, matpre, matass, &
 ! DECLARATION PARAMETRES D'APPELS
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getexm.h"
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

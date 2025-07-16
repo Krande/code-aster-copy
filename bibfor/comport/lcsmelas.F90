@@ -22,7 +22,6 @@ subroutine lcsmelas(fm, df, dtaudf, nmat, materd_, &
     implicit none
 !
 #include "blas/ddot.h"
-#include "asterfort/assert.h"
 #include "asterfort/gdsmin.h"
 #include "asterfort/gdsmci.h"
 #include "asterfort/gdsmtg.h"

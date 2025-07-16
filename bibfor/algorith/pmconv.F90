@@ -26,7 +26,6 @@ subroutine pmconv(r, rini, r1, inst, sigp, &
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-#include "asterc/r8vide.h"
 #include "asterfort/pmimpr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/GetResi.h"

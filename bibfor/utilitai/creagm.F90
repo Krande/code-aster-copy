@@ -51,7 +51,6 @@ subroutine creagm(nbmato, nbpart, ma, masd)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/lxcadr.h"
 #include "asterfort/uttcpr.h"
 #include "asterfort/uttcpu.h"

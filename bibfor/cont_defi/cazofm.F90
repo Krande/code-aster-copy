@@ -22,7 +22,6 @@ subroutine cazofm(sdcont, keywf, cont_form, cont_nbzone)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cazouu.h"
 #include "asterfort/getvr8.h"

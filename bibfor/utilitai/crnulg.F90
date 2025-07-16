@@ -22,7 +22,6 @@ subroutine crnulg(numddl)
 #include "asterf.h"
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/crnlgc.h"
 #include "asterfort/crnlgn.h"
 #include "asterfort/jedema.h"

@@ -28,9 +28,6 @@ subroutine te0006(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nbsigm.h"
-#include "asterfort/subaco.h"
-#include "asterfort/sumetr.h"
-#include "asterfort/utmess.h"
 !
     character(len=16), intent(in) :: option, nomte
 !
@@ -38,7 +35,7 @@ subroutine te0006(option, nomte)
     integer(kind=8) :: ipoids, ivf, idfde, jgano, nbsig
     integer(kind=8) :: iconti, iconto, ncmp, icmp, ipg, jv_geom
 !
-    real(kind=8) :: volume, moyenne, poids(100), cova(3, 3), metr(2, 2), jac
+    real(kind=8) :: volume, moyenne, poids(100)
     real(kind=8) :: somme(6), xx
     aster_logical :: laxi
 !

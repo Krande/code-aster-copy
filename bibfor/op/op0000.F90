@@ -22,7 +22,6 @@ subroutine op0000()
 !
 #include "asterc/getres.h"
 #include "asterc/jdcget.h"
-#include "asterc/prhead.h"
 #include "asterf_types.h"
 #include "asterfort/adjust_memlimit.h"
 #include "asterfort/dbg_base.h"

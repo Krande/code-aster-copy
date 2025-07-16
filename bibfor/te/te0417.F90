@@ -21,11 +21,9 @@ subroutine te0417(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/dxroep.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vectan.h"
 #include "asterfort/vectci.h"
 !
@@ -113,14 +111,14 @@ subroutine te0417(option, nomte)
                              l2+i)*vectn(i, k)
                 end do
 !
-                ix1x2 = ix1x2+epais*wgt*zr(l2+j)*xi(1, j)*zr(l2+i)*xi(2, &
-                                                i)+epais3/12.d0*wgt*zr(l2+j)*vectn(j, 1)*zr(l2+i)* &
+                ix1x2 = ix1x2+epais*wgt*zr(l2+j)*xi(1, j)*zr(l2+i)*xi(2, i)+ &
+                        epais3/12.d0*wgt*zr(l2+j)*vectn(j, 1)*zr(l2+i)* &
                         vectn(i, 2)
-                ix1x3 = ix1x3+epais*wgt*zr(l2+j)*xi(1, j)*zr(l2+i)*xi(3, &
-                                                i)+epais3/12.d0*wgt*zr(l2+j)*vectn(j, 1)*zr(l2+i)* &
+                ix1x3 = ix1x3+epais*wgt*zr(l2+j)*xi(1, j)*zr(l2+i)*xi(3, i)+ &
+                        epais3/12.d0*wgt*zr(l2+j)*vectn(j, 1)*zr(l2+i)* &
                         vectn(i, 3)
-                ix2x3 = ix2x3+epais*wgt*zr(l2+j)*xi(2, j)*zr(l2+i)*xi(3, &
-                                                i)+epais3/12.d0*wgt*zr(l2+j)*vectn(j, 2)*zr(l2+i)* &
+                ix2x3 = ix2x3+epais*wgt*zr(l2+j)*xi(2, j)*zr(l2+i)*xi(3, i)+ &
+                        epais3/12.d0*wgt*zr(l2+j)*vectn(j, 2)*zr(l2+i)* &
                         vectn(i, 3)
             end do
 !

@@ -28,7 +28,6 @@ subroutine lgicfc(refe, ndim, nno, nnob, npg, &
 #include "asterfort/assert.h"
 #include "asterfort/dfdmip.h"
 #include "asterfort/nmbeps.h"
-#include "blas/dgemv.h"
     aster_logical :: refe, axi
     integer(kind=8) :: ndim, nno, nnob, npg, nddl, idff, idffb, iw
     real(kind=8) :: geom(ndim, nno), ddl(nddl), vff(nno, npg), vffb(nnob, npg)

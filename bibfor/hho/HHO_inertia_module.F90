@@ -27,10 +27,8 @@ module HHO_inertia_module
 !
     private
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
-#include "asterfort/utmess.h"
 #include "blas/dsyev.h"
 #include "blas/dsyr.h"
 !

@@ -21,7 +21,6 @@ subroutine apnorm(elem_nbnode, elem_code, elem_dime, elem_coor, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/mmtang.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmdonf.h"

@@ -18,7 +18,6 @@
 
 subroutine te0265(nomopt, nomte)
     implicit none
-#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tecach.h"
@@ -187,7 +186,7 @@ subroutine te0265(nomopt, nomte)
     real(kind=8) :: Vx, VY, VZ, MT, MFY, MFZ
 
 !   COMMAND DATA
-    integer(kind=8) :: typcmb, typco, i, k, uc, um, typstru
+    integer(kind=8) :: typcmb, typco, i, uc, um, typstru
     real(kind=8) :: cequi, sigs, sigci, sigcs, sigcyi, sigcys, sigczi, sigczs
     real(kind=8) :: alphacc, effrts(6), dnsits(6)
     real(kind=8) :: ht, bw, enrobi, enrobs, enrobyi, enrobys, enrobzi, enrobzs

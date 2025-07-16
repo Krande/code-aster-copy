@@ -27,7 +27,6 @@ subroutine nmcrsu(sddisc, lisins, ds_conv, ds_algopara, l_implex, &
 #include "asterf_types.h"
 #include "event_def.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/gettco.h"
 #include "asterc/r8vide.h"
 #include "asterfort/crsvsi.h"

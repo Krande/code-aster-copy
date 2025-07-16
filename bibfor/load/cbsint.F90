@@ -23,7 +23,6 @@ subroutine cbsint(load, mesh)
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterfort/alcart.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

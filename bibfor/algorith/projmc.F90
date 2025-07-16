@@ -20,7 +20,6 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
                   neq, nbmo)
     implicit none
 #include "jeveux.h"
-#include "asterfort/gettco.h"
 #include "asterfort/assert.h"
 #include "asterfort/copmod.h"
 #include "asterfort/jecrec.h"
@@ -41,7 +40,6 @@ subroutine projmc(matras, nomres, basemo, nugene, nu, &
 #include "asterfort/zerlag.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-#include "blas/zdotc.h"
 !
     integer(kind=8) :: neq, nbmo
     character(len=8) :: matras, nomres, basemo

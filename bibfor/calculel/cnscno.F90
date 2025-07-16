@@ -41,7 +41,6 @@ subroutine cnscno(cnsz, nume_equaz, prol0, basez, cnoz, &
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"

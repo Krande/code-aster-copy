@@ -22,14 +22,12 @@ subroutine cppt6_2(main, maout, inc, jcoor, jcnnpa, conloc, &
 !
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/cnpc.h"
 #include "asterfort/cpmcpt6_2.h"

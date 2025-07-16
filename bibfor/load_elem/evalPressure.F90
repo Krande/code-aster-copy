@@ -26,7 +26,6 @@ subroutine evalPressure(lFunc, lTime, time, &
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/fointe.h"
 #include "asterfort/evalPressureSetFuncPara.h"
 !

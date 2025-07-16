@@ -30,7 +30,6 @@ subroutine exlim2(lismai, nbmail, ligrmoz, basez, ligrez)
 #include "asterfort/jedupo.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"

@@ -32,7 +32,6 @@ module plateGeom_module
     private
 #include "asterf_types.h"
 #include "asterc/r8miem.h"
-#include "asterfort/assert.h"
 #include "asterfort/plateGeom_module.h"
 ! ==================================================================================================
 contains

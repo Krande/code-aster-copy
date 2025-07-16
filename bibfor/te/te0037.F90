@@ -37,7 +37,6 @@ subroutine te0037(option, nomte)
 #include "asterfort/utmess.h"
 #include "asterfort/xcalc_code.h"
 #include "asterfort/xcalc_heav.h"
-#include "asterfort/xcalc_saut.h"
 #include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xhmddl.h"
 #include "asterfort/xhmini.h"

@@ -23,7 +23,6 @@ subroutine te0124(option, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     character(len=16), intent(in) :: option, nomte
 !

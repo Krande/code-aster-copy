@@ -24,20 +24,15 @@ subroutine addMatrAsse(mat1, mat2, coeff1, coeff2, matres)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtcmbl.h"
 #include "asterfort/mtdefs.h"
 #include "asterfort/utmess.h"
 #include "asterfort/vrrefe.h"
-#include "asterfort/wkvect.h"
 !
     character(len=*), intent(in) :: mat1, mat2, matres
     real(kind=8), intent(in) :: coeff1, coeff2

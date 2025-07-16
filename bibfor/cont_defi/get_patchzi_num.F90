@@ -22,7 +22,6 @@ subroutine get_patchzi_num(mesh, nmgrma, num)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/utmess.h"

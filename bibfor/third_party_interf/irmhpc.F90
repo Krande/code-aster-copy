@@ -39,7 +39,6 @@ subroutine irmhpc(idfimd, nomamd, nomast, nbnoeu)
 #include "asterfort/asmpi_info.h"
 #include "asterfort/assert.h"
 #include "asterfort/codent.h"
-#include "asterfort/codlet.h"
 #include "asterfort/infniv.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"

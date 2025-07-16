@@ -23,7 +23,6 @@ subroutine CreateInOutDS_T(ds_inout, l_temp_nonl)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 !

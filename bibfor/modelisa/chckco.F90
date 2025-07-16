@@ -33,8 +33,6 @@ subroutine chckco(char, noma, ndimg)
 #include "asterfort/cfzonn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mmtypm.h"
 #include "asterfort/utmess.h"

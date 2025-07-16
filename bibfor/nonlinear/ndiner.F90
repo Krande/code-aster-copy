@@ -27,7 +27,6 @@ subroutine ndiner(nbEqua, sddyna, hval_incr, hval_measse, cniner)
 #include "asterfort/infdbg.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/ndynre.h"
-#include "asterfort/nmchex.h"
 #include "asterfort/nmdebg.h"
 #include "asterfort/utmess.h"
 #include "blas/dscal.h"

@@ -21,7 +21,6 @@ subroutine vedith(model, loadNameJv, loadInfoJv, time, vect_elemz)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/inical.h"
@@ -30,7 +29,6 @@ subroutine vedith(model, loadNameJv, loadInfoJv, time, vect_elemz)
 #include "asterfort/memare.h"
 #include "asterfort/reajre.h"
 #include "asterfort/megeom.h"
-#include "asterfort/mecact.h"
 #include "asterfort/gcnco2.h"
 #include "asterfort/corich.h"
 #include "asterfort/calcul.h"

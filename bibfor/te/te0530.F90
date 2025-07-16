@@ -25,7 +25,6 @@ subroutine te0530(option, nomte)
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
 #include "asterfort/rcvarc.h"
 #include "asterfort/tecach.h"
     character(len=16) :: option, nomte

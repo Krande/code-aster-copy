@@ -26,7 +26,6 @@ subroutine comp_nbvari_std(rela_comp, defo_comp, type_cpla, &
 #include "asterf_types.h"
 #include "asterc/lcinfo.h"
 #include "asterc/lcdiscard.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_code.h"
 !
     character(len=16), intent(in) :: rela_comp, defo_comp, type_cpla

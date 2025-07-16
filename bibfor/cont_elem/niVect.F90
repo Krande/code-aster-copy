@@ -25,7 +25,6 @@ subroutine niVect(parameters, geom, vect_cont, vect_fric)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/niElemCont.h"

@@ -24,7 +24,6 @@ subroutine te0164(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
 #include "asterfort/matvec.h"
-#include "asterfort/tecach.h"
 #include "asterfort/terefe.h"
 !
     character(len=16) :: option, nomte

@@ -71,7 +71,6 @@ subroutine srcomp(mod, imate, instam, instap, &
 #include "asterfort/r8inir.h"
 #include "asterfort/trace.h"
 #include "asterfort/utmess.h"
-#include "asterfort/cos3t.h"
 #include "asterfort/get_varc.h"
 
     !!!

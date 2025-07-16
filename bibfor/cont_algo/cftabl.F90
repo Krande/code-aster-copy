@@ -22,7 +22,6 @@ subroutine cftabl(indic, nbliac, ajliai, spliai, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 !
 !

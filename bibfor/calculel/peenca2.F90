@@ -23,7 +23,6 @@ subroutine peenca2(champ, long, vr, nbmail, nummai, &
 #include "jeveux.h"
 #include "asterc/r8prem.h"
 #include "asterfort/asmpi_comm_vect.h"
-#include "asterfort/assert.h"
 #include "asterfort/digdel.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"

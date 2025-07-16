@@ -27,8 +27,6 @@ subroutine te0139(option, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_allocate.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/jevech.h"
@@ -78,7 +76,7 @@ subroutine te0139(option, nomte)
     integer(kind=8) :: icontm, ivarim
     integer(kind=8) :: iinstm, iinstp, ideplm, ideplp, icarcr
     integer(kind=8) :: ivectu, icontp, ivarip
-    integer(kind=8) :: ivarix, jv_mult_comp
+    integer(kind=8) :: ivarix
     integer(kind=8) :: jtab(7)
     real(kind=8) :: angl_naut(7)
     aster_logical :: matsym

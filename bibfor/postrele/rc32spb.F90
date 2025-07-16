@@ -21,7 +21,6 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8vide.h"
 #include "asterfort/codent.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
@@ -279,7 +278,8 @@ subroutine rc32spb(ze200, lieu, iocc1, iocc2, ns, &
 !
                                 if (nmecap .eq. 3) then
                                     do k = 1, 12
-                             mij(k) = A1p(k)*(zr(jtranp+50*(i-1)+1+48+1)-zr(jtranp+50*(l-1)+1+48+1))
+                                        mij(k) = A1p(k)*(zr(jtranp+50*(i-1)+1+48+1)- &
+                                                         zr(jtranp+50*(l-1)+1+48+1))
                                         sc(j) = sc(j)+mij(k)*zr(jsigu-1+6*(k-1)+j)
                                     end do
                                 end if

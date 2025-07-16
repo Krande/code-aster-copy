@@ -25,8 +25,6 @@ subroutine dyGetKineLoad(matrRigiz, matrMassz, matrDampz, lDamp, listLoadz, kine
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/ascavc.h"
-#include "asterfort/calvci.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/idenob.h"
 #include "asterfort/ischar_iden.h"

@@ -24,7 +24,6 @@ subroutine comp_nbvari_kit(kit_comp, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cg_kit_nvar.h"
 #include "asterfort/ddi_kit_nvar.h"
 #include "asterfort/thm_kit_nvar.h"

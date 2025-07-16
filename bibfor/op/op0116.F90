@@ -49,7 +49,6 @@ subroutine op0116()
 #include "asterfort/rsadpa.h"
 #include "asterfort/rsexch.h"
 #include "asterfort/tabcor.h"
-#include "asterfort/utmess.h"
 #include "asterfort/vtcmbl.h"
 #include "asterfort/wkvect.h"
 !

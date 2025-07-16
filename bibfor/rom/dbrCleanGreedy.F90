@@ -23,7 +23,6 @@ subroutine dbrCleanGreedy(paraGreedy)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/romMultiParaClean.h"
 #include "asterfort/romGreedyAlgoClean.h"
 !

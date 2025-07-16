@@ -26,11 +26,9 @@ subroutine projMaAndCheck(proj_tole, dist_ratio, elem_dime, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/apinte_chck2.h"
 #include "asterfort/apinte_norm.h"
 #include "asterfort/apinte_prma_n.h"
-#include "asterc/r8prem.h"
 !
     real(kind=8), intent(in) :: proj_tole, dist_ratio
     integer(kind=8), intent(in) :: elem_dime

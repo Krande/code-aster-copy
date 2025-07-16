@@ -20,7 +20,6 @@ subroutine ssafmo(model)
 !
     implicit none
 !
-#include "asterc/getfac.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/dismoi.h"

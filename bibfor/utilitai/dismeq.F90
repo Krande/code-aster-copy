@@ -22,15 +22,12 @@ subroutine dismeq(questi, nomobz, repi, repkz, ierd)
 !     ARGUMENTS:
 !     ----------
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismlg.h"
-#include "asterfort/dismcn.h"
 #include "asterfort/dismgd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jenuno.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jenonu.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"

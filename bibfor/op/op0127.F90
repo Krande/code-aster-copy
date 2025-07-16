@@ -33,7 +33,6 @@ subroutine op0127()
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
-#include "asterfort/jevtbl.h"
 #include "asterfort/nugeel.h"
 #include "asterfort/numgcy.h"
 #include "asterfort/numgen.h"

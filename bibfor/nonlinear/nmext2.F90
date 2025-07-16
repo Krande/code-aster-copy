@@ -22,9 +22,7 @@ subroutine nmext2(mesh, field, nb_cmp, nb_node, type_extr, &
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/nmexti.h"
 #include "asterfort/int_to_char8.h"
 !

@@ -21,7 +21,6 @@ subroutine lclaze(elem_dime, nb_lagr, nb_node_slav, indi_lagc, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
 !
     integer(kind=8), intent(in) :: elem_dime

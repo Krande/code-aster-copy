@@ -42,7 +42,6 @@ subroutine op0113()
 #include "asterfort/getvid.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/initel.h"
-#include "asterfort/ismali.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"

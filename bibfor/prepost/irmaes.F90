@@ -29,7 +29,6 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi, &
 #include "asterc/indik8.h"
 #include "asterfort/as_mmhcyw.h"
 #include "asterfort/as_mmhraw.h"
-#include "asterfort/assert.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
@@ -69,8 +68,8 @@ subroutine irmaes(idfimd, nomaas, nomamd, nbimpr, caimpi, &
 !
 ! --------------------------------------------------------------------------------------------------
 !
-   integer(kind=8) :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad, iadzr, iadep, iadex, iadr1
-    integer(kind=8) :: ima, nbsect, nbcouc, nbsp, nummai, nbmail, jpoin, ibid
+    integer(kind=8) :: codret, ipoin, ityp, letype, ino, iret, nbcmp, iad, iadzr, iadep
+    integer(kind=8) :: ima, nbsect, nbcouc, nbsp, nummai, nbmail, jpoin, ibid, iadex, iadr1
     integer(kind=8) :: jcnxma(MT_NTYMAX), jepama(MT_NTYMAX), joripmf(MT_NTYMAX)
     integer(kind=8) :: jr1eptu(MT_NTYMAX), jorituy(MT_NTYMAX), nmatyp(MT_NTYMAX)
     integer(kind=8) :: j_pmf_cesl, j_pmf_cesd, j_cg_cesl, j_cg_cesd

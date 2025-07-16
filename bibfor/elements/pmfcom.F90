@@ -74,9 +74,7 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
 #include "asterfort/utmess.h"
 !
 #include "jeveux.h"
-#include "asterfort/jevech.h"
 !
-    integer(kind=8) :: icompo
 !
     integer(kind=8)      :: nf, icdmat, nbvalc, kpg, debsp, codret
     real(kind=8) :: contm(nf), defm(nf), ddefp(nf), modf(nf), sigf(nf)
@@ -90,11 +88,11 @@ subroutine pmfcom(kpg, debsp, option, compor, crit, &
 ! --------------------------------------------------------------------------------------------------
 !
     integer(kind=8), parameter :: nbval = 1
-    integer(kind=8)             :: icodre(nbval)
-    real(kind=8)        :: valres(nbval)
+    integer(kind=8)    :: icodre(nbval)
+    real(kind=8)       :: valres(nbval)
 
-    integer(kind=8)      :: nbvari, codrep, ksp, fib, ivari, nbvari_grfibre
-    real(kind=8) :: ep, em, depsth, tref, tempm, tempp, sigx, epsx, depsx
+    integer(kind=8)    ::  codrep, ksp, fib, ivari, nbvari_grfibre
+    real(kind=8) :: ep, em, depsth, tref, tempm, tempp
     real(kind=8) :: angmas(3), depsm, nu
 !
     character(len=4)  :: fami

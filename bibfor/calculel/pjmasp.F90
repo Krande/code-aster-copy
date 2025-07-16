@@ -24,7 +24,6 @@ subroutine pjmasp(moa2, masp, corres, noca)
 #include "asterfort/celces.h"
 #include "asterfort/cesexi.h"
 #include "asterfort/cesvar.h"
-#include "asterfort/codent.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jecrec.h"
@@ -55,13 +54,13 @@ subroutine pjmasp(moa2, masp, corres, noca)
 ! ----------------------------------------------------------------------
     integer(kind=8) :: ntgeo, ipo, ipg, nuno2
     integer(kind=8) ::  nbnosp, nno2, ino2p
-    integer(kind=8) :: k, j1, ipoi1
+    integer(kind=8) ::  j1, ipoi1
     integer(kind=8) :: nbma, nbpt, nbsp, nbcmp
     integer(kind=8) :: ima, ipt, isp, icmp, iad, iadime
     integer(kind=8) :: jtypma, jpo2
     integer(kind=8) :: jcesd, jcesl, iatypm
     integer(kind=8) :: nchi, nbpgmx, nbspmx
-    character(len=8) :: nom, mail2, lpain(6)
+    character(len=8) ::  mail2, lpain(6)
     character(len=19) :: chamg, ces, chgeom, ligrel
     character(len=24) :: coodsc
     character(len=24) :: lchin(6)

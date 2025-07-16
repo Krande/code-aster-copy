@@ -33,7 +33,6 @@ subroutine thmFlh004(ds_thm, lMatr, lSigm, ndim, j_mater, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/hmderp2.h"
 #include "asterfort/thmEvalPermLiquGaz.h"
 #include "asterfort/thmEvalFickSteam.h"

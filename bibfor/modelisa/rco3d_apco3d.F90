@@ -25,17 +25,13 @@ subroutine rco3d_apco3d(noma, lismavo, lismaco, nbmavo, nbmaco, epai, &
 !
 
 #include "jeveux.h"
-#include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterc/r8prem.h"
 #include "asterfort/utmess.h"
 
     character(len=8), intent(in) :: noma

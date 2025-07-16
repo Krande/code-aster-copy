@@ -35,7 +35,6 @@ subroutine mmcalg(ndim, l_large_slip, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/matinv.h"
 !
     integer(kind=8), intent(in) :: ndim, nnm
@@ -190,7 +189,8 @@ subroutine mmcalg(ndim, l_large_slip, &
                 ! On rajoute ce terme au grand glissement seulement si on est sur
                 ! d'avoir converge en DEPDEL
                 ! increment de deplacement
-                ! Test : ssnp154d, ssnv128r, ssnv128p --> Débrancher la condition if et tester ces 2 cas.
+                ! Test : ssnp154d, ssnv128r, ssnv128p --> Débrancher la condition
+                ! if et tester ces 2 cas.
                 ! Ici on implante une strategie qui consiste a dire que ce terme n'est rajoute que
                 ! si le depdel est < 1.d-1*la logueur de la maille maître courante
                 dnepmait1 = dnepmait1+ddepmait1(idim)*norm(idim)*jeu

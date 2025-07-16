@@ -46,8 +46,6 @@ subroutine arlgrm(mail, nomgrp, dime, ima, connex, loncum, &
 #include "asterfort/jemarq.h"
 #include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/arlcnn.h"
 #include "asterfort/jedema.h"
 #include "asterfort/int_to_char8.h"

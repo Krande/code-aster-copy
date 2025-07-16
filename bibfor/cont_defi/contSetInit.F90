@@ -24,7 +24,6 @@ subroutine contSetInit(sdcont, mesh, nbContZone)
 #include "asterf_types.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/cfnbsf.h"
 #include "asterfort/cfzone.h"

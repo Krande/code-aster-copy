@@ -27,7 +27,6 @@ subroutine testvois(jv_geom, elem_slav_type, &
 #include "asterfort/apcoor.h"
 #include "asterfort/aptype.h"
 #include "asterfort/prjint.h"
-#include "asterfort/assert.h"
 #include "asterfort/dctest.h"
 !
     integer(kind=8), intent(in) :: jv_geom

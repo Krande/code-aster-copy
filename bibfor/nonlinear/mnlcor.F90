@@ -54,7 +54,6 @@ subroutine mnlcor(imat, numdrv, matdrv, xcdl, parcho, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/iunifi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"

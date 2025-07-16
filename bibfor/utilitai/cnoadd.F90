@@ -35,7 +35,6 @@ subroutine cnoadd(chno, chnop)
 #include "asterfort/copisd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/gettco.h"
-#include "asterfort/assert.h"
 #include "asterfort/asmpi_info.h"
 
     integer(kind=8) :: rang, nbproc

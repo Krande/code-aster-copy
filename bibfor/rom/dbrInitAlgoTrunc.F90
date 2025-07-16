@@ -23,9 +23,7 @@ subroutine dbrInitAlgoTrunc(paraTrunc)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/gnomsd.h"
 #include "asterfort/infniv.h"

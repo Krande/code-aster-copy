@@ -31,7 +31,6 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
 #include "asterfort/mrconl.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/rldlg3.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/utmess.h"
 #include "asterfort/isParallelMatrix.h"
 !
@@ -60,7 +59,7 @@ subroutine resldl(solveu, nommat, vcine, nsecm, rsolu, &
 !
 !
     character(len=19) :: nomma2
-    character(len=8) :: type, khpc
+    character(len=8) :: type
     character(len=16) :: metres
     character(len=19) :: vci19, solveu
     complex(kind=8) :: cbid

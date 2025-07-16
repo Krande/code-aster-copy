@@ -21,7 +21,6 @@ subroutine quadco(sdcont, l_node_q8)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr

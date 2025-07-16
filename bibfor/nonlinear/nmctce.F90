@@ -26,7 +26,6 @@ subroutine nmctce(mesh, ds_contact, sddyna, sddisc, nume_inst)
 #include "asterf_types.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/mmchml.h"
 !
     character(len=8), intent(in) :: mesh

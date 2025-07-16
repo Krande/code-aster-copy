@@ -25,7 +25,6 @@ subroutine dbr_calcpod_savel(base, nbMode, nbSnapRedu, baseSing, baseValeR)
 !
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/romBaseSave.h"
 !
     type(ROM_DS_Empi), intent(in) :: base

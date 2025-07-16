@@ -21,9 +21,7 @@ subroutine rftDiffusion(fami, kpg, ksp, poum, imate, c, &
     implicit none
 #include "asterc/r8t0.h"
 #include "asterfort/assert.h"
-#include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/rcvarc.h"
 #include "asterfort/utmess.h"
     character(len=*), intent(in) :: fami, poum
     integer(kind=8), intent(in) :: kpg, ksp, imate

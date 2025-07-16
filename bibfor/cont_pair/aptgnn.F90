@@ -32,7 +32,6 @@ subroutine aptgnn(sdappa, mesh, sdcont_defi, model_ndim, jdecno, &
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/mmmron.h"

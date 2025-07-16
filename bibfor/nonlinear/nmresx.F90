@@ -22,7 +22,6 @@ subroutine nmresx(sddisc, sderro, iter_newt)
 !
     implicit none
 !
-#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "event_def.h"
 #include "asterfort/nmcrel.h"

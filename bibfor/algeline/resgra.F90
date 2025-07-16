@@ -24,7 +24,6 @@ subroutine resgra(mat, matf, vcine, niter, epsi, &
 #include "jeveux.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
 #include "asterfort/csmbgg.h"
 #include "asterfort/gcpc.h"
 #include "asterfort/infniv.h"

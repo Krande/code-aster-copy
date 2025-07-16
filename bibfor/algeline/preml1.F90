@@ -35,10 +35,8 @@ subroutine preml1(neq, n2, diag, delg, col, &
 #include "asterfort/amdbar.h"
 #include "asterfort/genmmd.h"
 #include "asterfort/infniv.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/prmadj.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
     integer(kind=8) :: neq, diag(0:neq), lgind, lgadjn
     integer(kind=8) :: col(*), xadj(neq+1), adjncy(lgadjn)
     integer(kind=8) :: delg(neq), nbsn, adress(neq), parent(neq)
@@ -61,9 +59,7 @@ subroutine preml1(neq, n2, diag, delg, col, &
     integer(kind=8) :: nbnd, nd, nbnd1, ddlmoy, renum
     integer(kind=8) :: pas, k, ndanc, iddl, sni, ind, nddl
     integer(kind=8) :: vali(2)
-    integer(kind=4) :: nbnd4, nadj4, nbsn4, fctnz4, lgind4
     character(len=24) :: noxadj, noadjn, noperm, noinvp, nopare, nospnd
-    integer(kind=8) :: xadjd4, adjnc4, invpn4, permn4, paren4, spndn4
 !
     data noxadj/'&&PREML1.NOMXADJ_PROV   '/
     data noadjn/'&&PREML1.NOMADJN_PROV   '/

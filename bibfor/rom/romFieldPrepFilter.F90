@@ -25,7 +25,6 @@ subroutine romFieldPrepFilter(nbCmpToFilter, cmpToFilter, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/utmess.h"

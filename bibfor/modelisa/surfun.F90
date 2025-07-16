@@ -26,9 +26,7 @@ subroutine surfun(char, noma)
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8) :: char

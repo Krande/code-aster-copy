@@ -25,7 +25,6 @@ subroutine nueffe_lag2(nbLigr, listLigr, base, numeDofZ, renumZ, &
 #include "asterc/indik8.h"
 #include "asterfort/assert.h"
 #include "asterfort/creprn.h"
-#include "asterfort/debug_print.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"

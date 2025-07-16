@@ -22,7 +22,6 @@ subroutine xmilar(ndim, ndime, elrefp, geom, pinref, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/xelrex.h"
 #include "asterfort/reeref.h"
 #include "asterfort/reerel.h"

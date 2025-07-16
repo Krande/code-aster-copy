@@ -23,7 +23,6 @@ subroutine romBasePrintInfo(base)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 #include "asterfort/romModePrintInfo.h"
 !

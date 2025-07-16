@@ -38,8 +38,6 @@ subroutine nodoub(nbl, nbb, nol, nob, typl, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"
 !

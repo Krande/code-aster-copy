@@ -22,7 +22,6 @@ subroutine comp_meca_elas(compElas, l_etat_init)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nocart.h"
 #include "asterfort/Behaviour_type.h"

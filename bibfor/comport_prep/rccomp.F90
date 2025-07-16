@@ -22,7 +22,6 @@ subroutine rccomp(chmat, mesh)
 !
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_comp_read.h"
 #include "asterfort/comp_comp_save.h"
 #include "asterfort/comp_init.h"

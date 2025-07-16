@@ -29,21 +29,14 @@ subroutine lc7058(BEHinteg, fami, kpg, ksp, ndim, &
 !
     implicit none
 !
-#include "asterc/mgis_debug.h"
 #include "asterc/mgis_get_number_of_props.h"
 #include "asterc/mgis_integrate.h"
-#include "asterc/mgis_set_external_state_variables.h"
 #include "asterc/mgis_set_gradients.h"
 #include "asterc/mgis_set_internal_state_variables.h"
 #include "asterc/mgis_set_material_properties.h"
-#include "asterc/mgis_set_rotation_matrix.h"
-#include "asterc/mgis_set_thermodynamic_forces.h"
-#include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
-#include "asterfort/lcicma.h"
-#include "asterfort/matrot.h"
 #include "asterfort/mfront_get_mater_value.h"
 #include "asterfort/mfrontPrepareStrain.h"
 #include "asterfort/use_orient.h"

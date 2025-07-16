@@ -30,11 +30,9 @@ subroutine te0078(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 #include "asterfort/nlcomp.h"
 #include "asterfort/writeVector.h"
 #include "FE_module.h"

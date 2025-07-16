@@ -26,7 +26,6 @@ subroutine cfimp1(phase, noma, sdcont_defi, sdcont_solv, ifm)
 #include "asterfort/apnomp.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisd.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/cfnoap.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

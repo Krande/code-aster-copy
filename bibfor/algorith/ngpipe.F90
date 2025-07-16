@@ -27,7 +27,6 @@ subroutine ngpipe(typilo, npg, neps, nddl, b, &
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/pil000.h"
-#include "asterfort/r8inir.h"
 #include "blas/dgemv.h"
     character(len=8) :: typmod(*)
     character(len=16) :: typilo, compor(*)

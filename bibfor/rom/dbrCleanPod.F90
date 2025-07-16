@@ -23,7 +23,6 @@ subroutine dbrCleanPod(paraPod)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/romFieldClean.h"
 #include "asterfort/romResultClean.h"

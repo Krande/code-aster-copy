@@ -22,7 +22,6 @@ function ischar(list_load, load_type_1, load_type_2, i_load_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"

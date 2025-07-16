@@ -51,7 +51,6 @@ subroutine mnllec(imat, numedd, ordman, epsman, pasman, &
 ! ----------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"

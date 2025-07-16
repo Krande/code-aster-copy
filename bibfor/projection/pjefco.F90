@@ -30,7 +30,6 @@ subroutine pjefco(moa1, moa2, corres, base)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"

@@ -22,7 +22,6 @@ subroutine tdlamb(ds_thm, angl_naut, ndim, tdlamt)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/matrot.h"
 #include "asterfort/utbtab.h"
 #include "asterfort/THM_type.h"

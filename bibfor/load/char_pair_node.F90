@@ -22,14 +22,11 @@ subroutine char_pair_node(mesh, nb_node, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8dgrd.h"
 #include "asterc/r8gaem.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/matrot.h"
 #include "asterfort/padist.h"
 #include "asterfort/parotr.h"

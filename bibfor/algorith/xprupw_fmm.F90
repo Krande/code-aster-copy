@@ -25,7 +25,6 @@ subroutine xprupw_fmm(cmnd, noma, vcn, grlr, &
 !
 #include "jeveux.h"
 #include "asterc/r8gaem.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/celces.h"
 #include "asterfort/cescns.h"

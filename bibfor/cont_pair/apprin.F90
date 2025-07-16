@@ -23,7 +23,6 @@ subroutine apprin(mesh, newgeo, pair_tole, nb_elem_mast, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"

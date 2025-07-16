@@ -31,7 +31,6 @@ module lmp_module
 !
     private
 #include "asterf.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
@@ -53,7 +52,7 @@ contains
         PetscErrorCode, intent(out) :: ierr
         ! Local variables
         PetscInt :: maxits
-        integer(kind=8) :: ifm, niv, si
+        integer(kind=8) :: ifm, niv
         aster_logical :: verbose
         !
         call infniv(ifm, niv)

@@ -23,7 +23,6 @@ subroutine varinonu(modelZ, comporZ, &
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/etenca.h"
 #include "asterfort/jeexin.h"

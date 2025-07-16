@@ -32,7 +32,6 @@ subroutine te0539(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/nmtstm.h"
-#include "asterfort/rcangm.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"

@@ -32,7 +32,6 @@ subroutine xsifl1(elrefp, angl, basloc, coeff, coeff3, &
 #include "asterfort/coor_cyl.h"
 #include "asterfort/fointe.h"
 #include "asterfort/indent.h"
-#include "asterfort/iselli.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xcalc_code.h"

@@ -25,7 +25,6 @@ subroutine numer3(modelZ, base, listLoadZ, numeDofZ, ds_contact)
     implicit none
 !
 #include "asterfort/addModelLigrel.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"

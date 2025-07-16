@@ -25,7 +25,6 @@ subroutine mmmjeu(ndim, i_reso_geom, jeusup, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "Contact_type.h"
 !
     integer(kind=8), intent(in) :: ndim, i_reso_geom

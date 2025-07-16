@@ -29,7 +29,6 @@ subroutine xjacff(elrefp, elrefc, elc, ndim, fpg, &
 #include "asterfort/dfdm2b.h"
 #include "asterfort/elelin.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/lteatt.h"
 #include "asterfort/normev.h"
 #include "asterfort/provec.h"
 #include "asterfort/reeref.h"

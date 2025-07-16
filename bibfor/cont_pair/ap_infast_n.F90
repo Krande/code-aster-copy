@@ -34,14 +34,11 @@ subroutine ap_infast_n(mesh, newgeo, pair_tole, dist_ratio, nb_elem_mast, &
 #include "asterfort/apcoor.h"
 #include "asterfort/aptype.h"
 #include "asterfort/prjint_ray.h"
-#include "asterfort/gt_linoma.h"
 #include "asterfort/gtctma.h"
 !#include "asterfort/gtclno.h"
 #include "asterfort/gtclno_n.h"
 #include "asterfort/gtlmex.h"
 #include "asterfort/codent.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: mesh

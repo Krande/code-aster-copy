@@ -48,7 +48,6 @@ subroutine tufull(option, nFourier, nbrddl, deplm, deplp, &
 #include "asterfort/vlggl.h"
 #include "asterfort/vlgglc.h"
 #include "asterfort/Behaviour_type.h"
-#include "blas/dcopy.h"
 !
     character(len=16) :: option
 !

@@ -28,7 +28,6 @@ subroutine nonlinLoadDynaCompute(mode, sddyna, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmdebg.h"
 #include "asterfort/ndynlo.h"
 #include "asterfort/nmtime.h"

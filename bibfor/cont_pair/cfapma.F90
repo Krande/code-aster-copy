@@ -34,8 +34,6 @@ subroutine cfapma(noma, newgeo, ds_contact, lctfd, &
 #include "asterfort/cfposn.h"
 #include "asterfort/cfreli.h"
 #include "asterfort/cftanr.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"

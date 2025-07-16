@@ -23,7 +23,6 @@ subroutine mm_cycl_stat(ds_measure, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/nmrvai.h"

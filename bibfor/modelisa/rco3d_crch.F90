@@ -23,20 +23,11 @@ subroutine rco3d_crch(ligrel, noma, chmlrac, lismaco, &
     implicit none
     !
 #include "jeveux.h"
-#include "asterfort/as_deallocate.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/carces.h"
-#include "asterfort/cesexi.h"
-#include "asterc/indik8.h"
 #include "asterfort/jelira.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/utmavo.h"
-#include "asterfort/utmess.h"
 
     character(len=19), intent(in) :: ligrel, chmlrac
     character(len=8), intent(in) :: noma

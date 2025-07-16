@@ -22,7 +22,6 @@ subroutine te0285(option, nomte)
 !
 #include "jeveux.h"
 #include "asterc/r8depi.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dfdm2d.h"
 #include "asterfort/elrefe_info.h"

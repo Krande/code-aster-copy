@@ -22,7 +22,6 @@ subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/xderfk.h"
 #include "asterc/r8depi.h"
 #include "asterc/r8prem.h"
@@ -61,7 +60,9 @@ subroutine xderfk_wrap(kappa, mu, r, theta, ndim, dfkdpo, option, istano)
         dfkdpo(1, 2, 1:2) = [1/sqrt(r)*sin(theta/2.d0), 0.5*sqrt(r)*cos(theta/2.d0)]
         dfkdpo(2, 1, 1:2) = [1/sqrt(r)*sin(theta/2.d0), 0.5*sqrt(r)*cos(theta/2.d0)]
         dfkdpo(2, 2, 1:2) = [1/sqrt(r)*cos(theta/2.d0), -0.5*sqrt(r)*sin(theta/2.d0)]
-       if (ndim .eq. 3) dfkdpo(3, 3, 1:2) = [1/sqrt(r)*sin(theta/2.d0), 0.5*sqrt(r)*cos(theta/2.d0)]
+        if (ndim .eq. 3) then
+            dfkdpo(3, 3, 1:2) = [1/sqrt(r)*sin(theta/2.d0), 0.5*sqrt(r)*cos(theta/2.d0)]
+        end if
 !
     elseif (pref .eq. 'SMOOTH') then
         dfkdpo(1:ndim, 1:ndim, 1) = 0.

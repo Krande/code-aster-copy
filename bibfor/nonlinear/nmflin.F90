@@ -25,7 +25,6 @@ subroutine nmflin(ds_posttimestep, matass, freqr, linsta)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/echmat.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"

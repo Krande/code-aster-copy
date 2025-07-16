@@ -19,7 +19,6 @@
 subroutine numchc(nu, ccid, nbchc, lchci, base)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

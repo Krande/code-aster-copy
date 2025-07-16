@@ -22,7 +22,6 @@ subroutine romEvalCoefInit(nb_vari_para, vari_para, ds_evalcoef)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !

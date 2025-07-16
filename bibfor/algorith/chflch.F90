@@ -36,7 +36,6 @@ subroutine chflch(rigthe, vec2nd, listLoad)
 #include "asterfort/vechth.h"
 #include "asterfort/vedith.h"
 #include "asterfort/vtcreb.h"
-#include "asterfort/wkvect.h"
 #include "jeveux.h"
 !   ------------------------------------------------------------------------------------
 !   *** Subroutine arguments

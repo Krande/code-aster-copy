@@ -33,7 +33,6 @@ module FE_Basis_module
 #include "asterfort/tecael.h"
 #include "asterfort/lteatt.h"
 #include "asterfort/utmess.h"
-#include "blas/ddot.h"
 #include "FE_module.h"
 #include "jeveux.h"
 ! --------------------------------------------------------------------------------------------------

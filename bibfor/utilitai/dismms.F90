@@ -24,15 +24,12 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 #include "jeveux.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismme.h"
 #include "asterfort/dismnu.h"
 #include "asterfort/gettco.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 
     integer(kind=8) :: repi, ierd
     character(len=*) :: questi
@@ -50,12 +47,12 @@ subroutine dismms(questi, nomobz, repi, repkz, ierd)
 !     VARIABLES LOCALES:
 !     ------------------
     character(len=32) :: repk
-    character(len=24) :: p1, p2, k24
+    character(len=24) ::   k24
     character(len=19) :: nomob, solveu
     character(len=2) :: typmat
     character(len=8) :: nommai
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, ibid, ier
+    integer(kind=8) ::  ier
     character(len=16) :: typeco
     character(len=24), pointer :: refa(:) => null()
     character(len=24), pointer :: slvk(:) => null()

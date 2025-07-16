@@ -31,7 +31,6 @@ subroutine mbrigi(fami, kpg, imate, rig)
     implicit none
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"

@@ -26,7 +26,6 @@ subroutine thmSelectMatrix(ds_thm, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     type(THM_DS), intent(in) :: ds_thm
     integer(kind=8), intent(in) :: ndim, dimdef

@@ -27,11 +27,9 @@ subroutine lac_rela(mesh, ds_contact, iden_rela, l_iden_rela)
 #include "asterfort/jecrec.h"
 #include "asterfort/jecroc.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/cfdisi.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/int_to_char8.h"
 !

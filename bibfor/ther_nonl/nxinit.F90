@@ -43,7 +43,6 @@ subroutine nxinit(mesh, model, materField, &
 #include "asterfort/ntload_chck.h"
 #include "asterfort/romAlgoNLInit.h"
 #include "asterfort/nonlinDSPrintInit.h"
-#include "asterfort/utmess.h"
 !
     character(len=24), intent(in) :: compor
     character(len=24), intent(in) :: listLoad

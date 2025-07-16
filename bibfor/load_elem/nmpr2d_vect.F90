@@ -27,7 +27,6 @@ subroutine nmpr2d_vect(l_axis, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/vff2dn.h"
 !
     aster_logical, intent(in) :: l_axis

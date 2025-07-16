@@ -24,8 +24,6 @@ subroutine mmopti_lac(mesh, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/infdbg.h"
@@ -36,7 +34,6 @@ subroutine mmopti_lac(mesh, ds_contact)
 #include "asterfort/jedema.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/utmess.h"
-#include "asterfort/aptype.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/lac_gapi.h"

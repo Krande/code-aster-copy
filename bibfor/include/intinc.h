@@ -15,6 +15,7 @@
 ! You should have received a copy of the GNU General Public License
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
+#include "intdef.h"
 
 ! Parameters definitions
 ! -------------------------------------------------------------------------
@@ -33,7 +34,7 @@
                  'I  ', 'I  ', 'R  ', 'R  ', 'R  ', &
                  'I  ', 'R  ', 'R  ', 'R  ', 'R  ', &
                  'R  ', 'R  ', 'R  ', 'R  ', 'R  ', &
-                 'R  ', 'R  ', 'R  ', 'R  '/ 
+                 'R  ', 'R  ', 'R  ', 'R  '/
 
 ! -------------------------------------------------------------------------
 !   parind = -2 : vector global        ; = -1 : scalar global ;

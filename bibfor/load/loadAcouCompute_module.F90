@@ -34,23 +34,7 @@ module loadAcouCompute_module
     private
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/calcul.h"
-#include "asterfort/corich.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/exixfe.h"
-#include "asterfort/gcnco2.h"
-#include "asterfort/gettco.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
-#include "asterfort/jemarq.h"
-#include "asterfort/jeveuo.h"
-#include "asterfort/megeom.h"
-#include "asterfort/multResuElem.h"
-#include "asterfort/reajre.h"
-#include "asterfort/rsinch.h"
-#include "asterfort/utmess.h"
-#include "asterfort/xajcin.h"
 #include "LoadTypes_type.h"
 ! ==================================================================================================
 contains

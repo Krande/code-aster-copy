@@ -49,8 +49,6 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
 #include "asterfort/tesfin.h"
 #include "asterfort/tesmcl.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jelira.h"
-#include "asterfort/char8_to_int.h"
 !
     real(kind=8) :: rv
     integer(kind=8) :: nbm
@@ -62,7 +60,7 @@ subroutine stkmai(ifl, icl, iv, rv, cv, &
     save b8
 !
 !-----------------------------------------------------------------------
-    integer(kind=8) :: i, iadc, iadt, icl, ifl, iret, iret2
+    integer(kind=8) :: i, iadc, iadt, icl, ifl, iret
     integer(kind=8) :: irtet, irteti, iv, nume, numn
     integer(kind=8) :: numtcl
 !-----------------------------------------------------------------------

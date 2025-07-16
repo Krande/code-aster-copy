@@ -25,7 +25,6 @@ subroutine dtmforc(sd_dtm_, sd_int_, index, buffdtm, buffint, nlaccnt)
 !           "index".
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/dtmcase_coder.h"
 #include "asterfort/dtmforc_calcnoli.h"
 #include "asterfort/dtmget.h"

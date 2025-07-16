@@ -28,7 +28,6 @@ subroutine lcjohm(imate, lSigm, lMatr, lVari, kpi, npg, &
 #include "asterf_types.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/utmess.h"
-#include "asterfort/assert.h"
 !
     integer(kind=8) :: imate, kpi, npg, addeme, advico, ndim, dimdef, dimcon, nbvari
     real(kind=8) :: defgem(dimdef), varim(nbvari), sigm(dimcon)

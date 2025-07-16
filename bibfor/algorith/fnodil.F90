@@ -29,10 +29,7 @@ subroutine fnodil(option, typmod, ds_dil, ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
-#include "asterfort/nmepsi.h"
 #include "asterfort/nmbeps.h"
 
 !
@@ -76,14 +73,10 @@ subroutine fnodil(option, typmod, ds_dil, ndim, &
     real(kind=8), dimension(6), parameter  :: kron = (/1.d0, 1.d0, 1.d0, 0.d0, 0.d0, 0.d0/)
 ! ----------------------------------------------------------------------
     aster_logical :: axi
-    type(Behaviour_Integ) :: BEHinteg
-    character(len=8) :: fami
     integer(kind=8)       :: g, n, i
     integer(kind=8)       :: xu(ndim, nnos+nnom), xg(1, nnos), xp(1, nnos)
     integer(kind=8)       :: cod(npg)
     integer(kind=8)       :: nnu, nng, nnp, ndu, ndg, ndp, neu, neg, nep
-    real(kind=8)  :: dum(ndim, nnos+nnom), dup(ndim, nnos+nnom)
-    real(kind=8)  :: dgp(1, nnos), dpp(1, nnos)
     real(kind=8)  :: r, dff(nnos+nnom, ndim), dffb(nnos, ndim), poids
     real(kind=8)  :: butmp(2*ndim, ndim, nnos+nnom)
     real(kind=8)  :: bu(2*ndim+1, ndim, nnos+nnom)

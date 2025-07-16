@@ -28,7 +28,6 @@ subroutine laVect_cf_pr(parameters, geom, vect_cont, vect_fric)
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/laElemCont.h"
-#include "blas/daxpy.h"
 #include "blas/dgemv.h"
 #include "contact_module.h"
 !

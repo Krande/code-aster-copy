@@ -31,8 +31,6 @@ subroutine te0246(option, nomte)
 #include "asterfort/ntfcma.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/rcfode.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 #include "asterfort/writeMatrix.h"
 #include "FE_module.h"
 #include "jeveux.h"

@@ -24,7 +24,6 @@ subroutine contMatrModi(modelZ, ds_contact, matrAsse)
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/echmat.h"

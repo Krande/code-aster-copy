@@ -29,22 +29,16 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
 !
     implicit none
 !
-#include "asterc/mgis_debug.h"
 #include "asterc/mgis_get_number_of_props.h"
 #include "asterc/mgis_integrate.h"
-#include "asterc/mgis_set_external_state_variables.h"
 #include "asterc/mgis_set_gradients.h"
 #include "asterc/mgis_set_internal_state_variables.h"
 #include "asterc/mgis_set_material_properties.h"
-#include "asterc/mgis_set_rotation_matrix.h"
-#include "asterc/mgis_set_thermodynamic_forces.h"
 #include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/lcicma.h"
-#include "asterfort/matrot.h"
 #include "asterfort/mfront_get_mater_value.h"
-#include "asterfort/mfrontPrepareStrain.h"
 #include "asterfort/use_orient.h"
 #include "asterfort/utmess.h"
 #include "asterfort/rcvalb.h"
@@ -109,7 +103,7 @@ subroutine lc6058(BEHinteg, fami, kpg, ksp, ndim, &
 ! --------------------------------------------------------------------------------------------------
 !
     aster_logical :: lMatr, lSigm, lVari
-    integer(kind=8) :: i, j
+    integer(kind=8) :: i
     integer(kind=8) :: nstran, nforc, nstatv, nmatr
     integer(kind=8), parameter :: s0 = 0, s1 = 1
     real(kind=8) :: dstran(2*ndim+1), stran(2*ndim+1), dsidepMGIS((2*ndim)*(2*ndim+2)+1)

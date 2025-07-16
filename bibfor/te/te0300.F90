@@ -32,7 +32,6 @@ subroutine te0300(option, nomte)
 #include "asterfort/rcvad2.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xdeffk.h"
-#include "blas/ddot.h"
 !
     character(len=16) :: option, nomte
 !.......................................................................

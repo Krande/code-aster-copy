@@ -26,7 +26,6 @@ subroutine lc0034(fami, kpg, ksp, imate, &
 !
 #include "jeveux.h"
 #include "asterfort/nmhuj.h"
-#include "asterfort/plasti.h"
 #include "asterfort/utlcal.h"
 #include "asterfort/tecael.h"
 !

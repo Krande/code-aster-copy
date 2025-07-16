@@ -75,7 +75,6 @@ subroutine gcpc(m, in, ip, ac, inpc, &
 #include "asterfort/wkvect.h"
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/dismoi.h"
 #include "blas/daxpy.h"
 #include "blas/dcopy.h"
 #include "blas/ddot.h"

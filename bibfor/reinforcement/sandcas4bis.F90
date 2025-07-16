@@ -108,8 +108,6 @@ subroutine sandcas4bis(effrts, ht, enrobi, enrobs, facier, fbeton, gammas, gamma
 #include "asterc/r8rddg.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/juveca.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/mgauss.h"
 
 !VARIABLES PRINCIPALES

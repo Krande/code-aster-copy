@@ -37,7 +37,6 @@ module SolidShell_Mesh_module
 #include "asterfort/utmess.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/int_to_char8.h"
 ! ==================================================================================================

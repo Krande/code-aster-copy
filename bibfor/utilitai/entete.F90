@@ -25,8 +25,6 @@ subroutine entete()
 ! ----------------------------------------------------------------------
 !     ECRITURE DE L'ENTETE
 ! ----------------------------------------------------------------------
-#include "asterc/asmpi_comm.h"
-#include "asterc/gtopti.h"
 #include "asterc/lihdfv.h"
 #include "asterc/limedv.h"
 #include "asterc/liscov.h"

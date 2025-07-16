@@ -34,12 +34,7 @@ subroutine te0429(nomopt, nomte)
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/HHO_size_module.h"
-#include "asterfort/jevech.h"
 #include "asterfort/lteatt.h"
-#include "asterfort/rccoma.h"
-#include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
-#include "asterfort/writeMatrix.h"
 #include "asterfort/writeVector.h"
 #include "jeveux.h"
 !

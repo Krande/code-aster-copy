@@ -50,7 +50,6 @@ subroutine camoco(nomres, numref, intf, raid, raildl, &
 #include "asterfort/jelibe.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"

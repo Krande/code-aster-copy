@@ -21,7 +21,6 @@ subroutine nmprmb_matr(nno, npg, kpg, poidsg, vff, dff, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/subaco.h"

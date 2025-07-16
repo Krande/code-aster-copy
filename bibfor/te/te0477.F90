@@ -33,9 +33,7 @@ subroutine te0477(nomopt, nomte)
 #include "asterfort/HHO_size_module.h"
 #include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
-#include "asterfort/jevech.h"
 #include "asterfort/writeVector.h"
-#include "asterfort/teattr.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------

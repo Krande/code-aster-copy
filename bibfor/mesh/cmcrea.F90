@@ -26,7 +26,6 @@ subroutine cmcrea(main, maout, nbocc)
 #include "asterfort/copisd.h"
 #include "asterfort/cpclma.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/getvis.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jeccta.h"
 #include "asterfort/jecrec.h"
@@ -60,7 +59,7 @@ subroutine cmcrea(main, maout, nbocc)
 !
     character(len=16), parameter :: keywfact = 'CREA_FISS'
     integer(kind=8) :: nbnomx, nbmain, nbgmin, nbmaaj, nbgmaj, nbmato, nbgmto
-    integer(kind=8) :: numare, numaco, numa, nbma, nbgm, nbno, ma, no, gm
+    integer(kind=8) ::  numaco, numa, nbma, nbgm, nbno, ma, no, gm
     integer(kind=8) :: jadin, jadout
     integer(kind=8) :: jlnoma, jlconn, jltyma, jlngma, jlgpma
     integer(kind=8) :: jnoma, jtyma, jconn, jngma, jgpma
@@ -68,7 +67,7 @@ subroutine cmcrea(main, maout, nbocc)
     integer(kind=8) :: iret, iOcc, ib
     aster_logical :: false
 !
-    character(len=8) :: knum8, prefix, nomma
+    character(len=8) :: knum8
     character(len=24) :: linoma, liconn, lityma, lingma, ligpma
     character(len=24) :: valk, gno1, gno2
     character(len=24) :: dimin, dimout, tmain, tmaout, conin

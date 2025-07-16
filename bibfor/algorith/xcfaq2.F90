@@ -23,7 +23,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/abscvf.h"
 #include "asterfort/abscvl.h"
@@ -35,7 +34,6 @@ subroutine xcfaq2(jlsn, jlst, jgrlsn, igeom, noma, &
 #include "asterfort/loncar.h"
 #include "asterfort/padist.h"
 #include "asterfort/tecael.h"
-#include "asterfort/trigom.h"
 #include "asterfort/xajpin.h"
 #include "asterfort/xcfacf.h"
 #include "asterfort/xintar.h"

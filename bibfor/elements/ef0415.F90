@@ -24,7 +24,6 @@ subroutine ef0415(nomte)
 #include "asterfort/cosiro.h"
 #include "asterfort/jevech.h"
 #include "asterfort/jevete.h"
-#include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
 #include "asterfort/efcoq3d.h"
 

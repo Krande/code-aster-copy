@@ -23,7 +23,6 @@ subroutine metaZircGetParameters(jv_mater, temp, metaZircPara)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterfort/rcvalb.h"
 !
     integer(kind=8), intent(in) :: jv_mater

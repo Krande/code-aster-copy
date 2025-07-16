@@ -22,7 +22,6 @@ subroutine nmextl(mesh, model, keyw_fact, i_keyw_fact, field_type, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/asmpi_comm_vect.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/getelem.h"

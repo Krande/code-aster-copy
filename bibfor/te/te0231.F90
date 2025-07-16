@@ -23,9 +23,6 @@ subroutine te0231(option, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/jevech.h"
 #include "asterfort/writeMatrix.h"
 #include "asterfort/rco3d_elem.h"

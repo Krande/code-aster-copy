@@ -22,7 +22,6 @@ subroutine irmano(meshNameZ, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

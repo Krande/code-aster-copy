@@ -28,8 +28,6 @@ subroutine tecael(iadzi, iazk24, noms)
 !
 #include "jeveux.h"
 #include "asterfort/assert.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
     integer(kind=8), intent(out) :: iadzi

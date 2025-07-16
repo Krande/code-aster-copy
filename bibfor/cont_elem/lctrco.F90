@@ -20,7 +20,6 @@ subroutine lctrco(i_tria, tria_node, poin_inte, tria_coor)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
 !
     integer(kind=8), intent(in) :: i_tria

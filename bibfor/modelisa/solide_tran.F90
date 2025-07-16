@@ -22,16 +22,12 @@ subroutine solide_tran(type_geo, noma, type_vale, dist_mini, nb_node, list_node,
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/getcara_lisno.h"
 #include "asterfort/coor_bary.h"
 #include "asterfort/as_deallocate.h"

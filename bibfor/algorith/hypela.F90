@@ -23,7 +23,6 @@ subroutine hypela(fami, kpg, ksp, ndim, typmod, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/hyp3ci.h"
 #include "asterfort/hyp3cv.h"
 #include "asterfort/hyp3di.h"

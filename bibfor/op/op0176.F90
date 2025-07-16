@@ -45,7 +45,6 @@ subroutine op0176()
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/titre.h"
-#include "asterfort/utmess.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

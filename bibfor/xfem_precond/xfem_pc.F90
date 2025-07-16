@@ -30,11 +30,9 @@ subroutine xfem_pc(matass, base)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/echmat.h"
 #include "asterfort/infniv.h"
@@ -43,7 +41,6 @@ subroutine xfem_pc(matass, base)
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mtdscr.h"
 #include "asterfort/utmess.h"
 #include "asterfort/xfem_count_ddl.h"
@@ -57,7 +54,6 @@ subroutine xfem_pc(matass, base)
     character(len=1) :: base
 !-----------------------------------------------------------------------
     character(len=1) :: bas1
-    character(len=3) :: mathpc
     character(len=8) :: nomgd, noma
     character(len=14) :: nonu
     character(len=19) :: matas1, pc_1

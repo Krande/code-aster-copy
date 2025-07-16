@@ -29,9 +29,7 @@ subroutine irsspt(cesz, unite, nbmat, nummai, nbcmp, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=*) :: cesz, nomcmp(*)

@@ -25,7 +25,6 @@ module contact_module
 !
     private
 !
-#include "asterc/r8prem.h"
 #include "asterf_types.h"
 #include "asterfort/apnorm.h"
 #include "asterfort/assert.h"
@@ -35,18 +34,9 @@ module contact_module
 #include "asterfort/mmdonf.h"
 #include "asterfort/mmnewd.h"
 #include "asterfort/mmnonf.h"
-#include "asterfort/mmnorm.h"
 #include "asterfort/projInsideCell.h"
 #include "asterfort/reereg.h"
 #include "asterfort/reerel.h"
-#include "asterfort/subac1.h"
-#include "asterfort/subaco.h"
-#include "asterfort/subacv.h"
-#include "asterfort/sumetr.h"
-#include "asterfort/normev.h"
-#include "asterfort/mmmron.h"
-#include "blas/dgemv.h"
-#include "blas/dger.h"
 #include "contact_module.h"
 #include "jeveux.h"
 !

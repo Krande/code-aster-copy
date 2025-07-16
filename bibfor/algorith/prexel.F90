@@ -33,7 +33,6 @@ subroutine prexel(champ, ioc, mamax, nomax, ispmax, &
 #include "asterfort/detrsd.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/reliem.h"

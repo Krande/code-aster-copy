@@ -47,7 +47,6 @@ subroutine xxnmpl(elrefp, elrese, ndim, coorse, igeom, &
 #include "asterfort/xkamat.h"
 #include "asterfort/iimatu.h"
 #include "asterfort/xnbddl.h"
-#include "asterfort/iselli.h"
 #include "asterfort/Behaviour_type.h"
 !
     integer(kind=8) :: ndim, igeom, imate, lgpg, codret, nnop, npg

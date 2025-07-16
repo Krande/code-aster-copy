@@ -16,6 +16,8 @@
 ! along with code_aster.  If not, see <http://www.gnu.org/licenses/>.
 ! --------------------------------------------------------------------
 !
+#include "asterf_types.h"
+
 interface
     subroutine getelem(mesh, keywordfact, iocc, stop_void, list_elem, &
                        nb_elem, suffix, model, l_keep_propz, l_allz, onAllCells_)

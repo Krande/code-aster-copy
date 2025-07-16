@@ -43,8 +43,6 @@ subroutine rfrgen(trange)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/lxlgut.h"
 #include "asterfort/mdgep2.h"
 #include "asterfort/mdgep4.h"

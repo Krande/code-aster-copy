@@ -23,7 +23,6 @@ subroutine CreateInOutDS_M(ds_inout)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/infdbg.h"
 !

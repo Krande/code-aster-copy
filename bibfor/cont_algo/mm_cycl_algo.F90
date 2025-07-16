@@ -29,9 +29,7 @@ subroutine mm_cycl_algo(ds_contact, l_frot_zone, &
 !
     implicit none
 !
-#include "asterc/r8prem.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/bussetta_algorithm.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/mm_cycl_detect.h"

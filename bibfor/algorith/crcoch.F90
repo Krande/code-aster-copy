@@ -33,7 +33,6 @@ subroutine crcoch()
 #include "asterfort/as_deallocate.h"
 #include "asterfort/asasve.h"
 #include "asterfort/ascova.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/crcoch_getloads.h"
 #include "asterfort/dismoi.h"
@@ -48,7 +47,6 @@ subroutine crcoch()
 #include "asterfort/jemarq.h"
 #include "asterfort/jerecu.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/rcmfmc.h"
 #include "asterfort/refdaj.h"
 #include "asterfort/rsadpa.h"
@@ -63,7 +61,6 @@ subroutine crcoch()
 #include "asterfort/vechme.h"
 #include "asterfort/vtcreb.h"
 #include "asterfort/wkvect.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 !
     integer(kind=8) :: ibid, ier, icompt, iret, numini, numfin

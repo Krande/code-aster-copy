@@ -106,7 +106,6 @@ subroutine clcplq(typcmb, typco, nb, precs, &
 #include "asterfort/cftelu.h"
 #include "asterfort/cftels.h"
 #include "asterfort/trgfct.h"
-#include "asterfort/utmess.h"
 !
 !
     integer(kind=8) :: typcmb

@@ -36,8 +36,6 @@ subroutine te0545(option, nomte)
 #include "asterfort/getElemOrientation.h"
 #include "asterfort/teattr.h"
 #include "asterfort/tecach.h"
-#include "blas/dcopy.h"
-#include "blas/dgemv.h"
 !
     character(len=16), intent(in) :: option, nomte
 !

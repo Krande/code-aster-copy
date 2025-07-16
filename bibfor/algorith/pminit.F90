@@ -34,7 +34,6 @@ subroutine pminit(imate, nbvari, ndim, typmod, table, &
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterc/r8dgrd.h"
-#include "asterc/r8vide.h"
 #include "asterfort/codent.h"
 #include "asterfort/diinst.h"
 #include "asterfort/dmat3d.h"

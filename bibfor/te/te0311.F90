@@ -21,7 +21,6 @@ subroutine te0311(option, nomte)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8depi.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/coor_cyl.h"
 #include "asterfort/dfdm2d.h"

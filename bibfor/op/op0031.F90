@@ -37,9 +37,7 @@ subroutine op0031()
 #include "asterfort/getvtx.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mtcmbl.h"
@@ -59,7 +57,7 @@ subroutine op0031()
     complex(kind=8) :: cval
     integer(kind=8) :: nbocag, nboccr, nboccc, nbocc, ldesc, l, lnom, iocc, i
     integer(kind=8) :: ibid, lcoef, ltypec, nbcst, lr, lc, iret, ides1
-    integer(kind=8) :: jrefe, jpomr, n1, n2, k, iexi
+    integer(kind=8) :: jrefe, jpomr
 ! ------------------------------------------------------------------
 !
     call jemarq()

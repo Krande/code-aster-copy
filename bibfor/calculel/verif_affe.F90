@@ -23,9 +23,7 @@ subroutine verif_affe(modele, sd, non_lin)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getres.h"
 #include "asterfort/gettco.h"
-#include "asterc/indik8.h"
 #include "asterfort/getvtx.h"
 #include "asterfort/exisd.h"
 #include "asterfort/assert.h"

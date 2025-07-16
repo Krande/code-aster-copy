@@ -20,11 +20,9 @@ subroutine rcangm(ndim, coor, angl_naut)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/angvx.h"
 #include "asterfort/angvxy.h"
 #include "asterfort/tecach.h"
-#include "asterfort/utmess.h"
 #include "asterfort/utrcyl.h"
     integer(kind=8) :: ndim
     real(kind=8) :: angl_naut(3), coor(3)

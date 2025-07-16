@@ -41,7 +41,6 @@ subroutine nmmajc(fonact, sddyna, sdnume, deltat, numedd, &
 #include "asterfort/nmmaji.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
 !
     integer(kind=8) :: fonact(*)

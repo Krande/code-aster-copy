@@ -23,7 +23,6 @@ subroutine thmGetParaBJH(ds_thm, j_mater, p1)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/utmess.h"
 #include "asterfort/THM_type.h"

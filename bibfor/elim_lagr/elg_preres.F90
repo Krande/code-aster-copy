@@ -25,7 +25,6 @@ subroutine elg_preres(solve1, base, iret, matpre, matas1, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"

@@ -39,8 +39,6 @@ subroutine cfveri(mesh, ds_contact, time_curr, nt_ncomp_poin, &
 #include "asterfort/cfnumm.h"
 #include "asterfort/cfnumn.h"
 #include "asterfort/cftanr.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mmnorm.h"

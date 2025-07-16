@@ -21,13 +21,11 @@ subroutine char_rcbp_lino(mesh, name_ancr, list_node, nb_node)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jelira.h"
 #include "asterfort/wkvect.h"
 !

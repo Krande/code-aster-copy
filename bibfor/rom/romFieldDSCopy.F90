@@ -24,7 +24,6 @@ subroutine romFieldDSCopy(fieldIn, fieldOut)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/as_allocate.h"
 !
     type(ROM_DS_Field), intent(in)  :: fieldIn

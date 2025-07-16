@@ -38,7 +38,6 @@ subroutine mmmres(mesh, time_incr, ds_contact, disp_cumu_inst, sddisc, &
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/mcopco.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"

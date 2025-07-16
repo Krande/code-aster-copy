@@ -22,7 +22,6 @@ subroutine te0179(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/getFluidPara.h"
 #include "asterfort/jevech.h"

@@ -45,7 +45,6 @@ module lcgtn_module
 
 #include "asterf_types.h"
 #include "asterc/r8nnem.h"
-#include "asterc/r8pi.h"
 #include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"

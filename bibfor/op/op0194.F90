@@ -23,7 +23,6 @@ subroutine op0194()
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

@@ -23,7 +23,6 @@ subroutine thmGetParaCoupling(ds_thm, j_mater, temp)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 !
     type(THM_DS), intent(inout) :: ds_thm

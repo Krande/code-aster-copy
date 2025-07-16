@@ -23,7 +23,6 @@ subroutine nmasf3(nno, nbpg1, ipoids, ivf, idfde, &
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/cast3d.h"
 #include "asterfort/dfdm3d.h"
 #include "asterfort/elraga.h"

@@ -24,7 +24,6 @@ subroutine cfdist(ds_contact, i_zone, elem_slav_indx, poin_coor, time_curr, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdism.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jeveuo.h"

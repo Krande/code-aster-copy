@@ -21,7 +21,6 @@ subroutine thmEvalGravity(j_mater, time, grav)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 !
     integer(kind=8), intent(in) :: j_mater

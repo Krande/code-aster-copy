@@ -24,7 +24,6 @@ subroutine nonlinDSVectCombCompute(ds_vectcomb, vect_resu)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/vtzero.h"
 !

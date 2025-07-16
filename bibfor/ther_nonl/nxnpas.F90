@@ -30,7 +30,6 @@ subroutine nxnpas(sddisc, solver, nume_inst, ds_print, &
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
 #include "asterfort/diinst.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmnkft.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/rsinch.h"

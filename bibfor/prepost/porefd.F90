@@ -22,18 +22,15 @@ subroutine porefd(trange, noeu, cmp, nomrez)
 
     implicit none
 #include "jeveux.h"
+#include "nldef.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jedetr.h"
 #include "asterfort/jelibe.h"
-#include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nlget.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/as_allocate.h"
     character(len=*) :: trange, noeu, cmp, nomrez

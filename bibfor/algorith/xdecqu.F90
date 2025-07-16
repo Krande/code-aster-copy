@@ -26,7 +26,6 @@ subroutine xdecqu(nnose, it, ndim, cnset, jlsn, &
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/conare.h"
 #include "asterfort/elref1.h"

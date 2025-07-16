@@ -34,7 +34,6 @@ subroutine alrslt(nout, lchout, lpaout, base)
 #include "asterfort/grdeur.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 

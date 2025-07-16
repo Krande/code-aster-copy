@@ -24,7 +24,6 @@ subroutine te0356(nomopt, nomte)
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/jevech.h"
 #include "asterfort/laParam.h"
 #include "asterfort/niElem.h"
 #include "asterfort/niMatr.h"

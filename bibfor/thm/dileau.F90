@@ -20,7 +20,6 @@ function dileau(satur, phi, alphfi, alpliq)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     real(kind=8), intent(in) :: satur
     real(kind=8), intent(in) :: phi

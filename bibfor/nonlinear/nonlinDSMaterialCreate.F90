@@ -25,7 +25,6 @@ subroutine nonlinDSMaterialCreate(ds_material)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     type(NL_DS_Material), intent(out) :: ds_material
 !

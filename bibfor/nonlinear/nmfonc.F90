@@ -30,7 +30,6 @@ subroutine nmfonc(ds_conv, ds_algopara, solver, model, ds_contact, &
 #include "asterf_types.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"

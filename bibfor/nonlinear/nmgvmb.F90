@@ -23,10 +23,7 @@ subroutine nmgvmb(ndim, nno1, nno2, npg, axi, &
 !
     implicit none
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/dfdmip.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
     aster_logical, intent(in) :: axi
     integer(kind=8), intent(in) :: ndim, nno1, nno2, npg, idfde1, idfde2, iw
     real(kind=8), intent(in) :: geoi(ndim, nno1)

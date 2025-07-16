@@ -30,8 +30,6 @@ subroutine cfchno(noma, ds_contact, ndimg, posnoe, typenm, &
 #include "asterfort/assert.h"
 #include "asterfort/cfnomm.h"
 #include "asterfort/cfnorm.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmmron.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmtann.h"

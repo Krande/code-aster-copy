@@ -40,8 +40,6 @@ subroutine cfapre(mesh, ds_contact, time_curr)
 #include "asterfort/cfnumn.h"
 #include "asterfort/cfparz.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mminfi.h"
 #include "asterfort/mminfl.h"
 #include "asterfort/mminfr.h"

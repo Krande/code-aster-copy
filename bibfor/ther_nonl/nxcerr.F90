@@ -22,9 +22,6 @@ subroutine nxcerr(sddisc)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8vide.h"
-#include "asterfort/ceil.h"
-#include "asterfort/cfdisi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/nmlerr.h"

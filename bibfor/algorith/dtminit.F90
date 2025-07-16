@@ -24,7 +24,6 @@ subroutine dtminit(sd_dtm_, sd_int_)
 ! dtminit : Initialize a transitory calculation over a modal basis.
 !
 #include "jeveux.h"
-#include "blas/dcopy.h"
 #include "asterfort/dtmacce.h"
 #include "asterfort/dtmarch.h"
 #include "asterfort/dtmbuff.h"
@@ -34,11 +33,8 @@ subroutine dtminit(sd_dtm_, sd_int_)
 #include "asterfort/dtmsav.h"
 #include "asterfort/dtmupmat.h"
 #include "asterfort/intbuff.h"
-#include "asterfort/intget.h"
 #include "asterfort/intinivec.h"
 #include "asterfort/intsav.h"
-#include "asterfort/jedema.h"
-#include "asterfort/jemarq.h"
 #include "asterfort/mdinit.h"
 #include "asterfort/nlget.h"
 #include "asterfort/nlinivec.h"

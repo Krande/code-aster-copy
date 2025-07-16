@@ -24,7 +24,6 @@ subroutine thm_kit_read(keywordfact, iocc, rela_comp, rela_thmc, rela_hydr, &
 !
 #include "asterf_types.h"
 #include "asterfort/getvtx.h"
-#include "asterfort/assert.h"
 #include "asterc/lckitread.h"
 !
     character(len=16), intent(in) :: keywordfact

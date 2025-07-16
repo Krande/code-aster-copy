@@ -36,10 +36,8 @@ subroutine pj2dco(typeSelect, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/pj2dap.h"
 #include "asterfort/pj2dfb.h"
 #include "asterfort/pj2dtr.h"
@@ -51,7 +49,8 @@ subroutine pj2dco(typeSelect, &
 !
     character(len=*), intent(in) :: typeSelect
     character(len=8), intent(in) :: entity1, entity2
- integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*), nbNodeSelect2, listNodeSelect2(*)
+    integer(kind=8), intent(in) :: nbCellSelect1, listCellSelect1(*)
+    integer(kind=8), intent(in) :: nbNodeSelect2, listNodeSelect2(*)
     character(len=*), intent(in) :: geom1, geom2
     character(len=16), intent(in)  :: corrMesh
     aster_logical, intent(in) :: l_dmax

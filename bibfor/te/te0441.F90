@@ -34,7 +34,6 @@ subroutine te0441(option, nomte)
 #include "asterfort/xpesro.h"
 #include "asterfort/xteddl.h"
 #include "asterfort/xteini.h"
-#include "asterfort/lteatt.h"
     character(len=16) :: option, nomte
 !......................................................................
 !
@@ -106,8 +105,10 @@ subroutine te0441(option, nomte)
     if (enr(1:2) .eq. 'XH') call jevech('PHEA_NO', 'L', jheavn)
 !     PROPRE AUX ELEMENTS 1D ET 2D (QUADRATIQUES)
     if ((ibid .eq. 0) .and. &
-        (enr.eq.'XH' .or.enr.eq.'XHT'.or.enr.eq.'XT'.or.enr.eq.'XHC') .and. .not.iselli(elrefp)) &
+        (enr .eq. 'XH' .or. enr .eq. 'XHT' .or. enr .eq. 'XT' .or. enr .eq. 'XHC') &
+        .and. .not. iselli(elrefp)) then
         call jevech('PPMILTO', 'L', jpmilt)
+    end if
     if (nfiss .gt. 1) call jevech('PFISNO', 'L', jfisno)
 !
 !     PARAMETRE MATERIAU : RHO MASSE VOLUMIQUE

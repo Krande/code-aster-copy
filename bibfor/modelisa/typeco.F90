@@ -28,8 +28,6 @@ subroutine typeco(char, noma)
 #include "asterfort/cfnumm.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmelin.h"
 #include "asterfort/mmelty.h"
 #include "asterfort/mminfi.h"

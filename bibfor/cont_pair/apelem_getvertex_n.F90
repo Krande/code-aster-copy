@@ -23,7 +23,6 @@ subroutine apelem_getvertex_n(elem_dime, elem_code, &
 !
 #include "asterf_types.h"
 #include "asterfort/assert.h"
-#include "asterfort/mmnewt.h"
 !
     integer(kind=8), intent(in) :: elem_dime
     character(len=8), intent(in) :: elem_code

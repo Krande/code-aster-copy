@@ -29,7 +29,6 @@ subroutine laMatr_ct_std(parameters, geom, matr_cont, matr_fric)
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/laElemCont.h"
-#include "blas/dgemm.h"
 #include "blas/dger.h"
 #include "contact_module.h"
 !

@@ -30,7 +30,6 @@ module fe_topo_module
 #include "asterfort/jevech.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfvf.h"
-#include "asterfort/connec.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------

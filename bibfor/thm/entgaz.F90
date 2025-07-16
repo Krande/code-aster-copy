@@ -20,7 +20,6 @@ function entgaz(dtemp, cp)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     real(kind=8), intent(in) :: dtemp, cp
     real(kind=8) :: entgaz

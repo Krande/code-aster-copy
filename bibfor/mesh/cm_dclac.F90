@@ -21,7 +21,6 @@ subroutine cm_dclac(meshIn, meshOut)
     implicit none
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/cnmpmc.h"
 #include "asterfort/codent.h"
 #include "asterfort/copisd.h"
@@ -37,7 +36,6 @@ subroutine cm_dclac(meshIn, meshOut)
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/infniv.h"
 #include "asterfort/as_allocate.h"

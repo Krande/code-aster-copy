@@ -26,7 +26,6 @@ subroutine te0116(nomopt, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcvarc.h"
-#include "asterfort/utmess.h"
 #include "asterfort/Behaviour_type.h"
 !
     character(len=16), intent(in) :: nomte

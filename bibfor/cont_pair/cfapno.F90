@@ -32,8 +32,6 @@ subroutine cfapno(noma, newgeo, ds_contact, lctfd, &
 #include "asterfort/cfnewj.h"
 #include "asterfort/cfnumn.h"
 #include "asterfort/cftanr.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/utmess.h"
 #include "asterfort/int_to_char8.h"

@@ -25,8 +25,6 @@ subroutine get_equa_info(nume_ddlz, i_equa, type_equa, nume_nodez, nume_cmpz, &
 #include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nbec.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/get_lagr_info.h"

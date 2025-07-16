@@ -23,7 +23,6 @@ subroutine calc_glrcdm_err(l_calc, commax, flexmax, gamma_f, &
 !
 ! PARAMETRES ENTRANTS
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calc_axe_neutre.h"
 #include "asterfort/calc_moment.h"
     real(kind=8) :: commax, flexmax, gamma_f, gamma_c, epsi_c

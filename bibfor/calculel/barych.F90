@@ -25,7 +25,6 @@ subroutine barych(ch1z, ch2z, r1, r2, chz, &
 #include "asterfort/copisd.h"
 #include "asterfort/idenob.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jeimpo.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"

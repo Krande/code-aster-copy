@@ -26,7 +26,6 @@ subroutine romFieldBuildInit(mesh, nbNodeMesh, listNode, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/infniv.h"
 #include "asterfort/romBaseCreateMatrix.h"
 #include "asterfort/romFieldBuildMatrPhiTruncate.h"

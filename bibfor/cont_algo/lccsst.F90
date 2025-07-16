@@ -24,10 +24,8 @@ subroutine lccsst(ds_contact, vect_asse_cont)
 !
 #include "jeveux.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/assert.h"
 !
 !
     type(NL_DS_Contact), intent(in) :: ds_contact

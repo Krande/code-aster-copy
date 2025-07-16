@@ -51,7 +51,6 @@ module ExternalStateVariable_module
 #include "asterfort/exisd.h"
 #include "asterfort/ExternalStateVariable_type.h"
 #include "asterfort/getelem.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jenuno.h"

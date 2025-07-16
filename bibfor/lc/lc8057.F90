@@ -29,7 +29,6 @@ subroutine lc8057(BEHinteg, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmcomp.h"
 #include "asterfort/Behaviour_type.h"
 !

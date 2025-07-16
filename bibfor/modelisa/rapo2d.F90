@@ -22,7 +22,6 @@ subroutine rapo2d(numdlz, iocc, fonrez, lisrez, chargz)
     implicit none
 #include "jeveux.h"
 #include "asterc/getfac.h"
-#include "asterc/r8prem.h"
 #include "asterfort/afrela.h"
 #include "asterfort/assert.h"
 #include "asterfort/assvec.h"

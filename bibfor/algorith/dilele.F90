@@ -33,10 +33,8 @@ subroutine dilele(option, typmod, ds_dil, ndim, nnos, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/codere.h"
 #include "asterfort/dfdmip.h"
-#include "asterfort/nmepsi.h"
 #include "asterfort/dilpen.h"
 #include "asterfort/dil2gr.h"
 #include "asterfort/nmcomp.h"

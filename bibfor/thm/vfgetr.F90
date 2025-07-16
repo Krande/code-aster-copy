@@ -21,7 +21,6 @@ subroutine vfgetr(xs, t, xg, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/provec.h"
 !
     real(kind=8), intent(in) :: xs(3, 3), t(3, 2), xg(3)

@@ -23,7 +23,7 @@ subroutine nmarpc(ds_energy, nume_reuse, time_curr)
 !
     implicit none
 !
-#include "asterfort/assert.h"
+#include "asterf_types.h"
 #include "asterfort/tbajli.h"
 !
     type(NL_DS_Energy), intent(in) :: ds_energy

@@ -27,7 +27,6 @@ subroutine evalPressureSetFuncPara(lTime, time, &
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     aster_logical, intent(in) :: lTime
     real(kind=8), intent(in) :: time

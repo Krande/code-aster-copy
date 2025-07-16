@@ -29,7 +29,6 @@ subroutine getvis(motfac, motcle, iocc, nbval, vect, &
     integer(kind=8), intent(out), optional :: nbret
 #include "asterc/getvis_wrap.h"
 #include "asterfort/assert.h"
-#include "asterc/getres.h"
 !
 !   really used variables
     integer(kind=8) :: uioc, unbret, umax

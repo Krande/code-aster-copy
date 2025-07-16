@@ -27,7 +27,6 @@ subroutine asmael(ma1, ma2, mag)
 #include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
@@ -45,7 +44,7 @@ subroutine asmael(ma1, ma2, mag)
 !
 !-----------------------------------------------------------------------
 !
-    character(len=8) :: noma, nono, nosma, nomacr
+    character(len=8) ::  nono, nosma, nomacr
     character(len=24) :: valk(3), nogma, nogno
     real(kind=8) :: x, y, z, drefe, dij
 !     ------------------------------------------------------------------
@@ -56,7 +55,7 @@ subroutine asmael(ma1, ma2, mag)
     integer(kind=8) :: iagma1, iagma2, iagmax, iagno1, iagno2, iagnox, iancnf
     integer(kind=8) :: ianmcr, ianon2, iaparr
     integer(kind=8) :: iasup1, iasup2, iasupm, iatyma, iatyp1, iatyp2, iatypx
-    integer(kind=8) :: ibid, ico, icompt, ii, iret, iret1, iret2
+    integer(kind=8) :: ibid, icompt, ii, iret, iret1, iret2
     integer(kind=8) :: itrou, j, l1, l2, l3, n, nbgm1
     integer(kind=8) :: nbgm2, nbgma, nbgn1, nbgn2, nbgno, nbl1, nbm1
     integer(kind=8) :: nbm2, nbma, nbn1, nbn2, nbno, nbnoe, nbnol

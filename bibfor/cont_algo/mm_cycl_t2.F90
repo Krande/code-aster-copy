@@ -22,7 +22,6 @@ subroutine mm_cycl_t2(pres_frot_prev, dist_frot_prev, coef_frot_prev, cycl_stat_
 !
     implicit none
 !
-#include "asterc/r8prem.h"
 #include "asterfort/mm_cycl_adaf.h"
 #include "asterfort/mm_cycl_laugf.h"
 #include "asterfort/mm_cycl_zonf.h"

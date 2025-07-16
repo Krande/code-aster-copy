@@ -43,7 +43,6 @@ subroutine getKinematicForHHO(valeType, model, keywordFact, cnsForCharci)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/megeom.h"
-#include "asterfort/imprsd.h"
 #include "jeveux.h"
 !
     character(len=1), intent(in) :: valeType

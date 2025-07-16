@@ -23,7 +23,6 @@ subroutine romTableRead(tablReduCoor)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/tbexve.h"
 !

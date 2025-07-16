@@ -25,7 +25,6 @@ subroutine editgd(ncmp, nedit, dg, ncmpmx, ctype, &
 #include "jeveux.h"
 #include "asterc/indik8.h"
 #include "asterfort/jacopo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/utmess.h"
 !
     integer(kind=8), intent(in) :: ncmp

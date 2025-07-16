@@ -23,13 +23,9 @@ subroutine rcmaco(chmat, chmatgrp, indmat, nbmat, imate, l_ther, basename, base_
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/jeveut.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/matcod.h"
 #include "asterfort/utmess.h"
 !

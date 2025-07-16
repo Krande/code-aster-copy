@@ -30,7 +30,6 @@ subroutine te0463(option, nomte)
     character(len=16) :: option, nomte
 !
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fmater.h"
 #include "asterfort/jevech.h"

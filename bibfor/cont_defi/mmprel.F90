@@ -25,7 +25,6 @@ subroutine mmprel(sdcont, mesh, slavElemLigr)
 #include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/mminfi.h"

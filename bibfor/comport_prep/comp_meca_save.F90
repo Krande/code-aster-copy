@@ -24,14 +24,11 @@ subroutine comp_meca_save(model, mesh, chmate, compor, prepMapCompor)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/getexm.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/isParallelMesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/nmdpmf.h"
 #include "asterfort/nocart.h"
 #include "asterfort/utmess.h"

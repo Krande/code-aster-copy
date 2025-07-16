@@ -34,12 +34,9 @@ subroutine xside2(elrefp, ndim, coorse, elrese, igeom, &
 #include "asterfort/nbsigm.h"
 #include "asterfort/rccoma.h"
 #include "asterfort/reeref.h"
-#include "asterfort/utmess.h"
 #include "asterfort/xcinem.h"
 #include "asterfort/xcalc_code.h"
-#include "asterfort/xcalc_heav.h"
 #include "asterfort/xkamat.h"
-#include "asterfort/iselli.h"
 #include "asterfort/xcalfev_wrap.h"
 #include "asterfort/xnbddl.h"
     integer(kind=8) :: ndim, igeom, imate, nnop, npg, idepl, idecpg

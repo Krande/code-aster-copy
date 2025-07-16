@@ -25,7 +25,6 @@ subroutine nmrenu(modelz, list_func_acti, list_load, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/infdbg.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/numer3.h"

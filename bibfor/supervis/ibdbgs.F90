@@ -26,11 +26,7 @@ subroutine ibdbgs()
 !     ------------------------------------------------------------------
 !     ----- DEBUT COMMON DE DEBUG JEVEUX
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/gtopti.h"
-#include "asterc/jdcget.h"
-#include "asterc/jdcset.h"
-#include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/getvtx.h"

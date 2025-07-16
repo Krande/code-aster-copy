@@ -22,7 +22,6 @@ subroutine comp_ther_save(mesh, compor, nb_cmp, list_vale)
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_read_mesh.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeveuo.h"

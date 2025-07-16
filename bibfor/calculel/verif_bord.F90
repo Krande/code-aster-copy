@@ -33,8 +33,6 @@ subroutine verif_bord(modele, ligrel)
 #include "asterfort/as_deallocate.h"
 #include "asterfort/utmess.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/jexatr.h"
 #include "asterfort/int_to_char8.h"
 !

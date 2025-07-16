@@ -51,7 +51,6 @@ subroutine op0030()
 #include "asterfort/jemarq.h"
 #include "asterfort/lgtlgr.h"
 #include "asterfort/utmess.h"
-#include "asterfort/wkvect.h"
 !
 ! --------------------------------------------------------------------------------------------------
 !

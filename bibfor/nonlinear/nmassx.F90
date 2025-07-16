@@ -27,7 +27,6 @@ subroutine nmassx(listFuncActi, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndasva.h"
 #include "asterfort/ndynre.h"

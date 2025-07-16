@@ -35,7 +35,6 @@ subroutine nmresi(mesh, list_func_acti, ds_material, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/cnoadd.h"
 #include "asterfort/dismoi.h"

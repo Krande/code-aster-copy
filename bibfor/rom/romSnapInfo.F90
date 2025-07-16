@@ -23,7 +23,6 @@ subroutine romSnapInfo(snap)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/utmess.h"
 !
     type(ROM_DS_Snap), intent(in) :: snap

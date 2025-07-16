@@ -23,8 +23,6 @@ subroutine resuSelectNode(meshName, meshNodeNb, &
 !
     implicit none
 !
-#include "asterfort/jexnum.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/int_to_char8.h"
 !
     character(len=8), intent(in) :: meshName

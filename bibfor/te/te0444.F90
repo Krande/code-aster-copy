@@ -21,7 +21,6 @@ subroutine te0444(option, nomte)
     implicit none
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/dkqmas.h"
 #include "asterfort/dktmas.h"

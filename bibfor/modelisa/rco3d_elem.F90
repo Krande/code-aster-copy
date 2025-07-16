@@ -23,8 +23,6 @@ subroutine rco3d_elem(nomte, ndim, nddl, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
-#include "asterfort/lteatt.h"
 
     character(len=16), intent(in) :: nomte
     integer(kind=8), intent(out) :: ndim, nddl, nnco, nn3d

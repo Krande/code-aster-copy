@@ -29,7 +29,6 @@ subroutine laVect_ct_std(parameters, geom, vect_cont, vect_fric, k_diff)
 #include "asterfort/getQuadCont.h"
 #include "asterfort/laElemCont.h"
 #include "blas/daxpy.h"
-#include "blas/dgemv.h"
 #include "contact_module.h"
 !
     type(ContactParameters), intent(in) :: parameters

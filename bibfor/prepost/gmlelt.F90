@@ -29,7 +29,6 @@ subroutine gmlelt(igmsh, maxnod, nbtyma, nbmail, nbnoma, &
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeecra.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

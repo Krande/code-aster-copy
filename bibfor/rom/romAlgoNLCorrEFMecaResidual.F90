@@ -27,7 +27,6 @@ subroutine romAlgoNLCorrEFMecaResidual(v_cnequi, ds_algorom, l_cine, v_ccid, res
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/assert.h"
-#include "blas/ddot.h"
 !
     real(kind=8), pointer :: v_cnequi(:)
     type(ROM_DS_AlgoPara), intent(in) :: ds_algorom

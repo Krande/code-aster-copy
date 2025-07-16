@@ -26,7 +26,6 @@ subroutine thmEvalConductivity(ds_thm, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/THM_type.h"
 #include "asterfort/tdlamb.h"

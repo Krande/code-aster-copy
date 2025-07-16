@@ -19,7 +19,6 @@
 subroutine detrsd_vide(typesd, nomsd)
     implicit none
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"

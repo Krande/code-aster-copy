@@ -27,15 +27,11 @@ subroutine nmcadt(sddisc, i_adap, nume_inst, hval_incr, dtp)
 #include "asterc/r8maem.h"
 #include "asterc/r8vide.h"
 #include "asterfort/assert.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/extdch.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/nmchex.h"
 #include "asterfort/utdidt.h"
-#include "asterfort/wkvect.h"
 #include "asterfort/getAdapAction.h"
 !
     character(len=19), intent(in) :: sddisc

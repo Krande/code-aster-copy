@@ -26,8 +26,6 @@ subroutine mmimp3(ifm, noma, iptc, jvalv, jtabf)
 #include "asterfort/cfmmvd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"
     integer(kind=8) :: ifm
     character(len=8) :: noma

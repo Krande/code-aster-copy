@@ -20,7 +20,6 @@ subroutine rsinchpre(nomsd, nomch, acces, ier)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"

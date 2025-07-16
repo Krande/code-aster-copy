@@ -24,7 +24,6 @@ subroutine crprno(nume_equaz, base, meshz, gran_namez, nb_equa)
 #include "asterfort/jenonu.h"
 #include "asterfort/nume_equa_crsd.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 !
 !
     character(len=*), intent(in) :: nume_equaz

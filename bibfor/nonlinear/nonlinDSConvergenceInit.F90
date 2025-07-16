@@ -24,15 +24,10 @@ subroutine nonlinDSConvergenceInit(ds_conv, sderro, model_)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8vide.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisl.h"
-#include "asterfort/cfdisr.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/GetResi.h"
 #include "asterfort/getvr8.h"
 #include "asterfort/infdbg.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/NonLinear_type.h"
 #include "asterfort/SetResi.h"

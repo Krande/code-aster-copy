@@ -24,7 +24,6 @@ subroutine comp_read_typmod(mesh, v_model_elem, elem_type, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/BehaviourMGIS_type.h"
 #include "asterfort/comp_mfront_modelem.h"

@@ -40,7 +40,6 @@ subroutine nmforc_step(list_func_acti, &
 #include "asterfort/nmvcpr.h"
 #include "asterfort/diinst.h"
 #include "asterfort/ndynlo.h"
-#include "asterfort/isfonc.h"
 #include "asterfort/nonlinDSPrintSepLine.h"
 !
     integer(kind=8), intent(in) :: list_func_acti(*)

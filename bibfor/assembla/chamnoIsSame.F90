@@ -27,7 +27,6 @@ subroutine chamnoIsSame(chamno1_, chamno2_, ier)
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/assert.h"
 #include "asterfort/jenuno.h"
 #include "asterfort/jexnum.h"
 !

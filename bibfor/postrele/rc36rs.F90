@@ -20,10 +20,8 @@ subroutine rc36rs(nomres, noma, nbma, listma, chindi, &
                   chresu)
     implicit none
 #include "jeveux.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/tbajli.h"
 #include "asterfort/tbajpa.h"
 #include "asterfort/tbcrsd.h"

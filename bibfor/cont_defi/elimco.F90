@@ -23,8 +23,6 @@ subroutine elimco(sdcont, mesh, model, nb_cont_surf, &
 !
 #include "asterf_types.h"
 #include "asterfort/as_deallocate.h"
-#include "asterfort/assert.h"
-#include "asterfort/cfdisi.h"
 #include "asterfort/cflecq.h"
 #include "asterfort/cflema.h"
 #include "asterfort/cfleno.h"

@@ -23,7 +23,6 @@ subroutine dbr_calcpod_save(base, nbMode, nbSnapRedu, baseSing, baseValeR)
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/romBaseSave.h"
 #include "asterfort/dbr_calcpod_savel.h"
 !

@@ -36,7 +36,6 @@ subroutine aptgem(sdappa, mesh, newgeo, sdcont_defi, model_ndim, &
 #include "asterfort/jedema.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnum.h"
 #include "asterfort/int_to_char8.h"

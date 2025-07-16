@@ -32,7 +32,6 @@ subroutine nmetl3(model, compor, i_field, ds_inout, verbose)
 #include "asterfort/utmess.h"
 #include "asterfort/vrcomp.h"
 #include "asterfort/vrcom2.h"
-#include "asterfort/sgcomp.h"
 #include "asterfort/stressChck.h"
 !
     character(len=24), intent(in) :: model

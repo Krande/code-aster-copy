@@ -25,7 +25,6 @@ subroutine virhol(nbvari, vintm, vintp, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/THM_type.h"
 !
     integer(kind=8), intent(in) :: nbvari

@@ -26,7 +26,6 @@ subroutine thmCompNonLin(option, ds_thm)
 !
 #include "asterc/ismaem.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/assthm.h"
 #include "asterfort/Behaviour_type.h"
 #include "asterfort/Behaviour_type.h"

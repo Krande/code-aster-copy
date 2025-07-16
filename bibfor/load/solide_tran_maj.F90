@@ -28,10 +28,8 @@ subroutine solide_tran_maj(load_name, disp)
 #include "asterfort/detrsd.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
 #include "asterfort/char8_to_int.h"
 #include "asterfort/jeveuo.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
 !
 !

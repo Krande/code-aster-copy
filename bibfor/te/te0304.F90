@@ -32,7 +32,6 @@ subroutine te0304(option, nomte)
 !
 #include "jeveux.h"
 !
-#include "asterfort/assert.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/fointe.h"
 #include "asterfort/jevech.h"

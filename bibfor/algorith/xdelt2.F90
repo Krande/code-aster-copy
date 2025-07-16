@@ -25,8 +25,6 @@ subroutine xdelt2(elp, n, ndime, ksi, &
 !
 #include "jeveux.h"
 #include "MeshTypes_type.h"
-#include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/elrfno.h"
 #include "asterfort/elrfdf.h"
 #include "asterfort/elrfvf.h"

@@ -22,7 +22,6 @@ subroutine chckVari(comporPrevZ, comporCurrZ, variZ, ligrelZ)
 !
 #include "asterf_types.h"
 #include "asterfort/adaptVari.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"
@@ -32,7 +31,6 @@ subroutine chckVari(comporPrevZ, comporCurrZ, variZ, ligrelZ)
 #include "asterfort/vrcomp_chck_cmp.h"
 #include "asterfort/vrcomp_chck_rela.h"
 #include "asterfort/vrcomp_prep.h"
-#include "asterfort/vrcom2.h"
 #include "jeveux.h"
 !
     character(len=*), intent(in) :: comporPrevZ, comporCurrZ, variZ, ligrelZ

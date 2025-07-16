@@ -48,17 +48,11 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jedema.h"
-#include "asterfort/jeexin.h"
 #include "asterfort/jelira.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenuno.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexatr.h"
-#include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
-#include "asterfort/utmess.h"
 #include "asterfort/wkvect.h"
 !
 !
@@ -74,7 +68,7 @@ subroutine arlmai(mail, mailar, ndim, nom1, nom2, &
     parameter(nbnomx=27)
     integer(kind=8) :: nmain1, nmain2
     integer(kind=8) :: nnoin1, nnoin2, cxcumu
-    character(len=24) :: k8bid, nom
+    character(len=24) :: k8bid
     integer(kind=8) :: icpl, i
     integer(kind=8) :: numma1, numma2
     integer(kind=8) :: imail

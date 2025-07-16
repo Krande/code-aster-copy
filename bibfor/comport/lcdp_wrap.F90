@@ -26,8 +26,6 @@ subroutine lcdp_wrap(fami, kpg, ksp, ndim, imate, &
     implicit none
 #include "asterfort/lcdp_compute.h"
 #include "asterfort/lcdp_material.h"
-#include "asterfort/assert.h"
-#include "blas/ddot.h"
 !
     integer(kind=8) :: imate, ndim, kpg, ksp, codret, neps
     real(kind=8) :: instam, instap

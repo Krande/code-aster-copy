@@ -24,8 +24,6 @@ subroutine nmdocn(ds_conv)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8nnem.h"
-#include "asterc/r8vide.h"
 #include "asterfort/assert.h"
 #include "asterfort/getvis.h"
 #include "asterfort/getvr8.h"

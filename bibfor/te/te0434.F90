@@ -18,7 +18,6 @@
 
 subroutine te0434(option, nomte)
     implicit none
-#include "asterfort/assert.h"
 #include "jeveux.h"
 #include "asterc/r8dgrd.h"
 #include "asterfort/elrefe_info.h"

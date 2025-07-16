@@ -18,11 +18,9 @@
 
 subroutine crnggc(chamnz)
     implicit none
-#include "asterc/asmpi_allgather_i.h"
 #include "asterc/asmpi_recv_i.h"
 #include "asterc/asmpi_send_i.h"
 #include "asterc/asmpi_sendrecv_i.h"
-#include "asterc/loisem.h"
 #include "asterf_config.h"
 #include "asterf_debug.h"
 #include "asterf_types.h"
@@ -48,7 +46,6 @@ subroutine crnggc(chamnz)
 #include "asterfort/jexatr.h"
 #include "asterfort/jexnom.h"
 #include "asterfort/jexnum.h"
-#include "asterfort/jecroc.h"
 #include "asterfort/jeecra.h"
 #include "asterfort/jecrec.h"
 #include "asterfort/nbec.h"
@@ -154,7 +151,7 @@ subroutine crnggc(chamnz)
         call jeveuo(tag_name, 'L', vi=v_tag)
         call jeveuo(gcom, 'L', vi=v_gco)
         call jeveuo(pgid, 'L', vi4=v_pgid)
-        mpicou = v_gco(1)
+        mpicou = to_mpi_int(v_gco(1))
     end if
 
 !     !!!! IL PEUT ETRE INTERESSANT DE STOCKER CES INFOS
@@ -308,7 +305,7 @@ subroutine crnggc(chamnz)
             gcom = joints//'.GCOM'
             call jeveuo(domj, 'L', vi=v_dom)
             call jeveuo(gcom, 'L', vi=v_gco)
-            mpicou = v_gco(1)
+            mpicou = to_mpi_int(v_gco(1))
             do ijoin = 1, nb_comm
                 domj_i = v_comm(ijoin)
                 numpro = v_dom(domj_i)

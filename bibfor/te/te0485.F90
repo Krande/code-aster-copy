@@ -39,7 +39,6 @@ subroutine te0485(nomopt, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/nmtstm.h"
 #include "asterfort/writeVector.h"
-#include "asterfort/writeMatrix.h"
 #include "jeveux.h"
 !
 ! --------------------------------------------------------------------------------------------------

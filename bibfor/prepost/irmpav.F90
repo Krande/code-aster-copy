@@ -26,7 +26,6 @@ subroutine irmpav(nomcon, ifichi, paraListNb, paraListName, numdt, numit, dt)
 #include "asterfort/as_mficom.h"
 #include "asterfort/as_mficlo.h"
 #include "asterfort/as_mprrvw.h"
-#include "asterfort/assert.h"
 #include "asterfort/codent.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

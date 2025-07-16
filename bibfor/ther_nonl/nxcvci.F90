@@ -35,7 +35,6 @@ subroutine nxcvci(loadNameJv, loadInfoJv, loadFuncJv, numedd, tempmoi, &
 #include "asterfort/assert.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/dismoi.h"
 #include "asterfort/exisd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"

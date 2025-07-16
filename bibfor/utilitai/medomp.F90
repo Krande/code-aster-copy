@@ -23,7 +23,6 @@ subroutine medomp(result, modele, mater, mateco, carele, nh)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/getexm.h"
-#include "asterfort/assert.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"

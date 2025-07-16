@@ -20,7 +20,6 @@ subroutine regene(nomres, resgen, profno)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "blas/dcopy.h"
 #include "asterfort/gettco.h"
 #include "asterfort/copmod.h"
 #include "asterfort/dcapno.h"
@@ -28,7 +27,6 @@ subroutine regene(nomres, resgen, profno)
 #include "asterfort/genugl.h"
 #include "asterfort/getvid.h"
 #include "asterfort/getvis.h"
-#include "asterfort/getvtx.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"

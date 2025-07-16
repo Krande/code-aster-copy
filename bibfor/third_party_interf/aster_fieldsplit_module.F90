@@ -53,7 +53,6 @@ module aster_fieldsplit_module
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/jexnom.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/isParallelMatrix.h"
 !
     public :: mfield_setup

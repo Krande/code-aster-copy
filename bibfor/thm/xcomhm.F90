@@ -37,7 +37,6 @@ subroutine xcomhm(ds_thm, &
 #include "asterfort/xcalfh.h"
 #include "asterfort/xcalme.h"
 #include "asterfort/xhmsat.h"
-#include "asterfort/assert.h"
 #include "asterfort/thmGetParaBiot.h"
 #include "asterfort/thmGetParaElas.h"
 #include "asterfort/thmGetParaTher.h"

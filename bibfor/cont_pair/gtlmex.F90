@@ -23,7 +23,6 @@ subroutine gtlmex(v_cninv, v_cninv_lcum, nume_node_cl, nb_elem_mast, list_elem_m
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 
 !
     integer(kind=8), pointer :: v_cninv(:)

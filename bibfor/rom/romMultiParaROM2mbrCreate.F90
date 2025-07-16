@@ -28,7 +28,6 @@ subroutine romMultiParaROM2mbrCreate(base, ds_multipara, i_coef, syst_2mbrROM)
 #include "asterfort/infniv.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/utmess.h"
-#include "blas/zdotc.h"
 !
     type(ROM_DS_Empi), intent(in) :: base
     type(ROM_DS_MultiPara), intent(inout) :: ds_multipara

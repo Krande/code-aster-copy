@@ -21,7 +21,6 @@ subroutine nmpr3d_matr(nno, npg, poidsg, vff, dff, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/r8inir.h"
 #include "asterfort/subaco.h"
 #include "asterfort/subacv.h"

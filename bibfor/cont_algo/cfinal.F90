@@ -25,7 +25,6 @@ subroutine cfinal(ds_contact, nbliac)
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisd.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cftabl.h"

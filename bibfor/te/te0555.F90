@@ -23,7 +23,6 @@ subroutine te0555(option, nomte)
 #include "jeveux.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/teattr.h"
-#include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/utmess.h"
 #include "asterfort/getFluidPara.h"

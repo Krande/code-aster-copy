@@ -20,9 +20,6 @@ subroutine checkNormals(model, slave, master)
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getexm.h"
-#include "asterc/getfac.h"
-#include "asterc/r8prem.h"
 #include "asterfort/chbord.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedetr.h"
@@ -34,7 +31,6 @@ subroutine checkNormals(model, slave, master)
 #include "asterfort/orilma.h"
 #include "asterfort/ornorm.h"
 #include "asterfort/utmess.h"
-#include "asterfort/utmotp.h"
 #include "asterfort/wkvect.h"
 #include "asterfort/existGrpMa.h"
 !

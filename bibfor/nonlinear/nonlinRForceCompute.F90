@@ -26,7 +26,6 @@ subroutine nonlinRForceCompute(model, ds_material, cara_elem, list_load, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/vebtla.h"
 #include "asterfort/assvec.h"
 #include "asterfort/nmchex.h"

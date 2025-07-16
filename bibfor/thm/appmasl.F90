@@ -25,7 +25,6 @@ function appmasl(ds_thm, appmasm, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 !
     type(THM_DS), intent(in) :: ds_thm
     real(kind=8), intent(in) :: appmasm

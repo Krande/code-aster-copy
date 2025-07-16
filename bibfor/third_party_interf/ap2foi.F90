@@ -29,7 +29,6 @@ subroutine ap2foi(kptsc, mpicou, nosolv, lmd, indic, &
     implicit none
 #include "jeveux.h"
 #include "asterf_petsc.h"
-#include "asterc/asmpi_comm.h"
 #include "asterfort/apksp.h"
 #include "asterfort/appcpr.h"
 #include "asterfort/appcrs.h"

@@ -26,7 +26,6 @@ subroutine getBehaviourPara(l_mfront_proto, l_kit_thm, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/nmdocv.h"
 !
     aster_logical, intent(in) :: l_mfront_proto

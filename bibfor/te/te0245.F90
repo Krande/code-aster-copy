@@ -22,7 +22,6 @@ subroutine te0245(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/assert.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"

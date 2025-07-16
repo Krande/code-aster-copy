@@ -28,8 +28,6 @@ subroutine mmapma(mesh, ds_contact, model_ndim, i_zone, &
 !
 #include "asterf_types.h"
 #include "asterc/r8prem.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmgaus.h"
 #include "asterfort/mmnorm.h"
 #include "asterfort/mmnumn.h"

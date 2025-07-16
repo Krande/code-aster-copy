@@ -25,7 +25,6 @@ subroutine peMatr_cf_pr(parameters, geom, matr_cont, matr_fric)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/getInterCont.h"
 #include "asterfort/getQuadCont.h"
 #include "asterfort/laElemCont.h"

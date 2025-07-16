@@ -28,7 +28,6 @@ subroutine coor_cyl(ndim, nnop, basloc, geom, ff, &
 #include "asterfort/assert.h"
 #include "asterfort/xbasgl.h"
 #include "asterfort/xcoocy.h"
-#include "asterc/r8prem.h"
 !
     integer(kind=8) :: ndim, nnop
     real(kind=8) :: basloc(*), ff(*), geom(*)

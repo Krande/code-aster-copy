@@ -22,7 +22,6 @@ subroutine metaGetParaElas(poum, fami, kpg, ksp, j_mater, &
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/Metallurgy_type.h"
 !

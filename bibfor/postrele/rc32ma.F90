@@ -20,7 +20,6 @@ subroutine rc32ma()
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterfort/getvid.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"

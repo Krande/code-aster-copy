@@ -22,7 +22,6 @@ subroutine medome_once(result, v_list_store, nb_store, nume_user_, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/rslesd.h"
 #include "asterfort/utmess.h"
 !

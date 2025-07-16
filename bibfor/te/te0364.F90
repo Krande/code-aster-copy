@@ -23,7 +23,6 @@ subroutine te0364(option, nomte)
 !
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterfort/assert.h"
 #include "asterfort/mmelem.h"
 #include "asterfort/mmlagc.h"
 #include "asterfort/mmGetAlgo.h"

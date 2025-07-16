@@ -26,7 +26,6 @@ subroutine duplisp(celssp, celasp, carel, base)
 #include "asterfort/cesvar.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/dismoi.h"
-#include "asterfort/exisdg.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

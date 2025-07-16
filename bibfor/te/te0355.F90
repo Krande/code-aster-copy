@@ -23,15 +23,12 @@ subroutine te0355(nomopt, nomte)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/as_allocate.h"
 #include "asterfort/assert.h"
-#include "asterfort/jevech.h"
 #include "asterfort/laelem.h"
 #include "asterfort/laMatr.h"
 #include "asterfort/laMatr_diff.h"
 #include "asterfort/laParam.h"
 #include "asterfort/laVect.h"
-#include "asterfort/utmess.h"
 #include "asterfort/writeMatrix.h"
 #include "asterfort/writeVector.h"
 #include "contact_module.h"

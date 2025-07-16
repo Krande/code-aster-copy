@@ -24,7 +24,6 @@ subroutine nmcore_swap(sderro, nume_inst, load_norm, load_mini, last_resi_conv, 
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/GetResi.h"
 #include "asterfort/SetResi.h"
 #include "asterfort/nmcrel.h"

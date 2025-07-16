@@ -25,7 +25,6 @@ function lcdp_material(fami, kpg, ksp, imate, resi) result(mat)
 #include "asterfort/assert.h"
 #include "asterfort/rcvala.h"
 #include "asterfort/rcvalb.h"
-#include "asterfort/utmess.h"
 
     aster_logical, intent(in) :: resi
     character(len=*), intent(in) :: fami

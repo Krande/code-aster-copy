@@ -29,8 +29,6 @@ subroutine te0439(option, nomte)
 #include "asterfort/rcvalb.h"
 #include "asterfort/tecach.h"
 #include "asterfort/utmess.h"
-#include "asterfort/lteatt.h"
-#include "blas/ddot.h"
     character(len=16) :: option, nomte
 ! ......................................................................
 !    - FONCTION REALISEE:  CALCUL DE L'OPTION MASS_MECA

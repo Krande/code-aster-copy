@@ -27,11 +27,9 @@ subroutine ndassp(listFuncActi, ds_contact, ds_system, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/isfonc.h"
 #include "asterfort/ndasva.h"
-#include "asterfort/ndynin.h"
 #include "asterfort/ndynre.h"
 #include "asterfort/nmasdi.h"
 #include "asterfort/nmasfi.h"
@@ -39,7 +37,6 @@ subroutine ndassp(listFuncActi, ds_contact, ds_system, &
 #include "asterfort/infdbg.h"
 #include "asterfort/utmess.h"
 #include "asterfort/nmdebg.h"
-#include "asterfort/jeveuo.h"
 #include "asterfort/nonlinDSVectCombInit.h"
 #include "asterfort/nonlinDSVectCombCompute.h"
 #include "asterfort/nonlinDSVectCombAddAny.h"

@@ -24,7 +24,6 @@ subroutine iniMat0(l, x1, x2, x3, x4, x5, &
 !   initialisation des arguments à 0.d0
 !-----------------------------------------------------------------------
     implicit none
-#include "asterfort/assert.h"
     integer(kind=8), intent(in) :: l
     real(kind=8), intent(out) :: x1(l, l)
     real(kind=8), optional, intent(out) :: x2(l, l), x3(l, l), x4(l, l), x5(l, l)

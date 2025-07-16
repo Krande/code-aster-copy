@@ -24,7 +24,6 @@ subroutine cfmxpo(mesh, model_, ds_contact, nume_inst, sddisc, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdeco.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/cfmxre.h"

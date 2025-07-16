@@ -30,7 +30,6 @@ subroutine te0111(option, nomte)
 ! --------------------------------------------------------------------------------------------------
 !
 #include "jeveux.h"
-#include "asterc/r8prem.h"
 #include "asterfort/jevech.h"
 #include "asterfort/lonele.h"
 #include "asterfort/rcvalb.h"

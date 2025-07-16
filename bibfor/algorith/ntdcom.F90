@@ -22,7 +22,6 @@ subroutine ntdcom(result_dry, l_dry)
 !
 #include "asterf_types.h"
 #include "asterc/getfac.h"
-#include "asterc/getres.h"
 #include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"

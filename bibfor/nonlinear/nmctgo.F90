@@ -24,10 +24,8 @@ subroutine nmctgo(mesh, sderro, hval_incr, ds_print, ds_contact)
 !
 #include "asterf_types.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisi.h"
 #include "asterfort/cfdisl.h"
-#include "asterfort/cfdisr.h"
 #include "asterfort/cfverl.h"
 #include "asterfort/copisd.h"
 #include "asterfort/infdbg.h"

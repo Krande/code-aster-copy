@@ -33,7 +33,6 @@ subroutine op0027()
 #include "asterfort/infmaj.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/utmess.h"
 #include "jeveux.h"
 ! --------------------------------------------------------------------------------------------------
 !

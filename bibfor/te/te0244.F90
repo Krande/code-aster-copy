@@ -37,7 +37,6 @@ subroutine te0244(option, nomte)
 #include "asterfort/rccoma.h"
 #include "asterfort/rcvalb.h"
 #include "asterfort/rcfode.h"
-#include "asterfort/utmess.h"
 #include "asterfort/ntcomp.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/Behaviour_type.h"

@@ -30,7 +30,6 @@ subroutine modelCheckFSINormals(model)
 #include "asterfort/dismoi.h"
 #include "asterfort/infniv.h"
 #include "asterfort/utmess.h"
-#include "asterfort/jexnum.h"
 !
     character(len=8), intent(in) :: model
 !

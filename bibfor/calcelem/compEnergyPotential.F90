@@ -26,7 +26,6 @@ subroutine compEnergyPotential(option, modelz, ligrel, compor, l_temp, &
 !
 #include "asterf_types.h"
 #include "asterfort/ajchca.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/exisd.h"
 #include "asterfort/meceuc.h"

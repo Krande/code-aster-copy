@@ -18,7 +18,6 @@
 
 subroutine ibtcpu(ier)
     implicit none
-#include "asterc/getres.h"
 #include "asterc/gtoptr.h"
 #include "asterc/jdcget.h"
 #include "asterc/rdtmax.h"

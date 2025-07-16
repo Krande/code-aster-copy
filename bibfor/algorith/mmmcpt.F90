@@ -27,7 +27,6 @@ subroutine mmmcpt(mesh, ds_measure, ds_contact, cnsinr)
 #include "asterfort/as_allocate.h"
 #include "asterfort/as_deallocate.h"
 #include "asterfort/cfdisi.h"
-#include "asterfort/cfdisl.h"
 #include "asterfort/cfmmvd.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/jedema.h"

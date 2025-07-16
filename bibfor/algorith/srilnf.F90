@@ -52,8 +52,6 @@ subroutine srilnf(nvi, vind, nmat, materf, dt, nr, yf, deps, vinf)
 #include "asterfort/srds2h.h"
 #include "asterfort/srvacp.h"
 #include "asterfort/srvarp.h"
-#include "asterfort/cos3t.h"
-#include "asterc/r8pi.h"
 
     !!!
     !!! Variables globales

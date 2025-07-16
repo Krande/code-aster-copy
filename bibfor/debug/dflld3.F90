@@ -22,7 +22,6 @@ subroutine dflld3(sdlist, i_adap)
 !
 #include "asterf_types.h"
 #include "event_def.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/jeveuo.h"

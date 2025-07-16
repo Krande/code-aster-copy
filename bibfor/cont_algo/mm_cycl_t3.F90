@@ -21,7 +21,6 @@ subroutine mm_cycl_t3(pres_frot_prev, dist_frot_prev, coef_frot_prev, &
 !
     implicit none
 !
-#include "asterc/r8prem.h"
 !
 ! person_in_charge: mickael.abbas at edf.fr
 !

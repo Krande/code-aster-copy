@@ -35,7 +35,6 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 #include "asterfort/assert.h"
 #include "asterfort/elelin.h"
 #include "asterfort/iselli.h"
-#include "asterfort/ismali.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
 #include "asterfort/xcalc_code.h"
@@ -361,7 +360,9 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 ! ---  CALCUL DE PRE_FLU, LAG_FLI ET LAG_FLS
                     do j = 1, nnol
                         laghm(i) = laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
-                                    +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j, fiss)-1)+i))*ffc(j)
+                                               +cmp(ndim+1+nfh*(ndim+1)+ &
+                                                    (3+ndim)*(heavno(j, fiss)-1)+i)) &
+                                   *ffc(j)
                     end do
                 end do
 !
@@ -369,7 +370,9 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 ! ---  CALCUL DE LAGS_C, LAGS_F1 ET LAGS_F2 (DDLS LIES A LA PARTIE COHESIVE)
                     do j = 1, nnol
                         lagrc(i) = lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
-                                  +cmp(ndim+1+nfh*(ndim+1)+(3+ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
+                                               +cmp(ndim+1+nfh*(ndim+1)+ &
+                                                    (3+ndim)*(heavno(j, fiss)-1)+3+i)) &
+                                   *ffc(j)
                     end do
                 end do
             else if (contac .eq. 2) then
@@ -377,7 +380,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 ! ---  CALCUL DE PRE_FLU, LAG_FLI ET LAG_FLS
                     do j = 1, nnol
                         laghm(i) = laghm(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
-                                  +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j, fiss)-1)+i))*ffc(j)
+                                               +cmp(ndim+1+nfh*(ndim+1) &
+                                                    +(3+3*ndim)*(heavno(j, fiss)-1)+i))*ffc(j)
                     end do
                 end do
 !
@@ -385,7 +389,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 ! ---  CALCUL DE LAGS_C, LAGS_F1 ET LAGS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
                     do j = 1, nnol
                         lagrc(i) = lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
-                                +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
+                                               +cmp(ndim+1+nfh*(ndim+1) &
+                                                    +(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
                     end do
                 end do
 !
@@ -393,7 +398,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 ! ---  CALCUL DE JUPS_C, JUPS_F1 ET JUPS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
                     do j = 1, nnol
                         lagrc(i) = lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
-                                +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
+                                               +cmp(ndim+1+nfh*(ndim+1) &
+                                                    +(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
                     end do
                 end do
 !
@@ -401,7 +407,8 @@ subroutine xpoajd(elrefp, ino, nnop, lsn, lst, &
 ! ---  CALCUL DE MUS_C, MUS_F1 ET MUS_F2 (DDLS LIES A LA PARTIE COHESIVE MORTAR)
                     do j = 1, nnol
                         lagrc(i) = lagrc(i)+zr(jcnsv1-1+nbcmp*(ngl(j)-1) &
-                                +cmp(ndim+1+nfh*(ndim+1)+(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
+                                               +cmp(ndim+1+nfh*(ndim+1) &
+                                                    +(3+3*ndim)*(heavno(j, fiss)-1)+3+i))*ffc(j)
                     end do
                 end do
             end if

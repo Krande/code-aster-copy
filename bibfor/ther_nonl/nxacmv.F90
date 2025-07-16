@@ -35,7 +35,6 @@ subroutine nxacmv(model, materField, mateco, caraElem, listLoad, nume_dof, &
 #include "asterfort/ascavc.h"
 #include "asterfort/ascova.h"
 #include "asterfort/asmatr.h"
-#include "asterfort/assert.h"
 #include "asterfort/detrsd.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"

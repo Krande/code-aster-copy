@@ -22,7 +22,6 @@ subroutine op0036()
 #include "jeveux.h"
 #include "asterc/getfac.h"
 #include "asterc/getres.h"
-#include "asterfort/assert.h"
 #include "asterfort/ctresu.h"
 #include "asterfort/gettco.h"
 #include "asterfort/getvid.h"

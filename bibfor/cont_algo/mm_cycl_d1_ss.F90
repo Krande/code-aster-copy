@@ -21,7 +21,6 @@ subroutine mm_cycl_d1_ss(pres_near, laug_cont_prev, laug_cont_curr, zone_cont_pr
 !
     implicit none
 !
-#include "asterfort/assert.h"
 #include "asterfort/mm_cycl_zonc.h"
 !
 ! person_in_charge: ayaovi-dzifa.kudawoo at edf.fr

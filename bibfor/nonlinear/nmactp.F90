@@ -26,12 +26,10 @@ subroutine nmactp(ds_print, sddisc, sderro, ds_contact, &
 #include "asterf_types.h"
 #include "event_def.h"
 #include "asterfort/assert.h"
-#include "asterfort/isacti.h"
 #include "asterfort/nmacto.h"
 #include "asterfort/nmeceb.h"
 #include "asterfort/nmevac.h"
 #include "asterfort/nmleeb.h"
-#include "asterfort/utdidt.h"
 #include "asterfort/utmess.h"
 !
     type(NL_DS_Print), intent(in) :: ds_print

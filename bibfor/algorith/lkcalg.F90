@@ -20,7 +20,6 @@ subroutine lkcalg(dfdsig, vecn, g, devgii)
 !
     implicit none
 #include "asterfort/lcdevi.h"
-#include "asterfort/r8inir.h"
     real(kind=8) :: dfdsig(6), vecn(6), g(6), devgii
 ! --- MODELE LETK : LAIGLE VISCOPLASTIQUE--------------------------
 ! =================================================================

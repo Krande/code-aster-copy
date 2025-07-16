@@ -37,8 +37,6 @@ subroutine te0461(option, nomte)
 #include "asterfort/jevech.h"
 #include "asterfort/readVector.h"
 #include "asterfort/writeVector.h"
-#include "blas/daxpy.h"
-#include "blas/dcopy.h"
 #include "jeveux.h"
 !
     character(len=16), intent(in) :: option, nomte

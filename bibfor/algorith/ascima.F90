@@ -21,7 +21,6 @@ subroutine ascima(infcha, nu, matass, cumul)
     implicit none
 #include "jeveux.h"
 #include "asterfort/asschc.h"
-#include "asterfort/assert.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jedetr.h"
 #include "asterfort/jeexin.h"

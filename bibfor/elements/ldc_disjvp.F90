@@ -31,7 +31,6 @@ subroutine ldc_disjvp(ppr, ppi, ppc, yy0, dy0, dyy, decoup)
 ! ----------------------------------------------------------------------
 !
 #include "asterc/r8prem.h"
-#include "asterfort/assert.h"
 !
 ! ----------------------------------------------------------------------
 !        MODELE ELASTO PLASTIQUE ENDOMMAGEANT EN FLEXION (1DDL=RZ)

@@ -45,7 +45,6 @@ subroutine dracs2(a0, b0, c0, d0, e0, &
 ! OUT NBROOT : NOMBRE DE COUPLES SOLUTIONS
 ! OUT X ET Y : COUPLES SOLUTIONS
 !
-#include "asterc/r8prem.h"
 #include "asterc/r8maem.h"
 #include "asterfort/assert.h"
 #include "asterfort/decompose_conic.h"

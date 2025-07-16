@@ -25,7 +25,6 @@ subroutine thmCompVariElno(ds_thm)
 !
 #include "jeveux.h"
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/thmGetElemRefe.h"
 #include "asterfort/elrefe_info.h"
 #include "asterfort/jevech.h"

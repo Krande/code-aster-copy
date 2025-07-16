@@ -27,7 +27,6 @@ subroutine zacier(metaSteelPara, nbPhase, nbVari, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/Metallurgy_type.h"
 #include "asterfort/zwaeckel.h"
 !

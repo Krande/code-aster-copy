@@ -23,7 +23,6 @@ subroutine jeimpm(unit)
 #include "jeveux_private.h"
 #include "asterfort/assert.h"
 #include "asterfort/jxveri.h"
-#include "asterfort/utmess.h"
     integer(kind=8) :: unit
 ! ----------------------------------------------------------------------
 ! IMPRIME LA SEGMENTATION DE LA MEMOIRE
@@ -64,12 +63,11 @@ subroutine jeimpm(unit)
     parameter(ivnmax=0, idiadm=3,&
      &               idmarq=4)
 ! ----------------------------------------------------------------------
-    character(len=32) :: nom32, valk(2)
+    character(len=32) :: nom32
     character(len=8) :: nom8
     character(len=1) :: cla, cgenr
     integer(kind=8) :: k
     real(kind=8) :: vusta, vudyn, vxsta, vxdyn
-    aster_logical :: dbg
 ! DEB ------------------------------------------------------------------
 !
     if (unit .le. 0) goto 999

@@ -25,7 +25,6 @@ subroutine op0071()
 !
 #include "jeveux.h"
 #include "asterc/getres.h"
-#include "asterfort/gettco.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/getvid.h"
 #include "asterfort/infmaj.h"

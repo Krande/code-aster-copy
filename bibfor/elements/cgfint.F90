@@ -31,7 +31,6 @@ subroutine cgfint(ndim, nno1, nno2, npg, wref, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8nnem.h"
 #include "asterfort/assert.h"
 #include "asterfort/cgcine.h"
 #include "asterfort/codere.h"

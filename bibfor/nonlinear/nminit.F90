@@ -40,7 +40,6 @@ subroutine nminit(mesh, model, mater, mateco, cara_elem, &
 !
 #include "asterf_types.h"
 #include "asterfort/accel0.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfmxsd.h"
 #include "asterfort/cucrsd.h"
 #include "asterfort/diinit.h"

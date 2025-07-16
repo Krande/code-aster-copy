@@ -28,7 +28,6 @@ subroutine detmatrix(matass)
 !
 ! ----------------------------------------------------------------------
 !
-#include "asterfort/assert.h"
 #include "asterfort/detlsp.h"
 #include "asterfort/dismoi.h"
 #include "asterfort/xfem_precond.h"

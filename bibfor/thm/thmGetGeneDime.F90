@@ -23,7 +23,6 @@ subroutine thmGetGeneDime(ndim, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 !
     integer(kind=8), intent(in) :: ndim
     integer(kind=8), intent(in) :: mecani(5), press1(7), press2(7), tempe(5), second(5)

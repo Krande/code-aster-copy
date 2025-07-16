@@ -30,7 +30,6 @@ subroutine lcdppa(mod, nvi, option, materf, compor, &
 #include "asterfort/majsig.h"
 #include "asterfort/resdp2.h"
 #include "asterfort/trace.h"
-#include "asterfort/utmess.h"
 #include "blas/ddot.h"
     integer(kind=8) :: iret, nvi
     real(kind=8) :: deps(6), vim(nvi), vip(nvi), sig(6)

@@ -23,15 +23,11 @@ subroutine mmmcri_frot(mesh, loop_fric_disp, disp_curr, ds_contact)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterc/r8prem.h"
 #include "asterc/r8vide.h"
-#include "asterfort/assert.h"
 #include "asterfort/cfdisr.h"
 #include "asterfort/cnomax.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detrsd.h"
-#include "asterfort/jenuno.h"
-#include "asterfort/jexnum.h"
 #include "asterfort/mmbouc.h"
 #include "asterfort/vtaxpy.h"
 #include "asterfort/int_to_char8.h"

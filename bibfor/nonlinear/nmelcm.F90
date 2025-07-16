@@ -27,7 +27,6 @@ subroutine nmelcm(model, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/calcul.h"
 #include "asterfort/cfdisl.h"
 #include "asterfort/detrsd.h"

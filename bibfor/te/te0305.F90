@@ -28,7 +28,6 @@ subroutine te0305(option, nomte)
     implicit none
 !
 #include "asterfort/assert.h"
-#include "asterfort/elrefe_info.h"
 #include "asterfort/jevecd.h"
 #include "asterfort/jevech.h"
 #include "asterfort/tefrep.h"

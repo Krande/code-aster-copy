@@ -26,8 +26,6 @@ subroutine dfflon(geom, nonoff, nomnoe, inoff, nbnoff, &
 #include "asterfort/dis2no.h"
 #include "asterfort/jedema.h"
 #include "asterfort/jemarq.h"
-#include "asterfort/jenonu.h"
-#include "asterfort/jexnom.h"
 #include "asterfort/char8_to_int.h"
     real(kind=8) :: geom(*), d
     integer(kind=8) :: inoff, nbnoff

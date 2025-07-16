@@ -24,7 +24,6 @@ subroutine carc_chck(prepMapCarcri)
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/comp_meca_l.h"
 #include "asterfort/utmess.h"
 !

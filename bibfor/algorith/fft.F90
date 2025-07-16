@@ -20,7 +20,6 @@ subroutine fft(s, n, ifft)
     implicit none
 #include "jeveux.h"
 #include "asterc/r8pi.h"
-#include "asterfort/assert.h"
 #include "asterfort/veri32.h"
 #include "blas/zscal.h"
 !-----------------------------------------------------------------------

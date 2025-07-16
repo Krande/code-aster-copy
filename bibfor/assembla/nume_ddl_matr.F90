@@ -20,7 +20,6 @@ subroutine nume_ddl_matr(numeDofZ, jvListOfMatrZ, nbMatrElem, verbose)
 !
     implicit none
 !
-#include "asterfort/as_deallocate.h"
 #include "asterfort/jeveuo.h"
 #include "asterfort/numddl.h"
 #include "asterfort/promor.h"

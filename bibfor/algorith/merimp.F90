@@ -29,7 +29,6 @@ subroutine merimp(l_xfem, l_dyna, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/assert.h"
 #include "asterfort/cesvar.h"
 #include "asterfort/copisd.h"
 #include "asterfort/exisd.h"
@@ -37,7 +36,6 @@ subroutine merimp(l_xfem, l_dyna, &
 #include "asterfort/mecara.h"
 #include "asterfort/megeom.h"
 #include "asterfort/ndynkk.h"
-#include "asterfort/ndynlo.h"
 #include "asterfort/nmchex.h"
 #include "asterfort/nmvcex.h"
 #include "asterfort/vtzero.h"

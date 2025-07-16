@@ -24,7 +24,6 @@ subroutine rc3600_momeq()
     implicit none
 #include "asterf_types.h"
 #include "jeveux.h"
-#include "asterc/getfac.h"
 #include "asterc/getres.h"
 #include "asterfort/assert.h"
 #include "asterfort/calcul.h"

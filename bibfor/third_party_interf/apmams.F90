@@ -36,7 +36,6 @@ subroutine apmams(matass, auxMat)
 #include "asterfort/jexnum.h"
 #include "asterfort/mtmchc.h"
 #include "asterfort/wkvect.h"
-#include "asterfort/asmpi_info.h"
     !----------------------------------------------------------------
     !
     !  CONSTRUCTION DE LA MATRICE DE RIGIDITE LOCALE DU SOUS-DOMAINE
