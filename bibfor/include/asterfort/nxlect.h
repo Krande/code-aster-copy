@@ -23,7 +23,7 @@ interface
                       ds_inout, ds_algopara, &
                       ds_algorom, ds_print, &
                       compor, &
-                      mesh, l_dry)
+                      mesh)
         use NonLin_Datastructure_type
         use Rom_Datastructure_type
         character(len=8), intent(in) :: result, model
@@ -35,6 +35,5 @@ interface
         type(NL_DS_Print), intent(inout) :: ds_print
         character(len=24), intent(out) :: compor
         character(len=8), intent(out) :: mesh
-        aster_logical, intent(out) :: l_dry
     end subroutine nxlect
 end interface

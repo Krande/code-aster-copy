@@ -26,6 +26,7 @@ subroutine op0186()
 #include "asterf_types.h"
 #include "jeveux.h"
 #include "asterc/etausr.h"
+#include "asterc/getres.h"
 #include "asterfort/copisd.h"
 #include "asterfort/detmat.h"
 #include "asterfort/didern.h"
@@ -81,7 +82,8 @@ subroutine op0186()
     real(kind=8) :: tps2(4), tps3(4), tpex, ther_crit_r(2), rho
     real(kind=8) :: para(2), time_curr, tconso
     real(kind=8) :: rtab(2), theta_read
-    character(len=8) :: result, mesh, model, materField, caraElem
+    character(len=8) :: result, mesh, model, materField, caraElem, k8bid
+    character(len=16) :: commandName, typesd
     character(len=19) :: sdobse
     character(len=19) :: solver, maprec, sddisc, varc_curr, varc_prev
     character(len=24) :: mateco, listLoad
@@ -122,6 +124,11 @@ subroutine op0186()
 ! --- FORCER LE CALCUL MEME SI ON N'A PAS CONVERGENCE (ARRET=TRUE)
     arret = ASTER_FALSE
 !
+    call getres(k8bid, typesd, commandName)
+!
+    l_dry = ASTER_FALSE
+    if (commandName .eq. 'SECH_NON_LINE') l_dry = ASTER_TRUE
+!
 ! - Creation of datastructures
 !
     call nxini0(ds_algopara, ds_inout, ds_print)
@@ -139,7 +146,7 @@ subroutine op0186()
                 ds_inout, ds_algopara, &
                 ds_algorom, ds_print, &
                 comporTher, &
-                mesh, l_dry)
+                mesh)
     itmax = ther_crit_i(3)
 !
 ! - Initializations

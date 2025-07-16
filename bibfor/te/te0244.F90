@@ -39,6 +39,7 @@ subroutine te0244(option, nomte)
 #include "asterfort/rcvarc.h"
 #include "asterfort/rcfode.h"
 #include "asterfort/ntcomp.h"
+#include "asterfort/utmess.h"
 #include "asterfort/writeVector.h"
 #include "asterfort/Behaviour_type.h"
 #include "FE_module.h"
@@ -87,18 +88,6 @@ subroutine te0244(option, nomte)
 !
     deltat = zr(itemps+1)
     theta = zr(itemps+2)
-!
-!     if ((rela_name(1:5) .eq. 'SECH_')) then
-!         if (rela_name(1:12) .eq. 'SECH_GRANGER' .or. &
-!             rela_name(1:10) .eq. 'SECH_NAPPE' .or. &
-!             rela_name(1:8) .eq. 'SECH_RFT') then
-!             call jevech('PTMPCHI', 'L', vr=sechf)
-!         else
-! !          POUR LES AUTRES LOIS, PAS DE CHAMP DE TEMPERATURE
-! !          ISECHF EST FICTIF
-!             call jevech('PTEMPER', 'L', vr=sechf)
-!         end if
-!     end if
 
     if (rela_name(1:5) .eq. 'THER_') then
         call rccoma(zi(imate), 'THER', 1, phenom, icodre(1))

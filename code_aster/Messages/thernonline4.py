@@ -37,5 +37,4 @@ On ne peut pas utiliser d'éléments de structures (coques, plaques, poutres) da
                                   lors de l'itération : %(i2)d
 """
     ),
-    96: _("""Le séchage ne peut pas être mélangé à un autre comportement."""),
 }

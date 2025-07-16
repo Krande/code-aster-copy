@@ -21,7 +21,7 @@ subroutine nxlect(result, model, &
                   ds_inout, ds_algopara, &
                   ds_algorom, ds_print, &
                   compor, &
-                  mesh, l_dry)
+                  mesh)
 !
     use NonLin_Datastructure_type
     use Rom_Datastructure_type
@@ -29,7 +29,6 @@ subroutine nxlect(result, model, &
     implicit none
 !
 #include "asterf_types.h"
-#include "asterfort/ntdcom.h"
 #include "asterfort/nxdocc.h"
 #include "asterfort/nxdocn.h"
 #include "asterfort/nxdomt.h"
@@ -47,7 +46,6 @@ subroutine nxlect(result, model, &
     type(NL_DS_Print), intent(inout) :: ds_print
     character(len=24), intent(out) :: compor
     character(len=8), intent(out) :: mesh
-    aster_logical, intent(out) :: l_dry
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -67,7 +65,6 @@ subroutine nxlect(result, model, &
 ! IO  ds_print         : datastructure for printing parameters
 ! Out compor           : name of <CARTE> COMPOR
 ! Out mesh             : name of mesh
-! Out l_dry            : .true. if drying (concrete)
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -83,10 +80,6 @@ subroutine nxlect(result, model, &
 ! - Read parameters for algorithm management
 !
     call nxdomt(ds_algopara, ds_algorom)
-!
-! - Read parameters for drying
-!
-    call ntdcom(l_dry)
 !
 ! - Read convergence criteria
 !
