@@ -17,7 +17,7 @@
 ! --------------------------------------------------------------------
 !
 subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
-                  lfichUniq)
+                  lfichUniq, lNomCas)
 !
     implicit none
 !
@@ -46,7 +46,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
 !
     integer(kind=8), intent(in) :: keywfIocc, fileUnit, fileVersion
     character(len=8), intent(in) :: fileFormat, modelIn
-    aster_logical :: lfichUniq
+    aster_logical :: lfichUniq, lNomCas
 !
 ! --------------------------------------------------------------------------------------------------
 !
@@ -358,7 +358,7 @@ subroutine irmfac(keywfIocc, fileFormat, fileUnit, fileVersion, modelIn, &
                         cellListNb, cellListNume, &
                         nodeListNb, nodeListNume, &
                         cplxFormat, lVariName, &
-                        caraElem, lfichUniq)
+                        caraElem, lfichUniq, lNomCas)
         elseif (fileFormat .eq. 'GMSH') then
             lFirstOcc = keywfIocc .eq. 1 .and. .not. lMesh
             call irgmsh(dsName, cplxFormat, fileUnit, fieldListNb, fieldListType, &
